@@ -80,7 +80,7 @@ public:
   void Paint() override;
   void SetValue(int value);
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ int percentage;
 };
 
 class UIBarGraphHomun : public UIWindow {

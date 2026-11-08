@@ -8,24 +8,24 @@
 #include <vector>
 
 struct TipBoxImage {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ float unknown_0018;
+  /* 0000 */ int kind;
+  /* 0004 */ int blink;
+  /* 0008 */ int fromX;
+  /* 000C */ int fromY;
+  /* 0010 */ int toX;
+  /* 0014 */ int toY;
+  /* 0018 */ float duration;
 };
 
 struct TipBoxEntry {
   TipBoxEntry();
   /* 0000 */ std::string title;
-  /* 0018 */ unsigned char unknown_0018;
-  /* 001C */ std::string unknown_001C;
+  /* 0018 */ unsigned char randomEligible;
+  /* 001C */ std::string bitmapName;
   /* 0034 */ unsigned char searchable;
   /* 0038 */ std::vector<std::string> paragraphs;
-  /* 0044 */ int unknown_0044;
-  /* 0048 */ int unknown_0048;
+  /* 0044 */ int imageCell;
+  /* 0048 */ int imageScalePercent;
   /* 004C */ std::vector<TipBoxImage> images;
 };
 
@@ -61,8 +61,8 @@ public:
   void AddTip(int id, std::string title, double flag, std::string text);
   // INLINED
   void SetImageCoord(int id, int x, int y) {
-    this->m_entries[id].unknown_0044 = x;
-    this->m_entries[id].unknown_0048 = y;
+    this->m_entries[id].imageCell = x;
+    this->m_entries[id].imageScalePercent = y;
   }
   // INLINED
   void SetSearchable(int id, bool searchable) {
@@ -81,11 +81,11 @@ public:
   TipBoxEntry m_currentEntry;
   TipBoxLayout m_image;
   std::string m_imagePath;
-  int unknown_00B4;
+  int paragraphIndex;
   bool m_initialized;
   TipBoxEntry m_missing;
-  int unknown_0114;
-  int unknown_0118;
+  int currentTipId;
+  int maxTipId;
 };
 
 extern CTipBoxMgr* g_itemTagOwner;
@@ -98,10 +98,10 @@ static_assert(offsetof(TipBoxEntry, images) == 0x4C);
 static_assert(sizeof(CTipBoxMgr) == 284);
 static_assert(offsetof(CTipBoxMgr, m_randomList) == 0x18);
 static_assert(offsetof(CTipBoxMgr, m_currentEntry) == 0x24);
-static_assert(offsetof(CTipBoxMgr, unknown_00B4) == 0xB4);
+static_assert(offsetof(CTipBoxMgr, paragraphIndex) == 0xB4);
 static_assert(offsetof(CTipBoxMgr, m_image) == 0x7C);
 static_assert(offsetof(CTipBoxMgr, m_imagePath) == 0x9C);
-static_assert(offsetof(CTipBoxMgr, unknown_0114) == 0x114);
+static_assert(offsetof(CTipBoxMgr, currentTipId) == 0x114);
 #endif
 
 #endif

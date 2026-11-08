@@ -17,7 +17,7 @@ LightmappedCommand::LightmappedCommand()
 // OFFSET: 0x00569090
 // FUNCTION: fn_02247
 ModelRenderCommand::ModelRenderCommand()
-    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), unknown_0014(1), unknown_0018(0), unknown_001C(0), unknown_0020(0),
+    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), renderEnabled(1), renderStateA(0), renderStateB(0), renderStateC(0),
       primitiveType(D3DPT_TRIANGLELIST) {
 }
 

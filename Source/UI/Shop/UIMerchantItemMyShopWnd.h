@@ -26,27 +26,27 @@ public:
   void OpenShop();
   void SetDuration(std::uint32_t value);
 
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ int buyingZeny;
   /* 00F4 */ UIStaticText* title;
   /* 00F8 */ MerchantItemMyShopWndInfo* saved;
   /* 00FC */ UIStaticText* notice;
-  /* 0100 */ int unknown_0100;
+  /* 0100 */ int buyingShop;
   /* 0104 */ UICheckBox* saleAlarm;
   /* 0108 */ unsigned char shopOpen;
   /* 0109 */ unsigned char unknown_0109[0x03];
-  /* 010C */ int unknown_010C;
+  /* 010C */ int offlineStoreId;
   /* 0110 */ std::uint32_t startTick;
   /* 0114 */ std::uint32_t duration;
   /* 0118 */ UIBasicButton* actionButton;
-  /* 011C */ int unknown_011C;
+  /* 011C */ int footerHeight;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIMerchantItemMyShopWnd, saved) == 0xF8);
-static_assert(offsetof(UIMerchantItemMyShopWnd, unknown_0100) == 0x100);
+static_assert(offsetof(UIMerchantItemMyShopWnd, buyingShop) == 0x100);
 static_assert(offsetof(UIMerchantItemMyShopWnd, saleAlarm) == 0x104);
 static_assert(offsetof(UIMerchantItemMyShopWnd, startTick) == 0x110);
-static_assert(offsetof(UIMerchantItemMyShopWnd, unknown_011C) == 0x11C);
+static_assert(offsetof(UIMerchantItemMyShopWnd, footerHeight) == 0x11C);
 #endif
 
 #endif

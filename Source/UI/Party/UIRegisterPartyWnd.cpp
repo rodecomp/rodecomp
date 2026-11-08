@@ -279,7 +279,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       break;
     case 564:
     case 565:
-      if (g_session.unknown_5464 != 0) {
+      if (g_session.partyLeader != 0) {
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
           StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_STOP_RECRUITING_PARTY));

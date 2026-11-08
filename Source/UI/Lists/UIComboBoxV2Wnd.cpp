@@ -2,5 +2,5 @@
 
 // OFFSET: 0x0086CF40
 // FUNCTION: fn_11039
-UIComboBoxV2Wnd::UIComboBoxV2Wnd() : UIWindow(0), selected(-1), unknown_0098(nullptr), list(nullptr) {
+UIComboBoxV2Wnd::UIComboBoxV2Wnd() : UIWindow(0), selected(-1), auxiliaryWindow(nullptr), list(nullptr) {
 }

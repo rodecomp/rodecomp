@@ -10,11 +10,11 @@ bool CCharacterRender::DrawOnTop() const {
   if (g_session.m_newRobeDrawOnTop == 1) {
     int unusedPriority = 1;
     g_session.m_hotkeyScript->Call(
-      "_New_DrawOnTop", "ddddd>bd", this->unknown_00BC, this->unknown_0018[0], this->unknown_0010, this->unknown_0040, this->unknown_0044, &drawOnTop,
+      "_New_DrawOnTop", "ddddd>bd", this->robe, this->appearance[0], this->job, this->actionIndex, this->frameIndex, &drawOnTop,
       &unusedPriority
     );
   } else {
-    g_session.m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->unknown_00BC, this->unknown_0018[0], this->unknown_0010, this->unknown_0040, this->unknown_0044, &drawOnTop);
+    g_session.m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->robe, this->appearance[0], this->job, this->actionIndex, this->frameIndex, &drawOnTop);
   }
 
   return drawOnTop;
@@ -23,6 +23,6 @@ bool CCharacterRender::DrawOnTop() const {
 // OFFSET: 0x008124B0
 // FUNCTION: fn_10111
 bool CCharacterRender::SetRobe(int robe) {
-  this->unknown_00BC = robe;
-  return g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", robe, &this->unknown_00C0);
+  this->robe = robe;
+  return g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", robe, &this->isHelmRobe);
 }

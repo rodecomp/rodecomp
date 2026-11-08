@@ -144,7 +144,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     }
 
-    if (g_windowMgr.unknown_0214) {
+    if (g_windowMgr.comboBoxWnd) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 

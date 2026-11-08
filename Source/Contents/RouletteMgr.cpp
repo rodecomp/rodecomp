@@ -22,12 +22,12 @@ RouletteMgr::RouletteMgr() {
   std::memset(&this->m_quads.current, 0, sizeof(this->m_quads.current));
   std::memset(&this->m_quads.start, 0, sizeof(this->m_quads.start));
   std::memset(&this->m_quads.target, 0, sizeof(this->m_quads.target));
-  this->unknown_0004 = 0;
+  this->m_serial = 0;
   this->m_frame = 0;
   this->m_cycle = 0;
   this->m_spinning = 0;
   this->m_stage = 0;
-  this->unknown_0018 = 0;
+  this->resetState = 0;
   this->m_lastTick = 0;
   this->m_interval = 0;
   this->m_index = 0;
@@ -59,7 +59,7 @@ void RouletteMgr::Reset() {
   this->m_frame = 0;
   this->m_cycle = 0;
   this->m_stage = 0;
-  this->unknown_0018 = 0;
+  this->resetState = 0;
   this->m_lastTick = 0;
   this->m_interval = 0;
   this->m_spinning = 0;
@@ -143,9 +143,9 @@ void RouletteMgr::StartSpin(int x, int y, int originX, int originY) {
   this->m_spinning = 1;
   this->m_resultShown = 0;
 
-  g_windowMgr.unknown_0464->m_enabled = 0;
-  if (g_windowMgr.unknown_0464) {
-    g_windowMgr.unknown_0464->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  g_windowMgr.roulletteWnd->m_enabled = 0;
+  if (g_windowMgr.roulletteWnd) {
+    g_windowMgr.roulletteWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -210,8 +210,8 @@ void RouletteMgr::Update() {
       const int originY = static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0);
       const int originX = static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0);
       this->SetQuad((this->m_stage + this->m_index) * 36 + 173, 341 - this->m_stage * 40, originX, originY);
-      g_windowMgr.unknown_0464->m_enabled = 1;
-      g_windowMgr.unknown_0464->Invalidate();
+      g_windowMgr.roulletteWnd->m_enabled = 1;
+      g_windowMgr.roulletteWnd->Invalidate();
       this->m_spinning = 0;
       return;
     }

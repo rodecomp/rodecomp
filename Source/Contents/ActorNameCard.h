@@ -18,33 +18,33 @@ public:
   }
   // INLINED
   void SetValue1(std::string value) {
-    this->unknown_001C = value;
+    this->partyName = value;
   }
   // INLINED
   void SetValue2(std::string value) {
-    this->unknown_0034 = value;
+    this->guildName = value;
   }
   // INLINED
   __forceinline void SetValue3(std::string value) {
-    this->unknown_004C = value;
+    this->clanName = value;
   }
   // INLINED
   __forceinline void SetValue4(std::string value) {
-    this->unknown_0064 = value;
+    this->title = value;
   }
   // INLINED
   void SetValue5(std::string value, std::uint32_t number) {
-    this->unknown_007C = value;
-    this->unknown_0094 = number;
+    this->displayName = value;
+    this->groupIconId = number;
   }
 
   /* 0004 */ std::string name;
-  /* 001C */ std::string unknown_001C;
-  /* 0034 */ std::string unknown_0034;
-  /* 004C */ std::string unknown_004C;
-  /* 0064 */ std::string unknown_0064;
-  /* 007C */ std::string unknown_007C;
-  /* 0094 */ std::uint32_t unknown_0094;
+  /* 001C */ std::string partyName;
+  /* 0034 */ std::string guildName;
+  /* 004C */ std::string clanName;
+  /* 0064 */ std::string title;
+  /* 007C */ std::string displayName;
+  /* 0094 */ std::uint32_t groupIconId;
   /* 0098 */ unsigned char received;
 };
 

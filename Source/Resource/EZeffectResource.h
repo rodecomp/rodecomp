@@ -48,7 +48,7 @@ struct EZeffectClip {
   CTexture* Texture(int index, const char* prefix);
 
   /* 0000 */ int textureCount;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int textureState;
   /* 0008 */ int frameCount;
   /* 000C */ const EZeffectKeyFrame* frames;
   /* 0010 */ const char* names[110];
@@ -71,7 +71,7 @@ public:
   /* 0120 */ EZeffectClip clips[60];
 
 private:
-  /* D320 */ std::uint32_t unknown_D320;
+  /* D320 */ std::uint32_t loadState;
   /* D324 */ CFile m_file;
 };
 

@@ -11,7 +11,7 @@ void UIColorButton::Paint() {
   this->ClearSurface(static_cast<unsigned char>(red) | (static_cast<unsigned char>(green) << 8) | (static_cast<unsigned char>(blue) << 16));
 
   std::uint32_t color;
-  switch (this->geometry.unknown_0030) {
+  switch (this->geometry.state) {
   case 0:
     color = static_cast<unsigned char>(this->normalRed) | (static_cast<unsigned char>(this->normalGreen) << 8) | (static_cast<unsigned char>(this->normalBlue) << 16);
     break;

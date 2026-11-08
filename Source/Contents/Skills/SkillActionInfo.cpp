@@ -35,13 +35,13 @@ std::string CSession::GetRobeName(unsigned int robe) {
 // OFFSET: 0x00E13BF0
 // FUNCTION: fn_23828
 int CSession::GetItemDescription40(int id) {
-  return FindItemDescription(id).unknown_0040;
+  return FindItemDescription(id).viewId;
 }
 
 // OFFSET: 0x00E13C10
 // FUNCTION: fn_23829
 std::uint32_t CSession::GetUnknown0420(int index) {
-  return this->unknown_0420[index];
+  return this->hotkeySkillLevels[index];
 }
 
 // OFFSET: 0x00E13C30

@@ -24,12 +24,12 @@ bool CCharacterRender::ProjectCell(
   const double scaleY = scale * cell.scaleY;
   const double scaleX = scale * cell.scaleX;
   const float top = (cell.y + offsetY) * scaleY + y;
-  const float bottom = ((image.unknown_0006 + 1) * image.height + cell.y + offsetY) * scaleY + y + 1.0;
+  const float bottom = ((image.doubleHeight + 1) * image.height + cell.y + offsetY) * scaleY + y + 1.0;
   float left;
   float right;
 
   if (cell.mirrored & 1) {
-    left = ((image.unknown_0004 + 1) * image.width + cell.x + offsetX) * scaleX + x;
+    left = ((image.doubleWidth + 1) * image.width + cell.x + offsetX) * scaleX + x;
     right = (offsetX + cell.x) * scaleX + x + 1.0;
 
     if (top >= g_renderer->viewport.height || bottom <= 0.0f || right >= g_renderer->viewport.width || left <= 0.0f) {
@@ -37,7 +37,7 @@ bool CCharacterRender::ProjectCell(
     }
   } else {
     left = (cell.x + offsetX) * scaleX + x;
-    right = ((image.unknown_0004 + 1) * image.width + cell.x + offsetX) * scaleX + x + 1.0;
+    right = ((image.doubleWidth + 1) * image.width + cell.x + offsetX) * scaleX + x + 1.0;
 
     if (top >= g_renderer->viewport.height || bottom <= 0.0f || left >= g_renderer->viewport.width || right <= 0.0f) {
       return false;
@@ -52,7 +52,7 @@ bool CCharacterRender::ProjectCell(
   quad.right = right + shift;
   quad.bottomDepth = bottomDepth;
   quad.topDepth = topDepth;
-  quad.angle = static_cast<float>(cell.unknown_001C);
+  quad.angle = static_cast<float>(cell.rotation);
   bounds.left = static_cast<LONG>(left);
   bounds.top = static_cast<LONG>(top);
   bounds.right = static_cast<LONG>(right);

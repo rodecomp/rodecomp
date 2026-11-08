@@ -105,7 +105,7 @@ void UIShortCutWnd::Paint() {
       }
 
       const int x = 16 + 29 * column;
-      if (slot.unknown_0000 != 0) {
+      if (slot.enabled != 0) {
         CSkillInfo skill = g_session.LookupSkill(slot.itemId);
         if (!skill.MatchesShortcut(&slot)) {
           continue;
@@ -121,7 +121,7 @@ void UIShortCutWnd::Paint() {
 
         g_session.m_mainCooldownIcons.push_back({skill.id, index, x, y});
         Bitmap(window, image, x, y, true);
-        int level = slot.unknown_0005;
+        int level = slot.value;
 
         if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
           level = skill.level;
@@ -130,7 +130,7 @@ void UIShortCutWnd::Paint() {
         Count(window, x + 27, (y + 17), level);
       } else {
         ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-        if (item.unknown_0000[1] == 0) {
+        if (item.identity[1] == 0) {
           continue;
         }
 
@@ -139,9 +139,9 @@ void UIShortCutWnd::Paint() {
           Count(window, x + 27, (y + 17), item.quantity);
         }
 
-        if (item.unknown_0088 > 0) {
+        if (item.grade > 0) {
           char tail[96];
-          std::sprintf(tail, "\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
+          std::sprintf(tail, "\\grade_enchant\\grade_icon%d.bmp", item.grade);
           Bitmap(window, Load(resources, tail), x, (y + 12), true);
         }
       }
@@ -158,7 +158,7 @@ void UIShortCutWnd::Paint() {
       }
 
       ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-      if (item.unknown_0000[1] == 0) {
+      if (item.identity[1] == 0) {
         continue;
       }
 

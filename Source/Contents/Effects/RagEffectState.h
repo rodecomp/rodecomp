@@ -46,14 +46,14 @@ struct RagEffectState {
   /* 11B44 */ int loopCount;
   /* 11B48 */ int loopLimit;
   union {
-    /* 11B4C */ EffectPrimitiveState* unknown_11C84;
+    /* 11B4C */ EffectPrimitiveState* currentPrimitive;
     /* 11B4C */ CEffectPrim* lastPrim;
   };
-  /* 11B50 */ std::int32_t unknown_11C88[4];
+  /* 11B50 */ std::int32_t colorChannels[4];
   /* 11B60 */ unsigned char forceRender;
   /* 11B61 */ unsigned char unknown_11C99[3];
   /* 11B64 */ std::uint32_t tag;
-  /* 11B68 */ unsigned char unknown_11CA0;
+  /* 11B68 */ unsigned char visibilityFlags;
   /* 11B69 */ unsigned char unknown_11CA1[7];
 };
 

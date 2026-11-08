@@ -11,9 +11,9 @@ public:
   static void Destroy();
 
   /* 0004 */ bool m_initialized;
-  /* 0008 */ std::vector<std::string> unknown_0008;
-  /* 0014 */ std::vector<std::string> unknown_0014;
-  /* 0020 */ std::vector<std::string> unknown_0020;
+  /* 0008 */ std::vector<std::string> resourceNamesA;
+  /* 0014 */ std::vector<std::string> resourceNamesB;
+  /* 0020 */ std::vector<std::string> resourceNamesC;
 
   // INLINED
   EquipmentResourceMgr() {

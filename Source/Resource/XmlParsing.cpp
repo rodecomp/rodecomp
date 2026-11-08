@@ -7,21 +7,21 @@
 // FUNCTION: fn_18298
 const std::string& XmlNode::Text() {
   if (this->text.size() == 0) {
-    char* cursor = this->unknown_0004;
+    char* cursor = this->sourceBegin;
     while (*cursor != '>' && *cursor != '\0') {
       ++cursor;
     }
 
-    char* end = this->unknown_0008;
+    char* end = this->sourceEnd;
     for (++cursor; cursor != end; ++cursor) {
       for (XmlNode* node = this->child; node != nullptr; node = node->child) {
-        if (cursor == node->unknown_0004) {
-          cursor = node->unknown_0008;
+        if (cursor == node->sourceBegin) {
+          cursor = node->sourceEnd;
         }
 
         for (XmlNode* sibling = node->sibling; sibling != nullptr; sibling = sibling->sibling) {
-          if (cursor == sibling->unknown_0004) {
-            cursor = sibling->unknown_0008;
+          if (cursor == sibling->sourceBegin) {
+            cursor = sibling->sourceEnd;
           }
         }
       }
@@ -94,7 +94,7 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
 
         char* next = close + 1;
         if (std::strcmp(this->TerminateName(cursor + 2, end), parent->name) == 0) {
-          parent->unknown_0008 = next;
+          parent->sourceEnd = next;
           return next;
         }
 
@@ -129,7 +129,7 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
         continue;
       }
 
-      node->unknown_0004 = cursor;
+      node->sourceBegin = cursor;
       cursor = this->ParseElements(node, next, end);
     } else {
       if (value == '&' && std::strcmp(parent->name, "registrationweb") != 0) {
@@ -161,8 +161,8 @@ bool XmlDocument::Parse(const char* begin, const char* end) {
   this->buffer = buffer;
   std::memcpy(buffer, begin, length);
   buffer[length] = '\0';
-  this->unknown_0004 = buffer;
-  this->unknown_0008 = buffer + length;
+  this->sourceBegin = buffer;
+  this->sourceEnd = buffer + length;
   this->ParseElements(this, buffer, buffer + length);
   return this->child != nullptr;
 }

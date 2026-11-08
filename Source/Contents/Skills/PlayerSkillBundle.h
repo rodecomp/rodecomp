@@ -62,7 +62,7 @@ public:
   /* 0048 */ std::map<int, lcEXCInfo> levelChanges;
   /* 0050 */ std::map<int, bool> changed;
   /* 0058 */ std::vector<int> removals;
-  /* 0064 */ std::vector<int> unknown_0064;
+  /* 0064 */ std::vector<int> skillValues;
   /* 0070 */ std::list<CSkillInfo> pending;
 
 private:

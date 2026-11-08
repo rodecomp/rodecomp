@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00709F50
 // FUNCTION: fn_07096
-CRectUpEffect::CRectUpEffect() : CEffect(1088), unknown_00CC{} {
+CRectUpEffect::CRectUpEffect() : CEffect(1088), previousEdge{} {
 }
 
 // OFFSET: 0x0070A410
@@ -34,27 +34,27 @@ bool CRectUpEffect::IsAlive() {
 void CRectUpEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0] + particle->unknown_00D0;
-    particle->position.y = this->position[1] + particle->unknown_00D4;
-    particle->position.z = this->position[2] + particle->unknown_00D8;
+    particle->position.x = this->position[0] + particle->offsetX;
+    particle->position.y = this->position[1] + particle->offsetY;
+    particle->position.z = this->position[2] + particle->offsetZ;
 
-    int& phase = particle->unknown_0050;
+    int& phase = particle->angleParameter;
     phase += phase + 1 < 360 ? 1 : -359;
-    if (particle->unknown_00E8 > this->unknown_00E4) {
+    if (particle->elapsedFrames > this->particleLifetime) {
       particle->alpha = std::max(particle->alpha - 2, 0);
     }
 
-    float height = particle->unknown_00C0 * g_sinTable[phase] * 0.35f + particle->unknown_00C0 * 0.65f;
-    if (particle->unknown_00E8 < 90) {
-      height *= g_sinTable[particle->unknown_00E8];
+    float height = particle->speedParameter * g_sinTable[phase] * 0.35f + particle->speedParameter * 0.65f;
+    if (particle->elapsedFrames < 90) {
+      height *= g_sinTable[particle->elapsedFrames];
     }
-    particle->unknown_0054 = height;
+    particle->animationParameter = height;
     this->ProcessParticle(particle);
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
     rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     particle->transform = rotation;
   }
 }
@@ -65,8 +65,8 @@ void CRectUpEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {
-      const int previous = particle->unknown_000C;
-      const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4)) % 360;
+      const int previous = particle->columnIndex;
+      const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits)) % 360;
       const float x = particle->scale * g_cosTable[angle];
       const float z = particle->scale * g_sinTable[angle];
 
@@ -75,7 +75,7 @@ void CRectUpEffect::Render() {
       edge[0].y = 0.0f;
       edge[0].z = z;
       edge[1].x = x;
-      edge[1].y = -particle->unknown_0054;
+      edge[1].y = -particle->animationParameter;
       edge[1].z = z;
 
       particle->vertices[1].x = edge[1].x;
@@ -85,15 +85,15 @@ void CRectUpEffect::Render() {
       particle->vertices[3].y = edge[0].y;
       particle->vertices[3].z = edge[0].z;
       if (previous) {
-        particle->vertices[0].x = this->unknown_00CC[1].x;
-        particle->vertices[0].y = this->unknown_00CC[1].y;
-        particle->vertices[0].z = this->unknown_00CC[1].z;
-        particle->vertices[2].x = this->unknown_00CC[0].x;
-        particle->vertices[2].y = this->unknown_00CC[0].y;
-        particle->vertices[2].z = this->unknown_00CC[0].z;
+        particle->vertices[0].x = this->previousEdge[1].x;
+        particle->vertices[0].y = this->previousEdge[1].y;
+        particle->vertices[0].z = this->previousEdge[1].z;
+        particle->vertices[2].x = this->previousEdge[0].x;
+        particle->vertices[2].y = this->previousEdge[0].y;
+        particle->vertices[2].z = this->previousEdge[0].z;
       }
-      this->unknown_00CC[0] = edge[0];
-      this->unknown_00CC[1] = edge[1];
+      this->previousEdge[0] = edge[0];
+      this->previousEdge[1] = edge[1];
 
       if (previous) {
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
@@ -106,9 +106,9 @@ void CRectUpEffect::Render() {
 // FUNCTION: fn_07104
 void CRectUpEffect::ProcessParticle(CParticle* particle) {
   if (particle && this->id == 1088) {
-    particle->unknown_004C += particle->unknown_004C + 1 < 360 ? 1 : -359;
-    const int base = *reinterpret_cast<int*>(particle->unknown_0048);
-    particle->SetColor(255, 255, static_cast<short>(g_sinTable[particle->unknown_004C] * 100.0f + static_cast<float>(base)));
+    particle->phaseParameter += particle->phaseParameter + 1 < 360 ? 1 : -359;
+    const int base = *reinterpret_cast<int*>(particle->effectParameters);
+    particle->SetColor(255, 255, static_cast<short>(g_sinTable[particle->phaseParameter] * 100.0f + static_cast<float>(base)));
   }
 }
 
@@ -136,7 +136,7 @@ void CRectUpEffect::Open() {
     return;
   }
 
-  this->unknown_00E4 = 1880;
+  this->particleLifetime = 1880;
   for (int z = -5; z < 10; z += 5) {
     for (int x = -5; x < 10; x += 5) {
       int index = 0;
@@ -146,23 +146,23 @@ void CRectUpEffect::Open() {
           continue;
         }
 
-        particle->unknown_00D0 = static_cast<float>(x);
-        particle->unknown_00D4 = 0.0f;
-        particle->unknown_00D8 = static_cast<float>(z);
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = index;
-        particle->unknown_0010 = 0;
-        particle->unknown_0008 = 1;
-        particle->unknown_0050 = std::max(rand() % 360, 0);
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-        particle->unknown_0054 = 0.0f;
+        particle->offsetX = static_cast<float>(x);
+        particle->offsetY = 0.0f;
+        particle->offsetZ = static_cast<float>(z);
+        particle->effectId = this->id;
+        particle->columnIndex = index;
+        particle->rowIndex = 0;
+        particle->groupIndex = 1;
+        particle->angleParameter = std::max(rand() % 360, 0);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->animationParameter = 0.0f;
         if (this->id == 1088) {
-          particle->unknown_00C0 = 16.0f;
+          particle->speedParameter = 16.0f;
           particle->alpha = 120;
           particle->scale = 3.5f;
           const int shade = std::max(rand() % 50, 0) + 100;
-          std::memcpy(particle->unknown_0048, &shade, sizeof(shade));
-          particle->unknown_004C = 0;
+          std::memcpy(particle->effectParameters, &shade, sizeof(shade));
+          particle->phaseParameter = 0;
         }
         this->InitParticle(particle);
         InitParticleQuad(particle->vertices);

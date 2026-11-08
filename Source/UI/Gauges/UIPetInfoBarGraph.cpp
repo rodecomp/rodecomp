@@ -33,7 +33,7 @@ void UIINT64BarGraph::FillBackground(std::uint32_t color) {
 // OFFSET: 0x0089B540
 // FUNCTION: fn_11567
 void UIPetInfoBarGraph::SetValue(int value) {
-  this->unknown_007C = value;
+  this->percentage = value;
   this->Invalidate();
 }
 
@@ -52,13 +52,13 @@ void UIPetInfoBarGraph::Paint() {
 
   this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
 
-  if (this->unknown_007C != 0) {
+  if (this->percentage != 0) {
     auto* barLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gzeblue_left.bmp")));
     auto* barMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gzeblue_mid.bmp")));
     auto* barRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gzeblue_right.bmp")));
     const int fill = static_cast<int>(
       static_cast<float>(this->geometry.width - barRight->image.width - barLeft->image.width) *
-      (static_cast<float>(static_cast<unsigned>(this->unknown_007C)) / 100.0f)
+      (static_cast<float>(static_cast<unsigned>(this->percentage)) / 100.0f)
     );
     this->DrawBitmap(0, 0, barLeft, true);
     int x = 0;
@@ -78,5 +78,5 @@ UIINT64BarGraph::UIINT64BarGraph() : UIWindow(0), m_current(0), m_maximum(0) {
 
 // OFFSET: 0x0086E1B0
 // FUNCTION: fn_11066
-UIPetInfoBarGraph::UIPetInfoBarGraph() : UIWindow(0), unknown_007C(0) {
+UIPetInfoBarGraph::UIPetInfoBarGraph() : UIWindow(0), percentage(0) {
 }

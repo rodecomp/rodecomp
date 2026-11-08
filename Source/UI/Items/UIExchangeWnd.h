@@ -13,25 +13,25 @@ class UICheckBox;
 class UIExchangeWnd : public UIFrameWnd {
 public:
   /* 00B4 */ UIWindow* m_buttons[3];
-  /* 00C0 */ UIEditCtrl* unknown_00C0;
+  /* 00C0 */ UIEditCtrl* zenyEdit;
   /* 00C4 */ UIWindow* m_scrollBar;
   /* 00C8 */ unsigned char unknown_00C8[0x04];
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
+  /* 00CC */ int isLocalTrader;
+  /* 00D0 */ int localConfirmed;
+  /* 00D4 */ int remoteConfirmed;
+  /* 00D8 */ int localAccepted;
+  /* 00DC */ int remoteAccepted;
   /* 00E0 */ std::list<ITEM_INFO> m_myItems;
   /* 00E8 */ std::list<ITEM_INFO> m_otherItems;
-  /* 00F0 */ std::string unknown_00F0;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ short unknown_010C;
+  /* 00F0 */ std::string partnerName;
+  /* 0108 */ int partnerId;
+  /* 010C */ short partnerLevel;
   /* 010E */ unsigned char unknown_010E[0x04];
   /* 0112 */ short m_rowHeight;
   /* 0114 */ short m_hoverX;
   /* 0116 */ unsigned char unknown_0116[0x02];
-  /* 0118 */ UICheckBox* unknown_0118;
-  /* 011C */ unsigned char unknown_011C;
+  /* 0118 */ UICheckBox* screenshotCheckBox;
+  /* 011C */ unsigned char takeScreenshot;
   /* 0120 */ int m_moneyLength;
   /* 0124 */ std::string m_moneyText;
 

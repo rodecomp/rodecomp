@@ -663,23 +663,23 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
   g_session.m_validSlotCount = packet->producibleSlots;
 
   SecureZeroMemory(this->characters, sizeof(this->characters));
-  g_session.unknown_59BC = 0;
-  this->unknown_01D8 = 0;
+  g_session.characterSlotState = 0;
+  this->receivedCharacterCount = 0;
   this->unknown_01DC = 0;
 
   this->slotExtension = packet->extension;
-  this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
-  this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
-  this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+  this->slotExtension.code = htonl(this->slotExtension.code);
+  this->slotExtension.time1 = htonl(this->slotExtension.time1);
+  this->slotExtension.time2 = htonl(this->slotExtension.time2);
 }
 
 // OFFSET: 0x00D8EAC0
 // FUNCTION: fn_22275
 void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet) {
   this->slotExtension = packet->extension;
-  this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
-  this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
-  this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+  this->slotExtension.code = htonl(this->slotExtension.code);
+  this->slotExtension.time1 = htonl(this->slotExtension.time1);
+  this->slotExtension.time2 = htonl(this->slotExtension.time2);
 
   this->characterCount = (packet->length - 27) / sizeof(CharacterInfo);
   const int remainder = (packet->length - 27) % sizeof(CharacterInfo);
@@ -692,7 +692,7 @@ void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet) {
     g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
-  g_session.unknown_59BC = this->characterCount;
+  g_session.characterSlotState = this->characterCount;
   for (int i = 0; i < this->characterCount; ++i) {
     char* mapName = this->characters[i].mapName;
     strncpy(mapName, g_session.GatName2RswName(mapName), strlen(mapName));
@@ -766,7 +766,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
     return;
   }
 
-  const unsigned int total = this->unknown_01D8 + count;
+  const unsigned int total = this->receivedCharacterCount + count;
   if (total > 68) {
     char text[256];
     memset(text, 0, sizeof(text));
@@ -778,27 +778,27 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
     return;
   }
 
-  memcpy_s(&this->characters[this->unknown_01D8], sizeof(this->characters) - this->unknown_01D8 * sizeof(CharacterInfo),
+  memcpy_s(&this->characters[this->receivedCharacterCount], sizeof(this->characters) - this->receivedCharacterCount * sizeof(CharacterInfo),
     packet->characters, count * sizeof(CharacterInfo));
   __time32_t now;
   _time32(&now);
   for (int i = 0; i < static_cast<int>(count); ++i) {
-    if (this->characters[this->unknown_01D8 + i].sex == 99) {
-      this->characters[this->unknown_01D8 + i].sex = static_cast<unsigned char>(g_session.m_sex);
+    if (this->characters[this->receivedCharacterCount + i].sex == 99) {
+      this->characters[this->receivedCharacterCount + i].sex = static_cast<unsigned char>(g_session.m_sex);
     }
-    if (this->characters[this->unknown_01D8 + i].deleteDate != 0) {
-      this->characters[this->unknown_01D8 + i].deleteDate += now;
+    if (this->characters[this->receivedCharacterCount + i].deleteDate != 0) {
+      this->characters[this->receivedCharacterCount + i].deleteDate += now;
     }
-    CharacterInfo& character = this->characters[this->unknown_01D8 + i];
-    this->characters[this->unknown_01D8 + i].bodyStyle =
-      static_cast<std::int16_t>(g_session.GetBodyStyle(character.job, character.bodyStyle, character.unknown_0058));
+    CharacterInfo& character = this->characters[this->receivedCharacterCount + i];
+    this->characters[this->receivedCharacterCount + i].bodyStyle =
+      static_cast<std::int16_t>(g_session.GetBodyStyle(character.job, character.bodyStyle, character.bodyCostume));
   }
 
-  this->unknown_01D8 += count;
+  this->receivedCharacterCount += count;
   if (count != 3) {
-    this->characterCount = this->unknown_01D8;
-    g_session.unknown_59BC = this->unknown_01D8;
-    this->unknown_01D8 = 0;
+    this->characterCount = this->receivedCharacterCount;
+    g_session.characterSlotState = this->receivedCharacterCount;
+    this->receivedCharacterCount = 0;
     this->characterDeleted = false;
     for (long long i = 0; i < this->characterCount; ++i) {
       char* mapName = this->characters[i].mapName;
@@ -817,7 +817,7 @@ void CLoginMode::SubD8F560(int) {
 // FUNCTION: fn_22280
 __declspec(noinline) void CLoginMode::ReceiveCharacterList(const CharacterListPacket* packet) {
   this->characterCount = (packet->length - 4) / sizeof(CharacterInfo);
-  g_session.unknown_59BC = this->characterCount;
+  g_session.characterSlotState = this->characterCount;
   memcpy_s(this->characters, sizeof(this->characters), packet->characters, this->characterCount * sizeof(CharacterInfo));
   this->pendingCursorType = 7;
 }
@@ -1097,16 +1097,16 @@ void CLoginMode::SubD97780(int value) {
     }
     break;
   case 38:
-    if (this->unknown_6F75 == true) {
+    if (this->otpPending == true) {
       if (static_cast<int>(timeGetTime()) >= this->otpStarted + 0xEA60) {
         GetRagConnection().Close();
-        if (this->unknown_6F74 == true && this->unknown_6F75 == true) {
-          this->unknown_6F76 = true;
+        if (this->loginResponseReceived == true && this->otpPending == true) {
+          this->otpTimedOut = true;
           if (!g_windowMgr.HasModalWindow()) {
             if (g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_SAME_MAP), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
-              this->unknown_6F75 = false;
-              this->unknown_6F76 = false;
-              this->unknown_6F74 = false;
+              this->otpPending = false;
+              this->otpTimedOut = false;
+              this->loginResponseReceived = false;
               this->otpStarted = timeGetTime();
               this->pendingCursorType = 3;
             }
@@ -1116,9 +1116,9 @@ void CLoginMode::SubD97780(int value) {
     } else {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
         GetRagConnection().Close();
-        if (this->unknown_6F74 == false) {
+        if (this->loginResponseReceived == false) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_NO_PARTY_FOUND), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
-            this->unknown_6F74 = false;
+            this->loginResponseReceived = false;
             this->otpStarted = timeGetTime();
             this->pendingCursorType = 3;
           }
@@ -1206,7 +1206,7 @@ void CLoginMode::SubD97F00(int) {
 void CLoginMode::OpenAccountRegistration() {
   switch (g_serviceType) {
   case ServiceKorea:
-    if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
+    if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL_HANGAME);
       const char source[] = {'\x30', '\x45', '\xCA', '\xFB', '\x9D'};
       ShellExecuteA(hWnd, DecryptName<0xCFF3899D95AF355FULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
@@ -1364,7 +1364,7 @@ void PreloadLoginSprites() {
 // OFFSET: 0x00D9CFD0
 // FUNCTION: fn_22315
 void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
-  this->unknown_6F74 = true;
+  this->loginResponseReceived = true;
   std::string message;
   switch (packet->error) {
   case 0:
@@ -1379,7 +1379,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
     }
     g_windowMgr.EnsureWindow(WID_LOGINOTPWND);
-    this->unknown_6F75 = true;
+    this->otpPending = true;
     this->otpStarted = timeGetTime();
     break;
   case 500:
@@ -1419,7 +1419,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     const char detailSource[] = {'\xAF', '\x02', '\x44', '\x98', '\xE8', '\x19'};
     message += FormatOwnedString(DecryptName<0xC70319B5EB61598FULL>(detailSource), packet->detail);
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
-    if (this->unknown_6F76 != true) {
+    if (this->otpTimedOut != true) {
       if (error == 500) {
         this->otpStarted = timeGetTime();
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
@@ -1430,8 +1430,8 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
           g_windowMgr.CloseWindow(WID_LOGINOTPWND);
         }
-        this->unknown_6F74 = false;
-        this->unknown_6F75 = false;
+        this->loginResponseReceived = false;
+        this->otpPending = false;
         GetRagConnection().Close();
         this->otpStarted = timeGetTime();
         this->pendingCursorType = 3;
@@ -1443,7 +1443,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
 // OFFSET: 0x00D9D730
 // FUNCTION: fn_22316
 void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
-  this->unknown_6F74 = true;
+  this->loginResponseReceived = true;
   std::string message;
   switch (packet->error) {
   case 0:
@@ -1458,7 +1458,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
     }
     g_windowMgr.EnsureWindow(WID_LOGINOTPWND);
-    this->unknown_6F75 = true;
+    this->otpPending = true;
     this->otpStarted = timeGetTime();
     break;
   case 500:
@@ -1493,7 +1493,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
       protect = false;
     }
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, caption, 280, 120, protect);
-    if (this->unknown_6F76 != true) {
+    if (this->otpTimedOut != true) {
       if (error == 500) {
         this->otpStarted = timeGetTime();
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
@@ -1504,8 +1504,8 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
           g_windowMgr.CloseWindow(WID_LOGINOTPWND);
         }
-        this->unknown_6F74 = false;
-        this->unknown_6F75 = false;
+        this->loginResponseReceived = false;
+        this->otpPending = false;
         GetRagConnection().Close();
         this->otpStarted = timeGetTime();
         this->pendingCursorType = 3;
@@ -1802,9 +1802,9 @@ void CLoginMode::Initialize(const char* name) {
   this->charParams[3] = 5;
   this->charParams[4] = 5;
   this->charParams[5] = 5;
-  this->unknown_0070 = 0;
-  this->unknown_0074 = 1;
-  this->unknown_0078 = false;
+  this->characterParameter7 = 0;
+  this->characterParameter8 = 1;
+  this->makingCharNameFirstByte = false;
   this->wallpaperName = g_loginWallpaperName;
   this->running = 1;
   this->pendingCursorType = -1;
@@ -1827,16 +1827,16 @@ void CLoginMode::Initialize(const char* name) {
   g_entryQueueMgr->current = nullptr;
   g_session.ClearShortcutSlots();
   g_session.ClearSecondaryShortcutSlots();
-  g_session.unknown_6184 = 0;
-  this->unknown_01C4 = 0;
+  g_session.playerAppearanceState = 0;
+  this->serverCount = 0;
   this->characterCount = 0;
-  this->unknown_6F74 = false;
-  this->unknown_6F75 = false;
-  this->unknown_6F76 = false;
-  this->unknown_6F78 = 0;
-  g_session.unknown_8074 = 0;
-  g_session.unknown_0784.clear();
-  g_session.unknown_078C.clear();
+  this->loginResponseReceived = false;
+  this->otpPending = false;
+  this->otpTimedOut = false;
+  this->remainingLoginSeconds = 0;
+  g_session.madogearType = 0;
+  g_session.summonHp.clear();
+  g_session.summonMaxHp.clear();
 }
 
 #pragma pack(push, 1)
@@ -1868,7 +1868,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   g_session.SetOption(11, 1, 0);
   g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
     packet->posDir[2] & 0xF);
-  g_session.unknown_0F30[0] = packet->font;
+  g_session.chatFont[0] = packet->font;
 
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
@@ -1894,10 +1894,10 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   }
 
   g_session.SetUnknown5C1C(0);
-  g_session.unknown_809C.clear();
+  g_session.characterNames.clear();
   for (unsigned int i = 0; i < 68; ++i) {
     std::string name = this->characters[i].name;
-    g_session.unknown_809C.push_back(name);
+    g_session.characterNames.push_back(name);
   }
 
   SecureZeroMemory(this->characters, sizeof(this->characters));
@@ -2192,7 +2192,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED);
     break;
   case 36: {
-    const int remaining = this->unknown_6F78;
+    const int remaining = this->remainingLoginSeconds;
     const std::string text = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_RODEX_CONTENTS), remaining / 3600, static_cast<int>(std::ceil(static_cast<float>(remaining % 3600) / 60.0f)));
     message = text;
     break;
@@ -2228,16 +2228,16 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
 // OFFSET: 0x00D8C6A0
 // FUNCTION: fn_22258
-CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unknown_6F38(), unknown_6F50(), mapStates() {
+CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), accountInfo(), unknown_6F50(), mapStates() {
   this->fadeInRequested = 1;
-  this->unknown_6F10 = timeGetTime() + 12000;
+  this->nextKeepaliveTime = timeGetTime() + 12000;
   this->savedInlineCharset = g_inlineCharset;
   g_inlineCharset = 0;
-  this->unknown_6F48 = -1;
+  this->selectedAccount = -1;
   this->window_6F14 = nullptr;
   this->passwordRetryCount = 0;
   SecureZeroMemory(this->characters, sizeof(this->characters));
-  this->unknown_01D8 = 0;
+  this->receivedCharacterCount = 0;
   this->unknown_01DC = 0;
   this->characterDeleted = false;
 }
@@ -2253,10 +2253,10 @@ CLoginMode::~CLoginMode() {
 bool CLoginMode::ShowNotice(int notice, bool append) {
   UIWindow* window;
   if (append) {
-    window = g_windowMgr.unknown_0210;
+    window = g_windowMgr.menuWnd;
   } else {
-    this->unknown_6F1C.clear();
-    if (g_windowMgr.unknown_0210) {
+    this->noticeCommands.clear();
+    if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     window = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -2270,25 +2270,25 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
   case 45:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_MAKECHARCTER)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->unknown_6F1C.push_back(45);
+    this->noticeCommands.push_back(45);
     break;
   case 46:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_URL)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->unknown_6F1C.push_back(46);
+    this->noticeCommands.push_back(46);
     break;
   case 47:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_SERVERSTR)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->unknown_6F1C.push_back(47);
+    this->noticeCommands.push_back(47);
     break;
   }
 
-  if (this->unknown_6F1C.empty()) {
+  if (this->noticeCommands.empty()) {
     return false;
   }
 
-  if (UIWindow* notices = g_windowMgr.unknown_0210) {
+  if (UIWindow* notices = g_windowMgr.menuWnd) {
     int x = g_mouse.x + 1;
     int y = g_mouse.y + 1;
     if (x < 1) {
@@ -2318,7 +2318,7 @@ static void ComputeLoginDigest(unsigned char* digest, const void* data, int size
 // FUNCTION: fn_22264
 void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version) {
   g_loginAcceptTime = timeGetTime();
-  *reinterpret_cast<std::string*>(&g_session.unknown_56B8[4]) = LookupMessage(MSI_AUTO_MSG);
+  *reinterpret_cast<std::string*>(&g_session.autoReplyState[4]) = LookupMessage(MSI_AUTO_MSG);
 
   SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
   account.authCode = packet->authCode;
@@ -2355,25 +2355,25 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   switch (version) {
   case 2:
     count = (packet->length - (offsetof(AcceptLoginPacket, body) + 4)) / sizeof(ServerAddress);
-    this->unknown_01C4 = count;
+    this->serverCount = count;
     memcpy(this->serverList, packet->body + 4, count * sizeof(ServerAddress));
     break;
   case 3:
     count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress);
-    this->unknown_01C4 = count;
+    this->serverCount = count;
     memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress));
-    memcpy(&g_session.unknown_807C[8], packet->body, 16);
+    memcpy(&g_session.webServiceLoginData[8], packet->body, 16);
     break;
   case 4:
     count = (packet->length - offsetof(AcceptLoginPacket, body)) / sizeof(ServerAddress2);
-    this->unknown_01C4 = count;
+    this->serverCount = count;
     memcpy(this->serverList, packet->body, count * sizeof(ServerAddress2));
     break;
   case 5:
     count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress2);
-    this->unknown_01C4 = count;
+    this->serverCount = count;
     memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress2));
-    memcpy(&g_session.unknown_807C[8], packet->body, 16);
+    memcpy(&g_session.webServiceLoginData[8], packet->body, 16);
     break;
   case 6:
   case 7:
@@ -2382,7 +2382,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     break;
   default:
     count = (packet->length - offsetof(AcceptLoginPacket, body)) / sizeof(ServerAddress);
-    this->unknown_01C4 = count;
+    this->serverCount = count;
     memcpy(this->serverList, packet->body, count * sizeof(ServerAddress));
     break;
   }
@@ -2513,7 +2513,7 @@ void CLoginMode::PollNetworkStatus() {
         }
       }
       --this->characterCount;
-      --g_session.unknown_59BC;
+      --g_session.characterSlotState;
       memcpy_s(this->characters, sizeof(this->characters), remaining, this->characterCount * sizeof(CharacterInfo));
       delete[] remaining;
       this->pendingCursorType = 7;
@@ -2586,10 +2586,10 @@ void CLoginMode::PollNetworkStatus() {
     }
     case ID_HC_BLOCK_CHARACTER: {
       const BlockedCharacterPacket* packet = reinterpret_cast<const BlockedCharacterPacket*>(g_gameModePacketBuffer);
-      BlockedCharacter* blocked = reinterpret_cast<BlockedCharacter*>(&g_session.unknown_07F4[0x40]);
-      g_session.unknown_59D0 = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
-      memset(blocked, 0, g_session.unknown_59D0 * sizeof(BlockedCharacter));
-      memcpy(blocked, packet->characters, g_session.unknown_59D0 * sizeof(BlockedCharacter));
+      BlockedCharacter* blocked = reinterpret_cast<BlockedCharacter*>(&g_session.characterSelectionData[0x40]);
+      g_session.blockedCharacterCount = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
+      memset(blocked, 0, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
+      memcpy(blocked, packet->characters, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
       break;
     }
     case 0x23D:
@@ -2598,13 +2598,13 @@ void CLoginMode::PollNetworkStatus() {
     case 0x28B: {
       const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
       this->slotExtension = packet->extension;
-      this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
-      this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
-      this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+      this->slotExtension.code = htonl(this->slotExtension.code);
+      this->slotExtension.time1 = htonl(this->slotExtension.time1);
+      this->slotExtension.time2 = htonl(this->slotExtension.time2);
 
       const unsigned int dataLength = packet->length - offsetof(AcceptEnterNeoUnionPacket, characters);
       this->characterCount = dataLength / sizeof(CharacterInfo);
-      g_session.unknown_0E94 = this->characterCount;
+      g_session.characterCount = this->characterCount;
       const unsigned char* characters = reinterpret_cast<const unsigned char*>(packet->characters) + dataLength % sizeof(CharacterInfo);
       memcpy_s(this->characters, sizeof(this->characters), characters, this->characterCount * sizeof(CharacterInfo));
       this->pendingCursorType = 19;
@@ -2614,11 +2614,11 @@ void CLoginMode::PollNetworkStatus() {
       const ShortResultPacket* packet = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer);
       if (packet->result != 0) {
         char text[300];
-        sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), reinterpret_cast<const char*>(&g_session.unknown_5913[5]));
+        sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), reinterpret_cast<const char*>(&g_session.characterRenameData[5]));
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           ChangeCharacterNamePacket request;
           request.id = 0x28F;
-          request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1]);
+          request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1]);
           GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
           break;
         }
@@ -2827,7 +2827,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case 0x9A2:
-      this->unknown_6F28 = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
+      this->authChallengeId = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
       this->pendingCursorType = 24;
       break;
     case 0x9A5: {
@@ -2835,7 +2835,7 @@ void CLoginMode::PollNetworkStatus() {
       if (packet->code != 0x12) {
         GetRagConnection().Close();
       }
-      this->unknown_6F78 = packet->remaining;
+      this->remainingLoginSeconds = packet->remaining;
       this->ShowLoginError(packet->code, reinterpret_cast<int>(""));
       break;
     }
@@ -2918,7 +2918,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_ZC_EXTEND_BODYITEM_SIZE: {
       const std::int16_t slots = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer)->result;
       if (slots <= 100) {
-        g_session.unknown_7FBC = slots;
+        g_session.extraInventorySlots = slots;
       }
       break;
     }
@@ -2930,14 +2930,14 @@ void CLoginMode::PollNetworkStatus() {
       char* mapName = this->characters[this->characterCount].mapName;
       StringFormat(mapName, sizeof(this->characters[this->characterCount].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
       ++this->characterCount;
-      ++g_session.unknown_59BC;
+      ++g_session.characterSlotState;
       this->pendingCursorType = 7;
       break;
     }
     case 0xB71: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, packet->info.slot, 0, 0, 0));
-      if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5913[1])) {
+      if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1])) {
         *character = packet->info;
         StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));
         this->pendingCursorType = 7;
@@ -2949,7 +2949,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     case 0xC05: {
       const CharacterSlotCountsPacket* packet = reinterpret_cast<const CharacterSlotCountsPacket*>(g_gameModePacketBuffer);
-      g_session.unknown_8130 = packet->counts[1];
+      g_session.restrictedCharacterSlots = packet->counts[1];
       CharacterSlotsPacket slots;
       slots.id = 0x82D;
       slots.length = sizeof(CharacterSlotsPacket);
@@ -3023,8 +3023,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     );
     if (buffer) {
       *reinterpret_cast<std::int16_t*>(buffer) = 0x9A3;
-      *reinterpret_cast<int*>(buffer + 4) = this->unknown_6F28;
-      StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), reinterpret_cast<const char*>(&this->unknown_0138[0x80]));
+      *reinterpret_cast<int*>(buffer + 4) = this->authChallengeId;
+      StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), reinterpret_cast<const char*>(&this->loginCredentials[0x80]));
       *reinterpret_cast<std::int16_t*>(buffer + 2) = 14;
       GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(buffer + 2), buffer);
       this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
@@ -3034,7 +3034,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   }
   case LMM_DISPATCH_CHARACTER_SLOT_ACTION:
-    switch (this->unknown_6F1C[argument1]) {
+    switch (this->noticeCommands[argument1]) {
     case 45:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
         window->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
@@ -3064,7 +3064,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     };
     PacketAD0 packet;
     packet.id = 0xAD0;
-    memcpy_s(packet.code, sizeof(packet.code), &this->unknown_0138[0x80], sizeof(packet.code));
+    memcpy_s(packet.code, sizeof(packet.code), &this->loginCredentials[0x80], sizeof(packet.code));
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
     static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
@@ -3079,7 +3079,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 4;
     return 0;
   case LMM_SELECTSVR: {
-    *reinterpret_cast<int*>(this->unknown_01C8) = argument1;
+    *reinterpret_cast<int*>(this->selectedServerStorage) = argument1;
     if (argument1 == -1) {
       return 0;
     }
@@ -3092,20 +3092,20 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
 
     g_session.m_accountName = servers[argument1].address.name;
-    const int selected = *reinterpret_cast<int*>(this->unknown_01C8);
+    const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
     const std::uint32_t ip = servers[selected].address.ip;
     const std::uint8_t ipFormatSource[] = {0xB0, 0xEB, 0xCF, 0x28, 0x39, 0x27, 0x44, 0x95, 0xBB, 0xAA, 0x85, 0x0D};
     thread_local EncryptedName<sizeof(ipFormatSource), 0xF161095D0DE18F95ULL> ipFormat(ipFormatSource);
     CharServerEndpoint endpoint;
     wsprintfA(endpoint.ip, ipFormat.Text(), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
-    const int selected2 = *reinterpret_cast<int*>(this->unknown_01C8);
+    const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
     endpoint.port = servers[selected2].address.port;
     const std::uint8_t hostFormatSource[] = {0xFC, 0x8A, 0xE1};
     thread_local EncryptedName<sizeof(hostFormatSource), 0x2BAD156DE3E1F9D9ULL> hostFormat(hostFormatSource);
     StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), hostFormat.Text(), servers[selected2].domain);
     g_charServerEndpoint = endpoint;
-    g_charServerIp = servers[*reinterpret_cast<int*>(this->unknown_01C8)].address.ip;
-    g_session.m_serverName = servers[*reinterpret_cast<int*>(this->unknown_01C8)].address.name;
+    g_charServerIp = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.ip;
+    g_session.m_serverName = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.name;
     g_checkAttendanceMgr->LoadLocal(g_session.m_serverName);
     this->pendingCursorType = 5;
     return 0;
@@ -3125,27 +3125,27 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   case LMM_PASSWORD:
-    strcpy(reinterpret_cast<char*>(this->unknown_0138), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(this->loginCredentials), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_ID:
-    strcpy(reinterpret_cast<char*>(&this->unknown_0138[0x40]), reinterpret_cast<const char*>(argument1));
-    strcpy(reinterpret_cast<char*>(g_session.unknown_07F4), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x40]), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(g_session.characterSelectionData), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SELECT_CHARACTER: {
-    g_session.unknown_0F50 = static_cast<unsigned char>(g_selectedSlotIndex);
+    g_session.selectedCharacterSlot = static_cast<unsigned char>(g_selectedSlotIndex);
     g_windowMgr.LoadShortcutItems();
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].slot == static_cast<unsigned char>(g_selectedSlotIndex)) {
-        *reinterpret_cast<int*>(&g_session.unknown_0EA0[0x00]) = this->characters[i].slot;
+        *reinterpret_cast<int*>(&g_session.characterLoginData[0x00]) = this->characters[i].slot;
         g_session.SetJob(this->characters[i].job);
         g_session.m_gid = this->characters[i].gid;
-        *reinterpret_cast<int*>(g_session.unknown_16F4) = this->characters[i].speed;
+        *reinterpret_cast<int*>(g_session.healthPoints) = this->characters[i].speed;
         g_session.InvalidateWindowFrames();
         g_session.m_level = this->characters[i].level;
         g_session.InvalidateWindowFrames();
         g_session.m_skillPoint = this->characters[i].skillPoint;
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(g_session.unknown_1654) = this->characters[i].jobPoint;
+        *reinterpret_cast<int*>(g_session.statusPoints) = this->characters[i].jobPoint;
         g_session.InvalidateWindowFrames();
         g_session.m_standardStats[0] = this->characters[i].stats[0];
         g_session.InvalidateWindowFrames();
@@ -3159,54 +3159,54 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_standardStats[5] = this->characters[i].stats[5];
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x04]) = this->characters[i].exp;
+        *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x04]) = this->characters[i].exp;
         g_session.InvalidateWindowFrames();
         const int hp = static_cast<int>(this->characters[i].hp);
-        if (g_session.unknown_5568 != hp) {
-          g_session.unknown_5568 = hp;
+        if (g_session.hp != hp) {
+          g_session.hp = hp;
           g_session.RefreshHpSpWindows();
         }
         const int maxHp = static_cast<int>(this->characters[i].maxHp);
-        if (g_session.unknown_556C != maxHp) {
-          g_session.unknown_556C = maxHp;
+        if (g_session.maxHp != maxHp) {
+          g_session.maxHp = maxHp;
           g_session.RefreshHpSpWindows();
         }
         const int sp = static_cast<int>(this->characters[i].sp);
-        if (*reinterpret_cast<int*>(&g_session.unknown_5570[0x00]) != sp) {
-          *reinterpret_cast<int*>(&g_session.unknown_5570[0x00]) = sp;
+        if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x00]) != sp) {
+          *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x00]) = sp;
           g_session.RefreshHpSpWindows();
         }
         const int maxSp = static_cast<int>(this->characters[i].maxSp);
-        if (*reinterpret_cast<int*>(&g_session.unknown_5570[0x04]) != maxSp) {
-          *reinterpret_cast<int*>(&g_session.unknown_5570[0x04]) = maxSp;
+        if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x04]) != maxSp) {
+          *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x04]) = maxSp;
           g_session.RefreshHpSpWindows();
         }
-        g_session.m_zeny = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x00]);
+        g_session.m_zeny = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x00]);
         g_session.RefreshHpSpWindows();
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x1C]) = *reinterpret_cast<const std::int64_t*>(&this->characters[i].unknown_000C[0x04]);
+        *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x1C]) = *reinterpret_cast<const std::int64_t*>(&this->characters[i].progressionData[0x04]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(g_session.unknown_1704) = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x1C]);
+        *reinterpret_cast<int*>(g_session.optionFlags) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x1C]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(&g_session.unknown_16F4[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x20]);
+        *reinterpret_cast<int*>(&g_session.healthPoints[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x20]);
         g_session.InvalidateWindowFrames();
-        g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x0C]);
+        g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x0C]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(&g_session.unknown_0EA0[0x30]) = this->characters[i].unknown_008B[0];
+        *reinterpret_cast<int*>(&g_session.characterLoginData[0x30]) = this->characters[i].characterFlags[0];
         g_session.m_head = this->characters[i].head;
-        *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x04]) = 0;
-        *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x08]) = 0;
-        *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x00]) = this->characters[i].accessory;
-        *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x0C]) = this->characters[i].shield;
-        g_session.UpdateBodyStyle(this->characters[i].job, this->characters[i].bodyStyle, this->characters[i].unknown_0058);
+        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x04]) = 0;
+        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x08]) = 0;
+        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x00]) = this->characters[i].accessory;
+        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x0C]) = this->characters[i].shield;
+        g_session.UpdateBodyStyle(this->characters[i].job, this->characters[i].bodyStyle, this->characters[i].bodyCostume);
         g_session.m_headPalette = this->characters[i].headPalette;
-        *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x04]) = this->characters[i].accessory2;
-        *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x08]) = this->characters[i].accessory3;
+        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x04]) = this->characters[i].accessory2;
+        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x08]) = this->characters[i].accessory3;
         g_session.m_robe = this->characters[i].robe;
-        g_session.m_bodyCostume = this->characters[i].unknown_0058;
-        *reinterpret_cast<int*>(&g_session.unknown_0F0C[0x00]) = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x10]);
-        *reinterpret_cast<int*>(&g_session.unknown_0F0C[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].unknown_000C[0x14]);
-        g_session.m_jobFlags = *reinterpret_cast<const std::uint32_t*>(&this->characters[i].unknown_000C[0x18]);
+        g_session.m_bodyCostume = this->characters[i].bodyCostume;
+        *reinterpret_cast<int*>(&g_session.statusLevelEffects[0x00]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x10]);
+        *reinterpret_cast<int*>(&g_session.statusLevelEffects[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x14]);
+        g_session.m_jobFlags = *reinterpret_cast<const std::uint32_t*>(&this->characters[i].progressionData[0x18]);
         return 0;
       }
     }
@@ -3224,9 +3224,9 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   case LMM_GET_EMAIL_ADDRESS:
     return reinterpret_cast<int>(this->billingInfo);
   case LMM_GET_MAKING_CHAR_NAME:
-    return reinterpret_cast<int>(&this->unknown_0078);
+    return reinterpret_cast<int>(&this->makingCharNameFirstByte);
   case LMM_SET_MAKING_CHAR_NAME:
-    strcpy(reinterpret_cast<char*>(&this->unknown_0078), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(&this->makingCharNameFirstByte), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_GET_CHAR_PARAM:
     return reinterpret_cast<int>(this->charParams);
@@ -3238,8 +3238,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->charParams[3] = values[3];
     this->charParams[4] = values[4];
     this->charParams[5] = values[5];
-    this->unknown_0070 = values[6];
-    this->unknown_0074 = values[7];
+    this->characterParameter7 = values[6];
+    this->characterParameter8 = values[7];
     return 0;
   }
   case LMM_GOTOSELECTACCOUNT:
@@ -3250,8 +3250,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 2;
     return 0;
   case LMM_SELECTACCOUNT:
-    this->unknown_6F48 = argument1;
-    *reinterpret_cast<int*>(&g_session.unknown_5478[4]) = argument1;
+    this->selectedAccount = argument1;
+    *reinterpret_cast<int*>(&g_session.loginOptions[4]) = argument1;
     TraceSelection(argument1);
     if (g_serviceType == 19) {
       std::string suffix;
@@ -3281,12 +3281,12 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_GET_BILLING_INFO: {
     char* output = reinterpret_cast<char*>(argument1);
-    switch (this->slotExtension.unknown_0001) {
+    switch (this->slotExtension.code) {
     case 100:
-      std::sprintf(output, LookupMessage(MSI_BILLING_100), this->slotExtension.unknown_0005 / 60);
+      std::sprintf(output, LookupMessage(MSI_BILLING_100), this->slotExtension.time1 / 60);
       return 0;
     case 200: {
-      const std::uint32_t value = this->slotExtension.unknown_0005;
+      const std::uint32_t value = this->slotExtension.time1;
       std::sprintf(output, LookupMessage(MSI_BILLING_200), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
@@ -3294,13 +3294,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       std::sprintf(output, LookupMessage(MSI_BILLING_300));
       return 0;
     case 400: {
-      const std::uint32_t value = this->slotExtension.unknown_0009 - this->slotExtension.unknown_0005;
+      const std::uint32_t value = this->slotExtension.time2 - this->slotExtension.time1;
       std::sprintf(output, LookupMessage(MSI_BILLING_400), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
     case 500: {
-      const std::uint32_t value = this->slotExtension.unknown_0005 != 0 ? this->slotExtension.unknown_0005 : this->slotExtension.unknown_0009;
-      const int messageId = this->slotExtension.unknown_0005 != 0 ? 0x219 : 0x21A;
+      const std::uint32_t value = this->slotExtension.time1 != 0 ? this->slotExtension.time1 : this->slotExtension.time2;
+      const int messageId = this->slotExtension.time1 != 0 ? 0x219 : 0x21A;
       std::sprintf(output, LookupMessage(messageId), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
@@ -3327,18 +3327,18 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   case LMM_SELECTACCOUNT2:
-    this->unknown_6F4C = argument1;
-    this->unknown_6F38.clear();
-    TraceSelectionRange(this->unknown_6F48, this->unknown_6F4C);
+    this->selectedSecondaryAccount = argument1;
+    this->accountInfo.clear();
+    TraceSelectionRange(this->selectedAccount, this->selectedSecondaryAccount);
     this->pendingCursorType = 3;
     return 0;
   case LMM_SET_AUTH_CODE:
-    strcpy(reinterpret_cast<char*>(&this->unknown_0138[0x80]), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x80]), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_REPLAY_SELECT_SERVER:
     reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 0;
-    g_session.m_aid = ReplayFileList::Instance().unknown_011C;
-    g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().unknown_0120));
+    g_session.m_aid = ReplayFileList::Instance().selectionState;
+    g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().dialogState));
     this->pendingCursorType = 6;
     return 0;
   case LMM_SELECT_REPLAY_DATA:
@@ -3346,7 +3346,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 27;
     return 0;
   case LMM_START_REPLAY:
-    g_session.SetFlag(static_cast<char>(Replay::Instance().header.unknown_0014));
+    g_session.SetFlag(static_cast<char>(Replay::Instance().header.sessionSyncValue));
     this->pendingCursorType = 28;
     return 0;
   case LMM_SELECT_MAP:
@@ -3362,7 +3362,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = argument1;
     return reinterpret_cast<int>(this->billingInfo);
   case LMM_SET_LOGIN_EXTRA:
-    strcpy(reinterpret_cast<char*>(this->unknown_01D0), reinterpret_cast<const char*>(argument1));
+    strcpy(reinterpret_cast<char*>(this->loginExtra), reinterpret_cast<const char*>(argument1));
     return 0;
   default:
     return CMode::SendMsg(event, argument1, argument2, argument3, 0);
@@ -3587,8 +3587,8 @@ __declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* tex
 // FUNCTION: fn_45408
 void __stdcall LoadCustomServerList(CLoginMode* mode) {
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(mode->serverList);
-  mode->unknown_01C4 = 0;
-  *reinterpret_cast<int*>(mode->unknown_01C8) = -1;
+  mode->serverCount = 0;
+  *reinterpret_cast<int*>(mode->selectedServerStorage) = -1;
 
   XmlNode* connection = g_clientInfoRoot->FindChild("connection");
   int count = 0;
@@ -3635,9 +3635,9 @@ void __stdcall LoadCustomServerList(CLoginMode* mode) {
     connection = connection->FindSibling("connection");
   }
 
-  mode->unknown_01C4 = count;
+  mode->serverCount = count;
   if (count != 0) {
-    *reinterpret_cast<int*>(mode->unknown_01C8) = 0;
+    *reinterpret_cast<int*>(mode->selectedServerStorage) = 0;
   }
 }
 
@@ -3647,8 +3647,8 @@ void CLoginMode::OnChangeState(int value) {
   this->otpStarted = timeGetTime();
   g_windowMgr.Shutdown();
   this->tooltip = nullptr;
-  g_session.unknown_5480 = 0;
-  this->unknown_0018 = 1;
+  g_session.quitBlocked = 0;
+  this->connectionReady = 1;
 
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
   SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
@@ -3662,7 +3662,7 @@ void CLoginMode::OnChangeState(int value) {
   case 38: {
     CharServerEndpoint endpoint;
     std::memset(&endpoint, 0, sizeof(endpoint));
-    if (!std::strstr(g_session.unknown_58FA, "Dev")) {
+    if (!std::strstr(g_session.clientVersion, "Dev")) {
       const int port = rand() % 3 + 6951;
       const std::uint8_t hostSource[] = {0x24, 0xD3, 0xA0, 0x18, 0x02, 0xB0, 0x24, 0x17, 0x2C, 0xD8, 0xE1, 0x47, 0x02,
                                          0xB0, 0x2F, 0x18, 0x3D, 0xCE, 0xA4, 0x1B, 0x00, 0xB8, 0x6F, 0x12, 0x3D, 0xA1};
@@ -3681,8 +3681,8 @@ void CLoginMode::OnChangeState(int value) {
       StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText);
     }
 
-    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
-    if (!this->unknown_0018) {
+    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         this->pendingCursorType = 3;
@@ -3698,15 +3698,15 @@ void CLoginMode::OnChangeState(int value) {
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
     const std::uint8_t nameFormatSource[] = {0x38, 0xB4, 0x4B};
     thread_local EncryptedName<sizeof(nameFormatSource), 0x234977DDB54BC71DULL> nameFormat(nameFormatSource);
-    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), nameFormat.Text(), reinterpret_cast<const char*>(&this->unknown_0138[0x40]));
+    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), nameFormat.Text(), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));
     char password[33] = {};
     const std::uint8_t passwordFormatSource[] = {0xE0, 0x5E, 0x2B};
     thread_local EncryptedName<sizeof(passwordFormatSource), 0xEF6D1D893F2B2DC5ULL> passwordFormat(passwordFormatSource);
-    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), passwordFormat.Text(), reinterpret_cast<const char*>(this->unknown_0138));
+    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), passwordFormat.Text(), reinterpret_cast<const char*>(this->loginCredentials));
     DecryptRijndael256(password, packet.password);
     const std::uint8_t extraFormatSource[] = {0x7E, 0x20, 0x5F};
     thread_local EncryptedName<sizeof(extraFormatSource), 0x39A39F87DD5F535BULL> extraFormat(extraFormatSource);
-    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->unknown_01D0));
+    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
     this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
@@ -3722,12 +3722,12 @@ void CLoginMode::OnChangeState(int value) {
     g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    if (!g_session.unknown_5912) {
+    if (!g_session.characterRenameEnabled) {
       if (g_session.m_loginModeFlag == true) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
-        this->unknown_6F74 = false;
-        this->unknown_6F75 = false;
+        this->loginResponseReceived = false;
+        this->otpPending = false;
         SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
       }
 
@@ -3759,15 +3759,15 @@ void CLoginMode::OnChangeState(int value) {
     if (g_loginCancelRequested == 1) {
       g_loginCancelRequested = 0;
       LoadCustomServerList(this);
-    } else if (this->unknown_01C4 < 1 || this->unknown_01C4 > 8) {
+    } else if (this->serverCount < 1 || this->serverCount > 8) {
       LoadCustomServerList(this);
     }
-    if (this->unknown_01C4 != 0) {
+    if (this->serverCount != 0) {
       g_customServerListLoaded = 1;
     }
 
     char(*displayNames)[128] = CustomServerBalloons();
-    for (int i = 0; i < this->unknown_01C4; ++i) {
+    for (int i = 0; i < this->serverCount; ++i) {
       const ServerAddress2& server = servers[i];
       char text[64];
       std::memset(text, 0, sizeof(text));
@@ -3836,9 +3836,9 @@ void CLoginMode::OnChangeState(int value) {
     g_skillTooltipActive = 0;
     g_session.cartCount = 0;
     g_session.cartWeight = 0;
-    g_session.unknown_103C = -1;
+    g_session.petJob = -1;
     g_session.SetUnknown16EC(0);
-    g_session.unknown_5450 = 0;
+    g_session.guildLeader = 0;
     g_renewQuestMgr->m_ongoingQuests.clear();
     g_session.ClearAchievements();
     g_nProtectGameGuardMgr->IncrementCounter();
@@ -3870,14 +3870,14 @@ void CLoginMode::OnChangeState(int value) {
       g_session.m_passwordInputAlternate = false;
       g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
-      g_windowMgr.unknown_03B8->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
+      g_windowMgr.secondPasswordInputWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       break;
     case 4:
       g_session.m_passwordInputAlternate = true;
       g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
-      g_windowMgr.unknown_03BC->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
-      g_windowMgr.unknown_03BC->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
     case 5:
       g_session.m_passwordInputAlternate = true;
@@ -3895,7 +3895,7 @@ void CLoginMode::OnChangeState(int value) {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    if (!std::strstr(g_session.unknown_58FA, "Dev")) {
+    if (!std::strstr(g_session.clientVersion, "Dev")) {
       const std::uint8_t hostSource[] = {0xBA, 0x29, 0xF8, 0xC8, 0x58, 0xE4, 0x88, 0x1E, 0xFF, 0x29, 0xF6, 0x82, 0x57, 0xE6, 0x99,
                                          0x40, 0xBA, 0x75, 0xF4, 0x8A, 0x17, 0xEC, 0x99, 0x15, 0xE7, 0x62, 0xA7, 0xD5, 0x39};
       thread_local EncryptedName<sizeof(hostSource), 0x2FEB8739E5975BD1ULL> host(hostSource);
@@ -3930,8 +3930,8 @@ void CLoginMode::OnChangeState(int value) {
       endpoint.port = atoi(port);
     }
 
-    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
-    if (!this->unknown_0018) {
+    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
@@ -3945,15 +3945,15 @@ void CLoginMode::OnChangeState(int value) {
     AccountLoginPacket packet;
     packet.id = 0x64;
     packet.version = g_patchedClientVersion;
-    std::memcpy(packet.name, &this->unknown_0138[0x40], sizeof(packet.name));
+    std::memcpy(packet.name, &this->loginCredentials[0x40], sizeof(packet.name));
     if (g_serviceType == 7) {
       char password[24];
-      DecryptAES(reinterpret_cast<const char*>(this->unknown_0138), password, sizeof(password));
+      DecryptAES(reinterpret_cast<const char*>(this->loginCredentials), password, sizeof(password));
       std::memcpy(packet.password, password, sizeof(packet.password));
     } else if (g_serviceType == 4) {
-      DecryptRijndael192(reinterpret_cast<const char*>(this->unknown_0138), packet.password);
+      DecryptRijndael192(reinterpret_cast<const char*>(this->loginCredentials), packet.password);
     } else {
-      std::memcpy(packet.password, this->unknown_0138, sizeof(packet.password));
+      std::memcpy(packet.password, this->loginCredentials, sizeof(packet.password));
     }
     packet.clientType = static_cast<unsigned char>(GetClientType());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
@@ -3968,8 +3968,8 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_session.m_partyBooking.Reset();
     GetRagConnection().Close();
-    this->unknown_0018 = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
-    if (!this->unknown_0018) {
+    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
+    if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
@@ -4049,11 +4049,11 @@ void CLoginMode::OnChangeState(int value) {
   case 12: {
     g_characterLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_gid, g_session.m_accountName);
     g_runeSystemMgr->Reset();
-    g_session.unknown_593C = 0;
+    g_session.memorialWindowOpen = 0;
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    this->unknown_0018 = GetRagConnection().Connect(g_zoneServerEndpoint);
-    if (!this->unknown_0018) {
+    this->connectionReady = GetRagConnection().Connect(g_zoneServerEndpoint);
+    if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
         g_charServerAccountIdPending = 0;
@@ -4096,7 +4096,7 @@ void CLoginMode::OnChangeState(int value) {
     g_screenShakeDuration = 0;
     g_statusRefreshSuppressed = 0;
     g_skillTooltipActive = 0;
-    g_session.unknown_103C = -1;
+    g_session.petJob = -1;
     g_session.SetUnknown16EC(0);
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
@@ -4127,12 +4127,12 @@ void CLoginMode::OnChangeState(int value) {
     }
     break;
   case 26:
-    this->unknown_01C4 = ReplayFileList::Instance().unknown_0124;
-    if (this->unknown_01C4 > 100) {
-      this->unknown_01C4 = 0;
-      ReplayFileList::Instance().unknown_0124 = 0;
+    this->serverCount = ReplayFileList::Instance().fileState;
+    if (this->serverCount > 100) {
+      this->serverCount = 0;
+      ReplayFileList::Instance().fileState = 0;
     }
-    for (int i = 0; i < this->unknown_01C4; ++i) {
+    for (int i = 0; i < this->serverCount; ++i) {
       std::memcpy(&servers[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
     }
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
@@ -4146,12 +4146,12 @@ void CLoginMode::OnChangeState(int value) {
       window->m_list->AddLine(ReplayFileList::Instance().FileName(i));
     }
     window->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
-    ReplayFileList::Instance().unknown_0124 = this->unknown_01C4;
-    if (this->unknown_01C4 > 100) {
-      this->unknown_01C4 = 0;
-      ReplayFileList::Instance().unknown_0124 = 0;
+    ReplayFileList::Instance().fileState = this->serverCount;
+    if (this->serverCount > 100) {
+      this->serverCount = 0;
+      ReplayFileList::Instance().fileState = 0;
     }
-    for (int i = 0; i < this->unknown_01C4; ++i) {
+    for (int i = 0; i < this->serverCount; ++i) {
       const ServerAddress2 server = servers[i];
       reinterpret_cast<ServerAddress2*>(ReplayFileList::Instance().buffer)[i] = server;
     }
@@ -4176,10 +4176,10 @@ void CLoginMode::OnChangeState(int value) {
     ReplayHeader header = Replay::Instance().header;
     g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(header.characterName));
     g_session.SetNavigationPlayerMap(header.mapName);
-    g_session.unknown_0000 = header.accountId;
+    g_session.mapPropertyId = header.accountId;
     g_session.m_playerX = header.cellX;
     g_session.m_playerY = header.cellY;
-    g_session.m_playerDir = header.unknown_0078;
+    g_session.m_playerDir = header.playerDirection;
     g_windowMgr.ApplyReplayOptions(header.options);
     g_session.ResetUnknownState();
     g_session.ReadReplayCharacter(Replay::Instance().ReadSection(3));

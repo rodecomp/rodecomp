@@ -25,13 +25,13 @@ struct MapSkyCloud : CEffect {
   /* 00F8 */ float velocityX;
   /* 00FC */ float velocityY;
   /* 0100 */ float velocityZ;
-  /* 0104 */ float unknown_0104;
-  /* 0108 */ float unknown_0108;
-  /* 010C */ int unknown_010C;
-  /* 0110 */ int unknown_0110;
-  /* 0114 */ int unknown_0114;
-  /* 0118 */ int unknown_0118;
-  /* 011C */ float unknown_011C;
+  /* 0104 */ float scriptFloatParameterA;
+  /* 0108 */ float scriptFloatParameterB;
+  /* 010C */ int scriptIntegerParameterA;
+  /* 0110 */ int scriptIntegerParameterB;
+  /* 0114 */ int scriptIntegerParameterC;
+  /* 0118 */ int scriptIntegerParameterD;
+  /* 011C */ float scriptFloatParameterC;
   /* 0120 */ float spanX;
   /* 0124 */ float spanZ;
   /* 0128 */ unsigned char flag;
@@ -67,7 +67,7 @@ bool CMapSkyMgr::LoadData() {
 // OFFSET: 0x00C7B200
 // FUNCTION: fn_20362
 CWeatherEffect::CWeatherEffect()
-    : darken(0), unknown_0001(1), lightning(0), actor(nullptr), targetColor{}, effect(nullptr), counter(0) {
+    : darken(0), enabled(1), lightning(0), actor(nullptr), targetColor{}, effect(nullptr), counter(0) {
   this->color[0] = 1.0f;
   this->color[1] = 1.0f;
   this->color[2] = 1.0f;
@@ -380,13 +380,13 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       cloud->velocityX = static_cast<float>(velX);
       cloud->velocityY = static_cast<float>(velY);
       cloud->velocityZ = static_cast<float>(velZ);
-      cloud->unknown_010C = param0;
-      cloud->unknown_0110 = param1;
-      cloud->unknown_0114 = param3;
-      cloud->unknown_0118 = param4;
-      cloud->unknown_0104 = static_cast<float>(param2);
-      cloud->unknown_0108 = static_cast<float>(param5);
-      cloud->unknown_011C = static_cast<float>(param7);
+      cloud->scriptIntegerParameterA = param0;
+      cloud->scriptIntegerParameterB = param1;
+      cloud->scriptIntegerParameterC = param3;
+      cloud->scriptIntegerParameterD = param4;
+      cloud->scriptFloatParameterA = static_cast<float>(param2);
+      cloud->scriptFloatParameterB = static_cast<float>(param5);
+      cloud->scriptFloatParameterC = static_cast<float>(param7);
       cloud->spanX = spanX;
       cloud->spanZ = spanZ;
       cloud->flag = flag;
@@ -435,7 +435,7 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
   unsigned char fog = 0;
   this->m_script->Call("IsBackGroundFog", "s>b", sky.c_str(), &fog);
   if (fog == 1) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC = true;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog = true;
   }
 }
 
@@ -469,11 +469,11 @@ void RegisterLowercaseName(const char* name) {
     character = static_cast<char>(std::tolower(static_cast<unsigned char>(character)));
   }
 
-  for (const std::string& entry : g_session.unknown_80A8) {
+  for (const std::string& entry : g_session.skyMapNames) {
     if (entry == lowered) {
       return;
     }
   }
 
-  g_session.unknown_80A8.push_back(lowered.c_str());
+  g_session.skyMapNames.push_back(lowered.c_str());
 }

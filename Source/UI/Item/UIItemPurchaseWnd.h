@@ -25,7 +25,7 @@ public:
   /* 00F0 */ UIStaticText* title;
   /* 00F4 */ ItemPurchaseWndInfo* saved;
   /* 00F8 */ int hovered;
-  /* 00FC */ int unknown_00FC;
+  /* 00FC */ int cashShopMode;
   /* 0100 */ UIEditCtrl* quantityEdit;
 };
 

@@ -36,19 +36,19 @@
 namespace {
 
 std::int64_t BaseExpCurrent() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x04]);
+  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x04]);
 }
 
 std::int64_t BaseExpMaximum() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x0C]);
+  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x0C]);
 }
 
 std::int64_t JobExpCurrent() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x1C]);
+  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x1C]);
 }
 
 std::int64_t JobExpMaximum() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.unknown_162C[0x14]);
+  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x14]);
 }
 
 }
@@ -166,7 +166,7 @@ void UIBasicInfoWnd::StoreInfo() {
     this->saved->width = this->geometry.width;
     this->saved->x = this->geometry.x;
     this->saved->y = this->geometry.y;
-    this->saved->unknown_0010 = this->mode;
+    this->saved->mode = this->mode;
   }
 }
 
@@ -278,7 +278,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     case 214:
       if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.window_027C) {
-        if (!g_windowMgr.unknown_02FC && !g_windowMgr.unknown_0304) {
+        if (!g_windowMgr.merchantShopMakeWnd && !g_windowMgr.merchantItemMyShopWnd) {
           g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
         } else {
           g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
@@ -311,7 +311,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.StoreSnapRectangle(this);
       break;
     case 247:
-      if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.unknown_5C1C > 0) {
+      if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
         g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
       }
       break;
@@ -350,7 +350,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->saved->Reset();
     }
 
-    this->mode = this->saved->unknown_0010 != 0;
+    this->mode = this->saved->mode != 0;
     this->SetHeight(this->saved->height);
     this->Move(this->saved->x, this->saved->y);
     break;
@@ -387,14 +387,14 @@ void UIBasicInfoWnd::DrawExpanded() {
   this->DrawTextAt(9, 65, LookupMessage(MSI_BASICINFO_EXP), 0, 1, 14, 0, 0, 0);
   this->DrawTextAt(9, 80, LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), 0, 1, 14, 0, 0, 0);
 
-  if (g_session.unknown_556C > 0) {
-    const std::int64_t percent = static_cast<std::int64_t>(g_session.unknown_5568) * 100 / g_session.unknown_556C;
+  if (g_session.maxHp > 0) {
+    const std::int64_t percent = static_cast<std::int64_t>(g_session.hp) * 100 / g_session.maxHp;
     std::string text = FormatOwnedString("%d%%", percent);
     this->DrawTextAt(173, 51, text.c_str(), 0, 1, 14, 0, 0, 0);
   }
 
-  const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
-  const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+  const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
+  const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
   if (spMax > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(sp) * 100 / spMax;
     std::string text = FormatOwnedString("%d%%", percent);
@@ -484,10 +484,10 @@ void UIBasicInfoWnd::DrawCollapsed() {
   this->DrawTextAt(8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
 
   std::uint32_t hpColor = 0;
-  if (g_session.unknown_556C > 0) {
-    hpColor = 0.25f > static_cast<float>(g_session.unknown_5568) / static_cast<float>(g_session.unknown_556C) ? 255 : 0;
+  if (g_session.maxHp > 0) {
+    hpColor = 0.25f > static_cast<float>(g_session.hp) / static_cast<float>(g_session.maxHp) ? 255 : 0;
   }
-  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), g_session.unknown_5568, g_session.unknown_556C);
+  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), g_session.hp, g_session.maxHp);
   this->DrawTextAt(8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
 
   std::int64_t current = BaseExpCurrent();
@@ -510,8 +510,8 @@ void UIBasicInfoWnd::DrawCollapsed() {
   std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent);
   this->DrawTextAt(136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
 
-  const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
-  const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+  const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
+  const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
   std::uint32_t spColor = 0;
   if (spMax > 0) {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
@@ -540,8 +540,8 @@ void UIBasicInfoWnd::OnCreate(int width, int height) {
 
   this->hpBar = new UIBarGraphPlayer();
   static_cast<UIBarGraphPlayer*>(this->hpBar)->SetValues(
-    []() -> std::int64_t { return g_session.unknown_5568; },
-    []() -> std::int64_t { return g_session.unknown_556C; }
+    []() -> std::int64_t { return g_session.hp; },
+    []() -> std::int64_t { return g_session.maxHp; }
   );
   static_cast<UIBarGraphPlayer*>(this->hpBar)->SetSize(135, 9);
   static_cast<UIBarGraphPlayer*>(this->hpBar)->Move(-100, -100);
@@ -549,8 +549,8 @@ void UIBasicInfoWnd::OnCreate(int width, int height) {
 
   this->spBar = new UIBarGraphPlayer();
   static_cast<UIBarGraphPlayer*>(this->spBar)->SetValues(
-    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[0]); },
-    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.unknown_5570[4]); }
+    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]); },
+    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]); }
   );
   static_cast<UIBarGraphPlayer*>(this->spBar)->SetSize(135, 9);
   static_cast<UIBarGraphPlayer*>(this->spBar)->Move(-100, -100);
@@ -622,12 +622,12 @@ void UIBasicInfoWnd::Paint() {
     if (g_session.IsTreeGroupTwo(g_session.GetDisplayJob())) {
       maxLevel = g_session.m_maxLevel;
     } else if (g_session.IsSuperNovice2Job(g_session.GetDisplayJob())) {
-      maxLevel = *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0]);
+      maxLevel = *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0]);
     } else if (g_session.IsExpandedJob(g_session.GetDisplayJob())) {
-      maxLevel = *reinterpret_cast<const int*>(&g_session.unknown_7EF0[4]);
+      maxLevel = *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
     } else {
-      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x28])
-                                                                         : *reinterpret_cast<const int*>(g_session.unknown_7EE8);
+      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
+                                                                         : *reinterpret_cast<const int*>(g_session.maxBaseLevel);
     }
 
     double percent;
@@ -685,17 +685,17 @@ void UIBasicInfoWnd::Paint() {
     FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
 
     int offset = 0;
-    if (g_session.unknown_556C != 0) {
-      const std::uint32_t color = static_cast<float>(g_session.unknown_5568) * 100.0f / static_cast<float>(g_session.unknown_556C) < 25.0f ? 255 : 0;
-      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.unknown_5568, g_session.unknown_556C);
+    if (g_session.maxHp != 0) {
+      const std::uint32_t color = static_cast<float>(g_session.hp) * 100.0f / static_cast<float>(g_session.maxHp) < 25.0f ? 255 : 0;
+      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.hp, g_session.maxHp);
       this->DrawTextAt(x, 36, text, hpLength, 1, 14, color, 0, 0);
       offset = this->TextWidth(text, hpLength, 1, 14, 0, 0);
       length = std::sprintf(text, " | ");
       this->DrawTextAt(offset + x, 36, text, length, 1, 14, 0, 0, 0);
     }
 
-    const int sp = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
-    const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+    const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
+    const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
     if (spMax < 0) {
       return;
     }
@@ -732,14 +732,14 @@ void UIBasicInfoWnd::Paint() {
     this->DrawTextAt(17, 51, "HP", 0, 1, 14, 0, 0, 0);
     this->DrawTextAt(17, 65, "SP", 0, 1, 14, 0, 0, 0);
 
-    if (g_session.unknown_556C != 0) {
-      std::sprintf(text, "%d%%", g_session.unknown_5568 * 100 / g_session.unknown_556C);
+    if (g_session.maxHp != 0) {
+      std::sprintf(text, "%d%%", g_session.hp * 100 / g_session.maxHp);
       this->DrawTextAt(173, 51, text, 0, 1, 14, 0, 0, 0);
     }
 
-    const int spMax = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+    const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
     if (spMax != 0) {
-      std::sprintf(text, "%d%%", *reinterpret_cast<const int*>(&g_session.unknown_5570[0]) * 100 / spMax);
+      std::sprintf(text, "%d%%", *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]) * 100 / spMax);
       this->DrawTextAt(173, 65, text, 0, 1, 14, 0, 0, 0);
     }
 

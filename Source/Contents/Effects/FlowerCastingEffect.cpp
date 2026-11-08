@@ -21,64 +21,64 @@ void CFlowerCastingEffect::AddRing(int kind) {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->SetTexture("effect\\ring_blue.tga");
-      particle->unknown_0050 = 315;
+      particle->angleParameter = 315;
       particle->alpha = 0;
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
       if (kind == 0) {
         if (ring == 0) {
           particle->scale = 4.5f;
-          particle->unknown_004C = 85;
-          particle->unknown_00C0 = 27.0f;
+          particle->phaseParameter = 85;
+          particle->speedParameter = 27.0f;
           baseAngle = 0.0f;
         } else if (ring == 1) {
           particle->scale = 5.0f;
-          particle->unknown_004C = 80;
-          particle->unknown_00C0 = 28.0f;
+          particle->phaseParameter = 80;
+          particle->speedParameter = 28.0f;
           baseAngle = 90.0f;
         } else if (ring == 2) {
           particle->scale = 5.5f;
-          particle->unknown_004C = 70;
-          particle->unknown_00C0 = 29.0f;
+          particle->phaseParameter = 70;
+          particle->speedParameter = 29.0f;
           baseAngle = 180.0f;
         } else if (ring == 3) {
           particle->scale = 5.0f;
-          particle->unknown_004C = 75;
-          particle->unknown_00C0 = 30.0f;
+          particle->phaseParameter = 75;
+          particle->speedParameter = 30.0f;
           baseAngle = 270.0f;
         }
       } else if (kind == 1) {
         if (ring == 0) {
           particle->scale = 5.5f;
-          particle->unknown_004C = 50;
-          particle->unknown_00C0 = 30.0f;
+          particle->phaseParameter = 50;
+          particle->speedParameter = 30.0f;
           baseAngle = 90.0f;
         } else if (ring == 1) {
           particle->scale = 6.0f;
-          particle->unknown_004C = 55;
-          particle->unknown_00C0 = 29.0f;
+          particle->phaseParameter = 55;
+          particle->speedParameter = 29.0f;
           baseAngle = 180.0f;
         } else if (ring == 2) {
           particle->scale = 6.5f;
-          particle->unknown_004C = 65;
-          particle->unknown_00C0 = 28.0f;
+          particle->phaseParameter = 65;
+          particle->speedParameter = 28.0f;
           baseAngle = 270.0f;
         } else if (ring == 3) {
           particle->scale = 6.0f;
-          particle->unknown_004C = 60;
-          particle->unknown_00C0 = 27.0f;
+          particle->phaseParameter = 60;
+          particle->speedParameter = 27.0f;
           baseAngle = 0.0f;
         }
       }
 
       particle->SetColor(100, 100, 255);
-      particle->unknown_0054 = 0.0f;
-      *reinterpret_cast<float*>(particle->unknown_0058) = particle->unknown_00C0;
+      particle->animationParameter = 0.0f;
+      *reinterpret_cast<float*>(particle->animationParameters) = particle->speedParameter;
       InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
@@ -98,7 +98,7 @@ void CFlowerCastingEffect::Close() {
 // OFFSET: 0x00B66CA0
 // FUNCTION: fn_19061
 void CFlowerCastingEffect::Open() {
-  this->unknown_002C = 400;
+  this->effectLifetime = 400;
 
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
@@ -123,11 +123,11 @@ void CFlowerCastingEffect::OnProcess() {
     (*it)->position.z = this->position[2];
 
     CParticle* particle = *it;
-    if (particle && particle->unknown_00E8 > 0) {
-      float radius = g_sinTable[particle->unknown_00E8 % 90 * 4] * 2.5f + *reinterpret_cast<const float*>(particle->unknown_0058);
-      particle->unknown_00C0 = radius;
+    if (particle && particle->elapsedFrames > 0) {
+      float radius = g_sinTable[particle->elapsedFrames % 90 * 4] * 2.5f + *reinterpret_cast<const float*>(particle->animationParameters);
+      particle->speedParameter = radius;
 
-      const int age = particle->unknown_00E8;
+      const int age = particle->elapsedFrames;
       int alpha = particle->alpha;
       if (age > 110) {
         alpha = (std::max)(alpha - 1, 0);
@@ -136,16 +136,16 @@ void CFlowerCastingEffect::OnProcess() {
       }
       particle->alpha = alpha;
 
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       radius *= g_sinTable[segment * 9];
       if (age <= 90) {
         radius *= g_sinTable[age];
       }
       radius = (std::max)(radius, 0.0f);
 
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->unknown_00C4);
-      const int angle = static_cast<int>(static_cast<int>(particle->unknown_0050 / 20.0f) * segment + baseAngle) % 360;
-      const int tilt = particle->unknown_004C;
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * segment + baseAngle) % 360;
+      const int tilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[tilt];
       const float height = radius * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
@@ -179,7 +179,7 @@ void CFlowerCastingEffect::OnProcess() {
       this->lastOuter = points[1];
     }
 
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -188,11 +188,11 @@ void CFlowerCastingEffect::OnProcess() {
 void CFlowerCastingEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_000C <= 0) {
+    if (!particle || particle->columnIndex <= 0) {
       continue;
     }
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;

@@ -69,7 +69,7 @@ CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
 // INLINED
 CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
-    : m_accountId(0), m_accountName(UnknownAccountName()), m_loaded(false), unknown_0028(0), m_saveUrl(""), m_loadUrl("") {
+    : m_accountId(0), m_accountName(UnknownAccountName()), m_loaded(false), m_pendingLoads(0), m_saveUrl(""), m_loadUrl("") {
   this->m_enabled = true;
 }
 
@@ -178,7 +178,7 @@ void CAccountLinkedUserDataMgr::Reset(LuaScript& script, const char* host, const
 // OFFSET: 0x005BD650
 // FUNCTION: fn_03472
 void CAccountLinkedUserDataMgr::CompleteSave() {
-  --this->unknown_0028;
+  --this->m_pendingLoads;
 }
 
 // OFFSET: 0x005BCE50
@@ -210,8 +210,8 @@ void CAccountLinkedUserDataMgr::Save() {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16), response);
-    ++this->unknown_0028;
+    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), response);
+    ++this->m_pendingLoads;
   }
 }
 

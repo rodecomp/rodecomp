@@ -59,15 +59,15 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
     int boundary;
 
     if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
-      if (g_windowMgr.unknown_0458 &&
-          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
+      if (g_windowMgr.rodexComposeWnd &&
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
         continue;
       }
 
       boundary = position + bytes;
     } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
-      if (g_windowMgr.unknown_0458 &&
-          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
+      if (g_windowMgr.rodexComposeWnd &&
+          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
         continue;
       }
 
@@ -117,7 +117,7 @@ void UIEditCtrl::MoveCursorToEnd() {
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
 void UIEditCtrl::SnapLinkSelection(const std::string& prefix, const int& bytes) {
-  if (g_windowMgr.unknown_0458 && reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents != g_windowMgr.GetHoverWindow()) {
+  if (g_windowMgr.rodexComposeWnd && reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
     return;
   }
 
@@ -211,21 +211,21 @@ std::string UIEditCtrl::BracketFittedText(const std::string& name) {
 // OFFSET: 0x0085A870
 // FUNCTION: fn_10780
 void UIChatEditCtrl::InsertItemTag(int tagId) {
-  if (!this->unknown_0144) {
-    this->unknown_0144 = new (std::nothrow) UIItemTagOnChat();
-    if (!this->unknown_0144) {
+  if (!this->itemTags) {
+    this->itemTags = new (std::nothrow) UIItemTagOnChat();
+    if (!this->itemTags) {
       return;
     }
   }
 
-  if (static_cast<int>(this->unknown_0144->tags.size()) >= 3 || this->unknown_00F0 + this->text.size() > static_cast<unsigned>(this->maximum)) {
+  if (static_cast<int>(this->itemTags->tags.size()) >= 3 || this->tagTextLength + this->text.size() > static_cast<unsigned>(this->maximum)) {
     return;
   }
 
-  const std::string tag = this->unknown_0144->AddSkillTag(tagId, 0x7F00E4);
+  const std::string tag = this->itemTags->AddSkillTag(tagId, 0x7F00E4);
   const std::string combined = this->text + tag;
   g_serverLanguage->ResetInput();
   g_serverLanguage->Insert(combined.c_str());
-  this->unknown_0144->taggedText = this->text;
+  this->itemTags->taggedText = this->text;
 }
 

@@ -110,7 +110,7 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
       texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
     }
   } else {
-    texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
   }
 
   if (overlay) {
@@ -123,6 +123,6 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
 
   this->geometry.surface->DrawSurface(
     x + cell.x, y + cell.y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width, image->height,
-    cell.mirrored != 0, static_cast<short>(image->unknown_0004) + 1, static_cast<short>(image->unknown_0006) + 1, 0, 0
+    cell.mirrored != 0, static_cast<short>(image->doubleWidth) + 1, static_cast<short>(image->doubleHeight) + 1, 0, 0
   );
 }

@@ -5,7 +5,7 @@
 
 // OFFSET: 0x00AFA470
 // FUNCTION: fn_18291
-XmlNode::XmlNode(const char* name) : name(name), unknown_0004(0), unknown_0008(0), sibling(nullptr), child(nullptr) {
+XmlNode::XmlNode(const char* name) : name(name), sourceBegin(0), sourceEnd(0), sibling(nullptr), child(nullptr) {
 }
 
 // OFFSET: 0x00AFA500
@@ -49,8 +49,8 @@ void XmlNode::Clear() {
     this->child = nullptr;
   }
 
-  this->unknown_0004 = 0;
-  this->unknown_0008 = 0;
+  this->sourceBegin = 0;
+  this->sourceEnd = 0;
 }
 
 // OFFSET: 0x00AFA6B0

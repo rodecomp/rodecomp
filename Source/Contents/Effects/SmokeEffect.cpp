@@ -29,10 +29,10 @@ void CSmokeEffect::Open() {
   for (int i = 0; i < 4; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
     if (particle) {
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = i;
-      particle->unknown_0010 = 0;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = i;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
       this->particles.push_back(particle);
     }
   }
@@ -52,17 +52,17 @@ void CSmokeEffect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CSpriteParticle* particle = *it) {
-      matrix& rotation = *reinterpret_cast<matrix*>(particle->unknown_0198);
-      float& angle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      float& spin = *reinterpret_cast<float*>(&particle->unknown_02D4);
-      if (particle->unknown_00E8 < 50) {
+      matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
+      float& angle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& spin = *reinterpret_cast<float*>(&particle->spinBits);
+      if (particle->elapsedFrames < 50) {
         const float speed = particle->frameDelay;
         const float* values = rotation.values;
         particle->velocity.x += values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
         particle->velocity.y += values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
         particle->velocity.z += values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
         angle += spin;
-        if (particle->unknown_00E8 > 34) {
+        if (particle->elapsedFrames > 34) {
           particle->alpha = std::max(particle->alpha - 15, 0);
         }
       } else {
@@ -71,7 +71,7 @@ void CSmokeEffect::OnProcess() {
         particle->scale = 1.5f;
         spin = 0.75f;
         particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 3) / 10.0f;
-        particle->unknown_00E8 = 0;
+        particle->elapsedFrames = 0;
         particle->velocity.x = 0.0f;
         particle->velocity.y = 0.0f;
         particle->velocity.z = 0.0f;
@@ -88,7 +88,7 @@ void CSmokeEffect::OnProcess() {
       translate.MakeTranslate(particle->velocity.x + 0.0f, particle->velocity.y - 9.0f, particle->velocity.z + 0.0f);
       particle->transform = translate;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -96,7 +96,7 @@ void CSmokeEffect::OnProcess() {
 // FUNCTION: fn_19180
 void CSmokeEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it && (*it)->unknown_000C < this->visibleCount) {
+    if (*it && (*it)->columnIndex < this->visibleCount) {
       (*it)->Draw(1);
     }
   }

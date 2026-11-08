@@ -36,18 +36,18 @@ void UINewChatWnd::ShowSuggestions(std::uint8_t visible) {
 // FUNCTION: fn_12732
 void UINewChatWnd::ApplyInputLayout() {
   if (g_windowMgr.inputSuggestionsEnabled) {
-    this->unknown_00C0->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
+    this->m_whisperEdit->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
     this->m_chatEdit->Move(110, this->geometry.height - this->m_inputAreaHeight + 4);
-    UIWindow* child = this->unknown_00B8;
+    UIWindow* child = this->m_inputResizer;
     child->Move(3, this->geometry.height - child->geometry.height);
 
     this->m_inputButtons[0]->Move(97, this->geometry.height - this->m_inputAreaHeight + 3);
     this->m_inputButtons[1]->Move(586, this->geometry.height - this->m_inputAreaHeight + 7);
     this->m_inputButtons[2]->Move(572, this->geometry.height - this->m_inputAreaHeight + 7);
   } else {
-    this->unknown_00C0->Move(-100, -100);
+    this->m_whisperEdit->Move(-100, -100);
     this->m_chatEdit->Move(-100, -100);
-    this->unknown_00B8->Move(-100, -100);
+    this->m_inputResizer->Move(-100, -100);
     for (int index = 0; index < 3; ++index) {
       this->m_inputButtons[index]->Move(-100, -100);
     }
@@ -59,18 +59,18 @@ void UINewChatWnd::ApplyInputLayout() {
 // OFFSET: 0x009337F0
 // FUNCTION: fn_12730
 void UINewChatWnd::ApplyHeaderLayout() {
-  if (!g_session.m_canDragWnd && this->geometry.unknown_0030 != 0) {
+  if (!g_session.m_canDragWnd && this->geometry.state != 0) {
     this->m_headerButtons[1]->Move(-100, -100);
     this->m_headerButtons[0]->Move(-100, -100);
-    this->unknown_0128->Move(-100, -100);
+    this->m_headerButton->Move(-100, -100);
     this->m_chatModeButton->Move(this->m_lockButtonX - this->m_chatModeButton->geometry.width - 2, 4);
     return;
   }
 
-  if (this->geometry.unknown_0030 == 0) {
+  if (this->geometry.state == 0) {
     this->m_headerButtons[1]->Move(-100, -100);
     this->m_headerButtons[0]->Move(-100, -100);
-    this->unknown_0128->Move(-100, -100);
+    this->m_headerButton->Move(-100, -100);
     this->m_chatModeButton->Move(-100, -100);
     return;
   }
@@ -81,7 +81,7 @@ void UINewChatWnd::ApplyHeaderLayout() {
   button = this->m_headerButtons[0];
   x -= (button->geometry.width + 2);
   button->Move(x, 4);
-  button = this->unknown_0128;
+  button = this->m_headerButton;
   x -= (button->geometry.width + 2);
   button->Move(x, 4);
   button = this->m_chatModeButton;
@@ -116,7 +116,7 @@ void UISubChatHisWnd::ApplyButtonLayout() {
 // OFFSET: 0x0093D2C0
 // FUNCTION: fn_12768
 void UINewChatWnd::ResizeRows(int count) {
-  if (g_windowMgr.unknown_0214) {
+  if (g_windowMgr.comboBoxWnd) {
     g_windowMgr.CloseWindow(WID_COMBOBOXWND);
   }
 
@@ -126,7 +126,7 @@ void UINewChatWnd::ResizeRows(int count) {
   }
 
   const int rowCount = count > 15 ? 0 : count < 0 ? 15 : count;
-  chat.geometry.unknown_0030 = static_cast<unsigned>(rowCount);
+  chat.geometry.state = static_cast<unsigned>(rowCount);
   chat.Invalidate();
   const int previousHeight = chat.geometry.height;
   const int height = rowCount == 0 ? this->m_inputAreaHeight : this->m_inputAreaHeight + (rowCount + 3) * 14 + this->m_inputOffsetY;
@@ -153,17 +153,17 @@ void UINewChatWnd::ResizeRows(int count) {
     }
   }
 
-  this->unknown_00C0->Move(6, chat.geometry.height - this->m_inputAreaHeight + 4);
+  this->m_whisperEdit->Move(6, chat.geometry.height - this->m_inputAreaHeight + 4);
   this->m_chatEdit->Move(110, chat.geometry.height - this->m_inputAreaHeight + 4);
-  UIWindow* child = this->unknown_00B8;
+  UIWindow* child = this->m_inputResizer;
   child->Move(3, chat.geometry.height - child->geometry.height);
 
   if (rowCount != 0) {
-    this->unknown_0128->Move(this->m_tabWidth * 2 + 4, 4);
+    this->m_headerButton->Move(this->m_tabWidth * 2 + 4, 4);
     this->m_chatModeButton->Move(this->m_tabWidth * 2 + 19, 4);
     this->m_tabControl->Move(3, 0);
   } else {
-    this->unknown_0128->Move(-100, -100);
+    this->m_headerButton->Move(-100, -100);
     this->m_chatModeButton->Move(-100, -100);
     this->m_tabControl->Move(-100, -100);
   }
@@ -199,13 +199,13 @@ void UINewChatWnd::ToggleInput() {
     this->m_inputEdit->SetText("");
 
     if (!g_windowMgr.chatModeChanged) {
-      this->ResizeRows(static_cast<int>(this->geometry.unknown_0030));
+      this->ResizeRows(static_cast<int>(this->geometry.state));
     }
 
     g_windowMgr.SetPressedWindowRoot(this->m_inputEdit);
   }
 
-  if (UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144) {
+  if (UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags) {
     tags->ClearTags();
   }
 }

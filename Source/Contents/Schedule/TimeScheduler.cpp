@@ -75,7 +75,7 @@ CSchedule* CTimeScheduler::FindSchedule(int serial) {
 // FUNCTION: fn_45541
 CSchedule* CTimeScheduler::FindScheduleByKey(int key) {
   for (CSchedule* schedule : this->m_schedules) {
-    if (schedule->unknown_002C == key) {
+    if (schedule->userValue == key) {
       return schedule;
     }
   }
@@ -128,7 +128,7 @@ void CTimeScheduler::Process() {
     if (schedule != nullptr) {
       if (schedule->active) {
         uint64_t now = _Xtime_get_ticks();
-        if (!schedule->unknown_0025) {
+        if (!schedule->pending) {
           if (schedule->CheckTime(now) == true) {
             schedule->Process(now);
           }
@@ -147,7 +147,7 @@ void CTimeScheduler::Process() {
 // FUNCTION: fn_19739
 void CTimeScheduler::RemoveSchedulesByKey(int value) {
   for (CSchedule* schedule : this->m_schedules) {
-    if (schedule->unknown_002C == value) {
+    if (schedule->userValue == value) {
       schedule->active = false;
     }
   }

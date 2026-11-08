@@ -43,13 +43,13 @@
 // OFFSET: 0x007EE980
 // FUNCTION: fn_09831
 MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_001C)
-    : name(name), id(id), unknown_001C(unknown_001C) {}
+    : name(name), id(id), reportValue(unknown_001C) {}
 
 // OFFSET: 0x007EEA00
 // FUNCTION: fn_09832
 UIMacroReporterWnd::UIMacroReporterWnd()
-    : UIFrameWnd(0), m_scrollBar(nullptr), m_scrollable(false), unknown_00C8(13), m_firstRow(0), m_visibleRows(10), unknown_00D4(nullptr),
-      m_reportButton(nullptr), m_mode(0), m_edit(nullptr), unknown_00F4(1), unknown_00F8(5), m_state(nullptr), unknown_010C(false) {
+    : UIFrameWnd(0), m_scrollBar(nullptr), m_scrollable(false), scrollBarWidth(13), m_firstRow(0), m_visibleRows(10), activeCheckBox(nullptr),
+      m_reportButton(nullptr), m_mode(0), m_edit(nullptr), reportCount(1), maxReportCount(5), m_state(nullptr), activeOnly(false) {
   this->m_tabs[0] = nullptr;
   this->m_tabs[1] = nullptr;
   this->m_tabs[2] = nullptr;
@@ -242,7 +242,7 @@ void UIMacroUserInfoWnd::Paint() {
 // OFFSET: 0x007F1160
 // FUNCTION: fn_09850
 void UIMacroReporterWnd::OnLBtnDown(int x, int y) {
-  if (this->unknown_010C == 1 && y > 17) {
+  if (this->activeOnly == 1 && y > 17) {
     return;
   }
 
@@ -431,7 +431,7 @@ void UIMacroReporterWnd::StoreInfo() {
     this->m_state->height = this->geometry.height;
     this->m_state->x = this->geometry.x;
     this->m_state->y = this->geometry.y;
-    this->m_state->unknown_0011 = this->unknown_010C;
+    this->m_state->activeOnly = this->activeOnly;
     this->m_state->entries.clear();
     this->m_state->entries.resize(this->m_entries.size());
     for (unsigned int index = 0; index < this->m_entries.size(); ++index) {
@@ -466,12 +466,12 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_scrollBar->Configure(186, 56, 1, 216);
   this->AddChild(this->m_scrollBar);
 
-  this->unknown_00D4 = new UICheckBox();
-  static_cast<UICheckBox*>(this->unknown_00D4)->SetSize(42, 20);
-  static_cast<UICheckBox*>(this->unknown_00D4)->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
-  static_cast<UICheckBox*>(this->unknown_00D4)->Move(202, 27);
-  static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
-  this->AddChild(this->unknown_00D4);
+  this->activeCheckBox = new UICheckBox();
+  static_cast<UICheckBox*>(this->activeCheckBox)->SetSize(42, 20);
+  static_cast<UICheckBox*>(this->activeCheckBox)->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
+  static_cast<UICheckBox*>(this->activeCheckBox)->Move(202, 27);
+  static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
+  this->AddChild(this->activeCheckBox);
 
   this->m_reportButton = new UIBitmapButton();
   static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
@@ -542,7 +542,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   static_cast<UIEditCtrl*>(this->m_edit)->maximum = 1;
   static_cast<UIEditCtrl*>(this->m_edit)->preserveInput = 1;
   static_cast<UIEditCtrl*>(this->m_edit)->invalidatesParent = 1;
-  static_cast<UIEditCtrl*>(this->m_edit)->SetText(IntToString(this->unknown_00F4, 0).c_str());
+  static_cast<UIEditCtrl*>(this->m_edit)->SetText(IntToString(this->reportCount, 0).c_str());
   if (const char* tooltip = LookupMessage(MSI_TAIWANSS_PERSONALINFO_DEATHMSG)) {
     static_cast<UIEditCtrl*>(this->m_edit)->tooltip = tooltip;
   }
@@ -585,12 +585,12 @@ int UIMacroReporterWnd::SendMsg(
     }
     this->Resize(this->m_state->width, this->m_state->height);
     this->Move(this->m_state->x, this->m_state->y);
-    this->unknown_010C = this->m_state->unknown_0011;
-    static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(this->unknown_010C);
+    this->activeOnly = this->m_state->activeOnly;
+    static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(this->activeOnly);
     this->m_entries.clear();
     for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
       const MacroReporterEntry& entry = this->m_state->entries[index];
-      this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.unknown_001C));
+      this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.reportValue));
       this->AddActorRow(entry.id, entry.name);
     }
     this->UpdateScrollBar();
@@ -609,7 +609,7 @@ int UIMacroReporterWnd::SendMsg(
           for (auto next = it + 1; next != this->m_entries.end(); ++next, ++it) {
             it->name.swap(next->name);
             it->id = next->id;
-            it->unknown_001C = next->unknown_001C;
+            it->reportValue = next->reportValue;
           }
           this->m_entries.pop_back();
           break;
@@ -632,10 +632,10 @@ int UIMacroReporterWnd::SendMsg(
     }
 
     case ID_CHECK:
-      if (this->unknown_00D4 != sender) {
+      if (this->activeCheckBox != sender) {
         break;
       }
-      this->unknown_010C = argument2 != 0;
+      this->activeOnly = argument2 != 0;
       switch (this->m_mode) {
       case 0:
       case 1:
@@ -712,18 +712,18 @@ int UIMacroReporterWnd::SendMsg(
       break;
 
     case ID_RADIOBTN: {
-      if (this->unknown_010C == true) {
+      if (this->activeOnly == true) {
         switch (this->m_mode) {
         case 0:
         case 1:
           if (argument2 == 2 || argument2 == 3) {
-            static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
+            static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
           }
           break;
         case 2:
         case 3:
           if (argument2 == 0 || argument2 == 1) {
-            static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
+            static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
           }
           break;
         }
@@ -808,15 +808,15 @@ int UIMacroReporterWnd::SendMsg(
       UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
       std::string text = edit->Text();
       if (text.size() > 1) {
-        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
+        edit->SetText(IntToString(this->reportCount, 0).c_str());
       } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
-        this->unknown_00F4 = std::atoi(text.c_str());
-        if (this->unknown_00F4 > this->unknown_00F8) {
-          this->unknown_00F4 = this->unknown_00F8;
-          edit->SetText(IntToString(this->unknown_00F8, 0).c_str());
+        this->reportCount = std::atoi(text.c_str());
+        if (this->reportCount > this->maxReportCount) {
+          this->reportCount = this->maxReportCount;
+          edit->SetText(IntToString(this->maxReportCount, 0).c_str());
         }
       } else {
-        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
+        edit->SetText(IntToString(this->reportCount, 0).c_str());
       }
     }
     break;
@@ -842,7 +842,7 @@ int UIMacroReporterWnd::SendMsg(
     if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
       UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
-      const unsigned short job = entry->unknown_001C;
+      const unsigned short job = entry->reportValue;
       std::string name = entry->name;
       info->m_name = name;
       info->m_message = g_session.GetJobName(job, -1);

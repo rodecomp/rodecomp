@@ -76,7 +76,7 @@ namespace {
 // INLINED
 GroundBase::GroundBase()
     : terrain(nullptr), cellSize(10.0f), waterLevel(0.0f), waterAnimation(3), waterPitch(50), waterPhase(2), waterType(0), waterHeight(1.0f),
-      unknown_0050(0), unknown_0054(0), loaded(0) {
+      waterStateA(0), waterStateB(0), loaded(0) {
 }
 
 // INLINED
@@ -106,8 +106,8 @@ void GroundGeometry::Reset(int columns, int rows) {
   this->height = rows;
   this->cells.resize(static_cast<unsigned>(columns) * static_cast<unsigned>(rows));
   this->lighting.resize(4u * static_cast<unsigned>(columns) * static_cast<unsigned>(rows), {1.0f, 1.0f, 1.0f});
-  this->unknown_005C = 0;
-  this->unknown_0058 = 0;
+  this->waterStateD = 0;
+  this->waterStateC = 0;
 }
 
 // OFFSET: 0x00AC0350

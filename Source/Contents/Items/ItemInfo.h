@@ -9,13 +9,13 @@
 
 struct RawItemData {
   /* 0000 */ std::uint32_t unknown_0000;
-  /* 0004 */ std::uint32_t unknown_0004;
-  /* 0008 */ std::uint32_t unknown_0008;
-  /* 000C */ std::uint32_t unknown_000C;
+  /* 0004 */ std::uint32_t index;
+  /* 0008 */ std::uint32_t price;
+  /* 000C */ std::uint32_t realPrice;
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t unknown_0014;
-  /* 0018 */ std::uint32_t unknown_0018;
-  /* 001C */ std::uint32_t unknown_001C;
+  /* 0018 */ std::uint32_t type;
+  /* 001C */ std::uint32_t refiningLevel;
   /* 0020 */ unsigned char identified;
   /* 0021 */ unsigned char unknown_0021[27];
   /* 003C */ std::string itemId;
@@ -25,12 +25,12 @@ struct RawItemData {
   /* 0088 */ std::int32_t optionCount;
   /* 008C */ unsigned char options[25];
   /* 00A5 */ unsigned char unknown_00A5[7];
-  /* 00AC */ std::int16_t unknown_00AC;
-  /* 00AE */ unsigned char unknown_00AE;
+  /* 00AC */ std::int16_t grade;
+  /* 00AE */ unsigned char hasIndex;
   /* 00AF */ unsigned char unknown_00AF;
-  /* 00B0 */ std::uint32_t unknown_00B0;
+  /* 00B0 */ std::uint32_t location;
   /* 00B4 */ std::uint32_t unknown_00B4;
-  /* 00B8 */ std::uint32_t unknown_00B8;
+  /* 00B8 */ std::uint32_t sprite;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -39,19 +39,19 @@ static_assert(sizeof(RawItemData) == 188);
 
 struct RawItemBasic {
   /* 0000 */ std::int32_t id;
-  /* 0004 */ std::uint32_t unknown_0004;
-  /* 0008 */ std::uint32_t unknown_0008;
-  /* 000C */ std::uint32_t unknown_000C;
+  /* 0004 */ std::uint32_t price;
+  /* 0008 */ std::uint32_t realPrice;
+  /* 000C */ std::uint32_t type;
   /* 0010 */ unsigned char identified;
   /* 0011 */ char itemId[33];
-  /* 0034 */ std::uint32_t unknown_0034;
-  /* 0038 */ std::int32_t unknown_0038;
+  /* 0034 */ std::uint32_t location;
+  /* 0038 */ std::int32_t sprite;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(RawItemBasic, itemId) == 0x11);
-static_assert(offsetof(RawItemBasic, unknown_0034) == 0x34);
-static_assert(offsetof(RawItemBasic, unknown_0038) == 0x38);
+static_assert(offsetof(RawItemBasic, location) == 0x34);
+static_assert(offsetof(RawItemBasic, sprite) == 0x38);
 #endif
 
 struct ItemOption {
@@ -94,30 +94,30 @@ struct alignas(8) ITEM_INFO {
   const std::vector<const char*>& Description() const;
   std::vector<unsigned char> Serialize() const;
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);
-  /* 0000 */ std::uint32_t unknown_0000[4];
+  /* 0000 */ std::uint32_t identity[4];
   /* 0010 */ std::int32_t quantity;
-  /* 0014 */ std::uint32_t unknown_0014[2];
-  /* 001C */ unsigned char unknown_001C[16];
+  /* 0014 */ std::uint32_t prices[2];
+  /* 001C */ unsigned char cards[16];
   /* 002C */ std::string itemId;
-  /* 0044 */ std::string unknown_0044;
+  /* 0044 */ std::string displayName;
   /* 005C */ unsigned char identified;
-  /* 005D */ unsigned char unknown_005D;
-  /* 0060 */ std::int32_t unknown_0060;
-  /* 0064 */ std::uint16_t unknown_0064;
-  /* 0066 */ unsigned char unknown_0066;
-  /* 0068 */ std::uint32_t unknown_0068;
-  /* 006C */ std::uint16_t unknown_006C;
-  /* 0070 */ std::int32_t unknown_0070;
-  /* 0074 */ unsigned char unknown_0074[4];
-  /* 0078 */ std::uint32_t unknown_0078[4];
-  /* 0088 */ std::int16_t unknown_0088;
-  /* 0090 */ std::uint64_t unknown_0090;
-  /* 0098 */ std::int32_t unknown_0098;
-  /* 009C */ unsigned char unknown_009C[25];
-  /* 00B8 */ std::uint32_t unknown_00B8[2];
-  /* 00C0 */ unsigned char unknown_00C0;
-  /* 00C1 */ unsigned char unknown_00C1[24];
-  /* 00D9 */ unsigned char unknown_00D9[24];
+  /* 005D */ unsigned char damaged;
+  /* 0060 */ std::int32_t refiningLevel;
+  /* 0064 */ std::uint16_t bindOnEquip;
+  /* 0066 */ unsigned char durationInHours;
+  /* 0068 */ std::uint32_t expireTime;
+  /* 006C */ std::uint16_t priceFactor;
+  /* 0070 */ std::int32_t sprite;
+  /* 0074 */ unsigned char flags[4];
+  /* 0078 */ std::uint32_t saleData[4];
+  /* 0088 */ std::int16_t grade;
+  /* 0090 */ std::uint64_t productId;
+  /* 0098 */ std::int32_t optionCount;
+  /* 009C */ unsigned char options[25];
+  /* 00B8 */ std::uint32_t recordIds[2];
+  /* 00C0 */ unsigned char recordType;
+  /* 00C1 */ unsigned char recordName[24];
+  /* 00D9 */ unsigned char recordDate[24];
 };
 
 ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned char requireIdentified);

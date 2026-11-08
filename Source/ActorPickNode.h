@@ -19,7 +19,7 @@ struct ActorPickInfo {
   /* 0018 */ std::uint32_t accountId;
   /* 001C */ int job;
   /* 0020 */ int kind;
-  /* 0024 */ int unknown_0024;
+  /* 0024 */ int healthState;
 };
 
 struct ActorPickBounds {

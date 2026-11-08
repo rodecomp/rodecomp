@@ -73,12 +73,12 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
 
   if (slot.itemId == 0) {
     text = shortcut;
-  } else if (slot.unknown_0000 != 0) {
+  } else if (slot.enabled != 0) {
     CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (!skill.MatchesShortcut(&slot)) {
       text = shortcut;
     } else {
-      int level = slot.unknown_0005;
+      int level = slot.value;
       if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
         level = skill.level;
       }

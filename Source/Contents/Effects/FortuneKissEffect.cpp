@@ -26,16 +26,16 @@ void CFortuneKiss::Open() {
   }
 
   particle->SetTexture("effect\\kiss.bmp");
-  particle->unknown_0004 = this->id;
-  particle->unknown_000C = 0;
-  particle->unknown_0010 = 0;
-  particle->unknown_0008 = 1;
+  particle->effectId = this->id;
+  particle->columnIndex = 0;
+  particle->rowIndex = 0;
+  particle->groupIndex = 1;
   particle->alpha = 255;
-  particle->unknown_00C4 = 0;
-  particle->unknown_004C = 0;
+  particle->angleBits = 0;
+  particle->phaseParameter = 0;
   particle->scale = 1.0f;
-  particle->unknown_0054 = -5.0f - static_cast<float>(rand() % 5);
-  *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
+  particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
+  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
   InitParticleQuad(particle->vertices);
   this->angle = rand() % 359;
   this->particles.push_back(particle);
@@ -60,8 +60,8 @@ void CFortuneKiss::OnProcess() {
         this->angle = 0;
       }
 
-      float& offset = *reinterpret_cast<float*>(&particle->unknown_0048[0xC]);
-      float& width = *reinterpret_cast<float*>(&particle->unknown_0048[0x10]);
+      float& offset = *reinterpret_cast<float*>(&particle->effectParameters[0xC]);
+      float& width = *reinterpret_cast<float*>(&particle->effectParameters[0x10]);
       const float cosine = g_cosTable[this->angle];
       const float newOffset = offset - cosine * 0.05;
       const float newWidth = cosine * 0.02 + width;
@@ -83,7 +83,7 @@ void CFortuneKiss::OnProcess() {
       result.Compose(first, translate);
       particle->transform = result;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 

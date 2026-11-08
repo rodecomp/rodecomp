@@ -50,7 +50,7 @@ UIMenuIcon::UIMenuIcon() {}
 // OFFSET: 0x0084A240
 // FUNCTION: fn_10607
 UIMenuIconWnd::UIMenuIconWnd()
-    : UIFrameWnd(1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
+    : UIFrameWnd(1), openButton(nullptr), notificationOpenButton(nullptr), closeButton(nullptr) {}
 
 // OFFSET: 0x0084A850
 // FUNCTION: fn_10612
@@ -71,13 +71,13 @@ UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
   }
 
   if (!g_session.m_showMenuIcon) {
-    if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->unknown_00D0->geometry.height) {
+    if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->notificationOpenButton->geometry.height) {
       return nullptr;
     }
-    if (this->unknown_00C4.size() == 0) {
-      return this->unknown_00CC;
+    if (this->notifiedCommands.size() == 0) {
+      return this->openButton;
     }
-    return this->unknown_00D0;
+    return this->notificationOpenButton;
   }
 
   if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->geometry.height) {
@@ -138,7 +138,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     icon->SetId(ids[index]);
     icon->Enable(0);
     this->AddChild(icon);
-    this->unknown_00B4[ids[index]] = icon;
+    this->menuButtons[ids[index]] = icon;
 
     switch (ids[index]) {
     case ID_STATUS:
@@ -155,7 +155,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
       badge->SetId(ids[index]);
       badge->Enable(0);
       this->AddChild(badge);
-      this->unknown_00BC[ids[index]] = badge;
+      this->notificationButtons[ids[index]] = badge;
       break;
     }
     }
@@ -163,35 +163,35 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     ++position;
   }
 
-  this->unknown_00CC = new UIBitmapButton();
-  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_normal.bmp", 0, 0);
-  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_over.bmp", 1, 0);
-  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_press.bmp", 2, 0);
-  this->unknown_00CC->SetSize(this->unknown_00CC->BitmapWidth(), this->unknown_00CC->BitmapHeight());
-  this->unknown_00CC->Move(0, 4);
-  this->unknown_00CC->SetId(510);
-  this->unknown_00CC->Enable(0);
-  this->AddChild(this->unknown_00CC);
-  this->unknown_00D0 = new UIBitmapButton();
-  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_normal.bmp", 0, 0);
-  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_over.bmp", 1, 0);
-  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_press.bmp", 2, 0);
-  this->unknown_00D0->SetSize(this->unknown_00D0->BitmapWidth(), this->unknown_00D0->BitmapHeight());
-  this->unknown_00D0->Move(0, 0);
-  this->unknown_00D0->SetId(510);
-  this->unknown_00D0->Enable(0);
-  this->AddChild(this->unknown_00D0);
-  this->unknown_00D4 = new UIBitmapButton();
-  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_normal.bmp", 0, 0);
-  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_over.bmp", 1, 0);
-  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_press.bmp", 2, 0);
-  this->unknown_00D4->SetSize(this->unknown_00D4->BitmapWidth(), this->unknown_00D4->BitmapHeight());
-  this->unknown_00D4->Move(0, 4);
-  this->unknown_00D4->SetId(201);
-  this->unknown_00D4->Enable(0);
-  this->AddChild(this->unknown_00D4);
+  this->openButton = new UIBitmapButton();
+  this->openButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_normal.bmp", 0, 0);
+  this->openButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_over.bmp", 1, 0);
+  this->openButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_press.bmp", 2, 0);
+  this->openButton->SetSize(this->openButton->BitmapWidth(), this->openButton->BitmapHeight());
+  this->openButton->Move(0, 4);
+  this->openButton->SetId(510);
+  this->openButton->Enable(0);
+  this->AddChild(this->openButton);
+  this->notificationOpenButton = new UIBitmapButton();
+  this->notificationOpenButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_normal.bmp", 0, 0);
+  this->notificationOpenButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_over.bmp", 1, 0);
+  this->notificationOpenButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_press.bmp", 2, 0);
+  this->notificationOpenButton->SetSize(this->notificationOpenButton->BitmapWidth(), this->notificationOpenButton->BitmapHeight());
+  this->notificationOpenButton->Move(0, 0);
+  this->notificationOpenButton->SetId(510);
+  this->notificationOpenButton->Enable(0);
+  this->AddChild(this->notificationOpenButton);
+  this->closeButton = new UIBitmapButton();
+  this->closeButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_normal.bmp", 0, 0);
+  this->closeButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_over.bmp", 1, 0);
+  this->closeButton->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_press.bmp", 2, 0);
+  this->closeButton->SetSize(this->closeButton->BitmapWidth(), this->closeButton->BitmapHeight());
+  this->closeButton->Move(0, 4);
+  this->closeButton->SetId(201);
+  this->closeButton->Enable(0);
+  this->AddChild(this->closeButton);
   this->SendMsg(this, UM_COMMAND, g_session.m_showMenuIcon == true ? 510 : 201, 0, 0, 0);
-  if (this->unknown_00B4.size() > 20) {
+  if (this->menuButtons.size() > 20) {
     this->Resize(220, 238);
   }
 }
@@ -200,32 +200,32 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10617
 void UIMenuIconWnd::Paint() {
   this->m_primitives.clear();
-  this->unknown_00CC->Enable(0);
-  this->unknown_00D0->Enable(0);
-  this->unknown_00D4->Enable(0);
+  this->openButton->Enable(0);
+  this->notificationOpenButton->Enable(0);
+  this->closeButton->Enable(0);
 
   UIButton* toggle;
   if (g_session.m_showMenuIcon) {
-    toggle = this->unknown_00D4;
-  } else if (this->unknown_00C4.size() == 0) {
-    toggle = this->unknown_00CC;
+    toggle = this->closeButton;
+  } else if (this->notifiedCommands.size() == 0) {
+    toggle = this->openButton;
   } else {
-    toggle = this->unknown_00D0;
+    toggle = this->notificationOpenButton;
   }
   toggle->Enable(1);
 
-  for (auto it = this->unknown_00B4.begin(); it != this->unknown_00B4.end(); ++it) {
+  for (auto it = this->menuButtons.begin(); it != this->menuButtons.end(); ++it) {
     if (!g_session.m_showMenuIcon) {
       it->second->Enable(0);
-      if (this->unknown_00BC.find(it->first) != this->unknown_00BC.end()) {
-        this->unknown_00BC[it->first]->Enable(0);
+      if (this->notificationButtons.find(it->first) != this->notificationButtons.end()) {
+        this->notificationButtons[it->first]->Enable(0);
       }
     } else {
       this->DrawNamed(g_renderer->primitives, 0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
-      const bool pinned = std::find(this->unknown_00C4.begin(), this->unknown_00C4.end(), it->first) != this->unknown_00C4.end();
+      const bool pinned = std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), it->first) != this->notifiedCommands.end();
       it->second->Enable(!pinned);
-      if (this->unknown_00BC.find(it->first) != this->unknown_00BC.end()) {
-        this->unknown_00BC[it->first]->Enable(pinned);
+      if (this->notificationButtons.find(it->first) != this->notificationButtons.end()) {
+        this->notificationButtons[it->first]->Enable(pinned);
       }
     }
   }
@@ -373,13 +373,13 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       case ID_NOTICE: {
         const int id = argument2;
-        auto found = std::find(this->unknown_00C4.begin(), this->unknown_00C4.end(), id);
+        auto found = std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), id);
         if (argument3 > 0) {
-          if (found == this->unknown_00C4.end()) {
-            this->unknown_00C4.push_back(id);
+          if (found == this->notifiedCommands.end()) {
+            this->notifiedCommands.push_back(id);
           }
-        } else if (found != this->unknown_00C4.end()) {
-          this->unknown_00C4.erase(found);
+        } else if (found != this->notifiedCommands.end()) {
+          this->notifiedCommands.erase(found);
         }
         this->Invalidate();
         break;

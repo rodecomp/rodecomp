@@ -62,13 +62,13 @@ void UINavigationWnd::OnCreate(int width, int height) {
 
   std::string base = "유저인터페이스\\";
 
-  this->unknown_0128 = new UIResizer();
-  this->unknown_0128->SetSize(14, 14);
-  this->unknown_0128->SetDirection(7);
-  this->unknown_0128->SetBitmapName((base + "btn_resize.bmp").c_str());
-  this->unknown_0128->SetColors(0xFFFF00FF, 0xFFFF00FF);
-  this->unknown_0128->Move(-1000, -1000);
-  this->AddChild(this->unknown_0128);
+  this->m_resizer = new UIResizer();
+  this->m_resizer->SetSize(14, 14);
+  this->m_resizer->SetDirection(7);
+  this->m_resizer->SetBitmapName((base + "btn_resize.bmp").c_str());
+  this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->m_resizer->Move(-1000, -1000);
+  this->AddChild(this->m_resizer);
 
   std::string path = base;
   path += "navigation_interface\\";
@@ -94,31 +94,31 @@ void UINavigationWnd::OnCreate(int width, int height) {
   this->m_closeButton = this->AddCloseButton(LookupMessage(MSI_NAVIGATION_HELP), 0);
   this->m_minimizeButton = this->AddMinimizeButton("", 0);
 
-  this->unknown_0120 = new UIBitmapButton();
-  this->unknown_0120->SetBitmap((path + "NaviHelp_off.bmp").c_str(), 0, 0);
-  this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 1, 0);
-  this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 2, 0);
-  this->unknown_0120->SetSize(this->unknown_0120->BitmapWidth(), this->unknown_0120->BitmapHeight());
-  this->unknown_0120->Move(this->geometry.width - 42, 3);
-  this->unknown_0120->SetId(343);
-  this->unknown_0120->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
-  this->AddChild(this->unknown_0120);
+  this->m_helpButton = new UIBitmapButton();
+  this->m_helpButton->SetBitmap((path + "NaviHelp_off.bmp").c_str(), 0, 0);
+  this->m_helpButton->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 1, 0);
+  this->m_helpButton->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 2, 0);
+  this->m_helpButton->SetSize(this->m_helpButton->BitmapWidth(), this->m_helpButton->BitmapHeight());
+  this->m_helpButton->Move(this->geometry.width - 42, 3);
+  this->m_helpButton->SetId(343);
+  this->m_helpButton->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
+  this->AddChild(this->m_helpButton);
 
-  this->unknown_00EC = new UIComboBoxDefWnd();
-  this->unknown_00EC->dropdownHeight = 67;
-  this->unknown_00EC->SetSize(56, 18);
-  this->unknown_00EC->Move(-1000, -1000);
-  this->unknown_00EC->borderRed = 100;
-  this->unknown_00EC->borderGreen = 100;
-  this->unknown_00EC->borderBlue = 100;
-  this->unknown_00EC->red = 232;
-  this->unknown_00EC->green = 232;
-  this->unknown_00EC->blue = 232;
-  this->AddChild(this->unknown_00EC);
-  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
-  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
-  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_SCROLL), 0);
-  this->unknown_00EC->AddOption(LookupMessage(MSI_NAVIGATION_USESCROLL), 0);
+  this->m_searchType = new UIComboBoxDefWnd();
+  this->m_searchType->dropdownHeight = 67;
+  this->m_searchType->SetSize(56, 18);
+  this->m_searchType->Move(-1000, -1000);
+  this->m_searchType->borderRed = 100;
+  this->m_searchType->borderGreen = 100;
+  this->m_searchType->borderBlue = 100;
+  this->m_searchType->red = 232;
+  this->m_searchType->green = 232;
+  this->m_searchType->blue = 232;
+  this->AddChild(this->m_searchType);
+  this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
+  this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
+  this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_SCROLL), 0);
+  this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_USESCROLL), 0);
 
   this->m_titleBar = new UIEditCtrl();
   this->m_titleBar->SetSize(226, 18);
@@ -138,32 +138,32 @@ void UINavigationWnd::OnCreate(int width, int height) {
     this->m_titleBar->Invalidate();
   }
 
-  this->unknown_0118 = new UICheckBox();
-  this->unknown_0118->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USESERVICE), 10, 0, 12, 0, 0), 12);
+  this->m_includeObjects = new UICheckBox();
+  this->m_includeObjects->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USESERVICE), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USESERVICE));
-  this->unknown_0118->Move(-1000, -1000);
-  this->unknown_0118->SetChecked(g_navigationManager.unknown_127D);
-  this->unknown_0118->SetTooltip(LookupMessage(MSI_NAVIGATION_PLANE));
-  this->AddChild(this->unknown_0118);
+  this->m_includeObjects->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USESERVICE));
+  this->m_includeObjects->Move(-1000, -1000);
+  this->m_includeObjects->SetChecked(g_navigationManager.includeObjects);
+  this->m_includeObjects->SetTooltip(LookupMessage(MSI_NAVIGATION_PLANE));
+  this->AddChild(this->m_includeObjects);
 
-  this->unknown_0114 = new UICheckBox();
-  this->unknown_0114->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USEPLANE), 10, 0, 12, 0, 0), 12);
+  this->m_allowGates = new UICheckBox();
+  this->m_allowGates->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_USEPLANE), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USEPLANE));
-  this->unknown_0114->Move(-1000, -1000);
-  this->unknown_0114->SetChecked(g_navigationManager.unknown_127C);
-  this->unknown_0114->SetTooltip(LookupMessage(MSI_NAVIGATION_TARGETUNKNOWN));
-  this->AddChild(this->unknown_0114);
+  this->m_allowGates->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_USEPLANE));
+  this->m_allowGates->Move(-1000, -1000);
+  this->m_allowGates->SetChecked(g_navigationManager.allowGates);
+  this->m_allowGates->SetTooltip(LookupMessage(MSI_NAVIGATION_TARGETUNKNOWN));
+  this->AddChild(this->m_allowGates);
 
-  this->unknown_011C = new UICheckBox();
-  this->unknown_011C->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_GOING), 10, 0, 12, 0, 0), 12);
+  this->m_allowWarps = new UICheckBox();
+  this->m_allowWarps->SetSize(this->TextWidth(LookupMessage(MSI_NAVIGATION_GOING), 10, 0, 12, 0, 0), 12);
   path = base;
-  this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_GOING));
-  this->unknown_011C->Move(-1000, -1000);
-  this->unknown_011C->SetChecked(g_navigationManager.unknown_127E);
-  this->unknown_011C->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHING));
-  this->AddChild(this->unknown_011C);
+  this->m_allowWarps->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(MSI_NAVIGATION_GOING));
+  this->m_allowWarps->Move(-1000, -1000);
+  this->m_allowWarps->SetChecked(g_navigationManager.allowWarps);
+  this->m_allowWarps->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHING));
+  this->AddChild(this->m_allowWarps);
 }
 
 // OFFSET: 0x00931390
@@ -184,9 +184,9 @@ void UINavigationWnd::LayoutTabs() {
   this->m_searchFooter->Move(-1000, -1000);
 
   const int x = this->geometry.width - 222;
-  if (!g_navigationManager.unknown_1254) {
+  if (!g_navigationManager.expandedMap) {
     UIWindow* footer;
-    if (g_navigationManager.unknown_125C == 1) {
+    if (g_navigationManager.displayMode == 1) {
       this->m_searchPanel->Move(x, 37);
       this->m_searchPanel->Invalidate();
       footer = this->m_searchFooter;
@@ -204,7 +204,7 @@ void UINavigationWnd::LayoutTabs() {
 // OFFSET: 0x0093DB80
 // FUNCTION: fn_12771
 void UINavigationWnd::RefreshHeaderTexts(int mode) {
-  if (g_navigationManager.unknown_1254) {
+  if (g_navigationManager.expandedMap) {
     if (mode == 2) {
       char text[260];
       char saved[260];
@@ -233,7 +233,7 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
 // FUNCTION: fn_12772
 void UINavigationWnd::RefreshWorldMapMarks() {
   g_worldViewMgr.ClearMarks();
-  if (g_navigationManager.unknown_1258 == 2) {
+  if (g_navigationManager.viewMode == 2) {
     std::string name;
     for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
       CNavi_Link* node = g_navigationManager.GetNode(index);
@@ -291,7 +291,7 @@ void UINavigationWnd::RefreshRouteList() {
   this->m_searchPanel->Invalidate();
 
   const int nodeCount = g_navigationManager.NodeCount();
-  if (g_navigationManager.unknown_1258 != 2) {
+  if (g_navigationManager.viewMode != 2) {
     return;
   }
 
@@ -426,7 +426,7 @@ void UINavigationWnd::RefreshRouteList() {
 // OFFSET: 0x0093EB60
 // FUNCTION: fn_12776
 void UINavigationWnd::ApplyMinimized() {
-  if (g_navigationManager.unknown_1254) {
+  if (g_navigationManager.expandedMap) {
     this->Resize(134, 61);
     int x = this->geometry.x;
     int y = this->geometry.y;
@@ -438,8 +438,8 @@ void UINavigationWnd::ApplyMinimized() {
     }
     this->Move(x < 0 ? 0 : x, y < 0 ? 0 : y);
 
-    this->unknown_0128->Move(-1000, -1000);
-    this->unknown_0120->Move(this->geometry.width - 42, 3);
+    this->m_resizer->Move(-1000, -1000);
+    this->m_helpButton->Move(this->geometry.width - 42, 3);
     this->m_closeButton->Move(this->geometry.width - 14, 3);
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
     this->m_minimizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_ALL));
@@ -449,10 +449,10 @@ void UINavigationWnd::ApplyMinimized() {
     }
     this->LayoutTabs();
 
-    this->unknown_00EC->Move(-1000, -1000);
-    this->unknown_0114->Move(-1000, -1000);
-    this->unknown_0118->Move(-1000, -1000);
-    this->unknown_011C->Move(-1000, -1000);
+    this->m_searchType->Move(-1000, -1000);
+    this->m_allowGates->Move(-1000, -1000);
+    this->m_includeObjects->Move(-1000, -1000);
+    this->m_allowWarps->Move(-1000, -1000);
     this->m_titleBar->Move(-1000, -1000);
   } else {
     if (this->m_saved->minimized) {
@@ -476,8 +476,8 @@ void UINavigationWnd::ApplyMinimized() {
 
     this->m_routePanel->Resize(215, this->geometry.height - 78);
     this->m_searchPanel->Resize(215, this->geometry.height - 78);
-    this->unknown_0128->Move(this->geometry.width - 14, this->geometry.height - 14);
-    this->unknown_0120->Move(this->geometry.width - 42, 3);
+    this->m_resizer->Move(this->geometry.width - 14, this->geometry.height - 14);
+    this->m_helpButton->Move(this->geometry.width - 42, 3);
     this->m_closeButton->Move(this->geometry.width - 14, 3);
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
     this->m_minimizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_MAP));
@@ -490,10 +490,10 @@ void UINavigationWnd::ApplyMinimized() {
     }
     this->LayoutTabs();
 
-    this->unknown_00EC->Move(6, 18);
-    this->unknown_0114->Move(this->geometry.width - 136, this->geometry.height - 37);
-    this->unknown_0118->Move(this->geometry.width - 186, this->geometry.height - 37);
-    this->unknown_011C->Move(this->geometry.width - 136, this->geometry.height - 21);
+    this->m_searchType->Move(6, 18);
+    this->m_allowGates->Move(this->geometry.width - 136, this->geometry.height - 37);
+    this->m_includeObjects->Move(this->geometry.width - 186, this->geometry.height - 37);
+    this->m_allowWarps->Move(this->geometry.width - 136, this->geometry.height - 21);
     this->m_titleBar->Move(65, 18);
   }
 }
@@ -528,7 +528,7 @@ void UINavigationWnd::StoreInfo() {
 void UINavigationWnd::Paint() {
   this->DrawTitleBar(true, this->m_title.c_str(), 0);
   this->DrawPanelBackground(0x11, 0, "");
-  if (g_navigationManager.unknown_1254) {
+  if (g_navigationManager.expandedMap) {
     this->DrawTextAt(6, 20, this->m_subtitle.c_str(), 0, 0, 12, 0, 0, 0);
     return;
   }
@@ -537,13 +537,13 @@ void UINavigationWnd::Paint() {
     return;
   }
 
-  int mapCellY = g_navigationManager.unknown_1290;
-  int mapCellX = g_navigationManager.unknown_128C;
+  int mapCellY = g_navigationManager.previewY;
+  int mapCellX = g_navigationManager.previewX;
   const int targetType = g_navigationManager.GetCurrentTarget().type;
   int size = 0x80;
   this->FillRegion(6, 0x25, 0x82, 0x82, 0x646464);
 
-  if (g_navigationManager.unknown_1284 == 2) {
+  if (g_navigationManager.previewType == 2) {
     int markerSize = size;
     if (targetType == 2) {
       markerSize = size - 0x3D;
@@ -555,24 +555,24 @@ void UINavigationWnd::Paint() {
     } else if (targetType == 3) {
       size = 0x20;
     }
-    this->DrawActionSprite(g_navigationManager.unknown_12A4, g_navigationManager.unknown_12A0, 7, 0x26, markerSize, 0x80, 0x5dc, true, nullptr);
+    this->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, 7, 0x26, markerSize, 0x80, 0x5dc, true, nullptr);
   }
 
   const int mapX = 0x87 - size;
   const int mapY = 0xA6 - size;
   this->FillRegion(mapX, mapY, size, size, 0);
-  if (g_navigationManager.unknown_1288 != nullptr) {
-    const float scale = static_cast<float>(size) / static_cast<float>(g_navigationManager.unknown_1288->Width());
+  if (g_navigationManager.previewTexture != nullptr) {
+    const float scale = static_cast<float>(size) / static_cast<float>(g_navigationManager.previewTexture->Width());
     this->geometry.surface->DrawScaledSurface(
-      mapX, mapY, size, size, g_navigationManager.unknown_1288, g_navigationManager.unknown_1288->Width(), g_navigationManager.unknown_1288->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
+      mapX, mapY, size, size, g_navigationManager.previewTexture, g_navigationManager.previewTexture->Width(), g_navigationManager.previewTexture->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
       0
     );
   }
 
   bool drawCrosshair = true;
-  if (g_navigationManager.unknown_1258 == 2) {
+  if (g_navigationManager.viewMode == 2) {
     if (g_navigationManager.IsCurrentTarget(g_session.m_navigationPlayerMap)) {
-      if (g_navigationManager.unknown_125C == 1) {
+      if (g_navigationManager.displayMode == 1) {
         drawCrosshair = false;
       }
       const float scale = static_cast<float>(size) * g_navigationPointScale;
@@ -602,7 +602,7 @@ void UINavigationWnd::Paint() {
     this->FillRegion(mapX + mapCellX - 1, mapY + mapCellY - 1, 2, 2, 0xFFFF);
   }
 
-  const int activeLabel = g_navigationManager.unknown_1284;
+  const int activeLabel = g_navigationManager.previewType;
   const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
   for (int index = 0; index < labelCount; ++index) {
     if (g_navigationManager.routeLines[index].kind == activeLabel) {
@@ -652,7 +652,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     case ID_SEARCH:
       if (this->m_titleBar->Length() != 0) {
-        g_navigationManager.unknown_1264 = this->m_titleBar->Text();
+        g_navigationManager.searchText = this->m_titleBar->Text();
         g_navigationManager.RefreshSearch();
         this->SendMsg(this, UM_COMMAND, ID_BUTTON2, 0, 0, 0);
         if (g_windowMgr.modal) {
@@ -678,16 +678,16 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case 0x1AD:
-      if (!g_navigationManager.unknown_1254 && this->m_saved->minimized) {
+      if (!g_navigationManager.expandedMap && this->m_saved->minimized) {
         const int targetType = g_navigationManager.GetCurrentTarget().type;
         if (targetType != 1 && targetType != 6 && targetType != 0) {
-          if (g_navigationManager.unknown_1284 == 1) {
-            g_navigationManager.unknown_1284 = 2;
+          if (g_navigationManager.previewType == 1) {
+            g_navigationManager.previewType = 2;
             this->Invalidate();
             return 0;
           }
-          if (g_navigationManager.unknown_1284 == 2) {
-            g_navigationManager.unknown_1284 = 1;
+          if (g_navigationManager.previewType == 2) {
+            g_navigationManager.previewType = 1;
           }
           this->Invalidate();
           return 0;
@@ -700,16 +700,16 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
       return 0;
     case ID_MINI:
-      g_navigationManager.unknown_1254 = !g_navigationManager.unknown_1254;
+      g_navigationManager.expandedMap = !g_navigationManager.expandedMap;
       this->ApplyMinimized();
-      this->RefreshHeaderTexts(g_navigationManager.unknown_1258);
-      if (g_navigationManager.unknown_1254 && g_windowMgr.modal) {
+      this->RefreshHeaderTexts(g_navigationManager.viewMode);
+      if (g_navigationManager.expandedMap && g_windowMgr.modal) {
         static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
       break;
     case ID_CLOSE:
-      if (g_navigationManager.unknown_1258 == 2) {
+      if (g_navigationManager.viewMode == 2) {
         const int response = g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0);
         if (response != 0xBB) {
           break;
@@ -720,10 +720,10 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_worldViewMgr.ClearLevels();
       g_worldViewMgr.ResetSelection();
       g_navigationManager.Reset(true);
-      g_navigationManager.unknown_1254 = false;
-      g_navigationManager.unknown_1248 = false;
+      g_navigationManager.expandedMap = false;
+      g_navigationManager.hideWindow = false;
       if (g_windowMgr.modal) {
-        g_navigationManager.unknown_1254 = true;
+        g_navigationManager.expandedMap = true;
         static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
         return 0;
       }
@@ -731,15 +731,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.window_4F174 = nullptr;
       return 0;
     case ID_BUTTON1:
-      g_navigationManager.unknown_125C = 1;
+      g_navigationManager.displayMode = 1;
       this->LayoutTabs();
       return 0;
     case ID_BUTTON2:
-      g_navigationManager.unknown_125C = 0;
+      g_navigationManager.displayMode = 0;
       this->LayoutTabs();
       return 0;
     case 0xBF: {
-      if (g_windowMgr.unknown_0214) {
+      if (g_windowMgr.comboBoxWnd) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
 
@@ -767,16 +767,16 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
     case ID_CHECK:
-      if (sender == this->unknown_0114) {
-        g_navigationManager.unknown_127C = argument2 != 0;
+      if (sender == this->m_allowGates) {
+        g_navigationManager.allowGates = argument2 != 0;
         return 0;
       }
-      if (sender == this->unknown_0118) {
-        g_navigationManager.unknown_127D = argument2 != 0;
+      if (sender == this->m_includeObjects) {
+        g_navigationManager.includeObjects = argument2 != 0;
         return 0;
       }
-      if (sender == this->unknown_011C) {
-        g_navigationManager.unknown_127E = argument2 != 0;
+      if (sender == this->m_allowWarps) {
+        g_navigationManager.allowWarps = argument2 != 0;
         return 0;
       }
       break;
@@ -806,11 +806,11 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     break;
   case UM_COMBOBOX_SELECTED:
-    if (this->unknown_00EC == sender) {
-      g_navigationManager.unknown_1260 = static_cast<int>(argument1);
+    if (this->m_searchType == sender) {
+      g_navigationManager.searchType = static_cast<int>(argument1);
       this->Invalidate();
       if (g_replayAnimationScaling != 0) {
-        this->unknown_00EC->SendMsg(nullptr, UM_CHANGEMSG, argument1, 0, 0, 0);
+        this->m_searchType->SendMsg(nullptr, UM_CHANGEMSG, argument1, 0, 0, 0);
         return 0;
       }
       break;

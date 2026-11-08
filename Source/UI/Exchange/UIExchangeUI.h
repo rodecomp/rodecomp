@@ -17,10 +17,10 @@ class CUIStaticText;
 namespace ExchangeUI {
 class CUIItem : public CUIListItem {
 public:
-  /* 00E8 */ CUIStaticImage* unknown_00E8;
+  /* 00E8 */ CUIStaticImage* slotBackground;
   /* 00EC */ CUIGameItem* itemIcon;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
-  /* 00F4 */ CUIStaticText* unknown_00F4;
+  /* 00F0 */ CUIStaticText* quantityText;
+  /* 00F4 */ CUIStaticText* itemNameText;
 
   CUIItem();
   void OnCreate(int width, int height) override;
@@ -46,22 +46,22 @@ using CItemListBox = CUIListBoxEx<CUIItem, CItemData>;
 class CUIExchangeUI : public CUIFrameWnd {
 public:
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ CUIStaticText* unknown_00DC;
-  /* 00E0 */ CUIStaticImage* unknown_00E0;
+  /* 00DC */ CUIStaticText* partnerText;
+  /* 00E0 */ CUIStaticImage* backgroundImage;
   /* 00E4 */ ExchangeUI::CItemListBox* firstList;
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIStaticText* unknown_00EC;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00E8 */ CUIStaticText* ownZenyHighlight;
+  /* 00EC */ CUIStaticText* ownZenyText;
+  /* 00F0 */ CUIStaticText* ownZenyShadow;
   /* 00F4 */ CUIEditBoxEx* zenyEdit;
   /* 00F8 */ ExchangeUI::CItemListBox* secondList;
-  /* 00FC */ CUIStaticText* unknown_00FC;
-  /* 0100 */ CUIStaticText* unknown_0100;
-  /* 0104 */ CUIStaticText* unknown_0104;
+  /* 00FC */ CUIStaticText* partnerZenyHighlight;
+  /* 0100 */ CUIStaticText* partnerZenyText;
+  /* 0104 */ CUIStaticText* partnerZenyShadow;
   /* 0108 */ CUICheckBox* logCheckBox;
-  /* 010C */ CUIStaticText* unknown_010C;
+  /* 010C */ CUIStaticText* screenshotLabel;
   /* 0110 */ CUIImageButton* lockButton;
   /* 0114 */ CUIImageButton* tradeButton;
-  /* 0118 */ CUIImageButton* unknown_0118;
+  /* 0118 */ CUIImageButton* cancelButton;
   /* 011C */ std::string partnerName;
   /* 0134 */ std::string zenyText;
 

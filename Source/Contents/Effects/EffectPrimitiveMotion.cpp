@@ -114,7 +114,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   };
 
   if (this->state.changePoint == this->state.stateCnt) {
-    this->state.unknown_0138 = 1;
+    this->state.changePointReached = 1;
     constexpr float sentinel = 0.0001f;
 
     if (this->state.changeWidthSpeed != sentinel) {
@@ -193,7 +193,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
 
   if ((this->state.pattern & 0x400u) != 0) {
     if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
-      this->state.unknown_014C.x = std::bit_cast<float>(1u);
+      this->state.changeFlags.x = std::bit_cast<float>(1u);
       return false;
     }
 
@@ -2576,7 +2576,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 
   if ((particle.pattern & 0x400u) != 0) {
     if (3.0f >= this->CalcDist(particle.master->state.deltaPos[0], particle.master->state.deltaPos[2])) {
-      particle.unknown_014C.x = std::bit_cast<float>(1u);
+      particle.changeFlags.x = std::bit_cast<float>(1u);
       return false;
     }
 
@@ -2822,18 +2822,18 @@ bool CEffectPrim::Prim3DParticleOrbit() {
   }
 
   if (this->state.chRadiSpeed != 0) {
-    int index = this->state.unknown_01D8;
+    int index = this->state.colorCycleIndex;
     const std::uint32_t count = static_cast<std::uint32_t>(this->state.chPoint.size());
 
     if (index < 0 || static_cast<std::uint32_t>(index) >= count) {
       index = 0;
-      this->state.unknown_01D8 = 0;
+      this->state.colorCycleIndex = 0;
     }
 
     if (static_cast<float>(frame) == this->state.chPoint[index]) {
       this->state.radiusSpeed = this->state.chVal1[index];
       this->state.radiusAccel = this->state.chVal2[index];
-      this->state.unknown_01D8 = index + 1;
+      this->state.colorCycleIndex = index + 1;
     }
   }
 
@@ -2906,7 +2906,7 @@ void CEffectPrim::ShiftSegment() {
       record.corners[corner] = previous.corners[corner];
     }
 
-    record.unknown_003C = previous.unknown_003C;
+    record.radius = previous.radius;
     record.angle = previous.angle;
     std::memcpy(record.matrix, previous.matrix, sizeof(record.matrix));
     record.alpha = this->state.alpha - this->state.alpha / static_cast<float>(count) * static_cast<float>(index);
@@ -2927,7 +2927,7 @@ void CEffectPrim::ShiftSegment() {
     first.corners[corner] = this->state.segPos[corner];
   }
 
-  first.unknown_003C = this->state.radius;
+  first.radius = this->state.radius;
   first.scale = this->state.size;
   first.angle = this->state.longitude;
   std::memcpy(first.matrix, this->state.transform, sizeof(first.matrix));
@@ -7719,7 +7719,7 @@ bool CEffectPrim::Move2DPrimitive() {
     }
 
     if (effect != g_activeSkillEffects.end()) {
-      const std::uint32_t expiration = effect->unknown_0004;
+      const std::uint32_t expiration = effect->expiration;
       const DWORD now = timeGetTime();
 
       if (expiration > now || g_replayAnimationScaling != 0) {

@@ -33,14 +33,14 @@ int CSession::IsState291To303(int state) const {
 // OFFSET: 0x00E1D700
 // FUNCTION: fn_23851
 bool CSession::HasUnknown6178Record(int id) const {
-  auto it = this->unknown_6178.begin();
-  for (; it != this->unknown_6178.end(); ++it) {
+  auto it = this->trackedAchievements.begin();
+  for (; it != this->trackedAchievements.end(); ++it) {
     const SessionRecord6178 record = *it;
     if (id == record.id) {
       break;
     }
   }
-  return it != this->unknown_6178.end();
+  return it != this->trackedAchievements.end();
 }
 
 // OFFSET: 0x00E1D850
@@ -87,13 +87,13 @@ int CSession::IsLocalPlayerAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DDF0
 // FUNCTION: fn_23881
 bool CSession::IsHomunAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5570[8]);
+  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]);
 }
 
 // OFFSET: 0x00E1DE10
 // FUNCTION: fn_23882
 bool CSession::IsMercenaryAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]);
+  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
 }
 
 // OFFSET: 0x00E1DE30
@@ -102,13 +102,13 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
   if (aid == 0xFFFFFFFF) {
     return 0;
   }
-  if (aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5570[8]) ||
-      aid == *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]) || aid == this->unknown_1010 ||
-      aid == static_cast<std::uint32_t>(this->unknown_5BC0)) {
+  if (aid == *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]) ||
+      aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]) || aid == this->petGid ||
+      aid == static_cast<std::uint32_t>(this->elementalGid)) {
     return 1;
   }
-  auto it = this->unknown_0784.find(aid);
-  if (it == this->unknown_0784.end() || it->second == -1) {
+  auto it = this->summonHp.find(aid);
+  if (it == this->summonHp.end() || it->second == -1) {
     return 0;
   }
   return 1;
@@ -117,5 +117,5 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DF00
 // FUNCTION: fn_23885
 bool CSession::IsPetAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == this->unknown_1010;
+  return aid != 0xFFFFFFFF && aid == this->petGid;
 }

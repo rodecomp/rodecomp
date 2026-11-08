@@ -10,9 +10,9 @@ class UIStaticText;
 class UITextViewer;
 
 struct GuildBanTarget {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
+  /* 0000 */ int guildId;
+  /* 0004 */ int accountId;
+  /* 0008 */ int characterId;
 };
 
 class UIGuildHelperWnd : public UIFrameWnd {

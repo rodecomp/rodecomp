@@ -81,8 +81,8 @@ static_assert(offsetof(ReportUserPacket, message) == 0x24);
 // OFFSET: 0x00A477F0
 // FUNCTION: fn_16096
 CUIMacroReport::CUIMacroReport()
-    : m_background(nullptr), m_titleBar(nullptr), m_messageEdit(nullptr), unknown_00E4(nullptr), unknown_00E8(nullptr), unknown_00EC(nullptr),
-      unknown_00F0(nullptr), m_firstTypeButton(nullptr), m_secondTypeButton(nullptr), unknown_00FC(nullptr), unknown_0100(0), m_reportType(0) {
+    : m_background(nullptr), m_titleBar(nullptr), m_messageEdit(nullptr), firstTypeText(nullptr), secondTypeText(nullptr), cancelButton(nullptr),
+      reportButton(nullptr), m_firstTypeButton(nullptr), m_secondTypeButton(nullptr), warningText(nullptr), targetId(0), m_reportType(0) {
 }
 
 // OFFSET: 0x00A47A30
@@ -95,10 +95,10 @@ void CUIMacroReport::OnButtonClick() {
 void CUIMacroReport::SendReport() {
   ReportUserPacket packet;
   packet.id = ID_CZ_REQ_REPORT_USER;
-  packet.targetId = this->unknown_0100;
+  packet.targetId = this->targetId;
   packet.accountId = g_session.m_aid;
   packet.type = static_cast<std::uint16_t>(this->m_reportType);
-  strncpy_s(packet.targetName, sizeof(packet.targetName), this->unknown_0108.c_str(), _TRUNCATE);
+  strncpy_s(packet.targetName, sizeof(packet.targetName), this->targetName.c_str(), _TRUNCATE);
   {
     const std::string message = this->m_messageEdit->edit->Text();
     strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
@@ -119,8 +119,8 @@ void CUIMacroReport::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
 
   if (g_modeMgr.GetGameMode()) {
-    this->unknown_0100 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02E0;
-    this->unknown_0108 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02EC;
+    this->targetId = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->menuTargetAid;
+    this->targetName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->menuTargetName;
   }
 }
 
@@ -137,7 +137,7 @@ void CUIMacroReport::OnReportTypeSelect(CUIRadioButton* button) {
 // OFFSET: 0x00A441F0
 // FUNCTION: fn_16052
 void CUIMacroReport::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->m_resolveSkin = false;
   this->Resize(0xE7, 0xBD);
   this->Move(0, 0);
@@ -299,62 +299,62 @@ void CUIMacroReport::OnCreate(int width, int height) {
   }
   this->AddChild(this->m_messageEdit);
 
-  this->unknown_00E4 = new CUIStaticText();
-  this->unknown_00E4->SetSize(165, 12);
-  this->unknown_00E4->Move(28, 25);
+  this->firstTypeText = new CUIStaticText();
+  this->firstTypeText->SetSize(165, 12);
+  this->firstTypeText->Move(28, 25);
   {
-    CUIStaticText* text = this->unknown_00E4;
+    CUIStaticText* text = this->firstTypeText;
     const char firstTypeSource[] = {
         '\x07', '\x6F', '\x54', '\xCA', '\x9B', '\x78', '\x2E', '\x34', '\x73', '\x0C', '\x3A', '\x80', '\x1E', '\x9F', '\x2F', '\x44', '\x00', '\x74', '\xCD', '\x8A', '\x7E', '\x0F', '\x02', '\x83'};
     text->SetText(DecryptName<0x83EFBFBB37EDBDBDULL>(firstTypeSource));
   }
-  this->unknown_00E4->SetFitText(0);
-  this->unknown_00E4->SetAlign(0, 0);
+  this->firstTypeText->SetFitText(0);
+  this->firstTypeText->SetAlign(0, 0);
   {
-    CUIStaticText* text = this->unknown_00E4;
+    CUIStaticText* text = this->firstTypeText;
     const char firstTypeFontSource[] = {
         '\xE0', '\x80', '\x13', '\x50', '\x5C', '\x4B'};
     text->SetFont(std::string(DecryptName<0xBF2B4B31397FF5A7ULL>(firstTypeFontSource)));
   }
-  this->unknown_00E4->SetFontHeight(12);
-  this->unknown_00E4->SetBold(0);
-  this->unknown_00E4->SetColor(0);
-  this->unknown_00E4->SetShadow(0, 0xFFFFFF);
-  this->unknown_00E4->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00E4);
+  this->firstTypeText->SetFontHeight(12);
+  this->firstTypeText->SetBold(0);
+  this->firstTypeText->SetColor(0);
+  this->firstTypeText->SetShadow(0, 0xFFFFFF);
+  this->firstTypeText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->firstTypeText);
 
-  this->unknown_00E8 = new CUIStaticText();
-  this->unknown_00E8->SetSize(165, 12);
-  this->unknown_00E8->Move(28, 43);
+  this->secondTypeText = new CUIStaticText();
+  this->secondTypeText->SetSize(165, 12);
+  this->secondTypeText->Move(28, 43);
   {
-    CUIStaticText* text = this->unknown_00E8;
+    CUIStaticText* text = this->secondTypeText;
     const char secondTypeSource[] = {
         '\x2E', '\x07', '\x50', '\x0A', '\xF1', '\x2A', '\x3E', '\x0F', '\x2A', '\x32', '\x5C', '\x67', '\x14', '\x48', '\xC9', '\x91', '\x50', '\x4E', '\x0A', '\xDD'};
     text->SetText(DecryptName<0x2FE993D1DDE1F197ULL>(secondTypeSource));
   }
-  this->unknown_00E8->SetFitText(0);
-  this->unknown_00E8->SetAlign(0, 0);
+  this->secondTypeText->SetFitText(0);
+  this->secondTypeText->SetAlign(0, 0);
   {
-    CUIStaticText* text = this->unknown_00E8;
+    CUIStaticText* text = this->secondTypeText;
     const char secondTypeFontSource[] = {
         '\xC8', '\xEC', '\x87', '\x64', '\xD8', '\x7F'};
     text->SetFont(std::string(DecryptName<0x39FF7FB50DEB998FULL>(secondTypeFontSource)));
   }
-  this->unknown_00E8->SetFontHeight(12);
-  this->unknown_00E8->SetBold(0);
-  this->unknown_00E8->SetColor(0);
-  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
-  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00E8);
+  this->secondTypeText->SetFontHeight(12);
+  this->secondTypeText->SetBold(0);
+  this->secondTypeText->SetColor(0);
+  this->secondTypeText->SetShadow(0, 0xFFFFFF);
+  this->secondTypeText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->secondTypeText);
 
-  this->unknown_00EC = new CUIImageButton();
-  this->unknown_00EC->SetSize(58, 20);
-  this->unknown_00EC->Move(117, 165);
-  this->unknown_00EC->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
-  this->unknown_00EC->disabled = 0;
-  this->unknown_00EC->Invalidate();
+  this->cancelButton = new CUIImageButton();
+  this->cancelButton->SetSize(58, 20);
+  this->cancelButton->Move(117, 165);
+  this->cancelButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
+  this->cancelButton->disabled = 0;
+  this->cancelButton->Invalidate();
   {
-    CUIImageButton* button = this->unknown_00EC;
+    CUIImageButton* button = this->cancelButton;
     const char cancelDisabledSource[] = {
         '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x57', '\x01', '\xA3', '\xB2', '\x3E', '\x0A', '\x0B', '\x86', '\x50',
         '\x19', '\xFF', '\xB2', '\x39', '\x02', '\x16', '\x84', '\x57', '\x19', '\xA8', '\xC3', '\x3F', '\x06', '\x15', '\xE5'};
@@ -373,16 +373,16 @@ void CUIMacroReport::OnCreate(int width, int height) {
     const std::string cancelNormal(DecryptName<0x2F8B0F37118D157FULL>(cancelNormalSource));
     button->SetImages(cancelNormal, cancelPressed, cancelHover, cancelDisabled);
   }
-  this->AddChild(this->unknown_00EC);
+  this->AddChild(this->cancelButton);
 
-  this->unknown_00F0 = new CUIImageButton();
-  this->unknown_00F0->SetSize(58, 20);
-  this->unknown_00F0->Move(55, 165);
-  this->unknown_00F0->SetOnClick([this]() { this->SendReport(); });
-  this->unknown_00F0->disabled = 0;
-  this->unknown_00F0->Invalidate();
+  this->reportButton = new CUIImageButton();
+  this->reportButton->SetSize(58, 20);
+  this->reportButton->Move(55, 165);
+  this->reportButton->SetOnClick([this]() { this->SendReport(); });
+  this->reportButton->disabled = 0;
+  this->reportButton->Invalidate();
   {
-    CUIImageButton* button = this->unknown_00F0;
+    CUIImageButton* button = this->reportButton;
     const char reportDisabledSource[] = {
         '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xA9', '\x17', '\x9B', '\xBE', '\x0D', '\x5E', '\x55', '\x72', '\xB9',
         '\x17', '\xAA', '\x85', '\x16', '\x48', '\x44', '\x7F', '\xA7', '\x06', '\xDB', '\x83', '\x12', '\x4B', '\x25'};
@@ -401,7 +401,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
     const std::string reportNormal(DecryptName<0xB7FD8F670FC7B96BULL>(reportNormalSource));
     button->SetImages(reportNormal, reportPressed, reportHover, reportDisabled);
   }
-  this->AddChild(this->unknown_00F0);
+  this->AddChild(this->reportButton);
 
   this->m_firstTypeButton = new CUIRadioButton();
   this->m_firstTypeButton->SetSize(12, 12);
@@ -463,29 +463,29 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_secondTypeButton->Invalidate();
   this->AddChild(this->m_secondTypeButton);
 
-  this->unknown_00FC = new CUIStaticText();
-  this->unknown_00FC->SetSize(210, 13);
-  this->unknown_00FC->Move(9, 142);
+  this->warningText = new CUIStaticText();
+  this->warningText->SetSize(210, 13);
+  this->warningText->Move(9, 142);
   {
-    CUIStaticText* text = this->unknown_00FC;
+    CUIStaticText* text = this->warningText;
     const char warningSource[] = {
         '\xD4', '\xB7', '\x7D', '\xB6', '\x2D', '\x51', '\xE8', '\xFA', '\x8E', '\x75', '\x74', '\xBC', '\x2D', '\x2E', '\x89', '\x85', '\x82', '\xED', '\x6F', '\x5F', '\xB4', '\x31', '\xEF', '\xFE',
         '\x45', '\xE9', '\x3F', '\x5F', '\xCD', '\x39', '\x92', '\x85', '\xD1', '\x9A', '\x7D', '\xA6', '\x23', '\xEF'};
     text->SetText(DecryptName<0x452FEF0D7FC95565ULL>(warningSource));
   }
-  this->unknown_00FC->SetFitText(0);
-  this->unknown_00FC->SetAlign(0, 0);
+  this->warningText->SetFitText(0);
+  this->warningText->SetAlign(0, 0);
   {
-    CUIStaticText* text = this->unknown_00FC;
+    CUIStaticText* text = this->warningText;
     const char warningFontSource[] = {
         '\x1A', '\x78', '\x25', '\xE0', '\xCC', '\x7D'};
     const std::string warningFont(DecryptName<0x9FED7DA189490D5DULL>(warningFontSource));
     text->SetFont(warningFont);
   }
-  this->unknown_00FC->SetFontHeight(12);
-  this->unknown_00FC->SetBold(0);
-  this->unknown_00FC->SetColor(0x2D35F7);
-  this->unknown_00FC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00FC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00FC);
+  this->warningText->SetFontHeight(12);
+  this->warningText->SetBold(0);
+  this->warningText->SetColor(0x2D35F7);
+  this->warningText->SetShadow(0, 0xFFFFFF);
+  this->warningText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->warningText);
 }

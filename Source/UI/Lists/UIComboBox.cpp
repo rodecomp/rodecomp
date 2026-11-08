@@ -18,7 +18,7 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     }
 
-    if (g_windowMgr.unknown_0214 != nullptr) {
+    if (g_windowMgr.comboBoxWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
@@ -93,9 +93,9 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
       int extra = 0;
-      const auto found = this->unknown_00C4.find(this->selected);
+      const auto found = this->lineData.find(this->selected);
 
-      if (found != this->unknown_00C4.end()) {
+      if (found != this->lineData.end()) {
         extra = found->second;
       }
 
@@ -103,7 +103,7 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, lineId, extra, 0, 0);
     }
 
-    if (g_windowMgr.unknown_0214 != nullptr) {
+    if (g_windowMgr.comboBoxWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 

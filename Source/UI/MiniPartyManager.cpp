@@ -24,10 +24,10 @@ CMiniPartyWndAreaMgr* CMiniPartyWndAreaMgr::Instance() {
 // OFFSET: 0x00AA9ED0
 // FUNCTION: fn_17263
 void UIWindowMgr::SetScreenSize(int width, int height) {
-  this->unknown_047C = width;
-  this->unknown_0480 = height;
-  this->unknown_0030 = 0;
-  this->unknown_0034 = height - this->unknown_0038;
+  this->screenWidth = width;
+  this->screenHeight = height;
+  this->chatWndX = 0;
+  this->chatWndY = height - this->chatWndHeight;
   reinterpret_cast<MiniPartyGrid*>(CMiniPartyWndAreaMgr::Instance())->BuildAvailableCells();
 }
 
@@ -45,7 +45,7 @@ void UIWindowMgr::ArrangeMiniPartyWindows() {
 // OFFSET: 0x00AAAB20
 // FUNCTION: fn_17270
 void UIWindowMgr::RearrangeMiniPartyWindows() {
-  const int height = this->unknown_0480;
+  const int height = this->screenHeight;
   int top = static_cast<int>(static_cast<float>(height) * 0.3f);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     top = window->geometry.height;
@@ -54,7 +54,7 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
   RECT bounds;
   bounds.left = 0;
   bounds.top = top;
-  bounds.right = this->unknown_047C;
+  bounds.right = this->screenWidth;
   bounds.bottom = height - g_miniPartyCellHeight * 3;
   CMiniPartyWndSortArea area(bounds);
   const std::list<int> cells = area.GetCells();
@@ -120,7 +120,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     }
 
     const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
-    if (record.unknown_0000 == 0) {
+    if (record.active == 0) {
       continue;
     }
 
@@ -137,18 +137,18 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
 
     UIMiniPartyWnd* window = new UIMiniPartyWnd();
     window->SetSize(174, 52);
-    window->m_cell = record.unknown_0008;
+    window->m_cell = record.cell;
     this->AddMiniPartyWindow(window);
     window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
-    g_session.AddRecord0734(record.id, record.unknown_0008);
+    g_session.AddRecord0734(record.id, record.cell);
 
-    UIWindow* drag = this->unknown_0210;
+    UIWindow* drag = this->menuWnd;
     if (drag != nullptr && *reinterpret_cast<int*>(reinterpret_cast<char*>(drag) + 0xB4) == 301 &&
-        *reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(drag) + 0xCC) == record.unknown_0008) {
+        *reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(drag) + 0xCC) == record.cell) {
       const int x = drag->geometry.x;
       const int y = drag->geometry.y;
       window->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
-      this->unknown_0210->Move(x, y);
+      this->menuWnd->Move(x, y);
     }
   }
 
@@ -156,5 +156,5 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     this->Promote(this->window_4F250);
   }
 
-  this->Promote(this->unknown_0210);
+  this->Promote(this->menuWnd);
 }

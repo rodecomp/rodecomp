@@ -40,9 +40,9 @@ public:
 
   /* 00B4 */ MessengerMember member;
   /* 0104 */ UIPcGage* gauge;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
-  /* 0110 */ int unknown_0110;
+  /* 0108 */ int memberIndex;
+  /* 010C */ int dragStartX;
+  /* 0110 */ int dragStartY;
   /* 0114 */ int iconIndex;
   /* 0118 */ std::vector<MiniPartyIconPosition> iconPositions;
 };

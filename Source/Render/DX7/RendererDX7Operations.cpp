@@ -51,7 +51,7 @@ void CRendererDX7::ClearDepth(int clearColor) {
 // FUNCTION: fn_02078
 void CRendererDX7::ClearWorld() {
   unsigned color = this->clearColor;
-  if (this->fog.enabled != 0 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC == 1) {
+  if (this->fog.enabled != 0 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog == 1) {
     color = this->BlendColor(this->clearColor, g_worldOverlayColor);
   }
 
@@ -160,9 +160,9 @@ void CRendererDX7::DrawBlendedQueue() {
   for (auto it = this->queues.queue_0210.begin(); it != this->queues.queue_0210.end(); ++it) {
     if (RenderCommand* command = *it) {
       this->BindTexture(static_cast<CTextureDX7*>(command->texture));
-      this->SetTextureMode(command->unknown_0020);
-      this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->unknown_0018);
-      this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->unknown_001C);
+      this->SetTextureMode(command->textureMode);
+      this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->sourceBlend);
+      this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->destinationBlend);
       command->Draw(reinterpret_cast<int>(this->device));
     }
   }
@@ -349,9 +349,9 @@ void CRendererDX7::FlushRenderList() {
   for (auto it = this->queues.queue_01EC.begin(); it != this->queues.queue_01EC.end(); ++it) {
     if (RenderCommand* command = *it) {
       this->BindTexture(static_cast<CTextureDX7*>(command->texture));
-      this->SetTextureMode(command->unknown_0020);
-      this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->unknown_0018);
-      this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->unknown_001C);
+      this->SetTextureMode(command->textureMode);
+      this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->sourceBlend);
+      this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->destinationBlend);
       command->Draw(reinterpret_cast<int>(this->device));
     }
   }
@@ -381,14 +381,14 @@ void CRendererDX7::FlushRenderList() {
   for (auto it = this->queues.queue_0234.begin(); it != this->queues.queue_0234.end(); ++it) {
     if (RenderCommand* command = it->primitive) {
       this->BindTexture(static_cast<CTextureDX7*>(command->texture));
-      this->SetTextureMode(command->unknown_0020);
+      this->SetTextureMode(command->textureMode);
 
       if (it->depth >= 0.99f) {
         this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
         this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
       } else {
-        this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->unknown_0018);
-        this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->unknown_001C);
+        this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, command->sourceBlend);
+        this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, command->destinationBlend);
       }
 
       command->Draw(reinterpret_cast<int>(this->device));

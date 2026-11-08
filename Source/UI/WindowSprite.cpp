@@ -22,9 +22,9 @@ void UIWindow::AddSpriteCellOverlay(
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
   float left = static_cast<float>(cell->x) * scale * cell->scaleX;
-  float right = static_cast<float>((image->unknown_0004 + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;
+  float right = static_cast<float>((image->doubleWidth + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;
   float top = static_cast<float>(cell->y) * scale * cell->scaleY;
-  float bottom = static_cast<float>((image->unknown_0006 + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
+  float bottom = static_cast<float>((image->doubleHeight + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
 
   CTexture* texture;
   if (cell->imageType == 0) {
@@ -33,7 +33,7 @@ void UIWindow::AddSpriteCellOverlay(
       texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
     }
   } else {
-    texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     record.u1 = static_cast<float>(image->width) / static_cast<float>(texture->TextureWidth());
     record.v1 = static_cast<float>(image->height) / static_cast<float>(texture->TextureHeight());
   }
@@ -43,11 +43,11 @@ void UIWindow::AddSpriteCellOverlay(
   if (angle != 0.0f) {
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float sine = ClientSine(static_cast<int>(angle));
-    const int farX = (image->unknown_0004 + 1) * image->width + cell->x;
+    const int farX = (image->doubleWidth + 1) * image->width + cell->x;
     const float startX = static_cast<float>((cell->mirrored & 1) ? farX : cell->x) * scale + static_cast<float>(x);
     const float endX = static_cast<float>((cell->mirrored & 1) ? cell->x : farX) * scale + static_cast<float>(x) + 1.0f;
     const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
-    const float lower = static_cast<float>((image->unknown_0006 + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
+    const float lower = static_cast<float>((image->doubleHeight + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
     const float halfWidth = (endX - startX) * 0.5f;
     const float halfHeight = (lower - upper) * 0.5f;
     const float centerX = startX + halfWidth;
@@ -118,7 +118,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   SpriteAtlasRecord record{};
 
-  CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+  CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
   if (!texture) {
     texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
@@ -133,13 +133,13 @@ void UIWindow::AddRotatedSpriteCellOverlay(
   primitive->texture = texture;
 
   const int left = static_cast<int>(cell->x * static_cast<double>(cell->scaleX) + 1.0);
-  const int right = static_cast<int>(((static_cast<std::int16_t>(image->unknown_0004) + 1) * image->width + cell->x) * static_cast<double>(cell->scaleX));
+  const int right = static_cast<int>(((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * static_cast<double>(cell->scaleX));
   const int top = static_cast<int>(cell->y * static_cast<double>(cell->scaleY));
   const int startX = (cell->mirrored & 1) ? right : left;
   const int endX = (cell->mirrored & 1) ? left : right;
   const float halfWidth = static_cast<float>(endX - startX) * 0.5f;
   const int bottom =
-    static_cast<int>(((static_cast<std::int16_t>(image->unknown_0006) + 1) * image->height + cell->y) * static_cast<double>(cell->scaleY) + 1.0);
+    static_cast<int>(((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * static_cast<double>(cell->scaleY) + 1.0);
   const float halfHeight = static_cast<float>(bottom - top) * 0.5f;
 
   const float corners[4][2] = {
@@ -150,7 +150,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
   };
   const float centerX = static_cast<float>(x + startX) + halfWidth;
   const float centerY = static_cast<float>(y + top) + halfHeight;
-  const float angle = static_cast<float>(cell->unknown_001C) / 180.0f * 3.141592f;
+  const float angle = static_cast<float>(cell->rotation) / 180.0f * 3.141592f;
 
   const unsigned char* rgba = reinterpret_cast<const unsigned char*>(&cell->color);
   RenderVertex* vertices = primitive->quad;

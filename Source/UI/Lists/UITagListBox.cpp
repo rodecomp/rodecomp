@@ -231,16 +231,16 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
     return false;
   }
 
-  item.unknown_0000[2] = fields[0];
+  item.identity[2] = fields[0];
   item.SetItemId(fields[2]);
   if (fields[1] != 0) {
-    item.unknown_0000[0] = 4;
+    item.identity[0] = 4;
   }
   if (fields.size() > 3) {
-    item.unknown_0060 = fields[3];
+    item.refiningLevel = fields[3];
   }
-  item.unknown_0070 = fields[4];
-  item.unknown_0088 = static_cast<std::int16_t>(fields[5]);
+  item.sprite = fields[4];
+  item.grade = static_cast<std::int16_t>(fields[5]);
 
   int cardCount = 0;
   if (fields.size() > 6) {
@@ -253,7 +253,7 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
 
   if (static_cast<unsigned int>(cardCount + 8) < fields.size()) {
     const int optionCount = fields[cardCount + 8];
-    item.unknown_0098 = optionCount;
+    item.optionCount = optionCount;
     for (int option = 1; option < optionCount + 1; ++option) {
       const int* record = &fields[cardCount + 9 + (option - 1) * 3];
       ItemOption value;
@@ -599,13 +599,13 @@ std::string UITagListBox::ParseTaggedText(std::string text, std::vector<STagInfo
     const STagString& source = extracted[index];
     STagInfoV2 tag;
     result += text.substr(position, source.position - position);
-    tag.unknown_0008 = static_cast<int>(result.size());
+    tag.startOffset = static_cast<int>(result.size());
     const std::pair<std::string, std::string> parsed = this->ParseTag(source.text, source.tag);
     result += parsed.first;
-    tag.unknown_000C = static_cast<int>(result.size());
-    tag.unknown_0010 = parsed.first;
-    tag.unknown_0028 = parsed.second;
-    tag.unknown_0004 = g_textTagRegistry[source.tag].type;
+    tag.endOffset = static_cast<int>(result.size());
+    tag.label = parsed.first;
+    tag.data = parsed.second;
+    tag.type = g_textTagRegistry[source.tag].type;
     tags.push_back(tag);
     position = source.position + source.text.size();
   }
@@ -656,8 +656,8 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
     const char* start = buffer + position;
     int next = WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
     for (std::size_t index = 0; index < tags.size(); ++index) {
-      if (next > tags[index].unknown_0008 && next < tags[index].unknown_000C) {
-        next = tags[index].unknown_0008;
+      if (next > tags[index].startOffset && next < tags[index].endOffset) {
+        next = tags[index].startOffset;
         break;
       }
     }
@@ -676,22 +676,22 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
 // OFFSET: 0x009B7A20
 // FUNCTION: fn_13870
 void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
-  if (tag.unknown_0010.empty()) {
+  if (tag.label.empty()) {
     return;
   }
 
   UITagButton* button = new UITagButton();
-  button->Configure(tag.unknown_0010.c_str(), 0x00F4934A, 0, 12, 0, 1);
+  button->Configure(tag.label.c_str(), 0x00F4934A, 0, 12, 0, 1);
   const int height = button->geometry.height;
   button->ResizeToTextClipped(
-    this->TextWidth(tag.unknown_0010.c_str(), 0, 0, 12, 0, 0) + 1, height
+    this->TextWidth(tag.label.c_str(), 0, 0, 12, 0, 0) + 1, height
   );
   button->m_hoverColor = 0x00FF7864;
-  button->SetId(tag.unknown_0004);
+  button->SetId(tag.type);
 
-  std::string data = tag.unknown_0028;
+  std::string data = tag.data;
   if (!data.empty()) {
-    switch (tag.unknown_0004) {
+    switch (tag.type) {
     case LINE_SEGMENT_NAVI: {
       std::string remaining = data;
       std::size_t separator = remaining.find(",");
@@ -718,9 +718,9 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
       if (!button->GetString(1).empty()) {
         id = std::atoi(button->GetString(1).c_str());
       }
-      button->item.unknown_0000[0] = id;
+      button->item.identity[0] = id;
       button->item.identified = 1;
-      button->item.unknown_0060 = 0;
+      button->item.refiningLevel = 0;
       button->item.itemId = button->GetString(0);
       break;
     }
@@ -739,8 +739,8 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   const unsigned int count = static_cast<unsigned int>(this->lines.size());
   for (unsigned int index = count - lineCount; index < count; ++index) {
     bytes += static_cast<int>(this->lines[index].size());
-    if (tag.unknown_0008 < bytes) {
-      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.unknown_0008;
+    if (tag.startOffset < bytes) {
+      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.startOffset;
       const std::string stripped = StripColorTokens(this->lines[index].c_str(), prefixLength);
       const std::string prefix = stripped.substr(0, prefixLength);
       x = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;

@@ -203,7 +203,7 @@ void Replay::RecordCachedPackets() {
   Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x10F), 41, 0);
   Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x235), 41, 0);
   Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x29D), 41, 0);
-  if (g_session.unknown_5C1C != 0) {
+  if (g_session.replayPacketMode != 0) {
     Replay::Instance().RecordPacket(g_session.BuildStatusReplayPacket(), 41, 0);
   }
 }
@@ -218,8 +218,8 @@ namespace {
     /* 000E */ std::int32_t y;
     /* 0012 */ std::int32_t source;
     /* 0016 */ std::uint32_t id;
-    /* 001A */ std::uint32_t unknown_001A;
-    /* 001E */ std::uint32_t unknown_001E;
+    /* 001A */ std::uint32_t dragValue;
+    /* 001E */ std::uint32_t dragSubValue;
     /* 0022 */ std::int32_t quantity;
     /* 0026 */ std::int32_t slot;
     /* 002A */ std::uint32_t type;
@@ -277,8 +277,8 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
   packet.y = y;
   packet.source = drag.source;
   packet.id = drag.id;
-  packet.unknown_001A = drag.unknown_0310;
-  packet.unknown_001E = drag.unknown_0314;
+  packet.dragValue = drag.itemValue;
+  packet.dragSubValue = drag.price;
   packet.quantity = drag.quantity;
   packet.slot = drag.slot;
   packet.type = drag.type;

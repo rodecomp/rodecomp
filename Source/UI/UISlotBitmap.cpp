@@ -5,7 +5,7 @@
 // OFFSET: 0x0085ADA0
 // FUNCTION: fn_10789
 void UISlotBitmap::OnCreate(int, int) {
-  if (this->unknown_00B8 == 1) {
+  if (this->showAddButton == 1) {
     this->addButton = new UIBitmapButton();
     this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_out.bmp", 0, 0);
     this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_over.bmp", 1, 0);
@@ -56,7 +56,7 @@ int UISlotBitmap::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     return 0;
   case UM_SETSTATE:
-    this->geometry.unknown_0030 = argument1;
+    this->geometry.state = argument1;
     return 0;
   default:
     return UIStaticBitmap::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -67,7 +67,7 @@ int UISlotBitmap::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 // FUNCTION: fn_10672
 UISlotBitmap::UISlotBitmap(int slot) : UIStaticBitmap() {
   this->slot = slot;
-  this->unknown_00B8 = 0;
+  this->showAddButton = 0;
   this->addButton = nullptr;
 }
 
@@ -75,6 +75,6 @@ UISlotBitmap::UISlotBitmap(int slot) : UIStaticBitmap() {
 // FUNCTION: fn_10673
 UISlotBitmap::UISlotBitmap(int slot, unsigned char flag) : UIStaticBitmap() {
   this->slot = slot;
-  this->unknown_00B8 = flag;
+  this->showAddButton = flag;
   this->addButton = nullptr;
 }

@@ -55,12 +55,12 @@ public:
   /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
-  /* 00E4 */ std::vector<int> unknown_00E4;
+  /* 00E4 */ std::vector<int> lineColors;
   /* 00F0 */ int maxLines;
   /* 00F4 */ std::vector<std::string> history;
-  /* 0100 */ std::vector<std::string> unknown_0100;
-  /* 010C */ std::vector<int> unknown_010C;
-  /* 0118 */ std::vector<std::string> unknown_0118;
+  /* 0100 */ std::vector<std::string> historyTexts;
+  /* 010C */ std::vector<int> historyColors;
+  /* 0118 */ std::vector<std::string> historyItemIds;
 };
 
 #endif

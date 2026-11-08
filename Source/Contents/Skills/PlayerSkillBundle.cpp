@@ -128,9 +128,9 @@ bool CPlayerSkillBundle::UpdatePending(const CSkillInfo& value) {
     if (value.id == entry.id) {
       entry.level = value.level;
       entry.id = value.id;
-      entry.unknown_0014 = value.unknown_0014;
-      entry.unknown_0018 = value.unknown_0018;
-      entry.unknown_0034 = value.unknown_0034;
+      entry.spCost = value.spCost;
+      entry.upgradable = value.upgradable;
+      entry.apCost = value.apCost;
 
       return false;
     }
@@ -211,7 +211,7 @@ void CPlayerSkillBundle::NumberExtra() {
   unsigned number = 0;
 
   for (auto entry = this->extra.begin(); entry != this->extra.end(); ++entry, ++number) {
-    entry->unknown_0024 = number;
+    entry->treePosition = number;
   }
 }
 
@@ -267,7 +267,7 @@ int CPlayerSkillBundle::GroupedLevel(std::uint32_t id) {
 // FUNCTION: fn_08284
 bool CPlayerSkillBundle::HasHigherLevel(std::uint32_t id) {
   const CSkillInfo* value = this->FindGrouped(id);
-  return value ? value->level > value->unknown_0030 : false;
+  return value ? value->level > value->learnedLevel : false;
 }
 
 // OFFSET: 0x00770F20
@@ -355,7 +355,7 @@ void CPlayerSkillBundle::ResetFirstLevelChange() {
 // FUNCTION: fn_08294
 void CPlayerSkillBundle::SetUnknownValue(int id, int value) {
   if (static_cast<unsigned>(id) - 1u <= 0x1F3D) {
-    this->unknown_0064[id] = value;
+    this->skillValues[id] = value;
   }
 }
 

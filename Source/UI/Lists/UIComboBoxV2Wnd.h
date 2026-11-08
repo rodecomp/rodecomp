@@ -18,7 +18,7 @@ public:
 
   /* 007C */ std::string text;
   /* 0094 */ int selected;
-  /* 0098 */ UIWindow* unknown_0098;
+  /* 0098 */ UIWindow* auxiliaryWindow;
   /* 009C */ UIListBoxEx* list;
 };
 

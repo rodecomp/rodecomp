@@ -181,7 +181,7 @@ int UIWindowMgr::ProcessMouse() {
   }
   this->deferredDeletion.clear();
 
-  for (auto account = this->unknown_4F248.begin(); account != this->unknown_4F248.end(); ++account) {
+  for (auto account = this->closedMiniPartyIds.begin(); account != this->closedMiniPartyIds.end(); ++account) {
     const int accountId = *account;
     for (auto entry = this->snapExcluded.begin(); entry != this->snapExcluded.end();) {
       UIWindow* window = *entry;
@@ -193,7 +193,7 @@ int UIWindowMgr::ProcessMouse() {
       }
     }
   }
-  this->unknown_4F248.clear();
+  this->closedMiniPartyIds.clear();
 
   if (g_mouse.buttons[0] == 1 && this->window_01C8) {
     UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
@@ -204,7 +204,7 @@ int UIWindowMgr::ProcessMouse() {
       int bottom;
       WindowScreenBounds(suggestions->m_suggestions, left, top, right, bottom);
       const bool outside = left > x || right < x || top > y || bottom < y;
-      WindowScreenBounds(this->unknown_0384, left, top, right, bottom);
+      WindowScreenBounds(this->cashEmotionListWnd, left, top, right, bottom);
       const bool outsideCompanion = left > x || right < x || top > y || bottom < y;
       if (outside && outsideCompanion) {
         suggestions->ShowSuggestions(0);
@@ -239,7 +239,7 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     this->inputWindow->ResetCursor(localX, localY);
-    if (this->unknown_046C == x && this->unknown_0470 == y) {
+    if (this->previousMouseX == x && this->previousMouseY == y) {
       this->inputWindow->OnMouseHover(localX, localY);
     } else {
       this->inputWindow->OnMouseMove(localX, localY);
@@ -306,7 +306,7 @@ int UIWindowMgr::ProcessMouse() {
       }
 
       window->ResetCursor(localX, localY);
-      if (this->unknown_046C == x && this->unknown_0470 == y) {
+      if (this->previousMouseX == x && this->previousMouseY == y) {
         window->OnMouseHover(localX, localY);
       } else {
         window->OnMouseMove(localX, localY);
@@ -326,15 +326,15 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (g_mouse.buttons[0] == 1) {
-      if (this->unknown_0214 && (!window || (window != this->unknown_0214 && !window->IsDescendantOf(this->unknown_0214)))) {
+      if (this->comboBoxWnd && (!window || (window != this->comboBoxWnd && !window->IsDescendantOf(this->comboBoxWnd)))) {
         this->CloseWindow(WID_COMBOBOXWND);
       }
 
-      if (this->unknown_021C) {
+      if (this->comboBoxIDWnd) {
         if (!window) {
           this->CloseWindow(WID_COMBOBOXIDWND);
           this->CloseDropDown();
-        } else if (window != this->unknown_021C && !window->IsDescendantOf(this->unknown_021C)) {
+        } else if (window != this->comboBoxIDWnd && !window->IsDescendantOf(this->comboBoxIDWnd)) {
           this->CloseWindow(WID_COMBOBOXIDWND);
         }
       } else if (!window) {
@@ -345,14 +345,14 @@ int UIWindowMgr::ProcessMouse() {
     if (this->window_03D4) {
       this->window_03D4->Invalidate();
     }
-    if (this->unknown_01E0) {
-      this->unknown_01E0->Invalidate();
+    if (this->equipWnd) {
+      this->equipWnd->Invalidate();
     }
-    if (this->unknown_01E4) {
-      this->unknown_01E4->Invalidate();
+    if (this->nCashWnd) {
+      this->nCashWnd->Invalidate();
     }
-    if (this->unknown_03FC) {
-      this->unknown_03FC->Invalidate();
+    if (this->otherEquipWnd) {
+      this->otherEquipWnd->Invalidate();
     }
     if (this->window_03D8) {
       this->window_03D8->Invalidate();
@@ -380,13 +380,13 @@ int UIWindowMgr::ProcessMouse() {
   if (this->hoverWindow) {
     this->hoverWindow->Invalidate();
     UIWindow* root = this->hoverWindow->Root();
-    if (root && root != this->unknown_0328) {
+    if (root && root != this->guildPositionManageWnd) {
       root->Invalidate();
     }
   }
 
-  this->unknown_046C = x;
-  this->unknown_0470 = y;
+  this->previousMouseX = x;
+  this->previousMouseY = y;
 
   if (!this->modalWindows.empty() && this->modalWindows.back()) {
     handled = 1;

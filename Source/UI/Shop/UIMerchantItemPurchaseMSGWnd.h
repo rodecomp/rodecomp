@@ -21,7 +21,7 @@ public:
   /* 00C4 */ UIBitmapButton* buyButton;
   /* 00C8 */ UIBitmapButton* cancelButton;
   /* 00CC */ int purchaseIndex;
-  /* 00D0 */ int unknown_00D0;
+  /* 00D0 */ int purchaseAmount;
 };
 
 #endif

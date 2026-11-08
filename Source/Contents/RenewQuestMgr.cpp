@@ -45,23 +45,23 @@ struct RenewQuestOngoingRecord {
 
 struct RenewQuestHuntRecord {
   /* 0000 */ int huntId;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ short unknown_000C;
-  /* 000E */ short unknown_000E;
-  /* 0010 */ short unknown_0010;
-  /* 0012 */ short unknown_0012;
+  /* 0004 */ int monsterCondition;
+  /* 0008 */ int monsterId;
+  /* 000C */ short minLevel;
+  /* 000E */ short maxLevel;
+  /* 0010 */ short killCount;
+  /* 0012 */ short killGoal;
   /* 0014 */ char name[0x33];
 };
 
 struct RenewQuestShortHuntRecord {
   /* 0000 */ int huntId;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ short unknown_000C;
-  /* 000E */ short unknown_000E;
-  /* 0010 */ short unknown_0010;
-  /* 0012 */ short unknown_0012;
+  /* 0004 */ int monsterCondition;
+  /* 0008 */ int monsterId;
+  /* 000C */ short minLevel;
+  /* 000E */ short maxLevel;
+  /* 0010 */ short killCount;
+  /* 0012 */ short killGoal;
   /* 0014 */ char name[0x18];
 };
 
@@ -88,7 +88,7 @@ CRenewQuestMgr* g_renewQuestMgr;
 
 // OFFSET: 0x00676110
 // FUNCTION: fn_05417
-RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), unknown_01B8(""), unknown_01D0("") {
+RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), baseExpReward(""), jobExpReward("") {
   this->m_descriptions.clear();
   this->m_rewards.clear();
   for (int index = 0; index < 3; ++index) {
@@ -107,12 +107,12 @@ RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), unknown_01B
 // OFFSET: 0x006765C0
 // FUNCTION: fn_05420
 RenewQuestInfo::RenewQuestInfo()
-    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), unknown_004C(""), unknown_0064(""), unknown_007C(""), unknown_0094(""),
-      unknown_00AC(0), unknown_00B0(0) {}
+    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), summary(""), unknown_0064(""), npcSprite(""), destinationMap(""),
+      destinationX(0), destinationY(0) {}
 
 // OFFSET: 0x00676770
 // FUNCTION: fn_05421
-RenewQuestRecommendedInfo::RenewQuestRecommendedInfo() : unknown_00B4("") {
+RenewQuestRecommendedInfo::RenewQuestRecommendedInfo() : backgroundImage("") {
   for (int index = 0; index < 3; ++index) {
     this->m_descriptions[index].clear();
   }
@@ -452,12 +452,12 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     for (int index = 0; index < huntCount; ++index) {
       RenewQuestHuntRecord hunt = {};
       hunt.huntId = static_cast<int>(info.m_huntId[index]);
-      hunt.unknown_0004 = info.m_huntUnknown01A0[index];
-      hunt.unknown_0008 = info.m_huntUnknown00D4[index];
-      hunt.unknown_000C = info.m_huntUnknown01AC[index];
-      hunt.unknown_000E = info.m_huntUnknown01B2[index];
-      hunt.unknown_0010 = info.m_huntUnknown00E0[index];
-      hunt.unknown_0012 = info.m_huntUnknown0180[index];
+      hunt.monsterCondition = info.m_huntUnknown01A0[index];
+      hunt.monsterId = info.m_huntUnknown00D4[index];
+      hunt.minLevel = info.m_huntUnknown01AC[index];
+      hunt.maxLevel = info.m_huntUnknown01B2[index];
+      hunt.killCount = info.m_huntUnknown00E0[index];
+      hunt.killGoal = info.m_huntUnknown0180[index];
       strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
       *reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset) = hunt;
       offset += sizeof(RenewQuestHuntRecord);
@@ -539,15 +539,15 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
                         &text7, &unknown1, &unknown2, &type)) {
     info.m_title = title ? title : "";
     info.m_icon = icon ? icon : "";
-    info.unknown_004C = text3 ? text3 : "";
-    info.unknown_007C = text4 ? text4 : "";
-    info.unknown_0094 = text5 ? text5 : "";
-    info.unknown_01B8 = text6 ? text6 : "";
-    info.unknown_01D0 = text7 ? text7 : "";
-    info.unknown_00AC = unknown1;
-    info.unknown_00B0 = unknown2;
+    info.summary = text3 ? text3 : "";
+    info.npcSprite = text4 ? text4 : "";
+    info.destinationMap = text5 ? text5 : "";
+    info.baseExpReward = text6 ? text6 : "";
+    info.jobExpReward = text7 ? text7 : "";
+    info.destinationX = unknown1;
+    info.destinationY = unknown2;
     info.m_simpleView = simpleView;
-    info.unknown_01F8 = type;
+    info.questType = type;
     if (type == 1) {
       info.m_simpleView = false;
     }
@@ -555,10 +555,10 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
     info.m_iconTooltip = this->GetIconTooltip(info.m_icon);
   }
 
-  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC);
+  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd);
   if (window != nullptr) {
     info.m_title = window->FitDisplayText(250, info.m_title.c_str(), 0, 12, 1);
-    info.unknown_004C = window->FitDisplayText(250, info.unknown_004C.c_str(), 0, 12, 0);
+    info.summary = window->FitDisplayText(250, info.summary.c_str(), 0, 12, 0);
   }
 
   this->m_ongoingQuests.erase(id);
@@ -755,24 +755,24 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
         RenewQuestHuntRecord huntRecord;
         memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
         info.m_huntId[hunt] = huntRecord.huntId;
-        info.m_huntUnknown01A0[hunt] = huntRecord.unknown_0004;
-        info.m_huntUnknown00D4[hunt] = huntRecord.unknown_0008;
-        info.m_huntUnknown00E0[hunt] = huntRecord.unknown_0010;
-        info.m_huntUnknown0180[hunt] = huntRecord.unknown_0012;
-        info.m_huntUnknown01AC[hunt] = huntRecord.unknown_000C;
-        info.m_huntUnknown01B2[hunt] = huntRecord.unknown_000E;
+        info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
+        info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
+        info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
+        info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
+        info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
+        info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
         strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, _TRUNCATE);
         offset += sizeof(RenewQuestHuntRecord);
       } else {
         RenewQuestShortHuntRecord huntRecord;
         memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
         info.m_huntId[hunt] = huntRecord.huntId;
-        info.m_huntUnknown01A0[hunt] = huntRecord.unknown_0004;
-        info.m_huntUnknown00D4[hunt] = huntRecord.unknown_0008;
-        info.m_huntUnknown00E0[hunt] = huntRecord.unknown_0010;
-        info.m_huntUnknown0180[hunt] = huntRecord.unknown_0012;
-        info.m_huntUnknown01AC[hunt] = huntRecord.unknown_000C;
-        info.m_huntUnknown01B2[hunt] = huntRecord.unknown_000E;
+        info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
+        info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
+        info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
+        info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
+        info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
+        info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
         strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, sizeof(huntRecord.name));
         offset += sizeof(RenewQuestShortHuntRecord);
       }
@@ -885,12 +885,12 @@ int CRenewQuestMgr::L_InsertRecommendedQuestInfo(lua_State* state) {
   info.m_active = true;
   info.m_title = luaL_checkstring(state, 2);
   info.m_icon = luaL_checkstring(state, 3);
-  info.unknown_004C = luaL_checkstring(state, 4);
-  info.unknown_00B4 = luaL_checkstring(state, 5);
-  info.unknown_007C = luaL_checkstring(state, 6);
-  info.unknown_0094 = luaL_checkstring(state, 7);
-  info.unknown_00AC = static_cast<int>(luaL_checknumber(state, 8));
-  info.unknown_00B0 = static_cast<int>(luaL_checknumber(state, 9));
+  info.summary = luaL_checkstring(state, 4);
+  info.backgroundImage = luaL_checkstring(state, 5);
+  info.npcSprite = luaL_checkstring(state, 6);
+  info.destinationMap = luaL_checkstring(state, 7);
+  info.destinationX = static_cast<int>(luaL_checknumber(state, 8));
+  info.destinationY = static_cast<int>(luaL_checknumber(state, 9));
   info.m_iconTooltip = g_renewQuestMgr->GetIconTooltip(info.m_icon);
   g_renewQuestMgr->AddRecommendedQuest(id, info);
   return 0;

@@ -68,7 +68,7 @@ AnimatedModelNode::~AnimatedModelNode() {
 // OFFSET: 0x007550E0
 // FUNCTION: fn_07979
 C3dAnimModelRes::C3dAnimModelRes()
-    : unknown_0110(0), unknown_0114(nullptr), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f),
+    : recordCount(0), records(nullptr), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), originX(0.0f), unknown_0158(0.0f),
       unknown_015C(0.0f), alpha(255) {
 }
 
@@ -87,10 +87,10 @@ C3dAnimModelRes* C3dAnimModelRes::Create() {
 // OFFSET: 0x0075C710
 // FUNCTION: fn_08023
 void C3dAnimModelRes::Unload() {
-  if (this->unknown_0114) {
-    delete[] this->unknown_0114;
-    this->unknown_0114 = nullptr;
-    this->unknown_0110 = 0;
+  if (this->records) {
+    delete[] this->records;
+    this->records = nullptr;
+    this->recordCount = 0;
   }
 
   for (std::list<AnimatedModelNode*>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
@@ -120,7 +120,7 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   if (major == 1 && minor >= 2) {
     file.Read(&this->speed, 4);
-    file.Read(&this->unknown_0154, 12);
+    file.Read(&this->originX, 12);
   }
 
   if (major == 1 && minor == 3) {
@@ -258,7 +258,7 @@ C3dGrannyModelRes::C3dGrannyModelRes() {
   this->instance = nullptr;
   this->model = nullptr;
   this->job = 0;
-  this->unknown_03B0 = 0;
+  this->hairPivot = 0;
 }
 
 // OFFSET: 0x00753540
@@ -287,7 +287,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
   this->modelCount = 0;
   this->maxBoneCount = 0;
   this->textureCount = 0;
-  this->unknown_0280 = 0;
+  this->animationMode = 0;
   const char* cursor = std::strchr(name, '_');
 
   if (!cursor) {
@@ -350,7 +350,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
       this->localPose = GrannyNewLocalPose(this->maxBoneCount);
 
       if (this->deformBufferSize) {
-        this->unknown_0280 = 4;
+        this->animationMode = 4;
       }
 
       result = true;
@@ -366,7 +366,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
     ShowErrorDialog("Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
   }
 
-  this->unknown_0110 = 1920.0f;
+  this->animationDuration = 1920.0f;
 
   for (int index = 0; index < this->instance->meshCount; ++index) {
     if (GrannyGetMeshIndexCount(this->instance->meshes[index].mesh) / 3 > 10000) {
@@ -377,8 +377,8 @@ bool C3dGrannyModelRes::Load(const char* name) {
   this->position[0] = 0.0f;
   this->position[1] = 0.0f;
   this->position[2] = 0.0f;
-  this->unknown_03A0 = 10.0f;
-  this->unknown_03A4 = 10.0f;
+  this->baseHeight = 10.0f;
+  this->topHeight = 10.0f;
   return result;
 }
 

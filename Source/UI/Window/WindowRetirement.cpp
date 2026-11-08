@@ -83,18 +83,18 @@ void UIWindowMgr::DismissTransient() {
 // OFFSET: 0x00A8F840
 // FUNCTION: fn_17145
 void UIWindowMgr::DestroyWindow0478() {
-  if (this->unknown_0478) {
-    delete this->unknown_0478;
-    this->unknown_0478 = nullptr;
+  if (this->backgroundSurface) {
+    delete this->backgroundSurface;
+    this->backgroundSurface = nullptr;
   }
 }
 
 // OFFSET: 0x00A8FB80
 // FUNCTION: fn_17147
 void UIWindowMgr::SubmitActiveDialog() {
-  UIWindow* window = this->unknown_01F8;
-  if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
-      (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
+  UIWindow* window = this->choose3Wnd;
+  if (window || (window = this->sayDialogWnd) != nullptr || (window = this->sayDialogOverlayWnd) != nullptr || (window = this->comboBoxWnd) != nullptr ||
+      (window = this->comboBoxIDWnd) != nullptr || (window = this->chooseWarpWnd) != nullptr || (window = this->makeTargetListWnd) != nullptr ||
       (window = this->hoverWindow) != nullptr) {
     window->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return;

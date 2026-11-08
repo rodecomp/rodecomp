@@ -11,7 +11,7 @@
 // OFFSET: 0x00CAFD30
 // FUNCTION: fn_21088
 bool CMousePointer::OnProcess() {
-  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.previousAnimation = this->render.animation;
   this->render.curMotion = static_cast<int>(frame / this->render.speed) % static_cast<int>(this->render.action->FrameCount(this->render.animation));
   if (this->m_remainingFrames != 0) {
@@ -51,9 +51,9 @@ void CMousePointer::SendMsg(CGameObject*, int message, int a, int b, int c, int 
 // FUNCTION: fn_20990
 CMousePointer::CMousePointer() {
   this->m_remainingFrames = 0;
-  this->render.unknown_00A2 = 1;
+  this->render.flatDepth = 1;
   this->render.visible = 0;
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
 
   if (this->render.sprite) {
     this->render.sprite->Unlock();

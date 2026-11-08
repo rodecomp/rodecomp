@@ -165,7 +165,7 @@ void UIReputeWnd::Paint() {
     const std::int64_t point = info->point;
     if (point < 0) {
       const std::int64_t value = -point;
-      for (std::uint64_t k = 0; k < info->unknown_0020 / 1000; ++k) {
+      for (std::uint64_t k = 0; k < info->maxPointNegative / 1000; ++k) {
         bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
         this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
       }
@@ -179,7 +179,7 @@ void UIReputeWnd::Paint() {
       this->FillRegion(left + 12, top + 100, static_cast<int>(static_cast<float>(remain) / 1000.0f * 299.0f), 6, 0xFF);
       this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), remain).c_str(), 0, 0, 12, 0, 1);
     } else {
-      for (std::uint64_t k = 0; k < info->unknown_0018 / 1000; ++k) {
+      for (std::uint64_t k = 0; k < info->maxPointPositive / 1000; ++k) {
         bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
         this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
       }

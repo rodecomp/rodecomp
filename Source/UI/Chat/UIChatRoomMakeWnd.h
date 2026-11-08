@@ -17,7 +17,7 @@ struct ChatRoomSetting {
   /* 0000 */ std::string title;
   /* 0018 */ std::string password;
   /* 0030 */ int isPublic;
-  /* 0034 */ int unknown_0034;
+  /* 0034 */ int memberCount;
   /* 0038 */ int limit;
   /* 003C */ int roomId;
 };

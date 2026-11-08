@@ -134,7 +134,7 @@ const char* CNProtectGameGuardMgr::GameName() {
     return DecryptName<0x7321C3814F8799E1ULL>(source);
   }
   case 0:
-    if (std::strstr(g_session.unknown_58FA, g_devClientTag) != nullptr) {
+    if (std::strstr(g_session.clientVersion, g_devClientTag) != nullptr) {
       const char source[] = {'\x1D', '\xC0', '\xA8', '\x5B', '\x02', '\xA5', '\x2E', '\x12', '\x04', '\xF3', '\xCF'};
       return DecryptName<0x7941D76335CFA14FULL>(source);
     } else {

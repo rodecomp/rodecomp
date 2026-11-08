@@ -33,15 +33,15 @@ public:
   void SetTooltip(const char* value, std::size_t length);
 
   std::string& Tooltip() {
-    return *reinterpret_cast<std::string*>(this->unknown_00B0);
+    return *reinterpret_cast<std::string*>(this->tooltipStorage);
   }
 
 
   /* 0080 */ std::string text;
-  /* 0098 */ std::string unknown_0098;
-  /* 00B0 */ unsigned char unknown_00B0[0x10];
+  /* 0098 */ std::string displayText;
+  /* 00B0 */ unsigned char tooltipStorage[0x10];
   /* 00C0 */ CUIVScrollBar* scrollBar;
-  /* 00C4 */ unsigned char unknown_00C4[0x04];
+  /* 00C4 */ unsigned char tooltipTailStorage[0x04];
   /* 00C8 */ bool fitText;
   /* 00CC */ int horizontalAlign;
   /* 00D0 */ int verticalAlign;
@@ -59,7 +59,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CUIStaticText) == 0xFC);
-static_assert(offsetof(CUIStaticText, unknown_0098) == 0x98);
+static_assert(offsetof(CUIStaticText, displayText) == 0x98);
 static_assert(offsetof(CUIStaticText, scrollBar) == 0xC0);
 static_assert(offsetof(CUIStaticText, color) == 0xE0);
 static_assert(offsetof(CUIStaticText, outlineColor) == 0xF0);

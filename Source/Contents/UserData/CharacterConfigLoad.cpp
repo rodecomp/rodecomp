@@ -60,6 +60,6 @@ void CCharacterLinkedUserDataMgr::Load(std::uint32_t accountId, std::uint32_t ch
   }
 
   g_asyncWorkMgr->LoadCharacter(
-    accountId, characterId, accountName, this->LoadUrl(), std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16)
+    accountId, characterId, accountName, this->LoadUrl(), std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16)
   );
 }

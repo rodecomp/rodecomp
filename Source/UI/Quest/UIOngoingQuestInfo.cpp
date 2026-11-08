@@ -53,8 +53,8 @@ __declspec(noinline) CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestI
 // FUNCTION: fn_16217
 template <>
 CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A4F7F0
@@ -92,7 +92,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // OFFSET: 0x00A4FE70
 // FUNCTION: fn_16224
 void CUIOngoingQuestInfo::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);
@@ -344,7 +344,7 @@ void CUIRewards::OnInit() {
   this->firstLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM));
   this->secondLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM));
   this->thirdLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM));
-  this->rewardList->unknown_00C4 = 1;
+  this->rewardList->layoutFlag = 1;
   this->rewardList->Invalidate();
   this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
@@ -409,20 +409,20 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
     for (int index = 0; index < quest.m_huntCount; ++index) {
       this->secondContents->textViewer->AddLine(quest.GetHuntText(index));
     }
-    this->rewards->firstText->SetText(quest.unknown_01B8);
-    this->rewards->secondText->SetText(quest.unknown_01D0);
+    this->rewards->firstText->SetText(quest.baseExpReward);
+    this->rewards->secondText->SetText(quest.jobExpReward);
     for (const auto& reward : quest.m_rewards) {
       this->rewards->rewardList->AddData(CRewardItemData{static_cast<int>(reward.first), static_cast<int>(reward.second)}, false);
     }
     this->rewards->rewardList->UpdateScrollBar();
 
     CUIRewards* rewards = this->rewards;
-    if (quest.unknown_007C.empty()) {
+    if (quest.npcSprite.empty()) {
       rewards->npcSprite->Show(0);
     } else {
-      rewards->npcSprite->SetSprite(75, 145, quest.unknown_007C);
-      if (!quest.unknown_0094.empty()) {
-        rewards->npcSprite->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+      rewards->npcSprite->SetSprite(75, 145, quest.npcSprite);
+      if (!quest.destinationMap.empty()) {
+        rewards->npcSprite->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
       }
       rewards->npcSprite->Move(rewards->geometry.width - rewards->npcSprite->geometry.width - 23, 9);
       rewards->npcSprite->Show(1);
@@ -595,8 +595,8 @@ void CUIRewardItem::OnCreate(int width, int height) {
   this->gameItem = new CUIGameItem();
   this->gameItem->SetMode(0);
   this->gameItem->Move(7, 7);
-  this->gameItem->unknown_0084 = 1;
-  this->gameItem->unknown_0085 = 1;
+  this->gameItem->showNameTooltip = 1;
+  this->gameItem->allowItemInfo = 1;
   this->AddChild(this->gameItem);
 
   this->nameText = new CUIStaticText();
@@ -709,7 +709,7 @@ CUIScrollWindow::CUIScrollWindow()
 // INLINED
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
@@ -718,7 +718,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   OngoingQuestInfo::CUIRewardItem* selectedItem = dynamic_cast<OngoingQuestInfo::CUIRewardItem*>(item);

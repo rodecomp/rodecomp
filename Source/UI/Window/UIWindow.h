@@ -205,11 +205,11 @@ public:
 
   // INLINED
   bool HasTextBackground() const {
-    return this->unknown_0044 != 0;
+    return this->hasTextBackground != 0;
   }
   // INLINED
   std::uint32_t TextBackground() const {
-    return this->unknown_0048;
+    return this->textBackgroundColor;
   }
 
   bool IsCached() const {
@@ -220,9 +220,9 @@ public:
   /* 0014 */ WindowGeometry geometry;
 
 protected:
-  /* 0044 */ unsigned char unknown_0044;
-  /* 0048 */ std::uint32_t unknown_0048;
-  /* 004C */ std::uint32_t unknown_004C;
+  /* 0044 */ unsigned char hasTextBackground;
+  /* 0048 */ std::uint32_t textBackgroundColor;
+  /* 004C */ std::uint32_t renderLayer;
   /* 0050 */ std::list<UIWindow*> m_children;
   /* 0058 */ int m_dirty;
   /* 005C */ std::vector<RenderPrimitive*> m_overlayPrimitives;

@@ -104,8 +104,8 @@ void CSession::FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, 
   const char* speaker;
   if (!name.empty()) {
     speaker = name.c_str();
-  } else if (aid == g_session.unknown_1010) {
-    speaker = g_session.unknown_1018;
+  } else if (aid == g_session.petGid) {
+    speaker = g_session.petName;
   } else {
     *output = '\0';
     return;

@@ -83,7 +83,7 @@ C3dNode* C3dNode::Find(const char* selected) {
 // OFFSET: 0x00AB94A0
 // FUNCTION: fn_17509
 void C3dNode::OverrideColors() {
-  this->unknown_0088 = 1;
+  this->overrideColors = 1;
 
   for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
     (*it)->OverrideColors();

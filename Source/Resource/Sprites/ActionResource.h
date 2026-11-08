@@ -14,11 +14,11 @@ class ResourceMgr;
 struct ActionAnchor {
   /* 0000 */ std::int32_t x;
   /* 0004 */ std::int32_t y;
-  /* 0008 */ std::int32_t unknown_0008;
+  /* 0008 */ std::int32_t attachmentId;
 };
 
 struct ActionFrame {
-  /* 0000 */ std::int32_t unknown_0000[8];
+  /* 0000 */ std::int32_t rangeBounds[8];
   /* 0020 */ std::vector<SpriteFrameCell> cells;
   /* 002C */ int cellCount;
   /* 0030 */ int sound;
@@ -56,7 +56,7 @@ static_assert(sizeof(ActionAnchor) == 12);
 static_assert(sizeof(ActionFrame) == 68);
 static_assert(sizeof(CActRes) == 312);
 static_assert(offsetof(ActionAnchor, y) == 0x0004);
-static_assert(offsetof(ActionAnchor, unknown_0008) == 0x0008);
+static_assert(offsetof(ActionAnchor, attachmentId) == 0x0008);
 static_assert(offsetof(ActionFrame, cells) == 0x0020);
 static_assert(offsetof(ActionFrame, cellCount) == 0x002C);
 static_assert(offsetof(ActionFrame, sound) == 0x0030);

@@ -46,7 +46,7 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
         found.second.quantity = std::min(found.second.quantity, saved->quantity);
       }
 
-      if (found.second.unknown_0000[1] != 0) {
+      if (found.second.identity[1] != 0) {
         lists.AddItem1768(found.second, wholeItem, 0);
         lists.RemoveItem1750(found.second, wholeItem, 0);
       }
@@ -152,7 +152,7 @@ void CMCStoreInfoBackup::Load(
   }
 
   g_asyncWorkMgr->LoadStore(accountId, characterId, accountName, this->LoadUrl(),
-                            std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16), type);
+                            std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), type);
 }
 
 // OFFSET: 0x00606EB0
@@ -168,7 +168,7 @@ void CMCStoreInfoBackup::Save(int type) {
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
     g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->SaveUrl(),
-                              std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[8]), 16), response, this->type);
+                              std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), response, this->type);
 
     ++this->pendingSaves;
   }

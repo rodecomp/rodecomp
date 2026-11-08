@@ -39,9 +39,9 @@ public:
   /* 00F8 */ int m_itemIndex;
   /* 00FC */ UIBitmapButton* m_itemButton;
   /* 0100 */ UIBitmapButton* m_zenyButton;
-  /* 0104 */ UIBasicButton* unknown_0104;
-  /* 0108 */ UIBasicButton* unknown_0108;
-  /* 010C */ bool unknown_010C;
+  /* 0104 */ UIBasicButton* m_confirmButton;
+  /* 0108 */ UIBasicButton* m_adminButton;
+  /* 010C */ bool m_hasLineBreak;
 };
 
 #endif

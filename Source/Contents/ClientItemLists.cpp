@@ -135,20 +135,20 @@ namespace {
 #pragma pack(pop)
 
   bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
-    if (value.itemId != item.itemId || std::memcmp(value.unknown_001C, item.unknown_001C, sizeof(value.unknown_001C)) != 0 ||
-        value.identified != item.identified || value.unknown_0060 != item.unknown_0060 || value.unknown_0088 != item.unknown_0088) {
+    if (value.itemId != item.itemId || std::memcmp(value.cards, item.cards, sizeof(value.cards)) != 0 ||
+        value.identified != item.identified || value.refiningLevel != item.refiningLevel || value.grade != item.grade) {
       return false;
     }
 
-    const int count = item.unknown_0098;
+    const int count = item.optionCount;
 
-    if (value.unknown_0098 != count || value.unknown_0098 >= 5) {
+    if (value.optionCount != count || value.optionCount >= 5) {
       return false;
     }
 
-    if (value.unknown_0098 != 0) {
-      const auto* left = reinterpret_cast<const ItemRandomOption*>(value.unknown_009C);
-      const auto* right = reinterpret_cast<const ItemRandomOption*>(item.unknown_009C);
+    if (value.optionCount != 0) {
+      const auto* left = reinterpret_cast<const ItemRandomOption*>(value.options);
+      const auto* right = reinterpret_cast<const ItemRandomOption*>(item.options);
 
       for (int index = 0; index < count; ++index) {
         if (left[index].id != right[index].id || left[index].value != right[index].value || left[index].param != right[index].param) {
@@ -227,8 +227,8 @@ static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 // OFFSET: 0x00AA6440
 // FUNCTION: fn_17229
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
-  if (mgr->unknown_01D4) {
-    reinterpret_cast<UIWindow*>(mgr->unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (mgr->itemWnd) {
+    reinterpret_cast<UIWindow*>(mgr->itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (mgr->window_01E8) {
     mgr->window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -258,19 +258,19 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
   const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
   ItemRandomOption options[5] = {};
   ITEM_INFO item;
-  item.unknown_0000[1] = packet.index;
+  item.identity[1] = packet.index;
   item.quantity = packet.amount;
   item.SetItemId(packet.itemId);
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0000[0] = packet.type;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.identity[0] = packet.type;
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = 0;
+  item.grade = 0;
   g_session.AddItem1738(item, 1);
 }
 
@@ -312,17 +312,17 @@ void ReceiveItemSlot(const unsigned char* data) {
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet.type;
+  item.identity[0] = packet.type;
   item.SetItemId(packet.itemId);
-  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.identity[1] = 0xFFFFFFFF;
   item.quantity = packet.slot;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   g_session.AddItemSlot(item);
 }
@@ -341,17 +341,17 @@ void ReceiveItemSlotOptions(const unsigned char* data) {
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet.type;
+  item.identity[0] = packet.type;
   item.SetItemId(packet.itemId);
-  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.identity[1] = 0xFFFFFFFF;
   item.quantity = packet.slot;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0098 = CountItemOptions(packet.options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = packet.options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.optionCount = CountItemOptions(packet.options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = packet.options[index];
   }
   g_session.AddItemSlot(item);
 }
@@ -417,19 +417,19 @@ void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
   const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
   ItemRandomOption options[5] = {};
   ITEM_INFO item;
-  item.unknown_0000[1] = packet.index;
+  item.identity[1] = packet.index;
   item.quantity = packet.amount;
   item.SetItemId(packet.itemId);
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0000[0] = packet.type;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.identity[0] = packet.type;
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = 0;
+  item.grade = 0;
   g_session.AddItem1740(item);
 }
 
@@ -440,19 +440,19 @@ void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
   ItemRandomOption options[5];
   std::memcpy(options, packet->options, sizeof(options));
   ITEM_INFO item;
-  item.unknown_0000[1] = packet->index;
+  item.identity[1] = packet->index;
   item.quantity = packet->amount;
   item.SetItemId(packet->itemId);
   item.identified = packet->identified;
-  item.unknown_005D = packet->damaged;
-  item.unknown_0060 = packet->refine;
-  item.unknown_0000[0] = packet->type;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet->damaged;
+  item.refiningLevel = packet->refine;
+  item.identity[0] = packet->type;
+  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = 0;
+  item.grade = 0;
   g_session.AddItem1740(item);
 }
 
@@ -463,19 +463,19 @@ void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
   ItemRandomOption options[5];
   std::memcpy(options, packet.options, sizeof(options));
   ITEM_INFO item;
-  item.unknown_0000[1] = packet.index;
+  item.identity[1] = packet.index;
   item.quantity = packet.amount;
   item.SetItemId(packet.itemId);
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0000[0] = packet.type;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.identity[0] = packet.type;
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = packet.grade;
+  item.grade = packet.grade;
   g_session.AddItem1740(item);
 }
 
@@ -486,19 +486,19 @@ void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
   ItemRandomOption options[5];
   std::memcpy(options, packet->options, sizeof(options));
   ITEM_INFO item;
-  item.unknown_0000[1] = packet->index;
+  item.identity[1] = packet->index;
   item.quantity = packet->amount;
   item.SetItemId(packet->itemId);
   item.identified = packet->identified;
-  item.unknown_005D = packet->damaged;
-  item.unknown_0060 = packet->refine;
-  item.unknown_0000[0] = packet->type;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet->damaged;
+  item.refiningLevel = packet->refine;
+  item.identity[0] = packet->type;
+  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = 0;
+  item.grade = 0;
   g_session.AddItem1738(item, 1);
 }
 
@@ -509,19 +509,19 @@ void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
   ItemRandomOption options[5];
   std::memcpy(options, packet.options, sizeof(options));
   ITEM_INFO item;
-  item.unknown_0000[1] = packet.index;
+  item.identity[1] = packet.index;
   item.quantity = packet.amount;
   item.SetItemId(packet.itemId);
   item.identified = packet.identified;
-  item.unknown_005D = packet.damaged;
-  item.unknown_0060 = packet.refine;
-  item.unknown_0000[0] = packet.type;
-  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
-  item.unknown_0098 = CountItemOptions(options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  item.damaged = packet.damaged;
+  item.refiningLevel = packet.refine;
+  item.identity[0] = packet.type;
+  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
+  item.optionCount = CountItemOptions(options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
-  item.unknown_0088 = packet.grade;
+  item.grade = packet.grade;
   g_session.AddItem1738(item, 1);
 }
 
@@ -556,24 +556,24 @@ namespace {
 
   // INLINED
   __forceinline void FillEquipItemListItem(ITEM_INFO& item, const EquipItemListRecord& record, const ItemRandomOption* options) {
-    item.unknown_0000[0] = record.type;
-    item.unknown_0000[1] = record.index;
-    item.unknown_0000[2] = record.location;
-    item.unknown_0000[3] = record.wearState;
+    item.identity[0] = record.type;
+    item.identity[1] = record.index;
+    item.identity[2] = record.location;
+    item.identity[3] = record.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
     item.identified = record.flags & 1;
-    item.unknown_005D = (record.flags >> 1) & 1;
-    item.unknown_0060 = record.refine;
-    item.unknown_0068 = record.expireTime;
-    item.unknown_0064 = record.bindOnEquip;
-    item.unknown_0070 = record.sprite;
-    item.unknown_0074[0] = (record.flags >> 2) & 1;
-    item.unknown_0098 = CountItemOptions(options);
-    item.unknown_0088 = record.grade;
-    for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+    item.damaged = (record.flags >> 1) & 1;
+    item.refiningLevel = record.refine;
+    item.expireTime = record.expireTime;
+    item.bindOnEquip = record.bindOnEquip;
+    item.sprite = record.sprite;
+    item.flags[0] = (record.flags >> 2) & 1;
+    item.optionCount = CountItemOptions(options);
+    item.grade = record.grade;
+    for (int index = 0; index < item.optionCount; ++index) {
+      reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
     }
   }
 }
@@ -608,24 +608,24 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       ITEM_INFO item;
       FillEquipItemListItem(item, record, options);
 
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        g_session.unknown_1050 = item.unknown_0000[1];
+      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+        g_session.petEggIndex = item.identity[1];
       }
 
-      if (item.unknown_0000[3] == 0) {
+      if (item.identity[3] == 0) {
         g_session.AddItem1710(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
-        if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        if (g_session.IsCostumeLocation(item.identity[3])) {
           g_session.EquipItem2B50(item, &equipped);
         } else {
           g_session.EquipUnknown17F0(item, &equipped);
         }
       }
 
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
+      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
         if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
           g_session.SendPetAutoFeedOption(0);
         }
@@ -659,18 +659,18 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
   const ItemListRecord* record = reinterpret_cast<const ItemListRecord*>(data);
   for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->location;
-    item.unknown_0000[2] = 0;
+    item.identity[0] = record->type;
+    item.identity[1] = record->index;
+    item.identity[3] = record->location;
+    item.identity[2] = 0;
     item.quantity = record->amount;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
-    item.unknown_005D = 0;
+    item.damaged = 0;
     item.identified = record->flags & 1;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0060 = 0;
-    item.unknown_0074[0] = (record->flags >> 1) & 1;
+    item.expireTime = record->expireTime;
+    item.refiningLevel = 0;
+    item.flags[0] = (record->flags >> 1) & 1;
     switch (listType) {
     case INVTYPE_INVENTORY:
       g_session.UpdateInventoryItem(item, 0);
@@ -738,10 +738,10 @@ __declspec(noinline) EquipSlots EquipSlotDecoder::Decode(int mask) const {
 // FUNCTION: fn_23282
 __declspec(noinline) bool CSession::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
   for (ITEM_INFO& value : this->m_inventoryItems) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
-      value.unknown_0074[1] = item.unknown_0074[1];
-      value.unknown_0074[0] = item.unknown_0074[0];
+      value.flags[1] = item.flags[1];
+      value.flags[0] = item.flags[0];
       if (refresh) {
         RefreshItemWindows(&g_windowMgr);
       }
@@ -759,12 +759,12 @@ __declspec(noinline) bool CSession::AddItem1710(const ITEM_INFO& item, unsigned 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
 bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
-  for (ITEM_INFO& value : this->unknown_1768) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantPurchaseSavedItems) {
+    if (value.identity[1] == item.identity[1]) {
       if (!alternate) {
         value.quantity += item.quantity;
         if (refresh == 1) {
-          if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02FC)) {
+          if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)) {
             window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
         }
@@ -773,9 +773,9 @@ bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsig
     }
   }
 
-  this->unknown_1768.push_back(item);
+  this->merchantPurchaseSavedItems.push_back(item);
   if (refresh == 1) {
-    UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC);
+    UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd);
     if (window) {
       window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
@@ -786,18 +786,18 @@ bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsig
 // OFFSET: 0x00DD72C0
 // FUNCTION: fn_23285
 bool CSession::AddItem1740(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1740) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantShopItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return false;
     }
   }
 
-  this->unknown_1740.push_back(item);
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+  this->merchantShopItems.push_back(item);
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return true;
@@ -806,15 +806,15 @@ bool CSession::AddItem1740(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7350
 // FUNCTION: fn_23286
 bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (ITEM_INFO& value : this->unknown_1750) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantMyShopItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (refresh == 1) {
         std::uint32_t window;
         if (type == 1) {
-          window = g_windowMgr.unknown_0410;
+          window = g_windowMgr.buyingShopMirrorItemWnd;
         } else {
-          window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+          window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
         }
         if (window) {
           reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -824,13 +824,13 @@ bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refres
     }
   }
 
-  this->unknown_1750.push_back(item);
+  this->merchantMyShopItems.push_back(item);
   if (refresh == 1) {
     std::uint32_t window;
     if (type == 1) {
-      window = g_windowMgr.unknown_0410;
+      window = g_windowMgr.buyingShopMirrorItemWnd;
     } else {
-      window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+      window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
     }
     if (window) {
       reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -842,57 +842,57 @@ bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refres
 // OFFSET: 0x00DD7420
 // FUNCTION: fn_23287
 void CSession::AddItem1758(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1758) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantPurchaseItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->unknown_1758.push_back(item);
+  this->merchantPurchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7470
 // FUNCTION: fn_23288
 void CSession::AddItem1760(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1760) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantHopeToSellItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->unknown_1760.push_back(item);
+  this->merchantHopeToSellItems.push_back(item);
 }
 
 // OFFSET: 0x00DD74C0
 // FUNCTION: fn_23289
 void CSession::AddItem1748(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1748) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->merchantMirrorItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->unknown_1748.push_back(item);
+  this->merchantMirrorItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7510
 // FUNCTION: fn_23290
 bool CSession::Equip(const ITEM_INFO& item) {
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->unknown_21A0[slot];
+      ITEM_INFO& equipped = this->alternateEquippedItems[slot];
       equipped = item;
       equipped.quantity = 1;
-      equipped.unknown_0068 = item.unknown_0068;
-      equipped.unknown_0064 = item.unknown_0064;
-      equipped.unknown_0070 = item.unknown_0070;
+      equipped.expireTime = item.expireTime;
+      equipped.bindOnEquip = item.bindOnEquip;
+      equipped.sprite = item.sprite;
     }
   }
 
@@ -905,66 +905,66 @@ void CSession::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t
   ITEM_INFO value;
   value.AssignBasic(item);
   value.quantity = quantity;
-  value.unknown_006C = unknown_006C;
-  value.unknown_0060 = 0;
-  value.unknown_005D = 0;
+  value.priceFactor = unknown_006C;
+  value.refiningLevel = 0;
+  value.damaged = 0;
   value.SetItemId(std::atoi(value.itemId.c_str()));
-  this->unknown_1718.push_back(value);
+  this->shopItems.push_back(value);
 }
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
 void CSession::AppendItem1718(const ITEM_INFO& item) {
-  this->unknown_1718.push_back(item);
+  this->shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD76D0
 // FUNCTION: fn_23293
 void CSession::MergeItem1718ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1718) {
+  for (ITEM_INFO& value : this->shopItems) {
     if (value.itemId == item.itemId) {
       value.quantity = value.quantity == -1 ? -1 : value.quantity + item.quantity;
       return;
     }
   }
 
-  this->unknown_1718.push_back(item);
+  this->shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7770
 // FUNCTION: fn_23294
 void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1720) {
+  for (ITEM_INFO& value : this->purchaseItems) {
     if (value.itemId == item.itemId) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->unknown_1720.push_back(item);
+  this->purchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
 void CSession::MergeItem1720(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1720) {
-    const bool same = item.unknown_0074[3] ? value.unknown_0000[1] == item.unknown_0000[1] : value.itemId == item.itemId;
+  for (ITEM_INFO& value : this->purchaseItems) {
+    const bool same = item.flags[3] ? value.identity[1] == item.identity[1] : value.itemId == item.itemId;
     if (same) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->unknown_1720.push_back(item);
+  this->purchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7890
 // FUNCTION: fn_23296
 void CSession::AddItem1730(const ITEM_INFO& item) {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.unknown_0000[1]);
-  if (owned.unknown_0000[1] > 0) {
-    for (ITEM_INFO& value : this->unknown_1730) {
-      if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.identity[1]);
+  if (owned.identity[1] > 0) {
+    for (ITEM_INFO& value : this->storageItems) {
+      if (value.identity[1] == item.identity[1]) {
         const int quantity = value.quantity + item.quantity;
         if (owned.quantity >= quantity) {
           value.quantity = quantity;
@@ -974,7 +974,7 @@ void CSession::AddItem1730(const ITEM_INFO& item) {
     }
 
     if (owned.quantity >= item.quantity) {
-      this->unknown_1730.push_back(item);
+      this->storageItems.push_back(item);
     }
   }
 }
@@ -984,29 +984,29 @@ void CSession::AddItem1730(const ITEM_INFO& item) {
 void CSession::AddItem1718(const RawItemBasic& item, int mode) {
   if (mode != 0) {
     const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.id);
-    if (owned.unknown_0000[1] != 0) {
+    if (owned.identity[1] != 0) {
       ITEM_INFO value(owned);
       value.AssignBasic(item);
       value.SetItemId(std::atoi(value.itemId.c_str()));
-      this->unknown_1718.push_back(value);
+      this->shopItems.push_back(value);
     }
   } else {
     ITEM_INFO value;
     value.AssignBasic(item);
-    value.unknown_0060 = 0;
-    value.unknown_005D = 0;
+    value.refiningLevel = 0;
+    value.damaged = 0;
     value.SetItemId(std::atoi(value.itemId.c_str()));
-    value.unknown_0000[2] = item.unknown_0034;
-    value.unknown_0070 = item.unknown_0038;
-    this->unknown_1718.push_back(value);
+    value.identity[2] = item.location;
+    value.sprite = item.sprite;
+    this->shopItems.push_back(value);
   }
 }
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
 void CSession::MergeItem1718(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->unknown_1718) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->shopItems) {
+    if (value.identity[1] == item.identity[1]) {
       if (value.quantity != -1) {
         value.quantity += item.quantity;
       }
@@ -1014,7 +1014,7 @@ void CSession::MergeItem1718(const ITEM_INFO& item) {
     }
   }
 
-  this->unknown_1718.push_back(item);
+  this->shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7B80
@@ -1024,8 +1024,8 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
     return true;
   }
 
-  for (ITEM_INFO& value : this->unknown_1738) {
-    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+  for (ITEM_INFO& value : this->cartItems) {
+    if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (refresh && g_windowMgr.window_0288) {
         g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -1034,7 +1034,7 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
     }
   }
 
-  this->unknown_1738.push_back(item);
+  this->cartItems.push_back(item);
   if (refresh && g_windowMgr.window_0288) {
     g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
@@ -1044,13 +1044,13 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
 // OFFSET: 0x00DD6D70
 // FUNCTION: fn_23280
 bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1 && slot < 10) {
-      ITEM_INFO& equipped = this->unknown_17F0[slot];
+      ITEM_INFO& equipped = this->equippedItems[slot];
       equipped = item;
       equipped.quantity = 1;
     }
@@ -1069,21 +1069,21 @@ bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
 // FUNCTION: fn_23599
 bool CSession::OnItemEquipped(ITEM_INFO& item) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_EQUIPED)).c_str()), 0xC8FF00, 7, 0, 0);
-  if (item.unknown_0064 == 1) {
-    item.unknown_0064 = 2;
+  if (item.bindOnEquip == 1) {
+    item.bindOnEquip = 2;
   }
 
-  if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+  if (g_session.IsCostumeLocation(item.identity[3])) {
     char name[1] = "";
     g_session.EquipItem2B50(item, name);
   } else {
-    const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+    const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
     const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
     for (int index = 0; index < 3; ++index) {
       const int slot = order[index];
       if (slot != -1 && slot < 10) {
-        ITEM_INFO& equipped = this->unknown_17F0[slot];
+        ITEM_INFO& equipped = this->equippedItems[slot];
         equipped = item;
         equipped.quantity = 1;
       }
@@ -1097,10 +1097,10 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
     g_windowMgr.InvalidateFrames();
   }
 
-  if (item.unknown_0000[3] != 0x8000) {
-    this->RemoveItem1710(item.unknown_0000[1], 1);
+  if (item.identity[3] != 0x8000) {
+    this->RemoveItem1710(item.identity[1], 1);
   }
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   return true;
@@ -1111,10 +1111,10 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
 bool CSession::UnequipItem(int location, std::uint32_t identity) {
   if (location == 0x8000) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
-    if (item.unknown_0000[1] != 0) {
+    if (item.identity[1] != 0) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
     }
-    this->unknown_16EC = 0;
+    this->equippedArrowIndex = 0;
     g_windowMgr.InvalidateFrames();
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -1129,24 +1129,24 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
         g_activeSkillEffects.erase(it);
       }
 
-      if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
-        mode->scene->player->unknown_0544->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
+      if (mode->scene && mode->scene->player && mode->scene->player->skillEffect) {
+        mode->scene->player->skillEffect->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
       }
     }
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
-        ITEM_INFO& item = this->unknown_17F0[slots.values[2]];
+        ITEM_INFO& item = this->equippedItems[slots.values[2]];
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
-        item.unknown_0000[3] = 0;
+        item.identity[3] = 0;
 
         bool merged = false;
         for (ITEM_INFO& value : this->m_inventoryItems) {
-          if (value.unknown_0000[1] == item.unknown_0000[1]) {
+          if (value.identity[1] == item.identity[1]) {
             value.quantity += item.quantity;
-            value.unknown_0074[1] = item.unknown_0074[1];
-            value.unknown_0074[0] = item.unknown_0074[0];
+            value.flags[1] = item.flags[1];
+            value.flags[0] = item.flags[0];
             merged = true;
             break;
           }
@@ -1159,10 +1159,10 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
         item.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
-        this->unknown_17F0[slots.values[1]].Reset();
+        this->equippedItems[slots.values[1]].Reset();
       }
       if (slots.values[0] != -1 && slots.values[0] < 10) {
-        this->unknown_17F0[slots.values[0]].Reset();
+        this->equippedItems[slots.values[0]].Reset();
       }
     }
     RequestBasicInfoRefresh();
@@ -1173,7 +1173,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
   }
   g_equipmentPropertiesMgr->UnequipWearable(location);
   g_windowMgr.InvalidateFrames();
-  if (UIWindow* window = g_windowMgr.unknown_022C) {
+  if (UIWindow* window = g_windowMgr.itemParamChangeDisplayWnd) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   return true;
@@ -1254,64 +1254,64 @@ void CSession::ClearInventory() {
 // OFFSET: 0x00DD88C0
 // FUNCTION: fn_23314
 void CSession::ClearItems1760And1748() {
-  this->unknown_1760.erase(this->unknown_1760.begin(), this->unknown_1760.end());
-  this->unknown_1748.erase(this->unknown_1748.begin(), this->unknown_1748.end());
+  this->merchantHopeToSellItems.erase(this->merchantHopeToSellItems.begin(), this->merchantHopeToSellItems.end());
+  this->merchantMirrorItems.erase(this->merchantMirrorItems.begin(), this->merchantMirrorItems.end());
 }
 
 // OFFSET: 0x00DD8900
 // FUNCTION: fn_23315
 void CSession::ClearItems1768() {
-  this->unknown_1768.erase(this->unknown_1768.begin(), this->unknown_1768.end());
+  this->merchantPurchaseSavedItems.erase(this->merchantPurchaseSavedItems.begin(), this->merchantPurchaseSavedItems.end());
 }
 
 // OFFSET: 0x00DD8920
 // FUNCTION: fn_23316
 void CSession::ClearItems1740() {
-  this->unknown_1740.erase(this->unknown_1740.begin(), this->unknown_1740.end());
+  this->merchantShopItems.erase(this->merchantShopItems.begin(), this->merchantShopItems.end());
 }
 
 // OFFSET: 0x00DD8940
 // FUNCTION: fn_23317
 __declspec(noinline) void CSession::ClearItems1750() {
-  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
 }
 
 // OFFSET: 0x00DD8960
 // FUNCTION: fn_23318
 void CSession::ClearItems1758() {
-  this->unknown_1758.erase(this->unknown_1758.begin(), this->unknown_1758.end());
+  this->merchantPurchaseItems.erase(this->merchantPurchaseItems.begin(), this->merchantPurchaseItems.end());
 }
 
 // OFFSET: 0x00DD8980
 // FUNCTION: fn_23319
 void CSession::ClearItems1760() {
-  this->unknown_1760.erase(this->unknown_1760.begin(), this->unknown_1760.end());
+  this->merchantHopeToSellItems.erase(this->merchantHopeToSellItems.begin(), this->merchantHopeToSellItems.end());
 }
 
 // OFFSET: 0x00DD89A0
 // FUNCTION: fn_23320
 void CSession::ClearItems1748() {
-  this->unknown_1748.erase(this->unknown_1748.begin(), this->unknown_1748.end());
+  this->merchantMirrorItems.erase(this->merchantMirrorItems.begin(), this->merchantMirrorItems.end());
 }
 
 // OFFSET: 0x00DD89C0
 // FUNCTION: fn_23321
 void CSession::ClearRecords0734() {
-  this->unknown_0734.clear();
+  this->miniPartyRecords.clear();
 }
 
 // OFFSET: 0x00DD8A20
 // FUNCTION: fn_23322
 void CSession::ClearItems1784(int index) {
   if (index >= 0 && static_cast<unsigned>(index) < 11) {
-    this->unknown_1784[index].erase(this->unknown_1784[index].begin(), this->unknown_1784[index].end());
+    this->inventoryCategories[index].erase(this->inventoryCategories[index].begin(), this->inventoryCategories[index].end());
   }
 }
 
 // OFFSET: 0x00DD8A50
 // FUNCTION: fn_23323
 void CSession::ClearItemSlotQuantities() {
-  this->unknown_5214 = 0;
+  this->otherExchangeMoney = 0;
 
   for (int index = 0; index < 10; ++index) {
     this->m_itemSlots[index].quantity = 0;
@@ -1322,7 +1322,7 @@ void CSession::ClearItemSlotQuantities() {
 // FUNCTION: fn_23324
 void CSession::ResetEquipped() {
   for (int index = 0; index < 10; ++index) {
-    this->unknown_21A0[index].Reset();
+    this->alternateEquippedItems[index].Reset();
   }
 }
 
@@ -1341,25 +1341,25 @@ void CSession::ClearPartyMembers() {
   }
 
   this->m_partyMembers.clear();
-  this->unknown_5464 = 0;
-  this->unknown_54C4 = "";
+  this->partyLeader = 0;
+  this->partyName = "";
 }
 
 // OFFSET: 0x00DD8BD0
 // FUNCTION: fn_23326
 void CSession::ResetUnknown166C() {
-  this->unknown_166C = 0;
-  this->unknown_167C = 0;
-  this->unknown_1680 = 0;
-  this->unknown_1670 = 0;
-  this->unknown_1674 = 0;
-  this->unknown_1678 = 0;
+  this->strengthBonus = 0;
+  this->dexterityBonus = 0;
+  this->luckBonus = 0;
+  this->agilityBonus = 0;
+  this->vitalityBonus = 0;
+  this->intelligenceBonus = 0;
 }
 
 // OFFSET: 0x00DD8C10
 // FUNCTION: fn_23327
 void CSession::ClearItems1720() {
-  this->unknown_1720.erase(this->unknown_1720.begin(), this->unknown_1720.end());
+  this->purchaseItems.erase(this->purchaseItems.begin(), this->purchaseItems.end());
 }
 
 // OFFSET: 0x00DD8C70
@@ -1373,41 +1373,41 @@ void CSession::ResetHotkeyDescriptions() {
 // OFFSET: 0x00DD8CA0
 // FUNCTION: fn_23329
 void CSession::ClearItems1738() {
-  this->unknown_1738.erase(this->unknown_1738.begin(), this->unknown_1738.end());
+  this->cartItems.erase(this->cartItems.begin(), this->cartItems.end());
 }
 
 // OFFSET: 0x00DD8CC0
 // FUNCTION: fn_23330
 void CSession::CopyItems1740To1750() {
-  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
 
-  for (auto item = this->unknown_1740.begin(); item != this->unknown_1740.end(); ++item) {
-    this->unknown_1750.push_back(*item);
+  for (auto item = this->merchantShopItems.begin(); item != this->merchantShopItems.end(); ++item) {
+    this->merchantMyShopItems.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8DB0
 // FUNCTION: fn_23331
 void CSession::CopyItems1760To1770() {
-  this->unknown_1770.erase(this->unknown_1770.begin(), this->unknown_1770.end());
+  this->filteredInventoryItems.erase(this->filteredInventoryItems.begin(), this->filteredInventoryItems.end());
 
-  for (auto item = this->unknown_1760.begin(); item != this->unknown_1760.end(); ++item) {
-    this->unknown_1770.push_back(*item);
+  for (auto item = this->merchantHopeToSellItems.begin(); item != this->merchantHopeToSellItems.end(); ++item) {
+    this->filteredInventoryItems.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8EA0
 // FUNCTION: fn_23332
 std::pair<bool, ITEM_INFO> CSession::FindItem1750(const ITEM_INFO& item, unsigned char) {
-  auto found = this->unknown_1750.begin();
+  auto found = this->merchantMyShopItems.begin();
 
-  for (; found != this->unknown_1750.end(); ++found) {
+  for (; found != this->merchantMyShopItems.end(); ++found) {
     if (IsSameItem(*found, item)) {
       break;
     }
   }
 
-  return found != this->unknown_1750.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
+  return found != this->merchantMyShopItems.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
 }
 
 // OFFSET: 0x00DD91C0
@@ -1487,12 +1487,12 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
 // OFFSET: 0x00DDA470
 // FUNCTION: fn_23338
 void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
-  for (auto it = this->unknown_1758.begin(); it != this->unknown_1758.end(); ++it) {
+  for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1758.erase(it);
+        this->merchantPurchaseItems.erase(it);
       }
       return;
     }
@@ -1503,15 +1503,15 @@ void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
 // FUNCTION: fn_23339
 void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
-    if (it->unknown_0000[1] == id) {
+    if (it->identity[1] == id) {
       if (it->quantity <= quantity) {
         this->m_inventoryItems.erase(it);
       } else {
         it->quantity -= quantity;
       }
       for (auto it2 = this->m_inventoryItems.begin(); it2 != this->m_inventoryItems.end(); ++it2) {
-        if (it2->unknown_0000[1] == id) {
-          it2->unknown_0074[2] = 0;
+        if (it2->identity[1] == id) {
+          it2->flags[2] = 0;
           break;
         }
       }
@@ -1524,7 +1524,7 @@ void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
 // OFFSET: 0x00DFF0E0
 // FUNCTION: fn_23609
 void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, argument, 0, 0, 0);
   }
 }
@@ -1533,16 +1533,16 @@ void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
 // FUNCTION: fn_23340
 bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
   int index = 0;
-  for (auto it = this->unknown_1768.begin(); it != this->unknown_1768.end(); ++it, ++index) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->merchantPurchaseSavedItems.begin(); it != this->merchantPurchaseSavedItems.end(); ++it, ++index) {
+    if (it->identity[1] == item.identity[1]) {
       if (alternate) {
-        this->unknown_1768.erase(it);
+        this->merchantPurchaseSavedItems.erase(it);
         this->RefreshItem1768Window(1, 0);
         return true;
       }
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1768.erase(it);
+        this->merchantPurchaseSavedItems.erase(it);
         this->RefreshItem1768Window(0, index + 1);
         return true;
       }
@@ -1557,25 +1557,25 @@ bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
 // OFFSET: 0x00DDA690
 // FUNCTION: fn_23341
 bool CSession::RemoveItem1740(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1740.begin(); it != this->unknown_1740.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->merchantShopItems.begin(); it != this->merchantShopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1740.erase(it);
+        this->merchantShopItems.erase(it);
       }
-      for (auto it2 = this->unknown_1740.begin(); it2 != this->unknown_1740.end(); ++it2) {
-        if (it2->unknown_0000[1] == item.unknown_0000[1]) {
-          it2->unknown_0074[2] = 0;
+      for (auto it2 = this->merchantShopItems.begin(); it2 != this->merchantShopItems.end(); ++it2) {
+        if (it2->identity[1] == item.identity[1]) {
+          it2->flags[2] = 0;
           break;
         }
       }
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return true;
     }
   }
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return false;
@@ -1584,12 +1584,12 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
 // OFFSET: 0x00DDA8B0
 // FUNCTION: fn_23343
 void CSession::RemoveItem1758(ITEM_INFO& item) {
-  for (auto it = this->unknown_1758.begin(); it != this->unknown_1758.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1758.erase(it);
+        this->merchantPurchaseItems.erase(it);
       }
       return;
     }
@@ -1599,11 +1599,11 @@ void CSession::RemoveItem1758(ITEM_INFO& item) {
 // OFFSET: 0x00DDA920
 // FUNCTION: fn_23344
 void CSession::RemoveItem1760(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->merchantHopeToSellItems.begin(); it != this->merchantHopeToSellItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1760.erase(it);
+        this->merchantHopeToSellItems.erase(it);
       }
       return;
     }
@@ -1613,12 +1613,12 @@ void CSession::RemoveItem1760(const ITEM_INFO& item) {
 // OFFSET: 0x00DDA9C0
 // FUNCTION: fn_23345
 void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->unknown_1718.erase(it);
+          this->shopItems.erase(it);
         }
       }
       return;
@@ -1629,12 +1629,12 @@ void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAA50
 // FUNCTION: fn_23346
 void CSession::RemoveItem1718(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->unknown_1718.erase(it);
+          this->shopItems.erase(it);
         }
       }
       return;
@@ -1645,11 +1645,11 @@ void CSession::RemoveItem1718(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAAB0
 // FUNCTION: fn_23347
 void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1720.erase(it);
+        this->purchaseItems.erase(it);
       }
       return;
     }
@@ -1659,11 +1659,11 @@ void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAC40
 // FUNCTION: fn_23349
 void CSession::RemoveItem1730(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1730.begin(); it != this->unknown_1730.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1730.erase(it);
+        this->storageItems.erase(it);
       }
       return;
     }
@@ -1673,11 +1673,11 @@ void CSession::RemoveItem1730(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAC90
 // FUNCTION: fn_23350
 void CSession::ReduceItem1718(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1718.erase(it);
+        this->shopItems.erase(it);
       }
       return;
     }
@@ -1687,15 +1687,15 @@ void CSession::ReduceItem1718(const ITEM_INFO& item) {
 // OFFSET: 0x00DDACE0
 // FUNCTION: fn_23351
 bool CSession::RemoveItem1738(const ITEM_INFO& item) {
-  for (auto it = this->unknown_1738.begin(); it != this->unknown_1738.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->cartItems.begin(); it != this->cartItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1738.erase(it);
+        this->cartItems.erase(it);
       }
-      for (auto it2 = this->unknown_1738.begin(); it2 != this->unknown_1738.end(); ++it2) {
-        if (it2->unknown_0000[1] == item.unknown_0000[1]) {
-          it2->unknown_0074[2] = 0;
+      for (auto it2 = this->cartItems.begin(); it2 != this->cartItems.end(); ++it2) {
+        if (it2->identity[1] == item.identity[1]) {
+          it2->flags[2] = 0;
           break;
         }
       }
@@ -1714,23 +1714,23 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
 // OFFSET: 0x00E2EC10
 // FUNCTION: fn_24149
 bool CSession::EquipItem6B68(const ITEM_INFO& item) {
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->unknown_6B68[slot];
+      ITEM_INFO& equipped = this->swapEquippedItems[slot];
       equipped = item;
       equipped.quantity = 1;
-      equipped.unknown_0068 = item.unknown_0068;
-      equipped.unknown_0064 = item.unknown_0064;
-      equipped.unknown_0070 = item.unknown_0070;
+      equipped.expireTime = item.expireTime;
+      equipped.bindOnEquip = item.bindOnEquip;
+      equipped.sprite = item.sprite;
     }
   }
 
-  if (g_windowMgr.unknown_01E0) {
-    static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
+  if (g_windowMgr.equipWnd) {
+    static_cast<UIEquipWnd*>(g_windowMgr.equipWnd)->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
   return true;
@@ -1744,7 +1744,7 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
   }
 
   ITEM_INFO item = LookupClientItemByIdentity(this->m_inventoryItems, identity);
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     return item;
   }
 
@@ -1759,13 +1759,13 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
       } else {
         item = this->GetItem17F0(slot);
       }
-      if (item.unknown_0000[1] == identity) {
+      if (item.identity[1] == identity) {
         break;
       }
     }
   }
 
-  if (item.unknown_0000[1] != 0) {
+  if (item.identity[1] != 0) {
     return item;
   }
 
@@ -1778,8 +1778,8 @@ void CSession::SetItems1750(int count, const short* ids) {
   this->ClearItems1750();
   for (int i = 0; i < count; ++i) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, ids[i]);
-    if (item.unknown_0000[1] > 0) {
-      this->unknown_1750.push_back(item);
+    if (item.identity[1] > 0) {
+      this->merchantMyShopItems.push_back(item);
     }
   }
 }
@@ -1823,12 +1823,12 @@ bool CSession::AddExchangeItem(ITEM_INFO item) {
     return false;
   }
 
-  this->RemoveItem1710(item.unknown_0000[1], item.quantity);
+  this->RemoveItem1710(item.identity[1], item.quantity);
 
   ITEM_INFO added = item;
   int index = 0;
   for (; index < 10; ++index) {
-    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].unknown_0000[1] == added.unknown_0000[1]) {
+    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].identity[1] == added.identity[1]) {
       this->m_exchangeItems[index].quantity += added.quantity;
       break;
     }

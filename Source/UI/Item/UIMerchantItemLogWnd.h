@@ -18,7 +18,7 @@ public:
     }
 
     /* 0004 */ std::string name;
-    /* 001C */ std::string unknown_001C;
+    /* 001C */ std::string itemName;
     /* 0034 */ __time32_t time;
     /* 0038 */ std::uint32_t characterId;
   };
@@ -32,7 +32,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ std::vector<lcData> logs;
-  /* 00FC */ int unknown_00FC;
+  /* 00FC */ int mode;
 };
 
 #endif

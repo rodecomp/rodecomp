@@ -85,40 +85,40 @@ static std::uint32_t g_groundShadowPixels[35 * 35];
 // OFFSET: 0x00DA7700
 // FUNCTION: fn_22558
 CPc::CPc() : footprintPosition() {
-  this->unknown_04F4 = 0;
+  this->outlineColor = 0;
   this->equipSprites.resize(9, nullptr);
   this->equipActions.resize(9, nullptr);
-  this->unknown_0490 = nullptr;
-  this->unknown_0444 = 0;
-  this->unknown_045C = 0;
-  this->unknown_0430 = 0;
-  this->unknown_0434 = 0;
+  this->gaugeWindow = nullptr;
+  this->headPalette = 0;
+  this->shield = 0;
+  this->honor = 0;
+  this->virtue = 0;
   this->guildId = 0;
-  this->unknown_043C = 0;
-  this->unknown_0460[0] = 0;
-  this->unknown_0474 = 0;
-  this->unknown_0494 = 0;
-  this->unknown_0498 = 0;
-  this->render.unknown_00A8 = 1;
-  this->unknown_049C = -1;
+  this->headDir = 0;
+  this->shoe[0] = 0;
+  this->renderWithoutLayer = 0;
+  this->pkRank = 0;
+  this->pkTotal = 0;
+  this->render.isCharacter = 1;
+  this->robe = -1;
   this->blend = -1;
-  this->unknown_04A4 = -1;
-  this->unknown_04A8 = -1;
+  this->layerCellX = -1;
+  this->layerCellY = -1;
   this->msgEffect = nullptr;
-  this->unknown_04CC = 0;
-  this->unknown_04D0 = 0;
-  this->unknown_04D4 = 0;
-  this->unknown_04D8[0] = 0;
-  this->unknown_04D9 = false;
-  this->unknown_0438 = 0;
-  this->unknown_04DC = 0;
-  this->unknown_04E0 = false;
-  this->unknown_04E4 = 0.0f;
-  this->unknown_04E8 = 0.0f;
-  this->unknown_04EC = 0.0f;
-  this->unknown_04F0 = 0.0f;
+  this->pkState = 0;
+  this->bodyStyle = 0;
+  this->appearanceJob = 0;
+  this->alternateDoramAppearance[0] = 0;
+  this->isHelmRobe = false;
+  this->appearanceFlags = 0;
+  this->madogearType = 0;
+  this->arrowEffectSuppressed = false;
+  this->extentLeft = 0.0f;
+  this->extentTop = 0.0f;
+  this->extentRight = 0.0f;
+  this->extentBottom = 0.0f;
   this->weapon = 0;
-  this->unknown_044C = 0;
+  this->secondaryWeapon = 0;
 }
 
 // OFFSET: 0x00DA7BA0
@@ -132,9 +132,9 @@ CPc::~CPc() {
       this->equipActions[i]->Unlock();
     }
   }
-  if (this->unknown_0490 != nullptr) {
-    g_windowMgr.Schedule(this->unknown_0490);
-    this->unknown_0490 = nullptr;
+  if (this->gaugeWindow != nullptr) {
+    g_windowMgr.Schedule(this->gaugeWindow);
+    this->gaugeWindow = nullptr;
   }
 }
 
@@ -145,35 +145,35 @@ void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
     return;
   }
 
-  this->render.unknown_0070 = 0;
+  this->render.state = 0;
   switch (animation) {
     case 0:
-      this->render.unknown_0070 = 0;
+      this->render.state = 0;
       break;
     case 48:
-      this->render.unknown_0070 = 4;
+      this->render.state = 4;
       break;
     case 80:
     case 88:
-      this->render.unknown_0070 = 2;
+      this->render.state = 2;
       break;
     case 64:
-      this->render.unknown_0070 = 3;
+      this->render.state = 3;
       break;
     case 8:
-      this->render.unknown_0070 = 1;
+      this->render.state = 1;
       break;
     case 24:
-      this->render.unknown_0070 = 5;
+      this->render.state = 5;
       break;
     case 32:
-      this->render.unknown_0070 = 11;
+      this->render.state = 11;
       break;
     case 40:
-      this->render.unknown_0070 = 12;
+      this->render.state = 12;
       break;
     case 16:
-      this->render.unknown_0070 = 6;
+      this->render.state = 6;
       break;
   }
   this->PlayMotion(repeat);
@@ -182,14 +182,14 @@ void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
 // OFFSET: 0x00DB01F0
 // FUNCTION: fn_22611
 void CGrannyPc::PlayMotion(int repeat) {
-  this->motion = this->render.unknown_0070;
+  this->motion = this->render.state;
   for (int i = 0; i < 20; ++i) {
     this->model->FreeControl(this->controls[i]);
     this->controls[i] = nullptr;
   }
-  this->unknown_0F24 = 0;
+  this->animationTime = 0;
 
-  const int loopCount = (repeat == 1 && this->render.unknown_0070 != 6) ? 1 : 0;
+  const int loopCount = (repeat == 1 && this->render.state != 6) ? 1 : 0;
   this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], loopCount);
 }
 
@@ -221,7 +221,7 @@ void __stdcall fn_22664() {
 // OFFSET: 0x00DAFFA0
 // FUNCTION: fn_22607
 void CPc::SetBodyCostume(int first, int second) {
-  this->unknown_04D0 = first;
+  this->bodyStyle = first;
   if (static_cast<unsigned char>(second) != 0) {
     int job;
     if (this->IsShapeShifted()) {
@@ -230,7 +230,7 @@ void CPc::SetBodyCostume(int first, int second) {
       job = this->GetEffectiveJob(-1);
     }
     this->SetSprJob(job);
-    this->SetSprWeapon2(this->weapon, this->unknown_044C);
+    this->SetSprWeapon2(this->weapon, this->secondaryWeapon);
     this->SetBodyPaletteName();
   }
 }
@@ -238,33 +238,33 @@ void CPc::SetBodyCostume(int first, int second) {
 // OFFSET: 0x00DB0000
 // FUNCTION: fn_22608
 void CPc::SetBodyPalette(int value) {
-  this->render.unknown_0048 = value;
-  this->render.unknown_0048 = g_session.GetBodyStyle(this->unknown_025C, this->render.unknown_0048, this->unknown_04D0);
+  this->render.bodyPalette = value;
+  this->render.bodyPalette = g_session.GetBodyStyle(this->job, this->render.bodyPalette, this->bodyStyle);
   this->SetBodyPaletteName();
 }
 
 // OFFSET: 0x00DB02A0
 // FUNCTION: fn_22613
 void CGrannyPc::SetHeadPaletteName() {
-  if (this->unknown_0438 != 0) {
-    const std::string palName = g_session.GetHeadPalName(this->unknown_0434, this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0438);
-    this->unknown_0460 = palName;
+  if (this->headPalette != 0) {
+    const std::string palName = g_session.GetHeadPalName(this->head, this->GetEffectiveJob(-1), this->sex, this->headPalette);
+    this->headPaletteName = palName;
   }
 }
 
 // OFFSET: 0x00DB0350
 // FUNCTION: fn_22614
 void CPc::SetHeadPaletteName() {
-  if (this->unknown_0444 != 0) {
-    const std::string palName = g_session.GetHeadPalName(this->unknown_0440, this->unknown_04D4, this->unknown_0260, this->unknown_0444);
-    this->unknown_0478 = palName;
+  if (this->headPalette != 0) {
+    const std::string palName = g_session.GetHeadPalName(this->head, this->appearanceJob, this->sex, this->headPalette);
+    this->headPaletteName = palName;
   }
 }
 
 // OFFSET: 0x00DB0280
 // FUNCTION: fn_22612
 void CPc::SetHeadPalette(int value) {
-  this->unknown_0444 = value;
+  this->headPalette = value;
   this->SetHeadPaletteName();
 }
 
@@ -277,7 +277,7 @@ void CGrannyPc::SetHonor(int value) {
   } else {
     this->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
-  this->unknown_0428 = value;
+  this->honor = value;
 }
 
 // OFFSET: 0x00DB0480
@@ -289,40 +289,40 @@ void CPc::SetHonor(int value) {
   } else {
     this->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
-  this->unknown_0430 = value;
+  this->honor = value;
 }
 
 // OFFSET: 0x00DB0760
 // FUNCTION: fn_22621
 void CGrannyPc::SetPropensityInfo(int first, int second) {
   this->SetHonor(first);
-  this->unknown_042C = second;
+  this->virtue = second;
 }
 
 // OFFSET: 0x00DB0780
 // FUNCTION: fn_22622
 void CPc::SetPropensityInfo(int first, int second) {
   this->SetHonor(first);
-  this->unknown_0434 = second;
+  this->virtue = second;
 }
 
 // OFFSET: 0x00DB07C0
 // FUNCTION: fn_22625
 void CPc::SetRiding(unsigned char value) {
-  this->unknown_02CC = value;
-  this->SetSprShield(this->unknown_045C);
+  this->isRiding = value;
+  this->SetSprShield(this->shield);
 }
 
 // OFFSET: 0x00DB07E0
 // FUNCTION: fn_22626
 void CGrannyPc::SetSprAccessory2(int value) {
-  this->unknown_044C = value;
+  this->accessory2 = value;
 }
 
 // OFFSET: 0x00DB09D0
 // FUNCTION: fn_22628
 void CGrannyPc::SetSprAccessory3(int value) {
-  this->unknown_0450 = value;
+  this->accessory3 = value;
 }
 
 // OFFSET: 0x00DB2660
@@ -334,19 +334,19 @@ void CGrannyPc::SetSprShield(int) {
 // OFFSET: 0x00DB0B40
 // FUNCTION: fn_22630
 void CGrannyPc::SetSprAccessory(int value) {
-  this->unknown_0448 = value;
+  this->accessory = value;
 }
 
 // OFFSET: 0x00DB0CB0
 // FUNCTION: fn_22632
 void CGrannyPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int) {
-  this->SetSprActFull(first, second, third, fourth, fifth, sixth, seventh, eighth, this->unknown_0454, ninth, tenth);
+  this->SetSprActFull(first, second, third, fourth, fifth, sixth, seventh, eighth, this->shield, ninth, tenth);
 }
 
 // OFFSET: 0x00DB1960
 // FUNCTION: fn_22636
 void CPc::RefreshAccessory3() {
-  if (this->unknown_0458 == 185) {
+  if (this->accessory3 == 185) {
     this->SetSprAccessory3(185);
   }
 }
@@ -354,13 +354,13 @@ void CPc::RefreshAccessory3() {
 // OFFSET: 0x00DB1980
 // FUNCTION: fn_22637
 void CGrannyPc::SetSprHead(int value) {
-  this->unknown_0434 = value;
+  this->head = value;
 }
 
 // OFFSET: 0x00DB1AC0
 // FUNCTION: fn_22639
 void CGrannyPc::SetSprJob(int value) {
-  this->render.unknown_0054 = g_session.GetNpcLocationRadius(value, false);
+  this->render.shadowScale = g_session.GetNpcLocationRadius(value, false);
 }
 
 // OFFSET: 0x00DB2830
@@ -376,20 +376,20 @@ void CGrannyPc::SetSprWeapon(int weaponLow32, int weaponHigh32) {
     int high32;
   };
   const WeaponValueParts values = {weaponLow32, weaponHigh32};
-  *reinterpret_cast<WeaponValueParts*>(&this->unknown_0440) = values;
+  *reinterpret_cast<WeaponValueParts*>(&this->weapon) = values;
 }
 
 // OFFSET: 0x00DB3C30
 // FUNCTION: fn_22650
 void CGrannyPc::SetState(int state, int resetPosition) {
-  const int current = this->render.unknown_0070;
-  if (current == 3 || this->unknown_017C != 0) {
+  const int current = this->render.state;
+  if (current == 3 || this->isTrickDead != 0) {
     return;
   }
 
   if (current == 4 && static_cast<char>(resetPosition) == 1) {
-    this->render.position.x = this->unknown_02D0;
-    this->render.position.z = this->unknown_02D4;
+    this->render.position.x = this->damageDestX;
+    this->render.position.z = this->damageDestZ;
   }
 
   using SpawnArrow = void (CGameMode::*)(const vector3d*, std::uint32_t, float, int);
@@ -405,23 +405,23 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     this->RegisterPos();
     this->SetAction(0x10, 4, 1);
     this->render.isMotionFinished = true;
-    this->render.curMotion = this->unknown_0430;
+    this->render.curMotion = this->headDir;
     break;
   case ST_MOVE:
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
-    this->unknown_0430 = 0;
+    this->headDir = 0;
     CGameActor::SetState(1, resetPosition);
     break;
   case ST_STAND:
     CGameActor::SetState(0, resetPosition);
-    this->render.curMotion = this->unknown_0430;
-    if (current == 4 || current == 2 || this->unknown_02C8 != 0 || current == 8) {
+    this->render.curMotion = this->headDir;
+    if (current == 4 || current == 2 || this->healthState != 0 || current == 8) {
       this->SetAction(0x20, 4, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
     break;
   case ST_SKILL:
     if (current == 6) {
@@ -444,57 +444,57 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     } else {
       this->SetAction(0x60, 6, 1);
     }
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case ST_ATTACK: {
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = IsJobWeaponAllowed(
-      this->GetEffectiveJob(-1), this->unknown_0260,
-      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
+      this->GetEffectiveJob(-1), this->sex,
+      (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
+    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     bool usesArrow = false;
-    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->unknown_0440, &usesArrow);
+    g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->weapon, &usesArrow);
     if (usesArrow == true) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
   }
   case ST_ATTACK2: {
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = IsJobWeaponAllowed(
-      this->GetEffectiveJob(-1), this->unknown_0260,
-      (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440)
+      this->GetEffectiveJob(-1), this->sex,
+      (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, weaponAllowed);
-    if ((this->unknown_0440 == 14 && this->unknown_0444 == 0) || (this->unknown_0440 == 13 && this->unknown_0444 == 0)) {
+    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
   }
   default:
     CGameActor::SetState(state, resetPosition);
-    if (this->render.unknown_0070 == 3) {
+    if (this->render.state == 3) {
       this->PlayMotion(1);
     }
     return;
   }
 
-  this->unknown_0F28 = this->Get8Dir(this->render.angle) + this->unknown_0F2C;
-  this->render.unknown_0070 = state;
-  this->render.unknown_008C = timeGetTime();
+  this->directionalAnimation = this->Get8Dir(this->render.angle) + this->baseAnimation;
+  this->render.state = state;
+  this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00DBA6C0
@@ -542,11 +542,11 @@ bool CPlayer::IsSpecialState(int state) const {
 // OFFSET: 0x00DB06C0
 // FUNCTION: fn_22619
 void CGrannyPc::SetModifyFactorOfmotionSpeed(int value) {
-  if (this->unknown_0440 != 11 || this->unknown_0444 != 0) {
+  if (this->weapon != 11 || this->secondaryWeapon != 0) {
     value = value > g_maxMoveSpeed ? g_maxMoveSpeed : value;
   }
 
-  this->render.unknown_0064 = static_cast<float>(value) / 432.0f;
+  this->render.motionSpeedScale = static_cast<float>(value) / 432.0f;
 }
 
 
@@ -564,7 +564,7 @@ void CPc::SetModifyFactorOfmotionSpeed(int value) {
     speed = speed > g_maxMoveSpeed ? g_maxMoveSpeed : speed;
   }
 
-  this->render.unknown_0064 = static_cast<float>(speed) / 432.0f;
+  this->render.motionSpeedScale = static_cast<float>(speed) / 432.0f;
 }
 
 // OFFSET: 0x00DDD190
@@ -576,8 +576,8 @@ __declspec(noinline) std::string GetBodyImfName(int job, int sex, int head, int 
 // OFFSET: 0x00DB0500
 // FUNCTION: fn_22617
 void CGrannyPc::SetImfFileName() {
-  this->unknown_0410 = GetBodyImfName(
-    this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0434, this->GetEffectiveJob(-1)
+  this->imfName = GetBodyImfName(
+    this->GetEffectiveJob(-1), this->sex, this->head, this->GetEffectiveJob(-1)
   );
 }
 
@@ -586,11 +586,11 @@ void CGrannyPc::SetImfFileName() {
 void CPc::SetImfFileName() {
   int job = this->GetEffectiveJob(-1);
 
-  if (job >= 0x10CE && job <= 0x10E9 && this->unknown_02CC != 0) {
+  if (job >= 0x10CE && job <= 0x10E9 && this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
   }
 
-  this->unknown_0418 = GetBodyImfName(job, this->unknown_0260, this->unknown_0440, this->unknown_04D0);
+  this->imfName = GetBodyImfName(job, this->sex, this->head, this->bodyStyle);
 }
 
 // OFFSET: 0x00DAFB60
@@ -604,14 +604,14 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     if (IsObfuscatedMessage(this->render.accountId)) {
       switch (slot) {
         case 0:
-          if (this->unknown_0260 != 0) {
+          if (this->sex != 0) {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Act");
           } else {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Act");
           }
           break;
         case 5:
-          if (this->unknown_0260 != 0) {
+          if (this->sex != 0) {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Act");
           } else {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Act");
@@ -627,14 +627,14 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     } else {
       switch (slot) {
         case 0:
-          if (this->unknown_0260 != 0) {
+          if (this->sex != 0) {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Act");
           } else {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Act");
           }
           break;
         case 5:
-          if (this->unknown_0260 != 0) {
+          if (this->sex != 0) {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Act");
           } else {
             this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Act");
@@ -677,7 +677,7 @@ void CPc::LoadEquipAction(int slot, const char* name) {
 
   const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
   const int costumeJob = this->GetBodyCostume();
-  const std::string actionName = g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->unknown_0260, costumeJob, 0);
+  const std::string actionName = g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->sex, costumeJob, 0);
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
   if (!action) {
     return;
@@ -685,8 +685,8 @@ void CPc::LoadEquipAction(int slot, const char* name) {
 
   const ActionFrame* actionFrame = &action->Frame(0, 0);
   if (actionFrame && !actionFrame->anchors.empty() && !baseFrame->anchors.empty()) {
-    this->unknown_04E4 = static_cast<float>(actionFrame->anchors[0].x - baseFrame->anchors[0].x + cell->x);
-    this->unknown_04E8 = static_cast<float>(actionFrame->anchors[0].y - baseFrame->anchors[0].y + cell->y);
+    this->extentLeft = static_cast<float>(actionFrame->anchors[0].x - baseFrame->anchors[0].x + cell->x);
+    this->extentTop = static_cast<float>(actionFrame->anchors[0].y - baseFrame->anchors[0].y + cell->y);
   }
 }
 
@@ -709,14 +709,14 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
     if (IsObfuscatedMessage(this->render.accountId)) {
       switch (slot) {
       case 0:
-        if (this->unknown_0260) {
+        if (this->sex) {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Spr");
         } else {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Spr");
         }
         break;
       case 5:
-        if (this->unknown_0260) {
+        if (this->sex) {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Spr");
         } else {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Spr");
@@ -732,14 +732,14 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
     } else {
       switch (slot) {
       case 0:
-        if (this->unknown_0260) {
+        if (this->sex) {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Spr");
         } else {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Spr");
         }
         break;
       case 5:
-        if (this->unknown_0260) {
+        if (this->sex) {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Spr");
         } else {
           this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Spr");
@@ -773,7 +773,7 @@ void CPc::LoadEquipSprites(const std::vector<std::string>& names) {
 // OFFSET: 0x00DB23A0
 // FUNCTION: fn_22643
 void CPc::SetSprRobe(int first, int second) {
-  if (this->unknown_049C == first) {
+  if (this->robe == first) {
     return;
   }
 
@@ -781,26 +781,26 @@ void CPc::SetSprRobe(int first, int second) {
     return;
   }
 
-  this->unknown_049C = first;
+  this->robe = first;
 
-  g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", first, &this->unknown_04D9);
+  g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", first, &this->isHelmRobe);
 
-  if (this->unknown_04D9) {
-    const int accessory = this->unknown_049C;
+  if (this->isHelmRobe) {
+    const int accessory = this->robe;
     this->LoadEquipAction(
       8,
-      g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, accessory).c_str()
+      g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, accessory).c_str()
     );
     this->LoadEquipSprite(
       8,
-      g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, accessory).c_str()
+      g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, accessory).c_str()
     );
   } else {
     this->LoadEquipAction(
-      8, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, 0).c_str()
+      8, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, 0).c_str()
     );
     this->LoadEquipSprite(
-      8, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, 0).c_str()
+      8, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, 0).c_str()
     );
   }
 }
@@ -808,7 +808,7 @@ void CPc::SetSprRobe(int first, int second) {
 // OFFSET: 0x00DA7F10
 // FUNCTION: fn_22563
 void CPc::AddMsgEffect(CGameObject* effect) {
-  this->unknown_03B0.push_back(effect);
+  this->msgEffectList.push_back(effect);
 }
 
 // OFFSET: 0x00DA8180
@@ -816,8 +816,8 @@ void CPc::AddMsgEffect(CGameObject* effect) {
 void CPc::SetSex(int value) {
   this->SetUnknown0260(value);
   this->SetSprActFull(
-    this->unknown_04D4, this->unknown_0260, this->unknown_0440, this->weapon, this->unknown_044C, this->unknown_0450, this->unknown_0454,
-    this->unknown_0458, this->unknown_045C, this->unknown_0444, this->render.unknown_0048
+    this->appearanceJob, this->sex, this->head, this->weapon, this->secondaryWeapon, this->accessory, this->accessory2,
+    this->accessory3, this->shield, this->headPalette, this->render.bodyPalette
   );
 }
 
@@ -842,8 +842,8 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
   }
 
   int motion;
-  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0) {
-    this->render.previousAnimation = this->ActionBase(this->render.unknown_0070);
+  if (this->render.state == 3 || this->isTrickDead != 0) {
+    this->render.previousAnimation = this->ActionBase(this->render.state);
     motion = action->FrameCount(this->render.previousAnimation) - 1;
     this->render.curMotion = motion;
   } else {
@@ -876,7 +876,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
     std::uint32_t quadColor;
     if (this->GetMonsterTransformJob() == JT_THANATOS) {
       this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
-      if (this->render.unknown_0070 == 0 && index == 1) {
+      if (this->render.state == 0 && index == 1) {
         quad.bottomRhw = bottomRhw + 0.000008f;
         quad.topRhw = topRhw + 0.00008f;
       }
@@ -895,7 +895,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
       quad.color = color & 0xFFFFFF | 0x46000000;
     }
 
-    if (this->render.unknown_00A4Bytes[1] != 0) {
+    if (this->render.visibilityOptions[1] != 0) {
       bounds.Include(&quad.top);
     }
 
@@ -913,18 +913,18 @@ bool CPc::IsDrawOnTop() {
   bool drawOnTop = true;
   if (g_session.m_newRobeDrawOnTop) {
     int job = this->GetEffectiveJob(-1);
-    if (this->unknown_02CC) {
+    if (this->isRiding) {
       job = g_session.GetRidingJob(job);
     }
 
     int layer = 1;
     g_session.m_hotkeyScript->Call(
-      "_New_DrawOnTop", "ddddd>bd", this->unknown_049C, this->unknown_0260, job, this->render.previousAnimation, this->render.curMotion,
+      "_New_DrawOnTop", "ddddd>bd", this->robe, this->sex, job, this->render.previousAnimation, this->render.curMotion,
       &drawOnTop, &layer
     );
   } else {
     g_session.m_hotkeyScript->Call(
-      "DrawOnTop", "ddddd>b", this->unknown_049C, this->unknown_0260, this->unknown_025C, this->render.previousAnimation,
+      "DrawOnTop", "ddddd>b", this->robe, this->sex, this->job, this->render.previousAnimation,
       this->render.curMotion, &drawOnTop
     );
   }
@@ -936,7 +936,7 @@ bool CPc::IsDrawOnTop() {
 // FUNCTION: fn_22568
 const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* animation, int* frame, bool* replaced) {
   const ActionFrame& current = actRes->Frame(this->render.previousAnimation, this->render.curMotion);
-  if (this->unknown_02CC || layer < 1 || layer > 4 || this->render.previousAnimation < 88) {
+  if (this->isRiding || layer < 1 || layer > 4 || this->render.previousAnimation < 88) {
     return current;
   }
 
@@ -959,7 +959,7 @@ const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* anima
   }
 
   if (this->render.previousAnimation >= 88 && this->render.previousAnimation <= 95 && this->render.curMotion >= 3 && this->render.curMotion <= 5) {
-    if (this->unknown_0260 == 0) {
+    if (this->sex == 0) {
       if (this->render.curMotion != 3) {
         *replaced = true;
         if (this->render.previousAnimation <= 89) {
@@ -988,7 +988,7 @@ const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* anima
           }
         }
       }
-    } else if (this->unknown_0260 == 1) {
+    } else if (this->sex == 1) {
       if (this->render.curMotion != 5) {
         *replaced = true;
         if (this->render.previousAnimation <= 89) {
@@ -1062,11 +1062,11 @@ void CPc::ApplyLayerEffects(
   }
 
   if ((this->render.flags & 4) != 0 && layer == 5) {
-    if (!this->render.unknown_00ECBytes[1]) {
+    if (!this->render.effectPhaseBytes[1]) {
       this->DrawQuad(*quad, palette, layer, 0.0f, 0.0f, 0);
-      this->render.unknown_00ECBytes[1] = 1;
+      this->render.effectPhaseBytes[1] = 1;
     } else {
-      this->render.unknown_00ECBytes[1] = 0;
+      this->render.effectPhaseBytes[1] = 0;
     }
   }
 
@@ -1076,16 +1076,16 @@ void CPc::ApplyLayerEffects(
   }
 
   const int hoverOffset = hover;
-  this->render.unknown_0128 = static_cast<std::uint32_t>(hoverOffset);
-  this->render.unknown_012C = static_cast<std::uint32_t>(hoverOffset >> 31);
+  this->render.hoverOffsetLow = static_cast<std::uint32_t>(hoverOffset);
+  this->render.hoverOffsetHigh = static_cast<std::uint32_t>(hoverOffset >> 31);
 
   SpriteQuad jitter;
   if ((this->render.flags & 8) != 0 && layer < 5 && (this->render.flags & 0x30000) == 0) {
-    if (++this->render.unknown_00ECBytes[2] > 180) {
-      this->render.unknown_00ECBytes[2] = 0;
+    if (++this->render.effectPhaseBytes[2] > 180) {
+      this->render.effectPhaseBytes[2] = 0;
     }
 
-    float wave = g_sinTable[this->render.unknown_00ECBytes[2]] + 3.0f;
+    float wave = g_sinTable[this->render.effectPhaseBytes[2]] + 3.0f;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
     jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
@@ -1106,11 +1106,11 @@ void CPc::ApplyLayerEffects(
     jitter.bottomRhw = jitterBottomRhw;
     jitter.topRhw = jitterTopRhw;
     jitter.color = 0x64FFFFFF;
-    jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+    jitter.angle = static_cast<float>(cell->rotation + static_cast<int>(this->render.spriteAngle));
     jitter.image = image;
     this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
 
-    wave = g_sinTable[this->render.unknown_00ECBytes[2]];
+    wave = g_sinTable[this->render.effectPhaseBytes[2]];
     mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
     jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
@@ -1129,7 +1129,7 @@ void CPc::ApplyLayerEffects(
     jitter.bottomRhw = jitterBottomRhw;
     jitter.topRhw = jitterTopRhw;
     jitter.color = 0x78FFFFFF;
-    jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+    jitter.angle = static_cast<float>(cell->rotation + static_cast<int>(this->render.spriteAngle));
     jitter.image = image;
     this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
   }
@@ -1137,15 +1137,15 @@ void CPc::ApplyLayerEffects(
   if ((this->render.flags & 0x80800) != 0 && (this->render.flags & 0x20000) == 0) {
     const float scale = this->render.scale;
     for (int step = 1, depth = 3; depth < 7; ++step, depth += 3) {
-      const unsigned char alpha = this->render.unknown_00F2;
+      const unsigned char alpha = this->render.outlineAlpha;
       const float distanceScale = g_renderer->ScaleDistance(distance);
       const float factor = GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
       const float shift =
-        g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * factor;
+        g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) * this->render.scale) * factor;
       const int boxTop = box[1];
       const float top = static_cast<float>(static_cast<double>(cell->y + offsetY) * factor * cell->scaleY * scale + screenY);
       const float bottom = static_cast<float>(
-        static_cast<double>((static_cast<short>(image->unknown_0006) + 1) * image->height + cell->y + offsetY) * factor * cell->scaleY *
+        static_cast<double>((static_cast<short>(image->doubleHeight) + 1) * image->height + cell->y + offsetY) * factor * cell->scaleY *
           scale +
         screenY + 1.0
       );
@@ -1153,7 +1153,7 @@ void CPc::ApplyLayerEffects(
       double left;
       double right;
       if ((cell->mirrored & 1) != 0) {
-        left = static_cast<double>((static_cast<short>(image->unknown_0004) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
+        left = static_cast<double>((static_cast<short>(image->doubleWidth) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
         right = static_cast<double>(offsetX + cell->x) * factor * cell->scaleX;
         if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || box[2] >= g_renderer->viewport.width || box[0] <= 0) {
           continue;
@@ -1163,7 +1163,7 @@ void CPc::ApplyLayerEffects(
           continue;
         }
         left = static_cast<double>(cell->x + offsetX) * factor * cell->scaleX;
-        right = static_cast<double>((static_cast<short>(image->unknown_0004) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
+        right = static_cast<double>((static_cast<short>(image->doubleWidth) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
       }
 
       jitter.image = image;
@@ -1178,7 +1178,7 @@ void CPc::ApplyLayerEffects(
       } else if ((this->render.flags & 0x80000) != 0) {
         jitter.color = (alpha << 24) + 0x56405;
       }
-      jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+      jitter.angle = static_cast<float>(cell->rotation + static_cast<int>(this->render.spriteAngle));
       this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
     }
   }
@@ -1191,7 +1191,7 @@ void CPc::ApplyLayerEffects(
   this->ApplySpriteJitter(quad, box, shiftX, 11, 5);
 
   if ((this->render.flags & 0x10000) != 0) {
-    const short level = this->render.unknown_00F4;
+    const short level = this->render.effectPhase;
     const short alpha = static_cast<short>(255 - level * 20);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const float rise = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(level * 20);
@@ -1201,9 +1201,9 @@ void CPc::ApplyLayerEffects(
   }
 
   if ((this->render.flags & 0x20000) != 0) {
-    const unsigned char phase = this->render.unknown_00F6;
+    const unsigned char phase = this->render.tintPhase;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    short alpha = static_cast<short>((this->render.unknown_00F6 - 10) * 17);
+    short alpha = static_cast<short>((this->render.tintPhase - 10) * 17);
     if (alpha > 255) {
       alpha = 255;
     }
@@ -1235,16 +1235,16 @@ void CPc::ApplyLayerEffects(
 // FUNCTION: fn_22647
 void CPc::SetSprWeapon2(int first, int second) {
   this->weapon = first;
-  this->unknown_044C = second;
+  this->secondaryWeapon = second;
 
   int job = this->GetEffectiveJob(-1);
   if (this->IsCostumeOutfit()) {
-    job = this->unknown_04D4;
+    job = this->appearanceJob;
   }
 
   const int viewJob = job > 3950 ? job - 3950 : job;
 
-  if (this->unknown_02CC) {
+  if (this->isRiding) {
     return;
   }
 
@@ -1267,12 +1267,12 @@ void CPc::SetSprWeapon2(int first, int second) {
     case JT_SKY_EMPEROR:
     case JT_SKY_EMPEROR2: {
       if ((this->GetEffectiveJob(-1) == JT_TAEKWON || this->GetEffectiveJob(-1) == JT_TAEKWON_B) &&
-          this->GetEffectiveJob(-1) != this->unknown_04D0) {
+          this->GetEffectiveJob(-1) != this->bodyStyle) {
         return;
       }
 
-      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 1, this->unknown_04D0);
-      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 1, this->unknown_04D0);
+      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
+      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
       this->LoadEquipAction(6, actName.c_str());
       this->LoadEquipSprite(6, sprName.c_str());
       return;
@@ -1281,8 +1281,8 @@ void CPc::SetSprWeapon2(int first, int second) {
     case JT_WOLF_RANGER_H:
     case JT_WOLF_RANGER_B:
     case JT_WOLF_WINDHAWK: {
-      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
-      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
+      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
       this->LoadEquipAction(6, actName.c_str());
       this->LoadEquipSprite(6, sprName.c_str());
       return;
@@ -1290,8 +1290,8 @@ void CPc::SetSprWeapon2(int first, int second) {
     case JT_MADOGEAR:
     case JT_MADOGEAR_H:
     case JT_MADOGEAR_B: {
-      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
-      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
+      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
       if (this->GetMadogearType() == 2) {
         std::size_t pos = actName.rfind("마도기어_");
         if (pos != std::string::npos) {
@@ -1307,8 +1307,8 @@ void CPc::SetSprWeapon2(int first, int second) {
       return;
     }
     case JT_MEISTER_MADOGEAR: {
-      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
-      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
+      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 0, this->bodyStyle);
       if (this->GetMadogearType() == 2) {
         std::size_t pos = actName.rfind("MEISTER_MADOGEAR1");
         if (pos != std::string::npos) {
@@ -1326,7 +1326,7 @@ void CPc::SetSprWeapon2(int first, int second) {
   }
 
   const int weaponItem = this->weapon;
-  const int shieldItem = this->unknown_044C;
+  const int shieldItem = this->secondaryWeapon;
   if (weaponItem == 0 && shieldItem == 0) {
     return;
   }
@@ -1347,8 +1347,8 @@ void CPc::SetSprWeapon2(int first, int second) {
         break;
     }
 
-    const std::string actName = g_session.GetWeaponActName(viewJob, this->unknown_0260, weaponType, -1, this->unknown_04D0);
-    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, weaponType, -1, this->unknown_04D0);
+    const std::string actName = g_session.GetWeaponActName(viewJob, this->sex, weaponType, -1, this->bodyStyle);
+    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->sex, weaponType, -1, this->bodyStyle);
     this->LoadEquipAction(5, actName.c_str());
     this->LoadEquipSprite(5, sprName.c_str());
 
@@ -1370,9 +1370,9 @@ void CPc::SetSprWeapon2(int first, int second) {
       case W_DOUBLE_DA:
       case W_DOUBLE_SA: {
         const std::string effectActName =
-          g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, weaponType, -1, 0, this->unknown_04D0);
+          g_session.GetWeaponEffectActName(viewJob, this->sex, weaponType, -1, 0, this->bodyStyle);
         const std::string effectSprName =
-          g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, weaponType, -1, 0, this->unknown_04D0);
+          g_session.GetWeaponEffectSprName(viewJob, this->sex, weaponType, -1, 0, this->bodyStyle);
         this->LoadEquipAction(6, effectActName.c_str());
         this->LoadEquipSprite(6, effectSprName.c_str());
         break;
@@ -1382,10 +1382,10 @@ void CPc::SetSprWeapon2(int first, int second) {
   }
 
   int viewType = GetWeaponViewValue(this->weapon);
-  const std::string actName = g_session.GetWeaponActName(viewJob, this->unknown_0260, viewType, weaponItem, this->unknown_04D0);
+  const std::string actName = g_session.GetWeaponActName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
   if (ResourceMgr::Instance().Exists(actName.c_str())) {
     this->LoadEquipAction(5, actName.c_str());
-    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, viewType, weaponItem, this->unknown_04D0);
+    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
     this->LoadEquipSprite(5, sprName.c_str());
     viewType = this->MapMotion(viewType);
   } else {
@@ -1411,19 +1411,19 @@ void CPc::SetSprWeapon2(int first, int second) {
     }
 
     viewType = this->MapMotion(viewType);
-    const std::string fallbackActName = g_session.GetWeaponActName(viewJob, this->unknown_0260, viewType, -1, this->unknown_04D0);
+    const std::string fallbackActName = g_session.GetWeaponActName(viewJob, this->sex, viewType, -1, this->bodyStyle);
     if (ResourceMgr::Instance().Exists(fallbackActName.c_str())) {
       this->LoadEquipAction(5, fallbackActName.c_str());
-      const std::string fallbackSprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, viewType, -1, this->unknown_04D0);
+      const std::string fallbackSprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, -1, this->bodyStyle);
       this->LoadEquipSprite(5, fallbackSprName.c_str());
     }
   }
 
-  std::string effectActName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, viewType, weaponItem, 0, this->unknown_04D0);
-  std::string effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, viewType, weaponItem, 0, this->unknown_04D0);
+  std::string effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
+  std::string effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
   if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
-    effectActName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, viewType, -1, 0, this->unknown_04D0);
-    effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, viewType, -1, 0, this->unknown_04D0);
+    effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
+    effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
     if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
       return;
     }
@@ -1437,7 +1437,7 @@ void CPc::SetSprWeapon2(int first, int second) {
 // FUNCTION: fn_22649
 void CPc::SetSprWeapon(int first, int second) {
   this->weapon = first;
-  this->unknown_044C = second;
+  this->secondaryWeapon = second;
 
   if (!g_session.IsJobWeaponTypeAllowed(this->GetEffectiveJob(-1), *reinterpret_cast<const std::int64_t*>(&first))) {
     this->LoadEquipAction(5, "");
@@ -1447,8 +1447,8 @@ void CPc::SetSprWeapon(int first, int second) {
     return;
   }
 
-  const std::string actName = g_session.GetWeaponActName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, this->unknown_04D0);
-  const std::string sprName = g_session.GetWeaponSprName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, this->unknown_04D0);
+  const std::string actName = g_session.GetWeaponActName(this->GetEffectiveJob(-1), this->sex, this->weapon, -1, this->bodyStyle);
+  const std::string sprName = g_session.GetWeaponSprName(this->GetEffectiveJob(-1), this->sex, this->weapon, -1, this->bodyStyle);
   this->LoadEquipAction(5, actName.c_str());
   this->LoadEquipSprite(5, sprName.c_str());
 
@@ -1470,9 +1470,9 @@ void CPc::SetSprWeapon(int first, int second) {
     case W_DOUBLE_DA:
     case W_DOUBLE_SA: {
       const std::string effectActName =
-        g_session.GetWeaponEffectActName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, 0, this->unknown_04D0);
+        g_session.GetWeaponEffectActName(this->GetEffectiveJob(-1), this->sex, this->weapon, -1, 0, this->bodyStyle);
       const std::string effectSprName =
-        g_session.GetWeaponEffectSprName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, 0, this->unknown_04D0);
+        g_session.GetWeaponEffectSprName(this->GetEffectiveJob(-1), this->sex, this->weapon, -1, 0, this->bodyStyle);
       this->LoadEquipAction(6, effectActName.c_str());
       this->LoadEquipSprite(6, effectSprName.c_str());
       break;
@@ -1492,10 +1492,10 @@ void CPlayer::RegisterPos() {
 // OFFSET: 0x00DB07F0
 // FUNCTION: fn_22627
 void CPc::SetSprAccessory2(int value) {
-  this->unknown_0454 = value;
-  this->LoadEquipAction(3, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->accessory2 = value;
+  this->LoadEquipAction(3, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, value).c_str());
   this->LoadEquipSprite(
-    3, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0454).c_str()
+    3, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, this->accessory2).c_str()
   );
 
   if (this->HasId(678)) {
@@ -1508,29 +1508,29 @@ void CPc::SetSprAccessory2(int value) {
 // OFFSET: 0x00DB09E0
 // FUNCTION: fn_22629
 void CPc::SetSprAccessory3(int value) {
-  this->unknown_0458 = value;
-  this->LoadEquipAction(4, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->accessory3 = value;
+  this->LoadEquipAction(4, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, value).c_str());
   this->LoadEquipSprite(
-    4, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0458).c_str()
+    4, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, this->accessory3).c_str()
   );
 }
 
 // OFFSET: 0x00DB0B50
 // FUNCTION: fn_22631
 void CPc::SetSprAccessory(int value) {
-  this->unknown_0450 = value;
-  this->LoadEquipAction(2, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->accessory = value;
+  this->LoadEquipAction(2, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, value).c_str());
   this->LoadEquipSprite(
-    2, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0450).c_str()
+    2, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, this->accessory).c_str()
   );
 }
 
 // OFFSET: 0x00DB1990
 // FUNCTION: fn_22638
 void CPc::SetSprHead(int value) {
-  this->unknown_0440 = value;
-  this->LoadEquipAction(1, g_session.GetHeadActName(this->unknown_04D4, this->unknown_0260, &this->unknown_0440).c_str());
-  this->LoadEquipSprite(1, g_session.GetHeadSprName(this->unknown_04D4, this->unknown_0260, &this->unknown_0440).c_str());
+  this->head = value;
+  this->LoadEquipAction(1, g_session.GetHeadActName(this->appearanceJob, this->sex, &this->head).c_str());
+  this->LoadEquipSprite(1, g_session.GetHeadSprName(this->appearanceJob, this->sex, &this->head).c_str());
 }
 
 // OFFSET: 0x00DB4C70
@@ -1617,7 +1617,7 @@ __declspec(noinline) void CGrannyPc::ReleaseMeshes() {
     }
   }
 
-  this->unknown_2550 = 0;
+  this->worldPose = 0;
 }
 
 // OFFSET: 0x00DAA3F0
@@ -1765,14 +1765,14 @@ CRes* CPc::GetEquipSprite(int slot) const {
 // OFFSET: 0x00DAB160
 // FUNCTION: fn_22580
 std::int64_t CGrannyPc::GetWeapon() {
-  return *reinterpret_cast<const std::int64_t*>(&this->unknown_0440);
+  return *reinterpret_cast<const std::int64_t*>(&this->weapon);
 }
 
 // OFFSET: 0x00DAB250
 // FUNCTION: fn_22582
 bool CPc::IsCostumeOutfit() const {
   return StateFlag12(this->stateFlags) || StateFlag16(this->stateFlags) || StateFlag18(this->stateFlags) ||
-    StateFlag27(this->stateFlags) || StateFlag28(this->stateFlags) || this->unknown_03DC == 1;
+    StateFlag27(this->stateFlags) || StateFlag28(this->stateFlags) || this->mountedState == 1;
 }
 
 // OFFSET: 0x00DAB460
@@ -1850,12 +1850,12 @@ void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
   }
 
   this->clock = GrannyGetSystemSeconds();
-  this->unknown_0F24 += GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
+  this->animationTime += GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
   this->lastClock = this->clock;
 
   if (model != this->model) {
     model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), nullptr, 0);
-    model->Animate(this->unknown_0F24, GrannyInstantiateModel(model->model));
+    model->Animate(this->animationTime, GrannyInstantiateModel(model->model));
     return;
   }
 
@@ -1864,13 +1864,13 @@ void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
     this->controls[this->motion] = model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), this->controls[this->motion], 0);
   }
 
-  model->Animate(this->unknown_0F24 * g_depthAverageHalf, this->instance);
+  model->Animate(this->animationTime * g_depthAverageHalf, this->instance);
 }
 
 // OFFSET: 0x00DAC030
 // FUNCTION: fn_22591
 void CGrannyPc::ProcessMotion() {
-  if (this->render.unknown_0070 == 2) {
+  if (this->render.state == 2) {
     this->render.isMotionFinished = GrannyGetControlDurationLeft(this->controls[2]) < 0.1f;
   } else {
     this->render.isMotionFinished = true;
@@ -2004,8 +2004,8 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
   CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
 
   int motion;
-  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0) {
-    this->render.previousAnimation = this->ActionBase(this->render.unknown_0070);
+  if (this->render.state == 3 || this->isTrickDead != 0) {
+    this->render.previousAnimation = this->ActionBase(this->render.state);
     motion = action->FrameCount(this->render.previousAnimation) - 1;
     this->render.curMotion = motion;
   } else {
@@ -2031,7 +2031,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     std::uint32_t color;
     if (this->GetMonsterTransformJob() == JT_THANATOS) {
       this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
-      if (this->render.unknown_0070 == 0 && index == 1) {
+      if (this->render.state == 0 && index == 1) {
         quad.bottomRhw = bottomRhw + 0.000008f;
         quad.topRhw = topRhw + 0.00008f;
       }
@@ -2049,13 +2049,13 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     }
 
     quad.image = image;
-    if (this->render.unknown_00A4Bytes[1] != 0) {
+    if (this->render.visibilityOptions[1] != 0) {
       bounds.Include(&quad.top);
     }
 
     int blend = this->blend;
     const std::uint32_t* palette = sprite->palette;
-    if (this->render.unknown_0048 != 0 && this->GetMonsterTransformJob() < 0 && this->HasShapeShift() == true) {
+    if (this->render.bodyPalette != 0 && this->GetMonsterTransformJob() < 0 && this->HasShapeShift() == true) {
       palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
     }
 
@@ -2070,7 +2070,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
   }
 
   this->SetRenderInfo(&bounds.left, x, y);
-  this->render.unknown_00ECBytes[0] = 1;
+  this->render.effectPhaseBytes[0] = 1;
 }
 
 // OFFSET: 0x00DAD4D0
@@ -2087,9 +2087,9 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   float reciprocalDepth;
   g_renderer->ProjectViewport(origin, matrix, &x, &y, &reciprocalDepth);
   const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
-  this->render.unknown_005C = distanceScale / g_heightScale;
+  this->render.distanceScale = distanceScale / g_heightScale;
   const float scale =
-    g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * this->render.unknown_005C;
+    g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) * this->render.scale) * this->render.distanceScale;
 
   RenderBounds bounds;
   bounds.left = static_cast<float>(g_renderer->viewport.width);
@@ -2098,7 +2098,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   bounds.bottom = 0.0f;
   bounds.offset = reciprocalDepth;
 
-  ResourceMgr::Instance().Load(this->unknown_0418.c_str());
+  ResourceMgr::Instance().Load(this->imfName.c_str());
   int count = 0;
   bool drawn = false;
   if (std::strlen(this->equipActions[0] ? this->equipActions[0]->name.text : "") == 0) {
@@ -2135,12 +2135,12 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     ++count;
     drawn = true;
     quad.image = image;
-    if (this->render.unknown_00A4Bytes[1] != 0) {
+    if (this->render.visibilityOptions[1] != 0) {
       bounds.Include(&quad.top);
     }
 
     const std::uint32_t* palette;
-    if (this->render.unknown_0048 != 0) {
+    if (this->render.bodyPalette != 0) {
       palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
     } else {
       palette = sprite->palette;
@@ -2180,14 +2180,14 @@ bool CGrannyPc::OnProcess() {
 
   this->PlayFrameSounds();
 
-  if (this->unknown_0180 != 0) {
+  if (this->isPlayHitWave != 0) {
     const vector3d& player =
       reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
-    this->unknown_0180 = 0;
+    this->isPlayHitWave = 0;
   }
 
   float facing = this->render.angle;
@@ -2197,9 +2197,9 @@ bool CGrannyPc::OnProcess() {
   }
 
   float angle;
-  if (this->unknown_10A0 == 1) {
+  if (this->snapFacing == 1) {
     angle = 180.0f - facing;
-    this->unknown_10A0 = 0;
+    this->snapFacing = 0;
     this->angle = angle;
   } else {
     angle = this->angle;
@@ -2251,14 +2251,14 @@ bool CPc::OnProcess() {
 
   this->PlayFrameSounds();
 
-  if (this->unknown_0180 != 0) {
+  if (this->isPlayHitWave != 0) {
     const vector3d& player =
       reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
-    this->unknown_0180 = 0;
+    this->isPlayHitWave = 0;
   }
 
   const bool show = this->GetMonsterTransformJob() > 0;
@@ -2317,10 +2317,10 @@ void CPc::Render(int argument) {
     return;
   }
 
-  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+  if (this->render.state != 6 && this->render.state != 3) {
     this->DrawShadow(argument, this->render.scale);
   }
-  if (this->render.unknown_0070 == 6) {
+  if (this->render.state == 6) {
     switch (this->GetEffectiveJob(-1)) {
     case JT_STAR2:
     case JT_STAR2_B:
@@ -2342,7 +2342,7 @@ void CPc::Render(int argument) {
     return;
   }
 
-  if (this->unknown_0474 != 0) {
+  if (this->renderWithoutLayer != 0) {
     this->DrawSprite(argument, false, 0.0f);
     return;
   }
@@ -2360,10 +2360,10 @@ void CPc::DrawLayers(const float* matrix, int unknown0030, char unknown0034) {
 // OFFSET: 0x00DABF50
 // FUNCTION: fn_22589
 void CGrannyPc::UpdateGaugeWindow() {
-  if (reinterpret_cast<UIWindow*>(this->unknown_0478) != nullptr) {
-    reinterpret_cast<UIWindow*>(this->unknown_0478)->Move(
+  if (reinterpret_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
+    reinterpret_cast<UIWindow*>(this->gaugeWindow)->Move(
       this->render.screenX - 30,
-      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY))
+      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
   }
   this->UpdateHpGauge();
@@ -2372,10 +2372,10 @@ void CGrannyPc::UpdateGaugeWindow() {
 // OFFSET: 0x00DABFC0
 // FUNCTION: fn_22590
 void CPc::UpdateGaugeWindow() {
-  if (reinterpret_cast<UIWindow*>(this->unknown_0490) != nullptr) {
-    reinterpret_cast<UIWindow*>(this->unknown_0490)->Move(
+  if (reinterpret_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
+    reinterpret_cast<UIWindow*>(this->gaugeWindow)->Move(
       this->render.screenX - 30,
-      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY))
+      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
   }
   this->UpdateHpGauge();
@@ -2384,17 +2384,17 @@ void CPc::UpdateGaugeWindow() {
 // OFFSET: 0x00DB1760
 // FUNCTION: fn_22635
 void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
-  this->unknown_04D4 = first;
+  this->appearanceJob = first;
   this->SetUnknown0260(second);
-  this->unknown_0440 = third;
+  this->head = third;
   this->weapon = fourth;
-  this->unknown_044C = fifth;
-  this->unknown_0450 = sixth;
-  this->unknown_0454 = seventh;
-  this->unknown_0458 = eighth;
-  this->unknown_045C = ninth;
-  this->unknown_0444 = tenth;
-  this->render.unknown_0048 = eleventh;
+  this->secondaryWeapon = fifth;
+  this->accessory = sixth;
+  this->accessory2 = seventh;
+  this->accessory3 = eighth;
+  this->shield = ninth;
+  this->headPalette = tenth;
+  this->render.bodyPalette = eleventh;
   this->SetActorJob(first);
 
   int job = first;
@@ -2408,40 +2408,40 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
     job = 0x1c;
   } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
     job = 0x1d;
-  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
+  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
     job = 0x1e;
-  } else if (this->unknown_02CC != 0) {
+  } else if (this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
   }
 
   this->SetActorJob(job);
-  this->SetSprHead(this->unknown_0440);
-  this->SetSprWeapon(this->weapon, this->unknown_044C);
-  this->SetSprAccessory(this->unknown_0450);
-  this->SetSprAccessory2(this->unknown_0454);
-  this->SetSprAccessory3(this->unknown_0458);
-  this->SetSprShield(this->unknown_045C);
+  this->SetSprHead(this->head);
+  this->SetSprWeapon(this->weapon, this->secondaryWeapon);
+  this->SetSprAccessory(this->accessory);
+  this->SetSprAccessory2(this->accessory2);
+  this->SetSprAccessory3(this->accessory3);
+  this->SetSprShield(this->shield);
   this->SetImfFileName();
   this->SetHeadPaletteName();
-  this->SetBodyPalette(this->render.unknown_0048);
+  this->SetBodyPalette(this->render.bodyPalette);
   this->SetBodyPaletteName();
 }
 
 // OFFSET: 0x00DB0CE0
 // FUNCTION: fn_22633
 void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
-  this->unknown_04D4 = first;
+  this->appearanceJob = first;
   this->SetUnknown0260(second);
-  this->unknown_0440 = third;
+  this->head = third;
   this->weapon = fourth;
-  this->unknown_044C = fifth;
-  this->unknown_0450 = sixth;
-  this->unknown_0454 = seventh;
-  this->unknown_0458 = eighth;
-  this->unknown_045C = GetWeaponViewValue(fifth) < 0 ? fifth : 0;
-  this->unknown_0444 = ninth;
-  this->render.unknown_0048 = tenth;
-  this->render.unknown_0048 = g_session.GetBodyStyle(first, tenth, this->unknown_04D0);
+  this->secondaryWeapon = fifth;
+  this->accessory = sixth;
+  this->accessory2 = seventh;
+  this->accessory3 = eighth;
+  this->shield = GetWeaponViewValue(fifth) < 0 ? fifth : 0;
+  this->headPalette = ninth;
+  this->render.bodyPalette = tenth;
+  this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);
 
   int job = first;
   bool applyJob = true;
@@ -2455,12 +2455,12 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
     job = 0x1c;
   } else if (StateFlag28(eleventh) && !StateFlag15(eleventh)) {
     job = 0x1d;
-  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
+  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
     job = 0x1e;
   } else if (this->HasShapeShift()) {
     applyJob = false;
     this->SetSprJob(this->GetUnknown0404Job());
-  } else if (this->unknown_02CC != 0) {
+  } else if (this->isRiding != 0) {
     job = g_session.GetRidingJob(first);
   }
 
@@ -2468,10 +2468,10 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
     this->SetActorJob(job);
   }
 
-  this->SetSprHead(this->unknown_0440);
+  this->SetSprHead(this->head);
 
   if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
-      !StateFlag28(eleventh) && this->unknown_03DC != 1 && this->unknown_02CC == 0) {
+      !StateFlag28(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
     switch (this->GetEffectiveJob(-1)) {
       case JT_ASSASSIN:
       case JT_ASSASSIN_H:
@@ -2488,13 +2488,13 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
     }
   }
 
-  this->SetSprAccessory(this->unknown_0450);
-  this->SetSprAccessory2(this->unknown_0454);
-  this->SetSprAccessory3(this->unknown_0458);
+  this->SetSprAccessory(this->accessory);
+  this->SetSprAccessory2(this->accessory2);
+  this->SetSprAccessory3(this->accessory3);
 
   if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
-      !StateFlag28(eleventh) && this->unknown_03DC != 1 && this->unknown_02CC == 0) {
-    this->SetSprShield(this->unknown_045C);
+      !StateFlag28(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
+    this->SetSprShield(this->shield);
   }
 
   this->SetImfFileName();
@@ -2506,67 +2506,67 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
 // FUNCTION: fn_22640
 void CPc::SetSprJob(int job) {
   if (job == JT_BARD || job == JT_BARD_H || job == JT_BARD_B) {
-    if (this->unknown_0260 == 0) {
-      this->unknown_0260 = 1;
+    if (this->sex == 0) {
+      this->sex = 1;
     }
   } else if (job == JT_DANCER || job == JT_DANCER_H || job == JT_DANCER_B) {
-    if (this->unknown_0260 == 1) {
-      this->unknown_0260 = 0;
+    if (this->sex == 1) {
+      this->sex = 0;
     }
   } else if (job == JT_MINSTREL) {
-    if (this->unknown_0260 == 0) {
-      this->unknown_0260 = 1;
+    if (this->sex == 0) {
+      this->sex = 1;
     }
   } else if (job == JT_WANDERER) {
-    if (this->unknown_0260 == 1) {
-      this->unknown_0260 = 0;
+    if (this->sex == 1) {
+      this->sex = 0;
     }
   } else if (job == JT_MINSTREL_H) {
-    if (this->unknown_0260 == 0) {
-      this->unknown_0260 = 1;
+    if (this->sex == 0) {
+      this->sex = 1;
     }
   } else if (job == JT_WANDERER_H) {
-    if (this->unknown_0260 == 1) {
-      this->unknown_0260 = 0;
+    if (this->sex == 1) {
+      this->sex = 0;
     }
   } else if (job == JT_TROUBADOUR) {
-    if (this->unknown_0260 == 0) {
-      this->unknown_0260 = 1;
+    if (this->sex == 0) {
+      this->sex = 1;
     }
   } else if (job == JT_TROUVERE) {
-    if (this->unknown_0260 == 1) {
-      this->unknown_0260 = 0;
+    if (this->sex == 1) {
+      this->sex = 0;
     }
   }
 
-  this->render.unknown_0054 = g_session.GetNpcLocationRadius(job, this->unknown_02CC == 1);
+  this->render.shadowScale = g_session.GetNpcLocationRadius(job, this->isRiding == 1);
 
   if (this->GetMonsterTransformJob() > 0) {
     this->LoadEquipAction(0, g_session.GetMonsterActName(this->GetMonsterTransformJob()).c_str());
     this->LoadEquipSprite(0, g_session.GetMonsterSprName(this->GetMonsterTransformJob()).c_str());
   } else if (StateFlag12(this->stateFlags) == true || job == JT_MARRIED) {
-    this->LoadEquipAction(0, g_session.GetRaceBodyResourceName(0, this->unknown_04D4, JT_MARRIED, this->unknown_0260, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetRaceBodyResourceName(1, this->unknown_04D4, JT_MARRIED, this->unknown_0260, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetRaceBodyResourceName(0, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetRaceBodyResourceName(1, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
   } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SANTA, this->unknown_0260, 0, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SANTA, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SANTA, this->sex, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SANTA, this->sex, 0, 0).c_str());
   } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER, this->unknown_0260, 0, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER, this->sex, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER, this->sex, 0, 0).c_str());
   } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_HANBOK, this->unknown_0260, 0, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_HANBOK, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_HANBOK, this->sex, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_HANBOK, this->sex, 0, 0).c_str());
   } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_OKTOBERFEST, this->unknown_0260, 0, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_OKTOBERFEST, this->unknown_0260, 0, 0).c_str());
-  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER2, this->unknown_0260, 0, 0).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER2, this->unknown_0260, 0, 0).c_str());
-  } else if (this->unknown_02CC != 0) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
+  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER2, this->sex, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER2, this->sex, 0, 0).c_str());
+  } else if (this->isRiding != 0) {
     this->LoadEquipAction(
-      0, GetBodyActionResourceName(g_session.GetRidingJob(job), this->unknown_0260, this->unknown_04D0, 0).c_str()
+      0, GetBodyActionResourceName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str()
     );
-    this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->unknown_0260, this->unknown_04D0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str());
   } else {
     const int effectiveJob = this->GetEffectiveJob(JobNames::BaseJob(job));
     switch (effectiveJob) {
@@ -2574,20 +2574,20 @@ void CPc::SetSprJob(int job) {
       case JT_MADOGEAR_H:
       case JT_MEISTER_MADOGEAR:
         if (this->GetMadogearType() == 2) {
-          this->render.unknown_0054 = 1.5f;
+          this->render.shadowScale = 1.5f;
         }
         break;
       case JT_MADOGEAR_B:
         if (this->GetMadogearType() == 2) {
-          this->render.unknown_0054 = 1.12f;
+          this->render.shadowScale = 1.12f;
         }
         break;
     }
 
     this->LoadEquipAction(
-      0, GetBodyActionResourceName(effectiveJob, this->unknown_0260, this->unknown_04D0, this->GetMadogearType()).c_str()
+      0, GetBodyActionResourceName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str()
     );
-    this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->unknown_0260, this->unknown_04D0, this->GetMadogearType()).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
   }
 
   this->SetActionName(ResourceMgr::Instance(), this->equipActions[0] ? this->equipActions[0]->GetName() : "");
@@ -2620,22 +2620,22 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
 // FUNCTION: fn_22634
 void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->SetUnknown0260(second);
-  this->unknown_0434 = third;
-  this->unknown_0440 = fourth;
-  this->unknown_0448 = sixth;
-  this->unknown_044C = seventh;
-  this->unknown_0450 = eighth;
-  this->unknown_0454 = ninth;
-  this->unknown_0444 = fifth;
-  this->unknown_0438 = tenth;
-  this->render.unknown_0048 = eleventh;
+  this->head = third;
+  this->weapon = fourth;
+  this->accessory = sixth;
+  this->accessory2 = seventh;
+  this->accessory3 = eighth;
+  this->shield = ninth;
+  this->secondaryWeapon = fifth;
+  this->headPalette = tenth;
+  this->render.bodyPalette = eleventh;
   this->SetActorJob(first);
-  this->SetSprHead(this->unknown_0434);
-  this->SetSprWeapon(this->unknown_0440, this->unknown_0444);
-  this->SetSprAccessory(this->unknown_0448);
-  this->SetSprAccessory2(this->unknown_044C);
-  this->SetSprAccessory3(this->unknown_0450);
-  this->SetSprShield(this->unknown_0454);
+  this->SetSprHead(this->head);
+  this->SetSprWeapon(this->weapon, this->secondaryWeapon);
+  this->SetSprAccessory(this->accessory);
+  this->SetSprAccessory2(this->accessory2);
+  this->SetSprAccessory3(this->accessory3);
+  this->SetSprShield(this->shield);
   this->SetImfFileName();
   this->SetHeadPaletteName();
 
@@ -2654,9 +2654,9 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
 
-  this->unknown_0F24 = 0.0f;
+  this->animationTime = 0.0f;
   this->lastClock = GrannyGetSystemSeconds();
-  this->unknown_02E0 = 0;
+  this->actorType = 0;
 
   char* tag = std::strstr(this->modelName, "@hd");
   if (!tag) {
@@ -2730,46 +2730,46 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
 // OFFSET: 0x00DB0040
 // FUNCTION: fn_22609
 void CPc::SetBodyPaletteName() {
-  if (this->render.unknown_0048 == 0) {
+  if (this->render.bodyPalette == 0) {
     return;
   }
 
   if (this->GetMonsterTransformJob() < 0 && this->IsShapeShifted()) {
     std::string paletteName;
-    this->render.name.assign(static_cast<const std::string&>(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.unknown_0048)));
+    this->render.name.assign(static_cast<const std::string&>(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.bodyPalette)));
     return;
   }
 
   int job = this->GetEffectiveJob(-1);
-  const int costumeJob = this->unknown_04D0;
-  if (this->unknown_02CC != 0) {
+  const int costumeJob = this->bodyStyle;
+  if (this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
   }
 
-  this->render.name.assign(static_cast<const std::string&>(g_session.GetBodyPalName(job, this->unknown_0260, this->render.unknown_0048, costumeJob, this->GetMadogearType(), 0)));
+  this->render.name.assign(static_cast<const std::string&>(g_session.GetBodyPalName(job, this->sex, this->render.bodyPalette, costumeJob, this->GetMadogearType(), 0)));
 }
 
 // OFFSET: 0x00DB2670
 // FUNCTION: fn_22645
 void CPc::SetSprShield(int value) {
-  this->unknown_045C = value;
+  this->shield = value;
 
-  if (this->unknown_02CC != 0) {
+  if (this->isRiding != 0) {
     this->LoadEquipAction(7, "");
     this->LoadEquipSprite(7, "");
     return;
   }
 
   const int job = this->GetEffectiveJob(-1);
-  this->LoadEquipAction(7, g_session.GetShieldActName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
-  this->LoadEquipSprite(7, g_session.GetShieldSprName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
+  this->LoadEquipAction(7, g_session.GetShieldActName(job, this->sex, this->shield, this->bodyStyle).c_str());
+  this->LoadEquipSprite(7, g_session.GetShieldSprName(job, this->sex, this->shield, this->bodyStyle).c_str());
 }
 
 // OFFSET: 0x00DB6670
 // FUNCTION: fn_22668
 void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column) {
   int step = target->GetNpcLocationRadius();
-  if (target->unknown_02E0 == 1) {
+  if (target->actorType == 1) {
     step = 5;
   } else if (step == 0) {
     return;
@@ -2813,7 +2813,7 @@ void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, 
 // OFFSET: 0x00DB6820
 // FUNCTION: fn_22669
 float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
-  if (target->unknown_02E0 == 1) {
+  if (target->actorType == 1) {
     return std::max(distance - 20.0f, 0.0f);
   }
 
@@ -2855,14 +2855,14 @@ bool CPlayer::OnProcess() {
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (this->unknown_050C != 0 && timeGetTime() > (g_session.m_averagePing >> 1) + this->unknown_0504) {
+  if (this->preMoveOn != 0 && timeGetTime() > (g_session.m_averagePing >> 1) + this->preMoveStartTick) {
     PlayerMoveRequest request;
     mode->WorldSubcell(
       this->render.position.x, this->render.position.z, request.column, request.row, request.subColumn, request.subRow
     );
     request.serverTime = g_session.GetServerTime();
-    request.destinationX = reinterpret_cast<const int&>(this->unknown_04F8);
-    request.destinationY = this->unknown_04FC;
+    request.destinationX = reinterpret_cast<const int&>(this->destCellX);
+    request.destinationY = this->destCellZ;
     const int address = reinterpret_cast<int>(&request);
     this->SendMsg(nullptr, AM_MOVE, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
@@ -2873,19 +2873,19 @@ bool CPlayer::OnProcess() {
 
   this->PlayFrameSounds();
 
-  if (this->unknown_0180 != 0) {
+  if (this->isPlayHitWave != 0) {
     const vector3d& player =
       reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
-    this->unknown_0180 = 0;
+    this->isPlayHitWave = 0;
   }
 
   this->UpdateMsgEffect(this->GetMonsterTransformJob() > 0);
 
-  if (g_session.unknown_61B1) {
+  if (g_session.showCameraInfo) {
     UIWindow* window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
     if (window != nullptr) {
       window->Invalidate();
@@ -2899,14 +2899,14 @@ bool CPlayer::OnProcess() {
 // FUNCTION: fn_22667
 void CPlayer::UpdatePendingAction() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  switch (this->unknown_0508) {
+  switch (this->proceedType) {
   case PT_ATTACK:
   case PT_ATTACK_2: {
-    CGameActor* target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->unknown_051C));
+    CGameActor* target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->proceedTargetGid));
     if (target == nullptr) {
       break;
     }
-    if (target->render.unknown_0070 == 3) {
+    if (target->render.state == 3) {
       return;
     }
 
@@ -2914,18 +2914,18 @@ void CPlayer::UpdatePendingAction() {
     int row;
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
     if (this->GetEffectiveJob(-1) == 16 || this->GetEffectiveJob(-1) == 4017 || this->GetEffectiveJob(-1) == 4039) {
-      const int state = static_cast<int>(this->render.unknown_0070);
+      const int state = static_cast<int>(this->render.state);
       if (state != 1 && state != 0 && state != 4 && state != 7 && state != 8) {
         return;
       }
     } else if ((this->GetEffectiveJob(-1) >= 4046 && this->GetEffectiveJob(-1) < 4361) || this->GetEffectiveJob(-1) == 24 ||
                this->GetEffectiveJob(-1) == 25) {
-      const int state = static_cast<int>(this->render.unknown_0070);
+      const int state = static_cast<int>(this->render.state);
       if (state != 1 && state != 0 && state != 4 && state != 7 && state != 8 && state < 16) {
         return;
       }
     } else {
-      const int state = static_cast<int>(this->render.unknown_0070);
+      const int state = static_cast<int>(this->render.state);
       if (state != 1 && state != 0 && state != 4) {
         return;
       }
@@ -2934,43 +2934,43 @@ void CPlayer::UpdatePendingAction() {
     const float distance = this->AdjustFollowDistance(
       target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
     );
-    const bool inRange = static_cast<float>(g_session.unknown_0F4C * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->unknown_04F8) != column || this->unknown_04FC != row) && !inRange) {
-      const std::uint32_t delay = this->unknown_0508 != 5 ? 450 : 1200;
-      const bool elapsed = timeGetTime() > this->unknown_0524 + delay;
-      const int state = static_cast<int>(this->render.unknown_0070);
-      int cellX = target->unknown_0158[5];
-      int cellY = *reinterpret_cast<const int*>(target->unknown_0170);
+    const bool inRange = static_cast<float>(g_session.storeItemLimit * 5) + 5.5f >= distance;
+    if ((reinterpret_cast<const int&>(this->destCellX) != column || this->destCellZ != row) && !inRange) {
+      const std::uint32_t delay = this->proceedType != 5 ? 450 : 1200;
+      const bool elapsed = timeGetTime() > this->tickOfMoveForAttack + delay;
+      const int state = static_cast<int>(this->render.state);
+      int cellX = target->movementState[5];
+      int cellY = *reinterpret_cast<const int*>(target->destinationAndSpeed);
       float x;
       float z;
-      if (this->unknown_0508 == 5) {
+      if (this->proceedType == 5) {
         x = target->render.position.x;
         z = target->render.position.z;
       } else {
         mode->CellCenter(cellX, cellY, x, z);
       }
       this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
-      mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, g_session.unknown_0F4C);
-      if ((reinterpret_cast<const int&>(this->unknown_04F8) != cellX || this->unknown_04FC != cellY) && state != 2 &&
-          this->unknown_0514 == 0 && elapsed) {
-        reinterpret_cast<int&>(this->unknown_04F8) = cellX;
-        this->unknown_04FC = cellY;
-        this->unknown_0524 = timeGetTime();
+      mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, g_session.storeItemLimit);
+      if ((reinterpret_cast<const int&>(this->destCellX) != cellX || this->destCellZ != cellY) && state != 2 &&
+          this->isAttackRequest == 0 && elapsed) {
+        reinterpret_cast<int&>(this->destCellX) = cellX;
+        this->destCellZ = cellY;
+        this->tickOfMoveForAttack = timeGetTime();
         this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return;
     }
 
-    if (this->unknown_0510 == 2) {
+    if (this->attackMode == 2) {
       this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
-    if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
+    if (this->isAttackRequest != 0 || timeGetTime() <= this->attackReqTime + 1200) {
       return;
     }
-    ++this->unknown_0520;
-    this->unknown_0500 = timeGetTime();
-    this->unknown_0514 = 1;
-    if (this->unknown_0510 != 2) {
+    ++this->totalAttackReqCnt;
+    this->attackReqTime = timeGetTime();
+    this->isAttackRequest = 1;
+    if (this->attackMode != 2) {
       this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     } else {
       this->SendMsg(nullptr, AM_REQ_ATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -2979,10 +2979,10 @@ void CPlayer::UpdatePendingAction() {
   }
   case PT_SKILL: {
     CGameActor* target;
-    if (this->unknown_051C == g_session.m_aid) {
+    if (this->proceedTargetGid == g_session.m_aid) {
       target = this;
     } else {
-      target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->unknown_051C));
+      target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->proceedTargetGid));
     }
     if (target == nullptr) {
       break;
@@ -2992,12 +2992,12 @@ void CPlayer::UpdatePendingAction() {
     int row;
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
     const float x = target->render.position.x;
-    int cellX = target->unknown_0158[5];
-    int cellY = *reinterpret_cast<const int*>(target->unknown_0170);
+    int cellX = target->movementState[5];
+    int cellY = *reinterpret_cast<const int*>(target->destinationAndSpeed);
     const float z = target->render.position.z;
-    const int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
+    const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
-    const int state = static_cast<int>(this->render.unknown_0070);
+    const int state = static_cast<int>(this->render.state);
     if (state != 1 && state != 0 && state != 4 && state < 16) {
       return;
     }
@@ -3006,59 +3006,59 @@ void CPlayer::UpdatePendingAction() {
       target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
     );
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
+    if ((reinterpret_cast<const int&>(this->destCellX) == column && this->destCellZ == row) || inRange) {
       this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->unknown_04F8) == cellX && this->unknown_04FC == cellY) {
+    if (reinterpret_cast<const int&>(this->destCellX) == cellX && this->destCellZ == cellY) {
       return;
     }
-    if (this->render.unknown_0070 == 2) {
+    if (this->render.state == 2) {
       return;
     }
-    this->unknown_04FC = cellY;
-    reinterpret_cast<int&>(this->unknown_04F8) = cellX;
+    this->destCellZ = cellY;
+    reinterpret_cast<int&>(this->destCellX) = cellX;
     this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_GROUNDSKILL: {
-    int groundX = this->unknown_0534;
-    int groundY = this->unknown_0538;
+    int groundX = this->gSkillDx;
+    int groundY = this->gSkillDy;
     int column;
     int row;
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
-    const int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
+    const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
     float x;
     float z;
     mode->CellCenter(groundX, groundY, x, z);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, groundX, groundY, range);
-    const int state = static_cast<int>(this->render.unknown_0070);
+    const int state = static_cast<int>(this->render.state);
     if (state != 1 && state != 0 && state != 4 && state < 16) {
       return;
     }
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
+    if ((reinterpret_cast<const int&>(this->destCellX) == column && this->destCellZ == row) || inRange) {
       this->SendMsg(nullptr, AM_REQ_GROUND_SKILL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->unknown_04F8) == groundX && this->unknown_04FC == groundY) {
+    if (reinterpret_cast<const int&>(this->destCellX) == groundX && this->destCellZ == groundY) {
       return;
     }
-    if (this->render.unknown_0070 == 2) {
+    if (this->render.state == 2) {
       return;
     }
-    this->unknown_04FC = groundY;
-    reinterpret_cast<int&>(this->unknown_04F8) = groundX;
+    this->destCellZ = groundY;
+    reinterpret_cast<int&>(this->destCellX) = groundX;
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_PICKUPITEM: {
-    CItem* item = mode->scene->GetItemByAID(this->unknown_051C);
+    CItem* item = mode->scene->GetItemByAID(this->proceedTargetGid);
     if (item == nullptr) {
       break;
     }
@@ -3072,30 +3072,30 @@ void CPlayer::UpdatePendingAction() {
     const int targetX = itemX;
     const int targetY = itemY;
     mode->StepTowardWalkableCell(column, row, itemX, itemY);
-    const int state = static_cast<int>(this->render.unknown_0070);
+    const int state = static_cast<int>(this->render.state);
     if (state != 0 && state < 16) {
       return;
     }
 
     if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
       this->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-      if (!mode->HasUnknown01A4(this->unknown_051C)) {
-        mode->PushUnknown01A4(this->unknown_051C);
-        mode->SendMsg(MM_ITEMPICKUP, this->unknown_051C, 0, 0, 0);
+      if (!mode->HasUnknown01A4(this->proceedTargetGid)) {
+        mode->PushUnknown01A4(this->proceedTargetGid);
+        mode->SendMsg(MM_ITEMPICKUP, this->proceedTargetGid, 0, 0, 0);
       }
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->unknown_04F8) == itemX && this->unknown_04FC == itemY) {
+    if (reinterpret_cast<const int&>(this->destCellX) == itemX && this->destCellZ == itemY) {
       return;
     }
-    this->unknown_04FC = itemY;
-    reinterpret_cast<int&>(this->unknown_04F8) = itemX;
+    this->destCellZ = itemY;
+    reinterpret_cast<int&>(this->destCellX) = itemX;
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
   case PT_TOUCH_SKILL: {
-    CGameActor* skill = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->unknown_051C));
+    CGameActor* skill = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->proceedTargetGid));
     if (skill == nullptr) {
       break;
     }
@@ -3106,31 +3106,31 @@ void CPlayer::UpdatePendingAction() {
     int cellX;
     int cellY;
     mode->WorldCell(skill->render.position.x, skill->render.position.z, cellX, cellY);
-    int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
-    if (mode->SendMsg(MM_GET_SKILL_USE_TYPE, 0, 0, 0, 0) == 0 && range < 5 && this->unknown_052C != 124) {
-      range = g_session.unknown_0F4C > 5 ? g_session.unknown_0F4C : 5;
+    int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
+    if (mode->SendMsg(MM_GET_SKILL_USE_TYPE, 0, 0, 0, 0) == 0 && range < 5 && this->skillId != 124) {
+      range = g_session.storeItemLimit > 5 ? g_session.storeItemLimit : 5;
     }
     float x;
     float z;
     mode->CellCenter(cellX, cellY, x, z);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
-    const int state = static_cast<int>(this->render.unknown_0070);
+    const int state = static_cast<int>(this->render.state);
     if (state != 1 && state != 0 && state != 4 && state < 16) {
       return;
     }
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->unknown_04F8) != column || this->unknown_04FC != row) && !inRange) {
-      if (reinterpret_cast<const int&>(this->unknown_04F8) == cellX && this->unknown_04FC == cellY) {
+    if ((reinterpret_cast<const int&>(this->destCellX) != column || this->destCellZ != row) && !inRange) {
+      if (reinterpret_cast<const int&>(this->destCellX) == cellX && this->destCellZ == cellY) {
         return;
       }
-      if (this->render.unknown_0070 == 2 && skill->GetEffectiveJob(-1) != UNT_ICEWALL && skill->GetEffectiveJob(-1) != UNT_BLASTMINE &&
+      if (this->render.state == 2 && skill->GetEffectiveJob(-1) != UNT_ICEWALL && skill->GetEffectiveJob(-1) != UNT_BLASTMINE &&
           skill->GetEffectiveJob(-1) != UNT_CLAYMORETRAP) {
         return;
       }
-      this->unknown_04FC = cellY;
-      reinterpret_cast<int&>(this->unknown_04F8) = cellX;
+      this->destCellZ = cellY;
+      reinterpret_cast<int&>(this->destCellX) = cellX;
       this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -3146,17 +3146,17 @@ void CPlayer::UpdatePendingAction() {
     case UNT_SOLIDTRAP:
     case UNT_SWIFTTRAP:
     case UNT_FLAMETRAP:
-      if (this->unknown_052C == 0) {
-        if (this->unknown_0510 == 2) {
+      if (this->skillId == 0) {
+        if (this->attackMode == 2) {
           this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
-        if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
+        if (this->isAttackRequest != 0 || timeGetTime() <= this->attackReqTime + 1200) {
           return;
         }
-        ++this->unknown_0520;
-        this->unknown_0500 = timeGetTime();
-        this->unknown_0514 = 1;
-        if (this->unknown_0510 != 2) {
+        ++this->totalAttackReqCnt;
+        this->attackReqTime = timeGetTime();
+        this->isAttackRequest = 1;
+        if (this->attackMode != 2) {
           this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         } else {
           this->SendMsg(nullptr, AM_REQ_ATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3183,7 +3183,7 @@ void CPlayer::ReapplySkillEffects() {
   }
 
   g_weatherEffect.StopDarken();
-  this->unknown_0210 = static_cast<std::uint16_t>(g_session.m_level);
+  this->characterLevel = static_cast<std::uint16_t>(g_session.m_level);
   this->UpdateMaxLevelAura();
 
   CTetraBallEffect* tetraBall;
@@ -3196,9 +3196,9 @@ void CPlayer::ReapplySkillEffects() {
 
   for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
     const int type = it->id;
-    const int value = it->unknown_0008;
-    const int argument3 = it->unknown_000C;
-    const int argument4 = it->unknown_0010;
+    const int value = it->value1;
+    const int argument3 = it->value2;
+    const int argument4 = it->value3;
 
     switch (type) {
     case EFST_TWOHANDQUICKEN: {
@@ -3302,7 +3302,7 @@ void CPlayer::ReapplySkillEffects() {
         this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->skillEffect = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
     case EFST_SOULLINK:
@@ -3461,10 +3461,10 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_ALL_RIDING:
       this->SetRiding(1);
       this->SetSprJob(this->GetEffectiveJob(-1));
-      this->SetBodyPalette(this->render.unknown_0048);
+      this->SetBodyPalette(this->render.bodyPalette);
       break;
     case EFST_ON_PUSH_CART:
-      this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, 1, 0, g_session.unknown_5C1C, g_session.unknown_5C1C >> 31, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, type, type >> 31, 1, 0, g_session.replayPacketMode, g_session.replayPacketMode >> 31, 0, 0, 0, 0, 0, 0);
       break;
     case EFST_TELEKINESIS_INTENSE:
       while (this->HasId(0x418)) {
@@ -3586,7 +3586,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case EFST_SOULATTACK:
-      this->unknown_04D8[0] = 1;
+      this->alternateDoramAppearance[0] = 1;
       break;
     case EFST_IMMUNE_PROPERTY_NOTHING:
     case EFST_IMMUNE_PROPERTY_WATER:
@@ -3667,7 +3667,7 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(0x14E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_overrideColor = 1;
       this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->skillEffect = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_HANDICAPSTATE_DEEPSILENCE:
     case EFST_HANDICAPSTATE_SWOONING:
@@ -3852,10 +3852,10 @@ void CPlayer::SendMsg(
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
   case AM_REQ_GROUND_SKILL: {
     PlayerSkillRequest request;
-    request.skill = this->unknown_052C;
-    request.x = this->unknown_0534;
-    request.y = this->unknown_0538;
-    request.level = this->unknown_0530;
+    request.skill = this->skillId;
+    request.x = this->gSkillDx;
+    request.y = this->gSkillDy;
+    request.level = this->skillUseLevel;
     if (request.skill == 0x7D) {
       g_windowMgr.EnsureWindow(WID_TALKBOXTRAPINPUTWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
     } else if (request.skill == 0xDC) {
@@ -3869,7 +3869,7 @@ void CPlayer::SendMsg(
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())
         ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
       MovementRouteInterpolation route;
-      if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
+      if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->gSkillDx, this->gSkillDy, 150, route, 15) == true) {
         metadata = route.EndMetadata();
       }
       mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(&request), metadata, 0, 0);
@@ -3879,51 +3879,51 @@ void CPlayer::SendMsg(
     break;
   }
   case AM_REQ_SKILL:
-    mode->SendMsg(MM_USE_SKILL, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
+    mode->SendMsg(MM_USE_SKILL, this->skillId, this->proceedTargetGid, this->skillUseLevel, 0);
     break;
   case AM_REQ_ATTACK_REPEAT: {
-    CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
-    if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
-      mode->SendMsg(MM_REQUEST_ACT, 7, this->unknown_051C, 0, 0);
+    CRenderObject* target = mode->scene->GetGameActorByAID(this->proceedTargetGid);
+    if (target == nullptr || static_cast<CGameActor*>(target)->objectType != 7) {
+      mode->SendMsg(MM_REQUEST_ACT, 7, this->proceedTargetGid, 0, 0);
     }
     break;
   }
   case AM_REQ_ATTACK:
-    mode->SendMsg(MM_REQUEST_ACT, 0, this->unknown_051C, 0, 0);
+    mode->SendMsg(MM_REQUEST_ACT, 0, this->proceedTargetGid, 0, 0);
     break;
   case AM_REQ_SIT:
     if (!StateFlag01(this->stateFlags)) {
-      if (this->render.unknown_0070 == 0) {
-        mode->SendMsg(MM_REQUEST_ACT, 2, this->unknown_051C, 0, 0);
-      } else if (this->render.unknown_0070 == 6) {
-        mode->SendMsg(MM_REQUEST_ACT, 3, this->unknown_051C, 0, 0);
+      if (this->render.state == 0) {
+        mode->SendMsg(MM_REQUEST_ACT, 2, this->proceedTargetGid, 0, 0);
+      } else if (this->render.state == 6) {
+        mode->SendMsg(MM_REQUEST_ACT, 3, this->proceedTargetGid, 0, 0);
       }
     }
     break;
   case AM_REQ_MOVE:
     this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    if (this->render.unknown_0070 != 0x4B) {
-      if (this->IsSpecialState(this->render.unknown_0070)) {
-        this->unknown_0518 = 1;
-        this->unknown_053C = b;
-        this->unknown_0540 = d;
+    if (this->render.state != 0x4B) {
+      if (this->IsSpecialState(this->render.state)) {
+        this->isPreengageStateOfMove = 1;
+        this->preengageXOfMove = b;
+        this->preengageYOfMove = d;
       } else {
-        this->unknown_0518 = 0;
-        this->unknown_053C = -1;
-        this->unknown_0540 = -1;
+        this->isPreengageStateOfMove = 0;
+        this->preengageXOfMove = -1;
+        this->preengageYOfMove = -1;
         this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
     break;
   case AM_REQ_MOVE_PRIMITIVE:
     g_unknown173AD3F = false;
-    if (timeGetTime() > this->unknown_0528 + 350) {
-      this->unknown_0528 = timeGetTime();
+    if (timeGetTime() > this->standTick + 350) {
+      this->standTick = timeGetTime();
       mode->SendMsg(MM_REQUEST_MOVE, b, d, 0, 0);
     }
     break;
   case AM_REQ_CHANGE_DIR: {
-    const std::uint32_t state = this->render.unknown_0070;
+    const std::uint32_t state = this->render.state;
     if (state != 0 && state != 4 && state != 6) {
       break;
     }
@@ -3943,18 +3943,18 @@ void CPlayer::SendMsg(
       direction -= 8;
     }
     if (direction == 0 || direction == 4) {
-      this->unknown_043C = 0;
+      this->headDir = 0;
       this->render.angle = facing;
     } else if (direction == 1) {
-      if (this->unknown_043C == 1) {
-        this->unknown_043C = 0;
+      if (this->headDir == 1) {
+        this->headDir = 0;
         this->render.angle = facing;
       } else {
-        this->unknown_043C = 1;
+        this->headDir = 1;
       }
     } else {
       if (direction == 2 || direction == 3) {
-        this->unknown_043C = 1;
+        this->headDir = 1;
         const float angle = facing + 45.0f;
         this->render.angle = angle;
         if (angle >= 360.0f) {
@@ -3962,67 +3962,67 @@ void CPlayer::SendMsg(
         }
       }
       if (direction == 7) {
-        if (this->unknown_043C == 2) {
-          this->unknown_043C = 0;
+        if (this->headDir == 2) {
+          this->headDir = 0;
           this->render.angle = facing;
         } else {
-          this->unknown_043C = 2;
+          this->headDir = 2;
         }
       } else if (direction == 5 || direction == 6) {
         const float angle = facing - 45.0f;
-        this->unknown_043C = 2;
+        this->headDir = 2;
         this->render.angle = angle;
         if (angle < 0.0f) {
           this->render.angle = angle + 360.0f;
         }
       }
     }
-    const int motion = this->unknown_043C;
+    const int motion = this->headDir;
     this->render.curMotion = motion;
     this->render.angle = static_cast<float>((CPlayer::AngleToDirection(this->render.angle) + 4) * 45);
     mode->SendMsg(MM_CHANGE_DIRECTION, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
     break;
   }
   case AM_PREMOVE:
-    this->unknown_050C = 1;
-    this->unknown_0504 = timeGetTime();
-    reinterpret_cast<int&>(this->unknown_04F8) = b;
-    this->unknown_04FC = d;
+    this->preMoveOn = 1;
+    this->preMoveStartTick = timeGetTime();
+    reinterpret_cast<int&>(this->destCellX) = b;
+    this->destCellZ = d;
     break;
   case AM_MOVE: {
-    this->unknown_050C = 0;
+    this->preMoveOn = 0;
     const int* route = reinterpret_cast<const int*>(b);
     this->routeStartTick = route[0];
-    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
-      this->unknown_0158[5] = route[5];
-      *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.healthPoints))) {
+      this->movementState[5] = route[5];
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     } else {
       int column;
       int row;
       int subColumn;
       int subRow;
       mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
-      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
-        this->unknown_0158[5] = route[5];
-        *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.healthPoints))) {
+        this->movementState[5] = route[5];
+        *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
         this->SetState(1, 1);
       }
     }
-    g_navigationManager.CheckArrival(this->unknown_0158[5], *reinterpret_cast<const int*>(this->unknown_0170));
+    g_navigationManager.CheckArrival(this->movementState[5], *reinterpret_cast<const int*>(this->destinationAndSpeed));
     break;
   }
   case AM_FREEZE:
     this->SetState(0, 1);
     break;
   case AM_CANCELATTACK:
-    this->unknown_0514 = 0;
-    this->unknown_0508 = 0;
+    this->isAttackRequest = 0;
+    this->proceedType = 0;
     mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
     break;
   case AM_ATTACKCLICKUP: {
-    const int attackMode = this->unknown_0508;
+    const int attackMode = this->proceedType;
     if (attackMode != 1 && attackMode != 5) {
       if (attackMode == 3) {
         mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
@@ -4032,9 +4032,9 @@ void CPlayer::SendMsg(
         break;
       }
     }
-    if (this->unknown_0510 != 0) {
-      this->unknown_0510 = 2;
-      if (this->unknown_0520 != 0) {
+    if (this->attackMode != 0) {
+      this->attackMode = 2;
+      if (this->totalAttackReqCnt != 0) {
         this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         mode->SendMsg(MM_CANCEL_LOCKON, 0, 0, 0, 0);
       }
@@ -4042,72 +4042,72 @@ void CPlayer::SendMsg(
     break;
   }
   case AM_SET_SKILL_USE_LEVEL:
-    this->unknown_0530 = b;
+    this->skillUseLevel = b;
     break;
   case AM_PROCEEDGROUNDSKILL:
-    if (this->render.unknown_0070 != 6 &&
+    if (this->render.state != 6 &&
         (!StateFlag01(this->stateFlags) || (b == 0x89 && c == 0) || (b == 0xD4 && c == 0) || (b == 0x211 && c == 0) ||
          (b == 0x212 && c == 0))) {
-      this->unknown_0508 = 4;
-      this->unknown_052C = b;
-      this->unknown_0534 = d;
-      this->unknown_0538 = f;
-      this->unknown_051C = 0;
+      this->proceedType = 4;
+      this->skillId = b;
+      this->gSkillDx = d;
+      this->gSkillDy = f;
+      this->proceedTargetGid = 0;
     }
     break;
   case AM_PROCEEDSKILL:
-    if (this->render.unknown_0070 != 6 &&
+    if (this->render.state != 6 &&
         (!StateFlag01(this->stateFlags) || (d == 0x89 && e == 0) || (d == 0xD4 && e == 0) || (d == 0x211 && e == 0) ||
          (d == 0x212 && e == 0) || (d == 0x250 && e == 0))) {
-      this->unknown_0508 = 3;
-      this->unknown_051C = b;
-      this->unknown_052C = d;
+      this->proceedType = 3;
+      this->proceedTargetGid = b;
+      this->skillId = d;
     }
     break;
   case AM_RESUMEPROCEEDATTACK:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
-      const int attackMode = this->unknown_0508 == 1 ? 5 : 1;
-      this->unknown_0524 = timeGetTime() - 1200;
-      this->unknown_0508 = attackMode;
-      this->unknown_051C = b;
-      this->unknown_0514 = 0;
-      this->unknown_0520 = 0;
-      reinterpret_cast<int&>(this->unknown_04F8) = -1;
-      this->unknown_04FC = -1;
+    if (this->render.state != 6 && !StateFlag01(this->stateFlags)) {
+      const int attackMode = this->proceedType == 1 ? 5 : 1;
+      this->tickOfMoveForAttack = timeGetTime() - 1200;
+      this->proceedType = attackMode;
+      this->proceedTargetGid = b;
+      this->isAttackRequest = 0;
+      this->totalAttackReqCnt = 0;
+      reinterpret_cast<int&>(this->destCellX) = -1;
+      this->destCellZ = -1;
     }
     break;
   case AM_PROCEEDATTACK:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != 6 && !StateFlag01(this->stateFlags)) {
       CRenderObject* target = mode->scene->GetGameActorByAID(b);
       if (target != nullptr) {
-        this->unknown_0508 =
-          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.unknown_16F4) * 4 / 3) <
-              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->unknown_0170)[1]
+        this->proceedType =
+          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.healthPoints) * 4 / 3) <
+              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->destinationAndSpeed)[1]
             ? 5
             : 1;
-        this->unknown_051C = b;
-        this->unknown_0514 = 0;
-        this->unknown_0510 = d;
-        this->unknown_0520 = 0;
+        this->proceedTargetGid = b;
+        this->isAttackRequest = 0;
+        this->attackMode = d;
+        this->totalAttackReqCnt = 0;
       }
     }
     break;
   case AM_PROCEEDPICKUPITEM:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
-      this->unknown_0508 = 2;
-      this->unknown_051C = b;
+    if (this->render.state != 6 && !StateFlag01(this->stateFlags)) {
+      this->proceedType = 2;
+      this->proceedTargetGid = b;
     }
     break;
   case AM_PROCEEDTOUCHSKILL:
-    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != 6 && !StateFlag01(this->stateFlags)) {
       const int* skill = reinterpret_cast<const int*>(d);
-      this->unknown_0508 = 6;
-      this->unknown_052C = skill[1];
-      this->unknown_0530 = skill[3];
-      this->unknown_051C = b;
-      this->unknown_0510 = f;
-      this->unknown_0514 = 0;
-      this->unknown_0520 = 0;
+      this->proceedType = 6;
+      this->skillId = skill[1];
+      this->skillUseLevel = skill[3];
+      this->proceedTargetGid = b;
+      this->attackMode = f;
+      this->isAttackRequest = 0;
+      this->totalAttackReqCnt = 0;
     }
     break;
   case AM_CLEAR_ROUTE:
@@ -4146,12 +4146,12 @@ void CGrannyPc::RenderModel(
   RenderCommand** commands = this->layerCommands[layer];
   if (!model) {
     model = this->model;
-    this->unknown_2550 = (this->*update.asPose)(nullptr);
+    this->worldPose = (this->*update.asPose)(nullptr);
     commands = this->commands;
   } else if (animation) {
     pose = (this->*update.asPose)(animation);
   } else {
-    pose = this->unknown_2550;
+    pose = this->worldPose;
   }
 
   matrix rotation;
@@ -4249,7 +4249,7 @@ void CGrannyPc::RenderModel(
       }
 
       if (layer != 1) {
-        this->unknown_2558.push_back(position);
+        this->attachmentPositions.push_back(position);
       }
     }
 
@@ -4285,80 +4285,80 @@ void CPlayer::Initialize() {
   this->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain
                               ->Height(this->render.position.x, this->render.position.z);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-    ->WorldCell(this->render.position.x, this->render.position.z, reinterpret_cast<int&>(this->unknown_04F8), this->unknown_04FC);
+    ->WorldCell(this->render.position.x, this->render.position.z, reinterpret_cast<int&>(this->destCellX), this->destCellZ);
 
-  this->unknown_0534 = 0;
-  this->unknown_0538 = 0;
+  this->gSkillDx = 0;
+  this->gSkillDy = 0;
   this->render.angle = static_cast<float>((g_session.m_playerDir + 4) * 45);
   this->render.accountId = g_session.m_aid;
   this->guildId = g_guildInfo.m_guildId;
-  this->unknown_023C = -1;
-  this->unknown_0504 = 0;
-  this->unknown_050C = 0;
-  this->unknown_0508 = 0;
-  this->unknown_0510 = 0;
-  this->unknown_0520 = 0;
-  this->unknown_0514 = 0;
-  this->unknown_051C = 0;
-  this->render.unknown_00A4Bytes[1] = 1;
-  this->unknown_052C = 0;
-  this->unknown_0530 = 0;
-  this->unknown_0524 = timeGetTime() - 1200;
-  this->unknown_0500 = timeGetTime() - 1200;
+  this->pathStartCell = -1;
+  this->preMoveStartTick = 0;
+  this->preMoveOn = 0;
+  this->proceedType = 0;
+  this->attackMode = 0;
+  this->totalAttackReqCnt = 0;
+  this->isAttackRequest = 0;
+  this->proceedTargetGid = 0;
+  this->render.visibilityOptions[1] = 1;
+  this->skillId = 0;
+  this->skillUseLevel = 0;
+  this->tickOfMoveForAttack = timeGetTime() - 1200;
+  this->attackReqTime = timeGetTime() - 1200;
   this->render.screenX = g_renderer->viewport.centerX;
   this->render.screenY = g_renderer->viewport.centerY;
-  this->unknown_0518 = 0;
-  this->unknown_053C = -1;
-  this->unknown_0540 = -1;
-  this->unknown_0528 = timeGetTime() - 1200;
+  this->isPreengageStateOfMove = 0;
+  this->preengageXOfMove = -1;
+  this->preengageYOfMove = -1;
+  this->standTick = timeGetTime() - 1200;
   this->SetState(0, 1);
 
-  *reinterpret_cast<int*>(&this->unknown_0170[4]) = *reinterpret_cast<const int*>(&g_session.unknown_16F4[0]);
-  this->render.unknown_00A8 = 1;
+  *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = *reinterpret_cast<const int*>(&g_session.healthPoints[0]);
+  this->render.isCharacter = 1;
   this->SetUnknown0260(g_session.SyncUnknown0E98());
 
   const int bodyState = this->bodyState;
   const std::uint32_t stateFlags = this->stateFlags;
-  const int effectState = this->unknown_02C4;
-  this->bodyState = *reinterpret_cast<const int*>(&g_session.unknown_0F0C[0]);
+  const int effectState = this->effectState;
+  this->bodyState = *reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]);
   this->stateFlags = g_session.m_jobFlags;
-  this->unknown_02C4 = *reinterpret_cast<const int*>(&g_session.unknown_0F0C[4]);
-  this->SetMadogearType(g_session.unknown_8074);
+  this->effectState = *reinterpret_cast<const int*>(&g_session.statusLevelEffects[4]);
+  this->SetMadogearType(g_session.madogearType);
   this->SetBodyCostume(g_session.m_bodyCostume, 0);
   this->SetSprAct2(
-    g_session.GetDisplayJob(), g_session.SyncUnknown0E98(), g_session.m_head, *reinterpret_cast<const int*>(&g_session.unknown_0EDC[0x4]),
-    *reinterpret_cast<const int*>(&g_session.unknown_0EDC[0x8]), *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0x0]),
-    *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0x4]), *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0x8]),
+    g_session.GetDisplayJob(), g_session.SyncUnknown0E98(), g_session.m_head, *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]),
+    *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]),
+    *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]),
     g_session.m_headPalette, g_session.m_bodyStyle, g_session.m_jobFlags
   );
   this->SetSprRobe(g_session.m_robe, 0);
-  if (g_session.unknown_6184 != 0) {
-    const int value = g_session.unknown_6184;
+  if (g_session.playerAppearanceState != 0) {
+    const int value = g_session.playerAppearanceState;
     this->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 856, 0, 1, 0, value, value >> 31, 0, 0, 0, 0, 0, 0);
   }
   this->bodyState = bodyState;
   this->stateFlags = stateFlags;
-  this->unknown_02C4 = effectState;
+  this->effectState = effectState;
   this->SetStatusStates(
-    *reinterpret_cast<const int*>(&g_session.unknown_0F0C[0]), g_session.m_jobFlags, *reinterpret_cast<const int*>(&g_session.unknown_0F0C[4]), false
+    *reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]), g_session.m_jobFlags, *reinterpret_cast<const int*>(&g_session.statusLevelEffects[4]), false
   );
 
   this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0xA4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->unknown_0544 = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->skillEffect = this->LaunchEffect(0xA4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   if (!g_statusRefreshSuppressed) {
     this->ReapplySkillEffects();
   }
 
   this->msgEffect = nullptr;
-  this->unknown_0314 = 0;
+  this->objectType = 0;
   this->SetUnknown0404(g_session.GetUnknown8134());
 }
 
 // OFFSET: 0x00DB4290
 // FUNCTION: fn_22651
 void CPc::SetState(int state, int resetPosition) {
-  int current = this->render.unknown_0070;
-  if (current == 3 || this->unknown_017C != 0) {
+  int current = this->render.state;
+  if (current == 3 || this->isTrickDead != 0) {
     return;
   }
 
@@ -4367,15 +4367,15 @@ void CPc::SetState(int state, int resetPosition) {
   }
 
   if (state == 3) {
-    const int job = this->GetEffectiveJob(JobNames::BaseJob(this->unknown_025C));
-    this->LoadEquipAction(0, GetBodyActionResourceName(job, this->unknown_0260, this->unknown_04D0, this->GetMadogearType()).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->unknown_0260, this->unknown_04D0, this->GetMadogearType()).c_str());
-    current = this->render.unknown_0070;
+    const int job = this->GetEffectiveJob(JobNames::BaseJob(this->job));
+    this->LoadEquipAction(0, GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    current = this->render.state;
   }
 
   if (current == 4 && static_cast<char>(resetPosition) == 1) {
-    this->render.position.x = this->unknown_02D0;
-    this->render.position.z = this->unknown_02D4;
+    this->render.position.x = this->damageDestX;
+    this->render.position.z = this->damageDestZ;
   }
 
   int action;
@@ -4398,14 +4398,14 @@ void CPc::SetState(int state, int resetPosition) {
     this->RegisterPos();
     this->SetAction(action, 4, 1);
     this->render.isMotionFinished = true;
-    this->render.curMotion = this->unknown_043C;
+    this->render.curMotion = this->headDir;
     break;
   case ST_MOVE:
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
-    this->unknown_043C = 0;
+    this->headDir = 0;
     CGameActor::SetState(1, resetPosition);
     break;
   case ST_STAND:
@@ -4423,7 +4423,7 @@ void CPc::SetState(int state, int resetPosition) {
         break;
       }
     }
-    this->render.curMotion = this->unknown_043C;
+    this->render.curMotion = this->headDir;
     switch (current) {
     case ST_ATTACK:
     case ST_DAMAGE:
@@ -4454,15 +4454,15 @@ void CPc::SetState(int state, int resetPosition) {
       this->SetAction(action, 4, 0);
       break;
     default:
-      if (this->unknown_02C8 != 0) {
+      if (this->healthState != 0) {
         this->SetAction(action, 4, 0);
       }
       break;
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
     break;
   case ST_SKILL:
-    if (this->render.unknown_0114 == 1 || this->render.unknown_0070 == 6) {
+    if (this->render.specialMotionLocked == 1 || this->render.state == 6) {
       return;
     }
     this->SetAction(action, 6, 1);
@@ -4485,10 +4485,10 @@ void CPc::SetState(int state, int resetPosition) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 3, 0x60, 3, 1, 1000, 0);
     }
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case ST_ATTACK: {
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
@@ -4500,7 +4500,7 @@ void CPc::SetState(int state, int resetPosition) {
       weaponAllowed = true;
     } else {
       weaponAllowed = IsJobWeaponAllowed(
-        this->GetEffectiveJob(-1), this->unknown_0260, (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon)
+        this->GetEffectiveJob(-1), this->sex, (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
       );
     }
 
@@ -4532,7 +4532,7 @@ void CPc::SetState(int state, int resetPosition) {
     }
 
     CGameActor::SetState(attackState, resetPosition);
-    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, weaponAllowed);
+    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
 
     int weaponView = this->weapon;
     if (weaponView > 105) {
@@ -4545,32 +4545,32 @@ void CPc::SetState(int state, int resetPosition) {
         this->SetArrowEffectSuppressed(false);
       } else {
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->render.speed * this->unknown_0378, 0);
+        (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->render.speed * this->attackMotion, 0);
       }
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
 
-    if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->unknown_04D8[0] == 1) {
+    if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->alternateDoramAppearance[0] == 1) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, this->GetEffectiveJob(-1));
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, this->GetEffectiveJob(-1));
+      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
   }
   case ST_ATTACK2: {
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = IsJobWeaponAllowed(
-      this->GetEffectiveJob(-1), this->unknown_0260, (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon)
+      this->GetEffectiveJob(-1), this->sex, (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->unknown_0378 = AttackMotionLength(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, weaponAllowed);
-    if ((this->weapon == 14 && this->unknown_044C == 0) || (this->weapon == 13 && this->unknown_044C == 0)) {
+    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->unknown_0378 * this->render.speed, 0);
-      this->unknown_0378 = 8.0f / this->render.speed + this->unknown_0378;
+      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
   }
@@ -4580,8 +4580,8 @@ void CPc::SetState(int state, int resetPosition) {
   }
 
   this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
-  this->render.unknown_0070 = state;
-  this->render.unknown_008C = timeGetTime();
+  this->render.state = state;
+  this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00DAC400
@@ -4600,7 +4600,7 @@ void CGrannyPc::Render(int argument) {
 
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   if (this->renderFrame == 0) {
-    this->model->unknown_03B0 = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
+    this->model->hairPivot = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
     this->RenderModel(view, light, nullptr, 0, nullptr);
     for (int layer = 1; layer < 10; ++layer) {
       if (this->layerModels[layer]) {
@@ -4615,7 +4615,7 @@ void CGrannyPc::Render(int argument) {
   } else {
     this->RenderCached(view, 0, nullptr);
     if (this->layerModels[1]) {
-      this->layerModels[1]->unknown_03B0 = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
+      this->layerModels[1]->hairPivot = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
     }
     for (int layer = 1; layer < 10; ++layer) {
       if (this->layerModels[layer]) {
@@ -4653,7 +4653,7 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
     const int offsetZ = static_cast<int>(this->render.position.z - centerZ);
 
     std::memset(g_groundShadowPixels, 0, sizeof(g_groundShadowPixels));
-    for (const vector3d& point : this->unknown_2558) {
+    for (const vector3d& point : this->attachmentPositions) {
       const float x = point.x * 0.35f;
       const float y = point.y * 0.35f;
       const int pixelX = static_cast<int>(x * sine + y * cosine + 17.0f) + offsetX;
@@ -4665,8 +4665,8 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
         g_groundShadowPixels[index] = 0x5F000000;
       }
     }
-    this->unknown_2558.clear();
-    this->unknown_2554->Upload(0, 0, 35, 35, g_groundShadowPixels, 0, 0);
+    this->attachmentPositions.clear();
+    this->shadowTexture->Upload(0, 0, 35, 35, g_groundShadowPixels, 0, 0);
   }
 
   mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
@@ -4693,7 +4693,7 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
       uv[6] = (row1 * groundSine + column1 * groundCosine + 2.5f) / 5.0f;
       uv[7] = (row1 * groundCosine - column1 * groundSine + 2.5f) / 5.0f;
       ground->DrawGridDecal(
-        reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->unknown_2554, uv);
+        reinterpret_cast<const float*>(argument), column + j, row + i, 0x70FFFFFF, *this->shadowTexture, uv);
     }
   }
 }
@@ -4701,41 +4701,41 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
 struct PcStandEntry {
   /* 0000 */ std::uint32_t aid;
   /* 0004 */ int job;
-  /* 0008 */ int unknown_0008;
+  /* 0008 */ int sex;
   /* 000C */ int cellX;
   /* 0010 */ int cellY;
   /* 0014 */ int direction;
   /* 0018 */ int speed;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
-  /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C;
-  /* 0030 */ int unknown_0030;
+  /* 001C */ int xSize;
+  /* 0020 */ int ySize;
+  /* 0024 */ int head;
+  /* 0028 */ int weapon;
+  /* 002C */ int secondaryWeapon;
+  /* 0030 */ int accessory;
   /* 0034 */ int state;
   /* 0038 */ int bodyState;
   /* 003C */ int effectState;
   /* 0040 */ std::uint32_t stateFlags;
-  /* 0044 */ int unknown_0044;
-  /* 0048 */ int unknown_0048;
-  /* 004C */ int unknown_004C;
-  /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
-  /* 0058 */ int unknown_0058;
-  /* 005C */ int unknown_005C;
+  /* 0044 */ int healthState;
+  /* 0048 */ int shield;
+  /* 004C */ int accessory2;
+  /* 0050 */ int accessory3;
+  /* 0054 */ int headPalette;
+  /* 0058 */ int bodyPalette;
+  /* 005C */ int headDir;
   /* 0060 */ int guildId;
   /* 0064 */ int guildVersion;
-  /* 0068 */ int unknown_0068;
-  /* 006C */ int unknown_006C;
+  /* 0068 */ int honor;
+  /* 006C */ int virtue;
   /* 0070 */ int robe;
-  /* 0074 */ int unknown_0074;
-  /* 0078 */ int unknown_0078;
+  /* 0074 */ int pkState;
+  /* 0078 */ int bodyStyle;
 };
 
 struct PcMoveEntry {
   /* 0000 */ std::uint32_t aid;
   /* 0004 */ int job;
-  /* 0008 */ int unknown_0008;
+  /* 0008 */ int sex;
   /* 000C */ std::uint32_t moveStartTick;
   /* 0010 */ int startX;
   /* 0014 */ int startY;
@@ -4744,27 +4744,27 @@ struct PcMoveEntry {
   /* 0020 */ int destX;
   /* 0024 */ int destY;
   /* 0028 */ int speed;
-  /* 002C */ int unknown_002C;
-  /* 0030 */ int unknown_0030;
-  /* 0034 */ int unknown_0034;
-  /* 0038 */ int unknown_0038;
+  /* 002C */ int head;
+  /* 0030 */ int weapon;
+  /* 0034 */ int secondaryWeapon;
+  /* 0038 */ int accessory;
   /* 003C */ int bodyState;
   /* 0040 */ int effectState;
   /* 0044 */ std::uint32_t stateFlags;
-  /* 0048 */ int unknown_0048;
-  /* 004C */ int unknown_004C;
-  /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
-  /* 0058 */ int unknown_0058;
-  /* 005C */ int unknown_005C;
+  /* 0048 */ int healthState;
+  /* 004C */ int shield;
+  /* 0050 */ int accessory2;
+  /* 0054 */ int accessory3;
+  /* 0058 */ int headPalette;
+  /* 005C */ int bodyPalette;
   /* 0060 */ int unknown_0060;
   /* 0064 */ int guildId;
   /* 0068 */ int guildVersion;
-  /* 006C */ int unknown_006C;
-  /* 0070 */ int unknown_0070;
+  /* 006C */ int honor;
+  /* 0070 */ int virtue;
   /* 0074 */ int robe;
-  /* 0078 */ int unknown_0078;
-  /* 007C */ int unknown_007C;
+  /* 0078 */ int pkState;
+  /* 007C */ int bodyStyle;
 };
 
 // OFFSET: 0x00DAE890
@@ -4775,25 +4775,25 @@ void CPc::SendMsg(
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (*reinterpret_cast<const std::int64_t*>(&message)) {
   case AM_SET_HEAD_DIR:
-    if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
+    if (this->render.state == 0 || this->render.state == 6) {
       this->render.curMotion = b;
     }
     break;
   case AM_REMOVEGAGE:
-    if (this->unknown_0490) {
-      g_windowMgr.Schedule(this->unknown_0490);
-      this->unknown_0490 = nullptr;
+    if (this->gaugeWindow) {
+      g_windowMgr.Schedule(this->gaugeWindow);
+      this->gaugeWindow = nullptr;
     }
     break;
   case AM_UPDATEGAGE:
-    if (!this->unknown_0490) {
-      this->unknown_0490 = new UIPcGage();
-      this->unknown_0490->SetSize(60, 5);
-      g_windowMgr.AddRenderedFront(this->unknown_0490);
+    if (!this->gaugeWindow) {
+      this->gaugeWindow = new UIPcGage();
+      this->gaugeWindow->SetSize(60, 5);
+      g_windowMgr.AddRenderedFront(this->gaugeWindow);
     }
-    static_cast<UIPcGage*>(this->unknown_0490)->SetValues(b, d);
-    static_cast<UIPcGage*>(this->unknown_0490)->SetLimits(0, 0);
-    this->unknown_0490->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    static_cast<UIPcGage*>(this->gaugeWindow)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->gaugeWindow)->SetLimits(0, 0);
+    this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
   case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
@@ -4801,21 +4801,21 @@ void CPc::SendMsg(
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0048, entry->unknown_0054, entry->unknown_0058
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -4834,28 +4834,28 @@ void CPc::SendMsg(
   }
   case AM_STANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    this->unknown_04D0 = entry->unknown_0078;
+    this->bodyStyle = entry->bodyStyle;
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
-    this->unknown_04CC = entry->unknown_0074;
+    this->SetPropensityInfo(entry->honor, entry->virtue);
+    this->pkState = entry->pkState;
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -4883,7 +4883,7 @@ void CPc::SendMsg(
     } else {
       this->SetSprWeapon2(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
     }
-    this->SetSprShield(this->unknown_045C);
+    this->SetSprShield(this->shield);
     this->SetHeadPaletteName();
     this->SetBodyPaletteName();
     break;
@@ -4896,22 +4896,22 @@ void CPc::SendMsg(
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0048, entry->unknown_0054, entry->unknown_0058
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -4934,30 +4934,30 @@ void CPc::SendMsg(
   }
   case AM_INITSTANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
-    this->unknown_04D0 = entry->unknown_0078;
+    this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_043C = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0054, entry->unknown_0058, entry->stateFlags
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -4976,34 +4976,34 @@ void CPc::SendMsg(
       this->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0074;
+    this->pkState = entry->pkState;
     break;
   }
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     } else {
       this->SetState(0, 1);
     }
@@ -5012,103 +5012,103 @@ void CPc::SendMsg(
   }
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
+    this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     } else {
       this->SetState(0, 1);
     }
     this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
+    this->pkState = entry->pkState;
     break;
   }
   case AM_MOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
+    this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     }
     this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
+    this->pkState = entry->pkState;
     break;
   }
   case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
-    this->unknown_04D0 = entry->unknown_007C;
+    this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_043C = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_0058, entry->unknown_005C, entry->stateFlags
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     }
     this->ShowPartyMemberEffect(entry->aid);
-    this->unknown_04CC = entry->unknown_0078;
-    this->unknown_04D0 = entry->unknown_007C;
+    this->pkState = entry->pkState;
+    this->bodyStyle = entry->bodyStyle;
     break;
   }
   case AM_CHANGE_RANK:
-    this->unknown_0494 = d;
-    this->unknown_0498 = b;
+    this->pkRank = d;
+    this->pkTotal = b;
     break;
   case AM_MAKE_BIRD: {
-    if (this->unknown_037C[0] != 0) {
+    if (this->statusEffects[0] != 0) {
       break;
     }
 
     int effectId;
-    switch (this->unknown_04D0) {
+    switch (this->bodyStyle) {
     case JT_HUNTER_H:
       effectId = 0x17;
       break;
@@ -5142,16 +5142,16 @@ void CPc::SendMsg(
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     effect->SetAnimationSpeed(6.0f);
     this->AddMsgEffect(effect);
-    this->unknown_037C[0] = reinterpret_cast<int>(effect);
+    this->statusEffects[0] = reinterpret_cast<int>(effect);
     break;
   }
   case AM_MAKE_WOLF: {
-    if (this->unknown_037C[1] != 0) {
+    if (this->statusEffects[1] != 0) {
       break;
     }
 
     int effectId;
-    switch (this->unknown_04D0) {
+    switch (this->bodyStyle) {
     case JT_RANGER:
     case JT_RANGER_H:
     case JT_WOLF_RANGER:
@@ -5178,7 +5178,7 @@ void CPc::SendMsg(
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     this->AddMsgEffect(effect);
-    this->unknown_037C[1] = reinterpret_cast<int>(effect);
+    this->statusEffects[1] = reinterpret_cast<int>(effect);
     break;
   }
   default:
@@ -5197,25 +5197,25 @@ void CGrannyPc::SendMsg(
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   switch (*reinterpret_cast<const std::int64_t*>(&message)) {
   case AM_SET_HEAD_DIR:
-    if (this->render.unknown_0070 == 0 || this->render.unknown_0070 == 6) {
+    if (this->render.state == 0 || this->render.state == 6) {
       this->render.curMotion = b;
     }
     break;
   case AM_REMOVEGAGE:
-    if (this->unknown_0478) {
-      g_windowMgr.Schedule(this->unknown_0478);
-      this->unknown_0478 = nullptr;
+    if (this->gaugeWindow) {
+      g_windowMgr.Schedule(this->gaugeWindow);
+      this->gaugeWindow = nullptr;
     }
     break;
   case AM_UPDATEGAGE:
-    if (!this->unknown_0478) {
-      this->unknown_0478 = new UIPcGage();
-      this->unknown_0478->SetSize(60, 5);
-      g_windowMgr.AddRenderedFront(this->unknown_0478);
+    if (!this->gaugeWindow) {
+      this->gaugeWindow = new UIPcGage();
+      this->gaugeWindow->SetSize(60, 5);
+      g_windowMgr.AddRenderedFront(this->gaugeWindow);
     }
-    static_cast<UIPcGage*>(this->unknown_0478)->SetValues(b, d);
-    static_cast<UIPcGage*>(this->unknown_0478)->SetLimits(0, 0);
-    this->unknown_0478->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    static_cast<UIPcGage*>(this->gaugeWindow)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->gaugeWindow)->SetLimits(0, 0);
+    this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
   case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(b);
@@ -5223,21 +5223,21 @@ void CGrannyPc::SendMsg(
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_0430 = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0048, entry->unknown_0054, entry->unknown_0058
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -5260,21 +5260,21 @@ void CGrannyPc::SendMsg(
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_0430 = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0048, entry->unknown_0054, entry->unknown_0058
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -5297,7 +5297,7 @@ void CGrannyPc::SendMsg(
     this->SetImfFileName();
     const std::int64_t weapon = this->GetWeapon();
     this->SetSprWeapon(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
-    this->SetSprShield(this->unknown_0454);
+    this->SetSprShield(this->shield);
     this->SetHeadPaletteName();
     this->SetBodyPaletteName();
     break;
@@ -5311,22 +5311,22 @@ void CGrannyPc::SendMsg(
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
-    this->unknown_0294 = entry->unknown_001C;
-    this->unknown_0298 = entry->unknown_0020;
-    this->unknown_0158[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->unknown_0170) = entry->cellY;
-    this->unknown_0430 = entry->unknown_005C;
-    *reinterpret_cast<int*>(this->unknown_029C) = entry->unknown_0024;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->xSize = entry->xSize;
+    this->ySize = entry->ySize;
+    this->movementState[5] = entry->cellX;
+    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->headDir = entry->headDir;
+    *reinterpret_cast<int*>(this->headType) = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_0024, entry->unknown_0028, entry->unknown_002C, entry->unknown_0030, entry->unknown_004C,
-      entry->unknown_0050, entry->unknown_0048, entry->unknown_0054, entry->unknown_0058
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0044);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_0068, entry->unknown_006C);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
     case PCSTATE_STAND:
       this->SetState(0, 1);
@@ -5350,28 +5350,28 @@ void CGrannyPc::SendMsg(
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_0430 = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     } else {
       this->SetState(0, 1);
     }
@@ -5381,31 +5381,31 @@ void CGrannyPc::SendMsg(
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->stateFlags = entry->stateFlags;
-    this->unknown_02C4 = entry->effectState;
+    this->effectState = entry->effectState;
     this->bodyState = entry->bodyState;
-    this->unknown_0430 = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
     this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
     this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     } else {
       this->SetState(0, 1);
     }
@@ -5416,30 +5416,30 @@ void CGrannyPc::SendMsg(
   case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(b);
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->unknown_0170[4]) = entry->speed;
+    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
     this->routeStartTick = entry->moveStartTick;
-    this->unknown_0430 = 0;
+    this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->unknown_0008, entry->unknown_002C, entry->unknown_0030, entry->unknown_0034, entry->unknown_0038, entry->unknown_0050,
-      entry->unknown_0054, entry->unknown_004C, entry->unknown_0058, entry->unknown_005C
+      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->unknown_0048);
+    this->SetUnknown02C8(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
-    this->SetPropensityInfo(entry->unknown_006C, entry->unknown_0070);
+    this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
-      this->unknown_0158[5] = entry->destX;
-      *reinterpret_cast<int*>(this->unknown_0170) = entry->destY;
+      this->movementState[5] = entry->destX;
+      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
       this->SetState(1, 1);
-      this->unknown_023C = 0;
+      this->pathStartCell = 0;
     }
     this->ShowPartyMemberEffect(entry->aid);
     break;
   }
   case AM_CHANGE_RANK:
-    this->unknown_047C = d;
-    this->unknown_0480 = b;
+    this->pkRank = d;
+    this->pkTotal = b;
     break;
   default:
     CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -5452,9 +5452,9 @@ void CGrannyPc::SendMsg(
 // OFFSET: 0x00DAC080
 // FUNCTION: fn_22592
 bool CGrannyPc::ProcessState() {
-  if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
+  if (static_cast<std::uint32_t>(this->freezeEndTick) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->freezeEndTick)) {
     this->render.isMotionFreezed = false;
-    this->unknown_0278 = 0;
+    this->freezeEndTick = 0;
   }
 
   if (!this->UpdateFadeOut()) {
@@ -5462,7 +5462,7 @@ bool CGrannyPc::ProcessState() {
   }
 
   g_modeMgr.GetGameMode();
-  switch (this->render.unknown_0070) {
+  switch (this->render.state) {
   case ST_BEGIN_SKILL: {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
@@ -5488,9 +5488,9 @@ bool CGrannyPc::ProcessState() {
     }
     return true;
   case ST_DEAD:
-    this->render.unknown_00C8 = 0;
-    this->render.unknown_00D8 = 0;
-    this->render.unknown_00DC = 0;
+    this->render.frameSequenceActive = 0;
+    this->render.animationSequenceActive = 0;
+    this->render.timedSequenceActive = 0;
     this->render.isMotionFreezed = false;
   case ST_SIT:
     this->ProcessMotion();
@@ -5503,9 +5503,9 @@ bool CGrannyPc::ProcessState() {
 // OFFSET: 0x00DAC200
 // FUNCTION: fn_22593
 bool CPc::ProcessState() {
-  if (static_cast<std::uint32_t>(this->unknown_0278) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->unknown_0278)) {
+  if (static_cast<std::uint32_t>(this->freezeEndTick) > 0 && timeGetTime() > static_cast<std::uint32_t>(this->freezeEndTick)) {
     this->render.isMotionFreezed = false;
-    this->unknown_0278 = 0;
+    this->freezeEndTick = 0;
   }
 
   if (!this->UpdateFadeOut()) {
@@ -5513,7 +5513,7 @@ bool CPc::ProcessState() {
   }
 
   g_modeMgr.GetGameMode();
-  switch (this->render.unknown_0070) {
+  switch (this->render.state) {
   case ST_BEGIN_SKILL: {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
@@ -5558,9 +5558,9 @@ bool CPc::ProcessState() {
     }
     return true;
   case ST_DEAD:
-    this->render.unknown_00C8 = 0;
-    this->render.unknown_00D8 = 0;
-    this->render.unknown_00DC = 0;
+    this->render.frameSequenceActive = 0;
+    this->render.animationSequenceActive = 0;
+    this->render.timedSequenceActive = 0;
     this->render.isMotionFreezed = false;
   case ST_SIT:
   case 60:
@@ -5572,7 +5572,7 @@ bool CPc::ProcessState() {
   case 51:
     this->ProcessMotion();
     if (this->render.isMotionFinished == true) {
-      this->render.unknown_0070 = 2;
+      this->render.state = 2;
     }
     return true;
   default:
@@ -5583,21 +5583,21 @@ bool CPc::ProcessState() {
 // OFFSET: 0x00DBA5D0
 // FUNCTION: fn_22673
 void CPlayer::SetState(int state, int resetPosition) {
-  if (this->render.unknown_0070 == 3) {
+  if (this->render.state == 3) {
     return;
   }
 
   if (state != 1) {
-    reinterpret_cast<int&>(this->unknown_04F8) = -1;
-    this->unknown_04FC = -1;
+    reinterpret_cast<int&>(this->destCellX) = -1;
+    this->destCellZ = -1;
   }
 
-  if (this->unknown_0518 != 0 && this->IsSpecialState(this->render.unknown_0070)) {
-    const int cellX = this->unknown_053C;
-    const int cellY = this->unknown_0540;
-    this->unknown_0518 = 0;
-    this->unknown_053C = -1;
-    this->unknown_0540 = -1;
+  if (this->isPreengageStateOfMove != 0 && this->IsSpecialState(this->render.state)) {
+    const int cellX = this->preengageXOfMove;
+    const int cellY = this->preengageYOfMove;
+    this->isPreengageStateOfMove = 0;
+    this->preengageXOfMove = -1;
+    this->preengageYOfMove = -1;
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 

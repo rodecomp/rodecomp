@@ -181,7 +181,7 @@ CNavi_Link* CNavi_Object::FindLinkAt(int x, int y) {
 CNavi_Link* CNavi_Link::FindLinkTo(int x, int y) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     CNavi_Link* link = it->link;
-    if (link->unknown_0080 == x && link->unknown_0084 == y) {
+    if (link->linkedCellX == x && link->linkedCellY == y) {
       return link;
     }
   }
@@ -194,7 +194,7 @@ CNavi_Link* CNavi_Link::FindLinkTo(int x, int y) {
 CNavi_Link* CNavi_Object::FindLinkTo(int x, int y) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     CNavi_Link* link = it->link;
-    if (link->unknown_0080 == x && link->unknown_0084 == y) {
+    if (link->linkedCellX == x && link->linkedCellY == y) {
       return link;
     }
   }
@@ -254,8 +254,8 @@ const char* CNavi_Link::GetLinkedName() const {
 // FUNCTION: fn_19491
 NaviCell CNavi_Link::GetLinkedCell() const {
   NaviCell cell;
-  cell.x = this->unknown_0080;
-  cell.y = this->unknown_0084;
+  cell.x = this->linkedCellX;
+  cell.y = this->linkedCellY;
   return cell;
 }
 

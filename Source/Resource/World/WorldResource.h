@@ -18,7 +18,7 @@ struct WorldModelRecord {
   /* 00D4 */ float rotation[3]{};
   /* 00E0 */ float scale[3]{};
   /* 00EC */ int animation;
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ int animationType;
   /* 00F4 */ float animationSpeed;
   /* 00F8 */ unsigned char unknown_00F8[12];
   /* 0104 */ unsigned char flag;

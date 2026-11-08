@@ -26,13 +26,13 @@ public:
 
   /* 00B4 */ UIEditCtrl* nameEdit;
   /* 00B8 */ PetInfoWndInfo* saved;
-  /* 00BC */ UIBitmapButton* unknown_00BC;
-  /* 00C0 */ UINoneVisibleButton* unknown_00C0;
+  /* 00BC */ UIBitmapButton* renameButton;
+  /* 00C0 */ UINoneVisibleButton* statusButton;
   /* 00C4 */ UINormalMB* window_00C4;
   /* 00C8 */ UIPetInfoBarGraph* friendlyGauge;
   /* 00CC */ std::string friendlyText;
-  /* 00E4 */ unsigned char unknown_00E4;
-  /* 00E8 */ UICheckBox* unknown_00E8;
+  /* 00E4 */ unsigned char autoFeedAvailable;
+  /* 00E8 */ UICheckBox* autoFeedCheck;
 
 };
 

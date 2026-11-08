@@ -126,7 +126,7 @@ int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       g_windowMgr.CloseWindow(WID_EMOTIONWND);
       break;
     case ID_OPEN_EMOTIONLIST:
-      if (static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384) == nullptr) {
+      if (static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd) == nullptr) {
         g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND);
       } else {
         g_windowMgr.CloseWindow(WID_CASHEMOTIONLISTWND);

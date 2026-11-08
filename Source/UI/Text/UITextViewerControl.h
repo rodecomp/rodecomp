@@ -47,8 +47,8 @@ public:
   /* 008C */ int fontHeight;
   /* 0090 */ bool bold;
   /* 0094 */ std::uint32_t textColor;
-  /* 0098 */ bool unknown_0098;
-  /* 009C */ std::uint32_t unknown_009C;
+  /* 0098 */ bool shadow;
+  /* 009C */ std::uint32_t shadowColor;
   /* 00A0 */ bool outline;
   /* 00A4 */ std::uint32_t outlineColor;
   /* 00A8 */ int lineSpacing;

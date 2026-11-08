@@ -67,8 +67,8 @@ struct GameSettingsOption {
   /* 0040 */ std::string description;
   /* 0058 */ unsigned char defaultValue;
   /* 0059 */ unsigned char unknown_0059[3];
-  /* 005C */ int unknown_005c = 4698;
-  /* 0060 */ int unknown_0060 = 4698;
+  /* 005C */ int enabledMessage = 4698;
+  /* 0060 */ int disabledMessage = 4698;
 };
 
 class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {
@@ -453,10 +453,10 @@ void GameSettings::SetOption(int id, unsigned char value, bool notify) {
   if (entry != this->actions.end()) {
     const std::function<void(int, unsigned char, bool, int, int)> action = entry->second;
     if (action) {
-      action(id, value, notify, (*option)->unknown_005c, (*option)->unknown_0060);
+      action(id, value, notify, (*option)->enabledMessage, (*option)->disabledMessage);
     }
   } else {
-    ApplyServiceOption(id, value, notify, (*option)->unknown_005c, (*option)->unknown_0060);
+    ApplyServiceOption(id, value, notify, (*option)->enabledMessage, (*option)->disabledMessage);
   }
 }
 
@@ -622,8 +622,8 @@ bool GameSettings::ReadOptionTable() {
         lua_gettable(state, -2);
         const int disabledMessage = FindMessageId(lua_tostring(state, -1));
         lua_pop(state, 1);
-        option.unknown_005c = enabledMessage;
-        option.unknown_0060 = disabledMessage;
+        option.enabledMessage = enabledMessage;
+        option.disabledMessage = disabledMessage;
       }
       lua_pop(state, 1);
 
@@ -908,8 +908,8 @@ void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int ena
     }
   }
 
-  if (g_windowMgr.unknown_01D4 != nullptr) {
-    static_cast<UIItemWnd*>(g_windowMgr.unknown_01D4)->RefreshOptionBox();
+  if (g_windowMgr.itemWnd != nullptr) {
+    static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
   }
 }
 #pragma inline_depth()
@@ -938,8 +938,8 @@ void ToggleSitStand() {
   player->render.angle = static_cast<float>(std::ceil(player->render.angle));
   mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
 
-  if (player->render.unknown_0070 == 6) {
-    std::list<unsigned long>& times = mode->unknown_05D4;
+  if (player->render.state == 6) {
+    std::list<unsigned long>& times = mode->periodicTicks;
     times.pop_front();
     times.push_back(timeGetTime());
     const unsigned long elapsed = times.back() - times.front();
@@ -1053,7 +1053,7 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
     }
   }
 
-  *reinterpret_cast<int*>(g_session.unknown_5454) = value;
+  *reinterpret_cast<int*>(g_session.interactionFlags) = value;
 }
 #pragma inline_depth()
 
@@ -1172,7 +1172,7 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C0)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
     window->SendMsg(nullptr, UM_COMMAND, 0x1F6, 0, 0, 0);
   }
 }
@@ -1207,8 +1207,8 @@ void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int 
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (mode && mode->unknown_05D0 && !g_serviceOptions.Get(id)) {
-    mode->unknown_05D0->Show(0);
+  if (mode && mode->statusIconTooltip && !g_serviceOptions.Get(id)) {
+    mode->statusIconTooltip->Show(0);
   }
 }
 #pragma inline_depth()
@@ -1266,19 +1266,19 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
     }
   }
 
-  g_weatherEffect.unknown_0001 = value ^ 1;
+  g_weatherEffect.enabled = value ^ 1;
 }
 #pragma inline_depth()
 
 // OFFSET: 0x006C5AD0
 // FUNCTION: fn_06364
 void ApplyServiceOptionWindow27() {
-  if (g_windowMgr.unknown_0304 != 0) {
+  if (g_windowMgr.merchantItemMyShopWnd != 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 0x118, 0x78, 0);
     return;
   }
 
-  if (g_windowMgr.unknown_02FC != 0) {
+  if (g_windowMgr.merchantShopMakeWnd != 0) {
     CMode* mode = g_modeMgr.GetGameMode();
     if (mode) {
       mode->SendMsg(MM_REQ_OPENSTORE, 0, 0, 0, 0);
@@ -1341,8 +1341,8 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
     }
   }
 
-  if (g_windowMgr.unknown_01D4) {
-    static_cast<UIItemWnd*>(g_windowMgr.unknown_01D4)->RefreshOptionBox();
+  if (g_windowMgr.itemWnd) {
+    static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
   }
 }
 
@@ -1543,7 +1543,7 @@ void CSession::LoadOptionInfo() {
   }
 
   g_skinInfo.m_name = this->GetOptionString("SkinName", "<Basic Skin>");
-  this->unknown_1708 = g_serviceOptions.Get(0x2E);
+  this->monsterInfoEnabled = g_serviceOptions.Get(0x2E);
   g_showBattleFieldIcon = this->GetOptionInteger("ShowBattleFieldIcon", 1) != 0;
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive");
 

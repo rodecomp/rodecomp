@@ -27,7 +27,7 @@ struct CharSlotInfo {
   /* 0114 */ int bodyPalette;
   /* 0118 */ std::string headPaletteName;
   /* 0130 */ std::string bodyPaletteName;
-  /* 0148 */ int unknown_0148;
+  /* 0148 */ int actionBase;
   /* 014C */ int action;
   /* 0150 */ int frame;
   /* 0154 */ int job;

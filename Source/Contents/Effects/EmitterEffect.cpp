@@ -39,7 +39,7 @@ void CEmitterEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (particle) {
-      particle->unknown_00C0 = this->particleSpeed;
+      particle->speedParameter = this->particleSpeed;
       this->InitParticle(particle);
       this->pool.Add(particle);
       this->particles.push_back(particle);
@@ -56,17 +56,17 @@ void CEmitterEffect::InitParticle(CParticle* particle) {
   particle->SetTexture(this->texture.c_str());
   particle->life = RandomRange(this->lifeMin, this->lifeMax);
   particle->scale = RandomRange(this->scaleMin, this->scaleMax);
-  particle->unknown_0030.x = RandomRange(this->velocityMin.x, this->velocityMax.x);
-  particle->unknown_0030.y = RandomRange(this->velocityMin.y, this->velocityMax.y);
-  particle->unknown_0030.z = RandomRange(this->velocityMin.z, this->velocityMax.z);
+  particle->motionVelocity.x = RandomRange(this->velocityMin.x, this->velocityMax.x);
+  particle->motionVelocity.y = RandomRange(this->velocityMin.y, this->velocityMax.y);
+  particle->motionVelocity.z = RandomRange(this->velocityMin.z, this->velocityMax.z);
   const float x = RandomRange(-this->spread.x, this->spread.x);
   const float y = RandomRange(-this->spread.y, this->spread.y) - 10.0f;
   const float z = RandomRange(-this->spread.z, this->spread.z);
-  particle->unknown_00D0 = 0.0f + x;
-  particle->unknown_00D4 = 0.0f + y;
+  particle->offsetX = 0.0f + x;
+  particle->offsetY = 0.0f + y;
   particle->alpha = 0;
-  particle->unknown_00D8 = 0.0f + z;
-  particle->unknown_00E8 = 0;
+  particle->offsetZ = 0.0f + z;
+  particle->elapsedFrames = 0;
 
   if (this->sourceBlend != -1) {
     particle->sourceBlend = this->sourceBlend;
@@ -87,7 +87,7 @@ void CEmitterEffect::ResetParticles() {
     CParticle* particle = *it;
     this->InitParticle(particle);
     if (this->pool.IsActive(particle) == true &&
-        (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8) || this->fixedAlpha == 1)) {
+        (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames) || this->fixedAlpha == 1)) {
       particle->alpha = this->alpha;
     }
   }
@@ -106,7 +106,7 @@ bool CEmitterEffect::IsAlive() {
 // OFFSET: 0x00B50390
 // FUNCTION: fn_19016
 void CEmitterEffect::OnProcess() {
-  if (!this->unknown_00C1) {
+  if (!this->emissionStopped) {
     const float rate = static_cast<float>(static_cast<int>(RandomRange(this->rateMin, this->rateMax))) * this->timeScale;
     int spawn = static_cast<int>(rate);
     float carry = rate - static_cast<float>(spawn) + this->emitCarry;
@@ -160,9 +160,9 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
   particle->position.z = this->position[2];
 
   if (this->pool.IsActive(particle) == true) {
-    const int age = particle->unknown_00E8;
+    const int age = particle->elapsedFrames;
 
-    if (particle->life != 0.0f && !(particle->life * 60.0f > static_cast<float>(age)) && (!this->fixedAlpha || this->unknown_00C1)) {
+    if (particle->life != 0.0f && !(particle->life * 60.0f > static_cast<float>(age)) && (!this->fixedAlpha || this->emissionStopped)) {
       this->pool.Release(particle);
     } else {
       particle->SetColor(static_cast<short>(this->red), static_cast<short>(this->green), static_cast<short>(this->blue));
@@ -181,16 +181,16 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
       }
 
       const float step = this->timeScale;
-      const float speed = particle->unknown_00C0;
-      particle->unknown_00D4 += particle->unknown_0030.y * speed * step;
-      particle->unknown_00D8 += particle->unknown_0030.z * speed * step;
-      particle->unknown_00D0 += particle->unknown_0030.x * speed * step;
-      particle->position.y += particle->unknown_00D4;
-      particle->position.z += particle->unknown_00D8;
-      particle->position.x += particle->unknown_00D0;
-      particle->unknown_0030.x += step * this->acceleration.x;
-      particle->unknown_0030.y += step * this->acceleration.y;
-      particle->unknown_0030.z += step * this->acceleration.z;
+      const float speed = particle->speedParameter;
+      particle->offsetY += particle->motionVelocity.y * speed * step;
+      particle->offsetZ += particle->motionVelocity.z * speed * step;
+      particle->offsetX += particle->motionVelocity.x * speed * step;
+      particle->position.y += particle->offsetY;
+      particle->position.z += particle->offsetZ;
+      particle->position.x += particle->offsetX;
+      particle->motionVelocity.x += step * this->acceleration.x;
+      particle->motionVelocity.y += step * this->acceleration.y;
+      particle->motionVelocity.z += step * this->acceleration.z;
 
       if (this->billboard == 1) {
         matrix transform;
@@ -215,7 +215,7 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
     }
   }
 
-  ++particle->unknown_00E8;
+  ++particle->elapsedFrames;
 }
 
 // OFFSET: 0x00B50C60
@@ -234,7 +234,7 @@ void CEmitterEffect::SetParticleSpeed(float value) {
   if (this->particleSpeed != value) {
     this->particleSpeed = value;
     for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-      (*it)->unknown_00C0 = this->particleSpeed;
+      (*it)->speedParameter = this->particleSpeed;
     }
   }
 }
@@ -244,11 +244,11 @@ void CEmitterEffect::SetParticleSpeed(float value) {
 void CEmitterEffect::CheckRange() {
   if (this->InRange() == true) {
     this->outsideRange = 0;
-    this->unknown_00C1 = 0;
+    this->emissionStopped = 0;
     return;
   }
 
-  this->unknown_00C1 = 1;
+  this->emissionStopped = 1;
   if (this->pool.active == 0) {
     this->outsideRange = 1;
   }

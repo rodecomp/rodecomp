@@ -34,16 +34,16 @@ EffectPrimitiveState::~EffectPrimitiveState() {
 // OFFSET: 0x00BAE460
 // FUNCTION: fn_19765
 void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {
-  if (this->master->state.unknown_11C88[0] != -1) {
-    *red = static_cast<unsigned char>(this->master->state.unknown_11C88[0]);
+  if (this->master->state.colorChannels[0] != -1) {
+    *red = static_cast<unsigned char>(this->master->state.colorChannels[0]);
   }
 
-  if (this->master->state.unknown_11C88[1] != -1) {
-    *green = static_cast<unsigned char>(this->master->state.unknown_11C88[1]);
+  if (this->master->state.colorChannels[1] != -1) {
+    *green = static_cast<unsigned char>(this->master->state.colorChannels[1]);
   }
 
-  if (this->master->state.unknown_11C88[2] != -1) {
-    *blue = static_cast<unsigned char>(this->master->state.unknown_11C88[2]);
+  if (this->master->state.colorChannels[2] != -1) {
+    *blue = static_cast<unsigned char>(this->master->state.colorChannels[2]);
   }
 }
 

@@ -18,17 +18,17 @@ void CPokJukEffect::SpawnParticles() {
     for (int column = 0; column < 160; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = column;
-        particle->unknown_0010 = row;
-        particle->unknown_0008 = 1;
-        particle->unknown_00E8 = -300 - std::max(rand() % 50, 0);
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+        particle->effectId = this->id;
+        particle->columnIndex = column;
+        particle->rowIndex = row;
+        particle->groupIndex = 1;
+        particle->elapsedFrames = -300 - std::max(rand() % 50, 0);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
         particle->alpha = 0;
-        particle->unknown_00C0 = 2.0f;
+        particle->speedParameter = 2.0f;
         particle->scale = static_cast<float>(std::max(rand() % 100, 0)) * 0.004f + 0.4f;
-        particle->unknown_0050 = std::max(rand() % 360, 0);
-        particle->unknown_004C = std::max(rand() % 360, 0);
+        particle->angleParameter = std::max(rand() % 360, 0);
+        particle->phaseParameter = std::max(rand() % 360, 0);
         InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
@@ -99,8 +99,8 @@ void CPokJukEffect::OnProcess() {
     position.z = this->position[2];
 
     if (particle != nullptr) {
-      const int index = particle->unknown_0010 * 160 + particle->unknown_000C;
-      const int age = particle->unknown_00E8;
+      const int index = particle->rowIndex * 160 + particle->columnIndex;
+      const int age = particle->elapsedFrames;
 
       if (age > 0) {
         vector3d* trail = this->trails[index];
@@ -125,7 +125,7 @@ void CPokJukEffect::OnProcess() {
           this->beats[index] = 0;
         }
 
-        float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+        float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
         spinAngle = static_cast<float>((static_cast<int>(spinAngle) + 5) % 360);
 
         if (this->states[index] == 0) {
@@ -136,12 +136,12 @@ void CPokJukEffect::OnProcess() {
             particle->alpha = 250;
           }
         } else if (this->states[index] == 1) {
-          const int heading = particle->unknown_0050;
+          const int heading = particle->angleParameter;
           const float speed = particle->scale;
           trail[0].y += speed * g_sinTable[heading];
           const float flat = speed * g_cosTable[heading];
-          trail[0].x += flat * g_cosTable[particle->unknown_004C];
-          trail[0].z += flat * g_sinTable[particle->unknown_004C];
+          trail[0].x += flat * g_cosTable[particle->phaseParameter];
+          trail[0].z += flat * g_sinTable[particle->phaseParameter];
           trail[0].y += 0.02f;
           particle->scale = speed * 0.98f;
 
@@ -158,9 +158,9 @@ void CPokJukEffect::OnProcess() {
         }
 
         if (age > 2000) {
-          particle->unknown_00E8 = 0;
+          particle->elapsedFrames = 0;
           const int heading = std::rand() % 360;
-          particle->unknown_004C = heading < 0 ? 0 : heading;
+          particle->phaseParameter = heading < 0 ? 0 : heading;
           const int spread = std::rand() % 100;
           particle->scale = static_cast<float>(spread < 0 ? 0 : spread) * 0.004f + 0.4f;
           trail[0].x = -15.0f;
@@ -171,7 +171,7 @@ void CPokJukEffect::OnProcess() {
       }
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -183,14 +183,14 @@ void CPokJukEffect::Render() {
 
     if (particle && particle->alpha > 0) {
       float shrink = 0.0f;
-      const int index = particle->unknown_0010 * 160 + particle->unknown_000C;
+      const int index = particle->rowIndex * 160 + particle->columnIndex;
 
       for (int layer = 0; layer < 2; ++layer) {
         vector3d corners[4]{};
-        const float radius = particle->unknown_00C0 - shrink;
+        const float radius = particle->speedParameter - shrink;
 
         for (int corner = 0; corner < 4; ++corner) {
-          const int angle = static_cast<int>(static_cast<float>(corner * 90) + *reinterpret_cast<float*>(&particle->unknown_00C4)) % 360;
+          const int angle = static_cast<int>(static_cast<float>(corner * 90) + *reinterpret_cast<float*>(&particle->angleBits)) % 360;
           corners[corner].x = radius * g_cosTable[angle];
           corners[corner].y = 0.0f;
           corners[corner].z = radius * g_sinTable[angle];

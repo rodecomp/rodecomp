@@ -38,14 +38,14 @@ struct LineTextStyle {
 struct LineTextSegment {
   // INLINED
   LineTextSegment(const std::string& text, const LineTextStyle& style)
-      : text(text), style(style), type(LINE_SEGMENT_TEXT), unknown_0028(0), unknown_002C(0) {
+      : text(text), style(style), type(LINE_SEGMENT_TEXT), auxiliaryState(0), auxiliaryValue(0) {
   }
 
   /* 0000 */ std::string text;
   /* 0018 */ LineTextStyle style;
   /* 0024 */ int type;
-  /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C;
+  /* 0028 */ int auxiliaryState;
+  /* 002C */ int auxiliaryValue;
 };
 
 struct LineFontFlags {
@@ -82,10 +82,10 @@ public:
   /* 001C */ int m_fontHeight;
   /* 0020 */ std::uint32_t m_defaultColor;
   /* 0024 */ std::uint32_t m_color;
-  /* 0028 */ bool unknown_0028;
-  /* 002C */ int unknown_002C;
-  /* 0030 */ bool unknown_0030;
-  /* 0034 */ int unknown_0034;
+  /* 0028 */ bool outline;
+  /* 002C */ int outlineColor;
+  /* 0030 */ bool shadow;
+  /* 0034 */ int shadowColor;
   /* 0038 */ unsigned char m_align;
   /* 003C */ std::vector<LineFontState> m_fontStack;
   /* 0048 */ bool m_newSegment;

@@ -26,7 +26,7 @@ protected:
   /* 00B8 */ UICheckBox* m_jobChecks[6];
   /* 00D0 */ UIBitmapButton* m_okButton;
   /* 00D4 */ unsigned char unknown_00D4[0x14];
-  /* 00E8 */ int unknown_00E8;
+  /* 00E8 */ int m_selectionState;
   /* 00EC */ JobListWndInfo* m_saved;
 };
 

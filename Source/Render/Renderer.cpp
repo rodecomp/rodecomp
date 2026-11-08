@@ -20,7 +20,7 @@
 // OFFSET: 0x00544A60
 // FUNCTION: fn_01820
 std::uint32_t __fastcall sub_544A60(const CRenderer* renderer) {
-  return renderer->unknown_0044;
+  return renderer->viewDirectionZ;
 }
 
 // OFFSET: 0x0055D150
@@ -158,7 +158,7 @@ void CRenderer::DrawOverlays(CRenderSystemBase& system) {
   }
 
 timer:
-  if (g_session.unknown_5448 != 0) {
+  if (g_session.showTimer != 0) {
     const int scale = this->viewport.height / 700;
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
@@ -214,7 +214,7 @@ timer:
 
 // OFFSET: 0x00560A40
 // FUNCTION: fn_02161
-CRenderer::CRenderer() : frame(0), unknown_003C(0), unknown_0040(0), unknown_0044(0), twoPass(0), unknown_004C(0) {
+CRenderer::CRenderer() : frame(0), viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0), twoPass(0), unknown_004C(0) {
   this->atlas.Initialize(50);
   this->fog.enabled = 0;
   this->fog.dirty = 1;

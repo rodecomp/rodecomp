@@ -33,13 +33,13 @@ static __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
   if (0.0f == particle->life) {
     return true;
   }
-  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 
 // OFFSET: 0x00B40B60
 // FUNCTION: fn_18861
 CSpriteParticle::CSpriteParticle(vector3d position, int flags)
-  : CParticle(position, flags), unknown_02BC(0), unknown_02BD(0), velocity(), sprite(nullptr), action(nullptr) {
+  : CParticle(position, flags), applyActorExtent(0), applyActorLift(0), velocity(), sprite(nullptr), action(nullptr) {
   this->Reset();
 }
 
@@ -50,18 +50,18 @@ void CSpriteParticle::Reset() {
   this->sprite = nullptr;
   this->action = nullptr;
   this->frameDelay = 0;
-  this->unknown_02D4 = 0;
+  this->spinBits = 0;
   this->velocity.x = 0;
   this->velocity.y = 0;
   this->velocity.z = 0;
   this->animation = 0;
   this->frame = 0;
   this->loopMode = 0;
-  this->unknown_02BC = 0;
-  this->unknown_02BD = 0;
-  this->unknown_02C0 = 0;
-  this->unknown_02C4 = 0;
-  this->unknown_02F4 = 0;
+  this->applyActorExtent = 0;
+  this->applyActorLift = 0;
+  this->screenOffsetX = 0;
+  this->screenOffsetY = 0;
+  this->actorId = 0;
 }
 
 // OFFSET: 0x00B40E30
@@ -73,7 +73,7 @@ void CSpriteParticle::UpdateFrame() {
 
   const long long frameCount = static_cast<int>(this->action->FrameCount(this->animation));
   const long long delay = static_cast<long long>(this->frameDelay);
-  if (0 == delay || (this->unknown_00E8 >= delay && 0 == this->unknown_00E8 % delay)) {
+  if (0 == delay || (this->elapsedFrames >= delay && 0 == this->elapsedFrames % delay)) {
     ++this->frame;
   }
 
@@ -121,7 +121,7 @@ void CSpriteParticle::Draw(char mode) {
   float distance;
   g_renderer->ProjectViewport(&this->position.x, view, &screenX, &screenY, &distance);
   float scaleDistance = g_renderer->ScaleDistance(distance);
-  if (CRenderObject* renderObject = FindRenderObject(this->unknown_02F4)) {
+  if (CRenderObject* renderObject = FindRenderObject(this->actorId)) {
     renderObject->ScaleByFadePulse(scaleDistance);
   }
 
@@ -134,7 +134,7 @@ void CSpriteParticle::Draw(char mode) {
 
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     SpriteAtlasRecord record{};
-    CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     if (!texture) {
       texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
@@ -143,9 +143,9 @@ void CSpriteParticle::Draw(char mode) {
     } else {
       record.u0 = 0.0f;
       record.v0 = 0.0f;
-      const CTexture* widthTexture = static_cast<const CTexture*>(image->unknown_0008);
+      const CTexture* widthTexture = static_cast<const CTexture*>(image->surface);
       record.u1 = static_cast<float>(widthTexture->ImageWidth()) / static_cast<float>(widthTexture->TextureWidth());
-      const CTexture* heightTexture = static_cast<const CTexture*>(image->unknown_0008);
+      const CTexture* heightTexture = static_cast<const CTexture*>(image->surface);
       record.v1 = static_cast<float>(heightTexture->ImageHeight()) / static_cast<float>(heightTexture->TextureHeight());
     }
 
@@ -155,7 +155,7 @@ void CSpriteParticle::Draw(char mode) {
     std::memcpy(primitive->vertices, this->vertices, sizeof(this->vertices));
     primitive->texture = texture;
 
-    if ((this->unknown_00EC & 0x200) != 0) {
+    if ((this->renderOptions & 0x200) != 0) {
       const std::uint32_t a = static_cast<std::uint32_t>(
         static_cast<float>(this->alpha) * (1.0f / 255.0f) *
         static_cast<float>(cell.color >> 24) * (1.0f / 255.0f) * 255.0f
@@ -175,7 +175,7 @@ void CSpriteParticle::Draw(char mode) {
     matrix scaleMatrix;
     scaleMatrix.SetScale(cellScaleX * halfWidth, cellScaleY * halfHeight, 1.0f);
     matrix cellRotation;
-    cellRotation.MakeZRotation(ToRadians(static_cast<float>(cell.unknown_001C)));
+    cellRotation.MakeZRotation(ToRadians(static_cast<float>(cell.rotation)));
     matrix cellTranslate;
     cellTranslate.MakeTranslate((static_cast<float>(cell.x) + halfWidth) * cellScaleX, (static_cast<float>(cell.y) + halfHeight) * cellScaleY, 0.0f);
 
@@ -202,7 +202,7 @@ void CSpriteParticle::Draw(char mode) {
     matrix worldScale;
     worldScale.SetScale(this->scale, this->scale, 1.0f);
     matrix worldRotation;
-    worldRotation.MakeZRotation(ToRadians(*reinterpret_cast<const float*>(&this->unknown_00C4)));
+    worldRotation.MakeZRotation(ToRadians(*reinterpret_cast<const float*>(&this->angleBits)));
     worldRotation.AppendXRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch));
     worldRotation.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
     matrix worldTranslate;
@@ -231,19 +231,19 @@ void CSpriteParticle::Draw(char mode) {
       g_renderer->viewport.Project(&worldVertices[v].x, view, primitive->vertices[v]);
     }
 
-    if (CRenderObject* renderObject = FindRenderObject(this->unknown_02F4)) {
-      float offsetX = this->unknown_02C0;
-      float offsetY = this->unknown_02C4;
+    if (CRenderObject* renderObject = FindRenderObject(this->actorId)) {
+      float offsetX = this->screenOffsetX;
+      float offsetY = this->screenOffsetY;
       CGameActor* actor = static_cast<CGameActor*>(renderObject);
       if (actor->GetMonsterTransformJob() <= 0) {
-        if (this->unknown_02BC != 0) {
+        if (this->applyActorExtent != 0) {
           float extent[2];
           float* p = actor->GetExtent(extent);
           offsetX += p[0];
           offsetY += p[1];
         }
-        if (this->unknown_02BD != 0) {
-          offsetY -= static_cast<float>(static_cast<double>(*reinterpret_cast<const long long*>(&renderObject->render.unknown_0128)));
+        if (this->applyActorLift != 0) {
+          offsetY -= static_cast<float>(static_cast<double>(*reinterpret_cast<const long long*>(&renderObject->render.hoverOffsetLow)));
         }
       }
       offsetX *= scaleDistance;
@@ -262,8 +262,8 @@ void CSpriteParticle::Draw(char mode) {
       }
     }
 
-    primitive->unknown_0018 = 5;
-    primitive->unknown_001C = (this->flags != 5) ? 6 : 2;
+    primitive->sourceBlend = 5;
+    primitive->destinationBlend = (this->flags != 5) ? 6 : 2;
     g_renderer->queues.Submit(primitive, static_cast<std::uint16_t>(this->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
 }

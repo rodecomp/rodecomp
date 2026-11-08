@@ -22,7 +22,7 @@ struct LexiconHeader {
 
 struct LexiconSerializer {
   // INLINED
-  LexiconSerializer() : root(nullptr), wordCount(0), nodeCount(0), unknown_000C(0), buffer(nullptr), header{} {
+  LexiconSerializer() : root(nullptr), wordCount(0), nodeCount(0), serializedSize(0), buffer(nullptr), header{} {
   }
   // INLINED
   ~LexiconSerializer() {
@@ -33,7 +33,7 @@ struct LexiconSerializer {
   /* 0000 */ LexiconNode* root;
   /* 0004 */ int wordCount;
   /* 0008 */ int nodeCount;
-  /* 000C */ std::uint32_t unknown_000C;
+  /* 000C */ std::uint32_t serializedSize;
   /* 0010 */ unsigned char* buffer;
   /* 0014 */ LexiconHeader header;
 

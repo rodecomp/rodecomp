@@ -38,9 +38,9 @@ void CWindEffect::Init() {
       particle->alpha = alpha;
       particle->SetColor(this->red, this->green, this->blue);
       particle->scale = this->particleScale;
-      particle->unknown_0054 = this->ringCount > 1 ? this->height / static_cast<float>(this->ringCount - 1) * static_cast<float>(ring) : 0.0f;
-      particle->unknown_00C0 = this->angleSpeed;
-      particle->unknown_0050 = this->arcLength;
+      particle->animationParameter = this->ringCount > 1 ? this->height / static_cast<float>(this->ringCount - 1) * static_cast<float>(ring) : 0.0f;
+      particle->speedParameter = this->angleSpeed;
+      particle->angleParameter = this->arcLength;
       if (this->sourceBlend != -1) {
         particle->sourceBlend = this->sourceBlend;
       }
@@ -48,13 +48,13 @@ void CWindEffect::Init() {
         particle->destinationBlend = this->destinationBlend;
       }
       particle->SetTexture(this->textureName);
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(segment) * step + static_cast<float>(startAngle);
-      particle->unknown_00A8 = 0;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(segment) * step + static_cast<float>(startAngle);
+      particle->animationState = 0;
       InitParticleQuad(particle->vertices);
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       this->particles.push_back(particle);
     }
   }
@@ -98,12 +98,12 @@ void CWindEffect::OnProcess() {
       continue;
     }
 
-    switch (particle->unknown_00A8) {
+    switch (particle->animationState) {
     case 0: {
       int alpha = particle->alpha + 1;
       if (alpha >= this->maxAlpha) {
         alpha = this->maxAlpha;
-        particle->unknown_00A8 = 1;
+        particle->animationState = 1;
       }
       particle->alpha = alpha;
       break;
@@ -112,15 +112,15 @@ void CWindEffect::OnProcess() {
       int alpha = particle->alpha - 1;
       if (alpha <= 0) {
         alpha = 0;
-        particle->unknown_00A8 = 0;
+        particle->animationState = 0;
       }
       particle->alpha = alpha;
       break;
     }
     }
 
-    float& angle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-    float nextAngle = particle->unknown_00C0 + angle;
+    float& angle = *reinterpret_cast<float*>(&particle->angleBits);
+    float nextAngle = particle->speedParameter + angle;
     if (nextAngle > 360.0f) {
       nextAngle -= 360.0f;
     }
@@ -132,7 +132,7 @@ void CWindEffect::OnProcess() {
     vector3d points[4] = {};
     const float scale = particle->scale;
     points[0].x += scale * cosine;
-    points[0].y = scale * 0.0f - particle->unknown_0054;
+    points[0].y = scale * 0.0f - particle->animationParameter;
     points[0].z += scale * sine;
     points[1].x = (cosine + 0.0f) * this->width + points[0].x;
     points[1].y = this->width + points[0].y;
@@ -152,7 +152,7 @@ void CWindEffect::OnProcess() {
     particle->vertices[3].y = bottom.y;
     particle->vertices[3].z = bottom.z;
 
-    if (particle->unknown_000C != 0) {
+    if (particle->columnIndex != 0) {
       particle->vertices[0].x = this->lastTop.x;
       particle->vertices[0].y = this->lastTop.y;
       particle->vertices[0].z = this->lastTop.z;
@@ -175,7 +175,7 @@ void CWindEffect::Render() {
       continue;
     }
 
-    const int texPart = particle->unknown_000C;
+    const int texPart = particle->columnIndex;
     if (texPart <= 0) {
       continue;
     }

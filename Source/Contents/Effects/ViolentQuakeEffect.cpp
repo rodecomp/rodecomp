@@ -62,9 +62,9 @@ void CViolentQuakeEffect::Open() {
   case EF_UNK_1760: {
     CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", std::max(rand() % 3, 0) + 1));
-    emitter->unknown_00D0 = 0.0f;
-    emitter->unknown_00D4 = -8.0f;
-    emitter->unknown_00D8 = 0.0f;
+    emitter->offsetX = 0.0f;
+    emitter->offsetY = -8.0f;
+    emitter->offsetZ = 0.0f;
     this->emitters.push_back(emitter);
     this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
     break;
@@ -80,7 +80,7 @@ void CViolentQuakeEffect::Open() {
 bool CViolentQuakeEffect::IsAlive() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || (emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) == true) {
+    if (emitter->life == 0.0f || (emitter->life * 60.0f > static_cast<float>(emitter->elapsedFrames)) == true) {
       return true;
     }
   }
@@ -101,9 +101,9 @@ void CViolentQuakeEffect::OnProcess() {
     const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
     const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
-    const float viewX = view.values[0] * origin.x + view.values[3] * origin.y + view.values[6] * origin.z + view.values[9] + emitter->unknown_00D0;
-    const float viewY = view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10] + emitter->unknown_00D4;
-    const float viewZ = view.values[2] * origin.x + view.values[5] * origin.y + view.values[8] * origin.z + view.values[11] + emitter->unknown_00D8;
+    const float viewX = view.values[0] * origin.x + view.values[3] * origin.y + view.values[6] * origin.z + view.values[9] + emitter->offsetX;
+    const float viewY = view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10] + emitter->offsetY;
+    const float viewZ = view.values[2] * origin.x + view.values[5] * origin.y + view.values[8] * origin.z + view.values[11] + emitter->offsetZ;
 
     emitter->position.x = viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9];
     emitter->position.y = viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10];

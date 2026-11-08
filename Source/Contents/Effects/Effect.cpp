@@ -21,12 +21,12 @@
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
 CEffect::CEffect(int value)
-    : id(value), position{0.0f, 0.0f, 0.0f}, sourcePosition{0.0f, 0.0f, 0.0f}, actor(0), sourceActor(0), frame(0), unknown_002C(60), unknown_0030(1), outsideRange(0), range(130),
-      unknown_00B0(-1) {
+    : id(value), position{0.0f, 0.0f, 0.0f}, sourcePosition{0.0f, 0.0f, 0.0f}, actor(0), sourceActor(0), frame(0), effectLifetime(60), effectArgument(1), outsideRange(0), range(130),
+      effectLevel(-1) {
   this->retained = 0;
   this->forceRender = 0;
-  this->unknown_00C8 = 0;
-  this->unknown_00C4 = 0;
+  this->headAttached = 0;
+  this->instanceId = 0;
 }
 
 // OFFSET: 0x00B4DD10
@@ -63,11 +63,11 @@ bool CEffect::RetireIfInactive() {
 // FUNCTION: fn_18986
 bool CEffect::IsVisible() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
-  if (!actor || actor->render.unknown_00A8 == 0) {
+  if (!actor || actor->render.isCharacter == 0) {
     return true;
   }
 
-  if (this->unknown_00C8 == 0) {
+  if (this->headAttached == 0) {
     if (this->actor == g_session.m_aid) {
       return true;
     }
@@ -218,7 +218,7 @@ bool CEffect::ActorExists() const {
 // OFFSET: 0x00B4E6C0
 // FUNCTION: fn_19000
 bool CEffect::IsFinished() const {
-  return this->frame >= this->unknown_002C;
+  return this->frame >= this->effectLifetime;
 }
 
 // OFFSET: 0x00B249A0

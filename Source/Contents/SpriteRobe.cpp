@@ -21,17 +21,17 @@ void CCharacterRender::RenderRobe(
   std::list<RenderPrimitive*>& primitives, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
   float shift, float, CActRes* baseAct
 ) {
-  if (this->unknown_00BC < 1 || this->unknown_00C0 == 1 || (this->unknown_0040 >= 64 && this->unknown_0040 <= 71)
-      || (this->unknown_005C == -1 && this->unknown_0060 == -1 && this->unknown_0064 == -1)) {
+  if (this->robe < 1 || this->isHelmRobe == 1 || (this->actionIndex >= 64 && this->actionIndex <= 71)
+      || (this->bodyBlend == -1 && this->bodyCellX == -1 && this->bodyCellY == -1)) {
     return;
   }
 
   if (this->DrawOnTop() == drawOnTop) {
     std::string sprName = g_session.GetRobeSprName(
-      this->unknown_0010, this->unknown_0014, this->unknown_0018[0], this->unknown_00BC, this->unknown_004C, this->unknown_0050
+      this->job, this->headJob, this->appearance[0], this->robe, this->riding, this->bodyCostume
     );
     std::string actName = g_session.GetRobeActName(
-      this->unknown_0010, this->unknown_0014, this->unknown_0018[0], this->unknown_00BC, this->unknown_004C, this->unknown_0050
+      this->job, this->headJob, this->appearance[0], this->robe, this->riding, this->bodyCostume
     );
     if (!ResourceMgr::Instance().Exists(sprName) || !ResourceMgr::Instance().Exists(actName)) {
       return;
@@ -39,16 +39,16 @@ void CCharacterRender::RenderRobe(
 
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprName));
     CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
-    int frame = this->unknown_0044;
+    int frame = this->frameIndex;
     if (baseAct) {
       int baseFrame = frame;
-      if ((this->unknown_0040 >= 0 && this->unknown_0040 < 8) || (this->unknown_0040 >= 16 && this->unknown_0040 <= 22)) {
+      if ((this->actionIndex >= 0 && this->actionIndex < 8) || (this->actionIndex >= 16 && this->actionIndex <= 22)) {
         baseFrame = 0;
       }
-      g_session.GetSyncedFrame(baseAct, act, this->unknown_0040, baseFrame, 0, &frame);
+      g_session.GetSyncedFrame(baseAct, act, this->actionIndex, baseFrame, 0, &frame);
     }
 
-    const ActionFrame& actionFrame = act->Frame(this->unknown_0040, frame);
+    const ActionFrame& actionFrame = act->Frame(this->actionIndex, frame);
     for (int index = 0; index < actionFrame.cellCount; ++index) {
       const SpriteFrameCell& cell = actionFrame.Cell(index);
       if (cell.image == -1) {
@@ -56,7 +56,7 @@ void CCharacterRender::RenderRobe(
       }
 
       reinterpret_cast<unsigned char*>(&const_cast<SpriteFrameCell&>(cell).color)[3] =
-        static_cast<unsigned char>(g_session.GetRobeAlpha(this->unknown_00BC));
+        static_cast<unsigned char>(g_session.GetRobeAlpha(this->robe));
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
       SpriteQuad quad;
@@ -73,13 +73,13 @@ void CCharacterRender::RenderRobe(
         quad.bottomRhw = bottomDepth - 0.0000065f;
         quad.topRhw = topDepth - 0.0000065f;
       }
-      if (this->unknown_0040 >= 58 && this->unknown_0040 <= 61) {
+      if (this->actionIndex >= 58 && this->actionIndex <= 61) {
         quad.bottomRhw = quad.bottomRhw + 0.0000065f;
         quad.topRhw = quad.topRhw + 0.0000065f;
       }
 
       quad.image = image;
-      RenderPrimitive* primitive = BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, this->unknown_005C, 0.0f, 0.0f);
+      RenderPrimitive* primitive = BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, this->bodyBlend, 0.0f, 0.0f);
       primitives.push_back(primitive);
     }
   }

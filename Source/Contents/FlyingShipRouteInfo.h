@@ -12,7 +12,7 @@ struct FlyingShipRouteEntry {
   /* 0000 */ std::string name;
   /* 0018 */ int unknown_0018[4];
   /* 0028 */ int unknown_0028;
-  /* 002C */ float unknown_002C[2];
+  /* 002C */ float screenPosition[2];
   /* 0034 */ float unknown_0034;
   /* 0038 */ float unknown_0038;
 
@@ -37,21 +37,21 @@ public:
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
   /* 0010 */ int unknown_0010;
   /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ float unknown_001C;
-  /* 0020 */ float unknown_0020;
-  /* 0024 */ float unknown_0024;
-  /* 0028 */ unsigned char unknown_0028;
-  /* 002C */ int unknown_002C;
-  /* 0030 */ int unknown_0030;
+  /* 0018 */ int segmentIndex;
+  /* 001C */ float segmentProgress;
+  /* 0020 */ float segmentLength;
+  /* 0024 */ float travelledDistance;
+  /* 0028 */ unsigned char routeReset;
+  /* 002C */ int routeType;
+  /* 0030 */ int lineColor;
   union {
-    /* 0034 */ short unknown_0034;
+    /* 0034 */ short routeState;
     struct {
       /* 0034 */ unsigned char m_moving;
       /* 0035 */ unsigned char m_routeBuilt;
     };
   };
-  /* 0038 */ std::string unknown_0038;
+  /* 0038 */ std::string lineTextureName;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -60,9 +60,9 @@ static_assert(offsetof(FlyingShipRouteEntry, unknown_0018) == 0x18);
 static_assert(offsetof(FlyingShipRouteEntry, unknown_0038) == 0x38);
 static_assert(sizeof(CFlyingShipRouteInfo) == 0x50);
 static_assert(offsetof(CFlyingShipRouteInfo, entries) == 0x04);
-static_assert(offsetof(CFlyingShipRouteInfo, unknown_0028) == 0x28);
-static_assert(offsetof(CFlyingShipRouteInfo, unknown_0034) == 0x34);
-static_assert(offsetof(CFlyingShipRouteInfo, unknown_0038) == 0x38);
+static_assert(offsetof(CFlyingShipRouteInfo, routeReset) == 0x28);
+static_assert(offsetof(CFlyingShipRouteInfo, routeState) == 0x34);
+static_assert(offsetof(CFlyingShipRouteInfo, lineTextureName) == 0x38);
 #endif
 
 #endif

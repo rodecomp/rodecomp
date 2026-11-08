@@ -31,11 +31,11 @@ public:
 
   /* 00CC */ MapChainPoint corners[2];
   /* 00E4 */ std::vector<CParticle*> particles;
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
-  /* 00FC */ int unknown_00FC;
-  /* 0100 */ int unknown_0100;
+  /* 00F0 */ int chainModeA;
+  /* 00F4 */ int chainModeB;
+  /* 00F8 */ int chainModeC;
+  /* 00FC */ int chainModeD;
+  /* 0100 */ int chainModeE;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

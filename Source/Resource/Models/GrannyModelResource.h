@@ -196,7 +196,7 @@ public:
   void FreeInstance();
   granny_file* ReadAnimationFile(const char* name, const char* suffix);
 
-  /* 0000 */ float unknown_0000;
+  /* 0000 */ float animationDuration;
   /* 0004 */ unsigned char unknown_0004[0x14C];
   /* 0150 */ granny_file* file;
   /* 0154 */ int textureCount;
@@ -206,7 +206,7 @@ public:
   /* 0164 */ int maxBoneCount;
   /* 0168 */ granny_local_pose* localPose;
   /* 016C */ int deformBufferSize;
-  /* 0170 */ int unknown_0170;
+  /* 0170 */ int animationMode;
   /* 0174 */ unsigned char unknown_0174[8];
   /* 017C */ char fileName[MAX_PATH];
   /* 0280 */ granny_animation* animations[100][20];
@@ -244,7 +244,7 @@ public:
   void Release();
   granny_world_pose* Animate(float seconds, granny_model_instance* instance);
 
-  /* 0110 */ float unknown_0110;
+  /* 0110 */ float animationDuration;
   /* 0114 */ unsigned char unknown_0114[0x14C];
   /* 0260 */ granny_file* file;
   /* 0264 */ int textureCount;
@@ -254,17 +254,17 @@ public:
   /* 0274 */ int maxBoneCount;
   /* 0278 */ void* localPose;
   /* 027C */ int deformBufferSize;
-  /* 0280 */ int unknown_0280;
+  /* 0280 */ int animationMode;
   /* 0284 */ int unknown_0284;
   /* 0288 */ void* deformBuffer;
   /* 028C */ char fileName[MAX_PATH];
   /* 0390 */ const granny_model* model;
   /* 0394 */ float position[3];
-  /* 03A0 */ float unknown_03A0;
-  /* 03A4 */ float unknown_03A4;
+  /* 03A0 */ float baseHeight;
+  /* 03A4 */ float topHeight;
   /* 03A8 */ GrannyAnimationLibrary* animations;
   /* 03AC */ unsigned job;
-  /* 03B0 */ GrannyHairPivot* unknown_03B0;
+  /* 03B0 */ GrannyHairPivot* hairPivot;
   /* 03B4 */ granny_skeleton* skeleton;
 };
 
@@ -283,7 +283,7 @@ static_assert(offsetof(C3dGrannyModelRes, fileName) == 0x28C);
 static_assert(offsetof(C3dGrannyModelRes, model) == 0x390);
 static_assert(offsetof(C3dGrannyModelRes, skeleton) == 0x3B4);
 static_assert(offsetof(C3dGrannyModelRes, deformBuffer) == 0x288);
-static_assert(offsetof(C3dGrannyModelRes, unknown_03B0) == 0x3B0);
+static_assert(offsetof(C3dGrannyModelRes, hairPivot) == 0x3B0);
 static_assert(offsetof(granny_file_info, models) == 0x44);
 static_assert(offsetof(granny_file_info, animations) == 0x54);
 static_assert(offsetof(GrannyAnimationLibrary, file) == 0x150);

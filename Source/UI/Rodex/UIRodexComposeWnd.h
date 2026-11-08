@@ -48,24 +48,24 @@ public:
   void SetRecipient(int id, unsigned short job, unsigned short level, const char* name);
   __declspec(noinline) std::int64_t GetZeny();
 
-  /* 00B4 */ UIEditCtrl_Custom* unknown_00B4;
-  /* 00B8 */ UIEditCtrl_Custom* unknown_00B8;
-  /* 00BC */ UIBmpTextButton* unknown_00BC;
-  /* 00C0 */ UIStaticText* unknown_00C0;
-  /* 00C4 */ UIStaticText* unknown_00C4;
-  /* 00C8 */ UIStaticText* unknown_00C8;
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ UIEditCtrl_Custom* unknown_00D0;
+  /* 00B4 */ UIEditCtrl_Custom* m_recipientEdit;
+  /* 00B8 */ UIEditCtrl_Custom* m_confirmedRecipientEdit;
+  /* 00BC */ UIBmpTextButton* m_confirmRecipientButton;
+  /* 00C0 */ UIStaticText* m_recipientLevelText;
+  /* 00C4 */ UIStaticText* m_recipientJobText;
+  /* 00C8 */ UIStaticText* m_recipientIdText;
+  /* 00CC */ int m_recipientId;
+  /* 00D0 */ UIEditCtrl_Custom* m_titleEdit;
   /* 00D4 */ UIRodexEditCtrl3* m_contents;
-  /* 00D8 */ UIBasicButton* unknown_00D8;
+  /* 00D8 */ UIBasicButton* m_sendButton;
   /* 00DC */ UIEditCtrl_Currency* m_zeny;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E0 */ int m_reservedStateA;
+  /* 00E4 */ int m_reservedStateB;
   /* 00E8 */ std::list<ITEM_INFO> m_items;
   /* 00F0 */ int m_itemIndex;
   /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ std::int64_t unknown_00F8;
-  /* 0100 */ UIEditCtrl* unknown_0100;
+  /* 00F8 */ std::int64_t m_tax;
+  /* 0100 */ UIEditCtrl* m_tagCtrl;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

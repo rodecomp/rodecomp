@@ -108,8 +108,8 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 
     ITEM_INFO item;
     item.identified = 1;
-    item.unknown_0000[0] = static_cast<unsigned>(idValue);
-    item.unknown_0060 = 0;
+    item.identity[0] = static_cast<unsigned>(idValue);
+    item.refiningLevel = 0;
     item.itemId = button->GetLine(0);
 
     if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
@@ -366,8 +366,8 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
         ITEM_INFO item;
         item.identified = 1;
-        item.unknown_0000[0] = static_cast<unsigned>(idValue);
-        item.unknown_0060 = 0;
+        item.identity[0] = static_cast<unsigned>(idValue);
+        item.refiningLevel = 0;
         item.itemId = button->GetLine(0);
         if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
           window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);

@@ -35,7 +35,7 @@ protected:
   /* 0008 */ std::uint32_t m_accountId;
   /* 000C */ std::string m_accountName;
   /* 0024 */ bool m_loaded;
-  /* 0028 */ std::uint32_t unknown_0028;
+  /* 0028 */ std::uint32_t m_pendingLoads;
   /* 002C */ std::string m_saveUrl;
   /* 0044 */ std::string m_loadUrl;
 };

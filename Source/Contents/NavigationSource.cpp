@@ -57,7 +57,7 @@ NaviCell* CNavigationManager::GetDestinationCell(NaviCell* out) {
 // OFFSET: 0x00B96F10
 // FUNCTION: fn_19594
 void CNavigationManager::ClearData() {
-  this->unknown_12B4 = false;
+  this->drawDestination = false;
   this->data.Clear();
 }
 
@@ -203,16 +203,16 @@ NavigationTarget::~NavigationTarget() {
 // FUNCTION: fn_19551
 CNavigationManager::CNavigationManager() {
   this->viewIcon = 1;
-  this->unknown_127C = false;
-  this->unknown_127D = false;
-  this->unknown_127E = false;
-  this->unknown_1250 = -1;
-  this->unknown_124C = -1;
-  this->unknown_1248 = false;
-  this->unknown_1254 = false;
+  this->allowGates = false;
+  this->includeObjects = false;
+  this->allowWarps = false;
+  this->savedCellY = -1;
+  this->savedCellX = -1;
+  this->hideWindow = false;
+  this->expandedMap = false;
   this->Reset(true);
   this->pathFinder.useNodePool = true;
-  this->unknown_1244 = nullptr;
+  this->playerMapInfo = nullptr;
 
   char buffer[0x104];
   for (int i = 0; i < 8; ++i) {
@@ -221,7 +221,7 @@ CNavigationManager::CNavigationManager() {
     this->labels[i].assign(buffer, std::strlen(buffer));
   }
 
-  this->unknown_12B4 = false;
+  this->drawDestination = false;
 }
 
 // OFFSET: 0x00B92950
@@ -239,7 +239,7 @@ NaviRouteLine::NaviRouteLine(int kind, int x, int y, const char* text, int color
 // FUNCTION: fn_45448
 CNavigationManager::~CNavigationManager() {
   this->Reset(true);
-  this->unknown_1244 = nullptr;
+  this->playerMapInfo = nullptr;
 }
 
 // OFFSET: 0x00B959D0
@@ -263,10 +263,10 @@ void CNavigationManager::ClearNodePaths() {
 // OFFSET: 0x00B961A0
 // FUNCTION: fn_45452
 CNaviInfo* CNavigationManager::GetLinkedPlayerInfo() {
-  if (!this->unknown_1244->HasName(g_session.m_navigationPlayerMap)) {
-    this->unknown_1244 = this->FindObject(g_session.m_navigationPlayerMap);
+  if (!this->playerMapInfo->HasName(g_session.m_navigationPlayerMap)) {
+    this->playerMapInfo = this->FindObject(g_session.m_navigationPlayerMap);
   }
-  return this->unknown_1244;
+  return this->playerMapInfo;
 }
 
 // OFFSET: 0x00B96BA0
@@ -274,8 +274,8 @@ CNaviInfo* CNavigationManager::GetLinkedPlayerInfo() {
 void CNavigationManager::Reset(bool clearAll) {
   if (clearAll) {
     this->ClearNodePaths();
-    this->unknown_12C4 = -1;
-    this->unknown_12C8 = -1;
+    this->selectedPath = -1;
+    this->selectedPathNode = -1;
     this->states.clear();
   }
 
@@ -283,22 +283,22 @@ void CNavigationManager::Reset(bool clearAll) {
   this->currentTarget = NavigationTarget();
   this->routeResult = 0;
   this->nodes.clear();
-  this->unknown_115C = false;
+  this->routeFlag = false;
   this->selectedNode = -1;
   this->movementRoute.segment = 0;
-  this->unknown_117C = false;
+  this->drawRoute = false;
   this->ground = nullptr;
-  this->unknown_1258 = 0;
-  this->unknown_1260 = 0;
-  this->unknown_1264.clear();
-  this->unknown_1280 = 0;
-  this->unknown_1284 = 0;
-  this->unknown_1288 = nullptr;
-  this->unknown_128C = -1;
-  this->unknown_1290 = -1;
+  this->viewMode = 0;
+  this->searchType = 0;
+  this->searchText.clear();
+  this->routeSide = 0;
+  this->previewType = 0;
+  this->previewTexture = nullptr;
+  this->previewX = -1;
+  this->previewY = -1;
   this->cells.clear();
-  this->unknown_12A0 = nullptr;
-  this->unknown_12A4 = nullptr;
+  this->previewAction = nullptr;
+  this->previewSprite = nullptr;
   this->ClearRouteNodes();
 }
 
@@ -596,15 +596,15 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
 // FUNCTION: fn_19571
 void CNavigationManager::ClearSavedTarget() {
   this->savedTarget = NavigationTarget();
-  this->unknown_115C = false;
+  this->routeFlag = false;
   this->routeResult = 0;
   this->nodes.clear();
   this->selectedNode = -1;
   this->movementRoute.segment = 0;
-  this->unknown_117C = false;
+  this->drawRoute = false;
   this->ground = nullptr;
   this->cells.clear();
-  this->unknown_1258 = 1;
+  this->viewMode = 1;
 }
 
 // OFFSET: 0x00B95260
@@ -622,17 +622,17 @@ int CNavigationManager::RouteFromPlayer() {
     const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
-      this->unknown_117C = false;
-      this->unknown_115C = false;
-      this->unknown_12B4 = false;
+      this->drawRoute = false;
+      this->routeFlag = false;
+      this->drawDestination = false;
       return -93;
     }
   }
 
   int result = -96;
-  this->unknown_117C = false;
-  this->unknown_115C = false;
-  this->unknown_12B4 = false;
+  this->drawRoute = false;
+  this->routeFlag = false;
+  this->drawDestination = false;
   NaviCell player;
   player.x = 0;
   player.y = 0;
@@ -669,16 +669,16 @@ int CNavigationManager::RouteFromPlayer() {
       this->LoadTargetPreview();
       const int targetType = this->savedTarget.type;
       result = targetType == 2 ? 7 : -96;
-      this->unknown_117C = true;
-      this->unknown_115C = true;
-      this->unknown_12B4 = true;
+      this->drawRoute = true;
+      this->routeFlag = true;
+      this->drawDestination = true;
       if (targetType == 0) {
         result = 9;
-        this->unknown_1258 = 2;
+        this->viewMode = 2;
         return result;
       }
       if (targetType == 2) {
-        this->unknown_1258 = 2;
+        this->viewMode = 2;
         return result;
       }
     }
@@ -709,7 +709,7 @@ int CNavigationManager::RouteFromPlayer() {
         if (this->BuildRoute(start.x, start.y, this->nodes[index]->GetCell(&cellX)->x, this->nodes[index]->GetCell(&cellY)->y, true)) {
           this->selectedNode = index;
           this->SelectTarget(index);
-          this->unknown_117C = true;
+          this->drawRoute = true;
           goto selected;
         }
       } else {
@@ -729,7 +729,7 @@ int CNavigationManager::RouteFromPlayer() {
       }
       this->selectedNode = 0;
       this->SelectTarget(0);
-      this->unknown_117C = true;
+      this->drawRoute = true;
       goto selected;
     }
 
@@ -740,12 +740,12 @@ int CNavigationManager::RouteFromPlayer() {
       if (this->BuildRoute(start.x, start.y, this->nodes[candidates[index]]->GetCell(&cellX)->x, this->nodes[candidates[index]]->GetCell(&cellY)->y, true)) {
         this->selectedNode = candidates[index];
         this->SelectTarget(candidates[index]);
-        this->unknown_117C = true;
+        this->drawRoute = true;
         goto selected;
       }
     }
 
-    this->unknown_117C = false;
+    this->drawRoute = false;
     if (this->nodes[0]->GetType() != 400) {
       return result;
     }
@@ -759,7 +759,7 @@ selected:
   } else {
     result = 5;
   }
-  this->unknown_1258 = 2;
+  this->viewMode = 2;
   return result;
 }
 
@@ -933,7 +933,7 @@ std::string CNavigationManager::StateMapName(int index, int* distance) {
 // OFFSET: 0x00B96520
 // FUNCTION: fn_19585
 bool CNavigationManager::GetRouteFlag() const {
-  return this->unknown_115C;
+  return this->routeFlag;
 }
 
 // OFFSET: 0x00B96910
@@ -962,11 +962,11 @@ void CNavigationManager::ResetCurrentTarget() {
 // OFFSET: 0x00B94E90
 // FUNCTION: fn_19570
 void CNavigationManager::CheckArrival(int cellX, int cellY) {
-  if (this->unknown_1258 == 2) {
+  if (this->viewMode == 2) {
     if (g_windowMgr.window_4F174 != nullptr) {
       g_windowMgr.window_4F174->Invalidate();
     }
-    if (this->unknown_115C) {
+    if (this->routeFlag) {
       NaviCell cell;
       this->data.GetCell(&cell);
       if (std::abs(cell.x - cellX) <= 5 && std::abs(cell.y - cellY) <= 5) {
@@ -981,7 +981,7 @@ void CNavigationManager::CheckArrival(int cellX, int cellY) {
 void CNavigationManager::BuildNodePaths() {
   this->ClearNodePaths();
 
-  if (this->unknown_1260 == 0 || this->unknown_1260 == 1) {
+  if (this->searchType == 0 || this->searchType == 1) {
     for (int index = 0; index < this->states.size(); ++index) {
       if (this->states[index].type == 1) {
         std::vector<int> path;
@@ -992,7 +992,7 @@ void CNavigationManager::BuildNodePaths() {
   }
 
   for (int index = 0; index < this->states.size(); ++index) {
-    if (this->unknown_1260 != 0 && this->states[index].type != this->unknown_1260) {
+    if (this->searchType != 0 && this->states[index].type != this->searchType) {
       continue;
     }
     if (this->states[index].type == 1) {

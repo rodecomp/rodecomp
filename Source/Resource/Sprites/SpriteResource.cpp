@@ -75,11 +75,11 @@ bool CSprRes::Load(const char* name) {
     std::uint16_t dimensions[2];
     file.Read(dimensions, sizeof(dimensions));
     auto* image = new SpriteRleImage{};
-    image->unknown_0008 = nullptr;
+    image->surface = nullptr;
     image->width = static_cast<std::int16_t>(dimensions[0]);
     image->height = static_cast<std::int16_t>(dimensions[1]);
-    image->unknown_0004 = 0;
-    image->unknown_0006 = 0;
+    image->doubleWidth = 0;
+    image->doubleHeight = 0;
     std::uint16_t encodedBytes;
 
     if (g_spriteHalfWidth == 0 && g_spriteHalfHeight == 0) {
@@ -137,12 +137,12 @@ bool CSprRes::Load(const char* name) {
 
       if (g_spriteHalfWidth != 0) {
         image->width /= 2;
-        image->unknown_0004 = 1;
+        image->doubleWidth = 1;
       }
 
       if (g_spriteHalfHeight != 0) {
         image->height /= 2;
-        image->unknown_0006 = 1;
+        image->doubleHeight = 1;
       }
     }
 
@@ -169,18 +169,18 @@ bool CSprRes::Load(const char* name) {
       const int width = g_spriteHalfWidth != 0 ? image->width / 2 : image->width;
       const int height = g_spriteHalfHeight != 0 ? image->height / 2 : image->height;
       CTexture* texture = CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
-      image->unknown_0008 = texture;
+      image->surface = texture;
       texture->Upload(0, 0, image->width, image->height, pixels, 0, 0);
       delete[] pixels;
 
       if (g_spriteHalfWidth != 0) {
         image->width /= 2;
-        image->unknown_0004 = 1;
+        image->doubleWidth = 1;
       }
 
       if (g_spriteHalfHeight != 0) {
         image->height /= 2;
-        image->unknown_0006 = 1;
+        image->doubleHeight = 1;
       }
 
       this->images[1].push_back(image);
@@ -198,9 +198,9 @@ void CSprRes::Unload() {
     for (auto image = this->images[type].begin(); image != this->images[type].end(); ++image) {
       if (type == 0) {
         delete[] (*image)->runs;
-      } else if ((*image)->unknown_0008) {
-        delete static_cast<const CTexture*>((*image)->unknown_0008);
-        (*image)->unknown_0008 = nullptr;
+      } else if ((*image)->surface) {
+        delete static_cast<const CTexture*>((*image)->surface);
+        (*image)->surface = nullptr;
       }
 
       delete *image;

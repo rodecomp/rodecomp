@@ -33,8 +33,8 @@ public:
   __declspec(noinline) void LoadEmblem();
 
 protected:
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
+  /* 00BC */ int allyRow;
+  /* 00C0 */ int hostileRow;
   /* 00C4 */ CBitmapRes* m_emblem;
 };
 

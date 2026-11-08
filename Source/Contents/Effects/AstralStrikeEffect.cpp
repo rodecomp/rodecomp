@@ -24,7 +24,7 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   if (0.0f == particle->life) {
     return true;
   }
-  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 }
 
@@ -51,7 +51,7 @@ void CAstralStrikeEffect::Init() {
 // FUNCTION: fn_06831
 void CAstralStrikeEffect::SpawnStrike() {
   const __int64 ranges[10] = {5, 5, 5, 7, 7, 7, 9, 9, 9, 11};
-  const __int64 range = ranges[std::min<unsigned int>(this->unknown_00B0, 10) - 1] * 50;
+  const __int64 range = ranges[std::min<unsigned int>(this->effectLevel, 10) - 1] * 50;
 
   vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   const int span = static_cast<int>(range) + 1;
@@ -137,7 +137,7 @@ void CAstralStrikeEffect::OnProcess() {
 
   if (this->ActorExists() == true && this->emitters.empty()) {
     const __int64 intervals[10] = {11, 11, 11, 9, 9, 9, 7, 7, 7, 5};
-    if (0 == this->frame % intervals[std::min<unsigned int>(this->unknown_00B0, 10) - 1]) {
+    if (0 == this->frame % intervals[std::min<unsigned int>(this->effectLevel, 10) - 1]) {
       this->SpawnStrike();
     }
   }

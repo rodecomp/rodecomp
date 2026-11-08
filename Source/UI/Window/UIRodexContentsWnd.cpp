@@ -65,11 +65,11 @@ void UIRodexContentsWnd::SetContentsText(const char* text) {
 // OFFSET: 0x00801CE0
 // FUNCTION: fn_10015
 UIRodexContentsWnd::UIRodexContentsWnd()
-    : UIFrameWnd(0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), unknown_0104(nullptr),
-      unknown_0108(nullptr) {
+    : UIFrameWnd(0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), m_confirmButton(nullptr),
+      m_adminButton(nullptr) {
   this->m_items.clear();
   this->m_itemIndex = 0;
-  this->unknown_010C = false;
+  this->m_hasLineBreak = false;
 }
 
 // OFFSET: 0x00801F80
@@ -112,14 +112,14 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   RodexMailStore* store = g_rodexMailStore;
-  switch (store->unknown_0010) {
+  switch (store->inboxType) {
   case MAIL_INBOX_NORMAL: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails0.find(store->currentMailId);
     if (mail != store->m_mails0.end()) {
-      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
-                            mail->second.unknown_0001);
+      this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
+                            mail->second.type);
 
-      if ((mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0194 == 0) {
+      if ((mail->second.type & 8) == 0 && mail->second.isKnownSender == 0) {
         UIBasicButton* report = new UIBasicButton();
         report->Configure(70, LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION));
         report->Move(224, 29);
@@ -134,26 +134,26 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   case MAIL_INBOX_ACCOUNT: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails1.find(store->currentMailId);
     if (mail != store->m_mails1.end()) {
-      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
-                            mail->second.unknown_0001);
+      this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
+                            mail->second.type);
     }
     break;
   }
   case MAIL_INBOX_RETURNED: {
     std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails2.find(store->currentMailId);
     if (mail != store->m_mails2.end()) {
-      this->SetMailContents(mail->second.unknown_0004, mail->second.unknown_0024, mail->second.unknown_003C, mail->second.hasItem, mail->second.zeny,
-                            mail->second.unknown_0001);
+      this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
+                            mail->second.type);
     }
     break;
   }
   }
 
-  this->unknown_0104 = new UIBasicButton();
-  this->unknown_0104->Configure(50, LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID));
-  this->unknown_0104->Move(6, 376);
-  this->unknown_0104->SetId(211);
-  this->AddChild(this->unknown_0104);
+  this->m_confirmButton = new UIBasicButton();
+  this->m_confirmButton->Configure(50, LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID));
+  this->m_confirmButton->Move(6, 376);
+  this->m_confirmButton->SetId(211);
+  this->AddChild(this->m_confirmButton);
 }
 
 // OFFSET: 0x008023F0
@@ -196,9 +196,9 @@ void UIRodexContentsWnd::Paint() {
     );
     this->DrawBitmap(x - 4, 319, &slot->image, true);
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 309, *item, 0, 0);
-    if (item->unknown_0088 > 0) {
+    if (item->grade > 0) {
       ResourceMgr& resources = ResourceMgr::Instance();
-      const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->unknown_0088);
+      const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->grade);
       const auto* grade = static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
       this->DrawBitmap(x, 321, &grade->image, true);
     }
@@ -223,8 +223,8 @@ void UIRodexContentsWnd::OnMouseHover(int x, int y) {
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
     CMode* tooltip = g_modeMgr.gameMode;
-    if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+    if (item.identified == 1 && item.optionCount != 0) {
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -254,7 +254,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         RodexMailAttachmentRequestPacket packet;
         packet.packetType = 0x9F3;
         packet.mailId = g_rodexMailStore->currentMailId;
-        packet.mailType = g_rodexMailStore->unknown_0010;
+        packet.mailType = g_rodexMailStore->inboxType;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         UIBitmapButton* button = this->m_itemButton;
         button->SetDisabled(1);
@@ -270,7 +270,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         RodexMailAttachmentRequestPacket packet;
         packet.packetType = 0x9F1;
         packet.mailId = g_rodexMailStore->currentMailId;
-        packet.mailType = g_rodexMailStore->unknown_0010;
+        packet.mailType = g_rodexMailStore->inboxType;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         UIBitmapButton* button = this->m_zenyButton;
         button->SetDisabled(1);
@@ -281,16 +281,16 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
       g_rodexMailStore->currentMailId = 0;
-      if (g_windowMgr.unknown_0454) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+      if (g_windowMgr.rodexInboxWnd) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       }
       break;
     case ID_DELETE: {
       RodexMailStore* store = g_rodexMailStore;
       std::map<std::int64_t, RodexMail>* mails;
-      if (store->unknown_0010 == 0) {
+      if (store->inboxType == 0) {
         mails = &store->m_mails0;
-      } else if (store->unknown_0010 == 1) {
+      } else if (store->inboxType == 1) {
         mails = &store->m_mails1;
       } else {
         mails = &store->m_mails2;
@@ -301,21 +301,21 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         break;
       }
 
-      if ((mail->second.unknown_0001 & 6) != 0) {
+      if ((mail->second.type & 6) != 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILE_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
         break;
       }
 
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->unknown_0010, 0, 0);
-        if (g_windowMgr.unknown_045C != 0) {
+        g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->inboxType, 0, 0);
+        if (g_windowMgr.rodexContentsWnd != 0) {
           g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
         }
       }
       break;
     }
     case ID_SEND_MAIL:
-      if (this->unknown_010C != 1) {
+      if (this->m_hasLineBreak != 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_title.c_str()), 0, 0, 0);
       }
       break;
@@ -337,8 +337,8 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     this->Invalidate();
   } else if (message == UM_SET_DISABLE) {
-    if (this->unknown_010C && this->unknown_0108) {
-      UIBasicButton* button = this->unknown_0108;
+    if (this->m_hasLineBreak && this->m_adminButton) {
+      UIBasicButton* button = this->m_adminButton;
       button->SetDisabled(1);
       button->Invalidate();
     }
@@ -357,7 +357,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   std::string text = body;
 
   std::pair<bool, std::string> lineBreak = RemoveLineBreakTag(this->m_sender);
-  this->unknown_010C = lineBreak.first;
+  this->m_hasLineBreak = lineBreak.first;
   this->m_sender = lineBreak.second;
 
   this->m_title = g_navigationLinkParser->ExpandMessages(this->m_title);
@@ -377,7 +377,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
   this->m_contents->disabled = 1;
   this->m_contents->Invalidate();
-  reinterpret_cast<unsigned char*>(&this->m_contents->unknown_0184)[1] = 1;
+  reinterpret_cast<unsigned char*>(&this->m_contents->editFlags)[1] = 1;
   this->m_contents->SetId(504);
 
   if (text.find("<NAVIL>") == std::string::npos && text.find("</NAVIL>") == std::string::npos) {
@@ -412,17 +412,17 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
     this->AddChild(this->m_zenyButton);
   }
 
-  if (g_rodexMailStore->unknown_0010 == 0 && (flags & 8) == 0) {
-    this->unknown_0108 = new UIBasicButton();
-    this->unknown_0108->Configure(70, LookupMessage(MSI_RODEX_TAB_ADMIN));
-    this->unknown_0108->Move(224, 376);
-    this->unknown_0108->SetId(305);
-    this->unknown_0108->SetDisabled(0);
-    this->unknown_0108->Invalidate();
-    this->AddChild(this->unknown_0108);
+  if (g_rodexMailStore->inboxType == 0 && (flags & 8) == 0) {
+    this->m_adminButton = new UIBasicButton();
+    this->m_adminButton->Configure(70, LookupMessage(MSI_RODEX_TAB_ADMIN));
+    this->m_adminButton->Move(224, 376);
+    this->m_adminButton->SetId(305);
+    this->m_adminButton->SetDisabled(0);
+    this->m_adminButton->Invalidate();
+    this->AddChild(this->m_adminButton);
   }
 
-  if (this->unknown_010C == 1) {
+  if (this->m_hasLineBreak == 1) {
     this->SendMsg(nullptr, UM_SET_DISABLE, 0, 0, 0, 0);
   }
 }

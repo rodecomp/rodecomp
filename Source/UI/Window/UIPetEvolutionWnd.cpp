@@ -72,7 +72,7 @@ void UIPetEvolutionWnd::Paint() {
 
     int job = g_session.GetPetJobByEggItem(this->m_petEggId);
     if (job != -1) {
-      g_session.GetPetIllustName(job, g_session.unknown_1038, text);
+      g_session.GetPetIllustName(job, g_session.petAccessory, text);
       CBitmapRes* illust = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
       if (!illust) {
         illust = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("userinterface\\illust\\pet_noimage.bmp")));
@@ -94,7 +94,7 @@ void UIPetEvolutionWnd::Paint() {
 
     job = g_session.GetPetJobByEggItem(this->m_evolvedEggId);
     if (job != -1) {
-      g_session.GetPetIllustName(job, g_session.unknown_1038, text);
+      g_session.GetPetIllustName(job, g_session.petAccessory, text);
       CBitmapRes* illust = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
       if (!illust) {
         illust = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("userinterface\\illust\\pet_noimage.bmp")));
@@ -145,11 +145,11 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING)), 255, 0, 0, 0);
           return 0;
         }
-        materials.push_back(static_cast<std::uint16_t>(item.unknown_0000[1]));
+        materials.push_back(static_cast<std::uint16_t>(item.identity[1]));
         materials.push_back(static_cast<std::uint16_t>(it->second));
       }
 
-      if (g_session.unknown_1038 != 0) {
+      if (g_session.petAccessory != 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TIME_LINE_DAY2)), 255, 0, 0, 0);
         return 0;
       }

@@ -64,19 +64,19 @@ UIWindow* UIWindowMgr::GetGuildWindow() {
   if (this->window_0324) {
     return this->window_0324;
   }
-  if (this->unknown_0328) {
-    return this->unknown_0328;
+  if (this->guildPositionManageWnd) {
+    return this->guildPositionManageWnd;
   }
   if (this->window_032C) {
     return this->window_032C;
   }
-  if (this->unknown_0330) {
-    return this->unknown_0330;
+  if (this->guildBanishedMemberWnd) {
+    return this->guildBanishedMemberWnd;
   }
-  if (this->unknown_0334) {
-    return this->unknown_0334;
+  if (this->guildNoticeWnd) {
+    return this->guildNoticeWnd;
   }
-  return this->unknown_0338;
+  return this->guildTotalInfoWnd;
 }
 
 // OFFSET: 0x00A91670
@@ -119,14 +119,14 @@ void UIWindowMgr::HideWindow01C8() {
 // OFFSET: 0x00A91D90
 // FUNCTION: fn_17172
 bool CGameActor::HasUnknown030CEntry() {
-  const int* entry = reinterpret_cast<const int*>(this->unknown_030C);
+  const int* entry = reinterpret_cast<const int*>(this->homunAI);
   return entry && entry[1] != 0;
 }
 
 // OFFSET: 0x00A91F60
 // FUNCTION: fn_17175
 void UIWindowMgr::RestoreMiniPartyWindows() {
-  const int count = static_cast<int>(g_session.unknown_0734.size());
+  const int count = static_cast<int>(g_session.miniPartyRecords.size());
   for (int index = 0; index < count; ++index) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.valid == 0) {
@@ -136,7 +136,7 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
     const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
     UIMiniPartyWnd* window = new UIMiniPartyWnd();
     window->SetSize(174, 52);
-    window->m_cell = record.unknown_0008;
+    window->m_cell = record.cell;
     this->AddMiniPartyWindow(window);
     window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
   }
@@ -166,7 +166,7 @@ void UIWindowMgr::LoadShortcutItems() {
         DWORD type = REG_SZ;
         DWORD size = 32;
         char name[36];
-        std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+        std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
         char description[33] = {};
         LSTATUS result = RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(description), &size);
         int hasSkillLevel = 0;
@@ -183,7 +183,7 @@ void UIWindowMgr::LoadShortcutItems() {
 
         type = REG_DWORD;
         size = 4;
-        std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+        std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
         DWORD level = 0;
         if (RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&level), &size) == ERROR_SUCCESS) {
           g_session.SetHotkeySkillLevel(level, index);
@@ -219,21 +219,21 @@ void UIWindowMgr::LoadUIRectInfo() {
       DWORD size = 4;
       char name[256];
 
-      RegQueryValueExA(key, "m_minimapZoomWnd", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0050), &size);
-      if (RegQueryValueExA(key, "M_ISDRAGALL", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0064), &size) != ERROR_SUCCESS || this->unknown_0064 != 0) {
-        this->unknown_0064 = 1;
+      RegQueryValueExA(key, "m_minimapZoomWnd", nullptr, &type, reinterpret_cast<BYTE*>(&this->minimapZoom), &size);
+      if (RegQueryValueExA(key, "M_ISDRAGALL", nullptr, &type, reinterpret_cast<BYTE*>(&this->dragAllItems), &size) != ERROR_SUCCESS || this->dragAllItems != 0) {
+        this->dragAllItems = 1;
       }
-      if (RegQueryValueExA(key, "M_ISDRAWCOMPASS", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0060), &size) != ERROR_SUCCESS) {
-        this->unknown_0060 = 0;
+      if (RegQueryValueExA(key, "M_ISDRAWCOMPASS", nullptr, &type, reinterpret_cast<BYTE*>(&this->drawCompass), &size) != ERROR_SUCCESS) {
+        this->drawCompass = 0;
       }
-      if (RegQueryValueExA(key, "M_MINIMAPARGB", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_005C), &size) != ERROR_SUCCESS || this->unknown_005C != 0xFFFFFFFF) {
-        this->unknown_005C = 0xAAFFFFFF;
+      if (RegQueryValueExA(key, "M_MINIMAPARGB", nullptr, &type, reinterpret_cast<BYTE*>(&this->minimapColor), &size) != ERROR_SUCCESS || this->minimapColor != 0xFFFFFFFF) {
+        this->minimapColor = 0xAAFFFFFF;
       }
-      RegQueryValueExA(key, "M_CHATWNDSTATUS", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_004C), &size);
-      RegQueryValueExA(key, "M_CHATWNDHEIGHT", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0038), &size);
-      RegQueryValueExA(key, "M_CHATWNDX", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0030), &size);
-      RegQueryValueExA(key, "M_CHATWNDY", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0034), &size);
-      RegQueryValueExA(key, "M_CHATWNDSHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_003C), &size);
+      RegQueryValueExA(key, "M_CHATWNDSTATUS", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndStatus), &size);
+      RegQueryValueExA(key, "M_CHATWNDHEIGHT", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndHeight), &size);
+      RegQueryValueExA(key, "M_CHATWNDX", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndX), &size);
+      RegQueryValueExA(key, "M_CHATWNDY", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndY), &size);
+      RegQueryValueExA(key, "M_CHATWNDSHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndVisible), &size);
       RegQueryValueExA(key, "SAYDIALOGWNDINFO.X", nullptr, &type, base + 0x5E4, &size);
       RegQueryValueExA(key, "SAYDIALOGWNDINFO.Y", nullptr, &type, base + 0x5E8, &size);
       RegQueryValueExA(key, "SAYDIALOGWNDINFO.W", nullptr, &type, base + 0x5EC, &size);
@@ -256,45 +256,45 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO1", nullptr, &type, base + 0x540, &size);
       RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO2", nullptr, &type, base + 0x544, &size);
       RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO3", nullptr, &type, base + 0x548, &size);
-      RegQueryValueExA(key, "ITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_054C), &size);
+      RegQueryValueExA(key, "ITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->itemWndVisible), &size);
       RegQueryValueExA(key, "QUESTWNDINFO.X", nullptr, &type, base + 0x550, &size);
       RegQueryValueExA(key, "QUESTWNDINFO.Y", nullptr, &type, base + 0x554, &size);
       RegQueryValueExA(key, "QUESTWNDINFO.W", nullptr, &type, base + 0x558, &size);
       RegQueryValueExA(key, "QUESTWNDINFO.H", nullptr, &type, base + 0x55C, &size);
       RegQueryValueExA(key, "QUESTWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x560, &size);
       RegQueryValueExA(key, "QUESTWNDINFO.CURTAB", nullptr, &type, base + 0x564, &size);
-      RegQueryValueExA(key, "QUESTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0568), &size);
+      RegQueryValueExA(key, "QUESTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->questWndVisible), &size);
       RegQueryValueExA(key, "QUESTDISPWNDINFO.QUESTDISPLAY", nullptr, &type, base + 0x570, &size);
       RegQueryValueExA(key, "STATUSWNDINFO.X", nullptr, &type, base + 0x574, &size);
       RegQueryValueExA(key, "STATUSWNDINFO.Y", nullptr, &type, base + 0x578, &size);
       RegQueryValueExA(key, "STATUSWNDINFO.W", nullptr, &type, base + 0x57C, &size);
       RegQueryValueExA(key, "STATUSWNDINFO.H", nullptr, &type, base + 0x580, &size);
       RegQueryValueExA(key, "STATUSWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x584, &size);
-      if (RegQueryValueExA(key, "STATUSWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0588), &size) != ERROR_SUCCESS) {
-        this->unknown_0588 = 0;
+      if (RegQueryValueExA(key, "STATUSWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->statusWndVisible), &size) != ERROR_SUCCESS) {
+        this->statusWndVisible = 0;
       }
       RegQueryValueExA(key, "EQUIPWNDINFO.X", nullptr, &type, base + 0x590, &size);
       RegQueryValueExA(key, "EQUIPWNDINFO.Y", nullptr, &type, base + 0x594, &size);
       RegQueryValueExA(key, "EQUIPWNDINFO.W", nullptr, &type, base + 0x598, &size);
       RegQueryValueExA(key, "EQUIPWNDINFO.H", nullptr, &type, base + 0x59C, &size);
       RegQueryValueExA(key, "EQUIPWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x5A0, &size);
-      if (RegQueryValueExA(key, "EQUIPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05A4), &size) != ERROR_SUCCESS) {
-        this->unknown_05A4 = 0;
+      if (RegQueryValueExA(key, "EQUIPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->equipWndVisible), &size) != ERROR_SUCCESS) {
+        this->equipWndVisible = 0;
       }
       RegQueryValueExA(key, "OPTIONWNDINFO.X", nullptr, &type, base + 0x5A8, &size);
       RegQueryValueExA(key, "OPTIONWNDINFO.Y", nullptr, &type, base + 0x5AC, &size);
       RegQueryValueExA(key, "OPTIONWNDINFO.W", nullptr, &type, base + 0x5B0, &size);
       RegQueryValueExA(key, "OPTIONWNDINFO.H", nullptr, &type, base + 0x5B4, &size);
       RegQueryValueExA(key, "OPTIONWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x5B8, &size);
-      if (RegQueryValueExA(key, "OPTIONWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05BC), &size) != ERROR_SUCCESS) {
-        this->unknown_05BC = 0;
+      if (RegQueryValueExA(key, "OPTIONWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->optionWndVisible), &size) != ERROR_SUCCESS) {
+        this->optionWndVisible = 0;
       }
       RegQueryValueExA(key, "SHORTENITEMWNDINFO.X", nullptr, &type, base + 0x5C0, &size);
       RegQueryValueExA(key, "SHORTENITEMWNDINFO.Y", nullptr, &type, base + 0x5C4, &size);
       RegQueryValueExA(key, "SHORTENITEMWNDINFO.W", nullptr, &type, base + 0x5C8, &size);
       RegQueryValueExA(key, "SHORTENITEMWNDINFO.H", nullptr, &type, base + 0x5CC, &size);
-      if (RegQueryValueExA(key, "SHORTENITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05D0), &size) != ERROR_SUCCESS) {
-        this->unknown_05D0 = 0;
+      if (RegQueryValueExA(key, "SHORTENITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->shortenItemWndVisible), &size) != ERROR_SUCCESS) {
+        this->shortenItemWndVisible = 0;
       }
       RegQueryValueExA(key, "CHATROOMWNDINFO.X", nullptr, &type, base + 0x604, &size);
       RegQueryValueExA(key, "CHATROOMWNDINFO.Y", nullptr, &type, base + 0x608, &size);
@@ -307,13 +307,13 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "ITEMSTOREWNDINFO.subWnd", nullptr, &type, base + 0x624, &size);
 
       std::memset(name, 0, sizeof(name) - 1);
-      RegQueryValueExA(key, "ITEMSTOREWNDNUM", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0058), &size);
-      if (this->unknown_0058 != 8) {
+      RegQueryValueExA(key, "ITEMSTOREWNDNUM", nullptr, &type, reinterpret_cast<BYTE*>(&this->itemStoreWindowCount), &size);
+      if (this->itemStoreWindowCount != 8) {
         ItemStoreFindSlotInfo* const storeSlots = reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C);
         for (int index = 0; index < 8; ++index) {
           storeSlots[index].Reset(index);
         }
-        this->unknown_0058 = 8;
+        this->itemStoreWindowCount = 8;
         reinterpret_cast<ItemStoreFindListInfo*>(base + 0x614)->Reset();
       } else {
         for (int index = 0; index < 8; ++index) {
@@ -364,8 +364,8 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.Y", nullptr, &type, base + 0x730, &size);
       RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.W", nullptr, &type, base + 0x734, &size);
       RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.H", nullptr, &type, base + 0x738, &size);
-      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_073C), &size) != ERROR_SUCCESS) {
-        this->unknown_073C = 0;
+      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->messengerGroupWndVisible), &size) != ERROR_SUCCESS) {
+        this->messengerGroupWndVisible = 0;
       }
       if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", nullptr, &type, base + 0x740, &size) != ERROR_SUCCESS) {
         *reinterpret_cast<int*>(base + 0x740) = 1;
@@ -381,8 +381,8 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "SKILLLISTWNDINFO.Y", nullptr, &type, base + 0x770, &size);
       RegQueryValueExA(key, "SKILLLISTWNDINFO.W", nullptr, &type, base + 0x774, &size);
       RegQueryValueExA(key, "SKILLLISTWNDINFO.H", nullptr, &type, base + 0x778, &size);
-      if (RegQueryValueExA(key, "SKILLLISTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_077C), &size) != ERROR_SUCCESS) {
-        this->unknown_077C = 0;
+      if (RegQueryValueExA(key, "SKILLLISTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->skillListWndVisible), &size) != ERROR_SUCCESS) {
+        this->skillListWndVisible = 0;
       }
       RegQueryValueExA(key, "MERCHANTITEMWNDINFO.X", nullptr, &type, base + 0x780, &size);
       RegQueryValueExA(key, "MERCHANTITEMWNDINFO.Y", nullptr, &type, base + 0x784, &size);
@@ -455,11 +455,11 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "SUBCHATWNDBT.Y", nullptr, &type, base + 0x928, &size);
       RegQueryValueExA(key, "SUBCHATWNDBT.W", nullptr, &type, base + 0x92C, &size);
       RegQueryValueExA(key, "SUBCHATWNDBT.H", nullptr, &type, base + 0x930, &size);
-      RegQueryValueExA(key, "CHATWNDSTICKON", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F4), &size);
+      RegQueryValueExA(key, "CHATWNDSTICKON", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndStickOn), &size);
       RegQueryValueExA(key, "ONSTSUBCHAT", nullptr, &type, base + 0x3F5, &size);
-      RegQueryValueExA(key, "ONBTSUBCHAT", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F6), &size);
-      RegQueryValueExA(key, "MEMORIALDUNWND.X", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.unknown_5940), &size);
-      RegQueryValueExA(key, "MEMORIALDUNWND.Y", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.unknown_5944), &size);
+      RegQueryValueExA(key, "ONBTSUBCHAT", nullptr, &type, reinterpret_cast<BYTE*>(&this->battleSubChatEnabled), &size);
+      RegQueryValueExA(key, "MEMORIALDUNWND.X", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.memorialWindowX), &size);
+      RegQueryValueExA(key, "MEMORIALDUNWND.Y", nullptr, &type, reinterpret_cast<BYTE*>(&g_session.memorialWindowY), &size);
       RegQueryValueExA(key, "QUICKSLOTWNDINFO.X", nullptr, &type, base + 0x934, &size);
       RegQueryValueExA(key, "QUICKSLOTWNDINFO.Y", nullptr, &type, base + 0x938, &size);
       RegQueryValueExA(key, "QUICKSLOTWNDINFO.W", nullptr, &type, base + 0x93C, &size);
@@ -569,9 +569,9 @@ int UIWindowMgr::CenterOnViewportY(int y) {
 // OFFSET: 0x00AAAE60
 // FUNCTION: fn_17275
 void UIWindowMgr::ConfirmActiveDialog() {
-  UIWindow* window = this->unknown_01F8;
-  if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
-      (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
+  UIWindow* window = this->choose3Wnd;
+  if (window || (window = this->sayDialogWnd) != nullptr || (window = this->sayDialogOverlayWnd) != nullptr || (window = this->comboBoxWnd) != nullptr ||
+      (window = this->comboBoxIDWnd) != nullptr || (window = this->chooseWarpWnd) != nullptr || (window = this->makeTargetListWnd) != nullptr ||
       (window = this->hoverWindow) != nullptr) {
     window->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     return;
@@ -600,49 +600,49 @@ void UIWindowMgr::SaveVisibleWindowIds() {
   for (UIWindow* window : this->rendered) {
     int id = window->geometry.id;
     if (id == 8) {
-      if (this->unknown_054C) {
+      if (this->itemWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 10) {
-      if (this->unknown_05A4) {
+      if (this->equipWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 11) {
-      if (this->unknown_0588) {
+      if (this->statusWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 13) {
-      if (this->unknown_05BC) {
+      if (this->optionWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 37) {
-      if (this->unknown_077C) {
+      if (this->skillListWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 321) {
-      if (this->unknown_0568) {
+      if (this->questWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 205) {
-      if (this->unknown_0568) {
+      if (this->questWndVisible) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 134) {
-      if (this->unknown_0568) {
+      if (this->questWndVisible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if ((id == 69 || id == 34) && this->unknown_073C) {
+    } else if ((id == 69 || id == 34) && this->messengerGroupWndVisible) {
       this->savedWindowIds.push_back(id);
     } else if (id == 271) {
       if (g_session.HasUnknown6178Records() == true) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 286) {
-      if (this->unknown_4F210 == true) {
+      if (this->macroReporterVisible == true) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 10014) {
-      if (g_session.unknown_5470 && g_session.unknown_5474 && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
+      if (g_session.lowMemory && g_session.performanceWarningEnabled && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 301) {
@@ -660,7 +660,7 @@ void UIWindowMgr::SaveVisibleWindowIds() {
 // OFFSET: 0x00AAB8A0
 // FUNCTION: fn_17282
 void UIWindowMgr::UpdateNavigationList() {
-  if (this->window_4F174 && !g_navigationManager.unknown_1254 && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
+  if (this->window_4F174 && !g_navigationManager.expandedMap && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
     this->window_4F174->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
@@ -688,11 +688,11 @@ void UIWindowMgr::SaveShortcutItems() {
     char name[36];
     char description[33] = {};
     std::strcpy(description, g_session.GetHotkeyDescription(index));
-    std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+    std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
     RegSetValueExA(key, name, 0, REG_SZ, reinterpret_cast<const BYTE*>(description), 32);
 
     DWORD level = g_session.GetUnknown0420(index);
-    std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+    std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
     RegSetValueExA(key, name, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&level), 4);
   }
 
@@ -711,15 +711,15 @@ void UIWindowMgr::SaveUIRectInfo() {
   DWORD disposition = 0;
   if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, path, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
     char name[256];
-    RegSetValueExA(key, "m_minimapZoomWnd", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0050), 4);
-    RegSetValueExA(key, "M_ISDRAGALL", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0064), 4);
-    RegSetValueExA(key, "M_ISDRAWCOMPASS", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0060), 4);
-    RegSetValueExA(key, "M_MINIMAPARGB", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_005C), 4);
-    RegSetValueExA(key, "M_CHATWNDSTATUS", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_004C), 4);
-    RegSetValueExA(key, "M_CHATWNDHEIGHT", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0038), 4);
-    RegSetValueExA(key, "M_CHATWNDX", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0030), 4);
-    RegSetValueExA(key, "M_CHATWNDY", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0034), 4);
-    RegSetValueExA(key, "M_CHATWNDSHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_003C), 4);
+    RegSetValueExA(key, "m_minimapZoomWnd", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->minimapZoom), 4);
+    RegSetValueExA(key, "M_ISDRAGALL", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->dragAllItems), 4);
+    RegSetValueExA(key, "M_ISDRAWCOMPASS", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->drawCompass), 4);
+    RegSetValueExA(key, "M_MINIMAPARGB", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->minimapColor), 4);
+    RegSetValueExA(key, "M_CHATWNDSTATUS", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndStatus), 4);
+    RegSetValueExA(key, "M_CHATWNDHEIGHT", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndHeight), 4);
+    RegSetValueExA(key, "M_CHATWNDX", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndX), 4);
+    RegSetValueExA(key, "M_CHATWNDY", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndY), 4);
+    RegSetValueExA(key, "M_CHATWNDSHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndVisible), 4);
     RegSetValueExA(key, "SAYDIALOGWNDINFO.X", 0, REG_DWORD, base + 0x5E4, 4);
     RegSetValueExA(key, "SAYDIALOGWNDINFO.Y", 0, REG_DWORD, base + 0x5E8, 4);
     RegSetValueExA(key, "SAYDIALOGWNDINFO.W", 0, REG_DWORD, base + 0x5EC, 4);
@@ -742,38 +742,38 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "ITEMWNDINFO.CURRADIO1", 0, REG_DWORD, base + 0x540, 4);
     RegSetValueExA(key, "ITEMWNDINFO.CURRADIO2", 0, REG_DWORD, base + 0x544, 4);
     RegSetValueExA(key, "ITEMWNDINFO.CURRADIO3", 0, REG_DWORD, base + 0x548, 4);
-    RegSetValueExA(key, "ITEMWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_054C), 4);
+    RegSetValueExA(key, "ITEMWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->itemWndVisible), 4);
     RegSetValueExA(key, "QUESTWNDINFO.X", 0, REG_DWORD, base + 0x550, 4);
     RegSetValueExA(key, "QUESTWNDINFO.Y", 0, REG_DWORD, base + 0x554, 4);
     RegSetValueExA(key, "QUESTWNDINFO.W", 0, REG_DWORD, base + 0x558, 4);
     RegSetValueExA(key, "QUESTWNDINFO.H", 0, REG_DWORD, base + 0x55C, 4);
     RegSetValueExA(key, "QUESTWNDINFO.ORGHEIGHT", 0, REG_DWORD, base + 0x560, 4);
     RegSetValueExA(key, "QUESTWNDINFO.CURTAB", 0, REG_DWORD, base + 0x564, 4);
-    RegSetValueExA(key, "QUESTWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0568), 4);
+    RegSetValueExA(key, "QUESTWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->questWndVisible), 4);
     RegSetValueExA(key, "QUESTDISPWNDINFO.QUESTDISPLAY", 0, REG_DWORD, base + 0x570, 4);
     RegSetValueExA(key, "STATUSWNDINFO.X", 0, REG_DWORD, base + 0x574, 4);
     RegSetValueExA(key, "STATUSWNDINFO.Y", 0, REG_DWORD, base + 0x578, 4);
     RegSetValueExA(key, "STATUSWNDINFO.W", 0, REG_DWORD, base + 0x57C, 4);
     RegSetValueExA(key, "STATUSWNDINFO.H", 0, REG_DWORD, base + 0x580, 4);
     RegSetValueExA(key, "STATUSWNDINFO.ORGHEIGHT", 0, REG_DWORD, base + 0x584, 4);
-    RegSetValueExA(key, "STATUSWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0588), 4);
+    RegSetValueExA(key, "STATUSWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->statusWndVisible), 4);
     RegSetValueExA(key, "EQUIPWNDINFO.X", 0, REG_DWORD, base + 0x590, 4);
     RegSetValueExA(key, "EQUIPWNDINFO.Y", 0, REG_DWORD, base + 0x594, 4);
     RegSetValueExA(key, "EQUIPWNDINFO.W", 0, REG_DWORD, base + 0x598, 4);
     RegSetValueExA(key, "EQUIPWNDINFO.H", 0, REG_DWORD, base + 0x59C, 4);
     RegSetValueExA(key, "EQUIPWNDINFO.ORGHEIGHT", 0, REG_DWORD, base + 0x5A0, 4);
-    RegSetValueExA(key, "EQUIPWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_05A4), 4);
+    RegSetValueExA(key, "EQUIPWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->equipWndVisible), 4);
     RegSetValueExA(key, "OPTIONWNDINFO.X", 0, REG_DWORD, base + 0x5A8, 4);
     RegSetValueExA(key, "OPTIONWNDINFO.Y", 0, REG_DWORD, base + 0x5AC, 4);
     RegSetValueExA(key, "OPTIONWNDINFO.W", 0, REG_DWORD, base + 0x5B0, 4);
     RegSetValueExA(key, "OPTIONWNDINFO.H", 0, REG_DWORD, base + 0x5B4, 4);
     RegSetValueExA(key, "OPTIONWNDINFO.ORGHEIGHT", 0, REG_DWORD, base + 0x5B8, 4);
-    RegSetValueExA(key, "OPTIONWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_05BC), 4);
+    RegSetValueExA(key, "OPTIONWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->optionWndVisible), 4);
     RegSetValueExA(key, "SHORTENITEMWNDINFO.X", 0, REG_DWORD, base + 0x5C0, 4);
     RegSetValueExA(key, "SHORTENITEMWNDINFO.Y", 0, REG_DWORD, base + 0x5C4, 4);
     RegSetValueExA(key, "SHORTENITEMWNDINFO.W", 0, REG_DWORD, base + 0x5C8, 4);
     RegSetValueExA(key, "SHORTENITEMWNDINFO.H", 0, REG_DWORD, base + 0x5CC, 4);
-    RegSetValueExA(key, "SHORTENITEMWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_05D0), 4);
+    RegSetValueExA(key, "SHORTENITEMWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->shortenItemWndVisible), 4);
     RegSetValueExA(key, "CHATROOMWNDINFO.X", 0, REG_DWORD, base + 0x604, 4);
     RegSetValueExA(key, "CHATROOMWNDINFO.Y", 0, REG_DWORD, base + 0x608, 4);
     RegSetValueExA(key, "CHATROOMWNDINFO.W", 0, REG_DWORD, base + 0x60C, 4);
@@ -784,7 +784,7 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "ITEMSTOREWNDINFO.H", 0, REG_DWORD, base + 0x620, 4);
     RegSetValueExA(key, "ITEMSTOREWNDINFO.subWnd", 0, REG_DWORD, base + 0x624, 4);
     std::memset(name, 0, sizeof(name) - 1);
-    RegSetValueExA(key, "ITEMSTOREWNDNUM", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_0058), 4);
+    RegSetValueExA(key, "ITEMSTOREWNDNUM", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->itemStoreWindowCount), 4);
     for (int index = 0; index < 8; ++index) {
       std::sprintf(name, "ITEMSTOREWNDINFO_%d.X", index);
       RegSetValueExA(key, name, 0, REG_DWORD, base + 0x62C + index * 0x10, 4);
@@ -832,7 +832,7 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.Y", 0, REG_DWORD, base + 0x730, 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.W", 0, REG_DWORD, base + 0x734, 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.H", 0, REG_DWORD, base + 0x738, 4);
-    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_073C), 4);
+    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->messengerGroupWndVisible), 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", 0, REG_DWORD, base + 0x740, 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", 0, REG_DWORD, base + 0x744, 4);
     RegSetValueExA(key, "EXCHANGEACCEPTWNDINFO.X", 0, REG_DWORD, base + 0x75C, 4);
@@ -843,7 +843,7 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "SKILLLISTWNDINFO.Y", 0, REG_DWORD, base + 0x770, 4);
     RegSetValueExA(key, "SKILLLISTWNDINFO.W", 0, REG_DWORD, base + 0x774, 4);
     RegSetValueExA(key, "SKILLLISTWNDINFO.H", 0, REG_DWORD, base + 0x778, 4);
-    RegSetValueExA(key, "SKILLLISTWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_077C), 4);
+    RegSetValueExA(key, "SKILLLISTWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->skillListWndVisible), 4);
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.X", 0, REG_DWORD, base + 0x780, 4);
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.Y", 0, REG_DWORD, base + 0x784, 4);
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.W", 0, REG_DWORD, base + 0x788, 4);
@@ -913,11 +913,11 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "SUBCHATWNDBT.Y", 0, REG_DWORD, base + 0x928, 4);
     RegSetValueExA(key, "SUBCHATWNDBT.W", 0, REG_DWORD, base + 0x92C, 4);
     RegSetValueExA(key, "SUBCHATWNDBT.H", 0, REG_DWORD, base + 0x930, 4);
-    RegSetValueExA(key, "CHATWNDSTICKON", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_03F4), 4);
+    RegSetValueExA(key, "CHATWNDSTICKON", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->chatWndStickOn), 4);
     RegSetValueExA(key, "ONSTSUBCHAT", 0, REG_DWORD, base + 0x3F5, 4);
-    RegSetValueExA(key, "ONBTSUBCHAT", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->unknown_03F6), 4);
-    RegSetValueExA(key, "MEMORIALDUNWND.X", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.unknown_5940), 4);
-    RegSetValueExA(key, "MEMORIALDUNWND.Y", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.unknown_5944), 4);
+    RegSetValueExA(key, "ONBTSUBCHAT", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->battleSubChatEnabled), 4);
+    RegSetValueExA(key, "MEMORIALDUNWND.X", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.memorialWindowX), 4);
+    RegSetValueExA(key, "MEMORIALDUNWND.Y", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&g_session.memorialWindowY), 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.X", 0, REG_DWORD, base + 0x934, 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.Y", 0, REG_DWORD, base + 0x938, 4);
     RegSetValueExA(key, "QUICKSLOTWNDINFO.W", 0, REG_DWORD, base + 0x93C, 4);
@@ -1023,20 +1023,20 @@ void UIWindowMgr::RefreshWindow01C8Edits() {
 // FUNCTION: fn_17265
 void UIWindowMgr::SetSurface0478(CBitmapRes* bitmap) {
   if (!bitmap) {
-    if (this->unknown_0478) {
-      delete this->unknown_0478;
-      this->unknown_0478 = nullptr;
+    if (this->backgroundSurface) {
+      delete this->backgroundSurface;
+      this->backgroundSurface = nullptr;
     }
     return;
   }
 
-  if (!this->unknown_0478) {
-    this->unknown_0478 = reinterpret_cast<UIWindow*>(GetRenderSystemHolder()->CreateSurfaceOrTexture(bitmap->image.width, bitmap->image.height));
-    if (!this->unknown_0478) {
+  if (!this->backgroundSurface) {
+    this->backgroundSurface = reinterpret_cast<UIWindow*>(GetRenderSystemHolder()->CreateSurfaceOrTexture(bitmap->image.width, bitmap->image.height));
+    if (!this->backgroundSurface) {
       return;
     }
   }
-  reinterpret_cast<CSurface*>(this->unknown_0478)->Upload(0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, 0, 0);
+  reinterpret_cast<CSurface*>(this->backgroundSurface)->Upload(0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, 0, 0);
 }
 
 // OFFSET: 0x00AAA050
@@ -1096,7 +1096,7 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
   const int localX = x - offsetX;
   const int localY = y - offsetY;
   window->RecordDrop(localX, localY, *drag, -1);
-  drag->unknown_038C = reinterpret_cast<std::uint32_t>(window);
+  drag->sourceWindow = reinterpret_cast<std::uint32_t>(window);
   if (this->window_01EC != window->Root()) {
     window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
   }
@@ -1141,12 +1141,12 @@ void UIWindowMgr::RestoreHiddenWindows() {
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (mode && mode->unknown_0254 == 1) {
+  if (mode && mode->canRotateView == 1) {
     this->EnsureWindow(WID_MINIMAPZOOMWND);
   }
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();
-  this->unknown_0508 = 1;
+  this->windowVisibilityState = 1;
 
   for (std::map<int, UIWindow*>::iterator it = this->overlays.begin(); it != this->overlays.end(); ++it) {
     this->CloseWindow(it->first + 216);
@@ -1177,7 +1177,7 @@ int UIWindowMgr::RunEmailAddress() {
   }
 
   this->inputWindow = nullptr;
-  this->unknown_0474 = 0;
+  this->modalResponse = 0;
   this->modalWindows.push_back(window);
   int response = 184;
 
@@ -1201,15 +1201,15 @@ int UIWindowMgr::RunEmailAddress() {
         break;
       }
 
-      if (this->unknown_0474 != 0) {
+      if (this->modalResponse != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
           this->Schedule(active);
           this->modalWindows.pop_back();
         }
 
-        response = this->unknown_0474;
-        this->unknown_0474 = 0;
+        response = this->modalResponse;
+        this->modalResponse = 0;
         break;
       }
 
@@ -1220,7 +1220,7 @@ int UIWindowMgr::RunEmailAddress() {
 
       if (g_session.GetOption(20) > 0) {
         this->activeWindowId = 0;
-        this->unknown_0474 = 0;
+        this->modalResponse = 0;
 
         while (!this->modalWindows.empty()) {
           this->Schedule(this->modalWindows.back());

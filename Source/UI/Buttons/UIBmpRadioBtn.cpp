@@ -4,7 +4,7 @@
 // OFFSET: 0x0086C590
 // FUNCTION: fn_11028
 UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0) {
-  this->geometry.unknown_0030 = 0;
+  this->geometry.state = 0;
   this->geometry.id = 215;
   this->m_hovered = false;
   this->m_disabled = false;

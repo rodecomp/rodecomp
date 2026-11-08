@@ -30,7 +30,7 @@ void UIBmpTextButton::Paint() {
 
   for (; style != this->styles.end(); ++style) {
     if (this->m_disabled == 0) {
-      if (this->geometry.unknown_0030 == style->state) {
+      if (this->geometry.state == style->state) {
         found = true;
         break;
       }
@@ -59,7 +59,7 @@ void UIBmpTextButton::Paint() {
       }
     }
   } else {
-    switch (this->geometry.unknown_0030) {
+    switch (this->geometry.state) {
     case 0: {
       CBitmapRes* bitmap = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
       this->DrawBitmap(0, 0, bitmap, false);

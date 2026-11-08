@@ -135,12 +135,12 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
 
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, value.id);
-  if (item.unknown_0000[1] == 0 || item.identified == 0) {
+  if (item.identity[1] == 0 || item.identified == 0) {
     g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
-  switch (item.unknown_0000[0]) {
+  switch (item.identity[0]) {
   case TYPE_EVENT:
   case TYPE_ARROW:
   case TYPE_AMMO:
@@ -162,7 +162,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
   }
 
-  switch (item.unknown_0000[0]) {
+  switch (item.identity[0]) {
   case TYPE_ARMOR:
   case TYPE_WEAPON:
   case TYPE_BOW:
@@ -172,7 +172,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   case TYPE_ARMORMB:
   case TYPE_ARMORTMB:
   case TYPE_GUN:
-    if (item.unknown_0000[2] == 0) {
+    if (item.identity[2] == 0) {
       break;
     }
   case TYPE_HEAL:
@@ -278,8 +278,8 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     }
   } else if (value.source != 6 && value.source != 9) {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, value.id);
-    if (item.unknown_0000[1] != 0 && item.identified != 0) {
-      switch (item.unknown_0000[0]) {
+    if (item.identity[1] != 0 && item.identified != 0) {
+      switch (item.identity[0]) {
       case TYPE_ARMOR:
       case TYPE_WEAPON:
       case TYPE_BOW:
@@ -289,7 +289,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       case TYPE_ARMORMB:
       case TYPE_ARMORTMB:
       case TYPE_GUN:
-        if (item.unknown_0000[2] == 0) {
+        if (item.identity[2] == 0) {
           break;
         }
       case TYPE_HEAL:

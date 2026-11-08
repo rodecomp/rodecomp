@@ -14,9 +14,9 @@
 int CSession::RotateShortcut(int index, int bank) const {
   int rotation;
   if (bank == 0) {
-    rotation = this->unknown_06FC;
+    rotation = this->mainShortcutRow;
   } else if (bank == 1) {
-    rotation = this->unknown_06A8;
+    rotation = this->alternateShortcutRow;
   } else {
     return index;
   }
@@ -66,11 +66,11 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
       continue;
     }
 
-    bool duplicate = previous.itemId == id && previous.unknown_0005 == level && previous.unknown_0000 == type;
+    bool duplicate = previous.itemId == id && previous.value == level && previous.enabled == type;
 
     if (!duplicate) {
       const bool usesLevel = CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(previous.itemId));
-      duplicate = !usesLevel && previous.itemId == id && previous.unknown_0000 == type;
+      duplicate = !usesLevel && previous.itemId == id && previous.enabled == type;
     }
 
     if (!duplicate) {
@@ -96,12 +96,12 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   }
 
   if (bank == 0) {
-    this->m_shortcutSlots[destination].unknown_0005 = static_cast<std::int16_t>(level);
-    this->m_shortcutSlots[destination].unknown_0000 = type;
+    this->m_shortcutSlots[destination].value = static_cast<std::int16_t>(level);
+    this->m_shortcutSlots[destination].enabled = type;
     this->m_shortcutSlots[destination].itemId = id;
   } else if (bank == 1) {
-    this->m_secondaryShortcutSlots[destination].unknown_0005 = static_cast<std::int16_t>(level);
-    this->m_secondaryShortcutSlots[destination].unknown_0000 = type;
+    this->m_secondaryShortcutSlots[destination].value = static_cast<std::int16_t>(level);
+    this->m_secondaryShortcutSlots[destination].enabled = type;
     this->m_secondaryShortcutSlots[destination].itemId = id;
   }
 
@@ -119,8 +119,8 @@ void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
       }
     }
 
-    this->m_normalItemSlots[slot].unknown_0005 = 0;
-    this->m_normalItemSlots[slot].unknown_0000 = 0;
+    this->m_normalItemSlots[slot].value = 0;
+    this->m_normalItemSlots[slot].enabled = 0;
     this->m_normalItemSlots[slot].itemId = id;
   } else {
     this->m_normalItemSlots[slot] = {};

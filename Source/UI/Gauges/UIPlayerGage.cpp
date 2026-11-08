@@ -15,8 +15,8 @@ UIGage::UIGage() : UIWindow(0) {
 
 // OFFSET: 0x0086E120
 // FUNCTION: fn_11065
-UIPcGage::UIPcGage() : current(0), maximum(0), unknown_00A8(0), unknown_00AC(0) {
-  this->unknown_009C = 0;
+UIPcGage::UIPcGage() : current(0), maximum(0), secondaryValue(0), secondaryMaximum(0) {
+  this->displayMode = 0;
 }
 
 // OFFSET: 0x0086E3A0
@@ -26,7 +26,7 @@ UIRechargeGage::UIRechargeGage() : current(0), maximum(100) {
 
 // OFFSET: 0x0086E210
 // FUNCTION: fn_11067
-UIPlayerGage::UIPlayerGage() : unknown_009C(0) {
+UIPlayerGage::UIPlayerGage() : actorKind(0) {
 }
 
 // OFFSET: 0x0086DE90
@@ -37,7 +37,7 @@ UIMonsterGage::UIMonsterGage() {
   this->colors[2] = 0x00E700FF;
   this->colors[4] = 0x0000FFFF;
   this->m_threshold = 0x19;
-  this->unknown_009C = 1;
+  this->displayMode = 1;
 }
 
 // OFFSET: 0x00882450
@@ -78,7 +78,7 @@ void UIPlayerGage::SetThirdValues(std::function<std::int64_t()> current, std::fu
 // OFFSET: 0x0089C070
 // FUNCTION: fn_11580
 void UIMonsterGage::SetMode(int mode) {
-  this->unknown_009C = mode;
+  this->displayMode = mode;
 }
 
 // OFFSET: 0x0089C390
@@ -110,7 +110,7 @@ void UIPlayerGage::Paint() {
     this->FillRegion(1, y, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3, color);
   };
 
-  switch (this->unknown_009C) {
+  switch (this->actorKind) {
     case 7:
       if (this->m_thirdCurrent && this->m_thirdMaximum) {
         drawBar(1, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);

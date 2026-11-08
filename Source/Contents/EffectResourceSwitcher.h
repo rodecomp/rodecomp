@@ -18,22 +18,22 @@ struct EZ2STREffectInfo {
   /* 0004 */ std::string name;
   /* 001C */ float offsetX;
   /* 0020 */ float offsetY;
-  /* 0024 */ unsigned int unknown_0024 = 0;
-  /* 0028 */ std::string unknown_0028;
-  /* 0040 */ int unknown_0040[2] = {-1, 0};
+  /* 0024 */ unsigned int flags = 0;
+  /* 0028 */ std::string soundPath;
+  /* 0040 */ int delays[2] = {-1, 0};
 };
 
 struct EZ2STREffectRecord {
   /* 0000 */ std::string name;
   /* 0018 */ double offsetX;
   /* 0020 */ double offsetY;
-  /* 0028 */ bool unknown_0028;
-  /* 0029 */ bool unknown_0029;
-  /* 002A */ bool unknown_002A;
-  /* 002C */ std::string unknown_002C;
-  /* 0044 */ bool unknown_0044;
-  /* 0048 */ int unknown_0048[2];
-  /* 0050 */ bool unknown_0050;
+  /* 0028 */ bool infinite;
+  /* 0029 */ bool floor;
+  /* 002A */ bool aboveUi;
+  /* 002C */ std::string soundPath;
+  /* 0044 */ bool soundLoop;
+  /* 0048 */ int delays[2];
+  /* 0050 */ bool toGround;
 };
 
 class CEZ2STREffectMgr : public Singleton<CEZ2STREffectMgr> {
@@ -81,13 +81,13 @@ public:
 static_assert(sizeof(EZ2STREffectInfo) == 0x48);
 static_assert(sizeof(CEZ2STREffectMgr) == 0xC);
 static_assert(sizeof(EZ2STREffectRecord) == 0x58);
-static_assert(offsetof(EZ2STREffectRecord, unknown_002C) == 0x2C);
-static_assert(offsetof(EZ2STREffectRecord, unknown_0050) == 0x50);
+static_assert(offsetof(EZ2STREffectRecord, soundPath) == 0x2C);
+static_assert(offsetof(EZ2STREffectRecord, toGround) == 0x50);
 static_assert(offsetof(EZ2STREmitter, currentFrame) == 0x3CC4);
 static_assert(offsetof(EZ2STREmitter, looping) == 0x3F5C);
-static_assert(offsetof(EZ2STREmitter, unknown_3F98) == 0x3F98);
+static_assert(offsetof(EZ2STREmitter, lifetimeLimit) == 0x3F98);
 static_assert(offsetof(EZ2STREmitter, remainingTime) == 0x3FB4);
-static_assert(offsetof(EZ2STREmitter, unknown_3FE9) == 0x3FE9);
+static_assert(offsetof(EZ2STREmitter, flipY) == 0x3FE9);
 static_assert(offsetof(EffectResourceSwitcher, effect) == 0xD0);
 static_assert(offsetof(EffectResourceSwitcher, targetName) == 0xF8);
 static_assert(sizeof(EffectResourceSwitcher) == 0x110);

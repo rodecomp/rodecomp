@@ -13,7 +13,7 @@
 
 struct EditLine {
   /* 0000 */ std::string text;
-  /* 0018 */ unsigned char unknown_0018 = 0;
+  /* 0018 */ unsigned char hasCarriageReturn = 0;
   /* 001C */ int selectionBegin = 0;
   /* 0020 */ int selectionEnd = 0;
 };
@@ -39,26 +39,26 @@ public:
   int TrailingOffsetFitting(const std::string& text, int width);
 
   /* 0188 */ std::uint32_t normalColor;
-  /* 018C */ int unknown_018C;
-  /* 0190 */ unsigned char unknown_0190;
+  /* 018C */ int outlineColor;
+  /* 0190 */ unsigned char drawOutline;
   /* 0194 */ std::string placeholder;
   /* 01AC */ std::uint32_t placeholderColor;
   /* 01B0 */ int alignment;
-  /* 01B4 */ int unknown_01B4;
+  /* 01B4 */ int horizontalPadding;
   /* 01B8 */ int verticalPadding;
   /* 01BC */ std::vector<EditLine> lines;
   /* 01C8 */ unsigned char selectedAll;
   /* 01CC */ int column;
   /* 01D0 */ int line;
-  /* 01D4 */ int unknown_01D4;
-  /* 01D8 */ int unknown_01D8;
-  /* 01DC */ unsigned char unknown_01DC;
+  /* 01D4 */ int previousCursorLine;
+  /* 01D8 */ int cursorAdvance;
+  /* 01DC */ unsigned char wrapPending;
   /* 01E0 */ std::chrono::system_clock::time_point caretStart;
   /* 01E8 */ int scrollMaximum;
   /* 01EC */ int visibleLines;
-  /* 01F0 */ int unknown_01F0;
+  /* 01F0 */ int scrollStep;
   /* 01F4 */ int scrollPosition;
-  /* 01F8 */ int unknown_01F8;
+  /* 01F8 */ int textAlignment;
 };
 
 class CUIEditBoxEx : public CUIControl {

@@ -13,10 +13,10 @@ CSchedule::CSchedule(const std::uint64_t& timestamp, const std::int64_t& interva
   this->timestamp = timestamp;
   this->interval = interval;
   this->scheduleType = scheduleType;
-  this->unknown_002C = unknown;
+  this->userValue = unknown;
   this->active = true;
-  this->unknown_0025 = 0;
-  this->unknown_0028 = 0;
+  this->pending = 0;
+  this->processCount = 0;
 }
 
 // OFFSET: 0x00BA8980

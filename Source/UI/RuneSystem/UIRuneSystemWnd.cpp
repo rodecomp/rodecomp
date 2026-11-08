@@ -33,8 +33,8 @@ void UIRuneSetList::ScrollBy(int delta) {
 // OFFSET: 0x00816830
 // FUNCTION: fn_10166
 void UIRune_Decom::Reset() {
-  this->unknown_007C.clear();
-  this->unknown_0094.clear();
+  this->m_itemName.clear();
+  this->m_itemImagePath.clear();
   this->m_ownedCount = 0;
   this->m_itemId = 0;
   this->m_decomList = nullptr;
@@ -125,7 +125,7 @@ void UIRuneSetReWard::Paint() {
   } else if (this->m_state == 0) {
     name = &this->m_texts[0];
   } else if (this->m_state == 1) {
-    switch (this->geometry.unknown_0030) {
+    switch (this->geometry.state) {
     case 0:
       name = &this->m_names[3];
       break;
@@ -138,7 +138,7 @@ void UIRuneSetReWard::Paint() {
       break;
     }
   } else {
-    switch (this->geometry.unknown_0030) {
+    switch (this->geometry.state) {
     case 0:
       name = &this->m_names[0];
       break;
@@ -166,7 +166,7 @@ void UIRuneSetReWard::Paint() {
 // FUNCTION: fn_10184
 void UIRuneSystemTab::Paint() {
   ResourceMgr& resources = ResourceMgr::Instance();
-  const std::string name = FormatOwnedString(this->m_label.c_str(), this->geometry.unknown_0030);
+  const std::string name = FormatOwnedString(this->m_label.c_str(), this->geometry.state);
   this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())))->image, false);
 }
 
@@ -264,10 +264,10 @@ void UIRuneSystemTab::OnLBtnDown(int x, int) {
   index = index > 0 ? index : 0;
   index = index < this->m_count - 1 ? index : this->m_count - 1;
 
-  if (index < 3 && static_cast<int>(this->geometry.unknown_0030) != index) {
-    this->geometry.unknown_0030 = index;
+  if (index < 3 && static_cast<int>(this->geometry.state) != index) {
+    this->geometry.state = index;
     this->Invalidate();
-    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.state, 0, 0, 0);
   }
 }
 
@@ -473,7 +473,7 @@ void UIRuneSet_Info::OnProcess() {
 // OFFSET: 0x0081CC00
 // FUNCTION: fn_10213
 void UIRuneSystemWnd::OnProcess() {
-  switch (this->m_tab->geometry.unknown_0030) {
+  switch (this->m_tab->geometry.state) {
   case 0:
     this->m_runeSetInfo->OnProcess();
     break;
@@ -508,11 +508,11 @@ void UIRuneSetList::OnWheel(int delta) {
 // FUNCTION: fn_10220
 void UIRuneSet_Info::UpdateActivation() {
   this->m_activeWnd->Show(0);
-  this->unknown_0084->Enable(0);
+  this->m_activateButton->Enable(0);
   if (this->m_runeSet && !this->m_runeSet->IsActive()) {
     this->m_activeWnd->Show(1);
-    this->unknown_0084->Enable(1);
-    UIBitmapButton* button = this->unknown_0084;
+    this->m_activateButton->Enable(1);
+    UIBitmapButton* button = this->m_activateButton;
     button->SetDisabled(!g_runeSystemMgr->HasRequiredItems(this->m_runeSet->GetActiveType()));
     button->Invalidate();
   }
@@ -584,9 +584,9 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
     this->Invalidate();
     return 0;
   case UM_SETSTATE:
-    this->geometry.unknown_0030 = argument1;
+    this->geometry.state = argument1;
     this->Invalidate();
-    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.state, 0, 0, 0);
     break;
   }
 
@@ -759,9 +759,9 @@ void UIRuneSet_Info::UpdateRewards() {
 // FUNCTION: fn_10219
 void UIRuneSet_Info::Refresh() {
   this->m_activeWnd->Show(0);
-  this->unknown_0084->Enable(0);
-  this->unknown_0088->Enable(0);
-  this->unknown_008C->Enable(0);
+  this->m_activateButton->Enable(0);
+  this->m_equipButton->Enable(0);
+  this->m_unequipButton->Enable(0);
   this->m_tab->Show(0);
   this->m_gauge->Show(0);
   this->m_gradeText->Show(0);
@@ -776,24 +776,24 @@ void UIRuneSet_Info::Refresh() {
   if (this->m_runeSet) {
     if (this->m_runeSet->IsActive()) {
       if (this->m_runeSet == g_runeSystemMgr->GetCurRuneSet()) {
-        this->unknown_008C->Enable(1);
+        this->m_unequipButton->Enable(1);
       } else {
-        this->unknown_0088->Enable(1);
+        this->m_equipButton->Enable(1);
       }
     } else {
       this->m_activeWnd->Show(1);
       this->m_activeWnd->Invalidate();
-      this->unknown_0084->Enable(1);
-      UIBitmapButton* button = this->unknown_0084;
+      this->m_activateButton->Enable(1);
+      UIBitmapButton* button = this->m_activateButton;
       button->SetDisabled(!g_runeSystemMgr->HasRequiredItems(this->m_runeSet->GetActiveType()));
       button->Invalidate();
-      this->m_tab->geometry.unknown_0030 = 0;
+      this->m_tab->geometry.state = 0;
       this->m_tab->Invalidate();
       this->m_tab->Invalidate();
     }
 
     this->m_tab->Show(1);
-    const std::uint32_t tab = this->m_tab->geometry.unknown_0030;
+    const std::uint32_t tab = this->m_tab->geometry.state;
     if (tab == 1) {
       if (this->m_runeSet->m_reward.values[0] == 1) {
         for (int index = 0; index < this->m_runeSet->CountSlots(); ++index) {
@@ -871,15 +871,15 @@ void UIRuneSystemWnd::SelectTab() {
   for (int index = 0; index < 3; ++index) {
     UIRuneSetList* list = this->m_lists[index];
     if (list) {
-      list->Show(this->m_tab->geometry.unknown_0030 == static_cast<std::uint32_t>(index));
+      list->Show(this->m_tab->geometry.state == static_cast<std::uint32_t>(index));
     }
   }
-  this->m_equipRuneSet->Show(this->m_tab->geometry.unknown_0030 == 0);
-  this->m_tagList->SendMsg(this, 0xA9, this->m_tab->geometry.unknown_0030, this->m_equipRuneSet->geometry.height, 0, 0);
+  this->m_equipRuneSet->Show(this->m_tab->geometry.state == 0);
+  this->m_tagList->SendMsg(this, 0xA9, this->m_tab->geometry.state, this->m_equipRuneSet->geometry.height, 0, 0);
   this->m_tagList->Show(1);
   this->m_tagList->Invalidate();
 
-  switch (this->m_tab->geometry.unknown_0030) {
+  switch (this->m_tab->geometry.state) {
   case 0:
     this->m_runeSetInfo->Show(1);
     this->m_runeSetInfo->RefreshDescription();
@@ -994,7 +994,7 @@ void UIRuneSystem_Decom_RadioBtn::Paint() {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_disabledBitmap.c_str())));
     color = 0xECD5C4;
   } else {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((this->geometry.unknown_0030 ? this->uncheckedBitmap : this->checkedBitmap).c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((this->geometry.state ? this->uncheckedBitmap : this->checkedBitmap).c_str())));
   }
 
   if (bitmap) {
@@ -1195,7 +1195,7 @@ void UIRuneSetList::Paint() {
     this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
     for (unsigned int slot = 0; slot < runeSet->m_slots.size(); ++slot) {
       if (runeSet->m_slots[slot]) {
-        this->DrawRuneIcon(this->unknown_00B8 * slot + 20, y + 25, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
+        this->DrawRuneIcon(this->m_slotSpacing * slot + 20, y + 25, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
       }
     }
 
@@ -1497,7 +1497,7 @@ void UIRune_ViewInfo::Paint() {
 // OFFSET: 0x00814BC0
 // FUNCTION: fn_10136
 UIRuneSystemTab::UIRuneSystemTab() : UIWindow(0), m_count(4), m_label("유저인터페이스\\runesystem\\runesystam_tab_%d.bmp") {
-  this->geometry.unknown_0030 = 0;
+  this->geometry.state = 0;
 }
 
 // OFFSET: 0x00814D40
@@ -1572,8 +1572,8 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
 // OFFSET: 0x008152B0
 // FUNCTION: fn_10142
 UIRune_Decom::UIRune_Decom() : UIWindow(0) {
-  this->unknown_007C.clear();
-  this->unknown_0094.clear();
+  this->m_itemName.clear();
+  this->m_itemImagePath.clear();
   this->m_ownedCount = 0;
   this->m_decomList = nullptr;
   this->m_itemId = 0;
@@ -1595,7 +1595,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     if (!this->m_runeSet->IsActive()) {
       UIRuneSystemTab* tab = this->m_tab;
-      tab->geometry.unknown_0030 = 0;
+      tab->geometry.state = 0;
       tab->Invalidate();
       g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TITLE), 0, true, false, 0, "Message", 280, 120, 0);
     }
@@ -1663,7 +1663,7 @@ void UIRune_Decom::SetItem(int itemId) {
   item.identified = 1;
   if (this->m_itemId != itemId) {
     this->m_itemId = itemId;
-    this->unknown_007C = item.DisplayName(0);
+    this->m_itemName = item.DisplayName(0);
 
     std::string resource;
     if (IsItemCard(std::atoi(item.itemId.c_str()))) {
@@ -1673,11 +1673,11 @@ void UIRune_Decom::SetItem(int itemId) {
       resource = ItemResourcePath(item);
     }
 
-    this->unknown_0094 = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str()));
-    if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
-      this->unknown_0094 = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\cardbmp\\%s.bmp", resource.c_str()));
-      if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
-        this->unknown_0094 = "";
+    this->m_itemImagePath = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str()));
+    if (!ResourceMgr::Instance().Exists(this->m_itemImagePath.c_str())) {
+      this->m_itemImagePath = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\cardbmp\\%s.bmp", resource.c_str()));
+      if (!ResourceMgr::Instance().Exists(this->m_itemImagePath.c_str())) {
+        this->m_itemImagePath = "";
       }
     }
 
@@ -1742,14 +1742,14 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       if (!g_runeSystemMgr->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
-              g_session.unknown_7FBC + 100) {
+              g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_MACRO_USER_REPORT), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
           ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, this->m_itemId, 0);
           RuneDecomRequestPacket packet;
           packet.id = 0x0BD8;
           packet.itemId = item.GetItemId();
-          packet.itemIndex = item.unknown_0000[1];
+          packet.itemIndex = item.identity[1];
           packet.decomType = this->m_decomType + 1;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
           g_runeSystemMgr->SetRequestPending(true);
@@ -1873,35 +1873,35 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_activeWnd->SetSize(0xE6, 0x8C);
   this->m_activeWnd->Move(0x46, 0x156);
 
-  this->unknown_0084 = new UIBitmapButton();
-  this->AddChild(this->unknown_0084);
-  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
-  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
-  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_pressed.bmp", 2, 0);
-  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
-  this->unknown_0084->SetSize(this->unknown_0084->BitmapWidth(), this->unknown_0084->BitmapHeight());
-  this->unknown_0084->Move(0x6F, 0x1EC);
-  this->unknown_0084->SetId(0x23C);
+  this->m_activateButton = new UIBitmapButton();
+  this->AddChild(this->m_activateButton);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_pressed.bmp", 2, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
+  this->m_activateButton->SetSize(this->m_activateButton->BitmapWidth(), this->m_activateButton->BitmapHeight());
+  this->m_activateButton->Move(0x6F, 0x1EC);
+  this->m_activateButton->SetId(0x23C);
 
-  this->unknown_0088 = new UIBitmapButton();
-  this->AddChild(this->unknown_0088);
-  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_nomal.bmp", 0, 0);
-  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_mouseon.bmp", 1, 0);
-  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_pressed.bmp", 2, 0);
-  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_disabled.bmp", 3, 0);
-  this->unknown_0088->SetSize(this->unknown_0088->BitmapWidth(), this->unknown_0088->BitmapHeight());
-  this->unknown_0088->Move(0x6F, 0x1EC);
-  this->unknown_0088->SetId(0xC3);
+  this->m_equipButton = new UIBitmapButton();
+  this->AddChild(this->m_equipButton);
+  this->m_equipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equip_nomal.bmp", 0, 0);
+  this->m_equipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equip_mouseon.bmp", 1, 0);
+  this->m_equipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equip_pressed.bmp", 2, 0);
+  this->m_equipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equip_disabled.bmp", 3, 0);
+  this->m_equipButton->SetSize(this->m_equipButton->BitmapWidth(), this->m_equipButton->BitmapHeight());
+  this->m_equipButton->Move(0x6F, 0x1EC);
+  this->m_equipButton->SetId(0xC3);
 
-  this->unknown_008C = new UIBitmapButton();
-  this->AddChild(this->unknown_008C);
-  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_nomal.bmp", 0, 0);
-  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_mouseon.bmp", 1, 0);
-  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_pressed.bmp", 2, 0);
-  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_disabled.bmp", 3, 0);
-  this->unknown_008C->SetSize(this->unknown_008C->BitmapWidth(), this->unknown_008C->BitmapHeight());
-  this->unknown_008C->Move(0x6F, 0x1EC);
-  this->unknown_008C->SetId(0x158);
+  this->m_unequipButton = new UIBitmapButton();
+  this->AddChild(this->m_unequipButton);
+  this->m_unequipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_nomal.bmp", 0, 0);
+  this->m_unequipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_mouseon.bmp", 1, 0);
+  this->m_unequipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_pressed.bmp", 2, 0);
+  this->m_unequipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_disabled.bmp", 3, 0);
+  this->m_unequipButton->SetSize(this->m_unequipButton->BitmapWidth(), this->m_unequipButton->BitmapHeight());
+  this->m_unequipButton->Move(0x6F, 0x1EC);
+  this->m_unequipButton->SetId(0x158);
 
   this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
@@ -2030,7 +2030,7 @@ void UIRuneSet_Info::Paint() {
     this->DrawBitmap(0x76, 0x95, static_cast<CBitmapRes*>(runeSetBitmap), true);
   }
 
-  const std::uint32_t tab = this->m_tab->geometry.unknown_0030;
+  const std::uint32_t tab = this->m_tab->geometry.state;
   if (tab == 0) {
     this->DrawBitmap(
       0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_title.bmp"))), true
@@ -2113,23 +2113,23 @@ void UIRuneSet_Info::Paint() {
 void UIRune_Decom::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
   this->DrawBitmap(0xDD, 0x8E, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
-  if (!this->m_decomList || this->unknown_0094.empty()) {
+  if (!this->m_decomList || this->m_itemImagePath.empty()) {
     return;
   }
 
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
   this->DrawBitmap(0xDD, 0x47, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
-  CTexture* texture = g_texMgr.Load(this->unknown_0094.c_str(), 0, false, true, false);
+  CTexture* texture = g_texMgr.Load(this->m_itemImagePath.c_str(), 0, false, true, false);
   if (texture) {
     const float scale = 180.0f / static_cast<float>(texture->Width());
     this->geometry.surface->DrawScaledSurface(0xE1, 0x4B, 0xB4, 0xF0, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0);
   }
 
-  if (this->unknown_007C.size()) {
-    const int nameWidth = this->TextWidth(this->unknown_007C.c_str(), this->unknown_007C.size(), 0, 13, 0, 0);
+  if (this->m_itemName.size()) {
+    const int nameWidth = this->TextWidth(this->m_itemName.c_str(), this->m_itemName.size(), 0, 13, 0, 0);
     const int nameX = static_cast<int>(static_cast<float>(this->geometry.width - nameWidth) * 0.5f);
-    this->DrawTextAt(nameX, 0x19, this->unknown_007C.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
-    this->DrawTextAt(nameX - 1, 0x1A, this->unknown_007C.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+    this->DrawTextAt(nameX, 0x19, this->m_itemName.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+    this->DrawTextAt(nameX - 1, 0x1A, this->m_itemName.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   }
 
   this->DrawBitmap(200, 0x149, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
@@ -2209,8 +2209,8 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN:
-    if (this->m_lists[this->m_tab->geometry.unknown_0030]) {
-      this->m_lists[this->m_tab->geometry.unknown_0030]->ScrollBy(argument1);
+    if (this->m_lists[this->m_tab->geometry.state]) {
+      this->m_lists[this->m_tab->geometry.state]->ScrollBy(argument1);
       this->Invalidate();
     }
     break;
@@ -2219,13 +2219,13 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->SelectTab();
     break;
   case UM_REFRESH: {
-    UIRuneSetList* list = this->m_lists[this->m_tab->geometry.unknown_0030];
+    UIRuneSetList* list = this->m_lists[this->m_tab->geometry.state];
     if (!list) {
       break;
     }
 
     list->Invalidate();
-    switch (this->m_tab->geometry.unknown_0030) {
+    switch (this->m_tab->geometry.state) {
     case 0:
       this->m_equipRuneSet->Invalidate();
       this->m_runeSetInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
@@ -2276,7 +2276,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
   case 0xA9:
-    this->m_tab->geometry.unknown_0030 = argument1;
+    this->m_tab->geometry.state = argument1;
     this->m_tab->Invalidate();
     this->SelectTab();
     if (argument1 == 0) {
@@ -2297,7 +2297,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
   case 0xAB:
     if (argument1 == 0xC2) {
-      switch (this->m_tab->geometry.unknown_0030) {
+      switch (this->m_tab->geometry.state) {
       case 0: {
         RuneData* rune = argument2 == -1 ? g_runeSystemMgr->GetCurRuneSet() : g_runeSystemMgr->GetCurrentRune(0, argument2);
         if (!rune) {
@@ -2424,7 +2424,7 @@ UIRuneList::UIRuneList() : UIRuneSetList() {
 
 // OFFSET: 0x00814940
 // FUNCTION: fn_10132
-UIRuneSetList::UIRuneSetList() : UIScrollBar(), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
+UIRuneSetList::UIRuneSetList() : UIScrollBar(), m_itemHeight(0x44), m_slotSpacing(0x28), m_selected(-1) {
   this->arrowLength = 6;
 }
 

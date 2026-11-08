@@ -3,10 +3,10 @@
 
 class RDamageVar {
 public:
-  RDamageVar() : unknown_0004(0) {}
+  RDamageVar() : damageValue(0) {}
   virtual ~RDamageVar();
 
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int damageValue;
 };
 
 #endif

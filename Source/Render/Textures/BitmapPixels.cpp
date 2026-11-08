@@ -773,7 +773,7 @@ void CDCBitmap::DrawScaledSprite(
         surface = atlas.Insert(system, image, palette, record, serviceType, reuseDelay);
       }
     } else {
-      surface = static_cast<CSurface*>(const_cast<void*>(image->unknown_0008));
+      surface = static_cast<CSurface*>(const_cast<void*>(image->surface));
     }
 
     if (!surface) {

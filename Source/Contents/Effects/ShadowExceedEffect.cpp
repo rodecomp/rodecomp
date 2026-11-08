@@ -15,7 +15,7 @@
 
 // OFFSET: 0x00727CF0
 // FUNCTION: fn_07427
-CShadowExceed::CShadowExceed() : CEffect(1867), unknown_00D8(0) {
+CShadowExceed::CShadowExceed() : CEffect(1867), finishSpawned(0) {
 }
 
 // OFFSET: 0x00727E60
@@ -37,7 +37,7 @@ void CShadowExceed::Close() {
 // OFFSET: 0x00727FC0
 // FUNCTION: fn_07431
 void CShadowExceed::Open() {
-  this->unknown_00D8 = 0;
+  this->finishSpawned = 0;
 
   CRenderObject* actor = FindRenderObject(this->actor);
   if (!actor) {
@@ -73,9 +73,9 @@ void CShadowExceed::Open() {
   const float offsetX = 0.3f - ClientSine(static_cast<int>(actor->render.angle)) * 5.0f;
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->unknown_00D0 = offsetX;
-      (*it)->unknown_00D4 = offsetY;
-      (*it)->unknown_00D8 = 0.0f;
+      (*it)->offsetX = offsetX;
+      (*it)->offsetY = offsetY;
+      (*it)->offsetZ = 0.0f;
     }
   }
 
@@ -93,16 +93,16 @@ bool CShadowExceed::IsAlive() {
 void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->unknown_00E8)) {
+    if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->elapsedFrames)) {
       if (emitter) {
         const float x = this->position[0];
         const float y = this->position[1];
         const float z = this->position[2];
         const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
         const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
-        const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + emitter->unknown_00D0;
-        const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] + emitter->unknown_00D4;
-        const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + emitter->unknown_00D8;
+        const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + emitter->offsetX;
+        const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] + emitter->offsetY;
+        const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + emitter->offsetZ;
         emitter->position.x = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
         emitter->position.y = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
         emitter->position.z = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
@@ -115,8 +115,8 @@ void CShadowExceed::OnProcess() {
     }
   }
 
-  if (this->emitters.empty() && !this->unknown_00D8) {
-    this->unknown_00D8 = 1;
+  if (this->emitters.empty() && !this->finishSpawned) {
+    this->finishSpawned = 1;
     CRenderObject* actor = FindRenderObject(this->actor);
     if (actor) {
       while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {

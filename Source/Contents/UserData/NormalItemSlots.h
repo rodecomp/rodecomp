@@ -10,14 +10,14 @@ namespace Json {
 
 #pragma pack(push, 1)
 struct NormalItemSlot {
-  /* 0000 */ std::uint8_t unknown_0000;
+  /* 0000 */ std::uint8_t enabled;
   /* 0001 */ std::uint32_t itemId;
-  /* 0005 */ std::int16_t unknown_0005;
+  /* 0005 */ std::int16_t value;
 };
 #pragma pack(pop)
 static_assert(sizeof(NormalItemSlot) == 7);
 static_assert(offsetof(NormalItemSlot, itemId) == 1);
-static_assert(offsetof(NormalItemSlot, unknown_0005) == 5);
+static_assert(offsetof(NormalItemSlot, value) == 5);
 
 struct NormalItemSlotWindow {
   /* 0000 */ int x;
@@ -50,9 +50,9 @@ struct SkillListWndInfo : WindowPlacement {
 };
 
 struct StatusWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
+  /* 0010 */ int expandedHeight;
+  /* 0014 */ int resetState;
+  /* 0018 */ int extended;
 
   void Reset();
   int IsValid() const;
@@ -94,7 +94,7 @@ struct PreviewEquipWndInfo : WindowPlacement {
 };
 
 struct UnusedWndInfoC : WindowPlacement {
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int resetState;
 
   void Reset();
 };
@@ -109,9 +109,9 @@ struct AchTracingWndInfo : WindowPlacement {
 };
 
 struct BasicInfoWndInfo : WindowPlacement {
-  /* 0010 */ unsigned char unknown_0010;
+  /* 0010 */ unsigned char mode;
   /* 0011 */ unsigned char unknown_0011;
-  /* 0012 */ unsigned char unknown_0012;
+  /* 0012 */ unsigned char expanded;
   /* 0013 */ unsigned char unknown_0013;
 
   void Reset();
@@ -153,8 +153,8 @@ struct EmotionWndInfo : WindowPlacement {
 };
 
 struct EquipWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
+  /* 0010 */ int contentHeight;
+  /* 0014 */ int resetState;
 
   void Reset();
   int IsValid() const;
@@ -176,7 +176,7 @@ struct GuildHelperWndInfo : WindowPlacement {
 };
 
 struct GuildWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int tab;
 
   void Reset();
   int IsValid() const;
@@ -228,7 +228,7 @@ struct ItemShopWndInfo : WindowPlacement {
 };
 
 struct ItemStoreFindListInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int openTabs;
 
   void Reset();
   int IsValid() const;
@@ -245,12 +245,12 @@ struct ItemStoreFindSlotInfo : WindowPlacement {
 };
 
 struct ItemWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
+  /* 0010 */ int expandedHeight;
+  /* 0014 */ int selectedTab;
+  /* 0018 */ int usableRows;
+  /* 001C */ int equipmentRows;
+  /* 0020 */ int etcRows;
+  /* 0024 */ int resetState;
 
   void Reset();
   int IsValid() const;
@@ -262,11 +262,11 @@ struct EntryQueueWndInfo : WindowPlacement {
 };
 
 struct MiniMapWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
+  /* 0010 */ int expandedWidth;
+  /* 0014 */ int expandedHeight;
+  /* 0018 */ int showQuests;
+  /* 001C */ int showTowns;
+  /* 0020 */ int showMembers;
 
   void Reset();
   int IsValid() const;
@@ -308,9 +308,9 @@ struct MerchantShopMakeWndInfo : WindowPlacement {
 };
 
 struct MessengerGroupWndInfo : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
+  /* 0010 */ int resetState;
+  /* 0014 */ int mode;
+  /* 0018 */ int iconIndex;
 
   void Reset();
   int IsValid() const;
@@ -322,8 +322,8 @@ struct NCashWndInfo : WindowPlacement {
 };
 
 struct UnusedWndInfoB : WindowPlacement {
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
+  /* 0010 */ int defaultHeight;
+  /* 0014 */ int resetState;
 
   void Reset();
   int IsValid() const;
@@ -360,7 +360,7 @@ struct PetInfoWndInfo : WindowPlacement {
 };
 
 struct QuestDisplayInfo {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int visible;
 
   void Reset();
   int IsValid() const;

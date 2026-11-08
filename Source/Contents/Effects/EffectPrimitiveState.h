@@ -15,7 +15,7 @@ class CTexture;
 struct EffectPrimitiveRecord {
   /* 0000 */ vector3d position;
   /* 000C */ vector3d corners[4];
-  /* 003C */ float unknown_003C;
+  /* 003C */ float radius;
   /* 0040 */ float scale;
   /* 0044 */ float angle;
   /* 0048 */ float matrix[12];
@@ -59,23 +59,23 @@ struct EffectPrimitiveState {
   void ProcessAlpha();
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
-  /* 0138 */ std::uint32_t unknown_0138;
+  /* 0138 */ std::uint32_t changePointReached;
   /* 013C */ std::uint32_t isChangeProcessed;
   /* 0140 */ CRagEffect* master;
   /* 0144 */ CTexture** textures;
   /* 0148 */ std::uint32_t playWaveName;
-  /* 014C */ vector3d unknown_014C;
+  /* 014C */ vector3d changeFlags;
   /* 0158 */ std::uint32_t chRadiSpeed;
   /* 015C */ std::uint32_t isDisappear;
   /* 0160 */ float transform[12];
   /* 0190 */ float rotTransform[12];
   /* 01C0 */ std::uint32_t argb;
   /* 01C4 */ std::uint32_t renderFlag;
-  /* 01C8 */ unsigned char unknown_01C8[4];
+  /* 01C8 */ unsigned char useRenderFlag[4];
   /* 01CC */ std::uint32_t type;
   /* 01D0 */ int count;
   /* 01D4 */ std::uint32_t chCnt;
-  /* 01D8 */ int unknown_01D8;
+  /* 01D8 */ int colorCycleIndex;
   /* 01DC */ std::uint32_t pattern;
   /* 01E0 */ int stateCnt;
   /* 01E4 */ int duration;
@@ -118,7 +118,7 @@ struct EffectPrimitiveState {
   /* 02D0 */ float changeHeightAccel;
   /* 02D4 */ float maxAlpha;
   /* 02D8 */ float minAlpha;
-  /* 02DC */ std::uint32_t unknown_02DC;
+  /* 02DC */ std::uint32_t u1Bits;
   /* 02E0 */ float u2;
   /* 02E4 */ float v1;
   /* 02E8 */ float v2;
@@ -165,8 +165,8 @@ struct EffectPrimitiveState {
   /* 03E8 */ EffectPrimitiveSlot slots[4];
   /* 06B8 */ EffectPrimitiveRecord records[50];
   /* 2210 */ RenderTriangle triangles[512];
-  /* FA10 */ std::uint32_t unknown_FA10;
-  /* FA14 */ std::uint32_t unknown_FA14;
+  /* FA10 */ std::uint32_t spriteLiftLow;
+  /* FA14 */ std::uint32_t spriteLiftHigh;
 };
 
 class CActRes;

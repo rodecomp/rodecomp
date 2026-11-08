@@ -32,23 +32,23 @@ void CScatterEffect::Open() {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     if (this->id == 1002) {
-      this->unknown_002C = 300;
+      this->effectLifetime = 300;
       particle->SetSprite("이팩트\\sakura01.spr");
       particle->SetAction("이팩트\\sakura01.act");
       particle->scale = static_cast<float>(std::max(0, rand() % 6) + 22) / 70.0f;
       particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 2) * 0.15f;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(0, rand() % 360));
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(0, rand() % 360));
       const int angle = std::max(0, rand() % 360);
       particle->velocity.x = 0.0f;
       particle->velocity.y = 0.0f;
       particle->velocity.z = 0.0f;
       particle->alpha = 250;
-      particle->unknown_004C = angle;
+      particle->phaseParameter = angle;
       particle->destinationBlend = 6;
     }
 
@@ -75,7 +75,7 @@ void CScatterEffect::OnProcess() {
         particle->alpha = 0;
       }
 
-      const int angle = particle->unknown_004C;
+      const int angle = particle->phaseParameter;
       particle->velocity.y += particle->frameDelay;
       particle->velocity.x += g_cosTable[angle] * 0.2f;
       particle->velocity.z += g_sinTable[angle] * 0.2f;
@@ -85,7 +85,7 @@ void CScatterEffect::OnProcess() {
       translate.MakeTranslate(particle->velocity.x + 0.0f, particle->velocity.y - 40.0f, particle->velocity.z + 0.0f);
       particle->transform = translate;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 

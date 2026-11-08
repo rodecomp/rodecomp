@@ -22,21 +22,21 @@ void CRedLineEffect::CreateLines(int layer) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
         particle->SetTexture("effect\\ring_red.tga");
-        particle->unknown_0010 = row;
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = segment;
-        particle->unknown_0008 = 3;
-        particle->unknown_0050 = 360;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+        particle->rowIndex = row;
+        particle->effectId = this->id;
+        particle->columnIndex = segment;
+        particle->groupIndex = 3;
+        particle->angleParameter = 360;
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
         particle->alpha = 150;
-        particle->unknown_00C0 = 120.0f;
-        particle->unknown_004C = 90;
+        particle->speedParameter = 120.0f;
+        particle->phaseParameter = 90;
         particle->scale = scale;
-        particle->unknown_00D0 = directionX;
-        particle->unknown_00D8 = directionZ;
-        particle->unknown_00D4 = 0.0f;
-        particle->unknown_00E8 = life;
-        particle->unknown_0054 = static_cast<float>(layer);
+        particle->offsetX = directionX;
+        particle->offsetZ = directionZ;
+        particle->offsetY = 0.0f;
+        particle->elapsedFrames = life;
+        particle->animationParameter = static_cast<float>(layer);
         InitParticleQuad(particle->vertices);
         this->lines.push_back(particle);
       }
@@ -61,7 +61,7 @@ void CRedLineEffect::Close() {
 void CRedLineEffect::Open() {
   this->CreateLines(0);
   this->CreateLines(1);
-  this->unknown_002C = 75;
+  this->effectLifetime = 75;
 }
 
 // OFFSET: 0x00B71BE0
@@ -81,9 +81,9 @@ void CRedLineEffect::OnProcess() {
     position.z = this->position[2];
 
     if (particle != nullptr) {
-      float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
       float spin = spinAngle + 1.0f;
-      const int age = particle->unknown_00E8;
+      const int age = particle->elapsedFrames;
 
       if (spin >= 360.0f) {
         spin -= 360.0f;
@@ -97,33 +97,33 @@ void CRedLineEffect::OnProcess() {
         if (age < 100) {
           width = 0.0f;
         } else if (age <= 115) {
-          width = g_sinTable[(age - 100) * 6] * particle->unknown_00C0;
+          width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
         } else {
-          width = particle->unknown_00C0;
+          width = particle->speedParameter;
         }
       } else {
-        const float shrunk = particle->unknown_00C0 - 5.0f;
+        const float shrunk = particle->speedParameter - 5.0f;
         const int alpha = particle->alpha - 15;
         particle->alpha = alpha < 0 ? 0 : alpha;
-        particle->unknown_00C0 = shrunk < 0.0f ? 0.0f : shrunk;
-        width = particle->unknown_00C0;
+        particle->speedParameter = shrunk < 0.0f ? 0.0f : shrunk;
+        width = particle->speedParameter;
       }
 
       if (width < 0.0f) {
         width = 0.0f;
       }
 
-      const int segment = particle->unknown_000C;
-      const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
+      const int segment = particle->columnIndex;
+      const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
       const int angle = static_cast<int>(static_cast<float>(step * segment) + spin) % 360;
-      const float flat = width * g_cosTable[particle->unknown_004C];
-      const float rise = width * g_sinTable[particle->unknown_004C];
+      const float flat = width * g_cosTable[particle->phaseParameter];
+      const float rise = width * g_sinTable[particle->phaseParameter];
 
       vector3d points[2]{};
       points[0].x = particle->scale * g_cosTable[angle];
       points[0].z = particle->scale * g_sinTable[angle];
 
-      if (particle->unknown_0054 == 1.0f) {
+      if (particle->animationParameter == 1.0f) {
         points[0].x *= 1.5f;
         points[0].z *= 1.5f;
       }
@@ -132,12 +132,12 @@ void CRedLineEffect::OnProcess() {
       points[1].y = points[0].y - rise;
       points[1].z = flat * g_sinTable[angle] + points[0].z;
 
-      points[0].x += particle->unknown_00D0;
-      points[0].y += particle->unknown_00D4;
-      points[0].z += particle->unknown_00D8;
-      points[1].x += particle->unknown_00D0;
-      points[1].y += particle->unknown_00D4;
-      points[1].z += particle->unknown_00D8;
+      points[0].x += particle->offsetX;
+      points[0].y += particle->offsetY;
+      points[0].z += particle->offsetZ;
+      points[1].x += particle->offsetX;
+      points[1].y += particle->offsetY;
+      points[1].z += particle->offsetZ;
 
       particle->vertices[1].x = points[1].x;
       particle->vertices[1].y = points[1].y;
@@ -159,7 +159,7 @@ void CRedLineEffect::OnProcess() {
       this->previousOuter = points[1];
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -169,11 +169,11 @@ void CRedLineEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
 
-    if (particle && particle->unknown_000C > 0) {
+    if (particle && particle->columnIndex > 0) {
       int blend;
       short shade;
 
-      if (particle->unknown_0054 == 0.0f) {
+      if (particle->animationParameter == 0.0f) {
         shade = 10;
         blend = 6;
       } else {
@@ -184,7 +184,7 @@ void CRedLineEffect::Render() {
       particle->destinationBlend = blend;
       particle->SetColor(255, shade, shade);
 
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment - 1) / 21.0f, static_cast<float>(segment) / 21.0f, false, true};
       particle->Render(quad);
     }

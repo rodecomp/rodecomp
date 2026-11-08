@@ -87,7 +87,7 @@ bool LexiconSerializer::Load(const char* path) {
         result = true;
         this->wordCount = this->header.wordCount;
         this->nodeCount = this->header.nodeCount;
-        this->unknown_000C = this->header.size;
+        this->serializedSize = this->header.size;
         this->header.loaded = result;
         return result;
       }

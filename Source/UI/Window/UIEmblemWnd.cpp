@@ -55,7 +55,7 @@ void UIEmblemWnd::OnProcess() {
     if (this->screenX != screenX || this->screenX != screenY) {
       this->screenY = screenY;
       this->screenX = screenX;
-      const float scale = actor->render.unknown_005C;
+      const float scale = actor->render.distanceScale;
       const int x = static_cast<int>(screenX - static_cast<float>(g_renderer->viewport.width * 10 / 640) * scale);
       const int y = static_cast<int>(screenY - static_cast<float>(g_renderer->viewport.height * 100 / 480) * scale);
       this->Move(x, y);

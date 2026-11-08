@@ -18,7 +18,7 @@ public:
   virtual void AddNameLine(const char* text);
 
   /* 00A0 */ std::string iconName;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int nameWidth;
   /* 00BC */ unsigned char monsterType;
   /* 00BD */ unsigned char framed;
 };

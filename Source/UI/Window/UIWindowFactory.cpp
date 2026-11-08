@@ -40,7 +40,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     switch (id) {
     case WID_HOTKEYWND:
       window = new UIHotKeyWnd();
-      this->unknown_0404 = window;
+      this->hotkeyWnd = window;
       break;
     case WID_JOINTO_BATTLEFIELDWND:
       window = new UIEntryQueueWnd();
@@ -79,11 +79,11 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     window->Move(x, y);
     this->rendered.push_back(window);
     if (id == 0x9F) {
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_0934), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->hotkeyPlacement), 0, 0, 0);
     } else if (id == 0x9D) {
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_0944), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->battlefieldPlacement), 0, 0, 0);
     } else if (id == 0xD4) {
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->unknown_09D4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->entryQueueStandbyPlacement), 0, 0, 0);
     }
   }
 

@@ -28,23 +28,23 @@ void CRainbowEffect::Open() {
     for (int column = 0; column < 21; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = column;
-        particle->unknown_0010 = row;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = column;
+        particle->rowIndex = row;
+        particle->groupIndex = 1;
         particle->SetTexture("effect\\alpha_center.tga");
         particle->alpha = 0;
         particle->scale = 50.0f;
-        particle->unknown_0050 = 180;
-        particle->unknown_00C4 = 0;
-        particle->unknown_004C = angle;
+        particle->angleParameter = 180;
+        particle->angleBits = 0;
+        particle->phaseParameter = angle;
         InitParticleQuad(particle->vertices);
         this->bands.push_back(particle);
       }
     }
   }
 
-  this->unknown_002C = 300;
+  this->effectLifetime = 300;
 }
 
 // OFFSET: 0x00B70DF0
@@ -66,13 +66,13 @@ void CRainbowEffect::OnProcess() {
     if (particle != nullptr) {
       int alpha = particle->alpha;
 
-      if (particle->unknown_00E8 <= 180) {
+      if (particle->elapsedFrames <= 180) {
         ++alpha;
-      } else if (particle->unknown_00E8 <= 360) {
+      } else if (particle->elapsedFrames <= 360) {
         --alpha;
       }
 
-      float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
       spinAngle += 1.0f;
 
       if (alpha < 0) {
@@ -86,9 +86,9 @@ void CRainbowEffect::OnProcess() {
       rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
       particle->transform = rotation;
 
-      const int band = particle->unknown_0010;
-      const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
-      const int angle = static_cast<int>(static_cast<float>(step * particle->unknown_000C) + spinAngle) % 360;
+      const int band = particle->rowIndex;
+      const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+      const int angle = static_cast<int>(static_cast<float>(step * particle->columnIndex) + spinAngle) % 360;
 
       vector3d points[4]{};
       const float width = particle->scale * g_cosTable[angle];
@@ -97,18 +97,18 @@ void CRainbowEffect::OnProcess() {
       float ratio = 1.0f - static_cast<float>(band) * 0.05f;
       float flat = width * ratio;
       float rise = height * ratio;
-      points[0].x = g_cosTable[particle->unknown_004C] * flat;
+      points[0].x = g_cosTable[particle->phaseParameter] * flat;
       points[0].y = rise + rise;
-      points[0].z = g_sinTable[particle->unknown_004C] * flat;
+      points[0].z = g_sinTable[particle->phaseParameter] * flat;
 
       ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
       flat = width * ratio;
       rise = height * ratio;
-      points[1].x = g_cosTable[particle->unknown_004C] * flat;
+      points[1].x = g_cosTable[particle->phaseParameter] * flat;
       points[1].y = rise + rise;
-      points[1].z = g_sinTable[particle->unknown_004C] * flat;
+      points[1].z = g_sinTable[particle->phaseParameter] * flat;
 
-      if (particle->unknown_000C != 0) {
+      if (particle->columnIndex != 0) {
         particle->vertices[0].x = points[1].x;
         particle->vertices[0].y = points[1].y;
         particle->vertices[0].z = points[1].z;
@@ -151,7 +151,7 @@ void CRainbowEffect::OnProcess() {
       }
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -161,8 +161,8 @@ void CRainbowEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
     CParticle* particle = *it;
 
-    if (particle && particle->unknown_000C > 0) {
-      const int segment = particle->unknown_000C;
+    if (particle && particle->columnIndex > 0) {
+      const int segment = particle->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

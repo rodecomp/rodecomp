@@ -151,7 +151,7 @@ bool CNavigationManager::SetViewMode(int mode) {
     return false;
   }
 
-  this->unknown_1258 = mode;
+  this->viewMode = mode;
   return true;
 }
 
@@ -224,10 +224,10 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
     return -99;
   }
   this->data.SetDestination(target, destX, destY);
-  this->unknown_117C = true;
-  this->unknown_115C = true;
-  this->unknown_12B4 = true;
-  this->unknown_1258 = 2;
+  this->drawRoute = true;
+  this->routeFlag = true;
+  this->drawDestination = true;
+  this->viewMode = 2;
   return 9;
 }
 
@@ -325,8 +325,8 @@ std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
 CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
   const CNavi_Link target = link;
   for (CNavi_Link* candidate : this->links) {
-    if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->unknown_0080 == target.unknown_0080 &&
-        candidate->unknown_0084 == target.unknown_0084 && candidate->info != nullptr &&
+    if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->linkedCellX == target.linkedCellX &&
+        candidate->linkedCellY == target.linkedCellY && candidate->info != nullptr &&
         std::strcmp(candidate->info->name.c_str(), target.info->name.c_str()) == 0 && candidate->linkedInfo != nullptr &&
         std::strcmp(candidate->linkedInfo->name.c_str(), target.linkedInfo->name.c_str()) == 0) {
       return candidate;

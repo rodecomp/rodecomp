@@ -18,7 +18,7 @@ protected:
 
 public:
   /* 00B4 */ UIEditCtrl* edit;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int npcId;
 };
 
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {

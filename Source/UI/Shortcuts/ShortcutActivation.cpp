@@ -20,7 +20,7 @@ void UIShortCutWnd::OnLBtnDblClk(int x, int y) {
   }
 
   const NormalItemSlot& slot = *this->m_slots[index];
-  if (slot.unknown_0000 != 0 && g_session.m_automaticSkills.Contains(static_cast<std::uint16_t>(slot.itemId))) {
+  if (slot.enabled != 0 && g_session.m_automaticSkills.Contains(static_cast<std::uint16_t>(slot.itemId))) {
     g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(slot.itemId)), 1, 0);
   } else {
     g_session.m_automaticSkills.DisableAll();

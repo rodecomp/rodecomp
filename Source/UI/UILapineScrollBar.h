@@ -108,7 +108,7 @@ public:
   /* 00B8 */ UIBitmapButton* makeButton;
   /* 00BC */ UIBitmapButton* moveButton;
   /* 00C0 */ UILapineBox_IngredientListWnd* ingredientList;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ int ingredientId;
   /* 00C8 */ std::string title;
   /* 00E0 */ std::vector<ITEM_INFO> items;
   /* 00EC */ int maxItems;

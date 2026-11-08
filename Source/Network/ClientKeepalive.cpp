@@ -22,8 +22,8 @@ void CLoginMode::SendKeepalive() {
     return;
   }
 
-  if (timeGetTime() > this->unknown_6F10) {
-    this->unknown_6F10 = timeGetTime() + 12000;
+  if (timeGetTime() > this->nextKeepaliveTime) {
+    this->nextKeepaliveTime = timeGetTime() + 12000;
 
     KeepalivePacket packet;
     packet.id = 0x0187;

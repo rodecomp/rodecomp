@@ -7,20 +7,20 @@
 // OFFSET: 0x00B49AD0
 // FUNCTION: fn_18938
 void CMagnumBreak::AddRings() {
-  const float growth = -(1.75f / static_cast<float>(this->unknown_002C)) * 0.5f;
+  const float growth = -(1.75f / static_cast<float>(this->effectLifetime)) * 0.5f;
 
   for (int index = 0; index < 10; ++index) {
     CParticle* ring = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
-    ring->unknown_0004 = this->id;
-    ring->unknown_000C = index;
-    ring->unknown_0010 = 0;
-    ring->unknown_0008 = 1;
-    *reinterpret_cast<float*>(&ring->unknown_00C4) = static_cast<float>(index) * 36.0f;
+    ring->effectId = this->id;
+    ring->columnIndex = index;
+    ring->rowIndex = 0;
+    ring->groupIndex = 1;
+    *reinterpret_cast<float*>(&ring->angleBits) = static_cast<float>(index) * 36.0f;
     ring->scale = 0.0f;
-    ring->unknown_00C0 = 1.75f;
-    *reinterpret_cast<float*>(&ring->unknown_0048[0x0C]) = growth;
-    *reinterpret_cast<float*>(&ring->unknown_0048[0x10]) = 12.0f;
-    *reinterpret_cast<float*>(&ring->unknown_0048[0x14]) = 0.0f;
+    ring->speedParameter = 1.75f;
+    *reinterpret_cast<float*>(&ring->effectParameters[0x0C]) = growth;
+    *reinterpret_cast<float*>(&ring->effectParameters[0x10]) = 12.0f;
+    *reinterpret_cast<float*>(&ring->effectParameters[0x14]) = 0.0f;
     ring->SetTexture("effect\\ring_yellow.tga");
     this->rings.push_back(ring);
   }
@@ -28,20 +28,20 @@ void CMagnumBreak::AddRings() {
 
 // INLINED
 void CMagnumBreak::AddWaves() {
-  const float growth = -(1.15f / static_cast<float>(this->unknown_002C)) * 0.5f;
+  const float growth = -(1.15f / static_cast<float>(this->effectLifetime)) * 0.5f;
 
   for (int tilt = -90; tilt <= 54; tilt += 36) {
     for (int angle = 0; angle <= 324; angle += 36) {
       CParticle* wave = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
-      wave->unknown_0004 = this->id;
-      wave->unknown_000C = angle;
-      wave->unknown_0010 = tilt;
-      wave->unknown_0008 = 1;
+      wave->effectId = this->id;
+      wave->columnIndex = angle;
+      wave->rowIndex = tilt;
+      wave->groupIndex = 1;
       wave->scale = 0.0f;
-      wave->unknown_00C0 = 1.15f;
-      *reinterpret_cast<float*>(&wave->unknown_0048[0x0C]) = growth;
-      *reinterpret_cast<float*>(&wave->unknown_0048[0x10]) = 3.0f;
-      *reinterpret_cast<float*>(&wave->unknown_0048[0x14]) = 0.0f;
+      wave->speedParameter = 1.15f;
+      *reinterpret_cast<float*>(&wave->effectParameters[0x0C]) = growth;
+      *reinterpret_cast<float*>(&wave->effectParameters[0x10]) = 3.0f;
+      *reinterpret_cast<float*>(&wave->effectParameters[0x14]) = 0.0f;
       wave->SetTexture("effect\\대폭발.tga");
       this->waves.push_back(wave);
     }
@@ -81,38 +81,38 @@ bool CMagnumBreak::IsAlive() {
 void CMagnumBreak::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
-    float& growth = *reinterpret_cast<float*>(&ring->unknown_0048[0x0C]);
-    float& maximum = *reinterpret_cast<float*>(&ring->unknown_0048[0x10]);
-    float& spin = *reinterpret_cast<float*>(&ring->unknown_0048[0x14]);
+    float& growth = *reinterpret_cast<float*>(&ring->effectParameters[0x0C]);
+    float& maximum = *reinterpret_cast<float*>(&ring->effectParameters[0x10]);
+    float& spin = *reinterpret_cast<float*>(&ring->effectParameters[0x14]);
     const float angle = spin;
-    float speed = growth + ring->unknown_00C0;
+    float speed = growth + ring->speedParameter;
     speed = speed > 0.0f ? speed : 0.0f;
     float scale = speed + ring->scale;
     scale = scale < maximum ? scale : maximum;
     matrix rotation;
     rotation.MakeXRotation(1.5707964f);
     ring->scale = scale;
-    ring->unknown_00C0 = speed;
+    ring->speedParameter = speed;
     spin = angle + speed;
-    ++ring->unknown_00E8;
+    ++ring->elapsedFrames;
     ring->alpha = this->alpha;
     ring->transform = rotation;
   }
 
   for (std::vector<CParticle*>::iterator it = this->waves.begin(); it != this->waves.end(); ++it) {
     CParticle* wave = *it;
-    const float speed = *reinterpret_cast<float*>(&wave->unknown_0048[0x0C]) + wave->unknown_00C0;
-    wave->unknown_00C0 = speed;
+    const float speed = *reinterpret_cast<float*>(&wave->effectParameters[0x0C]) + wave->speedParameter;
+    wave->speedParameter = speed;
     wave->scale = speed + wave->scale;
-    *reinterpret_cast<float*>(&wave->unknown_0048[0x14]) =
-        *reinterpret_cast<float*>(&wave->unknown_0048[0x10]) + *reinterpret_cast<float*>(&wave->unknown_0048[0x14]);
-    ++wave->unknown_00E8;
+    *reinterpret_cast<float*>(&wave->effectParameters[0x14]) =
+        *reinterpret_cast<float*>(&wave->effectParameters[0x10]) + *reinterpret_cast<float*>(&wave->effectParameters[0x14]);
+    ++wave->elapsedFrames;
     wave->alpha = this->alpha;
   }
 
   float step;
   if (this->frame == this->fadeFrame) {
-    step = static_cast<float>(-(this->alpha / (this->unknown_002C - this->frame)));
+    step = static_cast<float>(-(this->alpha / (this->effectLifetime - this->frame)));
     this->fadeStep = step;
   } else {
     step = this->fadeStep;
@@ -132,8 +132,8 @@ void CMagnumBreak::OnProcess() {
 void CMagnumBreak::Render() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
-    const int angle = static_cast<int>(*reinterpret_cast<float*>(&ring->unknown_00C4));
-    const float outer = *reinterpret_cast<float*>(&ring->unknown_0048[0x14]);
+    const int angle = static_cast<int>(*reinterpret_cast<float*>(&ring->angleBits));
+    const float outer = *reinterpret_cast<float*>(&ring->effectParameters[0x14]);
     const float inner = outer - ring->scale;
     const float cos0 = g_cosTable[angle];
     const float sin0 = g_sinTable[angle];
@@ -155,7 +155,7 @@ void CMagnumBreak::Render() {
     quad.billboard = false;
     quad.top = 1.0f;
     quad.bottom = 0.0f;
-    quad.left = static_cast<float>(ring->unknown_000C % 4) * 0.25f;
+    quad.left = static_cast<float>(ring->columnIndex % 4) * 0.25f;
     quad.right = quad.left + 0.25f;
     quad.unused = false;
     quad.depth = true;
@@ -167,8 +167,8 @@ void CMagnumBreak::Render() {
     CMagnumBreak::UpdateWave(wave);
     ParticleQuad quad;
     quad.billboard = false;
-    quad.left = static_cast<float>(wave->unknown_000C / 36) * 0.1f;
-    quad.top = static_cast<float>(static_cast<int>((static_cast<float>(wave->unknown_0010) + 90.0f) / 36.0f)) * 0.2f;
+    quad.left = static_cast<float>(wave->columnIndex / 36) * 0.1f;
+    quad.top = static_cast<float>(static_cast<int>((static_cast<float>(wave->rowIndex) + 90.0f) / 36.0f)) * 0.2f;
     quad.right = quad.left + 0.1f;
     quad.bottom = quad.top + 0.2f;
     quad.unused = false;
@@ -180,9 +180,9 @@ void CMagnumBreak::Render() {
 // OFFSET: 0x00B4A590
 // FUNCTION: fn_18944
 void CMagnumBreak::UpdateWave(CParticle* particle) {
-  const int spin = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_0048[0x14]));
-  const int yaw = particle->unknown_000C;
-  const int pitch = particle->unknown_0010;
+  const int spin = static_cast<int>(*reinterpret_cast<float*>(&particle->effectParameters[0x14]));
+  const int yaw = particle->columnIndex;
+  const int pitch = particle->rowIndex;
   const float yaw0 = GetRadian(spin + yaw);
   const float pitch0 = GetRadian(pitch);
   const float yaw1 = GetRadian(static_cast<int>(static_cast<float>(yaw + 36) + 0.25f + static_cast<float>(spin)));

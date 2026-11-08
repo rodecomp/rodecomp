@@ -29,9 +29,9 @@ public:
   void ApplyColor();
 
   /* 007C */ UIStaticText* text;
-  /* 0080 */ std::string unknown_0080;
+  /* 0080 */ std::string boardText;
   /* 0098 */ std::string iconPath;
-  /* 00B0 */ std::string unknown_00B0;
+  /* 00B0 */ std::string colorText;
 };
 
 class CIcon : public CRenderObject {
@@ -68,20 +68,20 @@ struct SignBoardInfo {
   /* 0008 */ int offset;
   /* 000C */ const char* map;
   /* 0010 */ int type;
-  /* 0014 */ const char* unknown_0014;
+  /* 0014 */ const char* text;
   /* 0018 */ const char* image;
-  /* 001C */ const char* unknown_001C;
+  /* 001C */ const char* color;
 };
 
 class CSignBoardMgr {
 public:
-  CSignBoardMgr() : unknown_0000(true) {}
+  CSignBoardMgr() : initialized(true) {}
   ~CSignBoardMgr() { std::vector<SignBoardInfo>(this->m_entries).swap(this->m_entries); }
 
   void Initialize();
   void LoadList();
 
-  /* 0000 */ bool unknown_0000;
+  /* 0000 */ bool initialized;
   /* 0004 */ std::vector<SignBoardInfo> m_entries;
 };
 

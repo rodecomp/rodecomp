@@ -28,7 +28,7 @@ void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMem
   SnapRectangle moving;
   moving.Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
   SnapRectangle screen;
-  screen.Set(0, 0, this->unknown_047C, this->unknown_0480);
+  screen.Set(0, 0, this->screenWidth, this->screenHeight);
   screen.ReverseEdges();
   int x = 0, y = 0;
   screen.Snap(moving, x, y);

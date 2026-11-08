@@ -14,7 +14,7 @@
 // OFFSET: 0x007028C0
 // FUNCTION: fn_07007
 CFuumaShouakuEffect::CFuumaShouakuEffect()
-    : CEffect(0x930), first(nullptr), second(nullptr), unknown_00D4(0), unknown_00D8(0), unknown_00DC(0), unknown_00E0(0) {
+    : CEffect(0x930), first(nullptr), second(nullptr), velocityX(0), velocityY(0), velocityZ(0), travelFrames(0) {
 }
 
 // OFFSET: 0x00702A20
@@ -46,15 +46,15 @@ void CFuumaShouakuEffect::Open() {
   const float dy = this->sourcePosition[1] - this->position[1];
   const float dx = this->sourcePosition[0] - this->position[0];
   const float dz = this->sourcePosition[2] - this->position[2];
-  this->unknown_00E0 = static_cast<int>(SquareRoot(dy * dy + dx * dx + dz * dz) * g_depthAverageHalf);
+  this->travelFrames = static_cast<int>(SquareRoot(dy * dy + dx * dx + dz * dz) * g_depthAverageHalf);
 
-  this->unknown_00D4 = this->sourcePosition[0] - this->position[0];
-  this->unknown_00D8 = this->sourcePosition[1] - this->position[1];
-  this->unknown_00DC = this->sourcePosition[2] - this->position[2];
-  const float scale = 1.0f / SquareRoot(this->unknown_00D4 * this->unknown_00D4 + this->unknown_00D8 * this->unknown_00D8 + this->unknown_00DC * this->unknown_00DC);
-  this->unknown_00D4 = scale * this->unknown_00D4 * 2.0f;
-  this->unknown_00D8 = scale * this->unknown_00D8 * 2.0f;
-  this->unknown_00DC = scale * this->unknown_00DC * 2.0f;
+  this->velocityX = this->sourcePosition[0] - this->position[0];
+  this->velocityY = this->sourcePosition[1] - this->position[1];
+  this->velocityZ = this->sourcePosition[2] - this->position[2];
+  const float scale = 1.0f / SquareRoot(this->velocityX * this->velocityX + this->velocityY * this->velocityY + this->velocityZ * this->velocityZ);
+  this->velocityX = scale * this->velocityX * 2.0f;
+  this->velocityY = scale * this->velocityY * 2.0f;
+  this->velocityZ = scale * this->velocityZ * 2.0f;
 
   this->first->m_angle = ScreenAngle(this->position, this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
 }
@@ -68,11 +68,11 @@ bool CFuumaShouakuEffect::IsAlive() {
 // OFFSET: 0x00702CD0
 // FUNCTION: fn_07012
 void CFuumaShouakuEffect::OnProcess() {
-  if (this->frame < this->unknown_00E0) {
+  if (this->frame < this->travelFrames) {
     if (this->first) {
-      this->first->position.x += this->unknown_00D4;
-      this->first->position.y += this->unknown_00D8;
-      this->first->position.z += this->unknown_00DC;
+      this->first->position.x += this->velocityX;
+      this->first->position.y += this->velocityY;
+      this->first->position.z += this->velocityZ;
     }
   } else if (!this->second) {
     if (this->first) {
@@ -84,10 +84,10 @@ void CFuumaShouakuEffect::OnProcess() {
     if (this->second) {
       this->second->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku_00\\fuumashouaku_00.str"));
       this->second->m_loop = true;
-      this->AddEvent(0, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->unknown_00E0 + 1, 0);
+      this->AddEvent(0, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->travelFrames + 1, 0);
     }
   } else if (this->second->m_frame == 1) {
-    this->frame = this->unknown_00E0;
+    this->frame = this->travelFrames;
   }
 
   if (this->first) {

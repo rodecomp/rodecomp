@@ -25,9 +25,9 @@ bool CSession::IsRobeDrawOnTop(int action, int frame, bool riding) {
     }
 
     int layer = 1;
-    this->m_hotkeyScript->Call("_New_DrawOnTop", "ddddd>bd", this->m_robe, this->unknown_0E98, job, action, frame, &drawOnTop, &layer);
+    this->m_hotkeyScript->Call("_New_DrawOnTop", "ddddd>bd", this->m_robe, this->cachedSex, job, action, frame, &drawOnTop, &layer);
   } else {
-    this->m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->m_robe, this->unknown_0E98, job, action, frame, &drawOnTop);
+    this->m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->m_robe, this->cachedSex, job, action, frame, &drawOnTop);
   }
 
   return drawOnTop;

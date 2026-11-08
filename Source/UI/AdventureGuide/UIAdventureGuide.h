@@ -91,7 +91,7 @@ public:
   // OFFSET: 0x009D9080
   // FUNCTION: fn_14275
   __declspec(noinline) explicit CUIItem()
-      : CUIPage(), itemList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1) {
+      : CUIPage(), itemList(nullptr), findButton(nullptr), navigationButton(nullptr), navigationTarget(), location(-1) {
   }
 
   void OnCreate(int width, int height) override;
@@ -104,9 +104,9 @@ public:
   void SearchNavigation();
 
   /* 0080 */ CUIListBoxEx<CUIItemInfo, CItemData>* itemList;
-  /* 0084 */ CUIImageButton* unknown_0084;
-  /* 0088 */ CUIImageButton* unknown_0088;
-  /* 008C */ std::string unknown_008C;
+  /* 0084 */ CUIImageButton* findButton;
+  /* 0088 */ CUIImageButton* navigationButton;
+  /* 008C */ std::string navigationTarget;
   /* 00A4 */ int location;
 };
 
@@ -114,7 +114,7 @@ class CUIMonster : public CUIPage {
 public:
   // OFFSET: 0x009D9220
   // FUNCTION: fn_14277
-  __declspec(noinline) explicit CUIMonster() : CUIPage(), monsterList(nullptr), unknown_0084(nullptr), unknown_0088() {
+  __declspec(noinline) explicit CUIMonster() : CUIPage(), monsterList(nullptr), navigationButton(nullptr), navigationTarget() {
   }
 
   void OnCreate(int width, int height) override;
@@ -127,15 +127,15 @@ public:
   void SearchNavigation();
 
   /* 0080 */ CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList;
-  /* 0084 */ CUIImageButton* unknown_0084;
-  /* 0088 */ std::string unknown_0088;
+  /* 0084 */ CUIImageButton* navigationButton;
+  /* 0088 */ std::string navigationTarget;
 };
 
 class CUIQuest : public CUIPage {
 public:
   // OFFSET: 0x009D9360
   // FUNCTION: fn_14279
-  __declspec(noinline) explicit CUIQuest() : CUIPage(), questList(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C() {
+  __declspec(noinline) explicit CUIQuest() : CUIPage(), questList(nullptr), findButton(nullptr), navigationButton(nullptr), navigationTarget() {
   }
 
   void OnCreate(int width, int height) override;
@@ -148,9 +148,9 @@ public:
   void SearchNavigation();
 
   /* 0080 */ CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList;
-  /* 0084 */ CUIImageButton* unknown_0084;
-  /* 0088 */ CUIImageButton* unknown_0088;
-  /* 008C */ std::string unknown_008C;
+  /* 0084 */ CUIImageButton* findButton;
+  /* 0088 */ CUIImageButton* navigationButton;
+  /* 008C */ std::string navigationTarget;
 };
 
 }

@@ -31,7 +31,7 @@ int SpriteRidingOffset(const ActionFrame* frame, unsigned animation, unsigned mo
 
   const ActionAnchor& base = baseFrame->anchors.front();
   const ActionAnchor& riding = frame->anchors.front();
-  if (base.unknown_0008 != riding.unknown_0008) {
+  if (base.attachmentId != riding.attachmentId) {
     return 0;
   }
 

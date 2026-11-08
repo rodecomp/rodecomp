@@ -23,33 +23,33 @@
 // FUNCTION: fn_12882
 void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const unsigned char flags = mode->scene->player->unknown_02CC;
-  const std::uint32_t time = this->unknown_0100;
+  const unsigned char flags = mode->scene->player->isRiding;
+  const std::uint32_t time = this->m_previewStartTime;
   const int action = this->m_page;
 
   int headPalette = 0;
   if (!this->m_entries[0].empty() && static_cast<unsigned>(this->m_selected[0]) < this->m_entries[0].size()) {
-    headPalette = this->m_entries[0][this->m_selected[0]].unknown_0018;
+    headPalette = this->m_entries[0][this->m_selected[0]].value;
   }
 
   int bodyStyle = 0;
   if (!this->m_entries[2].empty() && static_cast<unsigned>(this->m_selected[2]) < this->m_entries[2].size()) {
-    bodyStyle = this->m_entries[2][this->m_selected[2]].unknown_0018;
+    bodyStyle = this->m_entries[2][this->m_selected[2]].value;
   }
 
   const int robe = g_session.m_robe;
-  const short midAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[8]);
-  const short topAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[4]);
-  const short bottomAccessory = *reinterpret_cast<const short*>(&g_session.unknown_0EF4[0]);
+  const short midAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[8]);
+  const short topAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[4]);
+  const short bottomAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[0]);
 
   int head = 0;
   if (!this->m_entries[1].empty() && static_cast<unsigned>(this->m_selected[1]) < this->m_entries[1].size()) {
-    head = this->m_entries[1][this->m_selected[1]].unknown_0018;
+    head = this->m_entries[1][this->m_selected[1]].value;
   }
 
   int body = 0;
   if (!this->m_entries[3].empty() && static_cast<unsigned>(this->m_selected[3]) < this->m_entries[3].size()) {
-    body = this->m_entries[3][this->m_selected[3]].unknown_0018;
+    body = this->m_entries[3][this->m_selected[3]].value;
   }
 
   FuncDrawWNDChar drawer(
@@ -76,7 +76,7 @@ void UISecondCostumeWnd::LoadLists() {
 
     SecondCostumeEntry entry;
     entry.name = name;
-    entry.unknown_0018 = value;
+    entry.value = value;
     this->m_entries[0].push_back(entry);
   }
 
@@ -90,7 +90,7 @@ void UISecondCostumeWnd::LoadLists() {
 
     SecondCostumeEntry entry;
     entry.name = name;
-    entry.unknown_0018 = value;
+    entry.value = value;
     this->m_entries[1].push_back(entry);
   }
 
@@ -104,7 +104,7 @@ void UISecondCostumeWnd::LoadLists() {
 
     SecondCostumeEntry entry;
     entry.name = name;
-    entry.unknown_0018 = value;
+    entry.value = value;
     this->m_entries[2].push_back(entry);
   }
 
@@ -118,7 +118,7 @@ void UISecondCostumeWnd::LoadLists() {
 
     SecondCostumeEntry entry;
     entry.name = name;
-    entry.unknown_0018 = value;
+    entry.value = value;
     this->m_entries[3].push_back(entry);
   }
 
@@ -130,28 +130,28 @@ void UISecondCostumeWnd::LoadLists() {
 void UISecondCostumeWnd::SelectSavedEntries() {
   unsigned int index;
   for (index = 0; index < this->m_entries[0].size(); ++index) {
-    if (this->m_entries[0][index].unknown_0018 == g_session.m_headPalette) {
+    if (this->m_entries[0][index].value == g_session.m_headPalette) {
       break;
     }
   }
   this->m_selected[0] = index < this->m_entries[0].size() ? index : 0;
 
   for (index = 0; index < this->m_entries[1].size(); ++index) {
-    if (this->m_entries[1][index].unknown_0018 == g_session.m_head) {
+    if (this->m_entries[1][index].value == g_session.m_head) {
       break;
     }
   }
   this->m_selected[1] = index < this->m_entries[1].size() ? index : 0;
 
   for (index = 0; index < this->m_entries[2].size(); ++index) {
-    if (this->m_entries[2][index].unknown_0018 == g_session.m_bodyStyle) {
+    if (this->m_entries[2][index].value == g_session.m_bodyStyle) {
       break;
     }
   }
   this->m_selected[2] = index < this->m_entries[2].size() ? index : 0;
 
   for (index = 0; index < this->m_entries[3].size(); ++index) {
-    if (this->m_entries[3][index].unknown_0018 == g_session.m_bodyCostume) {
+    if (this->m_entries[3][index].value == g_session.m_bodyCostume) {
       break;
     }
   }
@@ -300,6 +300,6 @@ UISecondCostumeWnd::UISecondCostumeWnd()
   this->m_selected[1] = 0;
   this->m_selected[2] = 0;
   this->m_selected[3] = 0;
-  this->unknown_0100 = timeGetTime();
+  this->m_previewStartTime = timeGetTime();
   this->m_page = 0;
 }

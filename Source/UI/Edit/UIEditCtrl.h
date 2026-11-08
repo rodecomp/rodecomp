@@ -74,7 +74,7 @@ public:
   /* 00BC */ std::string tooltip;
   /* 00D4 */ unsigned char disabled;
   /* 00D8 */ std::string text;
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ int tagTextLength;
   /* 00F4 */ int topPadding;
   /* 00F8 */ unsigned char preserveInput;
   /* 00FC */ std::list<UIWindow*> links;
@@ -139,24 +139,24 @@ public:
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;
-  /* 0130 */ UIWindow* unknown_0130;
-  /* 0134 */ unsigned char unknown_0134;
-  /* 0138 */ int unknown_0138;
-  /* 013C */ int unknown_013C;
-  /* 0140 */ int unknown_0140;
-  /* 0144 */ int unknown_0144;
-  /* 0148 */ int unknown_0148;
-  /* 014C */ int unknown_014C;
-  /* 0150 */ int unknown_0150;
-  /* 0154 */ int unknown_0154;
-  /* 0158 */ int unknown_0158;
-  /* 015C */ short unknown_015C;
-  /* 015E */ unsigned char unknown_015E;
-  /* 0160 */ char* unknown_0160;
-  /* 0164 */ char* unknown_0164;
-  /* 0168 */ std::vector<std::string> unknown_0168;
-  /* 0174 */ std::vector<bool> unknown_0174;
-  /* 0184 */ short unknown_0184;
+  /* 0130 */ UIWindow* scrollBar;
+  /* 0134 */ unsigned char scrollEnabled;
+  /* 0138 */ int lineHeight;
+  /* 013C */ int lineCount;
+  /* 0140 */ int caretLineLength;
+  /* 0144 */ int previousLineLength;
+  /* 0148 */ int nextLineLength;
+  /* 014C */ int caretPixelX;
+  /* 0150 */ int verticalCursorStep;
+  /* 0154 */ int previousCursor;
+  /* 0158 */ int firstVisibleLine;
+  /* 015C */ short scrollFlags;
+  /* 015E */ unsigned char movingDown;
+  /* 0160 */ char* previousLineText;
+  /* 0164 */ char* nextLineText;
+  /* 0168 */ std::vector<std::string> wrappedLines;
+  /* 0174 */ std::vector<bool> lineBreaks;
+  /* 0184 */ short editFlags;
 };
 
 class CUIEditCtrl : public UIEditCtrl3 {
@@ -208,8 +208,8 @@ public:
 
   /* 011C */ std::vector<std::string> history;
   /* 0128 */ std::string pending;
-  /* 0140 */ int unknown_0140;
-  /* 0144 */ UIItemTagOnChat* unknown_0144;
+  /* 0140 */ int historyIndex;
+  /* 0144 */ UIItemTagOnChat* itemTags;
   /* 0148 */ int historyLimit;
 };
 

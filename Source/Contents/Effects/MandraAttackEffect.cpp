@@ -18,7 +18,7 @@ CMandraAttackEffect::CMandraAttackEffect() {
 // OFFSET: 0x00E4C310
 // FUNCTION: fn_24285
 bool CMandraAttackEffect::OnProcess() {
-  float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   float startFrame = this->startFrame;
   if (startFrame > frame) {
     this->render.visible = 0;
@@ -162,7 +162,7 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
   this->render.position.y = target.y;
   this->render.position.z = target.z;
   this->render.visible = 1;
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
   this->SetAnimationSpeed(this->GetActRes()->Speed(0));
   if (f == 0x42C) {
     this->SetAnimationSpeed(2.0f);

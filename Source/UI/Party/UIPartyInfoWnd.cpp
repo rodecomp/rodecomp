@@ -79,7 +79,7 @@ void UIPartyInfoWnd::Paint() {
 
   CBitmapRes* background = nullptr;
 
-  switch (this->geometry.unknown_0030) {
+  switch (this->geometry.state) {
   case 0:
     background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
     break;

@@ -308,8 +308,8 @@ void CReputeMgr::SetPointsReceived(bool received) {
 void CReputeMgr::InfoInserter::operator()(const std::pair<int, ReputeInfoRecord>& entry) const {
   ReputeInfo info;
   info.name = FromUtf8(entry.second.name, g_textCodePage);
-  info.unknown_0018 = entry.second.maxPointPositive;
-  info.unknown_0020 = entry.second.maxPointNegative;
+  info.maxPointPositive = entry.second.maxPointPositive;
+  info.maxPointNegative = entry.second.maxPointNegative;
   const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
   const char* text = invisible.c_str();
   if (invisible.size() == 12 && text[0] == 'V' && text[1] == 'I' && text[2] == 'S' && text[3] == 'I' &&

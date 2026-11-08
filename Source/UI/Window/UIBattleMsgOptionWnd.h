@@ -23,16 +23,16 @@ public:
   virtual void UpdateScrollBar();
 
   /* 00B4 */ UIScrollBar* m_scrollBar;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int hoveredOption;
   /* 00BC */ int m_visibleRows;
   /* 00C0 */ int m_scrollable;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ int scrollPosition;
   /* 00C8 */ std::vector<const char*> messages;
   /* 00D4 */ std::string text;
-  /* 00EC */ unsigned char unknown_00EC[0x1C];
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
-  /* 0110 */ unsigned char unknown_0110;
+  /* 00EC */ unsigned char optionStates[0x1C];
+  /* 0108 */ int chatWindowIndex;
+  /* 010C */ int allChecked;
+  /* 0110 */ unsigned char useMainChatOptions;
   /* 0111 */ unsigned char unknown_0111[0x3];
   /* 0114 */ UICheckBox* m_allCheckBox;
 };

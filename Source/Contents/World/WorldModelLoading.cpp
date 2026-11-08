@@ -157,7 +157,7 @@ void CWorld::InitWorld() {
   this->movies = new BinkMovies();
   this->serializedSpatial = worldRes->spatial;
 
-  int* modeBounds = reinterpret_cast<int*>(this->gameMode->unknown_0058);
+  int* modeBounds = reinterpret_cast<int*>(this->gameMode->areaBounds);
   modeBounds[0] = worldRes->bounds[2];
   modeBounds[1] = worldRes->bounds[3];
   modeBounds[2] = worldRes->bounds[0];

@@ -23,17 +23,17 @@ public:
   void InitSpinParticle(CParticle* particle);
   void InitTrajectory(CParticle* particle);
 
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ float unknown_00DC;
-  /* 00E0 */ float unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
-  /* 00E8 */ float unknown_00E8;
-  /* 00EC */ float unknown_00EC;
-  /* 00F0 */ float unknown_00F0;
-  /* 00F4 */ float unknown_00F4;
+  /* 00CC */ int travelFrames;
+  /* 00D0 */ int launchDelay;
+  /* 00D4 */ int projectileCount;
+  /* 00D8 */ int trailCount;
+  /* 00DC */ float heightDelta;
+  /* 00E0 */ float arcHeight;
+  /* 00E4 */ int trailAlpha;
+  /* 00E8 */ float trailRotation;
+  /* 00EC */ float trailX;
+  /* 00F0 */ float trailY;
+  /* 00F4 */ float trailZ;
   /* 00F8 */ std::vector<CParticle*> particles;
 };
 

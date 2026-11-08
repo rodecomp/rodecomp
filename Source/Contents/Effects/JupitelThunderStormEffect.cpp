@@ -15,7 +15,7 @@
 
 // INLINED
 static bool ParticleAlive(const CParticle* particle) {
-  return particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f;
+  return particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f;
 }
 
 // OFFSET: 0x00705F80
@@ -65,8 +65,8 @@ void CJupitelThunderStormEffect::Open() {
 
   int corners[4][2] = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}};
   int index = 0;
-  const int rings = (this->unknown_00B0 - 1) / 4;
-  const int lastDelay = ((this->unknown_00B0 - 1) / 2 + 6) * 150;
+  const int rings = (this->effectLevel - 1) / 4;
+  const int lastDelay = ((this->effectLevel - 1) / 2 + 6) * 150;
   for (int delay = 80; delay <= lastDelay; delay += 80, ++index) {
     CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!bolt) {

@@ -61,14 +61,14 @@ protected:
   friend class SpriteAtlas;
   friend class TextureCache;
   /* 0004 */ std::int32_t m_format;
-  /* 0008 */ std::uint16_t unknown_0008;
+  /* 0008 */ std::uint16_t textureFlags;
   /* 000A */ std::uint8_t unknown_000A[2];
   /* 000C */ std::uint32_t m_textureWidth;
   /* 0010 */ std::uint32_t m_textureHeight;
   /* 0014 */ std::uint32_t m_width;
   /* 0018 */ std::uint32_t m_height;
-  /* 001C */ std::uint32_t unknown_001C;
-  /* 0020 */ std::uint32_t unknown_0020;
+  /* 001C */ std::uint32_t refCount;
+  /* 0020 */ std::uint32_t lastUsedTick;
   /* 0024 */ char m_name[256];
 };
 

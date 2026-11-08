@@ -72,8 +72,8 @@ void DrawScreenQuad(
   vertices[3].u = 1.0f;
   vertices[3].v = 1.0f;
   primitive->texture = texture;
-  primitive->unknown_0018 = 2;
-  primitive->unknown_001C = 4;
+  primitive->sourceBlend = 2;
+  primitive->destinationBlend = 4;
   queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
 }
 
@@ -111,7 +111,7 @@ void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint 
   vertices[3].u = 1.0f;
   vertices[3].v = 1.0f;
   primitive->texture = texture;
-  primitive->unknown_0018 = 2;
-  primitive->unknown_001C = 4;
+  primitive->sourceBlend = 2;
+  primitive->destinationBlend = 4;
   g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

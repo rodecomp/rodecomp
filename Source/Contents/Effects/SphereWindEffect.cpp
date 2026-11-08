@@ -39,18 +39,18 @@ void CSphereWindEffect::Open() {
           continue;
         }
 
-        particle->unknown_000C = segment;
-        particle->unknown_0010 = ring;
-        particle->unknown_0004 = this->id;
-        particle->unknown_0008 = 1;
-        particle->unknown_00C0 = radius;
+        particle->columnIndex = segment;
+        particle->rowIndex = ring;
+        particle->effectId = this->id;
+        particle->groupIndex = 1;
+        particle->speedParameter = radius;
         particle->scale = 14.0f;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(rotation);
-        particle->unknown_004C = tilt;
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(rotation);
+        particle->phaseParameter = tilt;
         particle->alpha = 100;
-        particle->unknown_0050 = spread;
-        particle->unknown_0054 = -14.0f;
-        *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(spin);
+        particle->angleParameter = spread;
+        particle->animationParameter = -14.0f;
+        *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(spin);
         InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
@@ -83,16 +83,16 @@ void CSphereWindEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     this->UpdateParticle(particle);
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
 // OFFSET: 0x00B78480
 // FUNCTION: fn_19192
 __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle) {
-  float& rotation = *reinterpret_cast<float*>(&particle->unknown_00C4);
+  float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
   if (particle) {
-    float value = *reinterpret_cast<const float*>(particle->unknown_0058) + rotation;
+    float value = *reinterpret_cast<const float*>(particle->animationParameters) + rotation;
     if (value >= 360.0f) {
       value -= 360.0f;
     }
@@ -104,11 +104,11 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
   transform.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
   particle->transform = transform;
 
-  const int segment = particle->unknown_000C;
-  const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) + rotation) % 360;
-  const int tilt = particle->unknown_004C;
+  const int segment = particle->columnIndex;
+  const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + rotation) % 360;
+  const int tilt = particle->phaseParameter;
   const float scale = particle->scale;
-  const float radius = particle->unknown_00C0;
+  const float radius = particle->speedParameter;
 
   const float ringX = g_cosTable[tilt] * scale * g_cosTable[angle];
   const float ringY = g_sinTable[tilt] * scale * g_cosTable[angle];
@@ -116,8 +116,8 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
   const float spreadX = g_sinTable[tilt] * radius;
   const float spreadY = g_cosTable[tilt] * radius;
 
-  const vector3d inner = {ringX - spreadX, ringY + spreadY + particle->unknown_0054, ringZ};
-  const vector3d outer = {ringX + spreadX, ringY - spreadY + particle->unknown_0054, ringZ};
+  const vector3d inner = {ringX - spreadX, ringY + spreadY + particle->animationParameter, ringZ};
+  const vector3d outer = {ringX + spreadX, ringY - spreadY + particle->animationParameter, ringZ};
 
   particle->vertices[1].x = outer.x;
   particle->vertices[1].y = outer.y;
@@ -144,11 +144,11 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
 void CSphereWindEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_000C <= 0) {
+    if (!particle || particle->columnIndex <= 0) {
       continue;
     }
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;

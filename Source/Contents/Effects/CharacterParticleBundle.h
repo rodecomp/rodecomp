@@ -28,7 +28,7 @@ public:
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ long long startTime;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D8 */ int elapsedFrames;
   /* 00DC */ std::vector<CEZ2STRParticle*> particles;
 };
 

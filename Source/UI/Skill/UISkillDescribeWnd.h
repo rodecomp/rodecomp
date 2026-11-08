@@ -14,9 +14,9 @@ public:
 
   /* 00B4 */ UIBitmapButton* m_closeButton;
   /* 00B8 */ UITextViewer* m_viewer;
-  /* 00BC */ std::string unknown_00BC;
-  /* 00D4 */ std::string unknown_00D4;
-  /* 00EC */ std::string unknown_00EC;
+  /* 00BC */ std::string iconName;
+  /* 00D4 */ std::string skillName;
+  /* 00EC */ std::string descriptionText;
   /* 0104 */ int m_skillId;
   /* 0108 */ UITextViewer* m_text;
   /* 010C */ UIBitmapButton* m_delayButton;

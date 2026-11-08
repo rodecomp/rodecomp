@@ -750,7 +750,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
 // FUNCTION: fn_16445
 template <>
 __declspec(noinline) void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (RenewQuestUI::CUIQuestItem* other : this->items) {
@@ -759,7 +759,7 @@ __declspec(noinline) void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   RenewQuestUI::CUIQuestItem* selectedItem = dynamic_cast<RenewQuestUI::CUIQuestItem*>(item);
@@ -804,7 +804,7 @@ void CQuestItemSelector::SetHighlighted(CUIListItem* const& item) {
 void CQuestItemSelector::Select(CUIListItem* const& item) {
   CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = this->listBox;
   CUIListItem* selection = item;
-  if (listBox->unknown_00C4) {
+  if (listBox->layoutFlag) {
     return;
   }
   for (RenewQuestUI::CUIQuestItem* other : listBox->items) {
@@ -813,7 +813,7 @@ void CQuestItemSelector::Select(CUIListItem* const& item) {
     }
   }
   selection->SetSelected(1);
-  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->selectionFlag) {
     return;
   }
   RenewQuestUI::CUIQuestItem* selectedItem = dynamic_cast<RenewQuestUI::CUIQuestItem*>(selection);
@@ -902,7 +902,7 @@ void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
 // OFFSET: 0x00A66C70
 // FUNCTION: fn_16622
 void RenewQuestUI::CUIQuestItem::OnInit() {
-  CUIButton* button = this->unknown_00F4;
+  CUIButton* button = this->simpleViewCheckBox;
   std::string tooltip = LookupMessage(MSI_PASSWORD);
   button->tooltip = tooltip;
 }
@@ -910,13 +910,13 @@ void RenewQuestUI::CUIQuestItem::OnInit() {
 // OFFSET: 0x00A66D90
 // FUNCTION: fn_16623
 void RenewQuestUI::CUIQuestList::OnInit() {
-  this->list->unknown_00E0 = 0;
+  this->list->selectionFlag = 0;
 }
 
 // OFFSET: 0x00A5C200
 // FUNCTION: fn_16432
 void CUIRenewQuestUI::Initialize() {
-  this->unknown_00B4 = 1;
+  this->ownedSkinColors = 1;
   this->m_resolveSkin = true;
   this->Resize(381, 466);
   this->Move(
@@ -964,7 +964,7 @@ bool CUIRenewQuestUI::MatchesFilter(const RenewQuestInfo& info) const {
   }
 
   if (!this->searchText.empty()) {
-    if (FindSubstring(info.unknown_004C.c_str(), static_cast<int>(info.unknown_004C.size()), this->searchText.c_str()) == -1 &&
+    if (FindSubstring(info.summary.c_str(), static_cast<int>(info.summary.size()), this->searchText.c_str()) == -1 &&
         FindSubstring(info.m_title.c_str(), static_cast<int>(info.m_title.size()), this->searchText.c_str()) == -1) {
       return false;
     }
@@ -1058,8 +1058,8 @@ bool sub_A59960() {
 // FUNCTION: fn_16366
 template <>
 CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A59C80
@@ -1078,7 +1078,7 @@ CUIEditBoxEx::CUIEditBoxEx()
 // OFFSET: 0x00A67CA0
 // FUNCTION: fn_16630
 void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {
-  this->unknown_00EC->SetColor(selected ? 0x00E47B2E : 0x00955322);
+  this->titleText->SetColor(selected ? 0x00E47B2E : 0x00955322);
   CUIListItem::SetSelected(selected);
 }
 
@@ -1167,14 +1167,14 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     const RenewQuestRecommendedInfo& info = found->second;
     item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
     item->icon->tooltip = info.m_iconTooltip;
-    item->unknown_00EC->SetText(info.m_title);
-    item->unknown_00F0->SetText(info.unknown_004C);
-    item->unknown_00F4->Show(0);
-    item->unknown_00F8->Show(1);
-    item->unknown_00F8->checked = info.m_active;
-    item->unknown_00F8->Invalidate();
+    item->titleText->SetText(info.m_title);
+    item->descriptionText->SetText(info.summary);
+    item->simpleViewCheckBox->Show(0);
+    item->activeCheckBox->Show(1);
+    item->activeCheckBox->checked = info.m_active;
+    item->activeCheckBox->Invalidate();
     std::string tooltip = LookupMessage(MSI_SAVE_ID);
-    item->unknown_00F8->tooltip = tooltip;
+    item->activeCheckBox->tooltip = tooltip;
   } else {
     auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
     if (found == g_renewQuestMgr->m_ongoingQuests.end()) {
@@ -1184,16 +1184,16 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     const RenewQuestOngoingInfo& info = found->second;
     item->icon->SetImage(std::format("유저인터페이스\\renew_questui\\{}", info.m_icon.empty() ? std::string("ico_nq.bmp") : info.m_icon));
     item->icon->tooltip = info.m_iconTooltip;
-    item->unknown_00EC->SetText(info.m_title);
-    item->unknown_00F0->SetText(info.unknown_004C);
-    item->unknown_00F4->Show(this->type != 8);
-    item->unknown_00F4->checked = info.m_simpleView;
-    item->unknown_00F4->Invalidate();
-    item->unknown_00F8->Show(this->type != 8);
-    item->unknown_00F8->checked = info.m_active;
-    item->unknown_00F8->Invalidate();
+    item->titleText->SetText(info.m_title);
+    item->descriptionText->SetText(info.summary);
+    item->simpleViewCheckBox->Show(this->type != 8);
+    item->simpleViewCheckBox->checked = info.m_simpleView;
+    item->simpleViewCheckBox->Invalidate();
+    item->activeCheckBox->Show(this->type != 8);
+    item->activeCheckBox->checked = info.m_active;
+    item->activeCheckBox->Invalidate();
     std::string tooltip = LookupMessage(MSI_OTP_INPUT_TIME);
-    item->unknown_00F8->tooltip = tooltip;
+    item->activeCheckBox->tooltip = tooltip;
   }
 }
 
@@ -1210,7 +1210,7 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.unknown_01F8 != 1 && entry.second.m_state != 0) {
+          if (this->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1270,7 +1270,7 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
           if (!this->MatchesFilter(entry.second)) {
             continue;
           }
-          if (entry.second.unknown_01F8 != 1 && entry.second.m_state == 0) {
+          if (entry.second.questType != 1 && entry.second.m_state == 0) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1296,7 +1296,7 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
           if (!this->MatchesFilter(entry.second)) {
             continue;
           }
-          if (entry.second.unknown_01F8 == 1) {
+          if (entry.second.questType == 1) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1333,41 +1333,41 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->icon->SetImage(std::string(""));
   this->AddChild(this->icon);
 
-  this->unknown_00EC = new CUIStaticText();
-  this->unknown_00EC->SetSize(260, 12);
-  this->unknown_00EC->Move(42, 6);
-  this->unknown_00EC->SetText("");
-  this->unknown_00EC->SetFitText(1);
-  this->unknown_00EC->SetAlign(0, 0);
-  this->unknown_00EC->SetFont(std::string(DecryptName<0xAD075B8DB599F1CDULL>({'\x8A', '\x84', '\xF5', '\xDC', '\xE0', '\x5B'})));
-  this->unknown_00EC->SetFontHeight(12);
-  this->unknown_00EC->SetBold(1);
-  this->unknown_00EC->SetColor(0x955322);
-  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00EC);
+  this->titleText = new CUIStaticText();
+  this->titleText->SetSize(260, 12);
+  this->titleText->Move(42, 6);
+  this->titleText->SetText("");
+  this->titleText->SetFitText(1);
+  this->titleText->SetAlign(0, 0);
+  this->titleText->SetFont(std::string(DecryptName<0xAD075B8DB599F1CDULL>({'\x8A', '\x84', '\xF5', '\xDC', '\xE0', '\x5B'})));
+  this->titleText->SetFontHeight(12);
+  this->titleText->SetBold(1);
+  this->titleText->SetColor(0x955322);
+  this->titleText->SetShadow(0, 0xFFFFFF);
+  this->titleText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->titleText);
 
-  this->unknown_00F0 = new CUIStaticText();
-  this->unknown_00F0->SetSize(260, 12);
-  this->unknown_00F0->Move(42, 24);
-  this->unknown_00F0->SetText("");
-  this->unknown_00F0->SetFitText(1);
-  this->unknown_00F0->SetAlign(0, 0);
-  this->unknown_00F0->SetFont(std::string(DecryptName<0xDD3913D5D7F97BE1ULL>({'\xA6', '\x0E', '\x95', '\xBE', '\xB8', '\x13'})));
-  this->unknown_00F0->SetFontHeight(12);
-  this->unknown_00F0->SetBold(0);
-  this->unknown_00F0->SetColor(0x38302E);
-  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
-  this->unknown_00F0->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00F0);
+  this->descriptionText = new CUIStaticText();
+  this->descriptionText->SetSize(260, 12);
+  this->descriptionText->Move(42, 24);
+  this->descriptionText->SetText("");
+  this->descriptionText->SetFitText(1);
+  this->descriptionText->SetAlign(0, 0);
+  this->descriptionText->SetFont(std::string(DecryptName<0xDD3913D5D7F97BE1ULL>({'\xA6', '\x0E', '\x95', '\xBE', '\xB8', '\x13'})));
+  this->descriptionText->SetFontHeight(12);
+  this->descriptionText->SetBold(0);
+  this->descriptionText->SetColor(0x38302E);
+  this->descriptionText->SetShadow(0, 0xFFFFFF);
+  this->descriptionText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->descriptionText);
 
-  this->unknown_00F4 = new CUICheckBox();
-  this->unknown_00F4->SetSize(14, 14);
-  this->unknown_00F4->Move(312, 3);
-  this->unknown_00F4->SetOnCheck([this](bool checked) { this->OnSimpleView(checked); });
-  this->unknown_00F4->disabled = 0;
-  this->unknown_00F4->Invalidate();
-  this->unknown_00F4->SetImages(
+  this->simpleViewCheckBox = new CUICheckBox();
+  this->simpleViewCheckBox->SetSize(14, 14);
+  this->simpleViewCheckBox->Move(312, 3);
+  this->simpleViewCheckBox->SetOnCheck([this](bool checked) { this->OnSimpleView(checked); });
+  this->simpleViewCheckBox->disabled = 0;
+  this->simpleViewCheckBox->Invalidate();
+  this->simpleViewCheckBox->SetImages(
     std::string(DecryptName<0x050505679903579BULL>({
       '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x57',
       '\xFE', '\x39', '\x66', '\xEE', '\x38', '\x54', '\x70', '\x60', '\xE8', '\x23', '\x56', '\xD0', '\x3B', '\x67', '\x71', '\x5A',
@@ -1389,17 +1389,17 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
       '\x6A', '\x4F', '\x4A', '\xD8', '\xD6', '\x02', '\x12', '\xBF', '\x6F', '\x09', '\x4D', '\xD6', '\xCD', '\x5D'
     }))
   );
-  this->unknown_00F4->checked = false;
-  this->unknown_00F4->Invalidate();
-  this->AddChild(this->unknown_00F4);
+  this->simpleViewCheckBox->checked = false;
+  this->simpleViewCheckBox->Invalidate();
+  this->AddChild(this->simpleViewCheckBox);
 
-  this->unknown_00F8 = new CUICheckBox();
-  this->unknown_00F8->SetSize(20, 17);
-  this->unknown_00F8->Move(306, 22);
-  this->unknown_00F8->SetOnCheck([this](bool checked) { this->OnActiveStateChanged(checked); });
-  this->unknown_00F8->disabled = 0;
-  this->unknown_00F8->Invalidate();
-  this->unknown_00F8->SetImages(
+  this->activeCheckBox = new CUICheckBox();
+  this->activeCheckBox->SetSize(20, 17);
+  this->activeCheckBox->Move(306, 22);
+  this->activeCheckBox->SetOnCheck([this](bool checked) { this->OnActiveStateChanged(checked); });
+  this->activeCheckBox->disabled = 0;
+  this->activeCheckBox->Invalidate();
+  this->activeCheckBox->SetImages(
     std::string(DecryptName<0xED796785D1DF137FULL>({
       '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\xBF',
       '\x1A', '\x7D', '\xBA', '\xA6', '\xDA', '\x36', '\x0C', '\x88', '\x0C', '\x67', '\x8A', '\x98', '\xD9', '\x05', '\x0D', '\xB2',
@@ -1421,9 +1421,9 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
       '\x0B', '\xC4', '\xF2', '\xCE', '\x8F', '\x5D', '\x8E', '\x63', '\x67'
     }))
   );
-  this->unknown_00F8->checked = false;
-  this->unknown_00F8->Invalidate();
-  this->AddChild(this->unknown_00F8);
+  this->activeCheckBox->checked = false;
+  this->activeCheckBox->Invalidate();
+  this->AddChild(this->activeCheckBox);
 }
 
 // OFFSET: 0x00A5D850
@@ -2138,7 +2138,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, 
 // OFFSET: 0x00A659B0
 // FUNCTION: fn_16597
 RenewQuestUI::CUIQuestItem::CUIQuestItem()
-    : CUIListItem(), icon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), questType(1),
+    : CUIListItem(), icon(nullptr), titleText(nullptr), descriptionText(nullptr), simpleViewCheckBox(nullptr), activeCheckBox(nullptr), questType(1),
       questId(0), pressed(0), baseX(0), baseY(0) {
 }
 

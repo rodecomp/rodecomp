@@ -24,7 +24,7 @@ public:
   /* 00B4 */ UIBitmapButton* digitButtons[10];
   /* 00DC */ UIBitmapButton* resetButton;
   /* 00E0 */ UIBitmapButton* okButton;
-  /* 00E4 */ unsigned char unknown_00E4;
+  /* 00E4 */ unsigned char resultState;
   /* 00E5 */ char digits[10];
   /* 00F0 */ int inputLength;
   /* 00F4 */ char input[9];

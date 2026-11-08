@@ -39,15 +39,15 @@ public:
 protected:
   /* 00B4 */ std::uint32_t unknown_00B4;
   /* 00B8 */ UISwapBitmapButton* m_swapButton;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ std::uint32_t unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
+  /* 00BC */ int equipmentPage;
+  /* 00C0 */ std::uint32_t previewTick;
+  /* 00C4 */ int topAccessory;
+  /* 00C8 */ int midAccessory;
+  /* 00CC */ int bottomAccessory;
+  /* 00D0 */ int weaponView;
+  /* 00D4 */ int hoverSlot;
+  /* 00D8 */ int hoverSecondarySlot;
+  /* 00DC */ int hoverTertiarySlot;
 };
 
 #endif

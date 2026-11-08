@@ -95,7 +95,7 @@ template <>
 __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Select(CUIListItem* const& item) {
   CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>* listBox = this->listBox;
   CUIListItem* selection = item;
-  if (listBox->unknown_00C4) {
+  if (listBox->layoutFlag) {
     return;
   }
   for (AdventureGuide::CUIItemInfo* other : listBox->items) {
@@ -104,7 +104,7 @@ __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIItemInfo, 
     }
   }
   selection->SetSelected(1);
-  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->selectionFlag) {
     return;
   }
   AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(selection);
@@ -127,7 +127,7 @@ template <>
 __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Select(CUIListItem* const& item) {
   CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>* listBox = this->listBox;
   CUIListItem* selection = item;
-  if (listBox->unknown_00C4) {
+  if (listBox->layoutFlag) {
     return;
   }
   for (AdventureGuide::CUIMonsterInfo* other : listBox->items) {
@@ -136,7 +136,7 @@ __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIMonsterInf
     }
   }
   selection->SetSelected(1);
-  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->selectionFlag) {
     return;
   }
   AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(selection);
@@ -159,7 +159,7 @@ template <>
 __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Select(CUIListItem* const& item) {
   CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>* listBox = this->listBox;
   CUIListItem* selection = item;
-  if (listBox->unknown_00C4) {
+  if (listBox->layoutFlag) {
     return;
   }
   for (AdventureGuide::CUIQuestInfo* other : listBox->items) {
@@ -168,7 +168,7 @@ __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUIQuestInfo,
     }
   }
   selection->SetSelected(1);
-  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->selectionFlag) {
     return;
   }
   AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(selection);
@@ -191,7 +191,7 @@ template <>
 __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Select(CUIListItem* const& item) {
   CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>* listBox = this->listBox;
   CUIListItem* selection = item;
-  if (listBox->unknown_00C4) {
+  if (listBox->layoutFlag) {
     return;
   }
   for (AdventureGuide::CUITabInfo* other : listBox->items) {
@@ -200,7 +200,7 @@ __declspec(noinline) void CUIListBoxExItemSelector<AdventureGuide::CUITabInfo, G
     }
   }
   selection->SetSelected(1);
-  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->selectionFlag) {
     return;
   }
   AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(selection);
@@ -234,7 +234,7 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
 }
 
 // INLINED
-__forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+__forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), clickWindow(nullptr), hoverWindow(nullptr) {
 }
 
 // OFFSET: 0x009BDF40
@@ -797,7 +797,7 @@ void CUIButton::SetState(int value) {
 // OFFSET: 0x009D3050
 // FUNCTION: fn_14027
 void CUIButton::SetOnClick(std::function<void()> handler) {
-  std::function<void()>& onClick = *reinterpret_cast<std::function<void()>*>(this->unknown_00A0);
+  std::function<void()>& onClick = *reinterpret_cast<std::function<void()>*>(this->clickHandlerStorage);
   onClick = handler;
 }
 
@@ -821,8 +821,8 @@ void CUIButton::OnLBtnDown(int, int) {
 void CUIButton::OnLBtnUp(int, int) {
   this->SetState(2);
   if (this == g_windowMgr.Capture()) {
-    if (!this->disabled && this->unknown_00C4) {
-      this->unknown_00C4->IsFrameWnd();
+    if (!this->disabled && this->clickWindow) {
+      this->clickWindow->IsFrameWnd();
     }
     g_windowMgr.ReleaseCapture();
   }
@@ -837,8 +837,8 @@ void CUIButton::OnMouseEnter() {
 // OFFSET: 0x009EEA00
 // FUNCTION: fn_14631
 void CUIButton::OnMouseHover(int, int) {
-  if (this->unknown_00EC) {
-    this->unknown_00EC->IsFrameWnd();
+  if (this->hoverWindow) {
+    this->hoverWindow->IsFrameWnd();
   }
 
   if (this->tooltip.empty()) {
@@ -1153,8 +1153,8 @@ void CUITabButton::SetSelected(bool selected) {
   if (this->page) {
     this->page->Show(selected);
   }
-  if (selected && this->unknown_00C4) {
-    this->unknown_00C4->IsFrameWnd();
+  if (selected && this->clickWindow) {
+    this->clickWindow->IsFrameWnd();
   }
   this->Invalidate();
 }
@@ -1744,7 +1744,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (AdventureGuide::CUIItemInfo* other : this->items) {
@@ -1753,7 +1753,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
           }
         }
         listItem->SetSelected(1);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(listItem);
@@ -1810,7 +1810,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (AdventureGuide::CUIMonsterInfo* other : this->items) {
@@ -1819,7 +1819,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
           }
         }
         listItem->SetSelected(1);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(listItem);
@@ -1876,7 +1876,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (AdventureGuide::CUIQuestInfo* other : this->items) {
@@ -1885,7 +1885,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
           }
         }
         listItem->SetSelected(1);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(listItem);
@@ -1942,7 +1942,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (AdventureGuide::CUITabInfo* other : this->items) {
@@ -1951,7 +1951,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
           }
         }
         listItem->SetSelected(1);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(listItem);
@@ -2620,7 +2620,7 @@ UIWindow* CUIControl::FindChildById(int id) {
 // OFFSET: 0x009BE300
 // FUNCTION: fn_13947
 CUITextViewer::CUITextViewer()
-    : CUIControl(), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), unknown_0098(false), unknown_009C(0xFFFFFF), outline(false),
+    : CUIControl(), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), shadow(false), shadowColor(0xFFFFFF), outline(false),
       outlineColor(0xFFFFFF), lineSpacing(6), backgroundColor(0xFFFFFF), paddingLeft(3), paddingTop(3), paddingRight(3), paddingBottom(3), scrollBar(nullptr),
       padding(nullptr), lines(), contentHeight(0), childPositions() {
 }
@@ -2713,32 +2713,32 @@ bool UnusedTrue9BD5C0() {
 // FUNCTION: fn_13939
 template <>
 CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x009BD990
 // FUNCTION: fn_13940
 template <>
 CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x009BDB50
 // FUNCTION: fn_13941
 template <>
 CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x009BDD10
 // FUNCTION: fn_13942
 template <>
 CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x009BE5F0
@@ -2781,8 +2781,8 @@ CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::~CUIListBoxEx()
 // FUNCTION: fn_13963
 CUIButton::~CUIButton() {
   using Handler = std::function<void()>;
-  reinterpret_cast<Handler*>(this->unknown_00C8)->~Handler();
-  reinterpret_cast<Handler*>(this->unknown_00A0)->~Handler();
+  reinterpret_cast<Handler*>(this->hoverHandlerStorage)->~Handler();
+  reinterpret_cast<Handler*>(this->clickHandlerStorage)->~Handler();
 }
 
 // OFFSET: 0x009BFED0
@@ -2802,36 +2802,36 @@ namespace AdventureGuide {
 // OFFSET: 0x009D9150
 // FUNCTION: fn_14276
 __declspec(noinline) CUIItemInfo::CUIItemInfo()
-    : CUIListItem(), unknown_00E8(), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(nullptr), itemId(-1), type(21), location(-1),
-      unknown_0108() {
+    : CUIListItem(), headerControls(), descriptionViewer(nullptr), optionsViewer(nullptr), sourcesViewer(nullptr), itemId(-1), type(21), location(-1),
+      description() {
 }
 
 // OFFSET: 0x009D92D0
 // FUNCTION: fn_14278
 CUIMonsterInfo::CUIMonsterInfo()
-    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), sprite(nullptr), action(nullptr) {
+    : CUIListItem(), nameText(nullptr), detailsViewer(nullptr), valuesViewer(nullptr), sprite(nullptr), action(nullptr) {
 }
 
 // OFFSET: 0x009D9420
 // FUNCTION: fn_14280
 __declspec(noinline) CUIQuestInfo::CUIQuestInfo()
-    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr), unknown_00F8(), questId(0) {
+    : CUIListItem(), stampImage(nullptr), titleViewer(nullptr), linesViewer(nullptr), statusViewer(nullptr), title(), questId(0) {
 }
 
 // OFFSET: 0x009D94D0
 // FUNCTION: fn_14281
-CUISubTab::CUISubTab() : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), id(0), unknown_00F4(0) {
+CUISubTab::CUISubTab() : CUIListItem(), labelText(nullptr), stampImage(nullptr), id(0), questId(0) {
 }
 
 // OFFSET: 0x009D9550
 // FUNCTION: fn_14282
 CUITab::CUITab()
-    : CUIListItem(), unknown_00E8(nullptr), subTabs(nullptr), unknown_00F0(), type(7), page(nullptr), unknown_0110(0) {
+    : CUIListItem(), labelText(nullptr), subTabs(nullptr), title(), type(7), page(nullptr), collapsedHeight(0) {
 }
 
 // OFFSET: 0x009D9600
 // FUNCTION: fn_14283
-CUITabInfo::CUITabInfo() : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr) {
+CUITabInfo::CUITabInfo() : CUIListItem(), titleText(nullptr), descriptionText(nullptr) {
 }
 
 }
@@ -2864,16 +2864,16 @@ void CUIStaticText::OnMouseHover(int x, int y) {
 void CUIStaticText::UpdateText() {
   this->Tooltip().clear();
   if (this->fitText) {
-    this->unknown_0098 = this->FitDisplayText(this->geometry.width, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
-    if (this->unknown_0098 != this->text) {
+    this->displayText = this->FitDisplayText(this->geometry.width, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
+    if (this->displayText != this->text) {
       this->Tooltip() = this->text;
     }
   } else {
-    this->unknown_0098 = this->text;
+    this->displayText = this->text;
   }
 
   const SIZE size =
-    this->TextSize(this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
+    this->TextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
 
   if (this->horizontalAlign == 0) {
     this->textX = 0;
@@ -3187,23 +3187,23 @@ void CUIBasicButton::DrawLabel() {
 // FUNCTION: fn_14669
 void CUIStaticText::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  if (this->unknown_0098.size() == 0) {
+  if (this->displayText.size() == 0) {
     return;
   }
 
   if (this->shadow) {
-    this->DrawTextAt(this->textX + 1, this->textY + 1, this->unknown_0098.c_str(), 0, this->fontIndex,
+    this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
       this->fontHeight, this->shadowColor, this->bold, 0
     );
   }
   if (this->outline) {
     DrawOutlinedText(
-      *this, this->textX, this->textY + 1, this->unknown_0098.c_str(), 0, this->color, this->outlineColor, this->fontIndex, this->fontHeight, this->bold,
+      *this, this->textX, this->textY + 1, this->displayText.c_str(), 0, this->color, this->outlineColor, this->fontIndex, this->fontHeight, this->bold,
       0
     );
     return;
   }
-  this->DrawTextAt(this->textX, this->textY, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight,
+  this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
     this->color, this->bold, 0
   );
 }
@@ -3288,7 +3288,7 @@ CUITextButton::CUITextButton()
 // OFFSET: 0x009E1250
 // FUNCTION: fn_14394
 CUIBasicButton::CUIBasicButton()
-    : CUITextButton(), unknown_0190(0), defaultWidth(0), leftImages(), disabledLeft(), middleImages(), disabledMiddle(), rightImages(),
+    : CUITextButton(), enabledState(0), defaultWidth(0), leftImages(), disabledLeft(), middleImages(), disabledMiddle(), rightImages(),
       disabledRight() {
   this->textColors[0] = 0;
   this->textColors[1] = 0;
@@ -3329,7 +3329,7 @@ void CUITextViewer::OnCreate(int width, int height) {
 // OFFSET: 0x009E2D10
 // FUNCTION: fn_14408
 void CUIBasicButton::SetAutoWidth(bool enabled) {
-  this->unknown_0190 = enabled;
+  this->enabledState = enabled;
   if (enabled) {
     const int width = this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0) + 8;
     if (width > this->geometry.width) {
@@ -3417,19 +3417,19 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
 bool CUIRegisterMgr::SaveTemporary() {
   std::string data;
 
-  if (this->unknown_000C.size() != 0) {
+  if (this->windowPositions.size() != 0) {
     data += "TblPos = \r\n";
     data += "{\r\n";
-    for (const auto& position : this->unknown_000C) {
+    for (const auto& position : this->windowPositions) {
       data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.first, position.second.second);
     }
     data += "}\r\n";
   }
 
-  if (this->unknown_0014.size() != 0) {
+  if (this->windowSizes.size() != 0) {
     data += "TblSize = \r\n";
     data += "{\r\n";
-    for (const auto& size : this->unknown_0014) {
+    for (const auto& size : this->windowSizes) {
       data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.first, size.second.second);
     }
     data += "}\r\n";
@@ -3473,9 +3473,9 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
   window->SetId(key);
   window->Initialize();
 
-  if (static_cast<unsigned char>(window->unknown_00B4) != 0) {
-    auto position = this->unknown_000C.find(key);
-    if (position != this->unknown_000C.end()) {
+  if (static_cast<unsigned char>(window->ownedSkinColors) != 0) {
+    auto position = this->windowPositions.find(key);
+    if (position != this->windowPositions.end()) {
       RECT bounds{0, 0, g_renderer->viewport.width - window->geometry.width, g_renderer->viewport.height - window->geometry.height};
       POINT savedPosition{position->second.first, position->second.second};
       if (PtInRect(&bounds, savedPosition)) {
@@ -3484,9 +3484,9 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
     }
   }
 
-  if (static_cast<unsigned char>(window->unknown_00B4 >> 8) != 0) {
-    auto size = this->unknown_0014.find(key);
-    if (size != this->unknown_0014.end()) {
+  if (static_cast<unsigned char>(window->ownedSkinColors >> 8) != 0) {
+    auto size = this->windowSizes.find(key);
+    if (size != this->windowSizes.end()) {
       window->Grow(size->second.first - window->geometry.width, size->second.second - window->geometry.height);
     }
   }
@@ -3517,14 +3517,14 @@ void CUIRegisterMgr::Load() {
         int y = 0;
         script.Call("GetWindowPos", "d>bdd", entry.first, &available, &x, &y);
         if (available) {
-          this->unknown_000C[entry.first] = std::pair<int, int>(x, y);
+          this->windowPositions[entry.first] = std::pair<int, int>(x, y);
         }
 
         int width = 0;
         int height = 0;
         script.Call("GetWindowSize", "d>bdd", entry.first, &available, &width, &height);
         if (available) {
-          this->unknown_0014[entry.first] = std::pair<int, int>(width, height);
+          this->windowSizes[entry.first] = std::pair<int, int>(width, height);
         }
       }
     }
@@ -3596,7 +3596,7 @@ void CUIVScrollBar::OnCreate(int, int) {
 // OFFSET: 0x009BE1A0
 // FUNCTION: fn_13946
 CUIStaticText::CUIStaticText()
-    : CUIControl(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(false), horizontalAlign(0),
+    : CUIControl(), displayText(), tooltipStorage(), scrollBar(nullptr), tooltipTailStorage(), fitText(false), horizontalAlign(0),
       verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(false), shadowColor(0xFFFFFF), outline(false), outlineColor(0xFFFFFF), textX(0),
       textY(0), text() {
   new (&this->Tooltip()) std::string();
@@ -3655,7 +3655,7 @@ void CUIEditBox::OnCreate(int width, int height) {
   this->edit = new CUIEditCtrl();
   this->edit->SetSize(width, height);
   this->edit->invalidatesParent = 1;
-  reinterpret_cast<unsigned char*>(&this->edit->unknown_0184)[1] = 1;
+  reinterpret_cast<unsigned char*>(&this->edit->editFlags)[1] = 1;
   this->AddChild(this->edit);
 }
 
@@ -3673,7 +3673,7 @@ void CUITextViewer::AddLine(const std::string& text) {
   LineFontFlags flags{this->bold, false};
   CCreateLineInfo lineInfo(
     this, text.c_str(), availableWidth, this->lineSpacing, this->textColor, this->fontHeight, flags,
-    this->outline, this->outlineColor, this->unknown_0098, this->unknown_009C, align
+    this->outline, this->outlineColor, this->shadow, this->shadowColor, align
   );
   if (!lineInfo.m_lines.empty()) {
     this->lines.push_back(text);

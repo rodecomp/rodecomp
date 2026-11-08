@@ -75,130 +75,130 @@ __declspec(noinline) ITEM_INFO::ITEM_INFO(int) {
 
 // OFFSET: 0x005D8F90
 // FUNCTION: fn_03753
-ITEM_INFO::ITEM_INFO(const ITEM_INFO& other) : itemId(other.itemId), unknown_0044(other.unknown_0044) {
-  std::memcpy(this->unknown_0000, other.unknown_0000, sizeof(this->unknown_0000));
+ITEM_INFO::ITEM_INFO(const ITEM_INFO& other) : itemId(other.itemId), displayName(other.displayName) {
+  std::memcpy(this->identity, other.identity, sizeof(this->identity));
   this->quantity = other.quantity;
-  std::memcpy(this->unknown_0014, other.unknown_0014, sizeof(this->unknown_0014));
-  std::memcpy(this->unknown_001C, other.unknown_001C, sizeof(this->unknown_001C));
+  std::memcpy(this->prices, other.prices, sizeof(this->prices));
+  std::memcpy(this->cards, other.cards, sizeof(this->cards));
   this->identified = other.identified;
-  this->unknown_005D = other.unknown_005D;
-  this->unknown_0060 = other.unknown_0060;
-  this->unknown_0064 = other.unknown_0064;
-  this->unknown_0066 = other.unknown_0066;
-  this->unknown_0068 = other.unknown_0068;
-  this->unknown_006C = other.unknown_006C;
-  this->unknown_0070 = other.unknown_0070;
-  std::memcpy(this->unknown_0074, other.unknown_0074, sizeof(this->unknown_0074));
-  std::memcpy(this->unknown_0078, other.unknown_0078, sizeof(this->unknown_0078));
-  this->unknown_0088 = other.unknown_0088;
-  this->unknown_0090 = other.unknown_0090;
-  this->unknown_0098 = other.unknown_0098;
-  std::memcpy(this->unknown_009C, other.unknown_009C, sizeof(this->unknown_009C));
-  std::memcpy(this->unknown_00B8, other.unknown_00B8, sizeof(this->unknown_00B8));
-  this->unknown_00C0 = other.unknown_00C0;
-  std::memcpy(this->unknown_00C1, other.unknown_00C1, sizeof(this->unknown_00C1));
-  std::memcpy(this->unknown_00D9, other.unknown_00D9, sizeof(this->unknown_00D9));
+  this->damaged = other.damaged;
+  this->refiningLevel = other.refiningLevel;
+  this->bindOnEquip = other.bindOnEquip;
+  this->durationInHours = other.durationInHours;
+  this->expireTime = other.expireTime;
+  this->priceFactor = other.priceFactor;
+  this->sprite = other.sprite;
+  std::memcpy(this->flags, other.flags, sizeof(this->flags));
+  std::memcpy(this->saleData, other.saleData, sizeof(this->saleData));
+  this->grade = other.grade;
+  this->productId = other.productId;
+  this->optionCount = other.optionCount;
+  std::memcpy(this->options, other.options, sizeof(this->options));
+  std::memcpy(this->recordIds, other.recordIds, sizeof(this->recordIds));
+  this->recordType = other.recordType;
+  std::memcpy(this->recordName, other.recordName, sizeof(this->recordName));
+  std::memcpy(this->recordDate, other.recordDate, sizeof(this->recordDate));
 }
 
 // OFFSET: 0x006D52B0
 // FUNCTION: fn_06569
 __declspec(noinline) ITEM_INFO& ITEM_INFO::operator=(const ITEM_INFO& other) {
   for (int index = 0; index < 4; ++index) {
-    this->unknown_0000[index] = other.unknown_0000[index];
+    this->identity[index] = other.identity[index];
   }
   this->quantity = other.quantity;
-  this->unknown_0014[0] = other.unknown_0014[0];
-  this->unknown_0014[1] = other.unknown_0014[1];
-  memcpy_s(this->unknown_001C, sizeof(this->unknown_001C), other.unknown_001C, sizeof(other.unknown_001C));
+  this->prices[0] = other.prices[0];
+  this->prices[1] = other.prices[1];
+  memcpy_s(this->cards, sizeof(this->cards), other.cards, sizeof(other.cards));
   this->itemId = other.itemId;
-  this->unknown_0044 = other.unknown_0044;
+  this->displayName = other.displayName;
   this->identified = other.identified;
-  this->unknown_005D = other.unknown_005D;
-  this->unknown_0060 = other.unknown_0060;
-  this->unknown_0064 = other.unknown_0064;
-  this->unknown_0066 = other.unknown_0066;
-  this->unknown_0068 = other.unknown_0068;
-  this->unknown_006C = other.unknown_006C;
-  this->unknown_0070 = other.unknown_0070;
-  this->unknown_0074[0] = other.unknown_0074[0];
-  this->unknown_0074[1] = other.unknown_0074[1];
-  this->unknown_0074[2] = other.unknown_0074[2];
-  this->unknown_0098 = other.unknown_0098;
-  memcpy_s(this->unknown_009C, sizeof(this->unknown_009C), other.unknown_009C, sizeof(other.unknown_009C));
-  this->unknown_0074[3] = other.unknown_0074[3];
-  this->unknown_0078[0] = other.unknown_0078[0];
-  this->unknown_0078[3] = other.unknown_0078[3];
-  this->unknown_0078[1] = other.unknown_0078[1];
-  this->unknown_0078[2] = other.unknown_0078[2];
-  this->unknown_0088 = other.unknown_0088;
-  this->unknown_0090 = other.unknown_0090;
+  this->damaged = other.damaged;
+  this->refiningLevel = other.refiningLevel;
+  this->bindOnEquip = other.bindOnEquip;
+  this->durationInHours = other.durationInHours;
+  this->expireTime = other.expireTime;
+  this->priceFactor = other.priceFactor;
+  this->sprite = other.sprite;
+  this->flags[0] = other.flags[0];
+  this->flags[1] = other.flags[1];
+  this->flags[2] = other.flags[2];
+  this->optionCount = other.optionCount;
+  memcpy_s(this->options, sizeof(this->options), other.options, sizeof(other.options));
+  this->flags[3] = other.flags[3];
+  this->saleData[0] = other.saleData[0];
+  this->saleData[3] = other.saleData[3];
+  this->saleData[1] = other.saleData[1];
+  this->saleData[2] = other.saleData[2];
+  this->grade = other.grade;
+  this->productId = other.productId;
   return *this;
 }
 
 // OFFSET: 0x006D5550
 // FUNCTION: fn_06573
 std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
-  this->unknown_0000[0] = item.unknown_0018;
-  this->unknown_0000[1] = item.unknown_0004;
+  this->identity[0] = item.type;
+  this->identity[1] = item.index;
   this->quantity = item.quantity;
-  this->unknown_0014[0] = item.unknown_0008;
-  this->unknown_0014[1] = item.unknown_000C;
+  this->prices[0] = item.price;
+  this->prices[1] = item.realPrice;
 
   for (int index = 0; index < 4; ++index) {
-    std::memcpy(this->unknown_001C + index * 4, &item.cards[index], sizeof(item.cards[index]));
+    std::memcpy(this->cards + index * 4, &item.cards[index], sizeof(item.cards[index]));
   }
 
   this->itemId = item.itemId;
 
   this->identified = item.identified;
-  this->unknown_0060 = item.unknown_001C;
+  this->refiningLevel = item.refiningLevel;
 
-  this->unknown_0098 = item.optionCount > 5 ? 0 : item.optionCount;
+  this->optionCount = item.optionCount > 5 ? 0 : item.optionCount;
 
-  for (int index = 0; index < this->unknown_0098; ++index) {
-    std::memcpy(this->unknown_009C + index * 5, item.options + index * 5, 5);
+  for (int index = 0; index < this->optionCount; ++index) {
+    std::memcpy(this->options + index * 5, item.options + index * 5, 5);
   }
 
-  this->unknown_0088 = item.unknown_00AC;
-  this->unknown_0074[3] = item.unknown_00AE;
-  this->unknown_0000[2] = item.unknown_00B0;
-  this->unknown_0070 = item.unknown_00B8;
+  this->grade = item.grade;
+  this->flags[3] = item.hasIndex;
+  this->identity[2] = item.location;
+  this->sprite = item.sprite;
 
-  return this->unknown_0070;
+  return this->sprite;
 }
 
 // OFFSET: 0x006D8A90
 // FUNCTION: fn_06606
 void ITEM_INFO::Reset() {
   for (int index = 0; index < 4; ++index) {
-    this->unknown_0000[index] = 0;
+    this->identity[index] = 0;
   }
   this->quantity = 0;
   for (int index = 0; index < 2; ++index) {
-    this->unknown_0014[index] = 0;
+    this->prices[index] = 0;
   }
-  std::memset(this->unknown_001C, 0, sizeof(this->unknown_001C));
+  std::memset(this->cards, 0, sizeof(this->cards));
   this->itemId = "";
-  this->unknown_0044 = "";
-  this->identified = this->unknown_005D = 0;
-  this->unknown_0060 = 0;
-  this->unknown_0064 = 0;
-  this->unknown_0066 = 0;
-  this->unknown_0068 = 0;
-  this->unknown_006C = 0;
-  this->unknown_0070 = 0;
-  this->unknown_0098 = 0;
+  this->displayName = "";
+  this->identified = this->damaged = 0;
+  this->refiningLevel = 0;
+  this->bindOnEquip = 0;
+  this->durationInHours = 0;
+  this->expireTime = 0;
+  this->priceFactor = 0;
+  this->sprite = 0;
+  this->optionCount = 0;
   for (int index = 0; index < 25; ++index) {
-    this->unknown_009C[index] = 0;
+    this->options[index] = 0;
   }
   for (int index = 0; index < 4; ++index) {
-    this->unknown_0074[index] = 0;
+    this->flags[index] = 0;
   }
   for (int index = 0; index < 4; ++index) {
-    this->unknown_0078[index] = 0;
+    this->saleData[index] = 0;
   }
-  this->unknown_0088 = 0;
-  this->unknown_0090 = 0;
+  this->grade = 0;
+  this->productId = 0;
 }
 
 // OFFSET: 0x00DDD4E0
@@ -226,7 +226,7 @@ ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::ui
 
   auto it = values.begin();
   for (; it != values.end(); ++it) {
-    if (it->unknown_0000[1] == id) {
+    if (it->identity[1] == id) {
       break;
     }
   }
@@ -237,22 +237,22 @@ ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::ui
 // OFFSET: 0x006D5450
 // FUNCTION: fn_06570
 ITEM_INFO& ITEM_INFO::AssignBasic(const RawItemBasic& item) {
-  this->unknown_0000[1] = item.id;
-  this->unknown_0014[0] = item.unknown_0004;
-  this->unknown_0014[1] = item.unknown_0008;
-  this->unknown_0000[0] = item.unknown_000C;
+  this->identity[1] = item.id;
+  this->prices[0] = item.price;
+  this->prices[1] = item.realPrice;
+  this->identity[0] = item.type;
   this->identified = item.identified;
   this->itemId = item.itemId;
-  this->unknown_0070 = item.unknown_0038;
-  this->unknown_0000[2] = item.unknown_0034;
-  this->unknown_0074[3] = item.id != -1;
+  this->sprite = item.sprite;
+  this->identity[2] = item.location;
+  this->flags[3] = item.id != -1;
   return *this;
 }
 
 // OFFSET: 0x006D54C0
 // FUNCTION: fn_06571
 bool ITEM_INFO::operator<(const ITEM_INFO& other) const {
-  return this->unknown_0044 < other.unknown_0044;
+  return this->displayName < other.displayName;
 }
 
 // OFFSET: 0x006D8B60
@@ -304,8 +304,8 @@ bool MatchItemName(std::string name, std::string query, unsigned char partial, s
 // OFFSET: 0x006D8FE0
 // FUNCTION: fn_06609
 bool ITEM_INFO::SetName(const char* name) {
-  this->unknown_0044 = name;
-  return this->unknown_0044.empty();
+  this->displayName = name;
+  return this->displayName.empty();
 }
 
 // OFFSET: 0x006D9010
@@ -337,19 +337,19 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
     case 282:
       return offset;
     case 283:
-      std::memcpy(&this->unknown_0000[0], source, header.bytes);
+      std::memcpy(&this->identity[0], source, header.bytes);
       offset += header.bytes;
       break;
     case 284:
-      std::memcpy(&this->unknown_0000[2], source, header.bytes);
+      std::memcpy(&this->identity[2], source, header.bytes);
       offset += header.bytes;
       break;
     case 285:
-      std::memcpy(&this->unknown_0000[1], source, header.bytes);
+      std::memcpy(&this->identity[1], source, header.bytes);
       offset += header.bytes;
       break;
     case 286:
-      std::memcpy(&this->unknown_0000[3], source, header.bytes);
+      std::memcpy(&this->identity[3], source, header.bytes);
       offset += header.bytes;
       break;
     case 287:
@@ -357,15 +357,15 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       offset += header.bytes;
       break;
     case 288:
-      std::memcpy(&this->unknown_0014[0], source, header.bytes);
+      std::memcpy(&this->prices[0], source, header.bytes);
       offset += header.bytes;
       break;
     case 289:
-      std::memcpy(&this->unknown_0014[1], source, header.bytes);
+      std::memcpy(&this->prices[1], source, header.bytes);
       offset += header.bytes;
       break;
     case 290:
-      std::memcpy(this->unknown_001C, source, header.bytes);
+      std::memcpy(this->cards, source, header.bytes);
       offset += header.bytes;
       break;
     case 291: {
@@ -381,7 +381,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       std::memset(buffer, 0, sizeof(buffer));
       std::memcpy(buffer, data.data() + offset, header.bytes);
       offset += header.bytes;
-      this->unknown_0044 = buffer;
+      this->displayName = buffer;
       break;
     }
     case 293:
@@ -389,35 +389,35 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       offset += header.bytes;
       break;
     case 294:
-      std::memcpy(&this->unknown_005D, source, header.bytes);
+      std::memcpy(&this->damaged, source, header.bytes);
       offset += header.bytes;
       break;
     case 295:
-      std::memcpy(&this->unknown_0060, source, header.bytes);
+      std::memcpy(&this->refiningLevel, source, header.bytes);
       offset += header.bytes;
       break;
     case 296:
-      std::memcpy(&this->unknown_0064, source, header.bytes);
+      std::memcpy(&this->bindOnEquip, source, header.bytes);
       offset += header.bytes;
       break;
     case 297:
-      std::memcpy(&this->unknown_0068, source, header.bytes);
+      std::memcpy(&this->expireTime, source, header.bytes);
       offset += header.bytes;
       break;
     case 298:
-      std::memcpy(&this->unknown_0070, source, header.bytes);
+      std::memcpy(&this->sprite, source, header.bytes);
       offset += header.bytes;
       break;
     case 299:
-      std::memcpy(&this->unknown_0088, source, header.bytes);
+      std::memcpy(&this->grade, source, header.bytes);
       offset += header.bytes;
       break;
     case 300:
-      std::memcpy(&this->unknown_0098, source, header.bytes);
+      std::memcpy(&this->optionCount, source, header.bytes);
       offset += header.bytes;
       break;
     case 301:
-      std::memcpy(this->unknown_009C, source, header.bytes);
+      std::memcpy(this->options, source, header.bytes);
       offset += header.bytes;
       break;
     default:
@@ -432,10 +432,10 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 // OFFSET: 0x00DFB9D0
 // FUNCTION: fn_23584
 bool CSession::HasRequiredItems() const {
-  for (auto it = this->unknown_1730.begin(); it != this->unknown_1730.end(); ++it) {
+  for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
     const ITEM_INFO& required = *it;
-    const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, required.unknown_0000[1]);
-    if (owned.unknown_0000[1] <= 0 || owned.quantity < required.quantity) {
+    const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, required.identity[1]);
+    if (owned.identity[1] <= 0 || owned.quantity < required.quantity) {
       return false;
     }
   }
@@ -446,12 +446,12 @@ bool CSession::HasRequiredItems() const {
 // OFFSET: 0x00DFBD90
 // FUNCTION: fn_23588
 bool CSession::IsSlotItemIdentity(std::uint32_t id) const {
-  if (id != 0 && id == this->unknown_16EC) {
+  if (id != 0 && id == this->equippedArrowIndex) {
     return true;
   }
 
   for (int index = 0; index < 10; ++index) {
-    if (this->unknown_17F0[index].quantity == 1 && this->unknown_17F0[index].unknown_0000[1] == id) {
+    if (this->equippedItems[index].quantity == 1 && this->equippedItems[index].identity[1] == id) {
       return true;
     }
   }
@@ -463,7 +463,7 @@ bool CSession::IsSlotItemIdentity(std::uint32_t id) const {
 // FUNCTION: fn_23589
 bool CSession::HasInventoryItem(std::uint32_t id) const {
   for (const ITEM_INFO& value : this->m_inventoryItems) {
-    if (value.unknown_0000[1] == id) {
+    if (value.identity[1] == id) {
       return true;
     }
   }
@@ -474,13 +474,13 @@ bool CSession::HasInventoryItem(std::uint32_t id) const {
 // OFFSET: 0x00DFBE40
 // FUNCTION: fn_23591
 bool CSession::HasItemId(int itemId) const {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_16EC);
-  if (owned.unknown_0000[1] > 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
+  if (owned.identity[1] > 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }
 
   for (int index = 0; index < 10; ++index) {
-    if (std::atoi(this->unknown_17F0[index].itemId.c_str()) == itemId || std::atoi(this->unknown_2B50[index].itemId.c_str()) == itemId) {
+    if (std::atoi(this->equippedItems[index].itemId.c_str()) == itemId || std::atoi(this->costumeItems[index].itemId.c_str()) == itemId) {
       return true;
     }
   }
@@ -491,16 +491,16 @@ bool CSession::HasItemId(int itemId) const {
 // OFFSET: 0x00DFBF70
 // FUNCTION: fn_23592
 bool CSession::HasItemCount(int itemId, int count) const {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_16EC);
-  if (owned.unknown_0000[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
+  if (owned.identity[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }
 
   for (int index = 0; index < 10; ++index) {
-    if (std::atoi(this->unknown_17F0[index].itemId.c_str()) == itemId && this->unknown_17F0[index].unknown_0060 >= count) {
+    if (std::atoi(this->equippedItems[index].itemId.c_str()) == itemId && this->equippedItems[index].refiningLevel >= count) {
       return true;
     }
-    if (std::atoi(this->unknown_2B50[index].itemId.c_str()) == itemId && this->unknown_2B50[index].unknown_0060 >= count) {
+    if (std::atoi(this->costumeItems[index].itemId.c_str()) == itemId && this->costumeItems[index].refiningLevel >= count) {
       return true;
     }
   }
@@ -512,7 +512,7 @@ bool CSession::HasItemCount(int itemId, int count) const {
 // FUNCTION: fn_06600
 bool ITEM_INFO::HasSpecialCard() const {
   std::uint32_t card;
-  std::memcpy(&card, this->unknown_001C, sizeof(card));
+  std::memcpy(&card, this->cards, sizeof(card));
   return card == 254 || card == 255;
 }
 
@@ -571,9 +571,9 @@ int ITEM_INFO::GetItemId() const {
 // FUNCTION: fn_06611
 void ITEM_INFO::SetOption(ItemOption option, const int& index) {
   if (index < 5) {
-    std::memcpy(this->unknown_009C + index * 5, &option.id, sizeof(option.id));
-    this->unknown_009C[index * 5 + 4] = option.parameter;
-    std::memcpy(this->unknown_009C + index * 5 + 2, &option.value, sizeof(option.value));
+    std::memcpy(this->options + index * 5, &option.id, sizeof(option.id));
+    this->options[index * 5 + 4] = option.parameter;
+    std::memcpy(this->options + index * 5 + 2, &option.value, sizeof(option.value));
   }
 }
 
@@ -581,7 +581,7 @@ void ITEM_INFO::SetOption(ItemOption option, const int& index) {
 // FUNCTION: fn_06613
 void ITEM_INFO::SetCard(const int& card, const int& index) {
   if (index < 4) {
-    std::memcpy(this->unknown_001C + index * 4, &card, sizeof(card));
+    std::memcpy(this->cards + index * 4, &card, sizeof(card));
   }
 }
 
@@ -691,23 +691,23 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 // OFFSET: 0x00DDA740
 // FUNCTION: fn_23342
 bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->merchantMyShopItems.begin(); it != this->merchantMyShopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       if (type == 0) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->unknown_1750.erase(it);
+          this->merchantMyShopItems.erase(it);
         }
       } else {
-        this->unknown_1750.erase(it);
+        this->merchantMyShopItems.erase(it);
       }
 
       if (refresh == 1) {
         std::uint32_t window;
         if (type == 1) {
-          window = g_windowMgr.unknown_0410;
+          window = g_windowMgr.buyingShopMirrorItemWnd;
         } else {
-          window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+          window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
         }
 
         if (window) {
@@ -721,9 +721,9 @@ bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char ref
   if (refresh == 1) {
     std::uint32_t window;
     if (type == 1) {
-      window = g_windowMgr.unknown_0410;
+      window = g_windowMgr.buyingShopMirrorItemWnd;
     } else {
-      window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+      window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
     }
 
     if (window) {
@@ -736,13 +736,13 @@ bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char ref
 // OFFSET: 0x00DDAB30
 // FUNCTION: fn_23348
 void CSession::RemoveItem1720(const ITEM_INFO& item) {
-  const bool hasFlag = item.unknown_0074[3] != 0;
-  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
-    const bool same = hasFlag ? it->unknown_0000[1] == item.unknown_0000[1] : it->itemId == item.itemId;
+  const bool hasFlag = item.flags[3] != 0;
+  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+    const bool same = hasFlag ? it->identity[1] == item.identity[1] : it->itemId == item.itemId;
     if (same) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->unknown_1720.erase(it);
+        this->purchaseItems.erase(it);
       }
       return;
     }

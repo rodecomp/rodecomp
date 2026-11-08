@@ -6,14 +6,14 @@
 // OFFSET: 0x00A918B0
 // FUNCTION: fn_17166
 RECT UIWindowMgr::GetMiniPartyUsableArea() {
-  const int height = this->unknown_0480;
+  const int height = this->screenHeight;
   int top = static_cast<int>(height * 0.3f);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
     top = window->geometry.height;
   }
 
   RECT area;
-  area.right = this->unknown_047C;
+  area.right = this->screenWidth;
   area.top = top;
   area.left = 0;
   area.bottom = height - g_miniPartyCellHeight * 3;

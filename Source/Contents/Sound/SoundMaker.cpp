@@ -50,7 +50,7 @@ CCorpse::CCorpse() {
   this->render.visible = 1;
   this->render.isLieOnGround = true;
   this->spriteOffset = 0.0f;
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00DA0DE0
@@ -70,86 +70,86 @@ CGndRiser::CGndRiser() {
 // FUNCTION: fn_22356
 CHalluNPC::CHalluNPC(CGameActor* source) {
   this->render.visible = 1;
-  this->render.unknown_00A4Bytes[0] = 0;
-  this->render.unknown_008C = timeGetTime();
-  this->SetUnknown0260(source->unknown_0260);
+  this->render.visibilityOptions[0] = 0;
+  this->render.motionStartTime = timeGetTime();
+  this->SetUnknown0260(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
-  this->unknown_02CC = source->unknown_02CC;
+  this->isRiding = source->isRiding;
   this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
-  this->render.unknown_005C = source->render.unknown_005C;
-  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.distanceScale = source->render.distanceScale;
+  this->render.spriteOffsetX = source->render.spriteOffsetX;
   this->render.scale = source->render.scale;
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
   this->SetActionName(ResourceMgr::Instance(), source->GetActName());
-  this->render.unknown_00A2 = source->render.unknown_00A2;
-  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.flatDepth = source->render.flatDepth;
+  this->render.depthLayer = source->render.depthLayer;
   this->render.isLieOnGround = source->render.isLieOnGround;
   this->render.isSingleColor = source->render.isSingleColor;
-  this->render.unknown_007C = source->render.unknown_007C;
-  this->render.unknown_0048 = 0;
+  this->render.spriteAngle = source->render.spriteAngle;
+  this->render.bodyPalette = 0;
   this->stateFlags = source->GetStateFlags();
-  this->SetSprAct(source->GetEffectiveJob(-1), source->unknown_0260, 0);
+  this->SetSprAct(source->GetEffectiveJob(-1), source->sex, 0);
   this->guildId = source->GetGdid();
   this->render.accountId = 0;
-  this->unknown_0440 = 0.0f;
-  this->unknown_0454 = 0;
-  this->unknown_0444 = 0x10000000;
-  this->unknown_03E1 = true;
+  this->hallucinationOffset = 0.0f;
+  this->processCount = 0;
+  this->fadeStep = 0x10000000;
+  this->modelReady = true;
 }
 
 // OFFSET: 0x00DA1AF0
 // FUNCTION: fn_22359
 CHalluPlant::CHalluPlant() {
   this->render.visible = 1;
-  this->render.unknown_00A4Bytes[0] = 0;
-  this->render.unknown_008C = timeGetTime();
+  this->render.visibilityOptions[0] = 0;
+  this->render.motionStartTime = timeGetTime();
   this->SetUnknown0260(0);
   this->SetActorJob(1079);
-  this->unknown_02CC = 0;
+  this->isRiding = 0;
   this->SetUnknown03C4(-1);
   this->render.position.x = 0.0f;
   this->render.position.y = 0.0f;
   this->render.position.z = 0.0f;
-  this->render.unknown_005C = 1.0f;
-  this->render.unknown_0078 = 0;
+  this->render.distanceScale = 1.0f;
+  this->render.spriteOffsetX = 0;
   this->render.scale = 1.0f;
   this->render.animation = 0;
   this->render.previousAnimation = 4;
   this->render.curMotion = 0;
   this->SetActionName("sprite\\몬스터\\blue_plant.act");
-  this->render.unknown_00A2 = 0;
-  this->render.unknown_0080 = 0;
+  this->render.flatDepth = 0;
+  this->render.depthLayer = 0;
   this->render.isLieOnGround = false;
   this->render.isSingleColor = false;
-  this->render.unknown_007C = 0;
-  this->render.unknown_0048 = 0;
+  this->render.spriteAngle = 0;
+  this->render.bodyPalette = 0;
   this->stateFlags = 0;
-  this->SetSprAct(this->GetEffectiveJob(-1), this->unknown_0260, 0);
+  this->SetSprAct(this->GetEffectiveJob(-1), this->sex, 0);
   this->guildId = 0;
   this->render.accountId = 0;
-  this->unknown_0440 = 0;
-  this->unknown_03E1 = true;
+  this->processCount = 0;
+  this->modelReady = true;
 }
 
 // OFFSET: 0x00DA1CB0
 // FUNCTION: fn_22360
 CMasterChaser::CMasterChaser() {
-  this->unknown_0138 = 0;
+  this->chaseState = 0;
 }
 
 // OFFSET: 0x00DA1D10
 // FUNCTION: fn_22361
 CNpc::CNpc() {
-  this->unknown_042C = nullptr;
-  this->unknown_0430 = nullptr;
-  this->unknown_0420 = 0;
-  this->unknown_0424 = timeGetTime();
-  this->unknown_0428 = 0;
-  this->unknown_0434 = nullptr;
-  this->unknown_0438 = 9999;
+  this->playerGaugeWindow = nullptr;
+  this->pcGaugeWindow = nullptr;
+  this->npcState = 0;
+  this->effectTick = timeGetTime();
+  this->appearanceInitialized = 0;
+  this->attachedEffect = nullptr;
+  this->attachedEffectId = 9999;
 }
 
 // OFFSET: 0x00DA1DB0
@@ -158,7 +158,7 @@ CNumEffect::CNumEffect() {
   this->SetSpriteName("이팩트\\숫자.spr");
   this->SetActionName("이팩트\\숫자.act");
   this->render.animation = 0;
-  this->render.unknown_00A2 = 1;
+  this->render.flatDepth = 1;
 }
 
 // OFFSET: 0x00DA1E30
@@ -176,14 +176,14 @@ CSoundMaker::CSoundMaker() {
 // OFFSET: 0x00DA2220
 // FUNCTION: fn_22364
 CNpc::~CNpc() {
-  if (this->unknown_042C) {
-    g_windowMgr.Schedule(this->unknown_042C);
-    this->unknown_042C = nullptr;
+  if (this->playerGaugeWindow) {
+    g_windowMgr.Schedule(this->playerGaugeWindow);
+    this->playerGaugeWindow = nullptr;
   }
 
-  if (this->unknown_0430) {
-    g_windowMgr.Schedule(this->unknown_0430);
-    this->unknown_0430 = nullptr;
+  if (this->pcGaugeWindow) {
+    g_windowMgr.Schedule(this->pcGaugeWindow);
+    this->pcGaugeWindow = nullptr;
   }
 }
 
@@ -210,13 +210,13 @@ CNumEffect::~CNumEffect() = default;
 // OFFSET: 0x00DA3340
 // FUNCTION: fn_22403
 bool CHalluPlant::OnProcess() {
-  return ++this->unknown_0440 <= 60;
+  return ++this->processCount <= 60;
 }
 
 // OFFSET: 0x00DA3980
 // FUNCTION: fn_22405
 bool CNumEffect::OnProcess() {
-  const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float elapsed = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.previousAnimation = this->render.animation;
   this->render.position.y = this->baseHeight - elapsed * 0.18f;
   this->SetColor(static_cast<int>(255.0f - (elapsed + elapsed)), -1, -1, -1);
@@ -290,14 +290,14 @@ bool CSoundMaker::OnProcess() {
 // OFFSET: 0x00DA2AF0
 // FUNCTION: fn_22378
 int CPc::GetBodyCostume() {
-  return this->unknown_04D0;
+  return this->bodyStyle;
 }
 
 // OFFSET: 0x00DA2B00
 // FUNCTION: fn_22379
 float* CPc::GetExtent(float* extent) const {
-  extent[0] = this->unknown_04EC - this->unknown_04E4;
-  extent[1] = this->unknown_04F0 - this->unknown_04E8;
+  extent[0] = this->extentRight - this->extentLeft;
+  extent[1] = this->extentBottom - this->extentTop;
   return extent;
 }
 
@@ -313,8 +313,8 @@ bool CBlurPC::OnProcess() {
     }
   }
 
-  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_04FC)) {
-    this->render.color -= this->unknown_04FC;
+  if (this->render.color >= static_cast<std::uint32_t>(this->destCellZ)) {
+    this->render.color -= this->destCellZ;
     return true;
   }
 
@@ -333,9 +333,9 @@ bool CHalluPC2::OnProcess() {
     }
   }
 
-  ++this->unknown_050C;
-  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_04FC)) {
-    this->render.color -= this->unknown_04FC;
+  ++this->preMoveOn;
+  if (this->render.color >= static_cast<std::uint32_t>(this->destCellZ)) {
+    this->render.color -= this->destCellZ;
     return true;
   }
 
@@ -360,19 +360,19 @@ void CHalluPlant::Render(int argument) {
 // OFFSET: 0x00DA2B40
 // FUNCTION: fn_22380
 bool CPc::IsArrowEffectSuppressed() {
-  return this->unknown_04E0;
+  return this->arrowEffectSuppressed;
 }
 
 // OFFSET: 0x00DA2B50
 // FUNCTION: fn_22381
 int CPc::GetMadogearType() {
-  return this->unknown_04DC;
+  return this->madogearType;
 }
 
 // OFFSET: 0x00DA2B60
 // FUNCTION: fn_22382
 int CPc::GetPkState() {
-  return this->unknown_04CC;
+  return this->pkState;
 }
 
 // OFFSET: 0x00DA2B70
@@ -439,7 +439,7 @@ void Nullsub502() {
 // OFFSET: 0x00DA2E00
 // FUNCTION: fn_22395
 void CMasterChaser::ClearUnknown0138() {
-  this->unknown_0138 = 0;
+  this->chaseState = 0;
 }
 
 // OFFSET: 0x00DA3F50
@@ -479,13 +479,13 @@ void CNpc::UnRegisterPos() {
 // OFFSET: 0x00DA5800
 // FUNCTION: fn_22429
 void CPc::SetArrowEffectSuppressed(bool value) {
-  this->unknown_04E0 = value;
+  this->arrowEffectSuppressed = value;
 }
 
 // OFFSET: 0x00DA5810
 // FUNCTION: fn_22430
 void CPc::SetMadogearType(int value) {
-  this->unknown_04DC = value;
+  this->madogearType = value;
 }
 
 // OFFSET: 0x00DA4150
@@ -496,7 +496,7 @@ void CGndRiser::Render(int) {
 // OFFSET: 0x00DA30B0
 // FUNCTION: fn_22399
 bool CGndRiser::OnProcess() {
-  const float frame = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
   if (frame > static_cast<float>(this->lifetime)) {
     return false;
   }
@@ -540,7 +540,7 @@ void CBlowEffect::SendMsg(
   this->render.position.z = position[2];
   this->render.visible = 1;
   this->render.color = (d | e) ? 0xFFFF0000u : 0xFFFFFFFFu;
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00DA4A00
@@ -552,14 +552,14 @@ void CBlurPC::SendMsg(
     switch (message) {
       case BM_RGB:
         this->SetColor(180, b, d, f);
-        this->unknown_04FC = 0x8000000;
+        this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
-        this->unknown_04FC = d << 24;
+        this->destCellZ = d << 24;
         return;
       case BM_MOTIONY:
-        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        this->destCellX = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -589,7 +589,7 @@ void CGndRiser::SendMsg(
     this->render.position.y = position[1];
     this->render.position.z = position[2];
     this->render.visible = 0;
-    this->render.unknown_008C = timeGetTime();
+    this->render.motionStartTime = timeGetTime();
     this->lifetime = 30;
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -613,14 +613,14 @@ void CHalluNPC::SendMsg(
     switch (message) {
       case BM_RGB:
         this->SetColor(180, b, d, f);
-        this->unknown_0444 = 0x8000000;
+        this->fadeStep = 0x8000000;
         return;
       case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
-        this->unknown_0444 = d << 24;
+        this->fadeStep = d << 24;
         return;
       case BM_MOTIONY:
-        this->unknown_0440 = *reinterpret_cast<const float*>(&b);
+        this->hallucinationOffset = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -640,14 +640,14 @@ void CHalluPC2::SendMsg(
     switch (message) {
       case BM_RGB:
         this->SetColor(180, 255, 55, 55);
-        this->unknown_04FC = 0x8000000;
+        this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
-        this->unknown_04FC = d << 24;
+        this->destCellZ = d << 24;
         return;
       case BM_MOTIONY:
-        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        this->destCellX = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -667,14 +667,14 @@ void CHalluPC::SendMsg(
     switch (message) {
       case BM_RGB:
         this->SetColor(180, b, d, f);
-        this->unknown_04FC = 0x8000000;
+        this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
         this->render.color &= (b << 24) + 0xFFFFFF;
-        this->unknown_04FC = d << 24;
+        this->destCellZ = d << 24;
         return;
       case BM_MOTIONY:
-        this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+        this->destCellX = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -715,7 +715,7 @@ struct NpcAppearInfo {
   /* 0060 */ int guildId;
   /* 0064 */ int guildVersion;
   /* 0068 */ int unknown_0068[3];
-  /* 0074 */ int unknown_0074;
+  /* 0074 */ int ownerId;
 };
 
 // OFFSET: 0x00DA4EF0
@@ -726,13 +726,13 @@ void CNpc::SendMsg(
   if (message == 4 && a == 0) {
     CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     const NpcAppearInfo* info = reinterpret_cast<const NpcAppearInfo*>(b);
-    switch (this->unknown_0314) {
+    switch (this->objectType) {
       case 8:
       case 9:
       case 10:
       case 13:
       case 14:
-        this->unknown_02EC = info->unknown_0074;
+        this->emblemVersion = info->ownerId;
         break;
     }
     this->render.visible = IsVisibleJob(info->job);
@@ -742,105 +742,105 @@ void CNpc::SendMsg(
 
   if (message == AM_UPDATEGAGE && a == 0) {
     if (g_session.IsCompanionAid(this->render.accountId)) {
-      if (this->unknown_042C == nullptr) {
-        this->unknown_042C = new UIPlayerGage();
-        switch (this->unknown_0314) {
+      if (this->playerGaugeWindow == nullptr) {
+        this->playerGaugeWindow = new UIPlayerGage();
+        switch (this->objectType) {
           case 8: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunHp); },
-              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.unknown_55C8)); }
+              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.homunMaxHp)); }
             );
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunSp); },
-              [] { return static_cast<std::int64_t>(g_session.unknown_55D0); }
+              [] { return static_cast<std::int64_t>(g_session.homunMaxSp); }
             );
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetThirdValues(
-              [] { return static_cast<std::int64_t>(g_session.unknown_55F0); },
-              [] { return static_cast<std::int64_t>(g_session.unknown_55F4); }
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetThirdValues(
+              [] { return static_cast<std::int64_t>(g_session.homunHunger); },
+              [] { return static_cast<std::int64_t>(g_session.homunMaxHunger); }
             );
-            this->unknown_042C->SetSize(60, 13);
-            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 8;
+            this->playerGaugeWindow->SetSize(60, 13);
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 8;
             break;
           }
           case 7: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetThirdValues(
-              [] { return static_cast<std::int64_t>(g_session.unknown_1044); },
-              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.unknown_1048)); }
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetThirdValues(
+              [] { return static_cast<std::int64_t>(g_session.petHunger); },
+              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.petMaxHunger)); }
             );
-            this->unknown_042C->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 7;
+            this->playerGaugeWindow->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 7;
             break;
           }
           case 9: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryHp); },
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxHp); }
             );
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.m_mercenarySp); },
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxSp); }
             );
-            this->unknown_042C->SetSize(60, 9);
+            this->playerGaugeWindow->SetSize(60, 9);
             break;
           }
           case 10: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
-              [] { return static_cast<std::int64_t>(g_session.unknown_5BC4); },
-              [] { return static_cast<std::int64_t>(g_session.unknown_5BCC); }
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+              [] { return static_cast<std::int64_t>(g_session.elementalHp); },
+              [] { return static_cast<std::int64_t>(g_session.elementalMaxHp); }
             );
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetSecondValues(
-              [] { return static_cast<std::int64_t>(g_session.unknown_5BC8); },
-              [] { return static_cast<std::int64_t>(g_session.unknown_5BD0); }
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
+              [] { return static_cast<std::int64_t>(g_session.elementalSp); },
+              [] { return static_cast<std::int64_t>(g_session.elementalMaxSp); }
             );
-            this->unknown_042C->SetSize(60, 9);
+            this->playerGaugeWindow->SetSize(60, 9);
             break;
           }
           case 13: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
               [this] { return g_session.FindUnknown0784(this->render.accountId); },
               [this] { return g_session.FindUnknown078C(this->render.accountId); }
             );
-            this->unknown_042C->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 13;
+            this->playerGaugeWindow->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 13;
             break;
           }
           case 14: {
-            static_cast<UIPlayerGage*>(this->unknown_042C)->SetFirstValues(
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
               [this] { return g_session.FindUnknown0784(this->render.accountId); },
               [this] { return g_session.FindUnknown078C(this->render.accountId); }
             );
-            this->unknown_042C->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->unknown_042C)->unknown_009C = 14;
+            this->playerGaugeWindow->SetSize(60, 5);
+            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 14;
             break;
           }
         }
-        g_windowMgr.AddRenderedFront(this->unknown_042C);
-        if (this->unknown_042C == nullptr) {
+        g_windowMgr.AddRenderedFront(this->playerGaugeWindow);
+        if (this->playerGaugeWindow == nullptr) {
           return;
         }
       }
-      this->unknown_042C->Move(
+      this->playerGaugeWindow->Move(
         this->render.screenX - 30, this->render.screenY + g_renderer->viewport.height * 12 / 480
       );
       return;
     }
 
-    if (this->unknown_0314 == 13 || this->unknown_0314 == 14) {
+    if (this->objectType == 13 || this->objectType == 14) {
       return;
     }
 
-    if (this->unknown_0430 == nullptr) {
-      this->unknown_0430 = new UIPcGage();
-      this->unknown_0430->SetSize(60, 5);
-      g_windowMgr.AddRenderedFront(this->unknown_0430);
-      if (this->unknown_0430 == nullptr) {
+    if (this->pcGaugeWindow == nullptr) {
+      this->pcGaugeWindow = new UIPcGage();
+      this->pcGaugeWindow->SetSize(60, 5);
+      g_windowMgr.AddRenderedFront(this->pcGaugeWindow);
+      if (this->pcGaugeWindow == nullptr) {
         return;
       }
     }
-    static_cast<UIPcGage*>(this->unknown_0430)->SetValues(b, d);
-    static_cast<UIPcGage*>(this->unknown_0430)->SetLimits(0, 0);
+    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetLimits(0, 0);
     const int y = this->render.screenY + ScaleByScreenHeight(12);
-    this->unknown_0430->Move(this->render.screenX - 30, y);
+    this->pcGaugeWindow->Move(this->render.screenX - 30, y);
     return;
   }
   CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -865,10 +865,10 @@ void CNumEffect::SendMsg(
       this->render.curMotion = 0;
     }
 
-    this->render.unknown_0078 = f;
+    this->render.spriteOffsetX = f;
     this->render.scale = 5.0f;
     this->baseScale = 5.0f;
-    this->render.unknown_008C = timeGetTime();
+    this->render.motionStartTime = timeGetTime();
     return;
   }
 
@@ -909,9 +909,9 @@ void CNpc::SetSprAct(int job, int value, int) {
   char name[64];
   this->SetActorJob(job);
   this->SetUnknown0260(value);
-  this->render.unknown_0048 = 0;
+  this->render.bodyPalette = 0;
   if (g_session.IsGuildMemberCharacter(this->GetEffectiveJob(-1), name)) {
-    this->render.unknown_0048 = 1;
+    this->render.bodyPalette = 1;
     this->render.name = name;
   }
 }
@@ -924,10 +924,10 @@ void CNpc::SetSprJob(int job) {
   const char* spriteFormat;
   const char* actionFormat;
 
-  this->render.unknown_010C = 0;
-  this->render.unknown_0054 = g_session.GetNpcLocationRadius(job, false);
+  this->render.spriteJob = 0;
+  this->render.shadowScale = g_session.GetNpcLocationRadius(job, false);
   if (g_session.IsNpcJob(job) == true) {
-    this->render.unknown_010C = job;
+    this->render.spriteJob = job;
     actionFormat = "NPC\\%s.act";
     spriteFormat = "NPC\\%s.spr";
   } else if (job >= 6017 && job <= 6046) {
@@ -937,7 +937,7 @@ void CNpc::SetSprJob(int job) {
     actionFormat = "homun\\%s.act";
     spriteFormat = "homun\\%s.spr";
   } else {
-    this->render.unknown_010C = job;
+    this->render.spriteJob = job;
     actionFormat = "몬스터\\%s.act";
     spriteFormat = "몬스터\\%s.spr";
   }
@@ -951,13 +951,13 @@ void CNpc::SetSprJob(int job) {
 // OFFSET: 0x00DA31B0
 // FUNCTION: fn_22400
 bool CHalluNPC::OnProcess() {
-  ++this->unknown_0454;
-  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_0444)) {
-    if (this->unknown_0454 == 110) {
+  ++this->processCount;
+  if (this->render.color >= static_cast<std::uint32_t>(this->fadeStep)) {
+    if (this->processCount == 110) {
       static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if (static_cast<unsigned>(this->unknown_0454) > 105 && (this->unknown_0454 & 3) == 0) {
-      this->render.color -= this->unknown_0444;
+    if (static_cast<unsigned>(this->processCount) > 105 && (this->processCount & 3) == 0) {
+      this->render.color -= this->fadeStep;
     }
     return true;
   }
@@ -968,13 +968,13 @@ bool CHalluNPC::OnProcess() {
 // OFFSET: 0x00DA32B0
 // FUNCTION: fn_22402
 bool CHalluPC::OnProcess() {
-  ++this->unknown_050C;
-  if (this->render.color >= static_cast<std::uint32_t>(this->unknown_04FC)) {
-    if (this->unknown_050C == 110) {
+  ++this->preMoveOn;
+  if (this->render.color >= static_cast<std::uint32_t>(this->destCellZ)) {
+    if (this->preMoveOn == 110) {
       static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if (static_cast<unsigned>(this->unknown_050C) > 105 && (this->unknown_050C & 3) == 0) {
-      this->render.color -= this->unknown_04FC;
+    if (static_cast<unsigned>(this->preMoveOn) > 105 && (this->preMoveOn & 3) == 0) {
+      this->render.color -= this->destCellZ;
     }
     return true;
   }
@@ -985,7 +985,7 @@ bool CHalluPC::OnProcess() {
 // OFFSET: 0x00DA3010
 // FUNCTION: fn_22398
 bool CCorpse::OnProcess() {
-  const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float elapsed = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
   this->render.curMotion = this->GetActRes()->FrameCount(this->render.previousAnimation) - 1;
   this->SetColor(static_cast<int>(255.0f - elapsed), -1, -1, -1);
@@ -1027,7 +1027,7 @@ void CHalluNPC::Render(int argument) {
     return;
   }
 
-  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+  if (this->render.state != 6 && this->render.state != 3) {
     this->DrawShadow(argument, this->render.scale);
   }
   if (this->render.enabled) {
@@ -1053,7 +1053,7 @@ void CNpc::Render(int argument) {
       float reciprocalDepth;
       g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
       const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
-      this->render.unknown_005C = scale;
+      this->render.distanceScale = scale;
 
       float bounds[5];
       bounds[0] = x - g_renderer->viewport.uiScaleX * 50.0f * scale;
@@ -1077,10 +1077,10 @@ void CNpc::Render(int argument) {
       float reciprocalDepth;
       g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
       const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
-      this->render.unknown_005C = scale;
+      this->render.distanceScale = scale;
 
-      const float halfWidth = static_cast<float>(this->unknown_0294 / 2);
-      const float halfHeight = static_cast<float>(this->unknown_0298 / 2);
+      const float halfWidth = static_cast<float>(this->xSize / 2);
+      const float halfHeight = static_cast<float>(this->ySize / 2);
       float bounds[5];
       bounds[0] = x - halfWidth * g_renderer->viewport.uiScaleX * scale;
       bounds[1] = y - halfHeight * g_renderer->viewport.uiScaleY * scale;
@@ -1116,7 +1116,7 @@ void CNpc::Render(int argument) {
     }
   }
 
-  if (hidden && this->unknown_0314 == 5 && (!this->render.visible || !this->render.enabled)) {
+  if (hidden && this->objectType == 5 && (!this->render.visible || !this->render.enabled)) {
     this->SetColor(-1, 0, 0, 0);
     this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
     return;
@@ -1139,7 +1139,7 @@ void CNpc::Render(int argument) {
 // OFFSET: 0x00DA2F00
 // FUNCTION: fn_22396
 bool CBlowEffect::OnProcess() {
-  const float frame = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.previousAnimation = this->render.animation;
   const int frameCount = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation));
   this->render.curMotion = static_cast<int>(frame / this->render.speed) % frameCount;
@@ -1150,24 +1150,24 @@ bool CBlowEffect::OnProcess() {
 // OFFSET: 0x00DA3DF0
 // FUNCTION: fn_22407
 void CNpc::UpdateBubblePositions() {
-  if (this->unknown_042C) {
-    this->unknown_042C->Move(
+  if (this->playerGaugeWindow) {
+    this->playerGaugeWindow->Move(
       this->render.screenX - 30,
       static_cast<int>(
-        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY)
+        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY)
       )
     );
-    this->unknown_042C->Invalidate();
+    this->playerGaugeWindow->Invalidate();
   }
 
-  if (this->unknown_0430) {
-    this->unknown_0430->Move(
+  if (this->pcGaugeWindow) {
+    this->pcGaugeWindow->Move(
       this->render.screenX - 30,
       static_cast<int>(
-        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY)
+        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY)
       )
     );
-    this->unknown_0430->Invalidate();
+    this->pcGaugeWindow->Invalidate();
   }
 
   this->UpdateHpGauge();
@@ -1176,46 +1176,46 @@ void CNpc::UpdateBubblePositions() {
 // OFFSET: 0x00DA1470
 // FUNCTION: fn_22357
 CHalluPC2::CHalluPC2(CPc* source) {
-  this->unknown_0510 = source;
+  this->sourcePc = source;
   this->render.visible = 1;
-  this->render.unknown_00A4Bytes[0] = 0;
-  this->render.unknown_008C = timeGetTime();
-  this->SetUnknown0260(source->unknown_0260);
+  this->render.visibilityOptions[0] = 0;
+  this->render.motionStartTime = timeGetTime();
+  this->SetUnknown0260(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->SetRiding(source->unknown_02CC);
+  this->SetRiding(source->isRiding);
   this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
-  this->render.unknown_005C = source->render.unknown_005C;
-  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.distanceScale = source->render.distanceScale;
+  this->render.spriteOffsetX = source->render.spriteOffsetX;
   this->render.scale = source->render.scale;
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
   this->SetActionName(source->GetActName());
-  this->render.unknown_00A2 = source->render.unknown_00A2;
-  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.flatDepth = source->render.flatDepth;
+  this->render.depthLayer = source->render.depthLayer;
   this->render.isLieOnGround = source->render.isLieOnGround;
   this->render.isSingleColor = source->render.isSingleColor;
-  this->render.unknown_007C = source->render.unknown_007C;
-  this->render.unknown_0048 = 0;
-  this->unknown_0444 = source->unknown_0444;
+  this->render.spriteAngle = source->render.spriteAngle;
+  this->render.bodyPalette = 0;
+  this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->unknown_0478 = source->unknown_0478;
+  this->headPaletteName = source->headPaletteName;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
-  this->unknown_0418 = source->unknown_0418;
+  this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->unknown_04F8 = 0.0f;
-  this->unknown_050C = 0;
-  this->unknown_04FC = 0x10000000;
-  this->render.unknown_0048 = source->render.unknown_0048;
+  this->destCellX = 0.0f;
+  this->preMoveOn = 0;
+  this->destCellZ = 0x10000000;
+  this->render.bodyPalette = source->render.bodyPalette;
   this->render.name = source->render.name;
-  this->unknown_049C = 0;
-  this->unknown_0450 = 0;
-  this->unknown_0454 = 0;
-  this->unknown_0458 = 0;
+  this->robe = 0;
+  this->accessory = 0;
+  this->accessory2 = 0;
+  this->accessory3 = 0;
 }
 
 // OFFSET: 0x00DA0E60
@@ -1223,90 +1223,90 @@ CHalluPC2::CHalluPC2(CPc* source) {
 CBlurPC::CBlurPC(CPc* source) {
   this->blurSource = source;
   this->render.visible = 1;
-  this->render.unknown_00A4Bytes[0] = 0;
-  this->render.unknown_008C = timeGetTime();
-  this->SetUnknown0260(source->unknown_0260);
+  this->render.visibilityOptions[0] = 0;
+  this->render.motionStartTime = timeGetTime();
+  this->SetUnknown0260(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->SetRiding(source->unknown_02CC);
+  this->SetRiding(source->isRiding);
   this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
-  this->render.unknown_005C = source->render.unknown_005C;
-  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.distanceScale = source->render.distanceScale;
+  this->render.spriteOffsetX = source->render.spriteOffsetX;
   this->render.scale = source->render.scale;
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
   this->SetActionName(source->GetActName());
-  this->render.unknown_00A2 = source->render.unknown_00A2;
-  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.flatDepth = source->render.flatDepth;
+  this->render.depthLayer = source->render.depthLayer;
   this->render.isLieOnGround = source->render.isLieOnGround;
   this->render.isSingleColor = source->render.isSingleColor;
-  this->render.unknown_007C = source->render.unknown_007C;
-  this->render.unknown_0048 = 0;
-  this->unknown_0444 = source->unknown_0444;
+  this->render.spriteAngle = source->render.spriteAngle;
+  this->render.bodyPalette = 0;
+  this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->unknown_0478 = source->unknown_0478;
+  this->headPaletteName = source->headPaletteName;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
-  this->unknown_0418 = source->unknown_0418;
+  this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->unknown_04F8 = 0.0f;
-  this->unknown_04FC = 0x10000000;
-  this->render.unknown_0048 = source->render.unknown_0048;
+  this->destCellX = 0.0f;
+  this->destCellZ = 0x10000000;
+  this->render.bodyPalette = source->render.bodyPalette;
   this->render.name = source->render.name;
-  this->unknown_049C = 0;
-  this->unknown_0450 = 0;
-  this->unknown_0454 = 0;
-  this->unknown_0458 = 0;
+  this->robe = 0;
+  this->accessory = 0;
+  this->accessory2 = 0;
+  this->accessory3 = 0;
 }
 
 // OFFSET: 0x00DA17A0
 // FUNCTION: fn_22358
 CHalluPC::CHalluPC(CPc* source) {
-  this->unknown_0510 = source;
+  this->sourcePc = source;
   this->render.visible = 1;
-  this->render.unknown_00A4Bytes[0] = 0;
-  this->render.unknown_008C = timeGetTime();
-  this->SetUnknown0260(source->unknown_0260);
+  this->render.visibilityOptions[0] = 0;
+  this->render.motionStartTime = timeGetTime();
+  this->SetUnknown0260(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->SetUnknown0404(source->GetUnknown0404());
-  this->SetRiding(source->unknown_02CC);
+  this->SetRiding(source->isRiding);
   this->SetUnknown03C4(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
-  this->render.unknown_005C = source->render.unknown_005C;
-  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.distanceScale = source->render.distanceScale;
+  this->render.spriteOffsetX = source->render.spriteOffsetX;
   this->render.scale = source->render.scale;
   this->render.animation = source->render.animation;
   this->render.previousAnimation = source->render.previousAnimation;
   this->render.curMotion = source->render.curMotion;
   this->SetActionName(source->GetActName());
-  this->render.unknown_00A2 = source->render.unknown_00A2;
-  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.flatDepth = source->render.flatDepth;
+  this->render.depthLayer = source->render.depthLayer;
   this->render.isLieOnGround = source->render.isLieOnGround;
   this->render.isSingleColor = source->render.isSingleColor;
-  this->render.unknown_007C = source->render.unknown_007C;
-  this->render.unknown_0048 = 0;
-  this->unknown_0444 = source->unknown_0444;
+  this->render.spriteAngle = source->render.spriteAngle;
+  this->render.bodyPalette = 0;
+  this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->unknown_0478 = source->unknown_0478;
+  this->headPaletteName = source->headPaletteName;
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
-  this->unknown_0418 = source->unknown_0418;
+  this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->unknown_04F8 = 0.0f;
-  this->unknown_050C = 0;
-  this->unknown_04FC = 0x10000000;
-  this->render.unknown_0048 = source->render.unknown_0048;
+  this->destCellX = 0.0f;
+  this->preMoveOn = 0;
+  this->destCellZ = 0x10000000;
+  this->render.bodyPalette = source->render.bodyPalette;
   this->render.name = source->render.name;
-  this->unknown_03E1 = true;
+  this->modelReady = true;
   this->SetBodyCostume(source->GetBodyCostume(), 1);
-  this->unknown_049C = 0;
-  this->unknown_0450 = 0;
-  this->unknown_0454 = 0;
-  this->unknown_0458 = 0;
+  this->robe = 0;
+  this->accessory = 0;
+  this->accessory2 = 0;
+  this->accessory3 = 0;
 }
 
 // OFFSET: 0x00DA28B0
@@ -1318,32 +1318,32 @@ void CNpc::UpdateMinimapMarker() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   MinimapMarker* marker = mode->FindMinimapMarker(this->render.accountId);
-  if (marker && marker->unknown_0004 != 9999) {
-    if (this->unknown_0434) {
-      if (marker->unknown_0004 == this->minimapMarkerCell[0] && marker->unknown_0006 == this->minimapMarkerCell[1]) {
+  if (marker && marker->effectType != 9999) {
+    if (this->attachedEffect) {
+      if (marker->effectType == this->minimapMarkerCell[0] && marker->questIconId == this->minimapMarkerCell[1]) {
         return;
       }
-      if (this->unknown_0434) {
-        this->unknown_0434->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        this->unknown_0434 = nullptr;
-        this->unknown_0438 = 9999;
+      if (this->attachedEffect) {
+        this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->attachedEffect = nullptr;
+        this->attachedEffectId = 9999;
       }
     }
 
-    const int base = marker->unknown_0004 < 6 ? 0x24 : 0x36;
-    CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->unknown_0004, &this->render.position, this->render.accountId, true);
-    this->unknown_03B0.push_back(effect);
+    const int base = marker->effectType < 6 ? 0x24 : 0x36;
+    CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->effectType, &this->render.position, this->render.accountId, true);
+    this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->unknown_0434 = effect;
-    this->minimapMarkerCell[0] = marker->unknown_0004;
-    this->minimapMarkerCell[1] = marker->unknown_0006;
+    this->attachedEffect = effect;
+    this->minimapMarkerCell[0] = marker->effectType;
+    this->minimapMarkerCell[1] = marker->questIconId;
     return;
   }
 
-  if (this->unknown_0434) {
-    this->unknown_0434->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->unknown_0434 = nullptr;
-    this->unknown_0438 = 9999;
+  if (this->attachedEffect) {
+    this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->attachedEffect = nullptr;
+    this->attachedEffectId = 9999;
   }
 }
 
@@ -1365,9 +1365,9 @@ bool CNpc::OnProcess() {
     case JT_HIDDEN_WARP_NPC:
       break;
     case JT_EFFECTLAUNCHER:
-      if (timeGetTime() > this->unknown_0424 + this->unknown_0294 * 1000) {
-        this->unknown_0424 = timeGetTime();
-        this->LaunchEffect(*reinterpret_cast<int*>(&this->unknown_0170[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (timeGetTime() > this->effectTick + this->xSize * 1000) {
+        this->effectTick = timeGetTime();
+        this->LaunchEffect(*reinterpret_cast<int*>(&this->destinationAndSpeed[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case JT_HIDDEN_NPC:
@@ -1387,16 +1387,16 @@ bool CNpc::OnProcess() {
       break;
   }
 
-  if (this->unknown_0314 != 7) {
+  if (this->objectType != 7) {
     this->PlayFrameSounds();
   }
 
   WIN32_FIND_DATAA findData;
   if (g_session.IsHomunAid(this->render.accountId)) {
-    if (!this->unknown_030C) {
-      this->unknown_030C = reinterpret_cast<int>(new CMercenaryAI(0));
-    } else if (reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->state) {
-      reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Process(this->render.accountId);
+    if (!this->homunAI) {
+      this->homunAI = reinterpret_cast<int>(new CMercenaryAI(0));
+    } else if (reinterpret_cast<CMercenaryAI*>(this->homunAI)->state) {
+      reinterpret_cast<CMercenaryAI*>(this->homunAI)->Process(this->render.accountId);
     } else {
       if (g_serviceOptions.Get(0xA4)) {
         HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
@@ -1405,19 +1405,19 @@ bool CNpc::OnProcess() {
         }
         FindClose(find);
         CopyFileA(".\\AI\\AI.lua", ".\\AI\\USER_AI\\AI.lua", TRUE);
-        reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Load(".\\AI\\USER_AI\\AI.lua");
+        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\USER_AI\\AI.lua");
       } else {
-        reinterpret_cast<CMercenaryAI*>(this->unknown_030C)->Load(".\\AI\\AI.lua");
+        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\AI.lua");
       }
       this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
 
   if (g_session.IsMercenaryAid(this->render.accountId)) {
-    if (!this->unknown_0310) {
-      this->unknown_0310 = reinterpret_cast<int>(new CMercenaryAI(1));
-    } else if (reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->state) {
-      reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Process(this->render.accountId);
+    if (!this->merAI) {
+      this->merAI = reinterpret_cast<int>(new CMercenaryAI(1));
+    } else if (reinterpret_cast<CMercenaryAI*>(this->merAI)->state) {
+      reinterpret_cast<CMercenaryAI*>(this->merAI)->Process(this->render.accountId);
     } else {
       const char* path;
       if (g_serviceOptions.Get(0xAE)) {
@@ -1431,7 +1431,7 @@ bool CNpc::OnProcess() {
       } else {
         path = ".\\AI\\AI_M.lua";
       }
-      reinterpret_cast<CMercenaryAI*>(this->unknown_0310)->Load(path);
+      reinterpret_cast<CMercenaryAI*>(this->merAI)->Load(path);
       this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
   }
@@ -1442,9 +1442,9 @@ bool CNpc::OnProcess() {
 
   this->UpdateBubblePositions();
 
-  if (g_session.unknown_5614 && g_groundMarkAid == this->render.accountId) {
+  if (g_session.homunAlive && g_groundMarkAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  } else if (g_session.unknown_56B0 && g_groundMarkAltAid == this->render.accountId) {
+  } else if (g_session.mercenaryAlive && g_groundMarkAltAid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
     this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1452,7 +1452,7 @@ bool CNpc::OnProcess() {
 
   this->UpdateMinimapMarker();
 
-  switch (this->unknown_0314) {
+  switch (this->objectType) {
     case 7:
     case 8:
     case 9:
@@ -1491,7 +1491,7 @@ void CBlurPC::Render(int argument) {
     return;
   }
 
-  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+  if (this->render.state != 6 && this->render.state != 3) {
     this->DrawShadow(argument, this->render.scale);
   }
   if (!this->render.enabled) {
@@ -1504,7 +1504,7 @@ void CBlurPC::Render(int argument) {
     return;
   }
 
-  if (this->unknown_0474 != 0) {
+  if (this->renderWithoutLayer != 0) {
     this->DrawSprite(argument, false, 0.0f);
     return;
   }
@@ -1564,7 +1564,7 @@ void CHalluPC::Render(int argument) {
     return;
   }
 
-  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+  if (this->render.state != 6 && this->render.state != 3) {
     this->DrawShadow(argument, this->render.scale);
   }
   if (!this->render.enabled) {
@@ -1577,7 +1577,7 @@ void CHalluPC::Render(int argument) {
     return;
   }
 
-  if (this->unknown_0474 != 0) {
+  if (this->renderWithoutLayer != 0) {
     this->DrawSprite(argument, false, 0.0f);
     return;
   }
@@ -1596,39 +1596,39 @@ void CNpc::SetState(int state, int) {
 
   switch (this->GetEffectiveJob(-1)) {
     case JT_WARPNPC: {
-      int height = this->unknown_0298;
+      int height = this->ySize;
       if (height <= 10) {
-        this->unknown_0298 = 10;
+        this->ySize = 10;
         height = 10;
       }
-      int width = this->unknown_0294;
+      int width = this->xSize;
       if (width <= 10) {
-        this->unknown_0294 = 10;
+        this->xSize = 10;
         width = 10;
       }
       this->boundsLeft = this->render.position.x - static_cast<float>(width / 2);
       this->boundsRight = static_cast<float>(width / 2) + this->render.position.x;
       this->boundsTop = this->render.position.z - static_cast<float>(height / 2);
       this->boundsBottom = static_cast<float>(height / 2) + this->render.position.z;
-      if (this->unknown_0428 == 0 && this->render.enabled) {
-        this->unknown_0428 = 1;
+      if (this->appearanceInitialized == 0 && this->render.enabled) {
+        this->appearanceInitialized = 1;
         this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     }
     case JT_EFFECTLAUNCHER:
-      this->render.position.y -= static_cast<float>(this->unknown_0298 * 5);
+      this->render.position.y -= static_cast<float>(this->ySize * 5);
       break;
     case JT_HIDDEN_NPC:
-      this->unknown_0294 *= 2;
-      this->unknown_0298 *= 2;
+      this->xSize *= 2;
+      this->ySize *= 2;
       break;
     case JT_HIDDEN_WARP_NPC:
       break;
     default: {
       CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(this->render.accountId));
       bool isDisguised = false;
-      if (actor && actor->unknown_0314 == 12) {
+      if (actor && actor->objectType == 12) {
         isDisguised = true;
       }
       if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != JT_MOB_TOMB &&
@@ -1638,20 +1638,20 @@ void CNpc::SetState(int state, int) {
         break;
       }
 
-      if (this->render.unknown_0070 == 4) {
-        this->render.position.x = this->unknown_02D0;
-        this->render.position.z = this->unknown_02D4;
+      if (this->render.state == 4) {
+        this->render.position.x = this->damageDestX;
+        this->render.position.z = this->damageDestZ;
       }
 
       switch (state) {
         case ST_STAND:
           this->render.isLieOnGround = false;
-          this->render.unknown_00A4Bytes[1] = 1;
+          this->render.visibilityOptions[1] = 1;
           this->SetAction(0, 4, 0);
-          if (this->unknown_02C8 != 0) {
-            int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+          if (this->healthState != 0) {
+            int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
             int emotion = state;
-            switch (this->unknown_02C8) {
+            switch (this->healthState) {
               case 1:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 7, hungerLevel);
                 this->SetAction(40, 4, 1);
@@ -1672,25 +1672,25 @@ void CNpc::SetState(int state, int) {
                 this->SetAction(40, 4, 1);
                 break;
             }
-            if (this->render.accountId == g_session.unknown_1010) {
+            if (this->render.accountId == g_session.petGid) {
               g_modeMgr.GetGameMode()->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
             }
-            this->unknown_02C8 = 0;
+            this->healthState = 0;
             this->render.isMotionFinished = false;
             this->RegisterPos();
           } else {
-            if (this->render.unknown_0070 != 0) {
-              this->unknown_027C = timeGetTime();
+            if (this->render.state != 0) {
+              this->petEmotionStartTick = timeGetTime();
             }
-            if (g_session.unknown_5608) {
-              g_session.unknown_5600 = 0;
-              g_session.unknown_5604 = 0;
-              g_session.unknown_5608 = 0;
+            if (g_session.moveHomunEnemy) {
+              g_session.homunEnemyX = 0;
+              g_session.homunEnemyY = 0;
+              g_session.moveHomunEnemy = 0;
             }
-            if (g_session.unknown_56A4) {
-              g_session.unknown_569C = 0;
-              g_session.unknown_56A0 = 0;
-              g_session.unknown_56A4 = 0;
+            if (g_session.moveMercenaryEnemy) {
+              g_session.mercenaryEnemyX = 0;
+              g_session.mercenaryEnemyY = 0;
+              g_session.moveMercenaryEnemy = 0;
             }
             this->RegisterPos();
           }
@@ -1710,7 +1710,7 @@ void CNpc::SetState(int state, int) {
           if (this->bodyState != 1 && this->bodyState != 2) {
             this->render.isMotionFreezed = false;
           }
-          if (this->unknown_0314 == 8) {
+          if (this->objectType == 8) {
             if (this->GetEffectiveJob(-1) == JT_MER_ELEANOR) {
               this->SetAction(16, 4, 1);
             } else if (std::rand() % 2) {
@@ -1723,14 +1723,14 @@ void CNpc::SetState(int state, int) {
           } else {
             this->SetAction(16, 4, 1);
           }
-          this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
+          this->attackMotion = static_cast<float>(this->GetAttackMotion());
           this->RegisterPos();
-          this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->unknown_0378);
+          this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->attackMotion);
           break;
         case ST_DEAD:
-          this->render.unknown_00C8 = 0;
-          this->render.unknown_00D8 = 0;
-          this->render.unknown_00DC = 0;
+          this->render.frameSequenceActive = 0;
+          this->render.animationSequenceActive = 0;
+          this->render.timedSequenceActive = 0;
           this->render.isMotionFreezed = false;
           if (this->bodyState == 2) {
             this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1738,7 +1738,7 @@ void CNpc::SetState(int state, int) {
           }
           this->render.isLieOnGround = true;
           this->render.isMotionFreezed = false;
-          this->render.unknown_00A4Bytes[1] = 0;
+          this->render.visibilityOptions[1] = 0;
           if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
             this->SetAction(64, 4, 1);
             this->UnRegisterPos();
@@ -1748,7 +1748,7 @@ void CNpc::SetState(int state, int) {
           }
           break;
         case ST_DAMAGE:
-          if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
+          if (this->render.frameSequenceActive != 0 || this->render.animationSequenceActive != 0 || this->render.timedSequenceActive != 0) {
             return;
           }
           if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
@@ -1763,7 +1763,7 @@ void CNpc::SetState(int state, int) {
           this->RegisterPos();
           break;
         case ST_SKILL:
-          switch (this->unknown_0314) {
+          switch (this->objectType) {
             case 8:
             case 10:
             case 13:
@@ -1794,6 +1794,6 @@ void CNpc::SetState(int state, int) {
   }
 
   this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
-  this->render.unknown_0070 = state;
-  this->render.unknown_008C = timeGetTime();
+  this->render.state = state;
+  this->render.motionStartTime = timeGetTime();
 }

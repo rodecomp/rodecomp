@@ -19,7 +19,7 @@ namespace {
 // OFFSET: 0x00D42AA0
 // FUNCTION: fn_21829
 void CGameMode::ApplySkillUpdatePacket(const void* packet) {
-  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
   const auto opcode = Read<std::uint16_t>(bytes);
@@ -40,10 +40,10 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
 
   value.id = id;
   value.level = Read<std::int16_t>(bytes + 4);
-  value.unknown_0014 = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
-  value.unknown_0018 = bytes[10];
-  value.unknown_001C = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 8));
-  value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
+  value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
+  value.upgradable = bytes[10];
+  value.range = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 8));
+  value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
   g_session.m_skillBundle.ApplyLevelChange(value);
 
   switch (opcode) {
@@ -65,19 +65,19 @@ void CGameMode::ReceiveLearnedSkill(
   std::uint16_t id, std::int16_t level, int unknown000C, std::uint8_t unknown0018, std::int16_t unknown0014, std::int16_t unknown001C, std::int16_t unknown0030
 ) {
   CSkillInfo value;
-  value.unknown_000C = unknown000C;
+  value.type = unknown000C;
   value.id = id;
   value.level = level;
-  value.unknown_0018 = unknown0018;
+  value.upgradable = unknown0018;
   value.name = value.IdName(*g_session.m_hotkeyScript);
-  value.unknown_0014 = unknown0014;
-  value.unknown_001C = unknown001C;
-  value.unknown_0030 = unknown0030;
-  value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, level);
+  value.spCost = unknown0014;
+  value.range = unknown001C;
+  value.learnedLevel = unknown0030;
+  value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, level);
 
   g_session.m_skillBundle.RecordLevelChange(value);
   if (value.id == 336) {
-    g_session.unknown_5468 = 1;
+    g_session.adoptionSkillAvailable = 1;
   }
 
   g_session.UpdateSkill(value, 1, 0);
@@ -86,7 +86,7 @@ void CGameMode::ReceiveLearnedSkill(
 // OFFSET: 0x00D2B5C0
 // FUNCTION: fn_45442
 void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
-  *reinterpret_cast<int*>(&this->unknown_0100[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
   g_session.m_additionalSkills.clear();
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
@@ -99,11 +99,11 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
     CSkillInfo value;
     value.level = Read<std::int16_t>(record + 6);
     value.id = Read<std::uint16_t>(record);
-    value.unknown_0014 = static_cast<std::int32_t>(Read<std::int16_t>(record + 8));
-    value.unknown_000C = Read<std::uint32_t>(record + 2);
-    value.unknown_0018 = record[36];
+    value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(record + 8));
+    value.type = Read<std::uint32_t>(record + 2);
+    value.upgradable = record[36];
     value.name = value.IdName(*g_session.m_hotkeyScript);
-    value.unknown_0034 = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
+    value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
 
     if (value.id - 10000u <= 19u) {
       g_session.UpdateAdditionalSkill(value, 1);

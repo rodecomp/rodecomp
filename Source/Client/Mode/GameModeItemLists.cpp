@@ -71,24 +71,24 @@ namespace {
 
   // INLINED
   __forceinline void FillEquipListItem(ITEM_INFO& item, const EquipListRecord& record, const EquipListOption* options) {
-    item.unknown_0000[0] = record.type;
-    item.unknown_0000[1] = record.index;
-    item.unknown_0000[2] = record.location;
-    item.unknown_0000[3] = record.wearState;
+    item.identity[0] = record.type;
+    item.identity[1] = record.index;
+    item.identity[2] = record.location;
+    item.identity[3] = record.wearState;
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
     item.identified = record.flags & 1;
-    item.unknown_005D = (record.flags >> 1) & 1;
-    item.unknown_0060 = record.refine;
-    item.unknown_0068 = record.expireTime;
-    item.unknown_0064 = record.bindOnEquip;
-    item.unknown_0070 = record.sprite;
-    item.unknown_0074[0] = (record.flags >> 2) & 1;
-    item.unknown_0098 = CountEquipListOptions(options);
-    item.unknown_0088 = 0;
-    for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<EquipListOption*>(item.unknown_009C)[index] = options[index];
+    item.damaged = (record.flags >> 1) & 1;
+    item.refiningLevel = record.refine;
+    item.expireTime = record.expireTime;
+    item.bindOnEquip = record.bindOnEquip;
+    item.sprite = record.sprite;
+    item.flags[0] = (record.flags >> 2) & 1;
+    item.optionCount = CountEquipListOptions(options);
+    item.grade = 0;
+    for (int index = 0; index < item.optionCount; ++index) {
+      reinterpret_cast<EquipListOption*>(item.options)[index] = options[index];
     }
   }
 }
@@ -122,24 +122,24 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
 
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        g_session.unknown_1050 = item.unknown_0000[1];
+      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+        g_session.petEggIndex = item.identity[1];
       }
 
-      if (item.unknown_0000[3] == 0) {
+      if (item.identity[3] == 0) {
         g_session.AddItem1710(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
-        if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+        if (g_session.IsCostumeLocation(item.identity[3])) {
           g_session.EquipItem2B50(item, &equipped);
         } else {
           g_session.EquipUnknown17F0(item, &equipped);
         }
       }
 
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.unknown_005D) {
-        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_1050).itemId.c_str());
+      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
         if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
           g_session.SendPetAutoFeedOption(0);
         }

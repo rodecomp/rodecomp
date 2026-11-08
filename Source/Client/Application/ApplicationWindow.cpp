@@ -199,7 +199,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     if (g_windowMgr.ProcessKeyDown(wParam, lParam, ~(static_cast<unsigned>(lParam) >> 30) & 1)) {
       return 0;
     }
-    if (!g_windowMgr.unknown_0025) {
+    if (!g_windowMgr.imeInputActive) {
       g_windowMgr.RefreshWindow01C8Edits();
       return 0;
     }
@@ -209,7 +209,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     if (!g_windowMgr.GetHoverWindow() || g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_KEYDOWN, wParam, lParam, 0, 0) != 3) {
       g_serverLanguage->KeyDown(wParam, lParam);
     }
-    if (g_session.unknown_5480 && !g_session.unknown_5488) {
+    if (g_session.quitBlocked && !g_session.quitAllowed) {
       g_windowMgr.RefreshWindow01C8Edits();
     }
     return 0;
@@ -220,7 +220,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     }
     return 0;
   case WM_CHAR:
-    if (!g_windowMgr.LookupWindow(WID_VIDEOWND) && g_windowMgr.unknown_0025) {
+    if (!g_windowMgr.LookupWindow(WID_VIDEOWND) && g_windowMgr.imeInputActive) {
       if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_CHAR, wParam, lParam, 0, 0) == 3) {
         return 0;
       }

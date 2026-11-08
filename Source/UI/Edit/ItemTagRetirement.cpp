@@ -57,9 +57,9 @@ void UIItemTagOnChat::RemoveTagChild(UIWindow* child) {
 
 // OFFSET: 0x0086D670
 // FUNCTION: fn_11050
-UIItemTagCtrl::UIItemTagCtrl() : unknown_011C(0), tagWidth(0) {
+UIItemTagCtrl::UIItemTagCtrl() : previousTagCount(0), tagWidth(0) {
   this->taggedText.clear();
-  this->unknown_0140.clear();
+  this->linkedText.clear();
 }
 
 // OFFSET: 0x0086D780
@@ -119,7 +119,7 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
   tag += FitText(*this->geometry.surface, name, width / 2);
   tag += ">";
 
-  UIRodexEditCtrl3* contents = reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents;
+  UIRodexEditCtrl3* contents = reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents;
   const unsigned int maximum = contents->maximum;
   this->taggedText = contents->text;
   std::string text = this->taggedText += tag;
@@ -162,16 +162,16 @@ bool UIItemTagCtrl::SyncTagsWithText() {
 // OFFSET: 0x00896F60
 // FUNCTION: fn_11521
 void UIItemTagOnMail::RemoveTagChild(UIWindow* child) {
-  if (g_windowMgr.unknown_0458) {
-    g_windowMgr.unknown_0458->RemoveChild(child, 1);
+  if (g_windowMgr.rodexComposeWnd) {
+    g_windowMgr.rodexComposeWnd->RemoveChild(child, 1);
   }
 }
 
 // OFFSET: 0x00896F80
 // FUNCTION: fn_11522
 void UIItemTagOnMegaPhone::RemoveTagChild(UIWindow* child) {
-  if (g_windowMgr.unknown_0318) {
-    g_windowMgr.unknown_0318->RemoveChild(child, 1);
+  if (g_windowMgr.npcTextEditDialogWnd) {
+    g_windowMgr.npcTextEditDialogWnd->RemoveChild(child, 1);
   }
 }
 
@@ -229,34 +229,34 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   button->SetTooltip(tag.c_str());
   button->SetId(0x1D0);
   button->Move(0, 0);
-  reinterpret_cast<ITEM_INFO&>(button->unknown_00F8) = item;
+  reinterpret_cast<ITEM_INFO&>(button->itemPayload) = item;
   this->AddTagButton(button);
 
   UITextViewer* links = reinterpret_cast<UITextViewer*>(this);
   std::string link;
   char delimiters[] = "!#$%&'()*+,-/";
-  if (links->ItemLinkNumberText(item.unknown_0000[2]).size() <= 5) {
-    for (unsigned int index = 0; index < 5 - links->ItemLinkNumberText(item.unknown_0000[2]).size(); ++index) {
+  if (links->ItemLinkNumberText(item.identity[2]).size() <= 5) {
+    for (unsigned int index = 0; index < 5 - links->ItemLinkNumberText(item.identity[2]).size(); ++index) {
       link += "0";
     }
   }
 
-  link += links->ItemLinkNumberText(item.unknown_0000[2]);
+  link += links->ItemLinkNumberText(item.identity[2]);
 
   link += Equipment(item) ? "1" : "0";
   link += links->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
 
-  if (item.unknown_0060 != 0) {
+  if (item.refiningLevel != 0) {
     link += delimiters[3];
-    link += links->ItemLinkNumberText(item.unknown_0060);
+    link += links->ItemLinkNumberText(item.refiningLevel);
   }
 
   link += delimiters[4];
-  link += links->ItemLinkNumberText(item.unknown_0070);
+  link += links->ItemLinkNumberText(item.sprite);
   link += delimiters[5];
-  link += links->ItemLinkNumberText(item.unknown_0088);
+  link += links->ItemLinkNumberText(item.grade);
 
-  const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
+  const int* cards = reinterpret_cast<const int*>(item.cards);
   int slots = ItemSlotsCount(item);
   if (slots == 0) {
     slots = 4;
@@ -273,8 +273,8 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
     link += links->ItemLinkNumberText(index < 4 ? cards[index] : 0);
   }
 
-  const ItemLinkOption* options = reinterpret_cast<const ItemLinkOption*>(item.unknown_009C);
-  for (int index = 0; index < item.unknown_0098; ++index) {
+  const ItemLinkOption* options = reinterpret_cast<const ItemLinkOption*>(item.options);
+  for (int index = 0; index < item.optionCount; ++index) {
     link += delimiters[9];
     link += links->ItemLinkNumberText(options[index].id);
     link += delimiters[10];
@@ -314,9 +314,9 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
   tag += ">";
 
   unsigned bytes = 0;
-  this->textWidth = reinterpret_cast<UIItemTagCtrl*>(g_windowMgr.unknown_0318)->MeasureText(tag, bytes);
+  this->textWidth = reinterpret_cast<UIItemTagCtrl*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
 
-  UIEditCtrl* edit = reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.unknown_0318)->edit;
+  UIEditCtrl* edit = reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit;
   const unsigned int maximum = edit->maximum;
   this->taggedText = edit->text;
   std::string text = this->taggedText += tag;
@@ -326,9 +326,9 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
 // OFFSET: 0x008962C0
 // FUNCTION: fn_11517
 void UIItemTagCtrl::UpdateItemTags() {
-  this->unknown_0140.clear();
-  if (this->unknown_011C != static_cast<int>(this->tags.size()) && this->SyncTagsWithText()) {
-    this->unknown_011C = static_cast<int>(this->tags.size());
+  this->linkedText.clear();
+  if (this->previousTagCount != static_cast<int>(this->tags.size()) && this->SyncTagsWithText()) {
+    this->previousTagCount = static_cast<int>(this->tags.size());
   }
 
   std::string prefix;
@@ -378,7 +378,7 @@ void UIItemTagCtrl::UpdateItemTags() {
         this->PlaceTagButton(entry->child, visible, x, 0);
 
         const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
-        if (!g_windowMgr.unknown_0458 || static_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents == g_windowMgr.GetHoverWindow()) {
+        if (!g_windowMgr.rodexComposeWnd || static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents == g_windowMgr.GetHoverWindow()) {
           const int cursor = g_serverLanguage->cursor;
           const int start = static_cast<int>(prefix.size());
           const int end = start + bytes + 2;
@@ -388,10 +388,10 @@ void UIItemTagCtrl::UpdateItemTags() {
           }
         }
 
-        this->unknown_0140 += head;
-        this->unknown_0140 += itemLinkTagOpening;
-        this->unknown_0140 += entry->link;
-        this->unknown_0140 += itemLinkTagClosing;
+        this->linkedText += head;
+        this->linkedText += itemLinkTagOpening;
+        this->linkedText += entry->link;
+        this->linkedText += itemLinkTagClosing;
         remaining = remaining.substr(found + display.size());
         prefix += display;
       }
@@ -400,5 +400,5 @@ void UIItemTagCtrl::UpdateItemTags() {
     }
   }
 
-  this->unknown_0140 += remaining;
+  this->linkedText += remaining;
 }

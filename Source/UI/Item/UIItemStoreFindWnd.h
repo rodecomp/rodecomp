@@ -36,7 +36,7 @@ public:
   /* 0118 */ UIStaticText* title;
   /* 011C */ unsigned char unknown_011C[0x4];
   /* 0120 */ int unknown_0120;
-  /* 0124 */ std::string unknown_0124;
+  /* 0124 */ std::string statusText;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;
   /* 0158 */ unsigned char unknown_0158[0x4];
@@ -45,7 +45,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(UIItemStoreFindWnd, unknown_0124) == 0x124);
+static_assert(offsetof(UIItemStoreFindWnd, statusText) == 0x124);
 static_assert(offsetof(UIItemStoreFindWnd, searchText) == 0x13C);
 static_assert(offsetof(UIItemStoreFindWnd, saved) == 0x154);
 static_assert(offsetof(UIItemStoreFindWnd, closeButton) == 0xFC);

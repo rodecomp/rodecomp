@@ -22,7 +22,7 @@ CSteal::~CSteal() {
 // FUNCTION: fn_18969
 void CSteal::SpawnParticles() {
   for (int i = 0; i < 10; ++i) {
-    const int life = this->unknown_002C;
+    const int life = this->effectLifetime;
     const int yaw = std::max(rand() % 360, 0);
     const int pitch = std::max(rand() % 100, 0) - 50;
 
@@ -52,14 +52,14 @@ void CSteal::SpawnParticles() {
     const float velocityZ = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + 0.0f;
 
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->scale = scale;
     particle->frameDelay = frameDelay;
 
-    float* params = &particle->unknown_0054;
+    float* params = &particle->animationParameter;
     params[0] = shrink;
     params[1] = static_cast<float>(yaw);
     params[2] = static_cast<float>(pitch);
@@ -108,9 +108,9 @@ void CSteal::OnProcess() {
     CSpriteParticle* particle = *it;
     const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
     const float scale = particle->scale;
-    float* params = &particle->unknown_0054;
+    float* params = &particle->animationParameter;
     const float scaleStep = params[5];
-    const int index = particle->unknown_000C;
+    const int index = particle->columnIndex;
     const vector3d velocity = particle->velocity;
     float lift = params[3] + params[4];
     const float distance = std::max(0.0f, params[0] + particle->frameDelay);
@@ -135,7 +135,7 @@ void CSteal::OnProcess() {
       }
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     particle->scale = newScale;
     particle->frameDelay = distance;
     params[3] = lift;

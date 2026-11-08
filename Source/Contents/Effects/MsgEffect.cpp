@@ -48,27 +48,27 @@ CMsgEffect::CMsgEffect() {
   this->m_drift.x = 0.0f;
   this->m_drift.y = 0.0f;
   this->m_drift.z = 0.0f;
-  this->unknown_016C.x = 0.0f;
-  this->unknown_016C.y = 0.0f;
-  this->unknown_016C.z = 0.0f;
+  this->origin.x = 0.0f;
+  this->origin.y = 0.0f;
+  this->origin.z = 0.0f;
   this->m_velocity.x = 0.0f;
   this->m_owner = nullptr;
   this->render.animation = 0;
   this->render.curMotion = 0;
-  this->render.unknown_00A2 = 1;
+  this->render.flatDepth = 1;
   this->m_value = 0;
   this->m_type = 0;
   this->m_finished = 0;
-  this->unknown_018C = 0.0f;
+  this->travelDistance = 0.0f;
   this->m_baseY = 1.0f;
   this->m_baseX = 1.0f;
   this->m_scale = 1.0f;
-  this->unknown_01A0 = 0;
-  this->unknown_01A4 = 0;
-  this->render.unknown_0080 = 0xFFFFFFFF;
+  this->processTick = 0;
+  this->previousAnimation = 0;
+  this->render.depthLayer = 0xFFFFFFFF;
   this->m_digit = 0;
-  this->unknown_01B4 = 0;
-  this->unknown_01B0 = 1;
+  this->activeMotion = 0;
+  this->motionInitialized = 1;
   ClearVector(this->m_drift);
   ClearVector(this->m_velocity);
   this->m_visible = true;
@@ -190,12 +190,12 @@ bool CMsgEffect::OnProcess() {
     if (this->m_type != 0x12 || !this->m_visible) {
       return false;
     }
-    if (this->unknown_01A0 > 35 && this->unknown_01B4 != 0) {
-      this->unknown_01B4 = 0;
+    if (this->processTick > 35 && this->activeMotion != 0) {
+      this->activeMotion = 0;
       this->m_finished = 0;
       return true;
     }
-    if (this->unknown_01B4 == 0) {
+    if (this->activeMotion == 0) {
       return false;
     }
   }
@@ -240,11 +240,11 @@ bool CMsgEffect::OnProcess() {
       if (frames == 0) {
         return true;
       }
-      const int tick = this->unknown_01A0;
+      const int tick = this->processTick;
       this->render.curMotion = static_cast<int>(static_cast<float>(tick) / this->render.speed) % frames;
-      if (this->unknown_01B4 == 1) {
+      if (this->activeMotion == 1) {
         if (this->render.curMotion >= frames - 1) {
-          this->unknown_01B4 = 0;
+          this->activeMotion = 0;
         }
         if (tick < 8) {
           this->render.position.x = this->m_velocity.x + this->render.position.x;
@@ -252,7 +252,7 @@ bool CMsgEffect::OnProcess() {
           this->render.position.z = this->m_velocity.z + this->render.position.z;
         }
       }
-      this->unknown_01A0 = tick + 1;
+      this->processTick = tick + 1;
       return true;
     }
 
@@ -389,7 +389,7 @@ bool CMsgEffect::OnProcess() {
       }
       const float motion = elapsed / this->render.speed;
       this->render.curMotion = static_cast<int>(motion) % frames;
-      if (this->m_type == 1 && this->render.unknown_0070 == 10000) {
+      if (this->m_type == 1 && this->render.state == 10000) {
         this->render.curMotion = 15;
         const ActionFrame& frame = action->Frame(this->render.previousAnimation, 15);
         const_cast<SpriteFrameCell&>(frame.cells[0]).mirrored = 0;
@@ -448,7 +448,7 @@ bool CMsgEffect::OnProcess() {
       return true;
 
     case MET_BIRD:
-      if (this->unknown_01B4 != 0 && this->m_owner != nullptr) {
+      if (this->activeMotion != 0 && this->m_owner != nullptr) {
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->Face(owner->render.position.x, owner->render.position.z);
         this->render.angle -= 180.0f;
@@ -457,12 +457,12 @@ bool CMsgEffect::OnProcess() {
         }
         this->render.previousAnimation = this->Get8Dir2(this->render.angle, 1) + 8;
         this->render.position.x = this->m_velocity.x + this->render.position.x;
-        const int tick = this->unknown_01A0;
+        const int tick = this->processTick;
         if (tick > 10 && tick < 25) {
-          this->unknown_019C = this->m_velocity.x;
+          this->initialVelocityX = this->m_velocity.x;
           this->render.position.z = this->m_velocity.z + this->render.position.z;
         } else {
-          this->unknown_019C = this->m_velocity.x;
+          this->initialVelocityX = this->m_velocity.x;
           this->render.position.y = this->m_velocity.y + this->render.position.y;
           this->render.position.z = this->m_velocity.z + this->render.position.z;
           if (tick >= 25) {
@@ -471,8 +471,8 @@ bool CMsgEffect::OnProcess() {
           }
         }
         this->GetActRes();
-        ++this->unknown_01A0;
-        this->unknown_01A4 = this->render.previousAnimation;
+        ++this->processTick;
+        this->previousAnimation = this->render.previousAnimation;
         this->render.curMotion = 0;
         return true;
       }
@@ -482,9 +482,9 @@ bool CMsgEffect::OnProcess() {
       {
         CActRes* action = this->GetActRes();
         const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-        int tick = this->unknown_01A0;
+        int tick = this->processTick;
         if (tick % static_cast<int>(this->render.speed) == 0) {
-          if (this->unknown_01B0 != 0) {
+          if (this->motionInitialized != 0) {
             ++this->render.curMotion;
           }
           tick = 0;
@@ -492,8 +492,8 @@ bool CMsgEffect::OnProcess() {
         if (this->render.curMotion >= frames) {
           this->render.curMotion = 0;
         }
-        this->unknown_01A4 = this->render.previousAnimation;
-        this->unknown_01A0 = tick + 1;
+        this->previousAnimation = this->render.previousAnimation;
+        this->processTick = tick + 1;
       }
       return true;
 
@@ -1060,9 +1060,9 @@ bool CSkill::OnProcess() {
       CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (effect) {
-        effect->state.unknown_11C88[0] = 20;
-        effect->state.unknown_11C88[1] = 20;
-        effect->state.unknown_11C88[2] = 180;
+        effect->state.colorChannels[0] = 20;
+        effect->state.colorChannels[1] = 20;
+        effect->state.colorChannels[2] = 180;
       }
     }
     break;
@@ -1073,9 +1073,9 @@ bool CSkill::OnProcess() {
       CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (effect) {
-        effect->state.unknown_11C88[0] = 20;
-        effect->state.unknown_11C88[1] = 180;
-        effect->state.unknown_11C88[2] = 20;
+        effect->state.colorChannels[0] = 20;
+        effect->state.colorChannels[1] = 180;
+        effect->state.colorChannels[2] = 20;
       }
     }
     break;
@@ -1086,9 +1086,9 @@ bool CSkill::OnProcess() {
       CRagEffect* effect = this->LaunchEffect(0x394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (effect) {
-        effect->state.unknown_11C88[0] = 40;
-        effect->state.unknown_11C88[1] = 40;
-        effect->state.unknown_11C88[2] = 40;
+        effect->state.colorChannels[0] = 40;
+        effect->state.colorChannels[1] = 40;
+        effect->state.colorChannels[2] = 40;
       }
     }
     break;
@@ -1221,7 +1221,7 @@ void CMsgEffect::FollowOwner() {
         this->render.position.z = z;
         this->m_velocity.z = z;
       }
-      this->render.unknown_0124 = 0x200;
+      this->render.blendFlags = 0x200;
       break;
 
     case MET_PKEFFECT:
@@ -1265,7 +1265,7 @@ void CMsgEffect::FollowOwner() {
         this->render.position.x = owner->render.position.x;
         this->render.position.y = owner->render.position.y;
         this->render.position.z = owner->render.position.z;
-        if (this->render.unknown_0070 == 10000) {
+        if (this->render.state == 10000) {
           this->render.position.y -= 10.0f;
         } else {
           this->render.position.y -= 20.0f;
@@ -1280,7 +1280,7 @@ void CMsgEffect::FollowOwner() {
         this->render.position.x = owner->render.position.x;
         this->render.position.y = owner->render.position.y;
         this->render.position.z = owner->render.position.z;
-        this->render.position.y = this->render.position.y - static_cast<float>(static_cast<CGameActor*>(this->m_owner)->unknown_03C8) - 10.0f;
+        this->render.position.y = this->render.position.y - static_cast<float>(static_cast<CGameActor*>(this->m_owner)->transformPriority) - 10.0f;
       }
       break;
 
@@ -1306,7 +1306,7 @@ void CMsgEffect::FollowOwner() {
         this->render.position.x = owner->render.position.x;
         this->render.position.y = owner->render.position.y;
         this->render.position.z = owner->render.position.z;
-        if (this->render.unknown_0070 == 10000) {
+        if (this->render.state == 10000) {
           this->render.position.y -= 10.0f;
         } else {
           this->render.position.y -= 20.0f;
@@ -1329,10 +1329,10 @@ void CMsgEffect::FollowOwner() {
           case 3:
           case 4:
           case 5:
-            this->render.unknown_0080 = 3;
+            this->render.depthLayer = 3;
             break;
           default:
-            this->render.unknown_0080 = static_cast<std::uint32_t>(-3);
+            this->render.depthLayer = static_cast<std::uint32_t>(-3);
             break;
         }
       }
@@ -1345,7 +1345,7 @@ void CMsgEffect::FollowOwner() {
         const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
-        if (this->unknown_01B4 == 1) {
+        if (this->activeMotion == 1) {
           this->render.previousAnimation = this->render.animation + dir + 12 + ((dir + 4 < 8) ? 8 : 0);
         } else if (dist > 15.0f) {
           const vector3d oldPosition = this->render.position;
@@ -1363,15 +1363,15 @@ void CMsgEffect::FollowOwner() {
           }
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
-          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
-          if (static_cast<CRenderObject*>(this->m_owner)->render.unknown_0070 == 0 && dist < 16.0f) {
+          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
+          if (static_cast<CRenderObject*>(this->m_owner)->render.state == 0 && dist < 16.0f) {
             this->render.previousAnimation = this->render.animation + dir;
           }
-        } else if (owner->render.unknown_0070 == 4) {
+        } else if (owner->render.state == 4) {
           this->render.previousAnimation = this->render.animation + 0x18 + dir;
-        } else if (owner->render.unknown_0070 == 3) {
+        } else if (owner->render.state == 3) {
           this->render.previousAnimation = this->render.animation + 0x20 + dir;
-        } else if (owner->render.unknown_0070 == 0 || dist <= 14.0f) {
+        } else if (owner->render.state == 0 || dist <= 14.0f) {
           this->render.previousAnimation = this->render.animation + dir;
         }
         this->Face(owner->render.position.x, owner->render.position.z);
@@ -1396,10 +1396,10 @@ void CMsgEffect::FollowOwner() {
           this->render.position.z = direction.y * 5.0f + owner->render.position.z;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
-          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
           CActRes* action = this->GetActRes();
           const unsigned frames = action->FrameCount(this->render.previousAnimation);
-          this->render.curMotion = static_cast<int>(this->unknown_018C * 0.23f * 4.0f / this->render.speed) % static_cast<int>(frames);
+          this->render.curMotion = static_cast<int>(this->travelDistance * 0.23f * 4.0f / this->render.speed) % static_cast<int>(frames);
         }
         this->Face(owner->render.position.x, owner->render.position.z);
         this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z);
@@ -1407,15 +1407,15 @@ void CMsgEffect::FollowOwner() {
       break;
 
     case MET_BIRD:
-      if (this->m_owner != nullptr && this->unknown_01B4 == 0) {
+      if (this->m_owner != nullptr && this->activeMotion == 0) {
         CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
         const float dist = static_cast<CRenderObject*>(this->m_owner)->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = static_cast<CRenderObject*>(this->m_owner);
         this->render.previousAnimation = this->render.animation + dir;
-        if (this->unknown_01B0 == 0) {
+        if (this->motionInitialized == 0) {
           if (dist <= 25.0f) {
-            this->unknown_01B0 = 1;
+            this->motionInitialized = 1;
           }
           const vector3d oldPosition = this->render.position;
           vector2d direction;
@@ -1427,8 +1427,8 @@ void CMsgEffect::FollowOwner() {
           this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
-          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
-        } else if (dist > 12.0f && this->unknown_01B4 == 0) {
+          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
+        } else if (dist > 12.0f && this->activeMotion == 0) {
           const vector3d oldPosition = this->render.position;
           vector2d direction;
           direction.x = this->render.position.x - owner->render.position.x;
@@ -1438,7 +1438,7 @@ void CMsgEffect::FollowOwner() {
           this->render.position.z += (owner->render.position.z - this->render.position.z) / dist;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
-          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
         } else if (dist > 3.0f) {
           const vector3d oldPosition = this->render.position;
           vector2d direction;
@@ -1449,7 +1449,7 @@ void CMsgEffect::FollowOwner() {
           this->render.position.z += (owner->render.position.z - this->render.position.z) / 20.0f;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
-          this->unknown_018C += SquareRoot(movedZ * movedZ + movedX * movedX);
+          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
         }
         this->Face(owner->render.position.x, owner->render.position.z);
         this->render.position.y = scene->terrain->Height(this->render.position.x, this->render.position.z) - 25.0f;
@@ -1520,8 +1520,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       if (this->m_type == 18) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
-        this->unknown_01B4 = 1;
-        this->unknown_01B0 = 0;
+        this->activeMotion = 1;
+        this->motionInitialized = 0;
         this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
         return;
       }
@@ -1529,8 +1529,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       if (this->m_type == 27 || this->m_type == 31) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
-        this->unknown_01B4 = 1;
-        this->unknown_01A0 = 0;
+        this->activeMotion = 1;
+        this->processTick = 0;
         this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
         return;
       }
@@ -1592,10 +1592,10 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       switch (d) {
         case MET_CART:
         case 31:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
-          this->render.unknown_00A4Bytes[0] = 1;
-          this->render.unknown_0054 = 1.0f;
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 0;
+          this->render.visibilityOptions[0] = 1;
+          this->render.shadowScale = 1.0f;
           break;
 
         case MET_PKEFFECT:
@@ -1604,26 +1604,26 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
 
         case MET_CURSE_EFFECT:
           this->SetColor(0x7F, -1, -1, -1);
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 5;
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 5;
           break;
 
         case MET_ICEEFFECT:
         case MET_ICEBREAKEFFECT:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 5;
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 5;
           break;
 
         case MET_BIRD:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 0;
           break;
 
         case 27:
-          this->render.unknown_00A2 = 0;
-          this->render.unknown_0080 = 0;
-          this->render.unknown_00A4Bytes[0] = 1;
-          this->render.unknown_0054 = 2.0f;
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 0;
+          this->render.visibilityOptions[0] = 1;
+          this->render.shadowScale = 2.0f;
           break;
       }
       return;
@@ -1682,18 +1682,18 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->render.curMotion = 0;
       }
 
-      this->render.unknown_0078 = f;
+      this->render.spriteOffsetX = f;
       this->m_digit = f;
       this->render.scale = 5.0f;
       this->m_scale = 5.0f;
-      this->render.unknown_0080 = static_cast<std::uint32_t>(-2);
-      this->render.unknown_008C = timeGetTime();
+      this->render.depthLayer = static_cast<std::uint32_t>(-2);
+      this->render.motionStartTime = timeGetTime();
       return;
     }
 
     case AM_SETPOS: {
       this->render.visible = 1;
-      this->render.unknown_008C = timeGetTime();
+      this->render.motionStartTime = timeGetTime();
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
         const std::string* names = reinterpret_cast<const std::string*>(d);
         this->SetSpriteName(ResourceMgr::Instance(), names[0].c_str());
@@ -1702,7 +1702,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
 
       if ((static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f)) == 1000) {
         this->SetAction(10, 4, 0);
-        this->render.unknown_0070 = 10000;
+        this->render.state = 10000;
         this->render.color = 0xFFFF0000;
       } else {
         this->SetAction(f, 4, 1);
@@ -1736,7 +1736,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.scale = 5.0f;
           this->m_scale = 5.0f;
           this->m_baseY = this->render.position.y;
-          this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           break;
 
         case MET_CRITICAL_EFFECT:
@@ -1748,7 +1748,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.curMotion = 1;
           this->render.scale = 3.0f;
           this->m_scale = 3.0f;
-          this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->m_baseY = this->render.position.y;
           this->render.color = 0xFFAAAAAA;
           break;
@@ -1759,7 +1759,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.position.z = position->z;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;
-          this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->m_baseY = this->render.position.y;
           break;
 
@@ -1771,7 +1771,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           this->render.curMotion = 0;
           this->render.scale = 1.0f;
           this->m_scale = 1.0f;
-          this->render.unknown_0080 = static_cast<std::uint32_t>(-5);
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->m_baseY = this->render.position.y;
           break;
 

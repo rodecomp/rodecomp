@@ -3,7 +3,7 @@
 // OFFSET: 0x00AB1310
 // FUNCTION: fn_17334
 BrowserClientSite::BrowserClientSite(HWND window, IUnknown* browser)
-    : unknown_0004(0), m_window(window), m_browser(browser) {
+    : referenceCount(0), m_window(window), m_browser(browser) {
   this->m_inPlace = new BrowserInPlaceSite(this);
   this->m_documentUI = new BrowserDocumentUI(this);
   this->m_events = new BrowserPopupDispatch(this);

@@ -17,12 +17,12 @@ public:
   /* 00B8 */ int m_after;
   /* 00BC */ int m_beforeSecond;
   /* 00C0 */ int m_afterSecond;
-  /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
+  /* 00C4 */ int itemParam;
+  /* 00C8 */ int itemSecondParam;
+  /* 00CC */ int equippedParam;
+  /* 00D0 */ int equippedSecondParam;
   /* 00D4 */ std::string m_label;
-  /* 00EC */ int unknown_00EC;
+  /* 00EC */ int itemIndex;
   /* 00F0 */ WindowPlacement* m_placement;
 
   void StoreInfo() override;
@@ -35,7 +35,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(UIItemParamChangeDisplayWnd, m_placement) - offsetof(UIItemParamChangeDisplayWnd, unknown_00C4) == 0x2C);
+static_assert(offsetof(UIItemParamChangeDisplayWnd, m_placement) - offsetof(UIItemParamChangeDisplayWnd, itemParam) == 0x2C);
 #endif
 
 #endif

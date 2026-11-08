@@ -27,14 +27,14 @@ public:
   void UpdateLights();
 
   /* 00CC */ std::uint32_t startTime;
-  /* 00D0 */ std::vector<CEZ2STRParticle*> unknown_00D0;
-  /* 00DC */ std::vector<CEZ2STRParticle*> unknown_00DC;
+  /* 00D0 */ std::vector<CEZ2STRParticle*> eyes;
+  /* 00DC */ std::vector<CEZ2STRParticle*> lights;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CCaneOfEvilEyeEffect) == 0xE8);
-static_assert(offsetof(CCaneOfEvilEyeEffect, unknown_00D0) == 0xD0);
-static_assert(offsetof(CCaneOfEvilEyeEffect, unknown_00DC) == 0xDC);
+static_assert(offsetof(CCaneOfEvilEyeEffect, eyes) == 0xD0);
+static_assert(offsetof(CCaneOfEvilEyeEffect, lights) == 0xDC);
 #endif
 
 #endif

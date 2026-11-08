@@ -18,12 +18,12 @@ class UIMenuIconWnd : public UIFrameWnd {
 public:
   UIMenuIconWnd();
 
-  /* 00B4 */ std::map<int, UIButton*> unknown_00B4;
-  /* 00BC */ std::map<int, UIButton*> unknown_00BC;
-  /* 00C4 */ std::list<int> unknown_00C4;
-  /* 00CC */ UIBitmapButton* unknown_00CC;
-  /* 00D0 */ UIBitmapButton* unknown_00D0;
-  /* 00D4 */ UIBitmapButton* unknown_00D4;
+  /* 00B4 */ std::map<int, UIButton*> menuButtons;
+  /* 00BC */ std::map<int, UIButton*> notificationButtons;
+  /* 00C4 */ std::list<int> notifiedCommands;
+  /* 00CC */ UIBitmapButton* openButton;
+  /* 00D0 */ UIBitmapButton* notificationOpenButton;
+  /* 00D4 */ UIBitmapButton* closeButton;
 
   void Move(int x, int y) override;
   bool IsTransmitMouseInput() override;

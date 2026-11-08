@@ -704,10 +704,10 @@ CCreateLineInfo::CCreateLineInfo(
     this->m_fontHeight = fontHeight;
     this->m_bold = flags.bold;
     this->m_italic = flags.italic;
-    this->unknown_0030 = unknown0030;
-    this->unknown_0034 = unknown0034;
-    this->unknown_0028 = unknown0028;
-    this->unknown_002C = unknown002C;
+    this->shadow = unknown0030;
+    this->shadowColor = unknown0034;
+    this->outline = unknown0028;
+    this->outlineColor = unknown002C;
 
     if (!s_fontStackCache.empty()) {
       this->m_fontStack.swap(s_fontStackCache);
@@ -801,7 +801,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
         if (action) {
           UIEmotion* emotion = new UIEmotion(sprite, action);
           emotion->SetSize(50, 50);
-          emotion->m_animation = data->unknown_0020;
+          emotion->m_animation = data->actionIndex;
           emotion->Invalidate();
           emotion->m_maxLoops = loops;
           emotion->m_loops = 1;
@@ -1152,14 +1152,14 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
   LineCutter::UIText* window = new LineCutter::UIText();
   window->SetSize(size.cx, size.cy);
   window->m_text = text;
-  window->m_outlineColor = this->unknown_002C;
-  window->m_shadowed = this->unknown_0030;
+  window->m_outlineColor = this->outlineColor;
+  window->m_shadowed = this->shadow;
   window->m_color = style.color;
   window->m_fontHeight = style.fontHeight;
   window->m_bold = style.bold;
   window->m_italic = style.italic;
-  window->m_outlined = this->unknown_0028;
-  window->m_shadowColor = this->unknown_0034;
+  window->m_outlined = this->outline;
+  window->m_shadowColor = this->shadowColor;
   if (window->m_outlined == 1) {
     const int textWidth = window->TextWidth(window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
     window->Resize(textWidth + 2, style.fontHeight + 2);
@@ -1214,7 +1214,7 @@ void ShowTextButtonItem(UITextButton* button) {
   const std::string itemId = button->GetLine(0);
   const int index = std::atoi(button->GetLine(1).c_str());
   ITEM_INFO item;
-  item.unknown_0000[0] = static_cast<std::uint32_t>(index);
+  item.identity[0] = static_cast<std::uint32_t>(index);
   item.itemId = itemId;
   item.identified = 1;
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
@@ -1729,12 +1729,12 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
     }
 
     const int itemId = ItemLinkMessageId(link);
-    if (link.substr(0, 6) == "00000T" && itemId <= g_itemTagOwner->unknown_0118) {
+    if (link.substr(0, 6) == "00000T" && itemId <= g_itemTagOwner->maxTipId) {
       offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
       continue;
     }
 
-    const bool unowned = !(LookupClientItem(g_session.m_inventoryItems, itemId, 0).unknown_0000[1] > 0 || g_session.HasItemId(itemId) ||
+    const bool unowned = !(LookupClientItem(g_session.m_inventoryItems, itemId, 0).identity[1] > 0 || g_session.HasItemId(itemId) ||
                            g_session.HasItem1740Number(itemId));
     if (!unowned) {
       offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());

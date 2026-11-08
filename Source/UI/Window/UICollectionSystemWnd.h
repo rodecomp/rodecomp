@@ -19,8 +19,8 @@ public:
 
 private:
   /* 00B4 */ int m_frameDelay;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
+  /* 00B8 */ int collectionId;
+  /* 00BC */ int animationIndex;
   /* 00C0 */ int m_frame;
   /* 00C4 */ int m_lastFrame;
   /* 00C8 */ bool m_paused;

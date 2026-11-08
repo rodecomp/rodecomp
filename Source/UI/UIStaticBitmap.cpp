@@ -41,7 +41,7 @@ void UIStaticBitmap::Paint() {
     return;
   }
 
-  switch (this->geometry.unknown_0030) {
+  switch (this->geometry.state) {
   case 0: {
     CBitmapRes* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmap.c_str())));
     this->DrawBitmap(0, 0, resource, false);

@@ -164,9 +164,9 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
 // OFFSET: 0x00CD0300
 // FUNCTION: fn_21252
 void CGameMode::RemoveMiniMapPing(std::uint32_t id) {
-  const auto found = this->unknown_01C4.find(id);
-  if (found != this->unknown_01C4.end()) {
-    this->unknown_01C4.erase(found);
+  const auto found = this->compassPosList.find(id);
+  if (found != this->compassPosList.end()) {
+    this->compassPosList.erase(found);
   }
 }
 
@@ -175,11 +175,11 @@ void CGameMode::RemoveMiniMapPing(std::uint32_t id) {
 void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   int index = 0;
   if (g_windowMgr.window_4F1CC) {
-    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 0, this->unknown_01B4.size(), 0, 0);
-    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 1, this->unknown_01BC.size(), 0, 0);
+    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 0, this->partyPosList.size(), 0, 0);
+    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 1, this->guildPosList.size(), 0, 0);
   }
 
-  for (auto it = this->unknown_01B4.begin(); it != this->unknown_01B4.end(); ++it) {
+  for (auto it = this->partyPosList.begin(); it != this->partyPosList.end(); ++it) {
     this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, it->second.color, false);
     if (g_windowMgr.window_4F1CC) {
       g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 0, index, it->second.x, it->second.y);
@@ -187,8 +187,8 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
     ++index;
   }
 
-  for (auto it = this->unknown_01BC.begin(); it != this->unknown_01BC.end(); ++it) {
-    if (this->unknown_01B4.find(it->first) == this->unknown_01B4.end()) {
+  for (auto it = this->guildPosList.begin(); it != this->guildPosList.end(); ++it) {
+    if (this->partyPosList.find(it->first) == this->partyPosList.end()) {
       this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 1, it->second.color, false);
       if (g_windowMgr.window_4F1CC) {
         g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 1, index, it->second.x, it->second.y);
@@ -198,16 +198,16 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   }
 
   for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
-    if (it->second.unknown_0006 != 0) {
-      const std::string name = FormatOwnedString("유저인터페이스\\basic_interface\\quest_%d.bmp", it->second.unknown_0006);
-      this->DrawMiniMapMarker(view, it->second.unknown_0000, it->second.unknown_0002, 4, name, 0, 0, true);
+    if (it->second.questIconId != 0) {
+      const std::string name = FormatOwnedString("유저인터페이스\\basic_interface\\quest_%d.bmp", it->second.questIconId);
+      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 4, name, 0, 0, true);
     }
   }
 
-  if (g_session.unknown_5BE8 > -1) {
-    const int y = g_session.unknown_5BEC;
+  if (g_session.storeSearchX > -1) {
+    const int y = g_session.storeSearchY;
     if (y > -1) {
-      this->DrawMiniMapMarker(view, g_session.unknown_5BE8, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
+      this->DrawMiniMapMarker(view, g_session.storeSearchX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
     }
   }
 }
@@ -215,7 +215,7 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
 // OFFSET: 0x00CD0DD0
 // FUNCTION: fn_21255
 void CGameMode::DrawMiniMap() {
-  if (!g_windowMgr.unknown_01C0) {
+  if (!g_windowMgr.minimapZoomWnd) {
     return;
   }
 
@@ -227,7 +227,7 @@ void CGameMode::DrawMiniMap() {
   int row;
   this->WorldCell(player->render.position.x, player->render.position.z, column, row);
 
-  const float half = 1.0f / (g_windowMgr.unknown_0050 * 2.0f);
+  const float half = 1.0f / (g_windowMgr.minimapZoom * 2.0f);
   const float u = static_cast<float>(column) / static_cast<float>(width);
   const float v = static_cast<float>(height - row) / static_cast<float>(height);
   TextureRegion view;
@@ -266,13 +266,13 @@ void CGameMode::DrawMiniMap() {
 
   const int reduction = g_textureReduction;
   g_textureReduction = 1;
-  CTexture* texture = g_texMgr.Load(reinterpret_cast<const char*>(this->unknown_0090), 0, false, true, false);
+  CTexture* texture = g_texMgr.Load(reinterpret_cast<const char*>(this->minimapBmpName), 0, false, true, false);
   RECT rect;
   rect.left = static_cast<int>(centerX - 64.0f);
   rect.top = 16;
   rect.right = static_cast<int>(centerX + 64.0f);
   rect.bottom = 144;
-  this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.unknown_005C, texture, view);
+  this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.minimapColor, texture, view);
 
   this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", 4, 0xFFFFFFFF, false);
 
@@ -285,11 +285,11 @@ void CGameMode::DrawMiniMap() {
     }
   }
 
-  if (this->unknown_05CC[0]) {
-    this->DrawMiniMapMarker(view, this->unknown_05C4, this->unknown_05C8, 6, "유저인터페이스\\map\\bossmonster.bmp", 5, 0, true);
+  if (this->bossAlarmAndCopyNameFlags[0]) {
+    this->DrawMiniMapMarker(view, this->bossMonsterX, this->bossMonsterY, 6, "유저인터페이스\\map\\bossmonster.bmp", 5, 0, true);
   }
 
-  if (g_windowMgr.unknown_0054) {
+  if (g_windowMgr.minimapMarkersVisible) {
     for (int index = 0;; ++index) {
       const TownInfo info = g_townInfoMgr->GetTownInfo(std::string(this->mapName), index);
       if (info.image.size() == 0 || info.type == 8 || info.type == 9) {
@@ -301,15 +301,15 @@ void CGameMode::DrawMiniMap() {
 
   this->DrawMiniMapMembers(view);
 
-  if (this->unknown_01C4.size() != 0) {
-    for (auto it = this->unknown_01C4.begin(); it != this->unknown_01C4.end();) {
+  if (this->compassPosList.size() != 0) {
+    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end();) {
       if (it->second.persistent == 0 && timeGetTime() > it->second.tick + 15000) {
-        it = this->unknown_01C4.erase(it);
+        it = this->compassPosList.erase(it);
       } else {
         ++it;
       }
     }
-    for (auto it = this->unknown_01C4.begin(); it != this->unknown_01C4.end(); ++it) {
+    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end(); ++it) {
       if (static_cast<int>(timeGetTime() - it->second.tick) % 1000 < 500) {
         this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
       }
@@ -487,7 +487,7 @@ void CGameMode::DrawMiniMapMarker(
       if (g_windowMgr.window_4F1CC) {
         g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_PLAYER_POS, x, y, 0, 0);
       }
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C0)) {
+      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
         window->Invalidate();
       }
     }
@@ -579,11 +579,11 @@ int g_minimapCoordinateDigitValues[4];
 // OFFSET: 0x00CD2A10
 // FUNCTION: fn_21261
 void CGameMode::DrawMiniMapNumber() {
-  if (this->unknown_0408 == nullptr || this->unknown_0414 == 0) {
+  if (this->skillUseType == nullptr || this->skillUseLevel == 0) {
     return;
   }
 
-  const int number = this->unknown_0414;
+  const int number = this->skillUseLevel;
   if (number != g_minimapCoordinateValue) {
     g_minimapCoordinateValue = number;
     int value = number;
@@ -734,12 +734,12 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   std::uint32_t remaining = 0;
   switch (mode) {
     case 0:
-      if (this->unknown_0464 == 0) {
-        this->unknown_0464 = timeGetTime();
+      if (this->countdownStartTick == 0) {
+        this->countdownStartTick = timeGetTime();
       }
       remaining = value;
-      if (timeGetTime() - this->unknown_0464 > 5000) {
-        this->unknown_0464 = 0;
+      if (timeGetTime() - this->countdownStartTick > 5000) {
+        this->countdownStartTick = 0;
         g_session.m_timeAttackVisible = 0;
       }
       break;
@@ -936,7 +936,7 @@ int CGameMode::UpdateMiniMapTooltip() {
   int id = tooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
-    if (tooltipId == -1 && g_windowMgr.unknown_0348 != nullptr) {
+    if (tooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
       return g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
     return tooltipId;
@@ -946,7 +946,7 @@ int CGameMode::UpdateMiniMapTooltip() {
     return id;
   }
 
-  UIWindow* window = g_windowMgr.unknown_0348;
+  UIWindow* window = g_windowMgr.illustWnd;
   if (window == nullptr) {
     window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
     g_miniMapTooltipId = tooltipId;

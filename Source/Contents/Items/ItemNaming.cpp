@@ -27,7 +27,7 @@ std::map<int, std::vector<const char*>> g_bookItemNames;
 // OFFSET: 0x006D8810
 // FUNCTION: fn_06597
 bool Equipment(const ITEM_INFO& item) {
-  switch (item.unknown_0000[0]) {
+  switch (item.identity[0]) {
   case TYPE_ARMOR:
   case TYPE_WEAPON:
   case TYPE_BOW:
@@ -47,13 +47,13 @@ bool Equipment(const ITEM_INFO& item) {
 namespace {
   // INLINED
   void CardIds(const ITEM_INFO& item, int (&ids)[4]) {
-    std::memcpy(ids, item.unknown_001C, sizeof(ids));
+    std::memcpy(ids, item.cards, sizeof(ids));
   }
 
   // INLINED
   int CardId(const ITEM_INFO& item, int index) {
     int id;
-    std::memcpy(&id, &item.unknown_001C[index * sizeof(id)], sizeof(id));
+    std::memcpy(&id, &item.cards[index * sizeof(id)], sizeof(id));
     return id;
   }
 
@@ -93,13 +93,13 @@ bool ITEM_INFO::HasCards() const {
 // FUNCTION: fn_06577
 __declspec(noinline) int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
   char grade[2] = {};
-  if (this->unknown_0088 == 1) {
+  if (this->grade == 1) {
     grade[0] = 'D';
-  } else if (this->unknown_0088 == 2) {
+  } else if (this->grade == 2) {
     grade[0] = 'C';
-  } else if (this->unknown_0088 == 3) {
+  } else if (this->grade == 3) {
     grade[0] = 'B';
-  } else if (this->unknown_0088 == 4) {
+  } else if (this->grade == 4) {
     grade[0] = 'A';
   }
 
@@ -311,11 +311,11 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
       AppendText(result, text, this->Apprentice(text, capacity, 0));
       AppendName(*this, result, text, capacity);
     } else if (cards[0] == 254 && cards[1] == 0) {
-      if (this->unknown_0060 > 0) {
+      if (this->refiningLevel > 0) {
         AppendText(result, text, this->Refine(text, capacity, 0));
       }
 
-      if (this->unknown_0088 > 0) {
+      if (this->grade > 0) {
         AppendText(result, text, this->Grade(text, capacity, 0));
       }
 
@@ -332,11 +332,11 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
       if (!Equipment(*this) && detailed == 0) {
         AppendName(*this, result, text, capacity);
       } else {
-        if (this->unknown_0060 > 0) {
+        if (this->refiningLevel > 0) {
           AppendText(result, text, this->Refine(text, capacity, 0));
         }
 
-        if (this->unknown_0088 > 0) {
+        if (this->grade > 0) {
           AppendText(result, text, this->Grade(text, capacity, 0));
         }
 
@@ -414,26 +414,26 @@ std::vector<unsigned char> ITEM_INFO::Serialize() const {
   };
 
   append(281, nullptr, 0);
-  append(283, &this->unknown_0000[0], 4);
-  append(285, &this->unknown_0000[1], 4);
-  append(284, &this->unknown_0000[2], 4);
-  append(286, &this->unknown_0000[3], 4);
+  append(283, &this->identity[0], 4);
+  append(285, &this->identity[1], 4);
+  append(284, &this->identity[2], 4);
+  append(286, &this->identity[3], 4);
   append(287, &this->quantity, 4);
-  append(288, &this->unknown_0014[0], 4);
-  append(289, &this->unknown_0014[1], 4);
-  append(290, this->unknown_001C, 16);
+  append(288, &this->prices[0], 4);
+  append(289, &this->prices[1], 4);
+  append(290, this->cards, 16);
   const int id = std::atoi(this->itemId.c_str());
   append(291, &id, 4);
-  append(292, this->unknown_0044.c_str(), static_cast<std::uint32_t>(this->unknown_0044.size()));
+  append(292, this->displayName.c_str(), static_cast<std::uint32_t>(this->displayName.size()));
   append(293, &this->identified, 1);
-  append(294, &this->unknown_005D, 1);
-  append(295, &this->unknown_0060, 4);
-  append(296, &this->unknown_0064, 2);
-  append(297, &this->unknown_0068, 4);
-  append(298, &this->unknown_0070, 4);
-  append(299, &this->unknown_0088, 2);
-  append(300, &this->unknown_0098, 4);
-  append(301, this->unknown_009C, 25);
+  append(294, &this->damaged, 1);
+  append(295, &this->refiningLevel, 4);
+  append(296, &this->bindOnEquip, 2);
+  append(297, &this->expireTime, 4);
+  append(298, &this->sprite, 4);
+  append(299, &this->grade, 2);
+  append(300, &this->optionCount, 4);
+  append(301, this->options, 25);
   append(282, nullptr, 0);
   return result;
 }
@@ -726,14 +726,14 @@ __declspec(noinline) void LoadItemNameTables() {
 
   g_tableStorage.LoadTokens(tokens, "itemSlotTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unknown_002C = std::atoi(token[1]);
+    EnsureItemDescription(std::atoi(*token), g_itemDescriptions).descriptionFlags = std::atoi(token[1]);
   }
 
   g_tableStorage.LoadTokens(tokens, "itemParamTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 3) {
     ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
-    desc.unknown_0034.push_back(std::atoi(token[1]));
-    desc.unknown_0034.push_back(std::atoi(token[2]));
+    desc.descriptionValues.push_back(std::atoi(token[1]));
+    desc.descriptionValues.push_back(std::atoi(token[2]));
   }
 
   g_tableStorage.LoadTokens(tokens, "CardItemNameTable.txt", 0);
@@ -835,7 +835,7 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
   const char* text = nullptr;
 
-  switch (this->unknown_001C[4]) {
+  switch (this->cards[4]) {
   case 0: {
     const int id = std::atoi(this->itemId.c_str());
     text = LookupMessage(id == 2634 || id == 2635 ? 2976 : 450);
@@ -873,7 +873,7 @@ int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const
 // FUNCTION: fn_06584
 int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
   const char* text = nullptr;
-  switch (this->unknown_001C[5]) {
+  switch (this->cards[5]) {
   case 5:
     text = LookupMessage(MSI_ONE_STARPIECE);
     break;
@@ -918,7 +918,7 @@ int ITEM_INFO::Apprentice(char* output, int& capacity, unsigned char consume) co
 // OFFSET: 0x006D70A0
 // FUNCTION: fn_06589
 int ITEM_INFO::Refine(char* output, int& capacity, unsigned char consume) const {
-  const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->unknown_0060);
+  const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->refiningLevel);
 
   if (bytes > 0) {
     if (consume) {

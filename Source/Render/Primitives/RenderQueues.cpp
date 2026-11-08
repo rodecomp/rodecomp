@@ -45,7 +45,7 @@ void RenderQueues::Submit(RenderCommand* primitive, std::uint16_t flags, bool de
       }
     } else if (flags & 0x20) {
       this->queue_01BC.push_back({first(), primitive});
-    } else if (static_cast<unsigned char>(primitive->unknown_0014) == 1) {
+    } else if (static_cast<unsigned char>(primitive->depthFlags) == 1) {
       this->queue_018C.push_back({first(), primitive});
     } else {
       this->queue_01A4.push_back({first(), primitive});
@@ -68,8 +68,8 @@ void RenderQueues::SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags,
   command->vertices = triangle.vertices;
   command->vertexCount = 3;
   command->texture = triangle.texture;
-  command->unknown_0020 = 0;
-  command->unknown_0018 = triangle.unknown_0064;
-  command->unknown_001C = triangle.unknown_0068;
+  command->textureMode = 0;
+  command->sourceBlend = triangle.sourceBlend;
+  command->destinationBlend = triangle.destinationBlend;
   this->Submit(command, flags, depthAlpha, depthStart, depthEnd);
 }

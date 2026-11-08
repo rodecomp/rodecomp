@@ -196,8 +196,8 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
       primitive->vertices[2].v = 1.0f;
       primitive->vertices[3].u = 1.0f;
       primitive->vertices[3].v = 1.0f;
-      primitive->unknown_0018 = 2;
-      primitive->unknown_001C = 2;
+      primitive->sourceBlend = 2;
+      primitive->destinationBlend = 2;
       primitive->texture = g_texMgr.Load(this->m_textureName, 0, false, true, false);
       primitive->vertices[0].diffuse = this->m_colors[i];
       primitive->vertices[1].diffuse = this->m_colors[i];

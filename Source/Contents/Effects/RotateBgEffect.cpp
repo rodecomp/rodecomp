@@ -32,19 +32,19 @@ void CRotateBgEffect::Open() {
     for (int index = 0; index < 10; ++index) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = index;
-        particle->unknown_0010 = ring;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = index;
+        particle->rowIndex = ring;
+        particle->groupIndex = 1;
         particle->SetTexture("effect\\storm2.tga");
         particle->alpha = 0;
         particle->scale = 2.0f;
         particle->SetColor(50, 50, 255);
-        float* values = &particle->unknown_0054;
+        float* values = &particle->animationParameter;
         values[0] = 40.0f;
         values[1] = 30.0f;
         values[2] = 5.0f;
-        particle->unknown_004C = start;
+        particle->phaseParameter = start;
         this->particles.push_back(particle);
       }
     }
@@ -56,16 +56,16 @@ void CRotateBgEffect::Open() {
     for (int index = 0; index < 21; ++index) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = index;
-        particle->unknown_0010 = layer;
-        particle->unknown_0008 = 2;
+        particle->effectId = this->id;
+        particle->columnIndex = index;
+        particle->rowIndex = layer;
+        particle->groupIndex = 2;
         particle->SetTexture("effect\\cloud11.tga");
-        particle->unknown_0050 = 30;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+        particle->angleParameter = 30;
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
         particle->alpha = 0;
-        particle->unknown_004C = span;
-        particle->unknown_0054 = 28.0f - static_cast<float>(layer) * 5.0f;
+        particle->phaseParameter = span;
+        particle->animationParameter = 28.0f - static_cast<float>(layer) * 5.0f;
         particle->scale = 7.0f - static_cast<float>(layer);
         this->segmentParticles.push_back(particle);
       }
@@ -100,15 +100,15 @@ void CRotateBgEffect::OnProcess() {
       alpha = std::max(alpha, 0);
       particle->alpha = alpha;
       if (alpha > 0) {
-        const int index = particle->unknown_000C;
-        const float* values = &particle->unknown_0054;
+        const int index = particle->columnIndex;
+        const float* values = &particle->animationParameter;
         float height;
         if (index == 0) {
           this->height = -values[1];
           this->radius = values[0];
           const int step = std::max(rand() % 3, 0);
-          this->angle = (particle->unknown_004C + 3 + step) % 360;
-          particle->unknown_004C = this->angle;
+          this->angle = (particle->phaseParameter + 3 + step) % 360;
+          particle->phaseParameter = this->angle;
           height = this->height;
         } else {
           this->height = values[2] + this->height;
@@ -139,7 +139,7 @@ void CRotateBgEffect::OnProcess() {
       }
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 
   for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
@@ -148,32 +148,32 @@ void CRotateBgEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      if (particle->unknown_000C == 0) {
-        this->segmentAngle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4));
-        this->segmentSpan = particle->unknown_0050;
+      if (particle->columnIndex == 0) {
+        this->segmentAngle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+        this->segmentSpan = particle->angleParameter;
         this->segmentAlpha = particle->alpha;
         this->segmentScale = particle->scale;
         this->segmentReady = 1;
       } else if (!this->segmentReady) {
-        ++particle->unknown_00E8;
+        ++particle->elapsedFrames;
         continue;
       }
 
       this->segmentAngle += 5;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(this->segmentAngle % 360);
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(this->segmentAngle % 360);
       this->segmentSpan += 3;
       if (this->segmentSpan > 180) {
         this->segmentSpan = 180;
       }
 
-      particle->unknown_0050 = this->segmentSpan;
-      if (particle->unknown_00E8 <= 12) {
+      particle->angleParameter = this->segmentSpan;
+      if (particle->elapsedFrames <= 12) {
         ++this->segmentAlpha;
         particle->alpha = this->segmentAlpha;
       } else {
         this->segmentScale += 0.1f;
         particle->scale = this->segmentScale;
-        if (particle->unknown_00E8 > 50) {
+        if (particle->elapsedFrames > 50) {
           if (--this->segmentAlpha < 0) {
             this->segmentAlpha = 0;
           }
@@ -182,9 +182,9 @@ void CRotateBgEffect::OnProcess() {
         }
       }
 
-      const int index = particle->unknown_000C;
-      const int span = particle->unknown_0050;
-      const float rotation = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      const int index = particle->columnIndex;
+      const int span = particle->angleParameter;
+      const float rotation = *reinterpret_cast<float*>(&particle->angleBits);
       int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(span) / 21.0f) * index) + rotation) % 360;
       if (span == 360 && index == 20) {
         angle = static_cast<int>(rotation);
@@ -192,11 +192,11 @@ void CRotateBgEffect::OnProcess() {
 
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const int tilt = particle->unknown_004C;
+      const int tilt = particle->phaseParameter;
       const float tiltCosine = g_cosTable[tilt];
       const float scale = particle->scale;
       const float innerX = scale * cosine;
-      const float innerY = -particle->unknown_0054;
+      const float innerY = -particle->animationParameter;
       const float innerZ = scale * sine;
       const float outerX = innerX + tiltCosine * cosine;
       const float outerY = innerY - g_sinTable[tilt];
@@ -224,7 +224,7 @@ void CRotateBgEffect::OnProcess() {
       this->lastOuter.z = outerZ;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -239,7 +239,7 @@ void CRotateBgEffect::Render() {
 
   for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
     if (CParticle* particle = *it) {
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

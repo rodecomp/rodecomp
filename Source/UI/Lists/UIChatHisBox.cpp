@@ -37,7 +37,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
 
       if (label.find(LookupMessage(MSI_NAMELESS_USER)) != std::string::npos) {
         const std::size_t found = result.find(LookupMessage(MSI_NAMELESS_USER));
-        const std::string player = LookupPlayerName(row[index]->unknown_01F8);
+        const std::string player = LookupPlayerName(row[index]->tipId);
 
         if (std::strcmp(player.c_str(), name) == 0) {
           result.replace(found, std::strlen(LookupMessage(MSI_NAMELESS_USER)), name, std::strlen(name));
@@ -49,14 +49,14 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           position += start + std::strlen(opening.c_str()) + 1;
           row[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
-          const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->unknown_00F8).DisplayName(0));
+          const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->itemPayload).DisplayName(0));
           row[index]->SetTooltip(bracket.c_str());
           row[index]->label = bracket;
           row[index]->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, row[index]->geometry.height);
           this->lines[line] = result;
         }
       } else {
-        const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->unknown_00F8).DisplayName(0));
+        const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->itemPayload).DisplayName(0));
         const std::string tail = result.substr(position);
         const std::size_t found = tail.find(bracket);
         const std::string head = result.substr(0, position + found);
@@ -76,11 +76,11 @@ __declspec(noinline) void UIChatHisBox::RebuildHistory() {
   this->Clear();
   this->ClearNaviLinks();
 
-  for (unsigned int index = 0; index < this->unknown_0100.size(); ++index) {
-    if (this->unknown_0100[index].find(g_itemLinkTagBegin) != std::string::npos) {
-      this->AddText(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
+  for (unsigned int index = 0; index < this->historyTexts.size(); ++index) {
+    if (this->historyTexts[index].find(g_itemLinkTagBegin) != std::string::npos) {
+      this->AddText(this->historyTexts[index].c_str(), this->historyColors[index], this->historyItemIds[index].c_str());
     } else {
-      this->AddTextWrapped(this->unknown_0100[index].c_str(), this->unknown_010C[index], this->unknown_0118[index].c_str());
+      this->AddTextWrapped(this->historyTexts[index].c_str(), this->historyColors[index], this->historyItemIds[index].c_str());
     }
   }
 
@@ -93,9 +93,9 @@ UIChatHisBox::UIChatHisBox() : UIListBox() {
   this->maxLines = 240;
   this->lineHeight = 14;
   this->lines.reserve(240);
-  this->unknown_00E4.reserve(240);
+  this->lineColors.reserve(240);
   this->history.reserve(240);
-  this->unknown_0100.reserve(240);
-  this->unknown_010C.reserve(240);
-  this->unknown_0118.reserve(240);
+  this->historyTexts.reserve(240);
+  this->historyColors.reserve(240);
+  this->historyItemIds.reserve(240);
 }

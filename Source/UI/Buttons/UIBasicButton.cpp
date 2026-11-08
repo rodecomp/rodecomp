@@ -71,7 +71,7 @@ void UIBasicButton::Paint() {
     this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
     this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
   } else {
-    switch (this->geometry.unknown_0030) {
+    switch (this->geometry.state) {
     case 0: {
       DrawButtonSkin(this, "유저인터페이스\\basic_interface\\btn_out_left.bmp", "유저인터페이스\\basic_interface\\btn_out_mid.bmp", "유저인터페이스\\basic_interface\\btn_out_right.bmp");
       const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);

@@ -2,7 +2,7 @@
 
 // OFFSET: 0x005BEA30
 // FUNCTION: fn_03484
-CActorNameCard::CActorNameCard() : unknown_0094(0), received(0) {
+CActorNameCard::CActorNameCard() : groupIconId(0), received(0) {
 }
 
 // OFFSET: 0x005BEB40
@@ -13,12 +13,12 @@ CActorNameCard::~CActorNameCard() = default;
 // FUNCTION: fn_03487
 void CActorNameCard::Reset() {
   this->name.clear();
-  this->unknown_001C.clear();
-  this->unknown_0034.clear();
-  this->unknown_004C.clear();
-  this->unknown_0064.clear();
-  this->unknown_007C.clear();
-  this->unknown_0094 = 0;
+  this->partyName.clear();
+  this->guildName.clear();
+  this->clanName.clear();
+  this->title.clear();
+  this->displayName.clear();
+  this->groupIconId = 0;
 }
 
 // OFFSET: 0x005BF080

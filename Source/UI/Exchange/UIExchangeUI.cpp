@@ -83,8 +83,8 @@ bool UnusedTrueA0F7B0() {
 // FUNCTION: fn_15180
 template <>
 CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A0FA00
@@ -108,7 +108,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearItems() {
 // OFFSET: 0x00A10140
 // FUNCTION: fn_15189
 void CUIExchangeUI::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->m_resolveSkin = true;
   this->Resize(560, 377);
   this->Move(0, 0);
@@ -221,7 +221,7 @@ void CUIExchangeUI::Cancel() {
   }
 
   mode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
-  CUIImageButton* button = this->unknown_0118;
+  CUIImageButton* button = this->cancelButton;
   button->disabled = 1;
   button->Invalidate();
 }
@@ -261,7 +261,7 @@ void CUIExchangeUI::SubmitZeny() {
       amount = value < 0 ? 0 : value;
     }
 
-    mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.unknown_5210 + amount, 0, 0);
+    mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.exchangeMoney + amount, 0, 0);
     mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
     this->lockButton->disabled = 1;
     this->lockButton->Invalidate();
@@ -292,7 +292,7 @@ void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  if (this->firstList->unknown_00C4) {
+  if (this->firstList->layoutFlag) {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
@@ -351,7 +351,7 @@ void CUIExchangeUI::OnInit() {
     this->titleBar->SetTitle(title);
   }
 
-  this->unknown_010C->SetText(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE));
+  this->screenshotLabel->SetText(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE));
 
   for (int count = 10; count != 0; --count) {
     this->firstList->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
@@ -445,13 +445,13 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->partnerName = reinterpret_cast<const char*>(argument1);
     if (argument2 > 0) {
       if (g_serviceType == 6) {
-        this->unknown_00DC->SetText(std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3)));
+        this->partnerText->SetText(std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3)));
       } else {
         std::string job = ShortcutFilename(argument2);
-        this->unknown_00DC->SetText(std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job));
+        this->partnerText->SetText(std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job));
       }
     } else {
-      this->unknown_00DC->SetText(this->partnerName);
+      this->partnerText->SetText(this->partnerName);
     }
     break;
   case UM_MYDRAGCLOSED:
@@ -460,7 +460,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->UpdateZeny(true);
     {
       CUIImageButton* button = this->tradeButton;
-      if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+      if (this->firstList->layoutFlag && this->secondList->layoutFlag) {
         button->disabled = 0;
       } else {
         button->disabled = 1;
@@ -473,7 +473,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->UpdateZeny(false);
     {
       CUIImageButton* button = this->tradeButton;
-      if (this->firstList->unknown_00C4 && this->secondList->unknown_00C4) {
+      if (this->firstList->layoutFlag && this->secondList->layoutFlag) {
         button->disabled = 0;
       } else {
         button->disabled = 1;
@@ -527,17 +527,17 @@ void CUIExchangeUI::BindItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemD
   const int quantity = data.item.quantity;
   const bool visible = quantity > 0;
   item->itemIcon->Show(visible);
-  item->unknown_00F0->Show(visible);
-  item->unknown_00F4->Show(visible);
+  item->quantityText->Show(visible);
+  item->itemNameText->Show(visible);
   item->itemIcon->SetItem(data.item);
 
-  item->unknown_00F0->SetText(quantity > 0 ? std::to_string(data.item.quantity) : "");
-  item->unknown_00F4->SetText(quantity > 0 ? data.item.DisplayName(0) : "");
-  item->unknown_00F4->SetTooltip("", 0);
+  item->quantityText->SetText(quantity > 0 ? std::to_string(data.item.quantity) : "");
+  item->itemNameText->SetText(quantity > 0 ? data.item.DisplayName(0) : "");
+  item->itemNameText->SetTooltip("", 0);
 
   if (data.frozen) {
     item->SetFrozen(true);
-    item->unknown_00E8->Show(0);
+    item->slotBackground->Show(0);
   }
 }
 
@@ -561,15 +561,15 @@ void CUIExchangeUI::UpdateZeny(bool mine) {
   CUIStaticText* third;
   int zeny;
   if (mine) {
-    first = this->unknown_00E8;
-    second = this->unknown_00EC;
-    third = this->unknown_00F0;
-    zeny = g_session.unknown_5210;
+    first = this->ownZenyHighlight;
+    second = this->ownZenyText;
+    third = this->ownZenyShadow;
+    zeny = g_session.exchangeMoney;
   } else {
-    first = this->unknown_00FC;
-    second = this->unknown_0100;
-    third = this->unknown_0104;
-    zeny = g_session.unknown_5214;
+    first = this->partnerZenyHighlight;
+    second = this->partnerZenyText;
+    third = this->partnerZenyShadow;
+    zeny = g_session.otherExchangeMoney;
   }
 
   char text[24];
@@ -591,7 +591,7 @@ void CUIExchangeUI::FreezeItems(bool mine) {
     data.frozen = true;
   }
   list->UpdateScrollBar();
-  list->unknown_00C4 = 1;
+  list->layoutFlag = 1;
   list->Invalidate();
 }
 
@@ -632,49 +632,49 @@ private:
 // OFFSET: 0x00A149B0
 // FUNCTION: fn_15192
 void ExchangeUI::CUIItem::OnCreate(int width, int height) {
-  this->unknown_00E8 = new CUIStaticImage();
-  this->unknown_00E8->SetSize(32, 32);
-  this->unknown_00E8->Move(9, 0);
-  this->unknown_00E8->SetImage(std::string(DecryptName<0x75ADC57D87EFBD8FULL>({'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
+  this->slotBackground = new CUIStaticImage();
+  this->slotBackground->SetSize(32, 32);
+  this->slotBackground->Move(9, 0);
+  this->slotBackground->SetImage(std::string(DecryptName<0x75ADC57D87EFBD8FULL>({'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
                                    '\xEE', '\xCE', '\x86', '\xE4', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x1C',
                                    '\xFB', '\xD8', '\x82', '\xF0', '\x14', '\xAB', '\xF2', '\x18', '\xE6', '\xD9', '\xC1', '\xE5', '\x10', '\xB5', '\xAD'})));
-  this->AddChild(this->unknown_00E8);
+  this->AddChild(this->slotBackground);
 
   this->itemIcon = new CUIGameItem();
   this->itemIcon->SetMode(0);
   this->itemIcon->SetScale(100);
   this->itemIcon->Move(13, 1);
-  this->itemIcon->unknown_0084 = 1;
-  this->itemIcon->unknown_0085 = 1;
+  this->itemIcon->showNameTooltip = 1;
+  this->itemIcon->allowItemInfo = 1;
   this->AddChild(this->itemIcon);
 
-  this->unknown_00F0 = new CUIStaticText();
-  this->unknown_00F0->SetSize(100, 13);
-  this->unknown_00F0->Move(25, 15);
-  this->unknown_00F0->SetText("");
-  this->unknown_00F0->SetFitText(0);
-  this->unknown_00F0->SetAlign(0, 6);
-  this->unknown_00F0->SetFont(std::string(DecryptName<0xC517FB932D95BB6DULL>({'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'})));
-  this->unknown_00F0->SetFontHeight(11);
-  this->unknown_00F0->SetBold(0);
-  this->unknown_00F0->SetColor(0);
-  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
-  this->unknown_00F0->SetOutline(1, 0xFFFFFF);
-  this->AddChild(this->unknown_00F0);
+  this->quantityText = new CUIStaticText();
+  this->quantityText->SetSize(100, 13);
+  this->quantityText->Move(25, 15);
+  this->quantityText->SetText("");
+  this->quantityText->SetFitText(0);
+  this->quantityText->SetAlign(0, 6);
+  this->quantityText->SetFont(std::string(DecryptName<0xC517FB932D95BB6DULL>({'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'})));
+  this->quantityText->SetFontHeight(11);
+  this->quantityText->SetBold(0);
+  this->quantityText->SetColor(0);
+  this->quantityText->SetShadow(0, 0xFFFFFF);
+  this->quantityText->SetOutline(1, 0xFFFFFF);
+  this->AddChild(this->quantityText);
 
-  this->unknown_00F4 = new CUIStaticText();
-  this->unknown_00F4->SetSize(215, 30);
-  this->unknown_00F4->Move(45, 0);
-  this->unknown_00F4->SetText("");
-  this->unknown_00F4->SetFitText(1);
-  this->unknown_00F4->SetAlign(0, 6);
-  this->unknown_00F4->SetFont(std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>({'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'})));
-  this->unknown_00F4->SetFontHeight(12);
-  this->unknown_00F4->SetBold(0);
-  this->unknown_00F4->SetColor(0);
-  this->unknown_00F4->SetShadow(0, 0xFFFFFF);
-  this->unknown_00F4->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00F4);
+  this->itemNameText = new CUIStaticText();
+  this->itemNameText->SetSize(215, 30);
+  this->itemNameText->Move(45, 0);
+  this->itemNameText->SetText("");
+  this->itemNameText->SetFitText(1);
+  this->itemNameText->SetAlign(0, 6);
+  this->itemNameText->SetFont(std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>({'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'})));
+  this->itemNameText->SetFontHeight(12);
+  this->itemNameText->SetBold(0);
+  this->itemNameText->SetColor(0);
+  this->itemNameText->SetShadow(0, 0xFFFFFF);
+  this->itemNameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->itemNameText);
 }
 
 // OFFSET: 0x00A103F0
@@ -737,14 +737,14 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->titleBar->titleText = title;
   this->titleBar->AddChild(title);
 
-  this->unknown_00DC = new CUIStaticText();
-  this->unknown_00DC->SetSize(495, 17);
-  this->unknown_00DC->Move(62, 0);
-  this->unknown_00DC->SetText("");
-  this->unknown_00DC->SetFitText(1);
-  this->unknown_00DC->SetAlign(0, 6);
+  this->partnerText = new CUIStaticText();
+  this->partnerText->SetSize(495, 17);
+  this->partnerText->Move(62, 0);
+  this->partnerText->SetText("");
+  this->partnerText->SetFitText(1);
+  this->partnerText->SetAlign(0, 6);
   {
-    CUIStaticText* partner = this->unknown_00DC;
+    CUIStaticText* partner = this->partnerText;
     const char partnerFontSource[] = {
       '\x28', '\x08', '\x97', '\x4A', '\x1C', '\x07'
     };
@@ -752,18 +752,18 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(partnerFontSource), 0xCD8F077123FB7D6FULL> partnerFontName(partnerFontSource);
     partner->SetFont(std::string(partnerFontName.Text()));
   }
-  this->unknown_00DC->SetFontHeight(12);
-  this->unknown_00DC->SetBold(0);
-  this->unknown_00DC->SetColor(0);
-  this->unknown_00DC->SetShadow(1, 0xB4B4B4);
-  this->unknown_00DC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00DC);
+  this->partnerText->SetFontHeight(12);
+  this->partnerText->SetBold(0);
+  this->partnerText->SetColor(0);
+  this->partnerText->SetShadow(1, 0xB4B4B4);
+  this->partnerText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->partnerText);
 
-  this->unknown_00E0 = new CUIStaticImage();
-  this->unknown_00E0->SetSize(560, 360);
-  this->unknown_00E0->Move(0, 17);
+  this->backgroundImage = new CUIStaticImage();
+  this->backgroundImage->SetSize(560, 360);
+  this->backgroundImage->Move(0, 17);
   {
-    CUIStaticImage* background = this->unknown_00E0;
+    CUIStaticImage* background = this->backgroundImage;
     const char backgroundSource[] = {
       '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xFB',
       '\x22', '\x5A', '\x3A', '\x44', '\x8A', '\xD6', '\x27', '\xED', '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\xFC',
@@ -773,7 +773,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(backgroundSource), 0x9949BFD527532943ULL> backgroundName(backgroundSource);
     background->SetImage(std::string(backgroundName.Text()));
   }
-  this->AddChild(this->unknown_00E0);
+  this->AddChild(this->backgroundImage);
 
   this->firstList = new ExchangeUI::CItemListBox();
   this->firstList->itemWidth = 272;
@@ -844,21 +844,21 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->firstList->AddNewItem();
   this->AddChild(this->firstList);
 
-  this->unknown_00E8 = new CUIStaticText();
-  this->unknown_00E8->SetSize(150, 18);
-  this->unknown_00E8->Move(69, 330);
+  this->ownZenyHighlight = new CUIStaticText();
+  this->ownZenyHighlight->SetSize(150, 18);
+  this->ownZenyHighlight->Move(69, 330);
   {
     const char zenySource[] = {
       '\x97', '\xF5'
     };
     // GLOBAL: gl_25406
     thread_local EncryptedName<sizeof(zenySource), 0xBF2B4B31397FF5A7ULL> zenyName(zenySource);
-    this->unknown_00E8->SetText(zenyName.Text());
+    this->ownZenyHighlight->SetText(zenyName.Text());
   }
-  this->unknown_00E8->SetFitText(0);
-  this->unknown_00E8->SetAlign(2, 6);
+  this->ownZenyHighlight->SetFitText(0);
+  this->ownZenyHighlight->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_00E8;
+    CUIStaticText* text = this->ownZenyHighlight;
     const char zenyFontSource[] = {
       '\xFC', '\xCF', '\x84', '\x56', '\xD7', '\xBF'
     };
@@ -866,28 +866,28 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x83EFBFBB37EDBDBDULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_00E8->SetFontHeight(16);
-  this->unknown_00E8->SetBold(0);
-  this->unknown_00E8->SetColor(0xFFFF00);
-  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
-  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00E8);
+  this->ownZenyHighlight->SetFontHeight(16);
+  this->ownZenyHighlight->SetBold(0);
+  this->ownZenyHighlight->SetColor(0xFFFF00);
+  this->ownZenyHighlight->SetShadow(0, 0xFFFFFF);
+  this->ownZenyHighlight->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->ownZenyHighlight);
 
-  this->unknown_00EC = new CUIStaticText();
-  this->unknown_00EC->SetSize(150, 18);
-  this->unknown_00EC->Move(70, 330);
+  this->ownZenyText = new CUIStaticText();
+  this->ownZenyText->SetSize(150, 18);
+  this->ownZenyText->Move(70, 330);
   {
     const char zenySource[] = {
       '\xBF', '\x99'
     };
     // GLOBAL: gl_25408
     thread_local EncryptedName<sizeof(zenySource), 0x39FF7FB50DEB998FULL> zenyName(zenySource);
-    this->unknown_00EC->SetText(zenyName.Text());
+    this->ownZenyText->SetText(zenyName.Text());
   }
-  this->unknown_00EC->SetFitText(0);
-  this->unknown_00EC->SetAlign(2, 6);
+  this->ownZenyText->SetFitText(0);
+  this->ownZenyText->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_00EC;
+    CUIStaticText* text = this->ownZenyText;
     const char zenyFontSource[] = {
       '\xD6', '\x83', '\x88', '\xBC', '\xBD', '\x93'
     };
@@ -895,28 +895,28 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2FE993D1DDE1F197ULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_00EC->SetFontHeight(16);
-  this->unknown_00EC->SetBold(0);
-  this->unknown_00EC->SetColor(0xFFFF00);
-  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00EC);
+  this->ownZenyText->SetFontHeight(16);
+  this->ownZenyText->SetBold(0);
+  this->ownZenyText->SetColor(0xFFFF00);
+  this->ownZenyText->SetShadow(0, 0xFFFFFF);
+  this->ownZenyText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->ownZenyText);
 
-  this->unknown_00F0 = new CUIStaticText();
-  this->unknown_00F0->SetSize(150, 18);
-  this->unknown_00F0->Move(70, 331);
+  this->ownZenyShadow = new CUIStaticText();
+  this->ownZenyShadow->SetSize(150, 18);
+  this->ownZenyShadow->Move(70, 331);
   {
     const char zenySource[] = {
       '\xFD', '\xF1'
     };
     // GLOBAL: gl_25410
     thread_local EncryptedName<sizeof(zenySource), 0xAD075B8DB599F1CDULL> zenyName(zenySource);
-    this->unknown_00F0->SetText(zenyName.Text());
+    this->ownZenyShadow->SetText(zenyName.Text());
   }
-  this->unknown_00F0->SetFitText(0);
-  this->unknown_00F0->SetAlign(2, 6);
+  this->ownZenyShadow->SetFitText(0);
+  this->ownZenyShadow->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_00F0;
+    CUIStaticText* text = this->ownZenyShadow;
     const char zenyFontSource[] = {
       '\x3E', '\x67', '\xE4', '\x70', '\x5B', '\x0F'
     };
@@ -924,12 +924,12 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2F8B0F37118D157FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_00F0->SetFontHeight(16);
-  this->unknown_00F0->SetBold(0);
-  this->unknown_00F0->SetColor(0x323232);
-  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
-  this->unknown_00F0->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00F0);
+  this->ownZenyShadow->SetFontHeight(16);
+  this->ownZenyShadow->SetBold(0);
+  this->ownZenyShadow->SetColor(0x323232);
+  this->ownZenyShadow->SetShadow(0, 0xFFFFFF);
+  this->ownZenyShadow->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->ownZenyShadow);
 
   this->zenyEdit = new CUIEditBoxEx();
   this->zenyEdit->Create(100, 16, false);
@@ -1015,21 +1015,21 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->secondList->AddNewItem();
   this->AddChild(this->secondList);
 
-  this->unknown_00FC = new CUIStaticText();
-  this->unknown_00FC->SetSize(150, 18);
-  this->unknown_00FC->Move(349, 330);
+  this->partnerZenyHighlight = new CUIStaticText();
+  this->partnerZenyHighlight->SetSize(150, 18);
+  this->partnerZenyHighlight->Move(349, 330);
   {
     const char zenySource[] = {
       '\x2D', '\x05'
     };
     // GLOBAL: gl_25418
     thread_local EncryptedName<sizeof(zenySource), 0xE55723712993051DULL> zenyName(zenySource);
-    this->unknown_00FC->SetText(zenyName.Text());
+    this->partnerZenyHighlight->SetText(zenyName.Text());
   }
-  this->unknown_00FC->SetFitText(0);
-  this->unknown_00FC->SetAlign(2, 6);
+  this->partnerZenyHighlight->SetFitText(0);
+  this->partnerZenyHighlight->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_00FC;
+    CUIStaticText* text = this->partnerZenyHighlight;
     const char zenyFontSource[] = {
       '\x0E', '\x15', '\x84', '\xE4', '\x65', '\x37'
     };
@@ -1037,28 +1037,28 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x793F370985ED674FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_00FC->SetFontHeight(16);
-  this->unknown_00FC->SetBold(0);
-  this->unknown_00FC->SetColor(0xFFFF00);
-  this->unknown_00FC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00FC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00FC);
+  this->partnerZenyHighlight->SetFontHeight(16);
+  this->partnerZenyHighlight->SetBold(0);
+  this->partnerZenyHighlight->SetColor(0xFFFF00);
+  this->partnerZenyHighlight->SetShadow(0, 0xFFFFFF);
+  this->partnerZenyHighlight->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->partnerZenyHighlight);
 
-  this->unknown_0100 = new CUIStaticText();
-  this->unknown_0100->SetSize(150, 18);
-  this->unknown_0100->Move(350, 330);
+  this->partnerZenyText = new CUIStaticText();
+  this->partnerZenyText->SetSize(150, 18);
+  this->partnerZenyText->Move(350, 330);
   {
     const char zenySource[] = {
       '\x4F', '\xD5'
     };
     // GLOBAL: gl_25420
     thread_local EncryptedName<sizeof(zenySource), 0x0F15B16B5BAFD57FULL> zenyName(zenySource);
-    this->unknown_0100->SetText(zenyName.Text());
+    this->partnerZenyText->SetText(zenyName.Text());
   }
-  this->unknown_0100->SetFitText(0);
-  this->unknown_0100->SetAlign(2, 6);
+  this->partnerZenyText->SetFitText(0);
+  this->partnerZenyText->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_0100;
+    CUIStaticText* text = this->partnerZenyText;
     const char zenyFontSource[] = {
       '\x62', '\x83', '\xBE', '\x76', '\xBB', '\x49'
     };
@@ -1066,28 +1066,28 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7DE349D717D7F123ULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_0100->SetFontHeight(16);
-  this->unknown_0100->SetBold(0);
-  this->unknown_0100->SetColor(0xFFFF00);
-  this->unknown_0100->SetShadow(0, 0xFFFFFF);
-  this->unknown_0100->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_0100);
+  this->partnerZenyText->SetFontHeight(16);
+  this->partnerZenyText->SetBold(0);
+  this->partnerZenyText->SetColor(0xFFFF00);
+  this->partnerZenyText->SetShadow(0, 0xFFFFFF);
+  this->partnerZenyText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->partnerZenyText);
 
-  this->unknown_0104 = new CUIStaticText();
-  this->unknown_0104->SetSize(150, 18);
-  this->unknown_0104->Move(350, 331);
+  this->partnerZenyShadow = new CUIStaticText();
+  this->partnerZenyShadow->SetSize(150, 18);
+  this->partnerZenyShadow->Move(350, 331);
   {
     const char zenySource[] = {
       '\xD1', '\x99'
     };
     // GLOBAL: gl_25422
     thread_local EncryptedName<sizeof(zenySource), 0x7321C3814F8799E1ULL> zenyName(zenySource);
-    this->unknown_0104->SetText(zenyName.Text());
+    this->partnerZenyShadow->SetText(zenyName.Text());
   }
-  this->unknown_0104->SetFitText(0);
-  this->unknown_0104->SetAlign(2, 6);
+  this->partnerZenyShadow->SetFitText(0);
+  this->partnerZenyShadow->SetAlign(2, 6);
   {
-    CUIStaticText* text = this->unknown_0104;
+    CUIStaticText* text = this->partnerZenyShadow;
     const char zenyFontSource[] = {
       '\x0E', '\xD3', '\xA6', '\x54', '\x0F', '\xD7'
     };
@@ -1095,12 +1095,12 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7941D76335CFA14FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
   }
-  this->unknown_0104->SetFontHeight(16);
-  this->unknown_0104->SetBold(0);
-  this->unknown_0104->SetColor(0x323232);
-  this->unknown_0104->SetShadow(0, 0xFFFFFF);
-  this->unknown_0104->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_0104);
+  this->partnerZenyShadow->SetFontHeight(16);
+  this->partnerZenyShadow->SetBold(0);
+  this->partnerZenyShadow->SetColor(0x323232);
+  this->partnerZenyShadow->SetShadow(0, 0xFFFFFF);
+  this->partnerZenyShadow->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->partnerZenyShadow);
 
   this->logCheckBox = new CUICheckBox();
   this->logCheckBox->SetSize(10, 10);
@@ -1143,14 +1143,14 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->logCheckBox->Invalidate();
   this->AddChild(this->logCheckBox);
 
-  this->unknown_010C = new CUIStaticText();
-  this->unknown_010C->SetSize(135, 14);
-  this->unknown_010C->Move(123, 356);
-  this->unknown_010C->SetText("");
-  this->unknown_010C->SetFitText(0);
-  this->unknown_010C->SetAlign(0, 6);
+  this->screenshotLabel = new CUIStaticText();
+  this->screenshotLabel->SetSize(135, 14);
+  this->screenshotLabel->Move(123, 356);
+  this->screenshotLabel->SetText("");
+  this->screenshotLabel->SetFitText(0);
+  this->screenshotLabel->SetAlign(0, 6);
   {
-    CUIStaticText* label = this->unknown_010C;
+    CUIStaticText* label = this->screenshotLabel;
     const char labelFontSource[] = {
       '\x22', '\x86', '\xBB', '\x34', '\xE0', '\x13'
     };
@@ -1158,12 +1158,12 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     thread_local EncryptedName<sizeof(labelFontSource), 0x176F138D5DD7F365ULL> labelFontName(labelFontSource);
     label->SetFont(std::string(labelFontName.Text()));
   }
-  this->unknown_010C->SetFontHeight(12);
-  this->unknown_010C->SetBold(1);
-  this->unknown_010C->SetColor(0xFF);
-  this->unknown_010C->SetShadow(0, 0xFFFFFF);
-  this->unknown_010C->SetOutline(1, 0xFFFFFF);
-  this->AddChild(this->unknown_010C);
+  this->screenshotLabel->SetFontHeight(12);
+  this->screenshotLabel->SetBold(1);
+  this->screenshotLabel->SetColor(0xFF);
+  this->screenshotLabel->SetShadow(0, 0xFFFFFF);
+  this->screenshotLabel->SetOutline(1, 0xFFFFFF);
+  this->AddChild(this->screenshotLabel);
 
   this->lockButton = new CUIImageButton();
   this->lockButton->SetSize(42, 20);
@@ -1246,12 +1246,12 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   }
   this->AddChild(this->tradeButton);
 
-  this->unknown_0118 = new CUIImageButton();
-  this->unknown_0118->SetSize(42, 20);
-  this->unknown_0118->Move(510, 354);
-  this->unknown_0118->SetOnClick([this]() { this->Cancel(); });
-  this->unknown_0118->disabled = 0;
-  this->unknown_0118->Invalidate();
+  this->cancelButton = new CUIImageButton();
+  this->cancelButton->SetSize(42, 20);
+  this->cancelButton->Move(510, 354);
+  this->cancelButton->SetOnClick([this]() { this->Cancel(); });
+  this->cancelButton->disabled = 0;
+  this->cancelButton->Invalidate();
   {
     const char disabledSource[] = {
       '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x51',
@@ -1281,22 +1281,22 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     // GLOBAL: gl_25440
     thread_local EncryptedName<sizeof(normalSource), 0x2DCB7567394DC1ABULL> normalName(normalSource);
     const std::string normal(normalName.Text());
-    this->unknown_0118->SetImages(normal, hover, pressed, disabled);
+    this->cancelButton->SetImages(normal, hover, pressed, disabled);
   }
-  this->AddChild(this->unknown_0118);
+  this->AddChild(this->cancelButton);
 }
 
 // OFFSET: 0x00A16C50
 // FUNCTION: fn_15282
 CUIExchangeUI::CUIExchangeUI()
-    : titleBar(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), firstList(nullptr), unknown_00E8(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr),
-      zenyEdit(nullptr), secondList(nullptr), unknown_00FC(nullptr), unknown_0100(nullptr), unknown_0104(nullptr), logCheckBox(nullptr), unknown_010C(nullptr),
-      lockButton(nullptr), tradeButton(nullptr), unknown_0118(nullptr) {
+    : titleBar(nullptr), partnerText(nullptr), backgroundImage(nullptr), firstList(nullptr), ownZenyHighlight(nullptr), ownZenyText(nullptr), ownZenyShadow(nullptr),
+      zenyEdit(nullptr), secondList(nullptr), partnerZenyHighlight(nullptr), partnerZenyText(nullptr), partnerZenyShadow(nullptr), logCheckBox(nullptr), screenshotLabel(nullptr),
+      lockButton(nullptr), tradeButton(nullptr), cancelButton(nullptr) {
 }
 
 // OFFSET: 0x00A16E10
 // FUNCTION: fn_15283
-ExchangeUI::CUIItem::CUIItem() : CUIListItem(), unknown_00E8(nullptr), itemIcon(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr) {
+ExchangeUI::CUIItem::CUIItem() : CUIListItem(), slotBackground(nullptr), itemIcon(nullptr), quantityText(nullptr), itemNameText(nullptr) {
 }
 
 // OFFSET: 0x00A10030
@@ -1345,7 +1345,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (ExchangeUI::CUIItem* other : this->items) {
@@ -1354,7 +1354,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
           }
         }
         listItem->SetSelected(1);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         ExchangeUI::CUIItem* selectedItem = dynamic_cast<ExchangeUI::CUIItem*>(listItem);

@@ -33,7 +33,7 @@ void UIMerchantShopTitle::OnCreate(int, int) {
 // FUNCTION: fn_10811
 void UIMerchantShopTitle::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const std::uint32_t color = this->ownerAid == g_session.unknown_5BF0 ? 0x7DFAFF : 0xFFFFFF;
+  const std::uint32_t color = this->ownerAid == g_session.storeSearchOwnerAid ? 0x7DFAFF : 0xFFFFFF;
   DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height - 6, color);
   DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 10, 0xC3C3C3);
   const char* icon = this->buyingShop != 0 ? "유저인터페이스\\buyingshop.bmp" : "유저인터페이스\\shop.bmp";
@@ -49,10 +49,10 @@ void UIMerchantShopTitle::OnLBtnDown(int, int) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
-    if (g_windowMgr.unknown_0308 == 0) {
+    if (g_windowMgr.merchantItemPurchaseWnd == 0) {
       mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
     }
-  } else if (g_windowMgr.unknown_0418 == 0) {
+  } else if (g_windowMgr.buyingShopItemsWnd == 0) {
     mode->SendMsg(MM_REQ_BUY_FROMMC, this->ownerAid, 0, 0, 0);
   }
 }
@@ -62,10 +62,10 @@ void UIMerchantShopTitle::OnLBtnDown(int, int) {
 void UIMerchantShopTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
-    if (g_windowMgr.unknown_0308 == 0) {
+    if (g_windowMgr.merchantItemPurchaseWnd == 0) {
       mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
     }
-  } else if (g_windowMgr.unknown_0418 == 0) {
+  } else if (g_windowMgr.buyingShopItemsWnd == 0) {
     mode->SendMsg(MM_REQ_BUY_FROMMC, this->ownerAid, 0, 0, 0);
   }
 }
@@ -85,8 +85,8 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 void UIMerchantShopTitle::OnRBtnDown(int, int) {
   if (g_serviceOptions.Get(167)) {
     g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
-    g_session.unknown_1760.clear();
-    g_session.unknown_1748.clear();
+    g_session.merchantHopeToSellItems.clear();
+    g_session.merchantMirrorItems.clear();
   }
 }
 
@@ -122,8 +122,8 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     title = title.substr(0, end);
   }
 
-  this->unknown_0084 = static_cast<std::int16_t>(b);
-  switch (this->unknown_0084) {
+  this->fontStyle = static_cast<std::int16_t>(b);
+  switch (this->fontStyle) {
   case 1:
     this->label->fontFamily = 21;
     break;

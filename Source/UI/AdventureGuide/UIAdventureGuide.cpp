@@ -516,7 +516,7 @@ void CUIAdventureGuide::OnClose() {
 // OFFSET: 0x009C14F0
 // FUNCTION: fn_13991
 void CUIAdventureGuide::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->Resize(750, 468);
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
   this->OnCreate(this->geometry.width, this->geometry.height);
@@ -553,31 +553,31 @@ void CUIIntro::OnSelectContents(CUITabInfo*, const Guide_Intro::Contents&) {
 // FUNCTION: fn_14318
 void CUIItem::OnSelectItem(CUIItemInfo* item, const CItemData&) {
   if (item) {
-    this->unknown_008C = item->unknown_0108;
+    this->navigationTarget = item->description;
   }
-  const bool selected = !this->unknown_008C.empty();
-  this->unknown_0084->Show(selected);
-  this->unknown_0088->Show(selected);
+  const bool selected = !this->navigationTarget.empty();
+  this->findButton->Show(selected);
+  this->navigationButton->Show(selected);
 }
 
 // OFFSET: 0x009DC270
 // FUNCTION: fn_14319
 void CUIMonster::OnSelectMonster(CUIMonsterInfo* item, const CMonsterData&) {
   if (item) {
-    this->unknown_0088 = item->unknown_00E8->unknown_0098;
+    this->navigationTarget = item->nameText->displayText;
   }
-  this->unknown_0084->Show(!this->unknown_0088.empty());
+  this->navigationButton->Show(!this->navigationTarget.empty());
 }
 
 // OFFSET: 0x009DC2C0
 // FUNCTION: fn_14320
 void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
   if (item) {
-    this->unknown_008C = item->unknown_00F8;
+    this->navigationTarget = item->title;
   }
-  const bool selected = !this->unknown_008C.empty();
-  this->unknown_0084->Show(selected);
-  this->unknown_0088->Show(selected);
+  const bool selected = !this->navigationTarget.empty();
+  this->findButton->Show(selected);
+  this->navigationButton->Show(selected);
 }
 
 // OFFSET: 0x009DC320
@@ -594,11 +594,11 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->image->SetImage(image);
   reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
   item->SetDescription(data.type, info.Description());
-  reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->Clear();
+  reinterpret_cast<CUITextViewer*>(item->sourcesViewer)->Clear();
   for (const std::string& value : data.values) {
-    reinterpret_cast<CUITextViewer*>(item->unknown_00F8)->AddLine(value);
+    reinterpret_cast<CUITextViewer*>(item->sourcesViewer)->AddLine(value);
   }
-  item->unknown_0108 = data.text;
+  item->description = data.text;
 }
 
 // OFFSET: 0x009DC770
@@ -608,27 +608,27 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
   case 1:
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
-    owner->unknown_00F8 = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
+    owner->title = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
     owner->questId = data.questId;
-    owner->unknown_00E8->Show(g_renewQuestMgr->IsNewQuest(data.questId));
+    owner->stampImage->Show(g_renewQuestMgr->IsNewQuest(data.questId));
     break;
   case 3:
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
-    owner->unknown_00F8 = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
-    owner->unknown_00E8->Show(0);
+    owner->title = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
+    owner->stampImage->Show(0);
     return;
   case 4:
     owner->SetTip(data.id);
     owner->SetViewerLines(data.rewards);
-    owner->unknown_00F8 = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
-    owner->unknown_00E8->Show(0);
+    owner->title = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
+    owner->stampImage->Show(0);
     return;
   }
 }
@@ -660,8 +660,8 @@ void CUIQuest::Paint() {
 // OFFSET: 0x009DCFF0
 // FUNCTION: fn_14331
 void CUIIntro::OnInit() {
-  const std::string& title = g_adventureGuideMgr->unknown_0014;
-  const std::map<int, AdventureGuideText>& texts = g_adventureGuideMgr->unknown_002C;
+  const std::string& title = g_adventureGuideMgr->introTitle;
+  const std::map<int, AdventureGuideText>& texts = g_adventureGuideMgr->introTexts;
   if (texts.empty()) {
     return;
   }
@@ -688,15 +688,15 @@ void CUIQuest::OnInit() {
 // OFFSET: 0x009DD1D0
 // FUNCTION: fn_14334
 void CUIItemInfo::OnInit() {
-  this->unknown_00F0->scrollBar->SetHidden(1);
-  this->unknown_00F4->scrollBar->SetHidden(1);
-  this->unknown_00F8->scrollBar->SetHidden(1);
+  this->descriptionViewer->scrollBar->SetHidden(1);
+  this->optionsViewer->scrollBar->SetHidden(1);
+  this->sourcesViewer->scrollBar->SetHidden(1);
 }
 
 // OFFSET: 0x009DEF40
 // FUNCTION: fn_14358
 void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& description) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->descriptionViewer)->Clear();
 
   if (type == 5) {
     this->type = 5;
@@ -721,7 +721,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
     while (!match.empty()) {
       std::string line = match.prefix().str() + match[0].str();
-      reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->AddLine(line);
+      reinterpret_cast<CUITextViewer*>(this->descriptionViewer)->AddLine(line);
       ++lines;
       text = match.suffix().str();
       text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
@@ -747,19 +747,19 @@ void CUIMonster::OnInit() {
 // OFFSET: 0x009DD680
 // FUNCTION: fn_14337
 void CUIMonsterInfo::OnInit() {
-  this->unknown_00EC->scrollBar->SetHidden(1);
-  this->unknown_00F0->scrollBar->SetHidden(1);
+  this->detailsViewer->scrollBar->SetHidden(1);
+  this->valuesViewer->scrollBar->SetHidden(1);
 }
 
 // OFFSET: 0x009DD6C0
 // FUNCTION: fn_14339
 void CUIQuestInfo::OnInit() {
-  this->unknown_00EC->scrollBar->SetHidden(1);
-  CUIVScrollBar* first = this->unknown_00EC->scrollBar;
+  this->titleViewer->scrollBar->SetHidden(1);
+  CUIVScrollBar* first = this->titleViewer->scrollBar;
   first->dragging = 0;
   first->Invalidate();
-  this->unknown_00F0->scrollBar->SetHidden(1);
-  CUIVScrollBar* last = this->unknown_00F4->scrollBar;
+  this->linesViewer->scrollBar->SetHidden(1);
+  CUIVScrollBar* last = this->statusViewer->scrollBar;
   last->dragging = 1;
   last->Invalidate();
 }
@@ -767,7 +767,7 @@ void CUIQuestInfo::OnInit() {
 // OFFSET: 0x009DD720
 // FUNCTION: fn_14340
 void CUISubTab::OnInit() {
-  this->unknown_00EC->Show(0);
+  this->stampImage->Show(0);
 }
 
 // OFFSET: 0x009DD730
@@ -783,18 +783,18 @@ void CUITabInfo::OnInit() {
 // OFFSET: 0x009DC0F0
 // FUNCTION: fn_14316
 void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents) {
-  item->unknown_00E8->SetText(contents.first);
-  item->unknown_00EC->SetText(contents.second);
+  item->titleText->SetText(contents.first);
+  item->descriptionText->SetText(contents.second);
 }
 
 // OFFSET: 0x009E0350
 // FUNCTION: fn_14361
 void CUIQuestInfo::SetTitle(int id) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Clear();
 
   const TipBoxEntry& entry = g_itemTagOwner->GetTip(id);
   if (entry.title.empty() || entry.paragraphs.empty()) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(std::to_string(id));
+    reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(std::to_string(id));
     return;
   }
 
@@ -808,8 +808,8 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(text);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(1);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(text);
 
   text = entry.paragraphs[0];
   std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
@@ -819,43 +819,43 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(text);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(0);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(text);
 }
 
 // OFFSET: 0x009DFAD0
 // FUNCTION: fn_14359
 void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->Clear();
   if (first == true) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   }
   if (second == true) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
   }
   if (third == true) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
   }
 }
 
 // OFFSET: 0x009E07B0
 // FUNCTION: fn_14362
 void CUIQuestInfo::SetViewerLines(const std::vector<std::string>& lines) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->Clear();
   for (const std::string& line : lines) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->AddLine(line);
+    reinterpret_cast<CUITextViewer*>(this->linesViewer)->AddLine(line);
   }
 }
 
@@ -874,25 +874,25 @@ void CUIItem::LoadPage(int type, int id) {
   for (const auto& [key, entry] : entries) {
     CItemData data;
     data.id = key;
-    data.first = entry.unknown_0000;
-    data.second = entry.unknown_0001;
-    data.third = entry.unknown_0002;
-    data.unknown_0008 = entry.unknown_0004;
-    data.unknown_000C = entry.unknown_0008;
+    data.first = entry.firstFlag;
+    data.second = entry.secondFlag;
+    data.third = entry.thirdFlag;
+    data.categoryId = entry.minLevel;
+    data.categoryIndex = entry.maxLevel;
     data.text = entry.text;
     data.values = entry.values;
     data.type = type;
     this->itemList->data.push_back(data);
   }
   this->itemList->UpdateScrollBar();
-  this->unknown_0084->Show(0);
-  this->unknown_0088->Show(0);
+  this->findButton->Show(0);
+  this->navigationButton->Show(0);
 }
 
 // OFFSET: 0x009DDE50
 // FUNCTION: fn_14350
 void CUIMonster::LoadPage(int, int) {
-  this->unknown_0084->Show(0);
+  this->navigationButton->Show(0);
 }
 
 // OFFSET: 0x009DDE60
@@ -904,25 +904,25 @@ void CUIQuest::LoadPage(int type, int id) {
   for (const auto& [key, content] : contents) {
     CQuestInfo data;
     data.id = key;
-    data.unknown_0004 = content.unknown_0000;
-    data.unknown_0008 = content.unknown_0004;
-    data.unknown_000C = content.unknown_0008;
-    data.questId = content.unknown_000C;
+    data.categoryType = content.flag;
+    data.categoryId = content.minLevel;
+    data.categoryIndex = content.maxLevel;
+    data.questId = content.questId;
     data.title = content.first;
     data.text = content.second;
     data.rewards = content.values;
     data.type = type;
     this->questList->data.push_back(data);
-    if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.unknown_000C)) {
-      g_renewQuestMgr->AddStatusRequest(content.unknown_000C);
+    if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.questId)) {
+      g_renewQuestMgr->AddStatusRequest(content.questId);
     }
   }
   this->questList->UpdateScrollBar();
   if (type == 1) {
     g_renewQuestMgr->SendQuestStatusRequest();
   }
-  this->unknown_0084->Show(0);
-  this->unknown_0088->Show(0);
+  this->findButton->Show(0);
+  this->navigationButton->Show(0);
 }
 
 // OFFSET: 0x009DE410
@@ -933,7 +933,7 @@ void CUITab::SetSelected(bool selected) {
   if (this->subTabs) {
     this->subTabs->Show(expand);
   }
-  this->Resize(this->geometry.width, this->unknown_0110 + (expand ? this->subTabs->geometry.height : 0));
+  this->Resize(this->geometry.width, this->collapsedHeight + (expand ? this->subTabs->geometry.height : 0));
   CUIListBox<CUITab>* list = dynamic_cast<CUIListBox<CUITab>*>(this->parent);
   if (list) {
     list->UpdateScrollBar();
@@ -1017,9 +1017,9 @@ void CUIAdventureGuide::OnInit() {
   for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
     AdventureGuide::CUITab* tab = this->tabs->CreateItem();
     tab->type = type;
-    tab->unknown_00E8->SetText(intro.text);
-    tab->unknown_00F0 = intro.title;
-    tab->unknown_0110 = this->tabs->rowHeight;
+    tab->labelText->SetText(intro.text);
+    tab->title = intro.title;
+    tab->collapsedHeight = this->tabs->rowHeight;
 
     auto page = pages.find(tab->type);
     if (page != pages.end() && page->first == tab->type) {
@@ -1037,14 +1037,14 @@ void CUIAdventureGuide::OnInit() {
         subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
         for (const auto& [id, detail] : details) {
           AdventureGuide::CUISubTab* subTab = subTabs->CreateItem();
-          subTab->unknown_00E8->SetText(detail.text);
+          subTab->labelText->SetText(detail.text);
           subTab->id = id;
-          subTab->unknown_00F4 = detail.unknown_0008;
+          subTab->questId = detail.questId;
           if (tab->type == 1) {
-            const bool isNew = g_renewQuestMgr->IsNewQuest(detail.unknown_0008);
-            subTab->unknown_00EC->Show(isNew);
+            const bool isNew = g_renewQuestMgr->IsNewQuest(detail.questId);
+            subTab->stampImage->Show(isNew);
             if (!isNew) {
-              g_renewQuestMgr->AddStatusRequest(detail.unknown_0008);
+              g_renewQuestMgr->AddStatusRequest(detail.questId);
             }
           }
         }
@@ -1065,11 +1065,11 @@ void CUIAdventureGuide::OnInit() {
 // OFFSET: 0x009DE7D0
 // FUNCTION: fn_14356
 void AdventureGuide::CUIQuestInfo::SetTip(int id) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Clear();
 
   const TipBoxEntry& tip = g_itemTagOwner->GetTip(id);
   if (tip.title.empty() || tip.paragraphs.empty()) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(std::to_string(id));
+    reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(std::to_string(id));
     return;
   }
 
@@ -1083,8 +1083,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(true);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(title);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(true);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(title);
 
   title = tip.paragraphs.front();
   std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\n"));
@@ -1093,8 +1093,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   }
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(false);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(title);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(false);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(title);
 }
 
 // OFFSET: 0x009DEBF0
@@ -1108,10 +1108,10 @@ void CUIAdventureGuide::MarkQuest(int questId) {
     if (tab->subTabs) {
       std::list<AdventureGuide::CUISubTab*> subTabs = tab->subTabs->items;
       auto found = std::find_if(subTabs.begin(), subTabs.end(), [questId](AdventureGuide::CUISubTab* subTab) {
-        return subTab->unknown_00F4 == static_cast<unsigned int>(questId);
+        return subTab->questId == static_cast<unsigned int>(questId);
       });
       if (found != subTabs.end()) {
-        (*found)->unknown_00EC->Show(1);
+        (*found)->stampImage->Show(1);
       }
     }
 
@@ -1122,7 +1122,7 @@ void CUIAdventureGuide::MarkQuest(int questId) {
         return item->questId == questId;
       });
       if (found != items.end()) {
-        (*found)->unknown_00E8->Show(1);
+        (*found)->stampImage->Show(1);
       }
     }
   }
@@ -1131,7 +1131,7 @@ void CUIAdventureGuide::MarkQuest(int questId) {
 // OFFSET: 0x009DC140
 // FUNCTION: fn_14317
 void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
-  this->titleText->SetText(tab->unknown_00F0);
+  this->titleText->SetText(tab->title);
   AdventureGuide::CUIPage* page = tab->page;
   if (!page) {
     return;
@@ -1255,7 +1255,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(this->nameText);
 
   CUITextViewer* description = new CUITextViewer();
-  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(description);
+  this->descriptionViewer = reinterpret_cast<CUIStaticText*>(description);
   description->SetSize(173, 97);
   description->Move(165, 26);
   description->SetTextOffset(0, 6);
@@ -1336,7 +1336,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(description);
 
   CUITextViewer* options = new CUITextViewer();
-  this->unknown_00F4 = reinterpret_cast<CUIStaticText*>(options);
+  this->optionsViewer = reinterpret_cast<CUIStaticText*>(options);
   options->SetSize(115, 90);
   options->Move(338, 26);
   options->SetTextOffset(0, 8);
@@ -1417,7 +1417,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(options);
 
   CUITextViewer* sources = new CUITextViewer();
-  this->unknown_00F8 = reinterpret_cast<CUIStaticText*>(sources);
+  this->sourcesViewer = reinterpret_cast<CUIStaticText*>(sources);
   sources->SetSize(108, 118);
   sources->Move(480, 5);
   sources->SetTextOffset(0, 6);
@@ -1501,14 +1501,14 @@ void CUIItemInfo::OnCreate(int width, int height) {
 // OFFSET: 0x009CC580
 // FUNCTION: fn_14005
 void CUIMonsterInfo::OnCreate(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText();
-  this->unknown_00E8->SetSize(280, 12);
-  this->unknown_00E8->Move(165, 19);
-  this->unknown_00E8->SetText("");
-  this->unknown_00E8->SetFitText(0);
-  this->unknown_00E8->SetAlign(0, 0);
+  this->nameText = new CUIStaticText();
+  this->nameText->SetSize(280, 12);
+  this->nameText->Move(165, 19);
+  this->nameText->SetText("");
+  this->nameText->SetFitText(0);
+  this->nameText->SetAlign(0, 0);
   {
-    CUIStaticText* name = this->unknown_00E8;
+    CUIStaticText* name = this->nameText;
     name->SetFont(std::string([]() {
       constexpr char bytes[] = {'\x82', '\x58', '\x47', '\x56', '\xE4', '\x1D'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1516,19 +1516,19 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->unknown_00E8->SetFontHeight(12);
-  this->unknown_00E8->SetBold(0);
-  this->unknown_00E8->SetColor(0xCE6B52);
-  this->unknown_00E8->SetShadow(1, 0xDEDEDE);
-  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00E8);
+  this->nameText->SetFontHeight(12);
+  this->nameText->SetBold(0);
+  this->nameText->SetColor(0xCE6B52);
+  this->nameText->SetShadow(1, 0xDEDEDE);
+  this->nameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->nameText);
 
-  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetSize(288, 84);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Move(165, 39);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextOffset(0, 6);
+  this->detailsViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetSize(288, 84);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->Move(165, 39);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextOffset(0, 6);
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
     details->SetFont(std::string([]() {
       constexpr char bytes[] = {'\x1C', '\x26', '\x33', '\xB4', '\xEA', '\x9F'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1536,17 +1536,17 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetPadding(0, 0, 0, 0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetScrollBarSize(8, 84);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetScrollStep(20);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetFontHeight(12);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetBold(0);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextColor(0);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetOutline(0, 0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetLineSpacing(6);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetBackgroundColor(0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetPadding(0, 0, 0, 0);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetScrollBarSize(8, 84);
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetScrollStep(20);
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
     details->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\xB7', '\x38', '\x47', '\xE7', '\xE3', '\x9D', '\x24', '\xA2', '\xB1', '\x73', '\x47', '\xD1', '\x9E', '\xE9', '\xBD', '\x2E', '\x13', '\xE1', '\xE2',
@@ -1566,7 +1566,7 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
     details->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x11', '\xF4', '\x57', '\x1F', '\xF9', '\x49', '\x2E', '\xE2', '\x17', '\xBF', '\x57', '\x29', '\x84', '\x3D', '\xB7', '\x6E', '\xB5', '\x2D', '\xF2',
@@ -1578,7 +1578,7 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
     details->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\xB5', '\x94', '\xC3', '\xD5', '\xD3', '\x0F', '\x64', '\xA6', '\xB3', '\xDF', '\xC3', '\xE3', '\xAE', '\x7B', '\xFD', '\x2A', '\x11', '\x4D', '\x66',
@@ -1605,14 +1605,14 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_00EC);
+  this->AddChild(this->detailsViewer);
 
-  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetSize(108, 118);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Move(480, 5);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextOffset(0, 6);
+  this->valuesViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetSize(108, 118);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->Move(480, 5);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetTextOffset(0, 6);
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
     values->SetFont(std::string([]() {
       constexpr char bytes[] = {'\xD8', '\xA8', '\xEF', '\x76', '\x1A', '\x45'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1620,17 +1620,17 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetPadding(0, 0, 0, 0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetScrollBarSize(8, 118);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetScrollStep(20);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetFontHeight(12);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetBold(0);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetTextColor(0);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetOutline(0, 0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetLineSpacing(6);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetBackgroundColor(0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetPadding(0, 0, 0, 0);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetScrollBarSize(8, 118);
+  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetScrollStep(20);
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
     values->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\x4F', '\xF6', '\xA1', '\x11', '\x75', '\xD7', '\xC6', '\x0A', '\x49', '\xBD', '\xA1', '\x27', '\x08', '\xA3', '\x5F', '\x86', '\xEB', '\x2F', '\x04',
@@ -1650,7 +1650,7 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
     values->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x15', '\x96', '\xEB', '\xB3', '\x27', '\x69', '\x52', '\x68', '\x13', '\xDD', '\xEB', '\x85', '\x5A', '\x1D', '\xCB', '\xE4', '\xB1', '\x4F', '\x4E',
@@ -1662,7 +1662,7 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
     values->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\xB3', '\x40', '\x7B', '\x2B', '\x15', '\x2D', '\x6E', '\x32', '\xB5', '\x0B', '\x7B', '\x1D', '\x68', '\x59', '\xF7', '\xBE', '\x17', '\x99', '\xDE',
@@ -1689,17 +1689,17 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_00F0);
+  this->AddChild(this->valuesViewer);
 }
 
 // OFFSET: 0x009CFAF0
 // FUNCTION: fn_14007
 void CUIQuestInfo::OnCreate(int width, int height) {
-  this->unknown_00E8 = new CUIStaticImage();
-  this->unknown_00E8->SetSize(85, 70);
-  this->unknown_00E8->Move(250, 10);
+  this->stampImage = new CUIStaticImage();
+  this->stampImage->SetSize(85, 70);
+  this->stampImage->Move(250, 10);
   {
-    CUIStaticImage* stamp = static_cast<CUIStaticImage*>(this->unknown_00E8);
+    CUIStaticImage* stamp = static_cast<CUIStaticImage*>(this->stampImage);
     stamp->SetImage(std::string([]() {
       constexpr char bytes[] = {
         '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\xB0', '\x95', '\xB1', '\x5C',
@@ -1710,14 +1710,14 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_00E8);
+  this->AddChild(this->stampImage);
 
-  this->unknown_00EC = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetSize(360, 57);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Move(25, 13);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextOffset(0, 0);
+  this->titleViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetSize(360, 57);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Move(25, 13);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetTextOffset(0, 0);
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
     title->SetFont(std::string([]() {
       constexpr char bytes[] = {'\x32', '\xB8', '\x81', '\x34', '\x06', '\x65'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1725,17 +1725,17 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetPadding(15, 5, 5, 5);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetScrollBarSize(8, 87);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetScrollStep(20);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetFontHeight(12);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(1);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetTextColor(0);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetOutline(0, 0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetLineSpacing(6);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBackgroundColor(0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetPadding(15, 5, 5, 5);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetScrollBarSize(8, 87);
+  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetScrollStep(20);
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
     title->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\x3D', '\x16', '\x7B', '\xDB', '\x5F', '\x33', '\x84', '\x84', '\x3B', '\x5D', '\x7B', '\xED', '\x22', '\x47', '\x1D', '\x08', '\x99', '\xCF', '\xDE',
@@ -1755,7 +1755,7 @@ void CUIQuestInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
     title->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\xAB', '\x16', '\x07', '\xF5', '\xA7', '\x41', '\x38', '\x7A', '\xAD', '\x5D', '\x07', '\xC3', '\xDA', '\x35', '\xA1', '\xF6', '\x0F', '\xCF', '\xA2',
@@ -1767,7 +1767,7 @@ void CUIQuestInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
     title->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\x4F', '\x36', '\x2B', '\xF7', '\x75', '\xB1', '\x3A', '\xF4', '\x49', '\x7D', '\x2B', '\xC1', '\x08', '\xC5', '\xA3', '\x78', '\xEB', '\xEF', '\x8E',
@@ -1794,14 +1794,14 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_00EC);
+  this->AddChild(this->titleViewer);
 
-  this->unknown_00F0 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetSize(200, 87);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Move(400, 5);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextOffset(0, 6);
+  this->linesViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetSize(200, 87);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->Move(400, 5);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetTextOffset(0, 6);
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
     lines->SetFont(std::string([]() {
       constexpr char bytes[] = {'\x38', '\x60', '\xE1', '\x78', '\x5A', '\x0F'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1809,17 +1809,17 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetPadding(15, 5, 5, 5);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetScrollBarSize(8, 87);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->SetScrollStep(20);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetFontHeight(12);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetBold(1);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetTextColor(0);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetOutline(0, 0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetLineSpacing(6);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetBackgroundColor(0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetPadding(15, 5, 5, 5);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetScrollBarSize(8, 87);
+  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetScrollStep(20);
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
     lines->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\xBF', '\x7A', '\x6F', '\xA1', '\xAB', '\x7F', '\xD0', '\xC2', '\xB9', '\x31', '\x6F', '\x97', '\xD6', '\x0B', '\x49', '\x4E', '\x1B', '\xA3', '\xCA',
@@ -1839,7 +1839,7 @@ void CUIQuestInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
     lines->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x21', '\x36', '\x47', '\xB5', '\x41', '\x0D', '\xE4', '\xBE', '\x27', '\x7D', '\x47', '\x83', '\x3C', '\x79', '\x7D', '\x32', '\x85', '\xEF', '\xE2',
@@ -1851,7 +1851,7 @@ void CUIQuestInfo::OnCreate(int width, int height) {
     }()));
   }
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->unknown_00F0);
+    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
     lines->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\x8F', '\x0E', '\x0F', '\xCF', '\xA3', '\x19', '\x84', '\xB4', '\x89', '\x45', '\x0F', '\xF9', '\xDE', '\x6D', '\x1D', '\x38', '\x2B', '\xD7', '\xAA',
@@ -1878,14 +1878,14 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_00F0);
+  this->AddChild(this->linesViewer);
 
-  this->unknown_00F4 = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetSize(360, 13);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->Move(25, 73);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextOffset(0, 0);
+  this->statusViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetSize(360, 13);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->Move(25, 73);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextOffset(0, 0);
   {
-    CUITextViewer* status = reinterpret_cast<CUITextViewer*>(this->unknown_00F4);
+    CUITextViewer* status = reinterpret_cast<CUITextViewer*>(this->statusViewer);
     status->SetFont(std::string([]() {
       constexpr char bytes[] = {'\x5A', '\x70', '\xFF', '\x40', '\x1C', '\x23'};
       constexpr EncryptedSource<6> source(bytes);
@@ -1893,19 +1893,19 @@ void CUIQuestInfo::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetPadding(15, 0, 3, 0);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetScrollBarSize(8, 12);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetScrollStep(1);
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetScrollBarButtonImages("", "");
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetScrollBarBackground("");
-  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetScrollBarThumbImages("", "", "");
-  this->AddChild(this->unknown_00F4);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetFontHeight(12);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetBold(0);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetOutline(0, 0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetLineSpacing(6);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetBackgroundColor(0xFFFF00FF);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetPadding(15, 0, 3, 0);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarSize(8, 12);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollStep(1);
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarButtonImages("", "");
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarBackground("");
+  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarThumbImages("", "", "");
+  this->AddChild(this->statusViewer);
 }
 
 // OFFSET: 0x009DCE10
@@ -1924,7 +1924,7 @@ void CUICharacterInfo::OnInit() {
 void CUIItemInfo::OnRBtnDown(int, int) {
   ITEM_INFO info;
   info.SetItemId(this->itemId);
-  info.unknown_0000[0] = this->type;
+  info.identity[0] = this->type;
   info.identified = 1;
   int location;
   if (this->type == 5) {
@@ -1968,7 +1968,7 @@ void CUIItemInfo::OnRBtnDown(int, int) {
   } else {
     location = 0;
   }
-  info.unknown_0000[2] = location;
+  info.identity[2] = location;
 
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
@@ -1980,16 +1980,16 @@ void CUIItemInfo::OnRBtnDown(int, int) {
 // FUNCTION: fn_14322
 void CUIMonster::BindMonster(CUIMonsterInfo* item, const CMonsterData& data) {
   item->SetMonster(data.name);
-  reinterpret_cast<CUITextViewer*>(item->unknown_00F0)->Clear();
+  reinterpret_cast<CUITextViewer*>(item->valuesViewer)->Clear();
   for (const std::string& value : data.values) {
-    reinterpret_cast<CUITextViewer*>(item->unknown_00F0)->AddLine(value);
+    reinterpret_cast<CUITextViewer*>(item->valuesViewer)->AddLine(value);
   }
 }
 
 // OFFSET: 0x009DFCB0
 // FUNCTION: fn_14360
 void CUIMonsterInfo::SetMonster(const std::string& title) {
-  reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->Clear();
+  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->Clear();
 
   std::string name;
   std::string spriteName;
@@ -2000,69 +2000,69 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   int race = 0;
   int type = 0;
   if (!g_navigationManager.GetMobInfo(title, &name, &spriteName, &x, &size, &element, &elementLevel, &race, &type)) {
-    this->unknown_00E8->SetText(title);
+    this->nameText->SetText(title);
     return;
   }
 
-  this->unknown_00E8->SetText(name.c_str(), name.size());
+  this->nameText->SetText(name.c_str(), name.size());
   this->sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName + ".spr"));
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
 
   if (element == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
   } else if (element == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
   } else if (element == 3) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
   } else if (element == 4) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
   } else if (element == 5) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
   } else if (element == 6) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
   } else if (element == 7) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
   } else if (element == 8) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
   } else if (element == 9) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
   }
 
   if (race == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
   } else if (race == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
   } else if (race == 3) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
   } else if (race == 4) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
   } else if (race == 5) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
   } else if (race == 6) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
   } else if (race == 7) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
   } else if (race == 8) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
   } else if (race == 9) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
   }
 
   if (size == 1) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
   } else if (size == 2) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
   }
 
   if (type == 0x12D) {
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->SetTextColor(0x6464FFu);
-    reinterpret_cast<CUITextViewer*>(this->unknown_00EC)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextColor(0x6464FFu);
+    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
   }
 }
 
@@ -2263,7 +2263,7 @@ void CUIItem::RequestNavigation() {
   std::string name;
   int x = -1;
   int y = -1;
-  std::vector<std::string> parts = Split(this->unknown_008C, ",");
+  std::vector<std::string> parts = Split(this->navigationTarget, ",");
   if (parts.size() > 2) {
     name = parts[0];
     x = std::atoi(parts[1].c_str());
@@ -2283,7 +2283,7 @@ void CUIQuest::RequestNavigation() {
   std::string name;
   int x = -1;
   int y = -1;
-  std::vector<std::string> parts = Split(this->unknown_008C, ",");
+  std::vector<std::string> parts = Split(this->navigationTarget, ",");
   if (parts.size() > 2) {
     name = parts[0];
     x = std::atoi(parts[1].c_str());
@@ -2300,16 +2300,16 @@ void CUIQuest::RequestNavigation() {
 // OFFSET: 0x009DBB80
 // FUNCTION: fn_14311
 void CUIItem::SearchNavigation() {
-  const std::size_t comma = this->unknown_008C.find(',');
+  const std::size_t comma = this->navigationTarget.find(',');
   if (comma == std::string::npos) {
     return;
   }
 
-  std::string name = this->unknown_008C.substr(0, comma);
-  g_navigationManager.unknown_1264 = name;
+  std::string name = this->navigationTarget.substr(0, comma);
+  g_navigationManager.searchText = name;
   g_navigationManager.UpdateSearchResults();
-  g_navigationManager.unknown_12C4 = 0;
-  g_navigationManager.unknown_12C8 = 0;
+  g_navigationManager.selectedPath = 0;
+  g_navigationManager.selectedPathNode = 0;
   g_navigationManager.SelectNodeState();
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND);
@@ -2322,16 +2322,16 @@ void CUIItem::SearchNavigation() {
 // OFFSET: 0x009DBCB0
 // FUNCTION: fn_14312
 void CUIQuest::SearchNavigation() {
-  const std::size_t comma = this->unknown_008C.find(',');
+  const std::size_t comma = this->navigationTarget.find(',');
   if (comma == std::string::npos) {
     return;
   }
 
-  std::string name = this->unknown_008C.substr(0, comma);
-  g_navigationManager.unknown_1264 = name;
+  std::string name = this->navigationTarget.substr(0, comma);
+  g_navigationManager.searchText = name;
   g_navigationManager.UpdateSearchResults();
-  g_navigationManager.unknown_12C4 = 0;
-  g_navigationManager.unknown_12C8 = 0;
+  g_navigationManager.selectedPath = 0;
+  g_navigationManager.selectedPathNode = 0;
   if (!g_navigationManager.SelectNodeState()) {
     this->RequestNavigation();
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4241)), 0, 0, 0, 0);
@@ -2579,12 +2579,12 @@ void CUIItem::OnCreate(int width, int height) {
   this->itemList->AddNewItem();
   this->AddChild(this->itemList);
 
-  this->unknown_0084 = new CUIImageButton();
-  this->unknown_0084->SetSize(62, 20);
-  this->unknown_0084->Move(471, 363);
-  this->unknown_0084->SetOnClick([this]() { this->RequestNavigation(); });
-  this->unknown_0084->disabled = 0;
-  this->unknown_0084->Invalidate();
+  this->findButton = new CUIImageButton();
+  this->findButton->SetSize(62, 20);
+  this->findButton->Move(471, 363);
+  this->findButton->SetOnClick([this]() { this->RequestNavigation(); });
+  this->findButton->disabled = 0;
+  this->findButton->Invalidate();
   {
     const char findDisableSource[] = {
         '\xE7', '\x0A', '\x53', '\x65', '\xC1', '\x9D', '\xA4', '\x60', '\xE1', '\x41', '\x53', '\x53', '\xBC', '\xE9', '\x3D', '\xEC', '\x43', '\xD3', '\xF6',
@@ -2610,16 +2610,16 @@ void CUIItem::OnCreate(int width, int height) {
         '\xAA', '\xEF', '\x6E', '\x7F', '\x2A', '\x3C', '\x81', '\xA3', '\x97', '\xEC', '\x71', '\x0D'};
     thread_local EncryptedName<sizeof(findNormalSource), 0x81F58DED5D470D01ULL> findNormalName(findNormalSource);
     const std::string findNormal(findNormalName.Text());
-    this->unknown_0084->SetImages(findNormal, findPress, findOver, findDisable);
+    this->findButton->SetImages(findNormal, findPress, findOver, findDisable);
   }
-  this->AddChild(this->unknown_0084);
+  this->AddChild(this->findButton);
 
-  this->unknown_0088 = new CUIImageButton();
-  this->unknown_0088->SetSize(62, 20);
-  this->unknown_0088->Move(540, 363);
-  this->unknown_0088->SetOnClick([this]() { this->SearchNavigation(); });
-  this->unknown_0088->disabled = 0;
-  this->unknown_0088->Invalidate();
+  this->navigationButton = new CUIImageButton();
+  this->navigationButton->SetSize(62, 20);
+  this->navigationButton->Move(540, 363);
+  this->navigationButton->SetOnClick([this]() { this->SearchNavigation(); });
+  this->navigationButton->disabled = 0;
+  this->navigationButton->Invalidate();
   {
     const char moveDisableSource[] = {
         '\x09', '\xAE', '\x2D', '\x15', '\x27', '\xA7', '\xDA', '\x6E', '\x0F', '\xE5', '\x2D', '\x23', '\x5A', '\xD3', '\x43', '\xE2', '\xAD', '\x77', '\x88',
@@ -2645,9 +2645,9 @@ void CUIItem::OnCreate(int width, int height) {
         '\xAA', '\xD1', '\x36', '\x0D', '\xCA', '\xC0', '\x7B', '\xEB', '\x97', '\xD2', '\x29', '\x7F'};
     thread_local EncryptedName<sizeof(moveNormalSource), 0xBFF5C517A1A77F59ULL> moveNormalName(moveNormalSource);
     const std::string moveNormal(moveNormalName.Text());
-    this->unknown_0088->SetImages(moveNormal, movePress, moveOver, moveDisable);
+    this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);
   }
-  this->AddChild(this->unknown_0088);
+  this->AddChild(this->navigationButton);
 }
 
 
@@ -2742,12 +2742,12 @@ void CUIQuest::OnCreate(int width, int height) {
   this->questList->AddNewItem();
   this->AddChild(this->questList);
 
-  this->unknown_0084 = new CUIImageButton();
-  this->unknown_0084->SetSize(62, 20);
-  this->unknown_0084->Move(471, 363);
-  this->unknown_0084->SetOnClick([this]() { this->RequestNavigation(); });
-  this->unknown_0084->disabled = 0;
-  this->unknown_0084->Invalidate();
+  this->findButton = new CUIImageButton();
+  this->findButton->SetSize(62, 20);
+  this->findButton->Move(471, 363);
+  this->findButton->SetOnClick([this]() { this->RequestNavigation(); });
+  this->findButton->disabled = 0;
+  this->findButton->Invalidate();
   {
     const char findDisableSource[] = {
         '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x0E', '\xD3', '\x47', '\x8A',
@@ -2773,16 +2773,16 @@ void CUIQuest::OnCreate(int width, int height) {
         '\x94', '\x43', '\xC4', '\xB3', '\x20', '\x58', '\x0B', '\x5B', '\xA9', '\x40', '\xDB', '\xC1'};
     thread_local EncryptedName<sizeof(findNormalSource), 0x2DCB7567394DC1ABULL> findNormalName(findNormalSource);
     const std::string findNormal(findNormalName.Text());
-    this->unknown_0084->SetImages(findNormal, findPress, findOver, findDisable);
+    this->findButton->SetImages(findNormal, findPress, findOver, findDisable);
   }
-  this->AddChild(this->unknown_0084);
+  this->AddChild(this->findButton);
 
-  this->unknown_0088 = new CUIImageButton();
-  this->unknown_0088->SetSize(62, 20);
-  this->unknown_0088->Move(540, 363);
-  this->unknown_0088->SetOnClick([this]() { this->SearchNavigation(); });
-  this->unknown_0088->disabled = 0;
-  this->unknown_0088->Invalidate();
+  this->navigationButton = new CUIImageButton();
+  this->navigationButton->SetSize(62, 20);
+  this->navigationButton->Move(540, 363);
+  this->navigationButton->SetOnClick([this]() { this->SearchNavigation(); });
+  this->navigationButton->disabled = 0;
+  this->navigationButton->Invalidate();
   {
     const char moveDisableSource[] = {
         '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x62', '\x79', '\xB1', '\x2E',
@@ -2808,9 +2808,9 @@ void CUIQuest::OnCreate(int width, int height) {
         '\x2E', '\xFF', '\x98', '\xBB', '\x0E', '\x08', '\x11', '\xB7', '\x13', '\xFC', '\x87', '\xC9'};
     thread_local EncryptedName<sizeof(moveNormalSource), 0x9171997D6963C9F7ULL> moveNormalName(moveNormalSource);
     const std::string moveNormal(moveNormalName.Text());
-    this->unknown_0088->SetImages(moveNormal, movePress, moveOver, moveDisable);
+    this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);
   }
-  this->AddChild(this->unknown_0088);
+  this->AddChild(this->navigationButton);
 }
 
 
@@ -2928,17 +2928,17 @@ void CUIMonster::OnCreate(int width, int height) {
   this->monsterList->AddNewItem();
   this->AddChild(this->monsterList);
 
-  this->unknown_0084 = new CUIImageButton();
-  this->unknown_0084->SetSize(62, 20);
-  this->unknown_0084->Move(540, 363);
-  this->unknown_0084->SetOnClick([this]() { this->SearchNavigation(); });
+  this->navigationButton = new CUIImageButton();
+  this->navigationButton->SetSize(62, 20);
+  this->navigationButton->Move(540, 363);
+  this->navigationButton->SetOnClick([this]() { this->SearchNavigation(); });
   {
-    CUIImageButton* button = this->unknown_0084;
+    CUIImageButton* button = this->navigationButton;
     button->disabled = 0;
     button->Invalidate();
   }
   {
-    this->unknown_0084->SetImages(std::string([]() {
+    this->navigationButton->SetImages(std::string([]() {
       constexpr char bytes[] = {
         '\x91', '\x02', '\x3D', '\xD1', '\x8F', '\xFD', '\x1A', '\xA6', '\x97', '\x49', '\x3D', '\xE7', '\xF2', '\x89', '\x83', '\x2A', '\x35', '\xDB', '\x98',
         '\x45', '\x3B', '\x46', '\xAD', '\x0E', '\x16', '\xD8', '\x94', '\x4F', '\x2A', '\x6F', '\xBD', '\x1F', '\x3F', '\xF2', '\x93', '\x4A', '\x39', '\x5A',
@@ -2972,16 +2972,16 @@ void CUIMonster::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->AddChild(this->unknown_0084);
+  this->AddChild(this->navigationButton);
 }
 
 // OFFSET: 0x009DBAC0
 // FUNCTION: fn_45477
 void CUIMonster::SearchNavigation() {
-  g_navigationManager.unknown_1264 = this->unknown_0088;
+  g_navigationManager.searchText = this->navigationTarget;
   g_navigationManager.UpdateSearchResults();
-  g_navigationManager.unknown_12C4 = 0;
-  g_navigationManager.unknown_12C8 = 0;
+  g_navigationManager.selectedPath = 0;
+  g_navigationManager.selectedPathNode = 0;
   g_navigationManager.SelectNodeState();
   if (g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND)) {
     g_navigationManager.SetViewMode(1);

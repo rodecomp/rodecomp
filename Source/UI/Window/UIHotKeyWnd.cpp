@@ -89,14 +89,14 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->m_balloon->Show(0);
   g_windowMgr.AddRendered(this->m_balloon);
 
-  this->unknown_0100 = new UITabControl();
-  this->unknown_0100->Configure(1, this->unknown_00C4 - 3, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0);
-  this->unknown_0100->Move(this->unknown_00C8, this->unknown_00CC + this->unknown_00BC);
-  this->AddChild(this->unknown_0100);
+  this->m_tabs = new UITabControl();
+  this->m_tabs->Configure(1, this->m_tabHeight - 3, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0);
+  this->m_tabs->Move(this->m_horizontalMargin, this->m_verticalMargin + this->m_titleHeight);
+  this->AddChild(this->m_tabs);
 
   const char* tabs[4] = {LookupMessage(MSI_HOTKEYWND_TAB1), LookupMessage(MSI_HOTKEYGUIDEWND_UP), LookupMessage(MSI_HOTKEYWND_TAB2), LookupMessage(MSI_HOTKEYWND_TAB3)};
   for (int index = 0; index < 4; ++index) {
-    this->unknown_0100->AddTab(tabs[index], "");
+    this->m_tabs->AddTab(tabs[index], "");
   }
 
   {
@@ -129,12 +129,12 @@ void UIHotKeyWnd::OnCreate(int, int) {
   }
 
   UICheckBox* checkBox = new UICheckBox();
-  this->unknown_0108 = checkBox;
+  this->m_optionCheckBox = checkBox;
   checkBox->SetSize(150, 12);
   checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_CHATMODE_ONOFF));
   checkBox->Move(80, this->geometry.height - 22);
   checkBox->SetChecked(g_windowMgr.chatModeChanged);
-  this->AddChild(this->unknown_0108);
+  this->AddChild(this->m_optionCheckBox);
 
   this->m_prevButton = new UIBitmapButton();
   UIBitmapButton* prevButton = static_cast<UIBitmapButton*>(this->m_prevButton);
@@ -185,8 +185,8 @@ void UIHotKeyWnd::UpdatePageButtons() {
 // OFFSET: 0x00911300
 // FUNCTION: fn_12513
 UIHotKeyWnd::UIHotKeyWnd()
-    : UIFrameWnd(0), m_selectedRow(-1), m_rowsPerPage(18), unknown_00BC(17), unknown_00C0(0), unknown_00C4(20), unknown_00C8(3), unknown_00CC(3),
-      unknown_00D0(20), unknown_00D4(80), unknown_00D8(135), m_balloon(nullptr), m_tab(0), m_page(1), m_pageCount(0), unknown_0114(0) {
+    : UIFrameWnd(0), m_selectedRow(-1), m_rowsPerPage(18), m_titleHeight(17), m_buttonBarHeight(0), m_tabHeight(20), m_horizontalMargin(3), m_verticalMargin(3),
+      m_rowHeight(20), m_keyColumnWidth(80), m_descriptionColumnWidth(135), m_balloon(nullptr), m_tab(0), m_page(1), m_pageCount(0), m_paged(0) {
 }
 
 // OFFSET: 0x00916760
@@ -222,19 +222,19 @@ void UIHotKeyWnd::SaveHotkeys() {
 // OFFSET: 0x0091BD80
 // FUNCTION: fn_12609
 int UIHotKeyWnd::RowFromPoint(int x, int y) {
-  if (x < this->unknown_00C8 || x > this->geometry.width - this->unknown_00C8) {
+  if (x < this->m_horizontalMargin || x > this->geometry.width - this->m_horizontalMargin) {
     return -1;
   }
 
-  if (y < this->unknown_00C4 + this->unknown_00BC + this->unknown_00CC) {
+  if (y < this->m_tabHeight + this->m_titleHeight + this->m_verticalMargin) {
     return -1;
   }
 
-  if (y > (this->geometry.height - this->unknown_00C0) - this->unknown_00CC) {
+  if (y > (this->geometry.height - this->m_buttonBarHeight) - this->m_verticalMargin) {
     return -1;
   }
 
-  int row = (((y - this->unknown_00BC) - this->unknown_00C4) - this->unknown_00CC) / this->unknown_00D0;
+  int row = (((y - this->m_titleHeight) - this->m_tabHeight) - this->m_verticalMargin) / this->m_rowHeight;
   if (x > this->geometry.width / 2) {
     row += this->m_rowsPerPage;
   }
@@ -250,7 +250,7 @@ int UIHotKeyWnd::RowFromPoint(int x, int y) {
 // OFFSET: 0x00930B80
 // FUNCTION: fn_12693
 void UIHotKeyWnd::OnLBtnDown(int x, int y) {
-  if (y < this->unknown_00BC) {
+  if (y < this->m_titleHeight) {
     UIFrameWnd::OnLBtnDown(x, y);
   }
 
@@ -272,7 +272,7 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
       this->m_balloon->m_outlineColor = 0;
       this->m_balloon->Move(
         (this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX,
-        (this->m_selectedRow % this->m_rowsPerPage - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + screenY + this->unknown_00BC
+        (this->m_selectedRow % this->m_rowsPerPage - 1) * this->m_rowHeight + this->m_verticalMargin + this->m_tabHeight + screenY + this->m_titleHeight
       );
       this->m_balloon->Show(1);
       g_windowMgr.Promote(this->m_balloon);
@@ -320,7 +320,7 @@ void UIHotKeyWnd::OnMouseHover(int x, int y) {
   int screenX = 0;
   int screenY = 0;
   const int x0 = this->geometry.width / 2 * column + 0x14;
-  const int y0 = (row - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
+  const int y0 = (row - 1) * this->m_rowHeight + this->m_verticalMargin + this->m_tabHeight + this->m_titleHeight;
   this->ToScreen(screenX, screenY);
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
@@ -344,9 +344,9 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
 
     std::string text;
     if (static_cast<unsigned int>(x - 51) <= 108) {
-      const auto entry = g_session.unknown_5BD4.begin() + ((this->unknown_00DC - 1) * 10 + this->unknown_00E0);
-      if (entry != g_session.unknown_5BD4.end()) {
-        text.assign(reinterpret_cast<const char*>(&entry->unknown_0000[8]));
+      const auto entry = g_session.storeSearchResults.begin() + ((this->m_page - 1) * 10 + this->m_hoverRow);
+      if (entry != g_session.storeSearchResults.end()) {
+        text.assign(reinterpret_cast<const char*>(&entry->storeIdentity[8]));
         const std::size_t end = text.find('\r');
         if (end != std::string::npos) {
           text = text.substr(0, end);
@@ -375,20 +375,20 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
 // OFFSET: 0x0092BEC0
 // FUNCTION: fn_12663
 void UIHotKeyWnd::Paint() {
-  if (this->geometry.height == this->unknown_00BC) {
+  if (this->geometry.height == this->m_titleHeight) {
     return;
   }
 
 
-  this->unknown_00BC = this->DrawTitleBar(true, LookupMessage(MSI_HOTKEYWND_TITLE), 0);
-  this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
-  this->DrawPanelBackground(this->unknown_00BC, 0, "");
+  this->m_titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_HOTKEYWND_TITLE), 0);
+  this->m_buttonBarHeight = this->DrawButtonBar(2, 0, 1);
+  this->DrawPanelBackground(this->m_titleHeight, 0, "");
 
   const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
   int visibleRow = 0;
 
   for (int row = 0; row < count; ++row) {
-    if (this->unknown_0114 && row < 36 * this->m_page - 36) {
+    if (this->m_paged && row < 36 * this->m_page - 36) {
       continue;
     }
     if (row >= 36 * this->m_page) {
@@ -407,15 +407,15 @@ void UIHotKeyWnd::Paint() {
 
     const int halfWidth = this->geometry.width / 2;
     const int column = visibleRow / this->m_rowsPerPage;
-    const int rowY = this->unknown_00BC + this->unknown_00C4 + this->unknown_00CC +
-                     (visibleRow % this->m_rowsPerPage) * this->unknown_00D0;
+    const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
+                     (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
 
     const int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int textX = (this->unknown_00D4 - textWidth) / 2;
+    const int textX = (this->m_keyColumnWidth - textWidth) / 2;
 
-    const int backgroundX = column ? this->geometry.width - this->unknown_00D4 - this->unknown_00C8
-                                   : halfWidth - this->unknown_00D4;
-    const int keyX = column ? halfWidth : this->unknown_00C8;
+    const int backgroundX = column ? this->geometry.width - this->m_keyColumnWidth - this->m_horizontalMargin
+                                   : halfWidth - this->m_keyColumnWidth;
+    const int keyX = column ? halfWidth : this->m_horizontalMargin;
 
     std::uint32_t color = 0xDFFFFE;
     switch (this->m_tab) {
@@ -429,18 +429,18 @@ void UIHotKeyWnd::Paint() {
       break;
     }
 
-    this->FillRegion(backgroundX, rowY, this->unknown_00D4, this->unknown_00D0 - 1, color);
+    this->FillRegion(backgroundX, rowY, this->m_keyColumnWidth, this->m_rowHeight - 1, color);
 
     if (visibleRow == this->m_selectedRow) {
-      this->FillRegion(keyX + 1, rowY, halfWidth - this->unknown_00C8 - 1, 19, 0xE1E1FF);
+      this->FillRegion(keyX + 1, rowY, halfWidth - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
     }
 
-    this->FillRegion(keyX, rowY - 1 + this->unknown_00D0, this->unknown_00D4 + this->unknown_00D8, 1, 0xC0C0C0);
-    this->FillRegion(backgroundX, rowY, 1, this->unknown_00D0, 0xC0C0C0);
+    this->FillRegion(keyX, rowY - 1 + this->m_rowHeight, this->m_keyColumnWidth + this->m_descriptionColumnWidth, 1, 0xC0C0C0);
+    this->FillRegion(backgroundX, rowY, 1, this->m_rowHeight, 0xC0C0C0);
 
     const std::string fitted = this->FitDisplayText(130, entry.info.description.c_str(), 0, 12, 0);
     const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
-    const int descriptionX = keyX + (halfWidth - this->unknown_00C8 - this->unknown_00D4 - fittedWidth) / 2;
+    const int descriptionX = keyX + (halfWidth - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
 
     this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(textX + backgroundX, rowY + 5, text.c_str(), 0, 0, 12, 0, 0, 0);
@@ -448,7 +448,7 @@ void UIHotKeyWnd::Paint() {
     ++visibleRow;
   }
 
-  if (this->unknown_0114) {
+  if (this->m_paged) {
     const std::string pages = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
     const int pagesWidth = this->TextWidth(pages.c_str(), 0, 0, 12, 0, 0);
     const int pageX =
@@ -462,19 +462,19 @@ void UIHotKeyWnd::Paint() {
     DrawOutlinedText(*this, pageX + currentWidth, 25, total.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
   }
 
-  const int bottomY = this->unknown_00BC + this->unknown_00C4 + this->unknown_00CC;
-  const int innerWidth = this->geometry.width - 2 * this->unknown_00C8;
+  const int bottomY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin;
+  const int innerWidth = this->geometry.width - 2 * this->m_horizontalMargin;
   const int innerHeight =
-    this->geometry.height - 2 * this->unknown_00CC - this->unknown_00C4 - this->unknown_00BC - this->unknown_00C0;
+    this->geometry.height - 2 * this->m_verticalMargin - this->m_tabHeight - this->m_titleHeight - this->m_buttonBarHeight;
 
-  DrawRectangleBorder(*this, this->unknown_00C8, bottomY, innerWidth, innerHeight, 0xC0C0C0);
+  DrawRectangleBorder(*this, this->m_horizontalMargin, bottomY, innerWidth, innerHeight, 0xC0C0C0);
   this->FillRegion(this->geometry.width / 2, bottomY, 1, innerHeight, 0xC0C0C0);
-  this->FillRegion(this->unknown_00C8, bottomY - 3, 1, 3, 0xC0C0C0);
-  this->FillRegion(this->geometry.width - this->unknown_00C8 - 1, bottomY - 3, 1, 3, 0xC0C0C0);
+  this->FillRegion(this->m_horizontalMargin, bottomY - 3, 1, 3, 0xC0C0C0);
+  this->FillRegion(this->geometry.width - this->m_horizontalMargin - 1, bottomY - 3, 1, 3, 0xC0C0C0);
   this->FillRegion(
-    this->unknown_0100->geometry.width + this->unknown_00C8,
+    this->m_tabs->geometry.width + this->m_horizontalMargin,
     bottomY - 3,
-    innerWidth - this->unknown_0100->geometry.width,
+    innerWidth - this->m_tabs->geometry.width,
     1,
     0xC0C0C0
   );
@@ -541,7 +541,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
   this->ToScreen(screenX, screenY);
 
   const int balloonY =
-    (this->m_selectedRow % this->m_rowsPerPage - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
+    (this->m_selectedRow % this->m_rowsPerPage - 1) * this->m_rowHeight + this->m_verticalMargin + this->m_tabHeight + this->m_titleHeight;
   this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE1), 0x3C);
   this->m_balloon->m_textColor = 0xFFFFFF;
   this->m_balloon->m_outlineColor = 0;
@@ -700,7 +700,7 @@ int UIHotKeyWnd::SendMsg(
       g_windowMgr.CloseWindow(WID_HOTKEYWND);
       return 0;
     case ID_CHECK:
-      if (sender != this->unknown_0108) {
+      if (sender != this->m_optionCheckBox) {
         return 0;
       }
 
@@ -736,7 +736,7 @@ int UIHotKeyWnd::SendMsg(
 
   if (message == UM_TAB) {
     if (sender == g_windowMgr.LookupWindow(WID_HOTKEYGUIDEWND)) {
-      this->unknown_0100->SelectTab(static_cast<int>(argument1));
+      this->m_tabs->SelectTab(static_cast<int>(argument1));
       return 0;
     }
 
@@ -752,12 +752,12 @@ int UIHotKeyWnd::SendMsg(
 
     this->m_selectedRow = -1;
     this->m_tab = tab;
-    this->unknown_0114 = 0;
+    this->m_paged = 0;
     this->m_page = 1;
 
     const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
     if (count > 36) {
-      this->unknown_0114 = 1;
+      this->m_paged = 1;
       this->m_pageCount = count / 36;
       if (count % 36 != 0) {
         ++this->m_pageCount;

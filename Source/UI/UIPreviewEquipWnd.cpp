@@ -25,7 +25,7 @@
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
 UIPreviewEquipWnd::UIPreviewEquipWnd()
-    : UIFrameWnd(1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0) {
+    : UIFrameWnd(1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), m_actionButton(0) {
 }
 
 // OFFSET: 0x007F3090
@@ -38,39 +38,39 @@ UIPreviewEquipWnd::~UIPreviewEquipWnd() {
 // FUNCTION: fn_09881
 void UIPreviewEquipWnd::DrawCharacter() {
   matrix view;
-  view.MakeXRotation(this->m_render->unknown_0074 / 180.0f * 3.141592f);
-  view.AppendYRotation(this->m_render->unknown_0078 / 180.0f * 3.141592f);
+  view.MakeXRotation(this->m_render->cameraPitch / 180.0f * 3.141592f);
+  view.AppendYRotation(this->m_render->cameraYaw / 180.0f * 3.141592f);
 
   vector3d offset;
   offset.x = 0.0f;
   offset.y = 0.0f;
-  offset.z = -this->m_render->unknown_0070;
+  offset.z = -this->m_render->cameraDistance;
   float eye[3];
   eye[0] = offset.x * view.values[0] + offset.y * view.values[3] + offset.z * view.values[6] + view.values[9];
   eye[1] = offset.x * view.values[1] + offset.y * view.values[4] + offset.z * view.values[7] + view.values[10];
   eye[2] = offset.x * view.values[2] + offset.y * view.values[5] + offset.z * view.values[8] + view.values[11];
 
   float up[3];
-  up[0] = this->m_render->unknown_0088;
-  up[1] = this->m_render->unknown_008C;
-  up[2] = *reinterpret_cast<float*>(&this->m_render->unknown_0090);
-  view.LookAt(eye, reinterpret_cast<float*>(&this->m_render->unknown_0004), up);
+  up[0] = this->m_render->cameraUpX;
+  up[1] = this->m_render->cameraUpY;
+  up[2] = *reinterpret_cast<float*>(&this->m_render->cameraUpZ);
+  view.LookAt(eye, reinterpret_cast<float*>(&this->m_render->positionX), up);
 
   float screenX = 0.0f;
   float screenY = 0.0f;
   float depth = 0.0f;
   g_renderer->ProjectViewportCentered(
-    reinterpret_cast<float*>(&this->m_render->unknown_0004), view.values, &screenX, &screenY, &depth,
-    static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&this->m_render->unknown_0054),
-    static_cast<float>(this->geometry.height) + this->m_render->unknown_0058
+    reinterpret_cast<float*>(&this->m_render->positionX), view.values, &screenX, &screenY, &depth,
+    static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&this->m_render->viewportOffsetX),
+    static_cast<float>(this->geometry.height) + this->m_render->viewportOffsetY
   );
 
   FuncDrawWNDChar drawer(
-    this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(this->m_render->unknown_0018[0]),
-    static_cast<short>(this->m_render->unknown_0010), this->m_render->unknown_0014, static_cast<short>(this->m_render->unknown_0050),
-    static_cast<short>(this->m_render->unknown_0018[1]), static_cast<short>(this->m_render->unknown_0028), static_cast<short>(this->m_render->unknown_002C),
-    static_cast<short>(this->m_render->unknown_0030), this->m_render->unknown_00BC, this->m_render->unknown_004C, this->m_render->unknown_0048, this->m_render->unknown_0018[2],
-    this->m_render->unknown_0018[3], this->m_render->unknown_0040, this->m_render->unknown_0044, 0
+    this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(this->m_render->appearance[0]),
+    static_cast<short>(this->m_render->job), this->m_render->headJob, static_cast<short>(this->m_render->bodyCostume),
+    static_cast<short>(this->m_render->appearance[1]), static_cast<short>(this->m_render->lowerHeadgear), static_cast<short>(this->m_render->upperHeadgear),
+    static_cast<short>(this->m_render->middleHeadgear), this->m_render->robe, this->m_render->riding, this->m_render->madogearType, this->m_render->appearance[2],
+    this->m_render->appearance[3], this->m_render->actionIndex, this->m_render->frameIndex, 0
   );
   drawer.Draw(1);
 }
@@ -126,12 +126,12 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   this->m_rightButton->SetId(0x181);
   this->AddChild(this->m_rightButton);
 
-  this->unknown_00C4 = new UIBasicButton();
-  this->unknown_00C4->Configure(80, LookupMessage(MSI_BLOCK_CALL_PERMIT));
-  this->unknown_00C4->Move(static_cast<int>((this->geometry.width - this->unknown_00C4->geometry.width) * 0.5), this->geometry.height - 30);
-  this->unknown_00C4->SetId(0x16B);
-  this->unknown_00C4->invalidateParent = 1;
-  this->AddChild(this->unknown_00C4);
+  this->m_actionButton = new UIBasicButton();
+  this->m_actionButton->Configure(80, LookupMessage(MSI_BLOCK_CALL_PERMIT));
+  this->m_actionButton->Move(static_cast<int>((this->geometry.width - this->m_actionButton->geometry.width) * 0.5), this->geometry.height - 30);
+  this->m_actionButton->SetId(0x16B);
+  this->m_actionButton->invalidateParent = 1;
+  this->AddChild(this->m_actionButton);
 }
 
 // OFFSET: 0x007F3CD0
@@ -146,7 +146,7 @@ void UIPreviewEquipWnd::Paint() {
 // OFFSET: 0x007F3DC0
 // FUNCTION: fn_09885
 void UIPreviewEquipWnd::SyncFromPlayer() {
-  this->m_render->unknown_00B0 = 0;
+  this->m_render->drawShadow = 0;
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   CPlayer* player = mode->scene->player;
@@ -154,21 +154,21 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
     return;
   }
 
-  this->m_render->unknown_0010 = player->GetEffectiveJob(-1);
-  this->m_render->unknown_0014 = player->unknown_04D4;
-  this->m_render->unknown_0018[0] = player->unknown_0260;
-  this->m_render->unknown_0018[1] = player->unknown_0440;
-  this->m_render->unknown_0018[2] = static_cast<int>(player->render.unknown_0048);
-  this->m_render->unknown_0018[3] = player->unknown_0444;
-  this->m_render->unknown_0028 = player->unknown_0450;
-  this->m_render->unknown_002C = player->unknown_0454;
-  this->m_render->unknown_0030 = player->unknown_0458;
-  this->m_render->SetRobe(player->unknown_049C);
-  this->m_render->unknown_0048 = player->GetMadogearType();
-  this->m_render->unknown_004C = player->unknown_02CC;
-  this->m_render->unknown_0050 = player->GetBodyCostume();
-  *reinterpret_cast<float*>(&this->m_render->unknown_0054) = -5.0f;
-  this->m_render->unknown_0058 = 136.0f;
+  this->m_render->job = player->GetEffectiveJob(-1);
+  this->m_render->headJob = player->appearanceJob;
+  this->m_render->appearance[0] = player->sex;
+  this->m_render->appearance[1] = player->head;
+  this->m_render->appearance[2] = static_cast<int>(player->render.bodyPalette);
+  this->m_render->appearance[3] = player->headPalette;
+  this->m_render->lowerHeadgear = player->accessory;
+  this->m_render->upperHeadgear = player->accessory2;
+  this->m_render->middleHeadgear = player->accessory3;
+  this->m_render->SetRobe(player->robe);
+  this->m_render->madogearType = player->GetMadogearType();
+  this->m_render->riding = player->isRiding;
+  this->m_render->bodyCostume = player->GetBodyCostume();
+  *reinterpret_cast<float*>(&this->m_render->viewportOffsetX) = -5.0f;
+  this->m_render->viewportOffsetY = 136.0f;
   this->RefreshHeadgearLocations();
   this->Invalidate();
 }
@@ -185,16 +185,16 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->SyncFromPlayer();
       break;
     case 0x180:
-      this->m_render->unknown_0040 = this->m_render->unknown_0040 + 1;
-      if (this->m_render->unknown_0040 > 7) {
-        this->m_render->unknown_0040 = 0;
+      this->m_render->actionIndex = this->m_render->actionIndex + 1;
+      if (this->m_render->actionIndex > 7) {
+        this->m_render->actionIndex = 0;
       }
       this->Invalidate();
       break;
     case 0x181:
-      this->m_render->unknown_0040 = this->m_render->unknown_0040 - 1;
-      if (this->m_render->unknown_0040 < 0) {
-        this->m_render->unknown_0040 = 7;
+      this->m_render->actionIndex = this->m_render->actionIndex - 1;
+      if (this->m_render->actionIndex < 0) {
+        this->m_render->actionIndex = 7;
       }
       this->Invalidate();
       break;
@@ -202,91 +202,91 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   } else if (message == UM_REFRESHITEM) {
     if (a != 0) {
       const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
-      switch (item->unknown_0000[2]) {
+      switch (item->identity[2]) {
       case EQP_HEAD_TOP:
       case EQP_COSTUME_HEAD_TOP:
-        this->m_render->unknown_002C = item->unknown_0070;
-        this->m_render->unknown_0038 = 0x100;
-        if ((this->m_render->unknown_0034 & 0x100) != 0) {
-          this->m_render->unknown_0034 = 0;
-          this->m_render->unknown_0028 = 0;
+        this->m_render->upperHeadgear = item->sprite;
+        this->m_render->upperHeadgearLocation = 0x100;
+        if ((this->m_render->lowerHeadgearLocation & 0x100) != 0) {
+          this->m_render->lowerHeadgearLocation = 0;
+          this->m_render->lowerHeadgear = 0;
         }
-        if ((this->m_render->unknown_003C & 0x100) != 0) {
-          this->m_render->unknown_003C = 0;
-          this->m_render->unknown_0030 = 0;
+        if ((this->m_render->middleHeadgearLocation & 0x100) != 0) {
+          this->m_render->middleHeadgearLocation = 0;
+          this->m_render->middleHeadgear = 0;
         }
         break;
       case EQP_HEAD_MID:
       case EQP_COSTUME_HEAD_MID:
-        this->m_render->unknown_0030 = item->unknown_0070;
-        this->m_render->unknown_003C = 0x200;
-        if ((this->m_render->unknown_0034 & 0x200) != 0) {
-          this->m_render->unknown_0034 = 0;
-          this->m_render->unknown_0028 = 0;
+        this->m_render->middleHeadgear = item->sprite;
+        this->m_render->middleHeadgearLocation = 0x200;
+        if ((this->m_render->lowerHeadgearLocation & 0x200) != 0) {
+          this->m_render->lowerHeadgearLocation = 0;
+          this->m_render->lowerHeadgear = 0;
         }
-        if ((this->m_render->unknown_0038 & 0x200) != 0) {
-          this->m_render->unknown_0038 = 0;
-          this->m_render->unknown_002C = 0;
+        if ((this->m_render->upperHeadgearLocation & 0x200) != 0) {
+          this->m_render->upperHeadgearLocation = 0;
+          this->m_render->upperHeadgear = 0;
         }
         break;
       case 0x300:
       case 0xC00:
-        this->m_render->unknown_002C = item->unknown_0070;
-        this->m_render->unknown_0030 = 0;
-        this->m_render->unknown_0038 = 0x300;
-        this->m_render->unknown_003C = 0x300;
-        if (this->m_render->unknown_0034 != EQP_HEAD_LOW) {
-          this->m_render->unknown_0034 = 0;
-          this->m_render->unknown_0028 = 0;
+        this->m_render->upperHeadgear = item->sprite;
+        this->m_render->middleHeadgear = 0;
+        this->m_render->upperHeadgearLocation = 0x300;
+        this->m_render->middleHeadgearLocation = 0x300;
+        if (this->m_render->lowerHeadgearLocation != EQP_HEAD_LOW) {
+          this->m_render->lowerHeadgearLocation = 0;
+          this->m_render->lowerHeadgear = 0;
         }
         break;
       case 0x301:
       case 0x1C00:
-        this->m_render->unknown_0028 = item->unknown_0070;
-        this->m_render->unknown_002C = 0;
-        this->m_render->unknown_0030 = 0;
-        this->m_render->unknown_0034 = 0x301;
-        this->m_render->unknown_0038 = 0x301;
-        this->m_render->unknown_003C = 0x301;
+        this->m_render->lowerHeadgear = item->sprite;
+        this->m_render->upperHeadgear = 0;
+        this->m_render->middleHeadgear = 0;
+        this->m_render->lowerHeadgearLocation = 0x301;
+        this->m_render->upperHeadgearLocation = 0x301;
+        this->m_render->middleHeadgearLocation = 0x301;
         break;
       case 0x201:
       case 0x1800:
-        this->m_render->unknown_0030 = item->unknown_0070;
-        this->m_render->unknown_0028 = 0;
-        this->m_render->unknown_003C = 0x201;
-        this->m_render->unknown_0034 = 0x201;
-        if (this->m_render->unknown_0038 != EQP_HEAD_TOP) {
-          this->m_render->unknown_0038 = 0;
-          this->m_render->unknown_002C = 0;
+        this->m_render->middleHeadgear = item->sprite;
+        this->m_render->lowerHeadgear = 0;
+        this->m_render->middleHeadgearLocation = 0x201;
+        this->m_render->lowerHeadgearLocation = 0x201;
+        if (this->m_render->upperHeadgearLocation != EQP_HEAD_TOP) {
+          this->m_render->upperHeadgearLocation = 0;
+          this->m_render->upperHeadgear = 0;
         }
         break;
       case 0x101:
       case 0x1400:
-        this->m_render->unknown_002C = item->unknown_0070;
-        this->m_render->unknown_0028 = 0;
-        this->m_render->unknown_0038 = 0x101;
-        this->m_render->unknown_0034 = 0x101;
-        if (this->m_render->unknown_003C != EQP_HEAD_MID) {
-          this->m_render->unknown_003C = 0;
-          this->m_render->unknown_0030 = 0;
+        this->m_render->upperHeadgear = item->sprite;
+        this->m_render->lowerHeadgear = 0;
+        this->m_render->upperHeadgearLocation = 0x101;
+        this->m_render->lowerHeadgearLocation = 0x101;
+        if (this->m_render->middleHeadgearLocation != EQP_HEAD_MID) {
+          this->m_render->middleHeadgearLocation = 0;
+          this->m_render->middleHeadgear = 0;
         }
         break;
       case EQP_HEAD_LOW:
       case EQP_COSTUME_HEAD_LOW:
-        this->m_render->unknown_0028 = item->unknown_0070;
-        this->m_render->unknown_0034 = 1;
-        if ((this->m_render->unknown_0038 & 1) != 0) {
-          this->m_render->unknown_0038 = 0;
-          this->m_render->unknown_002C = 0;
+        this->m_render->lowerHeadgear = item->sprite;
+        this->m_render->lowerHeadgearLocation = 1;
+        if ((this->m_render->upperHeadgearLocation & 1) != 0) {
+          this->m_render->upperHeadgearLocation = 0;
+          this->m_render->upperHeadgear = 0;
         }
-        if ((this->m_render->unknown_003C & 1) != 0) {
-          this->m_render->unknown_003C = 0;
-          this->m_render->unknown_0030 = 0;
+        if ((this->m_render->middleHeadgearLocation & 1) != 0) {
+          this->m_render->middleHeadgearLocation = 0;
+          this->m_render->middleHeadgear = 0;
         }
         break;
       case EQP_GARMENT:
       case EQP_COSTUME_GARMENT:
-        this->m_render->SetRobe(item->unknown_0070);
+        this->m_render->SetRobe(item->sprite);
         break;
       }
     }
@@ -304,98 +304,98 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x007F43E0
 // FUNCTION: fn_09887
 void UIPreviewEquipWnd::RefreshHeadgearLocations() {
-  if (this->m_render->unknown_0028) {
+  if (this->m_render->lowerHeadgear) {
     ITEM_INFO equipped = g_session.GetItem17F0(0);
-    if (this->m_render->unknown_0028 == equipped.unknown_0070) {
-      this->m_render->unknown_0034 = 1;
-      if (equipped.unknown_0000[2] == 0x301) {
-        this->m_render->unknown_0034 = 0x301;
-        this->m_render->unknown_0038 = 0x301;
-        this->m_render->unknown_003C = 0x301;
+    if (this->m_render->lowerHeadgear == equipped.sprite) {
+      this->m_render->lowerHeadgearLocation = 1;
+      if (equipped.identity[2] == 0x301) {
+        this->m_render->lowerHeadgearLocation = 0x301;
+        this->m_render->upperHeadgearLocation = 0x301;
+        this->m_render->middleHeadgearLocation = 0x301;
       }
     }
 
     ITEM_INFO costume = g_session.GetItem2B50(0);
-    if (this->m_render->unknown_0028 == costume.unknown_0070) {
-      this->m_render->unknown_0034 = 1;
-      if (costume.unknown_0000[2] == 0x1C00) {
-        this->m_render->unknown_0034 = 0x301;
-        this->m_render->unknown_0038 = 0x301;
-        this->m_render->unknown_003C = 0x301;
+    if (this->m_render->lowerHeadgear == costume.sprite) {
+      this->m_render->lowerHeadgearLocation = 1;
+      if (costume.identity[2] == 0x1C00) {
+        this->m_render->lowerHeadgearLocation = 0x301;
+        this->m_render->upperHeadgearLocation = 0x301;
+        this->m_render->middleHeadgearLocation = 0x301;
       }
     }
   }
 
-  if (this->m_render->unknown_002C) {
+  if (this->m_render->upperHeadgear) {
     ITEM_INFO equipped = g_session.GetItem17F0(8);
-    if (this->m_render->unknown_002C == equipped.unknown_0070) {
-      if (equipped.unknown_0000[2] == 0x100) {
-        this->m_render->unknown_0038 = 0x100;
+    if (this->m_render->upperHeadgear == equipped.sprite) {
+      if (equipped.identity[2] == 0x100) {
+        this->m_render->upperHeadgearLocation = 0x100;
       }
 
-      if (equipped.unknown_0000[2] == 0x101) {
-        this->m_render->unknown_0038 = 0x101;
-        this->m_render->unknown_0034 = 0x101;
+      if (equipped.identity[2] == 0x101) {
+        this->m_render->upperHeadgearLocation = 0x101;
+        this->m_render->lowerHeadgearLocation = 0x101;
       }
 
-      if (equipped.unknown_0000[2] == 0x300) {
-        this->m_render->unknown_0038 = 0x300;
-        this->m_render->unknown_003C = 0x300;
+      if (equipped.identity[2] == 0x300) {
+        this->m_render->upperHeadgearLocation = 0x300;
+        this->m_render->middleHeadgearLocation = 0x300;
       }
 
-      if (equipped.unknown_0000[2] == 0x301) {
-        this->m_render->unknown_0034 = 0x301;
-        this->m_render->unknown_0038 = 0x301;
-        this->m_render->unknown_003C = 0x301;
+      if (equipped.identity[2] == 0x301) {
+        this->m_render->lowerHeadgearLocation = 0x301;
+        this->m_render->upperHeadgearLocation = 0x301;
+        this->m_render->middleHeadgearLocation = 0x301;
       }
     }
 
     ITEM_INFO costume = g_session.GetItem2B50(8);
-    if (this->m_render->unknown_002C == costume.unknown_0070) {
-      if (costume.unknown_0000[2] == 0x400) {
-        this->m_render->unknown_0038 = 0x100;
+    if (this->m_render->upperHeadgear == costume.sprite) {
+      if (costume.identity[2] == 0x400) {
+        this->m_render->upperHeadgearLocation = 0x100;
       }
 
-      if (costume.unknown_0000[2] == 0x1400) {
-        this->m_render->unknown_0038 = 0x101;
-        this->m_render->unknown_0034 = 0x101;
+      if (costume.identity[2] == 0x1400) {
+        this->m_render->upperHeadgearLocation = 0x101;
+        this->m_render->lowerHeadgearLocation = 0x101;
       }
 
-      if (costume.unknown_0000[2] == 0xC00) {
-        this->m_render->unknown_0038 = 0x300;
-        this->m_render->unknown_003C = 0x300;
+      if (costume.identity[2] == 0xC00) {
+        this->m_render->upperHeadgearLocation = 0x300;
+        this->m_render->middleHeadgearLocation = 0x300;
       }
 
-      if (costume.unknown_0000[2] == 0x1C00) {
-        this->m_render->unknown_0034 = 0x301;
-        this->m_render->unknown_0038 = 0x301;
-        this->m_render->unknown_003C = 0x301;
+      if (costume.identity[2] == 0x1C00) {
+        this->m_render->lowerHeadgearLocation = 0x301;
+        this->m_render->upperHeadgearLocation = 0x301;
+        this->m_render->middleHeadgearLocation = 0x301;
       }
     }
   }
 
-  if (this->m_render->unknown_0030) {
+  if (this->m_render->middleHeadgear) {
     ITEM_INFO equipped = g_session.GetItem17F0(9);
-    if (this->m_render->unknown_0030 == equipped.unknown_0070) {
-      if (equipped.unknown_0000[2] == 0x200) {
-        this->m_render->unknown_003C = 0x200;
+    if (this->m_render->middleHeadgear == equipped.sprite) {
+      if (equipped.identity[2] == 0x200) {
+        this->m_render->middleHeadgearLocation = 0x200;
       }
 
-      if (equipped.unknown_0000[2] == 0x201) {
-        this->m_render->unknown_003C = 0x201;
-        this->m_render->unknown_0034 = 0x201;
+      if (equipped.identity[2] == 0x201) {
+        this->m_render->middleHeadgearLocation = 0x201;
+        this->m_render->lowerHeadgearLocation = 0x201;
       }
     }
 
     ITEM_INFO costume = g_session.GetItem2B50(9);
-    if (this->m_render->unknown_0030 == costume.unknown_0070) {
-      if (costume.unknown_0000[2] == 0x800) {
-        this->m_render->unknown_003C = 0x200;
+    if (this->m_render->middleHeadgear == costume.sprite) {
+      if (costume.identity[2] == 0x800) {
+        this->m_render->middleHeadgearLocation = 0x200;
       }
 
-      if (costume.unknown_0000[2] == 0x1800) {
-        this->m_render->unknown_003C = 0x201;
-        this->m_render->unknown_0034 = 0x201;
+      if (costume.identity[2] == 0x1800) {
+        this->m_render->middleHeadgearLocation = 0x201;
+        this->m_render->lowerHeadgearLocation = 0x201;
       }
     }
   }

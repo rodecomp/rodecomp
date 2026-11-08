@@ -35,17 +35,17 @@ void CRotateItemEffect::Open() {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = index;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
     particle->scale = 2.5f;
     particle->SetColor(255, 200, 255);
-    *reinterpret_cast<float*>(&particle->unknown_00C4) = 360.0f;
-    particle->unknown_00C0 = 0.4f;
+    *reinterpret_cast<float*>(&particle->angleBits) = 360.0f;
+    particle->speedParameter = 0.4f;
     particle->alpha = 255;
-    particle->unknown_0054 = 13.0f;
+    particle->animationParameter = 13.0f;
     particle->destinationBlend = 6;
     this->particles.push_back(particle);
   }
@@ -66,25 +66,25 @@ void CRotateItemEffect::OnProcess() {
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
       if (this->frame >= 5) {
-        float& particleAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-        if (particle->unknown_000C == 0) {
-          particleAngle = static_cast<float>(static_cast<int>(particle->unknown_00C0 * 45.0f + particleAngle) % 360);
+        float& particleAngle = *reinterpret_cast<float*>(&particle->angleBits);
+        if (particle->columnIndex == 0) {
+          particleAngle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + particleAngle) % 360);
           if (this->id != 984) {
             if (CRenderObject* object = FindRenderObject(this->actor)) {
-              object->render.angle = static_cast<float>(static_cast<int>(particle->unknown_00C0 * 45.0f + object->render.angle) % 360);
+              object->render.angle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + object->render.angle) % 360);
             }
           }
         } else {
-          this->alpha -= particle->unknown_000C == 1 ? 150 : 25;
+          this->alpha -= particle->columnIndex == 1 ? 150 : 25;
           particle->alpha = this->alpha;
           particleAngle = this->angle;
         }
 
         const int index = static_cast<int>(particleAngle);
-        const float radius = particle->unknown_0054;
-        particle->unknown_00D0 = radius * g_cosTable[index];
-        particle->unknown_00D4 = -8.0f;
-        particle->unknown_00D8 = radius * g_sinTable[index];
+        const float radius = particle->animationParameter;
+        particle->offsetX = radius * g_cosTable[index];
+        particle->offsetY = -8.0f;
+        particle->offsetZ = radius * g_sinTable[index];
         this->angle = static_cast<float>(static_cast<int>(particleAngle - 5.0f) % 360);
         this->alpha = particle->alpha;
         if (particle->alpha > 0) {
@@ -98,7 +98,7 @@ void CRotateItemEffect::OnProcess() {
           scale.SetScale(particle->scale, particle->scale, 1.0f);
           matrix translate;
           std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-          translate.MakeTranslate(particle->unknown_00D0, particle->unknown_00D4, particle->unknown_00D8);
+          translate.MakeTranslate(particle->offsetX, particle->offsetY, particle->offsetZ);
           matrix first;
           first.Compose(scale, rotation);
           matrix result;
@@ -107,7 +107,7 @@ void CRotateItemEffect::OnProcess() {
         }
       }
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 

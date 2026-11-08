@@ -44,7 +44,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     bool hasElementalStone = false;
     int emptySlot = 3;
     for (int index = 0; index < 3; ++index) {
-      if (this->materials[index].unknown_0000[1] != 0) {
+      if (this->materials[index].identity[1] != 0) {
         hasElementalStone |= this->materials[index].IsElementalStone();
       } else if (emptySlot == 3) {
         emptySlot = index;
@@ -53,12 +53,12 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
     if (emptySlot < 3) {
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
-      if (item.unknown_0000[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
+      if (item.identity[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
         this->materials[emptySlot] = item;
         this->materials[emptySlot].quantity = 1;
-        g_session.RemoveItem1710(item.unknown_0000[1], 1);
-        if (g_windowMgr.unknown_01D4) {
-          reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        g_session.RemoveItem1710(item.identity[1], 1);
+        if (g_windowMgr.itemWnd) {
+          reinterpret_cast<UIWindow*>(g_windowMgr.itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
         this->Invalidate();
       }
@@ -137,7 +137,7 @@ void UIMakeTargetProcessWnd::Paint() {
     for (int x = 8; x < 104; x += 32, ++material) {
       auto* bar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\btnbar_right2.bmp")));
       DrawItemSlotBackground(*this, x - 4, this->geometry.height - bar->image.height - 32);
-      if (material->unknown_0000[1] != 0) {
+      if (material->identity[1] != 0) {
         DrawItemIcon(*this, ResourceMgr::Instance(), x, this->geometry.height - bar->image.height - 28, *material, 0);
       }
     }
@@ -147,7 +147,7 @@ void UIMakeTargetProcessWnd::Paint() {
 
   ITEM_INFO item;
   item.SetItemId(this->makeType);
-  item.unknown_0060 = 0;
+  item.refiningLevel = 0;
   item.identified = 1;
   const int nameWidth = this->DrawFittedItemName(16, 2, &item, 0, 0, 12, 0);
   this->DrawShadowedText(nameWidth + 16, 2, LookupMessage(MSI_MAKE_TARGET), 0, 0, 0xFFFFFF, 0, 12, 0);
@@ -165,7 +165,7 @@ void UIMakeTargetProcessWnd::Paint() {
 // FUNCTION: fn_13614
 void UIMakeTargetProcessWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.unknown_0000[1] != 0) {
+  if (item.identity[1] != 0) {
     g_modeMgr.gameMode->SendMsg(MM_BEGIN_DRAG_FROM_METALPROCESSWND, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
   } else {
     this->UIFrameWnd::OnLBtnDown(x, y);
@@ -185,7 +185,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     const char* name = reinterpret_cast<const char*>(a);
     for (int index = 2; index >= 0; --index) {
       ITEM_INFO& material = this->materials[index];
-      if (material.unknown_0000[1] > 0 && material.itemId == name) {
+      if (material.identity[1] > 0 && material.itemId == name) {
         g_session.AddItem1710(material, 1);
         material.Reset();
         this->Invalidate();
@@ -210,7 +210,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, 0, reinterpret_cast<int>(this->materials), 0, 0);
       bool restored = false;
       for (int index = 0; index < 3; ++index) {
-        if (this->materials[index].unknown_0000[1] > 0) {
+        if (this->materials[index].identity[1] > 0) {
           restored = true;
           g_session.AddItem1710(this->materials[index], 0);
         }
@@ -220,8 +220,8 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         RefreshItemWindows(&g_windowMgr);
       }
 
-      if (g_windowMgr.unknown_01D4) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      if (g_windowMgr.itemWnd) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
 
       g_windowMgr.CloseWindow(WID_MAKETARGETPROCESSWND);

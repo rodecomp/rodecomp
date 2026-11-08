@@ -12,13 +12,13 @@ void UITab::Paint() {
   char name[128];
 
   if (this->style == 0) {
-    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_itm_%02d.bmp", this->geometry.unknown_0030 + 1);
+    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_itm_%02d.bmp", this->geometry.state + 1);
   } else if (this->style == 1) {
-    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_cmd_%02d.bmp", this->geometry.unknown_0030 + 1);
+    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_cmd_%02d.bmp", this->geometry.state + 1);
   } else if (this->style == 2) {
-    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_que_%02d.bmp", this->geometry.unknown_0030 + 1);
+    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_que_%02d.bmp", this->geometry.state + 1);
   } else if (this->style == 3) {
-    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_item_%02d.bmp", this->geometry.unknown_0030 + 1);
+    std::sprintf(name, "유저인터페이스\\basic_interface\\tab_item_%02d.bmp", this->geometry.state + 1);
   } else {
     return;
   }
@@ -43,10 +43,10 @@ void UITab::OnLBtnDown(int, int y) {
     index = this->tabCount - 1;
   }
 
-  if (this->geometry.unknown_0030 != static_cast<std::uint32_t>(index)) {
-    this->geometry.unknown_0030 = index;
+  if (this->geometry.state != static_cast<std::uint32_t>(index)) {
+    this->geometry.state = index;
     this->Invalidate();
-    this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
+    this->parent->SendMsg(this, UM_TAB, this->geometry.state, 0, 0, 0);
   }
 }
 
@@ -54,7 +54,7 @@ void UITab::OnLBtnDown(int, int y) {
 // FUNCTION: fn_10921
 int UITab::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == UM_SETSTATE) {
-    this->geometry.unknown_0030 = argument1;
+    this->geometry.state = argument1;
     this->Invalidate();
   }
 
@@ -64,7 +64,7 @@ int UITab::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::
 // OFFSET: 0x00850680
 // FUNCTION: fn_10679
 UITab::UITab() : UIWindow(0) {
-  this->geometry.unknown_0030 = 0;
+  this->geometry.state = 0;
   this->tabCount = 3;
   this->style = 0;
 }

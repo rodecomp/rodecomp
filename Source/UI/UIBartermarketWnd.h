@@ -30,15 +30,16 @@ public:
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
-  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->unknown_00B4); }
+  // INLINED
+  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->entryListStorage); }
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int entryListStorage;
   /* 00B8 */ int itemCount;
   /* 00BC */ UIResizer* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ int firstRow;
   /* 00C8 */ int rowCount;
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ int hoveredRow;
   /* 00D0 */ unsigned char scrollEnabled;
   /* 00D4 */ UIExpandedBarterPurchaseButton* buyButton;
   /* 00D8 */ UIBitmapButton* cancelButton;
@@ -58,15 +59,16 @@ public:
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
-  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->unknown_00B4); }
+  // INLINED
+  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->entryListStorage); }
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int entryListStorage;
   /* 00B8 */ int itemCount;
-  /* 00BC */ UIWindow* unknown_00BC;
+  /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ int firstRow;
   /* 00C8 */ int rowCount;
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ int hoveredRow;
   /* 00D0 */ unsigned char scrollEnabled;
 };
 

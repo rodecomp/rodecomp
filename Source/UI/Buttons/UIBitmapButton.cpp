@@ -49,7 +49,7 @@ bool UIBitmapButton::SetBitmap(const char* name, int state, unsigned char exactS
 void UIBitmapButton::Paint() {
   CBitmapRes* bitmap;
 
-  switch (this->geometry.unknown_0030) {
+  switch (this->geometry.state) {
   case 0:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
     break;

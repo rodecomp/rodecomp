@@ -25,7 +25,7 @@ public:
   /* 00B8 */ CCharacterRender* m_render;
   /* 00BC */ UIBitmapButton* m_leftButton;
   /* 00C0 */ UIBitmapButton* m_rightButton;
-  /* 00C4 */ UIBasicButton* unknown_00C4;
+  /* 00C4 */ UIBasicButton* m_actionButton;
 };
 
 #endif

@@ -48,7 +48,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       for (int category = 0; category < 8; ++category) {
         std::map<unsigned short, UICheckBox*>& checks = this->m_jobChecks[category];
         for (auto it = checks.begin(); it != checks.end(); ++it) {
-          if (it->second->geometry.unknown_0030) {
+          if (it->second->geometry.state) {
             if (count < 6) {
               this->m_registration.detail.job[count] = it->first;
             }
@@ -256,8 +256,8 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
 // OFFSET: 0x00911EE0
 // FUNCTION: fn_12524
 UISeekPartyMBWnd::UISeekPartyMBWnd()
-    : UIFrameWnd(0), m_titleText(nullptr), m_levelText(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
-      m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0) {
+    : UIFrameWnd(0), m_titleText(nullptr), m_levelText(nullptr), typeLabel(nullptr), jobLabel(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
+      m_jobChecks(), m_subTypes(), cancelButton(nullptr), confirmButton(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0) {
 }
 
 // OFFSET: 0x009146D0
@@ -291,43 +291,43 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_levelText);
 
   label = "MAP";
-  this->unknown_00BC = new UIStaticText();
-  this->unknown_00BC->SetSize(this->geometry.width - 10, 0x1E);
-  this->unknown_00BC->SetText(label.c_str(), 1);
-  this->unknown_00BC->Move(10, 0x2D);
-  this->unknown_00BC->shadow = 1;
-  this->AddChild(this->unknown_00BC);
+  this->typeLabel = new UIStaticText();
+  this->typeLabel->SetSize(this->geometry.width - 10, 0x1E);
+  this->typeLabel->SetText(label.c_str(), 1);
+  this->typeLabel->Move(10, 0x2D);
+  this->typeLabel->shadow = 1;
+  this->AddChild(this->typeLabel);
 
   label = "JOB";
-  this->unknown_00C0 = new UIStaticText();
-  this->unknown_00C0->SetSize(this->geometry.width - 10, 0x1E);
-  this->unknown_00C0->SetText(label.c_str(), 1);
-  this->unknown_00C0->Move(10, 0x46);
-  this->unknown_00C0->shadow = 1;
-  this->AddChild(this->unknown_00C0);
+  this->jobLabel = new UIStaticText();
+  this->jobLabel->SetSize(this->geometry.width - 10, 0x1E);
+  this->jobLabel->SetText(label.c_str(), 1);
+  this->jobLabel->Move(10, 0x46);
+  this->jobLabel->shadow = 1;
+  this->AddChild(this->jobLabel);
 
   {
     std::string path = "유저인터페이스\\";
-    this->unknown_0158 = new UIBitmapButton();
-    this->unknown_0158->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
-    this->unknown_0158->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-    this->unknown_0158->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-    this->unknown_0158->SetSize(this->unknown_0158->BitmapWidth(), this->unknown_0158->BitmapHeight());
-    this->unknown_0158->Move(this->geometry.width - 0x5D, this->geometry.height - 0x18);
-    this->unknown_0158->SetId(0xB8);
-    this->AddChild(this->unknown_0158);
+    this->confirmButton = new UIBitmapButton();
+    this->confirmButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->confirmButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->confirmButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->confirmButton->SetSize(this->confirmButton->BitmapWidth(), this->confirmButton->BitmapHeight());
+    this->confirmButton->Move(this->geometry.width - 0x5D, this->geometry.height - 0x18);
+    this->confirmButton->SetId(0xB8);
+    this->AddChild(this->confirmButton);
   }
 
   {
     std::string path = "유저인터페이스\\";
-    this->unknown_0154 = new UIBitmapButton();
-    this->unknown_0154->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
-    this->unknown_0154->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
-    this->unknown_0154->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
-    this->unknown_0154->SetSize(this->unknown_0154->BitmapWidth(), this->unknown_0154->BitmapHeight());
-    this->unknown_0154->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
-    this->unknown_0154->SetId(0xB9);
-    this->AddChild(this->unknown_0154);
+    this->cancelButton = new UIBitmapButton();
+    this->cancelButton->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
+    this->cancelButton->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
+    this->cancelButton->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
+    this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
+    this->cancelButton->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
+    this->cancelButton->SetId(0xB9);
+    this->AddChild(this->cancelButton);
   }
 
   this->CreateJobChecks();

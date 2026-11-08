@@ -165,7 +165,7 @@ int UIWindowMgr::Window4F250Ready() {
   if (*reinterpret_cast<void**>(reinterpret_cast<char*>(window) + 0xB4) == nullptr) {
     return false;
   }
-  if (window->geometry.unknown_0030 != 0) {
+  if (window->geometry.state != 0) {
     return false;
   }
   return true;
@@ -174,9 +174,9 @@ int UIWindowMgr::Window4F250Ready() {
 // OFFSET: 0x00A97410
 // FUNCTION: fn_17203
 bool UIWindowMgr::HasPendingDialog() {
-  return this->unknown_0284 || this->unknown_02CC || this->unknown_02D0 || this->unknown_02D4 || this->unknown_02D8 || this->unknown_02DC ||
-         this->unknown_02E0 || this->unknown_02E4 || this->unknown_02E8 || this->unknown_02EC || this->unknown_03B4 || this->unknown_01F0 ||
-         this->unknown_01F4;
+  return this->exchangeAcceptWnd || this->joinPartyAcceptWnd || this->coupleAcceptWnd || this->starPlaceAcceptWnd || this->mixAcceptWnd || this->yourItemWnd ||
+         this->babyAcceptWnd || this->babyAcceptWnd2 || this->joinGuildAcceptWnd || this->allyGuildAcceptWnd || this->joinFriendAcceptWnd || this->sayDialogWnd ||
+         this->sayDialogOverlayWnd;
 }
 
 // OFFSET: 0x00A97200
@@ -231,7 +231,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
 // OFFSET: 0x00A97490
 // FUNCTION: fn_17204
 void UIWindowMgr::CancelActiveDialog() {
-  UIWindow* window = this->window_03DC ? this->window_03DC : this->unknown_03B0;
+  UIWindow* window = this->window_03DC ? this->window_03DC : this->bookWnd;
   if (window) {
     window->SendMsg(nullptr, UM_LEFTPUSH, 0, 0, 0, 0);
     return;

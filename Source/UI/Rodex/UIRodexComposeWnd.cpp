@@ -95,14 +95,14 @@ ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
 // OFFSET: 0x007FF710
 // FUNCTION: fn_10003
 void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
-  if (!this->unknown_0100) {
-    this->unknown_0100 = new UIItemTagOnMail();
-    if (!this->unknown_0100) {
+  if (!this->m_tagCtrl) {
+    this->m_tagCtrl = new UIItemTagOnMail();
+    if (!this->m_tagCtrl) {
       return;
     }
   }
 
-  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
   if (!tagCtrl->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
     return;
   }
@@ -116,19 +116,19 @@ void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
 // OFFSET: 0x007FF940
 // FUNCTION: fn_10004
 void UIRodexComposeWnd::InsertSkillTag(int tagId) {
-  if (!this->unknown_0100) {
-    this->unknown_0100 = new UIItemTagOnMail();
-    if (!this->unknown_0100) {
+  if (!this->m_tagCtrl) {
+    this->m_tagCtrl = new UIItemTagOnMail();
+    if (!this->m_tagCtrl) {
       return;
     }
   }
 
-  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
   if (tagCtrl->tags.size() >= 3) {
     return;
   }
 
-  if (this->m_contents->Length() + this->m_contents->unknown_00F0 > this->m_contents->maximum) {
+  if (this->m_contents->Length() + this->m_contents->tagTextLength > this->m_contents->maximum) {
     return;
   }
 
@@ -143,9 +143,9 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
 // FUNCTION: fn_10006
 void UIRodexEditCtrl3::OnCreate(int width, int height) {
   auto* scrollBar = new UIRodexScrollBar();
-  this->unknown_0130 = scrollBar;
+  this->scrollBar = scrollBar;
   scrollBar->Configure(width - 5, 0, 1, height);
-  this->AddChild(this->unknown_0130);
+  this->AddChild(this->scrollBar);
 }
 
 // OFFSET: 0x00800DD0
@@ -192,7 +192,7 @@ void UIRodexComposeWnd::OnLBtnDown(int x, int y) {
   }
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 15, item, item.quantity, -1);
   }
 }
@@ -206,10 +206,10 @@ void UIRodexComposeWnd::OnMouseHover(int x, int y) {
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
     CMode* tooltip = g_modeMgr.gameMode;
-    if (item.identified == 1 && item.unknown_0098 != 0) {
+    if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->ShowTooltip(
-        FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY, color, 0, 1
+        FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY, color, 0, 1
       );
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
@@ -238,20 +238,20 @@ void UIRodexComposeWnd::OnRBtnDown(int x, int y) {
 // OFFSET: 0x007FEDD0
 // FUNCTION: fn_09992
 UIRodexComposeWnd::UIRodexComposeWnd()
-    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
-      unknown_00C8(nullptr), unknown_00CC(0), unknown_00D0(nullptr), m_contents(nullptr), unknown_00D8(nullptr), m_zeny(nullptr), unknown_00E0(0),
-      unknown_00E4(0) {
-  this->unknown_0100 = nullptr;
-  this->unknown_00F8 = 0;
+    : UIFrameWnd(0), m_recipientEdit(nullptr), m_confirmedRecipientEdit(nullptr), m_confirmRecipientButton(nullptr), m_recipientLevelText(nullptr), m_recipientJobText(nullptr),
+      m_recipientIdText(nullptr), m_recipientId(0), m_titleEdit(nullptr), m_contents(nullptr), m_sendButton(nullptr), m_zeny(nullptr), m_reservedStateA(0),
+      m_reservedStateB(0) {
+  this->m_tagCtrl = nullptr;
+  this->m_tax = 0;
   this->m_itemIndex = 0;
   this->m_items.clear();
 }
 
 // INLINED
 UIRodexComposeWnd::~UIRodexComposeWnd() {
-  if (this->unknown_0100) {
-    static_cast<UIItemTagCtrl*>(this->unknown_0100)->ClearTags();
-    delete this->unknown_0100;
+  if (this->m_tagCtrl) {
+    static_cast<UIItemTagCtrl*>(this->m_tagCtrl)->ClearTags();
+    delete this->m_tagCtrl;
   }
 }
 
@@ -264,23 +264,23 @@ int UIRodexComposeWnd::MeasureText(const std::string& text, const unsigned& byte
 // OFFSET: 0x007FF290
 // FUNCTION: fn_09999
 void UIRodexComposeWnd::SetRecipient(int id, unsigned short job, unsigned short level, const char* name) {
-  this->unknown_00C0->SetTextWithinWidth(FormatOwnedString("Lv%d", level).c_str(), 0);
-  this->unknown_00C0->Show(1);
-  this->unknown_00C4->SetTextWithinWidth(g_session.GetJobName(job, 99), 0);
-  this->unknown_00C4->Show(1);
-  this->unknown_00CC = id;
-  this->unknown_00C8->SetTextWithinWidth(ShortcutFilename(id).c_str(), 0);
-  this->unknown_00C8->Show(1);
-  this->unknown_00B4->Show(0);
-  this->unknown_00BC->Enable(0);
-  this->unknown_00B8->Show(1);
-  this->unknown_00B8->SetText(name);
+  this->m_recipientLevelText->SetTextWithinWidth(FormatOwnedString("Lv%d", level).c_str(), 0);
+  this->m_recipientLevelText->Show(1);
+  this->m_recipientJobText->SetTextWithinWidth(g_session.GetJobName(job, 99), 0);
+  this->m_recipientJobText->Show(1);
+  this->m_recipientId = id;
+  this->m_recipientIdText->SetTextWithinWidth(ShortcutFilename(id).c_str(), 0);
+  this->m_recipientIdText->Show(1);
+  this->m_recipientEdit->Show(0);
+  this->m_confirmRecipientButton->Enable(0);
+  this->m_confirmedRecipientEdit->Show(1);
+  this->m_confirmedRecipientEdit->SetText(name);
 }
 
 // OFFSET: 0x007FF400
 // FUNCTION: fn_10000
 void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  if (!g_windowMgr.unknown_0458) {
+  if (!g_windowMgr.rodexComposeWnd) {
     UIWindow::DragAndDrop(x, y, value);
     return;
   }
@@ -319,8 +319,8 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_RODEXCOMPOSEWND);
     } else if (argument1 == ID_CHECK) {
-      if (this->unknown_00B4->Length() != 0 && this->unknown_00B4->Length() < 24) {
-        if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
+      if (this->m_recipientEdit->Length() != 0 && this->m_recipientEdit->Length() < 24) {
+        if (g_navigationLinkParser->HasLink(this->m_recipientEdit->Text())) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
@@ -328,7 +328,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         RodexCheckRecipientPacket packet;
         packet.packetType = 0xB97;
         std::memset(packet.name, 0, sizeof(packet.name));
-        strcpy_s(packet.name, sizeof(packet.name), this->unknown_00B4->Text());
+        strcpy_s(packet.name, sizeof(packet.name), this->m_recipientEdit->Text());
         if (g_session.HasUnknown809C(packet.name)) {
           packet.known = 1;
         } else {
@@ -338,20 +338,20 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         return 0;
       }
 
-      if (this->unknown_00B4->Length() >= 24) {
+      if (this->m_recipientEdit->Length() >= 24) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_WND_OVERFULL)), 0x64FFFF, 0, 0, 0);
       }
-      if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
+      if (g_navigationLinkParser->HasLink(this->m_recipientEdit->Text())) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
       } else {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
       }
     } else if (argument1 == ID_SEND) {
-      if (this->unknown_00B4->Length() == 0 && this->unknown_00B8->Length() == 0) {
+      if (this->m_recipientEdit->Length() == 0 && this->m_confirmedRecipientEdit->Length() == 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
-      if (this->unknown_00D0->Length() < 4 || this->unknown_00D0->Length() >= 51) {
+      if (this->m_titleEdit->Length() < 4 || this->m_titleEdit->Length() >= 51) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIELD_SEND_MAIL_TO)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
@@ -366,17 +366,17 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TAIWAN_PERSONALINFO_EXPMSG)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
-        if (zeny + this->unknown_00F8 > g_session.m_zeny) {
+        if (zeny + this->m_tax > g_session.m_zeny) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ACHIEVEMENT_SYSTEM)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }
-      if (this->unknown_00F8 > 0 && this->unknown_00F8 > g_session.m_zeny) {
+      if (this->m_tax > 0 && this->m_tax > g_session.m_zeny) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ACHIEVEMENT_SYSTEM)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
-      if (this->unknown_00C8->GetText().length() <= 0) {
+      if (this->m_recipientIdText->GetText().length() <= 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MAIL_COMMISSION)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
@@ -394,15 +394,15 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         body = this->m_contents->TakePendingText();
       }
 
-      auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
-      if (tagCtrl && tagCtrl->unknown_0140.size() != 0) {
-        body = tagCtrl->unknown_0140.c_str();
+      auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
+      if (tagCtrl && tagCtrl->linkedText.size() != 0) {
+        body = tagCtrl->linkedText.c_str();
       }
 
       RodexSendMailRequest mail;
-      mail.recipientId = this->unknown_00CC;
-      mail.recipient = this->unknown_00B8->Text();
-      mail.title = this->unknown_00D0->Text();
+      mail.recipientId = this->m_recipientId;
+      mail.recipient = this->m_confirmedRecipientEdit->Text();
+      mail.title = this->m_titleEdit->Text();
       mail.body = body;
       mail.zeny = static_cast<int>(zeny);
       g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
@@ -451,7 +451,7 @@ void UIRodexComposeWnd::Paint() {
   const auto* bg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp")))->image;
   this->DrawBitmap(0, 0, bg, false);
 
-  if (this->unknown_00B8->geometry.visible == 1) {
+  if (this->m_confirmedRecipientEdit->geometry.visible == 1) {
     const auto* balloon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_id_balloon.bmp")))->image;
     this->DrawBitmap(161, 21, balloon, true);
   }
@@ -459,7 +459,7 @@ void UIRodexComposeWnd::Paint() {
   std::string countStr = std::format("/ {}", 1000);
   this->DrawTextAt(261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
 
-  int length = this->m_contents->Length() + this->m_contents->unknown_00F0;
+  int length = this->m_contents->Length() + this->m_contents->tagTextLength;
   std::string lengthStr = FormatOwnedString("%d", length);
   this->DrawRightAlignedText(258, 276, lengthStr.c_str(), 0, 0, 10, 0xD66E44, 0);
 
@@ -469,7 +469,7 @@ void UIRodexComposeWnd::Paint() {
   const char* weightMsg = LookupMessage(MSI_TWITTER_TAG);
   this->DrawTextAt(245, 316, weightMsg, 0, 0, 11, 0x737373, 0, 0);
 
-  std::string weightStr = FormatOwnedString("%d", static_cast<int>(g_session.unknown_6140));
+  std::string weightStr = FormatOwnedString("%d", static_cast<int>(g_session.achievementResult));
   this->DrawRightAlignedText(244, 316, weightStr.c_str(), 0, 0, 11, 0x737373, 0);
 
   this->FillRegion(35, 347, 95, 16, 0xFFFFFF);
@@ -496,14 +496,14 @@ void UIRodexComposeWnd::Paint() {
   std::int64_t inputZeny = _atoi64(inputBuf);
   if (this->m_zeny->Text() != nullptr) {
     tax += (inputZeny * 2) / 100;
-    this->unknown_00F8 = tax;
+    this->m_tax = tax;
   }
   FormatGroupedInteger(tax, taxBuf, sizeof(taxBuf));
-  std::uint32_t taxColor = (inputZeny + this->unknown_00F8 > g_session.m_zeny) ? 0x4E71CF : 0;
+  std::uint32_t taxColor = (inputZeny + this->m_tax > g_session.m_zeny) ? 0x4E71CF : 0;
   this->DrawRightAlignedText(104, 382, taxBuf, 0, 0, 11, taxColor, 0);
 
   if (this->m_zeny->Length() != 0) {
-    std::uint32_t textColor = (inputZeny > g_session.m_zeny || inputZeny + this->unknown_00F8 > g_session.m_zeny) ? 0xFF : 0;
+    std::uint32_t textColor = (inputZeny > g_session.m_zeny || inputZeny + this->m_tax > g_session.m_zeny) ? 0xFF : 0;
     this->m_zeny->TextColor(textColor, 0xFFFFFFFF);
   }
 
@@ -517,13 +517,13 @@ void UIRodexComposeWnd::Paint() {
     for (const auto& item : this->m_items) {
       const auto* shadowOn = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp")))->image;
       this->DrawBitmap(itemX - 4, 319, shadowOn, true);
-      if (this->unknown_00F8 <= g_session.m_zeny) {
+      if (this->m_tax <= g_session.m_zeny) {
         DrawItemWithQuantity(*this, ResourceMgr::Instance(), itemX, 309, item, 0, 0);
       } else {
         DrawItemWithQuantityAuxiliary(*this, 2, itemX, 309, item, item.identified, 0);
       }
-      if (item.unknown_0088 > 0) {
-        std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.unknown_0088));
+      if (item.grade > 0) {
+        std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade));
         const auto* gradeBmp = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(gradeStr.c_str())))->image;
         this->DrawBitmap(itemX, 321, gradeBmp, true);
       }
@@ -531,17 +531,17 @@ void UIRodexComposeWnd::Paint() {
     }
   }
 
-  if (this->unknown_0100) {
-    auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
-    tagCtrl->SetLines(this->m_contents->unknown_0168);
+  if (this->m_tagCtrl) {
+    auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
+    tagCtrl->SetLines(this->m_contents->wrappedLines);
     tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
     tagCtrl->UpdateItemTags();
-    auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->unknown_0100);
-    int diff = editCtrl3->unknown_0150 - editCtrl3->unknown_0138;
-    this->m_contents->unknown_00F0 = std::max(0, diff);
-    if (tagCtrl->unknown_011C == 0) {
-      delete this->unknown_0100;
-      this->unknown_0100 = nullptr;
+    auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->m_tagCtrl);
+    int diff = editCtrl3->verticalCursorStep - editCtrl3->lineHeight;
+    this->m_contents->tagTextLength = std::max(0, diff);
+    if (tagCtrl->previousTagCount == 0) {
+      delete this->m_tagCtrl;
+      this->m_tagCtrl = nullptr;
     }
   }
 }
@@ -552,90 +552,90 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->unknown_00B4 = new UIEditCtrl_Custom();
-  this->unknown_00B4->SetSize(0x96, 0x12);
-  this->unknown_00B4->Move(8, 0x1A);
-  this->unknown_00B4->maximum = 50;
-  this->unknown_00B4->Background(0xFF, 0xFF, 0xFF);
-  this->unknown_00B4->flat = 0;
-  this->unknown_00B4->Border(0xA6, 0xA6, 0xA6);
-  this->unknown_00B4->TextColor(0x313131, 0xFFFFFFFF);
-  this->unknown_00B4->unknown_0120 = 1;
-  this->unknown_00B4->unknown_0124 = 1;
-  this->AddChild(this->unknown_00B4);
+  this->m_recipientEdit = new UIEditCtrl_Custom();
+  this->m_recipientEdit->SetSize(0x96, 0x12);
+  this->m_recipientEdit->Move(8, 0x1A);
+  this->m_recipientEdit->maximum = 50;
+  this->m_recipientEdit->Background(0xFF, 0xFF, 0xFF);
+  this->m_recipientEdit->flat = 0;
+  this->m_recipientEdit->Border(0xA6, 0xA6, 0xA6);
+  this->m_recipientEdit->TextColor(0x313131, 0xFFFFFFFF);
+  this->m_recipientEdit->labelOffsetX = 1;
+  this->m_recipientEdit->labelOffsetY = 1;
+  this->AddChild(this->m_recipientEdit);
 
-  this->unknown_00B8 = new UIEditCtrl_Custom();
-  this->unknown_00B8->SetSize(0x96, 0x12);
-  this->unknown_00B8->Move(8, 0x1A);
-  this->unknown_00B8->maximum = 50;
-  this->unknown_00B8->Background(0x110, 0x110, 0x110);
-  this->unknown_00B8->flat = 0;
-  this->unknown_00B8->Border(0xA6, 0xA6, 0xA6);
-  this->unknown_00B8->TextColor(0x95330F, 0xFFFFFFFF);
-  this->unknown_00B8->unknown_011C = 1;
-  this->unknown_00B8->unknown_0120 = 1;
-  this->unknown_00B8->unknown_0124 = 1;
-  this->unknown_00B8->disabled = 1;
-  this->unknown_00B8->Invalidate();
-  this->unknown_00B8->Show(0);
-  this->AddChild(this->unknown_00B8);
+  this->m_confirmedRecipientEdit = new UIEditCtrl_Custom();
+  this->m_confirmedRecipientEdit->SetSize(0x96, 0x12);
+  this->m_confirmedRecipientEdit->Move(8, 0x1A);
+  this->m_confirmedRecipientEdit->maximum = 50;
+  this->m_confirmedRecipientEdit->Background(0x110, 0x110, 0x110);
+  this->m_confirmedRecipientEdit->flat = 0;
+  this->m_confirmedRecipientEdit->Border(0xA6, 0xA6, 0xA6);
+  this->m_confirmedRecipientEdit->TextColor(0x95330F, 0xFFFFFFFF);
+  this->m_confirmedRecipientEdit->labelBold = 1;
+  this->m_confirmedRecipientEdit->labelOffsetX = 1;
+  this->m_confirmedRecipientEdit->labelOffsetY = 1;
+  this->m_confirmedRecipientEdit->disabled = 1;
+  this->m_confirmedRecipientEdit->Invalidate();
+  this->m_confirmedRecipientEdit->Show(0);
+  this->AddChild(this->m_confirmedRecipientEdit);
 
-  this->unknown_00BC = new UIBmpTextButton();
-  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_out.bmp", 0, 0);
-  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_over.bmp", 1, 0);
-  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 2, 0);
-  this->unknown_00BC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 3, 0);
-  this->unknown_00BC->SetSize(this->unknown_00BC->BitmapWidth(), this->unknown_00BC->BitmapHeight());
+  this->m_confirmRecipientButton = new UIBmpTextButton();
+  this->m_confirmRecipientButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_out.bmp", 0, 0);
+  this->m_confirmRecipientButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_over.bmp", 1, 0);
+  this->m_confirmRecipientButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 2, 0);
+  this->m_confirmRecipientButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 3, 0);
+  this->m_confirmRecipientButton->SetSize(this->m_confirmRecipientButton->BitmapWidth(), this->m_confirmRecipientButton->BitmapHeight());
   {
     const int textX = static_cast<int>(
-      static_cast<float>(this->unknown_00BC->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_TAB_RETURN), 0, 0, 12, 0, 0)) *
+      static_cast<float>(this->m_confirmRecipientButton->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_TAB_RETURN), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
-    UIBmpTextButton* button = this->unknown_00BC;
+    UIBmpTextButton* button = this->m_confirmRecipientButton;
     const int textY = static_cast<int>(
       static_cast<float>(button->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_TAB_RETURN), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
     button->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);
-    this->unknown_00BC->AddTextStyle(1, 12, 0x313131, 0, 0, textX, textY);
-    this->unknown_00BC->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
-    this->unknown_00BC->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
+    this->m_confirmRecipientButton->AddTextStyle(1, 12, 0x313131, 0, 0, textX, textY);
+    this->m_confirmRecipientButton->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
+    this->m_confirmRecipientButton->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
   }
-  this->unknown_00BC->SetText(LookupMessage(MSI_RODEX_TAB_RETURN));
-  this->unknown_00BC->Move(0xA2, 0x1A);
-  this->unknown_00BC->SetId(0xD5);
-  this->AddChild(this->unknown_00BC);
+  this->m_confirmRecipientButton->SetText(LookupMessage(MSI_RODEX_TAB_RETURN));
+  this->m_confirmRecipientButton->Move(0xA2, 0x1A);
+  this->m_confirmRecipientButton->SetId(0xD5);
+  this->AddChild(this->m_confirmRecipientButton);
 
-  this->unknown_00C0 = new UIStaticText();
-  this->unknown_00C0->SetSize(0x100, 0x10);
-  this->unknown_00C0->Move(0xAC, 0x19);
-  this->unknown_00C0->SetColor(0xC6, 0x28, 0x28);
-  this->unknown_00C0->SetFont(0, 11, 0, 0);
-  this->unknown_00C0->Show(0);
-  this->AddChild(this->unknown_00C0);
+  this->m_recipientLevelText = new UIStaticText();
+  this->m_recipientLevelText->SetSize(0x100, 0x10);
+  this->m_recipientLevelText->Move(0xAC, 0x19);
+  this->m_recipientLevelText->SetColor(0xC6, 0x28, 0x28);
+  this->m_recipientLevelText->SetFont(0, 11, 0, 0);
+  this->m_recipientLevelText->Show(0);
+  this->AddChild(this->m_recipientLevelText);
 
-  this->unknown_00C4 = new UIStaticText();
-  this->unknown_00C4->SetSize(0x100, 0x10);
-  this->unknown_00C4->Move(0xAC, 0x25);
-  this->unknown_00C4->SetColor(0xC6, 0x28, 0x28);
-  this->unknown_00C4->SetFont(0, 11, 0, 0);
-  this->unknown_00C4->Show(0);
-  this->AddChild(this->unknown_00C4);
+  this->m_recipientJobText = new UIStaticText();
+  this->m_recipientJobText->SetSize(0x100, 0x10);
+  this->m_recipientJobText->Move(0xAC, 0x25);
+  this->m_recipientJobText->SetColor(0xC6, 0x28, 0x28);
+  this->m_recipientJobText->SetFont(0, 11, 0, 0);
+  this->m_recipientJobText->Show(0);
+  this->AddChild(this->m_recipientJobText);
 
-  this->unknown_00C8 = new UIStaticText();
-  this->unknown_00C8->SetSize(0xFD, 0x10);
-  this->unknown_00C8->Move(0xAC, 0x31);
-  this->unknown_00C8->SetColor(0xC6, 0x28, 0x28);
-  this->unknown_00C8->SetFont(0, 11, 0, 0);
-  this->unknown_00C8->Show(0);
-  this->AddChild(this->unknown_00C8);
+  this->m_recipientIdText = new UIStaticText();
+  this->m_recipientIdText->SetSize(0xFD, 0x10);
+  this->m_recipientIdText->Move(0xAC, 0x31);
+  this->m_recipientIdText->SetColor(0xC6, 0x28, 0x28);
+  this->m_recipientIdText->SetFont(0, 11, 0, 0);
+  this->m_recipientIdText->Show(0);
+  this->AddChild(this->m_recipientIdText);
 
-  this->unknown_00D0 = new UIEditCtrl_Custom();
-  this->unknown_00D0->SetSize(0x9B, 0xE);
-  this->unknown_00D0->Move(6, 0x32);
-  this->unknown_00D0->maximum = 50;
-  this->unknown_00D0->SetText("TITLE");
-  this->AddChild(this->unknown_00D0);
+  this->m_titleEdit = new UIEditCtrl_Custom();
+  this->m_titleEdit->SetSize(0x9B, 0xE);
+  this->m_titleEdit->Move(6, 0x32);
+  this->m_titleEdit->maximum = 50;
+  this->m_titleEdit->SetText("TITLE");
+  this->AddChild(this->m_titleEdit);
 
   this->m_contents = new UIRodexEditCtrl3();
   this->m_contents->SetSize(0x10B, 0xC0);
@@ -659,9 +659,9 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_zeny->SetText("0");
   this->AddChild(this->m_zeny);
 
-  this->unknown_00D8 = new UIBasicButton();
-  this->unknown_00D8->Configure(0x46, LookupMessage(MSI_RODEX_TAB_DEFAULT));
-  this->unknown_00D8->Move(0xE2, 0x178);
-  this->unknown_00D8->SetId(0x159);
-  this->AddChild(this->unknown_00D8);
+  this->m_sendButton = new UIBasicButton();
+  this->m_sendButton->Configure(0x46, LookupMessage(MSI_RODEX_TAB_DEFAULT));
+  this->m_sendButton->Move(0xE2, 0x178);
+  this->m_sendButton->SetId(0x159);
+  this->AddChild(this->m_sendButton);
 }

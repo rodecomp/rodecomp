@@ -58,7 +58,7 @@ namespace {
 
 // OFFSET: 0x005A2E50
 // FUNCTION: fn_03122
-CharacterParticleBundle::CharacterParticleBundle() : CEffect(-1), startTime(0), unknown_00D8(0), particles() {
+CharacterParticleBundle::CharacterParticleBundle() : CEffect(-1), startTime(0), elapsedFrames(0), particles() {
 }
 
 // OFFSET: 0x005A31F0
@@ -75,9 +75,9 @@ void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
     const float x = this->position[0];
     const float y = this->position[1];
     const float z = this->position[2];
-    const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + this->offsetX + particle->unknown_00D0;
-    const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] - this->offsetY + particle->unknown_00D4;
-    const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->unknown_00D8;
+    const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + this->offsetX + particle->offsetX;
+    const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] - this->offsetY + particle->offsetY;
+    const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->offsetZ;
     particle->position.x = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
     particle->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
     particle->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
@@ -112,9 +112,9 @@ void CChopChopClawMarks::SpawnParticle() {
     // GLOBAL: gl_24875
     thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
     particle->Load(name.Text());
-    particle->unknown_00D0 = x;
-    particle->unknown_00D4 = y;
-    particle->unknown_00D8 = 0.0f;
+    particle->offsetX = x;
+    particle->offsetY = y;
+    particle->offsetZ = 0.0f;
     particle->m_angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
     this->particles.push_back(particle);
   }
@@ -186,7 +186,7 @@ void CharacterParticleBundle::OnInit() {
 // OFFSET: 0x005A3E50
 // FUNCTION: fn_03137
 void CharacterParticleBundle::Open() {
-  this->unknown_00D8 = 0;
+  this->elapsedFrames = 0;
   this->startTime = std::chrono::steady_clock::now().time_since_epoch().count();
   this->OnInit();
 }
@@ -195,7 +195,7 @@ void CharacterParticleBundle::Open() {
 // FUNCTION: fn_03138
 bool CChopChopClawMarks::IsAlive() {
   if (this->ActorExists()) {
-    const std::chrono::milliseconds limit = std::chrono::seconds(this->unknown_002C);
+    const std::chrono::milliseconds limit = std::chrono::seconds(this->effectLifetime);
     const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
     if (std::chrono::duration_cast<std::chrono::milliseconds>(elapsed) <= limit) {
       return true;
@@ -225,7 +225,7 @@ void CharacterParticleBundle::OnProcess() {
     this->UpdateParticlePosition(particle);
     this->ProcessParticle(particle);
   }
-  ++this->unknown_00D8;
+  ++this->elapsedFrames;
 }
 
 // OFFSET: 0x005A4000

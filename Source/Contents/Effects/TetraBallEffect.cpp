@@ -10,7 +10,7 @@
 // OFFSET: 0x0072E680
 // FUNCTION: fn_07509
 CTetraBallEffect::CTetraBallEffect() : CEffect(-1) {
-  this->unknown_0050 = 0;
+  this->rotationParameter = 0;
   for (int index = 0; index < 5; ++index) {
     this->balls[index] = nullptr;
   }
@@ -98,7 +98,7 @@ void CTetraBallEffect::OnProcess() {
       ball->position.y = this->position[1];
       ball->position.z = this->position[2];
       ball->Process(0.0f, 0.0f, 0.0f);
-      ++ball->unknown_00E8;
+      ++ball->elapsedFrames;
     }
   }
 }

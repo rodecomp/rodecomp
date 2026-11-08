@@ -16,7 +16,7 @@ struct EffectActorState {
 
   /* 0138 */ int unknown_0138;
   /* 013C */ std::uint32_t unknown_013C;
-  /* 0140 */ std::uint32_t unknown_0140;
+  /* 0140 */ std::uint32_t effectLaunched;
   /* 0144 */ std::list<CRagEffect*> effects;
   /* 014C */ CRagEffect* first;
   /* 0150 */ CRagEffect* second;

@@ -55,8 +55,8 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_10912
 int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
-  unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->unknown_015C);
-  unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->unknown_0184);
+  unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->scrollFlags);
+  unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->editFlags);
 
   switch (message) {
   case UM_DEFPUSH:
@@ -70,53 +70,53 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
-    const int previous = this->unknown_0158;
+    const int previous = this->firstVisibleLine;
     scrolling[0] = 1;
 
     if (message == UM_SCROLLVERTPAGEUP) {
-      this->unknown_0158 = previous - this->geometry.height / this->unknown_0138 + 1;
+      this->firstVisibleLine = previous - this->geometry.height / this->lineHeight + 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->unknown_0158 = previous - 1 + this->geometry.height / this->unknown_0138;
+      this->firstVisibleLine = previous - 1 + this->geometry.height / this->lineHeight;
     } else {
-      this->unknown_0158 = previous + a;
+      this->firstVisibleLine = previous + a;
     }
 
-    if (this->unknown_0158 < 0) {
-      this->unknown_0158 = 0;
+    if (this->firstVisibleLine < 0) {
+      this->firstVisibleLine = 0;
     }
 
-    const int last = this->unknown_013C - this->geometry.height / this->unknown_0138;
-    if (this->unknown_0158 > last) {
-      this->unknown_0158 = last;
+    const int last = this->lineCount - this->geometry.height / this->lineHeight;
+    if (this->firstVisibleLine > last) {
+      this->firstVisibleLine = last;
     }
 
-    static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->unknown_0158);
-    this->unknown_0130->Invalidate();
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->firstVisibleLine);
+    this->scrollBar->Invalidate();
     this->Invalidate();
     if (this->parent) {
       this->parent->Invalidate();
     }
 
-    return this->unknown_0158 - previous;
+    return this->firstVisibleLine - previous;
   }
   case UM_UPPUSH: {
     lineMove[0] = 0;
 
-    const unsigned count = this->unknown_0168.size();
-    if (count <= 1 && (count != 1 || !this->unknown_0174[0])) {
+    const unsigned count = this->wrappedLines.size();
+    if (count <= 1 && (count != 1 || !this->lineBreaks[0])) {
       return 0;
     }
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->unknown_0150 <= 0 || this->unknown_0154 != this->cursor || scrolling[1] != 0) {
-      const char* current = this->unknown_0160;
-      this->unknown_015E = 0;
+    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || scrolling[1] != 0) {
+      const char* current = this->previousLineText;
+      this->movingDown = 0;
       int bytes = 0;
       int width = 0;
       const char* const end = current + std::strlen(current);
       int column = 0;
 
-      if (this->unknown_0144 != 0) {
+      if (this->previousLineLength != 0) {
         while (current < end) {
           const int previousBytes = bytes;
           const int previousWidth = width;
@@ -132,8 +132,8 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           }
 
           column = bytes;
-          if (width > this->unknown_014C) {
-            if (width - this->unknown_014C > this->unknown_014C - previousWidth) {
+          if (width > this->caretPixelX) {
+            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
               column = previousBytes;
             }
             break;
@@ -141,10 +141,10 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
       }
 
-      this->unknown_0150 = this->unknown_0144 - column + static_cast<int>(std::strlen(this->unknown_0160));
+      this->verticalCursorStep = this->previousLineLength - column + static_cast<int>(std::strlen(this->previousLineText));
     }
 
-    g_serverLanguage->RetreatCursor(this->unknown_0150);
+    g_serverLanguage->RetreatCursor(this->verticalCursorStep);
     scrolling[1] = 1;
     lineMove[0] = 1;
     break;
@@ -152,21 +152,21 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_DOWNPUSH: {
     lineMove[0] = 0;
 
-    const unsigned count = this->unknown_0168.size();
-    if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->unknown_0174[0] || this->unknown_0148 <= 0)) {
+    const unsigned count = this->wrappedLines.size();
+    if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->lineBreaks[0] || this->nextLineLength <= 0)) {
       return 0;
     }
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->unknown_0150 <= 0 || this->unknown_0154 != this->cursor || this->unknown_015E != 0) {
+    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingDown != 0) {
       scrolling[1] = 0;
       int bytes = 0;
       int width = 0;
       int column = 0;
-      const unsigned lines = this->unknown_0168.size();
+      const unsigned lines = this->wrappedLines.size();
 
       if (lines > 1 && static_cast<unsigned>(this->textY) < lines - 1) {
-        const char* current = this->unknown_0164;
+        const char* current = this->nextLineText;
         const char* const end = current + std::strlen(current);
 
         while (current < end) {
@@ -184,8 +184,8 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           }
 
           column = bytes;
-          if (width > this->unknown_014C) {
-            if (width - this->unknown_014C > this->unknown_014C - previousWidth) {
+          if (width > this->caretPixelX) {
+            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
               column = previousBytes;
             }
             break;
@@ -193,11 +193,11 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
         }
       }
 
-      this->unknown_0150 = this->unknown_0148 + column;
+      this->verticalCursorStep = this->nextLineLength + column;
     }
 
-    g_serverLanguage->AdvanceCursor(this->unknown_0150);
-    this->unknown_015E = 1;
+    g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
+    this->movingDown = 1;
     break;
   }
   case 256:
@@ -210,7 +210,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   }
 
   g_serverLanguage->Selection(this->anchor, this->cursor);
-  this->unknown_0154 = this->cursor;
+  this->previousCursor = this->cursor;
   return 0;
 }
 
@@ -219,8 +219,8 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
   UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
 
-  this->unknown_0150 = 0;
-  this->unknown_0154 = 0;
+  this->verticalCursorStep = 0;
+  this->previousCursor = 0;
 
   switch (key) {
   case VK_LEFT:
@@ -228,9 +228,9 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
       int length = 0;
       for (int line = 0; line < this->textY; ++line) {
-        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        length += static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
+      if (length == this->cursor && this->lineBreaks[this->textY - 1]) {
         g_serverLanguage->KeyDown(key, data);
       }
     }
@@ -238,12 +238,12 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
     break;
   case VK_RIGHT:
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (static_cast<unsigned>(this->textY) < this->unknown_0168.size()) {
+    if (static_cast<unsigned>(this->textY) < this->wrappedLines.size()) {
       int length = 0;
       for (int line = 0; line <= this->textY; ++line) {
-        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        length += static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      if (length - 2 == this->cursor && this->unknown_0174[this->textY]) {
+      if (length - 2 == this->cursor && this->lineBreaks[this->textY]) {
         g_serverLanguage->KeyDown(key, data);
         g_serverLanguage->KeyDown(key, data);
         return;
@@ -252,37 +252,37 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
     g_serverLanguage->KeyDown(key, data);
     break;
   case VK_HOME:
-    if (this->unknown_0168.size() != 0) {
+    if (this->wrappedLines.size() != 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
       int offset = this->cursor;
       for (int line = 0; line < this->textY; ++line) {
-        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        offset -= static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
       g_serverLanguage->RetreatCursor(offset);
       g_serverLanguage->Selection(this->anchor, this->cursor);
     }
     break;
   case VK_END:
-    if (this->unknown_0168.size() != 0) {
+    if (this->wrappedLines.size() != 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
       int offset = this->cursor;
       for (int line = 0; line < this->textY; ++line) {
-        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        offset -= static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      const int length = static_cast<int>(std::strlen(this->unknown_0168[this->textY].c_str()));
-      g_serverLanguage->AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
+      const int length = static_cast<int>(std::strlen(this->wrappedLines[this->textY].c_str()));
+      g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? length - offset - 2 : length - offset);
       g_serverLanguage->Selection(this->anchor, this->cursor);
     }
-    reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = 1;
+    reinterpret_cast<unsigned char*>(&this->editFlags)[0] = 1;
     return;
   case VK_BACK:
-    if (this->unknown_0168.size() != 0) {
+    if (this->wrappedLines.size() != 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
       int length = 0;
       for (int line = 0; line < this->textY; ++line) {
-        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+        length += static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
+      if (length == this->cursor && this->lineBreaks[this->textY - 1]) {
         g_serverLanguage->Character(VK_BACK, data);
       }
     }
@@ -301,65 +301,65 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
 // OFFSET: 0x0084F570
 // FUNCTION: fn_10659
 UIEditCtrl3::UIEditCtrl3() : UIEditCtrl2() {
-  this->unknown_0130 = 0;
-  this->unknown_0134 = 0;
-  this->unknown_0138 = 14;
-  this->unknown_013C = 0;
-  this->unknown_0140 = 0;
-  this->unknown_0144 = 0;
-  this->unknown_0148 = 0;
-  this->unknown_014C = 0;
-  this->unknown_0150 = 0;
-  this->unknown_0154 = 0;
-  this->unknown_0158 = 0;
-  this->unknown_015C = 0;
-  this->unknown_015E = 0;
-  this->unknown_0184 = 0;
-  this->unknown_0160 = 0;
-  this->unknown_0164 = 0;
+  this->scrollBar = 0;
+  this->scrollEnabled = 0;
+  this->lineHeight = 14;
+  this->lineCount = 0;
+  this->caretLineLength = 0;
+  this->previousLineLength = 0;
+  this->nextLineLength = 0;
+  this->caretPixelX = 0;
+  this->verticalCursorStep = 0;
+  this->previousCursor = 0;
+  this->firstVisibleLine = 0;
+  this->scrollFlags = 0;
+  this->movingDown = 0;
+  this->editFlags = 0;
+  this->previousLineText = 0;
+  this->nextLineText = 0;
 }
 
 // OFFSET: 0x0084F2B0
 // FUNCTION: fn_10658
 UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
-  this->unknown_0130 = 0;
+  this->scrollBar = 0;
   this->UIEditCtrl3::OnCreate(other.geometry.width, other.geometry.height);
 
-  this->unknown_0134 = other.unknown_0134;
-  this->unknown_0138 = other.unknown_0138;
-  this->unknown_013C = other.unknown_013C;
-  this->unknown_0140 = other.unknown_0140;
-  this->unknown_0144 = other.unknown_0144;
-  this->unknown_0148 = other.unknown_0148;
-  this->unknown_014C = other.unknown_014C;
-  this->unknown_0150 = other.unknown_0150;
-  this->unknown_0154 = other.unknown_0154;
-  this->unknown_0158 = other.unknown_0158;
-  reinterpret_cast<unsigned char*>(&this->unknown_015C)[0] = reinterpret_cast<const unsigned char*>(&other.unknown_015C)[0];
-  reinterpret_cast<unsigned char*>(&this->unknown_015C)[1] = reinterpret_cast<const unsigned char*>(&other.unknown_015C)[1];
-  this->unknown_015E = other.unknown_015E;
-  reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = reinterpret_cast<const unsigned char*>(&other.unknown_0184)[0];
-  reinterpret_cast<unsigned char*>(&this->unknown_0184)[1] = reinterpret_cast<const unsigned char*>(&other.unknown_0184)[1];
+  this->scrollEnabled = other.scrollEnabled;
+  this->lineHeight = other.lineHeight;
+  this->lineCount = other.lineCount;
+  this->caretLineLength = other.caretLineLength;
+  this->previousLineLength = other.previousLineLength;
+  this->nextLineLength = other.nextLineLength;
+  this->caretPixelX = other.caretPixelX;
+  this->verticalCursorStep = other.verticalCursorStep;
+  this->previousCursor = other.previousCursor;
+  this->firstVisibleLine = other.firstVisibleLine;
+  reinterpret_cast<unsigned char*>(&this->scrollFlags)[0] = reinterpret_cast<const unsigned char*>(&other.scrollFlags)[0];
+  reinterpret_cast<unsigned char*>(&this->scrollFlags)[1] = reinterpret_cast<const unsigned char*>(&other.scrollFlags)[1];
+  this->movingDown = other.movingDown;
+  reinterpret_cast<unsigned char*>(&this->editFlags)[0] = reinterpret_cast<const unsigned char*>(&other.editFlags)[0];
+  reinterpret_cast<unsigned char*>(&this->editFlags)[1] = reinterpret_cast<const unsigned char*>(&other.editFlags)[1];
 
-  char* first = other.unknown_0160;
-  if (first != this->unknown_0160) {
+  char* first = other.previousLineText;
+  if (first != this->previousLineText) {
     if (IsNullOrEmpty(first)) {
-      this->unknown_0160 = 0;
+      this->previousLineText = 0;
     } else {
       const std::size_t length = std::strlen(first) + 1;
-      this->unknown_0160 = new char[length];
-      strcpy_s(this->unknown_0160, length, first);
+      this->previousLineText = new char[length];
+      strcpy_s(this->previousLineText, length, first);
     }
   }
 
-  char* second = other.unknown_0164;
-  if (second != this->unknown_0164) {
+  char* second = other.nextLineText;
+  if (second != this->nextLineText) {
     if (IsNullOrEmpty(second)) {
-      this->unknown_0164 = 0;
+      this->nextLineText = 0;
     } else {
       const std::size_t length = std::strlen(second) + 1;
-      this->unknown_0164 = new char[length];
-      strcpy_s(this->unknown_0164, length, second);
+      this->nextLineText = new char[length];
+      strcpy_s(this->nextLineText, length, second);
     }
   }
 }
@@ -376,17 +376,17 @@ UIEditCtrl3::~UIEditCtrl3() {
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
 void UIEditCtrl3::OnCreate(int width, int height) {
-  this->unknown_0130 = new UIScrollBar3();
-  static_cast<UIScrollBar3*>(this->unknown_0130)->Configure(width - 10, 0, 1, height);
-  this->AddChild(this->unknown_0130);
+  this->scrollBar = new UIScrollBar3();
+  static_cast<UIScrollBar3*>(this->scrollBar)->Configure(width - 10, 0, 1, height);
+  this->AddChild(this->scrollBar);
 }
 
 // OFFSET: 0x00863280
 // FUNCTION: fn_10906
 void UIEditCtrl3::Resize(int width, int height) {
   this->UIWindow::Resize(width, height);
-  this->unknown_0130->Move(this->geometry.width - 10, 0);
-  this->unknown_0130->Resize(this->unknown_0130->geometry.width, height);
+  this->scrollBar->Move(this->geometry.width - 10, 0);
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
   this->UpdateScrollBar();
 }
 
@@ -463,41 +463,41 @@ void UIEditCtrl3::PaintText() {
   display = prefix + this->text;
 
   int width = this->geometry.width - 6;
-  if (this->unknown_0134 != 0) {
-    width += 3 - this->unknown_0130->geometry.width;
+  if (this->scrollEnabled != 0) {
+    width += 3 - this->scrollBar->geometry.width;
   }
 
-  this->unknown_0168.clear();
-  this->unknown_0174.clear();
-  this->WrapTextWithBreaks(display.c_str(), &this->unknown_0168, &this->unknown_0174, width);
-  this->WrapLines(this->unknown_0168);
+  this->wrappedLines.clear();
+  this->lineBreaks.clear();
+  this->WrapTextWithBreaks(display.c_str(), &this->wrappedLines, &this->lineBreaks, width);
+  this->WrapLines(this->wrappedLines);
 
-  for (std::size_t index = 0; index < this->unknown_0168.size() - this->unknown_0174.size(); ++index) {
-    this->unknown_0174.push_back(false);
+  for (std::size_t index = 0; index < this->wrappedLines.size() - this->lineBreaks.size(); ++index) {
+    this->lineBreaks.push_back(false);
   }
 
-  this->unknown_013C = static_cast<int>(this->unknown_0168.size());
-  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
-    ++this->unknown_013C;
+  this->lineCount = static_cast<int>(this->wrappedLines.size());
+  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+    ++this->lineCount;
   }
 
-  if (this->unknown_0168.size() == 0) {
+  if (this->wrappedLines.size() == 0) {
     this->DrawBlinkingCaret(color);
     return;
   }
 
-  const int rows = this->geometry.height / this->unknown_0138;
-  const int first = this->unknown_0158;
-  const int last = std::min<std::size_t>(rows + first, this->unknown_0168.size());
+  const int rows = this->geometry.height / this->lineHeight;
+  const int first = this->firstVisibleLine;
+  const int last = std::min<std::size_t>(rows + first, this->wrappedLines.size());
 
   int offset = 0;
   for (int line = 0; line < first; ++line) {
-    offset += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+    offset += static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
   }
 
   for (int line = first; line < last; ++line) {
-    const int y = (line - first) * this->unknown_0138;
-    offset += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+    const int y = (line - first) * this->lineHeight;
+    offset += static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
 
     if (g_windowMgr.GetHoverWindow() == this && std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       const int selectionBegin = std::min(this->anchor, this->cursor);
@@ -506,31 +506,31 @@ void UIEditCtrl3::PaintText() {
       int endX = 0;
 
       if (selectionBegin < offset) {
-        int begin = selectionBegin + static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) - offset;
+        int begin = selectionBegin + static_cast<int>(std::strlen(this->wrappedLines[line].c_str())) - offset;
         if (begin < 0) {
           begin = 0;
         }
 
-        startX = begin != 0 ? this->TextWidth(this->unknown_0168[line].c_str(), begin, 0, 12, 0, 0) : 0;
+        startX = begin != 0 ? this->TextWidth(this->wrappedLines[line].c_str(), begin, 0, 12, 0, 0) : 0;
 
-        int length = static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
-        if (this->unknown_0174[line]) {
+        int length = static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
+        if (this->lineBreaks[line]) {
           length -= 2;
         }
-        endX = this->TextWidth(this->unknown_0168[line].c_str(), length, 0, 12, 0, 0);
+        endX = this->TextWidth(this->wrappedLines[line].c_str(), length, 0, 12, 0, 0);
       }
 
       if (selectionEnd <= offset) {
-        int end = selectionEnd + static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) - offset;
+        int end = selectionEnd + static_cast<int>(std::strlen(this->wrappedLines[line].c_str())) - offset;
         if (end < 0) {
           end = 0;
         }
 
         int length = end;
-        if (static_cast<int>(std::strlen(this->unknown_0168[line].c_str())) == end && this->unknown_0174[line]) {
+        if (static_cast<int>(std::strlen(this->wrappedLines[line].c_str())) == end && this->lineBreaks[line]) {
           length = end - 2;
         }
-        endX = length != 0 ? this->TextWidth(this->unknown_0168[line].c_str(), length, 0, 12, 0, 0) : 0;
+        endX = length != 0 ? this->TextWidth(this->wrappedLines[line].c_str(), length, 0, 12, 0, 0) : 0;
       }
 
       int left = x + startX;
@@ -554,16 +554,16 @@ void UIEditCtrl3::PaintText() {
     }
 
     if (this->pendingText.size() < static_cast<unsigned>(line + 1)) {
-      this->pendingText.push_back(this->unknown_0168[line]);
-    } else if (&this->pendingText[line] != &this->unknown_0168[line]) {
-      this->pendingText[line] = this->unknown_0168[line];
+      this->pendingText.push_back(this->wrappedLines[line]);
+    } else if (&this->pendingText[line] != &this->wrappedLines[line]) {
+      this->pendingText[line] = this->wrappedLines[line];
     }
 
-    this->PlaceLinks(this->unknown_0168[line], y, line, first, last);
+    this->PlaceLinks(this->wrappedLines[line], y, line, first, last);
 
-    const std::size_t length = std::strlen(this->unknown_0168[line].c_str());
+    const std::size_t length = std::strlen(this->wrappedLines[line].c_str());
     char* buffer = new char[length + 1];
-    std::strcpy(buffer, this->unknown_0168[line].c_str());
+    std::strcpy(buffer, this->wrappedLines[line].c_str());
     buffer[length] = '\0';
     if (buffer[length - 2] == '\r') {
       buffer[length - 2] = '\0';
@@ -592,24 +592,24 @@ void UIEditCtrl3::PaintText() {
   int reading = std::max(this->anchor, this->cursor) + static_cast<int>(g_serverLanguage->candidate.size() + std::strlen(prefix));
 
   int remaining = column;
-  for (std::size_t index = 0; index < this->unknown_0168.size(); ++index) {
-    remaining -= static_cast<int>(std::strlen(this->unknown_0168[index].c_str()));
+  for (std::size_t index = 0; index < this->wrappedLines.size(); ++index) {
+    remaining -= static_cast<int>(std::strlen(this->wrappedLines[index].c_str()));
     this->textY = static_cast<int>(index);
-    if (remaining < 0 || (static_cast<unsigned char>(this->unknown_0184) != 0 && remaining == 0)) {
+    if (remaining < 0 || (static_cast<unsigned char>(this->editFlags) != 0 && remaining == 0)) {
       break;
     }
   }
 
   if (g_windowMgr.GetHoverWindow() == this) {
     int caretLine = this->textY;
-    if (this->unknown_0140 != static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str()))) {
-      reinterpret_cast<unsigned char*>(&this->unknown_015C)[0] = 0;
-      this->unknown_0140 = static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str()));
+    if (this->caretLineLength != static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()))) {
+      reinterpret_cast<unsigned char*>(&this->scrollFlags)[0] = 0;
+      this->caretLineLength = static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()));
     }
 
     int before = 0;
     for (int index = 0; index < caretLine; ++index) {
-      before += static_cast<int>(std::strlen(this->unknown_0168[index].c_str()));
+      before += static_cast<int>(std::strlen(this->wrappedLines[index].c_str()));
     }
 
     int wrapped = 0;
@@ -617,22 +617,22 @@ void UIEditCtrl3::PaintText() {
       column -= before;
     }
 
-    if (static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) == column && this->unknown_0174[caretLine]) {
+    if (static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) == column && this->lineBreaks[caretLine]) {
       wrapped = 1;
       column = 0;
     }
 
-    if (this->unknown_0148 != static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) - column) {
-      this->unknown_0148 = static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) - column;
+    if (this->nextLineLength != static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) - column) {
+      this->nextLineLength = static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) - column;
     }
 
-    if (this->unknown_0144 != column) {
-      this->unknown_0144 = column;
+    if (this->previousLineLength != column) {
+      this->previousLineLength = column;
     }
 
     int caretX = 0;
     if (column != 0) {
-      caretX = this->TextWidth(this->unknown_0168[caretLine].c_str(), column, 0, 12, 0, 0);
+      caretX = this->TextWidth(this->wrappedLines[caretLine].c_str(), column, 0, 12, 0, 0);
       caretLine = this->textY;
     }
 
@@ -641,11 +641,11 @@ void UIEditCtrl3::PaintText() {
     }
 
     int readingLength = reading;
-    if (static_cast<int>(std::strlen(this->unknown_0168[caretLine].c_str())) == reading && this->unknown_0174[caretLine]) {
+    if (static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) == reading && this->lineBreaks[caretLine]) {
       readingLength = reading - 2;
     }
 
-    const int readingX = readingLength != 0 ? this->TextWidth(this->unknown_0168[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
+    const int readingX = readingLength != 0 ? this->TextWidth(this->wrappedLines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
 
     if (g_serverLanguage->candidate.size() != 0) {
       int gap = readingX - caretX;
@@ -653,43 +653,43 @@ void UIEditCtrl3::PaintText() {
         gap = 2;
       }
       caretX += gap + 2;
-      this->unknown_0144 += 2;
+      this->previousLineLength += 2;
       this->MoveCandidateWindow(caretX);
       this->MoveReadingWindow(readingX);
     }
 
-    if (this->unknown_014C != caretX) {
-      this->unknown_014C = caretX;
+    if (this->caretPixelX != caretX) {
+      this->caretPixelX = caretX;
     }
 
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
-      this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->unknown_0138, "|", 0, 0, 12, color, 0, 0);
+      this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
 
-      const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->unknown_015C);
+      const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->scrollFlags);
       if (scroll[0] == 0) {
         if (scroll[1] != 0) {
           const int current = this->textY;
-          if (current - wrapped < this->unknown_0158) {
-            if (current >= this->unknown_013C - rows) {
-              this->unknown_0158 = this->unknown_013C - rows;
+          if (current - wrapped < this->firstVisibleLine) {
+            if (current >= this->lineCount - rows) {
+              this->firstVisibleLine = this->lineCount - rows;
             } else {
-              this->unknown_0158 = current + wrapped;
+              this->firstVisibleLine = current + wrapped;
             }
           }
-        } else if (this->unknown_015E != 0) {
+        } else if (this->movingDown != 0) {
           const int current = this->textY;
-          if (this->unknown_0158 - 1 + rows < current) {
+          if (this->firstVisibleLine - 1 + rows < current) {
             if (current < rows) {
-              this->unknown_0158 = 0;
+              this->firstVisibleLine = 0;
             } else {
-              this->unknown_0158 = current - rows + 1;
+              this->firstVisibleLine = current - rows + 1;
             }
           }
         } else {
-          const int top = this->unknown_013C <= rows ? this->textY : this->unknown_013C - rows + wrapped;
-          this->unknown_0158 = top;
-          if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && top > 0) {
-            this->unknown_0158 = top - 1;
+          const int top = this->lineCount <= rows ? this->textY : this->lineCount - rows + wrapped;
+          this->firstVisibleLine = top;
+          if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 && top > 0) {
+            this->firstVisibleLine = top - 1;
           }
         }
       }
@@ -700,42 +700,42 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  std::size_t count = this->unknown_0168.size();
+  std::size_t count = this->wrappedLines.size();
   if (count > 1 && this->textY > 0) {
-    const std::size_t length = std::strlen(this->unknown_0168[this->textY - 1].c_str());
-    if (this->unknown_0160) {
-      delete[] this->unknown_0160;
-      this->unknown_0160 = nullptr;
+    const std::size_t length = std::strlen(this->wrappedLines[this->textY - 1].c_str());
+    if (this->previousLineText) {
+      delete[] this->previousLineText;
+      this->previousLineText = nullptr;
     }
-    this->unknown_0160 = new char[length + 1];
-    std::strcpy(this->unknown_0160, this->unknown_0168[this->textY - 1].c_str());
-  } else if ((count == 1 || (count > 1 && this->textY == 0)) && this->unknown_0174[0]) {
-    const std::size_t length = std::strlen(this->unknown_0168[0].c_str());
-    if (this->unknown_0160) {
-      delete[] this->unknown_0160;
-      this->unknown_0160 = nullptr;
+    this->previousLineText = new char[length + 1];
+    std::strcpy(this->previousLineText, this->wrappedLines[this->textY - 1].c_str());
+  } else if ((count == 1 || (count > 1 && this->textY == 0)) && this->lineBreaks[0]) {
+    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+    if (this->previousLineText) {
+      delete[] this->previousLineText;
+      this->previousLineText = nullptr;
     }
-    this->unknown_0160 = new char[length + 1];
-    std::strcpy(this->unknown_0160, this->unknown_0168[0].c_str());
+    this->previousLineText = new char[length + 1];
+    std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
   }
 
-  count = this->unknown_0168.size();
+  count = this->wrappedLines.size();
   if (count > 1 && static_cast<unsigned>(this->textY) < count - 1) {
-    const std::size_t length = std::strlen(this->unknown_0168[this->textY + 1].c_str());
-    if (this->unknown_0164) {
-      delete[] this->unknown_0164;
-      this->unknown_0164 = nullptr;
+    const std::size_t length = std::strlen(this->wrappedLines[this->textY + 1].c_str());
+    if (this->nextLineText) {
+      delete[] this->nextLineText;
+      this->nextLineText = nullptr;
     }
-    this->unknown_0164 = new char[length + 1];
-    std::strcpy(this->unknown_0164, this->unknown_0168[this->textY + 1].c_str());
-  } else if (count == 1 && this->unknown_0174[0]) {
-    const std::size_t length = std::strlen(this->unknown_0168[0].c_str());
-    if (this->unknown_0164) {
-      delete[] this->unknown_0164;
-      this->unknown_0164 = nullptr;
+    this->nextLineText = new char[length + 1];
+    std::strcpy(this->nextLineText, this->wrappedLines[this->textY + 1].c_str());
+  } else if (count == 1 && this->lineBreaks[0]) {
+    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+    if (this->nextLineText) {
+      delete[] this->nextLineText;
+      this->nextLineText = nullptr;
     }
-    this->unknown_0164 = new char[length + 1];
-    std::strcpy(this->unknown_0164, this->unknown_0168[0].c_str());
+    this->nextLineText = new char[length + 1];
+    std::strcpy(this->nextLineText, this->wrappedLines[0].c_str());
   }
 
   this->UpdateScrollBar();
@@ -846,21 +846,21 @@ void UIEditCtrl3::Paint() {
 // OFFSET: 0x0085FF60
 // FUNCTION: fn_10892
 void UIEditCtrl3::OnWheel(int value) {
-  if (this->unknown_0134 == 0) {
+  if (this->scrollEnabled == 0) {
     return;
   }
 
   if (value < 0) {
-    this->SendMsg(this->unknown_0130, UM_SCROLLVERT, 3, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, 3, 0, 0, 0);
   } else {
-    this->SendMsg(this->unknown_0130, UM_SCROLLVERT, -3, 0, 0, 0);
+    this->SendMsg(this->scrollBar, UM_SCROLLVERT, -3, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00868300
 // FUNCTION: fn_10958
 void UIEditCtrl3::Trim() {
-  const int limit = this->maximum - this->unknown_00F0;
+  const int limit = this->maximum - this->tagTextLength;
   const auto length = this->text.size();
 
   if (static_cast<int>(length) <= limit) {
@@ -907,9 +907,9 @@ void UIBitmapEditCtrl::SetBitmapName(const char* name) {
 // OFFSET: 0x0084EE90
 // FUNCTION: fn_10654
 UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), historyLimit(30) {
-  this->unknown_0140 = 0;
+  this->historyIndex = 0;
   this->history.reserve(this->historyLimit);
-  this->unknown_0144 = 0;
+  this->itemTags = 0;
 }
 
 // OFFSET: 0x0085EB50
@@ -928,21 +928,21 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_UPPUSH:
     if (this->history.size() != 0) {
-      if (this->unknown_0140 == this->history.size()) {
+      if (this->historyIndex == this->history.size()) {
         this->pending = this->Text();
       }
-      if (this->unknown_0140 != 0) {
-        --this->unknown_0140;
+      if (this->historyIndex != 0) {
+        --this->historyIndex;
       }
 
-      this->SetText(this->history[this->unknown_0140].c_str());
+      this->SetText(this->history[this->historyIndex].c_str());
       this->OnBeginEdit();
     }
     break;
   case UM_DOWNPUSH:
-    if (this->history.size() != 0 && this->unknown_0140 < this->history.size()) {
-      ++this->unknown_0140;
-      this->SetText((this->unknown_0140 == this->history.size() ? this->pending : this->history[this->unknown_0140]).c_str());
+    if (this->history.size() != 0 && this->historyIndex < this->history.size()) {
+      ++this->historyIndex;
+      this->SetText((this->historyIndex == this->history.size() ? this->pending : this->history[this->historyIndex]).c_str());
       this->OnBeginEdit();
     }
     break;
@@ -1085,24 +1085,24 @@ int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x00853F20
 // FUNCTION: fn_10745
 void UIEditCtrl3::ClearLineState() {
-  auto line = this->unknown_0168.begin();
-  while (line != this->unknown_0168.end()) {
-    line = this->unknown_0168.erase(line);
+  auto line = this->wrappedLines.begin();
+  while (line != this->wrappedLines.end()) {
+    line = this->wrappedLines.erase(line);
   }
-  this->unknown_0168.clear();
+  this->wrappedLines.clear();
 
-  while (!this->unknown_0174.empty()) {
-    this->unknown_0174.pop_back();
-  }
-
-  if (this->unknown_0160) {
-    delete[] this->unknown_0160;
-    this->unknown_0160 = nullptr;
+  while (!this->lineBreaks.empty()) {
+    this->lineBreaks.pop_back();
   }
 
-  if (this->unknown_0164) {
-    delete[] this->unknown_0164;
-    this->unknown_0164 = nullptr;
+  if (this->previousLineText) {
+    delete[] this->previousLineText;
+    this->previousLineText = nullptr;
+  }
+
+  if (this->nextLineText) {
+    delete[] this->nextLineText;
+    this->nextLineText = nullptr;
   }
 }
 
@@ -1144,16 +1144,16 @@ void UIChatEditCtrl::Paint() {
   this->textY = this->topPadding + 2;
   this->PaintText();
 
-  UIItemTagOnChat* tag = this->unknown_0144;
+  UIItemTagOnChat* tag = this->itemTags;
   if (tag != nullptr) {
     tag->SetTaggedText(this->text, this->geometry.width);
-    this->unknown_0144->UpdateItemTags();
-    UIItemTagOnChat* current = this->unknown_0144;
-    const int span = static_cast<int>(current->unknown_0140.size() - current->taggedText.size());
-    this->unknown_00F0 = span > 0 ? span : 0;
-    if (current->unknown_011C == 0) {
-      delete this->unknown_0144;
-      this->unknown_0144 = nullptr;
+    this->itemTags->UpdateItemTags();
+    UIItemTagOnChat* current = this->itemTags;
+    const int span = static_cast<int>(current->linkedText.size() - current->taggedText.size());
+    this->tagTextLength = span > 0 ? span : 0;
+    if (current->previousTagCount == 0) {
+      delete this->itemTags;
+      this->itemTags = nullptr;
     }
   }
 }

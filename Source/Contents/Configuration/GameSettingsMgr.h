@@ -24,8 +24,8 @@ struct GameSettingsOption {
   /* 0040 */ std::string description;
   /* 0058 */ unsigned char defaultValue;
   /* 0059 */ unsigned char unknown_0059[3];
-  /* 005C */ int unknown_005c = 4698;
-  /* 0060 */ int unknown_0060 = 4698;
+  /* 005C */ int enabledMessage = 4698;
+  /* 0060 */ int disabledMessage = 4698;
 };
 
 class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {

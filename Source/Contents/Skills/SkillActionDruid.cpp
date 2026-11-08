@@ -613,7 +613,7 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const float scale = source->attackMotion * source->render.speed * 16.0f;
   const bool flag = direction != 1 && direction != 2;
 
   const std::string effectName(

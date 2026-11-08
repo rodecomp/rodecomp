@@ -74,9 +74,9 @@ void CRendererDX9::DrawQueues(
 
   const auto drawCommand = [&](RenderCommand& command) {
     this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);
-    this->SetTextureMode(command.unknown_0020);
-    this->device->state.SetRenderState(D3DRS_SRCBLEND, command.unknown_0018);
-    this->device->state.SetRenderState(D3DRS_DESTBLEND, command.unknown_001C);
+    this->SetTextureMode(command.textureMode);
+    this->device->state.SetRenderState(D3DRS_SRCBLEND, command.sourceBlend);
+    this->device->state.SetRenderState(D3DRS_DESTBLEND, command.destinationBlend);
     this->DrawPrimitive(&command);
   };
 
@@ -181,11 +181,11 @@ void CRendererDX9::DrawQueues(
     for (const DepthPrimitive& entry : queues.queue_0234) {
       RenderCommand& command = *entry.primitive;
       this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);
-      this->SetTextureMode(command.unknown_0020);
+      this->SetTextureMode(command.textureMode);
 
       const bool selected = !(entry.depth >= 0.99f);
-      this->device->state.SetRenderState(D3DRS_SRCBLEND, selected ? command.unknown_0018 : D3DBLEND_SRCALPHA);
-      this->device->state.SetRenderState(D3DRS_DESTBLEND, selected ? command.unknown_001C : D3DBLEND_INVSRCALPHA);
+      this->device->state.SetRenderState(D3DRS_SRCBLEND, selected ? command.sourceBlend : D3DBLEND_SRCALPHA);
+      this->device->state.SetRenderState(D3DRS_DESTBLEND, selected ? command.destinationBlend : D3DBLEND_INVSRCALPHA);
       this->DrawPrimitive(&command);
     }
   }

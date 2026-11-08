@@ -65,7 +65,7 @@ int AutomaticSkills::CancelOption(std::int16_t id) {
 // OFFSET: 0x007AF2A0
 // FUNCTION: fn_09150
 void AutomaticSkills::DisableAll() {
-  g_session.unknown_61A4 = 0;
+  g_session.automaticSkillHotkey = 0;
 
   for (int id : this->m_ids) {
     const auto skill = static_cast<std::int16_t>(id);
@@ -93,7 +93,7 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
     Cancel(id);
     g_session.SetOption(cancel, 0, 0);
   } else {
-    g_session.unknown_61A4 = g_session.m_currentHotkey;
+    g_session.automaticSkillHotkey = g_session.m_currentHotkey;
     g_session.SetOption(ActiveOption(id), 1, 0);
   }
 }

@@ -101,14 +101,14 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
       record.offsetY = y.AsDouble();
     }
 
-    this->GetBoolValue(node, "IsInfinite", &record.unknown_0028);
-    this->GetBoolValue(node, "IsFloor", &record.unknown_0029);
-    this->GetBoolValue(node, "IsAboveUI", &record.unknown_002A);
-    this->GetStringValue(node, "SoundPath", &record.unknown_002C);
-    this->GetBoolValue(node, "IsSoundLoop", &record.unknown_0044);
-    this->GetIntValue(node, "QuakeDelay", &record.unknown_0048[0]);
-    this->GetIntValue(node, "StartDelayTime", &record.unknown_0048[1]);
-    this->GetBoolValue(node, "IsToGround", &record.unknown_0050);
+    this->GetBoolValue(node, "IsInfinite", &record.infinite);
+    this->GetBoolValue(node, "IsFloor", &record.floor);
+    this->GetBoolValue(node, "IsAboveUI", &record.aboveUi);
+    this->GetStringValue(node, "SoundPath", &record.soundPath);
+    this->GetBoolValue(node, "IsSoundLoop", &record.soundLoop);
+    this->GetIntValue(node, "QuakeDelay", &record.delays[0]);
+    this->GetIntValue(node, "StartDelayTime", &record.delays[1]);
+    this->GetBoolValue(node, "IsToGround", &record.toGround);
 
     if (!out->insert(std::make_pair(name, record)).second) {
       this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());

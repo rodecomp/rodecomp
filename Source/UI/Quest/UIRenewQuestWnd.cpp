@@ -116,7 +116,7 @@ void UINpcSprWnd::Paint() {
           texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
         }
       } else {
-        texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+        texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
       }
 
       if (image->width != this->geometry.width || image->height != this->geometry.height) {
@@ -349,12 +349,12 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(bitmap);
   y += bitmap->geometry.height + 8;
 
-  if (!quest.unknown_007C.empty()) {
+  if (!quest.npcSprite.empty()) {
     UINpcSprWnd* npc = new UINpcSprWnd();
-    npc->SetSprite(75, 145, quest.unknown_007C);
+    npc->SetSprite(75, 145, quest.npcSprite);
     npc->Move(this->geometry.width - npc->geometry.width - 30, y);
-    if (!quest.unknown_0094.empty()) {
-      npc->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+    if (!quest.destinationMap.empty()) {
+      npc->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
     }
     this->AddScrollChild(npc);
   }
@@ -381,9 +381,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(label);
 
   label = new UIStaticText();
-  size = context.Measure(quest.unknown_01B8.c_str(), static_cast<int>(quest.unknown_01B8.size()));
+  size = context.Measure(quest.baseExpReward.c_str(), static_cast<int>(quest.baseExpReward.size()));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(quest.unknown_01B8.c_str(), 0);
+  label->SetText(quest.baseExpReward.c_str(), 0);
   label->SetColor(29, 85, 160);
   label->Move(109, y);
   this->AddScrollChild(label);
@@ -397,9 +397,9 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(label);
 
   label = new UIStaticText();
-  size = context.Measure(quest.unknown_01D0.c_str(), static_cast<int>(quest.unknown_01D0.size()));
+  size = context.Measure(quest.jobExpReward.c_str(), static_cast<int>(quest.jobExpReward.size()));
   label->SetSize(size.cx + 4, 12);
-  label->SetText(quest.unknown_01D0.c_str(), 0);
+  label->SetText(quest.jobExpReward.c_str(), 0);
   label->SetColor(29, 85, 160);
   label->Move(109, y);
   this->AddScrollChild(label);
@@ -462,7 +462,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(int width, int height)
-    : UIScrollWnd(width, height, 0), unknown_00B0(0), unknown_00B4(14) {
+    : UIScrollWnd(width, height, 0), m_questId(0), unknown_00B4(14) {
   this->OnCreate(width, height);
 }
 
@@ -515,7 +515,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   this->Clear();
   this->horizontalBar = nullptr;
   this->scrollBar = nullptr;
-  this->unknown_00B0 = questId;
+  this->m_questId = questId;
 
   UITagTextViewer* viewers[3];
   viewers[0] = new UITagTextViewer();
@@ -549,12 +549,12 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
     }
   }
 
-  if (!quest.unknown_007C.empty()) {
+  if (!quest.npcSprite.empty()) {
     UINpcSprWnd* npc = new UINpcSprWnd();
-    npc->SetSprite(75, 145, quest.unknown_007C);
+    npc->SetSprite(75, 145, quest.npcSprite);
     npc->Move(this->geometry.width - npc->geometry.width - 40, this->geometry.height - npc->geometry.height - 10);
-    if (!quest.unknown_0094.empty()) {
-      npc->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+    if (!quest.destinationMap.empty()) {
+      npc->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
     }
     this->AddScrollChild(npc);
   }
@@ -669,7 +669,7 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
     this->m_ongoingWnd->Show(0);
     this->m_recommendedWnd->Show(1);
     this->m_recommendedWnd->SetQuest(this->m_questId);
-    this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).unknown_00B4;
+    this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).backgroundImage;
     if (!this->m_imageName.empty()) {
       this->m_imageName = "유저인터페이스\\renew_questui\\" + this->m_imageName;
     }
@@ -826,14 +826,14 @@ void UIRenewQuestWnd::Paint() {
       this->DrawTextAt(80, this->m_pressed + 30 + y, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12,
         0xE47B2E, 1, 0
       );
-      summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
+      summary = quest->summary.empty() ? "" : quest->summary.c_str();
       summaryY = this->m_pressed + y;
     } else {
       this->DrawBitmap(38, y + 24, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList.bmp"))), true);
       this->m_rows.icons[index]->Move(46, y + 31);
       this->DrawTextAt(80, y + 30, quest->m_title.empty() ? "" : quest->m_title.c_str(), 0, 0, 12, 0x955322, 1, 0
       );
-      summary = quest->unknown_004C.empty() ? "" : quest->unknown_004C.c_str();
+      summary = quest->summary.empty() ? "" : quest->summary.c_str();
       summaryY = y;
     }
 
@@ -898,7 +898,7 @@ void UIRenewQuestWnd::RefreshRows() {
       const std::vector<unsigned int>& ids = this->m_questIds[1];
       if (index < ids.size()) {
         const RenewQuestRecommendedInfo& quest = g_renewQuestMgr->GetRecommendedQuest(ids[index]);
-        this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
+        this->m_rows.lockBoxes[i]->geometry.state = quest.m_state;
         this->m_rows.lockBoxes[i]->Invalidate();
         this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(MSI_SAVE_ID));
         this->m_rows.lockBoxes[i]->SetHidden(false);
@@ -918,11 +918,11 @@ void UIRenewQuestWnd::RefreshRows() {
           this->m_rows.checkBoxes[i]->SetHidden(true);
           this->m_rows.lockBoxes[i]->SetHidden(true);
         } else {
-          this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
+          this->m_rows.lockBoxes[i]->geometry.state = quest.m_state;
           this->m_rows.lockBoxes[i]->Invalidate();
           this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(MSI_OTP_INPUT_TIME));
           this->m_rows.lockBoxes[i]->SetHidden(false);
-          this->m_rows.checkBoxes[i]->geometry.unknown_0030 = quest.m_simpleView;
+          this->m_rows.checkBoxes[i]->geometry.state = quest.m_simpleView;
           this->m_rows.checkBoxes[i]->Invalidate();
           this->m_rows.checkBoxes[i]->SetHidden(false);
         }
@@ -982,7 +982,7 @@ void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
     this->m_questIds[3].clear();
     CRenewQuestMgr* mgr = g_renewQuestMgr;
     for (auto it = mgr->m_ongoingQuests.begin(); it != mgr->m_ongoingQuests.end(); ++it) {
-      if (it->second.unknown_01F8 == 1) {
+      if (it->second.questType == 1) {
         this->m_questIds[3].push_back(it->first);
       } else if (it->second.m_state == 1) {
         this->m_questIds[0].push_back(it->first);
@@ -1052,7 +1052,7 @@ static void SetRecommendedQuestTitle(CRenewQuestMgr* mgr, unsigned int id, std::
 
 // INLINED
 static void SetRecommendedQuestSummary(CRenewQuestMgr* mgr, unsigned int id, std::string summary) {
-  mgr->m_recommendedQuests[id].unknown_004C = summary;
+  mgr->m_recommendedQuests[id].summary = summary;
 }
 
 // OFFSET: 0x007FD7F0
@@ -1145,7 +1145,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
             std::string title = quest->second.m_title;
             title = this->FitDisplayText(250, title.c_str(), 0, 12, 1);
             SetRecommendedQuestTitle(g_renewQuestMgr, quest->first, title);
-            std::string summary = quest->second.unknown_004C;
+            std::string summary = quest->second.summary;
             summary = this->FitDisplayText(250, summary.c_str(), 0, 12, 0);
             SetRecommendedQuestSummary(g_renewQuestMgr, quest->first, summary);
             ++quest;

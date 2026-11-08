@@ -76,8 +76,8 @@ void UISubChatHisWnd::Move(int x, int y) {
   int screenX = 0;
   int screenY = 0;
   this->ToScreen(screenX, screenY);
-  this->m_state.unknown_0000 = screenX;
-  this->m_state.unknown_0004 = screenY + this->m_inputHeight;
+  this->m_state.x = screenX;
+  this->m_state.y = screenY + this->m_inputHeight;
   g_session.m_subChatWnds[this->m_index].x = screenX;
   g_session.m_subChatWnds[this->m_index].y = screenY;
 }
@@ -162,7 +162,7 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
   }
 
   this->m_chatBox = new UIChatHisBox();
-  this->m_chatBox->Configure(0, 0, this->geometry.width - 8, this->geometry.height - this->unknown_00F0 - this->m_inputHeight - 4, 0);
+  this->m_chatBox->Configure(0, 0, this->geometry.width - 8, this->geometry.height - this->headerHeight - this->m_inputHeight - 4, 0);
   this->m_chatBox->Move(5, this->m_inputHeight + 4);
   this->AddChild(this->m_chatBox);
 
@@ -177,13 +177,13 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);
-  this->m_state.unknown_0000 = x;
-  this->m_state.unknown_0014 = 0x66000000;
-  this->m_state.unknown_0004 = y + this->m_inputHeight;
-  this->m_state.unknown_0008 = this->geometry.width;
-  this->m_state.unknown_0018 = 0;
-  this->m_state.unknown_000C = this->geometry.height - this->m_inputHeight;
-  this->m_state.unknown_0010 = 0;
+  this->m_state.x = x;
+  this->m_state.backgroundColor = 0x66000000;
+  this->m_state.y = y + this->m_inputHeight;
+  this->m_state.width = this->geometry.width;
+  this->m_state.flags = 0;
+  this->m_state.height = this->geometry.height - this->m_inputHeight;
+  this->m_state.borderStyle = 0;
 
   const auto found = g_session.m_subChatWnds.find(this->m_index);
   if (found != g_session.m_subChatWnds.end()) {
@@ -212,7 +212,7 @@ UISubChatHisWnd::UISubChatHisWnd()
   this->m_chatBox = nullptr;
   this->m_inputHeight = 16;
   this->m_inputWidth = 71;
-  this->unknown_00F0 = 15;
+  this->headerHeight = 15;
   switch (g_serviceType) {
   case 10:
     this->m_inputWidth = 71;

@@ -8,7 +8,7 @@
 
 // INLINED
 inline bool UIWindowMgr::ShowShortcutWindow(int value) {
-  if (g_replayAnimationScaling && !Replay::Instance().header.options.unknown_0007) {
+  if (g_replayAnimationScaling && !Replay::Instance().header.options.showItemSlots) {
     return false;
   }
 

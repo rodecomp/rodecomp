@@ -65,27 +65,27 @@ public:
   void InitializeMailActions();
   void RequestAllMailActions();
 
-  /* 0130 */ UIBmpRadioBtn* unknown_0130;
-  /* 0134 */ UIBmpRadioBtn* unknown_0134;
-  /* 0138 */ UIBmpRadioBtn* unknown_0138;
-  /* 013C */ UIBitmapButton* unknown_013C;
-  /* 0140 */ UIBitmapButton* unknown_0140;
-  /* 0144 */ UITextButton* unknown_0144[6];
-  /* 015C */ UITextButton* unknown_015C[6];
+  /* 0130 */ UIBmpRadioBtn* mailTab;
+  /* 0134 */ UIBmpRadioBtn* accountTab;
+  /* 0138 */ UIBmpRadioBtn* returnTab;
+  /* 013C */ UIBitmapButton* refreshButton;
+  /* 0140 */ UIBitmapButton* writeButton;
+  /* 0144 */ UITextButton* senderButtons[6];
+  /* 015C */ UITextButton* subjectButtons[6];
   /* 0174 */ UICheckBox* checks[6];
-  /* 018C */ UIBasicButton* unknown_018C;
-  /* 0190 */ UIBasicButton* unknown_0190;
-  /* 0194 */ UIBitmapButton* unknown_0194;
-  /* 0198 */ UIBitmapButton* unknown_0198;
-  /* 019C */ int unknown_019C;
-  /* 01A0 */ int unknown_01A0;
+  /* 018C */ UIBasicButton* receiveButton;
+  /* 0190 */ UIBasicButton* deleteButton;
+  /* 0194 */ UIBitmapButton* previousPageButton;
+  /* 0198 */ UIBitmapButton* nextPageButton;
+  /* 019C */ int page;
+  /* 01A0 */ int pageCount;
   /* 01A4 */ unsigned char expired;
-  /* 01A8 */ UIBitmapButton* unknown_01A8[6];
-  /* 01C0 */ UIRadioBtn* unknown_01C0[2];
-  /* 01C8 */ UIEditCtrl* unknown_01C8;
-  /* 01CC */ UIBitmapButton* unknown_01CC;
-  /* 01D0 */ UIBmpRadioBtn* unknown_01D0;
-  /* 01D4 */ unsigned char unknown_01D4;
+  /* 01A8 */ UIBitmapButton* returnButtons[6];
+  /* 01C0 */ UIRadioBtn* searchModeButtons[2];
+  /* 01C8 */ UIEditCtrl* searchEdit;
+  /* 01CC */ UIBitmapButton* searchButton;
+  /* 01D0 */ UIBmpRadioBtn* searchTab;
+  /* 01D4 */ unsigned char searchActive;
   /* 01D8 */ std::vector<RodexMailEntry> searchResults;
   /* 01E4 */ std::vector<RodexMailEntry> mails0;
   /* 01F0 */ std::vector<RodexMailEntry> mails1;
@@ -94,7 +94,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RodexMailEntry) == 0x10);
-static_assert(offsetof(UIRodexInboxWnd, unknown_012C) == 0x12C);
+static_assert(offsetof(UIRodexInboxWnd, filterButton) == 0x12C);
 static_assert(offsetof(UIRodexInboxWnd, checks) == 0x174);
 static_assert(offsetof(UIRodexInboxWnd, expired) == 0x1A4);
 static_assert(offsetof(UIRodexInboxWnd, searchResults) == 0x1D8);

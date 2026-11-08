@@ -19,12 +19,12 @@ struct RenewQuestInfo {
   /* 0004 */ std::string m_title;
   /* 001C */ std::string m_icon;
   /* 0034 */ std::string m_iconTooltip;
-  /* 004C */ std::string unknown_004C;
+  /* 004C */ std::string summary;
   /* 0064 */ std::string unknown_0064;
-  /* 007C */ std::string unknown_007C;
-  /* 0094 */ std::string unknown_0094;
-  /* 00AC */ int unknown_00AC;
-  /* 00B0 */ int unknown_00B0;
+  /* 007C */ std::string npcSprite;
+  /* 0094 */ std::string destinationMap;
+  /* 00AC */ int destinationX;
+  /* 00B0 */ int destinationY;
 
   RenewQuestInfo();
 };
@@ -48,10 +48,10 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
   /* 01A0 */ int m_huntUnknown01A0[3];
   /* 01AC */ short m_huntUnknown01AC[3];
   /* 01B2 */ short m_huntUnknown01B2[3];
-  /* 01B8 */ std::string unknown_01B8;
-  /* 01D0 */ std::string unknown_01D0;
+  /* 01B8 */ std::string baseExpReward;
+  /* 01D0 */ std::string jobExpReward;
   /* 01E8 */ std::vector<std::pair<unsigned int, unsigned int>> m_rewards;
-  /* 01F8 */ __int64 unknown_01F8;
+  /* 01F8 */ __int64 questType;
 
   RenewQuestOngoingInfo();
   std::string GetDateString() const;
@@ -59,7 +59,7 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
 };
 
 struct RenewQuestRecommendedInfo : RenewQuestInfo {
-  /* 00B4 */ std::string unknown_00B4;
+  /* 00B4 */ std::string backgroundImage;
   /* 00CC */ std::vector<std::string> m_descriptions[3];
 
   RenewQuestRecommendedInfo();

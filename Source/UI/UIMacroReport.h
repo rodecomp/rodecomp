@@ -18,16 +18,16 @@ public:
   /* 00D8 */ CUIStaticImage* m_background;
   /* 00DC */ CUITitleBar* m_titleBar;
   /* 00E0 */ CUIEditBox* m_messageEdit;
-  /* 00E4 */ CUIStaticText* unknown_00E4;
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIImageButton* unknown_00EC;
-  /* 00F0 */ CUIImageButton* unknown_00F0;
+  /* 00E4 */ CUIStaticText* firstTypeText;
+  /* 00E8 */ CUIStaticText* secondTypeText;
+  /* 00EC */ CUIImageButton* cancelButton;
+  /* 00F0 */ CUIImageButton* reportButton;
   /* 00F4 */ CUIRadioButton* m_firstTypeButton;
   /* 00F8 */ CUIRadioButton* m_secondTypeButton;
-  /* 00FC */ CUIStaticText* unknown_00FC;
-  /* 0100 */ int unknown_0100;
+  /* 00FC */ CUIStaticText* warningText;
+  /* 0100 */ int targetId;
   /* 0104 */ int m_reportType;
-  /* 0108 */ std::string unknown_0108;
+  /* 0108 */ std::string targetName;
 
   __declspec(noinline) CUIMacroReport();
 

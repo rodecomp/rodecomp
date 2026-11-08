@@ -35,18 +35,18 @@ void CRotateLineEffect::Open() {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = i;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = i;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->SetTexture("effect\\cloud11.tga");
-      particle->unknown_0050 = 30;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(startAngle);
+      particle->angleParameter = 30;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(startAngle);
       particle->alpha = 50;
-      particle->unknown_004C = tilt;
+      particle->phaseParameter = tilt;
       particle->scale = 7.0f - static_cast<float>(ring);
-      particle->unknown_0054 = 28.0f - static_cast<float>(ring) * 5.0f;
-      *reinterpret_cast<float*>(particle->unknown_0058) = 3.0f;
+      particle->animationParameter = 28.0f - static_cast<float>(ring) * 5.0f;
+      *reinterpret_cast<float*>(particle->animationParameters) = 3.0f;
       switch (this->id) {
       case EF_ROTATE_LINE_GRAY:
         particle->SetColor(50, 50, 50);
@@ -78,16 +78,16 @@ void CRotateLineEffect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
-      float& particleAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      int& particleSpread = particle->unknown_0050;
-      if (particle->unknown_000C == 0) {
+      float& particleAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      int& particleSpread = particle->angleParameter;
+      if (particle->columnIndex == 0) {
         this->angle = static_cast<int>(particleAngle);
         this->spread = particleSpread;
         this->alpha = particle->alpha;
         this->scale = particle->scale;
         this->started = true;
       } else if (!this->started) {
-        ++(*it)->unknown_00E8;
+        ++(*it)->elapsedFrames;
         continue;
       }
 
@@ -99,12 +99,12 @@ void CRotateLineEffect::OnProcess() {
       }
       particleSpread = this->spread;
 
-      if (particle->unknown_00E8 <= 12) {
+      if (particle->elapsedFrames <= 12) {
         particle->alpha = ++this->alpha;
       } else {
         this->scale += 0.1f;
         particle->scale = this->scale;
-        if (particle->unknown_00E8 > 50) {
+        if (particle->elapsedFrames > 50) {
           if (--this->alpha < 0) {
             this->alpha = 0;
           }
@@ -112,7 +112,7 @@ void CRotateLineEffect::OnProcess() {
         }
       }
 
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       int index = static_cast<int>(static_cast<float>(static_cast<int>(particleSpread / 21.0f) * segment) + particleAngle) % 360;
       if (particleSpread == 360 && segment == 20) {
         index = static_cast<int>(particleAngle);
@@ -120,12 +120,12 @@ void CRotateLineEffect::OnProcess() {
 
       const float cosine = g_cosTable[index];
       const float sine = g_sinTable[index];
-      const int tilt = particle->unknown_004C;
+      const int tilt = particle->phaseParameter;
       const float tiltCosine = g_cosTable[tilt];
       vector3d points[2] = {};
-      const float height = *reinterpret_cast<float*>(particle->unknown_0058);
+      const float height = *reinterpret_cast<float*>(particle->animationParameters);
       points[0].x = cosine * particle->scale;
-      points[0].y = -particle->unknown_0054;
+      points[0].y = -particle->animationParameter;
       points[0].z = sine * particle->scale;
       points[1].x = points[0].x + tiltCosine * cosine;
       points[1].y = height - g_sinTable[tilt] + points[0].y;
@@ -148,7 +148,7 @@ void CRotateLineEffect::OnProcess() {
       this->previous[0] = points[0];
       this->previous[1] = points[1];
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -157,7 +157,7 @@ void CRotateLineEffect::OnProcess() {
 void CRotateLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (CParticle* particle = *it) {
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

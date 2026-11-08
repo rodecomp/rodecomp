@@ -51,7 +51,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       return false;
     }
 
-    this->unknown_003C = visible;
+    this->chatWndVisible = visible;
 
     if (!this->window_01C8) {
       g_windowMgr.EnsureWindow(WID_CHATWND);
@@ -83,7 +83,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     return false;
 
   case WID_SHORTCUTWND:
-    if (g_replayAnimationScaling && !Replay::Instance().header.options.unknown_0007) {
+    if (g_replayAnimationScaling && !Replay::Instance().header.options.showItemSlots) {
       return false;
     }
 
@@ -110,7 +110,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     return true;
 
   case WID_SKILLDESCRIBEWND: {
-    this->unknown_0048 = visible;
+    this->skillDescriptionVisible = visible;
 
     if (!this->window_0230) {
       if (visible == 0) {

@@ -40,7 +40,7 @@ void CArrowEffect::Reset() {
 // OFFSET: 0x00E4BE60
 // FUNCTION: fn_24280
 bool CArrowEffect::OnProcess() {
-  float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   if (this->startFrame > frame) {
     return true;
   }
@@ -94,7 +94,7 @@ bool CArrowEffect::OnProcess() {
     }
   }
 
-  this->render.unknown_007C = this->GetDir(this->render.angle);
+  this->render.spriteAngle = this->GetDir(this->render.angle);
   g_modeMgr.GetGameMode();
   this->render.position.x = frame * this->velocity.x + this->startPos.x;
   this->render.position.y = frame * this->velocity.y + this->startPos.y;
@@ -266,7 +266,7 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     return;
   }
 
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
   if ((static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f)) != 0) {
     this->startFrame = *reinterpret_cast<const float*>(f);
   }

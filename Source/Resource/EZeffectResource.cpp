@@ -12,7 +12,7 @@
 
 // OFFSET: 0x0074D640
 // FUNCTION: fn_07894
-EZeffectClip::EZeffectClip() : textureCount(0), unknown_0004(0), frameCount(0), frames(nullptr) {
+EZeffectClip::EZeffectClip() : textureCount(0), textureState(0), frameCount(0), frames(nullptr) {
   const char* const defaultName = "1.bmp";
   std::fill_n(this->names, std::size(this->names), defaultName);
   std::fill_n(this->textures, std::size(this->textures), nullptr);
@@ -31,7 +31,7 @@ EZeffectClip::~EZeffectClip() {
 // OFFSET: 0x0074D570
 // FUNCTION: fn_07893
 CEZeffectRes::CEZeffectRes() {
-  this->unknown_D320 = 0;
+  this->loadState = 0;
 }
 
 // OFFSET: 0x0074D6F0

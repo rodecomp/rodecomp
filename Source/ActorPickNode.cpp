@@ -199,14 +199,14 @@ CView::CView() {
   this->frame.up[2] = 0.0f;
   this->camera.yaw = 0.0f;
   this->shake.enabled = 0;
-  this->unknown_01B4 = nullptr;
+  this->skyBox = nullptr;
   this->shake.start = 0;
-  *reinterpret_cast<unsigned char*>(&this->shake.unknown_0010) = 0;
+  *reinterpret_cast<unsigned char*>(&this->shake.resetFlags) = 0;
 }
 
 CView::~CView() {
-  if (this->unknown_01B4) {
-    delete this->unknown_01B4;
+  if (this->skyBox) {
+    delete this->skyBox;
   }
 }
 

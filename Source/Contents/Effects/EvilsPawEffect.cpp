@@ -34,9 +34,9 @@ void CEvilsPawEffect::Open() {
     particle->SetColor(255, 255, 255);
     particle->alpha = 255;
     particle->scale = static_cast<float>(this->size);
-    particle->unknown_00D0 = this->offset.x;
-    particle->unknown_00D4 = this->offset.y;
-    particle->unknown_00D8 = this->offset.z;
+    particle->offsetX = this->offset.x;
+    particle->offsetY = this->offset.y;
+    particle->offsetZ = this->offset.z;
     particle->sourceBlend = 5;
     particle->destinationBlend = 6;
     InitParticleQuad(particle->vertices);
@@ -62,9 +62,9 @@ void CEvilsPawEffect::ResetParticles() {
     particle->SetColor(255, 255, 255);
     particle->alpha = 255;
     particle->scale = static_cast<float>(this->size);
-    particle->unknown_00D0 = this->offset.x;
-    particle->unknown_00D4 = this->offset.y;
-    particle->unknown_00D8 = this->offset.z;
+    particle->offsetX = this->offset.x;
+    particle->offsetY = this->offset.y;
+    particle->offsetZ = this->offset.z;
   }
 }
 
@@ -102,7 +102,7 @@ void CEvilsPawEffect::OnProcess() {
       particle->position.y = this->position[1] + this->offset.y;
       particle->position.z = this->position[2] + this->offset.z;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 
   if (--this->delayCounter < 0) {

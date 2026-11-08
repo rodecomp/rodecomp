@@ -1784,7 +1784,7 @@ void CEfstAction_INSANE::OnEfstBegin(int efstId, int value, int argument3, int a
       thread_local EncryptedName<sizeof(bytes), 0xC39FB559A17D3963ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFFFF200);
+    static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFFFF200);
   }
 }
 
@@ -1792,7 +1792,7 @@ void CEfstAction_INSANE::OnEfstBegin(int efstId, int value, int argument3, int a
 // FUNCTION: fn_03278
 void CEfstAction_INSANE::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    static_cast<CPc*>(actor)->unknown_04F4 = 0;
+    static_cast<CPc*>(actor)->outlineColor = 0;
   }
 }
 
@@ -1822,7 +1822,7 @@ void CEfstAction_INSANE2::OnEfstBegin(int efstId, int value, int argument3, int 
       thread_local EncryptedName<sizeof(bytes), 0x07112F85A39F4FABULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFFF7F27);
+    static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFFF7F27);
   }
 }
 
@@ -1844,7 +1844,7 @@ void CEfstAction_INSANE3::OnEfstBegin(int efstId, int value, int argument3, int 
       thread_local EncryptedName<sizeof(bytes), 0x936F3D2FFDFD87F5ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFED1C24);
+    static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFED1C24);
   }
 }
 

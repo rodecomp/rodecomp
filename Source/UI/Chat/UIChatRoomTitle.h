@@ -9,7 +9,7 @@ class UIStaticText;
 
 struct ChatRoomTitleInfo {
   /* 0000 */ std::string title;
-  /* 0018 */ std::string unknown_0018;
+  /* 0018 */ std::string password;
   /* 0030 */ int type;
   /* 0034 */ int memberCount;
   /* 0038 */ int memberLimit;
@@ -30,14 +30,14 @@ public:
 
   /* 007C */ UIStaticText* label;
   /* 0080 */ std::string title;
-  /* 0098 */ std::string unknown_0098;
+  /* 0098 */ std::string password;
   /* 00B0 */ int roomType;
   /* 00B4 */ int memberCount;
   /* 00B8 */ int memberLimit;
 
 protected:
   /* 00BC */ int roomId;
-  /* 00C0 */ short unknown_00C0;
+  /* 00C0 */ short roomOption;
 };
 
 #endif

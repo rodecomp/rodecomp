@@ -9,7 +9,7 @@ class UIMonsterDisplayWnd : public UIFrameWnd {
 public:
   UIMonsterDisplayWnd();
   /* 00B4 */ std::string m_name;
-  /* 00CC */ std::string unknown_00CC;
+  /* 00CC */ std::string titleText;
   /* 00E4 */ unsigned char unknown_00E4;
 
   void OnCreate(int width, int height) override;

@@ -173,7 +173,7 @@ int SetCmdOnOffList(lua_State* state) {
   if (optionId != 3) {
     if (optionId == 229) {
       const int value = enabled;
-      std::memcpy(g_session.unknown_5454, &value, sizeof(value));
+      std::memcpy(g_session.interactionFlags, &value, sizeof(value));
     }
     g_session.m_commandOptions.emplace_back(name, optionId);
   }
@@ -337,22 +337,22 @@ int SetMagicFloorInfo(lua_State* state) {
     effect->ResetParticles();
     break;
   case MSG_SET_AREA:
-    *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 3));
+    *reinterpret_cast<float*>(&effect->areaParameters[8]) = static_cast<float>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_SIZE2:
-    reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 3));
+    reinterpret_cast<float&>(effect->scaleParameter) = static_cast<float>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_ANGLE:
-    *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 3);
+    *reinterpret_cast<int*>(effect->angleParameter) = luaL_checknumber(state, 3);
     break;
   case MSG_SET_RISEANGLE:
-    reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   case MSG_SET_ALPHA:
-    *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 3);
+    *reinterpret_cast<int*>(&effect->alphaParameters[0]) = luaL_checknumber(state, 3);
     break;
   case MSG_SET_FDA:
-    *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 3);
+    *reinterpret_cast<int*>(&effect->alphaParameters[4]) = luaL_checknumber(state, 3);
     break;
   case MSG_SET_HEIGHT0:
   case MSG_SET_HEIGHT1:
@@ -375,7 +375,7 @@ int SetMagicFloorInfo(lua_State* state) {
   case MSG_SET_HEIGHT18:
   case MSG_SET_HEIGHT19:
   case MSG_SET_HEIGHT20:
-    reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    reinterpret_cast<float*>(&effect->alphaParameters[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   }
 
@@ -434,22 +434,22 @@ int SetOtherEffectInfo(lua_State* state) {
     effect->ResetParticles();
     break;
   case MSG_SET_AREA:
-    *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 4));
+    *reinterpret_cast<float*>(&effect->areaParameters[8]) = static_cast<float>(luaL_checknumber(state, 4));
     break;
   case MSG_SET_SIZE2:
-    reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 4));
+    reinterpret_cast<float&>(effect->scaleParameter) = static_cast<float>(luaL_checknumber(state, 4));
     break;
   case MSG_SET_ANGLE:
-    *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 4);
+    *reinterpret_cast<int*>(effect->angleParameter) = luaL_checknumber(state, 4);
     break;
   case MSG_SET_RISEANGLE:
-    reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   case MSG_SET_ALPHA:
-    *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 4);
+    *reinterpret_cast<int*>(&effect->alphaParameters[0]) = luaL_checknumber(state, 4);
     break;
   case MSG_SET_FDA:
-    *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 4);
+    *reinterpret_cast<int*>(&effect->alphaParameters[4]) = luaL_checknumber(state, 4);
     break;
   case MSG_SET_HEIGHT0:
   case MSG_SET_HEIGHT1:
@@ -472,7 +472,7 @@ int SetOtherEffectInfo(lua_State* state) {
   case MSG_SET_HEIGHT18:
   case MSG_SET_HEIGHT19:
   case MSG_SET_HEIGHT20:
-    reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    reinterpret_cast<float*>(&effect->alphaParameters[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   }
 
@@ -713,20 +713,20 @@ int AddEntryQueue(lua_State* state) {
   info->id = id;
   strcpy_s(info->name, sizeof(info->name), name.c_str());
   strcpy_s(info->displayName, sizeof(info->displayName), displayName.c_str());
-  info->unknown_020C = value020C;
-  info->unknown_0210 = value0210;
-  info->unknown_0214 = static_cast<unsigned char>(value0214);
-  info->unknown_0215 = static_cast<unsigned char>(value0215);
-  info->unknown_0216 = static_cast<unsigned char>(value0216);
-  info->unknown_0217 = static_cast<unsigned char>(value0217);
-  info->unknown_0218 = static_cast<unsigned char>(value0218);
-  info->unknown_021C = value021C;
-  info->unknown_0220 = value0220;
-  strcpy_s(info->unknown_0224, sizeof(info->unknown_0224), text0224.c_str());
-  strcpy_s(info->unknown_0328, sizeof(info->unknown_0328), text0328.c_str());
-  strcpy_s(info->unknown_042C, sizeof(info->unknown_042C), text042C.c_str());
-  strcpy_s(info->unknown_0530, sizeof(info->unknown_0530), text0530.c_str());
-  strcpy_s(info->unknown_0634, sizeof(info->unknown_0634), text0634.c_str());
+  info->minLevel = value020C;
+  info->maxLevel = value0210;
+  info->queueFlagA = static_cast<unsigned char>(value0214);
+  info->queueFlagB = static_cast<unsigned char>(value0215);
+  info->queueFlagC = static_cast<unsigned char>(value0216);
+  info->queueFlagD = static_cast<unsigned char>(value0217);
+  info->limitType = static_cast<unsigned char>(value0218);
+  info->limitValue = value021C;
+  info->limitValueEnd = value0220;
+  strcpy_s(info->description, sizeof(info->description), text0224.c_str());
+  strcpy_s(info->rulesText, sizeof(info->rulesText), text0328.c_str());
+  strcpy_s(info->rewardText, sizeof(info->rewardText), text042C.c_str());
+  strcpy_s(info->extraText, sizeof(info->extraText), text0530.c_str());
+  strcpy_s(info->bitmapName, sizeof(info->bitmapName), text0634.c_str());
 
   g_entryQueueList.insert(std::make_pair(id, info));
   return 0;
@@ -1303,7 +1303,7 @@ int UIWindowMgr::GetHotkeyBehavior() {
       const int count = HotkeyCount(*g_session.m_hotkeyScript, 0);
       for (int index = 0; index < count; ++index) {
         const HotkeyInfo hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);
-        if (hotkey.key1 == this->keyCode && g_session.m_shortcutSlots[index].unknown_0000 != 0) {
+        if (hotkey.key1 == this->keyCode && g_session.m_shortcutSlots[index].enabled != 0) {
           return index;
         }
       }

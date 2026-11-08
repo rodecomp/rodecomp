@@ -198,8 +198,8 @@ void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::
 // OFFSET: 0x0063AAE0
 // FUNCTION: fn_04778
 CStoveMgr::CStoveMgr()
-    : m_initialized(false), unknown_0008(0), m_environment(1), unknown_0010(0), unknown_0014(0), unknown_0018(), m_accessToken{},
-      m_memberNumber{}, m_gameUserId{}, unknown_02B8() {
+    : m_initialized(false), m_pendingOperation(0), m_environment(1), m_purchaseIdLow(0), m_purchaseIdHigh(0), m_purchaseUrl(), m_accessToken{},
+      m_memberNumber{}, m_gameUserId{}, m_applicationId() {
   this->Initialize();
 }
 
@@ -258,14 +258,14 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
     for (unsigned int index = 0; index < count; ++index) {
       const Stove::PCSDK::IAP::StovePCProduct& product = products[index];
       ITEM_INFO item;
-      item.unknown_0000[1] = 0xFFFFFFFF;
-      item.unknown_0014[0] = static_cast<int>(product.GetSalePrice());
-      item.unknown_0014[1] = static_cast<int>(product.GetSalePrice());
-      item.unknown_0000[0] = 4;
+      item.identity[1] = 0xFFFFFFFF;
+      item.prices[0] = static_cast<int>(product.GetSalePrice());
+      item.prices[1] = static_cast<int>(product.GetSalePrice());
+      item.identity[0] = 4;
       item.identified = 1;
-      item.unknown_005D = 0;
-      item.unknown_0060 = 0;
-      item.unknown_0090 = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(product).GetProductId();
+      item.damaged = 0;
+      item.refiningLevel = 0;
+      item.productId = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(product).GetProductId();
       std::string itemId = EncodeText(
           CP_ACP, std::wstring(reinterpret_cast<const wchar_t*>(reinterpret_cast<const Stove::PCSDK::IAP::StovePCShopCategory&>(product).GetDisplayNumber())));
       item.SetItemId(std::atoi(itemId.c_str()));
@@ -275,12 +275,12 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
       item.SetName(name);
       item.identified = 1;
       if (product.GetPurchaseLimitCount() != 0 && product.GetSaleBeginDate() != 0 && product.GetSaleEndDate() != 0) {
-        item.unknown_0064 = 8;
+        item.bindOnEquip = 8;
         const int guidQuantity = product.GetGuidQuantity();
-        item.unknown_0078[3] = product.GetPurchaseLimitCount() - guidQuantity;
+        item.saleData[3] = product.GetPurchaseLimitCount() - guidQuantity;
         item.quantity = product.GetPurchaseLimitCount();
-        item.unknown_0078[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
-        item.unknown_0078[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
+        item.saleData[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+        item.saleData[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
         g_session.AddItem1784(item, 9);
       }
     }
@@ -300,9 +300,9 @@ void PurchaseResultCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
   if (callbackResult.GetResult().IsSuccessful()) {
     if (reinterpret_cast<std::intptr_t>(reinterpret_cast<const Stove::PCSDK::IAP::StovePCChargeInfo&>(purchaseResult).GetChargeTypeName()) != 2) {
       const std::int64_t productId = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(purchaseResult).GetProductId();
-      g_stoveMgr->unknown_0010 = static_cast<int>(productId);
-      g_stoveMgr->unknown_0014 = static_cast<int>(productId >> 32);
-      g_stoveMgr->unknown_0018 = static_cast<const std::string&>(
+      g_stoveMgr->m_purchaseIdLow = static_cast<int>(productId);
+      g_stoveMgr->m_purchaseIdHigh = static_cast<int>(productId >> 32);
+      g_stoveMgr->m_purchaseUrl = static_cast<const std::string&>(
           EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::IAP::StovePCPurchasedProduct&>(purchaseResult).GetCategoryId())));
     }
   } else {
@@ -382,14 +382,14 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       }
 
       ITEM_INFO item;
-      item.unknown_0000[1] = 0xFFFFFFFF;
-      item.unknown_0014[0] = static_cast<int>(product.GetSalePrice());
-      item.unknown_0014[1] = static_cast<int>(product.GetSalePrice());
-      item.unknown_0000[0] = 4;
+      item.identity[1] = 0xFFFFFFFF;
+      item.prices[0] = static_cast<int>(product.GetSalePrice());
+      item.prices[1] = static_cast<int>(product.GetSalePrice());
+      item.identity[0] = 4;
       item.identified = 1;
-      item.unknown_005D = 0;
-      item.unknown_0060 = 0;
-      item.unknown_0090 = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(product).GetProductId();
+      item.damaged = 0;
+      item.refiningLevel = 0;
+      item.productId = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(product).GetProductId();
       std::string itemId = EncodeText(
           CP_ACP, std::wstring(reinterpret_cast<const wchar_t*>(reinterpret_cast<const Stove::PCSDK::IAP::StovePCShopCategory&>(product).GetDisplayNumber())));
       item.SetItemId(std::atoi(itemId.c_str()));
@@ -400,16 +400,16 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       item.identified = 1;
       if (list == 8) {
         if (product.GetPurchaseLimitCount() != 0 && product.GetSaleBeginDate() != 0 && product.GetSaleEndDate() != 0) {
-          item.unknown_0064 = 8;
+          item.bindOnEquip = 8;
           const int guidQuantity = product.GetGuidQuantity();
-          item.unknown_0078[3] = product.GetPurchaseLimitCount() - guidQuantity;
+          item.saleData[3] = product.GetPurchaseLimitCount() - guidQuantity;
           item.quantity = product.GetPurchaseLimitCount();
-          item.unknown_0078[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
-          item.unknown_0078[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
+          item.saleData[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+          item.saleData[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
           g_session.AddItem1784(item, 9);
         }
       } else if (product.GetPurchaseLimitCount() == 0 && product.GetSaleBeginDate() == 0 && product.GetSaleEndDate() == 0) {
-        item.unknown_0064 = static_cast<std::uint16_t>(list);
+        item.bindOnEquip = static_cast<std::uint16_t>(list);
         g_session.AddItem1784(item, list);
       }
     }
@@ -501,7 +501,7 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
 // FUNCTION: fn_04794
 void CSession::AddItem1784(const ITEM_INFO& item, int list) {
   if (static_cast<unsigned int>(list) <= 10) {
-    this->unknown_1784[list].push_back(item);
+    this->inventoryCategories[list].push_back(item);
   }
 }
 
@@ -520,7 +520,7 @@ bool CStoveMgr::Initialize() {
     param.SetEnvironment(L"SANDBOX");
     reinterpret_cast<Stove::PCSDK::Base::StovePCLogEvent&>(param).SetCategory1(L"SB_RAGNAROK_IND");
     param.SetApplicationKey(L"6b57af29764992a85cf793b01d4af15be6047715fd5f4687b23d0a1ba02337f5");
-    this->unknown_02B8 = L"SB__SH_IPJVFX";
+    this->m_applicationId = L"SB__SH_IPJVFX";
   } else {
     const char liveSource[] = {'\x5E', '\x8A', '\x2D', '\x9A', '\xF7', '\x78', '\x3A', '\xFD', '\x18', '\x8F', '\x3C', '\xF5'};
     const char* live = DecryptName<0x91651D81F559F971ULL>(liveSource);
@@ -529,7 +529,7 @@ bool CStoveMgr::Initialize() {
       param.SetEnvironment(L"LIVE");
       reinterpret_cast<Stove::PCSDK::Base::StovePCLogEvent&>(param).SetCategory1(L"RAGNAROK_IND");
       param.SetApplicationKey(L"9af21dbb708609cd29703f56d002c64ab6f8f5bf0a310388f65cf781a5e8dd8f");
-      this->unknown_02B8 = L"RAG_SH_BTLTNL";
+      this->m_applicationId = L"RAG_SH_BTLTNL";
     }
   }
 
@@ -546,7 +546,7 @@ bool CStoveMgr::Initialize() {
 
   Base_Initialize(&param, OnStoveInitialized);
   this->WaitForCallback();
-  Stove::PCSDK::Result result = IAP_Initialize(this->unknown_02B8.c_str());
+  Stove::PCSDK::Result result = IAP_Initialize(this->m_applicationId.c_str());
   if (result.IsSuccessful()) {
     this->FetchUser();
     Base_GetShutdown(OnStoveShutdown);
@@ -605,8 +605,8 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
   int index = 0;
   for (const ITEM_INFO& item : items) {
     Stove::PCSDK::IAP::StovePCOrderProduct orderProduct;
-    orderProduct.SetProductId(item.unknown_0090);
-    reinterpret_cast<Stove::PCSDK::IAP::StovePCChargeInfo&>(orderProduct).SetChargeDisplayDeductVal(static_cast<int>(item.unknown_0014[0]));
+    orderProduct.SetProductId(item.productId);
+    reinterpret_cast<Stove::PCSDK::IAP::StovePCChargeInfo&>(orderProduct).SetChargeDisplayDeductVal(static_cast<int>(item.prices[0]));
     reinterpret_cast<Stove::PCSDK::IAP::StovePCChargeInfo&>(orderProduct).SetChargeType(item.quantity);
     param.SetOrderProduct(index, &orderProduct);
     ++index;
@@ -622,7 +622,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     Sleep(200);
   } while (g_stoveWaitingCallback);
 
-  if (this->unknown_0018.size() == 0) {
+  if (this->m_purchaseUrl.size() == 0) {
     const char parametersSource[] = {'\x05', '\x47', '\x7B', '\xE5', '\xA8', '\x7F', '\xFC', '\x46', '\x0E', '\x40', '\x21', '\xFA', '\xB5', '\x36', '\xA7', '\x06', '\x1B', '\x56', '\x21', '\xF6', '\xB4', '\x28', '\xFC', '\x1A', '\x08', '\x41', '\x79', '\xFC', '\xB8', '\x20', '\xFC', '\x3B', '\x2C', '\x74', '\x41', '\xD4', '\x89', '\x0A', '\x98', '\x36', '\x24', '\x7D', '\x4B', '\x95'};
     const char* parameters = DecryptName<0x69D345DB950F336DULL>(parametersSource);
     const char fileSource[] = {'\x19', '\x6F', '\x87', '\x8F', '\xF4', '\x1F', '\xBE', '\xE8', '\x12', '\x68', '\xDD', '\x90', '\xE9', '\x56', '\xE5', '\xA8', '\x07', '\x7E', '\xDD', '\x9C', '\xE8', '\x48', '\xBE', '\xB4', '\x14', '\x69', '\x85', '\x96', '\xE4', '\x40', '\xBE', '\x95', '\x30', '\x5C', '\xBD', '\xBE', '\xD5', '\x6A', '\xDA', '\x98', '\x38', '\x55', '\xB7', '\xFF'};
@@ -631,12 +631,12 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     const char* verb = DecryptName<0x8F1B5BFD5F6175B5ULL>(verbSource);
     ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
   } else {
-    const char* url = this->unknown_0018.c_str();
+    const char* url = this->m_purchaseUrl.c_str();
     const char verbSource[] = {'\x60', '\xCF', '\xF6', '\x95', '\xEF'};
     const char* verb = DecryptName<0x9B17C9EFDBB39F2FULL>(verbSource);
     ShellExecuteA(nullptr, verb, url, url, nullptr, SW_SHOWNORMAL);
     if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
-      IAP_ConfirmPurchase((static_cast<std::int64_t>(this->unknown_0014) << 32) | static_cast<std::uint32_t>(this->unknown_0010), OnStovePurchaseConfirmed);
+      IAP_ConfirmPurchase((static_cast<std::int64_t>(this->m_purchaseIdHigh) << 32) | static_cast<std::uint32_t>(this->m_purchaseIdLow), OnStovePurchaseConfirmed);
       g_stoveWaitingCallback = true;
       do {
         Base_RunCallback();

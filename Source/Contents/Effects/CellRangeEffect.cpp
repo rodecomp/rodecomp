@@ -28,7 +28,7 @@ void CCellRangeEffect::SetCellTexture(CParticle* particle) {
     return;
   }
 
-  const int frame = (particle->unknown_00E8 + particle->unknown_000C) / 10 % 3 + 1;
+  const int frame = (particle->elapsedFrames + particle->columnIndex) / 10 % 3 + 1;
   std::string name;
   switch (this->id) {
   case EF_KO_ZENKAI_WATER:
@@ -80,10 +80,10 @@ void CCellRangeEffect::Open() {
     for (int column = -range; column <= range; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = column;
-        particle->unknown_0010 = row;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = column;
+        particle->rowIndex = row;
+        particle->groupIndex = 1;
         particle->alpha = 255;
         particle->SetColor(255, 255, 255);
         particle->SetTexture("effect\\torch_violet08.bmp");
@@ -105,8 +105,8 @@ void CCellRangeEffect::OnProcess() {
     if (particle) {
       vector3d position;
       std::memcpy(&position, this->position, sizeof(position));
-      position.x = static_cast<float>(particle->unknown_000C) * this->cellSize + position.x;
-      position.z = static_cast<float>(particle->unknown_0010) * this->cellSize + position.z;
+      position.x = static_cast<float>(particle->columnIndex) * this->cellSize + position.x;
+      position.z = static_cast<float>(particle->rowIndex) * this->cellSize + position.z;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       position.y = mode->scene->terrain->Height(position.x, position.z) - 1.2f;
       particle->position.x = position.x;
@@ -127,7 +127,7 @@ void CCellRangeEffect::OnProcess() {
       particle->transform = result;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

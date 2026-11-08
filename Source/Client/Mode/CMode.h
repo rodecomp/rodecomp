@@ -17,11 +17,11 @@ public:
   /* 000C */ int pendingCursorType;
   /* 0010 */ int fadeInRequested;
   /* 0014 */ int running;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ int connectionReady;
   /* 001C */ UITransBalloonText* tooltip;
   /* 0020 */ std::uint32_t tooltipTick;
   /* 0024 */ std::uint32_t cursorTick;
-  /* 0028 */ int unknown_0028;
+  /* 0028 */ int lockOnMouse;
   /* 002C */ int screenshotRequested;
   /* 0030 */ float cursorOffsetX;
   /* 0034 */ float cursorOffsetY;

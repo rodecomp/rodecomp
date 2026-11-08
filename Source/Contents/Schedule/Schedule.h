@@ -32,10 +32,10 @@ public:
   /* 0018 */ std::int64_t interval;
   /* 0020 */ int scheduleType;
   /* 0024 */ bool active;
-  /* 0025 */ std::uint8_t unknown_0025;
+  /* 0025 */ std::uint8_t pending;
   /* 0026 */ std::uint8_t unknown_0026[2];
-  /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C;
+  /* 0028 */ int processCount;
+  /* 002C */ int userValue;
 };
 #pragma pack(pop)
 
@@ -47,7 +47,7 @@ static_assert(offsetof(CSchedule, timestamp) == 0x10);
 static_assert(offsetof(CSchedule, interval) == 0x18);
 static_assert(offsetof(CSchedule, scheduleType) == 0x20);
 static_assert(offsetof(CSchedule, active) == 0x24);
-static_assert(offsetof(CSchedule, unknown_002C) == 0x2C);
+static_assert(offsetof(CSchedule, userValue) == 0x2C);
 #endif
 
 #endif

@@ -18,7 +18,7 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
   --this->pending;
 
   if (!diagnostic.success) {
-    if (this->unknown_0008 == g_session.m_aid) {
+    if (this->masterAccountId == g_session.m_aid) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_SIGHT_HELP)), 0xFF, 0, 0, 0);
     }
 
@@ -35,14 +35,14 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
   switch (root["Type"].asInt()) {
   case 2:
   case 3:
-    if (this->unknown_0008 == g_session.m_aid) {
+    if (this->masterAccountId == g_session.m_aid) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_SIGHT_HELP)), 0xFF, 0, 0, 0);
     }
 
     return;
   }
 
-  if (this->unknown_0008 == g_session.m_aid) {
+  if (this->masterAccountId == g_session.m_aid) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FORCED_WEB_LOGIN)), 0xFFFF64, 0, 0, 0);
   }
 

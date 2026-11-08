@@ -19,7 +19,7 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   if (0.0f == particle->life) {
     return true;
   }
-  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 }
 
@@ -52,10 +52,10 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position
     break;
   }
 
-  eye->unknown_00D0 = position[0];
-  eye->unknown_00D4 = position[1];
-  eye->unknown_00D8 = position[2];
-  eye->unknown_00A8 = static_cast<unsigned char>(type);
+  eye->offsetX = position[0];
+  eye->offsetY = position[1];
+  eye->offsetZ = position[2];
+  eye->animationState = static_cast<unsigned char>(type);
   return eye;
 }
 
@@ -79,24 +79,24 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateLight(int type, const float* positi
     break;
   }
 
-  light->unknown_00DC = position[0];
-  light->unknown_00E0 = position[1];
-  light->unknown_00E4 = position[2];
-  light->unknown_00A8 = static_cast<unsigned char>(type);
+  light->originX = position[0];
+  light->originY = position[1];
+  light->originZ = position[2];
+  light->animationState = static_cast<unsigned char>(type);
   return light;
 }
 
 // OFFSET: 0x006F8D40
 // FUNCTION: fn_06874
 void CCaneOfEvilEyeEffect::SpawnLights() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
       float position[3];
-      position[0] = eye->unknown_00D0 + 0.0f;
-      position[1] = eye->unknown_00D4 + 3.5f;
-      position[2] = eye->unknown_00D8 + 0.0f;
-      this->unknown_00DC.push_back(this->CreateLight(1, position));
+      position[0] = eye->offsetX + 0.0f;
+      position[1] = eye->offsetY + 3.5f;
+      position[2] = eye->offsetZ + 0.0f;
+      this->lights.push_back(this->CreateLight(1, position));
     }
   }
 }
@@ -104,35 +104,35 @@ void CCaneOfEvilEyeEffect::SpawnLights() {
 // OFFSET: 0x006F8DF0
 // FUNCTION: fn_06875
 void CCaneOfEvilEyeEffect::Close() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     if (*it) {
       FreeParticle(*it);
     }
   }
-  this->unknown_00D0.clear();
+  this->eyes.clear();
 
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+  for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     if (*it) {
       FreeParticle(*it);
     }
   }
-  this->unknown_00DC.clear();
+  this->lights.clear();
 }
 
 // OFFSET: 0x006F8E70
 // FUNCTION: fn_06876
 void CCaneOfEvilEyeEffect::RemoveNullEmitters() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end();) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end();) {
     if (*it == nullptr) {
-      it = this->unknown_00D0.erase(it);
+      it = this->eyes.erase(it);
     } else {
       ++it;
     }
   }
 
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end();) {
+  for (auto it = this->lights.begin(); it != this->lights.end();) {
     if (*it == nullptr) {
-      it = this->unknown_00DC.erase(it);
+      it = this->lights.erase(it);
     } else {
       ++it;
     }
@@ -142,18 +142,18 @@ void CCaneOfEvilEyeEffect::RemoveNullEmitters() {
 // OFFSET: 0x006F8F00
 // FUNCTION: fn_06877
 void CCaneOfEvilEyeEffect::Finish() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
-      *it = this->CreateEye(3, &eye->unknown_00D0);
+      *it = this->CreateEye(3, &eye->offsetX);
       FreeParticle(eye);
     }
   }
 
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+  for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     CEZ2STRParticle* light = *it;
-    if (light && light->unknown_00A8 != 3) {
-      *it = this->CreateLight(3, &light->unknown_00DC);
+    if (light && light->animationState != 3) {
+      *it = this->CreateLight(3, &light->originX);
       FreeParticle(light);
     }
   }
@@ -176,7 +176,7 @@ void CCaneOfEvilEyeEffect::Open() {
   offsets[7] = {20.0f, -12.0f, 20.0f};
 
   for (unsigned int index = 0; index < 8; ++index) {
-    this->unknown_00D0.push_back(this->CreateEye(1, &offsets[index].x));
+    this->eyes.push_back(this->CreateEye(1, &offsets[index].x));
   }
 
   this->SpawnLights();
@@ -185,7 +185,7 @@ void CCaneOfEvilEyeEffect::Open() {
 // OFFSET: 0x006F9340
 // FUNCTION: fn_06879
 bool CCaneOfEvilEyeEffect::IsAlive() {
-  if (this->ActorExists() && (!this->unknown_00D0.empty() || !this->unknown_00DC.empty())) {
+  if (this->ActorExists() && (!this->eyes.empty() || !this->lights.empty())) {
     return true;
   }
 
@@ -195,20 +195,20 @@ bool CCaneOfEvilEyeEffect::IsAlive() {
 // OFFSET: 0x006F9370
 // FUNCTION: fn_06880
 void CCaneOfEvilEyeEffect::UpdateEyes() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (IsParticleActive(eye) != true) {
-      *it = eye->unknown_00A8 == 1 ? this->CreateEye(2, &eye->unknown_00D0) : nullptr;
+      *it = eye->animationState == 1 ? this->CreateEye(2, &eye->offsetX) : nullptr;
       FreeParticle(eye);
     }
   }
 
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
-      const float x = this->position[0] + eye->unknown_00D0;
-      const float y = this->position[1] + eye->unknown_00D4;
-      const float z = this->position[2] + eye->unknown_00D8;
+      const float x = this->position[0] + eye->offsetX;
+      const float y = this->position[1] + eye->offsetY;
+      const float z = this->position[2] + eye->offsetZ;
 
       const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
       const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
@@ -241,14 +241,14 @@ void CCaneOfEvilEyeEffect::OnProcess() {
 // OFFSET: 0x006F9690
 // FUNCTION: fn_45459
 void CCaneOfEvilEyeEffect::UpdateLights() {
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+  for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     CEZ2STRParticle* light = *it;
     if (IsParticleActive(light) != true) {
       CEZ2STRParticle* next;
-      if (light->unknown_00A8 == 1) {
-        next = this->CreateLight(3, &light->unknown_00DC);
-      } else if (light->unknown_00A8 == 2) {
-        next = this->CreateLight(3, &light->unknown_00DC);
+      if (light->animationState == 1) {
+        next = this->CreateLight(3, &light->originX);
+      } else if (light->animationState == 2) {
+        next = this->CreateLight(3, &light->originX);
       } else {
         next = nullptr;
       }
@@ -258,13 +258,13 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
     }
   }
 
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+  for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     CEZ2STRParticle* light = *it;
     if (light) {
       vector3d from;
-      from.x = this->position[0] + light->unknown_00DC;
-      from.y = light->unknown_00E0 + this->position[1];
-      from.z = light->unknown_00E4 + this->position[2];
+      from.x = this->position[0] + light->originX;
+      from.y = light->originY + this->position[1];
+      from.z = light->originZ + this->position[2];
 
       float fromReciprocalDepth = 0.0f;
       float toReciprocalDepth = 0.0f;
@@ -286,9 +286,9 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       light->m_angle = static_cast<float>(angle);
       light->m_scale = SquareRoot(distance) * 0.0044f;
 
-      const float x = light->unknown_00D0 + this->position[0];
-      const float y = light->unknown_00D4 + this->position[1];
-      const float z = light->unknown_00D8 + this->position[2];
+      const float x = light->offsetX + this->position[0];
+      const float y = light->offsetY + this->position[1];
+      const float z = light->offsetZ + this->position[2];
 
       const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
       const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
@@ -307,13 +307,13 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
 // OFFSET: 0x006F9D40
 // FUNCTION: fn_06882
 void CCaneOfEvilEyeEffect::Render() {
-  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+  for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 
-  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+  for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     if (*it) {
       (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }

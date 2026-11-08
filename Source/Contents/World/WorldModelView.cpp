@@ -252,8 +252,8 @@ void CView::Render() {
     this->scene->ground->DrawGrid(matrix, g_groundOverlayA, g_groundOverlayB, g_groundOverlayC);
   }
 
-  if (g_session.unknown_5614 != 0 && g_session.unknown_5600 != 0 && g_session.unknown_5604 != 0) {
-    this->scene->ground->DrawGrid(matrix, g_session.unknown_5600, g_session.unknown_5604, 0xfeff0000);
+  if (g_session.homunAlive != 0 && g_session.homunEnemyX != 0 && g_session.homunEnemyY != 0) {
+    this->scene->ground->DrawGrid(matrix, g_session.homunEnemyX, g_session.homunEnemyY, 0xfeff0000);
   }
 
   for (auto it = this->scene->objects.begin(); it != this->scene->objects.end(); ++it) {
@@ -265,13 +265,13 @@ void CView::Render() {
   const float x = this->camera.target[0] - this->frame.eye[0];
   const float y = this->camera.target[1] - this->frame.eye[1];
   const float z = this->camera.target[2] - this->frame.eye[2];
-  *reinterpret_cast<float*>(&g_renderer->unknown_003C) = x;
-  *reinterpret_cast<float*>(&g_renderer->unknown_0040) = y;
-  *reinterpret_cast<float*>(&g_renderer->unknown_0044) = z;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionX) = x;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionY) = y;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionZ) = z;
   const float inverseLength = 1.0f / SquareRoot(x * x + y * y + z * z);
-  *reinterpret_cast<float*>(&g_renderer->unknown_003C) *= inverseLength;
-  *reinterpret_cast<float*>(&g_renderer->unknown_0040) *= inverseLength;
-  *reinterpret_cast<float*>(&g_renderer->unknown_0044) *= inverseLength;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionX) *= inverseLength;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionY) *= inverseLength;
+  *reinterpret_cast<float*>(&g_renderer->viewDirectionZ) *= inverseLength;
 
   this->spatial.inside.clear();
   this->spatial.clipped.clear();

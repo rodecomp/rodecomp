@@ -50,7 +50,7 @@ private:
 // FUNCTION: fn_23498
 bool CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->unknown_5400[0x30]);
+  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
   const char source[] = {'\x52', '\x88', '\x4B', '\xB1', '\x0A', '\x62', '\x9E', '\x43', '\x5E', '\x8B', '\x57', '\x9A', '\x45', '\x7B', '\x83', '\x63', '\x3F'};
   thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
   const bool loaded = storage.LoadTokens(tokens, name.Text(), 0);

@@ -12,15 +12,15 @@ __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& rend
   this->count = 0;
   this->pattern = 0;
   this->renderFlag = 1;
-  this->unknown_014C.x = 0;
-  this->unknown_014C.y = 0;
-  this->unknown_014C.z = 0;
+  this->changeFlags.x = 0;
+  this->changeFlags.y = 0;
+  this->changeFlags.z = 0;
   this->chRadiSpeed = 0;
   this->isDisappear = 0;
-  this->unknown_0138 = 0;
+  this->changePointReached = 0;
   this->master = nullptr;
   this->chCnt = 0;
-  this->unknown_01D8 = 0;
+  this->colorCycleIndex = 0;
   this->stateCnt = 0;
   this->radius = 0;
   this->minRadius = 0;
@@ -96,12 +96,12 @@ __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& rend
   render.curMotion = 0;
   this->totalTexture = 1;
   this->v1 = 0;
-  this->unknown_02DC = 0;
+  this->u1Bits = 0;
   this->v2 = 1.0f;
   this->u2 = 1.0f;
-  this->unknown_01C8[0] = 0;
-  this->unknown_FA10 = 0;
-  this->unknown_FA14 = 0;
+  this->useRenderFlag[0] = 0;
+  this->spriteLiftLow = 0;
+  this->spriteLiftHigh = 0;
 
   this->speed3d = {};
   this->orgPos = {};

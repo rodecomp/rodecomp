@@ -36,7 +36,7 @@ void CClimaxEffect::Open() {
   this->particles[0] = particle;
 
   CParticle* bottom = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13);
-  switch (this->unknown_00B0) {
+  switch (this->effectLevel) {
     case 1:
       static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_1.str");
       break;
@@ -97,7 +97,7 @@ void CClimaxEffect::OnProcess() {
     }
 
     climax->Process(0.0f, 0.0f, 0.0f);
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

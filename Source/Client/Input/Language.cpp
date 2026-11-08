@@ -414,7 +414,7 @@ UIChatHisBox2::UIChatHisBox2()
 
 // OFFSET: 0x0086C830
 // FUNCTION: fn_11031
-UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), unknown_0130(1), unknown_0134(12) {
+UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), autoScroll(1), fontHeight(12) {
 }
 
 // OFFSET: 0x00999FF0
@@ -425,8 +425,8 @@ UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
 UIMacroDetectorWnd::UIMacroDetectorWnd()
-    : UIFrameWnd(0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), unknown_00D0(0), totalDuration(0),
-      startTick(0), messageDuration(0), m_lastAnswer(), message(), unknown_0110(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
+    : UIFrameWnd(0), m_button(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0), remainingAttempts(0), totalDuration(0),
+      startTick(0), messageDuration(0), m_lastAnswer(), message(), lastCountdownTick(0), messageTick(3000), m_image(nullptr), m_editCtrl(nullptr) {
   std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
   g_windowMgr.CloseWindow(WID_ESCOPTIONWND);
   g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);

@@ -27,7 +27,7 @@ public:
 
   /* 00B4 */ UIEditCtrl_Custom* idEdit;
   /* 00B8 */ UIEditCtrl_Custom* passwordEdit;
-  /* 00BC */ UIWindow* unknown_00BC;
+  /* 00BC */ UIWindow* backgroundWindow;
   /* 00C0 */ bool idPlaceholder;
   /* 00C1 */ bool passwordPlaceholder;
   /* 00C2 */ unsigned char unknown_00C2[0x2];
@@ -36,10 +36,10 @@ public:
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ std::vector<std::string> unknown_00D8;
-  /* 00E4 */ int unknown_00E4;
-  /* 00E8 */ UIComboBoxDef2Wnd* unknown_00E8;
-  /* 00EC */ const char* unknown_00EC;
+  /* 00D8 */ std::vector<std::string> savedAccounts;
+  /* 00E4 */ int accountListOpen;
+  /* 00E8 */ UIComboBoxDef2Wnd* loginTypeCombo;
+  /* 00EC */ const char* loginExtra;
 };
 
 extern const char* g_webPageUrl;

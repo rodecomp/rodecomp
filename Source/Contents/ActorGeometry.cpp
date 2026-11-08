@@ -75,18 +75,18 @@ bool CRenderObject::PrepareSprite(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float* bottomDepth,
   float* topDepth, const SpriteRleImage* image, SpriteQuad* quad, int* bounds, std::uint32_t* color, int offsetX, int offsetY, int flags
 ) {
-  const float depthBias = this->render.unknown_005C * g_cameraScaleX;
+  const float depthBias = this->render.distanceScale * g_cameraScaleX;
   const double scaleY = static_cast<double>(scale * cell.scaleY * this->render.scale);
   const double scaleX = static_cast<double>(scale * cell.scaleX * this->render.scale);
   float top = static_cast<float>(static_cast<double>(cell.y + offsetY) * scaleY + static_cast<double>(y));
   float bottom = static_cast<float>(
-    static_cast<double>((image->unknown_0006 + 1) * image->height + cell.y + offsetY) * scaleY + static_cast<double>(y) + 1.0
+    static_cast<double>((image->doubleHeight + 1) * image->height + cell.y + offsetY) * scaleY + static_cast<double>(y) + 1.0
   );
   float left;
   float right;
 
   if (cell.mirrored & 1) {
-    left = static_cast<float>(static_cast<double>((image->unknown_0004 + 1) * image->width + cell.x + offsetX) * scaleX + static_cast<double>(x));
+    left = static_cast<float>(static_cast<double>((image->doubleWidth + 1) * image->width + cell.x + offsetX) * scaleX + static_cast<double>(x));
     right = static_cast<float>(static_cast<double>(offsetX + cell.x) * scaleX + static_cast<double>(x) + 1.0);
     if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || right >= static_cast<float>(g_renderer->viewport.width) ||
         left <= 0.0f) {
@@ -94,7 +94,7 @@ bool CRenderObject::PrepareSprite(
     }
   } else {
     left = static_cast<float>(static_cast<double>(cell.x + offsetX) * scaleX + static_cast<double>(x));
-    right = static_cast<float>(static_cast<double>((image->unknown_0004 + 1) * image->width + cell.x + offsetX) * scaleX + static_cast<double>(x) + 1.0);
+    right = static_cast<float>(static_cast<double>((image->doubleWidth + 1) * image->width + cell.x + offsetX) * scaleX + static_cast<double>(x) + 1.0);
     if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||
         right <= 0.0f) {
       return false;
@@ -102,7 +102,7 @@ bool CRenderObject::PrepareSprite(
   }
 
   if ((this->render.flags & 0x80) != 0) {
-    const short phase = this->render.unknown_00F4;
+    const short phase = this->render.effectPhase;
     float factor = 0.0f;
     if (phase < 19) {
       factor = g_sinTable[phase * 5] * 0.3f;
@@ -117,7 +117,7 @@ bool CRenderObject::PrepareSprite(
   }
 
   if ((this->render.flags & 0x20) != 0) {
-    const short phase = this->render.unknown_00F4;
+    const short phase = this->render.effectPhase;
     float factor = 1.0f;
     if (phase < 4) {
       factor = (100.0f - static_cast<float>(phase) * 20.0f) * 0.01f;
@@ -131,13 +131,13 @@ bool CRenderObject::PrepareSprite(
     top += (bottom - top) * (1.0f - factor);
   }
 
-  if (this->render.unknown_00A2 != 0) {
+  if (this->render.flatDepth != 0) {
     *bottomDepth = (static_cast<float>(unused) * g_cameraScaleY + 0.1f - g_cameraScaleY * 20.0f) +
-                   static_cast<float>(static_cast<int>(this->render.unknown_0080)) * g_cameraScaleY;
+                   static_cast<float>(static_cast<int>(this->render.depthLayer)) * g_cameraScaleY;
     *topDepth = (static_cast<float>(unused) * g_cameraScaleY + 0.1f - g_cameraScaleY * 20.0f) +
-                static_cast<float>(static_cast<int>(this->render.unknown_0080)) * g_cameraScaleY;
+                static_cast<float>(static_cast<int>(this->render.depthLayer)) * g_cameraScaleY;
   } else {
-    const int depthLayer = static_cast<int>(this->render.unknown_0080) + 3 + layer;
+    const int depthLayer = static_cast<int>(this->render.depthLayer) + 3 + layer;
     const float height = bottom - y;
     const float rise = top - y;
     if (this->render.isLieOnGround) {
@@ -158,7 +158,7 @@ bool CRenderObject::PrepareSprite(
   quad->right = right + shift;
   quad->bottomRhw = *bottomDepth;
   quad->topRhw = *topDepth;
-  quad->angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
+  quad->angle = static_cast<float>(cell.rotation + static_cast<int>(this->render.spriteAngle));
   bounds[0] = static_cast<int>(left);
   bounds[1] = static_cast<int>(top);
   bounds[2] = static_cast<int>(right);
@@ -167,7 +167,7 @@ bool CRenderObject::PrepareSprite(
   float lightRed = 1.0f;
   float lightGreen = 1.0f;
   float lightBlue = 1.0f;
-  if (this->render.unknown_00B4 == 1 && g_serviceOptions.Get(0x77)) {
+  if (this->render.useGroundLighting == 1 && g_serviceOptions.Get(0x77)) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     GroundGeometry* ground = mode->scene->ground;
     if (ground->IsNewVer()) {
@@ -198,7 +198,7 @@ bool CRenderObject::PrepareSprite(
   quad->color = *color;
 
   if ((this->render.flags & 0x40) != 0) {
-    const short phase = this->render.unknown_00F4;
+    const short phase = this->render.effectPhase;
     if (phase <= 36) {
       float angle = 180.0f - g_sinTable[90 + phase * 5] * 180.0f;
       quad->angle = angle;

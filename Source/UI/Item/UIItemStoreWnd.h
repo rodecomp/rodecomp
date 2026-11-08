@@ -32,25 +32,25 @@ public:
 
   /* 00F0 */ UIBitmapEditCtrl* searchEdit;
   /* 00F4 */ UIItemStoreComboBoxWnd* sortCombo;
-  /* 00F8 */ unsigned char unknown_00F8[0x08];
+  /* 00F8 */ unsigned char m_tabFlags[0x08];
   /* 0100 */ UICheckBox* tabs[8];
-  /* 0120 */ UIWindow* unknown_0120[8];
-  /* 0140 */ UIWindow* unknown_0140;
-  /* 0144 */ std::string unknown_0144;
+  /* 0120 */ UIWindow* m_tabWindows[8];
+  /* 0140 */ UIWindow* m_searchWindow;
+  /* 0144 */ std::string m_capacityText;
   /* 015C */ UIStaticText* title;
   /* 0160 */ unsigned char unknown_0160[0x04];
   /* 0164 */ ItemStoreFindListInfo* saved;
   /* 0168 */ UITab* tabBar;
-  /* 016C */ int unknown_016C;
-  /* 0170 */ int unknown_0170;
-  /* 0174 */ int unknown_0174;
-  /* 0178 */ int unknown_0178;
-  /* 017C */ int unknown_017C;
-  /* 0180 */ int unknown_0180;
-  /* 0184 */ unsigned char unknown_0184[0x04];
-  /* 0188 */ int unknown_0188;
-  /* 018C */ int unknown_018C;
-  /* 0190 */ unsigned char unknown_0190;
+  /* 016C */ int m_sortOptionA;
+  /* 0170 */ int m_sortOptionB;
+  /* 0174 */ int m_sortOptionC;
+  /* 0178 */ int m_sortOptionD;
+  /* 017C */ int m_sortOptionE;
+  /* 0180 */ int m_sortMode;
+  /* 0184 */ unsigned char m_searchFlags[0x04];
+  /* 0188 */ int m_itemCount;
+  /* 018C */ int m_capacity;
+  /* 0190 */ unsigned char m_hideCapacity;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

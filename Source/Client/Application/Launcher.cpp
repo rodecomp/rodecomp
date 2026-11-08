@@ -1062,7 +1062,7 @@ void ShutdownManagers() {
   DestroyPlayerNameDictionary();
 
   for (unsigned int attempt = 0; attempt < 30; ++attempt) {
-    if (g_adventurerAgencyMgr->pending + g_accountLinkedUserDataMgr->unknown_0028 == 0) {
+    if (g_adventurerAgencyMgr->pending + g_accountLinkedUserDataMgr->m_pendingLoads == 0) {
       break;
     }
 

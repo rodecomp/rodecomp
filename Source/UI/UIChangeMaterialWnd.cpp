@@ -56,7 +56,7 @@ inline const MaterialListEntry* UIChangeMaterialWnd_List::GetEntry(unsigned int 
 // OFFSET: 0x005E03B0
 // FUNCTION: fn_03861
 UIChangeMaterialWnd::UIChangeMaterialWnd()
-    : UIFrameWnd(0), unknown_00B4(nullptr), unknown_00B8(nullptr), m_sortBox(nullptr), m_button(nullptr), m_resultItem(), m_materials(), m_resultAmount(0),
+    : UIFrameWnd(0), itemList(nullptr), searchEdit(nullptr), m_sortBox(nullptr), m_button(nullptr), m_resultItem(), m_materials(), m_resultAmount(0),
       m_resultText() {
   this->m_resultX = 168;
   this->m_resultY = 131;
@@ -70,7 +70,7 @@ UIChangeMaterialWnd::UIChangeMaterialWnd()
 // OFFSET: 0x005E0560
 // FUNCTION: fn_03862
 UIChangeMaterialWnd_List::UIChangeMaterialWnd_List()
-    : UIFrameWnd(0), unknown_00B4(27), unknown_00B8(16), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
+    : UIFrameWnd(0), rowHeight(27), scrollBarWidth(16), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
       m_entries() {
 }
 
@@ -84,10 +84,10 @@ UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
 // FUNCTION: fn_03877
 void UIChangeMaterialWnd_List::OnCreate(int width, int height) {
   this->m_scrollBar = new UIChangeMaterialWnd_ScrollBar();
-  this->m_scrollBar->Configure(width - this->unknown_00B8, 0, 1, height);
+  this->m_scrollBar->Configure(width - this->scrollBarWidth, 0, 1, height);
   this->m_scrollBar->Show(0);
   this->AddChild(this->m_scrollBar);
-  this->m_pageSize = height / this->unknown_00B4;
+  this->m_pageSize = height / this->rowHeight;
   this->UpdateScrollBar();
 }
 
@@ -151,7 +151,7 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
 void UIChangeMaterialWnd_List::OnLBtnUp(int, int position) {
-  const int rowHeight = this->unknown_00B4;
+  const int rowHeight = this->rowHeight;
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
   index = std::min(index, last);
@@ -183,13 +183,13 @@ void UIChangeMaterialWnd_List::OnMouseMove(int x, int y) {
 // OFFSET: 0x005E2850
 // FUNCTION: fn_03887
 void UIChangeMaterialWnd::OnProcess() {
-  const std::string text = this->unknown_00B8->Text();
+  const std::string text = this->searchEdit->Text();
   if (text.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) != 0) {
     if (text.empty()) {
-      this->unknown_00B8->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
-      this->unknown_00B8->TextColor(0xb1u, 0xb1u, 0xb1u, 0xffffffffu);
+      this->searchEdit->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
+      this->searchEdit->TextColor(0xb1u, 0xb1u, 0xb1u, 0xffffffffu);
     } else {
-      this->unknown_00B8->TextColor(0, 0, 0, 0xffffffffu);
+      this->searchEdit->TextColor(0, 0, 0, 0xffffffffu);
     }
   }
 }
@@ -243,7 +243,7 @@ void UIChangeMaterialWnd_List::UpdateScrollBar() {
 // OFFSET: 0x005E2B20
 // FUNCTION: fn_03891
 void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
-  const int rowHeight = this->unknown_00B4;
+  const int rowHeight = this->rowHeight;
   this->m_pageSize = this->geometry.height / rowHeight;
   this->m_selectedIndex = 0;
   this->m_scrollOffset = 0;
@@ -336,7 +336,7 @@ void UIChangeMaterialWnd::SendChangeMaterial() {
   unsigned char* entry = packet + 0xC;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
     *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(it->quantity);
-    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->unknown_0000[1]);
+    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->identity[1]);
     entry += 4;
   }
 
@@ -363,8 +363,8 @@ int UIChangeMaterialWnd::SendMsg(
 ) {
   switch (message) {
   case UM_DEFPUSH:
-    if (sender == reinterpret_cast<UIWindow*>(this->unknown_00B8) && reinterpret_cast<UIWindow*>(this->unknown_00B8) == g_windowMgr.GetHoverWindow()) {
-      this->unknown_00B4->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
+    if (sender == reinterpret_cast<UIWindow*>(this->searchEdit) && reinterpret_cast<UIWindow*>(this->searchEdit) == g_windowMgr.GetHoverWindow()) {
+      this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
     }
     break;
   case UM_COMMAND:
@@ -376,23 +376,23 @@ int UIChangeMaterialWnd::SendMsg(
       g_windowMgr.CloseWindow(WID_CHANGEMATERIALWND);
       break;
     case ID_SEARCH:
-      this->unknown_00B4->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->unknown_00B8->Text()), 0, 0);
+      this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
       break;
     case 0x16c:
-      this->unknown_00B4->SortItems(argument2 > 0);
+      this->itemList->SortItems(argument2 > 0);
       break;
     case 0x19f:
-      this->unknown_00B4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      this->itemList->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     default:
       break;
     }
     break;
   case UM_UPPUSH:
-    this->unknown_00B4->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
+    this->itemList->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     break;
   case UM_DOWNPUSH:
-    this->unknown_00B4->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+    this->itemList->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     break;
   case UM_REFRESHITEM:
     if (argument1 != 0) {
@@ -406,7 +406,7 @@ int UIChangeMaterialWnd::SendMsg(
         info.SetItemId(it->id);
         info.quantity = it->quantity;
         const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, it->id, 1);
-        info.unknown_0000[1] = stock.unknown_0000[1];
+        info.identity[1] = stock.identity[1];
         info.identified = it->quantity <= stock.quantity;
         this->m_materials.push_back(info);
       }
@@ -565,7 +565,7 @@ void UIChangeMaterialWnd_List::Paint() {
       }
     }
 
-    const int rowHeight = this->unknown_00B4;
+    const int rowHeight = this->rowHeight;
     if (!entry) {
       CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
       this->DrawBitmap(0, rowHeight * row, static_cast<CBitmapRes*>(disabled), true);
@@ -650,7 +650,7 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
 // OFFSET: 0x005E26B0
 // FUNCTION: fn_03885
 void UIChangeMaterialWnd_List::OnMouseHover(int x, int y) {
-  const int rowHeight = this->unknown_00B4;
+  const int rowHeight = this->rowHeight;
   const int index = y / rowHeight + this->m_scrollOffset;
   if (static_cast<unsigned int>(index) >= this->m_items.size()) {
     return;
@@ -698,16 +698,16 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   close->SetId(201);
   this->AddChild(close);
 
-  this->unknown_00B8 = new UIEditCtrl();
-  this->unknown_00B8->SetSize(118, 13);
-  this->unknown_00B8->Move(313, 262);
-  this->unknown_00B8->maximum = 20;
-  this->unknown_00B8->preserveInput = 1;
-  this->unknown_00B8->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
-  this->unknown_00B8->TextColor(0xB1u, 0xB1u, 0xB1u, 0xFFFFFFFFu);
-  this->unknown_00B8->Background(255, 236, 207);
-  this->unknown_00B8->topPadding = -1;
-  this->AddChild(this->unknown_00B8);
+  this->searchEdit = new UIEditCtrl();
+  this->searchEdit->SetSize(118, 13);
+  this->searchEdit->Move(313, 262);
+  this->searchEdit->maximum = 20;
+  this->searchEdit->preserveInput = 1;
+  this->searchEdit->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
+  this->searchEdit->TextColor(0xB1u, 0xB1u, 0xB1u, 0xFFFFFFFFu);
+  this->searchEdit->Background(255, 236, 207);
+  this->searchEdit->topPadding = -1;
+  this->AddChild(this->searchEdit);
 
   UIBmpTextButton* search = new UIBmpTextButton();
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search.bmp", 0, 0);
@@ -756,11 +756,11 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   cancel->SetId(201);
   this->AddChild(cancel);
 
-  this->unknown_00B4 = new UIChangeMaterialWnd_List();
-  this->unknown_00B4->SetSize(186, 216);
-  this->unknown_00B4->Move(310, 41);
-  this->AddChild(this->unknown_00B4);
-  this->unknown_00B4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  this->itemList = new UIChangeMaterialWnd_List();
+  this->itemList->SetSize(186, 216);
+  this->itemList->Move(310, 41);
+  this->AddChild(this->itemList);
+  this->itemList->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005E1E20
@@ -779,12 +779,12 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
     return;
   }
 
-  if (this->geometry.unknown_0030 == 0) {
+  if (this->geometry.state == 0) {
     this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()))), false);
     if (!this->ascendingText.empty()) {
       this->DrawTextAt(0xc, 1, this->ascendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
     }
-  } else if (this->geometry.unknown_0030 == 1) {
+  } else if (this->geometry.state == 1) {
     this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str()))), false);
     if (!this->descendingText.empty()) {
       this->DrawTextAt(0xc, 1, this->descendingText.c_str(), 0, 0, 0xc, 0, 0, 0);

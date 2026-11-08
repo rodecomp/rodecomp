@@ -288,7 +288,7 @@ void CSkillAction_SKE_SKY_MOON::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const float scale = source->attackMotion * source->render.speed * 16.0f;
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));

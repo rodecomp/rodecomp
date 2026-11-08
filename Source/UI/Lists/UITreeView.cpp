@@ -8,10 +8,10 @@ UITreeView::UITreeView() : UIWindow(0) {
   this->itemCount = 0;
   this->verticalBar = nullptr;
   this->verticalOverflow = 0;
-  this->unknown_00A8 = 0;
-  this->unknown_0088 = nullptr;
-  this->unknown_008C = nullptr;
-  this->unknown_0090 = nullptr;
-  this->unknown_00AC = 0;
-  this->unknown_00B0 = 0;
+  this->scrollRow = 0;
+  this->selectedNode = nullptr;
+  this->dragNode = nullptr;
+  this->dropNode = nullptr;
+  this->mouseInside = 0;
+  this->highlightColor = 0;
 }

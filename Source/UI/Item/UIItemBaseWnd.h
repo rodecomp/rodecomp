@@ -23,14 +23,14 @@ public:
   void UpdateScrollBar();
 
   /* 00B4 */ int showQuantity;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int alternateButtonBar;
   /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIWindow* scrollBar;
   /* 00C4 */ UIWindow* buttons[5];
   /* 00D8 */ int scroll;
   /* 00DC */ int visibleRows;
   /* 00E0 */ int columns;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E4 */ int scrollOverflow;
   /* 00E8 */ std::list<ITEM_INFO> items;
 };
 

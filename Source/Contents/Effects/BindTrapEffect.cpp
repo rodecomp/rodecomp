@@ -13,7 +13,7 @@
 // OFFSET: 0x006FB2F0
 // FUNCTION: fn_06903
 CBindTrapEffect::CBindTrapEffect() : CEffect(-1), particles() {
-  this->unknown_002C = 8000;
+  this->effectLifetime = 8000;
 }
 
 // OFFSET: 0x006FB4E0
@@ -25,13 +25,13 @@ void CBindTrapEffect::AddParticle(int index) {
   }
 
   particle->SetTexture("effect\\hero_011.tga");
-  particle->unknown_0004 = this->id;
-  particle->unknown_000C = 0;
-  particle->unknown_0010 = 0;
-  particle->unknown_0008 = 1;
+  particle->effectId = this->id;
+  particle->columnIndex = 0;
+  particle->rowIndex = 0;
+  particle->groupIndex = 1;
   particle->alpha = 255;
-  particle->unknown_00C4 = 0;
-  particle->unknown_004C = 0;
+  particle->angleBits = 0;
+  particle->phaseParameter = 0;
   particle->scale = static_cast<float>(index) * 6.0f + 9.0f;
   InitParticleQuad(particle->vertices);
   this->particles.push_back(particle);
@@ -92,7 +92,7 @@ void CBindTrapEffect::OnProcess() {
       particle->transform = composed;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

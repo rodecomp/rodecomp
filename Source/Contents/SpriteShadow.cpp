@@ -22,7 +22,7 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const float* origin = reinterpret_cast<const float*>(&this->unknown_0004);
+  const float* origin = reinterpret_cast<const float*>(&this->positionX);
   float position[3];
   position[0] = origin[0];
   position[1] = mode->scene->terrain->Height(origin[0], origin[2]);
@@ -32,11 +32,11 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   float screenX;
   float screenY;
   float reciprocalDepth;
-  if (this->unknown_0068 == 0 && this->unknown_006C == 0) {
+  if (this->viewportWidth == 0 && this->viewportHeight == 0) {
     g_renderer->ProjectViewport(position, matrix, &screenX, &screenY, &reciprocalDepth);
   } else {
     g_renderer->ProjectViewportCentered(
-      position, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->unknown_0068) + this->unknown_0054, static_cast<float>(this->unknown_006C) + this->unknown_0058
+      position, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->viewportWidth) + this->viewportOffsetX, static_cast<float>(this->viewportHeight) + this->viewportOffsetY
     );
   }
   const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
@@ -49,14 +49,14 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   }
 
   const SpriteRleImage* image = sprite->images[cell.imageType][0];
-  const float size = g_session.GetNpcLocationRadius(this->unknown_0010, this->unknown_004C) * scale;
+  const float size = g_session.GetNpcLocationRadius(this->job, this->riding) * scale;
   const double factor = distanceScale;
 
   SpriteQuad quad;
   quad.top = static_cast<float>(cell.y * factor * cell.scaleY * size + screenY);
-  quad.bottom = static_cast<float>(((image->unknown_0006 + 1) * image->height + cell.y) * factor * cell.scaleY * size + screenY + 1.0);
+  quad.bottom = static_cast<float>(((image->doubleHeight + 1) * image->height + cell.y) * factor * cell.scaleY * size + screenY + 1.0);
   quad.left = static_cast<float>(cell.x * factor * cell.scaleX * size + screenX);
-  quad.right = static_cast<float>(((image->unknown_0004 + 1) * image->width + cell.x) * factor * cell.scaleX * size + screenX + 1.0);
+  quad.right = static_cast<float>(((image->doubleWidth + 1) * image->width + cell.x) * factor * cell.scaleX * size + screenX + 1.0);
   if (quad.top >= static_cast<float>(g_renderer->viewport.height) || quad.bottom <= 0.0f || quad.left >= static_cast<float>(g_renderer->viewport.width)
       || quad.right <= 0.0f) {
     return nullptr;
@@ -66,7 +66,7 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
                (cell.color >> 16 & 0xFF);
   quad.bottomRhw = 1.0f / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
   quad.topRhw = 1.0f / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
-  quad.angle = static_cast<float>(cell.unknown_001C);
+  quad.angle = static_cast<float>(cell.rotation);
   quad.image = image;
 
   return BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, 257, 0.0f, 0.0f);

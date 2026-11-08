@@ -99,7 +99,7 @@ public:
   __declspec(noinline) void DrawRuneIcon(int x, int y, const char* name, bool active);
 
   /* 00B4 */ int m_itemHeight;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int m_slotSpacing;
   /* 00BC */ int m_selected;
 };
 
@@ -218,9 +218,9 @@ public:
 
   /* 007C */ RuneSetData* m_runeSet;
   /* 0080 */ UIRuneSystem_ActiveWnd* m_activeWnd;
-  /* 0084 */ UIBitmapButton* unknown_0084;
-  /* 0088 */ UIBitmapButton* unknown_0088;
-  /* 008C */ UIBitmapButton* unknown_008C;
+  /* 0084 */ UIBitmapButton* m_activateButton;
+  /* 0088 */ UIBitmapButton* m_equipButton;
+  /* 008C */ UIBitmapButton* m_unequipButton;
   /* 0090 */ UIRuneSystemTab* m_tab;
   /* 0094 */ UIGage_Circle* m_gauge;
   /* 0098 */ UIStaticText* m_gradeText;
@@ -257,8 +257,8 @@ public:
   void SelectDecomType(unsigned int type);
   __declspec(noinline) void SetItem(int itemId);
 
-  /* 007C */ std::string unknown_007C;
-  /* 0094 */ std::string unknown_0094;
+  /* 007C */ std::string m_itemName;
+  /* 0094 */ std::string m_itemImagePath;
   /* 00AC */ unsigned int m_ownedCount;
   /* 00B0 */ std::vector<Decom_ItemInfo>* m_decomList;
   /* 00B4 */ int m_itemId;

@@ -13,7 +13,7 @@ bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
   if (encoded.substr(0, 6) == "00000T") {
     const int id = ItemLinkMessageId(encoded);
 
-    if (g_itemTagOwner->unknown_0118 >= id) {
+    if (g_itemTagOwner->maxTipId >= id) {
       std::string abbreviated;
       output = g_itemTagOwner->Title(id, &abbreviated, 17);
 

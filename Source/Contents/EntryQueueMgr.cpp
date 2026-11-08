@@ -240,7 +240,7 @@ void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
 
   if (window && this->current) {
     static_cast<UIEntryQueueStandByWnd*>(window)->SetInfo(
-      packet->queueName, this->current->unknown_0210 + this->current->unknown_020C, packet->ranking
+      packet->queueName, this->current->maxLevel + this->current->minLevel, packet->ranking
     );
   }
 

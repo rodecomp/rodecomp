@@ -7,7 +7,7 @@
 
 class CGravityControlEffect : public CEffect {
 public:
-  CGravityControlEffect() : CEffect(-1), target(0), unknown_00D0(0), unknown_00D4(-20.0f) {}
+  CGravityControlEffect() : CEffect(-1), target(0), heightOffset(0), minimumHeightOffset(-20.0f) {}
 
   void Open() override;
   void OnProcess() override;
@@ -17,8 +17,8 @@ public:
   ~CGravityControlEffect() override;
 
   /* 00CC */ int target;
-  /* 00D0 */ float unknown_00D0;
-  /* 00D4 */ float unknown_00D4;
+  /* 00D0 */ float heightOffset;
+  /* 00D4 */ float minimumHeightOffset;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

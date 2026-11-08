@@ -28,13 +28,13 @@ protected:
   /* 00D0 */ UITextButton* m_prevButton;
   /* 00D4 */ UITextButton* m_nextButton;
   /* 00D8 */ UIWindow* unknown_00D8;
-  /* 00DC */ int unknown_00DC;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
-  /* 00E8 */ int unknown_00E8;
-  /* 00EC */ unsigned char unknown_00EC;
-  /* 00ED */ unsigned char unknown_00ED;
-  /* 00F0 */ std::string unknown_00F0;
+  /* 00DC */ int m_page;
+  /* 00E0 */ int m_hoverRow;
+  /* 00E4 */ int m_searchType;
+  /* 00E8 */ int m_rowHeight;
+  /* 00EC */ unsigned char m_searchPending;
+  /* 00ED */ unsigned char m_matchOption;
+  /* 00F0 */ std::string m_statusText;
 
 };
 

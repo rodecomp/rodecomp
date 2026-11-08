@@ -23,7 +23,7 @@ namespace {
 
   // INLINED
   bool WritesDepth(const RenderCommand& command) {
-    return (command.unknown_0014 & 0xFFu) != 0 && (command.unknown_0014 & 0xFF00u) != 0;
+    return (command.depthFlags & 0xFFu) != 0 && (command.depthFlags & 0xFF00u) != 0;
   }
 }
 

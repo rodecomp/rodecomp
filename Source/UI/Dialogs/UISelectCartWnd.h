@@ -15,10 +15,10 @@ public:
 protected:
 
 public:
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
+  /* 00B4 */ int selectionContext;
+  /* 00B8 */ int cartTypesBegin;
+  /* 00BC */ int cartTypesEnd;
+  /* 00C0 */ int cartTypesCapacity;
 };
 
 #endif

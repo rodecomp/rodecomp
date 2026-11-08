@@ -23,21 +23,21 @@ public:
   /* 0159 */ unsigned char unknown_0159[0x03];
   /* 015C */ CGameObject* m_owner;
   /* 0160 */ vector3d m_drift;
-  /* 016C */ vector3d unknown_016C;
+  /* 016C */ vector3d origin;
   /* 0178 */ vector3d m_velocity;
   /* 0184 */ int m_value;
   /* 0188 */ int m_finished;
-  /* 018C */ float unknown_018C;
+  /* 018C */ float travelDistance;
   /* 0190 */ float m_baseY;
   /* 0194 */ float m_baseX;
   /* 0198 */ float m_scale;
-  /* 019C */ float unknown_019C;
-  /* 01A0 */ int unknown_01A0;
-  /* 01A4 */ int unknown_01A4;
+  /* 019C */ float initialVelocityX;
+  /* 01A0 */ int processTick;
+  /* 01A4 */ int previousAnimation;
   /* 01A8 */ int m_type;
   /* 01AC */ int m_digit;
-  /* 01B0 */ int unknown_01B0;
-  /* 01B4 */ int unknown_01B4;
+  /* 01B0 */ int motionInitialized;
+  /* 01B4 */ int activeMotion;
 };
 
 class CSummonActorEffect : public CMsgEffect {

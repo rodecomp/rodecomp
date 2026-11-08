@@ -22,14 +22,14 @@ public:
 
   /* 00CC */ std::list<CParticle*> particles;
   /* 00D4 */ std::list<CParticle*> sprites;
-  /* 00DC */ int unknown_00DC;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ unsigned char unknown_00E4;
+  /* 00DC */ int particleLifetimeFrames;
+  /* 00E0 */ int spriteLifetimeFrames;
+  /* 00E4 */ unsigned char emitting;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CCloudKillEffect, particles) == 0xCC);
-static_assert(offsetof(CCloudKillEffect, unknown_00E4) == 0xE4);
+static_assert(offsetof(CCloudKillEffect, emitting) == 0xE4);
 #endif
 
 #endif

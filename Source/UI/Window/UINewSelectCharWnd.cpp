@@ -412,16 +412,16 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     slotInfo.job = character->job;
     slotInfo.robe = character->robe;
     if (character->deleteDate > 0) {
-      slotInfo.unknown_0148 = 0x10;
+      slotInfo.actionBase = 0x10;
       slotInfo.action = 0x10;
     } else {
-      slotInfo.unknown_0148 = 0;
+      slotInfo.actionBase = 0;
       slotInfo.action = 0;
     }
     slotInfo.frame = 0;
 
-    slotInfo.actionNames[0] = GetBodyActionResourceName(character->job, character->sex, character->unknown_0058, 0);
-    slotInfo.spriteNames[0] = g_session.GetBodySprName(character->job, character->sex, character->unknown_0058, 0);
+    slotInfo.actionNames[0] = GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
+    slotInfo.spriteNames[0] = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
     int head = character->head;
     slotInfo.actionNames[1] = g_session.GetHeadActName(character->job, character->sex, &head);
     slotInfo.spriteNames[1] = g_session.GetHeadSprName(character->job, character->sex, &head);
@@ -434,9 +434,9 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     slotInfo.actionNames[4] = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory);
     slotInfo.spriteNames[4] = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory);
 
-    slotInfo.bodyPalette = g_session.GetBodyStyle(character->job, character->bodyStyle, character->unknown_0058);
+    slotInfo.bodyPalette = g_session.GetBodyStyle(character->job, character->bodyStyle, character->bodyCostume);
     if (slotInfo.bodyPalette != 0) {
-      slotInfo.bodyPaletteName = g_session.GetBodyPalName(character->job, character->sex, slotInfo.bodyPalette, character->unknown_0058, 0, 0);
+      slotInfo.bodyPaletteName = g_session.GetBodyPalName(character->job, character->sex, slotInfo.bodyPalette, character->bodyCostume, 0, 0);
     }
 
     slotInfo.headPalette = character->headPalette;
@@ -444,7 +444,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
       slotInfo.headPaletteName = g_session.GetHeadPalName(head, character->job, character->sex, slotInfo.headPalette);
     }
 
-    slotInfo.imfName = GetBodyImfName(character->job, character->sex, character->head, character->unknown_0058);
+    slotInfo.imfName = GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
   }
 
   for (int index = 0; index < this->m_totalSlots; ++index) {
@@ -499,7 +499,7 @@ void UINewSelectCharWnd::Paint() {
       const CharSlotInfo& slotInfo = this->m_charSlotInfos[slot];
       const int sex = info->sex == 99 ? static_cast<int>(g_session.m_sex) : info->sex;
       FuncDrawWNDChar(
-        this, slotInfo.x, slotInfo.y, sex, info->job, info->job, info->unknown_0058, info->head, info->accessory, info->accessory2, info->accessory3, info->robe,
+        this, slotInfo.x, slotInfo.y, sex, info->job, info->job, info->bodyCostume, info->head, info->accessory, info->accessory2, info->accessory3, info->robe,
         0, 0, info->bodyStyle, info->headPalette, slotInfo.action, slotInfo.frame, this->m_lastTick
       )
         .Draw(true);
@@ -529,10 +529,10 @@ void UINewSelectCharWnd::Paint() {
       if (slot == this->m_pageSlot && deleteDate.IsBeforeNow() == 1 && static_cast<UIButton*>(this->m_window100)->Disabled() == 1) {
         static_cast<UIButton*>(this->m_window100)->Enable(1);
       }
-      this->m_charSlotInfos[slot].unknown_0148 = 16;
+      this->m_charSlotInfos[slot].actionBase = 16;
       this->m_charSlotInfos[slot].action = 16;
     } else {
-      this->m_charSlotInfos[slot].unknown_0148 = 0;
+      this->m_charSlotInfos[slot].actionBase = 0;
       this->m_charSlotInfos[slot].action = 0;
     }
   }
@@ -559,7 +559,7 @@ void __stdcall Nullsub244(int, int) {
 // FUNCTION: fn_09593
 void UINewSelectCharWnd::OnProcess() {
   if (g_mouse.buttons[0] == 3) {
-    if (g_windowMgr.unknown_0210 != 0) {
+    if (g_windowMgr.menuWnd != 0) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
   }
@@ -581,7 +581,7 @@ void UINewSelectCharWnd::OnProcess() {
 // OFFSET: 0x007D77D0
 // FUNCTION: fn_09594
 int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (g_windowMgr.unknown_03BC != nullptr || g_windowMgr.unknown_03B8 != nullptr || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) != nullptr) {
+  if (g_windowMgr.secondPasswordEditWnd != nullptr || g_windowMgr.secondPasswordInputWnd != nullptr || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) != nullptr) {
     return 0;
   }
 
@@ -607,8 +607,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
       g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_session.m_sex) : static_cast<char>(info->sex));
       this->m_unknown118 = true;
-      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.unknown_07F4[0x40]);
-      for (int index = 0; index < g_session.unknown_59D0; ++index) {
+      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
+      for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
           char text[260];
           std::memset(text, 0, sizeof(text));
@@ -667,7 +667,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + index);
         this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
-            static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->unknown_0128 == 0) {
+            static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->m_displayMode == 0) {
           this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
           break;
         }
@@ -708,8 +708,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       const CharacterInfo* info =
         reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.unknown_07F4[0x40]);
-      for (int index = 0; index < g_session.unknown_59D0; ++index) {
+      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
+      for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
           char text[260];
           std::memset(text, 0, sizeof(text));
@@ -919,8 +919,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     case 0x1A0:
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
-      g_windowMgr.unknown_03BC->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
-      g_windowMgr.unknown_03BC->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
     case 0x1A1:
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
@@ -974,7 +974,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_unknown13C) {
       break;
     }
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
@@ -1000,7 +1000,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_unknown13C) {
       break;
     }
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
@@ -1028,7 +1028,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_unknown13C) {
       break;
     }
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
@@ -1052,7 +1052,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_unknown13C) {
       break;
     }
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {

@@ -62,8 +62,8 @@ public:
   void LoadLayers();
 
   /* 0000 */ float matrix[12];
-  /* 0030 */ int unknown_0030;
-  /* 0034 */ char unknown_0034;
+  /* 0030 */ int blendMode;
+  /* 0034 */ char blendVariant;
   /* 0038 */ CPc* pc;
   /* 003C */ vector3d position;
   /* 0048 */ float x;
@@ -72,15 +72,15 @@ public:
   /* 0054 */ float distanceScale;
   /* 0058 */ float scale;
   /* 005C */ CImfRes* imf;
-  /* 0060 */ int unknown_0060;
+  /* 0060 */ int layerShift;
   /* 0064 */ int swingX;
   /* 0068 */ int swingY;
-  /* 006C */ bool unknown_006C;
-  /* 006D */ bool unknown_006D;
+  /* 006C */ bool hideHeadLayer;
+  /* 006D */ bool hideAccessories;
   /* 0070 */ std::map<int, SpriteLayerResources> layers;
   /* 0078 */ std::map<int, int> layerViews;
   /* 0080 */ RenderBounds bounds;
-  /* 0094 */ bool unknown_0094;
+  /* 0094 */ bool alternateLayerRendering;
   /* 0098 */ std::map<int, SpriteLayerQuad> quads;
   /* 00A0 */ float depthScale;
   /* 00A4 */ float depthBias;

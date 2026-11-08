@@ -13,8 +13,8 @@ struct BarterMarketEntry;
 struct ModeDragState {
   /* 0308 */ int source;
   /* 030C */ std::uint32_t id;
-  /* 0310 */ std::uint32_t unknown_0310;
-  /* 0314 */ std::uint32_t unknown_0314;
+  /* 0310 */ std::uint32_t itemValue;
+  /* 0314 */ std::uint32_t price;
   /* 0318 */ int quantity;
   /* 031C */ int slot;
   /* 0320 */ std::uint32_t type;
@@ -26,14 +26,14 @@ struct ModeDragState {
   /* 0374 */ int skillLevel;
   /* 0378 */ unsigned char cards[16];
   /* 0388 */ unsigned char skill;
-  /* 038C */ std::uint32_t unknown_038C;
+  /* 038C */ std::uint32_t sourceWindow;
   /* 0390 */ int optionCount;
   /* 0394 */ unsigned char options[25];
-  /* 03B0 */ int unknown_03B0;
+  /* 03B0 */ int barterId;
   /* 03B4 */ std::uint16_t grade;
-  /* 03B6 */ unsigned char unknown_03B6;
-  /* 03B8 */ std::uint32_t unknown_03B8;
-  /* 03C0 */ std::int64_t unknown_03C0;
+  /* 03B6 */ unsigned char uniqueItem;
+  /* 03B8 */ std::uint32_t equipmentLocation;
+  /* 03C0 */ std::int64_t viewId;
 
   void Clear();
   void BeginItem(WindowManagerWindows& windows, int source, const ITEM_INFO& item, int quantity, int slot);

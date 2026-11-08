@@ -63,8 +63,8 @@ void CTalismanMarkEffect::PlayEnd() {
       continue;
     }
 
-    const int index = particle->unknown_000C;
-    const int angle = particle->unknown_004C;
+    const int index = particle->columnIndex;
+    const int angle = particle->phaseParameter;
     FreeParticle(particle);
 
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
@@ -73,15 +73,15 @@ void CTalismanMarkEffect::PlayEnd() {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = index;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     InitParticleQuad(particle->vertices);
     particle->m_actorId = this->actor;
     particle->Load(s_talismanEndEffects.at(index));
-    particle->unknown_004C = angle;
-    particle->unknown_00A8 = 2;
+    particle->phaseParameter = angle;
+    particle->animationState = 2;
     *it = particle;
   }
 }
@@ -91,21 +91,21 @@ void CTalismanMarkEffect::PlayEnd() {
 void CTalismanMarkEffect::Open() {
   this->retained = 1;
 
-  for (int i = 0; i < std::min<unsigned int>(this->unknown_00B0, 4); ++i) {
+  for (int i = 0; i < std::min<unsigned int>(this->effectLevel, 4); ++i) {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (!particle) {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     InitParticleQuad(particle->vertices);
     particle->m_actorId = this->actor;
     particle->Load(s_talismanStartEffects.at(i));
-    particle->unknown_004C = (i / 2 + i % 2 * 2) * 90;
-    particle->unknown_00A8 = 0;
+    particle->phaseParameter = (i / 2 + i % 2 * 2) * 90;
+    particle->animationState = 0;
     this->particles.push_back(particle);
   }
 }
@@ -119,15 +119,15 @@ void CTalismanMarkEffect::OnProcess() {
       continue;
     }
 
-    switch (particle->unknown_00A8) {
+    switch (particle->animationState) {
     case 0:
-      if (particle->life == 0.0f || particle->life * 60.0f > particle->unknown_00E8) {
+      if (particle->life == 0.0f || particle->life * 60.0f > particle->elapsedFrames) {
         break;
       }
 
       {
-        const int index = particle->unknown_000C;
-        const int angle = particle->unknown_004C;
+        const int index = particle->columnIndex;
+        const int angle = particle->phaseParameter;
         FreeParticle(particle);
 
         particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
@@ -136,15 +136,15 @@ void CTalismanMarkEffect::OnProcess() {
           continue;
         }
 
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = index;
-        particle->unknown_0010 = 0;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = index;
+        particle->rowIndex = 0;
+        particle->groupIndex = 1;
         InitParticleQuad(particle->vertices);
         particle->m_actorId = this->actor;
         particle->Load(s_talismanLoopEffects.at(index));
-        particle->unknown_004C = angle;
-        particle->unknown_00A8 = 1;
+        particle->phaseParameter = angle;
+        particle->animationState = 1;
         particle->m_loop = true;
         *it = particle;
       }
@@ -152,7 +152,7 @@ void CTalismanMarkEffect::OnProcess() {
     case 1:
       break;
     case 2:
-      if (particle->life == 0.0f || particle->life * 60.0f > particle->unknown_00E8) {
+      if (particle->life == 0.0f || particle->life * 60.0f > particle->elapsedFrames) {
         break;
       }
 
@@ -192,10 +192,10 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   const float viewZ = view[2] * center.x + view[5] * center.y + view[8] * center.z + view[11];
 
   const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
-  int angle = particle->unknown_004C;
-  if (particle->unknown_00A8 == 1) {
+  int angle = particle->phaseParameter;
+  if (particle->animationState == 1) {
     angle = (angle + 1) % 360;
-    particle->unknown_004C = angle;
+    particle->phaseParameter = angle;
   }
 
   const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;

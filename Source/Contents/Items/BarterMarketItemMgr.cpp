@@ -850,7 +850,7 @@ void CExpandedBarterMarketItemMgr::LoadInventoryItems()
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.identified) {
-      this->itemInfos.insert(std::make_pair(item.unknown_0060, item));
+      this->itemInfos.insert(std::make_pair(item.refiningLevel, item));
     }
   }
 }
@@ -867,7 +867,7 @@ bool CExpandedBarterMarketItemMgr::HasRequiredItems()
       if (it == this->itemInfos.end()) {
         return false;
       }
-      if (std::atoi(it->second.itemId.c_str()) == chunk->field_0 && (chunk->field_4 <= 0 || it->second.unknown_0060 >= chunk->field_4)) {
+      if (std::atoi(it->second.itemId.c_str()) == chunk->field_0 && (chunk->field_4 <= 0 || it->second.refiningLevel >= chunk->field_4)) {
         if (it->second.quantity > required) {
           it->second.quantity -= required;
           break;

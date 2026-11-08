@@ -61,7 +61,7 @@ CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixel
 
   if (texture) {
     texture->Upload(0, 0, width, height, pixels, option, 0);
-    texture->unknown_0008 = (texture->unknown_0008 & 0xFF00u) | fullSize;
+    texture->textureFlags = (texture->textureFlags & 0xFF00u) | fullSize;
   }
 
   return texture;
@@ -126,7 +126,7 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
   }
 
   if (texture) {
-    texture->unknown_0008 &= 0xFF00u;
+    texture->textureFlags &= 0xFF00u;
   }
 
   return texture;
@@ -159,7 +159,7 @@ CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool d
 // OFFSET: 0x005716F0
 // FUNCTION: fn_02452
 void TextureCache::Remove(CTexture* texture) {
-  if (texture->unknown_001C == 0 && texture != this->Default()) {
+  if (texture->refCount == 0 && texture != this->Default()) {
     const auto found = this->m_textures.find(texture->m_name);
 
     if (found != this->m_textures.end()) {
@@ -195,7 +195,7 @@ void TextureCache::Reload() {
     const int width = bitmap->image.width;
 
     if (texture) {
-      if ((texture->unknown_0008 & 0xFF) == 1) {
+      if ((texture->textureFlags & 0xFF) == 1) {
         texture->Create(width, height, texture->m_format);
       } else {
         texture->Create(width / g_textureReduction, height / g_textureReduction, texture->m_format);
@@ -216,7 +216,7 @@ void TextureCache::ClearUnused() {
   for (auto entry = this->m_textures.begin(); entry != this->m_textures.end();) {
     CTexture* texture = entry->second;
 
-    if (texture->unknown_001C != 0 || texture->unknown_0020 >= threshold) {
+    if (texture->refCount != 0 || texture->lastUsedTick >= threshold) {
       ++entry;
     } else {
       delete texture;

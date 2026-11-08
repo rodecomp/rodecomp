@@ -123,10 +123,10 @@ public:
   /* 0084 */ unsigned char disabled;
   /* 0085 */ unsigned char unknown_0085[0x03];
   /* 0088 */ std::string tooltip;
-  /* 00A0 */ unsigned char unknown_00A0[0x24];
-  /* 00C4 */ UIWindow* unknown_00C4;
-  /* 00C8 */ unsigned char unknown_00C8[0x24];
-  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00A0 */ unsigned char clickHandlerStorage[0x24];
+  /* 00C4 */ UIWindow* clickWindow;
+  /* 00C8 */ unsigned char hoverHandlerStorage[0x24];
+  /* 00EC */ UIWindow* hoverWindow;
 };
 
 class CUITextButton : public CUIButton {
@@ -201,7 +201,7 @@ public:
   void Create(int width, int height);
   void SetAutoWidth(bool enabled);
 
-  /* 0190 */ unsigned char unknown_0190;
+  /* 0190 */ unsigned char enabledState;
   /* 0194 */ int defaultWidth;
   /* 0198 */ std::map<int, CResPtr<CBitmapRes>> leftImages;
   /* 01A0 */ CResPtr<CBitmapRes> disabledLeft;

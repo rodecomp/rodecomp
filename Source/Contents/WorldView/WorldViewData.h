@@ -15,7 +15,7 @@ struct WorldViewArea {
   /* 0004 */ int top;
   /* 0008 */ int right;
   /* 000C */ int bottom;
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int areaFlags;
 };
 
 class CWorldViewField {
@@ -26,10 +26,10 @@ public:
   /* 0004 */ int top = 0;
   /* 0008 */ int right = 0;
   /* 000C */ int bottom = 0;
-  /* 0010 */ int unknown_0010 = 0;
+  /* 0010 */ int areaFlags = 0;
   /* 0014 */ std::string name;
-  /* 002C */ std::string unknown_002C;
-  /* 0044 */ std::string unknown_0044;
+  /* 002C */ std::string fieldName;
+  /* 0044 */ std::string description;
 };
 
 class CWorldViewMap {
@@ -51,7 +51,7 @@ public:
   /* 0038 */ int top = 0;
   /* 003C */ int right = 0;
   /* 0040 */ int bottom = 0;
-  /* 0044 */ int unknown_0044 = 0;
+  /* 0044 */ int areaFlags = 0;
   /* 0048 */ std::vector<CWorldViewField*> fields;
 };
 
@@ -79,18 +79,18 @@ struct WorldViewRecord {
   /* 0000 */ int worldIndex;
   /* 0004 */ int mapIndex;
   /* 0008 */ int level;
-  /* 000C */ int unknown_000C = 0;
-  /* 0010 */ int unknown_0010 = 0;
-  /* 0014 */ int unknown_0014 = 0;
-  /* 0018 */ int unknown_0018 = 0;
+  /* 000C */ int screenLeft = 0;
+  /* 0010 */ int screenTop = 0;
+  /* 0014 */ int screenRight = 0;
+  /* 0018 */ int screenBottom = 0;
   /* 001C */ int unknown_001C = 0;
   /* 0020 */ std::string name;
   /* 0038 */ int left = 0;
   /* 003C */ int top = 0;
   /* 0040 */ int right = 0;
   /* 0044 */ int bottom = 0;
-  /* 0048 */ int unknown_0048 = 0;
-  /* 004C */ std::list<std::string> unknown_004C;
+  /* 0048 */ int areaFlags = 0;
+  /* 004C */ std::list<std::string> relatedNames;
 };
 
 class CWorldViewMgr {
@@ -123,12 +123,12 @@ public:
   /* 0070 */ int screenScale;
   /* 0074 */ std::vector<CWorldViewWorld*> worlds;
   /* 0080 */ std::uint32_t dungeonColor;
-  /* 0084 */ std::uint32_t unknown_0084;
+  /* 0084 */ std::uint32_t dungeonOverlayColor;
   /* 0088 */ std::uint32_t dungeonFontColor;
   /* 008C */ std::uint32_t dungeonFontOutline;
   /* 0090 */ int dungeonFontSize[4];
   /* 00A0 */ std::uint32_t dungeonSelectColor;
-  /* 00A4 */ std::uint32_t unknown_00A4;
+  /* 00A4 */ std::uint32_t dungeonSelectTextColor;
   /* 00A8 */ std::uint32_t mobColor;
   /* 00AC */ std::uint32_t mobOutline;
   /* 00B0 */ int mobFont[4];
@@ -149,7 +149,7 @@ public:
 static_assert(sizeof(WorldViewRecord) == 0x54);
 static_assert(offsetof(WorldViewRecord, name) == 0x20);
 static_assert(offsetof(WorldViewRecord, left) == 0x38);
-static_assert(offsetof(WorldViewRecord, unknown_004C) == 0x4C);
+static_assert(offsetof(WorldViewRecord, relatedNames) == 0x4C);
 static_assert(offsetof(CWorldViewMgr, selection) == 0x18);
 static_assert(offsetof(CWorldViewMgr, currentWorld) == 0x6C);
 static_assert(offsetof(CWorldViewMgr, worlds) == 0x74);
@@ -161,7 +161,7 @@ static_assert(offsetof(CWorldViewMgr, selectBoxColor) == 0x2B8);
 static_assert(sizeof(WorldViewArea) == 0x14);
 static_assert(sizeof(CWorldViewField) == 0x5C);
 static_assert(offsetof(CWorldViewField, name) == 0x14);
-static_assert(offsetof(CWorldViewField, unknown_0044) == 0x44);
+static_assert(offsetof(CWorldViewField, description) == 0x44);
 static_assert(sizeof(CWorldViewMap) == 0x54);
 static_assert(offsetof(CWorldViewMap, id) == 0x30);
 static_assert(offsetof(CWorldViewMap, fields) == 0x48);

@@ -80,8 +80,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
-  /* 00B4 */ UIChangeMaterialWnd_List* unknown_00B4;
-  /* 00B8 */ UIEditCtrl* unknown_00B8;
+  /* 00B4 */ UIChangeMaterialWnd_List* itemList;
+  /* 00B8 */ UIEditCtrl* searchEdit;
   /* 00BC */ UIChangeMaterialWnd_CheckBox* m_sortBox;
   /* 00C0 */ UIBitmapButton* m_button;
   /* 00C4 */ int m_resultX;
@@ -118,8 +118,8 @@ public:
   void OnCreate(int width, int height) override;
   const MaterialListEntry* GetEntry(unsigned int index) const;
 
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B4 */ int rowHeight;
+  /* 00B8 */ int scrollBarWidth;
 
   /* 00BC */ int m_pageSize;
   /* 00C0 */ int64_t m_selectedIndex;

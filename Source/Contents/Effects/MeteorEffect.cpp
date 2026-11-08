@@ -14,11 +14,11 @@
 // OFFSET: 0x007077D0
 // FUNCTION: fn_07055
 void CMeteorEffect::Close() {
-  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     FreeParticle(*it);
   }
 
-  this->unknown_00CC.clear();
+  this->particles.clear();
 }
 
 // OFFSET: 0x00707810
@@ -28,7 +28,7 @@ void CMeteorEffect::Open() {
     case 1099:
     case 1111: {
       const long long counts[6] = {0, 3, 3, 5, 5, 7};
-      unsigned int level = this->unknown_00B0;
+      unsigned int level = this->effectLevel;
       if (level > 5) {
         level = 5;
       }
@@ -51,13 +51,13 @@ void CMeteorEffect::Open() {
           break;
         }
 
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = static_cast<int>(i);
-        particle->unknown_0010 = 0;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = static_cast<int>(i);
+        particle->rowIndex = 0;
+        particle->groupIndex = 1;
         particle->SetSprite("이팩트\\su_lunaticcarrotbeat\\su_lunaticcarrotbeat.spr");
         particle->SetAction("이팩트\\su_lunaticcarrotbeat\\su_lunaticcarrotbeat.act");
-        particle->unknown_00EC |= 0x200;
+        particle->renderOptions |= 0x200;
         particle->frameDelay = 4.0f;
         particle->depthOffset = 0.00015f;
         particle->loopMode = 1;
@@ -65,7 +65,7 @@ void CMeteorEffect::Open() {
           particle->alpha = 100;
         }
 
-        this->unknown_00CC.push_back(particle);
+        this->particles.push_back(particle);
       }
       break;
     }
@@ -79,13 +79,13 @@ void CMeteorEffect::Open() {
         return;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = 0;
-      particle->unknown_0010 = 0;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = 0;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
       particle->SetSprite("이팩트\\su_cn_meteor\\su_cn_meteor.spr");
       particle->SetAction("이팩트\\su_cn_meteor\\su_cn_meteor.act");
-      particle->unknown_00EC |= 0x200;
+      particle->renderOptions |= 0x200;
       particle->frameDelay = 4.0f;
       particle->depthOffset = 0.00015f;
       particle->loopMode = 1;
@@ -93,7 +93,7 @@ void CMeteorEffect::Open() {
         particle->alpha = 100;
       }
 
-      this->unknown_00CC.push_back(particle);
+      this->particles.push_back(particle);
       break;
     }
 
@@ -105,27 +105,27 @@ void CMeteorEffect::Open() {
 // OFFSET: 0x00707B40
 // FUNCTION: fn_07057
 bool CMeteorEffect::IsAlive() {
-  return !this->unknown_00CC.empty();
+  return !this->particles.empty();
 }
 
 // OFFSET: 0x00707B50
 // FUNCTION: fn_07058
 void CMeteorEffect::OnProcess() {
-  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ) {
     CParticle* particle = *it;
-    if (particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f) {
+    if (particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f) {
       if (particle) {
         CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
         spriteParticle->UpdateFrame();
-        if (static_cast<long long>(spriteParticle->frame) == *reinterpret_cast<const long long*>(&this->unknown_00D8)) {
+        if (static_cast<long long>(spriteParticle->frame) == *reinterpret_cast<const long long*>(&this->quakeFrameLow)) {
           g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
         }
-        ++particle->unknown_00E8;
+        ++particle->elapsedFrames;
       }
       ++it;
     } else {
       FreeParticle(particle);
-      it = this->unknown_00CC.erase(it);
+      it = this->particles.erase(it);
     }
   }
 }
@@ -133,9 +133,9 @@ void CMeteorEffect::OnProcess() {
 // OFFSET: 0x00707CA0
 // FUNCTION: fn_07059
 void CMeteorEffect::Render() {
-  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if ((particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) && particle) {
+    if ((particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) && particle) {
       static_cast<CSpriteParticle*>(particle)->Draw(0);
     }
   }

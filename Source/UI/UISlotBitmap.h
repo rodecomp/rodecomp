@@ -15,7 +15,7 @@ public:
   void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 00B8 */ unsigned char unknown_00B8;
+  /* 00B8 */ unsigned char showAddButton;
   /* 00BC */ UIBitmapButton* addButton;
   /* 00C0 */ int slot;
 };

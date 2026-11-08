@@ -50,22 +50,22 @@ public:
   void OnProcess() override;
   void Paint() override;
 
-  /* 00B4 */ UIEditCtrl* unknown_00B4;
-  /* 00B8 */ UIListBoxID* unknown_00B8;
-  /* 00BC */ UITagTextViewer* unknown_00BC;
-  /* 00C0 */ UIStaticText* unknown_00C0;
-  /* 00C4 */ UIStaticText* unknown_00C4;
+  /* 00B4 */ UIEditCtrl* searchEdit;
+  /* 00B8 */ UIListBoxID* searchResults;
+  /* 00BC */ UITagTextViewer* tipViewer;
+  /* 00C0 */ UIStaticText* titleText;
+  /* 00C4 */ UIStaticText* subtitleText;
   /* 00C8 */ UIStaticText* m_pageText;
   /* 00CC */ UIStaticText* m_pageTotalText;
-  /* 00D0 */ UIBitmapButton* unknown_00D0;
-  /* 00D4 */ UIBitmapButton* unknown_00D4;
-  /* 00D8 */ UIBitmapButton* unknown_00D8;
+  /* 00D0 */ UIBitmapButton* previousButton;
+  /* 00D4 */ UIBitmapButton* nextButton;
+  /* 00D8 */ UIBitmapButton* tagButton;
   /* 00DC */ std::vector<TipBoxAnimation> m_animations;
   /* 00E8 */ std::vector<TipBoxDot> m_dots;
   /* 00F4 */ std::uint32_t m_buildTime;
   /* 00F8 */ std::uint32_t m_frameTime;
-  /* 00FC */ bool unknown_00FC;
-  /* 0100 */ int unknown_0100;
+  /* 00FC */ bool refreshPending;
+  /* 0100 */ int showAtStartup;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

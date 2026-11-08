@@ -81,11 +81,11 @@ public:
   /* 01AC */ std::string m_raceOffsets;
   /* 01C4 */ int m_racePaletteEnabled[2];
   /* 01CC */ std::string m_racePalettes[2];
-  /* 01FC */ int unknown_01FC;
+  /* 01FC */ int actionBase;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
   /* 0208 */ unsigned char unknown_0208[0x8];
-  /* 0210 */ unsigned char unknown_0210[0x04];
+  /* 0210 */ unsigned char characterData[0x04];
   /* 0214 */ MakeCharacterStatus m_status;
   /* 0264 */ short m_job;
   /* 0266 */ short m_head;
@@ -95,8 +95,8 @@ public:
   /* 026E */ short m_skillPoint;
   /* 0270 */ short unknown_0270;
   /* 0272 */ short m_shield;
-  /* 0274 */ short unknown_0274;
-  /* 0276 */ short unknown_0276;
+  /* 0274 */ short accessory2;
+  /* 0276 */ short accessory3;
   /* 0278 */ short m_headPalette;
   /* 027A */ short m_bodyPalette;
   /* 027C */ char m_name[24];
@@ -106,30 +106,30 @@ public:
   /* 02BE */ unsigned char m_sex;
   /* 02BF */ unsigned char unknown_02BF;
   union {
-    /* 02C0 */ int unknown_02C0;
+    /* 02C0 */ int nameEditStorage;
     UIEditCtrl2* m_nameEdit;
   };
   /* 02C4 */ int m_race;
   /* 02C8 */ UIWindow* m_raceViews[2];
   union {
-    /* 02D0 */ int unknown_02D0[6];
+    /* 02D0 */ int hairStyleButtonStorage[6];
     UIHairStyleButton* m_hairStyleButtons[24];
   };
   union {
     struct {
-      /* 0330 */ int unknown_0330[2];
-      /* 0338 */ unsigned char unknown_0338;
+      /* 0330 */ int hairColorButtonStorage[2];
+      /* 0338 */ unsigned char hairColorButtonByte;
     };
     UIBmpRadioBtn* m_hairColorButtons[9];
   };
   union {
-    /* 0354 */ short unknown_0354;
+    /* 0354 */ short genderButtonStorage;
     UIBitmapButton* m_genderButtons[2];
   };
-  /* 035C */ int unknown_035C;
+  /* 035C */ int previewState;
   /* 0360 */ unsigned long m_startTime;
-  /* 0364 */ int unknown_0364;
-  /* 0368 */ int unknown_0368;
+  /* 0364 */ int previewCounter;
+  /* 0368 */ int previewPhase;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

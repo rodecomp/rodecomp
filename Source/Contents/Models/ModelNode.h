@@ -40,7 +40,7 @@ public:
   /* 006C */ float alpha;
   /* 0070 */ std::vector<ModelFaceState> faceState;
   /* 007C */ std::vector<int> faceValues;
-  /* 0088 */ unsigned char unknown_0088;
+  /* 0088 */ unsigned char overrideColors;
 };
 
 class C3dNodeV1 : public C3dNode {

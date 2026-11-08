@@ -77,12 +77,12 @@ public:
 class CUITargetItem : public CUIListItem {
 public:
   // INLINED
-  CUITargetItem() : itemIcon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr) {
+  CUITargetItem() : itemIcon(nullptr), targetIcon(nullptr), targetText(nullptr) {
   }
 
   /* 00E8 */ CUIGameItem* itemIcon;
-  /* 00EC */ CUIStaticImage* unknown_00EC;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00EC */ CUIStaticImage* targetIcon;
+  /* 00F0 */ CUIStaticText* targetText;
 
   void OnCreate(int width, int height) override;
   void OnMouseHover(int x, int y) override;
@@ -95,11 +95,11 @@ public:
 class CUIIngredient : public CUIControl {
 public:
   explicit CUIIngredient()
-      : CUIControl(), unknown_0080(nullptr), unknown_0084(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
+      : CUIControl(), backgroundImage(nullptr), sufficientMaterialImage(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
   }
 
-  /* 0080 */ CUIStaticImage* unknown_0080;
-  /* 0084 */ CUIStaticImage* unknown_0084;
+  /* 0080 */ CUIStaticImage* backgroundImage;
+  /* 0084 */ CUIStaticImage* sufficientMaterialImage;
   /* 0088 */ CUIGameItem* itemIcon;
   /* 008C */ CUIStaticText* ownedText;
   /* 0090 */ CUIStaticText* requiredText;
@@ -113,18 +113,18 @@ public:
   CUIEnchantPage();
 
   union {
-    /* 0080 */ unsigned char unknown_0080[0x4];
+    /* 0080 */ unsigned char backgroundStorage[0x4];
     /* 0080 */ CUIStaticImage* background;
   };
   /* 0084 */ CUIGameItem* gameItem;
-  /* 0088 */ std::map<int, CUISlot*> unknown_0088;
-  /* 0090 */ std::list<CUIIngredient*> unknown_0090;
+  /* 0088 */ std::map<int, CUISlot*> slots;
+  /* 0090 */ std::list<CUIIngredient*> ingredients;
   /* 0098 */ CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList;
-  /* 009C */ CUIStaticText* unknown_009C;
-  /* 00A0 */ CUIImageButton* unknown_00A0 = nullptr;
+  /* 009C */ CUIStaticText* costText;
+  /* 00A0 */ CUIImageButton* enchantButton = nullptr;
   /* 00A4 */ EnchantInfo* enchantInfo;
   /* 00A8 */ uint64_t group;
-  /* 00B0 */ int unknown_00B0;
+  /* 00B0 */ int selectedSlot;
 
   void OnCreate(int width, int height) override;
   void OnInit() override;
@@ -209,7 +209,7 @@ class CUIUpgradePerfect : public CUIUpgradeEnchantPage {
 public:
   using CUIUpgradeEnchantPage::CUIUpgradeEnchantPage;
 
-  /* 00B8 */ bool unknown_00B8 = false;
+  /* 00B8 */ bool isUpgrade = false;
 
   void OnCreate(int width, int height) override;
   void OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) override;

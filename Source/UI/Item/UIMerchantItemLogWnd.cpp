@@ -34,7 +34,7 @@
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
 UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
-  this->unknown_00FC = mode;
+  this->mode = mode;
 }
 
 // OFFSET: 0x0099E510
@@ -42,7 +42,7 @@ UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
 void UIMerchantItemLogWnd::OnCreate(int width, int height) {
   UIStaticText* title = new UIStaticText();
   title->SetSize(160, 15);
-  title->SetText(LookupMessage(2559 + (this->unknown_00FC != 0)), 0);
+  title->SetText(LookupMessage(2559 + (this->mode != 0)), 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
@@ -117,7 +117,7 @@ void UIMerchantItemLogWnd::Paint() {
       break;
     }
 
-    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->damaged) {
       continue;
     }
 
@@ -125,11 +125,11 @@ void UIMerchantItemLogWnd::Paint() {
     const int x = visible % this->columns * 32 + 44;
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
-    if (it->unknown_0088 > 0) {
+    if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
         ),
         true
       );
@@ -147,7 +147,7 @@ void UIMerchantItemLogWnd::Paint() {
     char grouped[64];
     std::memset(price, 0, sizeof(price));
     std::memset(grouped, 0, sizeof(grouped));
-    const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), grouped, sizeof(grouped)));
+    const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), grouped, sizeof(grouped)));
     this->DrawTextAt(textX, textY, price, length, 0, 12, 0, 0, 0);
     textX += 110;
 
@@ -165,14 +165,14 @@ void UIMerchantItemLogWnd::Paint() {
 // FUNCTION: fn_13577
 void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    if (item.identified == 1 && item.unknown_0098 != 0) {
+    if (item.identified == 1 && item.optionCount != 0) {
       g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), tooltipX, tooltipY,
                  g_session.GetItemNameColor(item), 0, 1);
     } else {
       g_modeMgr.gameMode
@@ -203,7 +203,7 @@ void UIMerchantItemLogWnd::OnProcess() {
 void UIMerchantItemLogWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     g_modeMgr.GetGameMode();
     g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
@@ -215,7 +215,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case UM_COMMAND:
     if (a == 201) {
-      g_windowMgr.CloseWindow(this->unknown_00FC != 0 ? 258 : 257);
+      g_windowMgr.CloseWindow(this->mode != 0 ? 258 : 257);
     }
     break;
   case UM_RESIZE:
@@ -246,7 +246,7 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     lcData data;
     data.name = LookupPlayerName(b);
-    data.unknown_001C = item.DisplayName(0);
+    data.itemName = item.DisplayName(0);
     data.time = c;
     data.characterId = b;
     this->logs.push_back(data);

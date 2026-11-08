@@ -13,8 +13,8 @@ std::map<int, ITEM_DESC> g_itemDescriptions;
 // OFFSET: 0x006D3540
 // FUNCTION: fn_06540
 ITEM_DESC::ITEM_DESC()
-    : identifiedName(nullptr), identifiedResource(nullptr), unidentifiedName(nullptr), unidentifiedResource(nullptr), unknown_002C(0), slots(0),
-      unknown_0040(0) {
+    : identifiedName(nullptr), identifiedResource(nullptr), unidentifiedName(nullptr), unidentifiedResource(nullptr), descriptionFlags(0), slots(0),
+      viewId(0) {
 }
 
 #pragma inline_depth(0)
@@ -36,10 +36,10 @@ ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) {
   this->unidentifiedName = other.unidentifiedName;
   this->unidentifiedResource = other.unidentifiedResource;
   this->unidentifiedDescription.assign(other.unidentifiedDescription.begin(), other.unidentifiedDescription.end());
-  this->unknown_002C = other.unknown_002C;
+  this->descriptionFlags = other.descriptionFlags;
   this->slots = other.slots;
-  this->unknown_0034.assign(other.unknown_0034.begin(), other.unknown_0034.end());
-  this->unknown_0040 = other.unknown_0040;
+  this->descriptionValues.assign(other.descriptionValues.begin(), other.descriptionValues.end());
+  this->viewId = other.viewId;
 
   return *this;
 }

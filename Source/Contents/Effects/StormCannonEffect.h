@@ -20,7 +20,7 @@ public:
 
   // INLINED
   int& Alpha() {
-    return *reinterpret_cast<int*>(this->unknown_0054);
+    return *reinterpret_cast<int*>(this->alphaParameters);
   }
 
   /* 00CC */ std::vector<CEZ2STRParticle*> emitters;

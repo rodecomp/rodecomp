@@ -22,8 +22,8 @@ struct RenderVertex {
 struct RenderTriangle {
   /* 0000 */ RenderVertex vertices[3];
   /* 0060 */ CTexture* texture;
-  /* 0064 */ std::uint32_t unknown_0064;
-  /* 0068 */ std::uint32_t unknown_0068;
+  /* 0064 */ std::uint32_t sourceBlend;
+  /* 0068 */ std::uint32_t destinationBlend;
 
   bool Visible() const;
 };
@@ -34,11 +34,11 @@ struct RenderCommand {
   /* 0008 */ CTexture* texture;
   /* 000C */ std::uint16_t* indices;
   /* 0010 */ std::uint32_t indexCount;
-  /* 0014 */ std::uint16_t unknown_0014;
+  /* 0014 */ std::uint16_t depthFlags;
   /* 0016 */ std::uint16_t unknown_0016;
-  /* 0018 */ std::uint32_t unknown_0018;
-  /* 001C */ std::uint32_t unknown_001C;
-  /* 0020 */ std::uint32_t unknown_0020;
+  /* 0018 */ std::uint32_t sourceBlend;
+  /* 001C */ std::uint32_t destinationBlend;
+  /* 0020 */ std::uint32_t textureMode;
   /* 0024 */ std::uint32_t primitiveType;
 
   RenderCommand();
@@ -69,7 +69,7 @@ static_assert(offsetof(RenderVertex, specular) == 0x0014);
 static_assert(offsetof(RenderVertex, u) == 0x0018);
 static_assert(offsetof(RenderVertex, v) == 0x001C);
 static_assert(offsetof(RenderTriangle, texture) == 0x0060);
-static_assert(offsetof(RenderTriangle, unknown_0068) == 0x0068);
+static_assert(offsetof(RenderTriangle, destinationBlend) == 0x0068);
 static_assert(offsetof(RenderCommand, unknown_0016) == 0x0016);
 static_assert(offsetof(RenderCommand, primitiveType) == 0x0024);
 static_assert(offsetof(RenderPrimitive, quad) == 0x0028);

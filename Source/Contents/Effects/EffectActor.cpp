@@ -3,7 +3,7 @@
 #include "Contents/Effects/RagEffect.h"
 
 // INLINED
-EffectActorState::EffectActorState() : unknown_0138(-1), unknown_013C(0), unknown_0140(0), first(nullptr), second(nullptr) {
+EffectActorState::EffectActorState() : unknown_0138(-1), unknown_013C(0), effectLaunched(0), first(nullptr), second(nullptr) {
 }
 
 // INLINED
@@ -37,7 +37,7 @@ EffectActor::~EffectActor() {
 void EffectActor::ResetEffectState() {
   this->state.unknown_0138 = -1;
   this->state.unknown_013C = 0;
-  this->state.unknown_0140 = 0;
+  this->state.effectLaunched = 0;
   this->state.first = nullptr;
   this->state.second = nullptr;
   this->render.unknown_0130[0] = 0;

@@ -40,19 +40,19 @@ void CSphereWind2Effect::Open() {
           continue;
         }
 
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = part;
-        particle->unknown_0010 = ring;
-        particle->unknown_0008 = 1;
-        particle->unknown_00E8 = delay;
-        particle->unknown_00C0 = radius;
+        particle->effectId = this->id;
+        particle->columnIndex = part;
+        particle->rowIndex = ring;
+        particle->groupIndex = 1;
+        particle->elapsedFrames = delay;
+        particle->speedParameter = radius;
         particle->scale = 5.0f;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(rotation);
-        particle->unknown_004C = angle;
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(rotation);
+        particle->phaseParameter = angle;
         particle->alpha = 0;
-        particle->unknown_0050 = step;
-        particle->unknown_0054 = -10.0f;
-        *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(speed);
+        particle->angleParameter = step;
+        particle->animationParameter = -10.0f;
+        *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(speed);
         particle->SetTexture("effect\\fire_ivy.bmp");
         particle->SetColor(255, 89, 182);
         InitParticleQuad(particle->vertices);
@@ -66,7 +66,7 @@ void CSphereWind2Effect::Open() {
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
   g_soundMgr->PlayWave("effect\\EF_Blessing.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
-  this->unknown_002C = 200;
+  this->effectLifetime = 200;
 }
 
 // OFFSET: 0x00B775E0
@@ -83,11 +83,11 @@ void CSphereWind2Effect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
-      if (particle->unknown_00E8 > 0) {
+      if (particle->elapsedFrames > 0) {
         int alpha = particle->alpha;
-        if (particle->unknown_00E8 <= 25) {
+        if (particle->elapsedFrames <= 25) {
           alpha += 2;
-        } else if (particle->unknown_00E8 > 70) {
+        } else if (particle->elapsedFrames > 70) {
           alpha -= 2;
         }
 
@@ -95,25 +95,25 @@ void CSphereWind2Effect::OnProcess() {
         particle->alpha = alpha < 0 ? 0 : alpha;
         particle->scale = scale;
 
-        const int oldAngle = particle->unknown_004C;
-        particle->unknown_004C = oldAngle + (oldAngle + 1 < 360 ? 1 : -359);
-        const int angle = particle->unknown_004C;
+        const int oldAngle = particle->phaseParameter;
+        particle->phaseParameter = oldAngle + (oldAngle + 1 < 360 ? 1 : -359);
+        const int angle = particle->phaseParameter;
 
-        const int texPart = particle->unknown_000C;
-        float& spin = *reinterpret_cast<float*>(&particle->unknown_00C4);
-        float rotation = *reinterpret_cast<float*>(particle->unknown_0058) + spin;
+        const int texPart = particle->columnIndex;
+        float& spin = *reinterpret_cast<float*>(&particle->angleBits);
+        float rotation = *reinterpret_cast<float*>(particle->animationParameters) + spin;
         if (rotation >= 360.0f) {
           rotation -= 360.0f;
         }
         spin = rotation;
 
-        const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
+        const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
         const int pitch = static_cast<int>(static_cast<float>(step * texPart) + rotation) % 360;
 
-        const float radius = particle->unknown_00C0;
+        const float radius = particle->speedParameter;
         const vector3d center = {scale * g_cosTable[angle] * g_cosTable[pitch], scale * g_sinTable[angle] * g_cosTable[pitch], scale * g_sinTable[pitch]};
         const vector3d side = {-g_sinTable[angle] * radius, radius * g_cosTable[angle], 0.0f};
-        const vector3d offset = {0.0f, particle->unknown_0054, 0.0f};
+        const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
         const vector3d inner = {center.x - side.x + offset.x, center.y - side.y + offset.y, center.z - side.z + offset.z};
         const vector3d outer = {center.x + side.x + offset.x, center.y + side.y + offset.y, center.z + side.z + offset.z};
 
@@ -137,7 +137,7 @@ void CSphereWind2Effect::OnProcess() {
         this->lastOuter = outer;
       }
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -146,8 +146,8 @@ void CSphereWind2Effect::OnProcess() {
 void CSphereWind2Effect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->unknown_00E8 > 0 && particle->unknown_000C > 0) {
-      const int texPart = particle->unknown_000C;
+    if (particle && particle->elapsedFrames > 0 && particle->columnIndex > 0) {
+      const int texPart = particle->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

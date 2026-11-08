@@ -62,10 +62,10 @@ int g_guildTotalInfoColumnWidths[4] = {151, 82, 70, 70};
 struct GuildTotalInfoEntry {
   /* 0000 */ int unknown_0000;
   /* 0004 */ std::string name;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
-  /* 0028 */ int unknown_0028;
+  /* 001C */ int level;
+  /* 0020 */ int memberCount;
+  /* 0024 */ int maxMembers;
+  /* 0028 */ int ranking;
 };
 
 // GLOBAL: gl_24994
@@ -275,14 +275,14 @@ UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd()
 // OFFSET: 0x009539C0
 // FUNCTION: fn_12997
 UIGuildInfoManageWnd::UIGuildInfoManageWnd()
-    : UIGuildWnd(), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
+    : UIGuildWnd(), emblemFiles(), emblemMenuEntries(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
 }
 
 // OFFSET: 0x00953B00
 // FUNCTION: fn_12999
 UIGuildMemberManageWnd::UIGuildMemberManageWnd()
-    : UIGuildWnd(), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
-      m_scrollable(0), m_rowSpacing(0), m_members(), unknown_0180(), m_sortOrders() {
+    : UIGuildWnd(), memberMenuEntries(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), selectedMemberRow(0),
+      m_scrollable(0), m_rowSpacing(0), m_members(), membersByCharacterId(), m_sortOrders() {
   this->m_buttonTime = 0;
   this->m_scrollBar = nullptr;
   for (int index = 0; index < 6; ++index) {
@@ -305,13 +305,13 @@ UIGuildNoticeWnd::UIGuildNoticeWnd() : UIGuildWnd() {
 UIGuildPositionManageWnd::UIGuildPositionManageWnd()
     : UIGuildWnd(), m_buttonTime(0) {
   for (int index = 0; index < 11; ++index) {
-    this->unknown_00D0[index] = 0;
-    this->unknown_00FC[index] = 0;
-    this->unknown_0128[index] = 0;
-    this->unknown_0180[index] = 0;
-    this->unknown_0154[index] = 0;
-    this->unknown_01D8[index] = 0;
-    this->unknown_01AC[index] = 0;
+    this->inviteChecks[index] = 0;
+    this->expelChecks[index] = 0;
+    this->storageChecks[index] = 0;
+    this->positionNameEdits[index] = 0;
+    this->taxEdits[index] = 0;
+    this->positionNameLabels[index] = 0;
+    this->taxLabels[index] = 0;
   }
 }
 
@@ -582,7 +582,7 @@ void UIGuildWnd::StoreInfo() {
     this->m_saved->y = this->geometry.y;
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
-    this->m_saved->unknown_0010 = this->Tab();
+    this->m_saved->tab = this->Tab();
   }
 }
 
@@ -593,7 +593,7 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
     return;
   }
 
-  if (g_guildInfo.unknown_00A4 == -1) {
+  if (g_guildInfo.guildTabBitmask == -1) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENUINTERFACE, 0, 0, 0, 0);
   }
 
@@ -641,7 +641,7 @@ int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::in
     case 2:
     case 4:
     case 5:
-      if ((permissions[a1] & g_guildInfo.unknown_00A4) == 0) {
+      if ((permissions[a1] & g_guildInfo.guildTabBitmask) == 0) {
         return 0;
       }
       break;
@@ -689,7 +689,7 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
     return;
   }
 
-  const int rows = g_guildInfo.unknown_00EC.size() / this->m_columns + (g_guildInfo.unknown_00EC.size() % this->m_columns != 0);
+  const int rows = g_guildInfo.bannedMembers.size() / this->m_columns + (g_guildInfo.bannedMembers.size() % this->m_columns != 0);
   const int visible = this->m_visibleRows;
   int range = 0;
   if (rows - visible >= 0) {
@@ -728,7 +728,7 @@ void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
     const int row = (y - g_guildBanishedRowHeight - 46) / g_guildBanishedRowHeight;
     int visible = 0;
     int index = 0;
-    const auto& members = g_guildInfo.unknown_00EC;
+    const auto& members = g_guildInfo.bannedMembers;
     for (auto member = members.begin(); member != members.end(); ++member, ++index) {
       if (index >= this->m_scrollTop * this->m_columns) {
         if (visible == this->m_columns * row) {
@@ -791,7 +791,7 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
     return;
   }
 
-  const int rows = g_guildInfo.unknown_00F4.size() / this->m_columns + (g_guildInfo.unknown_00F4.size() % this->m_columns != 0);
+  const int rows = g_guildInfo.guildList.size() / this->m_columns + (g_guildInfo.guildList.size() % this->m_columns != 0);
   const int visible = this->m_visibleRows;
   int range = 0;
   if (rows - visible >= 0) {
@@ -830,7 +830,7 @@ void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
     const int row = (y - g_guildTotalInfoRowHeight - 46) / g_guildTotalInfoRowHeight;
     int visible = 0;
     int index = 0;
-    const auto& entries = g_guildInfo.unknown_00F4;
+    const auto& entries = g_guildInfo.guildList;
     for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
       if (index >= this->m_scrollTop * this->m_columns) {
         if (visible == this->m_columns * row) {
@@ -883,11 +883,11 @@ int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
 // FUNCTION: fn_13066
 void UIGuildTotalInfoWnd::OnCreate(int, int) {
   this->CreateTabs();
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00D0 = 1;
+  g_guildInfo.masterCharacterId = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 5, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverRow = 0;
@@ -913,11 +913,11 @@ void UIGuildTotalInfoWnd::OnCreate(int, int) {
 // FUNCTION: fn_13057
 void UIGuildBanishedMemberWnd::OnCreate(int, int) {
   this->CreateTabs();
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00CC = 1;
+  g_guildInfo.bansRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverRow = 0;
@@ -951,15 +951,15 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   this->m_allyRow = -1;
   this->m_hostileRow = -1;
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00CC = 1;
+  g_guildInfo.bansRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
-  g_guildInfo.unknown_00BC = 1;
+  g_guildInfo.infoRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
-  g_guildInfo.unknown_00C0 = 1;
+  g_guildInfo.membersRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
 
   {
@@ -969,7 +969,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     this->m_editButton->SetBitmap((prefix + "btn_edit_a" + ".bmp").c_str(), 1, 0);
     this->m_editButton->SetBitmap((prefix + "btn_edit_b" + ".bmp").c_str(), 2, 0);
     this->m_editButton->SetSize(this->m_editButton->BitmapWidth(), this->m_editButton->BitmapHeight());
-    if (g_guildInfo.unknown_00B4) {
+    if (g_guildInfo.isMaster) {
       this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);
     } else {
       this->m_editButton->Move(-200, -200);
@@ -982,7 +982,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_a.bmp", 1, 0);
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_b.bmp", 2, 0);
     this->m_disbandButton->SetSize(this->m_disbandButton->BitmapWidth(), this->m_disbandButton->BitmapHeight());
-    if (g_guildInfo.unknown_00B4) {
+    if (g_guildInfo.isMaster) {
       this->m_disbandButton->Move(this->geometry.width - this->m_disbandButton->geometry.width - 15, this->geometry.height - this->m_disbandButton->geometry.height - 5);
     } else {
       this->m_disbandButton->Move(-200, -200);
@@ -1132,8 +1132,8 @@ void UIGuildSkillWnd::UpdateSkillButtons() {
   int row = 0;
   for (int y = 34; y < 272; y += 34, ++row) {
     CSkillInfo skill = this->VisibleSkillAt(row);
-    if (g_guildInfo.unknown_00B4 && row < this->m_visibleRows && this->m_scrollTop + row < this->m_skills.size() && g_session.m_guildSkillPoint &&
-        skill.available && skill.unknown_0018) {
+    if (g_guildInfo.isMaster && row < this->m_visibleRows && this->m_scrollTop + row < this->m_skills.size() && g_session.m_guildSkillPoint &&
+        skill.available && skill.upgradable) {
       this->m_levelUpButtons[row]->Move(78, y + 11);
     } else {
       this->m_levelUpButtons[row]->Move(-200, y - 17);
@@ -1293,7 +1293,7 @@ void UIGuildSkillWnd::Paint() {
       SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
       if (skill->level == 0) {
         SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
-      } else if (skill->unknown_0014 == 0) {
+      } else if (skill->spCost == 0) {
         SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, red, green, blue);
       }
       this->FillRegion(x + 104, y + 43, 164, 28, RGB(red, green, blue));
@@ -1307,10 +1307,10 @@ void UIGuildSkillWnd::Paint() {
     if (skill->level != 0) {
       std::sprintf(text, g_serviceType == 12 ? "Nv : %d" : "Lv : %d", skill->level);
       this->DrawTextAt(x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
-      if (skill->unknown_000C == 0) {
+      if (skill->type == 0) {
         std::sprintf(text, LookupMessage(MSI_PASSIVE));
       } else {
-        std::sprintf(text, "Sp : %d", skill->unknown_0014);
+        std::sprintf(text, "Sp : %d", skill->spCost);
       }
       this->DrawTextAt(x + 212, y + 58, text, 0, 0, 12, 0, 0, 0);
       gray = 0;
@@ -1334,26 +1334,26 @@ void UIGuildSkillWnd::Paint() {
 void UIGuildPositionManageWnd::Paint() {
   UIGuildWnd::Paint();
   for (int index = 0; index < 11; ++index) {
-    if (this->unknown_00D0[index]) {
-      this->unknown_00D0[index]->Move(-200, -200);
+    if (this->inviteChecks[index]) {
+      this->inviteChecks[index]->Move(-200, -200);
     }
-    if (this->unknown_00FC[index]) {
-      this->unknown_00FC[index]->Move(-200, -200);
+    if (this->expelChecks[index]) {
+      this->expelChecks[index]->Move(-200, -200);
     }
-    if (this->unknown_0180[index]) {
-      this->unknown_0180[index]->Move(-200, -200);
+    if (this->positionNameEdits[index]) {
+      this->positionNameEdits[index]->Move(-200, -200);
     }
-    if (this->unknown_0154[index]) {
-      this->unknown_0154[index]->Move(-200, -200);
+    if (this->taxEdits[index]) {
+      this->taxEdits[index]->Move(-200, -200);
     }
-    if (this->unknown_01D8[index]) {
-      this->unknown_01D8[index]->Move(-200, -200);
+    if (this->positionNameLabels[index]) {
+      this->positionNameLabels[index]->Move(-200, -200);
     }
-    if (this->unknown_01AC[index]) {
-      this->unknown_01AC[index]->Move(-200, -200);
+    if (this->taxLabels[index]) {
+      this->taxLabels[index]->Move(-200, -200);
     }
-    if (this->unknown_0128[index]) {
-      this->unknown_0128[index]->Move(-200, -200);
+    if (this->storageChecks[index]) {
+      this->storageChecks[index]->Move(-200, -200);
     }
   }
 
@@ -1410,18 +1410,18 @@ void UIGuildPositionManageWnd::Paint() {
     char path[128];
     std::sprintf(buffer, "%d", position->id);
     this->DrawTextAt(8, y, buffer, 0, 0, 12, 0, 0, 0);
-    if (this->unknown_0180[drawn]) {
-      this->unknown_0180[drawn]->SetText(position->name.c_str());
-      this->unknown_0180[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
-    } else if (this->unknown_01D8[drawn]) {
-      this->unknown_01D8[drawn]->SetTextFitted(position->name.c_str());
-      this->unknown_01D8[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
+    if (this->positionNameEdits[drawn]) {
+      this->positionNameEdits[drawn]->SetText(position->name.c_str());
+      this->positionNameEdits[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
+    } else if (this->positionNameLabels[drawn]) {
+      this->positionNameLabels[drawn]->SetTextFitted(position->name.c_str());
+      this->positionNameLabels[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
     }
 
-    if (this->unknown_00D0[drawn]) {
-      this->unknown_00D0[drawn]->geometry.unknown_0030 = position->canInvite;
-      this->unknown_00D0[drawn]->Invalidate();
-      this->unknown_00D0[drawn]->Move(g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y);
+    if (this->inviteChecks[drawn]) {
+      this->inviteChecks[drawn]->geometry.state = position->canInvite;
+      this->inviteChecks[drawn]->Invalidate();
+      this->inviteChecks[drawn]->Move(g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canInvite != 0);
       this->DrawBitmap(
@@ -1430,10 +1430,10 @@ void UIGuildPositionManageWnd::Paint() {
       );
     }
 
-    if (this->unknown_00FC[drawn]) {
-      this->unknown_00FC[drawn]->geometry.unknown_0030 = position->canExpel;
-      this->unknown_00FC[drawn]->Invalidate();
-      this->unknown_00FC[drawn]->Move(g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y);
+    if (this->expelChecks[drawn]) {
+      this->expelChecks[drawn]->geometry.state = position->canExpel;
+      this->expelChecks[drawn]->Invalidate();
+      this->expelChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canExpel != 0);
       this->DrawBitmap(
@@ -1444,10 +1444,10 @@ void UIGuildPositionManageWnd::Paint() {
 
     const int storageX =
       g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1];
-    if (this->unknown_0128[drawn]) {
-      this->unknown_0128[drawn]->geometry.unknown_0030 = position->canStorage;
-      this->unknown_0128[drawn]->Invalidate();
-      this->unknown_0128[drawn]->Move(storageX, y);
+    if (this->storageChecks[drawn]) {
+      this->storageChecks[drawn]->geometry.state = position->canStorage;
+      this->storageChecks[drawn]->Invalidate();
+      this->storageChecks[drawn]->Move(storageX, y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canStorage != 0);
       this->DrawBitmap(storageX, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, false);
@@ -1455,18 +1455,18 @@ void UIGuildPositionManageWnd::Paint() {
 
     const int taxX = g_guildPositionColumnWidths[0] + 13 + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[2] +
       g_guildPositionColumnWidths[1];
-    if (this->unknown_0154[drawn]) {
+    if (this->taxEdits[drawn]) {
       std::sprintf(buffer, "%d", position->tax);
-      this->unknown_0154[drawn]->SetText(buffer);
-      this->unknown_0154[drawn]->Move(taxX, y - 2);
+      this->taxEdits[drawn]->SetText(buffer);
+      this->taxEdits[drawn]->Move(taxX, y - 2);
       this->DrawTextAt(g_guildPositionColumnWidths[5] / 2 + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[2] +
           g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 13,
         y, "%", 0, 0, 12, 0, 0, 0
       );
-    } else if (this->unknown_01AC[drawn]) {
+    } else if (this->taxLabels[drawn]) {
       std::sprintf(buffer, "%d %s", position->tax, "%");
-      this->unknown_01AC[drawn]->SetText(buffer, 0);
-      this->unknown_01AC[drawn]->Move(taxX, y - 2);
+      this->taxLabels[drawn]->SetText(buffer, 0);
+      this->taxLabels[drawn]->Move(taxX, y - 2);
     }
 
     if (++drawn == this->m_visibleRows * this->m_columns) {
@@ -1481,14 +1481,14 @@ void UIGuildInfoManageWnd::Paint() {
   UIGuildWnd::Paint();
   GuildInfo& guild = g_guildInfo;
   char text[1024];
-  std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILDNAME), guild.unknown_0000.c_str());
+  std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILDNAME), guild.guildName.c_str());
   this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILDLEVEL), guild.unknown_0060);
+  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILDLEVEL), guild.guildLevel);
   this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
-  const std::string master = this->StripNamelessTag(g_guildInfo.unknown_0018);
+  const std::string master = this->StripNamelessTag(g_guildInfo.masterName);
   std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILD_MASTER_NAME), master.c_str());
   this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %d / %d", LookupMessage(MSI_GUILD_NUM_MEMBER), guild.unknown_0064, guild.unknown_006C);
+  std::sprintf(text, "%s : %d / %d", LookupMessage(MSI_GUILD_NUM_MEMBER), guild.memberCount, guild.maxMemberCount);
   this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
 
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
@@ -1497,22 +1497,22 @@ void UIGuildInfoManageWnd::Paint() {
   int x;
   if (g_serviceType == 0) {
     this->DrawBitmap(128, 95, online, true);
-    std::sprintf(text, "   %d", guild.unknown_0068);
+    std::sprintf(text, "   %d", guild.onlineMemberCount);
     x = 138;
   } else {
     this->DrawBitmap(width + 16, 95, online, true);
-    std::sprintf(text, " %d", guild.unknown_0068);
+    std::sprintf(text, " %d", guild.onlineMemberCount);
     this->TextWidth(LookupMessage(MSI_GUILD_MASTER_NAME), 0, 0, 12, 0, 0);
     x = online->image.width + 16 + width;
   }
   this->DrawTextAt(x, 97, text, 0, 0, 12, 0, 0, 0);
 
-  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILD_AVG_MEMBER_LEVEL), guild.unknown_0070);
+  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILD_AVG_MEMBER_LEVEL), guild.memberAverageLevel);
   this->DrawTextAt(8, 113, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILD_MANAGE_LAND), guild.unknown_0074.c_str());
+  std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILD_MANAGE_LAND), guild.manageLand.c_str());
   this->DrawTextAt(8, 129, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILD_EXP), guild.unknown_008C);
-  this->DrawTextAt(200, 49, text, 0, 0, 12, guild.unknown_0060 >= 50 ? 0xFF : 0, 0, 0);
+  std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILD_EXP), guild.exp);
+  this->DrawTextAt(200, 49, text, 0, 0, 12, guild.guildLevel >= 50 ? 0xFF : 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(MSI_GUILD_EMBLEM));
   this->DrawTextAt(200, 73, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s", LookupMessage(MSI_ALLY_GUILD));
@@ -1536,17 +1536,17 @@ void UIGuildInfoManageWnd::Paint() {
   this->FillRegion(200, 155, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   int row = 0;
   int y = 157;
-  for (auto related = guild.unknown_00E4.begin(); related != guild.unknown_00E4.end(); ++related) {
+  for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
     if (y > 204) {
       break;
     }
-    if (related->unknown_0004 == 0) {
+    if (related->relation == 0) {
       if (row == this->m_allyRow) {
         unsigned hoverRed, hoverGreen, hoverBlue;
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
-      this->DrawTextAt(204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -1556,17 +1556,17 @@ void UIGuildInfoManageWnd::Paint() {
   this->FillRegion(200, 229, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   row = 0;
   y = 231;
-  for (auto related = guild.unknown_00E4.begin(); related != guild.unknown_00E4.end(); ++related) {
+  for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
     if (y > 278) {
       break;
     }
-    if (related->unknown_0004 == 1) {
+    if (related->relation == 1) {
       if (row == this->m_hostileRow) {
         unsigned hoverRed, hoverGreen, hoverBlue;
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
-      this->DrawTextAt(204, y, related->unknown_0008.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
       y += 16;
     }
@@ -1584,7 +1584,7 @@ void UIGuildSkillWnd::OnLBtnDown(int x, int y) {
 
   if (g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
-    if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
+    if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);
@@ -1640,7 +1640,7 @@ void UIGuildTotalInfoWnd::Paint() {
     x += widths[column] + 1;
   }
 
-  const auto& entries = *reinterpret_cast<const std::list<GuildTotalInfoEntry>*>(&g_guildInfo.unknown_00F4);
+  const auto& entries = *reinterpret_cast<const std::list<GuildTotalInfoEntry>*>(&g_guildInfo.guildList);
   int drawn = 0;
   int index = 0;
   for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
@@ -1658,12 +1658,12 @@ void UIGuildTotalInfoWnd::Paint() {
     char buffer[512];
     this->m_rows[drawn]->SetTextFitted(entry->name.c_str());
     this->m_rows[drawn]->Move(8, y);
-    std::sprintf(buffer, "%d", entry->unknown_001C);
+    std::sprintf(buffer, "%d", entry->level);
     this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
-    std::sprintf(buffer, "%d/%d", entry->unknown_0020, entry->unknown_0024);
+    std::sprintf(buffer, "%d/%d", entry->memberCount, entry->maxMembers);
     this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + 10, y, buffer, 0, 0, 12, 0, 0, 0
     );
-    std::sprintf(buffer, "%d", entry->unknown_0028);
+    std::sprintf(buffer, "%d", entry->ranking);
     this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + g_guildTotalInfoColumnWidths[2] + 11, y, buffer, 0, 0, 12, 0, 0, 0
     );
     if (++drawn == this->m_visibleRows * this->m_columns) {
@@ -1676,11 +1676,11 @@ void UIGuildTotalInfoWnd::Paint() {
 // FUNCTION: fn_13061
 void UIGuildMemberManageWnd::OnCreate(int, int) {
   this->CreateTabs();
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00C0 = 1;
+  g_guildInfo.membersRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
   this->m_members = g_guildInfo.m_members;
   this->m_rowSpacing += 8;
@@ -1711,7 +1711,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     this->AddChild(this->m_rowTexts[0][row]);
   }
 
-  if (g_guildInfo.unknown_00B4) {
+  if (g_guildInfo.isMaster) {
     const std::string prefix("유저인터페이스\\basic_interface\\");
     UIBitmapButton** button = this->m_rowButtons;
     for (int y = 82; y < 298; y += 36, ++button) {
@@ -1741,7 +1741,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    if (!g_guildInfo.unknown_00B4 || this->unknown_0180.empty()) {
+    if (!g_guildInfo.isMaster || this->membersByCharacterId.empty()) {
       x = -200;
       y = -200;
     }
@@ -1831,7 +1831,7 @@ void UIGuildBanishedMemberWnd::Paint() {
     x += widths[column] + 1;
   }
 
-  const auto& members = g_guildInfo.unknown_00EC;
+  const auto& members = g_guildInfo.bannedMembers;
   int drawn = 0;
   int index = 0;
   for (auto member = members.begin(); member != members.end(); ++member, ++index) {
@@ -1851,7 +1851,7 @@ void UIGuildBanishedMemberWnd::Paint() {
 
     char reason[260];
     memset(reason, 0, sizeof(reason));
-    strncpy_s(reason, sizeof(reason), member->unknown_0034.c_str(), member->unknown_0034.size());
+    strncpy_s(reason, sizeof(reason), member->reason.c_str(), member->reason.size());
     if (g_forbiddenWords.Contains(reason) == true) {
       std::string masked;
       g_forbiddenWords.Mask(reason, &masked);
@@ -1897,8 +1897,8 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   }
 
   if (member.online == 1) {
-    const std::string headAct = g_session.GetHeadActName(member.job, member.unknown_002C, &member.unknown_0020);
-    const std::string headSpr = g_session.GetHeadSprName(member.job, member.unknown_002C, &member.unknown_0020);
+    const std::string headAct = g_session.GetHeadActName(member.job, member.sex, &member.head);
+    const std::string headSpr = g_session.GetHeadSprName(member.job, member.sex, &member.head);
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(headAct.c_str()));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(headSpr.c_str()));
     const std::uint32_t* palette = sprite->palette;
@@ -1908,8 +1908,8 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     }
 
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-    if (member.unknown_0024 != 0) {
-      const std::string headPal = g_session.GetHeadPalName(member.unknown_0020, member.job, member.unknown_002C, member.unknown_0024);
+    if (member.headPalette != 0) {
+      const std::string headPal = g_session.GetHeadPalName(member.head, member.job, member.sex, member.headPalette);
       palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(headPal.c_str()))->palette;
     }
 
@@ -1921,12 +1921,12 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
         texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
     this->geometry.surface->DrawSurface(
       (this->m_rowSpacing - image->width + 36) / 2 + 6, (this->m_rowSpacing + 36) * row + 70, texture, static_cast<int>(record.u0 * 256.0f),
-      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
 
@@ -1940,7 +1940,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   }
 
   int x = g_guildMemberColumnWidths[0] + g_guildMemberColumnWidths[1] + 8;
-  const std::string job(g_session.GetJobName(member.job, member.unknown_002C));
+  const std::string job(g_session.GetJobName(member.job, member.sex));
   this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
   this->m_rowTexts[3][row]->Move(x + 4, y);
   x += g_guildMemberColumnWidths[2] + 1;
@@ -1955,7 +1955,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   }
 
   char lastLogin[128];
-  const __time32_t* lastLoginTime = reinterpret_cast<const __time32_t*>(member.unknown_0074);
+  const __time32_t* lastLoginTime = reinterpret_cast<const __time32_t*>(member.lastOfflineTime);
   if (*lastLoginTime != 0) {
     strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_REFINING), _localtime32(lastLoginTime));
   } else {
@@ -1970,7 +1970,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 void UIGuildNoticeWnd::OnCreate(int, int) {
   this->CreateTabs();
 
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
@@ -1982,7 +1982,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
   this->m_titleEdit->SetId(281);
   this->AddChild(this->m_titleEdit);
   g_windowMgr.SetFocus(this->m_titleEdit);
-  this->m_titleEdit->SetText(g_guildInfo.unknown_0030.c_str());
+  this->m_titleEdit->SetText(g_guildInfo.subject.c_str());
 
   this->m_bodyEdit = new UIEditCtrl3();
   this->m_bodyEdit->SetSize(this->geometry.width - 10, 156);
@@ -1991,7 +1991,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
   this->m_bodyEdit->maximum = 119;
   this->m_bodyEdit->Background(242, 242, 242);
   this->AddChild(this->m_bodyEdit);
-  this->m_bodyEdit->SetText(g_guildInfo.unknown_0048.c_str());
+  this->m_bodyEdit->SetText(g_guildInfo.notice.c_str());
 
   const std::string prefix("유저인터페이스\\");
   this->m_sendButton = new UIBitmapButton();
@@ -2000,7 +2000,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
   this->m_sendButton->SetBitmap((prefix + "btn_send_b" + ".bmp").c_str(), 2, 0);
   this->m_sendButton->SetSize(this->m_sendButton->BitmapWidth(), this->m_sendButton->BitmapHeight());
 
-  if (g_guildInfo.unknown_00B4 != 0) {
+  if (g_guildInfo.isMaster != 0) {
     this->m_sendButton->Move(this->geometry.width - 46, this->geometry.height - 24);
   }
 
@@ -2022,7 +2022,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
-        if (g_guildInfo.unknown_00B4) {
+        if (g_guildInfo.isMaster) {
           g_modeMgr.gameMode->SendMsg(MM_GUILD_NOTICE, g_guildInfo.m_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
         }
         this->InvalidateChildren();
@@ -2145,7 +2145,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     const int count = static_cast<int>(g_session.m_additionalSkills.size());
     for (int index = 0; index < count; ++index) {
       CSkillInfo skill = g_session.AdditionalSkillAt(index);
-      if (skill.available != 0 && (skill.unknown_0018 != 0 || skill.level != 0)) {
+      if (skill.available != 0 && (skill.upgradable != 0 || skill.level != 0)) {
         this->m_skills.push_back(skill);
       }
     }
@@ -2157,7 +2157,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
 
   case UM_MAKEMENU:
     this->m_menuItems.clear();
-    if (g_windowMgr.unknown_0210 != 0) {
+    if (g_windowMgr.menuWnd != 0) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_hoverIndex != -1) {
@@ -2241,11 +2241,11 @@ UIListBoxAgitMenu::UIListBoxAgitMenu() : UIListBox() {
 // FUNCTION: fn_13064
 void UIGuildSkillWnd::OnCreate(int, int height) {
   this->CreateTabs();
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00C8 = 1;
+  g_guildInfo.skillsRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
@@ -2360,7 +2360,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     switch (a1) {
     case ID_OK:
       if (this->m_positionMap.size() != 0) {
-        reinterpret_cast<std::map<int, GuildPositionEntry>&>(g_guildInfo.unknown_010C) = this->m_positionMap;
+        reinterpret_cast<std::map<int, GuildPositionEntry>&>(g_guildInfo.pendingPositionChanges) = this->m_positionMap;
         g_modeMgr.gameMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
         this->m_positionMap.clear();
         this->m_button->Move(-200, -200);
@@ -2375,30 +2375,30 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       g_windowMgr.CloseWindow(WID_GUILDWND);
       return 0;
     case ID_CHECK:
-      if (this->unknown_00D0[0] && this->unknown_00FC[0] && this->unknown_0128[0]) {
+      if (this->inviteChecks[0] && this->expelChecks[0] && this->storageChecks[0]) {
         for (int index = 0; index < 11; ++index) {
-          if (this->unknown_00D0[index] == sender) {
+          if (this->inviteChecks[index] == sender) {
             int found;
             GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
             if (found) {
               position.canInvite = a2;
-              this->m_positionMap[position.unknown_0004] = position;
+              this->m_positionMap[position.positionId] = position;
             }
           }
-          if (this->unknown_00FC[index] == sender) {
+          if (this->expelChecks[index] == sender) {
             int found;
             GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
             if (found) {
               position.canExpel = a2;
-              this->m_positionMap[position.unknown_0004] = position;
+              this->m_positionMap[position.positionId] = position;
             }
           }
-          if (this->unknown_0128[index] == sender) {
+          if (this->storageChecks[index] == sender) {
             int found;
             GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
             if (found) {
               position.canStorage = a2;
-              this->m_positionMap[position.unknown_0004] = position;
+              this->m_positionMap[position.positionId] = position;
             }
           }
         }
@@ -2406,10 +2406,10 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       }
       return 0;
     case ID_POSNAME_EDIT:
-      if (this->unknown_0180[0]) {
+      if (this->positionNameEdits[0]) {
         int row = a1 - 275;
         for (int index = 0; index < 11; ++index) {
-          if (this->unknown_0180[index] == sender) {
+          if (this->positionNameEdits[index] == sender) {
             row = index;
             break;
           }
@@ -2418,17 +2418,17 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         int found;
         GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
         if (found) {
-          position.name = this->unknown_0180[row]->Text();
-          this->m_positionMap[position.unknown_0004] = position;
+          position.name = this->positionNameEdits[row]->Text();
+          this->m_positionMap[position.positionId] = position;
         }
         break;
       }
       return 0;
     case ID_PAYRATE_EDIT:
-      if (this->unknown_0154[0]) {
+      if (this->taxEdits[0]) {
         int row = a1 - 276;
         for (int index = 0; index < 11; ++index) {
-          if (this->unknown_0154[index] == sender) {
+          if (this->taxEdits[index] == sender) {
             row = index;
             break;
           }
@@ -2437,7 +2437,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         int found;
         GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
         if (found) {
-          position.tax = std::atoi(this->unknown_0154[row]->Text());
+          position.tax = std::atoi(this->taxEdits[row]->Text());
           if (position.tax < 0 || position.tax > 50) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INC_ATTACKDAMAGE_ABILITYPOWER), 50, 0).c_str()), 0xFF, 0, 0, 0);
             if (position.tax < 0) {
@@ -2446,7 +2446,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
               position.tax = 50;
             }
           }
-          this->m_positionMap[position.unknown_0004] = position;
+          this->m_positionMap[position.positionId] = position;
         }
         break;
       }
@@ -2455,7 +2455,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       return 0;
     }
 
-    if (g_guildInfo.unknown_00B4 && this->m_positionMap.size()) {
+    if (g_guildInfo.isMaster && this->m_positionMap.size()) {
       this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
     } else {
       this->m_button->Move(-200, -200);
@@ -2464,9 +2464,9 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     return 0;
 
   case UM_REFRESH:
-    this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.unknown_00D4);
+    this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.positions);
     this->InvalidateChildren();
-    if (g_guildInfo.unknown_00B4 && this->m_positionMap.size()) {
+    if (g_guildInfo.isMaster && this->m_positionMap.size()) {
       this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
     } else {
       this->m_button->Move(-200, -200);
@@ -2567,16 +2567,16 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (member->positionId != a1 && valid) {
           member->positionId = a1;
           member->positionName = g_guildInfo.m_positions[member->positionId];
-          this->unknown_0180[static_cast<int>(member->characterId)].accountId = member->accountId;
-          this->unknown_0180[static_cast<int>(member->characterId)].characterId = member->characterId;
-          this->unknown_0180[static_cast<int>(member->characterId)].positionId = member->positionId;
+          this->membersByCharacterId[static_cast<int>(member->characterId)].accountId = member->accountId;
+          this->membersByCharacterId[static_cast<int>(member->characterId)].characterId = member->characterId;
+          this->membersByCharacterId[static_cast<int>(member->characterId)].positionId = member->positionId;
         }
         break;
       }
     }
     int x = this->geometry.width - 61;
     int y = this->geometry.height - 23;
-    if (!g_guildInfo.unknown_00B4 || this->unknown_0180.empty()) {
+    if (!g_guildInfo.isMaster || this->membersByCharacterId.empty()) {
       x = -200;
       y = -200;
     }
@@ -2587,10 +2587,10 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   case UM_COMMAND:
     switch (a1) {
     case ID_OK:
-      if (!this->unknown_0180.empty()) {
-        g_guildInfo.unknown_0104 = this->unknown_0180;
+      if (!this->membersByCharacterId.empty()) {
+        g_guildInfo.pendingMemberPositions = this->membersByCharacterId;
         g_modeMgr.gameMode->SendMsg(MM_REQ_CHANGE_MEMBERPOS, 0, 0, 0, 0);
-        this->unknown_0180.clear();
+        this->membersByCharacterId.clear();
         UIButton* button = this->m_button;
         button->SetDisabled(1);
         button->Invalidate();
@@ -2615,9 +2615,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
             break;
           }
         }
-        this->m_hoverRow = this->unknown_016C = this->m_scrollTop + row;
+        this->m_hoverRow = this->selectedMemberRow = this->m_scrollTop + row;
         this->Invalidate();
-        if (g_windowMgr.unknown_0214 != nullptr) {
+        if (g_windowMgr.comboBoxWnd != nullptr) {
           g_windowMgr.CloseWindow(WID_COMBOBOXWND);
         }
         UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
@@ -2664,53 +2664,53 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return this->m_scrollTop - previous;
   }
   case UM_MAKEMENU:
-    this->unknown_0150.clear();
-    if (g_windowMgr.unknown_0210 != 0) {
+    this->memberMenuEntries.clear();
+    if (g_windowMgr.menuWnd != 0) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_hoverRow != -1) {
       GuildInfo::Member member;
       if (this->GetMember(this->m_hoverRow, member) == true) {
-        const int master = g_guildInfo.unknown_00D0;
+        const int master = g_guildInfo.masterCharacterId;
         if (member.characterId == static_cast<int>(g_session.m_gid)) {
           if (master != 0) {
             if (member.characterId != master) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
             }
-          } else if (!(member.name == g_guildInfo.unknown_0018)) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
+          } else if (!(member.name == g_guildInfo.masterName)) {
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
           }
         } else {
           if (master != 0) {
             if (master == static_cast<int>(g_session.m_gid)) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
-            } else if (g_guildInfo.unknown_00B0 != 0 && member.characterId != master) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
+            } else if (g_guildInfo.canExpel != 0 && member.characterId != master) {
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
             }
-          } else if (g_guildInfo.unknown_0018 == g_session.DecodePlayerName()) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
-          } else if (g_guildInfo.unknown_00B0 != 0 && !(member.name == g_guildInfo.unknown_0018)) {
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+          } else if (g_guildInfo.masterName == g_session.DecodePlayerName()) {
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
+          } else if (g_guildInfo.canExpel != 0 && !(member.name == g_guildInfo.masterName)) {
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
           }
 
           if (member.online == 1) {
-            const bool invite = g_session.unknown_5464 != 0 &&
+            const bool invite = g_session.partyLeader != 0 &&
                                 g_session.PartyByName(member.name.c_str()).valid == 0;
             if (invite) {
-              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_REQ_JOIN_PARTY3), 5));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_REQ_JOIN_PARTY3), 5));
             }
-            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), 20));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), 20));
           }
-          this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), 58));
+          this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), 58));
         }
       }
     }
-    if (this->unknown_0150.size() != 0) {
+    if (this->memberMenuEntries.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-      for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
+      for (std::size_t index = 0; index < this->memberMenuEntries.size(); ++index) {
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->memberMenuEntries[index].text.c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDMEMBERMANAGEWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
@@ -2737,7 +2737,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
 
-    switch (this->unknown_0150[a1].value) {
+    switch (this->memberMenuEntries[a1].value) {
     case MENUID_REMOVE_GUILE_MEMBER: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
@@ -2753,7 +2753,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case MENUID_LEAVE_GUILD: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
-        *reinterpret_cast<float*>(g_session.unknown_0F54) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
+        *reinterpret_cast<float*>(g_session.guildTargetCharacter) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
         g_windowMgr.EnsureWindow(WID_GUILDLEAVEREASONDESCWND);
       }
       break;
@@ -2801,11 +2801,11 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
-          this->unknown_0180[static_cast<int>(target.characterId)].accountId = target.accountId;
-          this->unknown_0180[static_cast<int>(target.characterId)].characterId = target.characterId;
-          this->unknown_0180[static_cast<int>(target.characterId)].positionId = target.positionId;
-          g_guildInfo.unknown_0104.clear();
-          g_guildInfo.unknown_0104 = this->unknown_0180;
+          this->membersByCharacterId[static_cast<int>(target.characterId)].accountId = target.accountId;
+          this->membersByCharacterId[static_cast<int>(target.characterId)].characterId = target.characterId;
+          this->membersByCharacterId[static_cast<int>(target.characterId)].positionId = target.positionId;
+          g_guildInfo.pendingMemberPositions.clear();
+          g_guildInfo.pendingMemberPositions = this->membersByCharacterId;
           g_modeMgr.GetGameMode()->SendMsg(MM_REQ_CHANGE_MEMBERPOS, 0, 0, 0, 0);
         }
       }
@@ -2815,12 +2815,12 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return 0;
   }
   case UM_REFRESH: {
-    this->unknown_0180.clear();
+    this->membersByCharacterId.clear();
     this->m_members = g_guildInfo.m_members;
     this->InvalidateChildren();
     int x = this->geometry.width - 61;
     int y = this->geometry.height - 23;
-    if (!g_guildInfo.unknown_00B4 || this->unknown_0180.empty()) {
+    if (!g_guildInfo.isMaster || this->membersByCharacterId.empty()) {
       x = -200;
       y = -200;
     }
@@ -2830,7 +2830,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   }
   case UM_SET_DISABLE: {
     this->m_members = g_guildInfo.m_members;
-    const bool enabled = g_guildInfo.unknown_00B4 != 0;
+    const bool enabled = g_guildInfo.isMaster != 0;
     for (int index = 0; index < 6; ++index) {
       if (this->m_rowButtons[index]) {
         this->m_rowButtons[index]->Enable(enabled);
@@ -2869,12 +2869,12 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 // FUNCTION: fn_13063
 void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->CreateTabs();
-  this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.unknown_00D4);
-  if (std::strcmp(g_guildInfo.unknown_0018.c_str(), "") == 0) {
+  this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.positions);
+  if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
-  g_guildInfo.unknown_00C4 = 1;
+  g_guildInfo.positionsRequested = 1;
   g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 2, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverIndex = 0;
@@ -2885,79 +2885,79 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
   this->AddChild(this->m_scrollBar);
 
-  if (g_guildInfo.unknown_00B4) {
+  if (g_guildInfo.isMaster) {
     for (int row = 0; row < 11; ++row) {
-      this->unknown_00D0[row] = new UICheckBox();
-      this->unknown_00D0[row]->SetSize(12, 12);
-      this->unknown_00D0[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
-      this->unknown_00D0[row]->Move(this->geometry.width - 148, row * g_guildPositionRowHeight + 66);
-      this->unknown_00D0[row]->geometry.unknown_0030 = 0;
-      this->unknown_00D0[row]->Invalidate();
-      this->AddChild(this->unknown_00D0[row]);
+      this->inviteChecks[row] = new UICheckBox();
+      this->inviteChecks[row]->SetSize(12, 12);
+      this->inviteChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->inviteChecks[row]->Move(this->geometry.width - 148, row * g_guildPositionRowHeight + 66);
+      this->inviteChecks[row]->geometry.state = 0;
+      this->inviteChecks[row]->Invalidate();
+      this->AddChild(this->inviteChecks[row]);
     }
 
     for (int row = 0; row < 11; ++row) {
-      this->unknown_00FC[row] = new UICheckBox();
-      this->unknown_00FC[row]->SetSize(12, 12);
-      this->unknown_00FC[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
-      this->unknown_00FC[row]->Move(this->geometry.width - 48, row * g_guildPositionRowHeight + 66);
-      this->unknown_00FC[row]->geometry.unknown_0030 = 0;
-      this->unknown_00FC[row]->Invalidate();
-      this->AddChild(this->unknown_00FC[row]);
+      this->expelChecks[row] = new UICheckBox();
+      this->expelChecks[row]->SetSize(12, 12);
+      this->expelChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->expelChecks[row]->Move(this->geometry.width - 48, row * g_guildPositionRowHeight + 66);
+      this->expelChecks[row]->geometry.state = 0;
+      this->expelChecks[row]->Invalidate();
+      this->AddChild(this->expelChecks[row]);
     }
 
     for (int row = 0; row < 11; ++row) {
-      this->unknown_0128[row] = new UICheckBox();
-      this->unknown_0128[row]->SetSize(12, 12);
-      this->unknown_0128[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
-      this->unknown_0128[row]->Move(this->geometry.width - 124, row * g_guildPositionRowHeight + 66);
-      this->unknown_0128[row]->geometry.unknown_0030 = 0;
-      this->unknown_0128[row]->Invalidate();
-      this->AddChild(this->unknown_0128[row]);
+      this->storageChecks[row] = new UICheckBox();
+      this->storageChecks[row]->SetSize(12, 12);
+      this->storageChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
+      this->storageChecks[row]->Move(this->geometry.width - 124, row * g_guildPositionRowHeight + 66);
+      this->storageChecks[row]->geometry.state = 0;
+      this->storageChecks[row]->Invalidate();
+      this->AddChild(this->storageChecks[row]);
     }
   }
 
-  if (g_guildInfo.unknown_00B4) {
+  if (g_guildInfo.isMaster) {
     for (int row = 0; row < 11; ++row) {
-      this->unknown_0180[row] = new UIEditCtrlVarId();
-      this->unknown_0180[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 16);
-      this->unknown_0180[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
-      this->unknown_0180[row]->maximum = 30;
-      this->unknown_0180[row]->Background(242, 242, 242);
-      this->unknown_0180[row]->SetId(275);
-      this->AddChild(this->unknown_0180[row]);
+      this->positionNameEdits[row] = new UIEditCtrlVarId();
+      this->positionNameEdits[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 16);
+      this->positionNameEdits[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
+      this->positionNameEdits[row]->maximum = 30;
+      this->positionNameEdits[row]->Background(242, 242, 242);
+      this->positionNameEdits[row]->SetId(275);
+      this->AddChild(this->positionNameEdits[row]);
     }
 
     for (int row = 0; row < 11; ++row) {
-      this->unknown_0154[row] = new UIEditCtrlVarId();
-      this->unknown_0154[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 16);
-      this->unknown_0154[row]->Move(
+      this->taxEdits[row] = new UIEditCtrlVarId();
+      this->taxEdits[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 16);
+      this->taxEdits[row]->Move(
         g_guildPositionColumnWidths[1] + 12 + g_guildPositionColumnWidths[0] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3],
         row * g_guildPositionRowHeight + 66
       );
-      this->unknown_0154[row]->maximum = 2;
-      this->unknown_0154[row]->Background(242, 242, 242);
-      this->unknown_0154[row]->SetId(276);
-      this->AddChild(this->unknown_0154[row]);
+      this->taxEdits[row]->maximum = 2;
+      this->taxEdits[row]->Background(242, 242, 242);
+      this->taxEdits[row]->SetId(276);
+      this->AddChild(this->taxEdits[row]);
     }
   } else {
     for (int row = 0; row < 11; ++row) {
-      this->unknown_01D8[row] = new UIStaticText();
-      this->unknown_01D8[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 15);
-      this->unknown_01D8[row]->SetTextFitted("");
-      this->unknown_01D8[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
-      this->AddChild(this->unknown_01D8[row]);
+      this->positionNameLabels[row] = new UIStaticText();
+      this->positionNameLabels[row]->SetSize(g_guildPositionColumnWidths[1] - 4, 15);
+      this->positionNameLabels[row]->SetTextFitted("");
+      this->positionNameLabels[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
+      this->AddChild(this->positionNameLabels[row]);
     }
 
     for (int row = 0; row < 11; ++row) {
-      this->unknown_01AC[row] = new UIStaticText();
-      this->unknown_01AC[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 15);
-      this->unknown_01AC[row]->SetTextFitted("");
-      this->unknown_01AC[row]->Move(
+      this->taxLabels[row] = new UIStaticText();
+      this->taxLabels[row]->SetSize(g_guildPositionColumnWidths[4] / 2 - 4, 15);
+      this->taxLabels[row]->SetTextFitted("");
+      this->taxLabels[row]->Move(
         g_guildPositionColumnWidths[1] + 12 + g_guildPositionColumnWidths[0] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3],
         row * g_guildPositionRowHeight + 66
       );
-      this->AddChild(this->unknown_01AC[row]);
+      this->AddChild(this->taxLabels[row]);
     }
   }
 
@@ -2972,7 +2972,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    if (!g_guildInfo.unknown_00B4 || this->m_positionMap.empty()) {
+    if (!g_guildInfo.isMaster || this->m_positionMap.empty()) {
       x = -200;
       y = -200;
     }
@@ -2991,20 +2991,20 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case UM_MENU_SELECTED: {
     CMode* gameMode = g_modeMgr.GetGameMode();
-    if (this->unknown_00E0[a1].value != 27) {
+    if (this->emblemMenuEntries[a1].value != 27) {
       break;
     }
 
     if (this->m_allyRow != -1) {
       int row = 0;
-      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.unknown_00E4.begin(); it != g_guildInfo.unknown_00E4.end(); ++it) {
+      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.relatedGuilds.begin(); it != g_guildInfo.relatedGuilds.end(); ++it) {
         if (row >= 3) {
           break;
         }
-        if (it->unknown_0004 == 0) {
+        if (it->relation == 0) {
           if (row == this->m_allyRow) {
-            if (it->unknown_0000 != 0) {
-              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->unknown_0000, 0, 0, 0);
+            if (it->guildId != 0) {
+              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 0, 0, 0);
             }
             return 0;
           }
@@ -3013,14 +3013,14 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
     } else if (this->m_hostileRow != -1) {
       int row = 0;
-      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.unknown_00E4.begin(); it != g_guildInfo.unknown_00E4.end(); ++it) {
+      for (std::list<GuildInfo::RelatedGuild>::iterator it = g_guildInfo.relatedGuilds.begin(); it != g_guildInfo.relatedGuilds.end(); ++it) {
         if (row >= 3) {
           break;
         }
-        if (it->unknown_0004 == 1) {
+        if (it->relation == 1) {
           if (row == this->m_hostileRow) {
-            if (it->unknown_0000 != 0) {
-              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->unknown_0000, 1, 0, 0);
+            if (it->guildId != 0) {
+              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 1, 0, 0);
             }
             return 0;
           }
@@ -3031,17 +3031,17 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     break;
   }
   case UM_MAKEMENU:
-    this->unknown_00E0.erase(this->unknown_00E0.begin(), this->unknown_00E0.end());
-    if (g_windowMgr.unknown_0210 != 0) {
+    this->emblemMenuEntries.erase(this->emblemMenuEntries.begin(), this->emblemMenuEntries.end());
+    if (g_windowMgr.menuWnd != 0) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
-    if (g_guildInfo.unknown_00B4 != 0) {
-      this->unknown_00E0.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DELETE), 27));
+    if (g_guildInfo.isMaster != 0) {
+      this->emblemMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DELETE), 27));
     }
-    if (this->unknown_00E0.size() != 0) {
+    if (this->emblemMenuEntries.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-      for (std::size_t index = 0; index < this->unknown_00E0.size(); ++index) {
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->unknown_00E0[index].text.c_str()), 0, 0, 0);
+      for (std::size_t index = 0; index < this->emblemMenuEntries.size(); ++index) {
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->emblemMenuEntries[index].text.c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDINFOMANAGEWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
@@ -3066,22 +3066,22 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_GUILDWND);
       return 0;
     case ID_CHANGE_GUILE_EMBLEM: {
-      if (g_windowMgr.unknown_0214 != 0) {
+      if (g_windowMgr.comboBoxWnd != 0) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      this->unknown_00D8.clear();
+      this->emblemFiles.clear();
       char directory[256];
       std::sprintf(directory, "%s\\emblem\\", g_applicationDirectory);
-      EnumerateFileNames(this->unknown_00D8, directory, "*.bmp");
-      EnumerateFileNames(this->unknown_00D8, directory, "*.gif");
-      const int count = static_cast<int>(this->unknown_00D8.size());
+      EnumerateFileNames(this->emblemFiles, directory, "*.bmp");
+      EnumerateFileNames(this->emblemFiles, directory, "*.gif");
+      const int count = static_cast<int>(this->emblemFiles.size());
       if (count == 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_SWAP_FAIL_SWAP), 0, true, false, 0, "Caution", 280, 120, 0);
         return 0;
       }
 
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
-      for (std::list<std::string>::iterator it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+      for (std::list<std::string>::iterator it = this->emblemFiles.begin(); it != this->emblemFiles.end(); ++it) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
@@ -3102,13 +3102,13 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_SETSTATE:
     break;
   case UM_COMBOBOX_SELECTED: {
-    if (this->unknown_00D8.size() == 0) {
+    if (this->emblemFiles.size() == 0) {
       break;
     }
 
     std::string name;
     int index = 0;
-    for (std::list<std::string>::iterator it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    for (std::list<std::string>::iterator it = this->emblemFiles.begin(); it != this->emblemFiles.end(); ++it) {
       if (a1 == index) {
         name = it->c_str();
         break;
@@ -3144,7 +3144,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   }
   case UM_REFRESH:
     this->m_guildId = g_guildInfo.m_guildId;
-    if (g_guildInfo.unknown_00B4 != 0) {
+    if (g_guildInfo.isMaster != 0) {
       this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);
       this->m_disbandButton->Move(this->geometry.width - this->m_disbandButton->geometry.width - 15, this->geometry.height - this->m_disbandButton->geometry.height - 5);
     } else {

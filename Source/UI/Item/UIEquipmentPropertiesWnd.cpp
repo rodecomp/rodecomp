@@ -49,12 +49,12 @@ template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLin
 // OFFSET: 0x00A0EBF0
 // FUNCTION: fn_15152
 EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine()
-    : CUIListItem(), unknown_00E8(nullptr), unknown_00EC(nullptr), evenRowColor(0), oddRowColor(0) {
+    : CUIListItem(), labelText(nullptr), valueText(nullptr), evenRowColor(0), oddRowColor(0) {
 }
 
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
@@ -63,7 +63,7 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* selectedItem =
@@ -230,8 +230,8 @@ bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx()
     : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A08680
@@ -244,7 +244,7 @@ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string
 // FUNCTION: fn_15033
 void CUIEquipmentPropertiesWnd::Initialize() {
   this->Resize(300, 308);
-  this->unknown_00B4 = 0x101;
+  this->ownedSkinColors = 0x101;
   this->m_resolveSkin = true;
   this->Move(0, 0);
   this->OnCreate(this->geometry.width, this->geometry.height);
@@ -882,39 +882,39 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
 // OFFSET: 0x00A0C9C0
 // FUNCTION: fn_15036
 void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width, int height) {
-  this->unknown_00E8 = new CUIStaticText();
-  this->unknown_00E8->SetSize(44, 12);
-  this->unknown_00E8->Move(0, 4);
-  this->unknown_00E8->SetText("");
-  this->unknown_00E8->SetFitText(0);
-  this->unknown_00E8->SetAlign(6, 0);
+  this->labelText = new CUIStaticText();
+  this->labelText->SetSize(44, 12);
+  this->labelText->Move(0, 4);
+  this->labelText->SetText("");
+  this->labelText->SetFitText(0);
+  this->labelText->SetAlign(6, 0);
   const char titleFontSource[] = {'\x9E', '\x8C', '\x8D', '\x8A', '\x00', '\x15'};
   // GLOBAL: gl_25121
   thread_local EncryptedName<sizeof(titleFontSource), 0x2BAD156DE3E1F9D9ULL> titleFont(titleFontSource);
-  this->unknown_00E8->SetFont(std::string(titleFont.Text()));
-  this->unknown_00E8->SetFontHeight(12);
-  this->unknown_00E8->SetBold(0);
-  this->unknown_00E8->SetColor(0xFF2A00);
-  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
-  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00E8);
+  this->labelText->SetFont(std::string(titleFont.Text()));
+  this->labelText->SetFontHeight(12);
+  this->labelText->SetBold(0);
+  this->labelText->SetColor(0xFF2A00);
+  this->labelText->SetShadow(0, 0xFFFFFF);
+  this->labelText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->labelText);
 
-  this->unknown_00EC = new CUIStaticText();
-  this->unknown_00EC->SetSize(216, 12);
-  this->unknown_00EC->Move(49, 4);
-  this->unknown_00EC->SetText("");
-  this->unknown_00EC->SetFitText(1);
-  this->unknown_00EC->SetAlign(0, 0);
+  this->valueText = new CUIStaticText();
+  this->valueText->SetSize(216, 12);
+  this->valueText->Move(49, 4);
+  this->valueText->SetText("");
+  this->valueText->SetFitText(1);
+  this->valueText->SetAlign(0, 0);
   const char textFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
   // GLOBAL: gl_25122
   thread_local EncryptedName<sizeof(textFontSource), 0x23BBD58F8B5FF5C9ULL> textFont(textFontSource);
-  this->unknown_00EC->SetFont(std::string(textFont.Text()));
-  this->unknown_00EC->SetFontHeight(12);
-  this->unknown_00EC->SetBold(0);
-  this->unknown_00EC->SetColor(0);
-  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00EC);
+  this->valueText->SetFont(std::string(textFont.Text()));
+  this->valueText->SetFontHeight(12);
+  this->valueText->SetBold(0);
+  this->valueText->SetColor(0);
+  this->valueText->SetShadow(0, 0xFFFFFF);
+  this->valueText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->valueText);
 }
 
 // OFFSET: 0x00A0EE90
@@ -975,21 +975,21 @@ void CUIEquipmentPropertiesWnd::BindLine(EquipmentPropertiesWnd::CUIItemEquipmen
     return;
   }
 
-  line->unknown_00E8->SetColor(0xFF2A00);
-  line->unknown_00EC->SetColor(0);
+  line->labelText->SetColor(0xFF2A00);
+  line->valueText->SetColor(0);
   std::vector<std::string> parts = Split(text, "#");
   if (parts.size() > 1) {
     std::vector<std::string> title = Split(parts[0], "{~}");
     if (title.size() > 1) {
-      line->unknown_00E8->SetColor(0x3C00FF);
-      line->unknown_00E8->SetText(title[1]);
+      line->labelText->SetColor(0x3C00FF);
+      line->labelText->SetText(title[1]);
     } else {
-      line->unknown_00E8->SetText(parts[0]);
+      line->labelText->SetText(parts[0]);
     }
-    line->unknown_00EC->SetText(parts[1]);
+    line->valueText->SetText(parts[1]);
   } else {
-    line->unknown_00E8->SetText("");
-    line->unknown_00EC->SetText(parts[0].c_str(), parts[0].size());
+    line->labelText->SetText("");
+    line->valueText->SetText(parts[0].c_str(), parts[0].size());
   }
 }
 

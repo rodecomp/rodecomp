@@ -33,7 +33,7 @@ struct CameraShake {
   /* 0004 */ float horizontal;
   /* 0008 */ float distance;
   /* 000C */ float pitch;
-  /* 0010 */ unsigned unknown_0010;
+  /* 0010 */ unsigned resetFlags;
   /* 0014 */ int enabled;
   /* 0018 */ unsigned start;
   /* 001C */ unsigned duration;

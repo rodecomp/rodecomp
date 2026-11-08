@@ -17,7 +17,7 @@
 // OFFSET: 0x00A568E0
 // FUNCTION: fn_16321
 void CUIRecommendedQuestInfo::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);
@@ -283,7 +283,7 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
   const auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
   if (found != g_renewQuestMgr->m_recommendedQuests.end()) {
     const RenewQuestRecommendedInfo& quest = found->second;
-    this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.unknown_00B4);
+    this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.backgroundImage);
 
     for (std::size_t i = 0; i < std::min<std::size_t>(this->questInfos.size(), 3); ++i) {
       for (std::string line : quest.m_descriptions[i]) {
@@ -291,12 +291,12 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
       }
     }
 
-    if (quest.unknown_007C.size() == 0) {
+    if (quest.npcSprite.size() == 0) {
       this->npcSprite->Show(0);
     } else {
-      this->npcSprite->SetSprite(75, 145, quest.unknown_007C);
-      if (quest.unknown_0094.size() != 0) {
-        this->npcSprite->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+      this->npcSprite->SetSprite(75, 145, quest.npcSprite);
+      if (quest.destinationMap.size() != 0) {
+        this->npcSprite->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
       }
       this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 40, this->geometry.height - this->npcSprite->geometry.height - 10);
       this->npcSprite->Show(1);

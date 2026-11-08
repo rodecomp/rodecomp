@@ -5,7 +5,7 @@
 
 // OFFSET: 0x00AB5CE0
 // FUNCTION: fn_17464
-C3dNode::C3dNode() : model(nullptr), parent(nullptr), mesh(nullptr), alpha(1.0f), unknown_0088(0) {
+C3dNode::C3dNode() : model(nullptr), parent(nullptr), mesh(nullptr), alpha(1.0f), overrideColors(0) {
 }
 
 // OFFSET: 0x00AB66A0

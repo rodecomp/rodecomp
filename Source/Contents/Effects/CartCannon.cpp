@@ -21,7 +21,7 @@ CCartCannon::CCartCannon() : CEffect(-1) {
   this->startPosition.x = 0.0f;
   this->startPosition.y = 0.0f;
   this->startPosition.z = 0.0f;
-  this->unknown_0050 = 0;
+  this->rotationParameter = 0;
 }
 
 // OFFSET: 0x006FAA80

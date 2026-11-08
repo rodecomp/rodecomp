@@ -371,7 +371,7 @@ int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
   if (argument1 == ID_OPEN_MEMBER_POS_COMBO) {
     this->dropped = !this->dropped;
-    if (g_windowMgr.unknown_0214) {
+    if (g_windowMgr.comboBoxWnd) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
@@ -420,7 +420,7 @@ void UIString::ParseTags(std::string text) {
   TrimLeading(text, " \t");
 
   if (text[0] != '<') {
-    this->unknown_00DC = text;
+    this->text = text;
     return;
   }
 
@@ -446,11 +446,11 @@ void UIString::ParseTags(std::string text) {
     if (key == "image") {
       const std::size_t start = tags.find_first_of("\"", index) + 1;
       index = tags.find_first_of("\"", start);
-      this->unknown_00AC = tags.substr(start, index - start);
-      TrimLeading(this->unknown_00AC, " \t");
-      TrimTrailing(this->unknown_00AC, " \t");
-      TrimLeading(this->unknown_00AC, "\"");
-      TrimTrailing(this->unknown_00AC, "\"");
+      this->image = tags.substr(start, index - start);
+      TrimLeading(this->image, " \t");
+      TrimTrailing(this->image, " \t");
+      TrimLeading(this->image, "\"");
+      TrimTrailing(this->image, "\"");
     } else if (key == "color") {
       const std::size_t start = tags.find_first_of(" \t", index) + 1;
       index = tags.find_first_of(" \t", start);
@@ -459,40 +459,40 @@ void UIString::ParseTags(std::string text) {
       const std::string green = value.substr(2, 2);
       const std::string blue = value.substr(4, 2);
       char* stop;
-      this->unknown_009C = std::strtol(red.c_str(), &stop, 16);
-      this->unknown_00A0 = std::strtol(green.c_str(), &stop, 16);
-      this->unknown_00A4 = std::strtol(blue.c_str(), &stop, 16);
+      this->red = std::strtol(red.c_str(), &stop, 16);
+      this->green = std::strtol(green.c_str(), &stop, 16);
+      this->blue = std::strtol(blue.c_str(), &stop, 16);
     } else if (key == "link") {
       const std::size_t start = tags.find_first_of("\"", index) + 1;
       index = tags.find_first_of("\"", start);
-      this->unknown_0084 = tags.substr(start, index - start);
-      TrimLeading(this->unknown_0084, " \t");
-      TrimTrailing(this->unknown_0084, " \t");
-      TrimLeading(this->unknown_0084, "\"");
-      TrimTrailing(this->unknown_0084, "\"");
-      this->unknown_009C = 10;
-      this->unknown_00A0 = 10;
-      this->unknown_00A4 = 255;
+      this->link = tags.substr(start, index - start);
+      TrimLeading(this->link, " \t");
+      TrimTrailing(this->link, " \t");
+      TrimLeading(this->link, "\"");
+      TrimTrailing(this->link, "\"");
+      this->red = 10;
+      this->green = 10;
+      this->blue = 255;
     } else if (key == "font") {
       const std::size_t start = tags.find_first_of("\"", index) + 1;
       index = tags.find_first_of("\"", start);
-      this->unknown_00C4 = tags.substr(start, index - start);
-      TrimLeading(this->unknown_00C4, " \t");
-      TrimTrailing(this->unknown_00C4, " \t");
-      TrimLeading(this->unknown_00C4, "\"");
-      TrimTrailing(this->unknown_00C4, "\"");
+      this->fontName = tags.substr(start, index - start);
+      TrimLeading(this->fontName, " \t");
+      TrimTrailing(this->fontName, " \t");
+      TrimLeading(this->fontName, "\"");
+      TrimTrailing(this->fontName, "\"");
     } else if (key == "bold") {
     } else if (key == "size") {
       const std::size_t start = tags.find_first_of(" \t", index) + 1;
       index = tags.find_first_of(" \t", start);
       const std::string value = tags.substr(start, index - start);
-      this->unknown_00A8 = std::atoi(value.c_str());
+      this->fontSize = std::atoi(value.c_str());
     }
 
     position = index + 1;
   }
 
-  this->unknown_00DC = text.substr(end + 1, text.find_first_of("<", end + 1) - (end + 1));
+  this->text = text.substr(end + 1, text.find_first_of("<", end + 1) - (end + 1));
 }
 
 // OFFSET: 0x008A0B10
@@ -548,14 +548,14 @@ void UIDescriptRace::DrawRaceDescription() {
 
     if (this->m_noRace) {
       if (this->m_createTime + 60 <= timeGetTime()) {
-        int next = this->unknown_0284 + 1;
+        int next = this->m_frameIndex + 1;
         if (next >= static_cast<int>(act->FrameCount(action))) {
           next = 0;
         }
-        this->unknown_0284 = next;
+        this->m_frameIndex = next;
         this->m_createTime = timeGetTime();
       }
-      frame = this->unknown_0284;
+      frame = this->m_frameIndex;
     }
 
     const ActionFrame* actionFrame = &act->Frame(action, frame);
@@ -563,7 +563,7 @@ void UIDescriptRace::DrawRaceDescription() {
     POINT point = imf->GetLongPoint(layer, action, frame);
     if (layer == 1) {
       const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_session.m_sex, job, 0)))->Frame(action, frame);
-      if (actionFrame->anchorCount != 0 && body->anchorCount != 0 && actionFrame->anchors[0].unknown_0008 == body->anchors[0].unknown_0008) {
+      if (actionFrame->anchorCount != 0 && body->anchorCount != 0 && actionFrame->anchors[0].attachmentId == body->anchors[0].attachmentId) {
         point.x += body->anchors[0].x - actionFrame->anchors[0].x;
         point.y += body->anchors[0].y - actionFrame->anchors[0].y;
       }
@@ -583,12 +583,12 @@ void UIDescriptRace::DrawRaceDescription() {
         texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
     this->geometry.surface->DrawSurface(
       cell.x + point.x + 60, cell.y + point.y + 140, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width,
-      image->height, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
 }
@@ -674,12 +674,12 @@ void UITextViewEX::SetText(std::string text) {
   const auto last = this->extraLinks.end();
   for (; link != last; ++link) {
     UIString* label = static_cast<UIString*>(*link);
-    const std::string caption = label->unknown_00DC;
+    const std::string caption = label->text;
     x += label->geometry.width + 5;
     if (x + 15 > this->geometry.width || caption == "\n") {
       this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
       first = link;
-      x = label->unknown_00DC == "\n" ? 0 : label->geometry.width + 5;
+      x = label->text == "\n" ? 0 : label->geometry.width + 5;
     }
   }
 
@@ -715,10 +715,10 @@ int UITextViewEX::AddWords(std::string text, int attached, int red, int green, i
     UIString* label = new UIString();
     label->SetText(100, 100, word);
     label->Show(0);
-    label->unknown_0080 = attached;
-    label->unknown_009C = red;
-    label->unknown_00A0 = green;
-    label->unknown_00A4 = blue;
+    label->enabled = attached;
+    label->red = red;
+    label->green = green;
+    label->blue = blue;
     attached = 0;
     this->AddChild(label);
     this->extraLinks.push_back(label);

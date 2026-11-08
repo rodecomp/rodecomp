@@ -26,21 +26,21 @@ void CElectricEffect::AddBolt(int tilt) {
           continue;
         }
 
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = segment;
-        particle->unknown_0010 = row;
-        particle->unknown_0008 = strand;
+        particle->effectId = this->id;
+        particle->columnIndex = segment;
+        particle->rowIndex = row;
+        particle->groupIndex = strand;
         particle->SetTexture("effect\\elec1.tga");
-        particle->unknown_00C0 = 0.1f;
+        particle->speedParameter = 0.1f;
         particle->alpha = 0;
-        particle->unknown_004C = tilt;
+        particle->phaseParameter = tilt;
         particle->scale = 0.0f;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = spin;
-        particle->unknown_0050 = 0;
+        *reinterpret_cast<float*>(&particle->angleBits) = spin;
+        particle->angleParameter = 0;
         InitParticleQuad(particle->vertices);
         this->bolts.push_back(particle);
 
-        float* arc = &particle->unknown_0054;
+        float* arc = &particle->animationParameter;
         arc[20] = 9.0f;
         for (int index = 20; index > 0; --index) {
           float value = arc[index] + 9.0f;
@@ -69,7 +69,7 @@ void CElectricEffect::Close() {
 // OFFSET: 0x00B4EE80
 // FUNCTION: fn_19004
 void CElectricEffect::Open() {
-  this->unknown_002C = 300;
+  this->effectLifetime = 300;
 }
 
 // OFFSET: 0x00B4EF40
@@ -101,9 +101,9 @@ void CElectricEffect::OnProcess() {
     particle->position.z = this->position[2];
 
     const float scale = particle->scale + 0.4f;
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     int alpha = scale > 15.0f ? particle->alpha - 2 : particle->alpha;
-    if (particle->unknown_00E8 <= 25) {
+    if (particle->elapsedFrames <= 25) {
       alpha += 5 + (std::max)(rand() % 4, 0);
     }
     particle->scale = scale;
@@ -114,18 +114,18 @@ void CElectricEffect::OnProcess() {
     rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
     particle->transform = rotation;
 
-    const int segment = particle->unknown_000C;
-    const int strand = particle->unknown_0008;
+    const int segment = particle->columnIndex;
+    const int strand = particle->groupIndex;
     vector3d unused[2] = {};
 
     if (strand == 0) {
-      const float* arc = &particle->unknown_0054;
+      const float* arc = &particle->animationParameter;
       for (int index = 0; index < 2; ++index) {
         const float bend = arc[segment + index];
         const float radius = bend / 90.0f * particle->scale;
-        this->path[index].x = radius * g_cosTable[particle->unknown_004C];
-        this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * *reinterpret_cast<const float*>(&particle->unknown_00C4);
-        this->path[index].z = radius * g_sinTable[particle->unknown_004C];
+        this->path[index].x = radius * g_cosTable[particle->phaseParameter];
+        this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * *reinterpret_cast<const float*>(&particle->angleBits);
+        this->path[index].z = radius * g_sinTable[particle->phaseParameter];
 
         const int jitterZ = rand() % 7;
         const int jitterY = rand() % 7;
@@ -153,7 +153,7 @@ void CElectricEffect::OnProcess() {
     }
 
     if (segment >= 1 && segment <= 18) {
-      const float radius = particle->unknown_00C0;
+      const float radius = particle->speedParameter;
       const float horizontal = radius * g_cosTable[strand * 120];
       const float vertical = radius * g_sinTable[strand * 120];
       const float offsetX = horizontal * g_cosTable[this->angle];
@@ -189,8 +189,8 @@ void CElectricEffect::OnProcess() {
 void CElectricEffect::Render() {
   for (auto it = this->bolts.begin(); it != this->bolts.end(); ++it) {
     CParticle* bolt = *it;
-    if (bolt && static_cast<unsigned>(bolt->unknown_000C - 1) <= 17 && bolt->unknown_0008 > 0) {
-      const int frame = bolt->unknown_000C;
+    if (bolt && static_cast<unsigned>(bolt->columnIndex - 1) <= 17 && bolt->groupIndex > 0) {
+      const int frame = bolt->columnIndex;
       const int alpha = bolt->alpha;
       const int faded = alpha - frame * 5;
       bolt->alpha = faded >= 0 ? faded : 0;
@@ -201,8 +201,8 @@ void CElectricEffect::Render() {
       quad.depth = true;
       quad.left = 0.0f;
       quad.right = 1.0f;
-      quad.top = static_cast<float>(bolt->unknown_000C - 1) / 21.0f;
-      quad.bottom = static_cast<float>(bolt->unknown_000C) / 21.0f;
+      quad.top = static_cast<float>(bolt->columnIndex - 1) / 21.0f;
+      quad.bottom = static_cast<float>(bolt->columnIndex) / 21.0f;
       bolt->Render(quad);
       bolt->alpha = alpha;
     }

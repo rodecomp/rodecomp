@@ -168,7 +168,7 @@ void UIChatHisBox3::AddText(const char* text, int color) {
     this->DropOldestLines();
   }
 
-  this->unknown_00E4.push_back(color);
+  this->lineColors.push_back(color);
 
   int mode = 3;
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
@@ -181,7 +181,7 @@ void UIChatHisBox3::AddText(const char* text, int color) {
     this->UIListBox::AddLine(text);
   }
 
-  if (this->verticalOverflow != 0 && atBottom && this->unknown_0130 != 0) {
+  if (this->verticalOverflow != 0 && atBottom && this->autoScroll != 0) {
     this->topLine = (static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin;
     this->verticalBar->position = this->topLine;
     this->verticalBar->Invalidate();
@@ -203,7 +203,7 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
   }
 
   this->history.push_back(style ? std::string(style) : std::string());
-  this->unknown_00E4.push_back(color);
+  this->lineColors.push_back(color);
 
   int mode = 4;
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
@@ -512,9 +512,9 @@ int UIListBox::TextLength() {
 // OFFSET: 0x0087AAF0
 // FUNCTION: fn_11238
 void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
-  this->unknown_0100 = other.unknown_0100;
-  this->unknown_010C = other.unknown_010C;
-  this->unknown_0118 = other.unknown_0118;
+  this->historyTexts = other.historyTexts;
+  this->historyColors = other.historyColors;
+  this->historyItemIds = other.historyItemIds;
   this->RebuildHistory();
 }
 
@@ -528,7 +528,7 @@ void UIComboBoxID::AddLine(const char* text, int id, int data) {
   this->Refresh();
 
   if (data != 0) {
-    this->unknown_00C4.try_emplace(index, data);
+    this->lineData.try_emplace(index, data);
   }
 }
 

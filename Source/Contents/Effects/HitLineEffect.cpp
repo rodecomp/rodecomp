@@ -29,17 +29,17 @@ void CHitLineEffect::Open() {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
         if (particle) {
           particle->SetTexture("effect\\white02.bmp");
-          particle->unknown_0010 = line;
-          particle->unknown_0004 = this->id;
-          particle->unknown_000C = segment;
-          particle->unknown_0008 = 4;
-          particle->unknown_00E8 = delay;
+          particle->rowIndex = line;
+          particle->effectId = this->id;
+          particle->columnIndex = segment;
+          particle->groupIndex = 4;
+          particle->elapsedFrames = delay;
           particle->scale = 0.1f;
-          *reinterpret_cast<int*>(particle->unknown_0048) = brightness;
-          particle->unknown_004C = angle;
-          particle->unknown_00C0 = 14.0f;
-          float* turns = &particle->unknown_0054;
-          unsigned char* halfTurns = &particle->unknown_00A8;
+          *reinterpret_cast<int*>(particle->effectParameters) = brightness;
+          particle->phaseParameter = angle;
+          particle->speedParameter = 14.0f;
+          float* turns = &particle->animationParameter;
+          unsigned char* halfTurns = &particle->animationState;
           for (int index = 0; index < 21; ++index) {
             halfTurns[index] = 0;
             turns[index] = 0.0f;
@@ -66,16 +66,16 @@ void CHitLineEffect::OnProcess() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    if (particle && particle->unknown_00E8 > 0) {
-      int& brightness = *reinterpret_cast<int*>(particle->unknown_0048);
+    if (particle && particle->elapsedFrames > 0) {
+      int& brightness = *reinterpret_cast<int*>(particle->effectParameters);
       short level = static_cast<short>(brightness);
-      if (particle->unknown_00E8 > 35) {
+      if (particle->elapsedFrames > 35) {
         level -= 5;
       }
       brightness = std::max<short>(level, 0);
 
-      float* turns = &particle->unknown_0054;
-      unsigned char* halfTurns = &particle->unknown_00A8;
+      float* turns = &particle->animationParameter;
+      unsigned char* halfTurns = &particle->animationState;
       float turn = turns[0] + 8.0f;
       if (turn > 180.0f) {
         ++halfTurns[0];
@@ -89,7 +89,7 @@ void CHitLineEffect::OnProcess() {
       }
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -98,15 +98,15 @@ void CHitLineEffect::OnProcess() {
 void CHitLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || *reinterpret_cast<int*>(particle->unknown_0048) <= 0 || particle->unknown_00E8 <= 0) {
+    if (!particle || *reinterpret_cast<int*>(particle->effectParameters) <= 0 || particle->elapsedFrames <= 0) {
       continue;
     }
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     vector3d points[2] = {};
-    const float radius = particle->unknown_00C0;
-    const float* turns = &particle->unknown_0054;
-    const unsigned char* halfTurns = &particle->unknown_00A8;
+    const float radius = particle->speedParameter;
+    const float* turns = &particle->animationParameter;
+    const unsigned char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
       const int count = static_cast<signed char>(halfTurns[segment + index]);
       float distance = 0.0f;
@@ -128,8 +128,8 @@ void CHitLineEffect::Render() {
       }
 
       points[index].y = height * scale;
-      points[index].x = g_cosTable[particle->unknown_004C] * distance;
-      points[index].z = g_sinTable[particle->unknown_004C] * distance;
+      points[index].x = g_cosTable[particle->phaseParameter] * distance;
+      points[index].z = g_sinTable[particle->phaseParameter] * distance;
     }
 
     const float dz = points[0].z - points[1].z;
@@ -181,7 +181,7 @@ void CHitLineEffect::Render() {
         particle->vertices[2].x = this->previous[0].x;
         particle->vertices[2].y = this->previous[0].y;
         particle->vertices[2].z = this->previous[0].z;
-        const int alpha = *reinterpret_cast<int*>(particle->unknown_0048) - segment * 5;
+        const int alpha = *reinterpret_cast<int*>(particle->effectParameters) - segment * 5;
         if (alpha > 0) {
           particle->alpha = alpha;
           particle->SetColor(255, 200, static_cast<short>(segment * 7 + 10));

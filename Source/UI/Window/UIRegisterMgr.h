@@ -21,8 +21,8 @@ public:
   bool SaveTemporary();
 
   /* 0004 */ std::map<int, std::function<CUIFrameWnd*()>> entries;
-  /* 000C */ std::map<int, std::pair<int, int>> unknown_000C;
-  /* 0014 */ std::map<int, std::pair<int, int>> unknown_0014;
+  /* 000C */ std::map<int, std::pair<int, int>> windowPositions;
+  /* 0014 */ std::map<int, std::pair<int, int>> windowSizes;
   /* 001C */ CRITICAL_SECTION lock;
 };
 

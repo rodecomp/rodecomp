@@ -19,9 +19,9 @@ UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}
 // OFFSET: 0x0090C970
 // FUNCTION: fn_12451
 void UISecondPasswordInputWnd::SetInputMode(int value) {
-  this->unknown_011C = value;
+  this->inputMode = value;
   if (value == 0) {
-    this->unknown_0164->SetText(LookupMessage(MSI_PET_EVOLUTION_NEED_ITEM), 0);
+    this->instructionText->SetText(LookupMessage(MSI_PET_EVOLUTION_NEED_ITEM), 0);
   }
 }
 
@@ -32,10 +32,10 @@ void UIPasswordWnd::sub_90C9B0(int) {}
 // OFFSET: 0x0090C9C0
 // FUNCTION: fn_12453
 void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
-  this->unknown_00F8 = 91;
-  this->unknown_00FC = 91;
-  this->unknown_0100 = 130;
-  this->unknown_0104 = 168;
+  this->activeInputY = 91;
+  this->currentPasswordY = 91;
+  this->newPasswordY = 130;
+  this->confirmPasswordY = 168;
   for (int i = 0; i < 10; ++i) {
     this->m_digits[i] = static_cast<unsigned char>(i);
   }
@@ -54,15 +54,15 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
   const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
 
   for (int i = 0; i < 5; ++i) {
-    this->unknown_0150[i] = new UIBitmapButton();
-    this->unknown_0150[i]->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
-    this->unknown_0150[i]->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
-    this->unknown_0150[i]->SetBitmap((prefix + commandNames[i][2] + ".bmp").c_str(), 2, 0);
-    this->unknown_0150[i]->SetBitmap((prefix + commandNames[i][3] + ".bmp").c_str(), 3, 0);
-    this->unknown_0150[i]->SetSize(this->unknown_0150[i]->BitmapWidth(), this->unknown_0150[i]->BitmapHeight());
-    this->unknown_0150[i]->Move(commandPositions[i][0], commandPositions[i][1]);
-    this->unknown_0150[i]->SetId(commandIds[i]);
-    this->AddChild(this->unknown_0150[i]);
+    this->actionButtons[i] = new UIBitmapButton();
+    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
+    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
+    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][2] + ".bmp").c_str(), 2, 0);
+    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][3] + ".bmp").c_str(), 3, 0);
+    this->actionButtons[i]->SetSize(this->actionButtons[i]->BitmapWidth(), this->actionButtons[i]->BitmapHeight());
+    this->actionButtons[i]->Move(commandPositions[i][0], commandPositions[i][1]);
+    this->actionButtons[i]->SetId(commandIds[i]);
+    this->AddChild(this->actionButtons[i]);
   }
 
   prefix = "유저인터페이스\\basic_interface\\";
@@ -78,47 +78,47 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
   for (int i = 0; i < 10; ++i) {
     const int digit = this->m_digits[i];
-    this->unknown_0124[i] = new UIBitmapButton();
-    this->unknown_0124[i]->SetBitmap((prefix + keyNames[digit][0] + ".bmp").c_str(), 0, 0);
-    this->unknown_0124[i]->SetBitmap((prefix + keyNames[digit][1] + ".bmp").c_str(), 1, 0);
-    this->unknown_0124[i]->SetBitmap((prefix + keyNames[digit][2] + ".bmp").c_str(), 2, 0);
-    this->unknown_0124[i]->SetSize(this->unknown_0124[i]->BitmapWidth(), this->unknown_0124[i]->BitmapHeight());
-    this->unknown_0124[i]->Move(keyPositions[i][0], keyPositions[i][1]);
-    this->unknown_0124[i]->SetId(keyIds[digit]);
-    this->AddChild(this->unknown_0124[i]);
+    this->keypadButtons[i] = new UIBitmapButton();
+    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][0] + ".bmp").c_str(), 0, 0);
+    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][1] + ".bmp").c_str(), 1, 0);
+    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][2] + ".bmp").c_str(), 2, 0);
+    this->keypadButtons[i]->SetSize(this->keypadButtons[i]->BitmapWidth(), this->keypadButtons[i]->BitmapHeight());
+    this->keypadButtons[i]->Move(keyPositions[i][0], keyPositions[i][1]);
+    this->keypadButtons[i]->SetId(keyIds[digit]);
+    this->AddChild(this->keypadButtons[i]);
   }
 
-  this->unknown_0124[10] = new UIBitmapButton();
-  this->unknown_0124[10]->SetBitmap((prefix + keyNames[10][0] + ".bmp").c_str(), 0, 0);
-  this->unknown_0124[10]->SetBitmap((prefix + keyNames[10][1] + ".bmp").c_str(), 1, 0);
-  this->unknown_0124[10]->SetBitmap((prefix + keyNames[10][2] + ".bmp").c_str(), 2, 0);
-  this->unknown_0124[10]->SetSize(this->unknown_0124[10]->BitmapWidth(), this->unknown_0124[10]->BitmapHeight());
-  this->unknown_0124[10]->Move(keyPositions[10][0], keyPositions[10][1]);
-  this->unknown_0124[10]->SetId(keyIds[10]);
-  this->AddChild(this->unknown_0124[10]);
+  this->keypadButtons[10] = new UIBitmapButton();
+  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][0] + ".bmp").c_str(), 0, 0);
+  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][1] + ".bmp").c_str(), 1, 0);
+  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][2] + ".bmp").c_str(), 2, 0);
+  this->keypadButtons[10]->SetSize(this->keypadButtons[10]->BitmapWidth(), this->keypadButtons[10]->BitmapHeight());
+  this->keypadButtons[10]->Move(keyPositions[10][0], keyPositions[10][1]);
+  this->keypadButtons[10]->SetId(keyIds[10]);
+  this->AddChild(this->keypadButtons[10]);
 
-  this->unknown_0150[0]->Enable(0);
+  this->actionButtons[0]->Enable(0);
 
   switch (g_session.m_passwordWndMode) {
   case 2:
-    this->unknown_0150[0]->Enable(1);
-    this->unknown_0150[3]->Enable(0);
+    this->actionButtons[0]->Enable(1);
+    this->actionButtons[3]->Enable(0);
     break;
   case 4:
   case 5:
-    this->unknown_0150[1]->SetDisabled(1);
-    this->unknown_0150[1]->Invalidate();
-    this->unknown_0150[2]->SetDisabled(1);
-    this->unknown_0150[2]->Invalidate();
+    this->actionButtons[1]->SetDisabled(1);
+    this->actionButtons[1]->Invalidate();
+    this->actionButtons[2]->SetDisabled(1);
+    this->actionButtons[2]->Invalidate();
     break;
   }
-  this->unknown_0150[2]->Enable(0);
+  this->actionButtons[2]->Enable(0);
 
-  this->unknown_0164 = new UIStaticText();
-  this->unknown_0164->SetSize(300, 15);
-  this->unknown_0164->SetText(LookupMessage(MSI_SECOND_PASSWORD_INFO_1), 0);
-  this->unknown_0164->Move(200, 30);
-  this->AddChild(this->unknown_0164);
+  this->instructionText = new UIStaticText();
+  this->instructionText->SetSize(300, 15);
+  this->instructionText->SetText(LookupMessage(MSI_SECOND_PASSWORD_INFO_1), 0);
+  this->instructionText->Move(200, 30);
+  this->AddChild(this->instructionText);
 
   UIStaticText* notice = new UIStaticText();
   notice->SetSize(320, 15);
@@ -130,7 +130,7 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 // OFFSET: 0x0090DE10
 // FUNCTION: fn_12454
 void UISecondPasswordInputWnd::EnableKeypad() {
-  UIBitmapButton** slot = this->unknown_0124;
+  UIBitmapButton** slot = this->keypadButtons;
   for (int remaining = 11; remaining != 0; --remaining) {
     UIButton* button = *slot;
     button->SetDisabled(0);
@@ -138,7 +138,7 @@ void UISecondPasswordInputWnd::EnableKeypad() {
     ++slot;
   }
 
-  slot = this->unknown_0150;
+  slot = this->actionButtons;
   for (int remaining = 5; remaining != 0; --remaining) {
     UIButton* button = *slot;
     button->SetDisabled(0);
@@ -147,10 +147,10 @@ void UISecondPasswordInputWnd::EnableKeypad() {
   }
 
   if (g_session.m_passwordWndMode == 4 || g_session.m_passwordWndMode == 5) {
-    UIButton* button = this->unknown_0150[1];
+    UIButton* button = this->actionButtons[1];
     button->SetDisabled(1);
     button->Invalidate();
-    button = this->unknown_0150[2];
+    button = this->actionButtons[2];
     button->SetDisabled(1);
     button->Invalidate();
   }

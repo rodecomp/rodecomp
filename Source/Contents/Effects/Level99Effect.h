@@ -23,13 +23,13 @@ public:
 
   void AddRings();
 
-  /* 00CC */ vector3d unknown_00CC[2] = {};
+  /* 00CC */ vector3d previousRingPoints[2] = {};
   /* 00E4 */ std::vector<CParticle*> sparkles;
   /* 00F0 */ std::vector<CParticle*> sprites;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CLevel99Effect, unknown_00CC) == 0xCC);
+static_assert(offsetof(CLevel99Effect, previousRingPoints) == 0xCC);
 static_assert(offsetof(CLevel99Effect, sparkles) == 0xE4);
 static_assert(offsetof(CLevel99Effect, sprites) == 0xF0);
 #endif

@@ -95,8 +95,8 @@ bool CActRes::Load(const char* name) {
       frame.cells.resize(std::min(static_cast<unsigned>(cellCount), 1000u));
       frame.anchors.clear();
       frame.anchorCount = 0;
-      std::memcpy(frame.unknown_0000, range1, sizeof(range1));
-      std::memcpy(frame.unknown_0000 + 4, range2, sizeof(range2));
+      std::memcpy(frame.rangeBounds, range1, sizeof(range1));
+      std::memcpy(frame.rangeBounds + 4, range2, sizeof(range2));
       if (this->maximumCells < cellCount) {
         this->maximumCells = cellCount;
       }
@@ -109,7 +109,7 @@ bool CActRes::Load(const char* name) {
           cell.color = 0xFFFFFFFFu;
           cell.scaleX = 1.0f;
           cell.scaleY = 1.0f;
-          cell.unknown_001C = 0;
+          cell.rotation = 0;
           cell.imageType = 0;
           continue;
         }
@@ -148,8 +148,8 @@ bool CActRes::Load(const char* name) {
             const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
             if (image) {
-              const int width = image->width * (image->unknown_0004 != 0 ? 2 : 1);
-              const int height = image->height * (image->unknown_0006 != 0 ? 2 : 1);
+              const int width = image->width * (image->doubleWidth != 0 ? 2 : 1);
+              const int height = image->height * (image->doubleHeight != 0 ? 2 : 1);
               cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
               cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
             }

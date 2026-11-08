@@ -33,9 +33,9 @@ void UITagButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.unknown_0030 = 0;
+    this->geometry.state = 0;
   } else {
-    this->geometry.unknown_0030 = 1;
+    this->geometry.state = 1;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, 0, 0);

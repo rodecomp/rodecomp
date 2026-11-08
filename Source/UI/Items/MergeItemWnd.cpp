@@ -59,7 +59,7 @@ void CMergeItemWnd::SelectSameItems(int id) {
   int checked = 0;
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
     if (itemId == std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->m_message).itemId.c_str())) {
-      const std::uint32_t state = (*it)->geometry.unknown_0030;
+      const std::uint32_t state = (*it)->geometry.state;
       if ((*it)->m_message == id) {
         if (state == 0) {
           continue;
@@ -158,7 +158,7 @@ void CMergeItemWnd::Paint() {
     UICheckBox* box = this->m_items[first + index];
     if (box != nullptr) {
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, box->m_message);
-      if (item.unknown_0000[1] != 0) {
+      if (item.identity[1] != 0) {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
         DrawItemWithQuantity(
@@ -182,7 +182,7 @@ void CMergeItemWnd::OnLBtnDown(int x, int y) {
   const int id = this->ItemAt(x, y);
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
     if (id == (*it)->m_message) {
-      (*it)->SetChecked((*it)->geometry.unknown_0030 == 0);
+      (*it)->SetChecked((*it)->geometry.state == 0);
       break;
     }
   }
@@ -196,7 +196,7 @@ void CMergeItemWnd::OnMouseHover(int x, int y) {
   int screenX = x;
   int screenY = y;
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
-  if (item.unknown_0000[1] != 0) {
+  if (item.identity[1] != 0) {
     this->ToScreen(screenX, screenY);
     std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
@@ -345,7 +345,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
   }
   case UM_REFRESH: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-    g_session.RemoveItem1710(item.unknown_0000[1], item.quantity);
+    g_session.RemoveItem1710(item.identity[1], item.quantity);
     item.quantity = argument2;
     g_session.AddItem1710(item, 1);
     break;
@@ -390,7 +390,7 @@ bool CMergeItemWnd::RequestMerge() {
   std::vector<std::uint16_t> ids;
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
     UICheckBox* item = *it;
-    if (item != nullptr && item->geometry.unknown_0030 != 0) {
+    if (item != nullptr && item->geometry.state != 0) {
       ids.push_back(static_cast<std::uint16_t>(item->m_message));
     }
   }

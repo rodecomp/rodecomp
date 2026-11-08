@@ -161,10 +161,10 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     const double factor = distanceScale;
     const float left = static_cast<float>(cell.x * factor * cell.scaleX + screenX);
-    const float right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * factor * cell.scaleX + screenX + 1.0);
-    const float lift = static_cast<float>(static_cast<double>(*reinterpret_cast<const std::int64_t*>(&this->state.unknown_FA10)));
+    const float right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * factor * cell.scaleX + screenX + 1.0);
+    const float lift = static_cast<float>(static_cast<double>(*reinterpret_cast<const std::int64_t*>(&this->state.spriteLiftLow)));
     const float top = static_cast<float>(cell.y * factor * cell.scaleY + screenY) - lift;
-    const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * factor * cell.scaleY + screenY + 1.0) - lift;
+    const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * factor * cell.scaleY + screenY + 1.0) - lift;
     if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||
         right <= 0.0f) {
       return;
@@ -172,14 +172,14 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
 
     SpriteQuad quad;
     quad.top = top;
-    quad.left = static_cast<float>(static_cast<int>(this->render.unknown_0078)) + left;
+    quad.left = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + left;
     quad.bottom = bottom;
-    quad.right = static_cast<float>(static_cast<int>(this->render.unknown_0078)) + right;
+    quad.right = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + right;
     const std::uint32_t color = static_cast<std::uint32_t>(((static_cast<std::uint32_t>(cell.color >> 24) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8) |
                                 (cell.color >> 16 & 0xFF);
     quad.bottomRhw = 1.0f / (depth - (bottom - screenY) * g_cotangent) + 0.00001f;
     quad.topRhw = 1.0f / (depth - (top - screenY) * g_cotangent) + 0.00001f;
-    quad.angle = static_cast<float>(cell.unknown_001C);
+    quad.angle = static_cast<float>(cell.rotation);
     const float alphaScale = static_cast<unsigned char>(static_cast<int>(this->state.alpha)) / 255.0f;
     quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(alphaScale * static_cast<float>(color >> 24)))) << 24 | (color & 0xFFFFFF);
     quad.image = image;
@@ -239,7 +239,7 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
         const double scale = record.scale;
         const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
-        const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+        const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
         if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
           continue;
         }
@@ -247,14 +247,14 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         float left;
         float right;
         if ((cell.mirrored & 1) != 0) {
-          left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
           if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
             continue;
           }
         } else {
           left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
             continue;
           }
@@ -264,7 +264,7 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const unsigned char green = static_cast<unsigned char>(cell.color >> 8);
         const unsigned char blue = static_cast<unsigned char>(cell.color >> 16);
         const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
-        const float angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        const float angle = static_cast<float>(cell.rotation) + this->state.roll;
         DrawTrailSpriteQuad(*this, slot.vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
 
         const float glowTop = top - 2.0f;

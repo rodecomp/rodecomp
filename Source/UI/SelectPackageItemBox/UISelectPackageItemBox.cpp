@@ -43,8 +43,8 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
     : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A686A0
@@ -52,8 +52,8 @@ CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx()
     : CUIControl(), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A68860
@@ -95,7 +95,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A694F0
 // FUNCTION: fn_16661
 void CUISelectPackageItemBox::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->Resize(387, 283);
   this->Move(0, 0);
   this->OnCreate(this->geometry.width, this->geometry.height);
@@ -168,7 +168,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // INLINED
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (SelectPackageItemBox::CUIItemInfo* other : this->items) {
@@ -177,7 +177,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::SelectItem(CUIL
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   SelectPackageItemBox::CUIItemInfo* selectedItem = dynamic_cast<SelectPackageItemBox::CUIItemInfo*>(item);
@@ -195,7 +195,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::SelectItem(CUIL
 // INLINED
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (SelectPackageItemBox::CUITabInfo* other : this->items) {
@@ -204,7 +204,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   SelectPackageItemBox::CUITabInfo* selectedTab = dynamic_cast<SelectPackageItemBox::CUITabInfo*>(item);
@@ -515,7 +515,7 @@ template <>
 void ListSelectCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operator()(CUIListItem* const& item) {
   CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>* list = this->list;
   CUIListItem* selection = item;
-  if (list->unknown_00C4) {
+  if (list->layoutFlag) {
     return;
   }
 
@@ -526,7 +526,7 @@ void ListSelectCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operator(
   }
 
   selection->SetSelected(true);
-  if (selection->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+  if (selection->index == static_cast<int>(list->selected) && list->selectionFlag) {
     return;
   }
 
@@ -552,7 +552,7 @@ template <>
 void ListSelectCallback<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::operator()(CUIListItem* const& item) {
   CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>* list = this->list;
   CUIListItem* selection = item;
-  if (list->unknown_00C4) {
+  if (list->layoutFlag) {
     return;
   }
 
@@ -563,7 +563,7 @@ void ListSelectCallback<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::
   }
 
   selection->SetSelected(true);
-  if (selection->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+  if (selection->index == static_cast<int>(list->selected) && list->selectionFlag) {
     return;
   }
 
@@ -772,8 +772,8 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->gameItem->SetMode(0);
   this->gameItem->SetScale(100);
   this->gameItem->Move(6, 5);
-  this->gameItem->unknown_0084 = 1;
-  this->gameItem->unknown_0085 = 1;
+  this->gameItem->showNameTooltip = 1;
+  this->gameItem->allowItemInfo = 1;
   this->AddChild(this->gameItem);
 
   this->nameText = new CUIStaticText();
@@ -1273,8 +1273,8 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
     thread_local EncryptedName<43, 0x3F5315DFE32B4FAFULL> name(source);
     return name.Text();
   }());
-  if (data.unknown_0068 > 0) {
-    if (data.unknown_0098 > 0) {
+  if (data.expireTime > 0) {
+    if (data.optionCount > 0) {
       image = std::string([]() {
         constexpr std::uint8_t bytes[] = {0x55, 0x52, 0xD1, 0x49, 0x91, 0xAB, 0x50, 0xFC, 0x53, 0x19, 0xD1, 0x7F, 0xEC,
                                                0xDF, 0xC9, 0x42, 0xF0, 0x91, 0x74, 0xD0, 0x25, 0x15, 0xF4, 0x52, 0xFE, 0x9C,
@@ -1294,7 +1294,7 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
         return name.Text();
       }());
     }
-  } else if (data.unknown_0098 > 0) {
+  } else if (data.optionCount > 0) {
     image = std::string([]() {
       constexpr std::uint8_t bytes[] = {0xD5, 0x3C, 0x73, 0x3B, 0x27, 0x8D, 0x94, 0x20, 0xD3, 0x77, 0x73, 0x0D, 0x5A, 0xF9, 0x0D, 0x9E, 0x70,
                                          0xFF, 0xD6, 0xA2, 0x93, 0x33, 0x30, 0x8E, 0x7E, 0xF2, 0xD4, 0xA4, 0xBB, 0x2A, 0x25, 0x88, 0x78, 0xCC,
@@ -1316,7 +1316,7 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
 void CUISelectPackageItemBox::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
   auto* const list = this->itemList;
-  list->unknown_00C4 = 1;
+  list->layoutFlag = 1;
   list->Invalidate();
   auto* const ok = this->okButton;
   ok->disabled = 1;
@@ -1333,7 +1333,7 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
   this->title->SetTitle("", 0);
   this->sourceIndex = sourceIndex;
   const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, sourceIndex);
-  if (item.unknown_0000[1] == 0) {
+  if (item.identity[1] == 0) {
     return;
   }
 

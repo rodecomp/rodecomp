@@ -15,7 +15,7 @@ struct UIBmpRadioBtnText {
   /* 000C */ int height;
   /* 0010 */ bool bold;
   /* 0014 */ std::uint32_t color;
-  /* 0018 */ bool unknown_0018;
+  /* 0018 */ bool drawShadow;
 };
 
 class UIBmpRadioBtn : public UIWindow {

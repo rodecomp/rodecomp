@@ -20,7 +20,7 @@ public:
 
   /* 007C */ UIStaticText* label;
   /* 0080 */ std::uint32_t ownerAid;
-  /* 0084 */ std::int16_t unknown_0084;
+  /* 0084 */ std::int16_t fontStyle;
   /* 0086 */ unsigned char unknown_0086[2];
   /* 0088 */ int buyingShop;
 

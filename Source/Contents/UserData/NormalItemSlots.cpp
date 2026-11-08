@@ -75,9 +75,9 @@ int BasicInfoWndInfo::IsValid() {
   }
 
   if (this->height == 55 || this->height == 71) {
-    this->unknown_0012 = 0;
+    this->expanded = 0;
   } else if (this->height == 134 || this->height == 149) {
-    this->unknown_0012 = 1;
+    this->expanded = 1;
   } else {
     return 0;
   }
@@ -144,7 +144,7 @@ int EquipWndInfo::IsValid() const {
   if (this->height != 167 && this->height != 17 && this->height != 187 && this->height != 187 + extraHeight) {
     return 0;
   }
-  if (this->unknown_0010 != 167 && this->unknown_0010 != 187) {
+  if (this->contentHeight != 167 && this->contentHeight != 187) {
     return 0;
   }
 
@@ -168,8 +168,8 @@ int GuildHelperWndInfo::IsValid() const {
 // FUNCTION: fn_13632
 int GuildWndInfo::IsValid() const {
   return this->width == g_defaultPlacementWidth && this->height == g_defaultPlacementHeight && this->x >= 0 &&
-         this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && this->unknown_0010 >= 0 &&
-         this->unknown_0010 <= 6;
+         this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && this->tab >= 0 &&
+         this->tab <= 6;
 }
 
 // OFFSET: 0x009A5590
@@ -250,8 +250,8 @@ int ItemStoreFindSlotInfo::IsValid() const {
 // FUNCTION: fn_13644
 int ItemWndInfo::IsValid() const {
   return this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height &&
-         this->unknown_0014 >= 0 && this->unknown_0014 <= 3 && this->unknown_0018 >= 0 && this->unknown_0018 <= 3 &&
-         this->unknown_001C >= 0 && this->unknown_001C <= 3 && this->unknown_0020 >= 0 && this->unknown_0020 <= 4;
+         this->selectedTab >= 0 && this->selectedTab <= 3 && this->usableRows >= 0 && this->usableRows <= 3 &&
+         this->equipmentRows >= 0 && this->equipmentRows <= 3 && this->etcRows >= 0 && this->etcRows <= 4;
 }
 
 // OFFSET: 0x009A5940
@@ -264,8 +264,8 @@ int EntryQueueWndInfo::IsValid() const {
 // OFFSET: 0x009A5980
 // FUNCTION: fn_13646
 int MiniMapWndInfo::IsValid() const {
-  return this->unknown_0010 > 0 && this->unknown_0014 > 0 && this->width >= 0 && this->width <= g_renderer->viewport.width - this->unknown_0010 &&
-         this->height >= 0 && this->height <= g_renderer->viewport.height - this->unknown_0014;
+  return this->expandedWidth > 0 && this->expandedHeight > 0 && this->width >= 0 && this->width <= g_renderer->viewport.width - this->expandedWidth &&
+         this->height >= 0 && this->height <= g_renderer->viewport.height - this->expandedHeight;
 }
 
 // OFFSET: 0x009A59C0
@@ -326,8 +326,8 @@ int MerchantShopMakeWndInfo::IsValid() const {
 // OFFSET: 0x009A5BF0
 // FUNCTION: fn_13654
 int MessengerGroupWndInfo::IsValid() const {
-  return this->unknown_0018 <= 2 && this->width >= 243 && this->height >= 166 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width &&
-         this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && (this->unknown_0014 == 0 || this->unknown_0014 == 1);
+  return this->iconIndex <= 2 && this->width >= 243 && this->height >= 166 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width &&
+         this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && (this->mode == 0 || this->mode == 1);
 }
 
 // OFFSET: 0x009A5C50
@@ -487,15 +487,15 @@ void BasicInfoWndInfo::Reset() {
   this->width = 220;
   this->height = 134;
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
-    if (this->unknown_0012 == 1) {
+    if (this->expanded == 1) {
       this->height = 149;
     } else {
       this->height = 71;
     }
-    this->unknown_0010 = 0;
+    this->mode = 0;
   } else {
-    this->height = this->unknown_0012 == 1 ? 134 : 55;
-    this->unknown_0010 = 0;
+    this->height = this->expanded == 1 ? 134 : 55;
+    this->mode = 0;
   }
 }
 
@@ -569,8 +569,8 @@ void EquipWndInfo::Reset() {
   this->y = 300;
   this->width = 280;
   this->height = 167;
-  this->unknown_0010 = 167;
-  this->unknown_0014 = 0;
+  this->contentHeight = 167;
+  this->resetState = 0;
 }
 
 // OFFSET: 0x009A6540
@@ -607,7 +607,7 @@ void GuildWndInfo::Reset() {
   this->y = 34;
   this->width = g_defaultPlacementWidth;
   this->height = g_defaultPlacementHeight;
-  this->unknown_0010 = 0;
+  this->tab = 0;
 }
 
 // OFFSET: 0x009A65D0
@@ -698,7 +698,7 @@ void ItemStoreFindListInfo::Reset() {
   this->y = 200;
   this->width = 280;
   this->height = 458;
-  this->unknown_0010 = 0;
+  this->openTabs = 0;
 }
 
 // OFFSET: 0x009A6780
@@ -719,12 +719,12 @@ void ItemWndInfo::Reset() {
   this->y = 120;
   this->width = 280;
   this->height = 120;
-  this->unknown_0010 = 120;
-  this->unknown_0014 = 0;
-  this->unknown_0018 = 3;
-  this->unknown_001C = 3;
-  this->unknown_0020 = 4;
-  this->unknown_0024 = 0;
+  this->expandedHeight = 120;
+  this->selectedTab = 0;
+  this->usableRows = 3;
+  this->equipmentRows = 3;
+  this->etcRows = 4;
+  this->resetState = 0;
 }
 
 // OFFSET: 0x009A6850
@@ -745,11 +745,11 @@ void MiniMapWndInfo::Reset() {
   this->width = x;
   this->x = x;
   this->y = 190;
-  this->unknown_0010 = 516;
-  this->unknown_0014 = 559;
-  this->unknown_0020 = 1;
-  this->unknown_0018 = 1;
-  this->unknown_001C = 1;
+  this->expandedWidth = 516;
+  this->expandedHeight = 559;
+  this->showMembers = 1;
+  this->showQuests = 1;
+  this->showTowns = 1;
 }
 
 // OFFSET: 0x009A68C0
@@ -820,11 +820,11 @@ void MerchantShopMakeWndInfo::Reset() {
 void MessengerGroupWndInfo::Reset() {
   this->width = 273;
   this->height = 326;
-  this->unknown_0018 = 0;
+  this->iconIndex = 0;
   this->x = 300;
   this->y = 200;
-  this->unknown_0010 = 0;
-  this->unknown_0014 = 1;
+  this->resetState = 0;
+  this->mode = 1;
 }
 
 // OFFSET: 0x009A69F0
@@ -843,8 +843,8 @@ void UnusedWndInfoB::Reset() {
   this->y = 300;
   this->width = 250;
   this->height = 60;
-  this->unknown_0010 = 60;
-  this->unknown_0014 = 0;
+  this->defaultHeight = 60;
+  this->resetState = 0;
 }
 
 // OFFSET: 0x009A6AA0
@@ -904,7 +904,7 @@ void PetInfoWndInfo::Reset() {
 // OFFSET: 0x009A6B60
 // FUNCTION: fn_13721
 void QuestDisplayInfo::Reset() {
-  this->unknown_0000 = 1;
+  this->visible = 1;
 }
 
 // OFFSET: 0x009A6BB0
@@ -941,7 +941,7 @@ void UnusedWndInfoC::Reset() {
   this->y = 300;
   this->width = 140;
   this->height = 30;
-  this->unknown_0010 = 0;
+  this->resetState = 0;
 }
 
 // OFFSET: 0x009A6C80
@@ -968,10 +968,10 @@ void StatusWndInfo::Reset() {
   this->x = 185;
   this->y = 300;
   this->width = 280;
-  this->unknown_0014 = 0;
+  this->resetState = 0;
   this->height = 141;
-  this->unknown_0010 = 141;
-  this->unknown_0018 = 1;
+  this->expandedHeight = 141;
+  this->extended = 1;
 }
 
 // OFFSET: 0x009A6D00
@@ -1080,7 +1080,7 @@ void UIWindowMgr::ResetUIRectInfo() {
   for (int index = 0; index < 8; ++index) {
     storeSlots[index].Reset(index);
   }
-  this->unknown_0058 = 8;
+  this->itemStoreWindowCount = 8;
 
   reinterpret_cast<ItemStoreFindWndInfo*>(base + 0x6AC)->Reset();
   reinterpret_cast<SeekPartyListWndInfo*>(base + 0x6BC)->Reset();

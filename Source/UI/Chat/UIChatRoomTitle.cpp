@@ -106,7 +106,7 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 
   const ChatRoomTitleInfo* info = reinterpret_cast<const ChatRoomTitleInfo*>(a);
   this->title = info->title;
-  this->unknown_0098 = info->unknown_0018;
+  this->password = info->password;
   this->roomType = info->type;
   this->memberCount = info->memberCount;
   this->memberLimit = info->memberLimit;
@@ -130,7 +130,7 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     std::sprintf(text, "%s (%d/%d)", this->title.c_str(), this->memberCount, this->memberLimit);
   }
 
-  this->unknown_00C0 = static_cast<short>(b);
+  this->roomOption = static_cast<short>(b);
   switch (static_cast<short>(b)) {
   case 1:
     this->label->fontFamily = 21;

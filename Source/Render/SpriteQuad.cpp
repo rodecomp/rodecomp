@@ -12,7 +12,7 @@
 RenderPrimitive* BuildSpriteQuad(CRenderSystemBase& system, const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY) {
   SpriteAtlasRecord record{};
   const SpriteRleImage* image = quad.image;
-  CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+  CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
   if (!texture) {
     texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
@@ -81,8 +81,8 @@ RenderPrimitive* BuildSpriteQuad(CRenderSystemBase& system, const SpriteQuad& qu
   vertices[3].v = record.v1;
   vertices[3].diffuse = quad.color;
 
-  primitive->unknown_0018 = 5;
-  primitive->unknown_001C = blend != 5 ? 6 : 2;
+  primitive->sourceBlend = 5;
+  primitive->destinationBlend = blend != 5 ? 6 : 2;
 
   return primitive;
 }

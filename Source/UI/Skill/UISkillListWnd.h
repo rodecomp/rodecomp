@@ -42,10 +42,10 @@ public:
   /* 011C */ int scroll;
   /* 0120 */ int columns;
   /* 0124 */ int visibleRows;
-  /* 0128 */ int unknown_0128;
+  /* 0128 */ int hasVerticalOverflow;
   /* 012C */ std::list<CSkillInfo> skills;
   /* 0134 */ SkillListWndInfo* saved;
-  /* 0138 */ std::vector<MiniPartyInfoEntry> unknown_0138;
+  /* 0138 */ std::vector<MiniPartyInfoEntry> contextMenuEntries;
   /* 0144 */ int skillTab;
 };
 

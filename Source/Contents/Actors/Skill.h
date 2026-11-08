@@ -24,7 +24,7 @@ public:
   void SetRenderInfo(const float* box, float x, float y);
   void ShowModel(const char* modelName);
 
-  /* 0410 */ int unknown_0410;
+  /* 0410 */ int sourceActorId;
   /* 0414 */ unsigned m_effectTimer;
   /* 0418 */ std::uint32_t skillAid;
   /* 041C */ C3dActor* m_model;

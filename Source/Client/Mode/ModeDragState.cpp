@@ -17,7 +17,7 @@ void ModeDragState::Clear() {
   this->identified = 0;
   this->id = 0;
   this->name = "";
-  this->unknown_0310 = 0;
+  this->itemValue = 0;
   this->resource = "";
   this->source = 0;
   this->quantity = 0;
@@ -25,7 +25,7 @@ void ModeDragState::Clear() {
   this->skillLevel = 0;
   this->refine = 0;
   std::memset(this->cards, 0, sizeof(this->cards));
-  this->unknown_03B0 = -1;
+  this->barterId = -1;
   this->grade = 0;
 }
 
@@ -37,33 +37,33 @@ void ModeDragState::BeginItem(
   windows.ShowWindowById(WID_ITEMDROPCNTWND, 0);
 
   this->Clear();
-  if (item.unknown_0000[1] == 0) {
+  if (item.identity[1] == 0) {
     return;
   }
 
   this->source = sourceValue;
   this->skill = 0;
-  this->id = item.unknown_0000[1];
+  this->id = item.identity[1];
   this->quantity = quantityValue;
   this->resource = g_session.ItemDragResource(item.itemId.c_str(), item.identified);
   this->name = item.itemId;
-  this->unknown_0310 = item.unknown_0014[0];
-  this->unknown_0314 = item.unknown_0014[1];
-  this->type = item.unknown_0000[0];
+  this->itemValue = item.prices[0];
+  this->price = item.prices[1];
+  this->type = item.identity[0];
   this->identified = item.identified;
   this->slot = slotValue;
-  this->refine = item.unknown_0060;
-  std::memcpy(this->cards, item.unknown_001C, sizeof(this->cards));
-  this->optionCount = item.unknown_0098;
+  this->refine = item.refiningLevel;
+  std::memcpy(this->cards, item.cards, sizeof(this->cards));
+  this->optionCount = item.optionCount;
 
   for (int index = 0; index < this->optionCount; ++index) {
-    std::memcpy(this->options + 5 * index, item.unknown_009C + 5 * index, 5);
+    std::memcpy(this->options + 5 * index, item.options + 5 * index, 5);
   }
 
-  this->grade = static_cast<std::uint16_t>(item.unknown_0088);
-  this->unknown_03B6 = item.unknown_0074[3];
-  this->unknown_03B8 = item.unknown_0000[2];
-  this->unknown_03C0 = item.unknown_0070;
+  this->grade = static_cast<std::uint16_t>(item.grade);
+  this->uniqueItem = item.flags[3];
+  this->equipmentLocation = item.identity[2];
+  this->viewId = item.sprite;
 }
 
 // OFFSET: 0x00CFE2A0
@@ -98,11 +98,11 @@ void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& ite
   this->skill = 0;
   this->resource = g_session.ItemDragResource(item.name.c_str(), item.flag_24);
   this->name = item.name.c_str();
-  this->unknown_0310 = item.field_20;
+  this->itemValue = item.field_20;
   this->type = item.field_1c;
   this->identified = item.flag_24;
   this->slot = slotValue;
-  this->unknown_03B0 = item.id;
+  this->barterId = item.id;
 }
 
 // OFFSET: 0x00CFE060
@@ -115,10 +115,10 @@ void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& e
   this->skill = 0;
   this->resource = g_session.ItemDragResource(entry.name.c_str(), entry.flag_24);
   this->name = entry.name.c_str();
-  this->unknown_0310 = entry.field_8;
+  this->itemValue = entry.field_8;
   this->type = entry.field_0;
   this->identified = entry.flag_24;
   this->slot = slotValue;
   this->refine = entry.field_28;
-  this->unknown_03B0 = entry.id;
+  this->barterId = entry.id;
 }

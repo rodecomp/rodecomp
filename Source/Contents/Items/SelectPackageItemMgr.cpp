@@ -158,17 +158,17 @@ int CSelectPackageItemMgr::LuaAddItem(lua_State* L) {
     item.SetItemId(static_cast<int>(itemId));
     item.identified = 1;
     item.quantity = static_cast<int>(quantity);
-    item.unknown_0000[0] = static_cast<unsigned char>(static_cast<int>(kind));
-    item.unknown_0060 = static_cast<int>(value);
-    item.unknown_0088 = static_cast<short>(static_cast<int>(refine));
+    item.identity[0] = static_cast<unsigned char>(static_cast<int>(kind));
+    item.refiningLevel = static_cast<int>(value);
+    item.grade = static_cast<short>(static_cast<int>(refine));
     const int optionValue = static_cast<int>(option);
     if (optionValue != 0) {
-      item.unknown_0066 = 1;
-      item.unknown_0068 = optionValue;
+      item.durationInHours = 1;
+      item.expireTime = optionValue;
     }
     if (placeholder) {
-      *reinterpret_cast<short*>(item.unknown_009C) = g_itemOptionPlaceholderId;
-      item.unknown_0098 = 3;
+      *reinterpret_cast<short*>(item.options) = g_itemOptionPlaceholderId;
+      item.optionCount = 3;
     }
   }
 
@@ -216,7 +216,7 @@ int CSelectPackageItemMgr::LuaAddTab(lua_State* L) {
 // FUNCTION: fn_04448
 bool CSelectPackageItemMgr::OpenItem(unsigned int itemIndex) {
   const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemIndex);
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     const int packageId = std::atoi(item.itemId.c_str());
     if (this->m_packages.find(packageId) != this->m_packages.end()) {
       if (g_windowMgr.LookupWindow(WID_SELECTPACKAGEITEMBOX) == nullptr || g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX)) {

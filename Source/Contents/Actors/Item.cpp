@@ -37,7 +37,7 @@ struct ItemFallEntry {
   /* 0034 */ int falling;
   /* 0038 */ int count;
   /* 003C */ unsigned char identified;
-  /* 003E */ std::uint16_t unknown_003E;
+  /* 003E */ std::uint16_t type;
   /* 0040 */ unsigned char showEffect;
   /* 0042 */ std::uint16_t grade;
 };
@@ -47,7 +47,7 @@ struct ItemFallEntry {
 void CItem::SetRenderInfo(const float* bounds, float x, float y) {
   enum { ItemPickJob = 32003 };
 
-  if (this->render.unknown_00A4Bytes[1]) {
+  if (this->render.visibilityOptions[1]) {
     // GLOBAL: gl_25149
     static const int minimumSize = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
@@ -59,7 +59,7 @@ void CItem::SetRenderInfo(const float* bounds, float x, float y) {
     info->depthOffset = bounds[4] + 300.0f;
     info->accountId = this->itemAid;
     info->job = ItemPickJob;
-    info->unknown_0024 = 0;
+    info->healthState = 0;
     info->kind = 1;
 
     const int width = static_cast<int>(info->right - info->left);
@@ -96,8 +96,8 @@ void CItem::SubD8B5A0() {
 // OFFSET: 0x00D8B5B0
 // FUNCTION: fn_22249
 void CItem::SubD8B5B0() {
-  this->render.unknown_00A4Bytes[0] = 1;
-  this->render.unknown_00A4Bytes[1] = 1;
+  this->render.visibilityOptions[0] = 1;
+  this->render.visibilityOptions[1] = 1;
   this->render.scale = 1.0f;
   this->render.overrideColor = 0xFFFFFF00;
 }
@@ -105,7 +105,7 @@ void CItem::SubD8B5B0() {
 // OFFSET: 0x00D8B5D0
 // FUNCTION: fn_22250
 bool CItem::OnProcess() {
-  const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float elapsed = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.isSingleColor = static_cast<int>(elapsed) % 92 >= 90;
 
   if (this->isFalling) {
@@ -162,15 +162,15 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
 
   ITEM_INFO item;
   this->itemIndex = std::atoi(entry->itemId);
-  this->unknown_018C = entry->unknown_003E;
+  this->itemEntryFlags = entry->type;
   this->itemId = static_cast<std::uint16_t>(std::atoi(entry->itemId));
   this->identified = entry->identified;
   item.itemId = itemName;
   item.identified = entry->identified;
-  item.unknown_0060 = 0;
+  item.refiningLevel = 0;
   this->name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), entry->count));
   this->GetActRes();
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
 
   if (entry->showEffect == 1) {
     const float x = this->render.position.x;

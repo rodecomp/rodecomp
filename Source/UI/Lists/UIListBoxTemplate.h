@@ -52,10 +52,10 @@ public:
   void OnCreate(int width, int height) override;
   void OnInit() override;
 
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIStaticImage* unknown_00EC;
+  /* 00E8 */ CUIStaticText* labelText;
+  /* 00EC */ CUIStaticImage* stampImage;
   /* 00F0 */ int id;
-  /* 00F4 */ unsigned int unknown_00F4;
+  /* 00F4 */ unsigned int questId;
 };
 
 class CUITab : public CUIListItem {
@@ -68,12 +68,12 @@ public:
   void OnSelectSubTab(CUISubTab* subTab);
   CUIListBox<CUISubTab>* CreateSubTabList();
 
-  /* 00E8 */ CUIStaticText* unknown_00E8;
+  /* 00E8 */ CUIStaticText* labelText;
   /* 00EC */ CUIListBox<CUISubTab>* subTabs;
-  /* 00F0 */ std::string unknown_00F0;
+  /* 00F0 */ std::string title;
   /* 0108 */ int type;
   /* 010C */ CUIPage* page;
-  /* 0110 */ int unknown_0110;
+  /* 0110 */ int collapsedHeight;
 };
 
 class CUIItemInfo : public CUIListItem {
@@ -86,19 +86,19 @@ public:
   void SetDescription(int type, const std::vector<const char*>& description);
 
   union {
-    /* 00E8 */ unsigned char unknown_00E8[0x08];
+    /* 00E8 */ unsigned char headerControls[0x08];
     struct {
       /* 00E8 */ CUIStaticImage* image;
       /* 00EC */ CUIStaticText* nameText;
     };
   };
-  /* 00F0 */ CUIStaticText* unknown_00F0;
-  /* 00F4 */ CUIStaticText* unknown_00F4;
-  /* 00F8 */ CUIStaticText* unknown_00F8;
+  /* 00F0 */ CUIStaticText* descriptionViewer;
+  /* 00F4 */ CUIStaticText* optionsViewer;
+  /* 00F8 */ CUIStaticText* sourcesViewer;
   /* 00FC */ int itemId;
   /* 0100 */ int type;
   /* 0104 */ int location;
-  /* 0108 */ std::string unknown_0108;
+  /* 0108 */ std::string description;
 };
 
 class CUIMonsterInfo : public CUIListItem {
@@ -109,9 +109,9 @@ public:
   void Paint() override;
   void SetMonster(const std::string& title);
 
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIStaticText* unknown_00EC;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00E8 */ CUIStaticText* nameText;
+  /* 00EC */ CUIStaticText* detailsViewer;
+  /* 00F0 */ CUIStaticText* valuesViewer;
   /* 00F4 */ CSprRes* sprite;
   /* 00F8 */ CActRes* action;
 };
@@ -126,11 +126,11 @@ public:
   void SetStatusLines(bool first, bool second, bool third);
   void SetViewerLines(const std::vector<std::string>& lines);
 
-  /* 00E8 */ UIWindow* unknown_00E8;
-  /* 00EC */ CUIStaticText* unknown_00EC;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
-  /* 00F4 */ CUIStaticText* unknown_00F4;
-  /* 00F8 */ std::string unknown_00F8;
+  /* 00E8 */ UIWindow* stampImage;
+  /* 00EC */ CUIStaticText* titleViewer;
+  /* 00F0 */ CUIStaticText* linesViewer;
+  /* 00F4 */ CUIStaticText* statusViewer;
+  /* 00F8 */ std::string title;
   /* 0110 */ int questId;
 };
 
@@ -140,8 +140,8 @@ public:
   void OnCreate(int width, int height) override;
   void OnInit() override;
 
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00E8 */ CUIStaticText* titleText;
+  /* 00EC */ CUIStaticText* descriptionText;
 };
 class CItemData {
 public:
@@ -149,8 +149,8 @@ public:
   /* 0004 */ std::uint8_t first;
   /* 0005 */ std::uint8_t second;
   /* 0006 */ std::uint8_t third;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  /* 0008 */ int categoryId;
+  /* 000C */ int categoryIndex;
   /* 0010 */ std::string text;
   /* 0028 */ std::vector<std::string> values;
   /* 0034 */ int type;
@@ -164,9 +164,9 @@ public:
 class CQuestInfo {
 public:
   /* 0000 */ int id;
-  /* 0004 */ std::uint8_t unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  /* 0004 */ std::uint8_t categoryType;
+  /* 0008 */ int categoryId;
+  /* 000C */ int categoryIndex;
   /* 0010 */ int questId;
   /* 0014 */ std::string title;
   /* 002C */ std::string text;
@@ -265,10 +265,10 @@ public:
   }
 
   CResPtr<CBitmapRes>& NormalImage() {
-    return this->unknown_0080;
+    return this->normalImage;
   }
 
-  /* 0080 */ CResPtr<CBitmapRes> unknown_0080;
+  /* 0080 */ CResPtr<CBitmapRes> normalImage;
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
   /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
   /* 008C */ CResPtr<CBitmapRes> unknown_008C;
@@ -468,10 +468,10 @@ public:
   }
 
   CResPtr<CBitmapRes>& NormalImage() {
-    return this->unknown_0080;
+    return this->normalImage;
   }
 
-  /* 0080 */ CResPtr<CBitmapRes> unknown_0080;
+  /* 0080 */ CResPtr<CBitmapRes> normalImage;
   /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
   /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
   /* 008C */ CResPtr<CBitmapRes> unknown_008C;
@@ -482,12 +482,12 @@ public:
   /* 00B8 */ int rowHeight;
   /* 00BC */ int itemX;
   /* 00C0 */ int itemY;
-  /* 00C4 */ unsigned char unknown_00C4;
+  /* 00C4 */ unsigned char layoutFlag;
   /* 00C5 */ unsigned char unknown_00C5[0x03];
   /* 00C8 */ std::vector<T*> items;
   /* 00D4 */ std::list<D> data;
   /* 00DC */ unsigned int selected;
-  /* 00E0 */ unsigned char unknown_00E0;
+  /* 00E0 */ unsigned char selectionFlag;
   /* 00E1 */ unsigned char rebind;
   /* 00E2 */ unsigned char unknown_00E2[0x06];
   /* 00E8 */ std::function<void(T*, const D&)> onSelect;

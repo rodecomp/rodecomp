@@ -43,7 +43,7 @@ public:
   std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00F0 */ std::int16_t unknown_00F0;
+  /* 00F0 */ std::int16_t listType;
 };
 
 class UIPetEggListWnd : public UIItemIdentifyWnd {

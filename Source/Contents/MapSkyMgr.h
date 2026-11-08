@@ -30,7 +30,7 @@ public:
   void Unused();
 
   /* 0000 */ unsigned char darken;
-  /* 0001 */ unsigned char unknown_0001;
+  /* 0001 */ unsigned char enabled;
   /* 0002 */ unsigned char lightning;
   /* 0004 */ std::vector<std::pair<std::string, std::string>> mapWeathers;
   /* 0010 */ void* actor;

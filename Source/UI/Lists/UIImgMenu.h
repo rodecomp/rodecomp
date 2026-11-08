@@ -22,11 +22,11 @@ public:
   /* 0084 */ int itemWidth;
   /* 0088 */ int itemHeight;
   /* 008C */ int horizontal;
-  /* 0090 */ bool* unknown_0090;
-  /* 0094 */ bool* unknown_0094;
+  /* 0090 */ bool* pressedItems;
+  /* 0094 */ bool* disabledItems;
   /* 0098 */ std::string bitmapName;
   /* 00B0 */ std::string baseName;
-  /* 00C8 */ int unknown_00C8;
+  /* 00C8 */ int callerWindowId;
 };
 
 #endif

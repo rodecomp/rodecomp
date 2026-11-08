@@ -30,10 +30,10 @@ public:
   void AddItemTag(const ITEM_INFO& item, unsigned int color);
   std::string AddSkillTag(int tagId, unsigned int color);
 
-  /* 011C */ int unknown_011C;
+  /* 011C */ int previousTagCount;
   /* 0120 */ std::list<ItemTagRecord> tags;
   /* 0128 */ std::string taggedText;
-  /* 0140 */ std::string unknown_0140;
+  /* 0140 */ std::string linkedText;
   /* 0158 */ int tagWidth;
 };
 

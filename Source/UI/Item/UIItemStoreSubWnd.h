@@ -45,11 +45,11 @@ public:
   /* 0114 */ UIStaticText* title;
   /* 0118 */ unsigned char unknown_0118[0x04];
   /* 011C */ int unknown_011C;
-  /* 0120 */ std::string unknown_0120;
-  /* 0138 */ std::string unknown_0138;
+  /* 0120 */ std::string footerText;
+  /* 0138 */ std::string nameFilter;
   /* 0150 */ ItemStoreFindSlotInfo* saved;
   /* 0154 */ int tabIndex;
-  /* 0158 */ unsigned char unknown_0158;
+  /* 0158 */ unsigned char sortEnabled;
   /* 0159 */ unsigned char unknown_0159[7];
 };
 

@@ -84,8 +84,8 @@ struct NaviUnknownBlock {
 // OFFSET: 0x00B8C870
 // FUNCTION: fn_19426
 CNavi_Object::CNavi_Object()
-    : cellX(0), cellY(0), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0),
-      unknown_006C(0), unknown_0070(0), unknown_0074(0), unknown_0078(0) {
+    : cellX(0), cellY(0), job(0), sex(0), bodyPalette(0), head(0), headPalette(0),
+      accessory0(0), accessory1(0), accessory2(0), robe(0) {
   this->id = -1;
   this->type = 101;
   this->index = 0;
@@ -104,8 +104,8 @@ NaviUnknownBlock::NaviUnknownBlock()
 // OFFSET: 0x00B8C710
 // FUNCTION: fn_19425
 CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info)
-    : cellX(0), cellY(0), unknown_0058(0), unknown_005C(0), unknown_0060(0), unknown_0064(0), unknown_0068(0), unknown_006C(0),
-      unknown_0070(0), unknown_0074(0), unknown_0078(0) {
+    : cellX(0), cellY(0), job(0), sex(0), bodyPalette(0), head(0), headPalette(0), accessory0(0),
+      accessory1(0), accessory2(0), robe(0) {
   this->type = type;
   this->id = -1;
   this->index = index;
@@ -122,11 +122,11 @@ CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* ti
 
 // OFFSET: 0x00B8C520
 // FUNCTION: fn_19423
-CNavi_Link::CNavi_Link() : unknown_0080(0), unknown_0084(0) {
+CNavi_Link::CNavi_Link() : linkedCellX(0), linkedCellY(0) {
   this->type = 200;
   this->linkedInfo = nullptr;
-  this->unknown_0080 = 0;
-  this->unknown_0084 = 0;
+  this->linkedCellX = 0;
+  this->linkedCellY = 0;
   this->depth = -1;
 }
 
@@ -135,7 +135,7 @@ CNavi_Link::CNavi_Link() : unknown_0080(0), unknown_0084(0) {
 CNavi_Link::CNavi_Link(
   int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84
 )
-    : unknown_0080(0), unknown_0084(0) {
+    : linkedCellX(0), linkedCellY(0) {
   this->type = type;
   this->index = index;
   if (name) {
@@ -148,8 +148,8 @@ CNavi_Link::CNavi_Link(
   this->cellY = cellY;
   this->info = info;
   this->linkedInfo = linkedInfo;
-  this->unknown_0080 = unknown80;
-  this->unknown_0084 = unknown84;
+  this->linkedCellX = unknown80;
+  this->linkedCellY = unknown84;
   this->depth = 0;
 }
 
@@ -314,15 +314,15 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     if (info) {
       CNavi_Object* npc = info->FindNpcAt(pickX, pickY);
       if (npc) {
-        npc->unknown_0058 = pick[0];
-        npc->unknown_005C = pick[1];
-        npc->unknown_0060 = pick[2];
-        npc->unknown_0064 = pick[3];
-        npc->unknown_0068 = pick[4];
-        npc->unknown_006C = pick[5];
-        npc->unknown_0070 = pick[6];
-        npc->unknown_0074 = pick[7];
-        npc->unknown_0078 = pick[8];
+        npc->job = pick[0];
+        npc->sex = pick[1];
+        npc->bodyPalette = pick[2];
+        npc->head = pick[3];
+        npc->headPalette = pick[4];
+        npc->accessory0 = pick[5];
+        npc->accessory1 = pick[6];
+        npc->accessory2 = pick[7];
+        npc->robe = pick[8];
       }
     }
   }
@@ -460,7 +460,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  this->unknown_1244 = this->FindObject("prontera");
+  this->playerMapInfo = this->FindObject("prontera");
   this->data.ResetLinkDepths();
   return true;
 }
@@ -538,65 +538,65 @@ void CSession::SetHotkeyDescription(const char* description, int index) {
 // FUNCTION: fn_23914
 void CSession::SetHotkeyDescription(const char* description, std::uint32_t skillLevel, int index) {
   for (int slot = 9 * this->m_hotkeyPage; slot < 9 * (this->m_hotkeyPage + 1); ++slot) {
-    if (this->m_hotkeyDescriptions[slot] == description && this->unknown_0420[slot] == skillLevel) {
+    if (this->m_hotkeyDescriptions[slot] == description && this->hotkeySkillLevels[slot] == skillLevel) {
       this->m_hotkeyDescriptions[slot] = "nothing";
-      this->unknown_0420[slot] = 0;
+      this->hotkeySkillLevels[slot] = 0;
     }
   }
 
   if (std::strlen(description) == 0) {
     this->m_hotkeyDescriptions[index] = "nothing";
-    this->unknown_0420[index] = 0;
+    this->hotkeySkillLevels[index] = 0;
   } else {
     this->m_hotkeyDescriptions[index] = description;
-    this->unknown_0420[index] = skillLevel;
+    this->hotkeySkillLevels[index] = skillLevel;
   }
 }
 
 // OFFSET: 0x00E26540
 // FUNCTION: fn_23915
 void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
-  this->unknown_0420[index] = skillLevel;
+  this->hotkeySkillLevels[index] = skillLevel;
 }
 
 // OFFSET: 0x00E265C0
 // FUNCTION: fn_23916
 void CSession::RefreshTrackedAchievement(int id) {
-  std::vector<SessionRecord6178>& tracked = this->unknown_6178;
+  std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
   auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
   if (found == tracked.end()) {
     return;
   }
 
-  auto record = g_session.unknown_6144.find(id);
-  SessionRecord6144 progress = record != g_session.unknown_6144.end() ? record->second : SessionRecord6144();
+  auto record = g_session.achievements.find(id);
+  SessionRecord6144 progress = record != g_session.achievements.end() ? record->second : SessionRecord6144();
 
   AchievementInfo info;
   g_achievementMgr->GetAchievement(info, id);
-  found->unknown_0001 = reinterpret_cast<const unsigned char*>(&progress.unknown_0000)[1];
+  found->completed = reinterpret_cast<const unsigned char*>(&progress.completionFlags)[1];
 
   for (unsigned int i = 0; i < info.rewards.size(); ++i) {
     const AchievementReward& reward = info.rewards[i];
-    SessionRecord6178Entry& entry = found->unknown_0020[i];
+    SessionRecord6178Entry& entry = found->objectives[i];
 
-    if (info.unknown_0064 == 0) {
+    if (info.progressMode == 0) {
       if (reward.text.size() > 40) {
         entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
       } else {
         entry.text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
       }
 
-      entry.completed = static_cast<int>(progress.unknown_0004[i]) > 0;
-    } else if (info.unknown_0064 == 1) {
-      int value = progress.unknown_0004[i];
-      std::string count = FormatOwnedString("(%d/%d)", value, reward.unknown_0018);
+      entry.completed = static_cast<int>(progress.objectives[i]) > 0;
+    } else if (info.progressMode == 1) {
+      int value = progress.objectives[i];
+      std::string count = FormatOwnedString("(%d/%d)", value, reward.targetCount);
       if (reward.text.size() + count.size() > 40) {
         entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
       } else {
         entry.text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
       }
 
-      entry.completed = value == reward.unknown_0018;
+      entry.completed = value == reward.targetCount;
     }
   }
 }
@@ -632,7 +632,7 @@ SessionShop* CSession::GetShop(int shopId) {
 // FUNCTION: fn_23641
 void CSession::SetShopFlag(int shopId, char flag) {
   if (SessionShop* shop = this->GetShop(shopId)) {
-    shop->unknown_0000 = static_cast<unsigned char>(flag);
+    shop->flag = static_cast<unsigned char>(flag);
   }
 }
 
@@ -644,11 +644,11 @@ void CSession::SetShopItem(int shopId, unsigned int index, int itemId, int first
     return;
   }
 
-  if (shop->unknown_0004.size() <= index) {
-    shop->unknown_0004.resize(index + 1);
+  if (shop->items.size() <= index) {
+    shop->items.resize(index + 1);
   }
 
-  std::map<int, std::pair<int, int>>& items = shop->unknown_0004[index];
+  std::map<int, std::pair<int, int>>& items = shop->items[index];
   if (items.find(itemId) == items.end()) {
     items[itemId] = index == 0 ? std::make_pair(1, second) : std::make_pair(first, second);
   }
@@ -756,22 +756,22 @@ void CSession::LoadRobeAlpha() {
 // OFFSET: 0x00E010B0
 // FUNCTION: fn_23646
 int CSession::SetUnknown8134(int value) {
-  this->unknown_8134 = value;
+  this->playerSkillMode = value;
   return value;
 }
 
 // OFFSET: 0x00DDBB50
 // FUNCTION: fn_23359
 int CSession::GetUnknown8134() const {
-  return this->unknown_8134;
+  return this->playerSkillMode;
 }
 
 // OFFSET: 0x00E01670
 // FUNCTION: fn_23647
 void CSession::ClearUnknown1710(int id) {
   for (ITEM_INFO& entry : this->m_inventoryItems) {
-    if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
-      entry.unknown_0074[2] = 0;
+    if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
+      entry.flags[2] = 0;
       break;
     }
   }
@@ -780,9 +780,9 @@ void CSession::ClearUnknown1710(int id) {
 // OFFSET: 0x00E016A0
 // FUNCTION: fn_23648
 void CSession::ClearUnknown1740(int id) {
-  for (ITEM_INFO& entry : this->unknown_1740) {
-    if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
-      entry.unknown_0074[2] = 0;
+  for (ITEM_INFO& entry : this->merchantShopItems) {
+    if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
+      entry.flags[2] = 0;
       break;
     }
   }
@@ -791,9 +791,9 @@ void CSession::ClearUnknown1740(int id) {
 // OFFSET: 0x00E016D0
 // FUNCTION: fn_23649
 void CSession::ClearUnknown1738(int id) {
-  for (ITEM_INFO& entry : this->unknown_1738) {
-    if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
-      entry.unknown_0074[2] = 0;
+  for (ITEM_INFO& entry : this->cartItems) {
+    if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
+      entry.flags[2] = 0;
       break;
     }
   }
@@ -826,8 +826,8 @@ std::uint32_t CSession::SyncServerTime(std::uint32_t serverTime) {
 // OFFSET: 0x00DE4D80
 // FUNCTION: fn_23490
 void CSession::LoadDamageSkinSettings() {
-  g_session.m_hotkeyScript->Call("GetDamageSkinSize", ">d", &this->unknown_80C8);
-  if (this->m_damageSkinIndex < 0 || this->m_damageSkinIndex >= this->unknown_80C8) {
+  g_session.m_hotkeyScript->Call("GetDamageSkinSize", ">d", &this->damageSkinCount);
+  if (this->m_damageSkinIndex < 0 || this->m_damageSkinIndex >= this->damageSkinCount) {
     this->m_damageSkinIndex = 0;
   }
   if (this->m_damageSkinMode < 0 || this->m_damageSkinMode >= 4) {
@@ -842,10 +842,10 @@ void CSession::LoadDamageSkinSettings() {
     this->m_damageResourceName = resourceName;
   }
   if (name80EC) {
-    this->unknown_80EC = name80EC;
+    this->damageSpriteName = name80EC;
   }
   if (name8104) {
-    this->unknown_8104 = name8104;
+    this->damageSkinAuxiliaryName = name8104;
   }
   g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
 }
@@ -857,7 +857,7 @@ bool CSession::LoadExceptionMinimapNameTable() {
   this->m_navigationForbiddenMaps.clear();
   this->m_navigationForbiddenMaps.reserve(512);
 
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->unknown_5400[0x30]);
+  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
   const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0);
 
   for (char* token : tokens) {
@@ -921,10 +921,10 @@ bool CSession::LoadFogParameters() {
 // OFFSET: 0x00DE5B40
 // FUNCTION: fn_23493
 void CSession::ClearHomunStatus() {
-  this->unknown_5608 = 0;
-  this->unknown_560C = 0;
-  this->unknown_5610 = 0;
-  this->unknown_55FC = 0;
-  this->unknown_5600 = 0;
-  this->unknown_5604 = 0;
+  this->moveHomunEnemy = 0;
+  this->selectHomunEnemy = 0;
+  this->attackHomunEnemy = 0;
+  this->homunEnemyGid = 0;
+  this->homunEnemyX = 0;
+  this->homunEnemyY = 0;
 }

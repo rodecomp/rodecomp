@@ -370,7 +370,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     case ID_CLOSE:
-      g_session.m_partyBooking.m_alarm = this->m_alarmCheck->geometry.unknown_0030 != 0;
+      g_session.m_partyBooking.m_alarm = this->m_alarmCheck->geometry.state != 0;
       g_windowMgr.CloseWindow(WID_SEEKPARTYLISTWND);
       return 0;
     default:
@@ -423,7 +423,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x009431D0
 // FUNCTION: fn_12815
 void UISeekPartyListWnd::NotifyNewAd() {
-  if (this->m_alarmCheck->geometry.unknown_0030 != 0) {
+  if (this->m_alarmCheck->geometry.state != 0) {
     g_soundMgr->PlayWave("party_alarm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     const char* message = LookupMessage(MSI_PARTY_BOOKING_NOTIFY);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 15, 0, 0);

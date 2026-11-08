@@ -11,7 +11,7 @@ void CEffectPrim::InitSegment() {
     EffectPrimitiveRecord& record = this->state.records[index];
     record.position = this->render.position;
     std::memcpy(record.corners, this->state.segPos, sizeof(record.corners));
-    record.unknown_003C = this->state.radius;
+    record.radius = this->state.radius;
     record.scale = this->state.size;
     record.angle = this->state.longitude;
     std::memcpy(record.matrix, this->state.transform, sizeof(record.matrix));

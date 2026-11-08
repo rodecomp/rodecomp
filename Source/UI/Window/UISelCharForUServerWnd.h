@@ -24,12 +24,12 @@ public:
 protected:
   /* 00B4 */ CharSlotInfo m_slots[18];
   /* 192C */ int m_slotEnabled[18];
-  /* 1974 */ short unknown_1974[18];
+  /* 1974 */ short accessory2[18];
   /* 1998 */ std::uint32_t m_startTime;
   /* 199C */ UIWindow* m_checkBoxes[18];
-  /* 19E4 */ UIBitmapButton* unknown_19E4;
-  /* 19E8 */ UICharInfoBalloonText* unknown_19E8;
-  /* 19EC */ std::vector<std::string> unknown_19EC;
+  /* 19E4 */ UIBitmapButton* confirmButton;
+  /* 19E8 */ UICharInfoBalloonText* characterInfoBalloon;
+  /* 19EC */ std::vector<std::string> characterInfoLines;
   /* 19F8 */ int m_checkedCount;
   /* 19FC */ int m_columns;
 };

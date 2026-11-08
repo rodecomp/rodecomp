@@ -40,7 +40,7 @@ void UIWordDisplayWnd::OnProcess() {
 
   this->screenY = screenY;
   this->screenX = screenX;
-  const float scale = actor->render.unknown_005C;
+  const float scale = actor->render.distanceScale;
   const int y = static_cast<int>(screenY - static_cast<float>(g_renderer->viewport.height * 100 / 480) * scale);
   const int x = static_cast<int>(screenX - static_cast<float>(g_renderer->viewport.width * 5 / 640) * scale);
   this->Move(x, y);

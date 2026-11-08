@@ -103,12 +103,12 @@ public:
 
 private:
   /* 00B4 */ std::list<WorldViewRecord> m_records;
-  /* 00BC */ WorldViewRecord* unknown_00BC;
-  /* 00C0 */ WorldViewRecord* unknown_00C0;
-  /* 00C4 */ RoMapTooltipBox* unknown_00C4;
-  /* 00C8 */ int* unknown_00C8;
+  /* 00BC */ WorldViewRecord* hoveredRecord;
+  /* 00C0 */ WorldViewRecord* selectedRecord;
+  /* 00C4 */ RoMapTooltipBox* hoverTooltip;
+  /* 00C8 */ int* previewArea;
   /* 00CC */ unsigned char unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
+  /* 00D0 */ int previewTexture;
   /* 00D4 */ unsigned char m_showLabels;
   /* 00D8 */ std::uint32_t m_lastTime;
   /* 00DC */ unsigned char m_resetTime;
@@ -120,8 +120,8 @@ private:
   /* 01F0 */ int m_comboHeight;
   /* 01F4 */ UIComboBoxDefWnd* m_worldCombo;
   /* 01F8 */ UICheckBox* m_labelCheck;
-  /* 01FC */ std::vector<std::string> unknown_01FC;
-  /* 0208 */ int unknown_0208;
+  /* 01FC */ std::vector<std::string> fieldNames;
+  /* 0208 */ int selectedMapIndex;
   /* 020C */ UIBitmapButton* m_searchButton;
   /* 0210 */ UIBitmapButton* m_searchListButton;
   /* 0214 */ UIEditCtrl* m_searchEdit;

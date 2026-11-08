@@ -178,12 +178,12 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     CRenderObject* actor;
     if (self) {
       actor = world->player;
-      current = g_session.unknown_5568;
-      maximum = g_session.unknown_556C;
+      current = g_session.hp;
+      maximum = g_session.maxHp;
     } else {
       actor = world->GetGameActorByAID(this->m_owner->GetMember().accountId);
       if (actor) {
-        UIPcGage* gauge = reinterpret_cast<UIPcGage*&>(static_cast<CPc*>(actor)->unknown_0490);
+        UIPcGage* gauge = reinterpret_cast<UIPcGage*&>(static_cast<CPc*>(actor)->gaugeWindow);
         if (gauge) {
           current = gauge->current;
           maximum = gauge->maximum;
@@ -203,7 +203,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
   case UM_MAKEMENU:
     this->m_entries.clear();
-    if (g_windowMgr.unknown_0210) {
+    if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_owner->GetMember().valid) {
@@ -212,7 +212,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), 9));
       } else {
         this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
-        if (g_session.unknown_5464) {
+        if (g_session.partyLeader) {
           this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_EXPEL)).c_str(), 0));
           this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), 43));
         }
@@ -340,14 +340,14 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_PARTY_SETTING:
       if (!g_session.m_lockMouse) {
-        if (g_windowMgr.unknown_042C) {
+        if (g_windowMgr.partyInvitationToWnd) {
           g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
         }
         if (!g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT) && g_session.PartyCount()) {
           g_windowMgr.EnsureWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
         }
         g_windowMgr.CloseWindow(WID_FRIENDOPTIONWND);
-        UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_030C);
+        UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.partySettingWnd);
         if (window) {
           int x = 0;
           int y = 0;
@@ -537,7 +537,7 @@ void UIMiniPartyInfoWnd::Paint() {
   if (this->m_owner->GetMember().dead == 1) {
     dead = 1;
   } else if (g_session.m_aid == this->m_owner->GetMember().accountId) {
-    dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250 == 1;
+    dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead == 1;
   }
 
   const int leader = this->m_owner->GetMember().leader;

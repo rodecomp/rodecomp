@@ -27,16 +27,16 @@ void CStormKickEffect::CreateStorms(int layer) {
     }
 
     particle->SetTexture("effect\\storm2.tga");
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = index;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
-    particle->unknown_00C0 = 40.0f;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
+    particle->speedParameter = 40.0f;
     particle->alpha = 0;
-    *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
     particle->scale = 2.0f;
-    particle->unknown_0054 = 50.0f;
-    float* motion = reinterpret_cast<float*>(particle->unknown_0058);
+    particle->animationParameter = 50.0f;
+    float* motion = reinterpret_cast<float*>(particle->animationParameters);
     motion[0] = 5.0f;
     motion[1] = static_cast<float>(layer);
 
@@ -86,29 +86,29 @@ void CStormKickEffect::CreateClouds(int layer) {
       }
 
       particle->SetTexture("effect\\cloud11.tga");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->alpha = 0;
-      particle->unknown_0050 = 30;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-      particle->unknown_004C = std::max(rand() % 21, 0) + 80;
-      particle->unknown_0054 = 1.0f;
+      particle->angleParameter = 30;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->phaseParameter = std::max(rand() % 21, 0) + 80;
+      particle->animationParameter = 1.0f;
 
       if (this->id == EF_STORMKICK8) {
         if (layer == 0) {
-          particle->unknown_00C0 = 28.0f - ring * 5.0f;
+          particle->speedParameter = 28.0f - ring * 5.0f;
           particle->scale = 10.0f - ring * 2.0f;
         } else if (layer == 1) {
-          particle->unknown_00C0 = 18.0f - ring * 5.0f;
+          particle->speedParameter = 18.0f - ring * 5.0f;
           particle->scale = 5.0f - ring;
         }
       } else if (layer == 0) {
-        particle->unknown_00C0 = 48.0f - ring * 5.0f;
+        particle->speedParameter = 48.0f - ring * 5.0f;
         particle->scale = 14.0f - ring * 2.0f;
       } else if (layer == 1) {
-        particle->unknown_00C0 = 28.0f - ring * 5.0f;
+        particle->speedParameter = 28.0f - ring * 5.0f;
         particle->scale = 6.0f - ring;
       }
 
@@ -127,11 +127,11 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
     return;
   }
 
-  const float* motion = reinterpret_cast<const float*>(particle->unknown_0058);
-  const int segment = particle->unknown_000C;
-  float radius = particle->unknown_00C0;
-  const float height = -particle->unknown_0054 + segment * motion[0];
-  int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->unknown_00C4)) % 360;
+  const float* motion = reinterpret_cast<const float*>(particle->animationParameters);
+  const int segment = particle->columnIndex;
+  float radius = particle->speedParameter;
+  const float height = -particle->animationParameter + segment * motion[0];
+  int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->angleBits)) % 360;
   for (int step = 1; step <= segment; ++step) {
     radius -= (2.2f - step * 0.2f) * particle->scale;
   }
@@ -215,13 +215,13 @@ void CStormKickEffect::Open() {
   case EF_STORMKICK2:
   case EF_STORMKICK3:
   case EF_STORMKICK6:
-    this->unknown_002C = 100;
+    this->effectLifetime = 100;
     break;
   case EF_STORMKICK7:
-    this->unknown_002C = 1000;
+    this->effectLifetime = 1000;
     break;
   case EF_STORMKICK8:
-    this->unknown_002C = 60;
+    this->effectLifetime = 60;
     break;
   }
 }
@@ -258,15 +258,15 @@ void CStormKickEffect::OnProcess() {
     particle->position.z = this->position[2];
     if (particle) {
       int alpha = particle->alpha;
-      if (particle->unknown_00E8 > 60 && this->id != EF_STORMKICK7) {
+      if (particle->elapsedFrames > 60 && this->id != EF_STORMKICK7) {
         alpha = std::max(alpha - 1, 0);
       }
-      if (particle->unknown_00E8 <= 40) {
+      if (particle->elapsedFrames <= 40) {
         ++alpha;
       }
       particle->alpha = alpha;
 
-      float& rotation = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
       rotation = static_cast<float>(static_cast<int>(rotation - static_cast<float>(std::max(rand() % 3, 0) + 3)) % 360);
 
       matrix transform;
@@ -275,7 +275,7 @@ void CStormKickEffect::OnProcess() {
       particle->transform = transform;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 
   for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
@@ -284,11 +284,11 @@ void CStormKickEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      float& rotation = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
       const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
-      const int spread = std::min(particle->unknown_0050 + 3, 180);
-      particle->unknown_0050 = spread;
-      const int frame = particle->unknown_00E8;
+      const int spread = std::min(particle->angleParameter + 3, 180);
+      particle->angleParameter = spread;
+      const int frame = particle->elapsedFrames;
       int alpha = particle->alpha;
       rotation = nextRotation;
 
@@ -308,16 +308,16 @@ void CStormKickEffect::OnProcess() {
         particle->scale += 0.1f;
       }
 
-      const int segment = particle->unknown_000C;
-      const float radius = particle->unknown_0054;
+      const int segment = particle->columnIndex;
+      const float radius = particle->animationParameter;
       const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(spread) / 20.0f) * segment) + nextRotation) % 360;
-      const int tilt = particle->unknown_004C;
+      const int tilt = particle->phaseParameter;
       const float horizontal = radius * g_cosTable[tilt];
       const float vertical = radius * g_sinTable[tilt];
 
       EffectPoint corners[4];
       corners[3].x = g_cosTable[angle] * particle->scale;
-      corners[3].y = -particle->unknown_00C0;
+      corners[3].y = -particle->speedParameter;
       corners[3].z = g_sinTable[angle] * particle->scale;
       corners[1].x = corners[3].x + g_cosTable[angle] * horizontal;
       corners[1].y = corners[3].y - vertical;
@@ -342,7 +342,7 @@ void CStormKickEffect::OnProcess() {
       this->lastPoints[1] = corners[1];
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 
   CRenderObject* actor = FindRenderObject(this->actor);
@@ -381,7 +381,7 @@ void CStormKickEffect::Render() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
     const int alpha = particle->alpha;
-    const float* motion = reinterpret_cast<const float*>(particle->unknown_0058);
+    const float* motion = reinterpret_cast<const float*>(particle->animationParameters);
 
     switch (this->id) {
     case EF_STORMKICK1:
@@ -414,7 +414,7 @@ void CStormKickEffect::Render() {
       continue;
     }
 
-    const int texPart = particle->unknown_000C;
+    const int texPart = particle->columnIndex;
     if (texPart <= 0) {
       continue;
     }

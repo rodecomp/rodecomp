@@ -16,11 +16,11 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnMouseHover(int x, int y) override;
 
-  /* 00F8 */ unsigned char unknown_00F8[0xF0];
+  /* 00F8 */ unsigned char itemPayload[0xF0];
   /* 01E8 */ unsigned char unknown_01E8[0x8];
   /* 01F0 */ int column;
   /* 01F4 */ int line;
-  /* 01F8 */ int unknown_01F8;
+  /* 01F8 */ int tipId;
   /* 01FC */ int textY;
 };
 

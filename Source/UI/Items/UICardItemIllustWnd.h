@@ -14,7 +14,7 @@ public:
 
   /* 00B4 */ std::string m_bitmapPath;
   /* 00CC */ std::string m_name;
-  /* 00E4 */ unsigned char unknown_00E4;
+  /* 00E4 */ unsigned char identified;
 };
 
 #endif

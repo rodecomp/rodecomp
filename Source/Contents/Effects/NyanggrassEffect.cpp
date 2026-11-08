@@ -123,7 +123,7 @@ void CMultiTexParticle::Render(int column, int row) {
 
 // OFFSET: 0x00708260
 // FUNCTION: fn_07070
-CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), unknown_00D8(0) {
+CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), gridSize(0) {
 }
 
 // OFFSET: 0x007085B0
@@ -139,32 +139,32 @@ void CNyanggrassEffect::Close() {
 // OFFSET: 0x007085F0
 // FUNCTION: fn_07073
 void CNyanggrassEffect::Open() {
-  switch (this->unknown_00B0) {
+  switch (this->effectLevel) {
   case 1:
   case 2:
-    this->unknown_00D8 = 5;
+    this->gridSize = 5;
     break;
   case 3:
   case 4:
-    this->unknown_00D8 = 7;
+    this->gridSize = 7;
     break;
   case 5:
-    this->unknown_00D8 = 9;
+    this->gridSize = 9;
     break;
   }
 
-  for (int row = 0; row < this->unknown_00D8; ++row) {
-    for (int column = 0; column < this->unknown_00D8; ++column) {
+  for (int row = 0; row < this->gridSize; ++row) {
+    for (int column = 0; column < this->gridSize; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
       if (particle) {
         CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
-        effect->unknown_0004 = this->id;
-        effect->unknown_000C = 0;
-        effect->unknown_0010 = 0;
-        effect->unknown_0008 = 1;
+        effect->effectId = this->id;
+        effect->columnIndex = 0;
+        effect->rowIndex = 0;
+        effect->groupIndex = 1;
         effect->m_loop = true;
         const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
-        const int half = this->unknown_00D8 / 2;
+        const int half = this->gridSize / 2;
         effect->position.x = static_cast<float>((column - half) * 5) + origin.x;
         effect->position.y = origin.y;
         effect->position.z = static_cast<float>((row - half) * 5) + origin.z;
@@ -191,6 +191,6 @@ void CNyanggrassEffect::OnProcess() {
       static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }

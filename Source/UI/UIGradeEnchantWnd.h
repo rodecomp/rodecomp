@@ -13,16 +13,16 @@ struct GradeEnchantMaterial {
   /* 0000 */ std::uint32_t itemId;
   /* 0004 */ std::int32_t amount;
   /* 0008 */ std::int32_t zeny;
-  /* 000C */ std::int32_t unknown_000C;
-  /* 0010 */ unsigned char unknown_0010;
+  /* 000C */ std::int32_t downgradeAmount;
+  /* 0010 */ unsigned char breakOnFailure;
 };
 #pragma pack(pop)
 
 struct GradeEnchantInfo {
-  /* 0000 */ std::int32_t unknown_0000;
-  /* 0004 */ std::int32_t unknown_0004;
-  /* 0008 */ std::int32_t unknown_0008;
-  /* 000C */ std::int32_t unknown_000C;
+  /* 0000 */ std::int32_t blessingItemId;
+  /* 0004 */ std::int32_t blessingStepAmount;
+  /* 0008 */ std::int32_t maxBlessingSteps;
+  /* 000C */ std::int32_t bonusPerStep;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -83,25 +83,25 @@ public:
   /* 00BC */ UIGradeEnchant_BtnEnhancedDown* enhancedDownButton;
   /* 00C0 */ int state;
   /* 00C4 */ int result;
-  /* 00C8 */ std::uint32_t unknown_00C8;
-  /* 00CC */ std::uint32_t unknown_00CC;
+  /* 00C8 */ std::uint32_t itemFrameInterval;
+  /* 00CC */ std::uint32_t wheelFrameInterval;
   /* 00D0 */ std::uint32_t stateTick;
-  /* 00D4 */ std::uint32_t unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
-  /* 00E0 */ std::uint32_t unknown_00E0;
+  /* 00D4 */ std::uint32_t wheelTick;
+  /* 00D8 */ int itemFrame;
+  /* 00DC */ int wheelFrame;
+  /* 00E0 */ std::uint32_t resultTick;
   /* 00E4 */ int selectedMaterial;
   /* 00E8 */ int hoverMaterial;
   /* 00EC */ std::vector<GradeEnchantMaterial> materials;
   /* 00F8 */ GradeEnchantInfo info;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
-  /* 0110 */ unsigned char unknown_0110;
-  /* 0114 */ int unknown_0114;
-  /* 0118 */ int unknown_0118;
-  /* 011C */ std::vector<int> unknown_011C;
+  /* 0108 */ int enchantOption;
+  /* 010C */ int enchantOptionCount;
+  /* 0110 */ unsigned char protect;
+  /* 0114 */ int blessingAmount;
+  /* 0118 */ int baseSuccessRate;
+  /* 011C */ std::vector<int> messageIds;
   /* 0128 */ ITEM_INFO item;
-  /* 0220 */ unsigned char unknown_0220;
+  /* 0220 */ unsigned char requestPending;
 };
 
 #endif

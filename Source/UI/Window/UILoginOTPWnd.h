@@ -15,10 +15,10 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ UIEditCtrl* unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B4 */ UIEditCtrl* authCodeEdit;
+  /* 00B8 */ int inputState;
   /* 00BC */ UIStaticText* timerText;
-  /* 00C0 */ int unknown_00C0;
+  /* 00C0 */ int timerState;
 };
 
 #endif

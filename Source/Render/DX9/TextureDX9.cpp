@@ -393,7 +393,7 @@ bool CTextureDX9::UploadSurface(
 // FUNCTION: fn_02491
 void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  this->unknown_0008 = (this->unknown_0008 & 255) | (static_cast<unsigned char>(option) << 8);
+  this->textureFlags = (this->textureFlags & 255) | (static_cast<unsigned char>(option) << 8);
   if (!pixels) {
     return;
   }

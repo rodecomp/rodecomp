@@ -21,13 +21,13 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ int nonItemHeight;
   /* 00F4 */ UIStaticText* total;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F8 */ int merchantId;
   /* 00FC */ MerchantItemPurchaseWndInfo* saved;
   /* 0100 */ int hovered;
-  /* 0104 */ int unknown_0104;
-  /* 0108 */ int unknown_0108;
+  /* 0104 */ int storeId;
+  /* 0108 */ int buyingStore;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

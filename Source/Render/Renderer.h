@@ -56,9 +56,9 @@ public:
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
-  /* 003C */ int unknown_003C;
-  /* 0040 */ int unknown_0040;
-  /* 0044 */ int unknown_0044;
+  /* 003C */ int viewDirectionX;
+  /* 0040 */ int viewDirectionY;
+  /* 0044 */ int viewDirectionZ;
   /* 0048 */ unsigned char twoPass;
   /* 0049 */ unsigned char unknown_0049[3];
   /* 004C */ int unknown_004C;

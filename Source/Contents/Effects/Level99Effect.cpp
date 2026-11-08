@@ -48,26 +48,26 @@ void CLevel99Effect::AddRings() {
       }
 
       particle->SetTexture("effect\\ring_blue.tga");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = row;
-      particle->unknown_0008 = 3;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = row;
+      particle->groupIndex = 3;
       particle->alpha = 120;
       particle->SetColor(100, 100, 255);
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(startAngle);
-      particle->unknown_0050 = 315;
-      particle->unknown_00C0 = 15.0f - static_cast<float>(row) * 2.0f;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(startAngle);
+      particle->angleParameter = 315;
+      particle->speedParameter = 15.0f - static_cast<float>(row) * 2.0f;
       particle->scale = static_cast<float>(row) * 0.2f + 3.9f;
-      particle->unknown_004C = tilt;
-      particle->unknown_0054 = 0.0f;
+      particle->phaseParameter = tilt;
+      particle->animationParameter = 0.0f;
       InitParticleQuad(particle->vertices);
       this->sprites.push_back(particle);
 
-      const int index = particle->unknown_000C;
-      const float radius = g_sinTable[index * 9] * particle->unknown_00C0;
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->unknown_00C4);
-      const int angle = static_cast<int>(static_cast<int>(particle->unknown_0050 / 20.0f) * index + baseAngle) % 360;
-      const int ringTilt = particle->unknown_004C;
+      const int index = particle->columnIndex;
+      const float radius = g_sinTable[index * 9] * particle->speedParameter;
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
+      const int ringTilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[ringTilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
@@ -89,16 +89,16 @@ void CLevel99Effect::AddRings() {
       particle->vertices[1].z = points[1].z;
 
       if (index != 0) {
-        particle->vertices[0].x = this->unknown_00CC[1].x;
-        particle->vertices[0].y = this->unknown_00CC[1].y;
-        particle->vertices[0].z = this->unknown_00CC[1].z;
-        particle->vertices[2].x = this->unknown_00CC[0].x;
-        particle->vertices[2].y = this->unknown_00CC[0].y;
-        particle->vertices[2].z = this->unknown_00CC[0].z;
+        particle->vertices[0].x = this->previousRingPoints[1].x;
+        particle->vertices[0].y = this->previousRingPoints[1].y;
+        particle->vertices[0].z = this->previousRingPoints[1].z;
+        particle->vertices[2].x = this->previousRingPoints[0].x;
+        particle->vertices[2].y = this->previousRingPoints[0].y;
+        particle->vertices[2].z = this->previousRingPoints[0].z;
       }
 
-      this->unknown_00CC[0] = points[0];
-      this->unknown_00CC[1] = points[1];
+      this->previousRingPoints[0] = points[0];
+      this->previousRingPoints[1] = points[1];
     }
 
     ++row;
@@ -131,13 +131,13 @@ void CLevel99Effect::Open() {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
     if (particle) {
       particle->SetTexture("effect\\pikapika2.bmp");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = index;
-      particle->unknown_0010 = 0;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = index;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
       particle->alpha = 200;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-      particle->unknown_004C = tilt;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->phaseParameter = tilt;
       particle->scale = 9.0f;
       InitParticleQuad(particle->vertices);
       this->sparkles.push_back(particle);
@@ -168,14 +168,14 @@ void CLevel99Effect::OnProcess() {
     if (CParticle* particle = *it) {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeZRotation(*reinterpret_cast<const float*>(&particle->unknown_00C4) / 180.0f * 3.141592f);
+      rotation.MakeZRotation(*reinterpret_cast<const float*>(&particle->angleBits) / 180.0f * 3.141592f);
       rotation.AppendXRotation(1.570796f);
 
-      int phase = particle->unknown_004C + 3;
+      int phase = particle->phaseParameter + 3;
       if (phase >= 360) {
         phase -= 360;
       }
-      particle->unknown_004C = phase;
+      particle->phaseParameter = phase;
 
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
@@ -186,7 +186,7 @@ void CLevel99Effect::OnProcess() {
       result.Compose(scale, rotation);
       particle->transform = result;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 
   for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
@@ -195,8 +195,8 @@ void CLevel99Effect::OnProcess() {
     (*it)->position.z = this->position[2];
 
     if (CParticle* particle = *it) {
-      float& baseAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0010) + baseAngle + 3.0f));
+      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->rowIndex) + baseAngle + 3.0f));
       baseAngle = degrees;
 
       matrix rotation;
@@ -204,7 +204,7 @@ void CLevel99Effect::OnProcess() {
       rotation.MakeYRotation(degrees / 180.0f * 3.141592f);
       particle->transform = rotation;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -220,8 +220,8 @@ void CLevel99Effect::Render() {
 
   for (std::vector<CParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
     CParticle* sprite = *it;
-    if (sprite && sprite->unknown_000C > 0) {
-      const int frame = sprite->unknown_000C;
+    if (sprite && sprite->columnIndex > 0) {
+      const int frame = sprite->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

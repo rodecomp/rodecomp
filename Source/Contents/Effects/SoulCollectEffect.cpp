@@ -14,7 +14,7 @@
 // OFFSET: 0x0072A210
 // FUNCTION: fn_07455
 CSoulCollectEffect::CSoulCollectEffect() : CEffect(-1) {
-  this->unknown_0050 = 0;
+  this->rotationParameter = 0;
 }
 
 // OFFSET: 0x0072A2A0
@@ -34,14 +34,14 @@ void CSoulCollectEffect::Close() {
 // OFFSET: 0x0072A5F0
 // FUNCTION: fn_07460
 void CSoulCollectEffect::Open() {
-  const int count = this->unknown_00B0;
+  const int count = this->effectLevel;
   if (count < 0) {
     return;
   }
 
   const int current = static_cast<int>(this->particles.size() / 2);
   if (current < count) {
-    for (int index = 0; index < this->unknown_00B0 - current; ++index) {
+    for (int index = 0; index < this->effectLevel - current; ++index) {
       for (int layer = 0; layer < 2; ++layer) {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
         if (!particle) {
@@ -49,10 +49,10 @@ void CSoulCollectEffect::Open() {
         }
 
         particle->SetTexture("effect\\soul_collect\\soul_collect.bmp");
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = static_cast<int>(this->particles.size() / 2);
-        particle->unknown_0010 = layer;
-        particle->unknown_0008 = 1;
+        particle->effectId = this->id;
+        particle->columnIndex = static_cast<int>(this->particles.size() / 2);
+        particle->rowIndex = layer;
+        particle->groupIndex = 1;
         particle->alpha = 0;
         if (layer == 0) {
           particle->depthOffset = 0.00001f;
@@ -64,7 +64,7 @@ void CSoulCollectEffect::Open() {
       }
     }
   } else if (current > count) {
-    for (int index = 0; index < current - this->unknown_00B0; ++index) {
+    for (int index = 0; index < current - this->effectLevel; ++index) {
       if (this->particles.size() != 0) {
         for (int layer = 0; layer < 2; ++layer) {
           FreeParticle(this->particles.back());
@@ -84,7 +84,7 @@ bool CSoulCollectEffect::IsAlive() {
 // OFFSET: 0x0072A800
 // FUNCTION: fn_07463
 void CSoulCollectEffect::OnProcess() {
-  float& rotation = reinterpret_cast<float&>(this->unknown_0050);
+  float& rotation = reinterpret_cast<float&>(this->rotationParameter);
 
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
@@ -93,7 +93,7 @@ void CSoulCollectEffect::OnProcess() {
     }
 
     const unsigned int pairs = this->particles.size() / 2;
-    const int index = particle->unknown_000C;
+    const int index = particle->columnIndex;
     if (index < static_cast<int>(pairs - 5)) {
       particle->alpha = 0;
       continue;
@@ -124,7 +124,7 @@ void CSoulCollectEffect::OnProcess() {
       break;
     }
 
-    if (particle->unknown_0010 == 1) {
+    if (particle->rowIndex == 1) {
       particle->scale *= 0.5f;
       particle->SetColor(255, 255, 255);
       maxAlpha = 255;

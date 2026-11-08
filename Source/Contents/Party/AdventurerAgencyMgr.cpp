@@ -22,7 +22,7 @@ CAdventurerAgencyMgr* g_adventurerAgencyMgr;
 
 // OFFSET: 0x005CA710
 // FUNCTION: fn_03648
-CAdventurerAgencyMgr::CAdventurerAgencyMgr() : enabled(true), registered(false), unknown_0008(0), pending(0) {
+CAdventurerAgencyMgr::CAdventurerAgencyMgr() : enabled(true), registered(false), masterAccountId(0), pending(0) {
 }
 
 // OFFSET: 0x005CA880

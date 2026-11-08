@@ -30,7 +30,7 @@ struct MacroReporterEntry {
 
   /* 0000 */ std::string name;
   /* 0018 */ int id;
-  /* 001C */ short unknown_001C;
+  /* 001C */ short reportValue;
 };
 
 struct MacroReporterState {
@@ -39,7 +39,7 @@ struct MacroReporterState {
   /* 0008 */ int x;
   /* 000C */ int y;
   /* 0010 */ unsigned char unknown_0010;
-  /* 0011 */ bool unknown_0011;
+  /* 0011 */ bool activeOnly;
   /* 0014 */ std::vector<MacroReporterEntry> entries;
 };
 
@@ -68,19 +68,19 @@ public:
   /* 00B4 */ std::vector<std::pair<UIButton*, UIButton*>> m_rows;
   /* 00C0 */ UIScrollBar* m_scrollBar;
   /* 00C4 */ bool m_scrollable;
-  /* 00C8 */ int unknown_00C8;
+  /* 00C8 */ int scrollBarWidth;
   /* 00CC */ int m_firstRow;
   /* 00D0 */ int m_visibleRows;
-  /* 00D4 */ UIWindow* unknown_00D4;
+  /* 00D4 */ UIWindow* activeCheckBox;
   /* 00D8 */ UIButton* m_reportButton;
   /* 00DC */ UIWindow* m_tabs[4];
   /* 00EC */ int m_mode;
   /* 00F0 */ UIWindow* m_edit;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F4 */ int reportCount;
+  /* 00F8 */ int maxReportCount;
   /* 00FC */ MacroReporterState* m_state;
   /* 0100 */ std::vector<MacroReporterEntry> m_entries;
-  /* 010C */ bool unknown_010C;
+  /* 010C */ bool activeOnly;
   /* 0110 */ std::vector<UIButton*> m_removedRows;
   /* 011C */ UIWindow* m_fields[10];
   /* 0144 */ std::string m_names[10];

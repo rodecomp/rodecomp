@@ -45,9 +45,9 @@ unsigned long g_swapEquipmentTick;
 // OFFSET: 0x0082F560
 // FUNCTION: fn_10387
 UISwapEquipmentWnd::UISwapEquipmentWnd()
-    : UIFrameWnd(0), m_swapButton(nullptr), unknown_00BC(0), unknown_00C0(timeGetTime()), unknown_00D4(-1), unknown_00D8(-1),
-      unknown_00DC(-1) {
-  this->geometry.unknown_0030 = 0;
+    : UIFrameWnd(0), m_swapButton(nullptr), equipmentPage(0), previewTick(timeGetTime()), hoverSlot(-1), hoverSecondarySlot(-1),
+      hoverTertiarySlot(-1) {
+  this->geometry.state = 0;
 }
 
 // OFFSET: 0x0082F990
@@ -76,19 +76,19 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     break;
   }
 
-  if (item.unknown_0000[1] > 0) {
-    switch (item.unknown_0000[0]) {
+  if (item.identity[1] > 0) {
+    switch (item.identity[0]) {
     case 10:
     case 16:
     case 17:
     case 19:
-      mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.unknown_0000[2], 0, 0);
+      mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.identity[2], 0, 0);
       break;
     default:
       if (equipped == 1) {
         mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
-      } else if (item.unknown_0000[2] != 0 && item.identified != 0 && item.unknown_0000[3] == 0) {
-        mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.unknown_0000[2], 0, 0);
+      } else if (item.identity[2] != 0 && item.identified != 0 && item.identity[3] == 0) {
+        mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.identity[2], 0, 0);
       }
       break;
     }
@@ -100,37 +100,37 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // OFFSET: 0x0082FD90
 // FUNCTION: fn_10391
 void UISwapEquipmentWnd::DrawEquipmentSlots() {
-  this->unknown_00D0 = 0;
-  this->unknown_00C4 = 0;
-  this->unknown_00C8 = 0;
-  this->unknown_00CC = 0;
+  this->weaponView = 0;
+  this->topAccessory = 0;
+  this->midAccessory = 0;
+  this->bottomAccessory = 0;
 
   for (int slot = 0; slot < 10; ++slot) {
     bool fromSwap = true;
     ITEM_INFO item = this->GetSlotItem(slot);
-    if (item.unknown_0000[1] == 0) {
+    if (item.identity[1] == 0) {
       fromSwap = false;
-      if (this->unknown_00BC == 2) {
+      if (this->equipmentPage == 2) {
         item = g_session.GetItem2B50(slot);
       } else {
         item = g_session.GetItem17F0(slot);
       }
     }
 
-    if (item.unknown_0000[1] > 0 && item.quantity == 1) {
+    if (item.identity[1] > 0 && item.quantity == 1) {
       int xCoords[4] = {34, 173, 6, 250};
       int yCoords[4] = {54, 80, 106, 132};
 
       if (fromSwap) {
-        this->SetSlotValue(slot, item.unknown_0070);
+        this->SetSlotValue(slot, item.sprite);
         const int row = slot & 3;
         if (slot < 8) {
           const int iconY = row * 26 + 48;
           DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[slot / 4 + 2], iconY, item, 0);
           this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
-          if (item.unknown_0088 > 0) {
+          if (item.grade > 0) {
             CBitmapRes* gradeBitmap = static_cast<CBitmapRes*>(
-              ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str()))
+              ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
             );
             this->DrawBitmap(xCoords[slot / 4 + 2], iconY + 12, gradeBitmap, true);
           }
@@ -139,14 +139,14 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
           this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
         }
       } else {
-        const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+        const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
         int locations[3] = {slots.values[2], slots.values[1], slots.values[0]};
         for (int i = 0; i < 3; ++i) {
-          fromSwap = this->GetSlotItem(locations[i]).unknown_0000[1] > 0;
+          fromSwap = this->GetSlotItem(locations[i]).identity[1] > 0;
         }
 
         if (!fromSwap) {
-          this->SetSlotValue(slot, item.unknown_0070);
+          this->SetSlotValue(slot, item.sprite);
           char path[128];
           if (slot < 8) {
             const int iconX = xCoords[slot / 4 + 2];
@@ -158,9 +158,9 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
               this->DrawAuxiliary(1, iconX, row * 26 + 48, &bitmap->image, true, false);
             }
             this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
-            if (item.unknown_0088 > 0) {
+            if (item.grade > 0) {
               CBitmapRes* gradeBitmap = static_cast<CBitmapRes*>(
-                ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088).c_str()))
+                ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
               );
               this->DrawBitmap(iconX, row * 26 + 60, gradeBitmap, true);
             }
@@ -184,7 +184,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
 // FUNCTION: fn_10400
 void UISwapEquipmentWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
-  if (item.unknown_0000[1] > 0) {
+  if (item.identity[1] > 0) {
     g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
@@ -197,8 +197,8 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     switch (argument1) {
     case ID_CANCEL:
       g_session.m_swapEquipmentMode = 0;
-      if (g_windowMgr.unknown_01E0) {
-        g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_COMMAND, 0x1FC, 0, 0, 0);
+      if (g_windowMgr.equipWnd) {
+        g_windowMgr.equipWnd->SendMsg(nullptr, UM_COMMAND, 0x1FC, 0, 0, 0);
       }
       break;
     case ID_CLOSE:
@@ -209,13 +209,13 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CHAT)), 0xFF, 0, 0, 0);
         return 1;
       }
-      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
+      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_MERCHANTSHOP)), 0xFF, 0, 0, 0);
-      } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
+      } else if (g_windowMgr.merchantItemMyShopWnd || g_windowMgr.merchantItemPurchaseWnd || g_windowMgr.merchantShopMakeWnd) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->actorWindows[3]) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_USE_NPC)), 0xFF, 0, 0, 0);
-      } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
+      } else if (g_windowMgr.sayDialogWnd || g_windowMgr.choose3Wnd) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_ARROW_CNT)), 0xFF, 0, 0, 0);
       } else {
         g_modeMgr.GetGameMode()->SendMsg(MM_SWAP_EQUIPMENT, 0, 0, 0, 0);
@@ -236,16 +236,16 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
   switch (index) {
   case 8:
-    this->unknown_00C8 = value;
+    this->midAccessory = value;
     break;
   case 9:
-    this->unknown_00CC = value;
+    this->bottomAccessory = value;
     break;
   case 0:
-    this->unknown_00C4 = value;
+    this->topAccessory = value;
     break;
   case 2:
-    this->unknown_00D0 = value;
+    this->weaponView = value;
     break;
   }
 }
@@ -279,13 +279,13 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
     return ITEM_INFO(0);
   }
 
-  if (this->unknown_00BC == 2) {
+  if (this->equipmentPage == 2) {
     ITEM_INFO item = g_session.GetItem6B68(slot);
-    return item.unknown_0000[1] > 0 ? item : ITEM_INFO(0);
+    return item.identity[1] > 0 ? item : ITEM_INFO(0);
   }
 
   ITEM_INFO item = g_session.GetItem61B8(slot);
-  return item.unknown_0000[1] > 0 ? item : ITEM_INFO(0);
+  return item.identity[1] > 0 ? item : ITEM_INFO(0);
 }
 
 // OFFSET: 0x00830760
@@ -328,9 +328,9 @@ void UISwapBitmapButton::Paint() {
 void UISwapEquipmentWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   std::string background;
-  if (this->unknown_00BC == 1) {
+  if (this->equipmentPage == 1) {
     background = "유저인터페이스\\swap_equipment\\equipwin_bg2_change.bmp";
-  } else if (this->unknown_00BC == 2) {
+  } else if (this->equipmentPage == 2) {
     background = "유저인터페이스\\swap_equipment\\equipwin_special_change.bmp";
   }
 
@@ -353,23 +353,23 @@ void UISwapEquipmentWnd::Paint() {
     g_session.m_job,
     static_cast<short>(g_session.m_bodyCostume),
     static_cast<short>(g_session.m_head),
-    static_cast<short>(this->unknown_00C4),
-    static_cast<short>(this->unknown_00C8),
-    static_cast<short>(this->unknown_00CC),
-    this->unknown_00D0,
+    static_cast<short>(this->topAccessory),
+    static_cast<short>(this->midAccessory),
+    static_cast<short>(this->bottomAccessory),
+    this->weaponView,
     0,
     0,
     g_session.m_bodyStyle,
     g_session.m_headPalette,
     0,
     0,
-    this->unknown_00C0
+    this->previewTick
   );
   drawer.Draw(false);
 
-  if (g_session.unknown_7EC8 != 0) {
-    ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.unknown_7EC8);
-    if (dragItem.unknown_0000[1] > 0) {
+  if (g_session.swapArrowIndex != 0) {
+    ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.swapArrowIndex);
+    if (dragItem.identity[1] > 0) {
       DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 24, 27, dragItem, 0);
       this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
     }
@@ -384,13 +384,13 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
   }
 
   ITEM_INFO item = this->ItemAtPoint(x, y);
-  if (item.unknown_0000[1] > 0 && item.quantity > 0) {
-    const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  if (item.identity[1] > 0 && item.quantity > 0) {
+    const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
     CMode* mode = g_modeMgr.gameMode;
     if (GetAsyncKeyState(VK_CONTROL)) {
       mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
     } else {
-      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], this->unknown_00BC == 2, 0, 0);
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], this->equipmentPage == 2, 0, 0);
     }
   }
 }
@@ -399,24 +399,24 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
 // FUNCTION: fn_10398
 void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
-  if (item.unknown_0000[1] <= 0 || item.quantity <= 0) {
+  if (item.identity[1] <= 0 || item.quantity <= 0) {
     return;
   }
 
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  mode->drag.BeginItem(g_windowMgr, this->unknown_00BC == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
+  mode->drag.BeginItem(g_windowMgr, this->equipmentPage == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
       if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-        reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.unknown_0318)->InsertItemTag(item);
+        reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
         reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->InsertItemTag(item);
+        reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }
@@ -429,7 +429,7 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
 void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   {
     ITEM_INFO item = this->ItemAtPoint(x, y);
-    if (item.unknown_0000[1] > 0) {
+    if (item.identity[1] > 0) {
       int tooltipX = 6;
       int tooltipY = y - (y - 22) % 26 - 19;
       if (x >= 170) {
@@ -441,13 +441,13 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
 
       std::string text;
       if (item.quantity > 1) {
-        if (item.unknown_0098 != 0) {
+        if (item.optionCount != 0) {
           text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0)));
         } else {
           text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
         }
-      } else if (item.unknown_0098 != 0) {
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098));
+      } else if (item.optionCount != 0) {
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount));
       } else {
         text = static_cast<const std::string&>(item.DisplayName(0));
       }
@@ -456,12 +456,12 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
     }
   }
 
-  const int previousD4 = this->unknown_00D4;
-  const int previousD8 = this->unknown_00D8;
-  const int previousDC = this->unknown_00DC;
-  this->unknown_00D4 = -1;
-  this->unknown_00D8 = -1;
-  this->unknown_00DC = -1;
+  const int previousD4 = this->hoverSlot;
+  const int previousD8 = this->hoverSecondarySlot;
+  const int previousDC = this->hoverTertiarySlot;
+  this->hoverSlot = -1;
+  this->hoverSecondarySlot = -1;
+  this->hoverTertiarySlot = -1;
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode->drag.source == 1) {
@@ -470,19 +470,19 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
     }
 
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
-    if (item.unknown_0000[1] > 0 && item.unknown_0000[2] != 0) {
-      const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[2]);
-      this->unknown_00D4 = slots.values[2];
+    if (item.identity[1] > 0 && item.identity[2] != 0) {
+      const EquipSlots slots = g_session.GetEquipSlots(item.identity[2]);
+      this->hoverSlot = slots.values[2];
       if (slots.values[1] != -1) {
-        this->unknown_00D8 = slots.values[1];
+        this->hoverSecondarySlot = slots.values[1];
       }
       if (slots.values[0] != -1) {
-        this->unknown_00DC = slots.values[0];
+        this->hoverTertiarySlot = slots.values[0];
       }
     }
   }
 
-  if (previousD4 != this->unknown_00D4 || previousD8 != this->unknown_00D8 || previousDC != this->unknown_00DC) {
+  if (previousD4 != this->hoverSlot || previousD8 != this->hoverSecondarySlot || previousDC != this->hoverTertiarySlot) {
     this->Invalidate();
   }
 }

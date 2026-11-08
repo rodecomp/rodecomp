@@ -39,15 +39,15 @@ struct PACKET_CZ_SELECT_CHARACTERS {
 // FUNCTION: fn_12526
 UISelCharForUServerWnd::UISelCharForUServerWnd()
     : UIFrameWnd(0), m_columns(6) {
-  if (g_session.unknown_0E94 > 12) {
+  if (g_session.characterCount > 12) {
     this->m_columns = 9;
   }
 
-  this->unknown_19E8 = 0;
+  this->characterInfoBalloon = 0;
   this->m_checkedCount = 0;
-  this->geometry.unknown_0034 = 0;
-  this->unknown_19E4 = 0;
-  for (int index = 0; index < g_session.unknown_0E94; ++index) {
+  this->geometry.animationFrame = 0;
+  this->confirmButton = 0;
+  for (int index = 0; index < g_session.characterCount; ++index) {
     this->m_slotEnabled[index] = 1;
   }
 
@@ -59,19 +59,19 @@ UISelCharForUServerWnd::UISelCharForUServerWnd()
 void UISelCharForUServerWnd::OnCreate(int, int) {
   {
     std::string path = "유저인터페이스\\";
-    this->unknown_19E4 = new UIBitmapButton();
-    this->unknown_19E4->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
-    this->unknown_19E4->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-    this->unknown_19E4->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-    this->unknown_19E4->SetSize(this->unknown_19E4->BitmapWidth(), this->unknown_19E4->BitmapHeight());
-    this->unknown_19E4->Move(this->geometry.width - 46, this->geometry.height - 24);
-    this->unknown_19E4->SetId(184);
-    this->AddChild(this->unknown_19E4);
+    this->confirmButton = new UIBitmapButton();
+    this->confirmButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->confirmButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->confirmButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->confirmButton->SetSize(this->confirmButton->BitmapWidth(), this->confirmButton->BitmapHeight());
+    this->confirmButton->Move(this->geometry.width - 46, this->geometry.height - 24);
+    this->confirmButton->SetId(184);
+    this->AddChild(this->confirmButton);
   }
 
   this->m_message0 = 184;
 
-  for (int index = 0; index < g_session.unknown_0E94; ++index) {
+  for (int index = 0; index < g_session.characterCount; ++index) {
     this->m_checkBoxes[index] = new UICheckBox();
     this->m_checkBoxes[index]->SetSize(10, 10);
     static_cast<UICheckBox*>(this->m_checkBoxes[index])->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
@@ -79,7 +79,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->AddChild(this->m_checkBoxes[index]);
   }
 
-  for (int index = 0; index < g_session.unknown_0E94; ++index) {
+  for (int index = 0; index < g_session.characterCount; ++index) {
     CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
     if (!info) {
       continue;
@@ -94,12 +94,12 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->m_slotEnabled[slotIndex] = 0;
     slot.x = slotIndex % this->m_columns * 81 + 68;
     slot.y = slotIndex / this->m_columns * 149 + 191;
-    slot.unknown_0148 = 0;
+    slot.actionBase = 0;
     slot.action = 0;
     slot.frame = 0;
 
-    slot.actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.SyncUnknown0E98(), info->unknown_0058, 0));
-    slot.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.SyncUnknown0E98(), info->unknown_0058, 0));
+    slot.actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.SyncUnknown0E98(), info->bodyCostume, 0));
+    slot.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.SyncUnknown0E98(), info->bodyCostume, 0));
 
     int head = info->head;
     slot.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(info->job, g_session.SyncUnknown0E98(), &head));
@@ -109,19 +109,19 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     info->head = static_cast<std::int16_t>(head);
     slot.actionNames[3] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.SyncUnknown0E98(), head, info->accessory2));
     slot.spriteNames[3] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.SyncUnknown0E98(), head, info->accessory2));
-    this->unknown_1974[slotIndex] = info->accessory2;
+    this->accessory2[slotIndex] = info->accessory2;
     slot.actionNames[4] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.SyncUnknown0E98(), head, info->accessory));
     slot.spriteNames[4] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.SyncUnknown0E98(), head, info->accessory));
 
     int bodyPalette = info->bodyStyle;
-    if (info->unknown_0058 < 1) {
-      bodyPalette = g_session.GetBodyStyle(info->job, bodyPalette, info->unknown_0058);
+    if (info->bodyCostume < 1) {
+      bodyPalette = g_session.GetBodyStyle(info->job, bodyPalette, info->bodyCostume);
     }
 
     slot.bodyPalette = bodyPalette;
     if (bodyPalette != 0) {
       slot.bodyPaletteName = static_cast<const std::string&>(
-        g_session.GetBodyPalName(info->job, g_session.SyncUnknown0E98(), bodyPalette, info->unknown_0058, 0, 0));
+        g_session.GetBodyPalName(info->job, g_session.SyncUnknown0E98(), bodyPalette, info->bodyCostume, 0, 0));
     }
 
     slot.headPalette = info->headPalette;
@@ -129,7 +129,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
       slot.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.SyncUnknown0E98(), slot.headPalette));
     }
 
-    slot.imfName = GetBodyImfName(info->job, g_session.SyncUnknown0E98(), info->head, info->unknown_0058);
+    slot.imfName = GetBodyImfName(info->job, g_session.SyncUnknown0E98(), info->head, info->bodyCostume);
   }
 }
 
@@ -148,8 +148,8 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     int characterIds[9] = {};
     int count = 0;
-    for (int index = 0; index < g_session.unknown_0E94; ++index) {
-      if (this->m_checkBoxes[index]->geometry.unknown_0030 != 0) {
+    for (int index = 0; index < g_session.characterCount; ++index) {
+      if (this->m_checkBoxes[index]->geometry.state != 0) {
         CMode* mode = g_modeMgr.gameMode;
         const int* character = reinterpret_cast<const int*>(mode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (character) {
@@ -175,7 +175,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     break;
   }
   case ID_CHECK:
-    this->m_checkedCount += sender->geometry.unknown_0030 != 0 ? 1 : -1;
+    this->m_checkedCount += sender->geometry.state != 0 ? 1 : -1;
     if (this->m_checkedCount > 9) {
       g_windowMgr.Confirm(LookupMessage(MSI_ERROR_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
       static_cast<UICheckBox*>(sender)->SetChecked(0);
@@ -197,14 +197,14 @@ void UISelCharForUServerWnd::OnMouseMove(int x, int y) {
 // FUNCTION: fn_12777
 void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
   const unsigned char red = (color >> 16) & 0xFF;
-  if (!this->unknown_19E8) {
-    this->unknown_19E8 = new UICharInfoBalloonText();
-    this->unknown_19E8->SetSize(140, 200);
-    g_windowMgr.AddRendered(this->unknown_19E8);
+  if (!this->characterInfoBalloon) {
+    this->characterInfoBalloon = new UICharInfoBalloonText();
+    this->characterInfoBalloon->SetSize(140, 200);
+    g_windowMgr.AddRendered(this->characterInfoBalloon);
   }
 
-  this->unknown_19E8->Move(-400, -400);
-  this->unknown_19EC.clear();
+  this->characterInfoBalloon->Move(-400, -400);
+  this->characterInfoLines.clear();
   if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
     const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
     CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
@@ -215,40 +215,40 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
       int width = this->TextWidth(name, 0, 0, 12, 0, 0) + 60;
 
       char text[100];
-      this->unknown_19EC.push_back("Name");
-      this->unknown_19EC.push_back(name);
-      this->unknown_19EC.push_back("Job");
-      this->unknown_19EC.push_back(g_session.GetJobName(info->job, -1));
-      this->unknown_19EC.push_back("Lv. ");
-      this->unknown_19EC.push_back(_itoa(info->level, text, 10));
-      this->unknown_19EC.push_back("EXP");
-      this->unknown_19EC.push_back(_itoa(static_cast<int>(info->exp), text, 10));
-      this->unknown_19EC.push_back("HP");
-      this->unknown_19EC.push_back(_i64toa(info->hp, text, 10));
-      this->unknown_19EC.push_back("SP");
-      this->unknown_19EC.push_back(_i64toa(info->sp, text, 10));
-      this->unknown_19EC.push_back("STR");
-      this->unknown_19EC.push_back(_itoa(info->stats[0], text, 10));
-      this->unknown_19EC.push_back("AGI");
-      this->unknown_19EC.push_back(_itoa(info->stats[1], text, 10));
-      this->unknown_19EC.push_back("VIT");
-      this->unknown_19EC.push_back(_itoa(info->stats[2], text, 10));
-      this->unknown_19EC.push_back("INT");
-      this->unknown_19EC.push_back(_itoa(info->stats[3], text, 10));
-      this->unknown_19EC.push_back("DEX");
-      this->unknown_19EC.push_back(_itoa(info->stats[4], text, 10));
-      this->unknown_19EC.push_back("LUK");
-      this->unknown_19EC.push_back(_itoa(info->stats[5], text, 10));
+      this->characterInfoLines.push_back("Name");
+      this->characterInfoLines.push_back(name);
+      this->characterInfoLines.push_back("Job");
+      this->characterInfoLines.push_back(g_session.GetJobName(info->job, -1));
+      this->characterInfoLines.push_back("Lv. ");
+      this->characterInfoLines.push_back(_itoa(info->level, text, 10));
+      this->characterInfoLines.push_back("EXP");
+      this->characterInfoLines.push_back(_itoa(static_cast<int>(info->exp), text, 10));
+      this->characterInfoLines.push_back("HP");
+      this->characterInfoLines.push_back(_i64toa(info->hp, text, 10));
+      this->characterInfoLines.push_back("SP");
+      this->characterInfoLines.push_back(_i64toa(info->sp, text, 10));
+      this->characterInfoLines.push_back("STR");
+      this->characterInfoLines.push_back(_itoa(info->stats[0], text, 10));
+      this->characterInfoLines.push_back("AGI");
+      this->characterInfoLines.push_back(_itoa(info->stats[1], text, 10));
+      this->characterInfoLines.push_back("VIT");
+      this->characterInfoLines.push_back(_itoa(info->stats[2], text, 10));
+      this->characterInfoLines.push_back("INT");
+      this->characterInfoLines.push_back(_itoa(info->stats[3], text, 10));
+      this->characterInfoLines.push_back("DEX");
+      this->characterInfoLines.push_back(_itoa(info->stats[4], text, 10));
+      this->characterInfoLines.push_back("LUK");
+      this->characterInfoLines.push_back(_itoa(info->stats[5], text, 10));
 
       if (width < 140) {
         width = 140;
       }
 
-      this->unknown_19E8->Resize(width, 200);
-      this->unknown_19E8->m_outlineColor = 0;
-      this->unknown_19E8->m_textColor = ((color & 0xFF) << 16) | (color & 0xFF00) | red;
-      this->unknown_19E8->SetBackground(0x88000000);
-      this->unknown_19E8->m_lines = this->unknown_19EC;
+      this->characterInfoBalloon->Resize(width, 200);
+      this->characterInfoBalloon->m_outlineColor = 0;
+      this->characterInfoBalloon->m_textColor = ((color & 0xFF) << 16) | (color & 0xFF00) | red;
+      this->characterInfoBalloon->SetBackground(0x88000000);
+      this->characterInfoBalloon->m_lines = this->characterInfoLines;
 
       int screenX = x + 20;
       int screenY = y;
@@ -256,23 +256,23 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
       if (screenX < -3) {
         screenX = -3;
       }
-      const int maxX = g_renderer->viewport.width - this->unknown_19E8->geometry.width + 3;
+      const int maxX = g_renderer->viewport.width - this->characterInfoBalloon->geometry.width + 3;
       if (screenX > maxX) {
         screenX = maxX;
       }
       if (screenY < -3) {
         screenY = -3;
       }
-      const int maxY = g_renderer->viewport.height - this->unknown_19E8->geometry.height + 3;
+      const int maxY = g_renderer->viewport.height - this->characterInfoBalloon->geometry.height + 3;
       if (screenY > maxY) {
         screenY = maxY;
       }
 
-      this->unknown_19E8->Move(screenX, screenY);
+      this->characterInfoBalloon->Move(screenX, screenY);
       return;
     }
   }
 
-  g_windowMgr.Schedule(this->unknown_19E8);
-  this->unknown_19E8 = nullptr;
+  g_windowMgr.Schedule(this->characterInfoBalloon);
+  this->characterInfoBalloon = nullptr;
 }

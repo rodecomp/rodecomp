@@ -62,7 +62,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->itemIds.push_back(itemId);
 
     item.SetItemId(itemId);
-    item.unknown_0060 = 0;
+    item.refiningLevel = 0;
     item.identified = 1;
     this->m_list->AddLine(item.DisplayName(0).c_str());
     return 0;

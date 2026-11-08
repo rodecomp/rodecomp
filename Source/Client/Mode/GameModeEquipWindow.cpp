@@ -23,25 +23,25 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
   const unsigned char* entry = packet + 45;
   for (int index = 0; index < count; ++index, entry += 37) {
     ITEM_INFO item;
-    item.unknown_0000[0] = entry[6];
-    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(entry + 7);
-    item.unknown_0000[1] = *reinterpret_cast<const std::int16_t*>(entry);
-    item.unknown_0000[3] = *reinterpret_cast<const std::uint16_t*>(entry + 9);
+    item.identity[0] = entry[6];
+    item.identity[2] = *reinterpret_cast<const std::uint16_t*>(entry + 7);
+    item.identity[1] = *reinterpret_cast<const std::int16_t*>(entry);
+    item.identity[3] = *reinterpret_cast<const std::uint16_t*>(entry + 9);
     item.quantity = 1;
-    std::memcpy(item.unknown_001C, entry + 12, sizeof(item.unknown_001C));
+    std::memcpy(item.cards, entry + 12, sizeof(item.cards));
     item.SetItemId(*reinterpret_cast<const int*>(entry + 2));
 
     const unsigned char flags = entry[36];
     item.identified = flags & 1;
-    item.unknown_005D = (flags >> 1) & 1;
-    item.unknown_0060 = entry[11];
-    item.unknown_0068 = *reinterpret_cast<const std::uint32_t*>(entry + 28);
-    item.unknown_0064 = *reinterpret_cast<const std::uint16_t*>(entry + 32);
-    item.unknown_0070 = *reinterpret_cast<const std::uint16_t*>(entry + 34);
-    item.unknown_0074[0] = (flags >> 2) & 1;
+    item.damaged = (flags >> 1) & 1;
+    item.refiningLevel = entry[11];
+    item.expireTime = *reinterpret_cast<const std::uint32_t*>(entry + 28);
+    item.bindOnEquip = *reinterpret_cast<const std::uint16_t*>(entry + 32);
+    item.sprite = *reinterpret_cast<const std::uint16_t*>(entry + 34);
+    item.flags[0] = (flags >> 2) & 1;
 
-    if (item.unknown_0000[3] != 0) {
-      if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+    if (item.identity[3] != 0) {
+      if (g_session.IsCostumeLocation(item.identity[3])) {
         g_session.EquipItem3500(item);
       } else {
         g_session.Equip(item);

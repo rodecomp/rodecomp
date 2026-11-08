@@ -20,10 +20,10 @@ public:
   /* 0018 */ const char* unidentifiedName;
   /* 001C */ const char* unidentifiedResource;
   /* 0020 */ std::vector<const char*> unidentifiedDescription;
-  /* 002C */ int unknown_002C;
+  /* 002C */ int descriptionFlags;
   /* 0030 */ int slots;
-  /* 0034 */ std::vector<int> unknown_0034;
-  /* 0040 */ int unknown_0040;
+  /* 0034 */ std::vector<int> descriptionValues;
+  /* 0040 */ int viewId;
 };
 
 extern std::map<int, ITEM_DESC> g_itemDescriptions;

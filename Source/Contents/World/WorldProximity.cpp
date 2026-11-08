@@ -21,15 +21,15 @@
 struct PACKET_CZ_APPROXIMATE_ACTOR {
   /* 0000 */ std::int16_t packetType;
   /* 0002 */ std::uint32_t accountId;
-  /* 0006 */ std::uint16_t unknown_0006;
-  /* 0008 */ std::uint8_t unknown_0008;
+  /* 0006 */ std::uint16_t range;
+  /* 0008 */ std::uint8_t enabled;
 };
 #pragma pack(pop)
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(PACKET_CZ_APPROXIMATE_ACTOR) == 9);
 static_assert(offsetof(PACKET_CZ_APPROXIMATE_ACTOR, accountId) == 2);
-static_assert(offsetof(PACKET_CZ_APPROXIMATE_ACTOR, unknown_0006) == 6);
+static_assert(offsetof(PACKET_CZ_APPROXIMATE_ACTOR, range) == 6);
 #endif
 
 // INLINED
@@ -60,9 +60,9 @@ void UpdateWorldProximityNotification(
 // OFFSET: 0x00AC93C0
 // FUNCTION: fn_17683
 void CWorld::UpdateGuildMasterApproach(std::function<bool()> isNearby) {
-  if (this->unknown_00F4 == true) {
+  if (this->guildMasterNearby == true) {
     if (!isNearby()) {
-      this->unknown_00F4 = false;
+      this->guildMasterNearby = false;
     }
 
     return;
@@ -71,11 +71,11 @@ void CWorld::UpdateGuildMasterApproach(std::function<bool()> isNearby) {
   if (isNearby() == true) {
     PACKET_CZ_APPROXIMATE_ACTOR packet;
     packet.packetType = ID_CZ_APPROXIMATE_ACTOR;
-    packet.accountId = g_guildInfo.unknown_00D0;
-    packet.unknown_0006 = 1;
-    packet.unknown_0008 = 1;
+    packet.accountId = g_guildInfo.masterCharacterId;
+    packet.range = 1;
+    packet.enabled = 1;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
-    this->unknown_00F4 = true;
+    this->guildMasterNearby = true;
   }
 }
 
@@ -103,7 +103,7 @@ bool CWorld::IsGuildMaster(std::uint32_t aid) {
         return false;
       }
 
-      return gameActor->GetPkState() == static_cast<int>(g_guildInfo.unknown_00D0);
+      return gameActor->GetPkState() == static_cast<int>(g_guildInfo.masterCharacterId);
     }
   }
 
@@ -134,7 +134,7 @@ bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
     }
 
     CRenderObject* actor = g_session.FindGameActor(aid);
-    if (actor->render.unknown_0070 == 1) {
+    if (actor->render.state == 1) {
       float centerX = 0.0f;
       float centerZ = 0.0f;
       int column = 0;
@@ -171,7 +171,7 @@ void CWorld::RemovePcPos(std::uint32_t aid, bool notify) {
         continue;
       }
 
-      if (notify && this->unknown_00F4) {
+      if (notify && this->guildMasterNearby) {
         if (this->IsGuildMaster(aid)) {
           this->UpdateGuildMasterApproach([this]() { return false; });
         }
@@ -191,7 +191,7 @@ void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
       continue;
     }
 
-    if (notify && this->unknown_00F4) {
+    if (notify && this->guildMasterNearby) {
       if (this->IsGuildMaster(aid)) {
         this->UpdateGuildMasterApproach([this]() { return false; });
       }
@@ -237,7 +237,7 @@ bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
     return false;
   }
 
-  if (static_cast<int>(g_guildInfo.unknown_00D0) != gameActor->GetPkState()) {
+  if (static_cast<int>(g_guildInfo.masterCharacterId) != gameActor->GetPkState()) {
     return false;
   }
 

@@ -797,18 +797,18 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   const RagEffectState& master = this->state.master->state;
   const int blend = pw != 0 ? 6 : 2;
   int red = r;
-  if (master.unknown_11C88[0] != -1) {
-    red = static_cast<unsigned char>(master.unknown_11C88[0]);
+  if (master.colorChannels[0] != -1) {
+    red = static_cast<unsigned char>(master.colorChannels[0]);
   }
   int green = g;
-  if (master.unknown_11C88[1] != -1) {
-    green = static_cast<unsigned char>(master.unknown_11C88[1]);
+  if (master.colorChannels[1] != -1) {
+    green = static_cast<unsigned char>(master.colorChannels[1]);
   }
   int blue = b;
-  if (master.unknown_11C88[2] != -1) {
-    blue = static_cast<unsigned char>(master.unknown_11C88[2]);
+  if (master.colorChannels[2] != -1) {
+    blue = static_cast<unsigned char>(master.colorChannels[2]);
   }
-  int destBlend = master.unknown_11C88[3];
+  int destBlend = master.colorChannels[3];
   if (destBlend == -1) {
     destBlend = blend;
   }
@@ -840,11 +840,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     RenderTriangle& triangle = this->state.triangles[*rpCnt];
 
     if (pw == 10) {
-      triangle.unknown_0064 = 2;
-      triangle.unknown_0068 = 1;
+      triangle.sourceBlend = 2;
+      triangle.destinationBlend = 1;
     } else {
-      triangle.unknown_0064 = 5;
-      triangle.unknown_0068 = pw == 99 ? 6 : destBlend;
+      triangle.sourceBlend = 5;
+      triangle.destinationBlend = pw == 99 ? 6 : destBlend;
     }
 
     RenderVertex first{};
@@ -885,7 +885,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
         triangle.vertices[2].x = center.x - width;
 
         for (int index = 0; index < 3; ++index) {
-          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.unknown_005C;
+          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
         }
       }
 
@@ -907,11 +907,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     RenderTriangle& triangle = this->state.triangles[*rpCnt];
 
     if (pw == 10) {
-      triangle.unknown_0064 = 2;
-      triangle.unknown_0068 = 1;
+      triangle.sourceBlend = 2;
+      triangle.destinationBlend = 1;
     } else {
-      triangle.unknown_0064 = 5;
-      triangle.unknown_0068 = pw == 99 ? 6 : destBlend;
+      triangle.sourceBlend = 5;
+      triangle.destinationBlend = pw == 99 ? 6 : destBlend;
     }
 
     RenderVertex first{};
@@ -952,7 +952,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
         triangle.vertices[2].x = center.x + width;
 
         for (int index = 0; index < 3; ++index) {
-          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.unknown_005C;
+          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
         }
       }
 
@@ -1192,17 +1192,17 @@ void CEffectPrim::RenderTeiRect(
   }
 
   const RagEffectState& master = this->state.master->state;
-  if (master.unknown_11C88[3] != -1) {
-    blend = master.unknown_11C88[3];
+  if (master.colorChannels[3] != -1) {
+    blend = master.colorChannels[3];
   }
-  if (master.unknown_11C88[0] != -1) {
-    red = master.unknown_11C88[0];
+  if (master.colorChannels[0] != -1) {
+    red = master.colorChannels[0];
   }
-  if (master.unknown_11C88[1] != -1) {
-    green = master.unknown_11C88[1];
+  if (master.colorChannels[1] != -1) {
+    green = master.colorChannels[1];
   }
-  if (master.unknown_11C88[2] != -1) {
-    blue = master.unknown_11C88[2];
+  if (master.colorChannels[2] != -1) {
+    blue = master.colorChannels[2];
   }
   const std::uint32_t color = static_cast<std::uint32_t>(((((alpha << 8) + red) << 8) + green) << 8) + blue;
 
@@ -1245,8 +1245,8 @@ void CEffectPrim::RenderTeiRect(
 
   for (int half = 0; half < 2; ++half) {
     RenderTriangle& triangle = this->state.triangles[*rpCnt];
-    triangle.unknown_0064 = 5;
-    triangle.unknown_0068 = blend;
+    triangle.sourceBlend = 5;
+    triangle.destinationBlend = blend;
 
     for (int index = 0; index < 3; ++index) {
       RenderVertex& vertex = triangle.vertices[index];
@@ -1275,10 +1275,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 ) {
   const RagEffectState& master = this->state.master->state;
   const int blend = pw != 0 ? 6 : 2;
-  const int red = master.unknown_11C88[0] != -1 ? static_cast<unsigned char>(master.unknown_11C88[0]) : r;
-  const int green = master.unknown_11C88[1] != -1 ? static_cast<unsigned char>(master.unknown_11C88[1]) : g;
-  const int blue = master.unknown_11C88[2] != -1 ? static_cast<unsigned char>(master.unknown_11C88[2]) : b;
-  const int destBlend = master.unknown_11C88[3] != -1 ? master.unknown_11C88[3] : blend;
+  const int red = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : r;
+  const int green = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : g;
+  const int blue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : b;
+  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
 
   if (*rpCnt >= 510) {
     return;
@@ -1307,8 +1307,8 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   vec4.z += position.z;
 
   alignas(16) RenderVertex vertex;
-  this->state.triangles[*rpCnt].unknown_0064 = 5;
-  this->state.triangles[*rpCnt].unknown_0068 = destBlend;
+  this->state.triangles[*rpCnt].sourceBlend = 5;
+  this->state.triangles[*rpCnt].destinationBlend = destBlend;
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
   this->state.triangles[*rpCnt].vertices[0] = vertex;
@@ -1336,8 +1336,8 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     ++*rpCnt;
   }
 
-  this->state.triangles[*rpCnt].unknown_0064 = 5;
-  this->state.triangles[*rpCnt].unknown_0068 = destBlend;
+  this->state.triangles[*rpCnt].sourceBlend = 5;
+  this->state.triangles[*rpCnt].destinationBlend = destBlend;
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->viewport.Project(&vec4.x, wtm.values, vertex);
   this->state.triangles[*rpCnt].vertices[0] = vertex;
@@ -5295,8 +5295,8 @@ void CEffectPrim::RenderRecordRings(matrix& wtm) {
 
   for (int index = 0; index < this->state.numSegment; ++index) {
     const EffectPrimitiveRecord& record = this->state.records[index];
-    const float inner = record.unknown_003C - this->state.size;
-    const float outer = record.unknown_003C;
+    const float inner = record.radius - this->state.size;
+    const float outer = record.radius;
 
     for (float i = 0.0f; last >= i; i += this->state.arcAngle) {
       const int angle1 = static_cast<int>(i);
@@ -5585,8 +5585,8 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
     if (triangle->Visible()) {
       RenderTriangle& submitted = *triangle++;
       if (this->state.slots[0].flag1[0] == 3) {
-        submitted.unknown_0064 = 5;
-        submitted.unknown_0068 = 2;
+        submitted.sourceBlend = 5;
+        submitted.destinationBlend = 2;
         g_renderer->queues.SubmitTriangle(submitted, 5, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       } else {
         g_renderer->queues.SubmitTriangle(submitted, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
@@ -6661,7 +6661,7 @@ void CEffectPrim::Render2DPrimitive() {
 
   tri0.texture = this->state.textures[this->render.curMotion];
 
-  const std::uint16_t flag1 = (this->state.unknown_01C8[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
+  const std::uint16_t flag1 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
   g_renderer->queues.SubmitTriangle(tri0, flag1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 
   RenderTriangle& tri1 = this->state.triangles[1];
@@ -6691,13 +6691,13 @@ void CEffectPrim::Render2DPrimitive() {
 
   tri1.texture = this->state.textures[this->render.curMotion];
 
-  const std::uint16_t flag2 = (this->state.unknown_01C8[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
+  const std::uint16_t flag2 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
   g_renderer->queues.SubmitTriangle(tri1, flag2, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 
   if (this->state.slots[0].life == 'b') {
     for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
       if (effect.id == static_cast<std::uint32_t>(this->state.slots[0].rotStart)) {
-        const std::uint32_t expire = effect.unknown_0004;
+        const std::uint32_t expire = effect.expiration;
         bool match = false;
         if (timeGetTime() < expire && expire != 999999 && expire != 0) {
           match = true;
@@ -6753,7 +6753,7 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       const double scale = record.scale;
       const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
-      const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+      const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
       if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
         continue;
       }
@@ -6762,12 +6762,12 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
       float right;
       if ((cell.mirrored & 1) == 0) {
         left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-        right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+        right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
         if (left >= static_cast<float>(g_renderer->viewport.width)) {
           continue;
         }
       } else {
-        left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+        left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
         right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
         if (right >= static_cast<float>(g_renderer->viewport.width)) {
           continue;
@@ -6790,7 +6790,7 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
       } else {
         quad.color = (cell.color & 0xFF00FF00) | ((cell.color & 0xFF) << 16) | ((cell.color >> 16) & 0xFF);
       }
-      quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+      quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
       quad.image = image;
       this->DrawQuad(quad, sprite->palette, this->state.renderFlag, 0.0f, 0.0f, 0);
     }

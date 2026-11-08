@@ -226,7 +226,7 @@ void UIIngredientInfoWnd::Paint() {
   }
 
   std::string name;
-  name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0).c_str();
+  name = this->FitDisplayText(100, this->item.displayName.c_str(), 0, 12, 0).c_str();
 
   std::uint32_t color = 0;
   if (this->insufficient == 0) {
@@ -278,7 +278,7 @@ void UILapineBoxWnd::Paint() {
 // FUNCTION: fn_04177
 int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
   if (this->items.size() < 10) {
-    if (std::find_if(this->items.begin(), this->items.end(), [id](ITEM_INFO entry) { return id == entry.unknown_0000[1]; }) != this->items.end()) {
+    if (std::find_if(this->items.begin(), this->items.end(), [id](ITEM_INFO entry) { return id == entry.identity[1]; }) != this->items.end()) {
       return 0;
     }
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
@@ -292,8 +292,8 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       char* cursor = name;
       int highlightColor;
       this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
-      if (item.identified == 1 && item.unknown_0098 != 0) {
-        sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, item.unknown_0098);
+      if (item.identified == 1 && item.optionCount != 0) {
+        sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, item.optionCount);
       }
       item.SetName(name);
     }
@@ -312,16 +312,16 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
 // FUNCTION: fn_04178
 unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
-  if (owned.unknown_0000[1] == 0) {
+  if (owned.identity[1] == 0) {
     return 0;
   }
 
   const int itemId = std::atoi(owned.itemId.c_str());
-  if (g_session.IsPetEgg(itemId) == 1 && owned.unknown_005D == 1) {
+  if (g_session.IsPetEgg(itemId) == 1 && owned.damaged == 1) {
     return 0;
   }
 
-  if (g_session.HasItem61B8(owned.unknown_0000[1]) == 1) {
+  if (g_session.HasItem61B8(owned.identity[1]) == 1) {
     return 0;
   }
 
@@ -334,7 +334,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   }
 
   for (UIIngredientInfoWnd* itemWnd : this->items) {
-    if (itemWnd->item.unknown_0000[1] == id) {
+    if (itemWnd->item.identity[1] == id) {
       itemWnd->item.quantity += it->quantity;
       itemWnd->insufficient = 0;
       itemWnd->Show(1);
@@ -355,7 +355,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
     info->insufficient = 1;
   }
 
-  if (this->minRefine > owned.unknown_0060 || this->maxRefine < owned.unknown_0060) {
+  if (this->minRefine > owned.refiningLevel || this->maxRefine < owned.refiningLevel) {
     info->insufficient = 1;
   }
 

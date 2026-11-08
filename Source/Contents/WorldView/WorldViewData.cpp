@@ -46,15 +46,15 @@ __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const 
   this->top = area.top;
   this->right = area.right;
   this->bottom = area.bottom;
-  this->unknown_0010 = area.unknown_0010;
+  this->areaFlags = area.areaFlags;
   if (name) {
     this->name = name;
   }
   if (unknown2) {
-    this->unknown_002C = unknown2;
+    this->fieldName = unknown2;
   }
   if (unknown3) {
-    this->unknown_0044 = unknown3;
+    this->description = unknown3;
   }
 }
 
@@ -89,7 +89,7 @@ void CWorldViewWorld::AddField(int mapId, const char* name, CWorldViewField* fie
     map->top = field->top;
     map->right = field->right;
     map->bottom = field->bottom;
-    map->unknown_0044 = field->unknown_0010;
+    map->areaFlags = field->areaFlags;
     this->maps.push_back(map);
   }
 
@@ -245,11 +245,11 @@ __declspec(noinline) void CWorldViewWorld::Draw(int, int x, int y, int width, in
 CWorldViewMgr::CWorldViewMgr() {
   this->screenScale = 0;
   this->dungeonColor = 0;
-  this->unknown_0084 = 0;
+  this->dungeonOverlayColor = 0;
   this->dungeonFontColor = 0xFFFFFFFF;
   this->dungeonFontOutline = 0xFF000000;
   this->dungeonSelectColor = 0xFFFFFFFF;
-  this->unknown_00A4 = 0xFFFFFFFF;
+  this->dungeonSelectTextColor = 0xFFFFFFFF;
   this->mobLevelColor = 0xFFFFFFFF;
   this->mobLevelOutline = 0xFF000000;
   this->mobColor = 0xFFFFFFFF;
@@ -342,8 +342,8 @@ void CWorldViewMgr::LoadTextures() {
     (*it)->LoadTexture();
   }
 
-  if (g_session.unknown_5324 == 0) {
-    g_session.unknown_5324 = this->ScaleToScreen();
+  if (g_session.mapPositionsScaled == 0) {
+    g_session.mapPositionsScaled = this->ScaleToScreen();
     g_session.ScaleMapPositions();
   }
 }
@@ -380,7 +380,7 @@ __declspec(noinline) void CWorldViewMgr::ResetSelection() {
   this->selection.top = 0;
   this->selection.right = 0;
   this->selection.bottom = 0;
-  this->selection.unknown_004C.clear();
+  this->selection.relatedNames.clear();
 }
 
 // OFFSET: 0x00616CC0
@@ -402,7 +402,7 @@ bool CWorldViewMgr::SelectField(const char* name) {
       this->selection.top = field->top;
       this->selection.right = field->right;
       this->selection.bottom = field->bottom;
-      this->selection.unknown_0048 = field->unknown_0010;
+      this->selection.areaFlags = field->areaFlags;
       return true;
     }
   }
@@ -445,7 +445,7 @@ bool CWorldViewMgr::AddMark(const char* name) {
       mark.level = 0;
       mark.worldIndex = index;
       mark.name = field->name;
-      mark.unknown_0048 = field->unknown_0010;
+      mark.areaFlags = field->areaFlags;
       mark.left = field->left;
       mark.top = field->top;
       mark.right = field->right;
@@ -535,7 +535,7 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
       record.mapIndex = mapIndex;
       record.worldIndex = index;
       record.name = field->name;
-      record.unknown_0048 = field->unknown_0010;
+      record.areaFlags = field->areaFlags;
       record.left = field->left;
       record.top = field->top;
       record.right = field->right;
@@ -696,7 +696,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
             map->top = area.top;
             map->right = area.right;
             map->bottom = area.bottom;
-            map->unknown_0044 = area.unknown_0010;
+            map->areaFlags = area.areaFlags;
           }
         }
       }
@@ -710,10 +710,10 @@ void CWorldViewMgr::Load(LuaScript& script) {
   int fifth = 0;
   int sixth = 0;
   int alpha = 0;
-  if (script.Call("Get_Worldview_info_Dungeon", ">dddd", &red, &green, &blue, &this->unknown_0084)) {
-    const std::uint32_t opacity = g_worldViewMgr.unknown_0084 << 24;
+  if (script.Call("Get_Worldview_info_Dungeon", ">dddd", &red, &green, &blue, &this->dungeonOverlayColor)) {
+    const std::uint32_t opacity = g_worldViewMgr.dungeonOverlayColor << 24;
     this->dungeonColor = opacity + RGB(blue, green, red);
-    this->unknown_0084 = opacity + 0xFFFFFF;
+    this->dungeonOverlayColor = opacity + 0xFFFFFF;
   }
   if (script.Call("Get_Worldview_info_Dungeon_FontColor", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
     this->dungeonFontColor = RGB(red, green, blue);
@@ -726,7 +726,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
     this->dungeonFontSize[3] = fourth;
   }
   if (script.Call("Get_Worldview_info_Dungeon_SelectColor", ">ddd", &red, &green, &blue)) {
-    this->unknown_00A4 = RGB(red, green, blue);
+    this->dungeonSelectTextColor = RGB(red, green, blue);
     this->dungeonSelectColor = RGB(blue, green, red);
   }
   if (script.Call("Get_Worldview_info_Mob_Color", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {

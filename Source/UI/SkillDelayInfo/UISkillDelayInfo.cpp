@@ -96,8 +96,8 @@ struct SkillDelayInfoSelectCallback {
 // FUNCTION: fn_16799
 template <>
 CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A71300
@@ -135,7 +135,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 // OFFSET: 0x00A719E0
 // FUNCTION: fn_16807
 void CUISkillDelayInfo::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->m_resolveSkin = true;
   this->Resize(345, 379);
   this->Move(0, 0);
@@ -262,7 +262,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
         }
       };
       item->onPress = [this](CUIListItem* listItem) {
-        if (this->unknown_00C4) {
+        if (this->layoutFlag) {
           return;
         }
         for (SkillDelayInfo::CUIDelayItem* row : this->items) {
@@ -272,7 +272,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
         }
 
         listItem->SetSelected(true);
-        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
           return;
         }
         SkillDelayInfo::CUIDelayItem* delayItem = dynamic_cast<SkillDelayInfo::CUIDelayItem*>(listItem);
@@ -395,7 +395,7 @@ void SkillDelayInfoFreezeCallback::operator()(CUIListItem* const& item) {
 void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
   CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* list = this->list;
   CUIListItem* selectedItem = item;
-  if (list->unknown_00C4) {
+  if (list->layoutFlag) {
     return;
   }
   for (SkillDelayInfo::CUIDelayItem* row : list->items) {
@@ -405,7 +405,7 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
   }
 
   selectedItem->SetSelected(true);
-  if (selectedItem->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+  if (selectedItem->index == static_cast<int>(list->selected) && list->selectionFlag) {
     return;
   }
   SkillDelayInfo::CUIDelayItem* delayItem = dynamic_cast<SkillDelayInfo::CUIDelayItem*>(selectedItem);
@@ -426,7 +426,7 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
 // OFFSET: 0x00A77200
 // FUNCTION: fn_16872
 CUISkillDelayInfo::CUISkillDelayInfo()
-    : titleBar(nullptr), unknown_00DC(nullptr), labels{}, columns{}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
+    : titleBar(nullptr), skillNameText(nullptr), labels{}, columns{}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
 }
 
 namespace SkillDelayInfo {
@@ -468,11 +468,11 @@ void CUISkillDelayInfo::OnSelectItem(SkillDelayInfo::CUIDelayItem*, const SkillD
 // OFFSET: 0x00A77B20
 // FUNCTION: fn_16881
 void CUISkillDelayInfo::OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) {
-  item->level->SetText(std::to_string(data.unknown_0000 + 1));
+  item->level->SetText(std::to_string(data.levelIndex + 1));
 
   for (int index = 0; index < 4; ++index) {
-    const auto found = data.unknown_0004.find(index);
-    item->times[index]->SetTime(found != data.unknown_0004.end() ? found->second : 0);
+    const auto found = data.delayTimes.find(index);
+    item->times[index]->SetTime(found != data.delayTimes.end() ? found->second : 0);
   }
 }
 
@@ -543,7 +543,7 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
   if (!IsNullOrEmpty(skillDescription)) {
     std::vector<std::string> lines = Split(skillDescription, "\r\n");
     if (!lines.empty()) {
-      this->unknown_00DC->SetText(lines[0].c_str(), lines[0].size());
+      this->skillNameText->SetText(lines[0].c_str(), lines[0].size());
     }
   }
 
@@ -615,7 +615,7 @@ void CUISkillDelayInfo::OnInit() {
   this->labels[1]->SetText(LookupMessage(4304));
   this->labels[2]->SetText(LookupMessage(4305));
 
-  this->delayList->unknown_00C4 = 1;
+  this->delayList->layoutFlag = 1;
   this->delayList->Invalidate();
   this->description->scrollBar->SetHidden(1);
 }
@@ -707,20 +707,20 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   );
   this->titleBar->SetSecondButton(closeButton);
 
-  this->unknown_00DC = new CUIStaticText();
-  this->unknown_00DC->SetSize(325, 25);
-  this->unknown_00DC->Move(10, 27);
-  this->unknown_00DC->SetText("");
-  this->unknown_00DC->SetFitText(1);
-  this->unknown_00DC->SetAlign(6, 6);
-  this->unknown_00DC->SetFont(DecryptName<0x192D654D29337BE5ULL>({
+  this->skillNameText = new CUIStaticText();
+  this->skillNameText->SetSize(325, 25);
+  this->skillNameText->Move(10, 27);
+  this->skillNameText->SetText("");
+  this->skillNameText->SetFitText(1);
+  this->skillNameText->SetAlign(6, 6);
+  this->skillNameText->SetFont(DecryptName<0x192D654D29337BE5ULL>({
       '\xA2', '\x0E', '\x5F', '\x40', '\x20', '\x65'}));
-  this->unknown_00DC->SetFontHeight(13);
-  this->unknown_00DC->SetBold(1);
-  this->unknown_00DC->SetColor(0);
-  this->unknown_00DC->SetShadow(0, 0xFFFFFF);
-  this->unknown_00DC->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00DC);
+  this->skillNameText->SetFontHeight(13);
+  this->skillNameText->SetBold(1);
+  this->skillNameText->SetColor(0);
+  this->skillNameText->SetShadow(0, 0xFFFFFF);
+  this->skillNameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->skillNameText);
 
   this->labels[0] = new CUIStaticText();
   this->labels[0]->SetSize(140, 22);

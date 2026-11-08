@@ -173,8 +173,8 @@ void CWorld::OnProcess() {
   }
 
   for (const std::uint32_t aid : this->pendingActorIds) {
-    auto skillEntry = this->unknown_0020.begin();
-    for (; skillEntry != this->unknown_0020.end(); ++skillEntry) {
+    auto skillEntry = this->skills.begin();
+    for (; skillEntry != this->skills.end(); ++skillEntry) {
       CSkill* skill = static_cast<CSkill*>(*skillEntry);
       if (skill->skillAid != aid) {
         continue;
@@ -204,7 +204,7 @@ void CWorld::OnProcess() {
             break;
           }
         }
-        this->unknown_0020.erase(skillEntry);
+        this->skills.erase(skillEntry);
       }
       break;
     }
@@ -255,8 +255,8 @@ void CWorld::Clear() {
 
   this->player = nullptr;
   this->actors.clear();
-  this->unknown_0018.clear();
-  this->unknown_0020.clear();
+  this->items.clear();
+  this->skills.clear();
   g_effectMgr->Clear();
   this->pendingActorIds.clear();
   this->actorCells.clear();
@@ -338,7 +338,7 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 // OFFSET: 0x00AC8350
 // FUNCTION: fn_17669
 CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
-  for (CRenderObject* object : this->unknown_0018) {
+  for (CRenderObject* object : this->items) {
     CItem* item = static_cast<CItem*>(object);
 
     if (item->itemAid == aid) {
@@ -354,7 +354,7 @@ CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
 CRenderObject* CWorld::GetActorByGID(int gid) const {
   auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CRenderObject* object) {
     CGameActor* actor = static_cast<CGameActor*>(object);
-    return !actor->unknown_0314 && gid == actor->GetPkState();
+    return !actor->objectType && gid == actor->GetPkState();
   });
 
   if (it != this->actors.end()) {
@@ -367,7 +367,7 @@ CRenderObject* CWorld::GetActorByGID(int gid) const {
 // OFFSET: 0x00AC8440
 // FUNCTION: fn_17671
 CRenderObject* CWorld::GetSkillByAID(std::uint32_t aid) const {
-  for (CRenderObject* object : this->unknown_0020) {
+  for (CRenderObject* object : this->skills) {
     CSkill* skill = static_cast<CSkill*>(object);
 
     if (skill->skillAid == aid) {
@@ -411,7 +411,7 @@ bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor*
     }
 
     if (argument != -1) {
-      effect->unknown_0030 = argument;
+      effect->effectArgument = argument;
     }
 
     if (effectId == 539) {
@@ -447,7 +447,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     return;
   }
 
-  if (actor->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
+  if (actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
     card.name = "??????";
   } else {
     const std::string name = this->nameCard.Name(actor->render.accountId);
@@ -460,10 +460,10 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     if (actor->GetEffectiveJob(-1) == 20269) {
       monsterType = 0;
     } else {
-      monsterType = actor->unknown_0304;
+      monsterType = actor->hpGaugeFlags;
     }
     balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
-  } else if (actor->unknown_0314 == 7 || actor->unknown_0314 == 8) {
+  } else if (actor->objectType == 7 || actor->objectType == 8) {
     CActorNameCard masked = card;
     char name[24] = {};
     strncpy_s(name, sizeof(name), masked.name.c_str(), masked.name.size());
@@ -482,13 +482,13 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   }
 
   const unsigned char showEmblem = g_serviceOptions.Get(0x40);
-  if (((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.unknown_0094) ||
-      (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.unknown_0094)) {
-    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.unknown_0094).c_str(), 0);
+  if (((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) ||
+      (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId)) {
+    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
   } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
     std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
-    this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C == 1 && framedEmblem ? 1 : 0);
+    this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
   } else if (reinterpret_cast<CGameActor*>(this->scene->player) == actor) {
     char path[256];
     std::memset(path, 0, sizeof(path));
@@ -496,18 +496,18 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
       StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
     }
     this->nameBalloon->SetIcon(path, 0);
-  } else if (actor->unknown_0305) {
+  } else if (actor->hasSp) {
     char path[256];
     std::memset(path, 0, sizeof(path));
-    std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->unknown_0308);
+    std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
     this->nameBalloon->SetIcon(path, 0);
   } else {
     this->nameBalloon->SetIcon("", 0);
   }
 
   UINameBalloonText* balloon = this->nameBalloon;
-  *reinterpret_cast<int*>(this->unknown_02E4) = balloon->geometry.width;
-  *reinterpret_cast<int*>(&this->unknown_02E4[4]) = balloon->geometry.height;
+  *reinterpret_cast<int*>(this->nameBalloonSize) = balloon->geometry.width;
+  *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = balloon->geometry.height;
   if (balloon) {
     const int aid = actor->render.accountId;
     if (g_serviceType == 12) {
@@ -533,8 +533,8 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
       balloon->m_outlineColor = 0;
     }
 
-    if (!actor->IsPlayerClass(actor->GetEffectiveJob(-1)) && static_cast<short>(actor->unknown_0210) > 0 && g_session.IsMonsterActor(actor)) {
-      const short difference = static_cast<short>(g_session.m_level - actor->unknown_0210);
+    if (!actor->IsPlayerClass(actor->GetEffectiveJob(-1)) && static_cast<short>(actor->characterLevel) > 0 && g_session.IsMonsterActor(actor)) {
+      const short difference = static_cast<short>(g_session.m_level - actor->characterLevel);
       if (difference < -10) {
         balloon->m_textColor = 0xFF;
         balloon->m_outlineColor = 0;
@@ -544,7 +544,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
       }
     }
 
-    if (g_session.m_aid == actor->unknown_02EC) {
+    if (g_session.m_aid == actor->emblemVersion) {
       balloon->m_textColor = 0xC8C8C8;
       balloon->m_outlineColor = 0;
     }
@@ -556,7 +556,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
 // OFFSET: 0x00CD8820
 // FUNCTION: fn_21302
 void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
-  if (!actor || !guildId || actor->unknown_0188 != 0) {
+  if (!actor || !guildId || actor->sceneNameWindow != 0) {
     return;
   }
 
@@ -573,7 +573,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   UIEmblemWnd* window = new UIEmblemWnd;
   window->SendMsg(nullptr, UM_SETINFO, actor->render.accountId, guildId, 0, 0);
   g_windowMgr.AddRenderedFront(window);
-  actor->unknown_0188 = reinterpret_cast<int>(window);
+  actor->sceneNameWindow = reinterpret_cast<int>(window);
   this->AddUnknown0604(window);
 }
 
@@ -598,8 +598,8 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
       }
 
       effect->SendMsg(nullptr, AM_SETMASTERGID, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->unknown_0020,
-                      data->unknown_0020 >> 31, 0, 0, 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->actionIndex,
+                      data->actionIndex >> 31, 0, 0, 0, 0, 0, 0);
     }
   }
 
@@ -659,12 +659,12 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   }
 
   if (actor != nullptr && g_session.IsHomunAid(actor->render.accountId)) {
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
     menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-    this->unknown_02E0 = pick->accountId;
+    this->menuTargetAid = pick->accountId;
 
     this->actorMenuIds.push_back(0x25);
     sprintf(text, LookupMessage(MSI_HOMUN_SHOWINFO));
@@ -676,12 +676,12 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     sprintf(text, LookupMessage(MSI_HOMUN_WAITING));
     menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
   } else if (actor != nullptr && g_session.IsMercenaryAid(pick->accountId)) {
-    if (g_windowMgr.unknown_0210 != nullptr) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
     menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-    this->unknown_02E0 = pick->accountId;
+    this->menuTargetAid = pick->accountId;
 
     this->actorMenuIds.push_back(0x28);
     sprintf(text, LookupMessage(MSI_HOMUN_SHOWINFO));
@@ -689,13 +689,13 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     this->actorMenuIds.push_back(0x29);
     sprintf(text, LookupMessage(MSI_HOMUN_WAITING));
     menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-  } else if (actor != nullptr && pick->accountId == g_session.unknown_1010 && actor->unknown_0314 == 7) {
-    if (g_windowMgr.unknown_0210 != nullptr) {
+  } else if (actor != nullptr && pick->accountId == g_session.petGid && actor->objectType == 7) {
+    if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
     menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-    this->unknown_02E0 = pick->accountId;
+    this->menuTargetAid = pick->accountId;
 
     this->actorMenuIds.push_back(0x21);
     sprintf(text, LookupMessage(MSI_PET_SHOWINFO));
@@ -728,7 +728,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     if (this->ActorName(pick->accountId).empty() && !isAdmin) {
       return;
     }
-    if (this->unknown_00E4 != g_mouse.x || this->unknown_00E8 != g_mouse.y || !IsPlayerJob(pick->job)) {
+    if (this->rBtnClickX != g_mouse.x || this->rBtnClickY != g_mouse.y || !IsPlayerJob(pick->job)) {
       return;
     }
 
@@ -737,34 +737,34 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       return;
     }
 
-    if (target->unknown_03E0Low == 1) {
+    if (target->storedActorEntry == 1) {
       if (isAdmin != true) {
         return;
       }
 
-      if (g_windowMgr.unknown_0210 != nullptr) {
+      if (g_windowMgr.menuWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_MENUWND);
       }
       this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
       menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-      this->unknown_02E0 = pick->accountId;
+      this->menuTargetAid = pick->accountId;
 
       this->actorMenuIds.push_back(0x41);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAPPROPERTY_REQUEST_USER)), 0, 0, 0);
     } else {
       std::string name;
-      if (target->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
+      if (target->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
         name = "??????";
       } else {
         name = this->ActorName(pick->accountId);
       }
 
-      if (g_windowMgr.unknown_0210 != nullptr) {
+      if (g_windowMgr.menuWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_MENUWND);
       }
       this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
       menu = g_windowMgr.EnsureWindow(WID_MENUWND);
-      this->unknown_02E0 = pick->accountId;
+      this->menuTargetAid = pick->accountId;
 
       char line[128];
       std::memset(line, 0, sizeof(line));
@@ -787,7 +787,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       }
 
       const bool canInviteParty =
-        g_session.unknown_5464 != 0 && g_session.PartyByName(name.c_str()).valid == 0;
+        g_session.partyLeader != 0 && g_session.PartyByName(name.c_str()).valid == 0;
       if (canInviteParty) {
         this->actorMenuIds.push_back(5);
         sprintf(line, LookupMessage(MSI_REQ_JOIN_PARTY2), name.c_str());
@@ -803,12 +803,12 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       if (g_guildInfo.m_guildId != 0) {
         CGameActor* member = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
         const std::uint32_t guildId = member != nullptr ? member->GetGdid() : 0;
-        if (g_guildInfo.unknown_00AC != 0 && guildId == 0) {
+        if (g_guildInfo.canInvite != 0 && guildId == 0) {
           this->actorMenuIds.push_back(0x16);
           sprintf(line, LookupMessage(MSI_REQ_JOIN_GUILD), name.c_str());
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
         }
-        if (g_guildInfo.unknown_00B4 != 0 && guildId != g_guildInfo.m_guildId) {
+        if (g_guildInfo.isMaster != 0 && guildId != g_guildInfo.m_guildId) {
           menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
           this->actorMenuIds.push_back(0x19);
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REQ_ALLY_GUILD)), 0, 0, 0);
@@ -845,16 +845,16 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GIVE_PLUS_MANNER_POINT)), 0, 0, 0);
           this->actorMenuIds.push_back(0x18);
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GIVE_MINUS_MANNER_POINT)), 0, 0, 0);
-          sprintf(line, LookupMessage(MSI_PROHIBIT_LOG), g_session.CountProhibitionLog(this->unknown_02E0));
+          sprintf(line, LookupMessage(MSI_PROHIBIT_LOG), g_session.CountProhibitionLog(this->menuTargetAid));
           this->actorMenuIds.push_back(0x23);
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
         }
-        sprintf(line, "%s : %d (GID) : %s", g_session.m_serverName.c_str(), this->unknown_02E0, name.c_str());
+        sprintf(line, "%s : %d (GID) : %s", g_session.m_serverName.c_str(), this->menuTargetAid, name.c_str());
         this->actorMenuIds.push_back(0x22);
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
       }
 
-      this->unknown_02EC = name;
+      this->menuTargetName = name;
       menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
       this->actorMenuIds.push_back(0x3F);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_COOLTIME)), 0xFF, 0, 0);
@@ -879,7 +879,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
 // OFFSET: 0x00ACA540
 // FUNCTION: fn_17693
 bool CWorld::RemoveGroundItem(std::uint32_t aid) {
-  for (auto item = this->unknown_0018.begin(); item != this->unknown_0018.end(); ++item) {
+  for (auto item = this->items.begin(); item != this->items.end(); ++item) {
     if (static_cast<CItem*>(*item)->itemAid == aid) {
       CRenderObject* object = *item;
 
@@ -891,7 +891,7 @@ bool CWorld::RemoveGroundItem(std::uint32_t aid) {
         }
       }
 
-      this->unknown_0018.erase(item);
+      this->items.erase(item);
       return true;
     }
   }
@@ -902,7 +902,7 @@ bool CWorld::RemoveGroundItem(std::uint32_t aid) {
 // OFFSET: 0x00ACA8A0
 // FUNCTION: fn_17697
 bool CWorld::RemoveSkill(std::uint32_t aid) {
-  for (auto entry = this->unknown_0020.begin(); entry != this->unknown_0020.end(); ++entry) {
+  for (auto entry = this->skills.begin(); entry != this->skills.end(); ++entry) {
     if (static_cast<CSkill*>(*entry)->skillAid == aid) {
       CSkill* skill = static_cast<CSkill*>(*entry);
 
@@ -924,7 +924,7 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
       }
 
       this->RemoveObject(skill);
-      this->unknown_0020.erase(entry);
+      this->skills.erase(entry);
       return true;
     }
   }
@@ -939,8 +939,8 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
     std::string sprite;
     std::string action;
   } names;
-  names.sprite = static_cast<const std::string&>(FormatOwnedString("%s.spr", g_session.unknown_80EC.c_str()));
-  names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.unknown_80EC.c_str()));
+  names.sprite = static_cast<const std::string&>(FormatOwnedString("%s.spr", g_session.damageSpriteName.c_str()));
+  names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.damageSpriteName.c_str()));
 
   CMsgEffect* effect = new CMsgEffect;
   if (effect) {
@@ -949,7 +949,7 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&names),
                     reinterpret_cast<int>(&names) >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
     effect->render.color = color;
-    effect->render.unknown_00B4 = 0;
+    effect->render.useGroundLighting = 0;
   }
 
   return effect;

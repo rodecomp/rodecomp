@@ -108,23 +108,23 @@ void UITextViewer::OnLBtnDblClk(int, int) {
 // OFFSET: 0x007B78D0
 // FUNCTION: fn_09228
 void UIAchListWnd::OnLBtnDown(int x, int y) {
-  if (x < 0 || x > this->geometry.width - this->unknown_0094) {
+  if (x < 0 || x > this->geometry.width - this->scrollBarWidth) {
     return;
   }
 
-  const int row = y / this->unknown_0084;
-  if (static_cast<unsigned>(row) >= static_cast<unsigned>(this->unknown_00AC->count)) {
+  const int row = y / this->rowHeight;
+  if (static_cast<unsigned>(row) >= static_cast<unsigned>(this->achievementList->count)) {
     return;
   }
 
-  this->SelectAchievement(this->unknown_008C + row);
+  this->SelectAchievement(this->firstRow + row);
   g_windowMgr.SetCapture(this);
 }
 
 // OFFSET: 0x007B7920
 // FUNCTION: fn_09229
 void UIAchTV::OnLBtnDown(int, int) {
-  if (this->unknown_00EC == 1) {
+  if (this->selectionDisabled == 1) {
     return;
   }
 
@@ -143,8 +143,8 @@ void UIAchTab::OnLBtnDown(int x, int y) {
     return;
   }
 
-  this->unknown_007C = a;
-  this->unknown_0080 = b;
+  this->selectedGroup = a;
+  this->selectedSub = b;
   if (this->parent) {
     this->parent->SendMsg(this, UM_TAB, a, b, 0, 0);
     this->parent->Invalidate();
@@ -262,7 +262,7 @@ void UIItemTagCtrl::AddTagButton(UIWindow* button) {
 // OFFSET: 0x00874E10
 // FUNCTION: fn_11195
 void UIItemTagOnMail::AddTagButton(UIWindow* button) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->AddChild(button);
   }
 }
@@ -270,7 +270,7 @@ void UIItemTagOnMail::AddTagButton(UIWindow* button) {
 // OFFSET: 0x00874E30
 // FUNCTION: fn_11196
 void UIItemTagOnMegaPhone::AddTagButton(UIWindow* button) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0318)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.npcTextEditDialogWnd)) {
     window->AddChild(button);
   }
 }

@@ -34,7 +34,7 @@ public:
 
   /* 0004 */ bool enabled;
   /* 0005 */ bool registered;
-  /* 0008 */ std::uint32_t unknown_0008;
+  /* 0008 */ std::uint32_t masterAccountId;
   /* 000C */ std::vector<CAdvenPartyInfo> entries;
   /* 0018 */ std::uint32_t pending;
 

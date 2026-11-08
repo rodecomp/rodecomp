@@ -121,11 +121,11 @@ int CSession::MercSkillLevel(int skillId) const {
 // OFFSET: 0x00E13B00
 // FUNCTION: fn_23826
 int CSession::SyncUnknown0E98() {
-  if (this->unknown_0E98 != this->unknown_5558) {
-    this->unknown_0E98 = this->unknown_5558;
+  if (this->cachedSex != this->currentSex) {
+    this->cachedSex = this->currentSex;
   }
 
-  return this->unknown_0E98;
+  return this->cachedSex;
 }
 
 // OFFSET: 0x00DF9B90
@@ -138,8 +138,8 @@ int CSession::IsExchangeItemListFull() {
 // FUNCTION: fn_23633
 void CSession::ClearItemSelection() {
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
-    if (it->unknown_0074[1] == 1) {
-      it->unknown_0074[1] = 0;
+    if (it->flags[1] == 1) {
+      it->flags[1] = 0;
     }
   }
 }
@@ -231,7 +231,7 @@ bool CSession::IsWithinUnknown59C0(int value) const {
     return false;
   }
 
-  return this->m_normalSlotCount - this->unknown_8130 <= value;
+  return this->m_normalSlotCount - this->restrictedCharacterSlots <= value;
 }
 
 // OFFSET: 0x00E3D390
@@ -242,7 +242,7 @@ __declspec(noinline) int CSession::HasItem61B8(std::uint32_t id) const {
   }
 
   for (int i = 0; i < 10; ++i) {
-    if (id == this->unknown_61B8[i].unknown_0000[1] || id == this->unknown_6B68[i].unknown_0000[1]) {
+    if (id == this->swapCostumeItems[i].identity[1] || id == this->swapEquippedItems[i].identity[1]) {
       return 1;
     }
   }
@@ -258,10 +258,10 @@ bool CSession::ResetUnknownState() {
   this->m_billingSlotCount = 1;
   this->m_producibleSlotCount = 1;
   this->m_validSlotCount = 1;
-  this->unknown_59BC = 1;
-  this->unknown_0E94 = 1;
-  this->unknown_103C = -1;
-  this->unknown_5450 = 0;
+  this->characterSlotState = 1;
+  this->characterCount = 1;
+  this->petJob = -1;
+  this->guildLeader = 0;
   this->m_serverTimeOffset = 0;
   this->m_serverTimeAdjustCount = 0;
   return true;
@@ -286,8 +286,8 @@ char* CSession::ConvertTooltipText(const char* source, char* output) const {
 // OFFSET: 0x00DDE890
 // FUNCTION: fn_23402
 ITEM_INFO CSession::FindItem1768(std::uint32_t id) const {
-  for (auto item = this->unknown_1768.begin(); item != this->unknown_1768.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->merchantPurchaseSavedItems.begin(); item != this->merchantPurchaseSavedItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -298,13 +298,13 @@ ITEM_INFO CSession::FindItem1768(std::uint32_t id) const {
 // OFFSET: 0x00DDE920
 // FUNCTION: fn_23403
 ITEM_INFO CSession::GetItem1768At(int index) const {
-  if (this->unknown_1768.empty()) {
+  if (this->merchantPurchaseSavedItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1768.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantPurchaseSavedItems.begin();
   int position = 0;
-  while (it != this->unknown_1768.end()) {
+  while (it != this->merchantPurchaseSavedItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -318,8 +318,8 @@ ITEM_INFO CSession::GetItem1768At(int index) const {
 // OFFSET: 0x00DDE9C0
 // FUNCTION: fn_23404
 int CSession::GetItem1768Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1768) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->merchantPurchaseSavedItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -330,8 +330,8 @@ int CSession::GetItem1768Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDE9F0
 // FUNCTION: fn_23405
 ITEM_INFO CSession::FindItem1740(std::uint32_t id) const {
-  for (auto item = this->unknown_1740.begin(); item != this->unknown_1740.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->merchantShopItems.begin(); item != this->merchantShopItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -342,13 +342,13 @@ ITEM_INFO CSession::FindItem1740(std::uint32_t id) const {
 // OFFSET: 0x00DDEA80
 // FUNCTION: fn_23406
 ITEM_INFO CSession::GetItem1740At(int index) const {
-  if (this->unknown_1740.empty()) {
+  if (this->merchantShopItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1740.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantShopItems.begin();
   int position = 0;
-  while (it != this->unknown_1740.end()) {
+  while (it != this->merchantShopItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -362,8 +362,8 @@ ITEM_INFO CSession::GetItem1740At(int index) const {
 // OFFSET: 0x00DDEB20
 // FUNCTION: fn_23407
 int CSession::GetItem1740Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1740) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->merchantShopItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -374,8 +374,8 @@ int CSession::GetItem1740Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDEB50
 // FUNCTION: fn_23408
 ITEM_INFO CSession::FindItem1750(std::uint32_t id) const {
-  for (auto item = this->unknown_1750.begin(); item != this->unknown_1750.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->merchantMyShopItems.begin(); item != this->merchantMyShopItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -386,13 +386,13 @@ ITEM_INFO CSession::FindItem1750(std::uint32_t id) const {
 // OFFSET: 0x00DDEBE0
 // FUNCTION: fn_23409
 ITEM_INFO CSession::GetItem1750At(int index) const {
-  if (this->unknown_1750.empty()) {
+  if (this->merchantMyShopItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1750.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantMyShopItems.begin();
   int position = 0;
-  while (it != this->unknown_1750.end()) {
+  while (it != this->merchantMyShopItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -406,8 +406,8 @@ ITEM_INFO CSession::GetItem1750At(int index) const {
 // OFFSET: 0x00DDEC80
 // FUNCTION: fn_23410
 int CSession::GetItem1750Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1750) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->merchantMyShopItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -418,8 +418,8 @@ int CSession::GetItem1750Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDECB0
 // FUNCTION: fn_23411
 ITEM_INFO CSession::FindItem1758(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1758) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->merchantPurchaseItems) {
+    if (item.identity[1] == id) {
       return item;
     }
   }
@@ -430,7 +430,7 @@ ITEM_INFO CSession::FindItem1758(std::uint32_t id) const {
 // OFFSET: 0x00DDED40
 // FUNCTION: fn_23412
 ITEM_INFO CSession::FindItem1758ByItemId(int itemId) const {
-  for (const ITEM_INFO& item : this->unknown_1758) {
+  for (const ITEM_INFO& item : this->merchantPurchaseItems) {
     if (std::atoi(item.itemId.c_str()) == itemId) {
       return item;
     }
@@ -442,13 +442,13 @@ ITEM_INFO CSession::FindItem1758ByItemId(int itemId) const {
 // OFFSET: 0x00DDEDE0
 // FUNCTION: fn_23413
 ITEM_INFO CSession::GetItem1758At(int index) const {
-  if (this->unknown_1758.empty()) {
+  if (this->merchantPurchaseItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1758.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantPurchaseItems.begin();
   int position = 0;
-  while (it != this->unknown_1758.end()) {
+  while (it != this->merchantPurchaseItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -462,8 +462,8 @@ ITEM_INFO CSession::GetItem1758At(int index) const {
 // OFFSET: 0x00DDEEB0
 // FUNCTION: fn_23414
 ITEM_INFO CSession::FindItem1760(std::uint32_t id) const {
-  for (auto item = this->unknown_1760.begin(); item != this->unknown_1760.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->merchantHopeToSellItems.begin(); item != this->merchantHopeToSellItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -474,9 +474,9 @@ ITEM_INFO CSession::FindItem1760(std::uint32_t id) const {
 // OFFSET: 0x00DDF000
 // FUNCTION: fn_23416
 ITEM_INFO CSession::GetItem1760At(int index) const {
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1760.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantHopeToSellItems.begin();
   int position = 0;
-  while (it != this->unknown_1760.end()) {
+  while (it != this->merchantHopeToSellItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -490,8 +490,8 @@ ITEM_INFO CSession::GetItem1760At(int index) const {
 // OFFSET: 0x00DDF0F0
 // FUNCTION: fn_23418
 int CSession::GetItem1760Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1760) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->merchantHopeToSellItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -502,8 +502,8 @@ int CSession::GetItem1760Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DDF120
 // FUNCTION: fn_23419
 ITEM_INFO CSession::FindItem1770(std::uint32_t id) const {
-  for (auto item = this->unknown_1770.begin(); item != this->unknown_1770.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->filteredInventoryItems.begin(); item != this->filteredInventoryItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -515,8 +515,8 @@ ITEM_INFO CSession::FindItem1770(std::uint32_t id) const {
 // FUNCTION: fn_23420
 long long CSession::GetItem1760Total() const {
   long long total = 0;
-  for (auto it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
-    total += static_cast<long long>(static_cast<int>(it->unknown_0014[1])) * it->quantity;
+  for (auto it = this->merchantHopeToSellItems.begin(); it != this->merchantHopeToSellItems.end(); ++it) {
+    total += static_cast<long long>(static_cast<int>(it->prices[1])) * it->quantity;
   }
 
   return total;
@@ -525,13 +525,13 @@ long long CSession::GetItem1760Total() const {
 // OFFSET: 0x00DDF200
 // FUNCTION: fn_23421
 ITEM_INFO CSession::GetItem1748At(int index) const {
-  if (this->unknown_1748.empty()) {
+  if (this->merchantMirrorItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1748.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->merchantMirrorItems.begin();
   int position = 0;
-  while (it != this->unknown_1748.end()) {
+  while (it != this->merchantMirrorItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -545,8 +545,8 @@ ITEM_INFO CSession::GetItem1748At(int index) const {
 // OFFSET: 0x00DF9C50
 // FUNCTION: fn_23563
 bool CSession::HasItem1718(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1718) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->shopItems) {
+    if (item.identity[1] == id) {
       return true;
     }
   }
@@ -558,7 +558,7 @@ bool CSession::HasItem1718(std::uint32_t id) const {
 // FUNCTION: fn_23564
 bool CSession::HasExchangeItem(std::uint32_t id) const {
   for (int index = 0; index < 10; ++index) {
-    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].unknown_0000[1] == id) {
+    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].identity[1] == id) {
       return true;
     }
   }
@@ -583,7 +583,7 @@ const char* CSession::GatName2RswName(const char* gatName) {
 // OFFSET: 0x00DDEF40
 // FUNCTION: fn_23415
 ITEM_INFO CSession::FindItem1760ByItemId(const char* itemId) const {
-  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1760.begin(); it != this->unknown_1760.end(); ++it) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->merchantHopeToSellItems.begin(); it != this->merchantHopeToSellItems.end(); ++it) {
     if (it->itemId == itemId) {
       return *it;
     }
@@ -595,7 +595,7 @@ ITEM_INFO CSession::FindItem1760ByItemId(const char* itemId) const {
 // OFFSET: 0x00DDF090
 // FUNCTION: fn_23417
 int CSession::GetItem1760QuantityByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->unknown_1760) {
+  for (const ITEM_INFO& item : this->merchantHopeToSellItems) {
     if (item.itemId == itemId) {
       return item.quantity;
     }
@@ -607,7 +607,7 @@ int CSession::GetItem1760QuantityByItemId(const char* itemId) const {
 // OFFSET: 0x00DDF2D0
 // FUNCTION: fn_23422
 SessionRecord0734 CSession::FindRecord0734(int id) const {
-  for (const SessionRecord0734& record : this->unknown_0734) {
+  for (const SessionRecord0734& record : this->miniPartyRecords) {
     if (record.id == id) {
       return record;
     }
@@ -639,9 +639,9 @@ const char* CSession::GetBgmFileName(const char* rswName) {
 // OFFSET: 0x00DF9CD0
 // FUNCTION: fn_23565
 bool CSession::HasItem17D4(int itemId) const {
-  if (!this->unknown_1784[10].empty()) {
-    for (std::list<ITEM_INFO>::const_iterator item = this->unknown_1784[10].begin();
-         item != this->unknown_1784[10].end(); ++item) {
+  if (!this->inventoryCategories[10].empty()) {
+    for (std::list<ITEM_INFO>::const_iterator item = this->inventoryCategories[10].begin();
+         item != this->inventoryCategories[10].end(); ++item) {
       if (std::atoi(item->itemId.c_str()) == itemId) {
         return true;
       }
@@ -666,7 +666,7 @@ int CSession::IsFriendName(const char* name) const {
 // OFFSET: 0x00E1DFB0
 // FUNCTION: fn_23889
 int CSession::GetSceneUnknown004C() const {
-  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C;
+  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode;
 }
 
 // OFFSET: 0x00DDB4D0
@@ -691,8 +691,8 @@ bool CSession::IsNumberWithCommas(char* text) {
 // OFFSET: 0x00DDC050
 // FUNCTION: fn_23361
 int CSession::FindUnknown0708(int key) const {
-  auto found = this->unknown_0708.find(key);
-  if (found != this->unknown_0708.end()) {
+  auto found = this->skillEffectIds.find(key);
+  if (found != this->skillEffectIds.end()) {
     return found->second;
   }
 
@@ -702,8 +702,8 @@ int CSession::FindUnknown0708(int key) const {
 // OFFSET: 0x00DDC0A0
 // FUNCTION: fn_23362
 int CSession::FindUnknown0700(int key) const {
-  auto found = this->unknown_0700.find(key);
-  if (found != this->unknown_0700.end()) {
+  auto found = this->skillFollowEffects.find(key);
+  if (found != this->skillFollowEffects.end()) {
     return found->second;
   }
 
@@ -763,13 +763,13 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
     return nullptr;
   }
 
-  if (item->unknown_0000[3] != 0) {
-    if (item->unknown_0000[3] != 0x8000 || this->unknown_16EC == item->unknown_0000[1]) {
+  if (item->identity[3] != 0) {
+    if (item->identity[3] != 0x8000 || this->equippedArrowIndex == item->identity[1]) {
       return nullptr;
     }
 
     for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
-      if (it->unknown_0000[1] == this->unknown_16EC) {
+      if (it->identity[1] == this->equippedArrowIndex) {
         return &*it;
       }
     }
@@ -778,72 +778,72 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
   }
 
   ITEM_INFO* equipped = nullptr;
-  switch (item->unknown_0000[2]) {
+  switch (item->identity[2]) {
   case EQP_HEAD_LOW:
-    equipped = &this->unknown_17F0[0];
+    equipped = &this->equippedItems[0];
     break;
   case EQP_HAND_R:
   case EQP_HAND_R | EQP_HAND_L:
-    equipped = &this->unknown_17F0[1];
+    equipped = &this->equippedItems[1];
     break;
   case EQP_GARMENT:
-    equipped = &this->unknown_17F0[2];
+    equipped = &this->equippedItems[2];
     break;
   case EQP_ACC_RL:
-    equipped = &this->unknown_17F0[3];
+    equipped = &this->equippedItems[3];
     break;
   case EQP_ARMOR:
-    equipped = &this->unknown_17F0[4];
+    equipped = &this->equippedItems[4];
     break;
   case EQP_HAND_L:
-    equipped = &this->unknown_17F0[5];
+    equipped = &this->equippedItems[5];
     break;
   case EQP_SHOES:
-    equipped = &this->unknown_17F0[6];
+    equipped = &this->equippedItems[6];
     break;
   case EQP_HEAD_TOP:
   case EQP_HEAD_TOP | EQP_HEAD_LOW:
   case EQP_HEAD_TOP | EQP_HEAD_MID:
   case EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW:
-    equipped = &this->unknown_17F0[8];
+    equipped = &this->equippedItems[8];
     break;
   case EQP_HEAD_MID:
   case EQP_HEAD_MID | EQP_HEAD_LOW:
-    equipped = &this->unknown_17F0[9];
+    equipped = &this->equippedItems[9];
     break;
   case EQP_COSTUME_HEAD_LOW:
-    equipped = &this->unknown_2B50[0];
+    equipped = &this->costumeItems[0];
     break;
   case EQP_SHADOW_WEAPON:
-    equipped = &this->unknown_2B50[1];
+    equipped = &this->costumeItems[1];
     break;
   case EQP_COSTUME_GARMENT:
-    equipped = &this->unknown_2B50[2];
+    equipped = &this->costumeItems[2];
     break;
   case EQP_SHADOW_ACC_R:
-    equipped = &this->unknown_2B50[3];
+    equipped = &this->costumeItems[3];
     break;
   case EQP_SHADOW_ARMOR:
-    equipped = &this->unknown_2B50[4];
+    equipped = &this->costumeItems[4];
     break;
   case EQP_SHADOW_SHIELD:
-    equipped = &this->unknown_2B50[5];
+    equipped = &this->costumeItems[5];
     break;
   case EQP_SHADOW_SHOES:
-    equipped = &this->unknown_2B50[6];
+    equipped = &this->costumeItems[6];
     break;
   case EQP_SHADOW_ACC_L:
-    equipped = &this->unknown_2B50[7];
+    equipped = &this->costumeItems[7];
     break;
   case EQP_COSTUME_HEAD_TOP:
   case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
   case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
   case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
-    equipped = &this->unknown_2B50[8];
+    equipped = &this->costumeItems[8];
     break;
   case EQP_COSTUME_HEAD_MID:
   case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
-    equipped = &this->unknown_2B50[9];
+    equipped = &this->costumeItems[9];
     break;
   }
 
@@ -858,9 +858,9 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
 // FUNCTION: fn_23367
 ITEM_INFO CSession::FindItem2B50(std::uint32_t id, int* index) const {
   for (int i = 0; i < 10; ++i) {
-    if (this->unknown_2B50[i].unknown_0000[1] == id) {
+    if (this->costumeItems[i].identity[1] == id) {
       *index = i;
-      return this->unknown_2B50[i];
+      return this->costumeItems[i];
     }
   }
 
@@ -871,9 +871,9 @@ ITEM_INFO CSession::FindItem2B50(std::uint32_t id, int* index) const {
 // FUNCTION: fn_23369
 ITEM_INFO CSession::FindItem17F0(std::uint32_t id, int* index) const {
   for (int i = 0; i < 10; ++i) {
-    if (this->unknown_17F0[i].unknown_0000[1] == id) {
+    if (this->equippedItems[i].identity[1] == id) {
       *index = i;
-      return this->unknown_17F0[i];
+      return this->equippedItems[i];
     }
   }
 
@@ -893,7 +893,7 @@ std::uint16_t CSession::FindInventoryIndexByItemId(int itemId) {
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = this->GetInventoryItemAt(i);
     if (std::atoi(item.itemId.c_str()) == itemId) {
-      return static_cast<std::uint16_t>(item.unknown_0000[1]);
+      return static_cast<std::uint16_t>(item.identity[1]);
     }
   }
 
@@ -906,7 +906,7 @@ std::vector<int> CSession::FindInventoryIndicesByItemId(int itemId, unsigned cha
   std::vector<int> indices;
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
     if (itemId == std::atoi(it->itemId.c_str()) && (identifiedOnly != 1 || it->identified == 1)) {
-      indices.push_back(static_cast<int>(it->unknown_0000[1]));
+      indices.push_back(static_cast<int>(it->identity[1]));
     }
   }
 
@@ -969,9 +969,9 @@ ITEM_INFO CSession::GetItem1784At(int list, int index) const {
     return ITEM_INFO(0);
   }
 
-  if (static_cast<unsigned int>(list) < 11 && !this->unknown_1784[list].empty()) {
+  if (static_cast<unsigned int>(list) < 11 && !this->inventoryCategories[list].empty()) {
     int position = 0;
-    for (const ITEM_INFO& item : this->unknown_1784[list]) {
+    for (const ITEM_INFO& item : this->inventoryCategories[list]) {
       if (position == index) {
         return item;
       }
@@ -1496,7 +1496,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
 // OFFSET: 0x00DDF890
 // FUNCTION: fn_23426
 int CSession::GetItem1728Count() const {
-  return static_cast<int>(this->unknown_1728.size());
+  return static_cast<int>(this->sellItems.size());
 }
 
 // OFFSET: 0x00DDFA50
@@ -1513,7 +1513,7 @@ ITEM_INFO CSession::GetItem21A0(int index) const {
   }
 
   if (index >= 0 && index < 10) {
-    return this->unknown_21A0[index];
+    return this->alternateEquippedItems[index];
   }
 
   return ITEM_INFO(0);
@@ -1522,7 +1522,7 @@ ITEM_INFO CSession::GetItem21A0(int index) const {
 // OFFSET: 0x00DDFD30
 // FUNCTION: fn_23445
 int CSession::GetItem1718QuantityByItemId(const ITEM_INFO& item) const {
-  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       return it->quantity;
     }
@@ -1534,8 +1534,8 @@ int CSession::GetItem1718QuantityByItemId(const ITEM_INFO& item) const {
 // OFFSET: 0x00DDFDB0
 // FUNCTION: fn_23446
 int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
-  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
       return it->quantity;
     }
   }
@@ -1546,9 +1546,9 @@ int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
 // OFFSET: 0x00DDFDE0
 // FUNCTION: fn_23447
 std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) const {
-  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
-      return it->unknown_006C;
+      return it->priceFactor;
     }
   }
 
@@ -1558,9 +1558,9 @@ std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) co
 // OFFSET: 0x00DDFE60
 // FUNCTION: fn_23448
 std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
-  for (auto it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
-    if (it->unknown_0000[1] == item.unknown_0000[1]) {
-      return it->unknown_006C;
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+    if (it->identity[1] == item.identity[1]) {
+      return it->priceFactor;
     }
   }
 
@@ -1571,7 +1571,7 @@ std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
 // FUNCTION: fn_23449
 std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
   std::uint16_t total = 0;
-  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
     total += it->quantity * this->GetItem1718Unknown006CByItemId(*it);
   }
 
@@ -1582,7 +1582,7 @@ std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
 // FUNCTION: fn_23450
 std::uint16_t CSession::SumItem1720Unknown006C() const {
   std::uint16_t total = 0;
-  for (auto it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
     total += it->quantity * this->GetItem1718Unknown006COf(*it);
   }
 
@@ -1592,7 +1592,7 @@ std::uint16_t CSession::SumItem1720Unknown006C() const {
 // OFFSET: 0x00DE0620
 // FUNCTION: fn_23456
 ITEM_INFO CSession::FindItem1720ByItemId(const char* itemId) const {
-  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
     if (it->itemId == itemId) {
       return *it;
     }
@@ -1604,9 +1604,9 @@ ITEM_INFO CSession::FindItem1720ByItemId(const char* itemId) const {
 // OFFSET: 0x00DE06E0
 // FUNCTION: fn_23457
 ITEM_INFO CSession::GetItem1720At(int index) const {
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->purchaseItems.begin();
   int position = 0;
-  while (it != this->unknown_1720.end()) {
+  while (it != this->purchaseItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -1620,7 +1620,7 @@ ITEM_INFO CSession::GetItem1720At(int index) const {
 // OFFSET: 0x00DE0770
 // FUNCTION: fn_23458
 int CSession::GetItem1720QuantityByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->unknown_1720) {
+  for (const ITEM_INFO& item : this->purchaseItems) {
     if (item.itemId == itemId) {
       return item.quantity;
     }
@@ -1632,8 +1632,8 @@ int CSession::GetItem1720QuantityByItemId(const char* itemId) const {
 // OFFSET: 0x00DE07D0
 // FUNCTION: fn_23459
 int CSession::GetItem1720Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1720) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->purchaseItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -1645,8 +1645,8 @@ int CSession::GetItem1720Quantity(std::uint32_t id) const {
 // FUNCTION: fn_23460
 int CSession::GetItem1720Total() const {
   int total = 0;
-  for (auto item = this->unknown_1720.begin(); item != this->unknown_1720.end(); ++item) {
-    total += item->unknown_0014[1] * item->quantity;
+  for (auto item = this->purchaseItems.begin(); item != this->purchaseItems.end(); ++item) {
+    total += item->prices[1] * item->quantity;
   }
 
   return total;
@@ -1661,8 +1661,8 @@ const char* CSession::GetMonsterRmaName(int job) const {
 // OFFSET: 0x00DE08F0
 // FUNCTION: fn_23463
 ITEM_INFO CSession::FindItem1730(std::uint32_t id) const {
-  for (auto item = this->unknown_1730.begin(); item != this->unknown_1730.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->storageItems.begin(); item != this->storageItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -1673,13 +1673,13 @@ ITEM_INFO CSession::FindItem1730(std::uint32_t id) const {
 // OFFSET: 0x00DE0980
 // FUNCTION: fn_23464
 ITEM_INFO CSession::GetItem1730At(int index) const {
-  if (this->unknown_1730.empty()) {
+  if (this->storageItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1730.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->storageItems.begin();
   int position = 0;
-  while (it != this->unknown_1730.end()) {
+  while (it != this->storageItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -1693,8 +1693,8 @@ ITEM_INFO CSession::GetItem1730At(int index) const {
 // OFFSET: 0x00DE0A20
 // FUNCTION: fn_23465
 int CSession::GetItem1730Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1730) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->storageItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -1705,13 +1705,13 @@ int CSession::GetItem1730Quantity(std::uint32_t id) const {
 // OFFSET: 0x00DE0D30
 // FUNCTION: fn_23470
 ITEM_INFO CSession::GetItem1718At(int index) const {
-  if (this->unknown_1718.empty()) {
+  if (this->shopItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin();
   int position = 0;
-  while (it != this->unknown_1718.end()) {
+  while (it != this->shopItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -1725,8 +1725,8 @@ ITEM_INFO CSession::GetItem1718At(int index) const {
 // OFFSET: 0x00DE0DD0
 // FUNCTION: fn_23471
 int CSession::GetItem1718Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1718) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->shopItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -1743,8 +1743,8 @@ const char* CSession::GetHotkeyDescription(int index) const {
 // OFFSET: 0x00DE0EB0
 // FUNCTION: fn_23475
 ITEM_INFO CSession::FindItem1738(std::uint32_t id) const {
-  for (auto item = this->unknown_1738.begin(); item != this->unknown_1738.end(); ++item) {
-    if (item->unknown_0000[1] == id) {
+  for (auto item = this->cartItems.begin(); item != this->cartItems.end(); ++item) {
+    if (item->identity[1] == id) {
       return *item;
     }
   }
@@ -1755,13 +1755,13 @@ ITEM_INFO CSession::FindItem1738(std::uint32_t id) const {
 // OFFSET: 0x00DE0F40
 // FUNCTION: fn_23476
 ITEM_INFO CSession::GetItem1738At(int index) const {
-  if (this->unknown_1738.empty()) {
+  if (this->cartItems.empty()) {
     return ITEM_INFO(0);
   }
 
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1738.begin();
+  std::list<ITEM_INFO>::const_iterator it = this->cartItems.begin();
   int position = 0;
-  while (it != this->unknown_1738.end()) {
+  while (it != this->cartItems.end()) {
     if (position == index) {
       return *it;
     }
@@ -1775,8 +1775,8 @@ ITEM_INFO CSession::GetItem1738At(int index) const {
 // OFFSET: 0x00DE0FE0
 // FUNCTION: fn_23477
 int CSession::GetItem1738Quantity(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->unknown_1738) {
-    if (item.unknown_0000[1] == id) {
+  for (const ITEM_INFO& item : this->cartItems) {
+    if (item.identity[1] == id) {
       return item.quantity;
     }
   }
@@ -1842,7 +1842,7 @@ bool CSession::IsGuildMemberName(const char* name) const {
     }
   }
 
-  return std::strcmp(g_guildInfo.unknown_0018.c_str(), name) == 0;
+  return std::strcmp(g_guildInfo.masterName.c_str(), name) == 0;
 }
 
 // OFFSET: 0x00DFA160
@@ -1897,7 +1897,7 @@ static_assert(sizeof(PACKET_CZ_USE_SKILL_END) == 4);
 // OFFSET: 0x00E2ED90
 // FUNCTION: fn_24151
 void CSession::AddUnknown7F94(std::uint32_t id) {
-  this->unknown_7F94.insert(id);
+  this->pendingActorNames.insert(id);
 }
 
 // OFFSET: 0x00E2F3B0
@@ -1905,7 +1905,7 @@ void CSession::AddUnknown7F94(std::uint32_t id) {
 void CSession::EndSkillOption() {
   auto option = this->m_options.m_values.find(2);
   if (option != this->m_options.m_values.end() && static_cast<int>(option->second) != 0) {
-    this->unknown_61A4 = 0;
+    this->automaticSkillHotkey = 0;
     PACKET_CZ_USE_SKILL_END packet;
     packet.packetType = ID_CZ_USE_SKILL_END;
     packet.skillId = GC_ROLLINGCUTTER;
@@ -1924,7 +1924,7 @@ void CSession::ClearNormalItemSlots() {
 // FUNCTION: fn_24155
 void CSession::ResetItems6B68() {
   for (int index = 0; index < 10; ++index) {
-    this->unknown_6B68[index].Reset();
+    this->swapEquippedItems[index].Reset();
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -1934,7 +1934,7 @@ void CSession::ResetItems6B68() {
 // FUNCTION: fn_24156
 void CSession::ResetItems61B8() {
   for (int index = 0; index < 10; ++index) {
-    this->unknown_61B8[index].Reset();
+    this->swapCostumeItems[index].Reset();
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -1943,7 +1943,7 @@ void CSession::ResetItems61B8() {
 // OFFSET: 0x00E2F5A0
 // FUNCTION: fn_24157
 bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
-  if (g_session.m_level < 70 || g_session.IsBabyJob(g_session.GetDisplayJob()) == true || g_session.unknown_5468 == 0) {
+  if (g_session.m_level < 70 || g_session.IsBabyJob(g_session.GetDisplayJob()) == true || g_session.adoptionSkillAvailable == 0) {
     return false;
   }
 
@@ -1958,7 +1958,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
     return false;
   }
 
-  return static_cast<std::int16_t>(actor->unknown_0210) <= 50 && g_session.IsBabyJob(aid) != true &&
+  return static_cast<std::int16_t>(actor->characterLevel) <= 50 && g_session.IsBabyJob(aid) != true &&
          static_cast<unsigned>(aid - JT_NOVICE_H) > 20;
 }
 
@@ -1992,7 +1992,7 @@ std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items) {
 // OFFSET: 0x00E2F9E0
 // FUNCTION: fn_24161
 int CSession::GetUnknown8148() const {
-  return this->unknown_8148;
+  return this->sessionIndex;
 }
 
 // OFFSET: 0x00DFF060
@@ -2006,7 +2006,7 @@ void CSession::RefreshWindow02C8() {
 // OFFSET: 0x00DFF080
 // FUNCTION: fn_23607
 void CSession::RefreshItem1740Window() {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
@@ -2016,9 +2016,9 @@ void CSession::RefreshItem1740Window() {
 void CSession::RefreshItem1750Window(int type) {
   std::uint32_t window;
   if (type == 1) {
-    window = g_windowMgr.unknown_0410;
+    window = g_windowMgr.buyingShopMirrorItemWnd;
   } else {
-    window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+    window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
   }
 
   if (window) {
@@ -2029,7 +2029,7 @@ void CSession::RefreshItem1750Window(int type) {
 // OFFSET: 0x00DFF120
 // FUNCTION: fn_23610
 void CSession::UpdateUnknown1708(int enabled) {
-  this->unknown_1708 = g_serviceOptions.Get(enabled ? 45 : 46);
+  this->monsterInfoEnabled = g_serviceOptions.Get(enabled ? 45 : 46);
 }
 
 // OFFSET: 0x00DFF150
@@ -2052,9 +2052,9 @@ void CSession::RefreshItem1738Window() {
 // OFFSET: 0x00DFF1A0
 // FUNCTION: fn_23613
 void CSession::EraseRecord0734(int id) {
-  for (auto it = this->unknown_0734.begin(); it != this->unknown_0734.end(); ++it) {
+  for (auto it = this->miniPartyRecords.begin(); it != this->miniPartyRecords.end(); ++it) {
     if (id == it->id) {
-      this->unknown_0734.erase(it);
+      this->miniPartyRecords.erase(it);
       return;
     }
   }
@@ -2071,10 +2071,10 @@ void CSession::IgnoreText(std::string text) {
 void CSession::SaveMiniPartyInfo() {
   std::string text;
 
-  for (auto it = this->unknown_0734.begin(); it != this->unknown_0734.end(); ++it) {
+  for (auto it = this->miniPartyRecords.begin(); it != this->miniPartyRecords.end(); ++it) {
     char line[512];
     std::memset(line, 0, sizeof(line));
-    sprintf_s(line, "{%s,%d,%d,%d}\n", g_session.DecodePlayerName(), it->unknown_0000, it->id, it->unknown_0008);
+    sprintf_s(line, "{%s,%d,%d,%d}\n", g_session.DecodePlayerName(), it->active, it->id, it->cell);
     text += line;
   }
 
@@ -2089,7 +2089,7 @@ void CSession::SaveMiniPartyInfo() {
 // FUNCTION: fn_23617
 void CSession::SetItem1768Quantity(int index, int quantity) {
   int position = 0;
-  for (ITEM_INFO& item : this->unknown_1768) {
+  for (ITEM_INFO& item : this->merchantPurchaseSavedItems) {
     if (position == index) {
       item.quantity = quantity;
       return;
@@ -2101,8 +2101,8 @@ void CSession::SetItem1768Quantity(int index, int quantity) {
 // OFFSET: 0x00DFF4B0
 // FUNCTION: fn_23618
 void CSession::SetUnknown5C1C(int value) {
-  this->unknown_5C1C = value;
-  if (UIWindow* window = g_windowMgr.unknown_01E0) {
+  this->replayPacketMode = value;
+  if (UIWindow* window = g_windowMgr.equipWnd) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
@@ -2131,8 +2131,8 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
 // FUNCTION: fn_23621
 void CSession::SetEquipItem2B50(unsigned int index, const ITEM_INFO& item) {
   if (index <= 9) {
-    this->unknown_2B50[index] = item;
-    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
+    this->costumeItems[index] = item;
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.identity[3]));
   }
 }
 
@@ -2155,7 +2155,7 @@ void SetMemberFlags(std::uint32_t* flags) {
 // OFFSET: 0x00DFF8B0
 // FUNCTION: fn_23624
 void CSession::SetUnknown16EC(std::uint32_t value) {
-  this->unknown_16EC = value;
+  this->equippedArrowIndex = value;
   this->InvalidateWindowFrames();
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -2177,8 +2177,8 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
     g_activeSkillEffects.erase(it);
   }
 
-  if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
-    mode->scene->player->unknown_0544->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
+  if (mode->scene && mode->scene->player && mode->scene->player->skillEffect) {
+    mode->scene->player->skillEffect->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
   }
 }
 
@@ -2186,8 +2186,8 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
 // FUNCTION: fn_23625
 void CSession::SetEquipItem17F0(unsigned int index, const ITEM_INFO& item) {
   if (index <= 9) {
-    this->unknown_17F0[index] = item;
-    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
+    this->equippedItems[index] = item;
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.identity[3]));
   }
 }
 
@@ -2230,7 +2230,7 @@ void CSession::SetHomunSkillLevel(int skillId, int level) {
 // FUNCTION: fn_23628
 void CSession::UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh) {
   auto it = this->m_inventoryItems.begin();
-  while (it != this->m_inventoryItems.end() && it->unknown_0000[1] != item.unknown_0000[1]) {
+  while (it != this->m_inventoryItems.end() && it->identity[1] != item.identity[1]) {
     ++it;
   }
 
@@ -2260,10 +2260,10 @@ void CSession::SetMercSkillLevel(int skillId, int level) {
 // FUNCTION: fn_23630
 void CSession::SetItem1768Unknown0014(int index, std::uint32_t value) {
   int position = 0;
-  for (ITEM_INFO& item : this->unknown_1768) {
+  for (ITEM_INFO& item : this->merchantPurchaseSavedItems) {
     if (position == index) {
-      item.unknown_0014[0] = value;
-      item.unknown_0014[1] = value;
+      item.prices[0] = value;
+      item.prices[1] = value;
       return;
     }
     ++position;
@@ -2274,16 +2274,16 @@ void CSession::SetItem1768Unknown0014(int index, std::uint32_t value) {
 // FUNCTION: fn_23631
 void CSession::AddRecord0734(int id, std::uint32_t value) {
   SessionRecord0734 record;
-  record.unknown_0000 = 1;
+  record.active = 1;
   record.id = id;
-  record.unknown_0008 = value;
-  this->unknown_0734.push_back(record);
+  record.cell = value;
+  this->miniPartyRecords.push_back(record);
 }
 
 // OFFSET: 0x00DFFCB0
 // FUNCTION: fn_23632
 void CSession::SetUnknown5210(int value) {
-  this->unknown_5210 = value;
+  this->exchangeMoney = value;
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
@@ -2292,7 +2292,7 @@ void CSession::SetUnknown5210(int value) {
 // OFFSET: 0x00DFFD20
 // FUNCTION: fn_23634
 void CSession::SetUnknown5214(int value) {
-  this->unknown_5214 = value;
+  this->otherExchangeMoney = value;
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
@@ -2309,9 +2309,9 @@ void CSession::SetPlayerPosition(int x, int y, int direction) {
 // OFFSET: 0x00E00100
 // FUNCTION: fn_23636
 void CSession::SetRecord0734Value(int id, std::uint32_t value) {
-  for (SessionRecord0734& record : this->unknown_0734) {
+  for (SessionRecord0734& record : this->miniPartyRecords) {
     if (id == record.id) {
-      record.unknown_0008 = value;
+      record.cell = value;
       return;
     }
   }
@@ -2325,7 +2325,7 @@ ITEM_INFO CSession::GetItem6B68(int index) const {
   }
 
   if (static_cast<unsigned int>(index) <= 9) {
-    return this->unknown_6B68[index];
+    return this->swapEquippedItems[index];
   }
 
   return ITEM_INFO(0);
@@ -2335,11 +2335,11 @@ ITEM_INFO CSession::GetItem6B68(int index) const {
 // FUNCTION: fn_24175
 ITEM_INFO CSession::GetItem61B8(int index) const {
   if (index == 15) {
-    return LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_7EC8);
+    return LookupClientItemByIdentity(this->m_inventoryItems, this->swapArrowIndex);
   }
 
   if (static_cast<unsigned int>(index) <= 9) {
-    return this->unknown_61B8[index];
+    return this->swapCostumeItems[index];
   }
 
   return ITEM_INFO(0);
@@ -2367,14 +2367,14 @@ void CSession::RefreshHpSpWindows() {
     return;
   }
 
-  if (g_windowMgr.unknown_01DC) {
-    if (this->unknown_556C < this->unknown_5568 ||
-        *reinterpret_cast<const int*>(&this->unknown_5570[4]) < *reinterpret_cast<const int*>(&this->unknown_5570[0])) {
+  if (g_windowMgr.basicInfoWnd) {
+    if (this->maxHp < this->hp ||
+        *reinterpret_cast<const int*>(&this->spAndHomunculusStats[4]) < *reinterpret_cast<const int*>(&this->spAndHomunculusStats[0])) {
       return;
     }
 
-    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
-    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->InvalidateChildren();
+    reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->Invalidate();
+    reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->InvalidateChildren();
   }
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
@@ -2417,7 +2417,7 @@ bool CSession::IsBlankString(const char* text) const {
 // FUNCTION: fn_23561
 bool CSession::HasNoUnknown1784Items() const {
   for (int i = 0; i < 11; ++i) {
-    if (!this->unknown_1784[i].empty()) {
+    if (!this->inventoryCategories[i].empty()) {
       return false;
     }
   }
@@ -2428,20 +2428,20 @@ bool CSession::HasNoUnknown1784Items() const {
 // OFFSET: 0x00DFA3C0
 // FUNCTION: fn_23573
 bool CSession::HasItem1740Number(int value) const {
-  std::list<ITEM_INFO>::const_iterator it = this->unknown_1740.begin();
-  for (; it != this->unknown_1740.end(); ++it) {
+  std::list<ITEM_INFO>::const_iterator it = this->merchantShopItems.begin();
+  for (; it != this->merchantShopItems.end(); ++it) {
     if (value == std::atoi(it->itemId.c_str())) {
       break;
     }
   }
 
-  return it != this->unknown_1740.end();
+  return it != this->merchantShopItems.end();
 }
 
 // OFFSET: 0x00DFA420
 // FUNCTION: fn_23574
 bool CSession::HasUnknown809C(std::string name) {
-  for (std::vector<std::string>::iterator it = this->unknown_809C.begin(); it != this->unknown_809C.end(); ++it) {
+  for (std::vector<std::string>::iterator it = this->characterNames.begin(); it != this->characterNames.end(); ++it) {
     if (*it == name) {
       return true;
     }
@@ -2475,8 +2475,8 @@ bool CSession::IsKnownName(std::string name) const {
 // FUNCTION: fn_23593
 void CSession::FlagInventoryItem(std::uint32_t id) {
   for (ITEM_INFO& item : this->m_inventoryItems) {
-    if (item.unknown_0000[1] == id) {
-      item.unknown_0074[2] = 1;
+    if (item.identity[1] == id) {
+      item.flags[2] = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }
@@ -2486,9 +2486,9 @@ void CSession::FlagInventoryItem(std::uint32_t id) {
 // OFFSET: 0x00DFC0F0
 // FUNCTION: fn_23594
 void CSession::FlagItem1740(std::uint32_t id) {
-  for (ITEM_INFO& item : this->unknown_1740) {
-    if (item.unknown_0000[1] == id) {
-      item.unknown_0074[2] = 1;
+  for (ITEM_INFO& item : this->merchantShopItems) {
+    if (item.identity[1] == id) {
+      item.flags[2] = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }
@@ -2498,9 +2498,9 @@ void CSession::FlagItem1740(std::uint32_t id) {
 // OFFSET: 0x00DFC130
 // FUNCTION: fn_23595
 void CSession::FlagItem1738(std::uint32_t id) {
-  for (ITEM_INFO& item : this->unknown_1738) {
-    if (item.unknown_0000[1] == id) {
-      item.unknown_0074[2] = 1;
+  for (ITEM_INFO& item : this->cartItems) {
+    if (item.identity[1] == id) {
+      item.flags[2] = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }
@@ -2510,15 +2510,15 @@ void CSession::FlagItem1738(std::uint32_t id) {
 // OFFSET: 0x00DFC170
 // FUNCTION: fn_23596
 void CSession::CollectItems1750() {
-  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
 
   const int count = static_cast<int>(this->m_inventoryItems.size());
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = this->GetInventoryItemAt(i);
-    if (item.unknown_0000[1] > 0) {
+    if (item.identity[1] > 0) {
       const int itemId = std::atoi(item.itemId.c_str());
-      if (std::find(this->unknown_1778.begin(), this->unknown_1778.end(), itemId) != this->unknown_1778.end()) {
-        this->unknown_1750.push_back(item);
+      if (std::find(this->inventoryFilterIds.begin(), this->inventoryFilterIds.end(), itemId) != this->inventoryFilterIds.end()) {
+        this->merchantMyShopItems.push_back(item);
       }
     }
   }
@@ -2527,41 +2527,41 @@ void CSession::CollectItems1750() {
 // OFFSET: 0x00DFC330
 // FUNCTION: fn_23597
 void CSession::RefreshItems1750() {
-  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
 
   const int count = static_cast<int>(this->m_inventoryItems.size());
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = this->GetInventoryItemAt(i);
-    if (item.unknown_0000[1] > 0) {
+    if (item.identity[1] > 0) {
       const int itemId = std::atoi(item.itemId.c_str());
-      if (std::find(this->unknown_1778.begin(), this->unknown_1778.end(), itemId) != this->unknown_1778.end()) {
-        this->unknown_1750.push_back(item);
+      if (std::find(this->inventoryFilterIds.begin(), this->inventoryFilterIds.end(), itemId) != this->inventoryFilterIds.end()) {
+        this->merchantMyShopItems.push_back(item);
       }
     }
   }
 
-  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end();) {
+  for (auto it = this->merchantMyShopItems.begin(); it != this->merchantMyShopItems.end();) {
     const int itemId = std::atoi(it->itemId.c_str());
-    auto match = this->unknown_1748.begin();
-    for (; match != this->unknown_1748.end(); ++match) {
+    auto match = this->merchantMirrorItems.begin();
+    for (; match != this->merchantMirrorItems.end(); ++match) {
       if (std::atoi(match->itemId.c_str()) == itemId) {
         break;
       }
     }
 
-    if (match == this->unknown_1748.end()) {
-      it = this->unknown_1750.erase(it);
+    if (match == this->merchantMirrorItems.end()) {
+      it = this->merchantMyShopItems.erase(it);
       continue;
     }
 
-    const std::uint32_t value = match->unknown_0014[0];
-    if (value == 0xFFFFFFFF || g_session.HasItem61B8(it->unknown_0000[1]) == 1) {
-      it = this->unknown_1750.erase(it);
+    const std::uint32_t value = match->prices[0];
+    if (value == 0xFFFFFFFF || g_session.HasItem61B8(it->identity[1]) == 1) {
+      it = this->merchantMyShopItems.erase(it);
       continue;
     }
 
-    it->unknown_0014[0] = value;
-    it->unknown_0014[1] = value;
+    it->prices[0] = value;
+    it->prices[1] = value;
     ++it;
   }
 }
@@ -2576,7 +2576,7 @@ std::uint32_t CSession::GetItemNameColor(const ITEM_INFO& item) const {
     if (color != 0) {
       return color;
     }
-    if (item.unknown_0064 == 2) {
+    if (item.bindOnEquip == 2) {
       return 0xFFFFFF00;
     }
     return 0xFFFFFFFF;
@@ -2590,7 +2590,7 @@ int CSession::CountItems2B50() const {
   std::vector<std::uint32_t> itemIds;
   int count = 0;
   for (int i = 0; i < 10; ++i) {
-    const std::uint32_t itemId = this->unknown_2B50[i].unknown_0000[1];
+    const std::uint32_t itemId = this->costumeItems[i].identity[1];
     if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
       itemIds.push_back(itemId);
       ++count;
@@ -2606,7 +2606,7 @@ int CSession::CountItems17F0() const {
   std::vector<std::uint32_t> itemIds;
   int count = 0;
   for (int i = 0; i < 10; ++i) {
-    const std::uint32_t itemId = this->unknown_17F0[i].unknown_0000[1];
+    const std::uint32_t itemId = this->equippedItems[i].identity[1];
     if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
       itemIds.push_back(itemId);
       ++count;
@@ -2624,8 +2624,8 @@ void CSession::RefreshSkillTree() {
     g_windowMgr.window_02C4->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
-  if (g_windowMgr.unknown_01DC) {
-    UIBasicInfoWnd* info = reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC);
+  if (g_windowMgr.basicInfoWnd) {
+    UIBasicInfoWnd* info = reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd);
     info->SetHeight(info->geometry.height);
   }
 }
@@ -2650,7 +2650,7 @@ unsigned char CSession::GetShopType(int id) {
     return 0;
   }
 
-  return it->second.unknown_0000;
+  return it->second.flag;
 }
 
 // OFFSET: 0x00DE3930
@@ -2659,8 +2659,8 @@ std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
   auto name = this->m_nameToId.find(std::string(this->m_navigationPlayerMap));
   if (name != this->m_nameToId.end()) {
     auto shop = this->m_shops.find(name->second);
-    if (shop != this->m_shops.end() && index < shop->second.unknown_0004.size()) {
-      std::map<int, std::pair<int, int>>& entries = shop->second.unknown_0004[index];
+    if (shop != this->m_shops.end() && index < shop->second.items.size()) {
+      std::map<int, std::pair<int, int>>& entries = shop->second.items[index];
       auto entry = entries.find(key);
       if (entry != entries.end()) {
         return entry->second;
@@ -2695,7 +2695,7 @@ void CSession::HiFriends(char* text) {
   greeting += text ? text : "*^_^*";
 
   for (const MessengerMember& member : this->m_friends) {
-    g_windowMgr.unknown_04DC = greeting.c_str();
+    g_windowMgr.chatInputText = greeting.c_str();
     g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
     if (++g_pendingWhisperCount > 40) {
       g_pendingWhisperCount = 40;
@@ -2722,7 +2722,7 @@ void CSession::LoadMiniPartyInfo() {
   char token[24];
   SessionRecord0734 record;
   for (int i = 0; i < size; ++i) {
-    record.unknown_0000 = 1;
+    record.active = 1;
     switch (data[i]) {
     case ',': {
       if (_mbsstr(reinterpret_cast<const unsigned char*>(name),
@@ -2733,14 +2733,14 @@ void CSession::LoadMiniPartyInfo() {
           state = 3;
         } else if (state == 3) {
           ++i;
-          record.unknown_0008 = std::atoi(&data[i]);
+          record.cell = std::atoi(&data[i]);
           state = 1;
         }
       }
       break;
     }
     case '}':
-      this->unknown_0734.push_back(record);
+      this->miniPartyRecords.push_back(record);
       break;
     case '{': {
       ++i;
@@ -2755,7 +2755,7 @@ void CSession::LoadMiniPartyInfo() {
       strcpy_s(name, sizeof(name), token);
       if (state == 1) {
         ++i;
-        record.unknown_0000 = std::atoi(&data[i]);
+        record.active = std::atoi(&data[i]);
         state = 2;
       }
       break;
@@ -2782,31 +2782,31 @@ void CSession::LoadExternalSettings() {
     this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr", true, false);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &*reinterpret_cast<int*>(this->unknown_7EE8));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &*reinterpret_cast<int*>(this->maxBaseLevel));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel3rd", &this->m_maxLevel);
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x00]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x04]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelHomun", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x08]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelNovice", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x0C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelSuperNovice", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x10]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelBase", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x14]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel2nd", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x18]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel3rd", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x1C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x20]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x24]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x00]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x04]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelHomun", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x08]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelNovice", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x0C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelSuperNovice", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x10]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelBase", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x14]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel2nd", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x18]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel3rd", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x20]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x24]));
 
-  if (*reinterpret_cast<int*>(this->unknown_7EE8) == -1 ||
+  if (*reinterpret_cast<int*>(this->maxBaseLevel) == -1 ||
       this->m_maxLevel == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x00]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x04]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x08]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x0C]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x10]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x14]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x18]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x1C]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x20]) == -1 ||
-      *reinterpret_cast<int*>(&this->unknown_7EF0[0x24]) == -1) {
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x00]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x04]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x08]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x0C]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x10]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x14]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x18]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x20]) == -1 ||
+      *reinterpret_cast<int*>(&this->jobLevelLimits[0x24]) == -1) {
     const std::uint8_t source[] = {
       0x1E, 0x9B, 0xE7, 0x02, 0xF7, 0x9D, 0x18,
       0x1D, 0x2F, 0x8C, 0xE7, 0x03, 0xD6, 0xD8,
@@ -2817,10 +2817,10 @@ void CSession::LoadExternalSettings() {
     ShowErrorDialog(nullptr, name.Text(), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x74]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x78]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x78]));
 
-  if (*reinterpret_cast<int*>(&this->unknown_7EF0[0x74]) == -1 || *reinterpret_cast<int*>(&this->unknown_7EF0[0x78]) == -1) {
+  if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) == -1 || *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) == -1) {
     const std::uint8_t source[] = {
       0xC2, 0x6B, 0x53, 0x54, 0x97, 0x4F, 0xEC,
       0xE5, 0xF3, 0x7C, 0x53, 0x55, 0xB6, 0x0A,
@@ -2831,10 +2831,10 @@ void CSession::LoadExternalSettings() {
     ShowErrorDialog(nullptr, name.Text(), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x28]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x2C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x28]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]));
 
-  if (*reinterpret_cast<int*>(&this->unknown_7EF0[0x2C]) == -1) {
+  if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]) == -1) {
     const std::uint8_t source[] = {
       0x84, 0x29, 0xA1, 0x34, 0x8D, 0xA7, 0xC6,
       0xDF, 0xB5, 0x3E, 0xA1, 0x35, 0xAC, 0xE2,
@@ -2845,24 +2845,24 @@ void CSession::LoadExternalSettings() {
     ShowErrorDialog(nullptr, name.Text(), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->unknown_7F74));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x30]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x34]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x38]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x3C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x40]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x44]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x48]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x4C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Boss99LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x50]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x54]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x58]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x5C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x60]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x64]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x68]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x6C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura_sub", &*reinterpret_cast<int*>(&this->unknown_7EF0[0x70]));
+  this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->raceCreationOptions));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x30]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x34]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x38]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x3C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x40]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x44]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x48]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x4C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Boss99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x50]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x54]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x58]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x5C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x60]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x64]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x68]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x6C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x70]));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th", &this->m_maxLevelEffect4th);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th_sub", &this->m_maxLevelEffect4thSub);
 
@@ -2909,8 +2909,8 @@ void CSession::Init() {
   }
 
   this->m_averagePing = 0;
-  *reinterpret_cast<int*>(&this->unknown_5490[0x08]) = 0;
-  *reinterpret_cast<int*>(this->unknown_546C) = 1;
+  *reinterpret_cast<int*>(&this->itemSendState[0x08]) = 0;
+  *reinterpret_cast<int*>(this->showEffects) = 1;
   this->m_aid = 0;
 
   SYSTEMTIME systemTime;
@@ -2918,65 +2918,65 @@ void CSession::Init() {
   const int now =
     (((((static_cast<unsigned char>(systemTime.wYear) * 12 +systemTime.wMonth) * 31 + systemTime.wDay) * 24 + systemTime.wHour + 9) * 60 + systemTime.wMinute) * 60 + systemTime.wSecond) * 1000 +
     systemTime.wMilliseconds;
-  *reinterpret_cast<int*>(this->unknown_170C) = now - timeGetTime();
-  *reinterpret_cast<int*>(this->unknown_0F54) = 0;
-  *reinterpret_cast<int*>(&this->unknown_0F64[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_07A4[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_07A4[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_07A4[0x0C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_07A4[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5454[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5454[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5454[0x08]) = 0;
-  this->unknown_5460 = 0;
-  *reinterpret_cast<int*>(this->unknown_079C) = 0;
+  *reinterpret_cast<int*>(this->clientTimeOffset) = now - timeGetTime();
+  *reinterpret_cast<int*>(this->guildTargetCharacter) = 0;
+  *reinterpret_cast<int*>(&this->whisperOptions[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->timeAttackState[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->timeAttackState[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->timeAttackState[0x0C]) = 0;
+  *reinterpret_cast<int*>(&this->timeAttackState[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->interactionFlags[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->interactionFlags[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->interactionFlags[0x08]) = 0;
+  this->partyBlocked = 0;
+  *reinterpret_cast<int*>(this->timeAttackMode) = 0;
   this->m_hotkeyPage = 0;
-  *reinterpret_cast<int*>(this->unknown_5554) = 0;
-  this->unknown_0000 = 0;
+  *reinterpret_cast<int*>(this->whisperRecordStorage) = 0;
+  this->mapPropertyId = 0;
   g_mapPropertyMgr->Clear();
   g_activeSkillEffects.clear();
 
-  *reinterpret_cast<int*>(&this->unknown_0F64[0x04]) = 0;
-  *reinterpret_cast<int*>(this->unknown_1014) = 0;
-  this->unknown_103C = -1;
-  this->unknown_1040 = 1;
-  this->unknown_1044 = 100;
-  *reinterpret_cast<int*>(this->unknown_1048) = 100;
+  *reinterpret_cast<int*>(&this->whisperOptions[0x04]) = 0;
+  *reinterpret_cast<int*>(this->petNameModified) = 0;
+  this->petJob = -1;
+  this->petLevel = 1;
+  this->petHunger = 100;
+  *reinterpret_cast<int*>(this->petMaxHunger) = 100;
   this->m_petFriendly = 100;
-  this->unknown_1050 = -1;
-  this->unknown_1054 = 100;
-  this->unknown_15FC[0] = 0;
-  *reinterpret_cast<int*>(&this->unknown_15FC[0x04]) = -1;
-  std::sprintf(this->unknown_1018, "");
+  this->petEggIndex = -1;
+  this->petPreviousHunger = 100;
+  this->monsterTalkState[0] = 0;
+  *reinterpret_cast<int*>(&this->monsterTalkState[0x04]) = -1;
+  std::sprintf(this->petName, "");
 
-  std::sprintf(reinterpret_cast<char*>(&this->unknown_5570[0x0C]), "");
-  int* homunStats = reinterpret_cast<int*>(&this->unknown_5570[0x2C]);
+  std::sprintf(reinterpret_cast<char*>(&this->spAndHomunculusStats[0x0C]), "");
+  int* homunStats = reinterpret_cast<int*>(&this->spAndHomunculusStats[0x2C]);
   for (int index = 0; index < 8; ++index) {
     homunStats[index] = 0;
   }
   this->m_homunJob = -1;
-  *reinterpret_cast<int*>(this->unknown_55C0) = 1;
+  *reinterpret_cast<int*>(this->homunLevel) = 1;
   this->m_homunHp = 0;
-  *reinterpret_cast<int*>(this->unknown_55C8) = 999999;
+  *reinterpret_cast<int*>(this->homunMaxHp) = 999999;
   this->m_homunSp = 0;
-  this->unknown_55D0 = 999999;
+  this->homunMaxSp = 999999;
   this->m_homunExp = 0;
   this->m_homunMaxExp = 999999;
-  this->unknown_55F0 = 100;
-  this->unknown_55F4 = 100;
-  this->unknown_55D4 = 100;
-  this->unknown_55F8 = 0;
-  this->unknown_5614 = 0;
+  this->homunHunger = 100;
+  this->homunMaxHunger = 100;
+  this->homunFriendly = 100;
+  this->homunNameModified = 0;
+  this->homunAlive = 0;
   this->m_traceAi = 0;
   this->m_homunActionState = 0;
-  *reinterpret_cast<int*>(&this->unknown_5620[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5620[0x04]) = 0;
-  this->unknown_5608 = 0;
-  this->unknown_560C = 0;
-  this->unknown_5610 = 0;
-  this->unknown_55FC = 0;
-  this->unknown_5600 = 0;
-  this->unknown_5604 = 0;
+  *reinterpret_cast<int*>(&this->companionTargetState[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->companionTargetState[0x04]) = 0;
+  this->moveHomunEnemy = 0;
+  this->selectHomunEnemy = 0;
+  this->attackHomunEnemy = 0;
+  this->homunEnemyGid = 0;
+  this->homunEnemyX = 0;
+  this->homunEnemyY = 0;
 
   this->m_mercenaryClass = -1;
   std::sprintf(this->m_mercenaryName, "용병");
@@ -2991,93 +2991,93 @@ void CSession::Init() {
   this->m_mercenaryLoyalty = 0;
   this->m_mercenarySummons = 0;
   this->m_mercenaryKills = 0;
-  *reinterpret_cast<int*>(this->unknown_5690) = 0;
+  *reinterpret_cast<int*>(this->mercenaryAttackRange) = 0;
   this->m_mercenaryExpiration = 0;
   this->m_mercenaryActionState = 0;
-  this->unknown_56B8[0] = 0;
+  this->autoReplyState[0] = 0;
 
-  *reinterpret_cast<DWORD*>(&this->unknown_5490[0x04]) = GetTickCount();
-  *reinterpret_cast<int*>(&this->unknown_5913[0x01]) = 0;
-  std::sprintf(reinterpret_cast<char*>(&this->unknown_5913[0x05]), "");
-  reinterpret_cast<bool&>(this->unknown_5938) = false;
-  this->unknown_593C = 0;
-  this->unknown_5940 = -1;
-  this->unknown_5944 = -1;
-  this->unknown_5950 = "";
-  this->unknown_5968 = 0;
-  this->unknown_596C = 0;
-  this->unknown_5970 = 0;
-  this->unknown_5948 = 0;
-  *reinterpret_cast<int*>(this->unknown_5974) = 0;
+  *reinterpret_cast<DWORD*>(&this->itemSendState[0x04]) = GetTickCount();
+  *reinterpret_cast<int*>(&this->characterRenameData[0x01]) = 0;
+  std::sprintf(reinterpret_cast<char*>(&this->characterRenameData[0x05]), "");
+  reinterpret_cast<bool&>(this->replaySessionFlag) = false;
+  this->memorialWindowOpen = 0;
+  this->memorialWindowX = -1;
+  this->memorialWindowY = -1;
+  this->memorialDungeonName = "";
+  this->memorialQueuePosition = 0;
+  this->memorialCreationTime = 0;
+  this->memorialExpirationTime = 0;
+  this->memorialDungeonState = 0;
+  *reinterpret_cast<int*>(this->equipmentViewState) = 0;
   this->m_simplifiedSkillList = 0;
   this->m_showSkillDescription = 1;
-  this->unknown_59BC = 0;
+  this->characterSlotState = 0;
   this->m_normalSlotCount = 0;
   this->m_premiumSlotCount = 0;
   this->m_billingSlotCount = 0;
   this->m_producibleSlotCount = 0;
-  this->unknown_59D0 = 0;
+  this->blockedCharacterCount = 0;
   this->m_validSlotCount = 0;
   this->m_noSubChatWnds.clear();
   this->m_subChatWnds.clear();
   this->m_hotkeyScript = nullptr;
-  this->unknown_5BC0 = -1;
+  this->elementalGid = -1;
   this->LoadProhibitionLog();
 
-  this->unknown_5BD4.clear();
-  this->unknown_5BE0 = 0;
-  this->unknown_5BE4 = 0;
-  this->unknown_5BE8 = -1;
-  this->unknown_5BEC = -1;
-  this->unknown_5BF0 = 0xFFFFFFFF;
+  this->storeSearchResults.clear();
+  this->storeSearchCount = 0;
+  this->storeSearchPageFlags = 0;
+  this->storeSearchX = -1;
+  this->storeSearchY = -1;
+  this->storeSearchOwnerAid = 0xFFFFFFFF;
   this->ClearPairValues(1, 1, 1);
 
   this->m_lockItemDrop = false;
-  for (std::list<ITEM_INFO>& items : this->unknown_1784) {
+  for (std::list<ITEM_INFO>& items : this->inventoryCategories) {
     items.clear();
   }
 
-  this->unknown_5C1C = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C15[0x03]) = 0;
+  this->replayPacketMode = 0;
+  *reinterpret_cast<int*>(&this->sellSoundState[0x03]) = 0;
   this->m_skipPriceWarning = true;
-  *reinterpret_cast<int*>(&this->unknown_5C30[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C30[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C30[0x08]) = 0;
-  this->unknown_06FC = 0;
-  this->unknown_06A8 = 0;
-  for (ITEM_INFO& item : this->unknown_5C68) {
+  *reinterpret_cast<int*>(&this->itemSelectionState[0x00]) = 0;
+  *reinterpret_cast<int*>(&this->itemSelectionState[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->itemSelectionState[0x08]) = 0;
+  this->mainShortcutRow = 0;
+  this->alternateShortcutRow = 0;
+  for (ITEM_INFO& item : this->selectionItems) {
     item.Reset();
   }
 
-  this->unknown_6140 = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C02[0x02]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C02[0x06]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C02[0x0A]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_5C02[0x0E]) = 1;
+  this->achievementResult = 0;
+  *reinterpret_cast<int*>(&this->itemDropState[0x02]) = 0;
+  *reinterpret_cast<int*>(&this->itemDropState[0x06]) = 0;
+  *reinterpret_cast<int*>(&this->itemDropState[0x0A]) = 0;
+  *reinterpret_cast<int*>(&this->itemDropState[0x0E]) = 1;
   this->m_muteSellSound = true;
   this->ClearAchievements();
-  this->unknown_6184 = 0;
+  this->playerAppearanceState = 0;
   this->m_bodyCostume = 0;
   this->m_lastIntervalTime = timeGetTime();
 
-  this->unknown_61A4 = 0;
+  this->automaticSkillHotkey = 0;
   this->m_currentHotkey = 0;
-  this->unknown_1010 = 0xFFFFFFFF;
-  *reinterpret_cast<int*>(&this->unknown_5570[0x08]) = -1;
-  *reinterpret_cast<int*>(&this->unknown_5620[0x08]) = -1;
+  this->petGid = 0xFFFFFFFF;
+  *reinterpret_cast<int*>(&this->spAndHomunculusStats[0x08]) = -1;
+  *reinterpret_cast<int*>(&this->companionTargetState[0x08]) = -1;
   this->m_guildMemberListSort = true;
   this->m_blockPrivateTab = false;
-  this->unknown_7ECC[0] = 0;
+  this->swapEquipmentFlag[0] = 0;
   this->m_itemDefaultSort = false;
   this->m_itemAscendingOrder = false;
   this->m_itemDescendingOrder = false;
   this->m_showMenuIcon = true;
   this->m_homunculusAutoFeed = false;
-  *reinterpret_cast<int*>(&this->unknown_7F7D[0x03]) = -1;
-  *reinterpret_cast<int*>(&this->unknown_7F7D[0x07]) = 50;
-  this->unknown_7F7D[0x0B] = 0;
+  *reinterpret_cast<int*>(&this->homunculusFeedOptions[0x03]) = -1;
+  *reinterpret_cast<int*>(&this->homunculusFeedOptions[0x07]) = 50;
+  this->homunculusFeedOptions[0x0B] = 0;
   this->m_showRankingSchedule = -1;
-  *reinterpret_cast<int*>(this->unknown_8128) = 0;
+  *reinterpret_cast<int*>(this->feedOptions) = 0;
 }
 
 // OFFSET: 0x00DF7C40
@@ -3088,20 +3088,20 @@ void CSession::ResetCharacterState() {
   const int randomValue = std::rand() % 1024 + 1;
 
   this->m_zeny = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x1C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x20]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x20]) = 0;
   this->m_maxWeight = 0;
   this->m_weight = 0;
 
-  if (this->unknown_556C != randomValue) {
-    this->unknown_556C = randomValue;
+  if (this->maxHp != randomValue) {
+    this->maxHp = randomValue;
     this->RefreshHpSpWindows();
   }
 
-  if (this->unknown_5568 != randomValue) {
-    this->unknown_5568 = randomValue;
+  if (this->hp != randomValue) {
+    this->hp = randomValue;
     this->RefreshHpSpWindows();
   }
 
@@ -3111,82 +3111,82 @@ void CSession::ResetCharacterState() {
 
   std::memcpy(this->m_playerNameKey, "잠이들었던거야", sizeof("잠이들었던거야"));
 
-  this->unknown_1678 = 0;
-  this->unknown_167C = 0;
-  this->unknown_1680 = 0;
-  this->unknown_166C = 0;
-  this->unknown_1670 = 0;
-  this->unknown_1674 = 0;
+  this->intelligenceBonus = 0;
+  this->dexterityBonus = 0;
+  this->luckBonus = 0;
+  this->strengthBonus = 0;
+  this->agilityBonus = 0;
+  this->vitalityBonus = 0;
 
-  *reinterpret_cast<int*>(&this->unknown_169C[0x00]) = 2;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x04]) = 2;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x14]) = 2;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x08]) = 2;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x0C]) = 2;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x10]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x00]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x04]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x14]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x08]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x0C]) = 2;
+  *reinterpret_cast<int*>(&this->combatStats[0x10]) = 2;
 
-  *reinterpret_cast<int*>(&this->unknown_162C[0x28]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x1C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x30]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x34]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x38]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x28]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x2C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x20]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x3C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x40]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x44]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x4C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x48]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x18]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_169C[0x24]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x28]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x30]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x34]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x38]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x28]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x2C]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x20]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x3C]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x40]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x44]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x4C]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x48]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x18]) = 0;
+  *reinterpret_cast<int*>(&this->combatStats[0x24]) = 0;
 
-  *reinterpret_cast<int*>(&this->unknown_162C[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x1C]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x20]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x0C]) = 999999;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x10]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x14]) = 999999;
-  *reinterpret_cast<int*>(&this->unknown_162C[0x18]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x04]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x08]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x1C]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x20]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x0C]) = 999999;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x10]) = 0;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x14]) = 999999;
+  *reinterpret_cast<int*>(&this->playerExperienceState[0x18]) = 0;
 
   this->cartCount = 0;
   this->cartMaxCount = 0;
   this->cartWeight = 0;
   this->cartMaxWeight = 0;
-  *reinterpret_cast<int*>(&this->unknown_0F44[0x00]) = 13;
-  *reinterpret_cast<int*>(&this->unknown_0F44[0x04]) = 5;
-  this->unknown_0F24[0] = 0;
+  *reinterpret_cast<int*>(&this->storeSlotCounts[0x00]) = 13;
+  *reinterpret_cast<int*>(&this->storeSlotCounts[0x04]) = 5;
+  this->playerTeam[0] = 0;
   this->m_score1 = -1;
   this->m_score2 = -1;
-  this->unknown_0F30[0] = 0;
-  this->unknown_0F4C = 20;
-  this->unknown_0F50 = 0;
+  this->chatFont[0] = 0;
+  this->storeItemLimit = 20;
+  this->selectedCharacterSlot = 0;
 
-  this->unknown_16EC = 0;
-  this->unknown_54A0 = 0;
-  this->unknown_54A4 = 0;
-  this->unknown_54A8 = 0;
-  this->unknown_1708 = 1;
-  this->unknown_5480 = 0;
-  this->unknown_5484 = 0;
-  this->unknown_5488 = 0;
-  this->unknown_548C = 0;
-  *reinterpret_cast<int*>(&g_session.unknown_544C[0x00]) = 0;
-  *reinterpret_cast<std::uint16_t*>(&this->unknown_555C[0x08]) = 0;
-  this->unknown_5468 = 0;
-  this->unknown_5478[0] = 1;
-  this->unknown_5450 = 0;
-  this->unknown_5448 = 0;
-  this->unknown_59DC[0] = 1;
+  this->equippedArrowIndex = 0;
+  this->partyExpShare = 0;
+  this->partyItemCollect = 0;
+  this->partyItemDistribute = 0;
+  this->monsterInfoEnabled = 1;
+  this->quitBlocked = 0;
+  this->battleChat = 0;
+  this->quitAllowed = 0;
+  this->sessionFlag = 0;
+  *reinterpret_cast<int*>(&g_session.mapTransitionFlag[0x00]) = 0;
+  *reinterpret_cast<std::uint16_t*>(&this->playerStatusFlags[0x08]) = 0;
+  this->adoptionSkillAvailable = 0;
+  this->loginOptions[0] = 1;
+  this->guildLeader = 0;
+  this->showTimer = 0;
+  this->mouseAndChannelOptions[0] = 1;
 
   MEMORYSTATUS memoryStatus = {};
   memoryStatus.dwLength = sizeof(memoryStatus);
   GlobalMemoryStatus(&memoryStatus);
-  this->unknown_5470 = memoryStatus.dwTotalPhys < 0x9B72EC0 ? 1 : 0;
+  this->lowMemory = memoryStatus.dwTotalPhys < 0x9B72EC0 ? 1 : 0;
 
-  std::memset(&this->unknown_07F4[0x40], 0, 0x660);
-  this->unknown_5C1C = 0;
+  std::memset(&this->characterSelectionData[0x40], 0, 0x660);
+  this->replayPacketMode = 0;
 
   std::map<int, int>& traitStats = this->m_traits.stats;
   traitStats[0xE7] = 0;
@@ -3211,30 +3211,30 @@ void CSession::ResetInventoryItems() {
   this->m_pingSamples.erase(this->m_pingSamples.begin(), this->m_pingSamples.end());
 
   for (int index = 0; index < 10; ++index) {
-    this->unknown_17F0[index].Reset();
+    this->equippedItems[index].Reset();
   }
 }
 
 // OFFSET: 0x00DF8940
 // FUNCTION: fn_23512
 void CSession::ClearItemContainers() {
-  this->unknown_1720.erase(this->unknown_1720.begin(), this->unknown_1720.end());
-  this->unknown_1730.erase(this->unknown_1730.begin(), this->unknown_1730.end());
-  this->unknown_1718.erase(this->unknown_1718.begin(), this->unknown_1718.end());
+  this->purchaseItems.erase(this->purchaseItems.begin(), this->purchaseItems.end());
+  this->storageItems.erase(this->storageItems.begin(), this->storageItems.end());
+  this->shopItems.erase(this->shopItems.begin(), this->shopItems.end());
 
-  this->unknown_5210 = 0;
+  this->exchangeMoney = 0;
 
   for (int index = 0; index < 10; ++index) {
     this->m_exchangeItems[index].quantity = 0;
   }
 
-  this->unknown_5214 = 0;
+  this->otherExchangeMoney = 0;
 
   for (int index = 0; index < 10; ++index) {
     this->m_itemSlots[index].quantity = 0;
   }
 
-  this->unknown_1738.erase(this->unknown_1738.begin(), this->unknown_1738.end());
+  this->cartItems.erase(this->cartItems.begin(), this->cartItems.end());
 
   g_session.m_skillBundle.skills.clear();
   this->m_friends.erase(this->m_friends.begin(), this->m_friends.end());
@@ -3250,34 +3250,34 @@ void CSession::ClearItemContainers() {
   }
 
   this->m_partyMembers.clear();
-  this->unknown_54C4 = "";
-  this->unknown_5464 = 0;
+  this->partyName = "";
+  this->partyLeader = 0;
   this->ClearItemQuantities();
 }
 
 // OFFSET: 0x00DF3160
 // FUNCTION: fn_23503
 void CSession::ClearEntryList5BD4() {
-  this->unknown_5BD4.clear();
-  this->unknown_5BE0 = 0;
-  this->unknown_5BE4 = 0;
-  this->unknown_5BE8 = -1;
-  this->unknown_5BEC = -1;
-  this->unknown_5BF0 = 0xFFFFFFFF;
+  this->storeSearchResults.clear();
+  this->storeSearchCount = 0;
+  this->storeSearchPageFlags = 0;
+  this->storeSearchX = -1;
+  this->storeSearchY = -1;
+  this->storeSearchOwnerAid = 0xFFFFFFFF;
 }
 
 // OFFSET: 0x00D8D9E0
 // FUNCTION: fn_22269
 void CSession::ClearAchievements() {
-  this->unknown_6144.clear();
-  this->unknown_6150 = 0;
-  this->unknown_6154 = 0;
-  this->unknown_6158 = 0;
-  this->unknown_6160.clear();
-  this->unknown_614C = 0;
-  this->unknown_616C.clear();
-  this->unknown_615C = 0;
-  this->unknown_6178.clear();
+  this->achievements.clear();
+  this->achievementLevel = 0;
+  this->achievementCompleted = 0;
+  this->achievementTotal = 0;
+  this->jobTitles.clear();
+  this->achievementScore = 0;
+  this->achievementIds.clear();
+  this->jobTitle = 0;
+  this->trackedAchievements.clear();
 }
 
 // OFFSET: 0x00DDC9D0
@@ -3382,7 +3382,7 @@ bool CSession::LoadMapViewParameters() {
 // OFFSET: 0x00DF8670
 // FUNCTION: fn_23510
 void CSession::InitWeaponHitWaveNames() {
-  std::vector<std::string>& weaponWaves = reinterpret_cast<std::vector<std::string>&>(this->unknown_525C[0x18]);
+  std::vector<std::string>& weaponWaves = reinterpret_cast<std::vector<std::string>&>(this->weaponSoundTables[0x18]);
   weaponWaves.clear();
   weaponWaves.resize(105, "_hit_mace.wav");
   for (int weapon = 0; weapon < 105; ++weapon) {
@@ -3883,7 +3883,7 @@ void CSession::InitCommandTables() {
                      return std::strcmp(left.first, right.first) < 0;
                    });
   std::vector<std::pair<const char*, int>>& chatCommands =
-    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->unknown_52E8[0x00]);
+    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->commandTables[0x00]);
   chatCommands.push_back(std::make_pair("/taekwon", 152));
   chatCommands.push_back(std::make_pair("/hi", 151));
   chatCommands.push_back(std::make_pair("/blacksmith", 146));
@@ -3904,7 +3904,7 @@ void CSession::InitCommandTables() {
   chatCommands.push_back(std::make_pair("/inall", 17));
   chatCommands.push_back(std::make_pair("/exall", 16));
   std::vector<std::pair<const char*, int>>& windowCommands =
-    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->unknown_52E8[0x0C]);
+    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->commandTables[0x0C]);
   if (g_serviceType == 12) {
     windowCommands.push_back(std::make_pair("Sala de Chat", 67));
     windowCommands.push_back(std::make_pair("Atributos", 65));
@@ -3942,7 +3942,7 @@ void CSession::InitCommandTables() {
     windowCommands.push_back(std::make_pair("EmotionList", 76));
     windowCommands.push_back(std::make_pair("PetInfo", 74));
   }
-  std::vector<const char*>& shortcutCommands = reinterpret_cast<std::vector<const char*>&>(this->unknown_52E8[0x18]);
+  std::vector<const char*>& shortcutCommands = reinterpret_cast<std::vector<const char*>&>(this->commandTables[0x18]);
   shortcutCommands.push_back("Alt + C");
   shortcutCommands.push_back("Alt + A");
   shortcutCommands.push_back("Alt + D");
@@ -4699,9 +4699,9 @@ SessionTraits::SessionTraits() {
 // FUNCTION: fn_22763
 CSession::CSession() {
   this->m_priorityClass = 32;
-  *reinterpret_cast<std::uint16_t*>(&this->unknown_8128[4]) = 0x100;
-  this->unknown_8148 = -1;
-  this->unknown_80A8.clear();
+  *reinterpret_cast<std::uint16_t*>(&this->feedOptions[4]) = 0x100;
+  this->sessionIndex = -1;
+  this->skyMapNames.clear();
 
   CItemInfoMgr::Create();
   CSpecialPopupMgr::Create();
@@ -4757,19 +4757,19 @@ CSession::CSession() {
   this->m_newRobeDrawOnTop = false;
   this->m_localMapMove = 0;
   this->m_swapEquipmentMode = 0;
-  this->unknown_7F74[0] = 1;
-  *reinterpret_cast<int*>(&this->unknown_7F74[4]) = 0;
+  this->raceCreationOptions[0] = 1;
+  *reinterpret_cast<int*>(&this->raceCreationOptions[4]) = 0;
   CPrivateAirplaneMgr::Create();
   CCheckAttendanceMgr::Create();
-  *reinterpret_cast<int*>(&this->unknown_5974[0x28]) = 0;
-  this->unknown_7FBC = 0;
+  *reinterpret_cast<int*>(&this->equipmentViewState[0x28]) = 0;
+  this->extraInventorySlots = 0;
   CMapInfoMgr::Create();
-  this->unknown_8074 = 0;
-  *reinterpret_cast<int*>(&this->unknown_7EF0[0x74]) = 0;
-  *reinterpret_cast<int*>(&this->unknown_7EF0[0x78]) = 0;
+  this->madogearType = 0;
+  *reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) = 0;
+  *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) = 0;
   CChangeMaterialMgr::CreateInstance();
   this->m_options.Clear();
-  *reinterpret_cast<int*>(&this->unknown_807C[0x18]) = 0;
+  *reinterpret_cast<int*>(&this->webServiceLoginData[0x18]) = 0;
   this->m_damageSkinIndex = 0;
   this->m_damageSkinMode = 0;
   this->m_damageMillionUnit = 0;
@@ -6524,7 +6524,7 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[403] = KarnosBodyPath1().Text();
   shieldJobNames[404] = KarnosBodyPath2().Text();
   shieldJobNames[405] = AliteaBodyPath1().Text();
-  std::vector<const char*>& unknownNames = reinterpret_cast<std::vector<const char*>&>(this->unknown_0F88[0x08]);
+  std::vector<const char*>& unknownNames = reinterpret_cast<std::vector<const char*>&>(this->additionalSpriteNames[0x08]);
   unknownNames.resize(2, "f");
   unknownNames[0] = "f";
   unknownNames[1] = "";
@@ -7039,7 +7039,7 @@ void CSession::LoadSessionTables() {
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();
 
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(session->unknown_5400[0x30]);
+  CCommonObject& storage = reinterpret_cast<CCommonObject&>(session->minimapTokenStorage[0x30]);
   std::vector<char*> tokens;
   session->m_bgmFileNames.clear();
   session->m_bgmFileNames.reserve(512);
@@ -7087,19 +7087,19 @@ void CSession::LoadSessionTables() {
   session->m_inventoryItems.clear();
   session->m_pingSamples.clear();
   for (int index = 0; index < 10; ++index) {
-    session->unknown_17F0[index].Reset();
+    session->equippedItems[index].Reset();
   }
 
   std::vector<char*> buyingStoreItems;
-  session->unknown_1778.clear();
-  session->unknown_1778.reserve(512);
+  session->inventoryFilterIds.clear();
+  session->inventoryFilterIds.reserve(512);
   storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
   for (char* token : buyingStoreItems) {
-    session->unknown_1778.push_back(std::atoi(token));
+    session->inventoryFilterIds.push_back(std::atoi(token));
   }
   buyingStoreItems = std::vector<char*>();
 
-  session->unknown_5324 = 0;
+  session->mapPositionsScaled = 0;
   session->m_mapPosListCount = -1;
   session->LoadMapPosTable();
   session->LoadExceptionMinimapNameTable();

@@ -1219,24 +1219,24 @@ PakAuxiliary::PakAuxiliary() {
 struct PakState_656DF0 {
   PakState_656DF0();
 
-  /* 0000 */ std::uint32_t unknown_0000;
-  /* 0004 */ std::uint32_t unknown_0004;
-  /* 0008 */ std::uint32_t unknown_0008;
-  /* 000C */ std::uint32_t unknown_000C;
-  /* 0010 */ std::uint32_t unknown_0010;
-  /* 0014 */ std::uint32_t unknown_0014;
-  /* 0018 */ std::uint32_t unknown_0018;
-  /* 001C */ std::uint32_t unknown_001C;
-  /* 0020 */ std::uint32_t unknown_0020;
+  /* 0000 */ std::uint32_t stateA;
+  /* 0004 */ std::uint32_t stateB;
+  /* 0008 */ std::uint32_t stateC;
+  /* 000C */ std::uint32_t stateD;
+  /* 0010 */ std::uint32_t stateE;
+  /* 0014 */ std::uint32_t stateF;
+  /* 0018 */ std::uint32_t stateG;
+  /* 001C */ std::uint32_t stateH;
+  /* 0020 */ std::uint32_t enabled;
 };
 
 static_assert(sizeof(PakState_656DF0) == 0x24);
-static_assert(offsetof(PakState_656DF0, unknown_0020) == 0x20);
+static_assert(offsetof(PakState_656DF0, enabled) == 0x20);
 
 // OFFSET: 0x00656DF0
 // FUNCTION: fn_05081
 PakState_656DF0::PakState_656DF0()
-    : unknown_0000(0), unknown_0004(0), unknown_0008(0), unknown_000C(0), unknown_0010(0), unknown_0014(0), unknown_0018(0), unknown_001C(0), unknown_0020(1) {
+    : stateA(0), stateB(0), stateC(0), stateD(0), stateE(0), stateF(0), stateG(0), stateH(0), enabled(1) {
 }
 
 // OFFSET: 0x00657640

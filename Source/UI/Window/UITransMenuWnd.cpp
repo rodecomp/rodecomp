@@ -69,19 +69,19 @@ void UITransMenuWnd::Resize(int width, int height) {
 // OFFSET: 0x0094CF00
 // FUNCTION: fn_12900
 void UITransMenuWnd::OnCreate(int width, int height) {
-  this->unknown_00C0 = this->geometry.x;
-  this->unknown_00C4 = this->geometry.y;
+  this->m_x = this->geometry.x;
+  this->m_y = this->geometry.y;
   this->m_width = this->geometry.width;
-  this->unknown_00D0 = 0;
+  this->m_rectangleReserved1 = 0;
   this->m_height = this->geometry.height;
-  this->unknown_00D4 = 0x66000000;
-  this->unknown_00D8 = 0;
+  this->m_backgroundColor = 0x66000000;
+  this->m_rectangleReserved2 = 0;
 }
 
 // OFFSET: 0x00949B70
 // FUNCTION: fn_12884
 bool UITransMenuWnd::GetTransBoxInfo(void* output) {
-  std::memcpy(output, &this->unknown_00C0, 28);
+  std::memcpy(output, &this->m_x, 28);
   return true;
 }
 
@@ -89,8 +89,8 @@ bool UITransMenuWnd::GetTransBoxInfo(void* output) {
 // FUNCTION: fn_12889
 void UITransMenuWnd::Move(int x, int y) {
   this->UIWindow::Move(x, y);
-  this->unknown_00C0 = this->geometry.x;
-  this->unknown_00C4 = this->geometry.y;
+  this->m_x = this->geometry.x;
+  this->m_y = this->geometry.y;
 }
 
 // OFFSET: 0x00951440

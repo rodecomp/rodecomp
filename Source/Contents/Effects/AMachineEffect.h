@@ -20,13 +20,13 @@ public:
   void PlayAttack();
   __declspec(noinline) void SetState(int state);
 
-  /* 00CC */ std::map<int, CEZ2STRParticle*> unknown_00CC;
-  /* 00D4 */ int unknown_00D4;
+  /* 00CC */ std::map<int, CEZ2STRParticle*> stateParticles;
+  /* 00D4 */ int state;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CAMachineEffect) == 0xD8);
-static_assert(offsetof(CAMachineEffect, unknown_00D4) == 0xD4);
+static_assert(offsetof(CAMachineEffect, state) == 0xD4);
 #endif
 
 #endif

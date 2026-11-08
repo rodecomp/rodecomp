@@ -18,15 +18,15 @@ CHealSp::~CHealSp() {
 // FUNCTION: fn_18898
 void CHealSp::AddRing(float inner, float outer, float height, int duration) {
   const float fadeFrame = static_cast<float>(duration) / 30.0f;
-  const float holdFrame = static_cast<float>(this->unknown_00E0);
+  const float holdFrame = static_cast<float>(this->holdFrame);
   for (int segment = 0; segment < 10; ++segment) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
-    float* params = &particle->unknown_0054;
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = segment;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
-    particle->unknown_00C0 = 5.0f;
+    float* params = &particle->animationParameter;
+    particle->effectId = this->id;
+    particle->columnIndex = segment;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
+    particle->speedParameter = 5.0f;
     particle->scale = height;
     params[0] = inner;
     params[1] = outer;
@@ -83,7 +83,7 @@ void CHealSp::OnProcess() {
     const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * 3.0f + values[10];
     const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * 3.0f + values[11];
     CSpriteParticle* sprite = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
-    float* params = &sprite->unknown_0054;
+    float* params = &sprite->animationParameter;
     sprite->life = 0.5f;
     sprite->scale = 0.55f;
     params[0] = 3.0f;
@@ -103,32 +103,32 @@ void CHealSp::OnProcess() {
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    float* params = &particle->unknown_0054;
+    float* params = &particle->animationParameter;
     float fade = params[2];
-    const float spin = particle->unknown_00C0;
+    const float spin = particle->speedParameter;
     const float endFrame = params[3];
     const float maxAlpha = params[4];
     const float alpha = params[6];
     const float angle = spin + params[5];
     rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
     if (this->frame == static_cast<int>(endFrame)) {
-      fade = -(alpha / static_cast<float>(this->unknown_002C - this->frame));
+      fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
     }
 
     const float level = std::min(std::max(alpha + fade, 0.0f), static_cast<float>(static_cast<int>(maxAlpha)));
-    this->unknown_00E4 = static_cast<int>(level);
+    this->alphaLevel = static_cast<int>(level);
     params[2] = fade;
     params[5] = spin + angle;
     params[6] = level;
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     particle->transform = rotation;
-    particle->alpha = this->unknown_00E4;
+    particle->alpha = this->alphaLevel;
   }
 
   for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end();) {
     CSpriteParticle* sprite = *it;
-    if (sprite->life == 0.0f || static_cast<float>(sprite->unknown_00E8) < sprite->life * 60.0f) {
-      float* params = &sprite->unknown_0054;
+    if (sprite->life == 0.0f || static_cast<float>(sprite->elapsedFrames) < sprite->life * 60.0f) {
+      float* params = &sprite->animationParameter;
       const float radius = params[0];
       const float delay = params[4];
       float fade = params[5];
@@ -143,14 +143,14 @@ void CHealSp::OnProcess() {
       const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (origin.y + velocity.y);
       const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (origin.z + velocity.z);
       float level;
-      if (this->frame < this->unknown_00E0) {
-        if (sprite->unknown_00E8 == static_cast<int>(delay)) {
-          fade = -(alpha / static_cast<float>(30 - sprite->unknown_00E8));
+      if (this->frame < this->holdFrame) {
+        if (sprite->elapsedFrames == static_cast<int>(delay)) {
+          fade = -(alpha / static_cast<float>(30 - sprite->elapsedFrames));
         }
 
         level = std::min(std::max(alpha + fade, 0.0f), 255.0f);
       } else {
-        level = static_cast<float>(this->unknown_00E4);
+        level = static_cast<float>(this->alphaLevel);
       }
 
       params[2] = lift;
@@ -160,7 +160,7 @@ void CHealSp::OnProcess() {
       sprite->position.x = x;
       sprite->position.y = y;
       sprite->position.z = z;
-      ++sprite->unknown_00E8;
+      ++sprite->elapsedFrames;
       ++it;
     } else {
       FreeParticle(sprite);
@@ -174,10 +174,10 @@ void CHealSp::OnProcess() {
 void CHealSp::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     const float height = particle->scale;
-    const float outer = *reinterpret_cast<const float*>(particle->unknown_0058);
-    const float inner = particle->unknown_0054;
+    const float outer = *reinterpret_cast<const float*>(particle->animationParameters);
+    const float inner = particle->animationParameter;
     const float startCos = g_cosTable[segment * 36];
     const float startSin = g_sinTable[segment * 36];
     const float endCos = g_cosTable[segment * 36 + 36];
@@ -196,7 +196,7 @@ void CHealSp::Render() {
     particle->vertices[3].y = -height;
     particle->vertices[3].z = endSin * inner;
 
-    const float left = static_cast<float>(particle->unknown_000C % 4) * 0.25f;
+    const float left = static_cast<float>(particle->columnIndex % 4) * 0.25f;
     const ParticleQuad quad = {false, 1.0f, 0.0f, left, left + 0.25f, false, true};
     particle->Render(quad);
   }

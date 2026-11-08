@@ -22,7 +22,7 @@ bool CRagEffect::PartyEffectVisible() {
       return false;
     }
 
-    if (target->render.unknown_00A8 != 0 && target->render.accountId != g_session.m_aid) {
+    if (target->render.isCharacter != 0 && target->render.accountId != g_session.m_aid) {
       if (!g_session.IsPvpMap() || !g_session.IsPartyMember(target->render.accountId, true)) {
         if (!target->EffectVisible()) {
           return false;
@@ -37,11 +37,11 @@ bool CRagEffect::PartyEffectVisible() {
     return false;
   }
 
-  if (actor->render.unknown_00A8 == 0) {
+  if (actor->render.isCharacter == 0) {
     return true;
   }
 
-  if (this->state.unknown_11CA0 == 0) {
+  if (this->state.visibilityFlags == 0) {
     if (actor->render.accountId == g_session.m_aid) {
       return true;
     }

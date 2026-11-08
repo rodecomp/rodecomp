@@ -32,10 +32,10 @@ void DrawActionSprite(
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     const float left = static_cast<float>(cell.x) * scale;
     const float scaledLeft = left * scaleX;
-    const float right = static_cast<float>(image->width * (image->unknown_0004 + 1) - 1 + cell.x) * scale;
+    const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x) * scale;
     const float top = static_cast<float>(cell.y) * scale * cell.scaleY;
     const float scaledRight = right * scaleX;
-    const float bottom = static_cast<float>(image->height * (image->unknown_0006 + 1) - 1 + cell.y) * scale * cell.scaleY;
+    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * scale * cell.scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
@@ -44,7 +44,7 @@ void DrawActionSprite(
         texture = g_renderer->atlas.Insert(system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
     primitive->texture = texture;
 

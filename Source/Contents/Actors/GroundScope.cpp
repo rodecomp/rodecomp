@@ -192,7 +192,7 @@ void CGroundScope::SendMsg(CGameObject* sender, int message, int a, int b, int c
       return;
 
     case AM_SETMASTERGID:
-      this->unknown_0158 = b;
+      this->m_masterGid = b;
       return;
 
     case AM_SETTIME:

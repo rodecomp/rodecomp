@@ -17,8 +17,8 @@ float g_textureOffsetY = 0.5f;
 // OFFSET: 0x005722E0
 // FUNCTION: fn_02463
 CTexture::CTexture()
-    : m_format(TextureFormat::UnknownTextureFormat), unknown_0008(1), m_textureWidth(0), m_textureHeight(0), m_width(0), m_height(0), unknown_001C(0),
-      unknown_0020(0) {
+    : m_format(TextureFormat::UnknownTextureFormat), textureFlags(1), m_textureWidth(0), m_textureHeight(0), m_width(0), m_height(0), refCount(0),
+      lastUsedTick(0) {
   this->m_name[0] = '\0';
 }
 
@@ -29,21 +29,21 @@ CTexture::~CTexture() = default;
 // OFFSET: 0x00572460
 // FUNCTION: fn_02469
 std::uint32_t CTexture::Retain() {
-  this->unknown_0020 = timeGetTime();
-  return ++this->unknown_001C;
+  this->lastUsedTick = timeGetTime();
+  return ++this->refCount;
 }
 
 // OFFSET: 0x005724F0
 // FUNCTION: fn_02473
 std::uint32_t CTexture::Touch() {
-  this->unknown_0020 = timeGetTime();
-  return this->unknown_0020;
+  this->lastUsedTick = timeGetTime();
+  return this->lastUsedTick;
 }
 
 // OFFSET: 0x005724E0
 // FUNCTION: fn_02472
 std::uint32_t CTexture::Release() {
-  return --this->unknown_001C;
+  return --this->refCount;
 }
 
 // OFFSET: 0x00572450

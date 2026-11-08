@@ -62,14 +62,14 @@ struct PACKET_CZ_RODEX_RETURN {
 // OFFSET: 0x00804D50
 // FUNCTION: fn_10038
 UIRodexInboxWnd::UIRodexInboxWnd()
-    : UIItemWnd(), unknown_0130(0), unknown_0134(0), unknown_0138(0), unknown_013C(nullptr), unknown_0140(nullptr),
-      unknown_018C(nullptr), unknown_0190(nullptr), unknown_0194(nullptr), unknown_0198(nullptr), unknown_019C(0), unknown_01A0(0),
-      expired(0), unknown_01C8(nullptr), unknown_01CC(0), unknown_01D0(0), unknown_01D4(0), searchResults(), mails0(), mails1(), mails2() {
-  std::memset(this->unknown_0144, 0, sizeof(this->unknown_0144));
-  std::memset(this->unknown_015C, 0, sizeof(this->unknown_015C));
+    : UIItemWnd(), mailTab(0), accountTab(0), returnTab(0), refreshButton(nullptr), writeButton(nullptr),
+      receiveButton(nullptr), deleteButton(nullptr), previousPageButton(nullptr), nextPageButton(nullptr), page(0), pageCount(0),
+      expired(0), searchEdit(nullptr), searchButton(0), searchTab(0), searchActive(0), searchResults(), mails0(), mails1(), mails2() {
+  std::memset(this->senderButtons, 0, sizeof(this->senderButtons));
+  std::memset(this->subjectButtons, 0, sizeof(this->subjectButtons));
   std::memset(this->checks, 0, sizeof(this->checks));
-  std::memset(this->unknown_01A8, 0, sizeof(this->unknown_01A8));
-  g_rodexMailStore->unknown_001C = false;
+  std::memset(this->returnButtons, 0, sizeof(this->returnButtons));
+  g_rodexMailStore->isPageComplete = false;
   PACKET_CZ_OPEN_RODEXBOX packet;
   packet.packetType = ID_CZ_OPEN_RODEXBOX;
   packet.lastMailId0 = 0;
@@ -143,103 +143,103 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->unknown_0138 = new UIBmpRadioBtn();
-  this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
-  this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
-  this->unknown_0138->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
+  this->returnTab = new UIBmpRadioBtn();
+  this->returnTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
+  this->returnTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
+  this->returnTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
   {
-    UIBmpRadioBtn* tab = this->unknown_0138;
+    UIBmpRadioBtn* tab = this->returnTab;
     const std::string label = LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION);
     tab->m_label = label;
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0138->geometry.width - this->TextWidth(LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
-    UIBmpRadioBtn* tab = this->unknown_0138;
+    const int textX = static_cast<int>(static_cast<float>(this->returnTab->geometry.width - this->TextWidth(LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    UIBmpRadioBtn* tab = this->returnTab;
     const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(MSI_FAILED_HOMUN_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
-    this->unknown_0138->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
-    this->unknown_0138->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
+    this->returnTab->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
+    this->returnTab->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
   }
-  this->unknown_0138->Move(0xCF, 0x46);
-  this->AddChild(this->unknown_0138);
-  this->unknown_0138->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+  this->returnTab->Move(0xCF, 0x46);
+  this->AddChild(this->returnTab);
+  this->returnTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
-  this->unknown_0134 = new UIBmpRadioBtn();
-  this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
-  this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
-  this->unknown_0134->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
+  this->accountTab = new UIBmpRadioBtn();
+  this->accountTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
+  this->accountTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
+  this->accountTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
   {
-    UIBmpRadioBtn* tab = this->unknown_0134;
+    UIBmpRadioBtn* tab = this->accountTab;
     const std::string label = LookupMessage(MSI_RODEX_TAB_SEARCH);
     tab->m_label = label;
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0134->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_TAB_SEARCH), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
-    UIBmpRadioBtn* tab = this->unknown_0134;
+    const int textX = static_cast<int>(static_cast<float>(this->accountTab->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_TAB_SEARCH), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    UIBmpRadioBtn* tab = this->accountTab;
     const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_TAB_SEARCH), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
-    this->unknown_0134->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
-    this->unknown_0134->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
+    this->accountTab->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
+    this->accountTab->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
   }
-  this->unknown_0134->Move(0x13, 0x46);
-  this->AddChild(this->unknown_0134);
-  this->unknown_0134->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+  this->accountTab->Move(0x13, 0x46);
+  this->AddChild(this->accountTab);
+  this->accountTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
-  this->unknown_0130 = new UIBmpRadioBtn();
-  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
-  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
-  this->unknown_0130->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
+  this->mailTab = new UIBmpRadioBtn();
+  this->mailTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
+  this->mailTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
+  this->mailTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
   {
-    UIBmpRadioBtn* tab = this->unknown_0130;
+    UIBmpRadioBtn* tab = this->mailTab;
     const std::string label = LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION);
     tab->m_label = label;
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_0130->geometry.width - this->TextWidth(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
-    UIBmpRadioBtn* tab = this->unknown_0130;
+    const int textX = static_cast<int>(static_cast<float>(this->mailTab->geometry.width - this->TextWidth(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    UIBmpRadioBtn* tab = this->mailTab;
     const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
-    this->unknown_0130->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
-    this->unknown_0130->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
+    this->mailTab->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
+    this->mailTab->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
   }
-  this->unknown_0130->Move(0x71, 0x46);
-  this->AddChild(this->unknown_0130);
-  this->unknown_0130->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+  this->mailTab->Move(0x71, 0x46);
+  this->AddChild(this->mailTab);
+  this->mailTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
-  switch (g_rodexMailStore->unknown_0010) {
+  switch (g_rodexMailStore->inboxType) {
   case MAIL_INBOX_NORMAL:
-    this->unknown_0130->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+    this->mailTab->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   case MAIL_INBOX_ACCOUNT:
-    this->unknown_0134->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+    this->accountTab->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   case MAIL_INBOX_RETURNED:
-    this->unknown_0138->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+    this->returnTab->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
     break;
   }
 
-  this->unknown_013C = new UIBitmapButton();
-  this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_out.bmp", 0, 0);
-  this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_over.bmp", 1, 0);
-  this->unknown_013C->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_press.bmp", 2, 0);
-  this->unknown_013C->SetTooltip(LookupMessage(MSI_RODEX_DELETE_TIME_DAY));
-  this->unknown_013C->SetSize(this->unknown_013C->BitmapWidth(), this->unknown_013C->BitmapHeight());
-  this->unknown_013C->Move(0xEF, 0x14);
-  this->unknown_013C->SetId(0x19F);
-  this->AddChild(this->unknown_013C);
+  this->refreshButton = new UIBitmapButton();
+  this->refreshButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_out.bmp", 0, 0);
+  this->refreshButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_over.bmp", 1, 0);
+  this->refreshButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_refresh_press.bmp", 2, 0);
+  this->refreshButton->SetTooltip(LookupMessage(MSI_RODEX_DELETE_TIME_DAY));
+  this->refreshButton->SetSize(this->refreshButton->BitmapWidth(), this->refreshButton->BitmapHeight());
+  this->refreshButton->Move(0xEF, 0x14);
+  this->refreshButton->SetId(0x19F);
+  this->AddChild(this->refreshButton);
 
-  this->unknown_0140 = new UIBitmapButton();
-  this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_out.bmp", 0, 0);
-  this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_over.bmp", 1, 0);
-  this->unknown_0140->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_press.bmp", 2, 0);
-  this->unknown_0140->SetTooltip(LookupMessage(MSI_MAIL_WRITE));
-  this->unknown_0140->SetSize(this->unknown_0140->BitmapWidth(), this->unknown_0140->BitmapHeight());
-  this->unknown_0140->Move(0x10C, 0x12);
-  this->unknown_0140->SetId(0x131);
-  this->AddChild(this->unknown_0140);
+  this->writeButton = new UIBitmapButton();
+  this->writeButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_out.bmp", 0, 0);
+  this->writeButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_over.bmp", 1, 0);
+  this->writeButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_write_press.bmp", 2, 0);
+  this->writeButton->SetTooltip(LookupMessage(MSI_MAIL_WRITE));
+  this->writeButton->SetSize(this->writeButton->BitmapWidth(), this->writeButton->BitmapHeight());
+  this->writeButton->Move(0x10C, 0x12);
+  this->writeButton->SetId(0x131);
+  this->AddChild(this->writeButton);
 
   for (int y = 0x66, row = 0; y < 0x16E; y += 0x2C, ++row) {
     this->checks[row] = new UICheckBox();
@@ -251,143 +251,143 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->checks[row]->Show(0);
     this->AddChild(this->checks[row]);
 
-    this->unknown_015C[row] = new UITextButton();
-    this->unknown_015C[row]->Configure("", 0, 0, 12, 0, 0);
-    this->unknown_015C[row]->m_hoverColor = 0x51417E;
-    this->unknown_015C[row]->Move(0x45, y);
-    this->unknown_015C[row]->SetId(0x143);
-    this->unknown_015C[row]->SetTooltip(LookupMessage(MSI_TAIWAN_CASH_MSG_2));
-    this->unknown_015C[row]->Enable(0);
-    this->AddChild(this->unknown_015C[row]);
+    this->subjectButtons[row] = new UITextButton();
+    this->subjectButtons[row]->Configure("", 0, 0, 12, 0, 0);
+    this->subjectButtons[row]->m_hoverColor = 0x51417E;
+    this->subjectButtons[row]->Move(0x45, y);
+    this->subjectButtons[row]->SetId(0x143);
+    this->subjectButtons[row]->SetTooltip(LookupMessage(MSI_TAIWAN_CASH_MSG_2));
+    this->subjectButtons[row]->Enable(0);
+    this->AddChild(this->subjectButtons[row]);
 
-    this->unknown_0144[row] = new UITextButton();
-    this->unknown_0144[row]->Configure("", 0x844A42, 0, 11, 1, 0);
-    this->unknown_0144[row]->m_hoverColor = 0x51417E;
-    this->unknown_0144[row]->Move(0x47, y + 0x10);
-    this->unknown_0144[row]->SetId(0x142);
-    this->unknown_0144[row]->SetTooltip(LookupMessage(MSI_TAIWAN_CASH_MSG_1));
-    this->unknown_0144[row]->Enable(0);
-    this->AddChild(this->unknown_0144[row]);
+    this->senderButtons[row] = new UITextButton();
+    this->senderButtons[row]->Configure("", 0x844A42, 0, 11, 1, 0);
+    this->senderButtons[row]->m_hoverColor = 0x51417E;
+    this->senderButtons[row]->Move(0x47, y + 0x10);
+    this->senderButtons[row]->SetId(0x142);
+    this->senderButtons[row]->SetTooltip(LookupMessage(MSI_TAIWAN_CASH_MSG_1));
+    this->senderButtons[row]->Enable(0);
+    this->AddChild(this->senderButtons[row]);
 
-    this->unknown_01A8[row] = new UIBitmapButton();
-    this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_out.bmp", 0, 0);
-    this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_over.bmp", 1, 0);
-    this->unknown_01A8[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_press.bmp", 2, 0);
-    this->unknown_01A8[row]->SetSize(this->unknown_01A8[row]->BitmapWidth(), this->unknown_01A8[row]->BitmapHeight());
-    this->unknown_01A8[row]->Move(0xBA, y + 0x1D);
-    this->unknown_01A8[row]->SetTooltip(LookupMessage(MSI_RODEX_DELETE_TIME_HOUR));
-    this->unknown_01A8[row]->SetId(0x136);
-    this->unknown_01A8[row]->Enable(0);
-    this->AddChild(this->unknown_01A8[row]);
+    this->returnButtons[row] = new UIBitmapButton();
+    this->returnButtons[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_out.bmp", 0, 0);
+    this->returnButtons[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_over.bmp", 1, 0);
+    this->returnButtons[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_press.bmp", 2, 0);
+    this->returnButtons[row]->SetSize(this->returnButtons[row]->BitmapWidth(), this->returnButtons[row]->BitmapHeight());
+    this->returnButtons[row]->Move(0xBA, y + 0x1D);
+    this->returnButtons[row]->SetTooltip(LookupMessage(MSI_RODEX_DELETE_TIME_HOUR));
+    this->returnButtons[row]->SetId(0x136);
+    this->returnButtons[row]->Enable(0);
+    this->AddChild(this->returnButtons[row]);
   }
 
   UIBasicButton* button = new UIBasicButton();
-  this->unknown_018C = button;
+  this->receiveButton = button;
   button->Configure(0x46, LookupMessage(MSI_RODEX_BUTTON_RECEIVE_ALL));
-  this->unknown_018C->SetId(0x222);
-  this->unknown_018C->Move(4, 0x178);
-  this->AddChild(this->unknown_018C);
+  this->receiveButton->SetId(0x222);
+  this->receiveButton->Move(4, 0x178);
+  this->AddChild(this->receiveButton);
 
   button = new UIBasicButton();
-  this->unknown_0190 = button;
+  this->deleteButton = button;
   button->Configure(0x46, LookupMessage(MSI_HOTKEYWND_SKILLBAR2));
-  this->unknown_0190->Move(0x54, 0x188);
-  this->unknown_0190->SetId(0x224);
-  this->AddChild(this->unknown_0190);
+  this->deleteButton->Move(0x54, 0x188);
+  this->deleteButton->SetId(0x224);
+  this->AddChild(this->deleteButton);
 
-  this->unknown_0194 = new UIBitmapButton();
-  this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_out.bmp", 0, 0);
-  this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_over.bmp", 1, 0);
-  this->unknown_0194->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_press.bmp", 2, 0);
-  this->unknown_0194->SetTooltip(LookupMessage(MSI_BOOK_PREV));
-  this->unknown_0194->SetSize(this->unknown_0194->BitmapWidth(), this->unknown_0194->BitmapHeight());
-  this->unknown_0194->Move(0xF6, 0x176);
-  this->unknown_0194->SetId(0x13C);
-  this->AddChild(this->unknown_0194);
+  this->previousPageButton = new UIBitmapButton();
+  this->previousPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_out.bmp", 0, 0);
+  this->previousPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_over.bmp", 1, 0);
+  this->previousPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_prev_press.bmp", 2, 0);
+  this->previousPageButton->SetTooltip(LookupMessage(MSI_BOOK_PREV));
+  this->previousPageButton->SetSize(this->previousPageButton->BitmapWidth(), this->previousPageButton->BitmapHeight());
+  this->previousPageButton->Move(0xF6, 0x176);
+  this->previousPageButton->SetId(0x13C);
+  this->AddChild(this->previousPageButton);
 
-  this->unknown_0198 = new UIBitmapButton();
-  this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_out.bmp", 0, 0);
-  this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_over.bmp", 1, 0);
-  this->unknown_0198->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_press.bmp", 2, 0);
-  this->unknown_0198->SetTooltip(LookupMessage(MSI_BOOK_NEXT));
-  this->unknown_0198->SetSize(this->unknown_0198->BitmapWidth(), this->unknown_0198->BitmapHeight());
-  this->unknown_0198->Move(0x10E, 0x176);
-  this->unknown_0198->SetId(0x13D);
-  this->AddChild(this->unknown_0198);
+  this->nextPageButton = new UIBitmapButton();
+  this->nextPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_out.bmp", 0, 0);
+  this->nextPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_over.bmp", 1, 0);
+  this->nextPageButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_next_press.bmp", 2, 0);
+  this->nextPageButton->SetTooltip(LookupMessage(MSI_BOOK_NEXT));
+  this->nextPageButton->SetSize(this->nextPageButton->BitmapWidth(), this->nextPageButton->BitmapHeight());
+  this->nextPageButton->Move(0x10E, 0x176);
+  this->nextPageButton->SetId(0x13D);
+  this->AddChild(this->nextPageButton);
 
   const int searchTexts[2] = {0xC78, 0xC79};
   for (int x = 0x16, index = 0; x < 0x7C; x += 0x33, ++index) {
-    this->unknown_01C0[index] = new UIRadioBtn();
-    this->unknown_01C0[index]->SetSize(0x33, 12);
+    this->searchModeButtons[index] = new UIRadioBtn();
+    this->searchModeButtons[index]->SetSize(0x33, 12);
     {
-      UIRadioBtn* radio = this->unknown_01C0[index];
+      UIRadioBtn* radio = this->searchModeButtons[index];
       const std::string unchecked = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_search_off.bmp";
       const std::string checked = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_search_on.bmp";
       radio->checkedBitmap = checked;
       radio->uncheckedBitmap = unchecked;
       radio->Invalidate();
     }
-    this->unknown_01C0[index]->SetText(LookupMessage(searchTexts[index]));
-    this->unknown_01C0[index]->textColor = 0x654939;
-    this->unknown_01C0[index]->Move(x, 0x44);
-    this->unknown_01C0[index]->value = 0x141;
-    this->unknown_01C0[index]->SendMsg(this, UM_SETSTATE, 1 - index, 0, 0, 0);
-    this->AddChild(this->unknown_01C0[index]);
+    this->searchModeButtons[index]->SetText(LookupMessage(searchTexts[index]));
+    this->searchModeButtons[index]->textColor = 0x654939;
+    this->searchModeButtons[index]->Move(x, 0x44);
+    this->searchModeButtons[index]->value = 0x141;
+    this->searchModeButtons[index]->SendMsg(this, UM_SETSTATE, 1 - index, 0, 0, 0);
+    this->AddChild(this->searchModeButtons[index]);
   }
 
-  this->unknown_01C8 = new UIEditCtrl();
-  this->unknown_01C8->SetSize(0x84, 0x12);
-  this->unknown_01C8->Move(0x85, 0x41);
-  this->unknown_01C8->maximum = 0x10;
-  this->unknown_01C8->flat = 0;
-  this->unknown_01C8->Border(0xAD, 0xAD, 0xAD);
-  this->unknown_01C8->preserveInput = 1;
-  this->AddChild(this->unknown_01C8);
+  this->searchEdit = new UIEditCtrl();
+  this->searchEdit->SetSize(0x84, 0x12);
+  this->searchEdit->Move(0x85, 0x41);
+  this->searchEdit->maximum = 0x10;
+  this->searchEdit->flat = 0;
+  this->searchEdit->Border(0xAD, 0xAD, 0xAD);
+  this->searchEdit->preserveInput = 1;
+  this->AddChild(this->searchEdit);
 
-  this->unknown_01CC = new UIBitmapButton();
-  this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_out.bmp", 0, 0);
-  this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_over.bmp", 1, 0);
-  this->unknown_01CC->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_press.bmp", 2, 0);
-  this->unknown_01CC->SetSize(this->unknown_01CC->BitmapWidth(), this->unknown_01CC->BitmapHeight());
-  this->unknown_01CC->Move(0x108, 0x41);
-  this->unknown_01CC->SetId(0x141);
-  this->AddChild(this->unknown_01CC);
+  this->searchButton = new UIBitmapButton();
+  this->searchButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_out.bmp", 0, 0);
+  this->searchButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_over.bmp", 1, 0);
+  this->searchButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_search_press.bmp", 2, 0);
+  this->searchButton->SetSize(this->searchButton->BitmapWidth(), this->searchButton->BitmapHeight());
+  this->searchButton->Move(0x108, 0x41);
+  this->searchButton->SetId(0x141);
+  this->AddChild(this->searchButton);
 
-  this->unknown_01D0 = new UIBmpRadioBtn();
-  this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
-  this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
-  this->unknown_01D0->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
+  this->searchTab = new UIBmpRadioBtn();
+  this->searchTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_out.bmp", 0);
+  this->searchTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_over.bmp", 1);
+  this->searchTab->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_listtab_empty_press.bmp", 2);
   {
-    UIBmpRadioBtn* tab = this->unknown_01D0;
+    UIBmpRadioBtn* tab = this->searchTab;
     const std::string label = LookupMessage(MSI_MSI_INVENTORY_TABNAME_4);
     tab->m_label = label;
     tab->Invalidate();
   }
   {
-    const int textX = static_cast<int>(static_cast<float>(this->unknown_01D0->geometry.width - this->TextWidth(LookupMessage(MSI_MSI_INVENTORY_TABNAME_4), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
-    UIBmpRadioBtn* tab = this->unknown_01D0;
+    const int textX = static_cast<int>(static_cast<float>(this->searchTab->geometry.width - this->TextWidth(LookupMessage(MSI_MSI_INVENTORY_TABNAME_4), 0, 0, 12, 0, 0)) * g_depthAverageHalf);
+    UIBmpRadioBtn* tab = this->searchTab;
     const int textY = static_cast<int>(static_cast<float>(tab->geometry.height - this->TextHeight(LookupMessage(MSI_MSI_INVENTORY_TABNAME_4), 0, 0, 12, 0, 0) - 3) * g_depthAverageHalf);
     tab->AddText(0, 12, 0xCCB5AD, true, false, textX, textY);
-    this->unknown_01D0->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
-    this->unknown_01D0->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
+    this->searchTab->AddText(1, 12, 0x9C3E1F, true, false, textX, textY);
+    this->searchTab->AddText(2, 12, 0x9C3E1F, true, false, textX, textY);
   }
-  this->unknown_01D0->Move(0xDF, 0x56);
-  this->AddChild(this->unknown_01D0);
-  this->unknown_01D0->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+  this->searchTab->Move(0xDF, 0x56);
+  this->AddChild(this->searchTab);
+  this->searchTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
 
-  this->unknown_0134->Move(0x13, 0x56);
-  this->unknown_0130->Move(0x57, 0x56);
-  this->unknown_0138->Move(0x9B, 0x56);
-  this->unknown_013C->Move(0xF8, 0x14);
-  this->unknown_0140->Move(0x115, 0x12);
+  this->accountTab->Move(0x13, 0x56);
+  this->mailTab->Move(0x57, 0x56);
+  this->returnTab->Move(0x9B, 0x56);
+  this->refreshButton->Move(0xF8, 0x14);
+  this->writeButton->Move(0x115, 0x12);
   for (int y = 0x79, row = 0; y < 0x181; y += 0x2C, ++row) {
     this->checks[row]->Move(0x11, y + 7);
-    this->unknown_015C[row]->Move(0x45, y);
-    this->unknown_0144[row]->Move(0x47, y + 0x14);
+    this->subjectButtons[row]->Move(0x45, y);
+    this->senderButtons[row]->Move(0x47, y + 0x14);
   }
-  this->unknown_018C->Move(4, 0x188);
-  this->unknown_0194->Move(0xFF, 0x186);
-  this->unknown_0198->Move(0x117, 0x186);
+  this->receiveButton->Move(4, 0x188);
+  this->previousPageButton->Move(0xFF, 0x186);
+  this->nextPageButton->Move(0x117, 0x186);
   this->RefreshMailLists();
   this->Invalidate();
 }
@@ -398,32 +398,32 @@ void UIRodexInboxWnd::Paint() {
   this->ClearSurface(0xFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_list.bmp"))), false);
   for (int i = 0; i < 6; ++i) {
-    this->unknown_01A8[i]->Enable(0);
+    this->returnButtons[i]->Enable(0);
   }
 
-  if (!g_rodexMailStore->unknown_001C) {
+  if (!g_rodexMailStore->isPageComplete) {
     this->DrawBitmap(0x1F, 0x9A, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\img_notice.bmp"))), true);
     this->DrawWrappedFormattedText(0x1F, 0xE5, std::string(LookupMessage(MSI_RODEX_SENDER)), 0xF8, 3, 6, 0, 12, 0, 0);
     this->DrawCenteredText(0x1F, 0x10E, LookupMessage(MSI_CLOSE_SETUP), 0xF8, 0, 0x12, 0xC89482, 1);
     return;
   }
 
-  unsigned int index = this->unknown_019C * 6;
-  if (this->unknown_01D4 == 1) {
+  unsigned int index = this->page * 6;
+  if (this->searchActive == 1) {
     for (int row = 0; row < 6; ++row, ++index) {
       if (index < this->searchResults.size()) {
         std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(this->searchResults[index].first);
         if (mails) {
           std::map<std::int64_t, RodexMail>::iterator it = mails->find(this->searchResults[index].second);
           if (it != mails->end()) {
-            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, this->searchResults[index].first == 2);
-            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, this->searchResults[index].first == 2);
+            this->DrawMailIcons(row, it->second.type, it->second.isRead, this->searchResults[index].first == 2);
+            this->DrawExpireTime(row, it->second.sentAt, it->second.expiresAt, this->searchResults[index].first == 2);
             if (this->expired == 1) {
               this->expired = 0;
               mails->erase(it);
             } else {
-              this->SetMailRow(row, this->searchResults[index].second, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead,
-                               it->second.unknown_0190, it->second.unknown_0194);
+              this->SetMailRow(row, this->searchResults[index].second, it->second.sender, it->second.title, it->second.isRead,
+                               it->second.isReturned, it->second.isKnownSender);
             }
           }
         }
@@ -431,30 +431,30 @@ void UIRodexInboxWnd::Paint() {
         this->checks[row]->Show(0);
         this->checks[row]->SetChecked(0);
         this->checks[row]->m_message = 0;
-        this->unknown_0144[row]->Enable(0);
-        this->unknown_015C[row]->Enable(0);
+        this->senderButtons[row]->Enable(0);
+        this->subjectButtons[row]->Enable(0);
       }
     }
   } else {
     for (int row = 0; row < 6; ++row, ++index) {
       this->checks[row]->Show(0);
-      this->unknown_0144[row]->Enable(0);
-      this->unknown_015C[row]->Enable(0);
-      switch (g_rodexMailStore->unknown_0010) {
+      this->senderButtons[row]->Enable(0);
+      this->subjectButtons[row]->Enable(0);
+      switch (g_rodexMailStore->inboxType) {
         case MAIL_INBOX_ACCOUNT:
           if (index < this->mails1.size()) {
             std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails1.find(this->mails1[index].second);
             if (it != g_rodexMailStore->m_mails1.end()) {
-              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              this->DrawMailIcons(row, it->second.type, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.sentAt, it->second.expiresAt, 0);
               if (this->expired == 1) {
                 this->expired = 0;
                 g_rodexMailStore->m_mails1.erase(it);
               } else {
                 this->checks[row]->Show(1);
-                this->unknown_0144[row]->Enable(1);
-                this->unknown_015C[row]->Enable(1);
-                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+                this->senderButtons[row]->Enable(1);
+                this->subjectButtons[row]->Enable(1);
+                this->SetMailRow(row, it->first, it->second.sender, it->second.title, it->second.isRead, it->second.isReturned, -1);
               }
             }
           }
@@ -463,34 +463,34 @@ void UIRodexInboxWnd::Paint() {
           if (index < this->mails2.size()) {
             std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails2.find(this->mails2[index].second);
             if (it != g_rodexMailStore->m_mails2.end()) {
-              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              this->DrawMailIcons(row, it->second.type, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.sentAt, it->second.expiresAt, 0);
               if (this->expired == 1) {
                 this->expired = 0;
                 g_rodexMailStore->m_mails2.erase(it);
               } else {
                 this->checks[row]->Show(1);
-                this->unknown_0144[row]->Enable(1);
-                this->unknown_015C[row]->Enable(1);
-                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+                this->senderButtons[row]->Enable(1);
+                this->subjectButtons[row]->Enable(1);
+                this->SetMailRow(row, it->first, it->second.sender, it->second.title, it->second.isRead, it->second.isReturned, -1);
               }
             }
           }
           break;
         default:
-          this->unknown_0144[row]->Enable(0);
-          this->unknown_015C[row]->Enable(0);
+          this->senderButtons[row]->Enable(0);
+          this->subjectButtons[row]->Enable(0);
           if (index < this->mails0.size()) {
             std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails0.find(this->mails0[index].second);
             if (it != g_rodexMailStore->m_mails0.end()) {
-              this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
-              this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+              this->DrawMailIcons(row, it->second.type, it->second.isRead, 0);
+              this->DrawExpireTime(row, it->second.sentAt, it->second.expiresAt, 0);
               if (this->expired == 1) {
                 this->expired = 0;
                 g_rodexMailStore->m_mails0.erase(it);
               } else {
-                this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190,
-                                 it->second.unknown_0194);
+                this->SetMailRow(row, it->first, it->second.sender, it->second.title, it->second.isRead, it->second.isReturned,
+                                 it->second.isKnownSender);
               }
             }
           }
@@ -498,42 +498,42 @@ void UIRodexInboxWnd::Paint() {
     }
   }
 
-  this->DrawRightAlignedText(0x111, 0x2E, FormatOwnedString("%d", g_rodexMailStore->unknown_0014).c_str(), 0, 0, 11, 0xC89482, 1);
+  this->DrawRightAlignedText(0x111, 0x2E, FormatOwnedString("%d", g_rodexMailStore->dailySendCount).c_str(), 0, 0, 11, 0xC89482, 1);
   this->DrawTextAt(0x111, 0x2E, LookupMessage(MSI_EMBLEM_CHANGE), 0, 0, 11, 0xC89482, 1, 0);
 }
 
 // OFFSET: 0x00808FD0
 // FUNCTION: fn_10056
 void UIRodexInboxWnd::SetButtonsDisabled(unsigned char disabled) {
-  UIButton* button = this->unknown_0194;
+  UIButton* button = this->previousPageButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_0194->Invalidate();
+  this->previousPageButton->Invalidate();
 
-  button = this->unknown_0198;
+  button = this->nextPageButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_0198->Invalidate();
+  this->nextPageButton->Invalidate();
 
-  button = this->unknown_013C;
+  button = this->refreshButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_013C->Invalidate();
+  this->refreshButton->Invalidate();
 
-  button = this->unknown_018C;
+  button = this->receiveButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_018C->Invalidate();
+  this->receiveButton->Invalidate();
 
-  button = this->unknown_0140;
+  button = this->writeButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_0140->Invalidate();
+  this->writeButton->Invalidate();
 
-  button = this->unknown_0190;
+  button = this->deleteButton;
   button->SetDisabled(disabled);
   button->Invalidate();
-  this->unknown_0190->Invalidate();
+  this->deleteButton->Invalidate();
 
   this->Invalidate();
 }
@@ -546,7 +546,7 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
   const std::pair<bool, std::string> stripped = RemoveLineBreakTag(subjectText);
   subjectText = stripped.second;
   if (stripped.first == true) {
-    this->unknown_0144[row]->SetTooltip("");
+    this->senderButtons[row]->SetTooltip("");
   }
 
   nameText = g_navigationLinkParser->ExpandMessages(nameText);
@@ -555,46 +555,46 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
   this->checks[row]->Show(1);
   this->checks[row]->m_message = static_cast<int>(mailId);
 
-  UITextButton* button = this->unknown_0144[row];
+  UITextButton* button = this->senderButtons[row];
   {
     const std::string label = nameText.c_str();
     button->label = label;
   }
-  this->unknown_0144[row]->ResizeToTextClipped(0x8C, this->unknown_0144[row]->geometry.height);
-  this->unknown_0144[row]->m_value = static_cast<int>(mailId);
-  this->unknown_0144[row]->Enable(1);
+  this->senderButtons[row]->ResizeToTextClipped(0x8C, this->senderButtons[row]->geometry.height);
+  this->senderButtons[row]->m_value = static_cast<int>(mailId);
+  this->senderButtons[row]->Enable(1);
 
   std::uint32_t color;
   if (noAttachment == 0) {
-    this->unknown_01A8[row]->Enable(1);
-    this->unknown_01A8[row]->m_argument = static_cast<int>(mailId);
+    this->returnButtons[row]->Enable(1);
+    this->returnButtons[row]->m_argument = static_cast<int>(mailId);
     color = read == 1 ? 0xC8C8E6 : 0xFF;
   } else {
     color = read == 1 ? 0xC8C8C8 : 0;
   }
 
-  this->unknown_015C[row]->m_color = color;
-  button = this->unknown_015C[row];
+  this->subjectButtons[row]->m_color = color;
+  button = this->subjectButtons[row];
   {
     const std::string label = subjectText.c_str();
     button->label = label;
   }
-  this->unknown_015C[row]->ResizeToTextClipped(0x8C, this->unknown_015C[row]->geometry.height);
-  this->unknown_015C[row]->m_value = static_cast<int>(mailId);
-  this->unknown_015C[row]->Enable(1);
+  this->subjectButtons[row]->ResizeToTextClipped(0x8C, this->subjectButtons[row]->geometry.height);
+  this->subjectButtons[row]->m_value = static_cast<int>(mailId);
+  this->subjectButtons[row]->Enable(1);
 
   if (returned == 1) {
     this->checks[row]->m_message = -1;
-    this->unknown_0144[row]->Enable(0);
-    this->unknown_015C[row]->m_color = 0xC8C8C8;
-    button = this->unknown_015C[row];
+    this->senderButtons[row]->Enable(0);
+    this->subjectButtons[row]->m_color = 0xC8C8C8;
+    button = this->subjectButtons[row];
     {
       const std::string label = LookupMessage(MSI_THAI_PERSONALINFO_DROP);
       button->label = label;
     }
-    this->unknown_015C[row]->ResizeToTextClipped(0x8C, this->unknown_015C[row]->geometry.height);
-    this->unknown_015C[row]->m_value = -1;
-    this->unknown_015C[row]->Enable(1);
+    this->subjectButtons[row]->ResizeToTextClipped(0x8C, this->subjectButtons[row]->geometry.height);
+    this->subjectButtons[row]->m_value = -1;
+    this->subjectButtons[row]->Enable(1);
   }
 }
 
@@ -634,7 +634,7 @@ void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t ex
 // OFFSET: 0x008098D0
 // FUNCTION: fn_10059
 void UIRodexInboxWnd::ClearChecks() {
-  ++this->unknown_019C;
+  ++this->page;
   for (int i = 0; i < 6; ++i) {
     this->checks[i]->SetChecked(0);
     this->checks[i]->m_message = 0;
@@ -683,17 +683,17 @@ void UIRodexInboxWnd::SearchBySender(const std::string keyword) {
 
   std::vector<RodexMailEntry>& results = this->searchResults;
   std::for_each(g_rodexMailStore->m_mails0.begin(), g_rodexMailStore->m_mails0.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0004.find(keyword, 0) != std::string::npos) {
+    if (mail.second.sender.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(0, mail.first));
     }
   });
   std::for_each(g_rodexMailStore->m_mails1.begin(), g_rodexMailStore->m_mails1.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0004.find(keyword, 0) != std::string::npos) {
+    if (mail.second.sender.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(1, mail.first));
     }
   });
   std::for_each(g_rodexMailStore->m_mails2.begin(), g_rodexMailStore->m_mails2.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0004.find(keyword, 0) != std::string::npos) {
+    if (mail.second.sender.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(2, mail.first));
     }
   });
@@ -708,17 +708,17 @@ void UIRodexInboxWnd::SearchByTitle(const std::string keyword) {
 
   std::vector<RodexMailEntry>& results = this->searchResults;
   std::for_each(g_rodexMailStore->m_mails0.begin(), g_rodexMailStore->m_mails0.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0024.find(keyword, 0) != std::string::npos) {
+    if (mail.second.title.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(0, mail.first));
     }
   });
   std::for_each(g_rodexMailStore->m_mails1.begin(), g_rodexMailStore->m_mails1.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0024.find(keyword, 0) != std::string::npos) {
+    if (mail.second.title.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(1, mail.first));
     }
   });
   std::for_each(g_rodexMailStore->m_mails2.begin(), g_rodexMailStore->m_mails2.end(), [&results, keyword](const std::pair<const std::int64_t, RodexMail>& mail) {
-    if (mail.second.unknown_0024.find(keyword, 0) != std::string::npos) {
+    if (mail.second.title.find(keyword, 0) != std::string::npos) {
       results.push_back(RodexMailEntry(2, mail.first));
     }
   });
@@ -738,7 +738,7 @@ void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
   if (mails != nullptr) {
     std::map<std::int64_t, RodexMail>::iterator mail = mails->find(mailId);
     if (mail != mails->end()) {
-      flags = mail->second.unknown_0001;
+      flags = mail->second.type;
     }
   }
 
@@ -760,16 +760,16 @@ void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
 // OFFSET: 0x008078E0
 // FUNCTION: fn_10054
 void UIRodexInboxWnd::InitializeMailActions() {
-  this->unknown_019C = 0;
+  this->page = 0;
   for (int i = 0; i < 6; ++i) {
     this->checks[i]->SetChecked(0);
     this->checks[i]->m_message = 0;
   }
 
-  this->unknown_018C->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_ALL));
-  this->unknown_018C->SetId(0x222);
-  this->unknown_0190->SetText(LookupMessage(MSI_HOTKEYWND_SKILLBAR2));
-  this->unknown_0190->SetId(0x224);
+  this->receiveButton->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_ALL));
+  this->receiveButton->SetId(0x222);
+  this->deleteButton->SetText(LookupMessage(MSI_HOTKEYWND_SKILLBAR2));
+  this->deleteButton->SetId(0x224);
   this->Invalidate();
 }
 
@@ -799,7 +799,7 @@ bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailE
   } else if (rightMail->second.isRead == 0) {
     return false;
   }
-  return leftMail->second.unknown_001C > rightMail->second.unknown_001C;
+  return leftMail->second.sentAt > rightMail->second.sentAt;
 }
 
 // OFFSET: 0x008054D0
@@ -811,12 +811,12 @@ bool __stdcall RequestRodexMailAction(int type, std::int64_t mailId) {
   }
 
   std::map<std::int64_t, RodexMail>::iterator mail = mails->find(mailId);
-  if (mail == mails->end() || (mail->second.unknown_0001 & 6) != 0) {
+  if (mail == mails->end() || (mail->second.type & 6) != 0) {
     return false;
   }
 
   g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(mailId), type, 0, 0);
-  if (g_windowMgr.unknown_045C != 0) {
+  if (g_windowMgr.rodexContentsWnd != 0) {
     g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
   }
   return true;
@@ -827,7 +827,7 @@ bool __stdcall RequestRodexMailAction(int type, std::int64_t mailId) {
 void UIRodexInboxWnd::RequestAllMailActions() {
   int requested = 0;
   int skipped = 0;
-  if (this->unknown_01D4 == 1) {
+  if (this->searchActive == 1) {
     for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
       std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(entry->first);
       if (mails == nullptr) {
@@ -839,7 +839,7 @@ void UIRodexInboxWnd::RequestAllMailActions() {
         continue;
       }
 
-      if ((mail->second.unknown_0001 & 6) == 0) {
+      if ((mail->second.type & 6) == 0) {
         g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(entry->second), entry->first, 0, 0);
         ++requested;
       } else {
@@ -847,14 +847,14 @@ void UIRodexInboxWnd::RequestAllMailActions() {
       }
     }
   } else {
-    int type = g_rodexMailStore->unknown_0010;
+    int type = g_rodexMailStore->inboxType;
     std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
     if (mails == nullptr) {
       return;
     }
 
     for (std::map<std::int64_t, RodexMail>::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
-      if ((mail->second.unknown_0001 & 6) == 0) {
+      if ((mail->second.type & 6) == 0) {
         g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(mail->first), type, 0, 0);
         ++requested;
       } else {
@@ -863,7 +863,7 @@ void UIRodexInboxWnd::RequestAllMailActions() {
     }
   }
 
-  if (requested > 0 && g_windowMgr.unknown_045C != 0) {
+  if (requested > 0 && g_windowMgr.rodexContentsWnd != 0) {
     g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
   }
   if (skipped > 0) {
@@ -874,12 +874,12 @@ void UIRodexInboxWnd::RequestAllMailActions() {
 // OFFSET: 0x00807AA0
 // FUNCTION: fn_10055
 int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (g_windowMgr.unknown_0458 != nullptr || g_windowMgr.unknown_045C != nullptr) {
+  if (g_windowMgr.rodexComposeWnd != nullptr || g_windowMgr.rodexContentsWnd != nullptr) {
     return 0;
   }
 
   CMode* mode = g_modeMgr.GetGameMode();
-  if (g_rodexMailStore->unknown_001C == false && !(message == UM_COMMAND && argument1 == ID_CLOSE)) {
+  if (g_rodexMailStore->isPageComplete == false && !(message == UM_COMMAND && argument1 == ID_CLOSE)) {
     return 0;
   }
 
@@ -889,7 +889,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case ID_RADIOBTN:
       if (argument2 == 0x141) {
         for (int i = 0; i < 2; ++i) {
-          UIRadioBtn* radio = this->unknown_01C0[i];
+          UIRadioBtn* radio = this->searchModeButtons[i];
           if (radio == sender) {
             radio->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
           } else {
@@ -898,32 +898,32 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
         this->Invalidate();
       } else {
-        this->unknown_0130->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-        this->unknown_0134->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-        this->unknown_0138->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-        this->unknown_01D0->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->mailTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->accountTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->returnTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        this->searchTab->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         for (int i = 0; i < 6; ++i) {
           this->checks[i]->SetChecked(0);
           this->checks[i]->m_message = 0;
         }
-        this->unknown_019C = 0;
+        this->page = 0;
 
-        if (this->unknown_0130 == sender) {
-          g_rodexMailStore->unknown_0010 = 0;
-        } else if (this->unknown_0134 == sender) {
-          g_rodexMailStore->unknown_0010 = 1;
-        } else if (this->unknown_0138 == sender) {
-          g_rodexMailStore->unknown_0010 = 2;
+        if (this->mailTab == sender) {
+          g_rodexMailStore->inboxType = 0;
+        } else if (this->accountTab == sender) {
+          g_rodexMailStore->inboxType = 1;
+        } else if (this->returnTab == sender) {
+          g_rodexMailStore->inboxType = 2;
         }
-        this->unknown_01D4 = this->unknown_01D0 == sender;
+        this->searchActive = this->searchTab == sender;
         this->Invalidate();
       }
       break;
 
     case ID_PREV_PAGE:
-      if (--this->unknown_019C < 0) {
-        this->unknown_019C = 0;
+      if (--this->page < 0) {
+        this->page = 0;
       } else {
         for (int i = 0; i < 6; ++i) {
           this->checks[i]->SetChecked(0);
@@ -934,11 +934,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
 
     case ID_NEXT_PAGE: {
-      if (this->unknown_01D4 == 1) {
-        if (this->searchResults.size() > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
+      if (this->searchActive == 1) {
+        if (this->searchResults.size() > static_cast<std::size_t>((this->page + 1) * 6)) {
           this->ClearChecks();
         }
-      } else if (RodexMailsOfType(g_rodexMailStore->unknown_0010)->size() > static_cast<std::size_t>((this->unknown_019C + 1) * 6)) {
+      } else if (RodexMailsOfType(g_rodexMailStore->inboxType)->size() > static_cast<std::size_t>((this->page + 1) * 6)) {
         this->ClearChecks();
       }
       break;
@@ -981,12 +981,12 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
 
     case ID_DELETE:
-      if (this->unknown_01D4 == 1) {
+      if (this->searchActive == 1) {
         std::vector<RodexMailEntry> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            const RodexMailEntry entry = this->searchResults[this->unknown_019C * 6 + i];
+          if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
+            const RodexMailEntry entry = this->searchResults[this->page * 6 + i];
             selected.push_back(entry);
           }
         }
@@ -1011,7 +1011,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::list<int> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0) {
+          if (check->geometry.visible == 1 && check->geometry.state != 0) {
             const int id = check->m_message;
             if (id != -1) {
               selected.push_back(id);
@@ -1028,7 +1028,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
             bool success = true;
             for (std::list<int>::iterator id = selected.begin(); id != selected.end(); ++id) {
-              success &= RequestRodexMailAction(g_rodexMailStore->unknown_0010, *id);
+              success &= RequestRodexMailAction(g_rodexMailStore->inboxType, *id);
             }
             if (!success) {
               g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILE_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
@@ -1039,39 +1039,39 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
 
     case ID_SEARCH:
-      if (this->unknown_01C0[0]->geometry.unknown_0030 == 1) {
-        this->SearchByTitle(this->unknown_01C8->Text());
-      } else if (this->unknown_01C0[1]->geometry.unknown_0030 == 1) {
-        this->SearchBySender(this->unknown_01C8->Text());
+      if (this->searchModeButtons[0]->geometry.state == 1) {
+        this->SearchByTitle(this->searchEdit->Text());
+      } else if (this->searchModeButtons[1]->geometry.state == 1) {
+        this->SearchBySender(this->searchEdit->Text());
       }
-      this->SendMsg(this->unknown_01D0, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
+      this->SendMsg(this->searchTab, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
       this->Invalidate();
       break;
 
     case ID_CHECK: {
       int checked = 0;
       for (int i = 0; i < 6; ++i) {
-        if (this->checks[i]->geometry.unknown_0030 > 0) {
+        if (this->checks[i]->geometry.state > 0) {
           ++checked;
         }
       }
 
       if (checked != 0) {
-        this->unknown_018C->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_SELECTED));
-        this->unknown_018C->SetId(0xD3);
-        this->unknown_0190->SetText(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL));
-        this->unknown_0190->SetId(0x223);
+        this->receiveButton->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_SELECTED));
+        this->receiveButton->SetId(0xD3);
+        this->deleteButton->SetText(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL));
+        this->deleteButton->SetId(0x223);
       } else {
-        this->unknown_018C->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_ALL));
-        this->unknown_018C->SetId(0x222);
-        this->unknown_0190->SetText(LookupMessage(MSI_HOTKEYWND_SKILLBAR2));
-        this->unknown_0190->SetId(0x224);
+        this->receiveButton->SetText(LookupMessage(MSI_RODEX_BUTTON_RECEIVE_ALL));
+        this->receiveButton->SetId(0x222);
+        this->deleteButton->SetText(LookupMessage(MSI_HOTKEYWND_SKILLBAR2));
+        this->deleteButton->SetId(0x224);
       }
       break;
     }
 
     case 0x136:
-      if (g_rodexMailStore->unknown_0010 == MAIL_INBOX_NORMAL) {
+      if (g_rodexMailStore->inboxType == MAIL_INBOX_NORMAL) {
         std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
         if (mail != g_rodexMailStore->m_mails0.end()) {
           PACKET_CZ_RODEX_RETURN packet;
@@ -1084,10 +1084,10 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
     case 0x222: {
       std::string type;
-      if (this->unknown_01D4 == 1) {
+      if (this->searchActive == 1) {
         type = LookupMessage(MSI_MSI_INVENTORY_TABNAME_4);
       } else {
-        switch (g_rodexMailStore->unknown_0010) {
+        switch (g_rodexMailStore->inboxType) {
         case MAIL_INBOX_NORMAL:
           type = LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION);
           break;
@@ -1109,10 +1109,10 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
     case 0x224: {
       std::string type;
-      if (this->unknown_01D4 == 1) {
+      if (this->searchActive == 1) {
         type = LookupMessage(MSI_MSI_INVENTORY_TABNAME_4);
       } else {
-        switch (g_rodexMailStore->unknown_0010) {
+        switch (g_rodexMailStore->inboxType) {
         case MAIL_INBOX_NORMAL:
           type = LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION);
           break;
@@ -1127,22 +1127,22 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
       const std::string text = FormatOwnedString(LookupMessage(MSI_HOTKEYGUIDEWND_LEFT), type.c_str());
       if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
-        if (this->unknown_01D4 == 1) {
+        if (this->searchActive == 1) {
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
               std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(entry->second);
-              if (mail != g_rodexMailStore->m_mails0.end() && mail->second.unknown_0194 <= 0) {
+              if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender <= 0) {
                 continue;
               }
             }
             RequestRodexMailAttachments(entry->first, entry->second);
           }
         } else {
-          const int mailType = g_rodexMailStore->unknown_0010;
+          const int mailType = g_rodexMailStore->inboxType;
           std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(mailType);
           if (mails != nullptr) {
             for (std::map<std::int64_t, RodexMail>::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
-              if (mail->second.unknown_0194 > 0) {
+              if (mail->second.isKnownSender > 0) {
                 RequestRodexMailAttachments(mailType, mail->first);
               }
             }
@@ -1153,12 +1153,12 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
 
     case 0x223: {
-      if (this->unknown_01D4 == 1) {
+      if (this->searchActive == 1) {
         std::vector<RodexMailEntry> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0 && check->m_message != -1) {
-            const RodexMailEntry entry = this->searchResults[this->unknown_019C * 6 + i];
+          if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
+            const RodexMailEntry entry = this->searchResults[this->page * 6 + i];
             selected.push_back(entry);
           }
         }
@@ -1177,7 +1177,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::vector<int> selected;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
-          if (check->geometry.visible == 1 && check->geometry.unknown_0030 != 0) {
+          if (check->geometry.visible == 1 && check->geometry.state != 0) {
             const int id = check->m_message;
             if (id != -1) {
               selected.push_back(id);
@@ -1188,7 +1188,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (selected.size() != 0 &&
             g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_SKILLBER), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           for (std::vector<int>::iterator id = selected.begin(); id != selected.end(); ++id) {
-            RequestRodexMailAttachments(g_rodexMailStore->unknown_0010, *id);
+            RequestRodexMailAttachments(g_rodexMailStore->inboxType, *id);
           }
           for (int i = 0; i < 6; ++i) {
             this->checks[i]->SetChecked(0);
@@ -1207,24 +1207,24 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   case UM_TEXT_LBTN_UP:
     if (argument1 == 0x142) {
-      if (g_rodexMailStore->unknown_0010 == MAIL_INBOX_NORMAL) {
+      if (g_rodexMailStore->inboxType == MAIL_INBOX_NORMAL) {
         std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
-        if (mail != g_rodexMailStore->m_mails0.end() && (mail->second.unknown_0001 & 8) == 0 && mail->second.unknown_0004.size() != 0) {
-          const std::pair<bool, std::string> title = RemoveLineBreakTag(mail->second.unknown_0024);
+        if (mail != g_rodexMailStore->m_mails0.end() && (mail->second.type & 8) == 0 && mail->second.sender.size() != 0) {
+          const std::pair<bool, std::string> title = RemoveLineBreakTag(mail->second.title);
           if (title.first != true) {
-            mode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(mail->second.unknown_0004.c_str()), 0, 0, 0);
+            mode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(mail->second.sender.c_str()), 0, 0, 0);
           }
         }
       }
     } else if (argument1 == 0x143) {
       std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
-      if (mail != g_rodexMailStore->m_mails0.end() && mail->second.unknown_0194 == 0) {
+      if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender == 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GRADE_ENCHANT_SUCCESS_REFINING_LEVEL_DISAPPEAR)), 0xFF, 0, 0, 0);
         if (g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_SUCCESS_REFINING_LEVEL_DISAPPEAR), 2, false, false, 0, "Message", 280, 120, 0) == 0xBC) {
           break;
         }
       }
-      mode->SendMsg(MM_OPEN_MAIL, argument2, g_rodexMailStore->unknown_0010, 0, 0);
+      mode->SendMsg(MM_OPEN_MAIL, argument2, g_rodexMailStore->inboxType, 0, 0);
     }
     break;
 
@@ -1236,8 +1236,8 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
 
   case UM_DEFPUSH:
-    if (this->unknown_01C8 == sender) {
-      this->SendMsg(this->unknown_01CC, UM_COMMAND, ID_SEARCH, 0, 0, 0);
+    if (this->searchEdit == sender) {
+      this->SendMsg(this->searchButton, UM_COMMAND, ID_SEARCH, 0, 0, 0);
     }
     break;
 

@@ -33,14 +33,14 @@ int CSession::AddUnknown6160(int id) {
     return -1;
   }
 
-  for (std::vector<int>::iterator it = this->unknown_6160.begin(); it != this->unknown_6160.end(); ++it) {
+  for (std::vector<int>::iterator it = this->jobTitles.begin(); it != this->jobTitles.end(); ++it) {
     if (*it == value) {
       return -1;
     }
   }
 
-  this->unknown_6160.push_back(value);
-  std::sort(this->unknown_6160.begin(), this->unknown_6160.end(), JobTitleLess());
+  this->jobTitles.push_back(value);
+  std::sort(this->jobTitles.begin(), this->jobTitles.end(), JobTitleLess());
 
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_EQUIPWND)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -52,20 +52,20 @@ int CSession::AddUnknown6160(int id) {
 // OFFSET: 0x00E06580
 // FUNCTION: fn_23737
 bool CSession::ToggleTrackedAchievement(int id) {
-  std::vector<SessionRecord6178>& tracked = this->unknown_6178;
+  std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
   auto found = tracked.begin();
   while (found != tracked.end() && found->id != id) {
     ++found;
   }
 
   SessionRecord6144* progress;
-  auto record = this->unknown_6144.find(id);
-  if (record != this->unknown_6144.end()) {
+  auto record = this->achievements.find(id);
+  if (record != this->achievements.end()) {
     progress = &record->second;
   } else {
-    this->unknown_6144.insert(std::make_pair(id, SessionRecord6144()));
-    reinterpret_cast<unsigned char*>(&this->unknown_6144[id].unknown_0000)[0] = 1;
-    progress = &this->unknown_6144[id];
+    this->achievements.insert(std::make_pair(id, SessionRecord6144()));
+    reinterpret_cast<unsigned char*>(&this->achievements[id].completionFlags)[0] = 1;
+    progress = &this->achievements[id];
   }
 
   if (!progress) {
@@ -85,34 +85,34 @@ bool CSession::ToggleTrackedAchievement(int id) {
 
     SessionRecord6178 entry;
     entry.id = id;
-    entry.unknown_0001 = reinterpret_cast<const unsigned char*>(&progress->unknown_0000)[1];
-    entry.unknown_0008 = info.title;
+    entry.completed = reinterpret_cast<const unsigned char*>(&progress->completionFlags)[1];
+    entry.title = info.title;
 
     for (unsigned int i = 0; i < info.rewards.size(); ++i) {
       const AchievementReward& reward = info.rewards[i];
       std::string text;
       bool completed = false;
 
-      if (info.unknown_0064 == 0) {
+      if (info.progressMode == 0) {
         if (reward.text.size() > 40) {
           text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
         } else {
           text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
         }
 
-        completed = static_cast<int>(progress->unknown_0004[i]) > 0;
-      } else if (info.unknown_0064 == 1) {
-        std::string count = FormatOwnedString("(%d/%d)", progress->unknown_0004[i], reward.unknown_0018);
+        completed = static_cast<int>(progress->objectives[i]) > 0;
+      } else if (info.progressMode == 1) {
+        std::string count = FormatOwnedString("(%d/%d)", progress->objectives[i], reward.targetCount);
         if (reward.text.size() + count.size() > 40) {
           text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
         } else {
           text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
         }
 
-        completed = static_cast<int>(progress->unknown_0004[i]) == reward.unknown_0018;
+        completed = static_cast<int>(progress->objectives[i]) == reward.targetCount;
       }
 
-      entry.unknown_0020.emplace_back(text, completed);
+      entry.objectives.emplace_back(text, completed);
     }
 
     tracked.push_back(entry);

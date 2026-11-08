@@ -20,27 +20,27 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->SetTexture(texture);
       particle->alpha = alpha;
-      particle->unknown_0050 = 360;
+      particle->angleParameter = 360;
       particle->scale = 4.1f;
-      particle->unknown_004C = 80;
-      particle->unknown_0054 = 0.0f;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>((particle->unknown_0010 + 2) * 90 % 360);
+      particle->phaseParameter = 80;
+      particle->animationParameter = 0.0f;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((particle->rowIndex + 2) * 90 % 360);
 
       switch (this->id) {
       case EF_COUPLECASTING:
-        particle->alpha += (3 - particle->unknown_0010) * 45;
-        particle->unknown_00C0 = 20.0f - static_cast<float>(particle->unknown_0010);
+        particle->alpha += (3 - particle->rowIndex) * 45;
+        particle->speedParameter = 20.0f - static_cast<float>(particle->rowIndex);
         break;
       case EF_AURABLADE:
         particle->alpha = 0;
-        particle->unknown_00E8 = -5 * particle->unknown_0010;
-        particle->unknown_00C0 = 15.0f - static_cast<float>(particle->unknown_0010);
+        particle->elapsedFrames = -5 * particle->rowIndex;
+        particle->speedParameter = 15.0f - static_cast<float>(particle->rowIndex);
         break;
       case EF_BEGINSPELL:
       case EF_BEGINSPELL6:
@@ -50,8 +50,8 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       case EF_DARKCASTING2:
       case EF_GREENCASTING:
         particle->alpha = 0;
-        particle->unknown_00E8 = -5 * particle->unknown_0010;
-        particle->unknown_00C0 = 20.0f - static_cast<float>(particle->unknown_0010);
+        particle->elapsedFrames = -5 * particle->rowIndex;
+        particle->speedParameter = 20.0f - static_cast<float>(particle->rowIndex);
         break;
       }
 
@@ -142,17 +142,17 @@ void CSaintCastingEffect::Open() {
   switch (this->id) {
   case EF_BEGINSPELL:
   case EF_BEGINSPELL6:
-    this->unknown_002C = 56;
+    this->effectLifetime = 56;
     break;
   case EF_COUPLECASTING:
-    this->unknown_002C = 1000;
+    this->effectLifetime = 1000;
     break;
   case EF_AURABLADE:
   case EF_DARKCASTING:
   case EF_HOMUNCASTING:
   case EF_DARKCASTING2:
   case EF_GREENCASTING:
-    this->unknown_002C = 60;
+    this->effectLifetime = 60;
     break;
   }
 }
@@ -172,8 +172,8 @@ void CSaintCastingEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
 
-    if (particle && particle->unknown_00E8 > 0) {
-      const int previousTilt = particle->unknown_004C - 1;
+    if (particle && particle->elapsedFrames > 0) {
+      const int previousTilt = particle->phaseParameter - 1;
       float scale = particle->scale + 0.07f;
       int tilt = previousTilt < 10 ? 10 : previousTilt;
       int alpha = previousTilt >= 10 ? particle->alpha : 0;
@@ -184,7 +184,7 @@ void CSaintCastingEffect::OnProcess() {
         alpha -= 3;
         if (alpha <= 0) {
           alpha = 0;
-          if (particle->unknown_00E8 < this->unknown_002C - 30) {
+          if (particle->elapsedFrames < this->effectLifetime - 30) {
             tilt = this->id == EF_AURABLADE ? 64 : 74;
             scale = 3.37f;
           }
@@ -192,19 +192,19 @@ void CSaintCastingEffect::OnProcess() {
       }
 
       particle->scale = scale;
-      particle->unknown_004C = tilt;
+      particle->phaseParameter = tilt;
       particle->alpha = alpha;
 
-      const int ring = particle->unknown_0010;
-      const int wave = ring < 2 ? ring * 90 + particle->unknown_00E8 : (ring * 45 + particle->unknown_00E8) * 2;
-      const int segment = particle->unknown_000C;
+      const int ring = particle->rowIndex;
+      const int wave = ring < 2 ? ring * 90 + particle->elapsedFrames : (ring * 45 + particle->elapsedFrames) * 2;
+      const int segment = particle->columnIndex;
       const float radius =
-        particle->unknown_00C0 * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave % 360] + particle->unknown_00C0;
+        particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave % 360] + particle->speedParameter;
       const float height = radius * g_sinTable[tilt];
       const float spread = radius * g_cosTable[tilt];
       const int angle =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) +
-                         *reinterpret_cast<const float*>(&particle->unknown_00C4)) %
+        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
+                         *reinterpret_cast<const float*>(&particle->angleBits)) %
         360;
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
@@ -232,7 +232,7 @@ void CSaintCastingEffect::OnProcess() {
       this->lastOuter = outer;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -241,7 +241,7 @@ void CSaintCastingEffect::OnProcess() {
 void CSaintCastingEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_000C <= 0) {
+    if (!particle || particle->columnIndex <= 0) {
       continue;
     }
 
@@ -249,7 +249,7 @@ void CSaintCastingEffect::Render() {
       particle->destinationBlend = 6;
     }
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;

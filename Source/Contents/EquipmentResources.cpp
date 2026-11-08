@@ -37,9 +37,9 @@ bool EquipmentResourceMgr::Create() {
 // OFFSET: 0x00BA9A60
 // FUNCTION: fn_19744
 void EquipmentResourceMgr::Clear() {
-  this->unknown_0008.clear();
-  this->unknown_0014.clear();
-  this->unknown_0020.clear();
+  this->resourceNamesA.clear();
+  this->resourceNamesB.clear();
+  this->resourceNamesC.clear();
 }
 
 // OFFSET: 0x00BA9AD0

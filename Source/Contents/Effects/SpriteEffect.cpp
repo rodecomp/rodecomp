@@ -76,12 +76,12 @@ void CSpriteEffect::Open() {
     return;
   }
 
-  particle->unknown_0004 = this->id;
-  particle->unknown_000C = 1;
-  particle->unknown_0010 = 0;
-  particle->unknown_0008 = 1;
+  particle->effectId = this->id;
+  particle->columnIndex = 1;
+  particle->rowIndex = 0;
+  particle->groupIndex = 1;
   this->SetupParticle(particle);
-  particle->unknown_02F4 = this->actor;
+  particle->actorId = this->actor;
   this->particles.push_back(particle);
 }
 
@@ -92,10 +92,10 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     return;
   }
 
-  particle->unknown_00EC |= 0x200;
+  particle->renderOptions |= 0x200;
   particle->frameDelay = 2.0f;
   particle->alpha = 255;
-  this->unknown_002C = 100;
+  this->effectLifetime = 100;
 
   switch (this->id) {
   case EF_GROUND_EXPLOSION:
@@ -107,7 +107,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
   case EF_UNK_1130:
     particle->SetSprite("이팩트\\bakuretsu_hadou\\bakuretsu_hadou.spr");
     particle->SetAction("이팩트\\bakuretsu_hadou\\bakuretsu_hadou.act");
-    particle->unknown_00EC |= 0x200;
+    particle->renderOptions |= 0x200;
     particle->depthOffset = 0.0003f;
     particle->flags = 0x101;
     particle->loopMode = 0;
@@ -385,7 +385,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
 void CSpriteEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    if (particle->unknown_00E8 > 0) {
+    if (particle->elapsedFrames > 0) {
       particle->Draw(1);
     }
   }
@@ -452,7 +452,7 @@ bool CSpriteEffect::IsAlive() {
       return true;
     }
 
-    if (particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) {
+    if (particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) {
       return true;
     }
   }
@@ -465,7 +465,7 @@ bool CSpriteEffect::IsAlive() {
 void CSpriteEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
 
     switch (this->id) {
     case EF_UNK_1130: {
@@ -583,19 +583,19 @@ void CSpriteEffect::OnProcess() {
       break;
     }
     case EF_UNK_2443:
-      particle->unknown_02BC = 1;
-      particle->unknown_02BD = 1;
-      particle->unknown_02C4 = 0.0f;
-      particle->unknown_02C0 = 0.0f;
+      particle->applyActorExtent = 1;
+      particle->applyActorLift = 1;
+      particle->screenOffsetY = 0.0f;
+      particle->screenOffsetX = 0.0f;
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];
       particle->position.z = this->position[2];
       break;
     case EF_UNK_2458:
-      particle->unknown_02BC = 1;
-      particle->unknown_02BD = 1;
-      particle->unknown_02C4 = -105.0f;
-      particle->unknown_02C0 = 0.0f;
+      particle->applyActorExtent = 1;
+      particle->applyActorLift = 1;
+      particle->screenOffsetY = -105.0f;
+      particle->screenOffsetX = 0.0f;
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];
       particle->position.z = this->position[2];

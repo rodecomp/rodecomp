@@ -9,7 +9,7 @@ class BrowserClientSite;
 class BrowserPopupDispatch final : public IDispatch {
 public:
   // INLINED
-  explicit BrowserPopupDispatch(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
+  explicit BrowserPopupDispatch(BrowserClientSite* site) : m_dispatchState(0), m_site(site) {
   }
   ~BrowserPopupDispatch();
 
@@ -23,7 +23,7 @@ public:
   Invoke(DISPID id, REFIID iid, LCID locale, WORD flags, DISPPARAMS* args, VARIANT* result, EXCEPINFO* error, UINT* argumentError) override;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int m_dispatchState;
   /* 0008 */ BrowserClientSite* m_site;
 };
 

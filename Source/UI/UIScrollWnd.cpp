@@ -17,7 +17,7 @@
 // FUNCTION: fn_13770
 UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
     : UIWindow(cached), viewWidth(0), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
-      scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
+      scrollBarWidth(13), scrollBarHeight(13), horizontalScrollPosition(0), scrollPosition(0), horizontalScrollable(0), wheelScroll(0) {
   this->UIWindow::Resize(width, height);
   this->OnCreate(width, height);
 }
@@ -80,7 +80,7 @@ bool UIScrollWnd::Update(int redraw) {
   }
 
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
-    it->first->Move(it->second.first - this->unknown_009C, it->second.second - this->scrollPosition);
+    it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
   }
 
   if (this->m_dirty == 1) {
@@ -138,7 +138,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
       } else {
         static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(child->m_texture);
         primitives.push_back(this->BuildPrimitive(
-          child->geometry.x + this->unknown_009C, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
+          child->geometry.x + this->horizontalScrollPosition, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
           child->m_texture, child->Color()
         ));
       }
@@ -150,7 +150,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
   }
 
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
-    it->first->Move(it->second.first - this->unknown_009C, it->second.second - this->scrollPosition);
+    it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
   }
   return changed;
 }
@@ -221,7 +221,7 @@ RenderPrimitive* UIScrollWnd::DrawPrimitive() {
   }
 
   return this->BuildPrimitive(
-    this->geometry.x, this->geometry.y, this->unknown_009C, this->scrollPosition, this->geometry.width, this->geometry.height, this->m_texture, this->Color()
+    this->geometry.x, this->geometry.y, this->horizontalScrollPosition, this->scrollPosition, this->geometry.width, this->geometry.height, this->m_texture, this->Color()
   );
 }
 
@@ -313,7 +313,7 @@ void UIScrollWnd::UpdateScrollRange() {
     }
   }
 
-  this->unknown_00A4 = 0;
+  this->horizontalScrollable = 0;
   this->wheelScroll = 0;
   this->viewWidth = this->geometry.width;
   this->viewHeight = this->geometry.height;
@@ -321,7 +321,7 @@ void UIScrollWnd::UpdateScrollRange() {
   int visibleHeight;
   if (right > this->geometry.width) {
     visibleHeight = this->geometry.height - this->scrollBarHeight;
-    this->unknown_00A4 = 1;
+    this->horizontalScrollable = 1;
     this->viewHeight = visibleHeight;
   } else {
     visibleHeight = this->geometry.height;
@@ -336,8 +336,8 @@ void UIScrollWnd::UpdateScrollRange() {
     visibleWidth = this->geometry.width;
   }
 
-  if (this->unknown_00A4 == 0 && right > visibleWidth) {
-    this->unknown_00A4 = 1;
+  if (this->horizontalScrollable == 0 && right > visibleWidth) {
+    this->horizontalScrollable = 1;
     visibleHeight = this->geometry.height - this->scrollBarHeight;
     this->viewHeight = visibleHeight;
   }
@@ -357,17 +357,17 @@ void UIScrollWnd::UpdateScrollRange() {
   }
   this->contentHeight = bottom;
 
-  if (this->unknown_00A4 == 1) {
+  if (this->horizontalScrollable == 1) {
     this->horizontalBar->Resize(visibleWidth, this->scrollBarHeight);
     this->horizontalBar->SetRange(this->contentWidth - this->viewWidth, this->viewWidth, this->contentWidth);
     const int maximum = this->contentWidth - this->viewWidth;
-    int position = this->unknown_009C;
+    int position = this->horizontalScrollPosition;
     if (position > maximum) {
-      this->unknown_009C = maximum;
+      this->horizontalScrollPosition = maximum;
       position = maximum;
     }
     if (position < 0) {
-      this->unknown_009C = 0;
+      this->horizontalScrollPosition = 0;
       position = 0;
     }
     this->horizontalBar->SetPosition(position);
@@ -391,20 +391,20 @@ void UIScrollWnd::UpdateScrollRange() {
     this->scrollBar->Invalidate();
   }
 
-  if (this->unknown_00A4 == 0) {
-    this->unknown_009C = 0;
+  if (this->horizontalScrollable == 0) {
+    this->horizontalScrollPosition = 0;
   }
   if (this->wheelScroll == 0) {
     this->scrollPosition = 0;
   }
-  this->horizontalBar->Show(this->unknown_00A4);
+  this->horizontalBar->Show(this->horizontalScrollable);
   this->scrollBar->Show(this->wheelScroll);
 }
 
 // OFFSET: 0x009AD790
 // FUNCTION: fn_13786
 void UIScrollWnd::Clear() {
-  this->unknown_009C = 0;
+  this->horizontalScrollPosition = 0;
   this->scrollPosition = 0;
   this->childOrigins.clear();
   this->DeleteChildren();
@@ -463,23 +463,23 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLHORZ:
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
-    const int previous = this->unknown_009C;
+    const int previous = this->horizontalScrollPosition;
     if (message == UM_SCROLLHORZPAGEUP) {
       delta = -1;
     } else if (message == UM_SCROLLHORZPAGEDOWN) {
       delta = 1;
     }
-    this->unknown_009C = previous + delta;
-    if (this->unknown_009C < 0) {
-      this->unknown_009C = 0;
+    this->horizontalScrollPosition = previous + delta;
+    if (this->horizontalScrollPosition < 0) {
+      this->horizontalScrollPosition = 0;
     }
-    if (this->unknown_009C > this->contentWidth - this->viewWidth) {
-      this->unknown_009C = this->contentWidth - this->viewWidth;
+    if (this->horizontalScrollPosition > this->contentWidth - this->viewWidth) {
+      this->horizontalScrollPosition = this->contentWidth - this->viewWidth;
     }
-    this->horizontalBar->SetPosition(this->unknown_009C);
+    this->horizontalBar->SetPosition(this->horizontalScrollPosition);
     this->horizontalBar->Invalidate();
     this->Invalidate();
-    return this->unknown_009C - previous;
+    return this->horizontalScrollPosition - previous;
   }
   }
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);

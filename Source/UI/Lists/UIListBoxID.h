@@ -31,7 +31,7 @@ public:
   virtual void Clear();
   virtual void Refresh();
 
-  /* 007C */ unsigned char unknown_007C[0xC];
+  /* 007C */ unsigned char backgroundChannels[0xC];
   /* 0088 */ std::map<int, IdListLine> lines;
   /* 0090 */ int selected;
   /* 0094 */ int topLine;
@@ -71,7 +71,7 @@ public:
   void AddLine(const char* text, int id, int data);
 
   /* 00C0 */ int targetId;
-  /* 00C4 */ std::map<int, int> unknown_00C4;
+  /* 00C4 */ std::map<int, int> lineData;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

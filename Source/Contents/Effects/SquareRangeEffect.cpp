@@ -38,7 +38,7 @@ void CSquareRangeEffect::Open() {
   particle->SetTexture("effect\\SquareRange.tga");
   particle->scale = this->size * 2.5f;
   if (this->id == 991) {
-    this->unknown_002C = 300;
+    this->effectLifetime = 300;
     particle->SetColor(92, 92, 92);
     particle->destinationBlend = 6;
   }
@@ -81,7 +81,7 @@ void CSquareRangeEffect::OnProcess() {
       particle->transform = transform;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

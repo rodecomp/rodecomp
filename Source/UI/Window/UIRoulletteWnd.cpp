@@ -126,9 +126,9 @@ void UIRoulletteWnd::OnCreate(int, int) {
     startSprite->SetActName("roullette\\Start.act");
     startSprite->SetSize(99, 99);
     startSprite->Move(-100, -100);
-    startSprite->unknown_00BC = 0;
-    startSprite->unknown_00C0 = 0;
-    startSprite->unknown_00C4 = 1;
+    startSprite->animationIndex = 0;
+    startSprite->frameIndex = 0;
+    startSprite->animate = 1;
     this->AddChild(startSprite);
 
     auto* prizeSprite = new UISpriteButton();
@@ -137,9 +137,9 @@ void UIRoulletteWnd::OnCreate(int, int) {
     prizeSprite->SetActName("roullette\\GetWinPrize.act");
     prizeSprite->SetSize(99, 99);
     prizeSprite->Move(-100, -100);
-    prizeSprite->unknown_00BC = 0;
-    prizeSprite->unknown_00C0 = 0;
-    prizeSprite->unknown_00C4 = 1;
+    prizeSprite->animationIndex = 0;
+    prizeSprite->frameIndex = 0;
+    prizeSprite->animate = 1;
     this->AddChild(prizeSprite);
 
     auto* stageArrow = new UISpriteButton();
@@ -148,9 +148,9 @@ void UIRoulletteWnd::OnCreate(int, int) {
     stageArrow->SetActName("roullette\\stageArrow.act");
     stageArrow->SetSize(35, 40);
     stageArrow->Move(-100, -100);
-    stageArrow->unknown_00BC = 0;
-    stageArrow->unknown_00C0 = 0;
-    stageArrow->unknown_00C4 = 1;
+    stageArrow->animationIndex = 0;
+    stageArrow->frameIndex = 0;
+    stageArrow->animate = 1;
     this->AddChild(stageArrow);
   }
 
@@ -258,8 +258,8 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
   if (item.quantity != 0) {
     this->ToScreen(tooltipX, tooltipY);
     CMode* tooltip = g_modeMgr.gameMode;
-    if (item.identified == 1 && item.unknown_0098 != 0) {
-      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+    if (item.identified == 1 && item.optionCount != 0) {
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -271,7 +271,7 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10090
 void UIRoulletteWnd::OnProcess() {
   if (g_effectDetailLevel != 2) {
-    if (this->m_startButton->geometry.unknown_0030 == 1 && this->m_enabled == 1) {
+    if (this->m_startButton->geometry.state == 1 && this->m_enabled == 1) {
       if (g_rouletteMgr->m_spinning == 0) {
         CBitmapRes* arrow =
           static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
@@ -287,7 +287,7 @@ void UIRoulletteWnd::OnProcess() {
     return;
   }
 
-  if (this->m_startButton->geometry.unknown_0030 == 1 && this->m_enabled == 1) {
+  if (this->m_startButton->geometry.state == 1 && this->m_enabled == 1) {
     if (g_rouletteMgr->m_spinning == 0) {
       this->m_startSprite->Move(339, 398);
       this->m_startSprite->SetTooltip(LookupMessage(MSI_GUILD_MAKE_GUILD_NOT_PERMITTED_MAP));
@@ -299,7 +299,7 @@ void UIRoulletteWnd::OnProcess() {
     this->m_startButton->SetState(0);
   }
 
-  if (this->m_startSprite->geometry.unknown_0030 == 2) {
+  if (this->m_startSprite->geometry.state == 2) {
     this->m_startSprite->SetState(3);
     this->m_startSprite->Move(-100, -100);
     this->m_startSprite->SetTooltip("");
@@ -307,13 +307,13 @@ void UIRoulletteWnd::OnProcess() {
     this->m_startButton->SetState(2);
   }
 
-  if (this->m_prizeButton->geometry.unknown_0030 == 1) {
+  if (this->m_prizeButton->geometry.state == 1) {
     this->m_prizeSprite->Move(203, 398);
     this->m_prizeSprite->SetTooltip(LookupMessage(MSI_TAKEOFF_TITLE));
     this->m_prizeButton->SetState(0);
   }
 
-  if (this->m_prizeSprite->geometry.unknown_0030 == 2) {
+  if (this->m_prizeSprite->geometry.state == 2) {
     this->m_prizeSprite->SetState(3);
     this->m_prizeSprite->Move(-100, -100);
     this->m_prizeSprite->SetTooltip("");
@@ -363,7 +363,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     switch (argument1) {
       case ID_CLOSE:
         if (g_rouletteMgr->m_spinning == 0) {
-          if (g_windowMgr.unknown_0464 != nullptr) {
+          if (g_windowMgr.roulletteWnd != nullptr) {
             g_windowMgr.CloseWindow(WID_ROULLETTEWND);
             return 0;
           }

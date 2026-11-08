@@ -85,11 +85,11 @@ void UIGuild_Storage_Log::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->unknown_0158 = new UITabControl();
-  this->unknown_0158->Configure(1, 20, 50, 1, 0, 0, 0, 0, 0, 0, 0, 0);
-  this->unknown_0158->Move(0, 17);
-  this->AddChild(this->unknown_0158);
-  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_WND_NAME), "");
-  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_CAUTION), "");
-  this->unknown_0158->AddTab(LookupMessage(MSI_GUILD_STORAGE_CLOSE_TIMEOUT), "");
+  this->m_tabs = new UITabControl();
+  this->m_tabs->Configure(1, 20, 50, 1, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->m_tabs->Move(0, 17);
+  this->AddChild(this->m_tabs);
+  this->m_tabs->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_WND_NAME), "");
+  this->m_tabs->AddTab(LookupMessage(MSI_GUILD_STORAGE_LOG_CAUTION), "");
+  this->m_tabs->AddTab(LookupMessage(MSI_GUILD_STORAGE_CLOSE_TIMEOUT), "");
 }

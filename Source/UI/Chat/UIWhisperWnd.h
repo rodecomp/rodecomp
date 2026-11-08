@@ -14,7 +14,7 @@ class UIResizer;
 
 struct WhisperLogLine {
   /* 0000 */ std::string text;
-  /* 0018 */ std::uint32_t unknown_0018;
+  /* 0018 */ std::uint32_t commandId;
 };
 
 class UIWhisperWnd : public UIFrameWnd {
@@ -28,7 +28,7 @@ public:
   /* 00EC */ UIChatHisBox* m_chatHistory;
   /* 00F0 */ UIBitmapButton* m_closeButton;
   /* 00F4 */ std::vector<WhisperLogLine> m_log;
-  /* 0100 */ WindowPlacement* unknown_0100;
+  /* 0100 */ WindowPlacement* placement;
   /* 0104 */ std::string m_code;
 
   void Move(int x, int y) override;

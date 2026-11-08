@@ -14,9 +14,9 @@ void UIBmpTextButton2::Paint() {
   CBitmapRes* bitmap;
 
   if (this->m_disabled != 0) {
-    this->geometry.unknown_0030 = 3;
+    this->geometry.state = 3;
   } else {
-    switch (this->geometry.unknown_0030) {
+    switch (this->geometry.state) {
     case 0:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
       break;

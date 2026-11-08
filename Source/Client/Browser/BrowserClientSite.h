@@ -27,7 +27,7 @@ public:
   friend class BrowserInPlaceSite;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int referenceCount;
   /* 0008 */ HWND m_window;
   /* 000C */ IUnknown* m_browser;
   /* 0010 */ BrowserInPlaceSite* m_inPlace;

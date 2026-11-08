@@ -14,24 +14,24 @@
 void CMapMagicZoneEffect::AddSpinner(int kind) {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
   if (particle) {
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = 0;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = 0;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     if (kind == 0) {
       particle->SetTexture("effect\\mjin2.tga");
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
+      *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
       particle->alpha = 200;
-      particle->unknown_0054 = -0.5f;
+      particle->animationParameter = -0.5f;
     } else if (kind == 1) {
       particle->SetTexture("effect\\mjin.tga");
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = 45.0f;
+      *reinterpret_cast<float*>(&particle->angleBits) = 45.0f;
       particle->alpha = 50;
-      particle->unknown_0054 = -0.4f;
+      particle->animationParameter = -0.4f;
     }
 
     particle->scale = 30.0f;
-    particle->unknown_004C = 0;
+    particle->phaseParameter = 0;
     InitParticleQuad(particle->vertices);
     this->spinners.push_back(particle);
   }
@@ -66,16 +66,16 @@ void CMapMagicZoneEffect::Open() {
   for (int angle = 0; angle < 360; angle += 180) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (particle) {
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = index;
-      particle->unknown_0010 = 0;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = index;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
       particle->SetTexture("effect\\pikapika2.bmp");
       particle->scale = 46.0f;
-      particle->unknown_004C = angle;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
+      particle->phaseParameter = angle;
+      *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
       particle->alpha = 25;
-      particle->unknown_0054 = -1.0f;
+      particle->animationParameter = -1.0f;
       InitParticleQuad(particle->vertices);
       this->petals.push_back(particle);
     }
@@ -90,17 +90,17 @@ void CMapMagicZoneEffect::Open() {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
         particle->SetTexture("effect\\ring_blue.tga");
-        particle->unknown_0010 = row;
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = segment;
-        particle->unknown_0008 = 3;
+        particle->rowIndex = row;
+        particle->effectId = this->id;
+        particle->columnIndex = segment;
+        particle->groupIndex = 3;
         particle->alpha = 50;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-        particle->unknown_0050 = 315;
-        particle->unknown_00C0 = 15.0f - (static_cast<float>(row) + static_cast<float>(row));
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->angleParameter = 315;
+        particle->speedParameter = 15.0f - (static_cast<float>(row) + static_cast<float>(row));
         particle->scale = static_cast<float>(row) * 0.2f + 12.9f;
-        particle->unknown_004C = height;
-        particle->unknown_0054 = 0.0f;
+        particle->phaseParameter = height;
+        particle->animationParameter = 0.0f;
         InitParticleQuad(particle->vertices);
         this->ribbon.push_back(particle);
       }
@@ -125,7 +125,7 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     this->UpdateSpinner(particle);
   }
 
@@ -134,13 +134,13 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
 
     vector3d corners[4]{};
-    const int angle = particle->unknown_000C * 23;
-    particle->unknown_004C = (particle->unknown_004C + 3) % 360;
-    const float radius = (g_sinTable[particle->unknown_004C] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
-    const float height = particle->unknown_0054;
+    const int angle = particle->columnIndex * 23;
+    particle->phaseParameter = (particle->phaseParameter + 3) % 360;
+    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+    const float height = particle->animationParameter;
 
     for (int corner = 0; corner < 4; ++corner) {
       const int index = (angle + corner * 90) % 360;
@@ -173,21 +173,21 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    ++particle->unknown_00E8;
-    float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-    spinAngle = static_cast<float>(static_cast<int>(particle->unknown_0010 + spinAngle + 3.0f));
+    ++particle->elapsedFrames;
+    float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+    spinAngle = static_cast<float>(static_cast<int>(particle->rowIndex + spinAngle + 3.0f));
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
     rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
     particle->transform = rotation;
 
-    const int segment = particle->unknown_000C;
-    const float wave = g_sinTable[segment * 9] * particle->unknown_00C0;
-    const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
+    const int segment = particle->columnIndex;
+    const float wave = g_sinTable[segment * 9] * particle->speedParameter;
+    const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
     const int angle = static_cast<int>(static_cast<float>(step * segment) + spinAngle) % 360;
-    const float flat = wave * g_cosTable[particle->unknown_004C];
-    const float rise = wave * g_sinTable[particle->unknown_004C];
+    const float flat = wave * g_cosTable[particle->phaseParameter];
+    const float rise = wave * g_sinTable[particle->phaseParameter];
 
     vector3d points[2]{};
     points[0].x = particle->scale * g_cosTable[angle];
@@ -222,11 +222,11 @@ void CMapMagicZoneEffect::OnProcess() {
 void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
   if (particle) {
     vector3d corners[4]{};
-    float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+    float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
     const int angle = static_cast<int>(spinAngle + 1.0f);
     spinAngle = static_cast<float>(angle % 360);
-    const float radius = (g_sinTable[particle->unknown_004C] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
-    const float height = particle->unknown_0054;
+    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+    const float height = particle->animationParameter;
 
     for (int corner = 0; corner < 4; ++corner) {
       const int index = (angle + corner * 90) % 360;
@@ -275,8 +275,8 @@ void CMapMagicZoneEffect::Render() {
 
   for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->unknown_000C > 0) {
-      const int segment = particle->unknown_000C;
+    if (particle && particle->columnIndex > 0) {
+      const int segment = particle->columnIndex;
       particle->destinationBlend = 6;
       ParticleQuad quad;
       quad.billboard = false;

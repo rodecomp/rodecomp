@@ -54,9 +54,9 @@ UIEditctrlWnd::UIEditctrlWnd()
 UIMiniMapWnd::UIMiniMapWnd()
     : UIFrameWnd(0) {
   this->dragging = 0;
-  this->unknown_0114 = 0;
-  this->unknown_011C = nullptr;
-  this->unknown_0120 = nullptr;
+  this->memoCount = 0;
+  this->questCheckBox = nullptr;
+  this->townCheckBox = nullptr;
 }
 
 // OFFSET: 0x0099B540
@@ -189,13 +189,13 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
     this->originY = 531.0f - margin;
   }
 
-  this->unknown_011C = this->AddCheckBox(361, 100, 12, LookupMessage(MSI_MINIMAP_MSG_05), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_06));
-  this->unknown_0120 = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_07), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_08));
-  this->unknown_0124 = this->AddCheckBox(373, 100, 12, LookupMessage(MSI_MINIMAP_MSG_09), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_10));
+  this->questCheckBox = this->AddCheckBox(361, 100, 12, LookupMessage(MSI_MINIMAP_MSG_05), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_06));
+  this->townCheckBox = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_07), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_08));
+  this->guildCheckBox = this->AddCheckBox(373, 100, 12, LookupMessage(MSI_MINIMAP_MSG_09), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_10));
   this->AddCloseButton(LookupMessage(MSI_MINIMAP_MSG_04), 0);
   this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(MSI_MINIMAP_MSG_11), true);
   this->AddTownMarks();
-  this->unknown_012C = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(MSI_MINIMAP_MSG_12), true);
+  this->bossButton = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(MSI_MINIMAP_MSG_12), true);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ResendMinimapMarkers();
   for (int index = 0; index < 20; ++index) {
     this->memoButtons[index] = this->AddNumberedButton(index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
@@ -205,9 +205,9 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->m_playerHead = new UIHeadsprButton();
   this->UpdatePlayerHead();
   this->m_playerHead->Move(-100, -100);
-  this->m_playerHead->unknown_00BC = 0;
-  this->m_playerHead->unknown_00C0 = 0;
-  this->m_playerHead->unknown_00C4 = 0;
+  this->m_playerHead->animationIndex = 0;
+  this->m_playerHead->frameIndex = 0;
+  this->m_playerHead->animate = 0;
   this->m_playerHead->SetTooltip(LookupMessage(MSI_MINIMAP_MSG_13));
   this->m_playerHead->SetId(200);
   this->AddChild(this->m_playerHead);
@@ -313,12 +313,12 @@ void UIMiniMapWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.x;
     this->m_saved->height = this->geometry.y;
-    this->m_saved->unknown_0010 = this->geometry.width;
-    this->m_saved->unknown_0014 = this->geometry.height;
+    this->m_saved->expandedWidth = this->geometry.width;
+    this->m_saved->expandedHeight = this->geometry.height;
   }
-  this->m_saved->unknown_0018 = this->unknown_011C->geometry.unknown_0030 != 0;
-  this->m_saved->unknown_001C = this->unknown_0120->geometry.unknown_0030 != 0;
-  this->m_saved->unknown_0020 = this->unknown_0124->geometry.unknown_0030 != 0;
+  this->m_saved->showQuests = this->questCheckBox->geometry.state != 0;
+  this->m_saved->showTowns = this->townCheckBox->geometry.state != 0;
+  this->m_saved->showMembers = this->guildCheckBox->geometry.state != 0;
 }
 
 // OFFSET: 0x0099C560
@@ -347,7 +347,7 @@ void UIMiniMapWnd::Paint() {
     }
   }
 
-  if (this->unknown_0124->geometry.unknown_0030 != 0) {
+  if (this->guildCheckBox->geometry.state != 0) {
     auto* guild = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\guild.bmp")));
     for (unsigned index = 0; index < this->guildMarks.size(); ++index) {
       const int x = this->guildMarks[index].x;
@@ -379,7 +379,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_COMMAND:
     switch (argument1) {
     case ID_ITEMS: {
-      const bool enabled = this->unknown_0120->geometry.unknown_0030 != 0;
+      const bool enabled = this->townCheckBox->geometry.state != 0;
       for (auto it = this->townButtons.begin(); it != this->townButtons.end(); ++it) {
         it->second->Enable(enabled);
       }
@@ -395,7 +395,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->dragging = 1;
       return 0;
     case 361: {
-      const bool enabled = this->unknown_011C->geometry.unknown_0030 != 0;
+      const bool enabled = this->questCheckBox->geometry.state != 0;
       for (auto it = this->questButtons.begin(); it != this->questButtons.end(); ++it) {
         it->second->Enable(enabled);
       }
@@ -424,7 +424,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
             std::fclose(file);
           }
 
-          this->unknown_0114 = this->LoadMemos();
+          this->memoCount = this->LoadMemos();
           this->Invalidate();
         }
       }
@@ -461,9 +461,9 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->m_saved->Reset();
     }
     this->Move(this->m_saved->width, this->m_saved->height);
-    this->unknown_011C->SetChecked(this->m_saved->unknown_0018);
-    this->unknown_0120->SetChecked(this->m_saved->unknown_001C);
-    this->unknown_0124->SetChecked(this->m_saved->unknown_0020);
+    this->questCheckBox->SetChecked(this->m_saved->showQuests);
+    this->townCheckBox->SetChecked(this->m_saved->showTowns);
+    this->guildCheckBox->SetChecked(this->m_saved->showMembers);
     return 0;
 
   case UM_MINIMAP_SET_PLAYER_POS:
@@ -473,7 +473,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return 0;
 
   case UM_MINIMAP_SET_BOSS_POS:
-    this->unknown_012C->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 12.0f + this->originX),
+    this->bossButton->Move(static_cast<int>(static_cast<float>(argument1) * this->scale - 12.0f + this->originX),
       static_cast<int>(this->originY - (static_cast<float>(argument2) * this->scale + 12.0f)));
     this->Invalidate();
     return 0;

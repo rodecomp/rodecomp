@@ -46,7 +46,7 @@ public:
   /* 0080 */ CameraFrame frame;
   /* 00F8 */ WorldViewSpatial spatial;
   /* 01B0 */ CWorld* scene;
-  /* 01B4 */ CSkyBox* unknown_01B4;
+  /* 01B4 */ CSkyBox* skyBox;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

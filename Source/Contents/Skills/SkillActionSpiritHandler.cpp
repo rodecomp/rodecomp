@@ -518,7 +518,7 @@ void CSkillAction_SH_CHUL_HO_BATTERING::OnSkillEffect(int level, CGameActor* sou
     return;
   }
 
-  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const float scale = source->attackMotion * source->render.speed * 16.0f;
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(
         target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0

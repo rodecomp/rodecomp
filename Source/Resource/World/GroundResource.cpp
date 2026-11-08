@@ -106,13 +106,13 @@ void CGndRes::ReadWater() {
       this->m_file.Read(&level, sizeof(level));
       this->waterHeights.push_back(level);
       record.parameters.level = level;
-      std::memset(record.unknown_0018, 0, sizeof(record.unknown_0018));
+      std::memset(record.reserved, 0, sizeof(record.reserved));
       this->water.push_back(record);
     }
   } else if (this->minor == 9) {
     for (int index = 0; static_cast<float>(index) < count; ++index) {
       this->m_file.Read(&record.parameters, sizeof(record.parameters));
-      std::memset(record.unknown_0018, 0, sizeof(record.unknown_0018));
+      std::memset(record.reserved, 0, sizeof(record.reserved));
       this->water.push_back(record);
       this->waterHeights.push_back(record.parameters.level);
     }

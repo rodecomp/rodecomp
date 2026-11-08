@@ -22,7 +22,7 @@ GuildInfo::GuildInfo() {
 // OFFSET: 0x00AE40C0
 // FUNCTION: fn_18029
 void GuildInfo::AddUnknown00EC(const Unknown00ECEntry& entry) {
-  this->unknown_00EC.push_back(entry);
+  this->bannedMembers.push_back(entry);
   g_windowMgr.RefreshGuildWindows();
 }
 
@@ -41,7 +41,7 @@ void GuildInfo::ChangeMemberPosition(int aid, int cid, int position) {
 // OFFSET: 0x00AE4230
 // FUNCTION: fn_18031
 void GuildInfo::ClearUnknown0114() {
-  this->unknown_0114.clear();
+  this->agitIds.clear();
 }
 
 // OFFSET: 0x00AE4240
@@ -53,9 +53,9 @@ void GuildInfo::ClearMembers() {
 // OFFSET: 0x00AE4270
 // FUNCTION: fn_18033
 void GuildInfo::RemoveUnknown0114(int value) {
-  for (auto it = this->unknown_0114.begin(); it != this->unknown_0114.end(); ++it) {
+  for (auto it = this->agitIds.begin(); it != this->agitIds.end(); ++it) {
     if (*it == value) {
-      this->unknown_0114.erase(it);
+      this->agitIds.erase(it);
       return;
     }
   }
@@ -64,9 +64,9 @@ void GuildInfo::RemoveUnknown0114(int value) {
 // OFFSET: 0x00AE42C0
 // FUNCTION: fn_18034
 void GuildInfo::RemoveRelatedGuild(int unknown_0000, int unknown_0004) {
-  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
-    if (it->unknown_0000 == unknown_0000 && it->unknown_0004 == unknown_0004) {
-      this->unknown_00E4.erase(it);
+  for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
+    if (it->guildId == unknown_0000 && it->relation == unknown_0004) {
+      this->relatedGuilds.erase(it);
       g_windowMgr.RefreshGuildWindows();
       return;
     }
@@ -87,15 +87,15 @@ int GuildInfo::GetMemberAccountId(const char* name) {
 // OFFSET: 0x00AE43E0
 // FUNCTION: fn_18036
 int GuildInfo::GetUnknown0114(int index) {
-  return this->unknown_0114[index];
+  return this->agitIds[index];
 }
 
 // OFFSET: 0x00AE4690
 // FUNCTION: fn_18037
 int GuildInfo::CountRelatedGuilds(int unknown_0004) {
   int count = 0;
-  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
-    if (it->unknown_0004 == unknown_0004) {
+  for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
+    if (it->relation == unknown_0004) {
       ++count;
     }
   }
@@ -105,7 +105,7 @@ int GuildInfo::CountRelatedGuilds(int unknown_0004) {
 // OFFSET: 0x00AE46C0
 // FUNCTION: fn_18038
 int GuildInfo::GetUnknown0114Count() {
-  return static_cast<int>(this->unknown_0114.size());
+  return static_cast<int>(this->agitIds.size());
 }
 
 // OFFSET: 0x00AE4740
@@ -118,48 +118,48 @@ void GuildInfo::Init() {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SetGdid(0);
   }
 
-  this->unknown_00AC = 0;
-  this->unknown_00B0 = 0;
-  this->unknown_00B4 = 0;
-  this->unknown_00D0 = 0;
-  this->unknown_00B8 = 0;
-  this->unknown_00A4 = -1;
-  this->unknown_00BC = 0;
-  this->unknown_00C0 = 0;
-  this->unknown_00C4 = 0;
-  this->unknown_00C8 = 0;
-  this->unknown_00CC = 0;
-  this->unknown_0000.clear();
-  this->unknown_0018.clear();
-  this->unknown_0030.clear();
-  this->unknown_0048.clear();
-  this->unknown_0060 = 0;
-  this->unknown_0064 = 0;
-  this->unknown_006C = 0;
-  this->unknown_0070 = 0;
-  this->unknown_0074.clear();
-  this->unknown_008C = 0;
-  this->unknown_0090 = 0;
-  this->unknown_0094 = 0;
-  this->unknown_0098 = 0;
-  this->unknown_009C = 0;
-  this->unknown_00A0 = 0;
-  this->unknown_00D4.clear();
+  this->canInvite = 0;
+  this->canExpel = 0;
+  this->isMaster = 0;
+  this->masterCharacterId = 0;
+  this->requestState = 0;
+  this->guildTabBitmask = -1;
+  this->infoRequested = 0;
+  this->membersRequested = 0;
+  this->positionsRequested = 0;
+  this->skillsRequested = 0;
+  this->bansRequested = 0;
+  this->guildName.clear();
+  this->masterName.clear();
+  this->subject.clear();
+  this->notice.clear();
+  this->guildLevel = 0;
+  this->memberCount = 0;
+  this->maxMemberCount = 0;
+  this->memberAverageLevel = 0;
+  this->manageLand.clear();
+  this->exp = 0;
+  this->nextExp = 0;
+  this->emblem = 0;
+  this->points = 0;
+  this->honor = 0;
+  this->virtue = 0;
+  this->positions.clear();
   this->m_members.clear();
-  this->unknown_00E4.clear();
-  this->unknown_00EC.clear();
-  this->unknown_00F4.clear();
+  this->relatedGuilds.clear();
+  this->bannedMembers.clear();
+  this->guildList.clear();
   this->m_positions.clear();
-  this->unknown_0104.clear();
-  this->unknown_010C.clear();
-  this->unknown_0114.clear();
+  this->pendingMemberPositions.clear();
+  this->pendingPositionChanges.clear();
+  this->agitIds.clear();
 }
 
 // OFFSET: 0x00AE49F0
 // FUNCTION: fn_18040
 bool GuildInfo::HasRelatedGuild(int unknown_0000) {
-  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
-    if (it->unknown_0000 == unknown_0000 && it->unknown_0004 == 0) {
+  for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
+    if (it->guildId == unknown_0000 && it->relation == 0) {
       return true;
     }
   }
@@ -219,8 +219,8 @@ int GuildInfo::DeleteMember(const char* name) {
 // OFFSET: 0x00AE4D30
 // FUNCTION: fn_18044
 void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
-  if (this->unknown_00D0 == characterId) {
-    this->unknown_0018 = name;
+  if (this->masterCharacterId == characterId) {
+    this->masterName = name;
   }
 
   std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
@@ -233,7 +233,7 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
     }
   }
 
-  for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+  for (auto it = this->bannedMembers.begin(); it != this->bannedMembers.end(); ++it) {
     if (it->characterId == characterId) {
       if (it->name.empty() || it->name == unknownName) {
         it->name = name;
@@ -252,9 +252,9 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
 void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024) {
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
     if (characterId == it->characterId) {
-      it->unknown_002C = unknown_002C;
-      it->unknown_0020 = unknown_0020;
-      it->unknown_0024 = unknown_0024;
+      it->sex = unknown_002C;
+      it->head = unknown_0020;
+      it->headPalette = unknown_0024;
       it->online = online;
       break;
     }
@@ -266,7 +266,7 @@ void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, s
       ++count;
     }
   }
-  this->unknown_0068 = count;
+  this->onlineMemberCount = count;
   g_windowMgr.RefreshGuildWindows();
 }
 
@@ -286,22 +286,22 @@ void GuildInfo::SetMemberOnline(int accountId, int online) {
       ++count;
     }
   }
-  this->unknown_0068 = count;
+  this->onlineMemberCount = count;
   g_windowMgr.RefreshGuildWindows();
 }
 
 // OFFSET: 0x00AE5030
 // FUNCTION: fn_18047
 void GuildInfo::SetMasterCharacterId(int characterId) {
-  this->unknown_00D0 = characterId;
-  this->unknown_00B4 = characterId == static_cast<int>(g_session.m_gid);
+  this->masterCharacterId = characterId;
+  this->isMaster = characterId == static_cast<int>(g_session.m_gid);
 }
 
 // OFFSET: 0x00AE5090
 // FUNCTION: fn_18048
 void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
-  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
-    if (it->unknown_0004 == entry.unknown_0004) {
+  for (auto it = this->positions.begin(); it != this->positions.end(); ++it) {
+    if (it->positionId == entry.positionId) {
       *it = entry;
       return;
     }
@@ -311,13 +311,13 @@ void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
 // OFFSET: 0x00AE3F40
 // FUNCTION: fn_18027
 void GuildInfo::AddUnknown0114(int value) {
-  const auto found = std::find_if(this->unknown_0114.begin(), this->unknown_0114.end(),
+  const auto found = std::find_if(this->agitIds.begin(), this->agitIds.end(),
                                   [value](int entry) { return value == entry; });
-  if (found != this->unknown_0114.end()) {
+  if (found != this->agitIds.end()) {
     return;
   }
 
-  this->unknown_0114.push_back(value);
+  this->agitIds.push_back(value);
 }
 
 // OFFSET: 0x00AE3FA0

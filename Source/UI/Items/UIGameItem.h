@@ -12,8 +12,8 @@ public:
   CUIGameItem();
 
   /* 0080 */ int mode;
-  /* 0084 */ unsigned char unknown_0084;
-  /* 0085 */ unsigned char unknown_0085;
+  /* 0084 */ unsigned char showNameTooltip;
+  /* 0085 */ unsigned char allowItemInfo;
   /* 0086 */ unsigned char transparent;
   /* 0088 */ unsigned short scale;
   /* 0090 */ ITEM_INFO itemInfo;

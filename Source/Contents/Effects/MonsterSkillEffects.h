@@ -99,10 +99,10 @@ public:
   void Restart();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ float unknown_00DC;
-  /* 00E0 */ float unknown_00E0;
-  /* 00E4 */ float unknown_00E4;
+  /* 00D8 */ int spawnPhase;
+  /* 00DC */ float viewOffsetX;
+  /* 00E0 */ float viewOffsetY;
+  /* 00E4 */ float viewOffsetZ;
 };
 
 class CWarningPlaneEffect : public CEffect {
@@ -146,7 +146,7 @@ public:
   void SpawnSecondStrike();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
+  /* 00D8 */ std::vector<EZ2STREmitter*> secondStrikeEmitters;
   /* 00E4 */ unsigned char secondStrike;
   /* 00E5 */ unsigned char unknown_00E5[3];
 };
@@ -186,9 +186,9 @@ public:
   void SetPosition(vector3d position);
 
   /* 00CC */ EZ2STREmitter* emitter;
-  /* 00D0 */ float unknown_00D0;
-  /* 00D4 */ float unknown_00D4;
-  /* 00D8 */ float unknown_00D8;
+  /* 00D0 */ float startX;
+  /* 00D4 */ float startY;
+  /* 00D8 */ float startZ;
 };
 
 class CFloralFlareRoad : public CEffect {
@@ -200,7 +200,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* unknown_00CC;
+  /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
 };
 
@@ -216,14 +216,14 @@ public:
   CParticle* SpawnFootprint();
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::string unknown_00D4;
-  /* 00EC */ std::string unknown_00EC;
+  /* 00D4 */ std::string leftTexture;
+  /* 00EC */ std::string rightTexture;
   /* 0104 */ int unknown_0104;
   /* 0108 */ double stepDistance;
-  /* 0110 */ unsigned char unknown_0110;
+  /* 0110 */ unsigned char leftFoot;
   /* 0111 */ unsigned char unknown_0111[3];
   /* 0114 */ vector3d lastPosition;
-  /* 0120 */ float unknown_0120;
+  /* 0120 */ float lastGroundHeight;
   /* 0124 */ int unknown_0124;
 };
 
@@ -239,19 +239,19 @@ public:
   void SpawnFootprint();
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
-  /* 00DC */ std::string unknown_00DC;
-  /* 00F4 */ std::string unknown_00F4;
-  /* 010C */ std::string unknown_010C;
-  /* 0124 */ std::string unknown_0124;
-  /* 0140 */ double unknown_0140;
-  /* 0148 */ double unknown_0148;
-  /* 0150 */ double unknown_0150;
-  /* 0158 */ double unknown_0158;
-  /* 0160 */ double unknown_0160;
-  /* 0168 */ unsigned char unknown_0168;
-  /* 0169 */ unsigned char unknown_0169;
-  /* 016C */ vector3d unknown_016C;
+  /* 00D4 */ std::list<EZ2STREmitter*> topEmitters;
+  /* 00DC */ std::string leftBottomFile;
+  /* 00F4 */ std::string rightBottomFile;
+  /* 010C */ std::string leftTopFile;
+  /* 0124 */ std::string rightTopFile;
+  /* 0140 */ double bottomScale;
+  /* 0148 */ double topScale;
+  /* 0150 */ double topHeight;
+  /* 0158 */ double stepDistance;
+  /* 0160 */ double footGap;
+  /* 0168 */ unsigned char adjustAngle;
+  /* 0169 */ unsigned char leftFoot;
+  /* 016C */ vector3d lastPosition;
 };
 
 class CFromTheAbyssEffect : public CEffect {
@@ -278,8 +278,8 @@ public:
   /* 00CC */ unsigned char unknown_00CC[4];
   /* 00D0 */ long long maxLevel;
   /* 00D8 */ long long level;
-  /* 00E0 */ std::map<long long, AbyssWave> unknown_00E0;
-  /* 00E8 */ std::map<long long, AbyssParticle> unknown_00E8;
+  /* 00E0 */ std::map<long long, AbyssWave> waves;
+  /* 00E8 */ std::map<long long, AbyssParticle> particles;
 };
 
 class CParticle;
@@ -365,7 +365,7 @@ public:
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ std::vector<CParticle*> coins;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E4 */ int coinCount;
 };
 
 class CSavageImpactEffect : public CEffect {
@@ -435,7 +435,7 @@ public:
   void SpawnGalaxyStar();
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ int unknown_00D4;
+  /* 00D4 */ int elapsedFrames;
 };
 
 class CGaleStorm : public CEffect {
@@ -452,8 +452,8 @@ public:
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   union {
     struct {
-      /* 00D8 */ int unknown_00D8;
-      /* 00DC */ int unknown_00DC;
+      /* 00D8 */ int countLow;
+      /* 00DC */ int countHigh;
     };
     /* 00D8 */ long long count;
   };
@@ -471,7 +471,7 @@ public:
   void SpawnSpark();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
+  /* 00D8 */ std::vector<EZ2STREmitter*> hitEmitters;
   /* 00E4 */ std::vector<std::string> textures;
 };
 
@@ -489,13 +489,13 @@ public:
   void ResetLightning(CParticle* particle);
   void ResetSmokeParticle(CParticle* particle);
 
-  /* 00CC */ std::list<EZ2STREmitter*> unknown_00CC;
-  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
-  /* 00DC */ std::list<EZ2STREmitter*> unknown_00DC;
-  /* 00E4 */ std::list<EZ2STREmitter*> unknown_00E4;
-  /* 00EC */ std::list<EZ2STREmitter*> unknown_00EC;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
+  /* 00CC */ std::list<EZ2STREmitter*> circleEmitters;
+  /* 00D4 */ std::list<EZ2STREmitter*> cloudEmitters;
+  /* 00DC */ std::list<EZ2STREmitter*> smokeEmitters;
+  /* 00E4 */ std::list<EZ2STREmitter*> lightningEmitters;
+  /* 00EC */ std::list<EZ2STREmitter*> mistEmitters;
+  /* 00F4 */ int circleResetTime;
+  /* 00F8 */ int cloudResetTime;
 };
 
 // VTABLE: vt_01909
@@ -530,26 +530,26 @@ public:
   void OnProcess() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
+  /* 00D4 */ std::list<EZ2STREmitter*> finishedEmitters;
   /* 00DC */ int unknown_00DC;
   union {
     struct {
-      /* 00E0 */ int unknown_00E0;
-      /* 00E4 */ int unknown_00E4;
+      /* 00E0 */ int countLow;
+      /* 00E4 */ int countHigh;
     };
     /* 00E0 */ long long count;
   };
-  /* 00E8 */ double unknown_00E8;
-  /* 00F0 */ float unknown_00F0;
-  /* 00F4 */ float unknown_00F4;
-  /* 00F8 */ float unknown_00F8;
-  /* 00FC */ unsigned int unknown_00FC;
-  /* 0100 */ vector3d unknown_0100;
-  /* 010C */ vector3d unknown_010C;
-  /* 0118 */ vector3d unknown_0118;
+  /* 00E8 */ double angularRange;
+  /* 00F0 */ float orbitOffsetX;
+  /* 00F4 */ float orbitOffsetY;
+  /* 00F8 */ float orbitOffsetZ;
+  /* 00FC */ unsigned int startTime;
+  /* 0100 */ vector3d targetPosition;
+  /* 010C */ vector3d originPosition;
+  /* 0118 */ vector3d orbitCenter;
   /* 0124 */ int unknown_0124;
-  /* 0128 */ double unknown_0128;
-  /* 0130 */ double unknown_0130;
+  /* 0128 */ double orbitRadius;
+  /* 0130 */ double startAngle;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -563,17 +563,17 @@ static_assert(sizeof(CEternalSlashAttackEffect) == 0xD8);
 static_assert(sizeof(CEternalSlashCountEffect) == 0xD0);
 static_assert(sizeof(CFallenAngelEffect) == 0xDC);
 static_assert(sizeof(CFromTheAbyssEffect) == 0xF0);
-static_assert(offsetof(CFromTheAbyssEffect, unknown_00E0) == 0xE0);
-static_assert(offsetof(CFromTheAbyssEffect, unknown_00E8) == 0xE8);
+static_assert(offsetof(CFromTheAbyssEffect, waves) == 0xE0);
+static_assert(offsetof(CFromTheAbyssEffect, particles) == 0xE8);
 static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
 static_assert(sizeof(CFootprintStrEffect) == 0x178);
-static_assert(offsetof(CFootprintStrEffect, unknown_00DC) == 0xDC);
-static_assert(offsetof(CFootprintStrEffect, unknown_0124) == 0x124);
-static_assert(offsetof(CFootprintStrEffect, unknown_0140) == 0x140);
-static_assert(offsetof(CFootprintStrEffect, unknown_016C) == 0x16C);
+static_assert(offsetof(CFootprintStrEffect, leftBottomFile) == 0xDC);
+static_assert(offsetof(CFootprintStrEffect, rightTopFile) == 0x124);
+static_assert(offsetof(CFootprintStrEffect, bottomScale) == 0x140);
+static_assert(offsetof(CFootprintStrEffect, lastPosition) == 0x16C);
 static_assert(offsetof(CFullScreenEffect, loaded) == 0xD8);
 static_assert(sizeof(CFullScreenEffect) == 0xDC);
 static_assert(sizeof(CPetitioEffect) == 0xD8);
@@ -586,17 +586,17 @@ static_assert(sizeof(CServantWeaponEffect) == 0x144);
 static_assert(sizeof(CServantWeaponNewEffect) == 0xDC);
 static_assert(sizeof(CSevereRainStorm) == 0xD8);
 static_assert(sizeof(CGaleStorm) == 0xE0);
-static_assert(offsetof(CGaleStorm, unknown_00D8) == 0xD8);
+static_assert(offsetof(CGaleStorm, countLow) == 0xD8);
 static_assert(sizeof(CJupitelThunderHit) == 0xF0);
 static_assert(offsetof(CJupitelThunderHit, textures) == 0xE4);
 static_assert(sizeof(CNewCloudKillEffect) == 0xFC);
-static_assert(offsetof(CNewCloudKillEffect, unknown_00F4) == 0xF4);
+static_assert(offsetof(CNewCloudKillEffect, circleResetTime) == 0xF4);
 static_assert(offsetof(CDropItemEffect, emitters) == 0xD4);
 static_assert(offsetof(CDropItemEffect, position) == 0x110);
 static_assert(sizeof(CDropItemEffect) == 0x11C);
-static_assert(offsetof(CHawkVumerangEffect, unknown_00D4) == 0xD4);
-static_assert(offsetof(CHawkVumerangEffect, unknown_0100) == 0x100);
-static_assert(offsetof(CHawkVumerangEffect, unknown_0130) == 0x130);
+static_assert(offsetof(CHawkVumerangEffect, finishedEmitters) == 0xD4);
+static_assert(offsetof(CHawkVumerangEffect, targetPosition) == 0x100);
+static_assert(offsetof(CHawkVumerangEffect, startAngle) == 0x130);
 static_assert(sizeof(CHawkVumerangEffect) == 0x138);
 #endif
 

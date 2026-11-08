@@ -26,7 +26,7 @@ struct ReplayCachedPacket {
 struct ReplayOptions {
   /* 0000 */ unsigned char unknown_0000[6];
   /* 0006 */ unsigned char recordRestricted;
-  /* 0007 */ unsigned char unknown_0007;
+  /* 0007 */ unsigned char showItemSlots;
   /* 0008 */ unsigned char unknown_0008[22];
 
   unsigned char Get(ReplayRecordOption option) const {
@@ -44,13 +44,13 @@ struct ReplayHeader {
   /* 0008 */ std::uint32_t key1;
   /* 000C */ int service;
   /* 0010 */ int serviceType;
-  /* 0014 */ int unknown_0014;
+  /* 0014 */ int sessionSyncValue;
   /* 0018 */ char characterName[64];
   /* 0058 */ char mapName[20];
   /* 006C */ int accountId;
   /* 0070 */ int cellX;
   /* 0074 */ int cellY;
-  /* 0078 */ int unknown_0078;
+  /* 0078 */ int playerDirection;
   /* 007C */ std::uint32_t duration;
   /* 0080 */ std::uint32_t records;
   /* 0084 */ std::uint32_t fileOffset;
@@ -104,8 +104,8 @@ public:
   /* 01E8 */ std::uint32_t cipherIndex;
   /* 01EC */ std::uint32_t cipherBase;
   /* 01F0 */ std::uint32_t cipherKey;
-  /* 01F4 */ int unknown_01F4;
-  /* 01F8 */ int unknown_01F8;
+  /* 01F4 */ int recordingState;
+  /* 01F8 */ int playbackState;
 
   Replay();
 
@@ -158,18 +158,18 @@ public:
 };
 
 struct ReplayFileEntry {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int index;
   /* 0004 */ char name[0x104];
 
   // INLINED
   ReplayFileEntry() {
-    this->unknown_0000 = 0;
+    this->index = 0;
     std::memset(this->name, 0, sizeof(this->name));
   }
 
   // INLINED
   ~ReplayFileEntry() {
-    this->unknown_0000 = 0;
+    this->index = 0;
     std::memset(this->name, 0, sizeof(this->name));
   }
 };
@@ -183,10 +183,10 @@ public:
   /* 0010 */ Replay* replay;
   /* 0014 */ char path[0x104];
   /* 0118 */ bool pathEnabled;
-  /* 0119 */ bool unknown_0119;
-  /* 011C */ int unknown_011C;
-  /* 0120 */ int unknown_0120;
-  /* 0124 */ int unknown_0124;
+  /* 0119 */ bool rejectExistingName;
+  /* 011C */ int selectionState;
+  /* 0120 */ int dialogState;
+  /* 0124 */ int fileState;
   /* 0128 */ unsigned char buffer[0x3E80];
 
   // INLINED
@@ -194,15 +194,15 @@ public:
       : replay(nullptr),
         path(),
         pathEnabled(true),
-        unknown_0119(true) {
+        rejectExistingName(true) {
     this->selected = -1;
     this->files.clear();
-    this->unknown_0124 = 0;
+    this->fileState = 0;
     for (std::size_t index = 0; index < sizeof(this->buffer); ++index) {
       this->buffer[index] = 0;
     }
-    this->unknown_011C = 0;
-    this->unknown_0120 = 0;
+    this->selectionState = 0;
+    this->dialogState = 0;
   }
 
   void Clear();
@@ -236,11 +236,11 @@ static_assert(sizeof(Replay) == 0x1FC);
 static_assert(offsetof(Replay, state) == 0xC);
 static_assert(offsetof(Replay, header) == 0x28);
 static_assert(offsetof(Replay, header) + offsetof(ReplayHeader, options) + offsetof(ReplayOptions, recordRestricted) == 0xB6);
-static_assert(offsetof(Replay, header) + offsetof(ReplayHeader, options) + offsetof(ReplayOptions, unknown_0007) == 0xB7);
+static_assert(offsetof(Replay, header) + offsetof(ReplayHeader, options) + offsetof(ReplayOptions, showItemSlots) == 0xB7);
 static_assert(offsetof(Replay, sections) == 0xD2);
 static_assert(offsetof(Replay, fileMode) == 0x1D8);
 static_assert(offsetof(Replay, file) == 0x1DC);
 static_assert(offsetof(Replay, cipherIndex) == 0x1E8);
-static_assert(offsetof(Replay, unknown_01F8) == 0x1F8);
+static_assert(offsetof(Replay, playbackState) == 0x1F8);
 
 #endif

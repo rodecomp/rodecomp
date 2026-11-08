@@ -96,8 +96,8 @@ namespace {
       primitive->vertices[corner].v = scaleV * uv[corner * 2 + 1];
     }
 
-    primitive->unknown_0018 = 5;
-    primitive->unknown_001C = 6;
+    primitive->sourceBlend = 5;
+    primitive->destinationBlend = 6;
     primitive->texture = &texture;
 
     for (unsigned corner = 0; corner < 4; ++corner) {
@@ -186,8 +186,8 @@ void GroundGeometry::DrawTerrainOverlay(
     primitive->vertices[corner].diffuse = color;
   }
 
-  primitive->unknown_0018 = 5;
-  primitive->unknown_001C = 6;
+  primitive->sourceBlend = 5;
+  primitive->destinationBlend = 6;
   primitive->texture = texture;
   g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

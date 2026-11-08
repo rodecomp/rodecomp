@@ -69,7 +69,7 @@ void GroundLightmapSet::Build(CGndRes& resource) {
 
       for (unsigned corner = 0; corner < 4; ++corner) {
         const unsigned pixel = samples[corner];
-        map.unknown_0028[corner] = (static_cast<unsigned>(decoded[pixel]) << 24) | (static_cast<unsigned>(decoded[64 + pixel * 3]) << 16) |
+        map.cornerColors[corner] = (static_cast<unsigned>(decoded[pixel]) << 24) | (static_cast<unsigned>(decoded[64 + pixel * 3]) << 16) |
                                    (static_cast<unsigned>(decoded[65 + pixel * 3]) << 8) | decoded[66 + pixel * 3];
       }
     }

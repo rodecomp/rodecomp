@@ -150,7 +150,7 @@ void CItemInfoMgr::SetItemInfo(std::map<int, ITEM_DESC>& descriptions) const {
     std::for_each(it->second.unidentifiedDescription.begin(), it->second.unidentifiedDescription.end(),
                   lcMyInsertDesc(&desc.unidentifiedDescription));
     desc.slots = it->second.slotCount;
-    desc.unknown_0040 = it->second.classNum;
+    desc.viewId = it->second.classNum;
   }
 }
 

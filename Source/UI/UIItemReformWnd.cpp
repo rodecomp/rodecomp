@@ -373,24 +373,24 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   }
 
   this->resultItem.SetItemId(info->resultItem);
-  this->resultItem.unknown_0000[0] = 5;
+  this->resultItem.identity[0] = 5;
   this->resultItem.identified = 1;
-  this->resultItem.unknown_0060 = this->selectedItem->unknown_0060 + static_cast<int>(info->changeRefineValue);
+  this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
   for (int index = 0; index < 25; ++index) {
-    this->resultItem.unknown_009C[index] = 0;
+    this->resultItem.options[index] = 0;
   }
   if (info->randomOptionCode.size() == 0) {
-    this->resultItem.unknown_0098 = this->selectedItem->unknown_0098;
-    memcpy_s(this->resultItem.unknown_009C, sizeof(this->resultItem.unknown_009C), this->selectedItem->unknown_009C, this->selectedItem->unknown_0098 * 5);
+    this->resultItem.optionCount = this->selectedItem->optionCount;
+    memcpy_s(this->resultItem.options, sizeof(this->resultItem.options), this->selectedItem->options, this->selectedItem->optionCount * 5);
   } else if (info->randomOptionCode.size() != 2 || info->randomOptionCode[0] != 'G' || info->randomOptionCode[1] != '0') {
-    this->resultItem.unknown_0098 = 1;
-    *reinterpret_cast<short*>(this->resultItem.unknown_009C) = g_itemOptionPlaceholderId;
+    this->resultItem.optionCount = 1;
+    *reinterpret_cast<short*>(this->resultItem.options) = g_itemOptionPlaceholderId;
   }
   if (info->preserveSocketItem == 1) {
-    std::memcpy(this->resultItem.unknown_001C, this->selectedItem->unknown_001C, sizeof(this->resultItem.unknown_001C));
+    std::memcpy(this->resultItem.cards, this->selectedItem->cards, sizeof(this->resultItem.cards));
   }
   if (info->preserveGrade == 1) {
-    this->resultItem.unknown_0088 = this->selectedItem->unknown_0088;
+    this->resultItem.grade = this->selectedItem->grade;
   }
 
   for (std::map<int, std::uint64_t>::iterator it = info->materials.begin(); it != info->materials.end(); ++it) {
@@ -460,7 +460,7 @@ int UIItemReformWnd::SendMsg(
         PACKET_CZ_ITEM_REFORM packet;
         packet.packetType = ID_CZ_ITEM_REFORM;
         packet.itemId = this->reformItem.GetItemId();
-        packet.index = static_cast<std::int16_t>(this->selectedItem->unknown_0000[1]);
+        packet.index = static_cast<std::int16_t>(this->selectedItem->identity[1]);
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       }
       break;
@@ -524,18 +524,18 @@ int UIItemReformWnd_List::SendMsg(
           continue;
         }
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
-        const std::uint64_t refine = item.unknown_0060;
+        const std::uint64_t refine = item.refiningLevel;
         if (refine < static_cast<std::uint64_t>(info->needRefineMin) || refine > static_cast<std::uint64_t>(info->needRefineMax)) {
           continue;
         }
-        const std::uint64_t options = item.unknown_0098;
+        const std::uint64_t options = item.optionCount;
         if (options < static_cast<std::uint64_t>(info->needOptionNumMin)) {
           continue;
         }
         bool emptySocket = true;
         if (info->isEmptySocket == 1) {
           for (unsigned int slot = std::min(ItemSlotsCount(item), 4); slot < 4; ++slot) {
-            if (static_cast<int>(slot) < 4 && reinterpret_cast<const int*>(item.unknown_001C)[slot] > 0) {
+            if (static_cast<int>(slot) < 4 && reinterpret_cast<const int*>(item.cards)[slot] > 0) {
               emptySocket = false;
               break;
             }

@@ -43,7 +43,7 @@ static_assert(sizeof(ShadeVector) == 12);
 // OFFSET: 0x00756D60
 // FUNCTION: fn_07997
 AnimatedModelRecord::~AnimatedModelRecord() {
-  delete[] this->unknown_0084;
+  delete[] this->names;
 }
 
 // OFFSET: 0x00755630
@@ -577,7 +577,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
   this->modelCount = 0;
   this->maxBoneCount = 0;
   this->textureCount = 0;
-  this->unknown_0170 = 0;
+  this->animationMode = 0;
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
@@ -673,7 +673,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
     this->localPose = GrannyNewLocalPose(this->maxBoneCount);
 
     if (this->deformBufferSize != 0) {
-      this->unknown_0170 = 4;
+      this->animationMode = 4;
     }
 
     result = true;
@@ -685,7 +685,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
   GrannyFreeFileSection(this->file, 2);
   GrannyFreeFileSection(this->file, 4);
   GrannyFreeFileSection(this->file, 5);
-  this->unknown_0000 = 1920.0f;
+  this->animationDuration = 1920.0f;
   return result;
 }
 
@@ -755,8 +755,8 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
   const float deltaZ = eye[2] - z;
   const float distance = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const float slope = std::min(std::fabs(1.0f / distance * deltaY), 1.0f);
-  const float height = this->unknown_03A4 - (this->unknown_03A4 - this->unknown_03A0) * slope;
-  const float halfWidth = SquareRoot(this->unknown_03A0 * this->unknown_03A0 * 0.5f);
+  const float height = this->topHeight - (this->topHeight - this->baseHeight) * slope;
+  const float halfWidth = SquareRoot(this->baseHeight * this->baseHeight * 0.5f);
   const float halfHeight = SquareRoot(height * height * 0.5f);
   const float inverseDepth = 1.0f / depth;
 
@@ -959,8 +959,8 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     const void* vertices = meshes[mesh].vertices;
     *indices = meshes[mesh].indices;
     *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
-    if (std::strstr(meshes[mesh].mesh->name, "hair_pivot") != nullptr && this->unknown_03B0 != nullptr) {
-      this->unknown_03B0->transform = *transform;
+    if (std::strstr(meshes[mesh].mesh->name, "hair_pivot") != nullptr && this->hairPivot != nullptr) {
+      this->hairPivot->transform = *transform;
     }
 
     return vertices;
@@ -983,13 +983,13 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
 // OFFSET: 0x0075CD90
 // FUNCTION: fn_08027
 bool C3dGrannyModelRes::FindHairPivot() {
-  if (this->unknown_03B0 == nullptr) {
+  if (this->hairPivot == nullptr) {
     return false;
   }
 
   for (int mesh = 0; mesh < this->instance->meshCount; ++mesh) {
     if (std::strstr(this->instance->meshes[mesh].mesh->name, "hair_pivot") != nullptr) {
-      this->unknown_03B0->mesh = mesh;
+      this->hairPivot->mesh = mesh;
       return true;
     }
   }

@@ -105,19 +105,19 @@ int CSession::GetDisplayJob() {
       return job + 13;
     }
   } else if (job == 4058) {
-    if (g_session.unknown_8074 != 0) {
+    if (g_session.madogearType != 0) {
       return job + 28;
     }
   } else if (job == 4064) {
-    if (g_session.unknown_8074 != 0) {
+    if (g_session.madogearType != 0) {
       return job + 23;
     }
   } else if (job == 4100) {
-    if (g_session.unknown_8074 != 0) {
+    if (g_session.madogearType != 0) {
       return job + 12;
     }
   } else if (job == 4253) {
-    if (g_session.unknown_8074 != 0) {
+    if (g_session.madogearType != 0) {
       return job + 26;
     }
   } else if (job == 4226) {
@@ -298,7 +298,7 @@ std::string CSession::GetHeadPalName(int head, int job, int sex, int palette) {
 // OFFSET: 0x00DDCF60
 // FUNCTION: fn_23376
 std::string CSession::GetPlayerHeadPalName() {
-  return g_equipmentResourceMgr->GetHeadPalName(this->m_head, this->m_job, this->unknown_0E98, this->m_headPalette);
+  return g_equipmentResourceMgr->GetHeadPalName(this->m_head, this->m_job, this->cachedSex, this->m_headPalette);
 }
 
 // OFFSET: 0x00DDCFE0

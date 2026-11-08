@@ -70,7 +70,7 @@ public:
 
   void SetQuest(unsigned int questId);
 
-  /* 00B0 */ int unknown_00B0;
+  /* 00B0 */ int m_questId;
   /* 00B4 */ int unknown_00B4;
 };
 
@@ -135,7 +135,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(UIRecommededQuestScrollWnd, unknown_00B0) == 0xB0);
+static_assert(offsetof(UIRecommededQuestScrollWnd, m_questId) == 0xB0);
 static_assert(sizeof(UIRecommededQuestScrollWnd) == 0xB8);
 static_assert(sizeof(UIRenewQuestScrollBar) == sizeof(UIScrollBar));
 static_assert(offsetof(RenewQuestRowControls, lockBoxes) == 0x24);

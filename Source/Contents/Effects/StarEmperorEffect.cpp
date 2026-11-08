@@ -82,17 +82,17 @@ void CStarEmperorEffect::Close() {
 // OFFSET: 0x0072C490
 // FUNCTION: fn_07478
 void CStarEmperorEffect::Open() {
-  this->unknown_002C = this->id != 1203 ? 30 : 60;
+  this->effectLifetime = this->id != 1203 ? 30 : 60;
   this->BuildSphere();
 
   for (int i = 0; i < 10; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->SetTexture("effect\\star_emperor\\ring_white.tga");
-    particle->unknown_004C = 36;
+    particle->phaseParameter = 36;
     this->rings.push_back(particle);
   }
 }
@@ -119,15 +119,15 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
     return;
   }
 
-  const int startAngle = particle->unknown_004C * particle->unknown_000C;
-  const int endAngle = (particle->unknown_000C + 1) * particle->unknown_004C;
-  int step = particle->unknown_00E8 + 1;
+  const int startAngle = particle->phaseParameter * particle->columnIndex;
+  const int endAngle = (particle->columnIndex + 1) * particle->phaseParameter;
+  int step = particle->elapsedFrames + 1;
   if (this->id == 1203) {
-    const int half = this->unknown_002C / 2;
-    step = half > particle->unknown_00E8 ? half - particle->unknown_00E8 : particle->unknown_00E8 - half;
+    const int half = this->effectLifetime / 2;
+    step = half > particle->elapsedFrames ? half - particle->elapsedFrames : particle->elapsedFrames - half;
   }
 
-  const float outer = -(1.75f / static_cast<float>(this->unknown_002C)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
+  const float outer = -(1.75f / static_cast<float>(this->effectLifetime)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
                       static_cast<float>(step) * 1.75f;
   float inner = 0.0f;
   if (outer > 12.0f) {
@@ -159,18 +159,18 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
   particle->transform = rotation;
 
   if (this->id == 1203) {
-    const int quarter = this->unknown_002C / 4;
+    const int quarter = this->effectLifetime / 4;
     if (quarter <= step) {
-      step = this->unknown_002C - step;
+      step = this->effectLifetime - step;
     }
     particle->alpha = 255 / quarter * step;
   } else {
-    const int half = this->unknown_002C / 2;
+    const int half = this->effectLifetime / 2;
     const int scale = 255 / half;
-    if (half > particle->unknown_00E8) {
+    if (half > particle->elapsedFrames) {
       particle->alpha = step * scale;
     } else {
-      particle->alpha = (this->unknown_002C - step) * scale;
+      particle->alpha = (this->effectLifetime - step) * scale;
     }
   }
 
@@ -184,14 +184,14 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
 void CStarEmperorEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->sphere.begin(); it != this->sphere.end(); ++it) {
     if (CParticle* particle = *it) {
-      const int frame = particle->unknown_00E8;
+      const int frame = particle->elapsedFrames;
       int step = frame + 1;
       if (this->id == 1203) {
-        const int half = this->unknown_002C / 2;
+        const int half = this->effectLifetime / 2;
         step = half > frame ? half - frame : frame - half;
       }
 
-      const float size = -(1.15f / static_cast<float>(this->unknown_002C)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
+      const float size = -(1.15f / static_cast<float>(this->effectLifetime)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
                          static_cast<float>(step) * 1.15f;
       matrix scale;
       scale.SetScale(size, size, size);
@@ -202,18 +202,18 @@ void CStarEmperorEffect::OnProcess() {
       particle->transform = result;
 
       if (this->id == 1203) {
-        const int quarter = this->unknown_002C / 4;
+        const int quarter = this->effectLifetime / 4;
         if (quarter <= step) {
-          step = this->unknown_002C - step;
+          step = this->effectLifetime - step;
         }
         particle->alpha = 255 / quarter * step;
       } else {
-        const int half = this->unknown_002C / 2;
+        const int half = this->effectLifetime / 2;
         const int fade = 255 / half;
-        if (half > particle->unknown_00E8) {
+        if (half > particle->elapsedFrames) {
           particle->alpha = step * fade;
         } else {
-          particle->alpha = (this->unknown_002C - step) * fade;
+          particle->alpha = (this->effectLifetime - step) * fade;
         }
       }
 
@@ -222,12 +222,12 @@ void CStarEmperorEffect::OnProcess() {
       particle->position.z = this->position[2];
     }
 
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     this->UpdateRing(*it);
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 

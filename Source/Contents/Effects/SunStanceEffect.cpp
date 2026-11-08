@@ -61,13 +61,13 @@ void CSunStanceEffect::Open() {
     }
     particle->SetTexture(texture);
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = 1;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = 1;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->alpha = 255;
     particle->scale = 3.0f;
-    particle->unknown_0054 = static_cast<float>(index) * 2.0943947f;
+    particle->animationParameter = static_cast<float>(index) * 2.0943947f;
     InitParticleQuad(particle->vertices);
     this->particles.push_back(particle);
   }
@@ -96,8 +96,8 @@ void CSunStanceEffect::OnProcess() {
     result.Compose(scaling, rotation);
     particle->transform = result;
 
-    particle->unknown_0054 += 0.02f;
-    const float angle = particle->unknown_0054;
+    particle->animationParameter += 0.02f;
+    const float angle = particle->animationParameter;
     const float cosine = std::cos(angle) * 8.0f;
     const float sine = std::sin(angle) * 8.0f;
     particle->position.z = cosine + this->position[2];

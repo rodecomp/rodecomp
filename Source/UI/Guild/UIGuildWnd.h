@@ -48,7 +48,7 @@ bool CompareWideText(const char* left, const char* right);
 
 struct GuildPositionEntry {
   /* 0000 */ int id;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int positionId;
   /* 0008 */ std::string name;
   /* 0020 */ int canInvite;
   /* 0024 */ int canExpel;
@@ -113,8 +113,8 @@ protected:
 
   /* 00D0 */ UIBitmapButton* m_editButton;
   /* 00D4 */ UIBitmapButton* m_disbandButton;
-  /* 00D8 */ std::list<std::string> unknown_00D8;
-  /* 00E0 */ std::vector<MiniPartyInfoEntry> unknown_00E0;
+  /* 00D8 */ std::list<std::string> emblemFiles;
+  /* 00E0 */ std::vector<MiniPartyInfoEntry> emblemMenuEntries;
   /* 00EC */ int unknown_00EC;
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ std::uint32_t m_guildId;
@@ -147,16 +147,16 @@ protected:
   /* 0130 */ UIBitmapButton* m_rowButtons[6];
   /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
-  /* 0150 */ std::vector<MiniPartyInfoEntry> unknown_0150;
+  /* 0150 */ std::vector<MiniPartyInfoEntry> memberMenuEntries;
   /* 015C */ int m_scrollTop;
   /* 0160 */ int m_hoverRow;
   /* 0164 */ int m_columns;
   /* 0168 */ int m_visibleRows;
-  /* 016C */ int unknown_016C;
+  /* 016C */ int selectedMemberRow;
   /* 0170 */ int m_scrollable;
   /* 0174 */ int m_rowSpacing;
   /* 0178 */ std::list<GuildInfo::Member> m_members;
-  /* 0180 */ std::map<int, GuildMemberManageEntry> unknown_0180;
+  /* 0180 */ std::map<int, GuildMemberManageEntry> membersByCharacterId;
   /* 0188 */ int m_sortColumn;
   /* 018C */ std::map<int, int> m_sortOrders;
   /* 0194 */ UICheckBox* m_onlineCheck;
@@ -202,13 +202,13 @@ protected:
   int PositionIndexAt(int x, int y);
   GuildPositionEntry& PositionAt(int index, int* found);
 
-  /* 00D0 */ UICheckBox* unknown_00D0[11];
-  /* 00FC */ UICheckBox* unknown_00FC[11];
-  /* 0128 */ UICheckBox* unknown_0128[11];
-  /* 0154 */ UIEditCtrl* unknown_0154[11];
-  /* 0180 */ UIEditCtrl* unknown_0180[11];
-  /* 01AC */ UIStaticText* unknown_01AC[11];
-  /* 01D8 */ UIStaticText* unknown_01D8[11];
+  /* 00D0 */ UICheckBox* inviteChecks[11];
+  /* 00FC */ UICheckBox* expelChecks[11];
+  /* 0128 */ UICheckBox* storageChecks[11];
+  /* 0154 */ UIEditCtrl* taxEdits[11];
+  /* 0180 */ UIEditCtrl* positionNameEdits[11];
+  /* 01AC */ UIStaticText* taxLabels[11];
+  /* 01D8 */ UIStaticText* positionNameLabels[11];
   /* 0204 */ UIScrollBar* m_scrollBar;
   /* 0208 */ UIButton* m_button;
   /* 020C */ int m_scrollTop;

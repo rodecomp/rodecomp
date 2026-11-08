@@ -32,7 +32,7 @@ protected:
   /* 00D4 */ std::uint32_t m_frameElapsed;
   /* 00D8 */ std::uint32_t m_frameTick;
   /* 00DC */ unsigned char unknown_00DC[0x104];
-  /* 01E0 */ int unknown_01E0;
+  /* 01E0 */ int expandedHeight;
   /* 01E4 */ unsigned char m_minimized;
   /* 01E5 */ unsigned char unknown_01E5[3];
   /* 01E8 */ SeekPartyWndInfo* m_saved;

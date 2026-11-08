@@ -35,10 +35,10 @@ void CSoulUnityEffect::Open() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0);
   if (particle) {
     particle->SetTexture("effect\\soul_unity\\soul_unity.bmp");
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = 1;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = 1;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->scale = 2.5f;
     particle->depthOffset = 0.035f;
     InitParticleQuad(particle->vertices);
@@ -63,7 +63,7 @@ void CSoulUnityEffect::OnProcess() {
 
     float height = -15.0f;
     CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
-    if (actor && actor->unknown_02CC) {
+    if (actor && actor->isRiding) {
       height = -20.0f;
     }
 

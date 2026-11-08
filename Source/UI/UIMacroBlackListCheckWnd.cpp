@@ -32,7 +32,7 @@ namespace {
 // FUNCTION: fn_09792
 UIMacroBlackListCheckWnd::UIMacroBlackListCheckWnd()
     : UIFrameWnd(0) {
-  this->unknown_00E4 = 0;
+  this->resultState = 0;
   this->inputLength = 0;
   this->duration = 0;
   this->startTick = 0;
@@ -111,8 +111,8 @@ void UIMacroBlackListCheckWnd::Paint() {
   this->DrawButtonBar(2, this->geometry.width + 1, 1);
 
   this->DrawAlignedText(7, 0x24, FormatOwnedString(LookupMessage(MSI_WEDDING_RING_ITEM_NAME_FORMAT)).c_str(), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
-  this->DrawAlignedText(7, 0x159, FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->unknown_00E4).c_str(), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
-  this->DrawAlignedText(0x4F, 0xF6, FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_NEXT_NEWDATE), this->unknown_00E4).c_str(), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
+  this->DrawAlignedText(7, 0x159, FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->resultState).c_str(), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
+  this->DrawAlignedText(0x4F, 0xF6, FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_NEXT_NEWDATE), this->resultState).c_str(), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
 
   std::string stars;
   for (int i = 0; i < this->inputLength; ++i) {
@@ -305,7 +305,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
 // FUNCTION: fn_09802
 void UIMacroBlackListCheckWnd::SetCode(unsigned char state, const char* code) {
   strncpy_s(this->code, sizeof(this->code), code, _TRUNCATE);
-  this->unknown_00E4 = state;
+  this->resultState = state;
   std::string text(code);
   this->codeLength = static_cast<int>(text.size());
   for (int i = 0; i < this->codeLength; ++i) {
@@ -320,6 +320,6 @@ void UIMacroBlackListCheckWnd::SetCode(unsigned char state, const char* code) {
 void UIMacroBlackListCheckWnd::Activate(unsigned char state, int duration) {
   this->startTick = timeGetTime();
   this->duration = duration;
-  this->unknown_00E4 = state;
+  this->resultState = state;
   this->Invalidate();
 }

@@ -73,7 +73,7 @@ UIEscOptionWnd::UIEscOptionWnd()
     : UIFrameWnd(0), m_titleHeight(17) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int escMode;
-  if (mode->unknown_0250 == 0) {
+  if (mode->isPlayerDead == 0) {
     escMode = 0;
   } else if (!mode->HasResurrectionItem() && !g_session.HasSkillEffect(580)) {
     escMode = 1;

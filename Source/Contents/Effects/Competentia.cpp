@@ -70,7 +70,7 @@ bool CCompetentia::IsAlive() {
 void CCompetentia::OnProcess() {
   for (auto current = this->particles.begin(); current != this->particles.end();) {
     CParticle* particle = *current;
-    if (particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f) {
+    if (particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f) {
       if (particle) {
         static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, -80.0f, 0.0f);
       }

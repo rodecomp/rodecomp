@@ -15,11 +15,11 @@ int CSession::UseLevel(int id) const {
   const auto key = static_cast<std::uint32_t>(id);
 
   if (key - 1u <= 0x1F3D) {
-    return this->m_skillBundle.unknown_0064[key];
+    return this->m_skillBundle.skillValues[key];
   }
 
   if (id > 10000) {
-    return this->unknown_0710[key - 10000u];
+    return this->extendedSkillLevels[key - 10000u];
   }
 
   if (this->IsHomunculusSkill(key)) {
@@ -96,7 +96,7 @@ void CCharacterLinkedUserDataMgr::Save() {
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
     g_asyncWorkMgr->SaveCharacter(this->m_accountId, this->m_characterId, this->m_accountName, this->SaveUrl(),
-                                  std::string(reinterpret_cast<const char*>(&g_session.unknown_807C[0x08]), 16), response);
+                                  std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), response);
 
     ++this->m_pendingSaves;
   }

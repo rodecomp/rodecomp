@@ -368,20 +368,20 @@ __forceinline CSkillActionMgr* CSkillActionMgr::GetInstance() {
 
 // OFFSET: 0x00773480
 // FUNCTION: fn_08311
-CSkillInfo::CSkillInfo() : available(1), id(0), level(0), name(nullptr), unknown_0028(0), unknown_0030(0), unknown_0034(0) {
+CSkillInfo::CSkillInfo() : available(1), id(0), level(0), name(nullptr), maxLevel(0), learnedLevel(0), apCost(0) {
 }
 
 // OFFSET: 0x00773400
 // FUNCTION: fn_08310
-CSkillInfo::CSkillInfo(int) : available(0), id(0), level(0), name("Unknown-Skill"), unknown_0028(0), unknown_0030(0), unknown_0034(0) {
+CSkillInfo::CSkillInfo(int) : available(0), id(0), level(0), name("Unknown-Skill"), maxLevel(0), learnedLevel(0), apCost(0) {
 }
 
 // OFFSET: 0x0076FD70
 // FUNCTION: fn_08254
 CSkillInfo::CSkillInfo(const CSkillInfo& other)
-    : available(other.available), id(other.id), unknown_000C(other.unknown_000C), level(other.level), unknown_0014(other.unknown_0014),
-      unknown_0018(other.unknown_0018), unknown_001C(other.unknown_001C), name(other.name), unknown_0024(other.unknown_0024),
-      unknown_0028(other.unknown_0028), unknown_002C(other.unknown_002C), unknown_0030(other.unknown_0030), unknown_0034(other.unknown_0034),
+    : available(other.available), id(other.id), type(other.type), level(other.level), spCost(other.spCost),
+      upgradable(other.upgradable), range(other.range), name(other.name), treePosition(other.treePosition),
+      maxLevel(other.maxLevel), canPlanLevel(other.canPlanLevel), learnedLevel(other.learnedLevel), apCost(other.apCost),
       entries(other.entries) {
 }
 
@@ -390,17 +390,17 @@ CSkillInfo::CSkillInfo(const CSkillInfo& other)
 CSkillInfo& CSkillInfo::operator=(const CSkillInfo& other) {
   this->available = other.available;
   this->id = other.id;
-  this->unknown_000C = other.unknown_000C;
+  this->type = other.type;
   this->level = other.level;
-  this->unknown_0014 = other.unknown_0014;
-  this->unknown_0018 = other.unknown_0018;
-  this->unknown_001C = other.unknown_001C;
+  this->spCost = other.spCost;
+  this->upgradable = other.upgradable;
+  this->range = other.range;
   this->name = other.name;
-  this->unknown_0024 = other.unknown_0024;
-  this->unknown_0028 = other.unknown_0028;
-  this->unknown_002C = other.unknown_002C;
-  this->unknown_0030 = other.unknown_0030;
-  this->unknown_0034 = other.unknown_0034;
+  this->treePosition = other.treePosition;
+  this->maxLevel = other.maxLevel;
+  this->canPlanLevel = other.canPlanLevel;
+  this->learnedLevel = other.learnedLevel;
+  this->apCost = other.apCost;
 
   this->entries = other.entries;
 
@@ -424,7 +424,7 @@ bool CSkillInfo::MatchesShortcut(const NormalItemSlot* slot) const {
     return false;
   }
 
-  const auto requested = slot->unknown_0005;
+  const auto requested = slot->value;
   return requested != 0 && (this->id != slot->itemId || this->level >= requested);
 }
 
@@ -785,7 +785,7 @@ void CEfstAction_ChangeSize::OnEfstBegin(int, int value, int, int, CRenderObject
     }
   }
 
-  *reinterpret_cast<float*>(&effect->unknown_0048) = static_cast<float>(value) * 0.01f;
+  *reinterpret_cast<float*>(&effect->scaleParameter) = static_cast<float>(value) * 0.01f;
 }
 
 // OFFSET: 0x007760D0
@@ -1524,7 +1524,7 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::OnSkillEffect(int level, CGameActor* s
     return;
   }
 
-  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const float scale = source->attackMotion * source->render.speed * 16.0f;
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
@@ -2170,7 +2170,7 @@ void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillEffect(int level, CGameActor* sourc
     return;
   }
 
-  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const float scale = source->attackMotion * source->render.speed * 16.0f;
   const bool flip = direction != 1 && direction != 2;
   const bool horizontal = (direction & 1) != 0;
   std::string name = horizontal ? "dragonic_pierce_horizon" : "dragonic_pierce_vertical";

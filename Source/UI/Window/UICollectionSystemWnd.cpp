@@ -22,7 +22,7 @@
 // OFFSET: 0x00910890
 // FUNCTION: fn_12504
 CUICollectionSystemWnd::CUICollectionSystemWnd()
-    : UIFrameWnd(0), m_frameDelay(15), unknown_00B8(-1), unknown_00BC(0),
+    : UIFrameWnd(0), m_frameDelay(15), collectionId(-1), animationIndex(0),
       m_frame(0), m_lastFrame(-1), m_paused(false), m_lastTick(0) {
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load("collection_slotmachine.act"));
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("collection_slotmachine.spr"));
@@ -35,7 +35,7 @@ void CUICollectionSystemWnd::OnCreate(int, int) {}
 // OFFSET: 0x0092B830
 // FUNCTION: fn_12658
 void CUICollectionSystemWnd::Paint() {
-  const ActionFrame& current = this->m_action->Frame(this->unknown_00BC, this->m_frame);
+  const ActionFrame& current = this->m_action->Frame(this->animationIndex, this->m_frame);
   const std::uint32_t* palette = this->m_sprite->palette;
   SpriteAtlasRecord record{};
 
@@ -52,14 +52,14 @@ void CUICollectionSystemWnd::Paint() {
     }
     this->geometry.surface->DrawSurface(
       this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
-      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
 
   const std::uint32_t now = timeGetTime();
   if (!this->m_paused && static_cast<int>(now - this->m_lastTick) > this->m_frameDelay) {
     ++this->m_frame;
-    if (this->m_frame >= static_cast<int>(this->m_action->FrameCount(this->unknown_00BC))) {
+    if (this->m_frame >= static_cast<int>(this->m_action->FrameCount(this->animationIndex))) {
       this->m_frame = 0;
     }
     this->m_lastTick = now;
@@ -69,9 +69,9 @@ void CUICollectionSystemWnd::Paint() {
 // OFFSET: 0x00930A40
 // FUNCTION: fn_12691
 void CUICollectionSystemWnd::OnLBtnDown(int, int) {
-  if (this->unknown_00BC == 0) {
-    this->unknown_00BC = 1;
-    g_modeMgr.GetGameMode()->SendMsg(MM_TRYCOLLECTION, this->unknown_00B8, 0, 0, 0);
+  if (this->animationIndex == 0) {
+    this->animationIndex = 1;
+    g_modeMgr.GetGameMode()->SendMsg(MM_TRYCOLLECTION, this->collectionId, 0, 0, 0);
   }
 }
 
@@ -96,7 +96,7 @@ void CUICollectionSystemWnd::OnProcess() {
 int CUICollectionSystemWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t, std::intptr_t) {
   if (message == UM_SET_TARGET) {
     if (a == 0) {
-      this->unknown_00B8 = b;
+      this->collectionId = b;
       return 0;
     }
     this->m_lastFrame = b;

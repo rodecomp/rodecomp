@@ -16,15 +16,15 @@ public:
   virtual void SetText(int width, int height, std::string text);
 
   /* 007C */ int unknown_007C;
-  /* 0080 */ int unknown_0080;
-  /* 0084 */ std::string unknown_0084;
-  /* 009C */ int unknown_009C;
-  /* 00A0 */ int unknown_00A0;
-  /* 00A4 */ int unknown_00A4;
-  /* 00A8 */ int unknown_00A8;
-  /* 00AC */ std::string unknown_00AC;
-  /* 00C4 */ std::string unknown_00C4;
-  /* 00DC */ std::string unknown_00DC;
+  /* 0080 */ int enabled;
+  /* 0084 */ std::string link;
+  /* 009C */ int red;
+  /* 00A0 */ int green;
+  /* 00A4 */ int blue;
+  /* 00A8 */ int fontSize;
+  /* 00AC */ std::string image;
+  /* 00C4 */ std::string fontName;
+  /* 00DC */ std::string text;
 };
 
 #endif

@@ -36,9 +36,9 @@ void CShadowExceedNew::Open() {
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_f_shadow_bottom.str"));
-    emitter->unknown_00D0 = 0.0f;
-    emitter->unknown_00D4 = -12.0f;
-    emitter->unknown_00D8 = 0.0f;
+    emitter->offsetX = 0.0f;
+    emitter->offsetY = -12.0f;
+    emitter->offsetZ = 0.0f;
     emitter->m_scale = 0.14f;
     this->frontEmitters.push_back(emitter);
   }
@@ -46,9 +46,9 @@ void CShadowExceedNew::Open() {
   emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_f_shadow.str"));
-    emitter->unknown_00D0 = 0.0f;
-    emitter->unknown_00D4 = -10.0f;
-    emitter->unknown_00D8 = 0.0f;
+    emitter->offsetX = 0.0f;
+    emitter->offsetY = -10.0f;
+    emitter->offsetZ = 0.0f;
     emitter->m_scale = 0.14f;
     this->frontEmitters.push_back(emitter);
   }
@@ -56,9 +56,9 @@ void CShadowExceedNew::Open() {
   emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_b_shadow_bottom.str"));
-    emitter->unknown_00D0 = 0.0f;
-    emitter->unknown_00D4 = -12.0f;
-    emitter->unknown_00D8 = 0.0f;
+    emitter->offsetX = 0.0f;
+    emitter->offsetY = -12.0f;
+    emitter->offsetZ = 0.0f;
     emitter->m_scale = 0.14f;
     emitter->depthOffset = 0.0003f;
     this->backEmitters.push_back(emitter);
@@ -67,9 +67,9 @@ void CShadowExceedNew::Open() {
   emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_b_shadow.str"));
-    emitter->unknown_00D0 = 0.0f;
-    emitter->unknown_00D4 = -10.0f;
-    emitter->unknown_00D8 = 0.0f;
+    emitter->offsetX = 0.0f;
+    emitter->offsetY = -10.0f;
+    emitter->offsetZ = 0.0f;
     emitter->m_scale = 0.14f;
     emitter->depthOffset = 0.0003f;
     this->backEmitters.push_back(emitter);
@@ -106,13 +106,13 @@ void CShadowExceedNew::OnProcess() {
   const float z = cosine * 5.0f + actor->render.position.z;
   const float x = -sine * 5.0f + actor->render.position.x;
   const int direction = actor->render.previousAnimation % 8;
-  this->unknown_00CC = static_cast<unsigned int>(direction - 2) < 4;
+  this->drawBackEmitters = static_cast<unsigned int>(direction - 2) < 4;
 
   for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    emitter->position.x = x + emitter->unknown_00D0;
-    emitter->position.y = y + emitter->unknown_00D4;
-    emitter->position.z = z + emitter->unknown_00D8;
+    emitter->position.x = x + emitter->offsetX;
+    emitter->position.y = y + emitter->offsetY;
+    emitter->position.z = z + emitter->offsetZ;
     emitter->m_flipX = direction == 0 || direction == 1;
     if (!emitter->Process(0.0f, 0.0f, 0.0f)) {
       FreeParticle(*it);
@@ -124,9 +124,9 @@ void CShadowExceedNew::OnProcess() {
 
   for (auto it = this->backEmitters.begin(); it != this->backEmitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    emitter->position.x = x + emitter->unknown_00D0;
-    emitter->position.y = y + emitter->unknown_00D4;
-    emitter->position.z = z + emitter->unknown_00D8;
+    emitter->position.x = x + emitter->offsetX;
+    emitter->position.y = y + emitter->offsetY;
+    emitter->position.z = z + emitter->offsetZ;
     emitter->m_flipX = direction == 4 || direction == 5;
     if (!emitter->Process(0.0f, 0.0f, 0.0f)) {
       FreeParticle(*it);
@@ -140,7 +140,7 @@ void CShadowExceedNew::OnProcess() {
 // OFFSET: 0x00729280
 // FUNCTION: fn_07438
 void CShadowExceedNew::Render() {
-  if (!this->unknown_00CC) {
+  if (!this->drawBackEmitters) {
     for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end(); ++it) {
       (*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }

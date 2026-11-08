@@ -112,11 +112,11 @@ void CSession::GetPetHungryStateString(int hunger, char* buffer) {
 // OFFSET: 0x00E12830
 // FUNCTION: fn_23817
 int CSession::GetPetEmotionNumber(int job, int action, int hungerLevel) {
-  if (g_session.unknown_0E98 != g_session.unknown_5558) {
-    g_session.unknown_0E98 = g_session.unknown_5558;
+  if (g_session.cachedSex != g_session.currentSex) {
+    g_session.cachedSex = g_session.currentSex;
   }
 
-  return g_session.unknown_0E98 + ((job * 10 + action) * 10 + hungerLevel) * 10;
+  return g_session.cachedSex + ((job * 10 + action) * 10 + hungerLevel) * 10;
 }
 
 // OFFSET: 0x00E1DF60

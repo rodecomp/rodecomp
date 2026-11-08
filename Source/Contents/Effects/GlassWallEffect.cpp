@@ -18,16 +18,16 @@ CGlassWall::~CGlassWall() {
 // OFFSET: 0x00B44860
 // FUNCTION: fn_18890
 void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
-  const int startFrame = this->unknown_002C - 6;
+  const int startFrame = this->effectLifetime - 6;
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
-  float* params = &particle->unknown_0054;
+  float* params = &particle->animationParameter;
   particle->scale = scale;
-  particle->unknown_00C0 = 0.25f;
+  particle->speedParameter = 0.25f;
   particle->alpha = 0;
-  *reinterpret_cast<float*>(&particle->unknown_00C4) = angle;
-  particle->unknown_00D0 = x;
-  particle->unknown_00D4 = y;
-  particle->unknown_00D8 = z;
+  *reinterpret_cast<float*>(&particle->angleBits) = angle;
+  particle->offsetX = x;
+  particle->offsetY = y;
+  particle->offsetZ = z;
   params[0] = 40.0f;
   params[1] = 30.0f;
   params[2] = static_cast<float>(startFrame);
@@ -89,9 +89,9 @@ void CGlassWall::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     const int frame = this->frame;
-    float* params = &particle->unknown_0054;
+    float* params = &particle->animationParameter;
     const int maxAlpha = static_cast<int>(params[3]);
-    float speed = particle->unknown_00C0;
+    float speed = particle->speedParameter;
     const float angle = speed + params[0];
     float fade = params[1];
     if (frame % static_cast<int>(params[4]) == 0) {
@@ -99,7 +99,7 @@ void CGlassWall::OnProcess() {
     }
 
     if (frame == static_cast<int>(params[2])) {
-      fade = static_cast<float>(-(particle->alpha / (this->unknown_002C - frame)));
+      fade = static_cast<float>(-(particle->alpha / (this->effectLifetime - frame)));
     }
 
     int alpha = static_cast<int>(static_cast<float>(particle->alpha) + fade);
@@ -108,18 +108,18 @@ void CGlassWall::OnProcess() {
     }
 
     matrix translation;
-    translation.MakeTranslate(particle->position.x + particle->unknown_00D0, particle->position.y + particle->unknown_00D4,
-                              particle->position.z + particle->unknown_00D8);
+    translation.MakeTranslate(particle->position.x + particle->offsetX, particle->position.y + particle->offsetY,
+                              particle->position.z + particle->offsetZ);
     matrix rotation;
-    rotation.MakeYRotation(GetRadian(static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4))));
+    rotation.MakeYRotation(GetRadian(static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits))));
     matrix result;
     result.Compose(rotation, translation);
 
     params[0] = angle;
     particle->alpha = alpha > maxAlpha ? maxAlpha : alpha;
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     params[1] = fade;
-    particle->unknown_00C0 = speed;
+    particle->speedParameter = speed;
     particle->transform = result;
   }
 
@@ -134,7 +134,7 @@ void CGlassWall::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     const float width = particle->scale;
-    const float height = particle->unknown_0054;
+    const float height = particle->animationParameter;
     particle->vertices[0].x = 0.0f;
     particle->vertices[0].y = -height;
     particle->vertices[0].z = width;

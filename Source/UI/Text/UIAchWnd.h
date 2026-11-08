@@ -56,15 +56,15 @@ public:
 
   /* 007C */ UIAchScrollBar* scrollBar;
   /* 0080 */ UIButton** buttons;
-  /* 0084 */ int unknown_0084;
+  /* 0084 */ int rowHeight;
   /* 0088 */ int rowCount;
-  /* 008C */ int unknown_008C;
+  /* 008C */ int firstRow;
   /* 0090 */ int selectedIndex;
-  /* 0094 */ int unknown_0094;
+  /* 0094 */ int scrollBarWidth;
   /* 0098 */ unsigned char scrollable;
-  /* 009C */ int unknown_009C;
+  /* 009C */ int listState;
   /* 00A0 */ std::vector<int> ids;
-  /* 00AC */ UIAchListInfo* unknown_00AC;
+  /* 00AC */ UIAchListInfo* achievementList;
 
   void Create(int width, int height, int rows);
   void SelectAchievement(int index);
@@ -87,14 +87,14 @@ class UIAchTab : public UIWindow {
 public:
   // INLINED
   UIAchTab()
-      : UIWindow(0), unknown_007C(-1), unknown_0080(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
+      : UIWindow(0), selectedGroup(-1), selectedSub(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
         scrollBarX(13), visibleSubs(3) {
     this->fontHeight = 12;
     this->scrollPos = 0;
   }
 
-  /* 007C */ int unknown_007C;
-  /* 0080 */ int unknown_0080;
+  /* 007C */ int selectedGroup;
+  /* 0080 */ int selectedSub;
   /* 0084 */ int tabWidth;
   /* 0088 */ int groupHeight;
   /* 008C */ int subHeight;
@@ -105,7 +105,7 @@ public:
   /* 00A0 */ std::uint32_t groupColor;
   /* 00A4 */ std::uint32_t selectedSubColor;
   /* 00A8 */ std::uint32_t subColor;
-  /* 00AC */ unsigned char unknown_00AC;
+  /* 00AC */ unsigned char tabState;
   /* 00B0 */ std::map<int, UIAchTabGroup> groups;
   /* 00B8 */ UIAchScrollBar* scrollBar;
   /* 00BC */ int scrollPos;
@@ -132,10 +132,10 @@ public:
 class UIAchTV : public UITextViewer {
 public:
   // INLINED
-  UIAchTV() : unknown_00EC(0), textColor(0), outlineColor(0), underline(0) {
+  UIAchTV() : selectionDisabled(0), textColor(0), outlineColor(0), underline(0) {
   }
 
-  /* 00EC */ unsigned char unknown_00EC;
+  /* 00EC */ unsigned char selectionDisabled;
   /* 00F0 */ std::uint32_t textColor;
   /* 00F4 */ std::uint32_t outlineColor;
   /* 00F8 */ unsigned char underline;
@@ -153,8 +153,8 @@ public:
   /* 0094 */ CBitmapRes* bitmap;
   /* 0098 */ std::string bitmapName;
   /* 00B0 */ int itemId;
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B4 */ int iconX;
+  /* 00B8 */ int iconY;
 
   void Paint() override;
   void OnMouseHover(int x, int y) override;
@@ -188,12 +188,12 @@ public:
   UIAchUpperWnd();
 
   /* 007C */ std::string title;
-  /* 0094 */ int unknown_0094;
-  /* 0098 */ int unknown_0098;
-  /* 009C */ int unknown_009C;
-  /* 00A0 */ int unknown_00A0;
-  /* 00A4 */ UICustomGageBar* unknown_00A4;
-  /* 00A8 */ UICustomGageBar* unknown_00A8;
+  /* 0094 */ int achievementPoints;
+  /* 0098 */ int nextLevelPoints;
+  /* 009C */ int completedCount;
+  /* 00A0 */ int achievementCount;
+  /* 00A4 */ UICustomGageBar* levelGauge;
+  /* 00A8 */ UICustomGageBar* completionGauge;
   /* 00AC */ UIWindow* buttons[2];
   /* 00B4 */ int selected;
 
@@ -211,7 +211,7 @@ class UIAchSummaryWnd : public UIWindow {
 public:
   UIAchSummaryWnd();
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ int visibleCount;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;
   /* 008C */ std::vector<std::pair<int, AchievementInfo>> recent;
   /* 0098 */ UIWindow* buttons[2];

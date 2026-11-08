@@ -61,7 +61,7 @@ void UIMakeTargetResultWnd::Paint() {
 
   ITEM_INFO item;
   item.SetItemId(this->makeType);
-  item.unknown_0060 = 0;
+  item.refiningLevel = 0;
   item.identified = 1;
 
   const int firstWidth = this->DrawFittedItemName(0x10, 2, &item, 0, 0, 0xC, 0);
@@ -221,7 +221,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->indices.push_back(entry.index);
 
     item.SetItemId(entry.itemId);
-    item.unknown_0060 = 0;
+    item.refiningLevel = 0;
     item.identified = 1;
     this->m_list->AddLine(item.DisplayName(0).c_str());
     return 0;

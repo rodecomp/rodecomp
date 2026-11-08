@@ -19,7 +19,7 @@ public:
   void Create(int width, int height);
 
 protected:
-  /* 007C */ unsigned int unknown_007C;
+  /* 007C */ unsigned int selectedQuestId;
   /* 0080 */ int m_selectedIndex;
   /* 0084 */ std::vector<MiniPartyInfoEntry> m_menuItems;
   /* 0090 */ int* m_visibleSetting;

@@ -103,9 +103,9 @@ void CMode::DrawCursor() {
     const float scaleX = cell.scaleX;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     float left = static_cast<float>(cell.x);
-    float right = static_cast<float>(image->width * (image->unknown_0004 + 1) - 1 + cell.x);
+    float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
     const float top = static_cast<float>(cell.y) * cell.scaleY;
-    const float bottom = static_cast<float>(image->height * (image->unknown_0006 + 1) - 1 + cell.y) * cell.scaleY;
+    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * cell.scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
@@ -114,7 +114,7 @@ void CMode::DrawCursor() {
         texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
     primitive->texture = texture;
 

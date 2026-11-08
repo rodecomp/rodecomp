@@ -513,9 +513,9 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   }
 
   primitive->texture = texture;
-  primitive->unknown_0018 = transform->srcalpha;
-  primitive->unknown_001C = transform->destalpha;
-  primitive->unknown_0020 = transform->mtpreset;
+  primitive->sourceBlend = transform->srcalpha;
+  primitive->destinationBlend = transform->destalpha;
+  primitive->textureMode = transform->mtpreset;
   this->flags |= 0x20;
   this->submit(primitive, this->flags);
 }
@@ -625,9 +625,9 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   primitive->texture = texture;
-  primitive->unknown_0018 = transform->srcalpha;
-  primitive->unknown_001C = transform->destalpha;
-  primitive->unknown_0020 = transform->mtpreset;
+  primitive->sourceBlend = transform->srcalpha;
+  primitive->destinationBlend = transform->destalpha;
+  primitive->textureMode = transform->mtpreset;
   this->flags |= 0x20;
   this->submit(primitive, this->flags);
 }
@@ -683,9 +683,9 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   primitive->texture = texture;
-  primitive->unknown_0018 = transform->srcalpha;
-  primitive->unknown_001C = transform->destalpha;
-  primitive->unknown_0020 = transform->mtpreset;
+  primitive->sourceBlend = transform->srcalpha;
+  primitive->destinationBlend = transform->destalpha;
+  primitive->textureMode = transform->mtpreset;
   this->flags |= 0x20;
   this->submit(primitive, this->flags);
 }
@@ -723,18 +723,18 @@ static __forceinline void ResetParticle(CParticle& particle) {
   particle.green = 0xFF;
   particle.blue = 0xFF;
   particle.scale = 1.0f;
-  particle.unknown_00C0 = 0;
+  particle.speedParameter = 0;
   particle.texture = nullptr;
   particle.alpha = 0xFF;
-  particle.unknown_00C4 = 0;
+  particle.angleBits = 0;
   particle.life = 0;
-  particle.unknown_00C8 = 0;
-  particle.unknown_0014 = 0;
-  particle.unknown_00E8 = 0;
-  particle.unknown_00EC = 0;
-  particle.unknown_00D0 = 0;
-  particle.unknown_00D4 = 0;
-  particle.unknown_00D8 = 0;
+  particle.auxiliaryParameter = 0;
+  particle.auxiliaryIndex = 0;
+  particle.elapsedFrames = 0;
+  particle.renderOptions = 0;
+  particle.offsetX = 0;
+  particle.offsetY = 0;
+  particle.offsetZ = 0;
   particle.sourceBlend = 5;
   particle.destinationBlend = 2;
   particle.primitive = RenderPrimitive();
@@ -745,9 +745,9 @@ static __forceinline void ResetParticle(CParticle& particle) {
     particle.vertices[i].x = 0;
     particle.vertices[i].y = 0;
     particle.vertices[i].z = 0;
-    particle.unknown_0278[i].x = 0;
-    particle.unknown_0278[i].y = 0;
-    particle.unknown_0278[i].z = 0;
+    particle.corners[i].x = 0;
+    particle.corners[i].y = 0;
+    particle.corners[i].z = 0;
   }
 
   InitParticleQuad(particle.vertices);
@@ -768,7 +768,7 @@ CParticle::CParticle(vector3d position, int flags) : flags(flags), position(posi
     vertex.v = 0;
   }
 
-  for (vector3d& corner : this->unknown_0278) {
+  for (vector3d& corner : this->corners) {
     corner.x = 0;
     corner.y = 0;
     corner.z = 0;
@@ -898,8 +898,8 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   }
 
   this->primitive.texture = this->texture;
-  this->primitive.unknown_0018 = this->sourceBlend;
-  this->primitive.unknown_001C = this->destinationBlend;
+  this->primitive.sourceBlend = this->sourceBlend;
+  this->primitive.destinationBlend = this->destinationBlend;
   g_renderer->queues.Submit(&this->primitive, static_cast<std::uint16_t>(this->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
@@ -942,7 +942,7 @@ void CParticle::SetTexture(std::string name) {
 // OFFSET: 0x00B40200
 // FUNCTION: fn_18845
 void CParticle::SetRenderFlag(unsigned char value) {
-  *reinterpret_cast<unsigned char*>(&this->primitive.unknown_0014) = value;
+  *reinterpret_cast<unsigned char*>(&this->primitive.depthFlags) = value;
 }
 
 // OFFSET: 0x00B40210

@@ -39,10 +39,10 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
     }
   }
 
-  if (limit <= index || slot->unknown_0000 == 0) {
+  if (limit <= index || slot->enabled == 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot->itemId), 1);
 
-    if (item.unknown_0000[1] != 0) {
+    if (item.identity[1] != 0) {
       UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }

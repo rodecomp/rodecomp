@@ -63,7 +63,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
 
-    this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.unknown_0F30[0]);
+    this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.chatFont[0]);
     this->m_balloon->m_richText = 1;
     this->m_balloon->SetLine("", popup->m_color);
     for (auto it = popup->m_descriptions.begin(); it != popup->m_descriptions.end(); ++it) {

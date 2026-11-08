@@ -145,7 +145,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
       const int value = entry.value;
       CSkillInfo* skill = g_session.m_skillBundle.FindGrouped(id);
       if (skill != nullptr && skill->available != 0) {
-        const int next = skill->unknown_0030 + 1;
+        const int next = skill->learnedLevel + 1;
         if (next <= value) {
           for (int count = value - next + 1; count != 0; --count) {
             g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
@@ -225,11 +225,11 @@ void UINewSkillListWnd::DrawCharacter() {
     if (g_session.IsDoramJob(job) == true) {
       int view = 0;
       if (layer == 4) {
-        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]);
+        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
       } else if (layer == 3) {
-        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]);
+        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]);
       } else if (layer == 2) {
-        view = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]);
+        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
       }
       int x = 0;
       int y = 0;
@@ -242,7 +242,7 @@ void UINewSkillListWnd::DrawCharacter() {
     if (layer == 1) {
       CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[0].c_str()));
       const ActionFrame& bodyFrame = bodyAction->Frame(23, frame);
-      if (actionFrame.anchorCount != 0 && bodyFrame.anchorCount != 0 && actionFrame.anchors[0].unknown_0008 == bodyFrame.anchors[0].unknown_0008) {
+      if (actionFrame.anchorCount != 0 && bodyFrame.anchorCount != 0 && actionFrame.anchors[0].attachmentId == bodyFrame.anchors[0].attachmentId) {
         offsetX += bodyFrame.anchors[0].x - actionFrame.anchors[0].x;
         offsetY += bodyFrame.anchors[0].y - actionFrame.anchors[0].y;
         g_skillListHeadOffsetX = offsetX;
@@ -272,14 +272,14 @@ void UINewSkillListWnd::DrawCharacter() {
         texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
     const int y = offsetY - 25 + cell.y + this->geometry.height;
     const int clipY = y < 0 ? y : 0;
     this->geometry.surface->DrawSurface(
       cell.x + offsetX + 48, y < 0 ? 0 : y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
-      image->height + clipY, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      image->height + clipY, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
 }
@@ -302,7 +302,7 @@ void UINewSkillListWnd::DrawSkillList() {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         if (skill.level == 0) {
           SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
-        } else if (skill.unknown_0014 == 0) {
+        } else if (skill.spCost == 0) {
           SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, red, green, blue);
         }
         this->FillRegion(x + 104, y + 32, 164, 28, RGB(red, green, blue));
@@ -356,10 +356,10 @@ void UINewSkillListWnd::DrawSkillList() {
         }
         this->DrawTextAt(levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
 
-        if (skill.unknown_000C == 0) {
+        if (skill.type == 0) {
           std::sprintf(text, LookupMessage(MSI_PASSIVE));
         } else {
-          int sp = static_cast<int>(skill.unknown_0014);
+          int sp = static_cast<int>(skill.spCost);
           const int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
           bool found = false;
           if (usesLevel) {
@@ -428,7 +428,7 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
   CSkillInfo result(0);
   int sequentialIndex = 0;
   for (const CSkillInfo& skill : this->SkillList(this->m_tab, live)) {
-    int key = skill.unknown_0024;
+    int key = skill.treePosition;
     if (g_session.m_simplifiedSkillList != 0) {
       key = sequentialIndex;
     }
@@ -471,7 +471,7 @@ std::optional<CSkillInfo*> UINewSkillListWnd::SkillPtr(int index, bool live) {
   }
 
   for (auto it = list.begin(); it != list.end(); ++it) {
-    if (it->unknown_0024 == index) {
+    if (it->treePosition == index) {
       return &*it;
     }
   }
@@ -737,7 +737,7 @@ void UINewSkillListWnd::InitTabs() {
   if (initialTabCount == 0) {
     this->m_tabs->AddTab(LookupMessage(MSI_ETC), "");
   }
-  this->m_tabs->unknown_007C = this->m_tab;
+  this->m_tabs->activeTabIndex = this->m_tab;
 }
 
 // OFFSET: 0x009B0E40
@@ -1002,7 +1002,7 @@ void UINewSkillListWnd::OnLBtnDown(int x, int y) {
 
   if (this->IsSkillArea(x, y) && !this->m_locked && this->m_selectedSkill != -1 && g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
-    if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
+    if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);
@@ -1027,7 +1027,7 @@ void UINewSkillListWnd::OnLBtnUp(int x, int y) {
   const int gate = g_session.m_simplifiedSkillList;
   if (gate == 0 && this->IsSkillArea(x, y)) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
-    if (skill.unknown_002C != 0 && skill.available != 0) {
+    if (skill.canPlanLevel != 0 && skill.available != 0) {
       if (this->IncreaseSkillLevel(skill.id)) {
         this->m_needsRedraw = 1;
         this->m_locked = 1;
@@ -1111,7 +1111,7 @@ void UINewSkillListWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  window->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, skill.unknown_0018, skill.level, 1);
+  window->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, skill.upgradable, skill.level, 1);
 
   int originX = 0;
   int originY = 0;
@@ -1142,11 +1142,11 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
   }
 
   for (CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
-    const int key = static_cast<int>(skill.unknown_0024);
+    const int key = static_cast<int>(skill.treePosition);
     if (key != -1 && this->m_firstRow * this->m_columns <= key && key == this->m_selectedSkill) {
       this->m_values.push_back({static_cast<int>(skill.id), 0});
       for (SkillInfoEntry& entry : skill.entries) {
-        NewSkillListValue required{static_cast<int>(entry.unknown_0000), static_cast<int>(entry.unknown_0004)};
+        NewSkillListValue required{static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)};
         const int tab = SkillTabOf(required.id);
         UITabControl* tabs = this->m_tabs;
         if (tab != this->m_tab && tab < static_cast<int>(tabs->labels.size())) {
@@ -1163,7 +1163,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
             break;
           }
         }
-        entry.unknown_0004 = required.value;
+        entry.requiredLevel = required.value;
         this->m_values.push_back(required);
       }
       return;
@@ -1195,7 +1195,7 @@ void UINewSkillListWnd::UpdateScrollBar() {
   if (gate == 0) {
     int maxKey = 0;
     for (const CSkillInfo& skill : list) {
-      const int key = static_cast<int>(skill.unknown_0024);
+      const int key = static_cast<int>(skill.treePosition);
       if (key > maxKey) {
         maxKey = key;
       }
@@ -1269,8 +1269,8 @@ void UINewSkillListWnd::LayoutButtons() {
   if (g_session.m_simplifiedSkillList == 0) {
     if (!this->m_locked) {
       for (const CSkillInfo& skill : list) {
-        const unsigned int slot = skill.unknown_0024 - this->m_columns * this->m_firstRow;
-        if (slot < 42 && skill.available != 0 && skill.unknown_0024 != 0xFFFFFFFF && skill.level != 0 &&
+        const unsigned int slot = skill.treePosition - this->m_columns * this->m_firstRow;
+        if (slot < 42 && skill.available != 0 && skill.treePosition != 0xFFFFFFFF && skill.level != 0 &&
             CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
           const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
           const int x = static_cast<int>(slot) % this->m_columns * 68;
@@ -1285,9 +1285,9 @@ void UINewSkillListWnd::LayoutButtons() {
   for (int row = 0; row < 10; ++row) {
     const int y = row * 32 + 48;
     CSkillInfo skill = this->VisibleSkill(row);
-    if (skill.level < static_cast<int>(skill.unknown_0028) && row < this->m_visibleRows &&
+    if (skill.level < static_cast<int>(skill.maxLevel) && row < this->m_visibleRows &&
         static_cast<unsigned int>(this->m_firstRow + row) < list.size() && this->m_skillPoints != 0 && skill.available != 0 &&
-        skill.unknown_0018 != 0) {
+        skill.upgradable != 0) {
       this->m_btnLevelUp[row]->Move(78, y - 14);
     }
     if (!this->m_locked && row < this->m_visibleRows && static_cast<unsigned int>(this->m_firstRow + row) < list.size() &&
@@ -1386,7 +1386,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case 248:
       if (this->m_skillPoints != 0) {
         CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + a - 239, false);
-        if (skill.available != 0 && skill.unknown_0018 != 0 && this->IncreaseSkillLevel(skill.id)) {
+        if (skill.available != 0 && skill.upgradable != 0 && this->IncreaseSkillLevel(skill.id)) {
           this->m_needsRedraw = 1;
           this->m_locked = 1;
           this->LayoutButtons();
@@ -1429,7 +1429,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_TAB: {
     std::list<CSkillInfo>& list = this->SkillList(a, false);
     if (!this->IsExtraTab(a) && list.size() == 0) {
-      this->m_tabs->unknown_007C = this->m_tab;
+      this->m_tabs->activeTabIndex = this->m_tab;
       return 0;
     }
     if (this->m_tab != a) {
@@ -1528,15 +1528,15 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
             break;
           }
         }
-        target = (std::max)(static_cast<int>(info->unknown_0030), current) + 1;
-        if (static_cast<int>(info->unknown_0030) >= static_cast<int>(info->unknown_0028)) {
+        target = (std::max)(static_cast<int>(info->learnedLevel), current) + 1;
+        if (static_cast<int>(info->learnedLevel) >= static_cast<int>(info->maxLevel)) {
           return false;
         }
       } else {
         target = it->value;
       }
 
-      if (target > static_cast<int>(info->unknown_0028)) {
+      if (target > static_cast<int>(info->maxLevel)) {
         continue;
       }
 
@@ -1547,12 +1547,12 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
           break;
         }
       }
-      current = (std::max)(static_cast<int>(info->unknown_0030), current);
+      current = (std::max)(static_cast<int>(info->learnedLevel), current);
       if (current >= target) {
         continue;
       }
 
-      if (static_cast<int>(info->unknown_002C) <= 0) {
+      if (static_cast<int>(info->canPlanLevel) <= 0) {
         const char* name = info->DisplayName(*g_session.m_hotkeyScript);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(MSI_REFUSE_LOGIN_AUTH), name)), 0xFF, 0, 0, 0);
         return false;
@@ -1581,7 +1581,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
   for (CSkillInfo& skill : list) {
     if (static_cast<int>(skill.id) == skillId) {
-      if (skill.level >= static_cast<int>(skill.unknown_0028)) {
+      if (skill.level >= static_cast<int>(skill.maxLevel)) {
         return false;
       }
       ++skill.level;
@@ -1623,7 +1623,7 @@ void UINewSkillListWnd::DrawSkillTree() {
   }
 
   for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
-    const int position = static_cast<int>(skill.unknown_0024);
+    const int position = static_cast<int>(skill.treePosition);
     if (position == -1) {
       continue;
     }
@@ -1643,7 +1643,7 @@ void UINewSkillListWnd::DrawSkillTree() {
     if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
       DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xC1B6FF);
-    } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.unknown_0018 != 0) {
+    } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xF0C4AF);
       DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xF0C4AF);
     } else {
@@ -1665,7 +1665,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         if (value.size() != 0) {
           DrawOutlinedText(*this, x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
         }
-      } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.unknown_0018 != 0) {
+      } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
         this->DrawAuxiliary(4, x + 4, y + 44, &bitmap->image, true, true);
       } else if (level == 0) {
         shade = 120;
@@ -1677,7 +1677,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       const int planned = SkillValueOf(this->m_unknown_02A0, static_cast<int>(skill.id));
       const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
       if (current) {
-        int added = planned - current->unknown_0030;
+        int added = planned - current->learnedLevel;
         if (added < 0) {
           added = 0;
         }
@@ -1687,7 +1687,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int maxLevel = this->SkillAt(static_cast<int>(skill.unknown_0024), true).level;
+    const int maxLevel = this->SkillAt(static_cast<int>(skill.treePosition), true).level;
     int red = shade;
     int green = shade;
     int blue = shade;

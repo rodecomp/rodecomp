@@ -53,7 +53,7 @@ void ReceivePartyJoinResult(const void* packet) {
   case 0: {
     char text[500] = {};
 
-    if (g_session.unknown_5464 == 1) {
+    if (g_session.partyLeader == 1) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_ADVENTURER_AGENCY_LIST), reinterpret_cast<const char*>(bytes + 2));
     } else {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_ACCEPT_REQUEST_USER), reinterpret_cast<const char*>(bytes + 26));
@@ -65,7 +65,7 @@ void ReceivePartyJoinResult(const void* packet) {
   case 1: {
     char text[500] = {};
 
-    if (g_session.unknown_5464 == 1) {
+    if (g_session.partyLeader == 1) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_REQUEST_JOIN_PARTY), reinterpret_cast<const char*>(bytes + 2));
     } else {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_REFUSE_REQUEST_USER), reinterpret_cast<const char*>(bytes + 26));

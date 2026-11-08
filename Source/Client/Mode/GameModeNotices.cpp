@@ -300,7 +300,7 @@ static int CountItemSlotOptions(const ItemSlotOption* options) {
 // FUNCTION: fn_21839
 void CGameMode::ReceiveStatus(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusPacket*>(data);
-  int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  int* bonusStats = reinterpret_cast<int*>(g_session.combatStats);
   g_session.m_standardStats[0] = packet->stats[0];
   g_session.InvalidateWindowFrames();
   g_session.m_standardStats[1] = packet->stats[2];
@@ -326,7 +326,7 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
   bonusStats[5] = packet->stats[11];
   g_session.InvalidateWindowFrames();
 
-  *reinterpret_cast<int*>(g_session.unknown_1654) = packet->statusPoint;
+  *reinterpret_cast<int*>(g_session.statusPoints) = packet->statusPoint;
   g_session.InvalidateWindowFrames();
 
   bonusStats[7] = packet->values[0];
@@ -358,7 +358,7 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
   bonusStats[9] = packet->values[13];
   g_session.InvalidateWindowFrames();
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
     window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
   }
 }
@@ -369,22 +369,22 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangePacket*>(data);
   switch (packet->type) {
   case SP_USTR:
-    reinterpret_cast<int*>(g_session.unknown_169C)[0] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[0] = packet->value;
     break;
   case SP_UAGI:
-    reinterpret_cast<int*>(g_session.unknown_169C)[1] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[1] = packet->value;
     break;
   case SP_UVIT:
-    reinterpret_cast<int*>(g_session.unknown_169C)[2] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[2] = packet->value;
     break;
   case SP_UINT:
-    reinterpret_cast<int*>(g_session.unknown_169C)[3] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[3] = packet->value;
     break;
   case SP_UDEX:
-    reinterpret_cast<int*>(g_session.unknown_169C)[4] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[4] = packet->value;
     break;
   case SP_ULUK:
-    reinterpret_cast<int*>(g_session.unknown_169C)[5] = packet->value;
+    reinterpret_cast<int*>(g_session.combatStats)[5] = packet->value;
     break;
   case SP_UPOW:
     g_session.m_traits.points[0] = packet->value;
@@ -405,7 +405,7 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
     g_session.m_traits.points[5] = packet->value;
     break;
   default:
-    if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+    if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
       window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     }
     return;
@@ -413,7 +413,7 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
 
   g_session.InvalidateWindowFrames();
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
     window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
   }
 }
@@ -428,14 +428,14 @@ void CGameMode::ReceiveStatusChangeEffect(const unsigned char* data) {
 // OFFSET: 0x00D45B90
 // FUNCTION: fn_21841
 void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
-  this->unknown_02D4 = 0;
-  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4);
+  this->waitingReqStatusAck = 0;
+  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd);
   const auto* packet = reinterpret_cast<const StatusChangeAckPacket*>(data);
   if (!packet->result) {
     return;
   }
 
-  int* bonusStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  int* bonusStats = reinterpret_cast<int*>(g_session.combatStats);
   switch (packet->type) {
   case SP_STR:
     g_session.m_standardStats[0] = packet->value;
@@ -603,10 +603,10 @@ void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
   }
 
   if (mail != end) {
-    mail->second.unknown_0190 = 1;
+    mail->second.isReturned = 1;
     if (!mail->second.isRead) {
-      --g_rodexMailStore->unknown_0018;
-      if (g_rodexMailStore->unknown_0018 == 0) {
+      --g_rodexMailStore->unreadCount;
+      if (g_rodexMailStore->unreadCount == 0) {
         UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
         if (window) {
           window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
@@ -616,8 +616,8 @@ void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
   }
 
 refresh:
-  if (g_windowMgr.unknown_0454) {
-    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->Invalidate();
+  if (g_windowMgr.rodexInboxWnd) {
+    reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->Invalidate();
   }
 }
 
@@ -667,25 +667,25 @@ void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
     break;
   case GENERATE_ROULETTE_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_RECV_ITEM_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
-    if (g_windowMgr.unknown_0464) {
+    if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
     return;
   case GENERATE_ROULETTE_NO_ENOUGH_POINT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_RECV_ITEM_OVERWEIGHT)), 0x64FFFF, 0, 0, 0);
-    if (g_windowMgr.unknown_0464) {
+    if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
     return;
   case 4:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JPN_PERSONALINFO_DEATHMSG)), 0x64FFFF, 0, 0, 0);
-    if (g_windowMgr.unknown_0464) {
+    if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
     return;
   case 5:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_DELETE)), 0x64FFFF, 0, 0, 0);
-    if (g_windowMgr.unknown_0464) {
+    if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
     return;
@@ -741,7 +741,7 @@ void CGameMode::NotifyWindow4F258(int result) {
   switch (result) {
   case 0:
     if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
-      g_windowMgr.unknown_0474 = 188;
+      g_windowMgr.modalResponse = 188;
     }
     break;
   case 1:
@@ -807,14 +807,14 @@ void CGameMode::ReceiveBasicInfoResult(unsigned char result) {
   case 1:
   case 2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_CHARMS)), 0xFF, 0, 0, 0);
-    if (g_windowMgr.unknown_01E0) {
-      g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
+    if (g_windowMgr.equipWnd) {
+      g_windowMgr.equipWnd->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
     }
     break;
   }
 
-  if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
+  if (g_windowMgr.equipWnd) {
+    g_windowMgr.equipWnd->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
   }
 }
 
@@ -845,8 +845,8 @@ void CGameMode::ReceiveUnknown0454Result(const unsigned char* data) {
     break;
   }
 
-  if (g_windowMgr.unknown_0454) {
-    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (g_windowMgr.rodexInboxWnd) {
+    reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
@@ -907,12 +907,12 @@ void CGameMode::ReceiveActorPairFreeze(const unsigned char* data) {
     CRenderObject* second = packet->secondAid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(packet->secondAid);
     if (first && second) {
       first->SetFrameSequence(96, 4, 4, 96, 4, 1, 99999999, 0);
-      first->render.unknown_00A3 = 1;
+      first->render.colorLocked = 1;
       first->SetColor(-1, 64, 64, 64);
       first->render.instant.Set(3, 1);
       second->render.instant.Set(3, 1);
       second->render.isMotionFreezed = true;
-      second->render.unknown_00A3 = 1;
+      second->render.colorLocked = 1;
       second->SetColor(-1, 64, 64, 64);
     }
   } else {
@@ -920,14 +920,14 @@ void CGameMode::ReceiveActorPairFreeze(const unsigned char* data) {
     CRenderObject* second = packet->secondAid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(packet->secondAid);
     if (first) {
       first->SetFrameSequence(96, 4, 4, 96, 4, 1, 1, 0);
-      first->render.unknown_00A3 = 0;
+      first->render.colorLocked = 0;
       first->SetColor(-1, 255, 255, 255);
       first->render.instant.Set(3, 0);
     }
 
     if (second) {
       second->render.isMotionFreezed = false;
-      second->render.unknown_00A3 = 0;
+      second->render.colorLocked = 0;
       second->SetColor(-1, 255, 255, 255);
       second->render.instant.Set(3, 0);
     }
@@ -982,7 +982,7 @@ void CGameMode::ReceiveActorEffect347(const unsigned char* data) {
 // OFFSET: 0x00D6E9D0
 // FUNCTION: fn_22109
 void CGameMode::ReceiveUnknown0294Text(const unsigned char* data) {
-  std::sprintf(this->unknown_0294, reinterpret_cast<const char*>(data + 2));
+  std::sprintf(this->coupleName, reinterpret_cast<const char*>(data + 2));
 }
 
 // OFFSET: 0x00D6E9F0
@@ -1039,9 +1039,9 @@ void CGameMode::ReceiveUnknown7FBC(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ShortValuePacket*>(data);
 
   if (100 >= packet->value) {
-    g_session.unknown_7FBC = packet->value;
-    if (g_windowMgr.unknown_01D4) {
-      reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    g_session.extraInventorySlots = packet->value;
+    if (g_windowMgr.itemWnd) {
+      reinterpret_cast<UIWindow*>(g_windowMgr.itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
 }
@@ -1148,16 +1148,16 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
   MessengerMember member = g_session.PartyByAccount(packet->aid);
   if (packet->aid != g_session.m_aid && member.valid) {
     ITEM_INFO item;
-    item.unknown_0000[0] = packet->type;
-    item.unknown_0000[2] = packet->location;
-    item.unknown_0000[1] = packet->itemId;
-    item.unknown_0000[3] = 0;
+    item.identity[0] = packet->type;
+    item.identity[2] = packet->location;
+    item.identity[1] = packet->itemId;
+    item.identity[3] = 0;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
     item.identified = packet->identified;
-    item.unknown_005D = packet->damaged;
-    item.unknown_0060 = packet->refine;
-    item.unknown_0088 = packet->grade;
+    item.damaged = packet->damaged;
+    item.refiningLevel = packet->refine;
+    item.grade = packet->grade;
 
     std::string name = item.DisplayName(0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ITEM_PICKUP_PARTY), member.name.c_str(), name.c_str()).c_str()), 0xFFFF00, 9, 0, 0);
@@ -1262,10 +1262,10 @@ struct MessageBoxPacket {
 struct Item1784Entry {
   /* 0000 */ int itemId;
   /* 0004 */ int quantity;
-  /* 0008 */ std::uint32_t unknown_0008;
-  /* 000C */ std::uint32_t unknown_000C;
-  /* 0010 */ std::uint32_t unknown_0010;
-  /* 0014 */ std::uint32_t unknown_0014;
+  /* 0008 */ std::uint32_t purchaseParameter;
+  /* 000C */ std::uint32_t price;
+  /* 0010 */ std::uint32_t saleParameter1;
+  /* 0014 */ std::uint32_t saleParameter2;
 };
 
 struct Item1784ListPacket {
@@ -1317,13 +1317,13 @@ __declspec(noinline) void ReceiveShortcutPage(int position, const ShortcutPagePa
     g_session.ClearShortcutSlots();
     memcpy_s(g_session.m_shortcutSlots, sizeof(g_session.m_shortcutSlots), payload, sizeof(payload->slots));
     g_session.ClearSlots06EB();
-    g_session.unknown_06EB = payload->slot06EB;
-    g_session.unknown_06F2 = payload->slot06F2;
-    base = g_session.unknown_06FC;
+    g_session.quickSlot = payload->slot06EB;
+    g_session.alternateQuickSlot = payload->slot06F2;
+    base = g_session.mainShortcutRow;
   } else if (bank == 1) {
     g_session.ClearSecondaryShortcutSlots();
     memcpy_s(g_session.m_secondaryShortcutSlots, sizeof(g_session.m_secondaryShortcutSlots), payload, sizeof(payload->slots));
-    base = g_session.unknown_06A8;
+    base = g_session.alternateShortcutRow;
   }
 
   if (g_windowMgr.window_01E8) {
@@ -1336,11 +1336,11 @@ __declspec(noinline) void ReceiveShortcutPage(int position, const ShortcutPagePa
 void CGameMode::ResendMinimapMarkers() {
   if (g_windowMgr.window_4F1CC) {
     for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
-      if (0 == it->second.unknown_0006) {
+      if (0 == it->second.questIconId) {
         continue;
       }
 
-      g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_ADD_QUEST_MARK, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
+      g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_ADD_QUEST_MARK, it->second.effectType, it->second.questIconId, it->second.x, it->second.y);
     }
   }
 }
@@ -1352,7 +1352,7 @@ void CGameMode::ReceiveJobTitle(unsigned char result, int job) {
     return;
   }
 
-  g_session.unknown_615C = job;
+  g_session.jobTitle = job;
   std::string title = GetJobTitleString(job);
   CActorNameCard card = this->LookupNameCard(g_session.m_aid);
   this->nameCard.SetValue4(g_session.m_aid, title);
@@ -1415,7 +1415,7 @@ void CGameMode::NotifyCaptchaRegistered() {
 // FUNCTION: fn_22120
 void CGameMode::ReceiveItem1784List(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const Item1784ListPacket*>(data);
-  if (g_session.unknown_5912 || packet->flag != 0) {
+  if (g_session.characterRenameEnabled || packet->flag != 0) {
     return;
   }
 
@@ -1430,18 +1430,18 @@ void CGameMode::ReceiveItem1784List(const unsigned char* data) {
     memcpy_s(&entry, sizeof(entry), &packet->entries[i], sizeof(entry));
 
     ITEM_INFO item;
-    item.unknown_0000[1] = -1;
+    item.identity[1] = -1;
     item.SetItemId(entry.itemId);
-    item.unknown_0078[3] = entry.unknown_0008;
+    item.saleData[3] = entry.purchaseParameter;
     item.quantity = entry.quantity;
-    item.unknown_0014[0] = entry.unknown_000C;
-    item.unknown_0078[1] = entry.unknown_0010;
-    item.unknown_0078[2] = entry.unknown_0014;
-    item.unknown_0064 = 8;
+    item.prices[0] = entry.price;
+    item.saleData[1] = entry.saleParameter1;
+    item.saleData[2] = entry.saleParameter2;
+    item.bindOnEquip = 8;
     item.identified = 1;
     item.GetIdDisplayName(name, capacity, 0);
     item.SetName(name);
-    g_session.unknown_1784[9].push_back(item);
+    g_session.inventoryCategories[9].push_back(item);
   }
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
@@ -1466,8 +1466,8 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COMPOUNDING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
     ITEM_INFO card = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->cardIndex);
     ITEM_INFO equip = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->equipIndex);
-    if (equip.unknown_0000[1] != 0 && card.unknown_0000[1] != 0) {
-      int* cards = reinterpret_cast<int*>(equip.unknown_001C);
+    if (equip.identity[1] != 0 && card.identity[1] != 0) {
+      int* cards = reinterpret_cast<int*>(equip.cards);
       for (int i = 0; i < 4; ++i) {
         if (cards[i] == 0) {
           cards[i] = std::atoi(card.itemId.c_str());
@@ -1491,8 +1491,8 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
 void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RefineResultPacket*>(data);
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
-  if (item.unknown_0000[1] != 0) {
-    item.unknown_0060 = packet->refine;
+  if (item.identity[1] != 0) {
+    item.refiningLevel = packet->refine;
     g_session.UpdateInventoryItem(item, 1);
   }
 
@@ -1531,7 +1531,7 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   }
 
   ITEM_INFO refined = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
-  refined.unknown_0060 = packet->refine;
+  refined.refiningLevel = packet->refine;
   g_session.UpdateInventoryItem(refined, 1);
 }
 
@@ -1685,7 +1685,7 @@ void CGameMode::ReceiveRouletteInfo(const unsigned char* packet) {
     g_rouletteMgr->SetResult(static_cast<unsigned short>(g_rouletteMgr->m_index), 1, 0);
   }
 
-  if (!g_windowMgr.unknown_0464) {
+  if (!g_windowMgr.roulletteWnd) {
     g_windowMgr.EnsureWindow(WID_ROULLETTEWND);
   }
 }
@@ -1873,10 +1873,10 @@ void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
 // OFFSET: 0x00D6C460
 // FUNCTION: fn_22081
 void CGameMode::ReceiveAchievementList(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
-  g_session.unknown_614C = unknown01738784;
-  g_session.unknown_6150 = unknown01738788;
-  g_session.unknown_6154 = completed;
-  g_session.unknown_6158 = total;
+  g_session.achievementScore = unknown01738784;
+  g_session.achievementLevel = unknown01738788;
+  g_session.achievementCompleted = completed;
+  g_session.achievementTotal = total;
 
   for (int i = 0; i < count; ++i) {
     g_session.UpdateRecord6144(packets[i]);
@@ -1943,7 +1943,7 @@ void CGameMode::ReceiveRouletteClose(const unsigned char* packet) {
   switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
   case CLOSE_ROULETTE_SUCCESS:
     g_rouletteMgr->Reset();
-    if (g_windowMgr.unknown_0464) {
+    if (g_windowMgr.roulletteWnd) {
       g_windowMgr.CloseWindow(WID_ROULLETTEWND);
     }
     break;
@@ -1986,7 +1986,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
   const auto* open = reinterpret_cast<const RouletteOpenPacket*>(packet);
   switch (open->result) {
   case OPEN_ROULETTE_SUCCESS:
-    g_rouletteMgr->unknown_0004 = open->serial;
+    g_rouletteMgr->m_serial = open->serial;
     g_rouletteMgr->m_stage = open->stage;
     g_rouletteMgr->SetAdditionItem(open->additionItemId);
     g_rouletteMgr->m_goldPoint = open->goldPoint;
@@ -2002,7 +2002,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
       PacketIdOnly request;
       request.id = 0xA1B;
       GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
-    } else if (!g_windowMgr.unknown_0464) {
+    } else if (!g_windowMgr.roulletteWnd) {
       g_windowMgr.EnsureWindow(WID_ROULLETTEWND);
     }
     break;
@@ -2017,13 +2017,13 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
 void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
   const auto* open = reinterpret_cast<const RodexOpenPacket*>(packet);
   if (open->result == 1) {
-    if (!g_windowMgr.unknown_0458) {
+    if (!g_windowMgr.rodexComposeWnd) {
       g_session.RestoreItems5C68();
       g_session.ClearItemQuantities();
       g_windowMgr.EnsureWindow(WID_RODEXCOMPOSEWND);
       const char* text = open->text;
       if (text) {
-        reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_0458)->SetContentsText(text);
+        reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexComposeWnd)->SetContentsText(text);
       }
     }
   } else {
@@ -2064,7 +2064,7 @@ void CGameMode::ReceiveStackedItemReturn(const unsigned char* packet) {
   const auto* result = reinterpret_cast<const StackedItemReturnPacket*>(packet);
   if (result->result == 1) {
     g_session.ReturnStackedItem(result->index, result->count);
-    g_session.unknown_6140 = result->value;
+    g_session.achievementResult = result->value;
   } else {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOINED_IN_CLAN)), 0x64FFFF, 0, 0, 0);
   }
@@ -2074,8 +2074,8 @@ void CGameMode::ReceiveStackedItemReturn(const unsigned char* packet) {
 // FUNCTION: fn_22095
 void CGameMode::ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name) {
   if (id) {
-    if (g_windowMgr.unknown_0458) {
-      reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->SetRecipient(id, job, level, name);
+    if (g_windowMgr.rodexComposeWnd) {
+      reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->SetRecipient(id, job, level, name);
     }
   } else {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TAIWAN_PERSONALINFO_DEATHMSG)), 0x64FFFF, 0, 0, 0);
@@ -2163,20 +2163,20 @@ void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet->type;
+  item.identity[0] = packet->type;
   item.SetItemId(packet->itemId);
   item.quantity = packet->slot;
-  item.unknown_005D = packet->damaged;
+  item.damaged = packet->damaged;
   item.identified = packet->identified;
-  item.unknown_0060 = packet->refine;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.unknown_0000[1] = 0xFFFFFFFF;
-  item.unknown_0098 = CountItemSlotOptions(packet->options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  item.refiningLevel = packet->refine;
+  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  item.identity[1] = 0xFFFFFFFF;
+  item.optionCount = CountItemSlotOptions(packet->options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
   }
-  item.unknown_0000[2] = packet->expireTime;
-  item.unknown_0070 = packet->bindType;
+  item.identity[2] = packet->expireTime;
+  item.sprite = packet->bindType;
   g_session.AddItemSlot(item);
 }
 
@@ -2194,21 +2194,21 @@ void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
   }
 
   ITEM_INFO item;
-  item.unknown_0000[0] = packet->type;
+  item.identity[0] = packet->type;
   item.SetItemId(packet->itemId);
   item.quantity = packet->slot;
-  item.unknown_005D = packet->damaged;
+  item.damaged = packet->damaged;
   item.identified = packet->identified;
-  item.unknown_0060 = packet->refine;
-  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
-  item.unknown_0000[1] = 0xFFFFFFFF;
-  item.unknown_0098 = CountItemSlotOptions(packet->options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  item.refiningLevel = packet->refine;
+  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  item.identity[1] = 0xFFFFFFFF;
+  item.optionCount = CountItemSlotOptions(packet->options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
   }
-  item.unknown_0000[2] = packet->expireTime;
-  item.unknown_0070 = packet->bindType;
-  item.unknown_0088 = packet->grade;
+  item.identity[2] = packet->expireTime;
+  item.sprite = packet->bindType;
+  item.grade = packet->grade;
   g_session.AddItemSlot(item);
 }
 
@@ -2236,11 +2236,11 @@ void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
   }
 
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
-  if (item.unknown_0000[1] != 0) {
-    item.unknown_0060 = packet->refine;
-    item.unknown_0098 = CountItemSlotOptions(packet->options);
-    for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  if (item.identity[1] != 0) {
+    item.refiningLevel = packet->refine;
+    item.optionCount = CountItemSlotOptions(packet->options);
+    for (int index = 0; index < item.optionCount; ++index) {
+      reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
     }
     g_session.UpdateInventoryItem(item, 1);
   }
@@ -2493,8 +2493,8 @@ void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
 // OFFSET: 0x00D6BE80
 // FUNCTION: fn_22076
 void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
-  if (g_windowMgr.unknown_045C) {
-    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->SetZenyButtonDisabled(0);
+  if (g_windowMgr.rodexContentsWnd) {
+    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->SetZenyButtonDisabled(0);
   }
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
@@ -2507,25 +2507,25 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
     case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
-        mail->second.unknown_0001 -= 2;
+        mail->second.type -= 2;
       }
       break;
     case MAIL_INBOX_ACCOUNT:
       mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
-        mail->second.unknown_0001 -= 2;
+        mail->second.type -= 2;
       }
       break;
     case MAIL_INBOX_RETURNED:
       mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
-        mail->second.unknown_0001 -= 2;
+        mail->second.type -= 2;
       }
       break;
     }
 
-    if (g_windowMgr.unknown_045C) {
-      reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->DisableZenyButton();
+    if (g_windowMgr.rodexContentsWnd) {
+      reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->DisableZenyButton();
     }
     break;
   }
@@ -2624,8 +2624,8 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
   int message;
   switch (packet->result) {
   case 0: {
-    const int nextSlots = g_session.unknown_7FBC + 110;
-    const int slots = g_session.unknown_7FBC + 100;
+    const int nextSlots = g_session.extraInventorySlots + 110;
+    const int slots = g_session.extraInventorySlots + 100;
     const char* name = FindItemDescription(packet->itemId).identifiedName;
     const int answer = g_windowMgr.Confirm(
       FormatOwnedString(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_NO_ITEM), name, slots, nextSlots).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
@@ -2663,7 +2663,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
     g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
     g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
-    if (item.unknown_0000[1] <= 0) {
+    if (item.identity[1] <= 0) {
       return;
     }
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
@@ -2685,8 +2685,8 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
 // OFFSET: 0x00D69E60
 // FUNCTION: fn_22056
 void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
-  if (g_windowMgr.unknown_045C) {
-    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->SetItemButtonDisabled(0);
+  if (g_windowMgr.rodexContentsWnd) {
+    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->SetItemButtonDisabled(0);
   }
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
@@ -2700,30 +2700,30 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
     case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
-        mail->second.unknown_0001 -= 4;
+        mail->second.type -= 4;
       }
       break;
     case MAIL_INBOX_ACCOUNT:
       mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
-        mail->second.unknown_0001 -= 4;
+        mail->second.type -= 4;
       }
       break;
     case MAIL_INBOX_RETURNED:
       mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
-        mail->second.unknown_0001 -= 4;
+        mail->second.type -= 4;
       }
       break;
     }
 
-    if (g_windowMgr.unknown_045C) {
-      auto* contents = reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C);
+    if (g_windowMgr.rodexContentsWnd) {
+      auto* contents = reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd);
       contents->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       contents->DisableItemButton();
     }
-    if (g_windowMgr.unknown_0454) {
-      reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+    if (g_windowMgr.rodexInboxWnd) {
+      reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
     break;
   }
@@ -3031,7 +3031,7 @@ void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
   const int count = g_session.GetList0Size();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
-    if (item.unknown_0000[1] == 0) {
+    if (item.identity[1] == 0) {
       continue;
     }
     if (packet->type == 1 && !this->IsEffectId994Group(std::atoi(item.itemId.c_str()))) {
@@ -3040,16 +3040,16 @@ void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
     if (packet->type == 2 && !this->IsEffectId990Group(std::atoi(item.itemId.c_str()))) {
       continue;
     }
-    if (item.unknown_0000[1] == g_session.unknown_16EC) {
+    if (item.identity[1] == g_session.equippedArrowIndex) {
       continue;
     }
     RawItemBasic raw = {};
-    raw.id = item.unknown_0000[1];
+    raw.id = item.identity[1];
     strcpy_s(raw.itemId, sizeof(raw.itemId), item.itemId.c_str());
-    raw.unknown_000C = item.unknown_0000[0];
+    raw.type = item.identity[0];
     raw.identified = item.identified;
-    raw.unknown_0004 = 1;
-    raw.unknown_0008 = 2;
+    raw.price = 1;
+    raw.realPrice = 2;
     g_session.AddItem1718(raw, 1);
   }
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
@@ -3062,9 +3062,9 @@ void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
 // FUNCTION: fn_21623
 void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeItemAddAckPacket*>(data);
-  int& exchangeAmount = *reinterpret_cast<int*>(&this->unknown_0100[0x10]);
-  *reinterpret_cast<int*>(&this->unknown_0100[0x00]) = 0;
-  this->unknown_05CE = 1;
+  int& exchangeAmount = *reinterpret_cast<int*>(&this->equipmentRequestState[0x10]);
+  *reinterpret_cast<int*>(&this->equipmentRequestState[0x00]) = 0;
+  this->inventoryChanged = 1;
   switch (packet->result) {
   case EXITEM_ADD_SUCCEED:
     if (packet->index != 0) {
@@ -3075,7 +3075,7 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
       g_session.m_zeny -= exchangeAmount;
       g_session.RefreshHpSpWindows();
       g_session.InvalidateWindowFrames();
-      g_session.SetUnknown5210(g_session.unknown_5210 + exchangeAmount);
+      g_session.SetUnknown5210(g_session.exchangeMoney + exchangeAmount);
     }
     break;
   case EXITEM_ADD_FAILED_OVERWEIGHT:
@@ -3101,7 +3101,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   switch (packet->result) {
   case TRADE_ACK_ACCEPT: {
     this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
+    *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 1;
     g_session.ResetSlots();
     g_session.ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(WID_EXCHANGEUI);
@@ -3143,7 +3143,7 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
   switch (packet->result) {
   case TRADE_ACK_ACCEPT: {
     this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
+    *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 1;
     g_session.ResetSlots();
     g_session.ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(WID_EXCHANGEUI);
@@ -3175,10 +3175,10 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
 
 #pragma pack(push, 1)
 struct GuildStorageLogPacketEntry {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int logId;
   /* 0004 */ int itemId;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ unsigned char unknown_000C;
+  /* 0008 */ int quantity;
+  /* 000C */ unsigned char operation;
   /* 000D */ int refine;
   /* 0011 */ unsigned char unknown_0011[8];
   /* 0019 */ unsigned char identified;
@@ -3186,7 +3186,7 @@ struct GuildStorageLogPacketEntry {
   /* 001C */ unsigned char cards[16];
   /* 002C */ char name[24];
   /* 0044 */ char date[24];
-  /* 005C */ unsigned char unknown_005C;
+  /* 005C */ unsigned char highlighted;
 };
 
 struct GuildStorageLogPacket {
@@ -3206,66 +3206,66 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
     for (int i = 0; i < packet->count; ++i) {
       const GuildStorageLogPacketEntry& source = packet->entries[i];
       ITEM_INFO item;
-      item.unknown_00B8[0] = source.unknown_0000;
-      item.unknown_00B8[1] = source.unknown_0008;
-      item.unknown_00C0 = source.unknown_000C;
-      std::strcpy(reinterpret_cast<char*>(item.unknown_00C1), source.name);
-      std::strcpy(reinterpret_cast<char*>(item.unknown_00D9), source.date);
+      item.recordIds[0] = source.logId;
+      item.recordIds[1] = source.quantity;
+      item.recordType = source.operation;
+      std::strcpy(reinterpret_cast<char*>(item.recordName), source.name);
+      std::strcpy(reinterpret_cast<char*>(item.recordDate), source.date);
       char number[16] = {};
       item.itemId = _itoa(source.itemId, number, 10);
       item.identified = source.identified;
-      item.unknown_0000[0] = source.count;
-      item.unknown_0060 = source.refine;
-      std::memcpy(item.unknown_001C, source.cards, sizeof(source.cards));
+      item.identity[0] = source.count;
+      item.refiningLevel = source.refine;
+      std::memcpy(item.cards, source.cards, sizeof(source.cards));
       GuildStorageLogEntry entry;
-      entry.unknown_0000 = item.unknown_00B8[0];
-      entry.unknown_0004 = item.unknown_00B8[1];
-      entry.unknown_0008 = item.unknown_00C0;
-      std::strcpy(entry.unknown_0009, reinterpret_cast<const char*>(item.unknown_00C1));
-      std::strcpy(entry.unknown_0021, reinterpret_cast<const char*>(item.unknown_00D9));
-      entry.unknown_003C = item.DisplayName(0);
-      entry.unknown_0054 = item.identified;
-      entry.unknown_0058 = item.unknown_0000[0];
-      entry.unknown_005C = item.unknown_0060;
-      std::memcpy(entry.unknown_0060, item.unknown_001C, sizeof(entry.unknown_0060));
-      entry.unknown_0070 = source.unknown_005C;
+      entry.logId = item.recordIds[0];
+      entry.quantity = item.recordIds[1];
+      entry.operation = item.recordType;
+      std::strcpy(entry.characterName, reinterpret_cast<const char*>(item.recordName));
+      std::strcpy(entry.timestamp, reinterpret_cast<const char*>(item.recordDate));
+      entry.itemName = item.DisplayName(0);
+      entry.identified = item.identified;
+      entry.itemType = item.identity[0];
+      entry.refineLevel = item.refiningLevel;
+      std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
+      entry.category = source.highlighted;
       g_guildStorageLogs[0].push_back(entry);
     }
   } else if (packet->result == 1) {
     for (int i = 0; i < packet->count; ++i) {
       const GuildStorageLogPacketEntry& source = packet->entries[i];
       ITEM_INFO item;
-      item.unknown_00B8[0] = source.unknown_0000;
-      item.unknown_00B8[1] = source.unknown_0008;
-      item.unknown_00C0 = source.unknown_000C;
-      std::strcpy(reinterpret_cast<char*>(item.unknown_00C1), source.name);
-      std::strcpy(reinterpret_cast<char*>(item.unknown_00D9), source.date);
+      item.recordIds[0] = source.logId;
+      item.recordIds[1] = source.quantity;
+      item.recordType = source.operation;
+      std::strcpy(reinterpret_cast<char*>(item.recordName), source.name);
+      std::strcpy(reinterpret_cast<char*>(item.recordDate), source.date);
       char number[16] = {};
       item.itemId = _itoa(source.itemId, number, 10);
       item.identified = source.identified;
-      item.unknown_0000[0] = source.count;
-      item.unknown_0060 = source.refine;
-      std::memcpy(item.unknown_001C, source.cards, sizeof(source.cards));
+      item.identity[0] = source.count;
+      item.refiningLevel = source.refine;
+      std::memcpy(item.cards, source.cards, sizeof(source.cards));
       GuildStorageLogEntry entry;
-      entry.unknown_0000 = item.unknown_00B8[0];
-      entry.unknown_0004 = item.unknown_00B8[1];
-      entry.unknown_0008 = item.unknown_00C0;
-      std::strcpy(entry.unknown_0009, reinterpret_cast<const char*>(item.unknown_00C1));
-      std::strcpy(entry.unknown_0021, reinterpret_cast<const char*>(item.unknown_00D9));
-      entry.unknown_003C = item.DisplayName(0);
-      entry.unknown_0054 = item.identified;
-      entry.unknown_0058 = item.unknown_0000[0];
-      entry.unknown_005C = item.unknown_0060;
-      std::memcpy(entry.unknown_0060, item.unknown_001C, sizeof(entry.unknown_0060));
-      entry.unknown_0070 = source.unknown_005C;
+      entry.logId = item.recordIds[0];
+      entry.quantity = item.recordIds[1];
+      entry.operation = item.recordType;
+      std::strcpy(entry.characterName, reinterpret_cast<const char*>(item.recordName));
+      std::strcpy(entry.timestamp, reinterpret_cast<const char*>(item.recordDate));
+      entry.itemName = item.DisplayName(0);
+      entry.identified = item.identified;
+      entry.itemType = item.identity[0];
+      entry.refineLevel = item.refiningLevel;
+      std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
+      entry.category = source.highlighted;
       g_guildStorageLogs[0].push_back(entry);
     }
     GuildStorageLogEntry pivot;
     std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
-      return std::strcmp(left.unknown_0021, right.unknown_0021) > 0;
+      return std::strcmp(left.timestamp, right.timestamp) > 0;
     });
     for (auto it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
-      if (it->unknown_0008 == 1) {
+      if (it->operation == 1) {
         g_guildStorageLogs[1].push_back(*it);
       } else {
         g_guildStorageLogs[2].push_back(*it);
@@ -3297,17 +3297,17 @@ void CGameMode::ReceiveStorageEquipList(const unsigned char* data) {
   const auto* record = reinterpret_cast<const StorageEquipRecord*>(data + sizeof(StorageListHeader));
   for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.identity[0] = record->type;
+    item.identity[2] = record->location;
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
-    item.unknown_005D = record->damaged;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
+    item.damaged = record->damaged;
+    item.refiningLevel = record->refine;
+    item.expireTime = record->expireTime;
     g_session.AddItem1738(item, 0);
   }
 
@@ -3323,19 +3323,19 @@ void CGameMode::ReceiveStorageEquipList2(const unsigned char* data) {
   const auto* record = reinterpret_cast<const StorageEquipRecord2*>(data + sizeof(StorageListHeader));
   for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.identity[0] = record->type;
+    item.identity[2] = record->location;
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
-    item.unknown_005D = record->damaged;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
+    item.damaged = record->damaged;
+    item.refiningLevel = record->refine;
+    item.expireTime = record->expireTime;
+    item.bindOnEquip = record->bindOnEquip;
+    item.sprite = record->sprite;
     g_session.AddItem1738(item, 0);
   }
 
@@ -3356,20 +3356,20 @@ void CGameMode::ReceiveStorageEquipList3(const unsigned char* data) {
   const auto* record = reinterpret_cast<const StorageEquipRecord3*>(data + sizeof(NamedStorageListHeader));
   for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
+    item.identity[0] = record->type;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.identity[2] = record->location;
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
-    item.unknown_0074[0] = (record->flags >> 2) & 1;
+    item.damaged = (record->flags >> 1) & 1;
+    item.refiningLevel = record->refine;
+    item.expireTime = record->expireTime;
+    item.bindOnEquip = record->bindOnEquip;
+    item.sprite = record->sprite;
+    item.flags[0] = (record->flags >> 2) & 1;
     g_session.AddItem1738(item, 0);
   }
 
@@ -3396,24 +3396,24 @@ void CGameMode::ReceiveStorageEquipList4(const unsigned char* data) {
     }
 
     ITEM_INFO item;
-    item.unknown_0000[0] = record.type;
-    item.unknown_0000[2] = record.location;
-    item.unknown_0000[1] = record.index;
-    item.unknown_0000[3] = record.wearState;
-    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.identity[0] = record.type;
+    item.identity[2] = record.location;
+    item.identity[1] = record.index;
+    item.identity[3] = record.wearState;
+    std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.quantity = 1;
     item.SetItemId(record.itemId);
     item.identified = record.flags & 1;
-    item.unknown_005D = (record.flags >> 1) & 1;
-    item.unknown_0060 = record.refine;
-    item.unknown_0068 = record.expireTime;
-    item.unknown_0064 = record.bindOnEquip;
-    item.unknown_0070 = record.sprite;
-    item.unknown_0074[0] = (record.flags >> 2) & 1;
-    item.unknown_0098 = CountItemSlotOptions(options);
-    item.unknown_0088 = 0;
-    for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = options[index];
+    item.damaged = (record.flags >> 1) & 1;
+    item.refiningLevel = record.refine;
+    item.expireTime = record.expireTime;
+    item.bindOnEquip = record.bindOnEquip;
+    item.sprite = record.sprite;
+    item.flags[0] = (record.flags >> 2) & 1;
+    item.optionCount = CountItemSlotOptions(options);
+    item.grade = 0;
+    for (int index = 0; index < item.optionCount; ++index) {
+      reinterpret_cast<ItemSlotOption*>(item.options)[index] = options[index];
     }
     g_session.AddItem1738(item, 0);
   }
@@ -3441,24 +3441,24 @@ void CGameMode::ReceiveStorageEquipList5(const unsigned char* data) {
     }
 
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    item.unknown_0000[2] = record->location;
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.identity[0] = record->type;
+    item.identity[2] = record->location;
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->flags & 1;
-    item.unknown_005D = (record->flags >> 1) & 1;
-    item.unknown_0060 = record->refine;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0064 = record->bindOnEquip;
-    item.unknown_0070 = record->sprite;
-    item.unknown_0074[0] = (record->flags >> 2) & 1;
-    item.unknown_0098 = CountItemSlotOptions(options);
-    item.unknown_0088 = 0;
-    for (int index = 0; index < item.unknown_0098; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = options[index];
+    item.damaged = (record->flags >> 1) & 1;
+    item.refiningLevel = record->refine;
+    item.expireTime = record->expireTime;
+    item.bindOnEquip = record->bindOnEquip;
+    item.sprite = record->sprite;
+    item.flags[0] = (record->flags >> 2) & 1;
+    item.optionCount = CountItemSlotOptions(options);
+    item.grade = 0;
+    for (int index = 0; index < item.optionCount; ++index) {
+      reinterpret_cast<ItemSlotOption*>(item.options)[index] = options[index];
     }
     g_session.AddItem1738(item, 0);
   }
@@ -3480,18 +3480,18 @@ void CGameMode::ReceiveStorageNormalList(const unsigned char* data) {
   const auto* record = reinterpret_cast<const StorageNormalRecord*>(data + sizeof(NamedStorageListHeader));
   for (unsigned int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
-    item.unknown_0000[2] = 0;
+    item.identity[0] = record->type;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
+    item.identity[2] = 0;
     item.quantity = record->amount;
     item.SetItemId(record->itemId);
-    item.unknown_005D = 0;
+    item.damaged = 0;
     item.identified = record->flags & 1;
-    item.unknown_0074[0] = (record->flags >> 1) & 1;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0060 = 0;
+    item.flags[0] = (record->flags >> 1) & 1;
+    item.expireTime = record->expireTime;
+    item.refiningLevel = 0;
     g_session.AddItem1738(item, 0);
   }
 
@@ -3512,18 +3512,18 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
   const auto* record = reinterpret_cast<const StorageNormalRecord2*>(data + sizeof(NamedStorageListHeader));
   for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
-    item.unknown_0000[0] = record->type;
-    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
-    item.unknown_0000[1] = record->index;
-    item.unknown_0000[3] = record->wearState;
-    item.unknown_0000[2] = 0;
+    item.identity[0] = record->type;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
+    item.identity[2] = 0;
     item.quantity = record->amount;
     item.SetItemId(record->itemId);
-    item.unknown_005D = 0;
+    item.damaged = 0;
     item.identified = record->flags & 1;
-    item.unknown_0074[0] = (record->flags >> 1) & 1;
-    item.unknown_0068 = record->expireTime;
-    item.unknown_0060 = 0;
+    item.flags[0] = (record->flags >> 1) & 1;
+    item.expireTime = record->expireTime;
+    item.refiningLevel = 0;
     g_session.AddItem1738(item, 0);
   }
 
@@ -3534,11 +3534,11 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
 // FUNCTION: fn_22094
 void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
-  item.unknown_0060 = refine;
-  std::memcpy(item.unknown_001C, cards.cards, sizeof(cards.cards));
-  item.unknown_0098 = CountItemSlotOptions(options.options);
-  for (int i = 0; i < item.unknown_0098; ++i) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[i] = options.options[i];
+  item.refiningLevel = refine;
+  std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
+  item.optionCount = CountItemSlotOptions(options.options);
+  for (int i = 0; i < item.optionCount; ++i) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[i] = options.options[i];
   }
   g_session.UpdateInventoryItem(item, 1);
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
@@ -3549,10 +3549,10 @@ void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, It
 // OFFSET: 0x00D6E640
 // FUNCTION: fn_22103
 void CGameMode::ReceiveFeedConfig(unsigned char state, unsigned char option) {
-  *reinterpret_cast<int*>(g_session.unknown_5974) = state;
+  *reinterpret_cast<int*>(g_session.equipmentViewState) = state;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(state + 0x54E)), 0x64FFFF, 0, 0, 0);
-  if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (g_windowMgr.equipWnd) {
+    g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
@@ -3562,10 +3562,10 @@ void CGameMode::ReceiveFeedConfig(unsigned char state, unsigned char option) {
 // OFFSET: 0x00D6E6F0
 // FUNCTION: fn_22104
 void CGameMode::ReceiveFeedConfig2(unsigned char state, unsigned char option, bool petAutoFeed) {
-  *reinterpret_cast<int*>(g_session.unknown_5974) = state;
+  *reinterpret_cast<int*>(g_session.equipmentViewState) = state;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(state + 0x54E)), 0x64FFFF, 0, 0, 0);
-  if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (g_windowMgr.equipWnd) {
+    g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
@@ -3576,10 +3576,10 @@ void CGameMode::ReceiveFeedConfig2(unsigned char state, unsigned char option, bo
 // OFFSET: 0x00D6E7A0
 // FUNCTION: fn_22105
 void CGameMode::ReceiveFeedConfig3(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed) {
-  *reinterpret_cast<int*>(g_session.unknown_5974) = state;
+  *reinterpret_cast<int*>(g_session.equipmentViewState) = state;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(state + 0x54E)), 0x64FFFF, 0, 0, 0);
-  if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (g_windowMgr.equipWnd) {
+    g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
@@ -3591,27 +3591,27 @@ void CGameMode::ReceiveFeedConfig3(unsigned char state, unsigned char option, bo
 // OFFSET: 0x00D6E860
 // FUNCTION: fn_22106
 void CGameMode::ReceiveFeedConfig4(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed, int value) {
-  *reinterpret_cast<int*>(g_session.unknown_5974) = state;
+  *reinterpret_cast<int*>(g_session.equipmentViewState) = state;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(state + 0x54E)), 0x64FFFF, 0, 0, 0);
-  if (g_windowMgr.unknown_01E0) {
-    g_windowMgr.unknown_01E0->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (g_windowMgr.equipWnd) {
+    g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(231, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
   g_windowMgr.RefreshGameSettingOption(231);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
-  *reinterpret_cast<int*>(g_session.unknown_8128) = value;
+  *reinterpret_cast<int*>(g_session.feedOptions) = value;
 }
 
 // OFFSET: 0x00D713E0
 // FUNCTION: fn_22133
 void CGameMode::ReceiveLongParChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const LongParChangePacket*>(data);
-  std::int64_t& exp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x04]);
-  std::int64_t& nextExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x0C]);
-  std::int64_t& nextJobExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x14]);
-  std::int64_t& jobExp = *reinterpret_cast<std::int64_t*>(&g_session.unknown_162C[0x1C]);
+  std::int64_t& exp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x04]);
+  std::int64_t& nextExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x0C]);
+  std::int64_t& nextJobExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x14]);
+  std::int64_t& jobExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x1C]);
   bool refresh = true;
   switch (packet->type) {
   case SP_BASEEXP:
@@ -3633,8 +3633,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     jobExp = packet->value;
     break;
   case SP_ZENY:
-    if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
-      *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
+    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14])) {
+      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
       g_session.ResetSlots();
     }
     g_session.m_zeny = static_cast<int>(packet->value);
@@ -3654,8 +3654,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.InvalidateWindowFrames();
   }
 
-  static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->baseExpBar)->SetValues(exp, nextExp);
-  static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->jobExpBar)->SetValues(jobExp, nextJobExp);
+  static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
+  static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
 }
 
 // OFFSET: 0x00D73A10
@@ -3741,7 +3741,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   }
 
   if (g_session.IsMercenaryJob(gameActor->GetEffectiveJob(-1)) && *reinterpret_cast<const int*>(packet + 6) == EF_HO_UP) {
-    ++gameActor->unknown_0210;
+    ++gameActor->characterLevel;
     gameActor->ResetJobEffects();
     gameActor->UpdateMaxLevelAura();
   }
@@ -3752,9 +3752,9 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 #pragma pack(push, 1)
 struct TypedItemEntry {
   /* 0000 */ int itemId;
-  /* 0004 */ std::uint32_t unknown_0004;
-  /* 0008 */ std::uint16_t unknown_0008;
-  /* 000A */ std::uint32_t unknown_000A;
+  /* 0004 */ std::uint32_t price;
+  /* 0008 */ std::uint16_t viewId;
+  /* 000A */ std::uint32_t equipLocation;
 };
 
 struct TypedItemListPacket {
@@ -3779,26 +3779,26 @@ void CGameMode::ReceiveTypedItemList(const unsigned char* data) {
     const int itemId = entry.itemId;
     char name[256];
     ITEM_INFO item;
-    item.unknown_0000[1] = -1;
-    item.unknown_0014[0] = entry.unknown_0004;
-    item.unknown_0014[1] = entry.unknown_0004;
-    item.unknown_0000[0] = 4;
+    item.identity[1] = -1;
+    item.prices[0] = entry.price;
+    item.prices[1] = entry.price;
+    item.identity[0] = 4;
     item.identified = 1;
-    item.unknown_005D = 0;
-    item.unknown_0060 = 0;
+    item.damaged = 0;
+    item.refiningLevel = 0;
     std::uint16_t type = packet->type;
     if (type == 8) {
       type = 0xFFFF;
     }
-    item.unknown_0070 = entry.unknown_0008;
-    item.unknown_0000[2] = entry.unknown_000A;
-    item.unknown_0064 = type;
+    item.sprite = entry.viewId;
+    item.identity[2] = entry.equipLocation;
+    item.bindOnEquip = type;
     item.SetItemId(itemId);
     int capacity = sizeof(name);
     item.GetIdDisplayName(name, capacity, 0);
     item.SetName(name);
     if (static_cast<unsigned int>(packet->type) <= 10) {
-      g_session.unknown_1784[packet->type].push_back(item);
+      g_session.inventoryCategories[packet->type].push_back(item);
     }
   }
 }
@@ -3827,11 +3827,11 @@ void CGameMode::ReceiveVendingItemList(
       const VendingItemRecord record = records[i];
       ITEM_INFO item;
       ++i;
-      item.unknown_0014[0] = record.price;
-      item.unknown_0014[1] = record.price;
+      item.prices[0] = record.price;
+      item.prices[1] = record.price;
       item.quantity = record.amount;
-      item.unknown_0000[0] = record.type;
-      item.unknown_0000[1] = i;
+      item.identity[0] = record.type;
+      item.identity[1] = i;
       item.identified = 1;
       item.SetItemId(record.itemId);
       g_session.AddItem1758(item);
@@ -3852,11 +3852,11 @@ void CGameMode::ReceiveVendingItemList(
       const VendingItemRecord record = records[i];
       ITEM_INFO item;
       ++i;
-      item.unknown_0014[0] = record.price;
-      item.unknown_0014[1] = record.price;
+      item.prices[0] = record.price;
+      item.prices[1] = record.price;
       item.quantity = record.amount;
-      item.unknown_0000[0] = record.type;
-      item.unknown_0000[1] = i;
+      item.identity[0] = record.type;
+      item.identity[1] = i;
       item.identified = 1;
       item.SetItemId(record.itemId);
       g_session.AddItem1748(item);
@@ -3870,7 +3870,7 @@ void CGameMode::ReceiveVendingItemList(
     UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND_MODE_1);
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETNAID, aid, storeId, 0, 0);
-    UIWindow* list = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0420);
+    UIWindow* list = reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd);
     if (list) {
       g_session.RefreshItems1750();
     } else {
@@ -3881,7 +3881,7 @@ void CGameMode::ReceiveVendingItemList(
     }
   }
 
-  this->unknown_024C = 1;
+  this->isOnQuest = 1;
 }
 
 #pragma pack(push, 1)
@@ -3903,22 +3903,22 @@ struct VendingItemRecord2 {
 
 // INLINED
 static __forceinline void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
-  item.unknown_0000[1] = record.index;
-  item.unknown_0014[0] = record.price;
-  item.unknown_0014[1] = record.price;
-  item.unknown_0000[0] = record.type;
+  item.identity[1] = record.index;
+  item.prices[0] = record.price;
+  item.prices[1] = record.price;
+  item.identity[0] = record.type;
   item.quantity = record.amount;
   item.identified = record.identified;
-  item.unknown_005D = record.damaged;
-  item.unknown_0060 = record.refine;
+  item.damaged = record.damaged;
+  item.refiningLevel = record.refine;
   item.SetItemId(record.itemId);
-  std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
-  item.unknown_0098 = CountItemSlotOptions(record.options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = record.options[index];
+  std::memcpy(item.cards, record.cards, sizeof(record.cards));
+  item.optionCount = CountItemSlotOptions(record.options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[index] = record.options[index];
   }
-  item.unknown_0000[2] = record.location;
-  item.unknown_0070 = record.sprite;
+  item.identity[2] = record.location;
+  item.sprite = record.sprite;
 }
 
 // OFFSET: 0x00D47720
@@ -3931,11 +3931,11 @@ void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
 // OFFSET: 0x00D6C410
 // FUNCTION: fn_22080
 void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short statusId, unsigned char value) {
-  this->unknown_02D4 = 0;
+  this->waitingReqStatusAck = 0;
   if (result == 1) {
     std::map<int, int>& traitStats = g_session.m_traits.stats;
     traitStats[statusId] = value;
-    if (UIStatusWnd* window = reinterpret_cast<UIStatusWnd*>(g_windowMgr.unknown_01C4)) {
+    if (UIStatusWnd* window = reinterpret_cast<UIStatusWnd*>(g_windowMgr.statusWnd)) {
       window->ValidatePlacement();
     }
   }
@@ -3961,7 +3961,7 @@ void CGameMode::ReceiveVendingItemList2(int aid, int storeId, char own, int coun
       window->SendMsg(nullptr, UM_SETNAID, aid, 0, 0, 0);
       window->SetDuration(duration);
     }
-    this->unknown_024C = 1;
+    this->isOnQuest = 1;
   } else {
     g_session.ClearItems1748();
     g_session.ClearItems1760();
@@ -3979,7 +3979,7 @@ void CGameMode::ReceiveVendingItemList2(int aid, int storeId, char own, int coun
     UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND);
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETNAID, aid, storeId, 0, 0);
-    this->unknown_024C = 1;
+    this->isOnQuest = 1;
   }
 }
 
@@ -4359,7 +4359,7 @@ void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
   g_session.SetServerTime(packet->startTime);
   g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
     packet->posDir[2] & 0xF);
-  g_session.unknown_0F30[0] = packet->font;
+  g_session.chatFont[0] = packet->font;
 
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
@@ -4418,18 +4418,18 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
     if (mails) {
       RodexMail mail;
       mail.isRead = entry->isRead;
-      mail.unknown_0001 = entry->type;
-      mail.unknown_0024.assign(entry->title, entry->titleLength);
-      mail.unknown_0004.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
-      mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
-      if (entry->openType == MAIL_INBOX_NORMAL && !(mail.unknown_0001 & 8) && !g_session.HasUnknown809C(mail.unknown_0004)) {
-        mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
+      mail.type = entry->type;
+      mail.title.assign(entry->title, entry->titleLength);
+      mail.sender.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
+      mail.expiresAt = _time32(nullptr) + entry->expireTime;
+      if (entry->openType == MAIL_INBOX_NORMAL && !(mail.type & 8) && !g_session.HasUnknown809C(mail.sender)) {
+        mail.isKnownSender = g_session.IsKnownName(mail.sender);
       } else {
-        mail.unknown_0194 = 1;
+        mail.isKnownSender = 1;
       }
 
       if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
-        ++g_rodexMailStore->unknown_0018;
+        ++g_rodexMailStore->unreadCount;
       }
       mails->insert(std::pair<const std::int64_t, RodexMail>(entry->mailId, mail));
     }
@@ -4438,7 +4438,7 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
   }
 
   if (packet[4] == 1) {
-    g_rodexMailStore->unknown_001C = true;
+    g_rodexMailStore->isPageComplete = true;
     UIWindow* window = g_windowMgr.LookupWindow(WID_RODEXINBOXWND);
     if (window) {
       window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -4560,7 +4560,7 @@ struct ItemFallEntry {
   /* 0034 */ int falling;
   /* 0038 */ int count;
   /* 003C */ unsigned char identified;
-  /* 003E */ std::uint16_t unknown_003E;
+  /* 003E */ std::uint16_t type;
   /* 0040 */ unsigned char showEffect;
   /* 0042 */ std::uint16_t grade;
 };
@@ -4578,7 +4578,7 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
   entry.subRow = packet->subRow;
   entry.count = packet->count;
   entry.identified = packet->identified;
-  entry.unknown_003E = packet->type;
+  entry.type = packet->type;
   entry.showEffect = packet->showEffect;
   entry.grade = packet->grade;
   entry.falling = 1;
@@ -4587,7 +4587,7 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
   if (!item) {
     item = new CItem;
     this->scene->objects.push_back(item);
-    this->scene->unknown_0018.push_back(item);
+    this->scene->items.push_back(item);
   }
 
   const std::int64_t entryAddress = reinterpret_cast<int>(&entry);
@@ -4627,17 +4627,17 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       g_session.m_head = packet->value;
       break;
     case LOOK_WEAPON:
-      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = packet->value;
-      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = 0;
+      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x4]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x8]) = 0;
       break;
     case LOOK_HEAD_BOTTOM:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = packet->value;
       break;
     case LOOK_HEAD_TOP:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = packet->value;
       break;
     case LOOK_HEAD_MID:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = packet->value;
       break;
     case LOOK_HAIR_COLOR:
       g_session.m_headPalette = packet->value;
@@ -4648,7 +4648,7 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       break;
     }
     case LOOK_SHIELD:
-      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0xC]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.weaponAppearance[0xC]) = packet->value;
       break;
     }
     if (!actor) {
@@ -4726,22 +4726,22 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.m_head = value;
       break;
     case LOOK_WEAPON: {
-      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = value;
+      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x4]) = value;
       const int shield = static_cast<int>(packet->value >> 32);
-      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = shield;
+      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x8]) = shield;
       if (value != 0 && GetWeaponViewValue(shield) == -1) {
-        *reinterpret_cast<int*>(&g_session.unknown_0EDC[0xC]) = shield;
+        *reinterpret_cast<int*>(&g_session.weaponAppearance[0xC]) = shield;
       }
       break;
     }
     case LOOK_HEAD_BOTTOM:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = value;
       break;
     case LOOK_HEAD_TOP:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = value;
       break;
     case LOOK_HEAD_MID:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = value;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = value;
       break;
     case LOOK_HAIR_COLOR:
       g_session.m_headPalette = value;
@@ -4750,9 +4750,9 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, bodyCostume);
       break;
     case LOOK_RESET_COSTUMES:
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = 0;
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = 0;
-      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = 0;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = 0;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = 0;
+      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = 0;
       g_session.m_robe = 0;
       break;
     case LOOK_ROBE:
@@ -4890,39 +4890,39 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
   g_mapPropertyMgr->SetValue(packet->mapId, 20, (packet->flags >> 8) & 1);
   g_mapPropertyMgr->SetValue(packet->mapId, 40, (packet->flags >> 9) & 1);
   g_mapPropertyMgr->SetValue(packet->mapId, 41, (packet->flags >> 10) & 1);
-  g_session.unknown_0000 = packet->mapId;
+  g_session.mapPropertyId = packet->mapId;
 
-  g_serviceOptions.Set(229, *reinterpret_cast<int*>(&g_session.unknown_5454[0x0]) != 0);
-  *reinterpret_cast<int*>(&g_session.unknown_5454[0x4]) = 0;
-  *reinterpret_cast<int*>(&g_session.unknown_5454[0x8]) = 0;
-  g_session.unknown_5460 = 0;
+  g_serviceOptions.Set(229, *reinterpret_cast<int*>(&g_session.interactionFlags[0x0]) != 0);
+  *reinterpret_cast<int*>(&g_session.interactionFlags[0x4]) = 0;
+  *reinterpret_cast<int*>(&g_session.interactionFlags[0x8]) = 0;
+  g_session.partyBlocked = 0;
   if (g_session.GetMapProperty0F()) {
     g_serviceOptions.Set(229, 1);
   }
   if (g_session.GetMapProperty10()) {
-    *reinterpret_cast<int*>(&g_session.unknown_5454[0x4]) = 1;
+    *reinterpret_cast<int*>(&g_session.interactionFlags[0x4]) = 1;
   }
   if (g_session.GetMapProperty11()) {
-    *reinterpret_cast<int*>(&g_session.unknown_5454[0x8]) = 1;
+    *reinterpret_cast<int*>(&g_session.interactionFlags[0x8]) = 1;
   }
   if (g_session.GetMapProperty12()) {
-    g_session.unknown_5460 = 1;
+    g_session.partyBlocked = 1;
   }
   if (g_session.GetMapProperty09()) {
-    this->scene->unknown_004C = 1;
+    this->scene->isSiegeMode = 1;
   }
   if (g_session.GetMapProperty13()) {
-    this->scene->unknown_0050 = 1;
+    this->scene->isBattleFieldMode = 1;
   }
 
-  if (GetBaseJob(g_session.GetDisplayJob()) == 0xFCF && !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+  if (GetBaseJob(g_session.GetDisplayJob()) == 0xFCF && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NAME)), 0xFFFF64, 0, 0, 0);
   }
-  if (GetBaseJob(g_session.GetDisplayJob()) == 0x1082 && !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+  if (GetBaseJob(g_session.GetDisplayJob()) == 0x1082 && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NAME)), 0xFFFF64, 0, 0, 0);
   }
   if ((g_session.GetDisplayJob() == 0x108F || g_session.GetDisplayJob() == 0x1091 || g_session.GetDisplayJob() == 0x10CE) &&
-      !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+      !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NAME)), 0xFFFF64, 0, 0, 0);
   }
   if (g_mapPropertyMgr->GetValue(packet->mapId, 20)) {
@@ -4963,10 +4963,10 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     message = static_cast<const std::string&>(FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count));
   }
   case 2:
-    if (g_stoveMgr->unknown_0008 == 2) {
+    if (g_stoveMgr->m_pendingOperation == 2) {
       FetchStoveTermsAgreement();
-    } else if (g_stoveMgr->unknown_0008 == 3) {
-      g_stoveMgr->unknown_0008 = 0;
+    } else if (g_stoveMgr->m_pendingOperation == 3) {
+      g_stoveMgr->m_pendingOperation = 0;
       UICashShopWnd* window = static_cast<UICashShopWnd*>(g_windowMgr.LookupWindow(WID_CASHSHOP_WND));
       g_stoveMgr->StartPurchase(window->m_cart->m_cartItems);
     }
@@ -4988,7 +4988,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     break;
   }
 
-  g_stoveMgr->unknown_0008 = 0;
+  g_stoveMgr->m_pendingOperation = 0;
   if (message.size() != 0) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
@@ -5011,23 +5011,23 @@ struct OngoingQuestEntry {
 
 struct OngoingQuestHunt {
   /* 0000 */ int huntId;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int conditionFlags;
   /* 0008 */ int mobId;
-  /* 000C */ std::int16_t unknown_000C;
-  /* 000E */ std::int16_t unknown_000E;
-  /* 0010 */ std::int16_t unknown_0010;
-  /* 0012 */ std::int16_t unknown_0012;
+  /* 000C */ std::int16_t minLevel;
+  /* 000E */ std::int16_t maxLevel;
+  /* 0010 */ std::int16_t count;
+  /* 0012 */ std::int16_t maxCount;
   /* 0014 */ char name[24];
 };
 
 struct OngoingQuestHunt2 {
   /* 0000 */ std::int64_t huntId;
-  /* 0008 */ int unknown_0008;
+  /* 0008 */ int conditionFlags;
   /* 000C */ int mobId;
-  /* 0010 */ std::int16_t unknown_0010;
-  /* 0012 */ std::int16_t unknown_0012;
-  /* 0014 */ std::int16_t unknown_0014;
-  /* 0016 */ std::int16_t unknown_0016;
+  /* 0010 */ std::int16_t minLevel;
+  /* 0012 */ std::int16_t maxLevel;
+  /* 0014 */ std::int16_t count;
+  /* 0016 */ std::int16_t maxCount;
   /* 0018 */ char name[24];
 };
 #pragma pack(pop)
@@ -5062,12 +5062,12 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
     const OngoingQuestHunt* hunt = hunts;
     for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
       info.m_huntId[i] = hunt->huntId;
-      info.m_huntUnknown01A0[i] = hunt->unknown_0004;
+      info.m_huntUnknown01A0[i] = hunt->conditionFlags;
       info.m_huntUnknown00D4[i] = hunt->mobId;
-      info.m_huntUnknown00E0[i] = hunt->unknown_0010;
-      info.m_huntUnknown0180[i] = hunt->unknown_0012;
-      info.m_huntUnknown01AC[i] = hunt->unknown_000C;
-      info.m_huntUnknown01B2[i] = hunt->unknown_000E;
+      info.m_huntUnknown00E0[i] = hunt->count;
+      info.m_huntUnknown0180[i] = hunt->maxCount;
+      info.m_huntUnknown01AC[i] = hunt->minLevel;
+      info.m_huntUnknown01B2[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
       if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
         if (mobId == 0x1099) {
@@ -5122,12 +5122,12 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
     const OngoingQuestHunt2* hunt = hunts;
     for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
       info.m_huntId[i] = hunt->huntId;
-      info.m_huntUnknown01A0[i] = hunt->unknown_0008;
+      info.m_huntUnknown01A0[i] = hunt->conditionFlags;
       info.m_huntUnknown00D4[i] = hunt->mobId;
-      info.m_huntUnknown00E0[i] = hunt->unknown_0014;
-      info.m_huntUnknown0180[i] = hunt->unknown_0016;
-      info.m_huntUnknown01AC[i] = hunt->unknown_0010;
-      info.m_huntUnknown01B2[i] = hunt->unknown_0012;
+      info.m_huntUnknown00E0[i] = hunt->count;
+      info.m_huntUnknown0180[i] = hunt->maxCount;
+      info.m_huntUnknown01AC[i] = hunt->minLevel;
+      info.m_huntUnknown01B2[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
       if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
         if (mobId == 0x1099) {
@@ -5193,23 +5193,23 @@ void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
   for (long long i = 0; i < count; ++i) {
     const ShopItemListEntry& entry = entries[i];
     ITEM_INFO item;
-    item.unknown_0000[1] = entry.index;
-    item.unknown_0014[0] = entry.price;
-    item.unknown_0000[0] = entry.type;
+    item.identity[1] = entry.index;
+    item.prices[0] = entry.price;
+    item.identity[0] = entry.type;
     item.quantity = entry.amount;
     item.identified = entry.identified;
-    item.unknown_005D = entry.damaged;
-    item.unknown_0060 = entry.refine;
-    item.unknown_0014[1] = entry.price;
+    item.damaged = entry.damaged;
+    item.refiningLevel = entry.refine;
+    item.prices[1] = entry.price;
     item.SetItemId(entry.itemId);
-    std::memcpy(item.unknown_001C, entry.cards, sizeof(entry.cards));
-    item.unknown_0098 = CountItemSlotOptions(entry.options);
-    for (long long option = 0; option < static_cast<unsigned int>(item.unknown_0098); ++option) {
-      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[option] = entry.options[option];
+    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.optionCount = CountItemSlotOptions(entry.options);
+    for (long long option = 0; option < static_cast<unsigned int>(item.optionCount); ++option) {
+      reinterpret_cast<ItemSlotOption*>(item.options)[option] = entry.options[option];
     }
-    item.unknown_0000[2] = entry.location;
-    item.unknown_0070 = entry.sprite;
-    item.unknown_0088 = entry.grade;
+    item.identity[2] = entry.location;
+    item.sprite = entry.sprite;
+    item.grade = entry.grade;
     items.push_back(item);
   }
 
@@ -5326,7 +5326,7 @@ struct RodexMailItem {
   /* 0018 */ std::uint32_t expireTime;
   /* 001C */ unsigned char type;
   /* 001D */ std::uint16_t bindType;
-  /* 001F */ std::uint16_t unknown_001F;
+  /* 001F */ std::uint16_t wearState;
   /* 0021 */ ItemSlotOption options[5];
   /* 003A */ unsigned char refine;
   /* 003B */ unsigned char grade;
@@ -5350,7 +5350,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RodexReadMailPacket*>(data);
   g_session.ClearItemQuantities();
   g_rodexMailStore->currentMailId = packet->mailId;
-  g_rodexMailStore->unknown_0010 = packet->type;
+  g_rodexMailStore->inboxType = packet->type;
 
   std::map<std::int64_t, RodexMail>* mails;
   switch (packet->type) {
@@ -5373,45 +5373,45 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   }
 
   RodexMail& mail = found->second;
-  if (!mail.isRead && --g_rodexMailStore->unknown_0018 == 0) {
+  if (!mail.isRead && --g_rodexMailStore->unreadCount == 0) {
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
     }
   }
 
-  mail.unknown_003C.append(packet->text, packet->textLength);
+  mail.body.append(packet->text, packet->textLength);
   mail.hasItem = packet->itemCount;
   mail.zeny = packet->zeny;
   mail.isRead = 1;
 
-  auto* mailItems = reinterpret_cast<RodexMailItem*>(mail.unknown_0055.data());
+  auto* mailItems = reinterpret_cast<RodexMailItem*>(mail.attachments.data());
   const auto* packetItems = reinterpret_cast<const RodexMailItem*>(packet->text + packet->textLength);
   for (long long i = 0; i < packet->itemCount; ++i) {
     RodexMailItem& record = mailItems[i];
     memcpy_s(&record, sizeof(RodexMailItem), &packetItems[i], sizeof(RodexMailItem));
 
     ITEM_INFO item;
-    item.unknown_0000[0] = record.type;
-    item.unknown_0000[2] = record.expireTime;
+    item.identity[0] = record.type;
+    item.identity[2] = record.expireTime;
     item.quantity = record.quantity;
-    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
     item.identified = record.identified;
-    item.unknown_005D = record.damaged;
-    item.unknown_0060 = record.refine;
-    item.unknown_0064 = record.unknown_001F;
-    item.unknown_0070 = record.bindType;
-    item.unknown_0098 = CountItemSlotOptions(record.options);
-    for (long long option = 0; option < item.unknown_0098; ++option) {
-      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[option] = record.options[option];
+    item.damaged = record.damaged;
+    item.refiningLevel = record.refine;
+    item.bindOnEquip = record.wearState;
+    item.sprite = record.bindType;
+    item.optionCount = CountItemSlotOptions(record.options);
+    for (long long option = 0; option < item.optionCount; ++option) {
+      reinterpret_cast<ItemSlotOption*>(item.options)[option] = record.options[option];
     }
-    item.unknown_0088 = record.grade;
+    item.grade = record.grade;
     g_session.AddItemToFreeSlot(item);
   }
 
   if (!g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND)) {
     g_windowMgr.EnsureWindow(WID_RODEXCONTENTSWND);
-    g_windowMgr.unknown_045C->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    g_windowMgr.rodexContentsWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -5442,15 +5442,15 @@ struct RodexMailPagePacket {
 void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RodexMailPagePacket*>(data);
   const RodexMailPageEntry* entry = packet->entries;
-  g_rodexMailStore->unknown_0010 = packet->type;
-  g_rodexMailStore->unknown_001C = packet->isEnd;
+  g_rodexMailStore->inboxType = packet->type;
+  g_rodexMailStore->isPageComplete = packet->isEnd;
 
   std::map<std::int64_t, RodexMail>* mails;
-  if (g_rodexMailStore->unknown_0010 == 0) {
+  if (g_rodexMailStore->inboxType == 0) {
     mails = &g_rodexMailStore->m_mails0;
-  } else if (g_rodexMailStore->unknown_0010 == 1) {
+  } else if (g_rodexMailStore->inboxType == 1) {
     mails = &g_rodexMailStore->m_mails1;
-  } else if (g_rodexMailStore->unknown_0010 == 2) {
+  } else if (g_rodexMailStore->inboxType == 2) {
     mails = &g_rodexMailStore->m_mails2;
   }
   mails->clear();
@@ -5458,19 +5458,19 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
   for (int i = 0; i < packet->count; ++i) {
     RodexMail mail;
     mail.isRead = entry->isRead;
-    mail.unknown_0001 = entry->type;
-    mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
-    mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
-    mail.unknown_0024.assign(entry->title, entry->titleLength);
+    mail.type = entry->type;
+    mail.expiresAt = _time32(nullptr) + entry->expireTime;
+    mail.sender.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+    mail.title.assign(entry->title, entry->titleLength);
     if (mails->find(entry->mailId) == mails->end()) {
       mails->insert(std::make_pair(entry->mailId, mail));
     }
     entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
   }
 
-  if (g_windowMgr.unknown_0454) {
-    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->InitializeMailActions();
-    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->SetButtonsDisabled(0);
+  if (g_windowMgr.rodexInboxWnd) {
+    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->InitializeMailActions();
+    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->SetButtonsDisabled(0);
   }
 }
 
@@ -5682,22 +5682,22 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
 void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RodexMailPagePacket*>(data);
   const RodexMailPageEntry* entry = packet->entries;
-  g_rodexMailStore->unknown_0010 = packet->type;
-  g_rodexMailStore->unknown_001C = packet->isEnd;
+  g_rodexMailStore->inboxType = packet->type;
+  g_rodexMailStore->isPageComplete = packet->isEnd;
 
   if (packet->count != 0) {
     for (int i = 1; i < packet->count + 1; ++i) {
       RodexMail mail;
       mail.isRead = entry->isRead;
-      mail.unknown_0001 = entry->type;
-      mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
-      mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
-      if (packet->type == MAIL_INBOX_NORMAL && (mail.unknown_0001 & 8) == MAIL_INBOX_NORMAL && !g_session.HasUnknown809C(mail.unknown_0004)) {
-        mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
+      mail.type = entry->type;
+      mail.expiresAt = _time32(nullptr) + entry->expireTime;
+      mail.sender.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+      if (packet->type == MAIL_INBOX_NORMAL && (mail.type & 8) == MAIL_INBOX_NORMAL && !g_session.HasUnknown809C(mail.sender)) {
+        mail.isKnownSender = g_session.IsKnownName(mail.sender);
       } else {
-        mail.unknown_0194 = 1;
+        mail.isKnownSender = 1;
       }
-      mail.unknown_0024.append(entry->title, entry->titleLength);
+      mail.title.append(entry->title, entry->titleLength);
 
       switch (packet->type) {
       case MAIL_INBOX_NORMAL:
@@ -5720,10 +5720,10 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
     }
   }
 
-  if (g_windowMgr.unknown_0454) {
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->RefreshMailLists();
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->SetButtonsDisabled(0);
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->ClearChecks();
+  if (g_windowMgr.rodexInboxWnd) {
+    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->RefreshMailLists();
+    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->SetButtonsDisabled(0);
+    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->ClearChecks();
   }
 }
 
@@ -5769,7 +5769,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     if (packet->aid == g_session.m_aid) {
       ActiveSkillEffect effect;
       effect.id = packet->type;
-      effect.unknown_0004 = 999999;
+      effect.expiration = 999999;
       if (!this->IsExcludedSkillEffectId(packet->type)) {
         for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
           if (it->id == packet->type) {
@@ -6171,7 +6171,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
-        g_session.unknown_5450 = 1;
+        g_session.guildLeader = 1;
       }
       std::sprintf(message, "");
       break;
@@ -6216,7 +6216,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_CASH_BOSS_ALARM:
       if (packet->aid == g_session.m_aid) {
-        this->unknown_05CC[0] = 1;
+        this->bossAlarmAndCopyNameFlags[0] = 1;
       }
       std::sprintf(message, LookupMessage(MSI_BOSS_ALARM));
       break;
@@ -6812,7 +6812,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
-        g_session.unknown_5450 = 0;
+        g_session.guildLeader = 0;
       }
       std::sprintf(message, "");
       break;
@@ -6851,7 +6851,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_CASH_BOSS_ALARM:
       if (packet->aid == g_session.m_aid) {
-        this->unknown_05CC[0] = 0;
+        this->bossAlarmAndCopyNameFlags[0] = 0;
       }
       break;
     case EFST_ON_PUSH_CART:
@@ -6887,7 +6887,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       break;
     case EFST_SU_STOOP:
-      if (packet->aid == g_session.m_aid && !this->scene->player->render.unknown_0114) {
+      if (packet->aid == g_session.m_aid && !this->scene->player->render.specialMotionLocked) {
         this->scene->player->SetState(0, 1);
       }
       break;
@@ -6913,7 +6913,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       }
       actor->SetMadogearType(0);
       if (packet->aid == g_session.m_aid) {
-        g_session.unknown_8074 = 0;
+        g_session.madogearType = 0;
       }
       actor->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
@@ -7084,7 +7084,7 @@ void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
     return;
   }
 
-  if (guildInfo->unknown_00C0) {
+  if (guildInfo->membersRequested) {
     guildInfo->DeleteMember(name);
   }
 
@@ -7102,7 +7102,7 @@ void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
 
   GuildInfo::Unknown00ECEntry entry;
   entry.name = name;
-  entry.unknown_0034 = reason;
+  entry.reason = reason;
   guildInfo->AddUnknown00EC(entry);
 }
 
@@ -7127,7 +7127,7 @@ struct GuildPositionUpdatePacket {
 void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildPositionUpdatePacket*>(data);
   GuildInfo* guildInfo = &g_guildInfo;
-  if (!guildInfo->unknown_00C4) {
+  if (!guildInfo->positionsRequested) {
     return;
   }
 
@@ -7145,13 +7145,13 @@ void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
     guildInfo->m_positions[position.positionId] = name;
 
     GuildInfo::Unknown00D4Entry entry;
-    entry.unknown_0004 = position.positionId;
-    entry.unknown_0008 = guildInfo->m_positions[position.positionId];
-    entry.unknown_0020 = position.mode & 1;
-    entry.unknown_0024 = (position.mode >> 4) & 1;
-    entry.unknown_0028 = position.payRate;
-    entry.unknown_002C = (position.mode >> 8) & 1;
-    entry.unknown_0000 = position.ranking;
+    entry.positionId = position.positionId;
+    entry.name = guildInfo->m_positions[position.positionId];
+    entry.canInvite = position.mode & 1;
+    entry.canExpel = (position.mode >> 4) & 1;
+    entry.tax = position.payRate;
+    entry.canStorage = (position.mode >> 8) & 1;
+    entry.ranking = position.ranking;
     guildInfo->UpdateUnknown00D4(entry);
   }
 
@@ -7179,7 +7179,7 @@ void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
     return;
   }
 
-  if (guildInfo->unknown_00C0) {
+  if (guildInfo->membersRequested) {
     guildInfo->DeleteMember(name);
   }
 
@@ -7242,7 +7242,7 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
     return;
   }
 
-  if (guildInfo->unknown_00C0) {
+  if (guildInfo->membersRequested) {
     guildInfo->DeleteMemberByCharacterId(static_cast<int>(packet->characterId));
   }
 
@@ -7265,7 +7265,7 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
 
   GuildInfo::Unknown00ECEntry entry;
   entry.name = name.c_str();
-  entry.unknown_0034 = reason;
+  entry.reason = reason;
   guildInfo->AddUnknown00EC(entry);
 }
 
@@ -7287,7 +7287,7 @@ void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
     return;
   }
 
-  if (guildInfo->unknown_00C0) {
+  if (guildInfo->membersRequested) {
     guildInfo->DeleteMemberByCharacterId(static_cast<int>(packet->characterId));
   }
 
@@ -7361,7 +7361,7 @@ void CGameMode::ReceivePartyInfo2(const unsigned char* data) {
 struct EquipItemUpdatePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t itemId;
-  /* 0004 */ unsigned char unknown_0004;
+  /* 0004 */ unsigned char damaged;
   /* 0005 */ std::uint32_t cards[4];
   /* 0015 */ ItemSlotOption options[5];
   /* 002E */ unsigned char refine;
@@ -7375,21 +7375,21 @@ void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char 
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemId);
   int lookup = 0;
   int slot = 0;
-  if (item.unknown_0000[1] == 0) {
+  if (item.identity[1] == 0) {
     item = g_session.FindItem17F0(itemId, &slot);
     lookup = 1;
-    if (item.unknown_0000[1] == 0) {
+    if (item.identity[1] == 0) {
       item = g_session.FindItem2B50(itemId, &slot);
       lookup = 2;
     }
   }
 
-  item.unknown_005D = unknownValue;
-  item.unknown_0060 = refine;
-  std::memcpy(item.unknown_001C, cards.cards, sizeof(cards.cards));
-  item.unknown_0098 = CountItemSlotOptions(options.options);
-  for (int index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = options.options[index];
+  item.damaged = unknownValue;
+  item.refiningLevel = refine;
+  std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
+  item.optionCount = CountItemSlotOptions(options.options);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[index] = options.options[index];
   }
 
   if (lookup == 0) {
@@ -7412,25 +7412,25 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->itemId);
   long long lookup = 0;
   int slot = 0;
-  if (item.unknown_0000[1] == 0) {
+  if (item.identity[1] == 0) {
     item = g_session.FindItem17F0(packet->itemId, &slot);
     lookup = 1;
-    if (item.unknown_0000[1] == 0) {
+    if (item.identity[1] == 0) {
       item = g_session.FindItem2B50(packet->itemId, &slot);
       lookup = 2;
     }
   }
 
-  item.unknown_005D = packet->unknown_0004;
-  item.unknown_0060 = packet->refine;
+  item.damaged = packet->damaged;
+  item.refiningLevel = packet->refine;
   for (long long index = 0; index < 4; ++index) {
-    reinterpret_cast<std::uint32_t*>(item.unknown_001C)[index] = packet->cards[index];
+    reinterpret_cast<std::uint32_t*>(item.cards)[index] = packet->cards[index];
   }
-  item.unknown_0098 = CountItemSlotOptions(packet->options);
-  for (long long index = 0; index < item.unknown_0098; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  item.optionCount = CountItemSlotOptions(packet->options);
+  for (long long index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
   }
-  item.unknown_0088 = packet->unknown_002F;
+  item.grade = packet->unknown_002F;
 
   if (lookup == 0) {
     g_session.UpdateInventoryItem(item, 1);
@@ -7533,17 +7533,17 @@ struct GuildStorageLogItem {
 
 #pragma pack(push, 1)
 struct GuildStorageLogItemRecord {
-  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0000 */ std::uint32_t logId;
   /* 0004 */ std::uint32_t itemId;
-  /* 0008 */ std::uint32_t unknown_0008;
-  /* 000C */ unsigned char unknown_000C;
+  /* 0008 */ std::uint32_t quantity;
+  /* 000C */ unsigned char operation;
   /* 000D */ unsigned char unknown_000D[8];
   /* 0015 */ unsigned char identified;
   /* 0016 */ std::int16_t type;
   /* 0018 */ std::uint32_t cards[4];
   /* 0028 */ char name[24];
   /* 0040 */ char characterName[24];
-  /* 0058 */ unsigned char unknown_0058;
+  /* 0058 */ unsigned char highlighted;
   /* 0059 */ unsigned char refine;
   /* 005A */ unsigned char grade;
 };
@@ -7567,19 +7567,19 @@ void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
     for (long long index = 0; index < packet->count; ++index) {
       const GuildStorageLogItemRecord& record = packet->records[index];
       ITEM_INFO item;
-      item.unknown_00B8[0] = record.unknown_0000;
-      item.unknown_00B8[1] = record.unknown_0008;
-      item.unknown_00C0 = record.unknown_000C;
-      strncpy_s(reinterpret_cast<char*>(item.unknown_00C1), sizeof(item.unknown_00C1), record.name, _TRUNCATE);
-      strncpy_s(reinterpret_cast<char*>(item.unknown_00D9), sizeof(item.unknown_00D9), record.characterName, _TRUNCATE);
+      item.recordIds[0] = record.logId;
+      item.recordIds[1] = record.quantity;
+      item.recordType = record.operation;
+      strncpy_s(reinterpret_cast<char*>(item.recordName), sizeof(item.recordName), record.name, _TRUNCATE);
+      strncpy_s(reinterpret_cast<char*>(item.recordDate), sizeof(item.recordDate), record.characterName, _TRUNCATE);
       char number[16] = {};
       item.itemId = _itoa(record.itemId, number, 10);
       item.identified = record.identified;
-      item.unknown_0000[0] = record.type;
-      item.unknown_0060 = record.refine;
-      std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
-      item.unknown_0088 = record.grade;
-      items.push_back({item, record.unknown_0058});
+      item.identity[0] = record.type;
+      item.refiningLevel = record.refine;
+      std::memcpy(item.cards, record.cards, sizeof(record.cards));
+      item.grade = record.grade;
+      items.push_back({item, record.highlighted});
     }
   }
 
@@ -7629,7 +7629,7 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
     }
   }
 
-  auto previous = statusLevelEffects.find(*reinterpret_cast<const int*>(&g_session.unknown_0F0C[0]));
+  auto previous = statusLevelEffects.find(*reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]));
   if (previous != statusLevelEffects.end()) {
     this->ApplyStatusChange(aid, 0, previous->second, 9999, 0, 0, 0, 0, 9999);
   }
@@ -7654,7 +7654,7 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
   line.append(message.data());
 
   if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(unknown_0004)) != 0) {
-    if (g_session.unknown_56B8[0] != 0) {
+    if (g_session.autoReplyState[0] != 0) {
       char notice[24];
       std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
       const char length = static_cast<char>(std::strlen(notice));
@@ -7663,7 +7663,7 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
       head[length] = '\0';
       if (std::strcmp(head, notice) != 0) {
         std::string reply(LookupMessage(MSI_AUTO_MSG2));
-        reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
+        reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyState[4]).c_str());
         g_windowMgr.SetUnknown04DC(reply.c_str());
         g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
@@ -7763,7 +7763,7 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
     }
   }
 
-  if (g_session.unknown_56B8[0] != 0) {
+  if (g_session.autoReplyState[0] != 0) {
     char notice[24];
     std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
     const char length = static_cast<char>(std::strlen(notice));
@@ -7772,7 +7772,7 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
     head[length] = '\0';
     if (std::strcmp(head, notice) != 0) {
       std::string reply(LookupMessage(MSI_AUTO_MSG2));
-      reply.append(reinterpret_cast<const std::string&>(g_session.unknown_56B8[4]).c_str());
+      reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyState[4]).c_str());
       g_windowMgr.SetUnknown04DC(reply.c_str());
       g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }

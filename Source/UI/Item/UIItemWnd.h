@@ -43,25 +43,25 @@ public:
   /* 00F4 */ UIBitmapButton* baseButton;
   /* 00F8 */ UIBitmapButton* minimizeButton;
   /* 00FC */ UIBitmapButton* closeButton;
-  /* 0100 */ int unknown_0100;
-  /* 0104 */ int unknown_0104;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
-  /* 0110 */ int unknown_0110;
+  /* 0100 */ int usableFilter;
+  /* 0104 */ int equipmentFilter;
+  /* 0108 */ int miscFilter;
+  /* 010C */ int categoryFilter;
+  /* 0110 */ int expandedHeight;
   /* 0114 */ UICheckBox* lockDropBox;
   /* 0118 */ UITabControl* tabs;
   /* 011C */ UIWindow* optionBox;
   /* 0120 */ UIBitmapButton* countButton;
-  /* 0124 */ UIButton* unknown_0124;
-  /* 0128 */ UIWindow* unknown_0128;
-  /* 012C */ UIButton* unknown_012C;
+  /* 0124 */ UIButton* dealLockButton;
+  /* 0128 */ UIWindow* filterWindow;
+  /* 012C */ UIButton* filterButton;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIItemWnd, saved) == 0xF0);
-static_assert(offsetof(UIItemWnd, unknown_0110) == 0x110);
+static_assert(offsetof(UIItemWnd, expandedHeight) == 0x110);
 static_assert(offsetof(UIItemWnd, tabs) == 0x118);
-static_assert(offsetof(UIItemWnd, unknown_0128) == 0x128);
+static_assert(offsetof(UIItemWnd, filterWindow) == 0x128);
 #endif
 
 #endif

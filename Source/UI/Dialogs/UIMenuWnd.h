@@ -14,9 +14,9 @@ public:
   /* 00B8 */ int m_selected;
   /* 00BC */ int m_itemHeight;
   /* 00C0 */ std::vector<std::string> m_items;
-  /* 00CC */ std::uint32_t unknown_00CC;
+  /* 00CC */ std::uint32_t m_targetWindowId;
   /* 00D0 */ std::vector<std::uint32_t> m_colors;
-  /* 00DC */ unsigned char unknown_00DC;
+  /* 00DC */ unsigned char m_menuFlags;
 
   void Move(int x, int y) override;
   void OnCreate(int width, int height) override;

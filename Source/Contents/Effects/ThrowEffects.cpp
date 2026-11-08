@@ -17,8 +17,8 @@
 // OFFSET: 0x00B7CB10
 // FUNCTION: fn_19227
 CThrowItemEffect::CThrowItemEffect()
-    : CEffect(-1), unknown_00CC(0), unknown_00D0(0), unknown_00D4(1), unknown_00D8(4), unknown_00DC(0), unknown_00E0(0), unknown_00EC(0),
-      unknown_00F0(0), unknown_00F4(0) {
+    : CEffect(-1), travelFrames(0), launchDelay(0), projectileCount(1), trailCount(4), heightDelta(0), arcHeight(0), trailX(0),
+      trailY(0), trailZ(0) {
 }
 
 // OFFSET: 0x00B7CCC0
@@ -36,73 +36,73 @@ void CThrowItemEffect::Close() {
 void CThrowItemEffect::Open() {
   switch (this->id) {
   case EF_THROW_HAPPOKUNAI:
-    this->unknown_00D4 = 8;
+    this->projectileCount = 8;
     break;
   case EF_THROW_MULTIPLE_COIN:
-    this->unknown_00D4 = 10;
+    this->projectileCount = 10;
     break;
   case EF_KAIHOU:
     if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
-      this->unknown_00D4 = owner->unknown_03D0;
-      this->unknown_00D8 = 1;
+      this->projectileCount = owner->charmCount;
+      this->trailCount = 1;
     }
     break;
   }
 
-  for (int row = 0; row < this->unknown_00D4; ++row) {
-    for (int column = 0; column < this->unknown_00D8; ++column) {
+  for (int row = 0; row < this->projectileCount; ++row) {
+    for (int column = 0; column < this->trailCount; ++column) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (!particle) {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = column;
-      particle->unknown_0010 = row;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = column;
+      particle->rowIndex = row;
+      particle->groupIndex = 1;
 
       switch (this->id) {
       case EF_THROWITEM:
-        this->unknown_002C = 300;
-        this->unknown_00E0 = 30.0f;
+        this->effectLifetime = 300;
+        this->arcHeight = 30.0f;
         this->InitTrajectory(particle);
         particle->SetTexture("유저인터페이스\\item\\빈병.bmp");
         particle->scale = 1.5f;
         particle->SetColor(135, 255, 135);
-        particle->unknown_00C4 = 0;
-        particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
+        particle->angleBits = 0;
+        particle->speedParameter = particle->animationParameter / 25.0f;
         particle->alpha = 255;
-        particle->unknown_00D0 = this->position[0];
-        particle->unknown_00D4 = this->position[1] - 8.0f;
-        particle->unknown_00D8 = this->position[2];
+        particle->offsetX = this->position[0];
+        particle->offsetY = this->position[1] - 8.0f;
+        particle->offsetZ = this->position[2];
         particle->destinationBlend = 6;
         break;
       case EF_THROWITEM2:
         particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
-        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
         break;
       case EF_THROWITEM3:
-        this->unknown_002C = 300;
-        this->unknown_00E0 = 10.0f;
+        this->effectLifetime = 300;
+        this->arcHeight = 10.0f;
         particle->SetTexture("유저인터페이스\\item\\돌.bmp");
         particle->scale = 1.0f;
         particle->SetColor(255, 255, 255);
-        particle->unknown_00C4 = 0;
-        particle->unknown_00C0 = 2.0f;
+        particle->angleBits = 0;
+        particle->speedParameter = 2.0f;
         particle->alpha = 255;
-        particle->unknown_00D0 = this->position[0];
-        particle->unknown_00D4 = this->position[1] - 8.0f;
-        particle->unknown_00D8 = this->position[2];
+        particle->offsetX = this->position[0];
+        particle->offsetY = this->position[1] - 8.0f;
+        particle->offsetZ = this->position[2];
         particle->destinationBlend = 6;
         break;
       case EF_THROWITEM4:
-        this->unknown_00D0 = 5;
+        this->launchDelay = 5;
         particle->SetTexture("유저인터페이스\\item\\화염병.bmp");
         this->InitFlameParticle(particle);
         break;
       case EF_THROWITEM5:
         particle->SetTexture("유저인터페이스\\item\\버서크포션.bmp");
-        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
         break;
       case EF_THROWITEM6:
         particle->SetTexture("유저인터페이스\\item\\베넘나이프.bmp");
@@ -126,29 +126,29 @@ void CThrowItemEffect::Open() {
         break;
       case EF_THROWITEM11:
         particle->SetTexture("유저인터페이스\\item\\폭탄버섯포자.bmp");
-        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
         break;
       case EF_THROWITEM4_1:
-        this->unknown_00D0 = 10;
+        this->launchDelay = 10;
         particle->SetTexture("유저인터페이스\\item\\염산병.bmp");
         this->InitFlameParticle(particle);
         break;
       case EF_THROW_BAKURETSU:
         particle->SetTexture("유저인터페이스\\item\\쿠나이_화.bmp");
         this->InitSpinParticle(particle);
-        particle->unknown_00C0 = 1.0f;
+        particle->speedParameter = 1.0f;
       case EF_THROW_HAPPOKUNAI:
-        this->unknown_002C = 200;
-        this->unknown_00E0 = 1.0f;
+        this->effectLifetime = 200;
+        this->arcHeight = 1.0f;
         particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
         particle->scale = 3.0f;
         particle->SetColor(255, 200, 255);
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
-        particle->unknown_00C0 = 1.5f;
+        *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+        particle->speedParameter = 1.5f;
         particle->alpha = 255;
-        particle->unknown_00D0 = this->position[0];
-        particle->unknown_00D8 = this->position[2];
-        particle->unknown_00D4 = this->position[1] - 8.0f;
+        particle->offsetX = this->position[0];
+        particle->offsetZ = this->position[2];
+        particle->offsetY = this->position[1] - 8.0f;
         particle->destinationBlend = 6;
         if (this->sourceActor == 0) {
           this->sourcePosition[1] = this->position[1];
@@ -157,18 +157,18 @@ void CThrowItemEffect::Open() {
         }
         break;
       case EF_THROW_MULTIPLE_COIN:
-        this->unknown_002C = 200;
-        this->unknown_00E0 = 10.0f;
+        this->effectLifetime = 200;
+        this->arcHeight = 10.0f;
         particle->SetTexture("effect\\coin_a.bmp");
         particle->scale = 2.5f;
         particle->SetColor(255, 200, 0);
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
-        particle->unknown_00C0 = 2.0f;
+        *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+        particle->speedParameter = 2.0f;
         particle->alpha = 255;
         particle->destinationBlend = 6;
-        particle->unknown_00D8 = this->position[2];
-        particle->unknown_00D4 = this->position[1] - 8.0f;
-        particle->unknown_00D0 = this->position[0];
+        particle->offsetZ = this->position[2];
+        particle->offsetY = this->position[1] - 8.0f;
+        particle->offsetX = this->position[0];
         break;
       case EF_KAIHOU:
         if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
@@ -188,14 +188,14 @@ void CThrowItemEffect::Open() {
             break;
           }
 
-          this->unknown_002C = 200;
+          this->effectLifetime = 200;
           particle->scale = 2.0f;
-          *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
-          particle->unknown_00C0 = 1.5f;
+          *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+          particle->speedParameter = 1.5f;
           particle->alpha = 255;
-          particle->unknown_00D8 = this->position[2];
-          particle->unknown_00D4 = this->position[1] - 15.0f;
-          particle->unknown_00D0 = this->position[0];
+          particle->offsetZ = this->position[2];
+          particle->offsetY = this->position[1] - 15.0f;
+          particle->offsetX = this->position[0];
         }
         break;
       }
@@ -209,33 +209,33 @@ void CThrowItemEffect::Open() {
 // OFFSET: 0x00B7D3B0
 // FUNCTION: fn_19231
 void CThrowItemEffect::InitFlameParticle(CParticle* particle) {
-  this->unknown_002C = 300;
-  this->unknown_00E0 = 1.0f;
+  this->effectLifetime = 300;
+  this->arcHeight = 1.0f;
   this->InitTrajectory(particle);
   particle->scale = 1.5f;
   particle->SetColor(255, 255, 255);
-  particle->unknown_00C4 = 0;
+  particle->angleBits = 0;
   particle->alpha = 255;
-  particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
-  particle->unknown_00D0 = this->position[0];
-  particle->unknown_00D8 = this->position[2];
+  particle->speedParameter = particle->animationParameter / 25.0f;
+  particle->offsetX = this->position[0];
+  particle->offsetZ = this->position[2];
   particle->destinationBlend = 6;
-  particle->unknown_00D4 = this->position[1] - 8.0f;
+  particle->offsetY = this->position[1] - 8.0f;
 }
 
 // OFFSET: 0x00B7D4D0
 // FUNCTION: fn_19232
 void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
-  this->unknown_002C = 300;
-  this->unknown_00E0 = 30.0f;
+  this->effectLifetime = 300;
+  this->arcHeight = 30.0f;
   this->InitTrajectory(particle);
   particle->scale = 1.5f;
-  particle->unknown_00C4 = 0;
+  particle->angleBits = 0;
   particle->alpha = 255;
-  particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
-  particle->unknown_00D0 = this->position[0];
-  particle->unknown_00D8 = this->position[2];
-  particle->unknown_00D4 = this->position[1] - 8.0f;
+  particle->speedParameter = particle->animationParameter / 25.0f;
+  particle->offsetX = this->position[0];
+  particle->offsetZ = this->position[2];
+  particle->offsetY = this->position[1] - 8.0f;
 
   if (kind != 6) {
     particle->destinationBlend = 6;
@@ -259,16 +259,16 @@ void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
 // OFFSET: 0x00B7D810
 // FUNCTION: fn_19233
 void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
-  this->unknown_002C = 200;
-  this->unknown_00E0 = 1.0f;
+  this->effectLifetime = 200;
+  this->arcHeight = 1.0f;
   particle->scale = 2.0f;
   particle->SetColor(255, 200, 255);
-  *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
-  particle->unknown_00C0 = 3.0f;
+  *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+  particle->speedParameter = 3.0f;
   particle->alpha = 255;
-  particle->unknown_00D0 = this->position[0];
-  particle->unknown_00D4 = this->position[1] - 8.0f;
-  particle->unknown_00D8 = this->position[2];
+  particle->offsetX = this->position[0];
+  particle->offsetY = this->position[1] - 8.0f;
+  particle->offsetZ = this->position[2];
   particle->destinationBlend = 6;
 }
 
@@ -307,44 +307,44 @@ void CThrowItemEffect::OnProcess() {
     target->position.y = this->position[1];
     target->position.z = this->position[2];
 
-    if (target != nullptr && this->unknown_00D0 <= this->frame) {
-      float& angle = target->unknown_00C0;
-      float& rotation = *reinterpret_cast<float*>(&target->unknown_00C4);
-      float& offsetX = *reinterpret_cast<float*>(&target->unknown_00D0);
-      float& offsetY = *reinterpret_cast<float*>(&target->unknown_00D4);
-      float& offsetZ = *reinterpret_cast<float*>(&target->unknown_00D8);
+    if (target != nullptr && this->launchDelay <= this->frame) {
+      float& angle = target->speedParameter;
+      float& rotation = *reinterpret_cast<float*>(&target->angleBits);
+      float& offsetX = *reinterpret_cast<float*>(&target->offsetX);
+      float& offsetY = *reinterpret_cast<float*>(&target->offsetY);
+      float& offsetZ = *reinterpret_cast<float*>(&target->offsetZ);
 
-      if (target->unknown_000C == 0) {
+      if (target->columnIndex == 0) {
         rotation = static_cast<float>(static_cast<int>(rotation + 45.0f) % 360);
       } else {
-        this->unknown_00E4 -= target->unknown_000C == 1 ? 150 : 25;
-        target->alpha = this->unknown_00E4;
-        offsetX = this->unknown_00EC;
-        offsetY = this->unknown_00F0;
-        offsetZ = this->unknown_00F4;
-        rotation = this->unknown_00E8;
+        this->trailAlpha -= target->columnIndex == 1 ? 150 : 25;
+        target->alpha = this->trailAlpha;
+        offsetX = this->trailX;
+        offsetY = this->trailY;
+        offsetZ = this->trailZ;
+        rotation = this->trailRotation;
       }
 
-      const float progress = static_cast<float>(this->frame) / static_cast<float>(this->unknown_00CC);
+      const float progress = static_cast<float>(this->frame) / static_cast<float>(this->travelFrames);
       float height = 0.0f;
 
       if (progress > 1.05f) {
         const int alpha = target->alpha - 20;
         target->alpha = alpha > 0 ? alpha : 0;
       } else {
-        const int index = *reinterpret_cast<const int*>(&target->unknown_0048[4]);
-        const float radius = angle / *reinterpret_cast<const float*>(&target->unknown_0048[0xC]);
+        const int index = *reinterpret_cast<const int*>(&target->effectParameters[4]);
+        const float radius = angle / *reinterpret_cast<const float*>(&target->effectParameters[0xC]);
         offsetX = angle * g_cosTable[index] + offsetX;
-        offsetY = radius * this->unknown_00DC + offsetY;
+        offsetY = radius * this->heightDelta + offsetY;
         offsetZ = angle * g_sinTable[index] + offsetZ;
-        height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->unknown_00E0;
+        height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->arcHeight;
       }
 
-      this->unknown_00EC = offsetX;
-      this->unknown_00F0 = offsetY;
-      this->unknown_00F4 = offsetZ;
-      this->unknown_00E8 = rotation;
-      this->unknown_00E4 = target->alpha;
+      this->trailX = offsetX;
+      this->trailY = offsetY;
+      this->trailZ = offsetZ;
+      this->trailRotation = rotation;
+      this->trailAlpha = target->alpha;
 
       if (target->alpha > 0) {
         matrix view;
@@ -367,7 +367,7 @@ void CThrowItemEffect::OnProcess() {
         transform.Compose(rotationMatrix, translate);
         target->transform = transform;
 
-        if (this->id == 0x3D5 && target->unknown_0010 == 0 && target->unknown_000C == 0) {
+        if (this->id == 0x3D5 && target->rowIndex == 0 && target->columnIndex == 0) {
           CRenderObject* object = FindRenderObject(this->actor);
 
           if (object != nullptr) {
@@ -378,7 +378,7 @@ void CThrowItemEffect::OnProcess() {
       }
     }
 
-    ++target->unknown_00E8;
+    ++target->elapsedFrames;
   }
 }
 
@@ -397,22 +397,22 @@ void CThrowItemEffect::Render() {
 void CThrowItemEffect::InitTrajectory(CParticle* particle) {
   const float deltaX = this->sourcePosition[0] - this->position[0];
   const float deltaZ = this->sourcePosition[2] - this->position[2];
-  this->unknown_00DC = this->sourcePosition[1] - this->position[1];
+  this->heightDelta = this->sourcePosition[1] - this->position[1];
 
   const unsigned short heading = static_cast<unsigned short>(static_cast<int>(DirectionAngle(deltaX, deltaZ)));
   unsigned short offset = 0;
   if (this->id == 981) {
-    offset = static_cast<unsigned short>(static_cast<short>(360 / this->unknown_00D4) * static_cast<short>(particle->unknown_0010));
+    offset = static_cast<unsigned short>(static_cast<short>(360 / this->projectileCount) * static_cast<short>(particle->rowIndex));
   }
 
-  particle->unknown_004C = static_cast<short>(heading + offset) % 360;
+  particle->phaseParameter = static_cast<short>(heading + offset) % 360;
 
   const float distance = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
-  particle->unknown_0054 = distance;
+  particle->animationParameter = distance;
 
   for (int step = 0; step < 100; ++step) {
-    if (static_cast<float>(step) * particle->unknown_00C0 > distance) {
-      this->unknown_00CC = step;
+    if (static_cast<float>(step) * particle->speedParameter > distance) {
+      this->travelFrames = step;
       return;
     }
   }
@@ -429,19 +429,19 @@ void CVolcanoEffect::AddRings() {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = row;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = row;
+      particle->groupIndex = 1;
 
       switch (this->id) {
       case EF_GANBANTEIN:
-        particle->unknown_00C0 = 15.0f;
-        particle->unknown_004C = 70;
-        particle->unknown_0054 = 0.0f;
-        particle->unknown_0050 = 360;
+        particle->speedParameter = 15.0f;
+        particle->phaseParameter = 70;
+        particle->animationParameter = 0.0f;
+        particle->angleParameter = 360;
         particle->alpha = 1;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(row * 90);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_VOLCANO:
@@ -455,21 +455,21 @@ void CVolcanoEffect::AddRings() {
       case EF_GUMGANG7:
       case EF_GUMGANG8:
       case EF_GUMGANG9:
-        particle->unknown_00C0 = 25.0f;
-        particle->unknown_004C = 80;
-        particle->unknown_0054 = 0.0f;
-        particle->unknown_0050 = 360;
+        particle->speedParameter = 25.0f;
+        particle->phaseParameter = 80;
+        particle->animationParameter = 0.0f;
+        particle->angleParameter = 360;
         particle->alpha = 1;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(baseAngle);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(baseAngle);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_GUMGANG5:
         particle->alpha = 1;
-        particle->unknown_0050 = 360;
-        particle->unknown_00C0 = 25.0f;
-        particle->unknown_004C = 80;
-        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(row * 90);
-        particle->unknown_0054 = 0.0f;
+        particle->angleParameter = 360;
+        particle->speedParameter = 25.0f;
+        particle->phaseParameter = 80;
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
+        particle->animationParameter = 0.0f;
         particle->scale = static_cast<float>(row) + 1.0f;
         particle->SetColor(0, 0, 255);
         break;
@@ -572,7 +572,7 @@ void CVolcanoEffect::OnProcess() {
     if (particle) {
       particle->scale += this->id == EF_GUMGANG2 ? 0.1f : 0.3f;
 
-      int tilt = particle->unknown_004C - 1;
+      int tilt = particle->phaseParameter - 1;
       if (this->id == EF_GUMGANG2) {
         if (tilt < 30) {
           tilt = 30;
@@ -580,9 +580,9 @@ void CVolcanoEffect::OnProcess() {
       } else if (tilt < 40) {
         tilt = 40;
       }
-      particle->unknown_004C = tilt;
+      particle->phaseParameter = tilt;
 
-      float& spin = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float& spin = *reinterpret_cast<float*>(&particle->angleBits);
       spin = static_cast<float>(static_cast<int>(spin) + (this->id != EF_GUMGANG2) * 2 + 3);
 
       switch (this->id) {
@@ -613,17 +613,17 @@ void CVolcanoEffect::OnProcess() {
         break;
       }
 
-      if (particle->unknown_00E8 > 10) {
+      if (particle->elapsedFrames > 10) {
         const int alpha = particle->alpha - fadeOut;
         particle->alpha = alpha > 0 ? alpha : 0;
       } else {
         particle->alpha += fadeIn;
       }
 
-      const int segment = particle->unknown_000C;
-      const float radius = g_sinTable[segment * 9] * particle->unknown_00C0;
+      const int segment = particle->columnIndex;
+      const float radius = g_sinTable[segment * 9] * particle->speedParameter;
       const int angle =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) + spin) % 360;
+        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + spin) % 360;
       const float spread = radius * g_cosTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
@@ -657,7 +657,7 @@ void CVolcanoEffect::OnProcess() {
       this->lastOuter = corners[1];
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -666,13 +666,13 @@ void CVolcanoEffect::OnProcess() {
 void CVolcanoEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_000C <= 0) {
+    if (!particle || particle->columnIndex <= 0) {
       continue;
     }
 
     particle->destinationBlend = 6;
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;

@@ -399,18 +399,18 @@ void CUIComboBox<T, D>::SetItemBinder(std::function<void(T*, const D&)> binder) 
 // INLINED
 template <class T, class D>
 void CUIComboBox<T, D>::SetButton(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled) {
-  if (this->unknown_0088 != nullptr) {
-    this->RemoveChild(this->unknown_0088, 1);
-    this->unknown_0088 = nullptr;
+  if (this->dropDownButton != nullptr) {
+    this->RemoveChild(this->dropDownButton, 1);
+    this->dropDownButton = nullptr;
     this->Resize(this->geometry.width - 18, this->geometry.height);
   }
-  if (this->unknown_0088 == nullptr) {
+  if (this->dropDownButton == nullptr) {
     this->Resize(this->geometry.width + 18, this->geometry.height);
-    this->unknown_0088 = new CUIImageButton();
-    this->unknown_0088->SetSize(18, 18);
-    this->unknown_0088->Move(this->geometry.width - 18, 0);
-    this->unknown_0088->SetImages(normal, hover, pressed, disabled);
-    this->unknown_0088->SetOnClick([this]() {
+    this->dropDownButton = new CUIImageButton();
+    this->dropDownButton->SetSize(18, 18);
+    this->dropDownButton->Move(this->geometry.width - 18, 0);
+    this->dropDownButton->SetImages(normal, hover, pressed, disabled);
+    this->dropDownButton->SetOnClick([this]() {
       if (!g_windowMgr.CloseDropDown()) {
         int x = 0;
         int y = this->geometry.height - 1;
@@ -418,7 +418,7 @@ void CUIComboBox<T, D>::SetButton(const std::string& normal, const std::string& 
         g_windowMgr.ShowDropDown(this, this->listBox, x, y);
       }
     });
-    this->AddChild(this->unknown_0088);
+    this->AddChild(this->dropDownButton);
   }
 }
 
@@ -828,7 +828,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
 // INLINED
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (GameSettingsUI::CUIOptionItem* other : this->items) {
@@ -837,7 +837,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::SelectItem(CUIListIt
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   GameSettingsUI::CUIOptionItem* selectedItem = dynamic_cast<GameSettingsUI::CUIOptionItem*>(item);
@@ -903,7 +903,7 @@ __declspec(noinline) GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(
 // OFFSET: 0x00A3CF80
 // FUNCTION: fn_15903
 __declspec(noinline) GameSettingsUI::CUIOptionItem::CUIOptionItem()
-    : CUIListItem(), m_check(nullptr), unknown_00EC(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
+    : CUIListItem(), m_check(nullptr), m_runButton(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
 }
 
 // OFFSET: 0x00A36170
@@ -1245,7 +1245,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnCreate(int width, 
 // FUNCTION: fn_15442
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -1254,7 +1254,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUILi
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   GameSettingsUI::CUIComboItem* selectedItem = dynamic_cast<GameSettingsUI::CUIComboItem*>(item);
@@ -1279,7 +1279,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUILi
 // FUNCTION: fn_15443
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -1288,7 +1288,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIList
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   GameSettingsUI::CUIComboItem* selectedItem = dynamic_cast<GameSettingsUI::CUIComboItem*>(item);
@@ -1313,7 +1313,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIList
 // FUNCTION: fn_15444
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -1322,7 +1322,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUILi
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   GameSettingsUI::CUIComboItem* selectedItem = dynamic_cast<GameSettingsUI::CUIComboItem*>(item);
@@ -1347,7 +1347,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUILi
 // FUNCTION: fn_15445
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -1356,7 +1356,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIList
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   GameSettingsUI::CUIComboItem* selectedItem = dynamic_cast<GameSettingsUI::CUIComboItem*>(item);
@@ -1922,7 +1922,7 @@ CUIGameSettingsUI::CUIGameSettingsUI()
 // OFFSET: 0x00A1EE20
 // FUNCTION: fn_15383
 void CUIGameSettingsUI::Initialize() {
-  this->unknown_00B4 = 1;
+  this->ownedSkinColors = 1;
   this->m_resolveSkin = true;
   this->Resize(400, 350);
   this->Move(0, 0);
@@ -2333,40 +2333,40 @@ void GameSettingsUI::CUIGroupTrilinear::OnInit() {
 // FUNCTION: fn_15341
 template <>
 __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19560
 // FUNCTION: fn_15342
 template <>
 __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19720
 // FUNCTION: fn_15343
 template <>
 __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A198E0
 // FUNCTION: fn_15344
 template <>
 __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A19AA0
 // FUNCTION: fn_15345
 template <>
 __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A41B60
@@ -2374,9 +2374,9 @@ __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIL
 void GameSettingsUI::CUIGroupSound::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_SOUND_OPTIONWND));
   this->m_bgmText->SetText(LookupMessage(MSI_BGM));
-  this->unknown_0090->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_bgmMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
   this->m_effectText->SetText(LookupMessage(MSI_SOUND));
-  this->unknown_00A0->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_effectMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
 }
 
 // OFFSET: 0x00A41560
@@ -2479,7 +2479,7 @@ void GameSettingsUI::CUIGroupSound::Apply() {
 
 // OFFSET: 0x00A19C60
 // FUNCTION: fn_15346
-inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), clickWindow(nullptr), hoverWindow(nullptr) {
 }
 
 // OFFSET: 0x00A19D30
@@ -2541,7 +2541,7 @@ GameSettingsUI::CUIGroupSkin::CUIGroupSkin() : CUIGroup(), m_combo(nullptr) {
 
 // OFFSET: 0x00A3CC60
 // FUNCTION: fn_15898
-GameSettingsUI::CUIGroupSound::CUIGroupSound() : CUIGroup(), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), unknown_0090(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), unknown_00A0(nullptr) {
+GameSettingsUI::CUIGroupSound::CUIGroupSound() : CUIGroup(), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), m_bgmMuteText(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), m_effectMuteText(nullptr) {
 }
 
 // OFFSET: 0x00A3CD30
@@ -3778,29 +3778,29 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmMute->checked = false;
   this->m_bgmMute->Invalidate();
   this->AddChild(this->m_bgmMute);
-  this->unknown_0090 = new CUIStaticText();
-  this->unknown_0090->SetSize(50, 13);
-  this->unknown_0090->Move(348, 12);
-  this->unknown_0090->SetText([]() {
+  this->m_bgmMuteText = new CUIStaticText();
+  this->m_bgmMuteText->SetSize(50, 13);
+  this->m_bgmMuteText->Move(348, 12);
+  this->m_bgmMuteText->SetText([]() {
     constexpr std::uint8_t bytes[] = {0xE9, 0x43, 0xD0, 0xBB, 0x4F};
     constexpr EncryptedSource<5> source(bytes);
     thread_local EncryptedName<5, 0xF715514F5961B75BULL> name(source);
     return name.Text();
   }());
-  this->unknown_0090->SetFitText(0);
-  this->unknown_0090->SetAlign(0, 0);
-  this->unknown_0090->SetFont(std::string([]() {
+  this->m_bgmMuteText->SetFitText(0);
+  this->m_bgmMuteText->SetAlign(0, 0);
+  this->m_bgmMuteText->SetFont(std::string([]() {
     constexpr std::uint8_t bytes[] = {0xDE, 0x4C, 0x91, 0x58, 0x38, 0xBB};
     constexpr EncryptedSource<6> source(bytes);
     thread_local EncryptedName<6, 0x4191BB5531FD3999ULL> name(source);
     return name.Text();
   }()));
-  this->unknown_0090->SetFontHeight(12);
-  this->unknown_0090->SetBold(0);
-  this->unknown_0090->SetColor(0);
-  this->unknown_0090->SetShadow(0, 0xFFFFFF);
-  this->unknown_0090->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_0090);
+  this->m_bgmMuteText->SetFontHeight(12);
+  this->m_bgmMuteText->SetBold(0);
+  this->m_bgmMuteText->SetColor(0);
+  this->m_bgmMuteText->SetShadow(0, 0xFFFFFF);
+  this->m_bgmMuteText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_bgmMuteText);
   this->m_effectText = new CUIStaticText();
   this->m_effectText->SetSize(50, 13);
   this->m_effectText->Move(110, 36);
@@ -3895,29 +3895,29 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectMute->checked = false;
   this->m_effectMute->Invalidate();
   this->AddChild(this->m_effectMute);
-  this->unknown_00A0 = new CUIStaticText();
-  this->unknown_00A0->SetSize(50, 13);
-  this->unknown_00A0->Move(348, 36);
-  this->unknown_00A0->SetText([]() {
+  this->m_effectMuteText = new CUIStaticText();
+  this->m_effectMuteText->SetSize(50, 13);
+  this->m_effectMuteText->Move(348, 36);
+  this->m_effectMuteText->SetText([]() {
     constexpr std::uint8_t bytes[] = {0xB3, 0xF9, 0xF6, 0xBF, 0xED};
     constexpr EncryptedSource<5> source(bytes);
     thread_local EncryptedName<5, 0x81F58DED5D470D01ULL> name(source);
     return name.Text();
   }());
-  this->unknown_00A0->SetFitText(0);
-  this->unknown_00A0->SetAlign(0, 0);
-  this->unknown_00A0->SetFont(std::string([]() {
+  this->m_effectMuteText->SetFitText(0);
+  this->m_effectMuteText->SetAlign(0, 0);
+  this->m_effectMuteText->SetFont(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x8C, 0x98, 0xDF, 0x42, 0xEA, 0x31};
     constexpr EncryptedSource<6> source(bytes);
     thread_local EncryptedName<6, 0x454D31872BB3EDCBULL> name(source);
     return name.Text();
   }()));
-  this->unknown_00A0->SetFontHeight(12);
-  this->unknown_00A0->SetBold(0);
-  this->unknown_00A0->SetColor(0);
-  this->unknown_00A0->SetShadow(0, 0xFFFFFF);
-  this->unknown_00A0->SetOutline(0, 0xFFFFFF);
-  this->AddChild(this->unknown_00A0);
+  this->m_effectMuteText->SetFontHeight(12);
+  this->m_effectMuteText->SetBold(0);
+  this->m_effectMuteText->SetColor(0);
+  this->m_effectMuteText->SetShadow(0, 0xFFFFFF);
+  this->m_effectMuteText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_effectMuteText);
 }
 
 // OFFSET: 0x00A2F880
@@ -4255,7 +4255,7 @@ void GameSettingsUI::CUIListPage::BindOption(CUIOptionItem* item, const TALKTYPE
     check->checked = IsServiceOption(item->m_optionId) ^ g_serviceOptions.Get(item->m_optionId);
     check->Invalidate();
   }
-  item->unknown_00EC->Show(option->type == 1);
+  item->m_runButton->Show(option->type == 1);
   item->m_label->SetText(option->title);
   item->m_label->tooltipText = option->tooltip;
   item->m_label->disabled = option->tipBoxId <= 0;
@@ -4275,7 +4275,7 @@ void GameSettingsUI::CUIListPage::LoadOptions(int tab) {
     this->m_optionList->data.push_back(static_cast<TALKTYPE>(id));
   }
   this->m_optionList->UpdateScrollBar();
-  this->m_optionList->unknown_00C4 = 1;
+  this->m_optionList->layoutFlag = 1;
   this->m_optionList->Invalidate();
   this->RefreshOptions();
 }
@@ -5011,7 +5011,7 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->AddChild(this->m_check);
 
   CUIImageButton* runButton = new CUIImageButton();
-  this->unknown_00EC = runButton;
+  this->m_runButton = runButton;
   runButton->SetSize(34, 15);
   runButton->Move(7, 5);
   runButton->SetOnClick([this]() { this->RunFunction(); });
@@ -5038,7 +5038,7 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
     thread_local EncryptedName<58, 0x0B8745519B1F95D7ULL> name(source);
     return name.Text();
   }()));
-  this->AddChild(this->unknown_00EC);
+  this->AddChild(this->m_runButton);
 
   this->m_label = new CUITextButton();
   this->m_label->SetSize(85, 13);

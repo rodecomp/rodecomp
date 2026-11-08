@@ -219,16 +219,16 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
     return false;
   }
 
-  item.unknown_0000[2] = fields[0];
+  item.identity[2] = fields[0];
   item.SetItemId(fields[2]);
 
   if (fields[1] != 0) {
-    item.unknown_0000[0] = 4;
+    item.identity[0] = 4;
   }
 
-  item.unknown_0060 = fields[3];
-  item.unknown_0070 = fields[4];
-  item.unknown_0088 = static_cast<std::int16_t>(fields[5]);
+  item.refiningLevel = fields[3];
+  item.sprite = fields[4];
+  item.grade = static_cast<std::int16_t>(fields[5]);
   int cardCount = 0;
 
   if (fields.size() > 6) {
@@ -242,7 +242,7 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
 
   if (static_cast<unsigned int>(cardCount + 8) < fields.size()) {
     const int optionCount = fields[cardCount + 8];
-    item.unknown_0098 = optionCount;
+    item.optionCount = optionCount;
 
     for (int option = 1; option < optionCount + 1; ++option) {
       const int* record = &fields[cardCount + 9 + (option - 1) * 3];

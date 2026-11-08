@@ -24,7 +24,7 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
   this->m_elapsed = 0;
   this->m_frameElapsed = 0;
   this->m_frameTick = 0;
-  this->unknown_01E0 = 0;
+  this->expandedHeight = 0;
   this->m_minimized = 0;
   this->m_elapsed = GetTickCount() - g_session.m_partyBooking.unknown_0034;
 }

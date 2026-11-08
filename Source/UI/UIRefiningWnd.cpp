@@ -59,8 +59,8 @@ struct RefiningClosePacket {
 // FUNCTION: fn_09890
 UIRefiningWnd::UIRefiningWnd()
     : UIFrameWnd(0), refiningButton(nullptr), returnButton(nullptr),
-      unknown_00C0(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
-      catalystItemId(0), catalystCount(0), item(0), unknown_01F0(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
+      cancelButton(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
+      catalystItemId(0), catalystCount(0), item(0), requestPending(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
   this->catalystItemId = 6635;
 }
 
@@ -90,7 +90,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   basic->Move(204, 322);
   basic->SetId(185);
   this->AddChild(basic);
-  this->unknown_00C0 = basic;
+  this->cancelButton = basic;
 
   this->refiningButton = new UIRefining_BtnRefining();
   this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
@@ -148,7 +148,7 @@ void UIRefiningWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // OFFSET: 0x007F52D0
 // FUNCTION: fn_09903
 __declspec(noinline) void UIRefiningWnd::Reset() {
-  this->unknown_01F0 = 0;
+  this->requestPending = 0;
   this->item = ITEM_INFO(0);
   this->selectedMaterial = -1;
   this->materials.clear();
@@ -165,9 +165,9 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
   this->result = 7;
   this->stateTick = timeGetTime();
   this->frame = 0;
-  if (this->unknown_00C0) {
-    this->unknown_00C0->SetDisabled(0);
-    this->unknown_00C0->Invalidate();
+  if (this->cancelButton) {
+    this->cancelButton->SetDisabled(0);
+    this->cancelButton->Invalidate();
   }
 
   this->result = 7;
@@ -183,9 +183,9 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
 // OFFSET: 0x007F54B0
 // FUNCTION: fn_09904
 std::uint32_t UIRefiningWnd::SelectedMaterialValue() {
-  if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+  if (this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
       this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
-    return this->materials[this->selectedMaterial].unknown_0005;
+    return this->materials[this->selectedMaterial].cost;
   }
   return 0;
 }
@@ -301,11 +301,11 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
     this->materials = this->nextMaterials;
 
     unsigned char level = 0;
-    if (this->item.unknown_0000[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+    if (this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
         this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
-      level = this->materials[this->selectedMaterial].unknown_0004;
+      level = this->materials[this->selectedMaterial].successRate;
     }
-    this->againButton->unknown_0125 = level;
+    this->againButton->remainingCount = level;
     this->againButton->Invalidate();
 
     if (!same) {
@@ -334,7 +334,7 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
     }
   }
 
-  this->unknown_01F0 = 0;
+  this->requestPending = 0;
   this->Invalidate();
 }
 
@@ -346,7 +346,7 @@ void UIRefining_BtnAgain::Paint() {
     int width = this->TextWidth(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, 1, 0);
     std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
     this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-      (this->geometry.unknown_0030 == 2) + 14, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
+      (this->geometry.state == 2) + 14, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
     );
     return;
   }
@@ -354,18 +354,18 @@ void UIRefining_BtnAgain::Paint() {
   int width = this->TextWidth(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, 1, 0);
   std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.unknown_0030 == 2) + 9, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 9, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
   );
 
-  std::string count = FormatOwnedString(LookupMessage(MSI_CASHSHOP_SALE_LIST), this->unknown_0125);
+  std::string count = FormatOwnedString(LookupMessage(MSI_CASHSHOP_SALE_LIST), this->remainingCount);
   width = this->TextWidth(count.c_str(), 0, 0, 11, 0, 0);
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.unknown_0030 == 2) + 22, count.c_str(), 0, 0, 11, 0, 0, 0
+    (this->geometry.state == 2) + 22, count.c_str(), 0, 0, 11, 0, 0, 0
   );
 
   width = this->TextWidth(IntToString(this->cost, 0).c_str(), 0, 0, 11, 1, 0);
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.unknown_0030 == 2) + 38, IntToString(this->cost, 0).c_str(), 0, 0, 11, 0xFFFFFF, 1, 0
+    (this->geometry.state == 2) + 38, IntToString(this->cost, 0).c_str(), 0, 0, 11, 0xFFFFFF, 1, 0
   );
 }
 
@@ -376,12 +376,12 @@ void UIRefining_BtnRefining::Paint() {
   int width = this->TextWidth(LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0, 0, 13, 1, 0);
   std::uint32_t color = this->m_disabled == 1 ? 0x94644A : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.unknown_0030 == 2) + 11, LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 11, LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0, 0, 12, color, 1, 0
   );
 
   if (this->m_disabled == 0) {
     width = this->TextWidth(IntToString(this->cost, 0).c_str(), 0, 0, 12, 1, 0);
-    this->DrawTextAt(83 - width, (this->geometry.unknown_0030 == 2) + 28, IntToString(this->cost, 0).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
+    this->DrawTextAt(83 - width, (this->geometry.state == 2) + 28, IntToString(this->cost, 0).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
     );
   }
 }
@@ -393,7 +393,7 @@ void UIRefining_BtnReturn::Paint() {
   int width = this->TextWidth(LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM), 0, 0, 12, 1, 0);
   std::uint32_t color = this->highlighted == 1 ? 0xE1C1F : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.unknown_0030 == 2) + 14, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 14, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM), 0, 0, 12, color, 1, 0
   );
 }
 
@@ -420,7 +420,7 @@ void UIRefining_Notice::Paint() {
 // OFFSET: 0x007F72A0
 // FUNCTION: fn_09913
 void UIRefiningWnd::OnLBtnDblClk(int x, int y) {
-  if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     this->Reset();
   }
 }
@@ -433,7 +433,7 @@ void UIRefiningWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  if (this->state == 1 && this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->state == 1 && this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 28, this->item, 1, -1);
   }
 }
@@ -465,7 +465,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     this->refiningButton->cost = this->SelectedMaterialValue();
     this->refiningButton->Invalidate();
 
-    if (this->materials[slot].unknown_0004 <= 99 && this->catalystEnabled == 0) {
+    if (this->materials[slot].successRate <= 99 && this->catalystEnabled == 0) {
       int message;
       switch (this->materials[slot].itemId) {
       case Carnium:
@@ -596,7 +596,7 @@ void UIRefiningWnd::OnProcess() {
     this->notice->OnProcess();
   }
 
-  if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.unknown_0000[1] > 0 && this->selectedMaterial >= 0 &&
+  if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.identity[1] > 0 && this->selectedMaterial >= 0 &&
       static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
     this->refiningButton->SetDisabled(0);
     this->refiningButton->Invalidate();
@@ -711,7 +711,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     if (slot >= 0) {
       if (static_cast<unsigned>(slot) < this->materials.size()) {
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
-        if (info.unknown_0000[1] > 0) {
+        if (info.identity[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
             window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
@@ -725,7 +725,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
           return;
         }
         ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
-        if (info.unknown_0000[1] > 0) {
+        if (info.identity[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
             window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
@@ -736,7 +736,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     }
   }
 
-  if (this->item.unknown_0000[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
@@ -788,13 +788,13 @@ int UIRefiningWnd::SendMsg(
       ShellExecuteA(hWnd, "open", LookupMessage(MSI_SELLINGSLOT_ERROR_MAXSLOT), nullptr, nullptr, SW_SHOWNORMAL);
       break;
     case ID_OK:
-      if (this->unknown_01F0 != 1) {
-        const std::uint32_t index = this->item.unknown_0000[1];
+      if (this->requestPending != 1) {
+        const std::uint32_t index = this->item.identity[1];
         if (index != 0) {
           if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
             this->notice->SetNotice(LookupMessage(MSI_REFINING_SUCCESS), 3000, 1);
           } else {
-            this->unknown_01F0 = 1;
+            this->requestPending = 1;
             RefiningRequestPacket packet;
             packet.id = 0xAA3;
             packet.index = static_cast<std::uint16_t>(index);
@@ -832,12 +832,12 @@ int UIRefiningWnd::SendMsg(
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-      if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {
+      if (g_session.HasItem61B8(info.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
       }
 
-      if (info.unknown_0000[1] > 0) {
+      if (info.identity[1] > 0) {
         if (info.identified == 1) {
           RefiningSelectPacket packet;
           packet.id = 0xAA1;
@@ -866,7 +866,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     }
 
     ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
-    if (found.unknown_0000[1] == 0) {
+    if (found.identity[1] == 0) {
       return;
     }
 
@@ -879,8 +879,8 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     std::size_t remaining = sizeof(text);
     char* cursor = text;
     this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
-    if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
-      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->item.unknown_0098);
+    if (this->item.identified == 1 && this->item.optionCount != 0) {
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->item.optionCount);
     }
 
     this->item.SetName(text);
@@ -893,9 +893,9 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     this->result = 7;
     this->stateTick = timeGetTime();
     this->frame = 0;
-    if (this->unknown_00C0) {
-      this->unknown_00C0->SetDisabled(0);
-      this->unknown_00C0->Invalidate();
+    if (this->cancelButton) {
+      this->cancelButton->SetDisabled(0);
+      this->cancelButton->Invalidate();
     }
 
     this->result = 7;
@@ -905,7 +905,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
     this->Invalidate();
-    this->unknown_01F0 = 0;
+    this->requestPending = 0;
     break;
   }
   case 2:
@@ -913,12 +913,12 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
   case 4:
   case 5:
   case 6: {
-    if (id == -1 || this->item.unknown_0000[1] != static_cast<std::uint32_t>(id)) {
+    if (id == -1 || this->item.identity[1] != static_cast<std::uint32_t>(id)) {
       return;
     }
 
     ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
-    if (found.unknown_0000[1] == 0) {
+    if (found.identity[1] == 0) {
       return;
     }
 
@@ -931,8 +931,8 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     std::size_t remaining = sizeof(text);
     char* name = text;
     this->BuildItemName(&this->nextItem, &highlightColor, &breaks, &name, &remaining, &cursor, 1, 0);
-    if (this->nextItem.identified == 1 && this->nextItem.unknown_0098 != 0) {
-      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->nextItem.unknown_0098);
+    if (this->nextItem.identified == 1 && this->nextItem.optionCount != 0) {
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->nextItem.optionCount);
     }
 
     this->nextItem.SetName(text);
@@ -976,9 +976,9 @@ void UIRefiningWnd::SetState(int state, int result) {
   this->result = result;
   this->stateTick = timeGetTime();
   this->frame = 0;
-  if (this->unknown_00C0) {
-    this->unknown_00C0->SetDisabled(0);
-    this->unknown_00C0->Invalidate();
+  if (this->cancelButton) {
+    this->cancelButton->SetDisabled(0);
+    this->cancelButton->Invalidate();
   }
 
   switch (state) {
@@ -998,9 +998,9 @@ void UIRefiningWnd::SetState(int state, int result) {
     this->refiningButton->Invalidate();
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
-    if (this->unknown_00C0) {
-      this->unknown_00C0->SetDisabled(1);
-      this->unknown_00C0->Invalidate();
+    if (this->cancelButton) {
+      this->cancelButton->SetDisabled(1);
+      this->cancelButton->Invalidate();
     }
     break;
   case 3:
@@ -1116,23 +1116,23 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     }
   }
 
-  if (this->item.unknown_0000[1] > 0) {
+  if (this->item.identity[1] > 0) {
     DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
-    if (this->item.unknown_0088 > 0) {
+    if (this->item.grade > 0) {
       this->DrawBitmap(120, 224,
-        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))),
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.grade).c_str()))),
         true);
     }
   }
 
   switch (this->state) {
   case 1:
-    this->DrawCenteredText(0, 246, this->item.unknown_0044.c_str(), 264, 0, 12, 0x462117, 1);
+    this->DrawCenteredText(0, 246, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
   case 3:
   case 5:
   case 6:
-    this->DrawCenteredText(0, 249, this->item.unknown_0044.c_str(), 264, 0, 12, 0x462117, 1);
+    this->DrawCenteredText(0, 249, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
   case 4:
     this->DrawCenteredText(0, 249, LookupMessage(MSI_OTP_MUST_8_CHAR), 264, 0, 12, 0x462117, 1);
@@ -1148,17 +1148,17 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     }
 
     unsigned char rate = 0;
-    if (this->item.unknown_0000[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+    if (this->item.identity[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
         static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-      rate = this->materials[this->selectedMaterial].unknown_0004;
+      rate = this->materials[this->selectedMaterial].successRate;
     }
     const std::string label = FormatOwnedString("%s %d%%", LookupMessage(MSI_CHANGE_HOMUN_NAME), rate);
     const int labelWidth = this->TextWidth(label.c_str(), 0, 0, 12, 1, 0);
 
     rate = 0;
-    if (this->item.unknown_0000[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+    if (this->item.identity[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
         static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-      rate = this->materials[this->selectedMaterial].unknown_0004;
+      rate = this->materials[this->selectedMaterial].successRate;
     }
     const std::string percent = FormatOwnedString("%d%%", rate);
     const int percentWidth = this->TextWidth(percent.c_str(), 0, 0, 12, 1, 0);

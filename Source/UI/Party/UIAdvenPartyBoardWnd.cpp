@@ -256,7 +256,7 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
   this->refresh->Invalidate();
   g_adventurerAgencyMgr->RequestList(pageValue);
 
-  if (g_session.unknown_5464 == 1) {
+  if (g_session.partyLeader == 1) {
     g_adventurerAgencyMgr->RequestMyParty();
   }
 }
@@ -265,7 +265,7 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
 // FUNCTION: fn_09322
 void UIAdvenPartyBoardWnd::Registration(bool value) {
 
-  if (g_session.unknown_5464 != 0) {
+  if (g_session.partyLeader != 0) {
     this->recruit->SetTooltip("");
 
     if (value) {
@@ -369,7 +369,7 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
   this->previous->Invalidate();
   this->Invalidate();
 
-  if (g_session.unknown_5464 == 0) {
+  if (g_session.partyLeader == 0) {
     this->ownParty->SetState(3);
   }
 

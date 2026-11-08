@@ -65,7 +65,7 @@ bool CCresciveBolt::IsAlive() {
     return true;
   }
 
-  return static_cast<float>(this->particle->unknown_00E8) < this->particle->life * 60.0f;
+  return static_cast<float>(this->particle->elapsedFrames) < this->particle->life * 60.0f;
 }
 
 // OFFSET: 0x0070AED0

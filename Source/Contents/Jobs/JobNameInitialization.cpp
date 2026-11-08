@@ -85,8 +85,8 @@ void CSession::InitJobNameTable() {
   this->m_sexLabels.resize(2, "F");
   this->m_sexLabels[0] = "F";
   this->m_sexLabels[1] = "M";
-  this->unknown_0710.resize(20, 0);
-  this->m_skillBundle.unknown_0064.resize(7999, 0);
+  this->extendedSkillLevels.resize(20, 0);
+  this->m_skillBundle.skillValues.resize(7999, 0);
   this->m_mercSkillLevels.resize(258, 0);
   this->m_homunSkillLevels.resize(61, 0);
 }

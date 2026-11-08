@@ -142,7 +142,7 @@ void UIMacroDetectorWnd::Paint() {
       this->DrawRightAlignedText(280, 138, str.c_str(), 0, 0, 13, 0xFF2323, 1);
     }
     {
-      std::string str = FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), this->unknown_00D0);
+      std::string str = FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), this->remainingAttempts);
       this->DrawTextAt(60, 138, str.c_str(), 0, 0, 13, 0x2323FF, 1, 0);
     }
   }

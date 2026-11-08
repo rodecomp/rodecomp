@@ -25,7 +25,7 @@ struct AnimatedModelRecord {
   ~AnimatedModelRecord();
 
   /* 0000 */ unsigned char unknown_0000[0x84];
-  /* 0084 */ std::string* unknown_0084;
+  /* 0084 */ std::string* names;
 };
 
 class C3dAnimModelRes;
@@ -64,8 +64,8 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
 
-  /* 0110 */ int unknown_0110;
-  /* 0114 */ AnimatedModelRecord* unknown_0114;
+  /* 0110 */ int recordCount;
+  /* 0114 */ AnimatedModelRecord* records;
   /* 0118 */ std::list<AnimatedModelNode*> nodes;
   /* 0120 */ std::list<std::string> rootNames;
   /* 0128 */ std::string sourceName;
@@ -74,7 +74,7 @@ public:
   /* 0148 */ int animationLength;
   /* 014C */ float speed;
   /* 0150 */ std::uint32_t unknown_0150;
-  /* 0154 */ float unknown_0154;
+  /* 0154 */ float originX;
   /* 0158 */ float unknown_0158;
   /* 015C */ float unknown_015C;
   /* 0160 */ std::uint32_t alpha;

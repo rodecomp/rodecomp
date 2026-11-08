@@ -12,7 +12,7 @@ public:
   UIItemDropCntWnd();
 
   /* 00B4 */ UIEditCtrl* m_edit;
-  /* 00B8 */ std::uint32_t unknown_00B8;
+  /* 00B8 */ std::uint32_t itemTitle;
 
   void Show(int visible) override;
   void Paint() override;
@@ -24,7 +24,7 @@ class UIPasswordWnd : public UIItemDropCntWnd {
 public:
   UIPasswordWnd();
 
-  /* 00BC */ int unknown_00BC;
+  /* 00BC */ int roomId;
 
   void Show(int visible) override;
   void Paint() override;
@@ -43,17 +43,17 @@ public:
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ int unknown_00C0;
   /* 00C4 */ unsigned char unknown_00C4[0xC];
-  /* 00D0 */ char unknown_00D0[9];
-  /* 00D9 */ char unknown_00D9[9];
-  /* 00E2 */ char unknown_00E2[9];
-  /* 00EC */ int unknown_00EC;
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
-  /* 00FC */ int unknown_00FC;
-  /* 0100 */ int unknown_0100;
-  /* 0104 */ int unknown_0104;
-  /* 0108 */ unsigned char unknown_0108;
+  /* 00D0 */ char currentPassword[9];
+  /* 00D9 */ char newPassword[9];
+  /* 00E2 */ char confirmPassword[9];
+  /* 00EC */ int inputDigitCount;
+  /* 00F0 */ int maskTextX;
+  /* 00F4 */ int passwordStage;
+  /* 00F8 */ int activeInputY;
+  /* 00FC */ int currentPasswordY;
+  /* 0100 */ int newPasswordY;
+  /* 0104 */ int confirmPasswordY;
+  /* 0108 */ unsigned char isChangingPassword;
 };
 
 class UISecondPasswordInputWnd : public UIStorePasswordInputWnd {
@@ -68,19 +68,19 @@ public:
   void CreateKeypad(unsigned int seed);
   void EnableKeypad();
 
-  /* 010C */ int unknown_010C;
+  /* 010C */ int passwordLength;
   /* 0110 */ unsigned char m_digits[10];
-  /* 011C */ int unknown_011C;
+  /* 011C */ int inputMode;
   /* 0120 */ int unknown_0120;
-  /* 0124 */ UIBitmapButton* unknown_0124[11];
-  /* 0150 */ UIBitmapButton* unknown_0150[5];
-  /* 0164 */ UIStaticText* unknown_0164;
+  /* 0124 */ UIBitmapButton* keypadButtons[11];
+  /* 0150 */ UIBitmapButton* actionButtons[5];
+  /* 0164 */ UIStaticText* instructionText;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIPasswordWnd) == 0xC0);
-static_assert(offsetof(UISecondPasswordInputWnd, unknown_0124) == 0x124);
-static_assert(offsetof(UISecondPasswordInputWnd, unknown_0164) == 0x164);
+static_assert(offsetof(UISecondPasswordInputWnd, keypadButtons) == 0x124);
+static_assert(offsetof(UISecondPasswordInputWnd, instructionText) == 0x164);
 static_assert(sizeof(UISecondPasswordInputWnd) == 0x168);
 #endif
 

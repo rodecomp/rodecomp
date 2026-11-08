@@ -65,7 +65,7 @@ void UIVideoSkipButton::Paint() {
   std::string text = "SKIP>";
   const int textWidth = this->TextWidth(text.c_str(), 0, 0, 30, 1, 0);
   const int textHeight = this->TextHeight(text.c_str(), 0, 0, 30, 1, 0);
-  const std::uint32_t color = this->geometry.unknown_0030 == 1 ? 0x4EC7FF : 0xFFFFFF;
+  const std::uint32_t color = this->geometry.state == 1 ? 0x4EC7FF : 0xFFFFFF;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - textWidth) * 0.5f + 5.0f),
     static_cast<int>(static_cast<float>(this->geometry.height - textHeight) * 0.5f), text.c_str(), 0, 0, 30, color, 1, 0
   );

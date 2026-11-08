@@ -21,7 +21,7 @@ struct UITreeNode {
   /* 016A */ unsigned char draggable;
   /* 016B */ unsigned char container;
   /* 016C */ unsigned char unknown_016C[0x4];
-  /* 0170 */ UITreeNode* unknown_0170;
+  /* 0170 */ UITreeNode* parent;
   /* 0174 */ UITVBitmapButton* expandButton;
   /* 0178 */ UITVBitmapButton* collapseButton;
   /* 017C */ UITVTextButton* labelButton;
@@ -57,18 +57,18 @@ protected:
   /* 007C */ UIScrollBar* verticalBar;
   /* 0080 */ int verticalOverflow;
   /* 0084 */ UITreeNode* root;
-  /* 0088 */ UITreeNode* unknown_0088;
-  /* 008C */ UITreeNode* unknown_008C;
-  /* 0090 */ UITreeNode* unknown_0090;
+  /* 0088 */ UITreeNode* selectedNode;
+  /* 008C */ UITreeNode* dragNode;
+  /* 0090 */ UITreeNode* dropNode;
   /* 0094 */ UITreeNode* editNode;
   /* 0098 */ UIEditCtrl2* edit;
   /* 009C */ int itemPadding;
   /* 00A0 */ int itemHeight;
   /* 00A4 */ int itemCount;
-  /* 00A8 */ int unknown_00A8;
-  /* 00AC */ unsigned char unknown_00AC;
+  /* 00A8 */ int scrollRow;
+  /* 00AC */ unsigned char mouseInside;
 
-  /* 00B0 */ int unknown_00B0;
+  /* 00B0 */ int highlightColor;
 };
 
 #endif

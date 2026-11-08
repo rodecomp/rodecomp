@@ -28,30 +28,30 @@ void CMappillarEffect::Open() {
       }
 
       particle->SetTexture("effect\\ring_blue.tga");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->alpha = 70;
       particle->SetColor(100, 100, 255);
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      particle->unknown_0050 = 360;
-      particle->unknown_00C0 = 120.0f;
-      particle->unknown_004C = 89;
-      baseAngle = static_cast<float>(particle->unknown_0010 * 90);
-      particle->scale = static_cast<float>(particle->unknown_0010) * 0.5f + 11.0f;
-      reinterpret_cast<int*>(&particle->unknown_0054)[particle->unknown_0010] = 0;
-      particle->unknown_00E8 = particle->unknown_0010 * 30;
+      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      particle->angleParameter = 360;
+      particle->speedParameter = 120.0f;
+      particle->phaseParameter = 89;
+      baseAngle = static_cast<float>(particle->rowIndex * 90);
+      particle->scale = static_cast<float>(particle->rowIndex) * 0.5f + 11.0f;
+      reinterpret_cast<int*>(&particle->animationParameter)[particle->rowIndex] = 0;
+      particle->elapsedFrames = particle->rowIndex * 30;
 
-      int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * particle->unknown_000C) + baseAngle) % 360;
-      if (particle->unknown_000C == 20) {
+      int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
+      if (particle->columnIndex == 20) {
         angle = static_cast<int>(baseAngle);
       }
 
-      const int tilt = particle->unknown_004C;
-      const float spread = particle->unknown_00C0 * g_cosTable[tilt];
-      const float height = particle->unknown_00C0 * g_sinTable[tilt];
+      const int tilt = particle->phaseParameter;
+      const float spread = particle->speedParameter * g_cosTable[tilt];
+      const float height = particle->speedParameter * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
 
@@ -63,7 +63,7 @@ void CMappillarEffect::Open() {
       points[1].y = 0.0f - height;
       points[1].z = points[0].z + spread * sine;
 
-      if (particle->unknown_000C >= 1 && particle->unknown_000C <= 20) {
+      if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
         particle->vertices[1].x = points[1].x;
         particle->vertices[1].y = points[1].y;
         particle->vertices[1].z = points[1].z;
@@ -99,24 +99,24 @@ void CMappillarEffect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
-      if (particle->unknown_0010 != 3 || particle->unknown_000C != 21 || particle->unknown_00E8 <= 999) {
-        const int frame = particle->unknown_00E8;
-        const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4) - static_cast<float>(frame));
+      if (particle->rowIndex != 3 || particle->columnIndex != 21 || particle->elapsedFrames <= 999) {
+        const int frame = particle->elapsedFrames;
+        const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits) - static_cast<float>(frame));
         float height;
         if (frame >= 800) {
-          particle->unknown_00C0 = std::max(0.0f, particle->unknown_00C0 - 1.0f);
-          height = particle->unknown_00C0;
+          particle->speedParameter = std::max(0.0f, particle->speedParameter - 1.0f);
+          height = particle->speedParameter;
         } else if (frame < 200) {
           height = 0.0f;
         } else if (frame > 290) {
-          height = particle->unknown_00C0;
+          height = particle->speedParameter;
         } else {
-          height = g_sinTable[frame - 200] * particle->unknown_00C0;
+          height = g_sinTable[frame - 200] * particle->speedParameter;
         }
 
-        particle->unknown_0054 = height;
+        particle->animationParameter = height;
         if (height < 0.0f) {
-          particle->unknown_0054 = 0.0f;
+          particle->animationParameter = 0.0f;
         }
 
         matrix rotation;
@@ -124,13 +124,13 @@ void CMappillarEffect::OnProcess() {
         rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
         matrix scale;
         std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-        scale.SetScale(1.0f, particle->unknown_0054 / 100.0f * 1.1f, 1.0f);
+        scale.SetScale(1.0f, particle->animationParameter / 100.0f * 1.1f, 1.0f);
         const matrix first = rotation;
         rotation.Compose(first, scale);
         particle->transform = rotation;
       }
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -140,7 +140,7 @@ void CMappillarEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle) {
-      const int texPart = particle->unknown_000C;
+      const int texPart = particle->columnIndex;
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;

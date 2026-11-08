@@ -25,16 +25,16 @@ void CRichManKim::Open() {
   }
 
   particle->SetTexture("effect\\pocket.bmp");
-  particle->unknown_0004 = this->id;
-  particle->unknown_000C = 0;
-  particle->unknown_0010 = 0;
-  particle->unknown_0008 = 1;
+  particle->effectId = this->id;
+  particle->columnIndex = 0;
+  particle->rowIndex = 0;
+  particle->groupIndex = 1;
   particle->alpha = 200;
-  particle->unknown_00C4 = 0;
-  particle->unknown_004C = 0;
+  particle->angleBits = 0;
+  particle->phaseParameter = 0;
   particle->scale = 1.0f;
-  *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
-  particle->unknown_0054 = -5.0f - static_cast<float>(rand() % 5);
+  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
+  particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
   particle->SetColor(200, 200, 200);
   InitParticleQuad(particle->vertices);
   this->angleIndex = rand() % 359;
@@ -63,9 +63,9 @@ void CRichManKim::OnProcess() {
         index = 0;
       }
 
-      float& width = *reinterpret_cast<float*>(particle->unknown_0058);
-      const float height = static_cast<float>(static_cast<double>(particle->unknown_0054) - static_cast<double>(g_cosTable[index]) * 0.08);
-      particle->unknown_0054 = height;
+      float& width = *reinterpret_cast<float*>(particle->animationParameters);
+      const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
+      particle->animationParameter = height;
       const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
       width = stretch;
 
@@ -86,7 +86,7 @@ void CRichManKim::OnProcess() {
       particle->transform = transform;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

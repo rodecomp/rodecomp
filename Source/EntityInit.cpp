@@ -98,12 +98,12 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
   std::vector<char> packet;
   std::string name = this->nameCard.Name(actor->render.accountId);
 
-  if (actor->render.unknown_0070 == 1) {
+  if (actor->render.state == 1) {
     packet.resize(sizeof(ActorMoveEntryPacket));
     ActorMoveEntryPacket* entry = reinterpret_cast<ActorMoveEntryPacket*>(packet.data());
     entry->hp = actor->GetGaugeCurrent();
     entry->maxHp = actor->GetGaugeMaximum();
-    entry->isBoss = actor->unknown_0304;
+    entry->isBoss = actor->hpGaugeFlags;
     entry->moveStartTime = actor->routeStartTick;
 
     int metadata = 0;
@@ -133,8 +133,8 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
       subY = 0;
     }
 
-    const int destinationX = actor->unknown_0158[5];
-    const int destinationY = *reinterpret_cast<const int*>(actor->unknown_0170);
+    const int destinationX = actor->movementState[5];
+    const int destinationY = *reinterpret_cast<const int*>(actor->destinationAndSpeed);
     entry->moveData[0] = static_cast<std::uint8_t>(cellX >> 2);
     entry->moveData[1] = static_cast<std::uint8_t>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry->moveData[2] = static_cast<std::uint8_t>((cellY << 4) | ((destinationX >> 6) & 0x0F));
@@ -144,35 +144,35 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
 
     entry->packetType = packetType;
     entry->packetLength = static_cast<std::uint16_t>(name.size() + packet.size());
-    entry->objectType = actor->unknown_0314;
+    entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
-    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->unknown_0170 + 4);
+    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
-    entry->healthState = static_cast<std::uint16_t>(actor->unknown_02C4);
+    entry->healthState = static_cast<std::uint16_t>(actor->effectState);
     entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
-    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->unknown_029C);
+    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
     entry->guildId = actor->GetGdid();
     entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
-    entry->isPkModeOn = actor->unknown_02C8 != 0;
-    entry->sex = static_cast<std::uint8_t>(actor->unknown_0260);
-    entry->xSize = static_cast<std::uint8_t>(actor->unknown_0294);
-    entry->ySize = static_cast<std::uint8_t>(actor->unknown_0298);
-    entry->level = actor->unknown_0210;
-    entry->font = static_cast<std::uint16_t>(actor->render.unknown_00FC);
-    entry->bodyPalette = static_cast<std::uint16_t>(actor->render.unknown_0048);
+    entry->isPkModeOn = actor->healthState != 0;
+    entry->sex = static_cast<std::uint8_t>(actor->sex);
+    entry->xSize = static_cast<std::uint8_t>(actor->xSize);
+    entry->ySize = static_cast<std::uint8_t>(actor->ySize);
+    entry->level = actor->characterLevel;
+    entry->font = static_cast<std::uint16_t>(actor->render.fontSequenceState);
+    entry->bodyPalette = static_cast<std::uint16_t>(actor->render.bodyPalette);
 
-    if (actor->unknown_0314 == 0) {
+    if (actor->objectType == 0) {
       CPc* pc = static_cast<CPc*>(actor);
-      entry->honor = static_cast<std::uint16_t>(pc->unknown_0430);
-      entry->virtue = pc->unknown_0434;
-      entry->headDirection = static_cast<std::uint16_t>(pc->unknown_043C);
-      entry->weapon = pc->unknown_0434;
-      entry->accessory = static_cast<std::uint16_t>(pc->unknown_0450);
-      entry->accessory2 = static_cast<std::uint16_t>(pc->unknown_0454);
-      entry->accessory3 = static_cast<std::uint16_t>(pc->unknown_0458);
-      entry->headPalette = static_cast<std::uint16_t>(pc->unknown_0444);
-      entry->robe = static_cast<std::uint16_t>(pc->unknown_049C);
+      entry->honor = static_cast<std::uint16_t>(pc->honor);
+      entry->virtue = pc->virtue;
+      entry->headDirection = static_cast<std::uint16_t>(pc->headDir);
+      entry->weapon = pc->virtue;
+      entry->accessory = static_cast<std::uint16_t>(pc->accessory);
+      entry->accessory2 = static_cast<std::uint16_t>(pc->accessory2);
+      entry->accessory3 = static_cast<std::uint16_t>(pc->accessory3);
+      entry->headPalette = static_cast<std::uint16_t>(pc->headPalette);
+      entry->robe = static_cast<std::uint16_t>(pc->robe);
       entry->characterId = pc->GetPkState();
       entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
     }
@@ -181,53 +181,53 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     ActorStandEntryPacket* entry = reinterpret_cast<ActorStandEntryPacket*>(packet.data());
     entry->hp = actor->GetGaugeCurrent();
     entry->maxHp = actor->GetGaugeMaximum();
-    entry->isBoss = actor->unknown_0304;
+    entry->isBoss = actor->hpGaugeFlags;
 
     const int direction = (static_cast<int>(actor->render.angle) + 180) / 45 % 8;
-    const int cellX = actor->unknown_0158[5];
-    const int cellY = *reinterpret_cast<const int*>(actor->unknown_0170);
+    const int cellX = actor->movementState[5];
+    const int cellY = *reinterpret_cast<const int*>(actor->destinationAndSpeed);
     entry->posDir[0] = static_cast<std::uint8_t>(cellX >> 2);
     entry->posDir[1] = static_cast<std::uint8_t>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry->posDir[2] = static_cast<std::uint8_t>((cellY << 4) | (direction & 0x0F));
 
-    if (actor->render.unknown_0070 == 3) {
+    if (actor->render.state == 3) {
       entry->state = 1;
     } else {
-      entry->state = actor->render.unknown_0070 == 6 ? 2 : 0;
+      entry->state = actor->render.state == 6 ? 2 : 0;
     }
 
     entry->packetType = packetType;
     entry->packetLength = static_cast<std::uint16_t>(name.size() + packet.size());
-    entry->objectType = actor->unknown_0314;
+    entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
-    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->unknown_0170 + 4);
+    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
-    entry->healthState = static_cast<std::uint16_t>(actor->unknown_02C4);
+    entry->healthState = static_cast<std::uint16_t>(actor->effectState);
     entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
-    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->unknown_029C);
+    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
     entry->guildId = actor->GetGdid();
     entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
-    entry->isPkModeOn = actor->unknown_02C8 != 0;
-    entry->sex = static_cast<std::uint8_t>(actor->unknown_0260);
-    entry->xSize = static_cast<std::uint8_t>(actor->unknown_0294);
-    entry->ySize = static_cast<std::uint8_t>(actor->unknown_0298);
-    entry->level = actor->unknown_0210;
-    entry->font = static_cast<std::uint16_t>(actor->render.unknown_00FC);
-    entry->bodyPalette = static_cast<std::uint16_t>(actor->render.unknown_0048);
+    entry->isPkModeOn = actor->healthState != 0;
+    entry->sex = static_cast<std::uint8_t>(actor->sex);
+    entry->xSize = static_cast<std::uint8_t>(actor->xSize);
+    entry->ySize = static_cast<std::uint8_t>(actor->ySize);
+    entry->level = actor->characterLevel;
+    entry->font = static_cast<std::uint16_t>(actor->render.fontSequenceState);
+    entry->bodyPalette = static_cast<std::uint16_t>(actor->render.bodyPalette);
     entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
 
-    if (actor->unknown_0314 == 0) {
+    if (actor->objectType == 0) {
       CPc* pc = static_cast<CPc*>(actor);
-      entry->honor = static_cast<std::uint16_t>(pc->unknown_0430);
-      entry->virtue = pc->unknown_0434;
-      entry->headDirection = static_cast<std::uint16_t>(pc->unknown_043C);
-      entry->weapon = pc->unknown_0434;
-      entry->accessory = static_cast<std::uint16_t>(pc->unknown_0450);
-      entry->accessory2 = static_cast<std::uint16_t>(pc->unknown_0454);
-      entry->accessory3 = static_cast<std::uint16_t>(pc->unknown_0458);
-      entry->headPalette = static_cast<std::uint16_t>(pc->unknown_0444);
-      entry->robe = static_cast<std::uint16_t>(pc->unknown_049C);
+      entry->honor = static_cast<std::uint16_t>(pc->honor);
+      entry->virtue = pc->virtue;
+      entry->headDirection = static_cast<std::uint16_t>(pc->headDir);
+      entry->weapon = pc->virtue;
+      entry->accessory = static_cast<std::uint16_t>(pc->accessory);
+      entry->accessory2 = static_cast<std::uint16_t>(pc->accessory2);
+      entry->accessory3 = static_cast<std::uint16_t>(pc->accessory3);
+      entry->headPalette = static_cast<std::uint16_t>(pc->headPalette);
+      entry->robe = static_cast<std::uint16_t>(pc->robe);
       entry->characterId = pc->GetPkState();
       entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
     }

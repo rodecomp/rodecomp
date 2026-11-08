@@ -38,7 +38,7 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D8 */ int gridSize;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -51,7 +51,7 @@ static_assert(offsetof(CMultiTexParticle, uv2) == 0x300);
 static_assert(offsetof(CMultiTexParticle, offsetU) == 0x320);
 static_assert(offsetof(CMultiTexParticle, offsetV) == 0x324);
 static_assert(sizeof(CNyanggrassEffect) == 0xDC);
-static_assert(offsetof(CNyanggrassEffect, unknown_00D8) == 0xD8);
+static_assert(offsetof(CNyanggrassEffect, gridSize) == 0xD8);
 #endif
 
 #endif

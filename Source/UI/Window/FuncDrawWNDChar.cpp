@@ -26,8 +26,8 @@ FuncDrawWNDChar::FuncDrawWNDChar(
 )
     : m_window(window), m_x(x), m_y(y), m_sex(sex), m_job(job), m_hairColor(hairColor), m_body(body), m_head(head), m_bottomAccessory(bottomAccessory),
       m_topAccessory(topAccessory), m_midAccessory(midAccessory), m_robe(robe), m_flags(flags), m_shield(shield), m_bodyStyle(bodyStyle),
-      m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_helmRobe(false), m_drawOnTop(false), m_resources(), unknown_0050(),
-      unknown_0068(), m_layers(), unknown_0088(0), unknown_008C(0), unknown_0090(0), unknown_0094(0) {
+      m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_helmRobe(false), m_drawOnTop(false), m_resources(), bodyPaletteName(),
+      headPaletteName(), m_layers(), hideHeadLayer(0), offsetX(0), offsetY(0), customRendering(0) {
   g_session.m_hotkeyScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
   this->m_drawOnTop = this->DrawOnTop();
   this->m_layers[5] = this->m_bottomAccessory;
@@ -90,7 +90,7 @@ void FuncDrawWNDChar::Draw(bool option) {
     switch (layer) {
       case 2: {
         FuncDrawOffset body = this->BodyAnchorOffset(frame, option);
-        if (this->unknown_0094 == 1) {
+        if (this->customRendering == 1) {
           continue;
         }
 
@@ -102,7 +102,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       case 4:
       case 5:
       case 6: {
-        if (!this->unknown_0088 && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
+        if (!this->hideHeadLayer && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
           CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
           this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
         }
@@ -132,10 +132,10 @@ void FuncDrawWNDChar::Draw(bool option) {
     const std::uint32_t* palette = sprite->palette;
     if (layer == 1) {
       if (this->m_bodyStyle > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_0050))->palette;
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
       }
     } else if (layer == 2 && this->m_headPalette > 0) {
-      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_0068))->palette;
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
     }
 
     const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
@@ -156,7 +156,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       UIWindow* window = this->m_window;
       window->AddSpriteCellOverlay(
         this->m_x + offsetX, this->m_y + offsetY, reinterpret_cast<int>(act), reinterpret_cast<int>(sprite), image, &cell, scale,
-        static_cast<float>(cell.unknown_001C), window->Color(), palette, 1.0f
+        static_cast<float>(cell.rotation), window->Color(), palette, 1.0f
       );
     } else {
       if (cell.image == -1) {
@@ -172,7 +172,7 @@ void FuncDrawWNDChar::Draw(bool option) {
           texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
         }
       } else {
-        texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+        texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
       }
 
       int x = this->m_x + cell.x + offset.x;
@@ -182,7 +182,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       if (clip <= top) {
         this->m_window->geometry.surface->DrawSurface(
           x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
-          image->height + clip, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+          image->height + clip, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
         );
       }
     }
@@ -298,7 +298,7 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
   if (frame->anchorCount > 0 && base.anchorCount > 0) {
     const ActionAnchor* frameAnchor = frame->anchors.data();
     const ActionAnchor* baseAnchor = base.anchors.data();
-    if (frameAnchor->unknown_0008 == baseAnchor->unknown_0008) {
+    if (frameAnchor->attachmentId == baseAnchor->attachmentId) {
       if (this->m_shield != 0) {
         if (keepScale == true) {
           offset.x += baseAnchor->x - frameAnchor->x;
@@ -313,12 +313,12 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
         offset.y = baseAnchor->y - frameAnchor->y;
       }
 
-      this->unknown_0090 = offset.y;
-      this->unknown_008C = offset.x;
+      this->offsetY = offset.y;
+      this->offsetX = offset.x;
     }
   }
 
-  this->unknown_0088 = 1;
+  this->hideHeadLayer = 1;
   return offset;
 }
 
@@ -342,18 +342,18 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   if (current->anchorCount > 0 && base.anchorCount > 0) {
     const ActionAnchor* baseAnchor = base.anchors.data();
     const ActionAnchor* frameAnchor = current->anchors.data();
-    if (frameAnchor->unknown_0008 == baseAnchor->unknown_0008) {
+    if (frameAnchor->attachmentId == baseAnchor->attachmentId) {
       offset.x = baseAnchor->x - frameAnchor->x;
       offset.y = baseAnchor->y - frameAnchor->y;
     }
   }
 
-  offset.x += this->unknown_008C;
+  offset.x += this->offsetX;
   int ridingOffset;
   if (IsIgnoredRidingState(this->m_layers[layer], this->m_job, this->m_action - this->m_action % 8, this->m_flags) == true) {
     ridingOffset = SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
   } else {
-    ridingOffset = this->unknown_0090;
+    ridingOffset = this->offsetY;
   }
 
   offset.y += ridingOffset;
@@ -380,7 +380,7 @@ __declspec(safebuffers) void FuncDrawWNDChar::LoadResources(const std::list<int>
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
         sprName = static_cast<const std::string&>(g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield));
         actName = static_cast<const std::string&>(GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield));
-        this->unknown_0050 = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0));
+        this->bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0));
         break;
       }
       case 2: {
@@ -388,7 +388,7 @@ __declspec(safebuffers) void FuncDrawWNDChar::LoadResources(const std::list<int>
         sprName = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
         actName = static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
         this->m_head = static_cast<short>(head);
-        this->unknown_0068 = static_cast<const std::string&>(g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette));
+        this->headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette));
         break;
       }
       case 3:
@@ -418,7 +418,7 @@ __declspec(safebuffers) void FuncDrawWNDChar::LoadResources(const std::list<int>
 
   for (int layer = 3; layer <= 5; ++layer) {
     if (g_session.IsSpecialMonsterJob(this->m_layers[layer]) == true) {
-      this->unknown_0094 = 1;
+      this->customRendering = 1;
       return;
     }
   }

@@ -14,7 +14,7 @@ struct GroundLightmap {
   /* 0000 */ unsigned char color[4];
   /* 0004 */ CTexture* texture;
   /* 0008 */ float uv[4][2];
-  /* 0028 */ std::uint32_t unknown_0028[4];
+  /* 0028 */ std::uint32_t cornerColors[4];
 };
 
 class GroundLightmapSet {
@@ -70,10 +70,10 @@ public:
   /* 0044 */ int waterPhase;
   /* 0048 */ int waterType;
   /* 004C */ float waterHeight;
-  /* 0050 */ std::uint32_t unknown_0050;
-  /* 0054 */ std::uint32_t unknown_0054;
-  /* 0058 */ std::uint32_t unknown_0058;
-  /* 005C */ std::uint32_t unknown_005C;
+  /* 0050 */ std::uint32_t waterStateA;
+  /* 0054 */ std::uint32_t waterStateB;
+  /* 0058 */ std::uint32_t waterStateC;
+  /* 005C */ std::uint32_t waterStateD;
   /* 0060 */ int loaded;
 };
 
@@ -124,7 +124,7 @@ public:
 static_assert(sizeof(GroundLightmap) == 56);
 static_assert(offsetof(GroundLightmap, texture) == 0x04);
 static_assert(offsetof(GroundLightmap, uv) == 0x08);
-static_assert(offsetof(GroundLightmap, unknown_0028) == 0x28);
+static_assert(offsetof(GroundLightmap, cornerColors) == 0x28);
 static_assert(sizeof(GroundLightmapSet) == 0x20);
 static_assert(offsetof(GroundLightmapSet, lightmapCount) == 0x18);
 static_assert(offsetof(GroundLightmapSet, atlasCount) == 0x1C);

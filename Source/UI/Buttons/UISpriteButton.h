@@ -22,19 +22,19 @@ public:
   void SetPalette(const char* name);
 
 public:
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
+  /* 00B4 */ int spriteStateA;
+  /* 00B8 */ int spriteStateB;
+  /* 00BC */ int animationIndex;
+  /* 00C0 */ int frameIndex;
+  /* 00C4 */ int animate;
+  /* 00C8 */ int spriteMode;
 
 public:
   /* 00CC */ std::string spriteName;
   /* 00E4 */ std::string actionName;
 
 protected:
-  /* 00FC */ std::string unknown_00FC;
+  /* 00FC */ std::string paletteName;
 };
 
 class UIHeadsprButton : public UISpriteButton {

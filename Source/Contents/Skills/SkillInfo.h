@@ -96,13 +96,13 @@ public:
 struct SkillInfoEntry {
   // INLINED
   SkillInfoEntry& operator=(const SkillInfoEntry& other) {
-    this->unknown_0000 = other.unknown_0000;
-    this->unknown_0004 = other.unknown_0004;
+    this->skillId = other.skillId;
+    this->requiredLevel = other.requiredLevel;
     return *this;
   }
 
-  /* 0000 */ std::uint32_t unknown_0000;
-  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0000 */ std::uint32_t skillId;
+  /* 0004 */ std::uint32_t requiredLevel;
 };
 
 class CSkillInfo {
@@ -124,17 +124,17 @@ public:
 
   /* 0004 */ std::int32_t available;
   /* 0008 */ std::uint32_t id;
-  /* 000C */ std::uint32_t unknown_000C;
+  /* 000C */ std::uint32_t type;
   /* 0010 */ std::int32_t level;
-  /* 0014 */ std::uint32_t unknown_0014;
-  /* 0018 */ std::uint32_t unknown_0018;
-  /* 001C */ std::uint32_t unknown_001C;
+  /* 0014 */ std::uint32_t spCost;
+  /* 0018 */ std::uint32_t upgradable;
+  /* 001C */ std::uint32_t range;
   /* 0020 */ const char* name;
-  /* 0024 */ std::uint32_t unknown_0024;
-  /* 0028 */ std::uint32_t unknown_0028;
-  /* 002C */ std::uint32_t unknown_002C;
-  /* 0030 */ std::int16_t unknown_0030;
-  /* 0034 */ std::uint32_t unknown_0034;
+  /* 0024 */ std::uint32_t treePosition;
+  /* 0028 */ std::uint32_t maxLevel;
+  /* 002C */ std::uint32_t canPlanLevel;
+  /* 0030 */ std::int16_t learnedLevel;
+  /* 0034 */ std::uint32_t apCost;
   /* 0038 */ std::vector<SkillInfoEntry> entries;
 };
 
@@ -191,7 +191,7 @@ bool ShowsCastEffect(int skillId);
 vector3d CellWorldPosition(int column, int row);
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);
+static_assert(offsetof(SkillInfoEntry, requiredLevel) == 0x4);
 static_assert(sizeof(CSkillInfo) == 68);
 static_assert(offsetof(CSkillActionMgr, m_efstActions) == 0x0C);
 static_assert(offsetof(CSkillActionMgr, m_skillObjectActions) == 0x14);

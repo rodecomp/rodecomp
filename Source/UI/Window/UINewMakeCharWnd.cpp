@@ -34,10 +34,10 @@
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()
     : UIFrameWnd(0),
-      unknown_02C0(0),
+      nameEditStorage(0),
       m_race(0),
       m_raceViews() {
-  this->geometry.unknown_0034 = 0;
+  this->geometry.animationFrame = 0;
 
   const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
   this->m_stats[0] = static_cast<unsigned char>(preset[0]);
@@ -63,13 +63,13 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_headPalette = 0;
   this->m_bodyPalette = 0;
   this->m_shield = 0;
-  this->unknown_0274 = 0;
-  this->unknown_0276 = 0;
+  this->accessory2 = 0;
+  this->accessory3 = 0;
   this->m_costumeJob = 0;
   this->m_sex = static_cast<unsigned char>(g_session.m_sex);
   this->m_viewX = 500;
   this->m_viewY = 228;
-  this->unknown_01FC = 0;
+  this->actionBase = 0;
   this->m_action = 0;
   this->m_frame = 0;
 
@@ -99,20 +99,20 @@ UINewMakeCharWnd::UINewMakeCharWnd()
 
   this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
 
-  this->unknown_035C = 0;
+  this->previewState = 0;
   this->m_startTime = timeGetTime();
-  this->unknown_0364 = 0;
-  this->unknown_0368 = 0;
-  this->unknown_02D0[0] = 0;
-  this->unknown_02D0[1] = 0;
-  this->unknown_02D0[2] = 0;
-  this->unknown_02D0[3] = 0;
-  this->unknown_02D0[4] = 0;
-  this->unknown_02D0[5] = 0;
-  this->unknown_0330[0] = 0;
-  this->unknown_0330[1] = 0;
-  this->unknown_0338 = 0;
-  this->unknown_0354 = 0;
+  this->previewCounter = 0;
+  this->previewPhase = 0;
+  this->hairStyleButtonStorage[0] = 0;
+  this->hairStyleButtonStorage[1] = 0;
+  this->hairStyleButtonStorage[2] = 0;
+  this->hairStyleButtonStorage[3] = 0;
+  this->hairStyleButtonStorage[4] = 0;
+  this->hairStyleButtonStorage[5] = 0;
+  this->hairColorButtonStorage[0] = 0;
+  this->hairColorButtonStorage[1] = 0;
+  this->hairColorButtonByte = 0;
+  this->genderButtonStorage = 0;
 }
 
 // OFFSET: 0x007DB320
@@ -190,7 +190,7 @@ void UINewMakeCharWnd::Paint() {
     if (i == 1) {
       CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_raceActions[0].c_str()));
       const ActionFrame& firstFrame = first->Frame(this->m_action, this->m_frame);
-      if (frame.anchorCount != 0 && firstFrame.anchorCount != 0 && frame.anchors[0].unknown_0008 == firstFrame.anchors[0].unknown_0008) {
+      if (frame.anchorCount != 0 && firstFrame.anchorCount != 0 && frame.anchors[0].attachmentId == firstFrame.anchors[0].attachmentId) {
         offset.x += firstFrame.anchors[0].x - frame.anchors[0].x;
         offset.y += firstFrame.anchors[0].y - frame.anchors[0].y;
       }
@@ -216,12 +216,12 @@ void UINewMakeCharWnd::Paint() {
         texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
-      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
     this->geometry.surface->DrawSurface(
       this->m_viewX + offset.x + cell.x, this->m_viewY + offset.y + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
-      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
 }
@@ -568,7 +568,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         char name[24] = {};
         strcpy(name, this->m_nameEdit->Text());
         memcpy(this->m_name, name, sizeof(this->m_name));
-        memcpy_s(&g_charInfo, sizeof(g_charInfo), this->unknown_0210, sizeof(g_charInfo));
+        memcpy_s(&g_charInfo, sizeof(g_charInfo), this->characterData, sizeof(g_charInfo));
         if (strstr(g_charInfo.name, "\xB1\xD7\xB6\xF3\xBA\xF1\xC6\xBC") != nullptr) {
           return 0;
         }
@@ -669,8 +669,8 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case ID_RIGHT:
     if (argument2 == 0) {
       --this->m_action;
-      if (this->m_action < this->unknown_01FC) {
-        this->m_action = this->unknown_01FC + 7;
+      if (this->m_action < this->actionBase) {
+        this->m_action = this->actionBase + 7;
       }
       this->Invalidate();
     }
@@ -679,8 +679,8 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case ID_LEFT:
     if (argument2 == 0) {
       ++this->m_action;
-      if (this->m_action >= this->unknown_01FC + 8) {
-        this->m_action = this->unknown_01FC;
+      if (this->m_action >= this->actionBase + 8) {
+        this->m_action = this->actionBase;
       }
       this->Invalidate();
     }

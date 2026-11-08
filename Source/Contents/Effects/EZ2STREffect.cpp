@@ -1555,7 +1555,7 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
 // OFFSET: 0x00B51A60
 // FUNCTION: fn_19032
 bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
-  if (this->unknown_00C8 != 1 && this->IsAttachedToHead() != true) {
+  if (this->headAttached != 1 && this->IsAttachedToHead() != true) {
     return false;
   }
 
@@ -1632,7 +1632,7 @@ bool CEZ2STRScreenEffect::IsVisible() {
     return false;
   }
 
-  if (actor->unknown_0304 > 0) {
+  if (actor->hpGaugeFlags > 0) {
     return actor->EffectVisible();
   }
 
@@ -1643,7 +1643,7 @@ bool CEZ2STRScreenEffect::IsVisible() {
 // FUNCTION: fn_19042
 bool CEZ2STRScreenEffect::IsAlive() {
   int id = this->id;
-  if (this->unknown_00C8 == 1) {
+  if (this->headAttached == 1) {
     return this->ActorExists();
   }
 
@@ -1768,7 +1768,7 @@ bool CEZ2STRScreenEffect::IsAlive() {
     return true;
   }
 
-  return particle->life * 60.0f > static_cast<float>(particle->unknown_00E8);
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 
 // OFFSET: 0x00B56D30
@@ -5395,9 +5395,9 @@ void CEZ2STRScreenEffect::OnProcess() {
     }
   }
 
-  ++this->particle->unknown_00E8;
+  ++this->particle->elapsedFrames;
   if (this->id == 0x851) {
-    int frame = this->particle->unknown_00E8 - 30;
+    int frame = this->particle->elapsedFrames - 30;
     if (frame >= 0 && frame % 64 == 0) {
       CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
@@ -5423,7 +5423,7 @@ void CEZ2STRScreenEffect::OnProcess() {
     particle->m_shiftY = factor * shift[1];
   }
 
-  this->particle->m_lift = *reinterpret_cast<const long long*>(&actor->render.unknown_0128);
+  this->particle->m_lift = *reinterpret_cast<const long long*>(&actor->render.hoverOffsetLow);
 }
 
 // OFFSET: 0x00B661B0
@@ -5500,11 +5500,11 @@ void CEZ2STRScreenEffect::SetId(int id) {
   case EF_MERMAID_LONGING:
   case EF_GIFT_OF_SNOW:
   case EF_TIME_ACCESSORY:
-    this->unknown_00C8 = 1;
+    this->headAttached = 1;
     break;
   default:
     if (id >= 0x9B5) {
-      this->unknown_00C8 = 1;
+      this->headAttached = 1;
     }
     break;
   }
@@ -5608,7 +5608,7 @@ void CEZ2STRScreenEffect::Open() {
 
   particle->m_actorId = this->actor;
 
-  if (this->unknown_00C8 == 1) {
+  if (this->headAttached == 1) {
     this->retained = 1;
     particle->m_loop = true;
     bool adjustSize = false;
@@ -5753,7 +5753,7 @@ void CEZ2STRScreenEffect::Open() {
     break;
   }
 
-  if (this->unknown_00C4 > 0) {
+  if (this->instanceId > 0) {
     particle->m_loop = true;
   }
 
@@ -6057,7 +6057,7 @@ void CEZ2STRScreenEffect::InitEvents() {
 
   case EF_DEADLY_PROJECTION_HIT: {
     CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
-    if (actor && actor->bodyState == 0 && actor->unknown_02C4 == 0) {
+    if (actor && actor->bodyState == 0 && actor->effectState == 0) {
       this->AddEvent(0, "effect\\AG_DEADLY_PROJECTION.wav", 0, 0);
     }
     break;
@@ -6221,7 +6221,7 @@ void CEZ2STRScreenEffect::InitEvents() {
 
   case EF_STRATUM_TREMOR_BOTTOM:
     this->particle->flags = 13;
-    switch (this->unknown_00B0) {
+    switch (this->effectLevel) {
     case 1:
       this->SetScale(0.7f);
       break;

@@ -99,7 +99,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->FillSurface(0xFFFF00FF, &rectangle);
     if (this->m_currentTab > 0) {
       --this->m_currentTab;
-      this->m_tabControl->unknown_007C = this->m_currentTab;
+      this->m_tabControl->activeTabIndex = this->m_currentTab;
     }
     this->RefreshTabs(true);
 
@@ -176,7 +176,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     rectangle.bottom = this->m_tabControl->geometry.height;
     this->FillSurface(0xFFFF00FF, &rectangle);
     this->m_currentTab = count;
-    this->m_tabControl->unknown_007C = count;
+    this->m_tabControl->activeTabIndex = count;
     this->RefreshTabs(true);
     this->ApplyHeaderLayout();
     return 0;
@@ -222,16 +222,16 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case UM_DELETE_WHISPER_NAME: {
     std::string name(reinterpret_cast<const char*>(a));
-    const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.size());
+    const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
     int index = 0;
-    for (std::vector<std::string>::iterator it = static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.begin(); it != static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.end(); ++it, ++index) {
+    for (std::vector<std::string>::iterator it = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.begin(); it != static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.end(); ++it, ++index) {
       if (*it == name) {
-        UIWhisperEditCtrl* whisper = static_cast<UIWhisperEditCtrl*>(this->unknown_00C0);
+        UIWhisperEditCtrl* whisper = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit);
         whisper->history.erase(it);
-        if (static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex == index) {
-          static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex = count - 1;
-        } else if (static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex > index) {
-          static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex = static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex - 1;
+        if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex == index) {
+          static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = count - 1;
+        } else if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex > index) {
+          static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex - 1;
         }
         return 0;
       }
@@ -239,9 +239,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   }
   case UM_COMBOBOX_SELECTED:
-    switch (this->unknown_00F0) {
+    switch (this->m_menuMode) {
     case 1:
-      *reinterpret_cast<int*>(&g_session.unknown_5490[0x8]) = a;
+      *reinterpret_cast<int*>(&g_session.itemSendState[0x8]) = a;
       switch (a) {
       case 0:
         static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
@@ -259,12 +259,12 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->Invalidate();
       return 0;
     case 0: {
-      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.size());
+      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
       if (a >= 0 && a <= count) {
-        static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->SetText(a == count ? "" : static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history[a].c_str());
-        static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex = a;
+        static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->SetText(a == count ? "" : static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[a].c_str());
+        static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = a;
       }
-      g_windowMgr.SetFocus(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0));
+      g_windowMgr.SetFocus(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit));
       break;
     }
     default:
@@ -343,14 +343,14 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     return 0;
   case UM_SETINFO:
-    if (g_windowMgr.unknown_0030 < 0 || g_windowMgr.unknown_0034 < 0 || g_windowMgr.unknown_0030 > g_renderer->viewport.width - this->geometry.width
-        || g_windowMgr.unknown_0034 > g_renderer->viewport.height - this->geometry.height) {
-      g_windowMgr.unknown_0030 = 0;
-      g_windowMgr.unknown_0034 = g_renderer->viewport.height - this->geometry.height;
+    if (g_windowMgr.chatWndX < 0 || g_windowMgr.chatWndY < 0 || g_windowMgr.chatWndX > g_renderer->viewport.width - this->geometry.width
+        || g_windowMgr.chatWndY > g_renderer->viewport.height - this->geometry.height) {
+      g_windowMgr.chatWndX = 0;
+      g_windowMgr.chatWndY = g_renderer->viewport.height - this->geometry.height;
     }
-    this->geometry.x = g_windowMgr.unknown_0030;
-    this->geometry.y = g_windowMgr.unknown_0034;
-    this->ResizeRows(g_windowMgr.unknown_004C);
+    this->geometry.x = g_windowMgr.chatWndX;
+    this->geometry.y = g_windowMgr.chatWndY;
+    this->ResizeRows(g_windowMgr.chatWndStatus);
     this->Move(this->geometry.x, this->geometry.y);
     return 0;
   case UM_COMMAND:
@@ -364,20 +364,20 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
       return 0;
     case ID_STICK_ON:
-      *reinterpret_cast<unsigned char*>(&g_windowMgr.unknown_03F4) = 1;
+      *reinterpret_cast<unsigned char*>(&g_windowMgr.chatWndStickOn) = 1;
       this->m_currentTab = 0;
-      if (this->unknown_0118 == 0) {
-        this->unknown_0118 = 1;
+      if (this->m_savedRowCount == 0) {
+        this->m_savedRowCount = 1;
       }
-      this->ResizeRows(this->unknown_0118);
+      this->ResizeRows(this->m_savedRowCount);
       this->Invalidate();
       return 0;
     case ID_STICK_OFF:
       this->SendMsg(this, UM_DETACH_CHAT_TAB, this->m_currentTab, 0, 0, 0);
       return 0;
     case ID_TALKTOWHOCOMBO: {
-      this->unknown_00F0 = 1;
-      if (g_windowMgr.unknown_0214 != nullptr) {
+      this->m_menuMode = 1;
+      if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
@@ -386,7 +386,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_GUILD)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLAN_MANAGE_LAND)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_IMPOSSIBLE)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_SETCURITEM, *reinterpret_cast<int*>(&g_session.unknown_5490[0x8]), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, *reinterpret_cast<int*>(&g_session.itemSendState[0x8]), 0, 0, 0);
       menu->Resize(0x70, 0x30);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
       int x = this->geometry.width - 0x73;
@@ -396,11 +396,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
     case ID_WHISPERCOMBO: {
-      this->unknown_00F0 = 0;
-      if (g_windowMgr.unknown_0214 != nullptr) {
+      this->m_menuMode = 0;
+      if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history.size());
+      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
       if (count == 0) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWHISPERLIST)), 0xFF, 0, 0, 0);
@@ -409,14 +409,14 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       for (int i = 0; i < count; ++i) {
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->history[i].c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[i].c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
       int height = (count + 1) * 16;
       if (height > 0x50) {
         height = 0x50;
       }
-      menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->historyIndex, 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex, 0, 0, 0);
       menu->Resize(0x70, height);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
       int x = 0;
@@ -441,11 +441,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       UIChatEditCtrl* edit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
       bool rejected = HasItemLinkTag(std::string(edit->Text()));
       if (!rejected) {
-        UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144;
-        if (tags != nullptr && tags->unknown_0140.size() != 0) {
-          text = std::string(tags->unknown_0140);
-          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144->unknown_0140.clear();
-          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->unknown_0144->ClearTags();
+        UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags;
+        if (tags != nullptr && tags->linkedText.size() != 0) {
+          text = std::string(tags->linkedText);
+          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags->linkedText.clear();
+          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags->ClearTags();
           rejected = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0;
         }
         if (!rejected) {
@@ -477,9 +477,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      if (static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Length() != 0 && buffer[0] != '/') {
-        g_windowMgr.unknown_04DC = buffer;
-        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Text()), 0, 0, 0);
+      if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Length() != 0 && buffer[0] != '/') {
+        g_windowMgr.chatInputText = buffer;
+        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Text()), 0, 0, 0);
         return 0;
       }
 
@@ -510,7 +510,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int noSubCount = static_cast<int>(g_session.m_noSubChatWnds.size());
       int subCount = static_cast<int>(g_session.m_subChatWnds.size());
       const int total = noSubCount + subCount;
-      if (total == this->unknown_0110) {
+      if (total == this->m_maxTabs) {
         g_windowMgr.Confirm(LookupMessage(MSI_FAILED_ADD_TAB), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         return 0;
       }
@@ -539,7 +539,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         rectangle.bottom = this->m_tabControl->geometry.height;
         this->FillSurface(0xFFFF00FF, &rectangle);
         this->m_currentTab = noSubCount;
-        this->m_tabControl->unknown_007C = noSubCount;
+        this->m_tabControl->activeTabIndex = noSubCount;
         this->RefreshTabs(true);
         this->ApplyHeaderLayout();
       }
@@ -581,7 +581,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->FillSurface(0xFFFF00FF, &rectangle);
       if (this->m_currentTab > 0) {
         --this->m_currentTab;
-        this->m_tabControl->unknown_007C = this->m_currentTab;
+        this->m_tabControl->activeTabIndex = this->m_currentTab;
       }
       this->RefreshTabs(true);
       this->ApplyHeaderLayout();
@@ -594,10 +594,10 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
   case UM_RESIZE:
-    if (a == 2 && static_cast<unsigned char>(g_windowMgr.unknown_03F4) != 0) {
+    if (a == 2 && static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0) {
       const int top = this->m_inputOffsetY + 0x38;
       if (c < top) {
-        if (this->geometry.unknown_0030 != 0) {
+        if (this->geometry.state != 0) {
           this->ResizeRows(0);
         }
       } else {
@@ -605,23 +605,23 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         if (rows > 15) {
           rows = 15;
         }
-        if (this->geometry.unknown_0030 != rows) {
+        if (this->geometry.state != rows) {
           this->ResizeRows(rows);
         }
       }
     }
     return 0;
   case UM_TOGGLEPUSH:
-    if (static_cast<unsigned char>(g_windowMgr.unknown_03F4) != 0) {
+    if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0) {
       const int step = a == 0 ? 1 : -1;
       int rows = step;
-      if (this->geometry.unknown_0030 != 0) {
-        rows = static_cast<int>(this->geometry.unknown_0030) + step * 3;
+      if (this->geometry.state != 0) {
+        rows = static_cast<int>(this->geometry.state) + step * 3;
       }
       if (rows > 0) {
         this->ResizeRows(rows / 3 * 3 + 1);
       } else {
-        this->ResizeRows(this->geometry.unknown_0030 != 0 ? 0 : rows);
+        this->ResizeRows(this->geometry.state != 0 ? 0 : rows);
       }
     }
     return 0;
@@ -651,7 +651,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->ResizeRows(a);
     return 0;
   case UM_OPENCHATWND:
-    if (static_cast<unsigned char>(g_windowMgr.unknown_03F4) != 0 && this->geometry.unknown_0030 == 0) {
+    if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->geometry.state == 0) {
       this->ResizeRows(1);
     }
     return 0;

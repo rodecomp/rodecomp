@@ -41,8 +41,8 @@ void CUIEditCtrlEx::RefreshPlaceholder() {
 // FUNCTION: fn_14431
 void CUIEditBoxEx::ResetSelection() {
   CUIEditCtrlEx* edit = this->edit;
-  edit->unknown_0190 = 0;
-  edit->unknown_018C = 0;
+  edit->drawOutline = 0;
+  edit->outlineColor = 0;
   edit->Invalidate();
 }
 
@@ -162,7 +162,7 @@ void CUIEditCtrlEx::Paint() {
 // FUNCTION: fn_14445
 void CUIEditCtrlEx::UpdateScrollBar() {
   const int total = static_cast<int>(this->lines.size());
-  this->visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->unknown_0138);
+  this->visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->lineHeight);
   this->scrollMaximum = std::max(0, total - this->visibleLines);
 
   this->scrollPosition = std::min(this->scrollPosition, this->line);
@@ -171,9 +171,9 @@ void CUIEditCtrlEx::UpdateScrollBar() {
   }
   this->scrollPosition = std::clamp(this->scrollPosition, 0, this->scrollMaximum);
 
-  static_cast<UIScrollBar*>(this->unknown_0130)->SetRange(this->scrollMaximum, this->visibleLines, total);
-  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->scrollPosition);
-  this->unknown_0134 = this->scrollMaximum > 0;
+  static_cast<UIScrollBar*>(this->scrollBar)->SetRange(this->scrollMaximum, this->visibleLines, total);
+  static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+  this->scrollEnabled = this->scrollMaximum > 0;
 }
 
 #include "Client/Input/InputCharset.h"
@@ -194,8 +194,8 @@ void CUIEditCtrlEx::Synchronize() {
   const std::string fullText = prefix + this->text;
   std::vector<std::string> lines;
   std::vector<bool> breaks;
-  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
-    int wrapWidth = this->geometry.width - this->unknown_0130->geometry.width - this->unknown_01B4;
+  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+    int wrapWidth = this->geometry.width - this->scrollBar->geometry.width - this->horizontalPadding;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
     this->WrapLines(lines);
   } else {
@@ -216,7 +216,7 @@ void CUIEditCtrlEx::Synchronize() {
     for (const std::string& rawLine : lines) {
       std::size_t crPos = rawLine.find("\r\n");
       EditLine line;
-      line.unknown_0018 = crPos != std::string::npos;
+      line.hasCarriageReturn = crPos != std::string::npos;
       line.text = crPos != std::string::npos ? rawLine.substr(0, crPos) : rawLine;
 
       int lineLen = static_cast<int>(line.text.size());
@@ -243,7 +243,7 @@ void CUIEditCtrlEx::Synchronize() {
       this->lines.push_back(line);
     }
 
-    if (this->lines.back().unknown_0018 != 0) {
+    if (this->lines.back().hasCarriageReturn != 0) {
       this->lines.emplace_back();
     }
 
@@ -251,7 +251,7 @@ void CUIEditCtrlEx::Synchronize() {
     this->line = 0;
     this->column = 0;
     for (std::size_t i = 0; i < this->lines.size(); ++i) {
-      int fullLen = static_cast<int>(this->lines[i].text.size()) + (this->lines[i].unknown_0018 ? 2 : 0);
+      int fullLen = static_cast<int>(this->lines[i].text.size()) + (this->lines[i].hasCarriageReturn ? 2 : 0);
       if (remaining - fullLen <= 0) {
         this->column = remaining;
         this->line = static_cast<int>(i);
@@ -261,8 +261,8 @@ void CUIEditCtrlEx::Synchronize() {
     }
 
     const EditLine& current = this->lines[this->line];
-    if (current.unknown_0018 != 0 || this->unknown_01DC == 0) {
-      int fullLen = static_cast<int>(current.text.size()) + (current.unknown_0018 ? 2 : 0);
+    if (current.hasCarriageReturn != 0 || this->wrapPending == 0) {
+      int fullLen = static_cast<int>(current.text.size()) + (current.hasCarriageReturn ? 2 : 0);
       if (remaining == fullLen && static_cast<std::size_t>(this->line) < this->lines.size() - 1) {
         this->column = 0;
         this->line++;
@@ -296,9 +296,9 @@ void CUIEditCtrlEx::Synchronize() {
 // OFFSET: 0x009E5A60
 // FUNCTION: fn_14447
 void CUIEditCtrlEx::ResetDragState() {
-  this->unknown_01D4 = -1;
-  this->unknown_01D8 = 0;
-  this->unknown_01DC = 0;
+  this->previousCursorLine = -1;
+  this->cursorAdvance = 0;
+  this->wrapPending = 0;
 }
 
 // OFFSET: 0x009E5A80
@@ -409,7 +409,7 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
       g_serverLanguage->AdvanceCursor(static_cast<int>(this->text.size()) - g_serverLanguage->cursor);
     } else {
       g_serverLanguage->AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
-      this->unknown_01DC = 1;
+      this->wrapPending = 1;
     }
     return;
   }
@@ -426,13 +426,13 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     position = this->scrollPosition + a;
     break;
   case UM_SCROLLVERTPAGEUP:
-    position = this->unknown_01F0 + this->scrollPosition;
+    position = this->scrollStep + this->scrollPosition;
     break;
   case UM_SCROLLVERTPAGEDOWN:
-    position = this->scrollPosition - this->unknown_01F0;
+    position = this->scrollPosition - this->scrollStep;
     break;
   case UM_DEFPUSH:
-    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
+    if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
       g_serverLanguage->Insert("\r\n");
       return 0;
     }
@@ -440,8 +440,8 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   case UM_UPPUSH:
     if (this->line > 0) {
-      if (this->unknown_01D4 == this->line - 1) {
-        g_serverLanguage->RetreatCursor(this->unknown_01D8);
+      if (this->previousCursorLine == this->line - 1) {
+        g_serverLanguage->RetreatCursor(this->cursorAdvance);
       } else {
         const EditLine& previous = this->lines[this->line - 1];
         int offset;
@@ -457,12 +457,12 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
 
         const EditLine& line = this->lines[this->line - 1];
-        const int delta = (line.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - offset + this->column;
+        const int delta = (line.hasCarriageReturn != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - offset + this->column;
         g_serverLanguage->RetreatCursor(delta);
-        this->unknown_01D8 = delta;
+        this->cursorAdvance = delta;
       }
-      this->unknown_01D4 = this->line;
-      this->unknown_01DC = 1;
+      this->previousCursorLine = this->line;
+      this->wrapPending = 1;
     }
     this->selectedAll = 1;
     return 0;
@@ -471,12 +471,12 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->selectedAll = 1;
     return 3;
   case WM_CHAR:
-    if (this->unknown_01F8 != 0) {
-      if (this->unknown_01F8 == 1) {
+    if (this->textAlignment != 0) {
+      if (this->textAlignment == 1) {
         if ((a < '0' || a > '9') && a != VK_BACK) {
           return 3;
         }
-      } else if (this->unknown_01F8 == 2) {
+      } else if (this->textAlignment == 2) {
         if ((a < '0' || a > '9') && a != '.' && a != VK_BACK) {
           return 3;
         }
@@ -489,8 +489,8 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 3;
   case UM_DOWNPUSH:
     if (this->lines.size() - 1 > static_cast<unsigned>(this->line)) {
-      if (this->unknown_01D4 == this->line + 1) {
-        g_serverLanguage->AdvanceCursor(this->unknown_01D8);
+      if (this->previousCursorLine == this->line + 1) {
+        g_serverLanguage->AdvanceCursor(this->cursorAdvance);
       } else {
         const EditLine& next = this->lines[this->line + 1];
         int offset;
@@ -506,12 +506,12 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
 
         const EditLine& line = this->lines[this->line];
-        const int delta = (line.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - this->column + offset;
+        const int delta = (line.hasCarriageReturn != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - this->column + offset;
         g_serverLanguage->AdvanceCursor(delta);
-        this->unknown_01D8 = delta;
+        this->cursorAdvance = delta;
       }
-      this->unknown_01D4 = this->line;
-      this->unknown_01DC = 1;
+      this->previousCursorLine = this->line;
+      this->wrapPending = 1;
     }
     this->selectedAll = 1;
     return 0;
@@ -524,8 +524,8 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
 
   this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
-  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->scrollPosition);
-  this->unknown_0134 = this->scrollMaximum > 0;
+  static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+  this->scrollEnabled = this->scrollMaximum > 0;
   return 0;
 }
 
@@ -548,8 +548,8 @@ void CUIEditBoxEx::SetTextColor(std::uint32_t color) {
 // FUNCTION: fn_14455
 void CUIEditBoxEx::SetHighlight(int value) {
   CUIEditCtrlEx* edit = this->edit;
-  edit->unknown_018C = value;
-  edit->unknown_0190 = 1;
+  edit->outlineColor = value;
+  edit->drawOutline = 1;
   edit->Invalidate();
 }
 
@@ -629,7 +629,7 @@ void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
   this->edit = new CUIEditCtrlEx();
   this->edit->SetSize(width, height);
   if (withScrollBar) {
-    reinterpret_cast<unsigned char*>(&this->edit->unknown_0184)[1] = 1;
+    reinterpret_cast<unsigned char*>(&this->edit->editFlags)[1] = 1;
   }
   this->AddChild(this->edit);
   this->SetSize(width, height);
@@ -646,15 +646,15 @@ void CUIEditCtrlEx::PaintTextLines() {
   }
 
   int width = this->geometry.width;
-  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
-    width -= this->unknown_0130->geometry.width;
+  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+    width -= this->scrollBar->geometry.width;
   }
 
   if (this->lines.empty()) {
-    int x = this->unknown_01B4;
+    int x = this->horizontalPadding;
     if (this->alignment == 2) {
       const int caretWidth = this->TextWidth("|", 0, 0, 12, 0, 0);
-      x = width - this->unknown_01B4 - caretWidth;
+      x = width - this->horizontalPadding - caretWidth;
     } else if (this->alignment == 6) {
       x = width / 2;
     }
@@ -663,7 +663,7 @@ void CUIEditCtrlEx::PaintTextLines() {
   }
 
   const int lineCount = static_cast<int>(this->lines.size());
-  const int visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->unknown_0138);
+  const int visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->lineHeight);
   int firstLine = this->scrollPosition;
   int endLine = std::min(firstLine + visibleLines, lineCount);
 
@@ -671,13 +671,13 @@ void CUIEditCtrlEx::PaintTextLines() {
     EditLine& line = this->lines[lineIndex];
     const int textWidth = this->TextWidth(line.text.c_str(), 0, 0, 12, 0, 0);
 
-    int x = this->unknown_01B4;
+    int x = this->horizontalPadding;
     if (this->alignment == 2) {
       x = width - x - textWidth;
     } else if (this->alignment == 6) {
       x = (width - textWidth) / 2;
     }
-    int y = (lineIndex - firstLine) * this->unknown_0138 + this->verticalPadding;
+    int y = (lineIndex - firstLine) * this->lineHeight + this->verticalPadding;
 
     if (!line.text.empty()) {
       if (g_windowMgr.GetHoverWindow() == this && line.selectionEnd - line.selectionBegin > 0) {
@@ -690,13 +690,13 @@ void CUIEditCtrlEx::PaintTextLines() {
 
       this->PlaceLinks(line.text, y, lineIndex, firstLine, endLine);
 
-      if (this->unknown_0190) {
-        this->DrawEmboldenedText(x, this->verticalPadding + y, line.text.c_str(), this->textColor, this->unknown_018C, 0, 0, 12);
+      if (this->drawOutline) {
+        this->DrawEmboldenedText(x, this->verticalPadding + y, line.text.c_str(), this->textColor, this->outlineColor, 0, 0, 12);
       } else {
         this->DrawTextAt(x, this->verticalPadding + y, line.text.c_str(), 0, 0, 12, this->textColor, 0, 0);
       }
 
-      this->PlaceTags(x, y, firstLine, endLine, lineIndex, this->unknown_013C);
+      this->PlaceTags(x, y, firstLine, endLine, lineIndex, this->lineCount);
     }
 
     if (g_windowMgr.GetHoverWindow() == this && lineIndex == this->line) {
@@ -709,24 +709,24 @@ void CUIEditCtrlEx::PaintTextLines() {
 CUIEditCtrlEx::CUIEditCtrlEx()
     : UIEditCtrl3(),
       normalColor(0),
-      unknown_018C(0),
-      unknown_0190(0),
+      outlineColor(0),
+      drawOutline(0),
       placeholderColor(0x808080),
       alignment(0),
-      unknown_01B4(3),
+      horizontalPadding(3),
       verticalPadding(1),
       selectedAll(0),
       column(0),
       line(0),
-      unknown_01D4(-1),
-      unknown_01D8(0),
-      unknown_01DC(0),
+      previousCursorLine(-1),
+      cursorAdvance(0),
+      wrapPending(0),
       caretStart(std::chrono::system_clock::now()),
       scrollMaximum(0),
       visibleLines(0),
-      unknown_01F0(1),
+      scrollStep(1),
       scrollPosition(0),
-      unknown_01F8(0) {
+      textAlignment(0) {
 }
 
 // OFFSET: 0x009E45F0

@@ -144,7 +144,7 @@ void UINewChatWnd::DrawTransBox() {
   int x = 3;
   int y = 0;
   this->ToScreen(x, y);
-  if (this->geometry.unknown_0030 == 0) {
+  if (this->geometry.state == 0) {
     return;
   }
 
@@ -162,7 +162,7 @@ void UISubChatHisWnd::DrawTransBox() {
   int y = 0;
   this->ToScreen(x, y);
   DrawAlphaRectangle(x + 1, y + 1, this->m_inputWidth - 2, this->m_inputHeight, 0x66000000);
-  DrawAlphaRectangle(this->m_state.unknown_0000 + 1, this->m_state.unknown_0004 + 1, this->m_state.unknown_0008 - 2, this->m_state.unknown_000C - 2, this->m_state.unknown_0014);
+  DrawAlphaRectangle(this->m_state.x + 1, this->m_state.y + 1, this->m_state.width - 2, this->m_state.height - 2, this->m_state.backgroundColor);
 }
 
 // OFFSET: 0x009189C0
@@ -219,7 +219,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
       texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
     }
   } else {
-    texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
   }
 
   const int height = static_cast<int>(static_cast<float>(image->height) * scale);
@@ -259,8 +259,8 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   vertices[3].u = record.u1;
   vertices[3].v = record.v1;
   primitive->texture = texture;
-  primitive->unknown_0018 = 2;
-  primitive->unknown_001C = 4;
+  primitive->sourceBlend = 2;
+  primitive->destinationBlend = 4;
   g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   this->m_kafraTop = static_cast<int>(vertices[0].y);
   this->m_kafraBottom = static_cast<int>(vertices[3].y);
@@ -343,32 +343,32 @@ std::uint32_t g_worldMapNameColor;
 // OFFSET: 0x00918D70
 // FUNCTION: fn_12596
 void UIRoMapWnd::DrawSelectedMapPreview() {
-  if (this->unknown_00C0 == nullptr) {
+  if (this->selectedRecord == nullptr) {
     return;
   }
 
-  if (this->unknown_00C0->mapIndex < 100) {
-    const WorldViewRecord* record = this->unknown_00C0;
+  if (this->selectedRecord->mapIndex < 100) {
+    const WorldViewRecord* record = this->selectedRecord;
     DrawRoundedBorder(
-      *this, record->unknown_000C, record->unknown_0010, record->unknown_0014 - record->unknown_000C, record->unknown_0018 - record->unknown_0010,
+      *this, record->screenLeft, record->screenTop, record->screenRight - record->screenLeft, record->screenBottom - record->screenTop,
       g_worldMapNameColor
     );
   }
 
   {
-    const WorldViewRecord* record = this->unknown_00C0;
+    const WorldViewRecord* record = this->selectedRecord;
     DrawRoundedBorder(*this, record->left, record->top, record->right - record->left, record->bottom - record->top, g_worldMapNameColor);
   }
 
-  WorldViewRecord* record = this->unknown_00C0;
+  WorldViewRecord* record = this->selectedRecord;
   const int savedLeft = record->left;
   const int savedTop = record->top;
   const int savedRight = record->right;
   const int savedBottom = record->bottom;
-  const int savedUnknown = record->unknown_0048;
+  const int savedUnknown = record->areaFlags;
 
   if (g_kafraServiceMapList.find(std::string(record->name)) != g_kafraServiceMapList.end()) {
-    WorldViewRecord* current = this->unknown_00C0;
+    WorldViewRecord* current = this->selectedRecord;
     if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
       const MiniMapPosition& offset = g_exceptionMiniMapPosList[current->name];
       current->left = static_cast<int>(static_cast<float>(current->left) + offset.x);
@@ -378,14 +378,14 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     }
   }
 
-  record = this->unknown_00C0;
+  record = this->selectedRecord;
   record->left = savedLeft;
   record->top = savedTop;
   record->right = savedRight;
   record->bottom = savedBottom;
-  record->unknown_0048 = savedUnknown;
+  record->areaFlags = savedUnknown;
 
-  record = this->unknown_00C0;
+  record = this->selectedRecord;
   int x = record->right + 10;
   if (x + 130 > g_renderer->viewport.width) {
     x = record->left - 140;
@@ -393,14 +393,14 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   const int y = record->top + 140 <= g_renderer->viewport.height ? record->top + 10 : g_renderer->viewport.height - 130;
 
-  WorldViewArea* previous = reinterpret_cast<WorldViewArea*>(this->unknown_00C8);
-  this->unknown_00C8 = reinterpret_cast<int*>(new WorldViewArea{x, y, x + 130, y + 130, 1});
+  WorldViewArea* previous = reinterpret_cast<WorldViewArea*>(this->previewArea);
+  this->previewArea = reinterpret_cast<int*>(new WorldViewArea{x, y, x + 130, y + 130, 1});
   delete previous;
 
   tagRECT area = {x, y, x + 130, y + 130};
   this->FillSurface(0xFFFF00FF, &area);
 
-  std::string name = this->unknown_00C0->name;
+  std::string name = this->selectedRecord->name;
   if (name.size() > 4) {
     name.resize(name.size() - 4);
   }
@@ -411,9 +411,9 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     std::string path = "유저인터페이스\\map\\";
     path += name;
     path += ".bmp";
-    this->unknown_00D0 = reinterpret_cast<int>(g_texMgr.Load(path.c_str(), 0, true, true, false));
+    this->previewTexture = reinterpret_cast<int>(g_texMgr.Load(path.c_str(), 0, true, true, false));
   }
 
-  name = g_session.GetMapDisplayName(this->unknown_00C0->name.c_str());
+  name = g_session.GetMapDisplayName(this->selectedRecord->name.c_str());
   DrawOutlinedText(*this, x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }

@@ -26,24 +26,24 @@ void CEvilLandEffect::Close() {
 // FUNCTION: fn_06948
 void CEvilLandEffect::Open() {
   CTexture* texture = g_texMgr.Load("effect\\EVILLAND\\demonground.tga", 0, false, true, false);
-  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / static_cast<float>(this->unknown_00B0);
-  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / static_cast<float>(this->unknown_00B0);
+  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / static_cast<float>(this->effectLevel);
+  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / static_cast<float>(this->effectLevel);
 
   CTexture* alpha = g_texMgr.Load("effect\\EVILLAND\\demonground_alpha_translucent.tga", 0, false, true, false);
-  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / static_cast<float>(this->unknown_00B0);
-  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / static_cast<float>(this->unknown_00B0);
+  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / static_cast<float>(this->effectLevel);
+  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / static_cast<float>(this->effectLevel);
 
-  for (int row = 0; row < this->unknown_00B0; ++row) {
-    for (int column = 0; column < this->unknown_00B0; ++column) {
+  for (int row = 0; row < this->effectLevel; ++row) {
+    for (int column = 0; column < this->effectLevel; ++column) {
       CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(CreateMultiTexParticle(reinterpret_cast<const vector3d*>(this->position), -1));
       if (!particle) {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_0010 = row;
-      particle->unknown_000C = column;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->rowIndex = row;
+      particle->columnIndex = column;
+      particle->groupIndex = 1;
       particle->texture1 = texture;
       particle->texture2 = alpha;
 
@@ -98,8 +98,8 @@ void CEvilLandEffect::Render() {
         int column = 0;
         int row = 0;
         gameMode->WorldCell(this->position[0], this->position[2], column, row);
-        const int half = this->unknown_00B0 / 2;
-        particle->Render(particle->unknown_000C - half + column, particle->unknown_0010 - half + row);
+        const int half = this->effectLevel / 2;
+        particle->Render(particle->columnIndex - half + column, particle->rowIndex - half + row);
       }
     }
   }

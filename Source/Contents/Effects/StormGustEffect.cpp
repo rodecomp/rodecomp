@@ -32,10 +32,10 @@ void CStormGustEffect::Open() {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = index;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->SetTexture("effect\\ice.tga");
     particle->alpha = 250;
 
@@ -44,14 +44,14 @@ void CStormGustEffect::Open() {
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float velocityZ = cosine * -static_cast<float>(speed);
     const float velocityX = ClientSine(static_cast<int>(angle)) * speed;
-    particle->unknown_00D0 = velocityX;
-    particle->unknown_00D4 = 20.0f;
-    particle->unknown_00D8 = velocityZ;
+    particle->offsetX = velocityX;
+    particle->offsetY = 20.0f;
+    particle->offsetZ = velocityZ;
 
-    particle->unknown_00C0 = 1.5f;
+    particle->speedParameter = 1.5f;
     particle->scale = static_cast<float>(std::max(rand() % 100, 0) + 400) / 100.0f;
 
-    matrix& rotation = *reinterpret_cast<matrix*>(particle->unknown_0198);
+    matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
     rotation.IsIdentity();
     rotation.MakeXRotation(100.0f / 180.0f * 3.141592f);
     rotation.AppendYRotation(static_cast<float>(std::max(rand() % 360, 0)) / 180.0f * 3.141592f);
@@ -74,20 +74,20 @@ void CStormGustEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      if (particle->unknown_00E8 == 3) {
-        particle->unknown_00C0 = 0.0f;
+      if (particle->elapsedFrames == 3) {
+        particle->speedParameter = 0.0f;
       }
 
-      const float speed = particle->unknown_00C0;
-      const matrix& rotation = *reinterpret_cast<const matrix*>(particle->unknown_0198);
+      const float speed = particle->speedParameter;
+      const matrix& rotation = *reinterpret_cast<const matrix*>(particle->rotationStorage);
       const float* values = rotation.values;
-      particle->unknown_00D0 += values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-      particle->unknown_00D4 += values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-      particle->unknown_00D8 += values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+      particle->offsetX += values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
+      particle->offsetY += values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
+      particle->offsetZ += values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
 
       matrix translation;
       std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-      translation.MakeTranslate(particle->unknown_00D0, particle->unknown_00D4, particle->unknown_00D8);
+      translation.MakeTranslate(particle->offsetX, particle->offsetY, particle->offsetZ);
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
       scale.SetScale(particle->scale, particle->scale, 1.0f);
@@ -111,7 +111,7 @@ void CStormGustEffect::OnProcess() {
       particle->alpha = alpha;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

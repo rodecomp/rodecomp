@@ -115,12 +115,12 @@ public:
   /* 00D4 */ int m_columns;
   /* 00D8 */ int m_page;
   /* 00DC */ int m_pageCount;
-  /* 00E0 */ UIEditCtrl* unknown_00E0;
-  /* 00E4 */ UIBmpTextButton* unknown_00E4;
-  /* 00E8 */ int unknown_00E8;
-  /* 00EC */ int unknown_00EC;
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ UIEditCtrl_Custom* unknown_00F4;
+  /* 00E0 */ UIEditCtrl* m_searchEdit;
+  /* 00E4 */ UIBmpTextButton* m_refreshButton;
+  /* 00E8 */ int m_cashPoints;
+  /* 00EC */ int m_secondaryPoints;
+  /* 00F0 */ int m_totalPrice;
+  /* 00F4 */ UIEditCtrl_Custom* m_pointsEdit;
   /* 00F8 */ std::vector<UICashShopWnd_Item*> m_itemWindows;
   /* 0104 */ UICashShopWnd_Cart* m_cart;
 };

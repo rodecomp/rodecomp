@@ -68,7 +68,7 @@ void UIGuildHelperWnd::Paint() {
 void UIGuildHelperWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
     UIFrameWnd::OnLBtnDown(x, y);
-    if (UIWindow* window = g_windowMgr.unknown_0438) {
+    if (UIWindow* window = g_windowMgr.createGuildWnd) {
       window->geometry.targetAlpha = 128;
       window->geometry.alphaStart = timeGetTime();
     }
@@ -79,7 +79,7 @@ void UIGuildHelperWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13095
 void UIGuildHelperWnd::OnLBtnUp(int x, int y) {
   UIFrameWnd::OnLBtnUp(x, y);
-  if (UIWindow* window = g_windowMgr.unknown_0438) {
+  if (UIWindow* window = g_windowMgr.createGuildWnd) {
     window->geometry.targetAlpha = 255;
     window->geometry.alphaStart = timeGetTime();
   }
@@ -89,11 +89,11 @@ void UIGuildHelperWnd::OnLBtnUp(int x, int y) {
 // FUNCTION: fn_13098
 void UIGuildHelperWnd::OnMouseMove(int x, int y) {
   UIFrameWnd::OnMouseMove(x, y);
-  if (g_windowMgr.unknown_0438) {
+  if (g_windowMgr.createGuildWnd) {
     x = 0;
     y = 0;
     this->ToScreen(x, y);
-    g_windowMgr.unknown_0438->Move(x + 2 + this->geometry.width, y);
+    g_windowMgr.createGuildWnd->Move(x + 2 + this->geometry.width, y);
   }
 }
 
@@ -210,9 +210,9 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   case UM_SETINFO: {
     const GuildBanTarget* target = reinterpret_cast<const GuildBanTarget*>(a1);
-    this->m_target.unknown_0000 = target->unknown_0000;
-    this->m_target.unknown_0004 = target->unknown_0004;
-    this->m_target.unknown_0008 = target->unknown_0008;
+    this->m_target.guildId = target->guildId;
+    this->m_target.accountId = target->accountId;
+    this->m_target.characterId = target->characterId;
     return 0;
   }
   default:
@@ -239,11 +239,11 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     case 448:
       if (!g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0)) {
         g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_0);
-        if (g_windowMgr.unknown_0438) {
+        if (g_windowMgr.createGuildWnd) {
           int x = 0;
           int y = 0;
           this->ToScreen(x, y);
-          g_windowMgr.unknown_0438->Move(x + 2 + this->geometry.width, y);
+          g_windowMgr.createGuildWnd->Move(x + 2 + this->geometry.width, y);
         }
       }
       break;

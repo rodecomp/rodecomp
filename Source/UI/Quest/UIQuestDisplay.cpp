@@ -60,12 +60,12 @@ void UIQuestDisplay::Paint() {
 
     const int top = single * 50 + (none + multiple * 2) * 40;
     std::string title = info.m_title.size() == 0 ? FormatOwnedString("Unknown Quest, ID = %d", questId) : info.m_title;
-    if (questId == this->unknown_007C) {
+    if (questId == this->selectedQuestId) {
       this->FillRegion(-12, top - 2, this->geometry.width - 10, 40, 0);
     }
     this->DrawShadowedText(0, top, title.c_str(), 0, 0xD6E1, 0, 0, 12, 0);
 
-    std::string description = info.m_descriptions.empty() ? std::string() : info.unknown_004C;
+    std::string description = info.m_descriptions.empty() ? std::string() : info.summary;
     description = StripColorCodes(description.c_str(), description.size());
     description = static_cast<const std::string&>(DisplayUrlTextTag(description));
     description = static_cast<const std::string&>(DisplayNavigationTextTag(description));
@@ -248,7 +248,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case UM_MAKEMENU: {
     this->m_menuItems.clear();
-    if (g_windowMgr.unknown_0210 != 0) {
+    if (g_windowMgr.menuWnd != 0) {
       this->Show(0);
     }
     if (this->m_selectedIndex != -1) {

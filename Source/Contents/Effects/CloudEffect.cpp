@@ -55,10 +55,10 @@ void CCloud::Close() {
 void CCloud::Open() {
   this->particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
   if (CParticle* particle = this->particle) {
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = 0;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = 0;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     this->particle->sourceBlend = 5;
     this->particle->destinationBlend = 6;
   }
@@ -84,7 +84,7 @@ void CCloud::ResetParticles() {
     return;
   }
 
-  this->particle->unknown_00E8 = 0;
+  this->particle->elapsedFrames = 0;
   CParticle* particle = this->particle;
   const int rangeZ = static_cast<int>(this->offsetRangeZ);
   const int offsetZ = rangeZ ? std::max(0, rand() % rangeZ) : 0;
@@ -92,9 +92,9 @@ void CCloud::ResetParticles() {
   const int offsetY = rangeY ? std::max(0, rand() % rangeY) : 0;
   const int rangeX = static_cast<int>(this->offsetRangeX);
   const int offsetX = rangeX ? std::max(0, rand() % rangeX) : 0;
-  particle->unknown_00D0 = static_cast<float>(offsetX);
-  particle->unknown_00D4 = static_cast<float>(offsetY);
-  particle->unknown_00D8 = static_cast<float>(offsetZ);
+  particle->offsetX = static_cast<float>(offsetX);
+  particle->offsetY = static_cast<float>(offsetY);
+  particle->offsetZ = static_cast<float>(offsetZ);
 
   this->particle->SetColor(this->red, this->green, this->blue);
   this->particle->alpha = 0;
@@ -117,7 +117,7 @@ void CCloud::OnProcess() {
     return;
   }
 
-  const int frame = particle->unknown_00E8;
+  const int frame = particle->elapsedFrames;
   if (frame < this->fadeInEnd) {
     const float value = this->alpha + this->fadeInStep;
     this->alpha = value > 255.0f ? 255.0f : value;
@@ -144,7 +144,7 @@ void CCloud::OnProcess() {
   matrix transform;
   transform.Compose(scale, rotation);
   this->particle->transform = transform;
-  ++this->particle->unknown_00E8;
+  ++this->particle->elapsedFrames;
 }
 
 // OFFSET: 0x006FC090
@@ -162,14 +162,14 @@ void CCloud::Drift() {
   StepDrift(this->driftZ, this->driftTargetZ);
 
   CParticle* particle = this->particle;
-  float offsetX = particle->unknown_00D0;
-  const float offsetY = particle->unknown_00D4;
-  float offsetZ = particle->unknown_00D8;
+  float offsetX = particle->offsetX;
+  const float offsetY = particle->offsetY;
+  float offsetZ = particle->offsetZ;
   offsetX = g_sinTable[this->driftX] * 0.05f + offsetX;
   offsetZ = g_sinTable[this->driftZ] * 0.05f + offsetZ;
-  particle->unknown_00D0 = offsetX;
-  particle->unknown_00D4 = offsetY;
-  particle->unknown_00D8 = offsetZ;
+  particle->offsetX = offsetX;
+  particle->offsetY = offsetY;
+  particle->offsetZ = offsetZ;
 
   this->particle->position.x = offsetX + this->position[0];
   this->particle->position.y = offsetY + this->position[1];

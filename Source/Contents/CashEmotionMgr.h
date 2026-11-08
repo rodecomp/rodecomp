@@ -44,8 +44,8 @@ struct CashEmotionData {
   /* 0000 */ int id;
   /* 0004 */ int subId;
   /* 0008 */ std::string name;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
+  /* 0020 */ int actionIndex;
+  /* 0024 */ int frameIndex;
   /* 0028 */ int actId;
   /* 002C */ int sprId;
 };
@@ -53,7 +53,7 @@ struct CashEmotionData {
 struct CashEmotionPack {
   // INLINED
   CashEmotionPack(const char* name, int unknown18, unsigned int startTime, unsigned int endTime, int unknown24, char unknown28)
-      : name(name), unknown_0018(unknown18), startTime(startTime), endTime(endTime), unknown_0024(unknown24), unknown_0028(unknown28),
+      : name(name), price(unknown18), startTime(startTime), endTime(endTime), period(unknown24), saleBadge(unknown28),
         originalStartTime(startTime), originalEndTime(endTime) {
   }
 
@@ -72,11 +72,11 @@ struct CashEmotionPack {
   }
 
   /* 0000 */ std::string name;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ int price;
   /* 001C */ unsigned int startTime;
   /* 0020 */ unsigned int endTime;
-  /* 0024 */ int unknown_0024;
-  /* 0028 */ bool unknown_0028;
+  /* 0024 */ int period;
+  /* 0028 */ bool saleBadge;
   /* 002C */ unsigned int originalStartTime;
   /* 0030 */ unsigned int originalEndTime;
 };
@@ -174,7 +174,7 @@ public:
   __declspec(noinline) int GetServerTime();
   // INLINED
   int BasePackId() const {
-    return this->unknown_000C;
+    return this->basePackId;
   }
   static int InsertOrderList(lua_State* state);
   static int InsertEmotionEnum(lua_State* state);
@@ -194,13 +194,13 @@ protected:
   /* 0004 */ bool m_enabled;
   /* 0005 */ std::uint8_t unknown_0005[3];
   /* 0008 */ ICashEmotionAction* m_action;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ std::unordered_map<int, CashEmotionPack, CashEmotionKeyHash> unknown_0010;
+  /* 000C */ int basePackId;
+  /* 0010 */ std::unordered_map<int, CashEmotionPack, CashEmotionKeyHash> packs;
   /* 0030 */ std::unordered_map<int, CashEmotionTable, CashEmotionKeyHash> m_emotionsByPack;
-  /* 0050 */ std::unordered_map<int, std::vector<int>, CashEmotionKeyHash> unknown_0050;
+  /* 0050 */ std::unordered_map<int, std::vector<int>, CashEmotionKeyHash> emotionOrder;
   /* 0070 */ std::unordered_map<std::string, std::pair<int, int>> m_searchIndex;
   /* 0090 */ CashEmotionFileNames m_packNames;
-  /* 00B0 */ std::unordered_map<std::string, int> unknown_00B0;
+  /* 00B0 */ std::unordered_map<std::string, int> actIds;
   /* 00D0 */ int m_lastActId = 0;
   /* 00D4 */ CashEmotionFileNames m_sprNames;
   /* 00F4 */ std::unordered_map<std::string, int> m_sprIds;
@@ -209,15 +209,15 @@ protected:
   /* 0138 */ std::unordered_map<CashEmotionSpecial, int, CashEmotionSpecialHash> m_specials;
   /* 0158 */ std::unordered_map<std::string, CashEmotionCommand*> m_shortcuts;
   /* 0178 */ std::unordered_map<std::string, int> m_commands;
-  /* 0198 */ std::vector<int> unknown_0198;
+  /* 0198 */ std::vector<int> packOrder;
   /* 01A4 */ std::vector<int> m_ownedPacks;
   /* 01B0 */ std::list<std::pair<int, Timestamp>> m_expiry;
   /* 01B8 */ std::vector<int> m_unownedPacks;
-  /* 01C4 */ int unknown_01C4 = -1;
-  /* 01C8 */ int unknown_01C8 = 6909;
-  /* 01CC */ int unknown_01CC = 0;
-  /* 01D0 */ int unknown_01D0 = 0;
-  /* 01D4 */ int unknown_01D4 = 0;
+  /* 01C4 */ int selectedPackId = -1;
+  /* 01C8 */ int purchaseItemId = 6909;
+  /* 01CC */ int intendedDelay = 0;
+  /* 01D0 */ int serverTimeOffset = 0;
+  /* 01D4 */ int serverTimezoneOffset = 0;
 };
 
 extern CCashEmotionMgr* g_cashEmotionMgr;

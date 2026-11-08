@@ -14,11 +14,11 @@ class UITagButton;
 class UITagListBox : public UIListBox {
 public:
   struct STagInfoV2 {
-    /* 0004 */ int unknown_0004;
-    /* 0008 */ int unknown_0008;
-    /* 000C */ int unknown_000C;
-    /* 0010 */ std::string unknown_0010;
-    /* 0028 */ std::string unknown_0028;
+    /* 0004 */ int type;
+    /* 0008 */ int startOffset;
+    /* 000C */ int endOffset;
+    /* 0010 */ std::string label;
+    /* 0028 */ std::string data;
 
     virtual ~STagInfoV2();
   };

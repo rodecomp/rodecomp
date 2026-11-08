@@ -13,8 +13,8 @@
 #pragma pack(push, 1)
 struct RefiningMaterial {
   /* 0000 */ std::uint32_t itemId;
-  /* 0004 */ unsigned char unknown_0004;
-  /* 0005 */ std::uint32_t unknown_0005;
+  /* 0004 */ unsigned char successRate;
+  /* 0005 */ std::uint32_t cost;
 };
 #pragma pack(pop)
 
@@ -31,7 +31,7 @@ public:
 
   /* 0120 */ int cost;
   /* 0124 */ unsigned char success;
-  /* 0125 */ unsigned char unknown_0125;
+  /* 0125 */ unsigned char remainingCount;
 };
 
 class UIRefining_BtnRefining : public UIBitmapButton {
@@ -92,7 +92,7 @@ public:
   /* 00B4 */ UIRefining_BtnRefining* refiningButton;
   /* 00B8 */ UIRefining_BtnReturn* returnButton;
   /* 00BC */ UIRefining_BtnAgain* againButton;
-  /* 00C0 */ UIButton* unknown_00C0;
+  /* 00C0 */ UIButton* cancelButton;
   /* 00C4 */ UIRefining_Notice* notice;
   /* 00C8 */ int state;
   /* 00CC */ int result;
@@ -105,7 +105,7 @@ public:
   /* 00F0 */ int catalystItemId;
   /* 00F4 */ int catalystCount;
   /* 00F8 */ ITEM_INFO item;
-  /* 01F0 */ unsigned char unknown_01F0;
+  /* 01F0 */ unsigned char requestPending;
   /* 01F4 */ std::vector<RefiningMaterial> nextMaterials;
   /* 0200 */ int nextCatalystCount;
   /* 0208 */ ITEM_INFO nextItem;

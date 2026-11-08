@@ -38,8 +38,8 @@ public:
 protected:
   /* 00B4 */ UIStaticText* m_titleText;
   /* 00B8 */ UIStaticText* m_levelText;
-  /* 00BC */ UIStaticText* unknown_00BC;
-  /* 00C0 */ UIStaticText* unknown_00C0;
+  /* 00BC */ UIStaticText* typeLabel;
+  /* 00C0 */ UIStaticText* jobLabel;
   /* 00C4 */ UIEditCtrl* m_levelEdit;
   /* 00C8 */ UIComboBoxDefWnd* m_typeCombo;
   /* 00CC */ UIComboBoxDefWnd* m_subTypeCombo;
@@ -47,8 +47,8 @@ protected:
   /* 00D4 */ unsigned char unknown_00D4[0x30];
   /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[9];
   /* 014C */ std::map<int, std::vector<std::pair<std::string, int>>> m_subTypes;
-  /* 0154 */ UIBitmapButton* unknown_0154;
-  /* 0158 */ UIBitmapButton* unknown_0158;
+  /* 0154 */ UIBitmapButton* cancelButton;
+  /* 0158 */ UIBitmapButton* confirmButton;
   /* 015C */ int m_jobCategory;
   /* 0160 */ short m_type;
   /* 0162 */ short m_subType;

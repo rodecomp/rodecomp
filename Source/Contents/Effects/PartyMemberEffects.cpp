@@ -69,9 +69,9 @@ bool CRollingCutterRagEffect::OnProcess() {
     return false;
   }
 
-  if (g_updateTick > 0 && this->state.parent->render.unknown_00ECBytes[0] == 1) {
+  if (g_updateTick > 0 && this->state.parent->render.effectPhaseBytes[0] == 1) {
     this->state.parent->render.flags = 0;
-    this->state.parent->render.unknown_00ECBytes[0] = 0;
+    this->state.parent->render.effectPhaseBytes[0] = 0;
   }
 
   this->render.position = this->state.parent->render.position;
@@ -108,7 +108,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   CRagEffect* effect;
 
   if (effectId == 127) {
-    this->state.unknown_0140 = 1;
+    this->state.effectLaunched = 1;
     RecordLaunch(effectId);
     effect = new CRagEffect();
   } else {
@@ -143,7 +143,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   deltaPos.x = x;
   deltaPos.z = z;
 
-  if (effectId == 166 && this->render.unknown_00A8 == 0) {
+  if (effectId == 166 && this->render.isCharacter == 0) {
     return nullptr;
   }
 
@@ -181,7 +181,7 @@ CRagEffect* EffectActor::LaunchTaggedEffect(int effectId, std::uint32_t tag) {
 
 // INLINED
 bool PartyMemberEffects::Enabled() const {
-  return this->mode && (this->mode->scene->unknown_0048 != 0 || this->mode->scene->unknown_0054 != 0);
+  return this->mode && (this->mode->scene->isPKZone != 0 || this->mode->scene->isEventPVPMode != 0);
 }
 
 // INLINED

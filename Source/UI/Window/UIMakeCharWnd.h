@@ -24,12 +24,12 @@ public:
   /* 00B8 */ CharacterInfo m_info;
   /* 0167 */ unsigned char unknown_0167;
   /* 0168 */ CharSlotInfo m_view;
-  /* 02C4 */ UIBitmapButton* unknown_02C4;
-  /* 02C8 */ UIBitmapButton* unknown_02C8;
-  /* 02CC */ UIScrollBar* unknown_02CC;
-  /* 02D0 */ UIScrollBar* unknown_02D0;
-  /* 02D4 */ int unknown_02D4;
-  /* 02D8 */ int unknown_02D8;
+  /* 02C4 */ UIBitmapButton* m_rotateLeftButton;
+  /* 02C8 */ UIBitmapButton* m_rotateRightButton;
+  /* 02CC */ UIScrollBar* m_hairStyleBar;
+  /* 02D0 */ UIScrollBar* m_hairColorBar;
+  /* 02D4 */ int m_hairStyle;
+  /* 02D8 */ int m_hairColor;
 };
 
 #endif

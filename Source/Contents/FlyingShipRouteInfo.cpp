@@ -12,8 +12,8 @@
 // OFFSET: 0x009105F0
 // FUNCTION: fn_12503
 CFlyingShipRouteInfo::CFlyingShipRouteInfo()
-    : unknown_0010(0), unknown_0014(0), unknown_0018(0), unknown_001C(0), unknown_0020(0), unknown_0024(0), unknown_0028(1), unknown_002C(0), unknown_0030(0),
-      unknown_0034(0) {
+    : unknown_0010(0), unknown_0014(0), segmentIndex(0), segmentProgress(0), segmentLength(0), travelledDistance(0), routeReset(1), routeType(0), lineColor(0),
+      routeState(0) {
 }
 
 // OFFSET: 0x00910A70
@@ -23,7 +23,7 @@ FlyingShipRouteEntry::FlyingShipRouteEntry(FlyingShipRouteEntry&& other) noexcep
 // OFFSET: 0x0092B000
 // FUNCTION: fn_12657
 void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
-  if (this->unknown_0038.empty()) {
+  if (this->lineTextureName.empty()) {
     return;
   }
 
@@ -33,19 +33,19 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     const FlyingShipRouteEntry& entry = this->entries[i + 1];
     targets.insert(std::pair<std::string, FlyingShipRouteEntry>(entry.name, entry));
 
-    CTexture* texture = g_texMgr.Load(this->unknown_0038.c_str(), 0, true, true, false);
+    CTexture* texture = g_texMgr.Load(this->lineTextureName.c_str(), 0, true, true, false);
     DrawScreenLine(
-      g_renderer->primitives, g_renderer->queues, from.unknown_002C[0], from.unknown_002C[1], entry.unknown_002C[0], entry.unknown_002C[1], 2, texture,
-      static_cast<std::uint32_t>(this->unknown_0030), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+      g_renderer->primitives, g_renderer->queues, from.screenPosition[0], from.screenPosition[1], entry.screenPosition[0], entry.screenPosition[1], 2, texture,
+      static_cast<std::uint32_t>(this->lineColor), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
     );
   }
 
-  const FlyingShipRouteEntry& from = this->entries[this->unknown_0018];
-  const FlyingShipRouteEntry& to = this->entries[this->unknown_0018 + 1];
+  const FlyingShipRouteEntry& from = this->entries[this->segmentIndex];
+  const FlyingShipRouteEntry& to = this->entries[this->segmentIndex + 1];
   CTexture* head = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_airplen32.bmp", 0, true, true, false);
   CTexture* body = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf.bmp", 0, true, true, false);
   wnd->DrawDashedArrow(
-    from.unknown_002C[0], from.unknown_002C[1], to.unknown_002C[0], to.unknown_002C[1], 0x10, 0x10, body, 0x14, head, this->unknown_001C, 0xFFFFFFFF, 6
+    from.screenPosition[0], from.screenPosition[1], to.screenPosition[0], to.screenPosition[1], 0x10, 0x10, body, 0x14, head, this->segmentProgress, 0xFFFFFFFF, 6
   );
 
   for (std::map<std::string, FlyingShipRouteEntry>::iterator it = targets.begin(); it != targets.end(); ++it) {

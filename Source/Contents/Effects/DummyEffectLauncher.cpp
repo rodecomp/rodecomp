@@ -10,7 +10,7 @@
 // OFFSET: 0x00E4C1C0
 // FUNCTION: fn_24281
 bool CDummyEffectLauncher::OnProcess() {
-  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   const float limit = static_cast<float>(this->lifeFrames);
   return !(frame > limit);
 }
@@ -28,7 +28,7 @@ __declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, 
   this->render.position.y = position->y;
   this->render.position.z = position->z;
   this->render.visible = 0;
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
   if (g_effectMgr->Spawn(0, d, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) != nullptr) {
     return;
   }

@@ -46,11 +46,11 @@ protected:
   /* 00C4 */ UICashEmotionListChildWnd_Search* m_searchList;
   /* 00C8 */ std::map<char, UIWindow*> m_tabs;
   /* 00D0 */ char m_tab;
-  /* 00D4 */ UIBitmapButton* unknown_00D4;
+  /* 00D4 */ UIBitmapButton* m_backButton;
   /* 00D8 */ UIEditCtrl* m_searchEdit;
-  /* 00DC */ UIBitmapButton* unknown_00DC;
-  /* 00E0 */ UIBitmapButton* unknown_00E0;
-  /* 00E4 */ UIBitmapButton* unknown_00E4;
+  /* 00DC */ UIBitmapButton* m_searchButton;
+  /* 00E0 */ UIBitmapButton* m_shortcutButton;
+  /* 00E4 */ UIBitmapButton* m_buyButton;
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
   /* 00EC */ UIStaticText* m_period;
 };

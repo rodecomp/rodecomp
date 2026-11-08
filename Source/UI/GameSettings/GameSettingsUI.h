@@ -35,7 +35,7 @@ extern std::map<int, int> g_optionHotkeys;
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
   explicit CUIComboBox()
-      : CUIControl(), display(), button(), unknown_0088(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
+      : CUIControl(), display(), button(), dropDownButton(), listBox(nullptr), width(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
   }
 
   void Paint() override;
@@ -52,7 +52,7 @@ public:
 
   /* 0080 */ T* display;
   /* 0084 */ CUIButton* button;
-  /* 0088 */ CUIImageButton* unknown_0088;
+  /* 0088 */ CUIImageButton* dropDownButton;
   /* 008C */ CUIListBoxEx<T, D>* listBox;
   /* 0090 */ int width;
   /* 0094 */ int itemHeight;
@@ -221,11 +221,11 @@ public:
   /* 0084 */ CUIStaticText* m_bgmText;
   /* 0088 */ CUIVScrollBar* m_bgmSlider;
   /* 008C */ CUICheckBox* m_bgmMute;
-  /* 0090 */ CUIStaticText* unknown_0090;
+  /* 0090 */ CUIStaticText* m_bgmMuteText;
   /* 0094 */ CUIStaticText* m_effectText;
   /* 0098 */ CUIVScrollBar* m_effectSlider;
   /* 009C */ CUICheckBox* m_effectMute;
-  /* 00A0 */ CUIStaticText* unknown_00A0;
+  /* 00A0 */ CUIStaticText* m_effectMuteText;
 };
 
 class CUIGroupSpriteDetailLevel : public CUIGroup {
@@ -342,7 +342,7 @@ public:
   void OnClickLabel();
 
   /* 00E8 */ CUICheckBox* m_check;
-  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00EC */ UIWindow* m_runButton;
   /* 00F0 */ CUITextButton* m_label;
   /* 00F4 */ CUIStaticText* m_description;
   /* 00F8 */ int m_optionId;

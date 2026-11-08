@@ -10,7 +10,7 @@
 // FUNCTION: fn_23395
 const char* CSession::GetHitWaveName(int job) {
   if (!((job >= 31 && job < 1000) || job < 0 || (job > 1000 && job < 3999) || (job >= 20021 && job <= 31999))) {
-    const std::vector<std::string>& jobWaves = reinterpret_cast<const std::vector<std::string>&>(this->unknown_525C[0x0C]);
+    const std::vector<std::string>& jobWaves = reinterpret_cast<const std::vector<std::string>&>(this->weaponSoundTables[0x0C]);
     if (job > 3950) {
       return jobWaves.begin()[job - 3950].c_str();
     }
@@ -31,7 +31,7 @@ const char* CSession::GetHitWaveName(int job) {
     }
   }
 
-  const std::vector<std::string>& weaponWaves = reinterpret_cast<const std::vector<std::string>&>(this->unknown_525C[0x18]);
+  const std::vector<std::string>& weaponWaves = reinterpret_cast<const std::vector<std::string>&>(this->weaponSoundTables[0x18]);
   if (weaponWaves.empty() || weaponWaves.size() <= static_cast<unsigned int>(weapon)) {
     return nullptr;
   }
@@ -73,7 +73,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
     }
   }
 
-  const std::vector<std::string>& weaponWaves = reinterpret_cast<const std::vector<std::string>&>(this->unknown_525C[0x18]);
+  const std::vector<std::string>& weaponWaves = reinterpret_cast<const std::vector<std::string>&>(this->weaponSoundTables[0x18]);
   if (weaponWaves.empty() || weaponWaves.size() <= static_cast<unsigned int>(realWeapon)) {
     return nullptr;
   }
@@ -101,7 +101,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
 // OFFSET: 0x00DE5BD0
 // FUNCTION: fn_23494
 void CSession::InitJobHitWaveNames() {
-  std::vector<std::string>& jobWaves = reinterpret_cast<std::vector<std::string>&>(this->unknown_525C[0x0C]);
+  std::vector<std::string>& jobWaves = reinterpret_cast<std::vector<std::string>&>(this->weaponSoundTables[0x0C]);
   jobWaves.clear();
   jobWaves.resize(28053, "player_clothes.wav");
   jobWaves[0] = "player_clothes.wav";

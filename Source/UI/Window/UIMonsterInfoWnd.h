@@ -31,7 +31,7 @@ public:
   void DrawNewItemIcon(int x, int y);
 
   /* 00B4 */ MonsterInfo info;
-  /* 00D4 */ int unknown_00D4;
+  /* 00D4 */ int actorId;
   /* 00D8 */ std::string name;
 };
 

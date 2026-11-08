@@ -26,25 +26,25 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ const char* unknown_007C;
-  /* 0080 */ int unknown_0080;
-  /* 0084 */ int unknown_0084;
-  /* 0088 */ int unknown_0088;
-  /* 008C */ int unknown_008C;
+  /* 007C */ const char* shadowBitmapName;
+  /* 0080 */ int slotNumber;
+  /* 0084 */ int direction;
+  /* 0088 */ int robe;
+  /* 008C */ int head;
   /* 0090 */ int job;
-  /* 0094 */ int unknown_0094;
-  /* 0098 */ int unknown_0098;
-  /* 009C */ int unknown_009C;
-  /* 00A0 */ int unknown_00A0;
-  /* 00A4 */ int unknown_00A4;
-  /* 00A8 */ int unknown_00A8;
+  /* 0094 */ int headPalette;
+  /* 0098 */ int bodyStyle;
+  /* 009C */ int topAccessory;
+  /* 00A0 */ int middleAccessory;
+  /* 00A4 */ int bottomAccessory;
+  /* 00A8 */ int animationStartTick;
   /* 00AC */ UIBitmapButton* m_favoriteButton;
-  /* 00B0 */ int unknown_00B0;
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
+  /* 00B0 */ int hideFavoriteButton;
+  /* 00B4 */ int shadowX;
+  /* 00B8 */ int shadowY;
+  /* 00BC */ int topAccessoryItemId;
+  /* 00C0 */ int middleAccessoryItemId;
+  /* 00C4 */ int bottomAccessoryItemId;
   /* 00C8 */ std::map<int, int> m_jobs;
 };
 
@@ -67,20 +67,20 @@ public:
 
   /* 007C */ UIDisplayCharacter* m_display;
   /* 0080 */ UICheckBox* m_checks[8];
-  /* 00A0 */ unsigned char unknown_00A0;
-  /* 00A1 */ unsigned char unknown_00A1;
-  /* 00A2 */ unsigned char unknown_00A2;
+  /* 00A0 */ unsigned char showPayments;
+  /* 00A1 */ unsigned char showPaymentItems;
+  /* 00A2 */ unsigned char showDottedLines;
   /* 00A3 */ unsigned char unknown_00A3;
   /* 00A4 */ int m_checkTop;
-  /* 00A8 */ int unknown_00A8;
+  /* 00A8 */ int paymentFontSize;
   /* 00AC */ bool m_buyable;
   /* 00AD */ bool m_changed[6];
   /* 00B4 */ std::list<int> m_list;
-  /* 00BC */ unsigned char unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
+  /* 00BC */ unsigned char costumeChanged;
+  /* 00C0 */ int paymentIconX;
+  /* 00C4 */ int paymentIconYOffset;
+  /* 00C8 */ int paymentTextX;
+  /* 00CC */ int paymentTextYOffset;
   /* 00D0 */ const char* m_offBitmap;
 };
 
@@ -94,9 +94,9 @@ public:
 
   /* 007C */ UIDisplayCharacter* m_display;
   /* 0080 */ UIShowInfoWnd* m_showInfo;
-  /* 0084 */ bool unknown_0084;
+  /* 0084 */ bool primaryTabVisible;
   /* 0085 */ bool unknown_0085;
-  /* 0086 */ bool unknown_0086;
+  /* 0086 */ bool accessoryTabVisible;
 
   void OnCreate(int width, int height) override;
   void Paint() override;
@@ -200,9 +200,9 @@ public:
 
   /* 0088 */ int m_selectedSlot;
   /* 008C */ UISlotOfMyStyleWnd* m_slots[2];
-  /* 0094 */ UIBitmapButton* unknown_0094[2];
-  /* 009C */ UIBitmapButton* unknown_009C[2];
-  /* 00A4 */ UIBitmapButton* unknown_00A4[2];
+  /* 0094 */ UIBitmapButton* deleteStyleButtons[2];
+  /* 009C */ UIBitmapButton* rotateLeftButtons[2];
+  /* 00A4 */ UIBitmapButton* rotateRightButtons[2];
 };
 
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {

@@ -58,7 +58,7 @@ public:
   /* 00DC */ CUIStaticText* m_nameHeader;
   /* 00E0 */ CUIEditBoxEx* m_searchEdit;
   union {
-    /* 00E4 */ unsigned char unknown_00E4[0x04];
+    /* 00E4 */ unsigned char m_searchButtonStorage[0x04];
     /* 00E4 */ CUIImageButton* m_searchButton;
   };
   /* 00E8 */ CUIStaticText* m_itemName;

@@ -111,7 +111,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->block->SetChecked(0);
       break;
     case 542:
-      if (this->block->geometry.unknown_0030 != 0) {
+      if (this->block->geometry.state != 0) {
         g_requestJoinPartyMgr->Block(this->accountId);
       }
 

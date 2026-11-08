@@ -438,13 +438,13 @@ void UIQuickSlotWnd::Paint() {
       }
     } else {
       ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
-      if (item.unknown_0000[1] == 0) {
+      if (item.identity[1] == 0) {
         continue;
       }
 
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 5, item, item.identified, 1);
-      if (item.unknown_0088 > 0) {
-        const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
+      if (item.grade > 0) {
+        const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
         auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
         this->DrawBitmap(x, 17, &grade->image, true);
       }
@@ -568,9 +568,9 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     case ID_MINI:
       if (this->m_minimized) {
-        this->Resize(this->geometry.width, this->unknown_01E0);
+        this->Resize(this->geometry.width, this->expandedHeight);
       } else {
-        this->unknown_01E0 = this->geometry.height;
+        this->expandedHeight = this->geometry.height;
         this->Resize(this->geometry.width, 44);
       }
       this->m_minimized = !this->m_minimized;
@@ -653,10 +653,10 @@ int g_charViewOffsetY;
 // FUNCTION: fn_12678
 void UISelCharForUServerWnd::Paint() {
   const char* background =
-    g_session.unknown_0E94 > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
+    g_session.characterCount > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
   this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))->image, false);
 
-  for (int index = 0; index < g_session.unknown_0E94; ++index) {
+  for (int index = 0; index < g_session.characterCount; ++index) {
     if (this->m_slotEnabled[index] != 0) {
       continue;
     }
@@ -697,7 +697,7 @@ void UISelCharForUServerWnd::Paint() {
           turn = 1;
         }
 
-        int direction = turn - slot.unknown_0148 + slot.action;
+        int direction = turn - slot.actionBase + slot.action;
         if (direction < 0) {
           direction = 7;
         }
@@ -715,7 +715,7 @@ void UISelCharForUServerWnd::Paint() {
         if (frame->anchorCount != 0 && body->anchorCount != 0) {
           const ActionAnchor* head = frame->anchors.data();
           const ActionAnchor* base = body->anchors.data();
-          if (head->unknown_0008 == base->unknown_0008) {
+          if (head->attachmentId == base->attachmentId) {
             offsetX += base->x - head->x;
             g_charViewOffsetX = offsetX;
             offsetY += base->y - head->y;
@@ -736,7 +736,7 @@ void UISelCharForUServerWnd::Paint() {
         if (frame->anchorCount != 0 && head->anchorCount != 0) {
           const ActionAnchor* anchor = frame->anchors.data();
           const ActionAnchor* base = head->anchors.data();
-          if (anchor->unknown_0008 == base->unknown_0008) {
+          if (anchor->attachmentId == base->attachmentId) {
             offsetX += base->x - anchor->x;
             offsetY += base->y - anchor->y;
           }
@@ -744,7 +744,7 @@ void UISelCharForUServerWnd::Paint() {
 
         offsetX += g_charViewOffsetX;
         offsetY += g_charViewOffsetY;
-        if (layer == 3 && (this->unknown_1974[index] == 0xB5 || this->unknown_1974[index] == 0xC5)) {
+        if (layer == 3 && (this->accessory2[index] == 0xB5 || this->accessory2[index] == 0xC5)) {
           offsetY -= 7;
         }
       }
@@ -773,12 +773,12 @@ void UISelCharForUServerWnd::Paint() {
           texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
         }
       } else {
-        texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+        texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
       }
 
       this->geometry.surface->DrawSurface(
         cell.x + offsetX + slot.x, cell.y + offsetY + slot.y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
-        image->width, image->height, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+        image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
       );
     }
   }
@@ -805,11 +805,11 @@ void UISerachStoreInfoWnd::Paint() {
   DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   this->DrawTextAt(353, 38, "~", 0, 0, 12, 0, 0, 0);
 
-  const std::string count = FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.unknown_5BE0);
+  const std::string count = FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.storeSearchCount);
   this->DrawRightAlignedText(this->geometry.width - 60, 60, count.c_str(), 0, 0, 12, 0, 0);
 
   this->FillRegion(5, 80, this->geometry.width - 10, 20, 0xDFFFFE);
-  DrawRoundedBorder(*this, 5, 80, this->geometry.width - 10, this->unknown_00E8 * 10 + 21, 0xC0C0C0);
+  DrawRoundedBorder(*this, 5, 80, this->geometry.width - 10, this->m_rowHeight * 10 + 21, 0xC0C0C0);
   DrawRectangleBorder(*this, 50, 80, 110, 21, 0xC0C0C0);
   DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
   this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
@@ -827,40 +827,40 @@ void UISerachStoreInfoWnd::Paint() {
     LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0, 0
   );
 
-  if (this->unknown_00F0.size() != 0) {
-    this->DrawTextAt(5, this->geometry.height - 20, this->unknown_00F0.c_str(), 0, 0, 12, 0xFF, 0, 0);
+  if (this->m_statusText.size() != 0) {
+    this->DrawTextAt(5, this->geometry.height - 20, this->m_statusText.c_str(), 0, 0, 12, 0xFF, 0, 0);
   }
 
-  if (static_cast<unsigned int>(this->unknown_00DC * 10 - 10) >= g_session.unknown_5BD4.size()) {
+  if (static_cast<unsigned int>(this->m_page * 10 - 10) >= g_session.storeSearchResults.size()) {
     return;
   }
 
-  const SearchStoreEntry* end = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data() + g_session.unknown_5BD4.size());
-  const SearchStoreEntry* entry = reinterpret_cast<const SearchStoreEntry*>(g_session.unknown_5BD4.data()) + (this->unknown_00DC - 1) * 10;
+  const SearchStoreEntry* end = reinterpret_cast<const SearchStoreEntry*>(g_session.storeSearchResults.data() + g_session.storeSearchResults.size());
+  const SearchStoreEntry* entry = reinterpret_cast<const SearchStoreEntry*>(g_session.storeSearchResults.data()) + (this->m_page - 1) * 10;
   for (int row = 0; entry != end; ++entry) {
     if (row == 10) {
       break;
     }
 
-    if (this->unknown_00E0 == row) {
-      this->FillRegion(5, this->unknown_00E8 * row + 100, this->geometry.width - 10, this->unknown_00E8, 0xFBDFCA);
+    if (this->m_hoverRow == row) {
+      this->FillRegion(5, this->m_rowHeight * row + 100, this->geometry.width - 10, this->m_rowHeight, 0xFBDFCA);
     }
-    DrawRectangleBorder(*this, 50, this->unknown_00E8 * row + 100, 110, this->unknown_00E8 + 1, 0xC0C0C0);
-    DrawRectangleBorder(*this, 330, this->unknown_00E8 * row + 100, 30, this->unknown_00E8 + 1, 0xC0C0C0);
+    DrawRectangleBorder(*this, 50, this->m_rowHeight * row + 100, 110, this->m_rowHeight + 1, 0xC0C0C0);
+    DrawRectangleBorder(*this, 330, this->m_rowHeight * row + 100, 30, this->m_rowHeight + 1, 0xC0C0C0);
 
     const int next = row + 1;
     if (next < 10) {
-      this->FillRegion(5, this->unknown_00E8 * next + 100, this->geometry.width - 10, 1, 0xC0C0C0);
+      this->FillRegion(5, this->m_rowHeight * next + 100, this->geometry.width - 10, 1, 0xC0C0C0);
     }
 
-    const int top = this->unknown_00E8 * row + 100;
+    const int top = this->m_rowHeight * row + 100;
     const int y = top + 7;
     DrawItemIcon(*this, ResourceMgr::Instance(), 13, top, entry->item, 0);
-    if (entry->item.unknown_0088 > 0) {
+    if (entry->item.grade > 0) {
       this->DrawBitmap(
         13, y + 5,
         &static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", entry->item.unknown_0088).c_str()))
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", entry->item.grade).c_str()))
         )->image,
         true
       );
@@ -886,7 +886,7 @@ void UISerachStoreInfoWnd::Paint() {
   }
 
   char page[12];
-  std::sprintf(page, " %d ", this->unknown_00DC);
+  std::sprintf(page, " %d ", this->m_page);
   this->DrawTextAt((this->geometry.width - this->TextWidth(page, 0, 0, 12, 0, 0)) / 2,
     this->geometry.height - 20, page, 0, 0, 12, 0, 0, 0
   );

@@ -17,7 +17,7 @@ void UIRadioBtn::Paint() {
   if (!this->checkedBitmap.empty() && !this->uncheckedBitmap.empty()) {
     this->ClearSurface(0xFFFF00FF);
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->checkedBitmap.c_str())));
-    if (this->geometry.unknown_0030 == 0) {
+    if (this->geometry.state == 0) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->uncheckedBitmap.c_str())));
     }
 
@@ -35,7 +35,7 @@ void UIRadioBtn::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   const char* name;
-  if (this->geometry.unknown_0030 == 0) {
+  if (this->geometry.state == 0) {
     name = "유저인터페이스\\radiobtn_off.bmp";
   } else {
     name = this->highlighted != 0 ? "유저인터페이스\\radiobtn_on1.bmp" : "유저인터페이스\\radiobtn_on.bmp";
@@ -71,7 +71,7 @@ void UIRadioBtn::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10919
 int UIRadioBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message == UM_SETSTATE) {
-    this->geometry.unknown_0030 = argument1;
+    this->geometry.state = argument1;
     this->Invalidate();
   }
 
@@ -88,7 +88,7 @@ void UIRadioBtn::SetText(const char* value) {
 // OFFSET: 0x0084FFE0
 // FUNCTION: fn_10670
 UIRadioBtn::UIRadioBtn() : UIWindow(0) {
-  this->geometry.unknown_0030 = 0;
+  this->geometry.state = 0;
   this->enabled = 1;
   this->geometry.id = 215;
   this->highlighted = 0;

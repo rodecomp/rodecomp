@@ -13,7 +13,7 @@
 // OFFSET: 0x00A90950
 // FUNCTION: fn_17154
 bool UIWindowMgr::ProcessDialogKey(int, int key) {
-  if (g_session.unknown_5480 == 0 || g_session.unknown_5488 != 0) {
+  if (g_session.quitBlocked == 0 || g_session.quitAllowed != 0) {
     return false;
   }
 
@@ -150,7 +150,7 @@ int UIWindowMgr::Confirm(
   const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
   CMode* gameMode = g_modeMgr.GetGameMode();
-  if (gameMode && static_cast<CGameMode*>(gameMode)->unknown_0624[0] == 1) {
+  if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing[0] == 1) {
     return 185;
   }
 
@@ -183,7 +183,7 @@ int UIWindowMgr::Confirm(
   }
 
   this->hoverWindow = nullptr;
-  this->unknown_0474 = 0;
+  this->modalResponse = 0;
   this->modalWindows.push_back(box);
   int response = 184;
 
@@ -207,15 +207,15 @@ int UIWindowMgr::Confirm(
         break;
       }
 
-      if (this->unknown_0474 != 0) {
+      if (this->modalResponse != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
           this->Schedule(active);
           this->modalWindows.pop_back();
         }
 
-        response = this->unknown_0474;
-        this->unknown_0474 = 0;
+        response = this->modalResponse;
+        this->modalResponse = 0;
         break;
       }
 
@@ -226,7 +226,7 @@ int UIWindowMgr::Confirm(
 
       if (g_session.GetOption(20) > 0) {
         this->activeWindowId = 0;
-        this->unknown_0474 = 0;
+        this->modalResponse = 0;
 
         while (!this->modalWindows.empty()) {
           this->Schedule(this->modalWindows.back());
@@ -291,7 +291,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   }
 
   this->hoverWindow = nullptr;
-  this->unknown_0474 = 0;
+  this->modalResponse = 0;
   this->modalWindows.push_back(window);
   int response = 184;
 
@@ -315,15 +315,15 @@ int UIWindowMgr::RunModal(UIWindow* window) {
         break;
       }
 
-      if (this->unknown_0474 != 0) {
+      if (this->modalResponse != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
           this->Schedule(active);
           this->modalWindows.pop_back();
         }
 
-        response = this->unknown_0474;
-        this->unknown_0474 = 0;
+        response = this->modalResponse;
+        this->modalResponse = 0;
         break;
       }
 
@@ -334,7 +334,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
 
       if (g_session.GetOption(20) > 0) {
         this->activeWindowId = 0;
-        this->unknown_0474 = 0;
+        this->modalResponse = 0;
 
         while (!this->modalWindows.empty()) {
           this->Schedule(this->modalWindows.back());

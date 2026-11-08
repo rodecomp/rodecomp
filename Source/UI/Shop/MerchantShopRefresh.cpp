@@ -17,15 +17,15 @@ void UIMerchantShopMakeWnd::Refresh() {
   CMCStoreInfoBackup& backup = g_session.m_storeInfoBackup;
 
   if (std::string(backup.title).empty()) {
-    this->unknown_0168->SetDisabled(0);
-    this->unknown_0168->Invalidate();
+    this->actionButton->SetDisabled(0);
+    this->actionButton->Invalidate();
     return;
   }
 
-  this->unknown_00CC->SetText(std::string(backup.title).c_str());
-  this->unknown_00CC->Invalidate();
+  this->titleEdit->SetText(std::string(backup.title).c_str());
+  this->titleEdit->Invalidate();
 
-  for (int index = 0; index < this->unknown_012C; ++index) {
+  for (int index = 0; index < this->slotCount; ++index) {
     UIEditCtrl* edit = this->priceEdits[index];
     edit->SetText("");
 
@@ -50,18 +50,18 @@ void UIMerchantShopMakeWnd::Refresh() {
   }
 
   g_session.ClearItems1768();
-  backup.Restore(this->mode != 0, this->unknown_012C);
+  backup.Restore(this->mode != 0, this->slotCount);
 
   const std::vector<ITEM_INFO> displayed(backup.items);
   int index = 0;
   UIEditCtrl** edit = this->priceEdits;
 
   for (const ITEM_INFO& item : displayed) {
-    if (index >= this->unknown_012C) {
+    if (index >= this->slotCount) {
       break;
     }
 
-    const int price = static_cast<int>(item.unknown_0014[0]);
+    const int price = static_cast<int>(item.prices[0]);
     char value[24] = {};
     _itoa(price, value, 10);
     (*edit)->disabled = 0;
@@ -81,7 +81,7 @@ void UIMerchantShopMakeWnd::Refresh() {
       char grouped[24] = {};
       FormatGroupedInteger(price, grouped, sizeof(grouped));
       (*edit)->SetText(grouped);
-      this->unknown_016C = (*edit)->Length();
+      this->previousPriceLength = (*edit)->Length();
     }
 
     ++edit;
@@ -90,7 +90,7 @@ void UIMerchantShopMakeWnd::Refresh() {
 
   g_session.RefreshItem1768Window(this->mode != 0, 0);
   g_session.RefreshItem1750Window(this->mode);
-  this->unknown_0168->SetDisabled(0);
-  this->unknown_0168->Invalidate();
+  this->actionButton->SetDisabled(0);
+  this->actionButton->Invalidate();
   backup.Clear();
 }

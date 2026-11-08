@@ -44,7 +44,7 @@ public:
   /* 0494 */ RenderVertex* vertices[30];
   /* 050C */ granny_system_clock clock;
   /* 051C */ granny_system_clock lastClock;
-  /* 052C */ float unknown_052C;
+  /* 052C */ float motionProgress;
   /* 0530 */ unsigned char unknown_0530[0x08];
   /* 0538 */ float angle;
   /* 053C */ unsigned char alpha;
@@ -53,10 +53,10 @@ public:
   /* 0544 */ int motion;
   /* 0548 */ unsigned char unknown_0548[0x04];
   /* 054C */ char name[0x104];
-  /* 0650 */ int unknown_0650;
+  /* 0650 */ int renderState;
   /* 0654 */ int unknown_0654;
   /* 0658 */ granny_control* controls[20];
-  /* 06A8 */ unsigned char unknown_06A8;
+  /* 06A8 */ unsigned char initializeFacing;
   /* 06A9 */ unsigned char unknown_06A9[0x03];
   /* 06AC */ CTexture* meshTextures[30];
   /* 0724 */ std::uint16_t* meshIndices[30];
@@ -64,7 +64,7 @@ public:
   /* 0814 */ matrix meshTransforms[30];
   /* 0DB4 */ unsigned char unknown_0DB4[0x04];
   /* 0DB8 */ CTexture* texture;
-  /* 0DBC */ std::vector<vector3d> unknown_0DBC;
+  /* 0DBC */ std::vector<vector3d> litPositions;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

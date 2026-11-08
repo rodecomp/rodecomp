@@ -58,13 +58,13 @@ public:
   /* 0044 */ bool m_helmRobe;
   /* 0045 */ bool m_drawOnTop;
   /* 0048 */ std::map<int, std::pair<CSprRes*, CActRes*>> m_resources;
-  /* 0050 */ std::string unknown_0050;
-  /* 0068 */ std::string unknown_0068;
+  /* 0050 */ std::string bodyPaletteName;
+  /* 0068 */ std::string headPaletteName;
   /* 0080 */ std::map<int, int> m_layers;
-  /* 0088 */ unsigned char unknown_0088;
-  /* 008C */ int unknown_008C;
-  /* 0090 */ int unknown_0090;
-  /* 0094 */ unsigned char unknown_0094;
+  /* 0088 */ unsigned char hideHeadLayer;
+  /* 008C */ int offsetX;
+  /* 0090 */ int offsetY;
+  /* 0094 */ unsigned char customRendering;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -448,7 +448,7 @@ void UIEntryQueueWnd::Paint() {
   EntryQueueInfo* info = g_entryQueueMgr->current;
   if (info) {
     const std::string path = "유저인터페이스\\battle_field\\";
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + info->unknown_0634).c_str())));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + info->bitmapName).c_str())));
     if (bitmap) {
       this->DrawBitmap(157, 25, bitmap, false);
     }
@@ -489,9 +489,9 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         error = 0x86C;
       } else if (g_session.PartyCount() == 0) {
         error = 0x86D;
-      } else if (g_session.unknown_5464 == 0) {
+      } else if (g_session.partyLeader == 0) {
         error = 0x86E;
-      } else if (static_cast<unsigned>(g_entryQueueMgr->current->unknown_020C) <
+      } else if (static_cast<unsigned>(g_entryQueueMgr->current->minLevel) <
                  static_cast<unsigned>(g_session.OnlinePartyCount())) {
         error = 0x86F;
       } else {
@@ -509,9 +509,9 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         error = 0x86C;
       } else if (guild->m_guildId < 1) {
         error = 0x870;
-      } else if (guild->unknown_00B4 == 0) {
+      } else if (guild->isMaster == 0) {
         error = 0x871;
-      } else if (static_cast<unsigned>(g_entryQueueMgr->current->unknown_020C) < static_cast<unsigned>(guild->unknown_0068)) {
+      } else if (static_cast<unsigned>(g_entryQueueMgr->current->minLevel) < static_cast<unsigned>(guild->onlineMemberCount)) {
         error = 0x872;
       } else {
         if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_LEVELDOWN_D))) {
@@ -576,30 +576,30 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
       strcpy_s(text, sizeof(text), info->displayName);
       break;
     case 2:
-      sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LEVEL_D_D), info->unknown_020C, info->unknown_0210);
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LEVEL_D_D), info->minLevel, info->maxLevel);
       break;
     case 3:
-      if (info->unknown_0218 == 1) {
-        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LIMITLESS), info->unknown_021C);
-      } else if (info->unknown_0218 == 2) {
-        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_MSG_NOT_JOINMAP), info->unknown_021C);
-      } else if (info->unknown_0218 == 3) {
-        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_MSG_WAIT_1MM), info->unknown_021C, info->unknown_0220);
+      if (info->limitType == 1) {
+        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LIMITLESS), info->limitValue);
+      } else if (info->limitType == 2) {
+        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_MSG_NOT_JOINMAP), info->limitValue);
+      } else if (info->limitType == 3) {
+        sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_MSG_WAIT_1MM), info->limitValue, info->limitValueEnd);
       } else {
         sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_MSG_PLZ_PALTYJOIN));
       }
       break;
     case 4:
-      strcpy_s(text, sizeof(text), info->unknown_0224);
+      strcpy_s(text, sizeof(text), info->description);
       break;
     case 5:
-      strcpy_s(text, sizeof(text), info->unknown_0328);
+      strcpy_s(text, sizeof(text), info->rulesText);
       break;
     case 6:
-      strcpy_s(text, sizeof(text), info->unknown_042C);
+      strcpy_s(text, sizeof(text), info->rewardText);
       break;
     case 1:
-      strcpy_s(text, sizeof(text), info->unknown_0530);
+      strcpy_s(text, sizeof(text), info->extraText);
       break;
     }
 

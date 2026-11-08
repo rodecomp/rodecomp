@@ -46,9 +46,9 @@ public:
 
   /* 00F0 */ UIStaticText* title;
   /* 00F4 */ UIStaticText* total;
-  /* 00F8 */ int unknown_00F8;
-  /* 00FC */ int unknown_00FC;
-  /* 0100 */ int unknown_0100;
+  /* 00F8 */ int hovered;
+  /* 00FC */ int footerHeight;
+  /* 0100 */ int headerHeight;
 };
 
 #endif

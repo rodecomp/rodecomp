@@ -14,11 +14,11 @@ CUIRegisterMgr* Singleton<CUIRegisterMgr>::s_instance = nullptr;
 // OFFSET: 0x009E69D0
 // FUNCTION: fn_14469
 CUIFrameWnd::~CUIFrameWnd() {
-  if (static_cast<unsigned char>(this->unknown_00B4) != 0) {
+  if (static_cast<unsigned char>(this->ownedSkinColors) != 0) {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
-    std::map<int, std::pair<int, int>>& positions = CUIRegisterMgr::s_instance->unknown_000C;
+    std::map<int, std::pair<int, int>>& positions = CUIRegisterMgr::s_instance->windowPositions;
     std::map<int, std::pair<int, int>>::iterator position = positions.lower_bound(this->geometry.id);
     if (position == positions.end() || this->geometry.id < position->first) {
       position = positions.insert(position, std::map<int, std::pair<int, int>>::value_type(this->geometry.id, std::pair<int, int>()));
@@ -27,11 +27,11 @@ CUIFrameWnd::~CUIFrameWnd() {
     position->second.second = this->geometry.y;
   }
 
-  if (static_cast<unsigned char>(this->unknown_00B4 >> 8) != 0) {
+  if (static_cast<unsigned char>(this->ownedSkinColors >> 8) != 0) {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
-    std::map<int, std::pair<int, int>>& sizes = CUIRegisterMgr::s_instance->unknown_0014;
+    std::map<int, std::pair<int, int>>& sizes = CUIRegisterMgr::s_instance->windowSizes;
     std::map<int, std::pair<int, int>>::iterator size = sizes.lower_bound(this->geometry.id);
     if (size == sizes.end() || this->geometry.id < size->first) {
       size = sizes.insert(size, std::map<int, std::pair<int, int>>::value_type(this->geometry.id, std::pair<int, int>()));

@@ -3,6 +3,6 @@
 // OFFSET: 0x008C9620
 // FUNCTION: fn_11984
 UIWhisperWnd::UIWhisperWnd() : UIFrameWnd(0) {
-  this->unknown_0100 = 0;
+  this->placement = 0;
   this->m_code = std::string("");
 }

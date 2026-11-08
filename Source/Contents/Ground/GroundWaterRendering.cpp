@@ -103,7 +103,7 @@ void GroundGeometry::DrawWaterCell(
     primitive->vertices[corner].v = (corner & 2) ? bottom : top;
   }
 
-  primitive->unknown_0014 = (primitive->unknown_0014 & 0xFF00u) | 1u;
+  primitive->depthFlags = (primitive->depthFlags & 0xFF00u) | 1u;
   primitive->texture = surface.texture;
   g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

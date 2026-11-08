@@ -12,20 +12,20 @@
 // OFFSET: 0x00AC64F0
 // FUNCTION: fn_17651
 CWorld::CWorld() {
-  this->unknown_00FD = false;
+  this->partyRestricted = false;
   this->serializedSpatial = nullptr;
   this->pending = 0;
   this->ground = nullptr;
   this->player = nullptr;
-  this->unknown_0048 = 0;
-  this->unknown_004C = 0;
-  this->unknown_0050 = 0;
+  this->isPKZone = 0;
+  this->isSiegeMode = 0;
+  this->isBattleFieldMode = 0;
   g_session.m_score1 = -1;
   g_session.m_score2 = -1;
-  this->unknown_0054 = 0;
-  this->unknown_00F4 = false;
+  this->isEventPVPMode = 0;
+  this->guildMasterNearby = false;
   this->nearbyRange = 2;
-  this->unknown_00FC = false;
+  this->backgroundFog = false;
 }
 
 // OFFSET: 0x00AC6FB0

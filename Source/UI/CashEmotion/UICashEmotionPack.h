@@ -37,10 +37,10 @@ public:
 
 protected:
   /* 007C */ std::vector<UICashEmotionPiece*> m_pieces;
-  /* 0088 */ UIStaticText* unknown_0088;
+  /* 0088 */ UIStaticText* packTitleText;
   /* 008C */ UIStaticText* m_titleText;
   /* 0090 */ std::string m_background;
-  /* 00A8 */ int unknown_00A8;
+  /* 00A8 */ int packId;
   /* 00AC */ std::string m_title;
   /* 00C4 */ std::string m_saleBadge;
   /* 00DC */ bool m_limited;

@@ -16,8 +16,8 @@ CEmotionPurchaseExpireSchedule::CEmotionPurchaseExpireSchedule(const std::uint64
 void CEmotionPurchaseExpireSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
   if (g_cashEmotionMgr->RemoveExpiredPacks()) {
-    if (static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)) {
-      static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)->RefreshPackLists();
+    if (static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)) {
+      static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)->RefreshPackLists();
     }
   }
   int earliest = g_cashEmotionMgr->GetEarliestExpiry();
@@ -59,9 +59,9 @@ CEmotionSaleExpireSchedule::CEmotionSaleExpireSchedule(const std::uint64_t& time
 void CEmotionSaleExpireSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
   CashEmotionPackRefresh refresh = g_cashEmotionMgr->RefreshUnownedPacks();
-  if (refresh.changed && static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)) {
-    static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)->RefreshPackLists();
-    static_cast<UICashEmotionListWnd*>(g_windowMgr.unknown_0384)->RefreshSelection();
+  if (refresh.changed && static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)) {
+    static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)->RefreshPackLists();
+    static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)->RefreshSelection();
   }
   if (refresh.nextTime != 0x7FFFFFFF) {
     int current = g_cashEmotionMgr->GetServerTime();

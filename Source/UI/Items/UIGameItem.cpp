@@ -25,7 +25,7 @@
 // OFFSET: 0x009F71F0
 // FUNCTION: fn_14769
 CUIGameItem::CUIGameItem()
-    : CUIControl(), mode(0), unknown_0084(1), unknown_0085(1), transparent(0), scale(100), itemInfo(), name(), image(nullptr), showOverlay(0),
+    : CUIControl(), mode(0), showNameTooltip(1), allowItemInfo(1), transparent(0), scale(100), itemInfo(), name(), image(nullptr), showOverlay(0),
       overlay(nullptr), onClick() {
 }
 
@@ -97,7 +97,7 @@ void CUIGameItem::OnLBtnDown(int x, int y) {
 // OFFSET: 0x009E7610
 // FUNCTION: fn_14482
 void CUIGameItem::OnMouseHover(int x, int y) {
-  if (this->unknown_0084 == 0 || this->name.empty()) {
+  if (this->showNameTooltip == 0 || this->name.empty()) {
     return;
   }
 
@@ -106,8 +106,8 @@ void CUIGameItem::OnMouseHover(int x, int y) {
   this->ToScreen(screenX, screenY);
   const std::uint32_t color = g_session.GetItemNameColor(this->itemInfo);
   CMode* tooltip = g_modeMgr.gameMode;
-  if (this->itemInfo.unknown_0098 > 0) {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.unknown_0098);
+  if (this->itemInfo.optionCount > 0) {
+    const std::string text = FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.optionCount);
     tooltip->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
   } else {
     tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, color, 0, 1);
@@ -117,7 +117,7 @@ void CUIGameItem::OnMouseHover(int x, int y) {
 // OFFSET: 0x009E7750
 // FUNCTION: fn_14483
 void CUIGameItem::OnLBtnDblClk(int, int) {
-  if (this->unknown_0085 == 0 || std::atoi(this->itemInfo.itemId.c_str()) <= 0) {
+  if (this->allowItemInfo == 0 || std::atoi(this->itemInfo.itemId.c_str()) <= 0) {
     return;
   }
 
@@ -161,8 +161,8 @@ void CUIGameItem::SetItem(const ITEM_INFO& item) {
     oldImage->Unlock();
   }
 
-  if (item.unknown_0088 > 0) {
-    CBitmapRes* overlay = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.unknown_0088)));
+  if (item.grade > 0) {
+    CBitmapRes* overlay = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.grade)));
     if (overlay) {
       overlay->Lock();
     }

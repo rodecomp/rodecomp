@@ -11,7 +11,7 @@ void UIBitmapTab::Paint() {
   int y = 0;
 
   for (unsigned index = 0; index < this->tabs.size(); ++index) {
-    const std::string name = FormatOwnedString(this->tabs[index].name.c_str(), 'a' + (this->geometry.unknown_0030 == index));
+    const std::string name = FormatOwnedString(this->tabs[index].name.c_str(), 'a' + (this->geometry.state == index));
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     if (bitmap) {
       this->DrawBitmap(0, y, bitmap, false);
@@ -31,10 +31,10 @@ void UIBitmapTab::OnLBtnDown(int, int y) {
   for (unsigned index = 0; index < this->tabs.size(); ++index) {
     bottom += this->tabs[index].height;
     if (y < bottom) {
-      if (this->geometry.unknown_0030 != index) {
-        this->geometry.unknown_0030 = index;
+      if (this->geometry.state != index) {
+        this->geometry.state = index;
         this->Invalidate();
-        this->parent->SendMsg(this, UM_TAB, this->geometry.unknown_0030, 0, 0, 0);
+        this->parent->SendMsg(this, UM_TAB, this->geometry.state, 0, 0, 0);
       }
 
       return;
@@ -55,7 +55,7 @@ void UIBitmapTab::DragAndDrop(int argument1, int argument2, std::intptr_t argume
 int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
   case UM_SETSTATE:
-    this->geometry.unknown_0030 = argument1;
+    this->geometry.state = argument1;
     this->Invalidate();
     break;
   case UM_CLEAR_ITEM:

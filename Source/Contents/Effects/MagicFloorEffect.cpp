@@ -33,13 +33,13 @@ void CMagicFloorEffect::AddFloors() {
     }
 
     particle->SetTexture(textures[index]);
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = index;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->alpha = 255;
-    *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
-    particle->unknown_004C = 0;
+    *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
+    particle->phaseParameter = 0;
     particle->scale = 30.0f;
     InitParticleQuad(particle->vertices);
     this->floors.push_back(particle);
@@ -58,22 +58,22 @@ void CMagicFloorEffect::AddClouds(int layer) {
       }
 
       particle->SetTexture("effect\\cloud11.tga");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = segment;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
+      particle->effectId = this->id;
+      particle->columnIndex = segment;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
       particle->alpha = 200;
-      particle->unknown_0050 = 30;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
-      particle->unknown_004C = std::max(0, rand() % 21) + 80;
-      particle->unknown_0054 = 1.0f;
+      particle->angleParameter = 30;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->phaseParameter = std::max(0, rand() % 21) + 80;
+      particle->animationParameter = 1.0f;
       particle->SetColor(255, 100, 100);
 
       if (layer == 0) {
-        particle->unknown_00C0 = 48.0f - static_cast<float>(ring) * 5.0f;
+        particle->speedParameter = 48.0f - static_cast<float>(ring) * 5.0f;
         particle->scale = 11.0f;
       } else if (layer == 1) {
-        particle->unknown_00C0 = 28.0f - static_cast<float>(ring) * 5.0f;
+        particle->speedParameter = 28.0f - static_cast<float>(ring) * 5.0f;
         particle->scale = 22.0f;
       }
 
@@ -116,14 +116,14 @@ void CMagicFloorEffect::ResetParticles() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    particle->scale = *reinterpret_cast<const float*>(&this->unknown_0048);
-    *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(*reinterpret_cast<const int*>(this->unknown_004C));
-    particle->unknown_004C = static_cast<int>(static_cast<float>(particle->unknown_0010) * *reinterpret_cast<const float*>(&this->unknown_0050));
-    particle->alpha = *reinterpret_cast<const int*>(this->unknown_0054);
+    particle->scale = *reinterpret_cast<const float*>(&this->scaleParameter);
+    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(*reinterpret_cast<const int*>(this->angleParameter));
+    particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * *reinterpret_cast<const float*>(&this->rotationParameter));
+    particle->alpha = *reinterpret_cast<const int*>(this->alphaParameters);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
     InitParticleQuad(particle->vertices);
-    particle->unknown_00E8 = 0;
+    particle->elapsedFrames = 0;
   }
 }
 
@@ -143,9 +143,9 @@ void CMagicFloorEffect::OnProcess() {
     particle->position.z = this->position[2];
 
     if (particle) {
-      const float current = *reinterpret_cast<const float*>(&particle->unknown_00C4);
+      const float current = *reinterpret_cast<const float*>(&particle->angleBits);
       int angle = 0;
-      switch (particle->unknown_000C) {
+      switch (particle->columnIndex) {
       case 0:
       case 1:
         angle = static_cast<int>(current + 1.0f);
@@ -166,7 +166,7 @@ void CMagicFloorEffect::OnProcess() {
         angle += 360;
       }
 
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
@@ -179,7 +179,7 @@ void CMagicFloorEffect::OnProcess() {
       particle->transform = result;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
@@ -189,12 +189,12 @@ void CMagicFloorEffect::OnProcess() {
     particle->position.z = this->position[2];
 
     if (particle) {
-      const int direction = static_cast<int>(*reinterpret_cast<const float*>(&particle->unknown_00C4) + 5.0f) % 360;
-      const int sweep = std::min(particle->unknown_0050 + 3, 180);
-      particle->unknown_0050 = sweep;
+      const int direction = static_cast<int>(*reinterpret_cast<const float*>(&particle->angleBits) + 5.0f) % 360;
+      const int sweep = std::min(particle->angleParameter + 3, 180);
+      particle->angleParameter = sweep;
       int alpha = particle->alpha;
-      const int phase = particle->unknown_00E8 % 300;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(direction);
+      const int phase = particle->elapsedFrames % 300;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(direction);
       if (phase == 0) {
         alpha = 50;
       } else if (phase > 100) {
@@ -205,22 +205,22 @@ void CMagicFloorEffect::OnProcess() {
       }
       particle->alpha = alpha;
 
-      const int segment = particle->unknown_000C;
-      const float radius = particle->unknown_0054;
+      const int segment = particle->columnIndex;
+      const float radius = particle->animationParameter;
       const int angle =
         static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(sweep) / 20.0f) * segment) +
-                         *reinterpret_cast<const float*>(&particle->unknown_00C4)) %
+                         *reinterpret_cast<const float*>(&particle->angleBits)) %
         360;
-      const int tilt = particle->unknown_004C;
+      const int tilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[tilt];
       const float height = radius * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const float floorRadius = *reinterpret_cast<const float*>(&this->unknown_0048);
+      const float floorRadius = *reinterpret_cast<const float*>(&this->scaleParameter);
 
       EffectPoint points[4];
       points[0].x = floorRadius * cosine;
-      points[0].y = -particle->unknown_00C0;
+      points[0].y = -particle->speedParameter;
       points[0].z = floorRadius * sine;
       points[1].x = points[0].x + cosine * spread;
       points[1].y = points[0].y - height;
@@ -250,7 +250,7 @@ void CMagicFloorEffect::OnProcess() {
       this->lastPoints[1].z = points[1].z;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -265,15 +265,15 @@ void CMagicFloorEffect::Render() {
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->unknown_000C > 0) {
+    if (particle && particle->columnIndex > 0) {
       ParticleQuad quad;
       quad.billboard = false;
       quad.unused = false;
       quad.depth = true;
       quad.top = 0.0f;
       quad.bottom = 1.0f;
-      quad.left = static_cast<float>(particle->unknown_000C - 1) / 21.0f;
-      quad.right = static_cast<float>(particle->unknown_000C) / 21.0f;
+      quad.left = static_cast<float>(particle->columnIndex - 1) / 21.0f;
+      quad.right = static_cast<float>(particle->columnIndex) / 21.0f;
       particle->Render(quad);
     }
   }

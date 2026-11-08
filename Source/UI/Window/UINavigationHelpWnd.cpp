@@ -72,5 +72,5 @@ int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::i
 // OFFSET: 0x009115B0
 // FUNCTION: fn_12517
 UINavigationHelpWnd::UINavigationHelpWnd()
-    : UIFrameWnd(0), m_viewer(nullptr), unknown_00B8(0) {
+    : UIFrameWnd(0), m_viewer(nullptr), helpState(0) {
 }

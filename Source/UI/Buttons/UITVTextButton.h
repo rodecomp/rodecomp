@@ -23,9 +23,9 @@ public:
   void SetLabel(std::string text);
 
 protected:
-  /* 00B4 */ unsigned char unknown_00B4;
-  /* 00B5 */ unsigned char unknown_00B5;
-  /* 00B6 */ unsigned char unknown_00B6;
+  /* 00B4 */ unsigned char drawBackground;
+  /* 00B5 */ unsigned char highlighted;
+  /* 00B6 */ unsigned char mousePressed;
   /* 00B7 */ unsigned char m_border;
   /* 00B8 */ unsigned char m_fill;
   /* 00B9 */ unsigned char unknown_00B9[0x3];
@@ -38,7 +38,7 @@ protected:
   /* 00D1 */ unsigned char unknown_00D1[0x3];
   /* 00D4 */ int m_fontHeight;
   /* 00D8 */ int m_fontFamily;
-  /* 00DC */ std::string unknown_00DC;
+  /* 00DC */ std::string displayText;
   /* 00F4 */ int m_value;
 };
 

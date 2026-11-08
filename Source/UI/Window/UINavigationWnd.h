@@ -51,7 +51,7 @@ protected:
   /* 00B8 */ UIButton* m_minimizeButton;
   /* 00BC */ std::string m_title;
   /* 00D4 */ std::string m_subtitle;
-  /* 00EC */ UIComboBoxDefWnd* unknown_00EC;
+  /* 00EC */ UIComboBoxDefWnd* m_searchType;
   /* 00F0 */ UIEditCtrl* m_titleBar;
   /* 00F4 */ UIListBoxNavi* m_routePanel;
   /* 00F8 */ UIListBoxNavi* m_searchPanel;
@@ -66,12 +66,12 @@ protected:
       /* 0110 */ UIWindow* unknown_0110;
     };
   };
-  /* 0114 */ UICheckBox* unknown_0114;
-  /* 0118 */ UICheckBox* unknown_0118;
-  /* 011C */ UICheckBox* unknown_011C;
-  /* 0120 */ UIBitmapButton* unknown_0120;
+  /* 0114 */ UICheckBox* m_allowGates;
+  /* 0118 */ UICheckBox* m_includeObjects;
+  /* 011C */ UICheckBox* m_allowWarps;
+  /* 0120 */ UIBitmapButton* m_helpButton;
   /* 0124 */ NavigationWndInfo* m_saved;
-  /* 0128 */ UIResizer* unknown_0128;
+  /* 0128 */ UIResizer* m_resizer;
   /* 012C */ std::vector<std::string> m_history;
 
 };

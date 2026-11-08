@@ -30,12 +30,12 @@ protected:
 
 public:
   /* 00F4 */ UICheckBox* checkBox;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F8 */ int sellMode;
   /* 00FC */ ItemShopWndInfo* saved;
   /* 0100 */ int hovered;
-  /* 0104 */ int unknown_0104;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
+  /* 0104 */ int bottomPadding;
+  /* 0108 */ int footerHeight;
+  /* 010C */ int showFooter;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -11,7 +11,7 @@
 // OFFSET: 0x00701BB0
 // FUNCTION: fn_06999
 CFriggSongEffect::CFriggSongEffect() : CEffect(0x423), lastInner{} {
-  this->unknown_002C = EffectLifetime(0x423);
+  this->effectLifetime = EffectLifetime(0x423);
 }
 
 // OFFSET: 0x00701EE0
@@ -34,28 +34,28 @@ void CFriggSongEffect::Open() {
     }
 
     particle->SetTexture("effect\\ring_blue.tga");
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = segment;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = segment;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->alpha = 50;
     particle->SetColor(50, 200, 50);
-    particle->unknown_0050 = 360;
-    particle->unknown_00C0 = 120.0f;
-    particle->unknown_004C = 90;
-    float& baseAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-    baseAngle = static_cast<float>(particle->unknown_0010 * 10);
-    particle->scale = static_cast<float>(particle->unknown_0010) * 0.5f + 2.5f;
-    (&particle->unknown_0054)[particle->unknown_0010] = 0.0f;
-    particle->unknown_00E8 = particle->unknown_0010;
+    particle->angleParameter = 360;
+    particle->speedParameter = 120.0f;
+    particle->phaseParameter = 90;
+    float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+    baseAngle = static_cast<float>(particle->rowIndex * 10);
+    particle->scale = static_cast<float>(particle->rowIndex) * 0.5f + 2.5f;
+    (&particle->animationParameter)[particle->rowIndex] = 0.0f;
+    particle->elapsedFrames = particle->rowIndex;
 
-    int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * particle->unknown_000C) + baseAngle) % 360;
-    if (particle->unknown_000C == 20) {
+    int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
+    if (particle->columnIndex == 20) {
       angle = static_cast<int>(baseAngle);
     }
 
-    const int tilt = particle->unknown_004C;
-    const float radius = particle->unknown_00C0;
+    const int tilt = particle->phaseParameter;
+    const float radius = particle->speedParameter;
     vector3d points[2] = {};
     points[0].x = particle->scale * g_cosTable[angle];
     points[0].y = 0.0f;
@@ -64,7 +64,7 @@ void CFriggSongEffect::Open() {
     points[1].y = 0.0f - radius * g_sinTable[tilt];
     points[1].z = points[0].z + radius * g_cosTable[tilt] * g_sinTable[angle];
 
-    if (particle->unknown_000C >= 1 && particle->unknown_000C <= 20) {
+    if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
       particle->vertices[1].x = points[1].x;
       particle->vertices[1].y = points[1].y;
       particle->vertices[1].z = points[1].z;
@@ -105,18 +105,18 @@ void CFriggSongEffect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
-      const int age = particle->unknown_00E8;
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->unknown_00C4);
+      const int age = particle->elapsedFrames;
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
       const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
-      float& height = *reinterpret_cast<float*>(&particle->unknown_0048[0xC]);
+      float& height = *reinterpret_cast<float*>(&particle->effectParameters[0xC]);
       if (age < 20) {
         height = 1.0f;
       } else if (age <= 140) {
-        height = (std::max)(0.0f, g_sinTable[age - 20] * particle->unknown_00C0);
+        height = (std::max)(0.0f, g_sinTable[age - 20] * particle->speedParameter);
       } else {
-        const float speed = particle->unknown_00C0;
-        particle->unknown_00C0 = (std::max)(0.0f, speed - 0.5f - speed * 0.01f);
-        height = particle->unknown_00C0;
+        const float speed = particle->speedParameter;
+        particle->speedParameter = (std::max)(0.0f, speed - 0.5f - speed * 0.01f);
+        height = particle->speedParameter;
       }
 
       matrix rotation;
@@ -129,7 +129,7 @@ void CFriggSongEffect::OnProcess() {
       rotation.Compose(first, scale);
       particle->transform = rotation;
     }
-    ++(*it)->unknown_00E8;
+    ++(*it)->elapsedFrames;
   }
 }
 
@@ -142,7 +142,7 @@ void CFriggSongEffect::Render() {
       continue;
     }
 
-    const int texPart = particle->unknown_000C;
+    const int texPart = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;

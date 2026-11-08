@@ -65,14 +65,14 @@ void UIMacroDetectorWnd::ClearImageData() {
 // FUNCTION: fn_09822
 void UIMacroDetectorWnd::SetCountdown(unsigned char count, std::uint32_t duration) {
   DWORD now = timeGetTime();
-  if (this->unknown_0110 > 0) {
+  if (this->lastCountdownTick > 0) {
     std::string text = FormatOwnedString(LookupMessage(MSI_MACRO_REGISTER_DATA), count);
     this->message = text;
   }
 
-  this->unknown_00D0 = count;
+  this->remainingAttempts = count;
   this->messageDuration = now;
-  this->unknown_0110 = now;
+  this->lastCountdownTick = now;
   if (this->totalDuration == 0) {
     this->totalDuration = duration;
   }

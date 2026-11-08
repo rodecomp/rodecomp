@@ -16,7 +16,7 @@ public:
 
   int SkillScopeType(int skillId);
 
-  /* 0158 */ int unknown_0158;
+  /* 0158 */ int m_masterGid;
   /* 015C */ int m_cellX;
   /* 0160 */ int m_cellY;
   /* 0164 */ unsigned long m_lastingTime;

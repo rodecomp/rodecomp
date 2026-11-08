@@ -190,7 +190,7 @@ CEffect* EffectLists::Find(int actor, int instance, int id) const {
 
   if (found != this->active.end()) {
     for (CEffect* effect : found->second) {
-      if (effect->id == id && effect->unknown_00C4 == instance) {
+      if (effect->id == id && effect->instanceId == instance) {
         return effect;
       }
     }
@@ -373,10 +373,10 @@ CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::u
     effect->position[2] = z;
     effect->SetId(id);
     if (frame != -1) {
-      effect->unknown_00B0 = frame;
+      effect->effectLevel = frame;
     }
     if (instance > 0) {
-      effect->unknown_00C4 = instance;
+      effect->instanceId = instance;
       effect->retained = 1;
     }
     effect->Open();

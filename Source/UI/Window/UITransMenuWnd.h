@@ -26,13 +26,13 @@ public:
 
 protected:
   /* 00B4 */ std::vector<TransMenuItem> m_items;
-  /* 00C0 */ std::uint32_t unknown_00C0;
-  /* 00C4 */ std::uint32_t unknown_00C4;
+  /* 00C0 */ std::uint32_t m_x;
+  /* 00C4 */ std::uint32_t m_y;
   /* 00C8 */ int m_width;
   /* 00CC */ int m_height;
-  /* 00D0 */ std::uint32_t unknown_00D0;
-  /* 00D4 */ std::uint32_t unknown_00D4;
-  /* 00D8 */ std::uint32_t unknown_00D8;
+  /* 00D0 */ std::uint32_t m_rectangleReserved1;
+  /* 00D4 */ std::uint32_t m_backgroundColor;
+  /* 00D8 */ std::uint32_t m_rectangleReserved2;
   /* 00DC */ int m_lineHeight;
   /* 00E0 */ int m_margin;
   /* 00E4 */ int m_selected;

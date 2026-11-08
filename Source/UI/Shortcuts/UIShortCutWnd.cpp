@@ -193,7 +193,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
   case 549: {
     const int bank = g_session.GetOption(10);
     g_session.SetOption(10, bank == 0 ? 1 : 0, 0);
-    this->m_bank->geometry.unknown_0030 = bank == 0;
+    this->m_bank->geometry.state = bank == 0;
     this->m_bank->Invalidate();
 
     for (ShortcutCooldownRecord& record : g_session.m_requestTimers) {
@@ -336,13 +336,13 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
     return;
   }
 
-  if (slot.unknown_0000 != 0) {
+  if (slot.enabled != 0) {
     CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (skill.MatchesShortcut(&slot)) {
       CMode* mode = g_modeMgr.gameMode;
-      int level = slot.unknown_0005;
+      int level = slot.value;
       if (IsIndexedSkill(static_cast<int>(skill.id))) {
-        level = (std::min)(static_cast<int>(slot.unknown_0005), skill.level);
+        level = (std::min)(static_cast<int>(slot.value), skill.level);
       }
 
       mode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), level, 0, 0);
@@ -352,27 +352,27 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   }
 
   ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-  if (item.unknown_0000[1] == 0) {
+  if (item.identity[1] == 0) {
     return;
   }
 
   CMode* mode = g_modeMgr.GetGameMode();
-  switch (item.unknown_0000[0]) {
+  switch (item.identity[0]) {
   case TYPE_HEAL:
   case TYPE_SCHANGE:
   case TYPE_SPECIAL:
     if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-      mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
+      mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
     }
 
     break;
 
   case TYPE_CASH_POINT_ITEM:
-    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
+    if (*reinterpret_cast<const int*>(&g_session.healthPoints[4]) >= 0) {
       const int result =
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
       if (result == 187) {
-        mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
+        mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
       }
     }
 
@@ -382,15 +382,15 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
   case 19:
-    if (item.unknown_0000[3] == 0x8000) {
-      mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+    if (item.identity[3] == 0x8000) {
+      mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
     }
 
     break;
 
   default:
-    if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
-      mode->SendMsg(MM_WEAR_EQUIP, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+    if (item.identity[2] != 0 && item.identity[3] == 0 && item.identified != 0) {
+      mode->SendMsg(MM_WEAR_EQUIP, item.identity[1], item.identity[2], 0, 0);
     }
 
     break;
@@ -417,7 +417,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
 
       NormalItemSlot& slot = *this->m_slots[index];
-      if (slot.itemId == 0 || slot.unknown_0000 == 0) {
+      if (slot.itemId == 0 || slot.enabled == 0) {
         continue;
       }
 
@@ -447,7 +447,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
 
       if (skill.available != 0 && skill.level != 0 && g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
-        slot.unknown_0005 = static_cast<std::int16_t>(skill.level);
+        slot.value = static_cast<std::int16_t>(skill.level);
       }
     }
 
@@ -471,7 +471,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
 
   case UM_ROTATE_SHORTCUT_ROWS:
-    if (RotateCooldownRows(g_session.m_requestTimers, static_cast<int>(a), static_cast<int>(b), g_session.unknown_06FC, g_session.unknown_06A8)) {
+    if (RotateCooldownRows(g_session.m_requestTimers, static_cast<int>(a), static_cast<int>(b), g_session.mainShortcutRow, g_session.alternateShortcutRow)) {
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
 
@@ -499,7 +499,7 @@ void UINewChatWnd::Move(int x, int y) {
   this->m_inputX = screenX + 3;
   this->m_inputY = this->m_inputOffsetY + screenY;
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_03F0)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.subChatMiniWnd)) {
     window->SendMsg(this, UM_COMMAND, ID_DIALOG, this->geometry.width + x, this->geometry.height + y, 0);
   }
 }
@@ -592,7 +592,7 @@ void UINewChatWnd::OnMouseMove(int x, int y) {
 // FUNCTION: fn_12695
 void UINewChatWnd::OnLBtnDown(int x, int y) {
   if (static_cast<unsigned int>(y - 1) <= 19) {
-    if (static_cast<int>(this->geometry.unknown_0030) <= 0) {
+    if (static_cast<int>(this->geometry.state) <= 0) {
       return;
     }
 
@@ -632,7 +632,7 @@ void UINewChatWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->FillRegion(4, this->geometry.height - this->m_inputAreaHeight, this->geometry.width - 8, 1, 0x8E8E8E);
 
-  if (static_cast<unsigned char>(g_windowMgr.unknown_03F4) != 0 && this->m_inputAreaHeight + this->m_inputOffsetY < this->geometry.height) {
+  if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->m_inputAreaHeight + this->m_inputOffsetY < this->geometry.height) {
     const int tabsWidth = static_cast<int>(this->m_tabControl->labels.size()) * this->m_tabWidth;
     this->FillRegion(3, this->m_inputOffsetY, 1, this->geometry.height - this->m_inputOffsetY, 0xFFFFFF);
     this->FillRegion(tabsWidth + 3, this->m_inputOffsetY, this->geometry.width - tabsWidth - 10, 1, 0xFFFFFF);
@@ -646,7 +646,7 @@ void UINewChatWnd::Paint() {
     this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
   }
 
-  if (static_cast<int>(this->geometry.unknown_0030) > 0) {
+  if (static_cast<int>(this->geometry.state) > 0) {
     if (g_windowMgr.chatModeChanged) {
       auto* chatMode = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
         Resolve(g_windowMgr.inputSuggestionsEnabled ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp")
@@ -675,25 +675,25 @@ void UINewChatWnd::OnLBtnUp(int x, int y) {
 // OFFSET: 0x009313F0
 // FUNCTION: fn_12704
 void UIRoMapWnd::OnLBtnUp(int x, int y) {
-  this->unknown_01FC.clear();
+  this->fieldNames.clear();
 
   unsigned int mapIndex = 0;
   if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, x, y)) {
-    this->unknown_0208 = mapIndex;
+    this->selectedMapIndex = mapIndex;
     for (CWorldViewField* field : map->fields) {
-      this->unknown_01FC.push_back(field->unknown_002C);
+      this->fieldNames.push_back(field->fieldName);
     }
   }
 
-  if (!this->unknown_01FC.empty()) {
-    if (g_windowMgr.unknown_0214 != 0) {
+  if (!this->fieldNames.empty()) {
+    if (g_windowMgr.comboBoxWnd != 0) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
-    if (!this->unknown_01FC.empty()) {
+    if (!this->fieldNames.empty()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int width = 0;
-      for (std::vector<std::string>::iterator name = this->unknown_01FC.begin(); name != this->unknown_01FC.end(); ++name) {
+      for (std::vector<std::string>::iterator name = this->fieldNames.begin(); name != this->fieldNames.end(); ++name) {
         const int textWidth = this->TextWidth(name->c_str(), 0, 0, 14, 0, 0);
         if (width < textWidth) {
           width = textWidth;
@@ -701,7 +701,7 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
       }
 
-      const int height = static_cast<int>((std::min)(this->unknown_01FC.size() * 16, 160u));
+      const int height = static_cast<int>((std::min)(this->fieldNames.size() * 16, 160u));
       menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       menu->Resize(width, height);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 140, 0, 0, 0);
@@ -710,13 +710,13 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
       const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
       menu->Move(menuX, menuY);
     }
-  } else if (this->unknown_00C0) {
-    std::string name = this->unknown_00C0->name;
+  } else if (this->selectedRecord) {
+    std::string name = this->selectedRecord->name;
     if (name.size() > 4) {
       name.resize(name.size() - 4);
     }
 
-    g_navigationManager.unknown_1254 = false;
+    g_navigationManager.expandedMap = false;
     g_navigationManager.SearchNavigation(name, 0, false);
     if (g_windowMgr.window_4F174) {
       static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
@@ -733,11 +733,11 @@ void UIMemorialDunWnd::Move(int x, int y) {
   const int top = y <= g_renderer->viewport.height - this->geometry.height ? y : 310;
   this->UIFrameWnd::Move(left, top);
 
-  if (g_session.unknown_5940 != left) {
-    g_session.unknown_5940 = left;
+  if (g_session.memorialWindowX != left) {
+    g_session.memorialWindowX = left;
   }
-  if (g_session.unknown_5944 != top) {
-    g_session.unknown_5944 = top;
+  if (g_session.memorialWindowY != top) {
+    g_session.memorialWindowY = top;
   }
 }
 
@@ -770,11 +770,11 @@ void UIMemorialDunWnd::OnCreate(int, int) {
 // OFFSET: 0x0091CF00
 // FUNCTION: fn_12621
 void UIMemorialDunWnd::ResetDungeonInfo() {
-  g_session.unknown_5950 = "";
-  g_session.unknown_5968 = 0;
-  g_session.unknown_596C = 0;
-  g_session.unknown_5970 = 0;
-  g_session.unknown_5948 = 0;
+  g_session.memorialDungeonName = "";
+  g_session.memorialQueuePosition = 0;
+  g_session.memorialCreationTime = 0;
+  g_session.memorialExpirationTime = 0;
+  g_session.memorialDungeonState = 0;
 }
 
 // OFFSET: 0x0092C6B0
@@ -794,26 +794,26 @@ void UIMemorialDunWnd::Paint() {
   char timeText[128];
   const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
 
-  if (g_session.unknown_5948 != 3) {
+  if (g_session.memorialDungeonState != 3) {
     char nameColor[12];
     char endColor[12];
     char name[80];
     char title[100];
     sprintf(nameColor, "^%02X%02X%02X", 0x41, 0x69, 0xE1);
     sprintf(endColor, "^%02X%02X%02X", 0, 0, 0);
-    sprintf(name, "%s[%s]%s", nameColor, g_session.unknown_5950.c_str(), endColor);
-    sprintf(title, LookupMessage(g_session.unknown_5948 + 0x539), name);
+    sprintf(name, "%s[%s]%s", nameColor, g_session.memorialDungeonName.c_str(), endColor);
+    sprintf(title, LookupMessage(g_session.memorialDungeonState + 0x539), name);
     const int width = this->ColoredTextWidth(title, 0, 0, 12, 0);
     DrawColoredText(*this, (this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
   }
 
-  if (g_session.unknown_5948 == 0) {
-    sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_PRIORITY), g_session.unknown_5968);
+  if (g_session.memorialDungeonState == 0) {
+    sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_PRIORITY), g_session.memorialQueuePosition);
     const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
     DrawColoredText(*this, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
-  } else if (g_session.unknown_5948 == 1) {
-    if (g_session.unknown_5970) {
-      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_5970)));
+  } else if (g_session.memorialDungeonState == 1) {
+    if (g_session.memorialExpirationTime) {
+      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.memorialExpirationTime)));
       sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_NOTIFY), timeText);
       std::vector<std::string> lines;
       this->WrapPixelText(text, lines, this->geometry.width - 20);
@@ -828,15 +828,15 @@ void UIMemorialDunWnd::Paint() {
         DrawColoredText(*this, (this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
       }
     }
-  } else if (g_session.unknown_5948 == 2) {
-    if (g_session.unknown_596C) {
+  } else if (g_session.memorialDungeonState == 2) {
+    if (g_session.memorialCreationTime) {
       this->DrawTextAt(10, 55, LookupMessage(MSI_MEMORIAL_DUN_NOTIFY2), 0, 0, 12, 0, 0, 0);
-      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
+      strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.memorialCreationTime)));
       sprintf(text, "^ff0000%s^ffffff", timeText);
       const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
       DrawColoredText(*this, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
     }
-  } else if (g_session.unknown_5948 == 3) {
+  } else if (g_session.memorialDungeonState == 3) {
     std::vector<std::string> lines;
     this->WrapPixelText(LookupMessage(MSI_MEMORIAL_DUN_OUT1), lines, this->geometry.width - 20);
     int y = 55;
@@ -866,7 +866,7 @@ void UIMemorialDunWnd::Paint() {
 // OFFSET: 0x0092AFE0
 // FUNCTION: fn_12656
 void UISubChatMiniWnd::OnCreate(int, int) {
-  this->Resize(this->m_rowHeight * this->unknown_00B4, this->m_offsetY);
+  this->Resize(this->m_rowHeight * this->rowCount, this->m_offsetY);
 }
 
 // OFFSET: 0x0093CA50
@@ -928,10 +928,10 @@ void UISubChatMiniWnd::OnLBtnDown(int x, int) {
 // OFFSET: 0x00940EB0
 // FUNCTION: fn_12782
 void UINewChatWnd::StoreInfo() {
-  g_windowMgr.unknown_004C = this->geometry.unknown_0030;
-  g_windowMgr.unknown_0038 = this->geometry.height;
-  g_windowMgr.unknown_0030 = this->geometry.x;
-  g_windowMgr.unknown_0034 = this->geometry.y;
+  g_windowMgr.chatWndStatus = this->geometry.state;
+  g_windowMgr.chatWndHeight = this->geometry.height;
+  g_windowMgr.chatWndX = this->geometry.x;
+  g_windowMgr.chatWndY = this->geometry.y;
 }
 
 // OFFSET: 0x00941190
@@ -990,7 +990,7 @@ void UINewChatWnd::SaveChatLogs() {
 // OFFSET: 0x009166A0
 // FUNCTION: fn_12584
 void UINewChatWnd::RefreshTabs(bool arrange) {
-  if (arrange && this->geometry.unknown_0030 != 0) {
+  if (arrange && this->geometry.state != 0) {
     int index = 0;
     for (std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
       if (this->m_currentTab == index) {
@@ -1017,13 +1017,13 @@ void UIMemorialDunWnd::ArrangeButtons() {
     this->m_partyButton->Move(-100, -100);
   }
 
-  if (g_session.unknown_5948 == 0 || g_session.unknown_5948 == 1 || g_session.unknown_5948 == 2) {
+  if (g_session.memorialDungeonState == 0 || g_session.memorialDungeonState == 1 || g_session.memorialDungeonState == 2) {
     this->m_actionButton->Move(-100, -100);
     this->m_message0 = 600;
-    if (g_session.unknown_5464 && this->m_partyButton && g_session.unknown_5948 == 1) {
+    if (g_session.partyLeader && this->m_partyButton && g_session.memorialDungeonState == 1) {
       this->m_partyButton->Move(41, 115);
     }
-  } else if (g_session.unknown_5948 == 3) {
+  } else if (g_session.memorialDungeonState == 3) {
     this->m_actionButton->Move((this->geometry.width - this->m_actionButton->geometry.width) / 2, this->geometry.height - 30);
     this->m_message0 = 184;
   }
@@ -1047,9 +1047,9 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     case ID_CANCEL: {
       MemorialDungeonCommandPacket packet;
       packet.id = 0x2CF;
-      if (g_session.unknown_5948 == 0) {
+      if (g_session.memorialDungeonState == 0) {
         packet.command = 0;
-      } else if (g_session.unknown_5948 == 1) {
+      } else if (g_session.memorialDungeonState == 1) {
         packet.command = 1;
       }
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
@@ -1057,12 +1057,12 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     case ID_CLOSE:
       this->Show(0);
-      if (g_session.unknown_5948 == 2) {
-        g_session.unknown_593C = 0;
+      if (g_session.memorialDungeonState == 2) {
+        g_session.memorialWindowOpen = 0;
       }
       return 0;
     case ID_DELETE:
-      if (g_session.unknown_5464 != 0) {
+      if (g_session.partyLeader != 0) {
         g_modeMgr.GetGameMode()->SendMsg(MM_MEMORIALDUNGEON_COMMAND, 0, 0, 0, 0);
       }
       return 0;
@@ -1129,22 +1129,22 @@ UIMemorialDunWnd::UIMemorialDunWnd()
 // OFFSET: 0x00912460
 // FUNCTION: fn_12530
 UISubChatMiniWnd::UISubChatMiniWnd()
-    : UIFrameWnd(0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
+    : UIFrameWnd(0), rowCount(2), m_rowHeight(32), m_offsetY(32) {
 }
 
 // OFFSET: 0x00911700
 // FUNCTION: fn_12518
 UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
   this->m_chatEdit = nullptr;
-  this->unknown_00C0 = nullptr;
+  this->m_whisperEdit = nullptr;
   this->m_inputEdit = nullptr;
-  this->unknown_00B8 = nullptr;
-  this->unknown_0110 = 10;
-  *reinterpret_cast<unsigned char*>(&g_windowMgr.unknown_03F4) = 1;
-  this->geometry.unknown_0030 = 0;
-  this->unknown_00F0 = 0;
+  this->m_inputResizer = nullptr;
+  this->m_maxTabs = 10;
+  *reinterpret_cast<unsigned char*>(&g_windowMgr.chatWndStickOn) = 1;
+  this->geometry.state = 0;
+  this->m_menuMode = 0;
   this->m_currentTab = 0;
-  this->unknown_0118 = 0;
+  this->m_savedRowCount = 0;
   this->m_inputOffsetY = 16;
   this->m_tabWidth = 71;
   this->m_inputAreaHeight = 24;
@@ -1168,11 +1168,11 @@ UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
 // FUNCTION: fn_12738
 void UISubChatHisWnd::Resize(int width, int height) {
   this->UIFrameWnd::Resize(width, height);
-  this->m_chatBox->Resize(this->geometry.width - 8, this->geometry.height - this->unknown_00F0 - this->m_inputHeight - 4, true);
+  this->m_chatBox->Resize(this->geometry.width - 8, this->geometry.height - this->headerHeight - this->m_inputHeight - 4, true);
   this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
   this->m_miniButton->Move(this->m_inputWidth + 26, 5);
-  this->m_state.unknown_0008 = this->geometry.width;
-  this->m_state.unknown_000C = this->geometry.height - this->m_inputHeight;
+  this->m_state.width = this->geometry.width;
+  this->m_state.height = this->geometry.height - this->m_inputHeight;
   g_session.m_subChatWnds[this->m_index].width = this->geometry.width;
   g_session.m_subChatWnds[this->m_index].height = this->geometry.height;
 }
@@ -1352,7 +1352,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       rectangle.left = this->m_chatBox->geometry.x;
       rectangle.top = this->m_chatBox->geometry.y;
       rectangle.right = this->geometry.width - 3;
-      rectangle.bottom = this->geometry.height - this->unknown_00F0;
+      rectangle.bottom = this->geometry.height - this->headerHeight;
       this->FillSurface(0xFFFF00FF, &rectangle);
       return 0;
     }
@@ -1367,13 +1367,13 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 // FUNCTION: fn_12644
 void UINewChatWnd::OnCreate(int width, int height) {
   if (height > this->m_inputAreaHeight) {
-    int rows = (height - (static_cast<int>(this->geometry.unknown_0030) + this->m_inputOffsetY + 74)) / 42 + 1;
+    int rows = (height - (static_cast<int>(this->geometry.state) + this->m_inputOffsetY + 74)) / 42 + 1;
     if (rows > 4) {
       rows = 4;
     }
-    this->geometry.unknown_0030 = rows;
+    this->geometry.state = rows;
   } else {
-    this->geometry.unknown_0030 = 0;
+    this->geometry.state = 0;
   }
 
   this->m_tabWidth = 0;
@@ -1383,18 +1383,18 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->m_tabControl->Configure(1, this->m_inputOffsetY, 10, 1, 1, 1, 0, 0, 0xFFFFFF, 0x8E8E8E, 0xFFFFFF, 0xFFFFFF);
   this->m_tabControl->Move(3, 0);
   this->AddChild(this->m_tabControl);
-  this->m_tabControl->unknown_007C = 0;
+  this->m_tabControl->activeTabIndex = 0;
 
   {
     std::string name = "유저인터페이스\\basic_interface\\stickoff";
-    this->unknown_0128 = new UIBitmapButton();
-    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    static_cast<UIBitmapButton*>(this->unknown_0128)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    static_cast<UIBitmapButton*>(this->unknown_0128)->SetSize(static_cast<UIBitmapButton*>(this->unknown_0128)->BitmapWidth(), static_cast<UIBitmapButton*>(this->unknown_0128)->BitmapHeight());
-    static_cast<UIBitmapButton*>(this->unknown_0128)->Move(this->m_tabWidth * 2 + 4, 4);
-    static_cast<UIBitmapButton*>(this->unknown_0128)->SetId(0x166);
-    this->AddChild(static_cast<UIBitmapButton*>(this->unknown_0128));
+    this->m_headerButton = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetSize(static_cast<UIBitmapButton*>(this->m_headerButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_headerButton)->BitmapHeight());
+    static_cast<UIBitmapButton*>(this->m_headerButton)->Move(this->m_tabWidth * 2 + 4, 4);
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetId(0x166);
+    this->AddChild(static_cast<UIBitmapButton*>(this->m_headerButton));
   }
 
   {
@@ -1464,20 +1464,20 @@ void UINewChatWnd::OnCreate(int width, int height) {
   g_windowMgr.SetFocus(this->m_chatEdit);
   this->m_chatEdit->SetId(0x1ED);
 
-  this->unknown_00C0 = new UIWhisperEditCtrl();
-  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->SetSize(90, 16);
-  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
-  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->maximum = 24;
-  static_cast<UIWhisperEditCtrl*>(this->unknown_00C0)->Background(240, 240, 240);
-  this->AddChild(static_cast<UIWhisperEditCtrl*>(this->unknown_00C0));
+  this->m_whisperEdit = new UIWhisperEditCtrl();
+  static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->SetSize(90, 16);
+  static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
+  static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->maximum = 24;
+  static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Background(240, 240, 240);
+  this->AddChild(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit));
   this->m_message0 = 0xB8;
 
-  this->unknown_00B8 = new UIResizer();
-  static_cast<UIResizer*>(this->unknown_00B8)->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");
-  static_cast<UIResizer*>(this->unknown_00B8)->SetSize(static_cast<UIResizer*>(this->unknown_00B8)->geometry.width, static_cast<UIResizer*>(this->unknown_00B8)->geometry.height);
-  static_cast<UIResizer*>(this->unknown_00B8)->SetDirection(0);
-  static_cast<UIResizer*>(this->unknown_00B8)->Move(2, this->geometry.height - static_cast<UIResizer*>(this->unknown_00B8)->geometry.height);
-  this->AddChild(static_cast<UIResizer*>(this->unknown_00B8));
+  this->m_inputResizer = new UIResizer();
+  static_cast<UIResizer*>(this->m_inputResizer)->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");
+  static_cast<UIResizer*>(this->m_inputResizer)->SetSize(static_cast<UIResizer*>(this->m_inputResizer)->geometry.width, static_cast<UIResizer*>(this->m_inputResizer)->geometry.height);
+  static_cast<UIResizer*>(this->m_inputResizer)->SetDirection(0);
+  static_cast<UIResizer*>(this->m_inputResizer)->Move(2, this->geometry.height - static_cast<UIResizer*>(this->m_inputResizer)->geometry.height);
+  this->AddChild(static_cast<UIResizer*>(this->m_inputResizer));
 
   std::string basePath = "유저인터페이스\\basic_interface\\";
   const int base = this->geometry.height - this->m_inputAreaHeight;
@@ -1515,9 +1515,9 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->m_inputX = screenX + 3;
   this->m_listColor = 0x66000000;
   this->m_inputY = screenY + this->m_inputOffsetY;
-  std::memset(this->unknown_00DC, 0, sizeof(this->unknown_00DC));
+  std::memset(this->m_secondaryStateStorage, 0, sizeof(this->m_secondaryStateStorage));
   this->m_listWidth = this->geometry.width - 6;
-  std::memset(this->unknown_00D4, 0, sizeof(this->unknown_00D4));
+  std::memset(this->m_primaryStateStorage, 0, sizeof(this->m_primaryStateStorage));
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
 
   if (!g_windowMgr.chatModeChanged) {

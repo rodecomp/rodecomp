@@ -38,9 +38,9 @@ public:
   /* 0090 */ UIScrollBar* scrollBar;
   /* 0094 */ int scrollBarWidth;
   /* 0098 */ int scrollBarHeight;
-  /* 009C */ int unknown_009C;
+  /* 009C */ int horizontalScrollPosition;
   /* 00A0 */ int scrollPosition;
-  /* 00A4 */ unsigned char unknown_00A4;
+  /* 00A4 */ unsigned char horizontalScrollable;
   /* 00A5 */ unsigned char wheelScroll;
   /* 00A8 */ std::map<UIWindow*, std::pair<int, int>> childOrigins;
 };

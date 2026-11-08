@@ -15,8 +15,8 @@ struct XmlNode {
   std::string DecodeEntity(const char* begin, const char* end);
 
   /* 0000 */ const char* name;
-  /* 0004 */ char* unknown_0004;
-  /* 0008 */ char* unknown_0008;
+  /* 0004 */ char* sourceBegin;
+  /* 0008 */ char* sourceEnd;
   /* 000C */ std::string text;
   /* 0024 */ XmlNode* sibling;
   /* 0028 */ XmlNode* child;

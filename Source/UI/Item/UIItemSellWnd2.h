@@ -29,7 +29,7 @@ protected:
 public:
   /* 00F4 */ ItemSellWndInfo* saved;
   /* 00F8 */ int hovered;
-  /* 00FC */ int unknown_00FC;
+  /* 00FC */ int shopId;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -14,7 +14,7 @@ public:
 
 protected:
   /* 00B4 */ UITextViewer* m_viewer;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int helpState;
 };
 
 #endif

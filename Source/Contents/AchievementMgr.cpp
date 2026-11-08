@@ -32,7 +32,7 @@ bool CAchievementMgr::CreateInstance() {
     return false;
   }
 
-  if (!g_achievementMgr->unknown_0004) {
+  if (!g_achievementMgr->enabled) {
     delete g_achievementMgr;
     g_achievementMgr = nullptr;
     return false;
@@ -73,7 +73,7 @@ bool CAchievementMgr::GetAchievement(AchievementInfo& out, int id) {
 // FUNCTION: fn_05314
 std::string CAchievementMgr::GetUnknown0068(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return this->achievements[id].unknown_0068;
+    return this->achievements[id].iconName;
   }
   return "";
 }
@@ -108,7 +108,7 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
 // FUNCTION: fn_05316
 int CAchievementMgr::GetUnknown0048(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return this->achievements[id].unknown_0048;
+    return this->achievements[id].points;
   }
   return -1;
 }
@@ -117,7 +117,7 @@ int CAchievementMgr::GetUnknown0048(int id) {
 // FUNCTION: fn_05317
 std::string CAchievementMgr::GetUnknown0018(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return this->achievements[id].unknown_0018;
+    return this->achievements[id].summaryText;
   }
   return "";
 }
@@ -126,7 +126,7 @@ std::string CAchievementMgr::GetUnknown0018(int id) {
 // FUNCTION: fn_05318
 int CAchievementMgr::GetUnknown0050(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return this->achievements[id].unknown_0050;
+    return this->achievements[id].rewardTitleId;
   }
   return -1;
 }
@@ -152,7 +152,7 @@ namespace {
 // INLINED
 bool IsAchievementCompleted(int id) {
   const SessionRecord6144 record = g_session.FindRecord6144(id);
-  return static_cast<unsigned char>(record.unknown_0000 >> 8) == 1;
+  return static_cast<unsigned char>(record.completionFlags >> 8) == 1;
 }
 
 }
@@ -320,7 +320,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, in
     return std::make_pair(false, message);
   }
 
-  found->second.unknown_0054 = value;
+  found->second.rewardBuffId = value;
   return std::make_pair(true, "good");
 }
 
@@ -333,7 +333,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, in
     return std::make_pair(false, message);
   }
 
-  found->second.unknown_004C = value;
+  found->second.rewardItemId = value;
   return std::make_pair(true, "good");
 }
 
@@ -346,7 +346,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, i
     return std::make_pair(false, message);
   }
 
-  found->second.unknown_0050 = value;
+  found->second.rewardTitleId = value;
   return std::make_pair(true, "good");
 }
 
@@ -359,8 +359,8 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveUIType(int id, int ty
     return std::make_pair(false, message);
   }
 
-  found->second.unknown_0064 = type;
-  found->second.unknown_0068 = text;
+  found->second.progressMode = type;
+  found->second.iconName = text;
   return std::make_pair(true, "good");
 }
 
@@ -372,9 +372,9 @@ bool CAchievementMgr::HasReward(int id) {
   }
 
   const AchievementInfo& info = this->achievements[id];
-  bool result = info.unknown_0054 > 0;
-  result |= info.unknown_0050 > 0;
-  if (info.unknown_004C > 0) {
+  bool result = info.rewardBuffId > 0;
+  result |= info.rewardTitleId > 0;
+  if (info.rewardItemId > 0) {
     result = true;
   }
   return result;

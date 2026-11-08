@@ -56,9 +56,9 @@ void CChargingPierceNewEffect::SetCount(int count) {
     }
 
     particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
-    particle->unknown_00D0 = s_chargingPierceNewOffsets[index].x;
-    particle->unknown_00D4 = s_chargingPierceNewOffsets[index].y;
-    particle->unknown_00D8 = s_chargingPierceNewOffsets[index].z;
+    particle->offsetX = s_chargingPierceNewOffsets[index].x;
+    particle->offsetY = s_chargingPierceNewOffsets[index].y;
+    particle->offsetZ = s_chargingPierceNewOffsets[index].z;
     particle->m_hold = true;
     particle->m_scale = 0.75f;
     this->emitters.push_back(particle);
@@ -181,7 +181,7 @@ void CChargingPierceEffect::OnProcess() {
     }
 
     if (CEZ2STRParticle* emitter = this->emitters[index]) {
-      if (emitter->life == 0.0f || static_cast<float>(emitter->unknown_00E8) < emitter->life * 60.0f) {
+      if (emitter->life == 0.0f || static_cast<float>(emitter->elapsedFrames) < emitter->life * 60.0f) {
         if (g_modeMgr.GetGameMode()) {
           float height = -13.0f;
           if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
@@ -200,17 +200,17 @@ void CChargingPierceEffect::OnProcess() {
           emitter->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
           emitter->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
           emitter->Process(0.0f, 0.0f, 0.0f);
-          ++emitter->unknown_00E8;
+          ++emitter->elapsedFrames;
         }
       } else {
         FreeParticle(emitter);
         this->emitters[index] = nullptr;
         if (!this->sparks[index]) {
           CParticle* spark = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x101);
-          spark->unknown_0004 = this->id;
-          spark->unknown_000C = 1;
-          spark->unknown_0010 = 0;
-          spark->unknown_0008 = 1;
+          spark->effectId = this->id;
+          spark->columnIndex = 1;
+          spark->rowIndex = 0;
+          spark->groupIndex = 1;
           spark->SetTexture("effect\\new_chargingpierce\\cha_orb.bmp");
           spark->scale = 1.5f;
           spark->depthOffset = 0.035f;
@@ -233,9 +233,9 @@ void CChargingPierceNewEffect::OnProcess() {
     const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
     const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
-    const float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + particle->unknown_00D0;
-    const float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] + particle->unknown_00D4;
-    const float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + particle->unknown_00D8;
+    const float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + particle->offsetX;
+    const float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] + particle->offsetY;
+    const float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + particle->offsetZ;
     particle->position.x = viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9];
     particle->position.y = viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10];
     particle->position.z = viewY * inverse.values[5] + viewX * inverse.values[2] + viewZ * inverse.values[8] + inverse.values[11];

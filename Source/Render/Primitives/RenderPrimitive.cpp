@@ -38,7 +38,7 @@ bool RenderTriangle::Visible() const {
 // OFFSET: 0x00568F40
 // FUNCTION: fn_02244
 RenderCommand::RenderCommand()
-    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), unknown_0014(1), unknown_0018(0), unknown_001C(0), unknown_0020(0),
+    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), depthFlags(1), sourceBlend(0), destinationBlend(0), textureMode(0),
       primitiveType(D3DPT_TRIANGLELIST) {
 }
 

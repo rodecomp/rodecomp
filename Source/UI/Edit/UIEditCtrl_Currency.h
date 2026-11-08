@@ -14,10 +14,10 @@ public:
   void Trim() override;
   void DrawLabel(int x, int y, const char* text);
 
-  /* 011C */ unsigned char unknown_011C;
-  /* 0120 */ int unknown_0120;
-  /* 0124 */ int unknown_0124;
-  /* 0128 */ int unknown_0128;
+  /* 011C */ unsigned char labelBold;
+  /* 0120 */ int labelOffsetX;
+  /* 0124 */ int labelOffsetY;
+  /* 0128 */ int labelAlignment;
 };
 
 class UIEditCtrl_Currency : public UIEditCtrl_Custom {

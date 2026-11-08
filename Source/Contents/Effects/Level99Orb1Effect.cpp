@@ -34,11 +34,11 @@ void CLevel99Orb1Effect::Open() {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
         particle->SetTexture("effect\\whitelight.tga");
-        particle->unknown_0004 = this->id;
-        particle->unknown_000C = column;
-        particle->unknown_0010 = row;
-        particle->unknown_0008 = 2;
-        particle->unknown_00C0 = 0.15f;
+        particle->effectId = this->id;
+        particle->columnIndex = column;
+        particle->rowIndex = row;
+        particle->groupIndex = 2;
+        particle->speedParameter = 0.15f;
         particle->scale = 1.8f;
         particle->SetColor(80, 80, 255);
         particle->alpha = 0;
@@ -48,7 +48,7 @@ void CLevel99Orb1Effect::Open() {
         offset.y = static_cast<float>(std::max(rand() % 100, 0));
         offset.z = 0.0f;
 
-        float* angles = &particle->unknown_0054;
+        float* angles = &particle->animationParameter;
         for (int i = 0; i < 4; ++i) {
           angles[i] = static_cast<float>(std::max(rand() % 360, 0));
         }
@@ -74,8 +74,8 @@ void CLevel99Orb1Effect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      const int index = particle->unknown_000C + particle->unknown_0010 * 4;
-      const float speed = particle->unknown_00C0;
+      const int index = particle->columnIndex + particle->rowIndex * 4;
+      const float speed = particle->speedParameter;
       vector3d& offset = this->offsets[index];
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
@@ -83,14 +83,14 @@ void CLevel99Orb1Effect::OnProcess() {
           offset.y = static_cast<float>(std::max(rand() % 100, 0));
           offset.z = 0.0f;
 
-          float* angles = &particle->unknown_0054;
+          float* angles = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
             angles[i] = static_cast<float>(std::max(rand() % 360, 0));
           }
 
           particle->alpha = 0;
         } else {
-          float* angles = &particle->unknown_0054;
+          float* angles = &particle->animationParameter;
           for (int i = 0; i < 2; ++i) {
             const int current = static_cast<int>(angles[i]);
             const int delta = static_cast<int>(angles[i + 2]) - current;
@@ -138,7 +138,7 @@ void CLevel99Orb1Effect::OnProcess() {
       particle->transform = result;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

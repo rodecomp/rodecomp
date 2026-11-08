@@ -308,7 +308,7 @@ bool C3dWorldRes::Load(const char* name) {
         std::strcpy(record->node, wire.node);
         record->animationSpeed = speed;
         record->animation = animation;
-        record->unknown_00F0 = unknown;
+        record->animationType = unknown;
         std::memcpy(record->position, wire.position, sizeof(record->position));
         std::memcpy(record->rotation, wire.rotation, sizeof(record->rotation));
         std::memcpy(record->scale, wire.scale, sizeof(record->scale));

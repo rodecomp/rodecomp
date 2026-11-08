@@ -58,10 +58,10 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
       }
 
       particle->SetTexture(FormatOwnedString("effect\\W_bubble%02d.tga", segment + 1).c_str());
-      particle->unknown_0004 = this->id;
-      particle->unknown_0010 = ring;
-      particle->unknown_000C = segment;
-      particle->unknown_0008 = 4;
+      particle->effectId = this->id;
+      particle->rowIndex = ring;
+      particle->columnIndex = segment;
+      particle->groupIndex = 4;
       particle->alpha = alphaOffset + (3 - ring) * 45;
 
       if (effectId == 978) {
@@ -74,21 +74,21 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
         particle->SetColor(255, 155, 0);
       }
 
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>((ring + 2) * 90 % 360);
-      particle->unknown_0050 = 360;
-      particle->unknown_00C0 = 30.0f - static_cast<float>(ring);
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((ring + 2) * 90 % 360);
+      particle->angleParameter = 360;
+      particle->speedParameter = 30.0f - static_cast<float>(ring);
       particle->scale = 3.5f;
-      particle->unknown_004C = 80;
-      particle->unknown_0054 = 0.0f;
-      particle->unknown_00E8 = 0;
+      particle->phaseParameter = 80;
+      particle->animationParameter = 0.0f;
+      particle->elapsedFrames = 0;
 
-      const int index = particle->unknown_000C;
-      const float radius = particle->unknown_00C0 * g_sinTable[index * 9] * 0.15f + particle->unknown_00C0;
+      const int index = particle->columnIndex;
+      const float radius = particle->speedParameter * g_sinTable[index * 9] * 0.15f + particle->speedParameter;
       const int direction =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * index) +
-                         *reinterpret_cast<const float*>(&particle->unknown_00C4)) %
+        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * index) +
+                         *reinterpret_cast<const float*>(&particle->angleBits)) %
         360;
-      const int tilt = particle->unknown_004C;
+      const int tilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[tilt];
       const float height = radius * g_sinTable[tilt];
       const float cosine = g_cosTable[direction];
@@ -136,21 +136,21 @@ void CLevel150Effect::AddShock(int kind) {
   for (int index = 0; index < 2; ++index) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
     if (particle) {
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = index;
-      particle->unknown_0010 = 0;
-      particle->unknown_0008 = 1;
-      particle->unknown_004C = index * 180;
+      particle->effectId = this->id;
+      particle->columnIndex = index;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
+      particle->phaseParameter = index * 180;
       particle->alpha = 200;
-      particle->unknown_0054 = -1.0f;
-      particle->unknown_00E8 = 0;
+      particle->animationParameter = -1.0f;
+      particle->elapsedFrames = 0;
 
       if (kind == 3) {
         particle->SetTexture("effect\\cir0002.tga");
-        *reinterpret_cast<float*>(particle->unknown_0058) = 18.0f;
+        *reinterpret_cast<float*>(particle->animationParameters) = 18.0f;
       } else {
         particle->SetTexture("effect\\emp shock.tga");
-        *reinterpret_cast<float*>(particle->unknown_0058) = 11.0f;
+        *reinterpret_cast<float*>(particle->animationParameters) = 11.0f;
       }
 
       this->shocks.push_back(particle);
@@ -221,7 +221,7 @@ void CLevel150Effect::OnProcess() {
     particle->position.z = this->position[2];
 
     if (particle) {
-      int tilt = particle->unknown_004C - 1;
+      int tilt = particle->phaseParameter - 1;
       float scale = particle->scale + 0.07f;
       int alpha = particle->alpha;
       if (tilt < 10) {
@@ -242,17 +242,17 @@ void CLevel150Effect::OnProcess() {
 
       particle->alpha = alpha;
       particle->scale = scale;
-      particle->unknown_004C = tilt;
+      particle->phaseParameter = tilt;
 
-      const float radius = particle->unknown_00C0;
-      const int segment = particle->unknown_000C;
+      const float radius = particle->speedParameter;
+      const int segment = particle->columnIndex;
       matrix transform;
       std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
       transform.SetScale(scale * 0.5f, radius * g_sinTable[tilt] / (radius * g_sinTable[segment * 9] * 0.15f + radius), scale * 0.5f);
       particle->transform = transform;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 
   for (std::vector<CParticle*>::iterator it = this->shocks.begin(); it != this->shocks.end(); ++it) {
@@ -262,15 +262,15 @@ void CLevel150Effect::OnProcess() {
     particle->position.z = this->position[2];
 
     if (particle) {
-      int tilt = particle->unknown_004C + 3;
+      int tilt = particle->phaseParameter + 3;
       if (tilt >= 360) {
         tilt -= 360;
       }
-      particle->unknown_004C = tilt;
+      particle->phaseParameter = tilt;
 
-      const float size = *reinterpret_cast<const float*>(particle->unknown_0058);
+      const float size = *reinterpret_cast<const float*>(particle->animationParameters);
       const float scale = size * 0.1f * g_sinTable[tilt] + 1.0f + size * 0.8f;
-      const int segment = particle->unknown_000C;
+      const int segment = particle->columnIndex;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
 
@@ -287,7 +287,7 @@ void CLevel150Effect::OnProcess() {
       particle->transform = result;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -296,13 +296,13 @@ void CLevel150Effect::OnProcess() {
 void CLevel150Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_000C <= 0) {
+    if (!particle || particle->columnIndex <= 0) {
       continue;
     }
 
-    const int segment = particle->unknown_000C;
+    const int segment = particle->columnIndex;
     const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment) / 21.0f, static_cast<float>(segment + 1) / 21.0f, false, true};
-    particle->SetTexture(FormatOwnedString("effect\\W_bubble%02d.tga", particle->unknown_00E8 % 27 + 1).c_str());
+    particle->SetTexture(FormatOwnedString("effect\\W_bubble%02d.tga", particle->elapsedFrames % 27 + 1).c_str());
     particle->Render(quad);
   }
 
@@ -349,15 +349,15 @@ void CLevel150SubEffect::Init() {
       }
 
       particle->SetTexture("effect\\emp shock.tga");
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
       particle->alpha = 200;
-      particle->unknown_0054 = 10.0f;
-      *reinterpret_cast<float*>(particle->unknown_0058) = 10.0f;
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = index;
-      particle->unknown_0010 = ring;
-      particle->unknown_0008 = 1;
-      particle->unknown_00E8 = -20 * ring;
+      particle->animationParameter = 10.0f;
+      *reinterpret_cast<float*>(particle->animationParameters) = 10.0f;
+      particle->effectId = this->id;
+      particle->columnIndex = index;
+      particle->rowIndex = ring;
+      particle->groupIndex = 1;
+      particle->elapsedFrames = -20 * ring;
       this->particles.push_back(particle);
 
       if (effectId == 979) {
@@ -404,24 +404,24 @@ void CLevel150SubEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
 
-    if (particle && particle->unknown_00E8 > 0) {
-      float size = particle->unknown_0054 * 1.02;
+    if (particle && particle->elapsedFrames > 0) {
+      float size = particle->animationParameter * 1.02;
       if (size > 20.0f) {
         int alpha = particle->alpha - 3;
         if (alpha <= 0) {
           size = 10.0f;
-          *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+          *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
           alpha = 200;
         }
         particle->alpha = alpha;
       }
-      particle->unknown_0054 = size;
+      particle->animationParameter = size;
 
-      const int angle = static_cast<int>(*reinterpret_cast<const float*>(&particle->unknown_00C4));
+      const int angle = static_cast<int>(*reinterpret_cast<const float*>(&particle->angleBits));
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
-      const float scale = particle->unknown_0054;
-      const float height = *reinterpret_cast<const float*>(particle->unknown_0058);
+      const float scale = particle->animationParameter;
+      const float height = *reinterpret_cast<const float*>(particle->animationParameters);
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
@@ -439,7 +439,7 @@ void CLevel150SubEffect::OnProcess() {
       particle->transform = result;
     }
 
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

@@ -13,18 +13,18 @@ struct CEffectMaker : EffectActor {
 
   void Reset();
 
-  /* 0158 */ unsigned unknown_0158;
-  /* 015C */ unsigned unknown_015C;
-  /* 0160 */ int unknown_0160;
-  /* 0164 */ float unknown_0164;
-  /* 0168 */ float unknown_0168;
-  /* 016C */ float unknown_016C;
-  /* 0170 */ float unknown_0170;
+  /* 0158 */ unsigned elapsedFrames;
+  /* 015C */ unsigned spawnInterval;
+  /* 0160 */ int effectId;
+  /* 0164 */ float parameter1;
+  /* 0168 */ float parameter2;
+  /* 016C */ float parameter3;
+  /* 0170 */ float parameter4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CEffectMaker, unknown_0158) == 0x158);
-static_assert(offsetof(CEffectMaker, unknown_0170) == 0x170);
+static_assert(offsetof(CEffectMaker, elapsedFrames) == 0x158);
+static_assert(offsetof(CEffectMaker, parameter4) == 0x170);
 #endif
 
 #endif

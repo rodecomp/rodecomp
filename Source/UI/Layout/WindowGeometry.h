@@ -13,8 +13,8 @@ struct WindowGeometry {
   /* 0024 */ CDC* surface;
   /* 0028 */ int visible;
   /* 002C */ int id;
-  /* 0030 */ std::uint32_t unknown_0030;
-  /* 0034 */ std::uint32_t unknown_0034;
+  /* 0030 */ std::uint32_t state;
+  /* 0034 */ std::uint32_t animationFrame;
   /* 0038 */ std::uint32_t targetAlpha;
   /* 003C */ std::uint32_t alphaStart;
   /* 0040 */ std::uint32_t currentAlpha;

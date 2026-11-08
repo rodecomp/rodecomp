@@ -172,7 +172,7 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* targ
       effect->SetAngle(
         ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f
       );
-      effect->SetDelay(static_cast<int>(source->unknown_0378 * source->render.speed * 16.0f));
+      effect->SetDelay(static_cast<int>(source->attackMotion * source->render.speed * 16.0f));
     }
   }
 }

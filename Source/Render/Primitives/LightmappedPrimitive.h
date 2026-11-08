@@ -44,11 +44,11 @@ struct ModelRenderCommand {
   /* 0008 */ CTexture* texture;
   /* 000C */ std::uint16_t* indices;
   /* 0010 */ std::uint32_t indexCount;
-  /* 0014 */ std::uint16_t unknown_0014;
+  /* 0014 */ std::uint16_t renderEnabled;
   /* 0016 */ std::uint16_t unknown_0016;
-  /* 0018 */ std::uint32_t unknown_0018;
-  /* 001C */ std::uint32_t unknown_001C;
-  /* 0020 */ std::uint32_t unknown_0020;
+  /* 0018 */ std::uint32_t renderStateA;
+  /* 001C */ std::uint32_t renderStateB;
+  /* 0020 */ std::uint32_t renderStateC;
   /* 0024 */ std::uint32_t primitiveType;
 };
 

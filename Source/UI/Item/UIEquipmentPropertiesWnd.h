@@ -13,8 +13,8 @@ class CUIItemEquipmentPropertiesLine : public CUIListItem {
 public:
   CUIItemEquipmentPropertiesLine();
 
-  /* 00E8 */ CUIStaticText* unknown_00E8;
-  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00E8 */ CUIStaticText* labelText;
+  /* 00EC */ CUIStaticText* valueText;
   /* 00F0 */ std::uint32_t evenRowColor;
   /* 00F4 */ std::uint32_t oddRowColor;
 

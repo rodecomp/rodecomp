@@ -28,9 +28,9 @@ public:
   std::vector<unsigned char> SerializeReplayData();
 
   /* 00B4 */ std::string title;
-  /* 00CC */ std::string unknown_00CC;
+  /* 00CC */ std::string roomSettingsText;
   /* 00E4 */ union {
-    int unknown_00E4[4];
+    int roomStatusValues[4];
     struct {
       int roomType;
       int memberCount;
@@ -44,8 +44,8 @@ public:
   /* 0100 */ UIMemberListBox* memberList;
   /* 0104 */ UIBitmapButton* closeButton;
   /* 0108 */ UIStaticText* titleText;
-  /* 010C */ std::map<std::string, int> unknown_010C;
-  /* 0114 */ std::vector<std::pair<std::string, int>> unknown_0114;
+  /* 010C */ std::map<std::string, int> memberRoles;
+  /* 0114 */ std::vector<std::pair<std::string, int>> menuCommands;
   /* 0120 */ ChatRoomWndInfo* saved;
 };
 

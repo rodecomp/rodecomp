@@ -18,8 +18,8 @@ class CUITime;
 
 class CDelayItemData {
 public:
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ std::map<int, int> unknown_0004;
+  /* 0000 */ int levelIndex;
+  /* 0004 */ std::map<int, int> delayTimes;
 };
 
 class CUIDelayItem : public CUIListItem {
@@ -68,7 +68,7 @@ public:
   void SetSkill(int skillId);
 
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ CUIStaticText* unknown_00DC;
+  /* 00DC */ CUIStaticText* skillNameText;
   /* 00E0 */ CUIStaticText* labels[3];
   /* 00EC */ CUIStaticText* columns[4];
   /* 00FC */ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* delayList;

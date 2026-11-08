@@ -76,7 +76,7 @@ void SpriteAtlas::Clear() {
     std::forward_list<SpriteAtlasPage>& pages = this->m_classes[i];
     for (SpriteAtlasPage& page : pages) {
       CTexture* texture = page.texture;
-      if (texture->unknown_001C == 0) {
+      if (texture->refCount == 0) {
         delete texture;
       } else {
         this->m_spare.push_back(texture);
@@ -225,7 +225,7 @@ void SpriteAtlas::ClearExpired(std::uint32_t reuseDelay) {
         }
 
         CTexture* texture = it->texture;
-        if (texture->unknown_001C) {
+        if (texture->refCount) {
           this->m_spare.push_back(texture);
         } else {
           delete texture;

@@ -36,12 +36,12 @@ void UIBattleMsgOptionWnd::OnWheel(int delta) {
 // OFFSET: 0x00910C40
 // FUNCTION: fn_12510
 UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
-  this->unknown_00B8 = -1;
+  this->hoveredOption = -1;
   this->messages.push_back(LookupMessage(MSI_ST_CHAT));
 
-  this->unknown_0108 = -1;
-  this->unknown_0110 = 1;
-  this->unknown_010C = 0;
+  this->chatWindowIndex = -1;
+  this->useMainChatOptions = 1;
+  this->allChecked = 0;
 
   this->messages.push_back(LookupMessage(MSI_VIEW_CHAT_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_WHISPER_MSG));
@@ -83,7 +83,7 @@ void UIBattleMsgOptionWnd::OnCreate(int, int height) {
   this->m_allCheckBox->SetSize(70, 12);
   this->m_allCheckBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", " all on");
   this->m_allCheckBox->Move(20, this->geometry.height - 16);
-  this->m_allCheckBox->SetChecked(this->unknown_010C);
+  this->m_allCheckBox->SetChecked(this->allChecked);
   this->AddChild(this->m_allCheckBox);
   this->m_visibleRows = (height - 38) / 20;
   this->UpdateScrollBar();
@@ -97,7 +97,7 @@ int UIBattleMsgOptionWnd::RowAt(int x, int y) {
     int row = 0;
     int index = 0;
     for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
-      if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) != 0 && index >= this->unknown_00C4) {
+      if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) != 0 && index >= this->scrollPosition) {
         if (row == (y - 17) / 20 + column) {
           return index;
         }
@@ -125,24 +125,24 @@ void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  const int previous = this->unknown_00B8;
-  this->unknown_00B8 = this->RowAt(x, y);
-  if (previous != this->unknown_00B8) {
+  const int previous = this->hoveredOption;
+  this->hoveredOption = this->RowAt(x, y);
+  if (previous != this->hoveredOption) {
     this->Invalidate();
   }
 
-  if (this->unknown_00B8 != -1) {
-    this->unknown_00EC[this->unknown_00B8] = this->unknown_00EC[this->unknown_00B8] == 0;
-    (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108].options[this->unknown_00B8] =
-      this->unknown_00EC[this->unknown_00B8];
-    this->unknown_010C = 1;
+  if (this->hoveredOption != -1) {
+    this->optionStates[this->hoveredOption] = this->optionStates[this->hoveredOption] == 0;
+    (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex].options[this->hoveredOption] =
+      this->optionStates[this->hoveredOption];
+    this->allChecked = 1;
     for (int i = 0; i < 25; ++i) {
-      if (this->unknown_00EC[i] == 0) {
-        this->unknown_010C = 0;
+      if (this->optionStates[i] == 0) {
+        this->allChecked = 0;
         break;
       }
     }
-    this->m_allCheckBox->geometry.unknown_0030 = this->unknown_010C;
+    this->m_allCheckBox->geometry.state = this->allChecked;
     this->m_allCheckBox->Invalidate();
     this->Invalidate();
   }
@@ -151,9 +151,9 @@ void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
 // OFFSET: 0x009317A0
 // FUNCTION: fn_12707
 void UIBattleMsgOptionWnd::OnMouseHover(int x, int y) {
-  const int previous = this->unknown_00B8;
-  this->unknown_00B8 = this->RowAt(x, y);
-  if (previous != this->unknown_00B8) {
+  const int previous = this->hoveredOption;
+  this->hoveredOption = this->RowAt(x, y);
+  if (previous != this->hoveredOption) {
     this->Invalidate();
   }
 }
@@ -171,15 +171,15 @@ void UIBattleMsgOptionWnd::UpdateScrollBar() {
   this->m_scrollable = range != 0;
   if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, total);
-    if (this->unknown_00C4 < 0) {
-      this->unknown_00C4 = 0;
+    if (this->scrollPosition < 0) {
+      this->scrollPosition = 0;
     }
-    if (this->unknown_00C4 > total - this->m_visibleRows) {
-      this->unknown_00C4 = total - this->m_visibleRows;
+    if (this->scrollPosition > total - this->m_visibleRows) {
+      this->scrollPosition = total - this->m_visibleRows;
     }
-    this->m_scrollBar->SetPosition(this->unknown_00C4);
+    this->m_scrollBar->SetPosition(this->scrollPosition);
   } else {
-    this->unknown_00C4 = 0;
+    this->scrollPosition = 0;
     this->m_scrollBar->SetRange(0, visible, total);
   }
   this->m_scrollBar->Invalidate();
@@ -215,11 +215,11 @@ void UIBattleMsgOptionWnd::Paint() {
   int row = 1;
   int y = 22;
   for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
-    if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) == 0 || index < this->unknown_00C4) {
+    if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) == 0 || index < this->scrollPosition) {
       continue;
     }
 
-    if (this->unknown_00B8 == index) {
+    if (this->hoveredOption == index) {
       unsigned selectRed, selectGreen, selectBlue;
       SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
       this->FillRegion(25, y - 3, this->geometry.width - 40, 20, RGB(selectRed, selectGreen, selectBlue));
@@ -227,7 +227,7 @@ void UIBattleMsgOptionWnd::Paint() {
     }
 
     this->DrawTextAt(50, y, *it, 0, 0, 12, 0, 0, 0);
-    const bool online = this->unknown_00EC[index] != 0;
+    const bool online = this->optionStates[index] != 0;
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(online ? "유저인터페이스\\basic_interface\\grp_online.bmp" : "유저인터페이스\\basic_interface\\grp_offline.bmp")
     ));
@@ -248,7 +248,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_COMMAND:
     switch (a) {
     case ID_OPTION: {
-      if (this->unknown_0108 == b && this->unknown_0110 == (c != 0)) {
+      if (this->chatWindowIndex == b && this->useMainChatOptions == (c != 0)) {
         if (d != 2) {
           g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
           return 0;
@@ -257,19 +257,19 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         return 0;
       }
 
-      this->unknown_0108 = b;
-      this->unknown_0110 = c != 0;
+      this->chatWindowIndex = b;
+      this->useMainChatOptions = c != 0;
       SubChatWndInfo info;
-      info = (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108];
+      info = (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex];
       if (!info.name.empty()) {
-        this->unknown_010C = 1;
+        this->allChecked = 1;
         for (int i = 0; i < 25; ++i) {
-          this->unknown_00EC[i] = info.options[i];
+          this->optionStates[i] = info.options[i];
           if (!info.options[i]) {
-            this->unknown_010C = 0;
+            this->allChecked = 0;
           }
         }
-        this->m_allCheckBox->geometry.unknown_0030 = this->unknown_010C;
+        this->m_allCheckBox->geometry.state = this->allChecked;
         this->m_allCheckBox->Invalidate();
         this->text = info.name;
         this->text += LookupMessage(MSI_SET_CHATINFO);
@@ -282,11 +282,11 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
       return 0;
     case ID_CHECK:
-      this->unknown_010C = b;
+      this->allChecked = b;
       for (int i = 0; i < 25; ++i) {
-        const bool checked = this->unknown_010C != 0;
-        this->unknown_00EC[i] = checked;
-        (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108].options[i] = checked;
+        const bool checked = this->allChecked != 0;
+        this->optionStates[i] = checked;
+        (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex].options[i] = checked;
       }
       this->Invalidate();
       return 0;
@@ -296,19 +296,19 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
-    const int previous = this->unknown_00C4;
+    const int previous = this->scrollPosition;
     if (message == UM_SCROLLVERTPAGEUP) {
-      this->unknown_00C4 = previous - this->m_visibleRows + 1;
+      this->scrollPosition = previous - this->m_visibleRows + 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->unknown_00C4 = previous + this->m_visibleRows - 1;
+      this->scrollPosition = previous + this->m_visibleRows - 1;
     } else {
-      this->unknown_00C4 = previous + static_cast<int>(a);
+      this->scrollPosition = previous + static_cast<int>(a);
     }
-    if (previous != this->unknown_00C4) {
+    if (previous != this->scrollPosition) {
       this->UpdateScrollBar();
       this->Invalidate();
     }
-    return this->unknown_00C4 - previous;
+    return this->scrollPosition - previous;
   }
   }
 

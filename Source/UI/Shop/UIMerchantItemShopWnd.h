@@ -26,17 +26,17 @@ public:
 
   void StartTimer(std::uint32_t value);
 
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ UIStaticText* unknown_00F4;
+  /* 00F0 */ int nonItemHeight;
+  /* 00F4 */ UIStaticText* titleText;
   /* 00F8 */ MerchantItemShopWndInfo* saved;
   /* 00FC */ int hovered;
-  /* 0100 */ int unknown_0100;
+  /* 0100 */ int ownerAid;
   /* 0104 */ UIStaticText* notice;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
+  /* 0108 */ int buyingZeny;
+  /* 010C */ int buyingShop;
   /* 0110 */ std::uint32_t startTick;
   /* 0114 */ std::uint32_t duration;
-  /* 0118 */ int unknown_0118;
+  /* 0118 */ int footerHeight;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

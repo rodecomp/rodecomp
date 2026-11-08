@@ -40,11 +40,11 @@ void CLevel99Orb2Effect::Open() {
       }
 
       particle->SetTexture("effect\\freezing_circle.bmp");
-      particle->unknown_0004 = this->id;
-      particle->unknown_000C = column;
-      particle->unknown_0010 = row;
-      particle->unknown_0008 = 2;
-      particle->unknown_00C0 = 0.15f;
+      particle->effectId = this->id;
+      particle->columnIndex = column;
+      particle->rowIndex = row;
+      particle->groupIndex = 2;
+      particle->speedParameter = 0.15f;
       particle->scale = 0.55f;
       particle->alpha = 0;
 
@@ -54,7 +54,7 @@ void CLevel99Orb2Effect::Open() {
       offset.y = height;
       offset.z = 0.0f;
 
-      float* angles = &particle->unknown_0054;
+      float* angles = &particle->animationParameter;
       for (int i = 0; i < 4; ++i) {
         angles[i] = static_cast<float>(std::max(rand() % 360, 0));
       }
@@ -79,8 +79,8 @@ void CLevel99Orb2Effect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      const float speed = particle->unknown_00C0;
-      EffectPoint& offset = this->offsets[particle->unknown_0010][particle->unknown_000C];
+      const float speed = particle->speedParameter;
+      EffectPoint& offset = this->offsets[particle->rowIndex][particle->columnIndex];
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
           const float height = static_cast<float>(std::max(rand() % 100, 0));
@@ -88,14 +88,14 @@ void CLevel99Orb2Effect::OnProcess() {
           offset.y = height;
           offset.z = 0.0f;
 
-          float* angles = &particle->unknown_0054;
+          float* angles = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
             angles[i] = static_cast<float>(std::max(rand() % 360, 0));
           }
 
           particle->alpha = 0;
         } else {
-          float* angles = &particle->unknown_0054;
+          float* angles = &particle->animationParameter;
           for (int i = 0; i < 2; ++i) {
             const int current = static_cast<int>(angles[i]);
             const int difference = static_cast<int>(angles[i + 2]) - current;
@@ -109,7 +109,7 @@ void CLevel99Orb2Effect::OnProcess() {
             }
           }
 
-          offset.x += speed * g_sinTable[static_cast<int>(particle->unknown_0054)];
+          offset.x += speed * g_sinTable[static_cast<int>(particle->animationParameter)];
           offset.z += speed * g_sinTable[static_cast<int>(angles[1])];
           if (offset.y < -20.0f) {
             particle->alpha = std::max(particle->alpha - 4, 0);
@@ -140,7 +140,7 @@ void CLevel99Orb2Effect::OnProcess() {
       result.Compose(scaled, translation);
       particle->transform = result;
     }
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

@@ -101,7 +101,7 @@ void ProbabilityTableFreezeCallback::operator()(CUIListItem* const& item) {
 void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
   CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list = this->list;
   CUIListItem* selectedItem = item;
-  if (!list->unknown_00C4) {
+  if (!list->layoutFlag) {
     for (ProbabilityTable::CUIItem* row : list->items) {
       if (selectedItem != row) {
         row->SetSelected(false);
@@ -109,7 +109,7 @@ void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
     }
 
     selectedItem->SetSelected(true);
-    if (selectedItem->index != static_cast<int>(list->selected) || !list->unknown_00E0) {
+    if (selectedItem->index != static_cast<int>(list->selected) || !list->selectionFlag) {
       ProbabilityTable::CUIItem* probabilityItem = dynamic_cast<ProbabilityTable::CUIItem*>(selectedItem);
       if (probabilityItem) {
         const int selectedIndex = probabilityItem->index;
@@ -164,8 +164,8 @@ bool UnusedTrueA47F10() {
 // FUNCTION: fn_16108
 template <>
 CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::CUIListBoxEx()
-    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
-      unknown_00E0(1), rebind(0) {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A48160
@@ -203,7 +203,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Clear
 // OFFSET: 0x00A487D0
 // FUNCTION: fn_16116
 void CUIProbabilityTable::Initialize() {
-  this->unknown_00B4 = 0;
+  this->ownedSkinColors = 0;
   this->Resize(345, 455);
   this->Move(0, 0);
   this->OnCreate(this->geometry.width, this->geometry.height);
@@ -420,7 +420,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScr
 // FUNCTION: fn_16126
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::SelectItem(CUIListItem* item) {
-  if (this->unknown_00C4) {
+  if (this->layoutFlag) {
     return;
   }
   for (ProbabilityTable::CUIItem* other : this->items) {
@@ -429,7 +429,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
     }
   }
   item->SetSelected(1);
-  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+  if (item->index == static_cast<int>(this->selected) && this->selectionFlag) {
     return;
   }
   ProbabilityTable::CUIItem* selectedItem = dynamic_cast<ProbabilityTable::CUIItem*>(item);
@@ -453,7 +453,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
 // OFFSET: 0x00A4D6A0
 // FUNCTION: fn_16191
 CUIProbabilityTable::CUIProbabilityTable()
-    : m_titleBar(nullptr), m_nameHeader(nullptr), m_searchEdit(nullptr), unknown_00E4{}, m_itemName(nullptr), m_probabilityHeader(nullptr), m_list(nullptr),
+    : m_titleBar(nullptr), m_nameHeader(nullptr), m_searchEdit(nullptr), m_searchButtonStorage{}, m_itemName(nullptr), m_probabilityHeader(nullptr), m_list(nullptr),
       m_itemId(0) {
 }
 

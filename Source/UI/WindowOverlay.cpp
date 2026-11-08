@@ -48,7 +48,7 @@ void UIEquipWnd::DrawDamageSkinPage() {
   int slot = 0;
   for (int x = 6; x < 0x116; x += 0x44) {
     int index = this->m_firstSlot + slot;
-    if (index >= g_session.unknown_80C8) {
+    if (index >= g_session.damageSkinCount) {
       break;
     }
     if (g_session.m_damageSkinIndex == index) {
@@ -142,7 +142,7 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
 
     if (text == highlight) {
       this->DrawShadowedText(offset + x, y, text, bytes, static_cast<std::uint32_t>(highlightColor), 0xE0E0E0, 0, 12, 0);
-    } else if (item->unknown_005D) {
+    } else if (item->damaged) {
       this->DrawShadowedText(offset + x, y, text, bytes, color, 0x5050FA, 0, 12, 0);
     } else {
       std::uint32_t card = ItemCardColor(item);

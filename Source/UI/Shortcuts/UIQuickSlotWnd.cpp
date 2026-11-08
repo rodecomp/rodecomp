@@ -63,7 +63,7 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
-    if (item.unknown_0000[1] > 0) {
+    if (item.identity[1] > 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       mode->drag.BeginItem(g_windowMgr, 16, item, item.quantity, -1);
     }
@@ -169,7 +169,7 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
-    if (item.unknown_0000[1] > 0) {
+    if (item.identity[1] > 0) {
       UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
@@ -192,7 +192,7 @@ UIQuickSlotWnd::UIQuickSlotWnd()
 int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_REFRESHITEM: {
-    const NormalItemSlot* saved = &g_session.unknown_06EB;
+    const NormalItemSlot* saved = &g_session.quickSlot;
     for (int index = 0; index < 2; ++index) {
       const NormalItemSlot source = saved[index];
       QuickSlotEntry& entry = this->m_entries[index];
@@ -203,9 +203,9 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         continue;
       }
 
-      if (source.unknown_0000 == 0) {
+      if (source.enabled == 0) {
         ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(source.itemId), 1);
-        if (item.unknown_0000[1] != 0 && item.identified != 0) {
+        if (item.identity[1] != 0 && item.identified != 0) {
           entry.id = source.itemId;
         }
         continue;
@@ -237,7 +237,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         if (g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
           entry.count = static_cast<std::int16_t>(skill.level);
         } else {
-          entry.count = source.unknown_0005;
+          entry.count = source.value;
         }
       }
     }
@@ -262,34 +262,34 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
 
       ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
-      if (item.unknown_0000[1] != 0) {
+      if (item.identity[1] != 0) {
         CMode* mode = g_modeMgr.GetGameMode();
-        switch (item.unknown_0000[0]) {
+        switch (item.identity[0]) {
         case UM_DEFPUSH:
         case UM_CANCELPUSH:
         case UM_TOGGLEPUSH:
-          mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
+          mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
           break;
         case UM_SCROLLVERTPAGEDOWN:
         case UM_OPENCHATWND:
         case UM_LOADINGPERCENT:
         case UM_DOWNPUSH:
-          if (item.unknown_0000[3] == 0x8000) {
+          if (item.identity[3] == 0x8000) {
             mode->SendMsg(MM_TAKE_OFF_EQUIP, 0xF, 0, 0, 0);
-            mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+            mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
           }
           break;
         case UM_UPPUSH:
-          if (*reinterpret_cast<int*>(&g_session.unknown_16F4[4]) >= 0) {
+          if (*reinterpret_cast<int*>(&g_session.healthPoints[4]) >= 0) {
             const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str());
             if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-              mode->SendMsg(MM_USEITEM, item.unknown_0000[1], 0, 0, 0);
+              mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
             }
           }
           break;
         default:
-          if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
-            mode->SendMsg(MM_WEAR_EQUIP, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+          if (item.identity[2] != 0 && item.identity[3] == 0 && item.identified != 0) {
+            mode->SendMsg(MM_WEAR_EQUIP, item.identity[1], item.identity[2], 0, 0);
           }
           break;
         }

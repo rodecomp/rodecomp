@@ -21,12 +21,12 @@ public:
 
 protected:
   /* 0120 */ int m_index;
-  /* 0124 */ bool unknown_0124;
-  /* 0128 */ int unknown_0128;
+  /* 0124 */ bool m_selected;
+  /* 0128 */ int m_displayMode;
   /* 012C */ int m_slot;
   /* 0130 */ UIStaticBitmap* icon;
-  /* 0134 */ short unknown_0134;
-  /* 0136 */ short unknown_0136;
+  /* 0134 */ short m_animationTick;
+  /* 0136 */ short m_frameInterval;
   /* 0138 */ bool m_inRange;
 };
 

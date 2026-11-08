@@ -23,8 +23,8 @@ public:
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ std::list<CSpriteParticle*> sprites;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E0 */ int holdFrame;
+  /* 00E4 */ int alphaLevel;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

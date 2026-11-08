@@ -293,31 +293,31 @@ void CEZ2STREffectEx::Open() {
   emitter->offset.x = info->offsetX;
   emitter->offset.y = info->offsetY;
   emitter->offset.z = 0.0f;
-  if (info->unknown_0024 & 1) {
+  if (info->flags & 1) {
     this->retained = 1;
     emitter->looping = 1;
   }
 
-  emitter->duration = info->unknown_0040[1];
-  this->frameStep = info->unknown_0040[1] / 16;
-  if (!info->unknown_0028.empty()) {
-    this->AddEvent(0, info->unknown_0028.c_str(), this->frameStep + 1, 0);
+  emitter->duration = info->delays[1];
+  this->frameStep = info->delays[1] / 16;
+  if (!info->soundPath.empty()) {
+    this->AddEvent(0, info->soundPath.c_str(), this->frameStep + 1, 0);
   }
 
-  if (info->unknown_0040[0] >= 0) {
-    this->AddEvent(1, nullptr, info->unknown_0040[0], 0);
+  if (info->delays[0] >= 0) {
+    this->AddEvent(1, nullptr, info->delays[0], 0);
   }
 
-  if (info->unknown_0024 & 2) {
+  if (info->flags & 2) {
     particle->flags = 0xD;
   }
 
-  if (info->unknown_0024 & 4) {
+  if (info->flags & 4) {
     particle->flags = 0x205;
   }
 
-  emitter->unknown_3FEA = (info->unknown_0024 >> 3) & 1;
-  emitter->unknown_3FEB = (info->unknown_0024 >> 4) & 1;
+  emitter->repeatFrame = (info->flags >> 3) & 1;
+  emitter->followGround = (info->flags >> 4) & 1;
   this->emitter = emitter;
 }
 
@@ -355,7 +355,7 @@ void CEZ2STREffectEx::OnProcess() {
     this->emitter->remainingTime -= 0.05f;
   }
 
-  if (this->emitter->unknown_3FEB) {
+  if (this->emitter->followGround) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
   }
@@ -377,7 +377,7 @@ void CEZ2STREffectEx::OnProcess() {
     reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
 
-  if (this->emitter->unknown_3FEA == 1 && this->emitter->unknown_3F58 == 1) {
+  if (this->emitter->repeatFrame == 1 && this->emitter->playbackState == 1) {
     this->frame = this->frameStep;
   }
 
@@ -410,7 +410,7 @@ void CEZ2STREffectEx::SetAlpha(float argument) {
 // FUNCTION: fn_06973
 void CEZ2STREffectEx::SetFlipX(int argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FE8 = static_cast<unsigned char>(argument);
+    this->emitter->flipX = static_cast<unsigned char>(argument);
   }
 }
 
@@ -418,7 +418,7 @@ void CEZ2STREffectEx::SetFlipX(int argument) {
 // FUNCTION: fn_06974
 void CEZ2STREffectEx::SetFlipY(int argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FE9 = static_cast<unsigned char>(argument);
+    this->emitter->flipY = static_cast<unsigned char>(argument);
   }
 }
 
@@ -441,7 +441,7 @@ void CEZ2STREffectEx::EnableGroundRender() {
 // FUNCTION: fn_06977
 void CEZ2STREffectEx::SetLifeTime(int argument) {
   if (this->emitter) {
-    this->emitter->unknown_3F98 = argument;
+    this->emitter->lifetimeLimit = argument;
   }
 }
 
@@ -449,7 +449,7 @@ void CEZ2STREffectEx::SetLifeTime(int argument) {
 // FUNCTION: fn_06978
 void CEZ2STREffectEx::SetAngle(float argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FA4 = argument;
+    this->emitter->rotationAngle = argument;
   }
 }
 
@@ -457,7 +457,7 @@ void CEZ2STREffectEx::SetAngle(float argument) {
 // FUNCTION: fn_06979
 void CEZ2STREffectEx::SetPitch(float argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FA8 = argument;
+    this->emitter->pitch = argument;
   }
 }
 
@@ -465,7 +465,7 @@ void CEZ2STREffectEx::SetPitch(float argument) {
 // FUNCTION: fn_06980
 void CEZ2STREffectEx::SetYaw(float argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FAC = argument;
+    this->emitter->yaw = argument;
   }
 }
 
@@ -473,7 +473,7 @@ void CEZ2STREffectEx::SetYaw(float argument) {
 // FUNCTION: fn_06981
 void CEZ2STREffectEx::SetScale(float argument) {
   if (this->emitter) {
-    this->emitter->unknown_3FB0 = argument;
+    this->emitter->scale = argument;
   }
 }
 
@@ -500,24 +500,24 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
   info.id = static_cast<int>(this->manager->effects.size());
   info.name = static_cast<const std::string&>(FromUtf8(record.name, g_textCodePage));
   info.offsetX = static_cast<float>(record.offsetX);
-  if (record.unknown_0028) {
-    info.unknown_0024 |= 1;
+  if (record.infinite) {
+    info.flags |= 1;
   }
-  if (record.unknown_0029) {
-    info.unknown_0024 |= 2;
+  if (record.floor) {
+    info.flags |= 2;
   }
   info.offsetY = static_cast<float>(record.offsetY);
-  if (record.unknown_002A) {
-    info.unknown_0024 |= 4;
+  if (record.aboveUi) {
+    info.flags |= 4;
   }
-  info.unknown_0028 = static_cast<const std::string&>(FromUtf8(record.unknown_002C, g_textCodePage));
-  if (record.unknown_0044) {
-    info.unknown_0024 |= 8;
+  info.soundPath = static_cast<const std::string&>(FromUtf8(record.soundPath, g_textCodePage));
+  if (record.soundLoop) {
+    info.flags |= 8;
   }
-  info.unknown_0040[0] = record.unknown_0048[0];
-  info.unknown_0040[1] = record.unknown_0048[1];
-  if (record.unknown_0050) {
-    info.unknown_0024 |= 16;
+  info.delays[0] = record.delays[0];
+  info.delays[1] = record.delays[1];
+  if (record.toGround) {
+    info.flags |= 16;
   }
 
   std::string key = FromUtf8(entry.first, g_textCodePage);

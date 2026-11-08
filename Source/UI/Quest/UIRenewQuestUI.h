@@ -33,10 +33,10 @@ public:
   void OnSimpleView(bool simpleView);
 
   /* 00E8 */ CUIStaticImage* icon;
-  /* 00EC */ CUIStaticText* unknown_00EC;
-  /* 00F0 */ CUIStaticText* unknown_00F0;
-  /* 00F4 */ CUICheckBox* unknown_00F4;
-  /* 00F8 */ CUICheckBox* unknown_00F8;
+  /* 00EC */ CUIStaticText* titleText;
+  /* 00F0 */ CUIStaticText* descriptionText;
+  /* 00F4 */ CUICheckBox* simpleViewCheckBox;
+  /* 00F8 */ CUICheckBox* activeCheckBox;
   /* 00FC */ int questType;
   /* 0100 */ int questId;
   /* 0104 */ unsigned char pressed;

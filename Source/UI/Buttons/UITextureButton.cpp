@@ -28,13 +28,13 @@ void UITextureButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.unknown_0030 = 0;
+    this->geometry.state = 0;
   } else {
-    if (this->unknown_011C == 1) {
-      this->unknown_011D = this->unknown_011D == 0;
+    if (this->toggleEnabled == 1) {
+      this->toggled = this->toggled == 0;
     }
 
-    this->geometry.unknown_0030 = 1;
+    this->geometry.state = 1;
     UIWindow* parent = this->parent;
     if (parent) {
       if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) > 0) {

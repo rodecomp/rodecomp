@@ -31,23 +31,23 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
   }
 
   std::memcpy(this->matrix, matrix, sizeof(this->matrix));
-  this->unknown_0030 = unknown0030;
-  this->unknown_0034 = unknown0034;
-  this->unknown_0060 = 0;
+  this->blendMode = unknown0030;
+  this->blendVariant = unknown0034;
+  this->layerShift = 0;
   this->swingX = 0;
   this->swingY = 0;
-  this->unknown_006C = false;
-  this->unknown_006D = false;
-  this->unknown_0094 = false;
+  this->hideHeadLayer = false;
+  this->hideAccessories = false;
+  this->alternateLayerRendering = false;
 
   int slot = 2;
-  this->layerViews[slot] = this->pc->unknown_0450;
+  this->layerViews[slot] = this->pc->accessory;
   slot = 3;
-  this->layerViews[slot] = this->pc->unknown_0454;
+  this->layerViews[slot] = this->pc->accessory2;
   slot = 4;
-  this->layerViews[slot] = this->pc->unknown_0458;
+  this->layerViews[slot] = this->pc->accessory3;
   slot = 8;
-  this->layerViews[slot] = this->pc->unknown_049C;
+  this->layerViews[slot] = this->pc->robe;
   this->LoadLayers();
 
   const vector3d& origin = this->pc->render.position;
@@ -56,11 +56,11 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
   this->position.z = origin.x * matrix[2] + origin.y * matrix[5] + origin.z * matrix[8] + matrix[11];
   g_renderer->ProjectViewport(&this->pc->render.position.x, matrix, &this->x, &this->y, &this->rhw);
   this->distanceScale = g_renderer->ScaleDistance(this->rhw);
-  this->pc->render.unknown_005C = this->distanceScale / g_heightScale;
+  this->pc->render.distanceScale = this->distanceScale / g_heightScale;
   this->pc->ScaleByPulse(this->distanceScale);
   this->distanceScale *= GetSkillFactor(this->pc->GetEffectiveJob(-1));
-  this->scale = g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->pc->render.unknown_0078)) * this->pc->render.scale) *
-                this->pc->render.unknown_005C;
+  this->scale = g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->pc->render.spriteOffsetX)) * this->pc->render.scale) *
+                this->pc->render.distanceScale;
 
   if (this->pc->HasAppearanceOverride()) {
     const int layer = this->DrawBodyOutline(0);
@@ -71,13 +71,13 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
   }
 
   this->DrawRobe(false);
-  this->imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->pc->unknown_0418));
+  this->imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->pc->imfName));
   this->bounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, this->rhw);
 
   bool bodyDrawn = false;
   bool swapped = false;
-  if (this->pc->unknown_04F4) {
-    this->DrawLayerOutlines(this->pc->unknown_04F4);
+  if (this->pc->outlineColor) {
+    this->DrawLayerOutlines(this->pc->outlineColor);
   }
 
   for (int index = 8; index >= 0; --index) {
@@ -109,16 +109,16 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
         if (job == 0xFF6 || job == 0xFF7 || job == 0x1010) {
           continue;
         }
-      } else if (this->pc->unknown_02CC == 1) {
+      } else if (this->pc->isRiding == 1) {
         continue;
       }
     }
 
-    if ((layer == 2 || layer == 3 || layer == 4) && this->unknown_006D == true) {
+    if ((layer == 2 || layer == 3 || layer == 4) && this->hideAccessories == true) {
       continue;
     }
 
-    if (layer == 8 && this->pc->unknown_04D9 == false) {
+    if (layer == 8 && this->pc->isHelmRobe == false) {
       continue;
     }
 
@@ -143,9 +143,9 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
     const ActionFrame& frame = this->pc->SelectStanceFrame(layer, action, &stanceAnimation, &frameIndex, &replaced);
     std::pair<bool, std::string> sound = this->GetLayerSound(layer, action, frame.sound);
     if (sound.first == true) {
-      this->pc->unknown_0180 = 1;
+      this->pc->isPlayHitWave = 1;
       std::string name = sound.second;
-      char* buffer = reinterpret_cast<char*>(this->pc->unknown_0190);
+      char* buffer = reinterpret_cast<char*>(this->pc->hitWaveName);
       StringFormat(buffer, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? buffer : name.c_str());
     }
 
@@ -181,13 +181,13 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unkn
     }
   }
 
-  if (this->unknown_0094 == true) {
+  if (this->alternateLayerRendering == true) {
     this->pc->SetRenderInfo(&this->bounds.left, this->x, this->y);
   } else {
     this->pc->SetTlvert(this->x, this->y);
   }
 
-  this->pc->render.unknown_00ECBytes[0] = 1;
+  this->pc->render.effectPhaseBytes[0] = 1;
 }
 
 // OFFSET: 0x0063FC90
@@ -262,7 +262,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     int box[4];
     std::uint32_t quadColor;
     if (!this->pc->PrepareSprite(
-          layer, this->unknown_0060, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw,
+          layer, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw,
           &topRhw, resolved.image, &quad, box, &quadColor, itemOffset.first, itemOffset.second, 0
         )) {
       continue;
@@ -321,8 +321,8 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
 // OFFSET: 0x00640510
 // FUNCTION: fn_04810
 void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
-  if (this->pc->unknown_049C <= 0 || this->pc->unknown_04D9 == true || this->pc->render.unknown_0070 == 3 ||
-      (this->pc->blend == -1 && this->pc->unknown_04A4 == -1 && this->pc->unknown_04A8 == -1)) {
+  if (this->pc->robe <= 0 || this->pc->isHelmRobe == true || this->pc->render.state == 3 ||
+      (this->pc->blend == -1 && this->pc->layerCellX == -1 && this->pc->layerCellY == -1)) {
     return;
   }
 
@@ -330,7 +330,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     return;
   }
 
-  if (this->pc->unknown_0260 == 0) {
+  if (this->pc->sex == 0) {
     const int job = this->pc->GetEffectiveJob(-1);
     if (job == 0xFF6 || job == 0xFF7 || job == 0x1010) {
       return;
@@ -338,10 +338,10 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
   }
 
   std::string sprName = g_session.GetRobeSprName(
-    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->GetBodyCostume()
+    this->pc->GetEffectiveJob(-1), this->pc->appearanceJob, this->pc->sex, this->pc->robe, this->pc->isRiding, this->pc->GetBodyCostume()
   );
   std::string actName = g_session.GetRobeActName(
-    this->pc->GetEffectiveJob(-1), this->pc->unknown_04D4, this->pc->unknown_0260, this->pc->unknown_049C, this->pc->unknown_02CC, this->pc->GetBodyCostume()
+    this->pc->GetEffectiveJob(-1), this->pc->appearanceJob, this->pc->sex, this->pc->robe, this->pc->isRiding, this->pc->GetBodyCostume()
   );
   if (!ResourceMgr::Instance().Exists(sprName.c_str()) || !ResourceMgr::Instance().Exists(actName.c_str())) {
     return;
@@ -361,7 +361,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
   }
 
   g_session.GetSyncedFrame(
-    static_cast<CActRes*>(this->pc->GetEquipAction(1)), action, animation, baseFrame, this->pc->render.unknown_008C, &frameIndex
+    static_cast<CActRes*>(this->pc->GetEquipAction(1)), action, animation, baseFrame, this->pc->render.motionStartTime, &frameIndex
   );
   const ActionFrame& frame = action->Frame(this->pc->render.previousAnimation, frameIndex);
   for (int index = 0; index < frame.cellCount; ++index) {
@@ -371,7 +371,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     }
 
     reinterpret_cast<unsigned char*>(&const_cast<SpriteFrameCell&>(cell).color)[3] =
-      static_cast<unsigned char>(g_session.GetRobeAlpha(this->pc->unknown_049C));
+      static_cast<unsigned char>(g_session.GetRobeAlpha(this->pc->robe));
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
     float bottomRhw = 0.0f;
@@ -380,7 +380,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     int box[4];
     std::uint32_t quadColor;
     this->pc->PrepareSprite(
-      this->unknown_0060, this->unknown_0060, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
+      this->layerShift, this->layerShift, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
       image, &quad, box, &quadColor, 0, 0, !drawOnTop
     );
     if (this->pc->render.unknown_0130[0] == 1) {
@@ -393,7 +393,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     this->pc->ApplyLayerEffects(
       &quad, &cell, 0, box, this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
     );
-    if (drawOnTop && g_session.IsTopLayerRobe(this->pc->unknown_049C)) {
+    if (drawOnTop && g_session.IsTopLayerRobe(this->pc->robe)) {
       SpriteLayerQuad entry;
       entry.quad = quad;
       entry.palette = sprite->palette;
@@ -412,7 +412,7 @@ int SpriteLayerRenderer::DrawBodyOutline(int layer) {
     return layer;
   }
 
-  std::uint32_t color = this->pc->unknown_04F4;
+  std::uint32_t color = this->pc->outlineColor;
   if (!color) {
     return layer;
   }
@@ -445,7 +445,7 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
     case 1: {
       const ActionFrame& body = static_cast<CActRes*>(this->pc->GetEquipAction(0))->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       if (frame->anchorCount > 0 && body.anchorCount > 0) {
-        if (frame->anchors[0].unknown_0008 == body.anchors[0].unknown_0008) {
+        if (frame->anchors[0].attachmentId == body.anchors[0].attachmentId) {
           offsetX = body.anchors[0].x - frame->anchors[0].x;
           offsetY = body.anchors[0].y - frame->anchors[0].y;
           this->swingX = offsetX;
@@ -461,7 +461,7 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       int syncedFrame = 0;
       const ActionFrame* synced = g_session.GetSyncedFrame(
         static_cast<CActRes*>(this->pc->GetEquipAction(1)), static_cast<CActRes*>(this->pc->GetEquipAction(layer)),
-        this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->render.unknown_008C, &syncedFrame
+        this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->render.motionStartTime, &syncedFrame
       );
       if (synced && syncedFrame != this->pc->render.curMotion) {
         frame = synced;
@@ -480,16 +480,16 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
 
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
-        if (frame->anchors[0].unknown_0008 == bodyFrame->anchors[0].unknown_0008) {
+        if (frame->anchors[0].attachmentId == bodyFrame->anchors[0].attachmentId) {
           offsetX = bodyFrame->anchors[0].x - frame->anchors[0].x;
           anchorY = bodyFrame->anchors[0].y - frame->anchors[0].y;
         }
       }
 
       offsetX += this->swingX;
-      if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->unknown_02CC) == true) {
+      if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->isRiding) == true) {
         offsetY = SpriteRidingOffset(
-                    bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->unknown_0260,
+                    bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
                     this->pc->GetBodyCostume()
                   ) +
                   anchorY;
@@ -518,12 +518,12 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
 // OFFSET: 0x00641130
 // FUNCTION: fn_04813
 std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
-  if (g_session.IsDoramJob(this->pc->unknown_025C) == true) {
+  if (g_session.IsDoramJob(this->pc->job) == true) {
     CPc* pc = this->pc;
     int turn = 0;
-    if (pc->unknown_043C == 2) {
+    if (pc->headDir == 2) {
       turn = -1;
-    } else if (pc->unknown_043C == 1) {
+    } else if (pc->headDir == 1) {
       turn = 1;
     }
 
@@ -537,7 +537,7 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
 
     int x = 0;
     int y = 0;
-    g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->layerViews[layer], direction, pc->unknown_0260, &x, &y);
+    g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->layerViews[layer], direction, pc->sex, &x, &y);
     return std::make_pair(x, y);
   }
 
@@ -549,13 +549,13 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
 const std::uint32_t* SpriteLayerRenderer::GetPalette(int layer, CSprRes* sprite, CActRes*) {
   switch (layer) {
     case 0:
-      if (static_cast<int>(this->pc->render.unknown_0048) > 0) {
+      if (static_cast<int>(this->pc->render.bodyPalette) > 0) {
         return static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->pc->render.name))->palette;
       }
       break;
     case 1:
-      if (this->pc->unknown_0444 > 0) {
-        return static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->pc->unknown_0478))->palette;
+      if (this->pc->headPalette > 0) {
+        return static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->pc->headPaletteName))->palette;
       }
       break;
   }
@@ -628,7 +628,7 @@ void SpriteLayerRenderer::DrawLayer(
     int box[4];
     std::uint32_t quadColor;
     if (!this->pc->PrepareSprite(
-          index, this->unknown_0060, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
+          index, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
           resolved.image, &quad, box, &quadColor, offsetX, offsetY, 0
         )) {
       continue;
@@ -646,9 +646,9 @@ void SpriteLayerRenderer::DrawLayer(
     }
 
     if (layer == 1) {
-      this->pc->unknown_04EC = static_cast<float>(resolved.cell->x + this->swingX);
-      this->pc->unknown_04F0 = static_cast<float>(resolved.cell->y + this->swingY);
-      if (this->unknown_006C == true) {
+      this->pc->extentRight = static_cast<float>(resolved.cell->x + this->swingX);
+      this->pc->extentBottom = static_cast<float>(resolved.cell->y + this->swingY);
+      if (this->hideHeadLayer == true) {
         continue;
       }
     }
@@ -666,12 +666,12 @@ void SpriteLayerRenderer::DrawLayer(
         blend = 1;
         break;
       case 4:
-        blend = this->pc->unknown_0458 == 0xB9 ? 0x11 : 1;
+        blend = this->pc->accessory3 == 0xB9 ? 0x11 : 1;
         break;
       default:
         blend = 0x101;
-        if (quad.color >= 0xFF000000 && this->unknown_0030 == 1) {
-          switch (this->unknown_0034) {
+        if (quad.color >= 0xFF000000 && this->blendMode == 1) {
+          switch (this->blendVariant) {
             case 1:
               if (layer == 5) {
                 blend = layer;
@@ -687,11 +687,11 @@ void SpriteLayerRenderer::DrawLayer(
         break;
     }
 
-    if ((layer == 0 || layer == 1) && this->pc->render.unknown_00A4Bytes[1] == 1) {
+    if ((layer == 0 || layer == 1) && this->pc->render.visibilityOptions[1] == 1) {
       this->bounds.Include(&quad.top);
     }
 
-    this->unknown_0094 = true;
+    this->alternateLayerRendering = true;
     this->pc->ApplyLayerEffects(
       &quad, resolved.cell, layer, box, this->scale, this->rhw, bottomRhw, topRhw, this->x, this->y, palette, resolved.image, &blend, offsetX,
       offsetY
@@ -700,8 +700,8 @@ void SpriteLayerRenderer::DrawLayer(
     this->pc->DrawStatusOverlays(quad, palette);
     if (layer == 0) {
       this->pc->blend = blend;
-      this->pc->unknown_04A4 = resolved.cell->x;
-      this->pc->unknown_04A8 = resolved.cell->y;
+      this->pc->layerCellX = resolved.cell->x;
+      this->pc->layerCellY = resolved.cell->y;
       this->DrawRobe(true);
     }
   }
@@ -720,11 +720,11 @@ void SpriteLayerRenderer::LoadLayers() {
     if (layer == 1) {
       const ActionFrame& frame = static_cast<CActRes*>(action)->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       if (frame.Cell(GetSlotLayer(1)).image == -1) {
-        this->unknown_006D = true;
+        this->hideAccessories = true;
       }
 
       if (StateFlag11(this->pc->stateFlags) == true) {
-        if (g_session.IsDoramJob(this->pc->unknown_025C) == true) {
+        if (g_session.IsDoramJob(this->pc->job) == true) {
           sprite = ResourceMgr::Instance().Load("이팩트\\orcface_doram.spr");
           action = ResourceMgr::Instance().Load("이팩트\\orcface_doram.act");
         } else {
@@ -741,7 +741,7 @@ void SpriteLayerRenderer::LoadLayers() {
 
   for (int layer = 2; layer <= 4; ++layer) {
     if (g_session.IsSpecialMonsterJob(this->layerViews[layer]) == true) {
-      this->unknown_006C = true;
+      this->hideHeadLayer = true;
       return;
     }
   }

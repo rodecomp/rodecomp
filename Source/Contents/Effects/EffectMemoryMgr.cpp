@@ -225,7 +225,7 @@ __declspec(noinline) void CEffectMemoryMgr::Free(int type, CParticle* particle) 
 // FUNCTION: fn_19290
 CParticle* CreateEZ2STRParticle(const vector3d* position, int flags) {
   CParticle* particle = g_effectMemoryMgr->Alloc(2);
-  particle->unknown_02B0 = 2;
+  particle->poolIndex = 2;
   particle->position = *position;
   particle->flags = flags;
   return particle;
@@ -235,7 +235,7 @@ CParticle* CreateEZ2STRParticle(const vector3d* position, int flags) {
 // FUNCTION: fn_19291
 CParticle* CreateMultiTexParticle(const vector3d* position, int flags) {
   CParticle* particle = g_effectMemoryMgr->Alloc(3);
-  particle->unknown_02B0 = 3;
+  particle->poolIndex = 3;
   particle->position = *position;
   particle->flags = flags;
   return particle;
@@ -245,7 +245,7 @@ CParticle* CreateMultiTexParticle(const vector3d* position, int flags) {
 // FUNCTION: fn_19292
 CParticle* CreateParticle(const vector3d* position, int flags) {
   CParticle* particle = g_effectMemoryMgr->Alloc(0);
-  particle->unknown_02B0 = 0;
+  particle->poolIndex = 0;
   particle->position = *position;
   particle->flags = flags;
   return particle;
@@ -255,7 +255,7 @@ CParticle* CreateParticle(const vector3d* position, int flags) {
 // FUNCTION: fn_19293
 CParticle* CreateSpriteParticle(const vector3d* position, int flags) {
   CParticle* particle = g_effectMemoryMgr->Alloc(1);
-  particle->unknown_02B0 = 1;
+  particle->poolIndex = 1;
   particle->position = *position;
   particle->flags = flags;
   return particle;
@@ -267,5 +267,5 @@ void FreeParticle(CParticle* particle) {
   if (particle) {
     particle->ReleaseResource();
   }
-  g_effectMemoryMgr->Free(particle->unknown_02B0, particle);
+  g_effectMemoryMgr->Free(particle->poolIndex, particle);
 }

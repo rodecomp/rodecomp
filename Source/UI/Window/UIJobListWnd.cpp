@@ -117,7 +117,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       std::int16_t job = -1;
       bool enabled = false;
       if (check != nullptr) {
-        if (check->geometry.unknown_0030 != 0) {
+        if (check->geometry.state != 0) {
           ++selected;
           enabled = true;
           job = static_cast<std::int16_t>(it->first);
@@ -184,5 +184,5 @@ void UIJobListWnd::RefreshJobs() {
 // OFFSET: 0x00911410
 // FUNCTION: fn_12514
 UIJobListWnd::UIJobListWnd()
-    : UIFrameWnd(0), m_title(nullptr), m_okButton(nullptr), unknown_00E8(0) {
+    : UIFrameWnd(0), m_title(nullptr), m_okButton(nullptr), m_selectionState(0) {
 }

@@ -56,12 +56,12 @@ public:
   static void Destroy();
 
   /* 0000 */ unsigned char m_valid;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int m_serial;
   /* 0008 */ int m_frame;
   /* 000C */ int m_cycle;
   /* 0010 */ unsigned char m_spinning;
   /* 0014 */ int m_stage;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ int resetState;
   /* 001C */ RouletteQuads m_quads;
   /* 025C */ unsigned long m_lastTick;
   /* 0260 */ unsigned long m_interval;

@@ -143,7 +143,7 @@ public:
   /* 00A0 */ RenderVertex* vertices[30];
   /* 0118 */ granny_system_clock clock;
   /* 0128 */ granny_system_clock startClock;
-  /* 0138 */ float unknown_0138;
+  /* 0138 */ float animationTime;
   /* 013C */ unsigned char unknown_013C[4];
   /* 0140 */ int tick;
   /* 0144 */ float angle;
@@ -155,21 +155,21 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(C3dGrannyGameActor, model) == 0x414);
-static_assert(offsetof(C3dGrannyGameActor, unknown_052C) == 0x52C);
+static_assert(offsetof(C3dGrannyGameActor, motionProgress) == 0x52C);
 static_assert(offsetof(C3dGrannyGameActor, motion) == 0x544);
 static_assert(offsetof(C3dGrannyGameActor, controls) == 0x658);
 static_assert(offsetof(C3dGrannyGameActor, commands) == 0x41C);
 static_assert(offsetof(C3dGrannyGameActor, vertices) == 0x494);
 static_assert(offsetof(C3dGrannyGameActor, alpha) == 0x53C);
 static_assert(offsetof(C3dGrannyGameActor, name) == 0x54C);
-static_assert(offsetof(C3dGrannyGameActor, unknown_0650) == 0x650);
-static_assert(offsetof(C3dGrannyGameActor, unknown_06A8) == 0x6A8);
+static_assert(offsetof(C3dGrannyGameActor, renderState) == 0x650);
+static_assert(offsetof(C3dGrannyGameActor, initializeFacing) == 0x6A8);
 static_assert(offsetof(C3dGrannyGameActor, texture) == 0xDB8);
 static_assert(offsetof(C3dGrannyGameActor, angle) == 0x538);
 static_assert(offsetof(C3dGrannyGameActor, brightness) == 0x540);
 static_assert(offsetof(C3dGrannyGameActor, meshTextures) == 0x6AC);
 static_assert(offsetof(C3dGrannyGameActor, meshTransforms) == 0x814);
-static_assert(offsetof(C3dGrannyGameActor, unknown_0DBC) == 0xDBC);
+static_assert(offsetof(C3dGrannyGameActor, litPositions) == 0xDBC);
 static_assert(offsetof(CGrannyCorpse3d, tick) == 0x140);
 static_assert(offsetof(CGrannyCorpse3d, alpha) == 0x148);
 static_assert(offsetof(CGrannyCorpse3d, startClock) == 0x128);
@@ -196,16 +196,16 @@ bool CRenderObject::OnProcess() {
 void CRenderObject::ProcessMotion() {
   this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
   g_modeMgr.GetGameMode();
-  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   CActRes* action = this->render.action;
-  if (this->render.unknown_0070 == 0x2D) {
+  if (this->render.state == 0x2D) {
     action = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\아크비숍_여2.Act"));
   }
   if (action == nullptr) {
     return;
   }
 
-  if (this->render.unknown_00D8 != 0) {
+  if (this->render.animationSequenceActive != 0) {
     this->render.sequenceAnimation = this->render.sequenceAnimations[this->render.sequenceIndex];
     this->render.sequenceFrame = this->render.sequenceFrames[this->render.sequenceIndex];
     if (this->render.sequenceFinished != 0) {
@@ -213,8 +213,8 @@ void CRenderObject::ProcessMotion() {
       this->render.previousAnimation = this->render.sequenceAnimations[4] + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFrames[4];
       if (this->render.sequenceDeadline == 0) {
-        this->render.unknown_00D8 = 0;
-        this->render.unknown_006C = 1;
+        this->render.animationSequenceActive = 0;
+        this->render.motionType = 1;
       }
     } else {
       this->render.animation = this->render.sequenceAnimation;
@@ -225,12 +225,12 @@ void CRenderObject::ProcessMotion() {
       return;
     }
     if (timeGetTime() >= this->render.sequenceDeadline) {
-      this->render.unknown_00D8 = 0;
+      this->render.animationSequenceActive = 0;
       this->render.sequenceDeadline = 0;
-      this->render.unknown_006C = 1;
+      this->render.motionType = 1;
       this->render.isMotionFinished = true;
     }
-    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.unknown_00C2 == 0) {
+    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.sequenceInterval == 0) {
       ++this->render.sequenceIndex;
     }
     if (this->render.sequenceIndex > this->render.sequenceLast) {
@@ -246,14 +246,14 @@ void CRenderObject::ProcessMotion() {
     return;
   }
 
-  if (this->render.unknown_00DC != 0) {
+  if (this->render.timedSequenceActive != 0) {
     if (this->render.sequenceFinished != 0) {
       this->render.animation = this->render.sequenceFinishAnimation;
       this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFinishFrame;
       if (this->render.sequenceDeadline == 0) {
-        this->render.unknown_00C8 = 0;
-        this->render.unknown_006C = 1;
+        this->render.frameSequenceActive = 0;
+        this->render.motionType = 1;
       }
     } else {
       this->render.animation = this->render.sequenceAnimation;
@@ -264,13 +264,13 @@ void CRenderObject::ProcessMotion() {
       return;
     }
     if (timeGetTime() >= this->render.sequenceDeadline) {
-      this->render.unknown_00C8 = 0;
+      this->render.frameSequenceActive = 0;
       this->render.sequenceDeadline = 0;
-      this->render.unknown_006C = 1;
+      this->render.motionType = 1;
       this->render.isMotionFinished = true;
     }
     if (this->render.sequenceFinished == 0) {
-      if (this->render.unknown_00FCBytes[2] == 3) {
+      if (this->render.fontSequenceBytes[2] == 3) {
         this->render.sequenceFrame =
           static_cast<unsigned char>(~static_cast<int>(frame * -2.0f / this->render.speed) - this->render.sequenceLast);
       } else {
@@ -278,13 +278,13 @@ void CRenderObject::ProcessMotion() {
       }
     }
     if (this->render.sequenceFrame > this->render.sequenceLast) {
-      if (this->render.unknown_00FCBytes[2] == 2) {
+      if (this->render.fontSequenceBytes[2] == 2) {
         ++this->render.sequenceTick;
-        this->render.unknown_00FCBytes[2] = 3;
+        this->render.fontSequenceBytes[2] = 3;
         this->render.sequenceFrame = 0;
         return;
       }
-      this->render.unknown_00FCBytes[2] = 0;
+      this->render.fontSequenceBytes[2] = 0;
       this->render.sequenceFrame = this->render.sequenceLast;
       this->render.sequenceFinished = 1;
     }
@@ -292,14 +292,14 @@ void CRenderObject::ProcessMotion() {
     return;
   }
 
-  if (this->render.unknown_00C8 != 0) {
+  if (this->render.frameSequenceActive != 0) {
     if (this->render.sequenceFinished != 0) {
       this->render.animation = this->render.sequenceFinishAnimation;
       this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFinishFrame;
       if (this->render.sequenceDeadline == 0) {
-        this->render.unknown_00C8 = 0;
-        this->render.unknown_006C = 1;
+        this->render.frameSequenceActive = 0;
+        this->render.motionType = 1;
       }
     } else {
       this->render.animation = this->render.sequenceAnimation;
@@ -310,12 +310,12 @@ void CRenderObject::ProcessMotion() {
       return;
     }
     if (timeGetTime() >= this->render.sequenceDeadline) {
-      this->render.unknown_00C8 = 0;
+      this->render.frameSequenceActive = 0;
       this->render.sequenceDeadline = 0;
-      this->render.unknown_006C = 1;
+      this->render.motionType = 1;
       this->render.isMotionFinished = true;
     }
-    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.unknown_00C2 == 0) {
+    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.sequenceInterval == 0) {
       if (this->render.sequenceLoop != 0 && this->render.sequenceFinishAnimation == 0 && this->render.sequenceFinishFrame != 0) {
         --this->render.sequenceFrame;
         this->render.sequenceFinishFrame = 0;
@@ -351,7 +351,7 @@ void CRenderObject::ProcessMotion() {
   int count;
   int motion;
   float progress;
-  switch (this->render.unknown_006C) {
+  switch (this->render.motionType) {
     case MT_LOOP:
       this->render.curMotion =
         static_cast<int>(frame / this->render.speed) % static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -362,7 +362,7 @@ void CRenderObject::ProcessMotion() {
       motion = static_cast<int>(progress);
       break;
     case MT_STATIC: {
-      if (this->render.unknown_0070 != 2) {
+      if (this->render.state != 2) {
         return;
       }
       count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -383,7 +383,7 @@ void CRenderObject::ProcessMotion() {
   progress /= static_cast<float>(count);
   if (progress >= 1.0f) {
     this->render.curMotion = count - 1;
-    if (progress >= this->render.unknown_0060) {
+    if (progress >= this->render.motionFinishThreshold) {
       this->render.isMotionFinished = true;
     }
   }
@@ -392,10 +392,10 @@ void CRenderObject::ProcessMotion() {
 // OFFSET: 0x00CB0AD0
 // FUNCTION: fn_21096
 void CRenderObject::PlayFrameSounds() {
-  int lastMotion = static_cast<int>(this->render.unknown_0044);
-  if (lastMotion != this->render.curMotion || this->render.unknown_0040 != static_cast<std::uint32_t>(this->render.animation)) {
-    if (this->render.unknown_0040 != static_cast<std::uint32_t>(this->render.animation)) {
-      this->render.unknown_0044 = 0;
+  int lastMotion = static_cast<int>(this->render.lastSoundMotion);
+  if (lastMotion != this->render.curMotion || this->render.lastSoundAnimation != static_cast<std::uint32_t>(this->render.animation)) {
+    if (this->render.lastSoundAnimation != static_cast<std::uint32_t>(this->render.animation)) {
+      this->render.lastSoundMotion = 0;
       lastMotion = 0;
     }
     CActRes* action = this->render.action;
@@ -415,10 +415,10 @@ void CRenderObject::PlayFrameSounds() {
       }
     } else if (lastMotion > this->render.curMotion) {
       const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
-      lastMotion = static_cast<int>(this->render.unknown_0044);
+      lastMotion = static_cast<int>(this->render.lastSoundMotion);
       if (lastMotion >= count) {
         lastMotion = count - 1;
-        this->render.unknown_0044 = static_cast<std::uint32_t>(lastMotion);
+        this->render.lastSoundMotion = static_cast<std::uint32_t>(lastMotion);
       }
       for (int motion = lastMotion + 1; motion < count; ++motion) {
         const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
@@ -448,8 +448,8 @@ void CRenderObject::PlayFrameSounds() {
       }
     }
   }
-  this->render.unknown_0044 = static_cast<std::uint32_t>(this->render.curMotion);
-  this->render.unknown_0040 = static_cast<std::uint32_t>(this->render.animation);
+  this->render.lastSoundMotion = static_cast<std::uint32_t>(this->render.curMotion);
+  this->render.lastSoundAnimation = static_cast<std::uint32_t>(this->render.animation);
 }
 
 // OFFSET: 0x00CBF920
@@ -484,7 +484,7 @@ void CRenderObject::SetRenderInfo(const float*, float, float) {
 // OFFSET: 0x00CC2DA0
 // FUNCTION: fn_21146
 __declspec(noinline) void CGameActor::SetUnknown0260(int value) {
-  this->unknown_0260 = value & 1;
+  this->sex = value & 1;
 }
 
 // OFFSET: 0x00CC2E00
@@ -533,7 +533,7 @@ void CRenderObject::SetAction(unsigned animation, int, int repeat) {
       this->render.speed = 1.0f;
     }
   }
-  speed = this->render.speed * this->render.unknown_0064;
+  speed = this->render.speed * this->render.motionSpeedScale;
   if (g_replayAnimationScaling != 0) {
     speed *= Replay::Instance().AnimationScale();
   }
@@ -544,13 +544,13 @@ void CRenderObject::SetAction(unsigned animation, int, int repeat) {
   this->render.animation = animation;
   this->render.previousAnimation = animation;
   this->render.curMotion = 0;
-  this->render.unknown_006C = repeat;
+  this->render.motionType = repeat;
   this->render.isMotionFinished = 0;
-  this->render.unknown_0060 = 1.0f;
-  this->render.unknown_0064 = 1.0f;
-  this->render.unknown_00C8 = 0;
-  this->render.unknown_00D8 = 0;
-  this->render.unknown_00DC = 0;
+  this->render.motionFinishThreshold = 1.0f;
+  this->render.motionSpeedScale = 1.0f;
+  this->render.frameSequenceActive = 0;
+  this->render.animationSequenceActive = 0;
+  this->render.timedSequenceActive = 0;
 }
 
 // OFFSET: 0x00CBFC00
@@ -574,7 +574,7 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
 // OFFSET: 0x00CAF050
 // FUNCTION: fn_21078
 void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
-  if (this->render.unknown_00A3 == 0) {
+  if (this->render.colorLocked == 0) {
     unsigned char* argb = reinterpret_cast<unsigned char*>(&this->render.color);
     int newAlpha = argb[3] + alpha;
     int newRed = argb[2] + red;
@@ -590,15 +590,15 @@ void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
 // OFFSET: 0x00CC1C20
 // FUNCTION: fn_21125
 void CGameActor::SetUnknown0305(unsigned char value, int extra) {
-  this->unknown_0305 = value;
-  this->unknown_0308 = extra;
+  this->hasSp = value;
+  this->spGaugeValue = extra;
 }
 
 // OFFSET: 0x00CC1D20
 // FUNCTION: fn_21127
 void CGameActor::RaiseUnknown03C8(int value) {
-  if (value <= 0 || this->unknown_03C8 < value) {
-    this->unknown_03C8 = value;
+  if (value <= 0 || this->transformPriority < value) {
+    this->transformPriority = value;
   }
 }
 
@@ -611,7 +611,7 @@ void CRenderObject::SetSequenceDeadline(std::uint32_t duration) {
 // OFFSET: 0x00CC1E90
 // FUNCTION: fn_21131
 void CRenderObject::SetSequenceInterval(unsigned char interval) {
-  this->render.unknown_00C2 = interval;
+  this->render.sequenceInterval = interval;
 }
 
 // OFFSET: 0x00CC1EA0
@@ -638,9 +638,9 @@ void CRenderObject::SetAnimationSequence(
   this->render.sequenceLoop = loop;
   this->render.sequenceTimed = timed;
   this->render.sequenceFinished = 0;
-  this->render.unknown_00D8 = 1;
-  this->render.unknown_00C8 = 0;
-  this->render.unknown_00DC = 0;
+  this->render.animationSequenceActive = 1;
+  this->render.frameSequenceActive = 0;
+  this->render.timedSequenceActive = 0;
   this->render.sequenceDeadline = timed != 0 ? timeGetTime() + duration : 0;
   this->render.sequenceTick = 1;
 }
@@ -660,9 +660,9 @@ void CRenderObject::SetFrameSequence(
   this->render.sequenceLoop = loop;
   this->render.sequenceTimed = timed;
   this->render.sequenceFinished = 0;
-  this->render.unknown_00C8 = 1;
-  this->render.unknown_00DC = 0;
-  this->render.unknown_00D8 = 0;
+  this->render.frameSequenceActive = 1;
+  this->render.timedSequenceActive = 0;
+  this->render.animationSequenceActive = 0;
   this->render.sequenceDeadline = timed != 0 ? timeGetTime() + duration : 0;
   this->render.sequenceTick = 1;
 }
@@ -670,7 +670,7 @@ void CRenderObject::SetFrameSequence(
 // OFFSET: 0x00CC2050
 // FUNCTION: fn_21134
 void CGameActor::SetUnknown02E4(int value) {
-  this->unknown_02E4 = value;
+  this->isGroupMemberVisible = value;
 }
 
 // OFFSET: 0x00CC2780
@@ -688,54 +688,54 @@ void CRenderObject::SetAnimationSpeed(float speed) {
 // OFFSET: 0x00CC2810
 // FUNCTION: fn_21142
 void CGameActor::SetUnknown02C8(int value) {
-  this->unknown_02C8 = value;
+  this->healthState = value;
 }
 
 // OFFSET: 0x00CBF970
 // FUNCTION: fn_21117
 void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
-  if (this->unknown_0314 == 7) {
+  if (this->objectType == 7) {
     if (!this->render.action || static_cast<int>(this->render.action->animations.size()) <= static_cast<int>(animation)) {
       return;
     }
   }
 
   CRenderObject::SetAction(animation, motion, repeat);
-  this->unknown_0238 = 0;
-  this->unknown_0378 = -1.0f;
+  this->isNeverAnimation = 0;
+  this->attackMotion = -1.0f;
 }
 
 // OFFSET: 0x00CC15F0
 // FUNCTION: fn_21121
 int CRenderObject::HoverHeight() {
-  this->render.unknown_00F8 += 2;
-  if (this->render.unknown_00F8 >= 360) {
-    this->render.unknown_00F8 -= 360;
+  this->render.hoverAngle += 2;
+  if (this->render.hoverAngle >= 360) {
+    this->render.hoverAngle -= 360;
   }
 
-  const short angle = this->render.unknown_00F8;
-  const int state = this->render.unknown_0070;
+  const short angle = this->render.hoverAngle;
+  const int state = this->render.state;
   if (state == 0 || state == 1 || (this->render.flags & 0x40000) != 0) {
-    if (this->render.unknown_00FA < 20) {
+    if (this->render.hoverHeight < 20) {
       if (angle % 30 == 0) {
-        ++this->render.unknown_00FA;
+        ++this->render.hoverHeight;
       }
-    } else if (this->render.unknown_00FA > 20 && angle % 30 == 0) {
-      --this->render.unknown_00FA;
+    } else if (this->render.hoverHeight > 20 && angle % 30 == 0) {
+      --this->render.hoverHeight;
     }
   } else if (state == 6) {
-    if (this->render.unknown_00FA < 100) {
+    if (this->render.hoverHeight < 100) {
       if (angle % 30 == 0) {
-        ++this->render.unknown_00FA;
+        ++this->render.hoverHeight;
       }
-    } else if (this->render.unknown_00FA > 100 && angle % 30 == 0) {
-      --this->render.unknown_00FA;
+    } else if (this->render.hoverHeight > 100 && angle % 30 == 0) {
+      --this->render.hoverHeight;
     }
-  } else if (this->render.unknown_00FA != 0) {
-    --this->render.unknown_00FA;
+  } else if (this->render.hoverHeight != 0) {
+    --this->render.hoverHeight;
   }
 
-  const short height = static_cast<short>(g_sinTable[angle] * 4.0f + this->render.unknown_00FA);
+  const short height = static_cast<short>(g_sinTable[angle] * 4.0f + this->render.hoverHeight);
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
   return scaled < 0 ? 0 : scaled;
@@ -745,7 +745,7 @@ int CRenderObject::HoverHeight() {
 // FUNCTION: fn_21122
 void CRenderObject::DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* palette) {
   if ((this->render.flags & 0x100) != 0) {
-    const short level = this->render.unknown_00F4;
+    const short level = this->render.effectPhase;
     bool draw = true;
     if (level <= 5) {
       quad.color = (static_cast<short>(level * 50) << 24) + 0xFFFFFF;
@@ -800,7 +800,7 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
     return;
   }
 
-  const int swing = static_cast<int>(180.0f - g_sinTable[this->render.unknown_00F4 * 5 + 90] * 180.0f);
+  const int swing = static_cast<int>(180.0f - g_sinTable[this->render.effectPhase * 5 + 90] * 180.0f);
   const int angle = swing >= 360 ? swing - 360 : swing;
   if (mode == 1) {
     x = static_cast<int>(g_sinTable[angle] * 40.0f + x);
@@ -816,7 +816,7 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
 // OFFSET: 0x00CC1C40
 // FUNCTION: fn_21126
 __declspec(noinline) void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette) {
-  const unsigned char phase = this->render.unknown_00F6;
+  const unsigned char phase = this->render.tintPhase;
   if (phase <= 10) {
     quad.color = (((((phase * 15) << 8) + red) << 8) + green << 8) + blue;
   } else if (phase <= 20) {
@@ -826,7 +826,7 @@ __declspec(noinline) void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short 
     quad.color = ((((alpha << 8) + red) << 8) + green << 8) + blue;
   }
 
-  if (this->render.unknown_00F6 <= 50) {
+  if (this->render.tintPhase <= 50) {
     this->DrawQuad(quad, palette, 5, 0.0f, 0.0f, 0);
     this->DrawQuad(quad, palette, 5, 0.0f, 0.0f, 0);
   }
@@ -869,16 +869,16 @@ void CGameActor::SetImfFileName() {
 // FUNCTION: fn_21141
 void CGameActor::SetUnknown0318(const float* value, int index) {
   if (index == 0) {
-    std::memcpy(this->unknown_0318, value, sizeof(this->unknown_0318));
+    std::memcpy(this->homunMsg, value, sizeof(this->homunMsg));
   } else if (index == 1) {
-    std::memcpy(this->unknown_0348, value, sizeof(this->unknown_0348));
+    std::memcpy(this->merMsg, value, sizeof(this->merMsg));
   }
 }
 
 // OFFSET: 0x00CC2820
 // FUNCTION: fn_21143
 void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
-  if (this->render.unknown_00A4Bytes[1] != 0) {
+  if (this->render.visibilityOptions[1] != 0) {
     // GLOBAL: gl_25185
     static int s_minPickSize = static_cast<int>(g_renderer->UiScaleX() * 40.0f);
 
@@ -890,7 +890,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
+          depth = this->objectType == 7 ? 50.0f : 400.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -900,7 +900,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->unknown_0314 == 7 ? 50.0f : 400.0f;
+          depth = this->objectType == 7 ? 50.0f : 400.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -912,7 +912,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
+          depth = this->objectType == 7 ? 50.0f : 200.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -922,14 +922,14 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->unknown_0314 == 7 ? 50.0f : 200.0f;
+          depth = this->objectType == 7 ? 50.0f : 200.0f;
         } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
       }
     }
 
-    switch (this->unknown_0314) {
+    switch (this->objectType) {
     case 9:
     case 10:
     case 13:
@@ -938,7 +938,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       break;
     }
 
-    if (!this->unknown_03E1) {
+    if (!this->modelReady) {
       if (bounds[0] == static_cast<float>(g_renderer->viewport.width) && bounds[1] == static_cast<float>(g_renderer->viewport.height) &&
           bounds[2] == 0.0f && bounds[3] == 0.0f) {
         return;
@@ -953,13 +953,13 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       info->depthOffset = depth + bounds[4];
       info->accountId = this->render.accountId;
       info->job = this->GetEffectiveJob(-1);
-      info->unknown_0024 = this->unknown_02C8;
-      if (this->unknown_0314 == 7) {
+      info->healthState = this->healthState;
+      if (this->objectType == 7) {
         info->kind = 3;
       } else {
         info->kind = g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
       }
-      switch (this->unknown_0314) {
+      switch (this->objectType) {
       case 9:
       case 10:
       case 13:
@@ -1095,9 +1095,9 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case HT_DETECTING:
     mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
-    if (this->unknown_037C[0] != 0) {
+    if (this->statusEffects[0] != 0) {
       const int address = reinterpret_cast<int>(&position);
-      reinterpret_cast<CGameObject*>(this->unknown_037C[0])->SendMsg(nullptr, AM_REQ_ATTACK, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      reinterpret_cast<CGameObject*>(this->statusEffects[0])->SendMsg(nullptr, AM_REQ_ATTACK, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case AS_VENOMDUST:
@@ -1246,9 +1246,9 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
 // FUNCTION: fn_21145
 void CGameActor::SetUnknown0330(const float* value, int index) {
   if (index == 0) {
-    std::memcpy(this->unknown_0330, value, sizeof(this->unknown_0330));
+    std::memcpy(this->homunResMsg, value, sizeof(this->homunResMsg));
   } else if (index == 1) {
-    std::memcpy(this->unknown_0360, value, sizeof(this->unknown_0360));
+    std::memcpy(this->merResMsg, value, sizeof(this->merResMsg));
   }
 }
 
@@ -1294,15 +1294,15 @@ void CGameActor::SetState(int state, int resetPosition) {
   g_session.m_homunActionState = 0;
   g_session.m_mercenaryActionState = 0;
 
-  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0 || state == -1) {
+  if (this->render.state == 3 || this->isTrickDead != 0 || state == -1) {
     return;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (this->render.unknown_0070 == 4 && static_cast<unsigned char>(resetPosition) == 1) {
-    this->render.position.x = this->unknown_02D0;
-    this->render.position.z = this->unknown_02D4;
-    this->render.position.y = mode->scene->terrain->Height(this->unknown_02D0, this->unknown_02D4);
+  if (this->render.state == 4 && static_cast<unsigned char>(resetPosition) == 1) {
+    this->render.position.x = this->damageDestX;
+    this->render.position.z = this->damageDestZ;
+    this->render.position.y = mode->scene->terrain->Height(this->damageDestX, this->damageDestZ);
   }
 
   const std::uint32_t aid = this->render.accountId;
@@ -1313,7 +1313,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     isPlayer = false;
   }
 
-  if (state != static_cast<int>(this->render.unknown_0070) && this->render.unknown_0070 == 1 && isPlayer) {
+  if (state != static_cast<int>(this->render.state) && this->render.state == 1 && isPlayer) {
     CellFloatPos pos;
     pos.x = this->render.position.x;
     pos.z = this->render.position.z;
@@ -1331,7 +1331,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_AUTOCOUNTER:
     if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
       const std::int64_t weapon = this->GetWeapon();
-      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
+      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, weapon);
       this->SetAction(action, 4, 1);
       this->render.isMotionFreezed = true;
     } else {
@@ -1340,7 +1340,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
     break;
   case ST_DAMAGE: {
-    if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
+    if (this->render.frameSequenceActive != 0 || this->render.animationSequenceActive != 0 || this->render.timedSequenceActive != 0) {
       return;
     }
 
@@ -1361,13 +1361,13 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_SKILL:
-    if (this->render.unknown_0070 == 6) {
+    if (this->render.state == 6) {
       return;
     }
   case ST_ATTACK:
   case ST_ATTACK2:
-    this->SetAction(action, 3, this->unknown_0404 == 1 ? 2 : 1);
-    if (this->render.unknown_0070 != 9 && this->render.unknown_0070 != 2) {
+    this->SetAction(action, 3, this->shapeShift == 1 ? 2 : 1);
+    if (this->render.state != 9 && this->render.state != 2) {
       if (this->hitTargetAid == g_session.m_aid) {
         CRenderObject* target = mode->scene->player;
         if (this->render.accountId != this->hitTargetAid) {
@@ -1383,13 +1383,13 @@ void CGameActor::SetState(int state, int resetPosition) {
     if (this->GetEffectiveJob(-1) == 0x505) {
       this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
     }
-    this->unknown_0378 = static_cast<float>(this->GetAttackMotion());
+    this->attackMotion = static_cast<float>(this->GetAttackMotion());
     this->RegisterPos();
     break;
   case ST_DEAD:
-    this->render.unknown_00C8 = 0;
-    this->render.unknown_00D8 = 0;
-    this->render.unknown_00DC = 0;
+    this->render.frameSequenceActive = 0;
+    this->render.animationSequenceActive = 0;
+    this->render.timedSequenceActive = 0;
     this->render.isMotionFreezed = false;
     if (this->bodyState == BODYSTATE_FREEZING) {
       this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1408,13 +1408,13 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->RegisterPos();
     break;
   case ST_MOVE:
-    if (this->unknown_0184 == 0) {
+    if (this->isAsuraAttack == 0) {
       this->SetAction(action, 6, 0);
     }
     this->UnRegisterPos();
     break;
   case ST_PICKUP:
-    this->unknown_0178 = 0;
+    this->isCounter = 0;
     this->render.isMotionFreezed = false;
   case ST_ATTACKWAIT:
     this->SetAction(action, 6, 1);
@@ -1424,27 +1424,27 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->RegisterPos();
     break;
   case ST_DANCE:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 1, 3, 0, 0, 1, 99999999, 1);
     break;
   case ST_SING:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 1, 3, action, 1, 1, 99999999, 1);
     break;
   case ST_READYSHOT:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 3000, 0);
     break;
   case ST_THROW2:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetAnimationSequence(action, 0, action, 1, action, 2, action, 3, action, 4, 1, 1000, 0);
     break;
   case ST_READYJUMP:
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
-      this->render.unknown_00C2 = 10;
+      this->render.sequenceInterval = 10;
       this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
     } else {
-      this->render.unknown_00C2 = 10;
+      this->render.sequenceInterval = 10;
       this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
       while (HasEffectOfType(this->state.effects, 0x1be)) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1be, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1457,51 +1457,51 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
     break;
   case ST_LANDJUMP:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetAnimationSequence(action, 1, action, 1, action, 1, action, 1, 8, 5, 1, 3000, 0);
     break;
   case ST_R_STORM:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_STORM:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
     break;
   case ST_R_DOWN:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_SG_DOWN:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 1000, 0);
     break;
   case ST_A_DOWN:
-    this->render.unknown_00C2 = 5;
+    this->render.sequenceInterval = 5;
     this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
     break;
   case ST_R_TURN:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_SG_TURN:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 1000, 0);
     break;
   case ST_A_TURN:
-    this->render.unknown_00C2 = 5;
+    this->render.sequenceInterval = 5;
     this->SetAnimationSequence(action, 4, action, 5, action, 6, action, 7, action, 2, 1, 500, 0);
     break;
   case ST_R_COUNTER:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_COUNTER: {
-    this->render.unknown_00C2 = 4;
+    this->render.sequenceInterval = 4;
     int frame0;
     int frame1;
     int frame2;
@@ -1525,35 +1525,35 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_R_DODGE:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
     this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_JUMPKICK:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 3000, 0);
     break;
   case ST_NINJASKILL2:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
     break;
   case 0x37:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 4, action, 4, 1, 500, 0);
     break;
   case 0x38:
     this->render.isMotionFinished = false;
   case ST_NINJASKILL1:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 1, action, 1, 1, 500, 0);
     break;
   case 0x39:
     this->render.isMotionFinished = false;
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
     break;
   case ST_NINJAREADY: {
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
     const int frame = (random != 0) + 2;
@@ -1561,7 +1561,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_GUNSKILL1: {
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
     if (random != 0) {
@@ -1572,11 +1572,11 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_GUNSKILL3:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 2, action, 2, 1, 500, 0);
     break;
   case ST_GUNREADY: {
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     int random = rand() % 2;
     random = random < 0 ? 0 : random;
     const int frame = (random != 0) + 1;
@@ -1584,15 +1584,15 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_GUNREADY2:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
     break;
   case ST_MADOSKILL:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
     break;
   case ST_MADOSKILL2:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 500, 0);
     break;
   case ST_AB_SPECIAL:
@@ -1604,7 +1604,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetAction(action, 3, 1);
     break;
   case 0x2e:
-    this->render.unknown_00C2 = 20;
+    this->render.sequenceInterval = 20;
     this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
     while (HasEffectOfType(this->state.effects, 0x1be)) {
       this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x1be, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1616,142 +1616,142 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 0x2f:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
     break;
   case ST_GUNSKILL2:
   case 0x30:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
     break;
   case 0x31:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 1000, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x32:
-    this->render.unknown_00C2 = 10;
+    this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 9999999, 0);
     break;
   case 0x33:
-    this->render.unknown_00C2 = 4;
+    this->render.sequenceInterval = 4;
     this->SetAnimationSequence(action, 2, action, 3, action, 4, action, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x3e:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x3f:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x40:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x41:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x3c:
   case 0x3d:
   case 0x42:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
     break;
   case 0x43:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x44:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x45:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 8, action, 8, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x46:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x4c:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x47:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 4, 8, action, 8, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x48:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x49:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x4d:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
   case 0x4b:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 5, action, 5, 1, 500, 1);
     this->render.isMotionFinished = false;
     break;
   case 0x4e:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 1);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x4f:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 8, action, 4, 1, 500, 1);
     this->render.isMotionFinished = false;
-    this->unknown_0378 = 6.0f;
+    this->attackMotion = 6.0f;
     break;
   case 0x50:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 5, action, 5, 1, 500, 1);
     this->render.isMotionFinished = false;
     break;
   case 0x51:
-    this->render.unknown_00C2 = 6;
+    this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 9999999, 0);
     break;
   }
 
   this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
-  const int previous = this->render.unknown_0070;
+  const int previous = this->render.state;
   if (previous == 0 || previous == 6) {
-    this->render.unknown_0074 = previous;
+    this->render.previousState = previous;
   }
-  this->render.unknown_0070 = state;
+  this->render.state = state;
   if (state == 7 || state == 0x31) {
-    this->render.unknown_0070 = 7;
+    this->render.state = 7;
   }
-  this->render.unknown_008C = timeGetTime();
+  this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00CA9E50
@@ -1769,9 +1769,9 @@ void CRenderObject::RenderBlur(
 
   SpriteQuad quad;
   for (int direction = 1; direction < 5; ++direction) {
-    const float distance = static_cast<float>(this->render.unknown_00F4) * scale;
+    const float distance = static_cast<float>(this->render.effectPhase) * scale;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    short alpha = static_cast<short>((30 - this->render.unknown_00F4) * 5);
+    short alpha = static_cast<short>((30 - this->render.effectPhase) * 5);
     if (alpha < 0) {
       alpha = 0;
     }
@@ -1805,7 +1805,7 @@ void CRenderObject::RenderBlur(
     quad.bottom -= static_cast<float>(shift);
     quad.bottomRhw = bottomRhw;
     quad.topRhw = topRhw;
-    quad.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+    quad.angle = static_cast<float>(cell->rotation + static_cast<int>(this->render.spriteAngle));
     this->DrawQuad(quad, palette, 0x201, 0.0f, 0.0f, 0);
   }
 }
@@ -1847,7 +1847,7 @@ void CRenderObject::RenderAura(
     return;
   }
 
-  unsigned char& phaseTick = this->render.unknown_00ECBytes[3];
+  unsigned char& phaseTick = this->render.effectPhaseBytes[3];
   ++phaseTick;
   if (phaseTick >= 200) {
     phaseTick -= 200;
@@ -1881,7 +1881,7 @@ void CRenderObject::RenderAura(
     trail.color = (static_cast<short>(alpha) << 24) + 0xFFFFFF;
     trail.bottomRhw = bottomRhw - spread * 0.000005f - 0.00001f;
     trail.topRhw = topRhw - spread * 0.000005f - 0.00001f;
-    trail.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
+    trail.angle = static_cast<float>(static_cast<int>(this->render.spriteAngle) + cell->rotation);
     if (blend != 5) {
       this->DrawQuad(trail, palette, blend, 0.0f, 0.0f, 0);
     }
@@ -1900,7 +1900,7 @@ void CRenderObject::DrawPulseOutline(
     return;
   }
 
-  unsigned char& phase = this->render.unknown_00ECBytes[2];
+  unsigned char& phase = this->render.effectPhaseBytes[2];
   ++phase;
   if (phase > 180) {
     phase = 0;
@@ -1928,7 +1928,7 @@ void CRenderObject::DrawPulseOutline(
   outline.topRhw = topRhw - 0.00005f;
   outline.image = image;
   outline.color = color;
-  outline.angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
+  outline.angle = static_cast<float>(cell.rotation + static_cast<int>(this->render.spriteAngle));
   this->DrawQuad(outline, palette, 5, 0.0f, 0.0f, 0);
 }
 
@@ -1960,10 +1960,10 @@ void CRenderObject::DrawSpriteEffects(
     short step = 1;
     for (int distance = 3; distance <= 30; distance += 3, ++step) {
       short alpha;
-      if (this->render.unknown_00F4 > 130) {
-        alpha = 245 - step * 10 - this->render.unknown_00F4;
+      if (this->render.effectPhase > 130) {
+        alpha = 245 - step * 10 - this->render.effectPhase;
       } else {
-        alpha = this->render.unknown_00F4 - (step * 5 + 50);
+        alpha = this->render.effectPhase - (step * 5 + 50);
       }
       if (alpha > 200) {
         alpha = 200;
@@ -1993,14 +1993,14 @@ void CRenderObject::DrawSpriteEffects(
       shadow.color = (alpha << 24) + 0xFFFFFF;
       shadow.bottomRhw = bottomRhw + spread * 0.000005f + 0.00001f;
       shadow.topRhw = topRhw + spread * 0.000005f + 0.00001f;
-      shadow.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
+      shadow.angle = static_cast<float>(static_cast<int>(this->render.spriteAngle) + cell->rotation);
       this->DrawQuad(shadow, palette, 5, 0.0f, 0.0f, 0);
     }
   }
 
   if ((this->render.flags & 0x80002) != 0) {
     for (int distance = 1; distance <= 2; ++distance) {
-      const unsigned char alpha = this->render.unknown_00F2;
+      const unsigned char alpha = this->render.outlineAlpha;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const float spread = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(distance);
 
@@ -2026,7 +2026,7 @@ void CRenderObject::DrawSpriteEffects(
       } else {
         glow.color = (alpha << 24) + 0x059B05;
       }
-      glow.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell->unknown_001C);
+      glow.angle = static_cast<float>(static_cast<int>(this->render.spriteAngle) + cell->rotation);
       this->DrawQuad(glow, palette, 5, 0.0f, 0.0f, 0);
     }
   }
@@ -2037,7 +2037,7 @@ void CRenderObject::DrawSpriteEffects(
   actor->ApplySpriteJitter(quad, box, offset, 21, 10);
 
   if ((this->render.flags & 0x100000) != 0) {
-    short angle = static_cast<short>(cell->unknown_001C) + static_cast<short>(this->render.unknown_007C) + 60;
+    short angle = static_cast<short>(cell->rotation) + static_cast<short>(this->render.spriteAngle) + 60;
     if (angle >= 360) {
       angle -= 360;
     }
@@ -2163,7 +2163,7 @@ void CGameActor::SetPropensityInfo(int, int) {
 // OFFSET: 0x005A19E0
 // FUNCTION: fn_03062
 void CGameActor::SetRiding(unsigned char value) {
-  this->unknown_02CC = value;
+  this->isRiding = value;
 }
 
 // OFFSET: 0x005A1A40
@@ -2206,10 +2206,10 @@ int CGameActor::GetAttackMotion() {
 // FUNCTION: fn_21048
 float* CGameActor::GetMsg2AI(int index) {
   if (index == 0) {
-    return this->unknown_0318;
+    return this->homunMsg;
   }
   if (index == 1) {
-    return this->unknown_0348;
+    return this->merMsg;
   }
   return nullptr;
 }
@@ -2218,10 +2218,10 @@ float* CGameActor::GetMsg2AI(int index) {
 // FUNCTION: fn_21052
 float* CGameActor::GetResMsg2AI(int index) {
   if (index == 0) {
-    return this->unknown_0330;
+    return this->homunResMsg;
   }
   if (index == 1) {
-    return this->unknown_0360;
+    return this->merResMsg;
   }
   return nullptr;
 }
@@ -2229,7 +2229,7 @@ float* CGameActor::GetResMsg2AI(int index) {
 // OFFSET: 0x00CADB70
 // FUNCTION: fn_21061
 bool CGameActor::HasShapeShift() {
-  return this->unknown_0404 != 0;
+  return this->shapeShift != 0;
 }
 
 // OFFSET: 0x00CAE500
@@ -2246,12 +2246,12 @@ void CGameActor::MakeCorpse() {
   );
 
   if (corpse) {
-    if (static_cast<int>(this->render.unknown_010C) > 0) {
-      corpse->render.unknown_010C = this->render.unknown_010C;
+    if (static_cast<int>(this->render.spriteJob) > 0) {
+      corpse->render.spriteJob = this->render.spriteJob;
     }
 
     if (CEffect* effect = g_effectMgr->Find(static_cast<int>(this->render.accountId), 2374)) {
-      corpse->spriteOffset = *reinterpret_cast<const float*>(&effect->unknown_0048);
+      corpse->spriteOffset = *reinterpret_cast<const float*>(&effect->scaleParameter);
     }
   }
 }
@@ -2260,7 +2260,7 @@ void CGameActor::MakeCorpse() {
 // FUNCTION: fn_21076
 void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (mode->scene->unknown_0048 == 0 && mode->scene->unknown_0054 == 0) {
+  if (mode->scene->isPKZone == 0 && mode->scene->isEventPVPMode == 0) {
     return;
   }
 
@@ -2427,8 +2427,8 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
 // OFFSET: 0x00CABEB0
 // FUNCTION: fn_21040
 int CGameActor::GetMonsterTransformJob() {
-  if (this->unknown_03C4 != -1) {
-    return this->unknown_03C4;
+  if (this->monsterTransformJob != -1) {
+    return this->monsterTransformJob;
   }
 
   int result = -1;
@@ -2436,15 +2436,15 @@ int CGameActor::GetMonsterTransformJob() {
     return g_session.GetPairValue();
   }
 
-  if (this->unknown_03B8[0] != -1) {
-    result = this->unknown_03B8[0];
+  if (this->transformJobs[0] != -1) {
+    result = this->transformJobs[0];
   }
-  int second = this->unknown_03B8[1];
+  int second = this->transformJobs[1];
   if (second == -1) {
     second = result;
   }
-  if (this->unknown_03B8[2] != -1) {
-    second = this->unknown_03B8[2];
+  if (this->transformJobs[2] != -1) {
+    second = this->transformJobs[2];
   }
   return second;
 }
@@ -2453,7 +2453,7 @@ int CGameActor::GetMonsterTransformJob() {
 // FUNCTION: fn_21042
 int CGameActor::GetEffectiveJob(int job) {
   if (job == -1) {
-    job = this->unknown_025C;
+    job = this->job;
   }
 
   if (StateFlag12(this->GetStateFlags())) {
@@ -2473,7 +2473,7 @@ int CGameActor::GetEffectiveJob(int job) {
     if (StateFlag28(this->GetStateFlags())) {
       return JT_OKTOBERFEST;
     }
-    if (this->unknown_03DC == 1) {
+    if (this->mountedState == 1) {
       return JT_SUMMER2;
     }
   }
@@ -2595,7 +2595,7 @@ void CGameActor::SetModifyFactorOfmotionSpeed(int value) {
     value = g_maxMoveSpeed;
   }
   const float speed = static_cast<float>(value) / 432.0f;
-  this->render.unknown_0064 = speed;
+  this->render.motionSpeedScale = speed;
   this->render.motionSpeed = speed;
 }
 
@@ -2661,17 +2661,17 @@ void CCharacterNpc::Render(int) {
     return;
   }
 
-  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->unknown_0440);
-  characterRender->unknown_0040 = this->render.previousAnimation;
-  characterRender->unknown_0044 = this->render.curMotion;
+  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->characterRender);
+  characterRender->actionIndex = this->render.previousAnimation;
+  characterRender->frameIndex = this->render.curMotion;
 
   char useBounds = 0;
-  std::list<CharacterRenderDrawItem> drawList = characterRender->BuildDrawList(this->render.unknown_00A4Bytes[1], &useBounds);
+  std::list<CharacterRenderDrawItem> drawList = characterRender->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
 
   float bounds[5];
-  std::memcpy(bounds, characterRender->unknown_0094, sizeof(bounds));
-  const float tlvertX = *reinterpret_cast<float*>(&characterRender->unknown_00A8);
-  const float tlvertY = *reinterpret_cast<float*>(&characterRender->unknown_00AC);
+  std::memcpy(bounds, characterRender->renderBounds, sizeof(bounds));
+  const float tlvertX = *reinterpret_cast<float*>(&characterRender->screenX);
+  const float tlvertY = *reinterpret_cast<float*>(&characterRender->screenY);
   if (useBounds == 1) {
     this->SetRenderInfo(bounds, tlvertX, tlvertY);
   } else {
@@ -2687,61 +2687,61 @@ struct CharacterNpcViewInfo {
   /* 0000 */ int unknown_0000;
   /* 0004 */ int job;
   /* 0008 */ int unknown_0008[10];
-  /* 0030 */ int unknown_0030;
+  /* 0030 */ int standAccessory;
   /* 0034 */ int unknown_0034;
-  /* 0038 */ int unknown_0038;
+  /* 0038 */ int moveAccessory;
   /* 003C */ int unknown_003C[4];
-  /* 004C */ int unknown_004C;
-  /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
-  /* 0058 */ int unknown_0058;
-  /* 005C */ int unknown_005C;
-  /* 0060 */ int unknown_0060;
-  /* 0064 */ int unknown_0064;
+  /* 004C */ int standAccessory2;
+  /* 0050 */ int standAccessory3OrMoveAccessory2;
+  /* 0054 */ int standBodyPaletteOrMoveAccessory3;
+  /* 0058 */ int standHeadPaletteOrMoveBodyPalette;
+  /* 005C */ int moveHeadPalette;
+  /* 0060 */ int guildId;
+  /* 0064 */ int guildEmblemVersion;
   /* 0068 */ int unknown_0068[2];
   /* 0070 */ int robe;
   /* 0074 */ int robeAlt;
-  /* 0078 */ int unknown_0078;
-  /* 007C */ int unknown_007C;
+  /* 0078 */ int standBodyStyle;
+  /* 007C */ int moveBodyStyle;
 };
 
 // INLINED
 static CCharacterRender* NpcCharacterRender(CCharacterNpc* self) {
-  return reinterpret_cast<CCharacterRender*>(self->unknown_0440);
+  return reinterpret_cast<CCharacterRender*>(self->characterRender);
 }
 
 // INLINED
 static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
-  NpcCharacterRender(self)->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
-  NpcCharacterRender(self)->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
-  NpcCharacterRender(self)->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
-  NpcCharacterRender(self)->unknown_0010 = self->unknown_025C;
-  NpcCharacterRender(self)->unknown_0018[0] = self->unknown_0260;
-  NpcCharacterRender(self)->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
-  NpcCharacterRender(self)->unknown_0018[2] = info->unknown_0058;
-  NpcCharacterRender(self)->unknown_0018[3] = info->unknown_0054;
-  NpcCharacterRender(self)->unknown_0028 = info->unknown_0030;
-  NpcCharacterRender(self)->unknown_002C = info->unknown_004C;
-  NpcCharacterRender(self)->unknown_0030 = info->unknown_0050;
+  NpcCharacterRender(self)->positionX = *reinterpret_cast<int*>(&self->render.position.x);
+  NpcCharacterRender(self)->positionY = *reinterpret_cast<int*>(&self->render.position.y);
+  NpcCharacterRender(self)->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  NpcCharacterRender(self)->job = self->job;
+  NpcCharacterRender(self)->appearance[0] = self->sex;
+  NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
+  NpcCharacterRender(self)->appearance[2] = info->standHeadPaletteOrMoveBodyPalette;
+  NpcCharacterRender(self)->appearance[3] = info->standBodyPaletteOrMoveAccessory3;
+  NpcCharacterRender(self)->lowerHeadgear = info->standAccessory;
+  NpcCharacterRender(self)->upperHeadgear = info->standAccessory2;
+  NpcCharacterRender(self)->middleHeadgear = info->standAccessory3OrMoveAccessory2;
   NpcCharacterRender(self)->SetRobe(info->robe);
-  NpcCharacterRender(self)->unknown_0050 = info->unknown_0078;
+  NpcCharacterRender(self)->bodyCostume = info->standBodyStyle;
 }
 
 // INLINED
 static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
-  NpcCharacterRender(self)->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
-  NpcCharacterRender(self)->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
-  NpcCharacterRender(self)->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
-  NpcCharacterRender(self)->unknown_0010 = self->unknown_025C;
-  NpcCharacterRender(self)->unknown_0018[0] = self->unknown_0260;
-  NpcCharacterRender(self)->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
-  NpcCharacterRender(self)->unknown_0018[2] = info->unknown_005C;
-  NpcCharacterRender(self)->unknown_0018[3] = info->unknown_0058;
-  NpcCharacterRender(self)->unknown_0028 = info->unknown_0038;
-  NpcCharacterRender(self)->unknown_002C = info->unknown_0050;
-  NpcCharacterRender(self)->unknown_0030 = info->unknown_0054;
+  NpcCharacterRender(self)->positionX = *reinterpret_cast<int*>(&self->render.position.x);
+  NpcCharacterRender(self)->positionY = *reinterpret_cast<int*>(&self->render.position.y);
+  NpcCharacterRender(self)->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  NpcCharacterRender(self)->job = self->job;
+  NpcCharacterRender(self)->appearance[0] = self->sex;
+  NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
+  NpcCharacterRender(self)->appearance[2] = info->moveHeadPalette;
+  NpcCharacterRender(self)->appearance[3] = info->standHeadPaletteOrMoveBodyPalette;
+  NpcCharacterRender(self)->lowerHeadgear = info->moveAccessory;
+  NpcCharacterRender(self)->upperHeadgear = info->standAccessory3OrMoveAccessory2;
+  NpcCharacterRender(self)->middleHeadgear = info->standBodyPaletteOrMoveAccessory3;
   NpcCharacterRender(self)->SetRobe(info->robeAlt);
-  NpcCharacterRender(self)->unknown_0050 = info->unknown_007C;
+  NpcCharacterRender(self)->bodyCostume = info->moveBodyStyle;
 }
 
 // OFFSET: 0x005A1530
@@ -2754,16 +2754,16 @@ void CCharacterNpc::SendMsg(
   case AM_INITSTANDENTRY:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
-    this->SetGuildInfo(info->unknown_0060, info->unknown_0064);
-    if (this->unknown_0440 != nullptr) {
+    this->SetGuildInfo(info->guildId, info->guildEmblemVersion);
+    if (this->characterRender != nullptr) {
       return;
     }
-    this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    this->characterRender = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
     FillCharacterNpcRenderPrimary(this, info);
     return;
   case AM_STANDENTRY:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    if (this->unknown_0440 == nullptr) {
+    if (this->characterRender == nullptr) {
       return;
     }
     FillCharacterNpcRenderPrimary(this, info);
@@ -2771,16 +2771,16 @@ void CCharacterNpc::SendMsg(
   case AM_INITMOVEENTRY:
   case AM_INITMOVEENTRY2:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    if (this->unknown_0440 != nullptr) {
+    if (this->characterRender != nullptr) {
       return;
     }
-    this->unknown_0440 = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    this->characterRender = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
     FillCharacterNpcRenderSecondary(this, info);
     return;
   case AM_MOVEENTRY:
   case AM_MOVEENTRY2:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    if (this->unknown_0440 == nullptr) {
+    if (this->characterRender == nullptr) {
       return;
     }
     FillCharacterNpcRenderSecondary(this, info);
@@ -2794,38 +2794,38 @@ void CCharacterNpc::SendMsg(
 // OFFSET: 0x00CAC760
 // FUNCTION: fn_21044
 int CGameActor::GetUnknown0404Job() const {
-  switch (this->unknown_0404) {
+  switch (this->shapeShift) {
   case 1:
     return 0x1104;
   case 2:
     return 0x1105;
   default:
-    return this->unknown_025C;
+    return this->job;
   }
 }
 
 // OFFSET: 0x00CC1D40
 // FUNCTION: fn_21128
 void CGameActor::SetUnknown03B8(int value, int slot) {
-  this->unknown_03C8 = 0;
+  this->transformPriority = 0;
   if (this->render.accountId == g_session.m_aid) {
     g_session.SetPairValue(value, slot);
   } else if (slot == 0) {
-    this->unknown_03B8[0] = value;
+    this->transformJobs[0] = value;
   } else if (slot == 1) {
-    this->unknown_03B8[1] = value;
+    this->transformJobs[1] = value;
   } else if (slot == 2) {
-    this->unknown_03B8[2] = value;
+    this->transformJobs[2] = value;
   }
 
   if (value > 0) {
     this->SetSprJob(value);
-    this->SetState(this->render.unknown_0070, 1);
+    this->SetState(this->render.state, 1);
     return;
   }
 
   int job;
-  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->unknown_0404 == 0) {
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
     job = this->GetEffectiveJob(-1);
   } else {
     job = this->GetUnknown0404Job();
@@ -2833,7 +2833,7 @@ void CGameActor::SetUnknown03B8(int value, int slot) {
 
   this->SetBodyPaletteName();
   this->SetSprJob(job);
-  this->SetState(this->render.unknown_0070, 1);
+  this->SetState(this->render.state, 1);
 }
 
 // OFFSET: 0x00CC46D0
@@ -2841,7 +2841,7 @@ void CGameActor::SetUnknown03B8(int value, int slot) {
 void CGameActor::SetTetraBall(int index, int on, int value) {
   CTetraBallEffect* ball = nullptr;
   if (on == 1) {
-    if (value == 0 || this->unknown_0158[index] == value) {
+    if (value == 0 || this->movementState[index] == value) {
       return;
     }
 
@@ -2891,7 +2891,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       }
     }
 
-    this->unknown_0158[index] = value;
+    this->movementState[index] = value;
     return;
   }
 
@@ -2907,21 +2907,21 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
     }
   }
 
-  this->unknown_0158[index] = 0;
+  this->movementState[index] = 0;
 }
 
 // OFFSET: 0x00CC40C0
 // FUNCTION: fn_21157
 void CGameActor::SetUnknown0404(int value) {
-  this->unknown_0404 = value;
+  this->shapeShift = value;
 }
 
 // OFFSET: 0x00CC3DE0
 // FUNCTION: fn_21155
 void CGameActor::SetUnknown008C(const std::uint32_t* value) {
-  this->render.unknown_008C = value[0];
-  this->render.unknown_0090 = value[1];
-  this->render.unknown_0094 = value[2];
+  this->render.motionStartTime = value[0];
+  this->render.savedTintColor = value[1];
+  this->render.targetTintColor = value[2];
 }
 
 // OFFSET: 0x00CC41E0
@@ -2933,13 +2933,13 @@ void CGameActor::UnRegisterPos() {
 // OFFSET: 0x00CC1E30
 // FUNCTION: fn_21129
 void CGameActor::SetUnknown03C4(int value) {
-  this->unknown_03C8 = 0;
-  this->unknown_03C4 = value;
+  this->transformPriority = 0;
+  this->monsterTransformJob = value;
   if (value <= 0) {
     value = this->GetEffectiveJob(-1);
   }
   this->SetSprJob(value);
-  this->SetState(this->render.unknown_0070, 1);
+  this->SetState(this->render.state, 1);
 }
 
 // OFFSET: 0x00CABDE0
@@ -3050,7 +3050,7 @@ static std::string ShapeShiftName(int form, int job) {
 // OFFSET: 0x00CACD00
 // FUNCTION: fn_21046
 std::string CGameActor::GetShapeShiftName() {
-  return ShapeShiftName(this->unknown_0404, this->unknown_025C);
+  return ShapeShiftName(this->shapeShift, this->job);
 }
 
 // OFFSET: 0x00CACD70
@@ -3129,7 +3129,7 @@ bool CGameActor::IsShapeShifted() {
   if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true) {
     return false;
   }
-  return this->unknown_0404 != 0;
+  return this->shapeShift != 0;
 }
 
 // OFFSET: 0x00CAA870
@@ -3178,8 +3178,8 @@ void CGameActor::SetHatEffect(int effectId, bool on) {
   bool show = on;
   CPc* pc;
   if (hatEffect == 254 && IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
-    pc->unknown_0438 = on ? pc->unknown_0438 | 0x10 : pc->unknown_0438 ^ 0x10;
-    show = (pc->unknown_0434 & 0x10) != 0 || (pc->unknown_0438 & 0x10) != 0;
+    pc->appearanceFlags = on ? pc->appearanceFlags | 0x10 : pc->appearanceFlags ^ 0x10;
+    show = (pc->virtue & 0x10) != 0 || (pc->appearanceFlags & 0x10) != 0;
   }
   if (!show) {
     return;
@@ -3187,7 +3187,7 @@ void CGameActor::SetHatEffect(int effectId, bool on) {
 
   CEffect* effect = g_effectMgr->Spawn(this->render.accountId, hatEffect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
-    effect->unknown_00C8 = 1;
+    effect->headAttached = 1;
   } else {
     this->LaunchEffect(hatEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
@@ -3199,7 +3199,7 @@ void CGameActor::SetEffectState(int effectId, bool on) {
   if (on) {
     CEffect* effect = g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
-      effect->unknown_00C8 = 1;
+      effect->headAttached = 1;
     }
   } else {
     g_effectMgr->Retire(this->render.accountId, effectId);
@@ -3219,7 +3219,7 @@ void CGameActor::SetEffectInstance(int effectId, int instance, bool on) {
 // OFFSET: 0x00CAAC80
 // FUNCTION: fn_21022
 void CGameActor::ResetJobEffects() {
-  this->unknown_02B8 = 0;
+  this->levelAuraType = 0;
   this->SendMsg(this, AM_DELETE_EFFECT, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, 0, 976, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, 0, 977, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3249,32 +3249,32 @@ void CGameActor::ResetJobEffects() {
 // OFFSET: 0x00CAB020
 // FUNCTION: fn_21024
 __declspec(noinline) void CGameActor::ClearUnknown037C(int value) {
-  if (this->unknown_037C[1] == value) {
-    this->unknown_037C[1] = 0;
-  } else if (this->unknown_037C[0] == value) {
-    this->unknown_037C[0] = 0;
-  } else if (this->unknown_037C[2] == value) {
-    this->unknown_037C[2] = 0;
-  } else if (this->unknown_037C[3] == value) {
-    this->unknown_037C[3] = 0;
-  } else if (this->unknown_037C[4] == value) {
-    this->unknown_037C[4] = 0;
-  } else if (this->unknown_037C[5] == value) {
-    this->unknown_037C[5] = 0;
-  } else if (this->unknown_037C[6] == value) {
-    this->unknown_037C[6] = 0;
-  } else if (this->unknown_037C[8] == value) {
-    this->unknown_037C[8] = 0;
-  } else if (this->unknown_037C[9] == value) {
-    this->unknown_037C[9] = 0;
-  } else if (this->unknown_037C[7] == value) {
-    this->unknown_037C[7] = 0;
-  } else if (this->unknown_037C[10] == value) {
-    this->unknown_037C[10] = 0;
-  } else if (this->unknown_037C[11] == value) {
-    this->unknown_037C[11] = 0;
-  } else if (this->unknown_037C[12] == value) {
-    this->unknown_037C[12] = 0;
+  if (this->statusEffects[1] == value) {
+    this->statusEffects[1] = 0;
+  } else if (this->statusEffects[0] == value) {
+    this->statusEffects[0] = 0;
+  } else if (this->statusEffects[2] == value) {
+    this->statusEffects[2] = 0;
+  } else if (this->statusEffects[3] == value) {
+    this->statusEffects[3] = 0;
+  } else if (this->statusEffects[4] == value) {
+    this->statusEffects[4] = 0;
+  } else if (this->statusEffects[5] == value) {
+    this->statusEffects[5] = 0;
+  } else if (this->statusEffects[6] == value) {
+    this->statusEffects[6] = 0;
+  } else if (this->statusEffects[8] == value) {
+    this->statusEffects[8] = 0;
+  } else if (this->statusEffects[9] == value) {
+    this->statusEffects[9] = 0;
+  } else if (this->statusEffects[7] == value) {
+    this->statusEffects[7] = 0;
+  } else if (this->statusEffects[10] == value) {
+    this->statusEffects[10] = 0;
+  } else if (this->statusEffects[11] == value) {
+    this->statusEffects[11] = 0;
+  } else if (this->statusEffects[12] == value) {
+    this->statusEffects[12] = 0;
   }
 }
 
@@ -3357,7 +3357,7 @@ int CGameActor::WeaponActionBase(int weaponType) {
     base = 40;
     break;
   case ST_AUTOCOUNTER:
-    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->GetWeapon()) ? 88 : 80;
+    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
     break;
   case ST_DANCE:
   case ST_SING:
@@ -3422,20 +3422,20 @@ int CGameActor::MountHeightOffset() {
   }
 
   if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
-    return this->unknown_02CC ? 10 : -20;
+    return this->isRiding ? 10 : -20;
   }
 
   if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
-    return this->unknown_02CC ? -40 : -30;
+    return this->isRiding ? -40 : -30;
   }
 
-  return this->unknown_02CC ? 30 : 0;
+  return this->isRiding ? 30 : 0;
 }
 
 // OFFSET: 0x00CABD30
 // FUNCTION: fn_21036
 int CGameActor::GetUnknown0404() {
-  return this->unknown_0404;
+  return this->shapeShift;
 }
 
 // OFFSET: 0x00CC4EA0
@@ -3443,7 +3443,7 @@ int CGameActor::GetUnknown0404() {
 C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   this->model = nullptr;
   this->instance = nullptr;
-  this->unknown_06A8 = 1;
+  this->initializeFacing = 1;
   for (int mesh = 0; mesh < 30; ++mesh) {
     this->commands[mesh] = nullptr;
     this->vertices[mesh] = nullptr;
@@ -3451,14 +3451,14 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   this->motion = 0;
   this->alpha = 0xFF;
   std::strcpy(this->name, name);
-  this->unknown_0650 = 0;
+  this->renderState = 0;
   this->unknown_0654 = 0;
   for (int index = 0; index < 20; ++index) {
     this->controls[index] = nullptr;
   }
   this->emblemTexture = nullptr;
   this->texture = CreateTexture(35, 35, 1, false, false);
-  this->unknown_0DBC.resize(4900);
+  this->litPositions.resize(4900);
 }
 
 // OFFSET: 0x00CC7ED0
@@ -3488,13 +3488,13 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   }
 
   this->lastClock = GrannyGetSystemSeconds();
-  this->unknown_052C = 0.0f;
+  this->motionProgress = 0.0f;
   if (job == JT_ZOMBIE_DRAGON || job == JT_HUGELING) {
-    this->unknown_02E0 = 1;
-    this->model->unknown_03A0 = 30.0f;
-    this->model->unknown_03A4 = 30.0f;
+    this->actorType = 1;
+    this->model->baseHeight = 30.0f;
+    this->model->topHeight = 30.0f;
   } else {
-    this->unknown_02E0 = job == JT_GUILD_FLAG ? 2 : 0;
+    this->actorType = job == JT_GUILD_FLAG ? 2 : 0;
   }
 }
 
@@ -3527,41 +3527,41 @@ bool CGrannyCorpse3d::OnProcess() {
 // OFFSET: 0x00CC7D50
 // FUNCTION: fn_21188
 void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
-  this->render.unknown_0070 = 0;
+  this->render.state = 0;
   switch (animation) {
     case 0:
       break;
     case 8:
-      this->render.unknown_0070 = 1;
+      this->render.state = 1;
       break;
     case 24:
-      this->render.unknown_0070 = 5;
+      this->render.state = 5;
       break;
     case 32:
-      this->render.unknown_0070 = 11;
+      this->render.state = 11;
       break;
     case 40:
-      this->render.unknown_0070 = 12;
+      this->render.state = 12;
       break;
     case 48:
-      this->render.unknown_0070 = 4;
+      this->render.state = 4;
       break;
     case 64:
-      this->render.unknown_0070 = 3;
+      this->render.state = 3;
       break;
     case 80:
     case 88:
-      this->render.unknown_0070 = 2;
+      this->render.state = 2;
       break;
   }
 
-  this->motion = this->render.unknown_0070;
+  this->motion = this->render.state;
   for (int i = 0; i < 20; ++i) {
     this->model->FreeControl(this->controls[i]);
     this->controls[i] = nullptr;
   }
 
-  this->unknown_052C = 0;
+  this->motionProgress = 0;
   this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], repeat == 1);
 }
 
@@ -3590,7 +3590,7 @@ CGrannyCorpse3d::CGrannyCorpse3d(const char* name) {
   }
 
   this->startClock = GrannyGetSystemSeconds();
-  this->unknown_0138 = 0;
+  this->animationTime = 0;
   this->tick = 0;
   this->control = this->model->PlayAnimation(3, this->instance, this->control, 1);
 }
@@ -3630,8 +3630,8 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
   int damage = info->damage;
   int hitCount = info->hitCount;
   const int extraDamage = info->extraDamage;
-  const int unknown_001C = info->unknown_001C;
-  const int unknown_0020 = info->unknown_0020;
+  const int unknown_001C = info->cellX;
+  const int unknown_0020 = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
 
@@ -3676,12 +3676,12 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
     case DMG_CRITICAL:
     case DMG_LUCY_DODGE:
     case DMG_MULTI_HIT_CRITICAL: {
-      if (this->unknown_0178 != 0) {
+      if (this->isCounter != 0) {
         CRagEffect* effect = this->LaunchEffect(0x83, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
           effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         }
-        this->unknown_0178 = 0;
+        this->isCounter = 0;
       }
 
       this->SetModifyFactorOfmotionSpeed(attackSpeed);
@@ -3690,7 +3690,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       }
 
       this->Face(x, z);
-      unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+      unsigned delay = static_cast<unsigned>(this->attackMotion * this->render.speed * 24.0f);
       if (this->GetEffectiveJob(-1) == JT_ARCHER_SKELETON || this->GetEffectiveJob(-1) == JT_G_ARCHER_SKELETON) {
         delay += 0xC0;
       } else if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN || this->GetEffectiveJob(-1) == JT_BOW_GUARDIAN) {
@@ -3711,7 +3711,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
           flag = 1;
           break;
         case DMG_LUCY_DODGE:
-          action = this->unknown_0178 != 0 ? 0x1A : 0x5E;
+          action = this->isCounter != 0 ? 0x1A : 0x5E;
           break;
         case DMG_MULTI_HIT_CRITICAL:
           action = 0x94;
@@ -3763,15 +3763,15 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       message.targetAid = this->hitTargetAid;
       message.time = timeGetTime() + delay;
       message.attackerAid = this->render.accountId;
-      message.unknown_0014 = unknown_001C;
-      message.unknown_0018 = unknown_0020;
-      message.unknown_001C = flag;
+      message.cellX = unknown_001C;
+      message.cellY = unknown_0020;
+      message.hitEffect = flag;
       message.effectId = effectId;
-      message.unknown_002C = info->unknown_002C;
+      message.blueDamage = info->blueDamage;
       message.action = action;
       message.damage = damage;
-      message.unknown_0024 = 1;
-      message.unknown_0034 = 0;
+      message.monsterValue = 1;
+      message.skillTarget = 0;
 
       const std::int64_t address = reinterpret_cast<int>(&message);
       if (hitCount == 1) {
@@ -3846,15 +3846,15 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 // OFFSET: 0x00CC5C70
 // FUNCTION: fn_21180
 void C3dGrannyGameActor::ProcessMotion() {
-  this->render.isMotionFinished = this->render.unknown_0070 != 2;
-  if (this->render.unknown_0070 != 2 || !(this->render.motionSpeed < 1.0f)) {
+  this->render.isMotionFinished = this->render.state != 2;
+  if (this->render.state != 2 || !(this->render.motionSpeed < 1.0f)) {
     return;
   }
 
   this->clock = GrannyGetSystemSeconds();
   const float elapsed = GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
-  this->unknown_052C += elapsed / this->render.motionSpeed;
-  this->model->Animate(this->unknown_052C, this->instance);
+  this->motionProgress += elapsed / this->render.motionSpeed;
+  this->model->Animate(this->motionProgress, this->instance);
   this->lastClock = this->clock;
 
   if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
@@ -3874,8 +3874,8 @@ void CGrannyCorpse3d::Render(int argument) {
 
   this->clock = GrannyGetSystemSeconds();
   const float elapsed = GrannyGetSecondsElapsed(&this->startClock, &this->clock) * 2.0f;
-  this->unknown_0138 += elapsed;
-  this->model->Animate(this->unknown_0138, this->instance);
+  this->animationTime += elapsed;
+  this->model->Animate(this->animationTime, this->instance);
   this->startClock = this->clock;
 
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
@@ -4007,11 +4007,11 @@ int ReturnZero() {
 // OFFSET: 0x00CC5D80
 // FUNCTION: fn_21182
 void C3dGrannyGameActor::Render(int argument) {
-  this->unknown_0DBC.clear();
+  this->litPositions.clear();
   this->clock = GrannyGetSystemSeconds();
   const float elapsed = GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
-  this->unknown_052C += elapsed;
-  this->model->Animate(this->unknown_052C, this->instance);
+  this->motionProgress += elapsed;
+  this->model->Animate(this->motionProgress, this->instance);
   this->lastClock = this->clock;
 
   if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
@@ -4025,11 +4025,11 @@ void C3dGrannyGameActor::Render(int argument) {
   light.green = 200;
   light.blue = 200;
   light.intensity = 0x80;
-  if (this->unknown_0650 == 1 || this->unknown_0650 == 2) {
+  if (this->renderState == 1 || this->renderState == 2) {
     return;
   }
 
-  if (this->unknown_02E0 == 2) {
+  if (this->actorType == 2) {
     this->RenderShadowed(argument);
   } else {
     this->RenderLit(argument, light);
@@ -4107,7 +4107,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
     matrix world;
     world.Compose(local, view);
 
-    if (this->unknown_025C == 0x49D && mesh == 28) {
+    if (this->job == 0x49D && mesh == 28) {
       this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
@@ -4134,7 +4134,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
                          static_cast<unsigned char>(light.blue + 0x38 + this->brightness) + (this->alpha << 24);
       }
 
-      this->unknown_0DBC.push_back(position);
+      this->litPositions.push_back(position);
     }
 
     command->texture = texture;
@@ -4211,7 +4211,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
       continue;
     }
 
-    if (this->unknown_025C == 0x49D && mesh == 28) {
+    if (this->job == 0x49D && mesh == 28) {
       this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
@@ -4240,7 +4240,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
                  static_cast<float>(static_cast<int>(this->render.position.x) % 5);
     position.z = spin.values[5] * corner.y + spin.values[2] * corner.x + spin.values[8] * corner.z + spin.values[11] +
                  static_cast<float>(static_cast<int>(this->render.position.z) % 5);
-    this->unknown_0DBC.push_back(position);
+    this->litPositions.push_back(position);
 
     CTexture* meshTexture;
     if (mesh == 1) {
@@ -4285,7 +4285,7 @@ void CGameActor::SetCharm(int type, int count) {
   }
 
   this->charmType = type;
-  this->unknown_03D0 = count;
+  this->charmCount = count;
   if (!g_effectMgr->HasAllocator(0xE4)) {
     int effectId;
     if (type == 1) {
@@ -4388,53 +4388,53 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (IsTreeGroupTwoLocal(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->unknown_0210) == g_session.m_maxLevel) {
+    if (static_cast<std::int16_t>(this->characterLevel) == g_session.m_maxLevel) {
       this->SendMsg(nullptr, 0x96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    this->unknown_02B4 = 0;
+    this->hasLevelAura = 0;
     return;
   }
 
   if (IsTreeGroupThreeLocal(this->GetEffectiveJob(-1)) == true) {
-    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0x74])) {
+    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x74])) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL4TH_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    this->unknown_02B4 = 0;
+    this->hasLevelAura = 0;
     return;
   }
 
   if (g_session.IsSuperNovice2Job(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0])) {
+    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0])) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    this->unknown_02B4 = 0;
+    this->hasLevelAura = 0;
     return;
   }
 
   if (g_session.IsExpandedJob(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[4])) {
+    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[4])) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    this->unknown_02B4 = 0;
+    this->hasLevelAura = 0;
     return;
   }
 
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
-    const int skill = static_cast<std::int16_t>(this->unknown_0210);
-    if (skill == *reinterpret_cast<int*>(&g_session.unknown_7EF0[8])) {
+    const int skill = static_cast<std::int16_t>(this->characterLevel);
+    if (skill == *reinterpret_cast<int*>(&g_session.jobLevelLimits[8])) {
       this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (skill != *reinterpret_cast<int*>(g_session.unknown_7EE8)) {
-      this->unknown_02B4 = 0;
+    if (skill != *reinterpret_cast<int*>(g_session.maxBaseLevel)) {
+      this->hasLevelAura = 0;
       return;
     }
     if (g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
-      this->unknown_02B4 = 0;
+      this->hasLevelAura = 0;
       return;
     }
     this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -4442,129 +4442,129 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
-    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0x28])) {
+    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x28])) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    this->unknown_02B4 = 0;
+    this->hasLevelAura = 0;
     return;
   }
 
-  if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(g_session.unknown_7EE8)) {
+  if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(g_session.maxBaseLevel)) {
     this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
 
-  this->unknown_02B4 = 0;
+  this->hasLevelAura = 0;
 }
 
 // OFFSET: 0x00CC2340
 // FUNCTION: fn_21139
 void CGameActor::SetActorJob(int job) {
-  this->unknown_025C = job;
+  this->job = job;
   if (job < 0xfaf) {
     if (job == JT_CHICKEN_H) {
-      this->unknown_025C = 0xfa8;
+      this->job = 0xfa8;
     } else if (job == JT_CHICKEN) {
-      this->unknown_025C = 7;
+      this->job = 7;
     } else if (job == JT_CHICKEN2) {
-      this->unknown_025C = 0xe;
+      this->job = 0xe;
     }
   } else if (job < 0x10b7) {
     if (job == JT_WOLF_WINDHAWK) {
-      this->unknown_025C = 0x10a1;
+      this->job = 0x10a1;
     } else {
       switch (job) {
       case JT_CHICKEN2_H:
-        this->unknown_025C = 0xfaf;
+        this->job = 0xfaf;
         break;
       case JT_CHICKEN_B:
-        this->unknown_025C = 0xfbe;
+        this->job = 0xfbe;
         break;
       case JT_CHICKEN2_B:
-        this->unknown_025C = 0xfc5;
+        this->job = 0xfc5;
         break;
       case JT_STAR2:
-        this->unknown_025C = 0xfcf;
+        this->job = 0xfcf;
         break;
       case JT_RUNE_CHICKEN:
       case JT_RUNE_CHICKEN2:
       case JT_RUNE_CHICKEN3:
       case JT_RUNE_CHICKEN4:
       case JT_RUNE_CHICKEN5:
-        this->unknown_025C = 0xfd6;
+        this->job = 0xfd6;
         break;
       case JT_RUNE_CHICKEN_H:
       case JT_RUNE_CHICKEN2_H:
       case JT_RUNE_CHICKEN3_H:
       case JT_RUNE_CHICKEN4_H:
       case JT_RUNE_CHICKEN5_H:
-        this->unknown_025C = 0xfdc;
+        this->job = 0xfdc;
         break;
       case JT_ROYAL_CHICKEN:
-        this->unknown_025C = 0xfe2;
+        this->job = 0xfe2;
         break;
       case JT_ROYAL_CHICKEN_H:
-        this->unknown_025C = 0xfe9;
+        this->job = 0xfe9;
         break;
       case JT_WOLF_RANGER:
-        this->unknown_025C = 0xfd8;
+        this->job = 0xfd8;
         break;
       case JT_WOLF_RANGER_H:
-        this->unknown_025C = 0xfde;
+        this->job = 0xfde;
         break;
       case JT_MADOGEAR:
-        this->unknown_025C = 0xfda;
+        this->job = 0xfda;
         break;
       case JT_MADOGEAR_H:
-        this->unknown_025C = 0xfe0;
+        this->job = 0xfe0;
         break;
       case JT_RUNE_CHICKEN_B:
-        this->unknown_025C = 0x1000;
+        this->job = 0x1000;
         break;
       case JT_ROYAL_CHICKEN_B:
-        this->unknown_025C = 0x1006;
+        this->job = 0x1006;
         break;
       case JT_WOLF_RANGER_B:
-        this->unknown_025C = 0x1002;
+        this->job = 0x1002;
         break;
       case JT_MADOGEAR_B:
-        this->unknown_025C = 0x1004;
+        this->job = 0x1004;
         break;
       case JT_STAR2_B:
-        this->unknown_025C = 0x1082;
+        this->job = 0x1082;
         break;
       case JT_STAR2_EMPEROR_B:
-        this->unknown_025C = 0x1091;
+        this->job = 0x1091;
         break;
       }
     }
   } else {
     switch (job) {
     case JT_MEISTER_MADOGEAR:
-      this->unknown_025C = 0x109d;
+      this->job = 0x109d;
       break;
     case JT_DRAGON_KNIGHT_CHICKEN:
-      this->unknown_025C = 0x109c;
+      this->job = 0x109c;
       break;
     case JT_IMPERIAL_GUARD_CHICKEN:
-      this->unknown_025C = 0x10a2;
+      this->job = 0x10a2;
       break;
     case JT_SKY_EMPEROR2:
-      this->unknown_025C = 0x10ce;
+      this->job = 0x10ce;
       break;
     }
   }
 
   int slotJob;
-  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->unknown_0404 == 0) {
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
     slotJob = this->GetEffectiveJob(-1);
-  } else if (this->unknown_0404 == 1) {
+  } else if (this->shapeShift == 1) {
     slotJob = 0x1104;
-  } else if (this->unknown_0404 == 2) {
+  } else if (this->shapeShift == 2) {
     slotJob = 0x1105;
   } else {
-    slotJob = this->unknown_025C;
+    slotJob = this->job;
   }
 
   this->SetSprJob(slotJob);
@@ -4575,10 +4575,10 @@ void CGameActor::SetActorJob(int job) {
 // OFFSET: 0x00CAAFD0
 // FUNCTION: fn_21023
 void CGameActor::ClearUnknown0188() {
-  if (g_session.GetSceneUnknown004C() != 0 && this->unknown_0188 != 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->unknown_0188);
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0188));
-    this->unknown_0188 = 0;
+  if (g_session.GetSceneUnknown004C() != 0 && this->sceneNameWindow != 0) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->sceneNameWindow);
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->sceneNameWindow));
+    this->sceneNameWindow = 0;
   }
 }
 
@@ -4631,38 +4631,38 @@ void C3dGrannyGameActor::MakeCorpse() {
 // OFFSET: 0x00CC40D0
 // FUNCTION: fn_21158
 void CGameActor::ApplyNatureProtection() {
-  if (this->unknown_0404 == 3) {
+  if (this->shapeShift == 3) {
     return;
   }
 
-  this->unknown_0408 = this->unknown_0404;
+  this->savedShapeShift = this->shapeShift;
   this->SetState(0x51, 1);
   this->render.isMotionFreezed = true;
-  this->render.unknown_0114 = 1;
-  this->unknown_0404 = 3;
-  this->SetSprJob(this->unknown_025C);
+  this->render.specialMotionLocked = 1;
+  this->shapeShift = 3;
+  this->SetSprJob(this->job);
   const int costume = this->GetMadogearType();
   const int costumeJob = this->GetBodyCostume();
   this->render.name = g_equipmentResourceMgr->GetBodyPalName(
-    this->GetEffectiveJob(-1), this->unknown_0260, static_cast<int>(this->render.unknown_0048), costumeJob, costume, 0
+    this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
   );
 }
 
 __declspec(noinline) void CGameActor::ProcessViewCheck() {
-  if (g_updateTick > 0 && (this->render.unknown_00EC & 0xFFu) == 1) {
+  if (g_updateTick > 0 && (this->render.effectPhaseState & 0xFFu) == 1) {
     this->render.flags = 0;
-    this->render.unknown_00EC &= 0xFFFFFF00u;
+    this->render.effectPhaseState &= 0xFFFFFF00u;
   }
 
   if (StateFlagsClear(this->stateFlags)) {
-    this->unknown_02D8 = 0x8ca0;
+    this->effectLaunchCnt = 0x8ca0;
     return;
   }
 
   timeGetTime();
   if (StateFlag00(this->stateFlags)) {
-    if (static_cast<unsigned int>(EffectLifetime(0x16)) <= static_cast<unsigned int>(this->unknown_02D8)) {
-      this->unknown_02D8 = 0;
+    if (static_cast<unsigned int>(EffectLifetime(0x16)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
+      this->effectLaunchCnt = 0;
       vector3d zero;
       zero.x = 0.0f;
       zero.y = 0.0f;
@@ -4672,8 +4672,8 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
   }
 
   if (StateFlag13(this->stateFlags)) {
-    if (static_cast<unsigned int>(EffectLifetime(0x21)) <= static_cast<unsigned int>(this->unknown_02D8)) {
-      this->unknown_02D8 = 0;
+    if (static_cast<unsigned int>(EffectLifetime(0x21)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
+      this->effectLaunchCnt = 0;
       vector3d zero;
       zero.x = 0.0f;
       zero.y = 0.0f;
@@ -4682,11 +4682,11 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
     }
   }
 
-  ++this->unknown_02D8;
+  ++this->effectLaunchCnt;
 }
 
 __declspec(noinline) void CGameActor::ProcessActorEffects() {
-  for (auto it = this->unknown_02A8.begin(); it != this->unknown_02A8.end();) {
+  for (auto it = this->willBeAttackedList.begin(); it != this->willBeAttackedList.end();) {
     if (timeGetTime() < it->time) {
       ++it;
       continue;
@@ -4696,7 +4696,7 @@ __declspec(noinline) void CGameActor::ProcessActorEffects() {
     this->SendMsg(
       nullptr, message.action, message.action >> 31, reinterpret_cast<int>(&message.targetAid), 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0);
-    it = this->unknown_02A8.erase(it);
+    it = this->willBeAttackedList.erase(it);
   }
 }
 
@@ -4716,9 +4716,9 @@ bool C3dGrannyGameActor::OnProcess() {
     this->render.angle = facing;
   }
 
-  if (this->unknown_06A8 == 1) {
+  if (this->initializeFacing == 1) {
     this->angle = 180.0f - facing;
-    this->unknown_06A8 = 0;
+    this->initializeFacing = 0;
   } else {
     float current = this->angle;
     const float target = 180.0f - static_cast<float>(static_cast<int>(facing));
@@ -4781,13 +4781,13 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
   } while (remaining != 0);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (type == 22 && this->unknown_03B0.size() != 0) {
-    for (auto it = this->unknown_03B0.begin(); it != this->unknown_03B0.end();) {
+  if (type == 22 && this->msgEffectList.size() != 0) {
+    for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end();) {
       CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
       if (effect->m_type == 22) {
         this->ClearUnknown037C(reinterpret_cast<int>(effect));
         effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        it = this->unknown_03B0.erase(it);
+        it = this->msgEffectList.erase(it);
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(effect);
       } else {
         ++it;
@@ -4812,26 +4812,26 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
       effect->SendMsg(nullptr, AM_SETPOS2, 0, position, position >> 31, *it, *it >> 31, (count - index * 2) * 4 - 4, 0, 0, 0, 0, 0, 0, 0);
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    effect->render.unknown_00B4 = 0;
+    effect->render.useGroundLighting = 0;
     if (type == 22) {
       effect->render.scale = 0.5f;
     }
     mode->AddSceneObject(effect);
-    this->unknown_03B0.push_back(effect);
+    this->msgEffectList.push_back(effect);
   }
 }
 
 // OFFSET: 0x005A10B0
 // FUNCTION: fn_03040
 CCharacterNpc::CCharacterNpc() : CNpc() {
-  this->unknown_0440 = 0;
+  this->characterRender = 0;
 }
 
 // INLINED
 CCharacterNpc::~CCharacterNpc() {
-  if (this->unknown_0440) {
-    delete this->unknown_0440;
-    this->unknown_0440 = nullptr;
+  if (this->characterRender) {
+    delete this->characterRender;
+    this->characterRender = nullptr;
   }
 }
 
@@ -4843,7 +4843,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   const std::uint32_t previousFlags = this->stateFlags;
   this->bodyState = bodyState;
   this->stateFlags = stateFlags;
-  this->unknown_02C4 = effectState;
+  this->effectState = effectState;
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   unsigned char* const color = reinterpret_cast<unsigned char*>(&this->render.color);
 
@@ -4877,11 +4877,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
-        this->render.unknown_00A4Bytes[0] = 0;
+        this->render.visibilityOptions[0] = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -4893,21 +4893,21 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
         this->ClearUnknown0188();
       }
-      if (this->unknown_018C) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
-        this->unknown_018C = 0;
+      if (this->actorTitleWindow) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
+        this->actorTitleWindow = 0;
       }
     } else {
       if (notify) {
         this->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       }
 
       this->render.enabled = 1;
       if (this->render.accountId != g_session.m_aid) {
-        this->render.unknown_00A4Bytes[0] = 1;
+        this->render.visibilityOptions[0] = 1;
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -4917,7 +4917,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();
-      if (this->unknown_02B4 != 0) {
+      if (this->hasLevelAura != 0) {
         this->UpdateMaxLevelAura();
       }
       if (this->GetEffectiveJob(-1) == 45) {
@@ -4932,11 +4932,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.visible = 0;
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
-        this->render.unknown_00A4Bytes[0] = 0;
+        this->render.visibilityOptions[0] = 0;
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -4948,17 +4948,17 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
         this->ClearUnknown0188();
       }
-      if (this->unknown_018C) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
-        this->unknown_018C = 0;
+      if (this->actorTitleWindow) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
+        this->actorTitleWindow = 0;
       }
     } else {
       this->render.visible = 1;
       this->render.enabled = 1;
       if (this->render.accountId != g_session.m_aid) {
-        this->render.unknown_00A4Bytes[0] = 1;
+        this->render.visibilityOptions[0] = 1;
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -4968,7 +4968,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();
-      if (this->unknown_02B4 != 0) {
+      if (this->hasLevelAura != 0) {
         this->UpdateMaxLevelAura();
       }
     }
@@ -5012,19 +5012,19 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->ResetJobEffects();
     if (StateFlag06(this->stateFlags)) {
       const int admin = g_session.IsAdminSubMode(8);
-      this->render.unknown_00A4Bytes[0] = 0;
+      this->render.visibilityOptions[0] = 0;
       if (admin == 0) {
         this->render.visible = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        if (this->unknown_03B0.size() != 0) {
-          for (CGameObject* object : this->unknown_03B0) {
+        if (this->msgEffectList.size() != 0) {
+          for (CGameObject* object : this->msgEffectList) {
             static_cast<CMsgEffect*>(object)->m_visible = this->render.accountId == g_session.m_aid;
           }
         }
       } else {
         this->render.visible = 1;
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -5036,22 +5036,22 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
         this->ClearUnknown0188();
       }
-      if (this->unknown_018C) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
-        this->unknown_018C = 0;
+      if (this->actorTitleWindow) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
+        this->actorTitleWindow = 0;
       }
     } else {
       this->render.visible = 1;
-      this->render.unknown_00A4Bytes[0] = 1;
+      this->render.visibilityOptions[0] = 1;
       if (!this->render.enabled && this->render.accountId != g_session.m_aid) {
-        this->render.unknown_00A4Bytes[0] = 0;
+        this->render.visibilityOptions[0] = 0;
       }
-      if (this->unknown_03B0.size() != 0) {
-        for (CGameObject* object : this->unknown_03B0) {
+      if (this->msgEffectList.size() != 0) {
+        for (CGameObject* object : this->msgEffectList) {
           static_cast<CMsgEffect*>(object)->m_visible = true;
         }
       }
-      if (this->unknown_02FC > 0) {
+      if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (StateFlag04(this->stateFlags)) {
@@ -5061,7 +5061,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();
-      if (this->unknown_02B4 != 0) {
+      if (this->hasLevelAura != 0) {
         this->UpdateMaxLevelAura();
       }
     }
@@ -5077,7 +5077,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       g_soundMgr->PlayWave(
         "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       break;
     }
     case OPT1_FREEZE: {
@@ -5089,20 +5089,20 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       );
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = false;
-      this->render.unknown_00A3 = 0;
+      this->render.colorLocked = 0;
       color[1] = 0xFF;
       color[2] = 0xFF;
       color[0] = 0xFF;
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       break;
     }
     case OPT1_STUN:
       this->SendMsg(nullptr, AM_DELETE_STUN_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       break;
     case OPT1_SLEEP:
       this->SendMsg(nullptr, AM_DELETE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       break;
     case OPT1_BURNING:
       this->SendMsg(nullptr, AM_DELETE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -5120,7 +5120,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     case OPT1_STONE:
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
-      this->render.unknown_00A3 = 1;
+      this->render.colorLocked = 1;
       color[1] = 0x40;
       color[2] = 0x40;
       color[0] = 0x40;
@@ -5129,7 +5129,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, AM_MAKE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
-      this->render.unknown_00A3 = 1;
+      this->render.colorLocked = 1;
       color[1] = 0x80;
       color[2] = 0x00;
       color[0] = 0xFF;
@@ -5153,7 +5153,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_STONEWAIT:
-      this->render.unknown_00A3 = 1;
+      this->render.colorLocked = 1;
       color[1] = 0x80;
       color[2] = 0x80;
       color[0] = 0x80;
@@ -5172,21 +5172,21 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   }
 
   bool poisonSound = false;
-  if (this->unknown_02C4 & 0x80) {
+  if (this->effectState & 0x80) {
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
     }
-    this->render.unknown_00A3 = 1;
+    this->render.colorLocked = 1;
     color[1] = 0x32;
     color[2] = 0xFF;
     color[0] = 0xFF;
     poisonSound = true;
-  } else if (this->unknown_02C4 & 0x01) {
+  } else if (this->effectState & 0x01) {
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
     }
     if (!this->HasId(812)) {
-      this->render.unknown_00A3 = 1;
+      this->render.colorLocked = 1;
       color[1] = 0x80;
       color[2] = 0xFF;
       color[0] = 0xFF;
@@ -5210,9 +5210,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
-  if (this->unknown_02C4 & 0x02) {
+  if (this->effectState & 0x02) {
     this->SendMsg(nullptr, AM_MAKE_CURSE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->render.unknown_00A3 = 1;
+    this->render.colorLocked = 1;
     color[1] = 0x32;
     color[2] = 0xC8;
     color[0] = 0x32;
@@ -5226,7 +5226,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->SendMsg(nullptr, AM_DELETE_CURSE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  if (this->unknown_02C4 & 0x04) {
+  if (this->effectState & 0x04) {
     if (notify) {
       const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
       g_soundMgr->PlayWave(
@@ -5238,16 +5238,16 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->SendMsg(nullptr, AM_DELETE_SILENCE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  this->SendMsg(nullptr, (this->unknown_02C4 & 0x20) ? AM_MAKE_ANGELUS_EFFECT : AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, (this->effectState & 0x20) ? AM_MAKE_ANGELUS_EFFECT : AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-  if ((this->unknown_02C4 & 0x08) && notify) {
+  if ((this->effectState & 0x08) && notify) {
     const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
       "_confusion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
   }
 
-  if (this->unknown_02C4 & 0x10) {
+  if (this->effectState & 0x10) {
     if (this->render.accountId == g_session.m_aid) {
       g_overrideColor = 1;
     }
@@ -5274,11 +5274,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->render.isMotionFreezed = false;
   }
 
-  if ((this->unknown_02C4 & 0x83) == 0 && this->bodyState != OPT1_FREEZE && this->bodyState != OPT1_STONE && this->bodyState != OPT1_STONEWAIT &&
+  if ((this->effectState & 0x83) == 0 && this->bodyState != OPT1_FREEZE && this->bodyState != OPT1_STONE && this->bodyState != OPT1_STONEWAIT &&
       static_cast<int>(this->GetInstant(3)) != 1 && static_cast<int>(this->GetInstant(12)) != 1 &&
       static_cast<int>(this->GetInstant(13)) != 1 && static_cast<int>(this->GetInstant(14)) != 1 &&
       static_cast<int>(this->GetInstant(15)) != 1) {
-    this->render.unknown_00A3 = 0;
+    this->render.colorLocked = 0;
     color[1] = 0xFF;
     color[2] = 0xFF;
     color[0] = 0xFF;
@@ -5306,8 +5306,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   int hitCount = info->hitCount;
   const int skillId = info->skillId;
   int type = info->type;
-  const int unknown_001C = info->unknown_001C;
-  const int unknown_0020 = info->unknown_0020;
+  const int unknown_001C = info->cellX;
+  const int unknown_0020 = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
   if (hitCount <= 0 || hitCount > 36) {
@@ -5379,7 +5379,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     if (target != nullptr) {
       if (!this->IsSkillWithoutAction(skillId)) {
         const float speed = static_cast<float>(motionSpeed) / 288.0f;
-        const unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+        const unsigned delay = static_cast<unsigned>(this->attackMotion * this->render.speed * 24.0f);
         int effect = -1;
         int followEffect = -1;
         switch (skillId) {
@@ -5413,15 +5413,15 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         message.damage = damage;
         message.time = timeGetTime() + delay;
         message.attackerAid = this->render.accountId;
-        message.unknown_0014 = unknown_001C;
-        message.unknown_0018 = unknown_0020;
-        message.unknown_001C = effect;
+        message.cellX = unknown_001C;
+        message.cellY = unknown_0020;
+        message.hitEffect = effect;
         message.effectId = followEffect;
-        message.unknown_0024 = level;
+        message.monsterValue = level;
         message.motionSpeed = speed;
-        message.unknown_002C = 0;
-        message.unknown_0030 = skillId;
-        message.unknown_0034 = 0;
+        message.blueDamage = 0;
+        message.skillId = skillId;
+        message.skillTarget = 0;
         target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return;
       }
@@ -5432,21 +5432,21 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
     if (target != nullptr) {
       if (!this->IsSkillWithoutAction(skillId)) {
-        const unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+        const unsigned delay = static_cast<unsigned>(this->attackMotion * this->render.speed * 24.0f);
         message.targetAid = this->hitTargetAid;
         message.action = 0x61;
         message.damage = damage;
         message.time = timeGetTime() + delay;
         message.attackerAid = this->render.accountId;
-        message.unknown_0014 = unknown_001C;
-        message.unknown_0018 = unknown_0020;
-        message.unknown_001C = -1;
+        message.cellX = unknown_001C;
+        message.cellY = unknown_0020;
+        message.hitEffect = -1;
         message.effectId = -1;
-        message.unknown_0024 = level;
+        message.monsterValue = level;
         message.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
-        message.unknown_002C = 0;
-        message.unknown_0030 = skillId;
-        message.unknown_0034 = 0;
+        message.blueDamage = 0;
+        message.skillId = skillId;
+        message.skillTarget = 0;
         target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         return;
       }
@@ -5501,8 +5501,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
   }
 
-  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type) && this->render.unknown_0070 != 9 &&
-      this->render.unknown_0070 != 2) {
+  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type) && this->render.state != 9 &&
+      this->render.state != 2) {
     this->Face(targetPos.x, targetPos.z);
   }
 
@@ -5528,7 +5528,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     break;
   }
 
-  unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+  unsigned delay = static_cast<unsigned>(this->attackMotion * this->render.speed * 24.0f);
   if (this->GetEffectiveJob(-1) == 0x3F8 || this->GetEffectiveJob(-1) == 0x58C) {
     delay += 0xC0;
   }
@@ -5684,15 +5684,15 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   message.damage = damage;
   message.time = timeGetTime() + delay;
   message.attackerAid = this->render.accountId;
-  message.unknown_0014 = unknown_001C;
-  message.unknown_0018 = unknown_0020;
-  message.unknown_001C = effect;
+  message.cellX = unknown_001C;
+  message.cellY = unknown_0020;
+  message.hitEffect = effect;
   message.effectId = followEffect;
-  message.unknown_0024 = level;
+  message.monsterValue = level;
   message.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
-  message.unknown_002C = 0;
-  message.unknown_0030 = skillId;
-  message.unknown_0034 = 0;
+  message.blueDamage = 0;
+  message.skillId = skillId;
+  message.skillTarget = 0;
   switch (skillId) {
   case MO_COMBOFINISH:
   case CH_TIGERFIST:
@@ -5752,7 +5752,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case MO_INVESTIGATE:
   case MO_FINGEROFFENSIVE:
   case SR_RIDEINLIGHTNING:
-    if (this->unknown_0314 != 5) {
+    if (this->objectType != 5) {
       this->SetSequenceInterval(10);
       if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
         this->SetFrameSequence(0x58, 4, 5, 0x58, 5, 1, 1100, 0);
@@ -5762,10 +5762,10 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
     break;
   case MO_EXTREMITYFIST:
-    if (this->unknown_0314 != 5) {
+    if (this->objectType != 5) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
-      this->unknown_0184 = 1;
+      this->isAsuraAttack = 1;
     }
     break;
   case MO_CHAINCOMBO:
@@ -5874,7 +5874,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     const int previous = hit;
     ++hit;
     message.effectId = -1;
-    message.unknown_0034 = hit;
+    message.skillTarget = hit;
     if (skillId == KN_PIERCE) {
       message.time += g_multiHitInterval + 80;
       total += damage;
@@ -5910,17 +5910,17 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     case WL_COMET:
       message.action = action;
       if (previous & 1) {
-        message.unknown_001C = -1;
+        message.hitEffect = -1;
       } else if (g_serviceOptions.Get(229)) {
-        message.unknown_001C = 0x601;
+        message.hitEffect = 0x601;
         message.effectId = 0x602;
       } else {
-        message.unknown_001C = 0x588;
+        message.hitEffect = 0x588;
         message.effectId = 0x589;
       }
       break;
     case ABC_DEFT_STAB:
-      message.unknown_001C = -1;
+      message.hitEffect = -1;
       message.effectId = g_session.FindUnknown0700(skillId);
       message.action = action;
       break;

@@ -32,7 +32,7 @@ void LoadSkillUseLevelRegistry() {
     DWORD size = sizeof(int);
     int value;
     char name[100] = {};
-    const int character = g_session.unknown_0F50;
+    const int character = g_session.selectedCharacterSlot;
     const char* skill = CSkillInfo::IdName(*g_session.m_hotkeyScript, id);
     std::sprintf(name, "%s%d", skill, character);
 

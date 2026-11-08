@@ -19,14 +19,14 @@ public:
   /* 00D4 */ std::string hoverTexture;
   /* 00EC */ std::string pressedTexture;
   /* 0104 */ std::string disabledTexture;
-  /* 011C */ unsigned char unknown_011C;
-  /* 011D */ unsigned char unknown_011D;
+  /* 011C */ unsigned char toggleEnabled;
+  /* 011D */ unsigned char toggled;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UITextureButton, normalTexture) == 0xBC);
 static_assert(offsetof(UITextureButton, disabledTexture) == 0x104);
-static_assert(offsetof(UITextureButton, unknown_011C) == 0x11C);
+static_assert(offsetof(UITextureButton, toggleEnabled) == 0x11C);
 #endif
 
 #endif

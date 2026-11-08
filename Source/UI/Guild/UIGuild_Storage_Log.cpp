@@ -21,20 +21,20 @@ std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
 // OFFSET: 0x009469D0
 // FUNCTION: fn_12849
 UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
-  this->unknown_0184 = 0;
-  this->unknown_0188 = 0;
-  this->unknown_018C = 0;
+  this->m_rowFlagsBegin = 0;
+  this->m_rowFlagsEnd = 0;
+  this->m_rowFlagsCapacity = 0;
   this->m_category = 0;
   this->m_offset = 0;
   this->m_state = 1;
-  this->unknown_0174 = 0;
+  this->m_logTextHeight = 0;
   const int first = static_cast<int>(g_guildStorageLogs[0].size());
-  this->unknown_0178[0] = first;
+  this->m_categoryCounts[0] = first;
   const int second = static_cast<int>(g_guildStorageLogs[1].size());
-  this->unknown_0178[1] = second;
+  this->m_categoryCounts[1] = second;
   const int third = static_cast<int>(g_guildStorageLogs[2].size());
   this->m_page = 1;
-  this->unknown_0178[2] = third;
+  this->m_categoryCounts[2] = third;
   this->m_pageCounts[0] = (first + 9) / 10;
   this->m_pageCounts[1] = (second + 9) / 10;
   this->m_pageCounts[2] = (third + 9) / 10;
@@ -66,8 +66,8 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       this->m_state = 1;
       this->m_page = page + 1;
-      this->unknown_0174 = 0;
-      this->unknown_0188 = this->unknown_0184;
+      this->m_logTextHeight = 0;
+      this->m_rowFlagsEnd = this->m_rowFlagsBegin;
       this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     }
@@ -77,7 +77,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (page > 1) {
         const int state = this->m_state;
         this->m_state = 1;
-        this->unknown_0174 = 0;
+        this->m_logTextHeight = 0;
 
         unsigned offset = this->m_offset;
         if (state == 11) {
@@ -88,7 +88,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
         this->m_offset = std::max(0u, offset);
         this->m_page = std::max(1u, page - 1);
-        this->unknown_0188 = this->unknown_0184;
+        this->m_rowFlagsEnd = this->m_rowFlagsBegin;
         this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
@@ -102,9 +102,9 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->m_category = static_cast<int>(a);
     this->m_page = 1;
     this->m_state = 1;
-    this->unknown_0174 = 0;
+    this->m_logTextHeight = 0;
     this->m_offset = 0;
-    this->unknown_0188 = this->unknown_0184;
+    this->m_rowFlagsEnd = this->m_rowFlagsBegin;
     this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     return 0;
 
@@ -130,17 +130,17 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
   char number[256];
   std::memset(number, 0, 255);
   for (auto it = logs.begin(); it != logs.end(); ++it) {
-    if (static_cast<unsigned>(this->m_state) > 10 || this->m_offset >= this->unknown_0178[index]) {
+    if (static_cast<unsigned>(this->m_state) > 10 || this->m_offset >= this->m_categoryCounts[index]) {
       break;
     }
 
     std::string date;
-    date = logs[this->m_offset].unknown_003C;
-    std::uint32_t flag = logs[this->m_offset].unknown_0008;
-    reinterpret_cast<std::vector<std::uint32_t>*>(&this->unknown_0184)->push_back(flag);
-    _itoa(logs[this->m_offset].unknown_0004, number, 10);
+    date = logs[this->m_offset].itemName;
+    std::uint32_t flag = logs[this->m_offset].operation;
+    reinterpret_cast<std::vector<std::uint32_t>*>(&this->m_rowFlagsBegin)->push_back(flag);
+    _itoa(logs[this->m_offset].quantity, number, 10);
 
-    if (logs[this->m_offset].unknown_0070 == 1) {
+    if (logs[this->m_offset].category == 1) {
       this->m_dateTexts[this->m_state - 1]->SetColor(255, 0, 0);
       this->m_nameTexts[this->m_state - 1]->SetColor(255, 0, 0);
       this->m_itemTexts[this->m_state - 1]->SetColor(255, 0, 0);
@@ -154,9 +154,9 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
 
     this->m_dateTexts[this->m_state - 1]->SetTextFitted(date.c_str());
     this->m_nameTexts[this->m_state - 1]->SetTextFitted(number);
-    this->m_itemTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].unknown_0009);
-    this->m_countTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].unknown_0021);
-    this->unknown_0174 += 15;
+    this->m_itemTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].characterName);
+    this->m_countTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].timestamp);
+    this->m_logTextHeight += 15;
     ++this->m_state;
     ++this->m_offset;
   }
@@ -199,12 +199,12 @@ void UIGuild_Storage_Log::Paint() {
   CBitmapRes* out = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\out.bmp")));
   CBitmapRes* in = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\in.bmp")));
 
-  for (int tab = 0; tab < static_cast<int>(this->unknown_0158->labels.size()); ++tab) {
-    this->unknown_0158->colors[tab] = 0xFFFFFFFF;
-    this->unknown_0158->Invalidate();
+  for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
+    this->m_tabs->colors[tab] = 0xFFFFFFFF;
+    this->m_tabs->Invalidate();
   }
-  this->unknown_0158->colors[this->m_category] = 0xC89623;
-  this->unknown_0158->Invalidate();
+  this->m_tabs->colors[this->m_category] = 0xC89623;
+  this->m_tabs->Invalidate();
 
   this->DrawTextAt(234, 23, LookupMessage(MSI_EA5), 0, 0, 11, 0xFF, 0, 0);
   this->DrawTextAt(6, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_IN), 0, 0, 12, 0, 0, 0);
@@ -215,7 +215,7 @@ void UIGuild_Storage_Log::Paint() {
   this->FillRows();
 
   int y = 60;
-  for (const std::uint32_t* it = this->unknown_0184; it != this->unknown_0188; ++it) {
+  for (const std::uint32_t* it = this->m_rowFlagsBegin; it != this->m_rowFlagsEnd; ++it) {
     this->DrawBitmap(6, y, *it == 1 ? in : out, true);
     y += 15;
   }

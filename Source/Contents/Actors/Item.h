@@ -25,7 +25,7 @@ public:
   /* 0180 */ std::uint32_t isFalling;
   /* 0184 */ float fallVelocity;
   /* 0188 */ float fallOrigin;
-  /* 018C */ std::uint16_t unknown_018C;
+  /* 018C */ std::uint16_t itemEntryFlags;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -42,8 +42,8 @@ void UIClanInfoManageWnd::OnCreate(int width, int height) {
     this->AddCloseButton("Ctrl+G", 0);
   }
 
-  this->unknown_00BC = -1;
-  this->unknown_00C0 = -1;
+  this->allyRow = -1;
+  this->hostileRow = -1;
   if (g_clanInfo->m_hasClan) {
     g_clanInfo->unknown_0034 = 1;
   }
@@ -117,7 +117,7 @@ void UIClanInfoManageWnd::Paint() {
       break;
     }
     if (relation->first == 0) {
-      if (row == this->unknown_00BC) {
+      if (row == this->allyRow) {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
@@ -136,7 +136,7 @@ void UIClanInfoManageWnd::Paint() {
       break;
     }
     if (relation->first == 1) {
-      if (row == this->unknown_00C0) {
+      if (row == this->hostileRow) {
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }

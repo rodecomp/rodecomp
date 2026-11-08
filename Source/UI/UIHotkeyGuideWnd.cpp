@@ -260,7 +260,7 @@ void UIHotkeyGuideWnd::Paint() {
 void UIHotkeyGuideWnd::OnProcess() {
   auto tab = this->m_tabs.begin();
   for (; tab != this->m_tabs.end(); ++tab) {
-    if ((*tab)->geometry.unknown_0030 == 2) {
+    if ((*tab)->geometry.state == 2) {
       int id = (*tab)->geometry.id;
       if (id != this->m_current) {
         this->m_keys.clear();

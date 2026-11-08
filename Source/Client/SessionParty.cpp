@@ -25,7 +25,7 @@ bool CSession::IsPvpMap() {
   if (g_modeMgr.GetGameMode()) {
     CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
     if (scene) {
-      return scene->unknown_00FD;
+      return scene->partyRestricted;
     }
   }
 

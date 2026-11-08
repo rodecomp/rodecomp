@@ -325,7 +325,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
         const double scale = record.scale;
         const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
-        const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+        const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
         if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
           continue;
         }
@@ -333,14 +333,14 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         float left;
         float right;
         if ((cell.mirrored & 1) != 0) {
-          left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
           if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
             continue;
           }
         } else {
           left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
             continue;
           }
@@ -361,7 +361,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         } else if (slot.flag1[0] == 1) {
           quad.color = (alpha << 24) + 0x3737FF;
         }
-        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         quad.image = image;
         this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
 
@@ -379,7 +379,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         } else if (slot.flag1[0] == 1) {
           quad.color = (alpha << 24) + 0x3737FF;
         }
-        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         quad.image = image;
         this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
       }
@@ -1687,7 +1687,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
         const double scale = record.scale;
         const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
-        const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+        const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
         if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
           continue;
         }
@@ -1695,14 +1695,14 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         float left;
         float right;
         if ((cell.mirrored & 1) != 0) {
-          left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
           if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
             continue;
           }
         } else {
           left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
             continue;
           }
@@ -1715,7 +1715,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         quad.right = right;
         quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth);
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth);
-        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
 
         unsigned char red = static_cast<unsigned char>(cell.color);
         unsigned char green = static_cast<unsigned char>(cell.color >> 8);
@@ -1735,7 +1735,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         glow.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
         glow.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
         glow.color = color;
-        glow.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        glow.angle = static_cast<float>(cell.rotation) + this->state.roll;
         this->DrawQuad(glow, sprite->palette, 5, 0.0f, 0.0f, 0);
       }
     }

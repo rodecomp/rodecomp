@@ -34,8 +34,8 @@ void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t col
     vertex.u = 0.0f;
     vertex.v = 0.0f;
   }
-  primitive->unknown_0018 = 5;
-  primitive->unknown_001C = 6;
+  primitive->sourceBlend = 5;
+  primitive->destinationBlend = 6;
   g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 

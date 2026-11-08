@@ -31,7 +31,7 @@ bool CreateSignBoardMgr() {
   if (s_signBoardMgr == nullptr) {
     s_signBoardMgr = new (std::nothrow) CSignBoardMgr();
     if (s_signBoardMgr != nullptr) {
-      if (!s_signBoardMgr->unknown_0000) {
+      if (!s_signBoardMgr->initialized) {
         delete s_signBoardMgr;
         s_signBoardMgr = nullptr;
       } else {
@@ -116,7 +116,7 @@ void CSignBoardMgr::Initialize() {
       }
       image += it->image;
       object->SetWindowImage(image);
-      object->SetBoard(std::string(it->unknown_0014), std::string(it->unknown_001C));
+      object->SetBoard(std::string(it->text), std::string(it->color));
 
       vector3d position = {0.0f, 0.0f, 0.0f};
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
@@ -136,7 +136,7 @@ void CSignBoardMgr::LoadList() {
   SignBoardInfo defaults;
   g_session.m_hotkeyScript->Call(
     "GetSignBoardListTable", "d>sddddsss", 1, &defaults.map, &defaults.column, &defaults.row, &defaults.offset, &defaults.type, &defaults.image,
-    &defaults.unknown_0014, &defaults.unknown_001C
+    &defaults.text, &defaults.color
   );
 
   int count = 0;
@@ -144,8 +144,8 @@ void CSignBoardMgr::LoadList() {
   for (int index = 2; index < count + 1; ++index) {
     SignBoardInfo info;
     g_session.m_hotkeyScript->Call(
-      "GetSignBoardListTable", "d>sddddsss", index, &info.map, &info.column, &info.row, &info.offset, &info.type, &info.image, &info.unknown_0014,
-      &info.unknown_001C
+      "GetSignBoardListTable", "d>sddddsss", index, &info.map, &info.column, &info.row, &info.offset, &info.type, &info.image, &info.text,
+      &info.color
     );
     switch (info.type) {
     case 2:
@@ -153,11 +153,11 @@ void CSignBoardMgr::LoadList() {
       break;
     case 3:
       info.type = 3;
-      if (info.unknown_0014 == nullptr) {
-        info.unknown_0014 = defaults.unknown_0014;
+      if (info.text == nullptr) {
+        info.text = defaults.text;
       }
-      if (info.unknown_001C == nullptr) {
-        info.unknown_001C = defaults.unknown_001C;
+      if (info.color == nullptr) {
+        info.color = defaults.color;
       }
       break;
     case 1:
@@ -216,12 +216,12 @@ void CSignBoardWnd::ApplyColor() {
   int red = 0;
   int green = 0;
   int blue = 0;
-  if (this->unknown_00B0.size() != 0) {
+  if (this->colorText.size() != 0) {
     int values[3] = {0, 0, 0};
     int index = 0;
-    std::string rest = this->unknown_00B0;
-    std::string token = this->unknown_00B0;
-    std::size_t comma = this->unknown_00B0.find(",");
+    std::string rest = this->colorText;
+    std::string token = this->colorText;
+    std::size_t comma = this->colorText.find(",");
     if (comma != std::string::npos) {
       while (comma != std::string::npos) {
         token = rest.substr(0, comma);
@@ -235,8 +235,8 @@ void CSignBoardWnd::ApplyColor() {
     red = values[0];
     green = values[1];
     blue = values[2];
-    if (this->unknown_00B0.find("#") != std::string::npos) {
-      std::string hex = this->unknown_00B0;
+    if (this->colorText.find("#") != std::string::npos) {
+      std::string hex = this->colorText;
       hex = hex.substr(hex.find("#") + 1);
       const unsigned long color = std::strtoul(hex.c_str(), nullptr, 16);
       red = static_cast<int>((color >> 16) & 0xff);
@@ -319,7 +319,7 @@ bool C3DCooRendering::OnProcess() {
     const int lift = g_renderer->viewport.height * 81 / 480;
     window->Move(
       this->render.screenX - window->geometry.width / 2,
-      static_cast<int>(static_cast<float>(this->render.screenY - window->geometry.height / 2) - static_cast<float>(lift) * this->render.unknown_005C)
+      static_cast<int>(static_cast<float>(this->render.screenY - window->geometry.height / 2) - static_cast<float>(lift) * this->render.distanceScale)
     );
   }
   return true;
@@ -328,7 +328,7 @@ bool C3DCooRendering::OnProcess() {
 // OFFSET: 0x00821F50
 // FUNCTION: fn_10270
 bool CIcon::OnProcess() {
-  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   this->render.previousAnimation = this->render.animation;
   this->render.curMotion = static_cast<int>(frame / this->render.speed) % static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation));
   return true;
@@ -341,7 +341,7 @@ void C3DCooRendering::Render(int argument) {
   float y;
   float reciprocalDepth;
   g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
-  this->render.unknown_005C = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+  this->render.distanceScale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
   this->SetTlvert(x, y);
 }
 
@@ -379,11 +379,11 @@ void CIcon::Load(const std::string& name) {
 // OFFSET: 0x00822310
 // FUNCTION: fn_10276
 void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
-  static_cast<CSignBoardWnd*>(this->window)->unknown_0080 = text;
-  static_cast<CSignBoardWnd*>(this->window)->unknown_00B0 = color;
+  static_cast<CSignBoardWnd*>(this->window)->boardText = text;
+  static_cast<CSignBoardWnd*>(this->window)->colorText = color;
   CSignBoardWnd* board = static_cast<CSignBoardWnd*>(this->window);
   board->ApplyColor();
-  board->text->SetTextFitted(board->unknown_0080.c_str());
+  board->text->SetTextFitted(board->boardText.c_str());
 }
 
 // OFFSET: 0x00822390

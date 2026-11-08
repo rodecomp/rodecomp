@@ -13,7 +13,7 @@ class UIListBox;
 
 struct SecondCostumeEntry {
   /* 0000 */ std::string name;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ int value;
 };
 
 class UISecondCostumeWnd : public UIFrameWnd {
@@ -34,7 +34,7 @@ protected:
   /* 00BC */ int m_tab;
   /* 00C0 */ int m_selected[4];
   /* 00D0 */ std::vector<SecondCostumeEntry> m_entries[4];
-  /* 0100 */ std::uint32_t unknown_0100;
+  /* 0100 */ std::uint32_t m_previewStartTime;
   /* 0104 */ int m_page;
   /* 0108 */ std::string unknown_0108[7];
   /* 01B0 */ std::string unknown_01B0[7];

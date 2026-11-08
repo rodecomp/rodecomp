@@ -71,7 +71,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   const int vertexCount = this->mesh->vertexCount;
   const std::array<float, 3>* meshVertices = this->mesh->vertices;
 
-  if (g_weatherEffect.unknown_0001) {
+  if (g_weatherEffect.enabled) {
     g_modeMgr.GetGameMode();
   }
 
@@ -118,13 +118,13 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
               output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
             }
-          } else if (this->unknown_0088) {
+          } else if (this->overrideColors) {
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
               color.alpha = 0x80;
               output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
             }
-          } else if (g_weatherEffect.unknown_0001) {
+          } else if (g_weatherEffect.enabled) {
             const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
 
             for (int corner = 0; corner < 3; ++corner) {
@@ -162,7 +162,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
-      command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+      command->depthFlags = static_cast<std::uint16_t>((command->depthFlags & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
 
       if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;
@@ -173,7 +173,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     }
   }
 
-  this->unknown_0088 = 0;
+  this->overrideColors = 0;
 
   for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
     (*it)->Draw(combined.values, reversed, clip, commandMode);
@@ -196,7 +196,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   const int vertexCount = this->mesh->vertexCount;
   const std::array<float, 3>* meshVertices = this->mesh->vertices;
 
-  if (g_weatherEffect.unknown_0001) {
+  if (g_weatherEffect.enabled) {
     g_modeMgr.GetGameMode();
   }
 
@@ -252,13 +252,13 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
               output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
             }
-          } else if (this->unknown_0088) {
+          } else if (this->overrideColors) {
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
               color.alpha = 0x80;
               output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
             }
-          } else if (g_weatherEffect.unknown_0001) {
+          } else if (g_weatherEffect.enabled) {
             const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
 
             for (int corner = 0; corner < 3; ++corner) {
@@ -296,7 +296,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
-      command->unknown_0014 = static_cast<std::uint16_t>((command->unknown_0014 & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+      command->depthFlags = static_cast<std::uint16_t>((command->depthFlags & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
 
       if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;
@@ -307,7 +307,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     }
   }
 
-  this->unknown_0088 = 0;
+  this->overrideColors = 0;
 
   for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
     (*it)->Draw(combined.values, reversed, clip, commandMode);

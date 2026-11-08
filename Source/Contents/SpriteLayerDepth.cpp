@@ -50,7 +50,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
 
   switch (layer) {
   case 1:
-    if (this->unknown_002C == 1095) {
+    if (this->upperHeadgear == 1095) {
       if (g_cameraDistance < 32.0f) {
         bottom = bottomDepth - 0.000008f;
         top = topDepth - 0.000008f;
@@ -64,7 +64,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
     }
     break;
   case 2:
-    switch (this->unknown_0028) {
+    switch (this->lowerHeadgear) {
     case 1041:
     case 1358:
     case 1478:
@@ -112,7 +112,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
     }
     break;
   case 4:
-    if (this->unknown_002C == 1485) {
+    if (this->upperHeadgear == 1485) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         bottom = 0.00035f + bottomDepth;
         top = 0.0006f + topDepth;
@@ -121,7 +121,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
         top = 0.00015f + topDepth;
       }
     } else {
-      switch (this->unknown_0030) {
+      switch (this->middleHeadgear) {
       case 1318:
         if (g_cameraDistance < robeTopLayerThreshold) {
           bottom = 0.00025f + bottomDepth;
@@ -172,7 +172,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
   bool enabled = false;
   double nearOffset = 0.0;
   double farOffset = 0.0;
-  g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->unknown_0028, &enabled, &nearOffset, &farOffset);
+  g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->lowerHeadgear, &enabled, &nearOffset, &farOffset);
 
   if (layer == 2 && enabled) {
     if (nearOffset == 0.0) {

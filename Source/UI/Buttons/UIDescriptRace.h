@@ -32,7 +32,7 @@ public:
   /* 0124 */ UIDescriptRaceText m_text;
   /* 026C */ unsigned char unknown_026C[0x14];
   /* 0280 */ unsigned char m_noRace;
-  /* 0284 */ int unknown_0284;
+  /* 0284 */ int m_frameIndex;
   /* 0288 */ std::uint32_t m_createTime;
 };
 

@@ -17,7 +17,7 @@ struct GroundWaterParameters {
 
 struct GroundWater {
   /* 0000 */ GroundWaterParameters parameters;
-  /* 0018 */ std::uint32_t unknown_0018[3];
+  /* 0018 */ std::uint32_t reserved[3];
 };
 
 struct GroundLegacyLightmap {

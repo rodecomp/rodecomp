@@ -41,7 +41,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
 
       if (this->m_keepOpen) {
-        g_windowMgr.unknown_0474 = id;
+        g_windowMgr.modalResponse = id;
         return 0;
       }
     }

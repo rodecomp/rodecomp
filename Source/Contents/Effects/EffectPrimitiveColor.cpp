@@ -5,30 +5,30 @@
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
 void EffectPrimitiveState::ProcessAlpha() {
-  if (this->unknown_014C.z != 0) {
-    int index = this->unknown_01D8;
+  if (this->changeFlags.z != 0) {
+    int index = this->colorCycleIndex;
 
     if (index < 0 || static_cast<std::uint32_t>(index) > this->chPoint.size() - 1) {
-      this->unknown_01D8 = 0;
+      this->colorCycleIndex = 0;
       index = 0;
     }
 
     if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
       this->alpha = this->chVal1[index];
       this->maxAlpha = this->chVal2[index];
-      this->unknown_01D8 = index + 1;
+      this->colorCycleIndex = index + 1;
     }
-  } else if (this->unknown_014C.y != 0) {
-    int index = this->unknown_01D8;
+  } else if (this->changeFlags.y != 0) {
+    int index = this->colorCycleIndex;
 
     if (index < 0 || static_cast<std::uint32_t>(index) >= this->chPoint.size()) {
-      this->unknown_01D8 = 0;
+      this->colorCycleIndex = 0;
       index = 0;
     }
 
     if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
       this->alphaSpeed = this->chVal1[index];
-      this->unknown_01D8 = index + 1;
+      this->colorCycleIndex = index + 1;
     }
   }
 

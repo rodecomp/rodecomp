@@ -218,19 +218,19 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
     CSkillInfo snapshot(value);
     const auto update = [](CSkillInfo& target, const CSkillInfo& source, bool copy000C, bool copy0030) {
       target.level = source.level;
-      std::memcpy(&target.unknown_0014, &source.unknown_0014, sizeof(target.unknown_0014));
-      std::memcpy(&target.unknown_001C, &source.unknown_001C, sizeof(target.unknown_001C));
-      std::memcpy(&target.unknown_0018, &source.unknown_0018, sizeof(target.unknown_0018));
+      std::memcpy(&target.spCost, &source.spCost, sizeof(target.spCost));
+      std::memcpy(&target.range, &source.range, sizeof(target.range));
+      std::memcpy(&target.upgradable, &source.upgradable, sizeof(target.upgradable));
 
       if (copy000C) {
-        std::memcpy(&target.unknown_000C, &source.unknown_000C, sizeof(target.unknown_000C));
+        std::memcpy(&target.type, &source.type, sizeof(target.type));
       }
 
       if (copy0030) {
-        target.unknown_0030 = source.unknown_0030;
+        target.learnedLevel = source.learnedLevel;
       }
 
-      target.unknown_0034 = source.unknown_0034;
+      target.apCost = source.apCost;
     };
 
     CSkillInfo* grouped = this->m_skillBundle.FindGrouped(snapshot.id);
@@ -240,8 +240,8 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
       if (CSkillInfo* extra = this->m_skillBundle.FindExtra(snapshot.id)) {
         update(*extra, snapshot, true, false);
       } else {
-        snapshot.unknown_0024 = UINT32_MAX;
-        snapshot.unknown_002C = 0;
+        snapshot.treePosition = UINT32_MAX;
+        snapshot.canPlanLevel = 0;
         this->m_skillBundle.AddExtra(snapshot);
       }
     }
@@ -258,16 +258,16 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
 
   if (CSkillInfo* existing = this->m_skillBundle.Find(value.id)) {
     existing->level = value.level;
-    std::memcpy(&existing->unknown_0014, &value.unknown_0014, sizeof(existing->unknown_0014));
-    std::memcpy(&existing->unknown_001C, &value.unknown_001C, sizeof(existing->unknown_001C));
-    std::memcpy(&existing->unknown_0018, &value.unknown_0018, sizeof(existing->unknown_0018));
+    std::memcpy(&existing->spCost, &value.spCost, sizeof(existing->spCost));
+    std::memcpy(&existing->range, &value.range, sizeof(existing->range));
+    std::memcpy(&existing->upgradable, &value.upgradable, sizeof(existing->upgradable));
 
     if (updateUnknown000C == 1) {
-      std::memcpy(&existing->unknown_000C, &value.unknown_000C, sizeof(existing->unknown_000C));
+      std::memcpy(&existing->type, &value.type, sizeof(existing->type));
     }
 
-    existing->unknown_0030 = value.unknown_0030;
-    existing->unknown_0034 = value.unknown_0034;
+    existing->learnedLevel = value.learnedLevel;
+    existing->apCost = value.apCost;
     if (notify == 1) {
       this->NotifySkillWindows();
     }
@@ -289,10 +289,10 @@ bool CSession::UpdateAdditionalSkill(const CSkillInfo& value, int) {
   for (CSkillInfo& skill : this->m_additionalSkills) {
     if (value.id == skill.id) {
       skill.level = value.level;
-      std::memcpy(&skill.unknown_0014, &value.unknown_0014, sizeof(skill.unknown_0014));
-      std::memcpy(&skill.unknown_001C, &value.unknown_001C, sizeof(skill.unknown_001C));
-      std::memcpy(&skill.unknown_0018, &value.unknown_0018, sizeof(skill.unknown_0018));
-      skill.unknown_0034 = value.unknown_0034;
+      std::memcpy(&skill.spCost, &value.spCost, sizeof(skill.spCost));
+      std::memcpy(&skill.range, &value.range, sizeof(skill.range));
+      std::memcpy(&skill.upgradable, &value.upgradable, sizeof(skill.upgradable));
+      skill.apCost = value.apCost;
 
       return false;
     }
@@ -308,11 +308,11 @@ bool CSession::UpdateHomunSkill(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->m_homunSkills) {
     if (value.id == skill.id) {
       skill.level = value.level;
-      skill.unknown_0014 = value.unknown_0014;
-      skill.unknown_001C = value.unknown_001C;
-      skill.unknown_0018 = value.unknown_0018;
-      skill.unknown_000C = value.unknown_000C;
-      skill.unknown_0034 = value.unknown_0034;
+      skill.spCost = value.spCost;
+      skill.range = value.range;
+      skill.upgradable = value.upgradable;
+      skill.type = value.type;
+      skill.apCost = value.apCost;
       if (notify) {
         this->NotifyHomunSkillWindows();
       }
@@ -335,11 +335,11 @@ bool CSession::UpdateMercSkill(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->m_mercSkills) {
     if (value.id == skill.id) {
       skill.level = value.level;
-      skill.unknown_0014 = value.unknown_0014;
-      skill.unknown_001C = value.unknown_001C;
-      skill.unknown_0018 = value.unknown_0018;
-      skill.unknown_000C = value.unknown_000C;
-      skill.unknown_0034 = value.unknown_0034;
+      skill.spCost = value.spCost;
+      skill.range = value.range;
+      skill.upgradable = value.upgradable;
+      skill.type = value.type;
+      skill.apCost = value.apCost;
       if (notify) {
         this->NotifyMercSkillWindows();
       }
@@ -359,26 +359,26 @@ bool CSession::UpdateMercSkill(const CSkillInfo& value, unsigned char notify) {
 // OFFSET: 0x00E07410
 // FUNCTION: fn_23743
 void CSession::AddUnknownId(int id) {
-  if (std::find(this->unknown_616C.begin(), this->unknown_616C.end(), id) == this->unknown_616C.end()) {
-    this->unknown_616C.push_back(id);
+  if (std::find(this->achievementIds.begin(), this->achievementIds.end(), id) == this->achievementIds.end()) {
+    this->achievementIds.push_back(id);
   }
 }
 
 // OFFSET: 0x00E07470
 // FUNCTION: fn_23744
 bool CSession::EquipItem3500(const ITEM_INFO& item) {
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->unknown_3500[slot];
+      ITEM_INFO& equipped = this->alternateCostumeItems[slot];
       equipped = item;
       equipped.quantity = 1;
-      equipped.unknown_0068 = item.unknown_0068;
-      equipped.unknown_0064 = item.unknown_0064;
-      equipped.unknown_0070 = item.unknown_0070;
+      equipped.expireTime = item.expireTime;
+      equipped.bindOnEquip = item.bindOnEquip;
+      equipped.sprite = item.sprite;
     }
   }
 
@@ -390,23 +390,23 @@ bool CSession::EquipItem3500(const ITEM_INFO& item) {
 void CSession::AddStackedItem(ITEM_INFO item) {
   int index;
   for (index = 0; index < 5; ++index) {
-    if (this->unknown_5C68[index].quantity != 0 && this->unknown_5C68[index].unknown_0000[1] == item.unknown_0000[1]) {
+    if (this->selectionItems[index].quantity != 0 && this->selectionItems[index].identity[1] == item.identity[1]) {
       break;
     }
   }
 
   if (index < 5) {
-    this->unknown_5C68[index].quantity += item.quantity;
+    this->selectionItems[index].quantity += item.quantity;
   } else {
     for (index = 0; index < 5; ++index) {
-      if (this->unknown_5C68[index].quantity == 0) {
-        this->unknown_5C68[index] = item;
+      if (this->selectionItems[index].quantity == 0) {
+        this->selectionItems[index] = item;
         break;
       }
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
@@ -415,8 +415,8 @@ void CSession::AddStackedItem(ITEM_INFO item) {
 // FUNCTION: fn_23748
 void CSession::AddItemToFreeSlot(ITEM_INFO item) {
   for (int index = 0; index < 5; ++index) {
-    if (this->unknown_5C68[index].quantity == 0) {
-      this->unknown_5C68[index] = item;
+    if (this->selectionItems[index].quantity == 0) {
+      this->selectionItems[index] = item;
       break;
     }
   }
@@ -440,38 +440,38 @@ bool CSession::IsListedId(int id, int variant) const {
 // FUNCTION: fn_23754
 void CSession::ClearItemQuantities() {
   for (int index = 0; index < 5; ++index) {
-    this->unknown_5C68[index].quantity = 0;
+    this->selectionItems[index].quantity = 0;
   }
 
-  this->unknown_6140 = 0;
+  this->achievementResult = 0;
 }
 
 // OFFSET: 0x00E082D0
 // FUNCTION: fn_23755
 void CSession::ResetItems3500() {
   for (int index = 0; index < 10; ++index) {
-    this->unknown_3500[index].Reset();
+    this->alternateCostumeItems[index].Reset();
   }
 }
 
 // OFFSET: 0x00E08300
 // FUNCTION: fn_23756
 void CSession::ClearSlots06EB() {
-  this->unknown_06EB.unknown_0000 = 0;
-  this->unknown_06EB.itemId = 0;
-  this->unknown_06EB.unknown_0005 = 0;
-  this->unknown_06F2.unknown_0000 = 0;
-  this->unknown_06F2.itemId = 0;
-  this->unknown_06F2.unknown_0005 = 0;
+  this->quickSlot.enabled = 0;
+  this->quickSlot.itemId = 0;
+  this->quickSlot.value = 0;
+  this->alternateQuickSlot.enabled = 0;
+  this->alternateQuickSlot.itemId = 0;
+  this->alternateQuickSlot.value = 0;
 }
 
 // OFFSET: 0x00E08330
 // FUNCTION: fn_23757
 void CSession::ClearShortcutSlots() {
   for (int index = 0; index < 36; ++index) {
-    this->m_shortcutSlots[index].unknown_0000 = 0;
+    this->m_shortcutSlots[index].enabled = 0;
     this->m_shortcutSlots[index].itemId = 0;
-    this->m_shortcutSlots[index].unknown_0005 = 0;
+    this->m_shortcutSlots[index].value = 0;
   }
 }
 
@@ -485,21 +485,21 @@ void CSession::ClearSecondaryShortcutSlots() {
 // FUNCTION: fn_23759
 void CSession::ClearUnknown0420() {
   for (int index = 0; index < 36; ++index) {
-    this->unknown_0420[index] = 0;
+    this->hotkeySkillLevels[index] = 0;
   }
 }
 
 // OFFSET: 0x00E083D0
 // FUNCTION: fn_23760
 void CSession::EraseUnknownKey(std::int64_t key) {
-  auto first = this->unknown_0784.find(key);
-  if (first != this->unknown_0784.end()) {
-    this->unknown_0784.erase(first);
+  auto first = this->summonHp.find(key);
+  if (first != this->summonHp.end()) {
+    this->summonHp.erase(first);
   }
 
-  auto second = this->unknown_078C.find(key);
-  if (second != this->unknown_078C.end()) {
-    this->unknown_078C.erase(second);
+  auto second = this->summonMaxHp.find(key);
+  if (second != this->summonMaxHp.end()) {
+    this->summonMaxHp.erase(second);
   }
 }
 
@@ -551,8 +551,8 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 // OFFSET: 0x00E08690
 // FUNCTION: fn_23764
 std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
-  auto found = this->unknown_0784.lower_bound(key);
-  if (found == this->unknown_0784.end() || key < found->first) {
+  auto found = this->summonHp.lower_bound(key);
+  if (found == this->summonHp.end() || key < found->first) {
     return -1;
   }
 
@@ -562,8 +562,8 @@ std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
 // OFFSET: 0x00E086F0
 // FUNCTION: fn_23765
 std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
-  auto found = this->unknown_078C.lower_bound(key);
-  if (found == this->unknown_078C.end() || key < found->first) {
+  auto found = this->summonMaxHp.lower_bound(key);
+  if (found == this->summonMaxHp.end() || key < found->first) {
     return -1;
   }
 
@@ -573,8 +573,8 @@ std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
 // OFFSET: 0x00E08750
 // FUNCTION: fn_23766
 SessionRecord6144 CSession::FindRecord6144(int key) const {
-  auto found = this->unknown_6144.find(key);
-  if (found != this->unknown_6144.end()) {
+  auto found = this->achievements.find(key);
+  if (found != this->achievements.end()) {
     return found->second;
   }
 
@@ -584,24 +584,24 @@ SessionRecord6144 CSession::FindRecord6144(int key) const {
 // OFFSET: 0x00E06FD0
 // FUNCTION: fn_23738
 void CSession::UpdateRecord6144(const AchievementRecordPacket& packet) {
-  auto found = this->unknown_6144.find(packet.id);
-  if (found != this->unknown_6144.end()) {
+  auto found = this->achievements.find(packet.id);
+  if (found != this->achievements.end()) {
     SessionRecord6144& record = found->second;
-    reinterpret_cast<unsigned char*>(&record.unknown_0000)[1] = packet.completed;
-    std::memcpy(record.unknown_0004, packet.objectives, sizeof(record.unknown_0004));
-    record.unknown_002C = packet.completedAt;
-    record.unknown_0030 = packet.rewarded;
+    reinterpret_cast<unsigned char*>(&record.completionFlags)[1] = packet.completed;
+    std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
+    record.completedAt = packet.completedAt;
+    record.rewarded = packet.rewarded;
     this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
     return;
   }
 
   SessionRecord6144 record;
-  record.unknown_0000 = static_cast<std::uint16_t>(1 | packet.completed << 8);
-  std::memcpy(record.unknown_0004, packet.objectives, sizeof(record.unknown_0004));
-  record.unknown_002C = packet.completedAt;
-  record.unknown_0030 = packet.rewarded;
+  record.completionFlags = static_cast<std::uint16_t>(1 | packet.completed << 8);
+  std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
+  record.completedAt = packet.completedAt;
+  record.rewarded = packet.rewarded;
   this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
-  this->unknown_6144.insert({packet.id, record});
+  this->achievements.insert({packet.id, record});
 }
 
 // OFFSET: 0x00E08A00
@@ -635,7 +635,7 @@ ITEM_INFO CSession::GetItem2B50(int index) const {
   }
 
   if (index >= 0 && index < 10) {
-    return this->unknown_2B50[index];
+    return this->costumeItems[index];
   }
 
   return ITEM_INFO(0);
@@ -646,7 +646,7 @@ ITEM_INFO CSession::GetItem2B50(int index) const {
 int CSession::CountItems5C68() const {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
-    if (this->unknown_5C68[index].quantity != 0) {
+    if (this->selectionItems[index].quantity != 0) {
       ++count;
     }
   }
@@ -676,7 +676,7 @@ int CSession::GetDefaultOptionValue(const char* name, int fallback) const {
 // OFFSET: 0x00E094B0
 // FUNCTION: fn_23777
 int CSession::FindUnknown0778(int key) const {
-  for (const std::pair<int, int>& entry : this->unknown_0778) {
+  for (const std::pair<int, int>& entry : this->keyValues) {
     if (key == entry.first) {
       return entry.second;
     }
@@ -751,7 +751,7 @@ __declspec(noinline) void CSession::NotifyMercSkillWindows() {
 // FUNCTION: fn_23753
 void CSession::ResetItems2B50() {
   for (int index = 0; index < 10; ++index) {
-    this->unknown_2B50[index].Reset();
+    this->costumeItems[index].Reset();
   }
 
   RequestBasicInfoRefresh();
@@ -785,14 +785,14 @@ float GetSkillFactor(int job) {
 void CSession::ClearAdditionalShortcutSkills() {
   for (int slot = 0; slot < 36; ++slot) {
     const NormalItemSlot& value = this->m_shortcutSlots[slot];
-    if (value.itemId != 0 && value.unknown_0000 != 0 && value.itemId >= 10000 && value.itemId < 10020) {
+    if (value.itemId != 0 && value.enabled != 0 && value.itemId >= 10000 && value.itemId < 10020) {
       this->AssignShortcut(1, 0, 0, slot, 0);
     }
   }
 
   for (int slot = 0; slot < 36; ++slot) {
     const NormalItemSlot& value = this->m_secondaryShortcutSlots[slot];
-    if (value.itemId != 0 && value.unknown_0000 != 0 && value.itemId >= 10000 && value.itemId < 10020) {
+    if (value.itemId != 0 && value.enabled != 0 && value.itemId >= 10000 && value.itemId < 10020) {
       this->AssignShortcut(1, 0, 0, slot, 1);
     }
   }
@@ -914,9 +914,9 @@ int CSession::ProcessEmotionShortcut(const char* text) {
 void CSession::RestoreItems5C68() {
   bool restored = false;
   for (int index = 0; index < 5; ++index) {
-    if (this->unknown_5C68[index].quantity != 0) {
+    if (this->selectionItems[index].quantity != 0) {
       restored = true;
-      g_session.AddItem1710(this->unknown_5C68[index], 0);
+      g_session.AddItem1710(this->selectionItems[index], 0);
     }
   }
 
@@ -929,17 +929,17 @@ void CSession::RestoreItems5C68() {
 // FUNCTION: fn_23905
 void CSession::ReturnStackedItem(int index, int count) {
   for (int slot = 0; slot < 5; ++slot) {
-    const int quantity = this->unknown_5C68[slot].quantity;
-    if (quantity != 0 && this->unknown_5C68[slot].unknown_0000[1] == index) {
-      this->unknown_5C68[slot].quantity = count;
-      g_session.AddItem1710(this->unknown_5C68[slot], 0);
-      this->unknown_5C68[slot].quantity = quantity - count;
+    const int quantity = this->selectionItems[slot].quantity;
+    if (quantity != 0 && this->selectionItems[slot].identity[1] == index) {
+      this->selectionItems[slot].quantity = count;
+      g_session.AddItem1710(this->selectionItems[slot], 0);
+      this->selectionItems[slot].quantity = quantity - count;
       RefreshItemWindows(&g_windowMgr);
       break;
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
@@ -958,18 +958,18 @@ public:
 // OFFSET: 0x00E07150
 // FUNCTION: fn_23739
 bool CSession::EquipItem2B50(const ITEM_INFO& item, const char* name) {
-  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->unknown_2B50[slot];
+      ITEM_INFO& equipped = this->costumeItems[slot];
       equipped = item;
       equipped.quantity = 1;
-      equipped.unknown_0068 = item.unknown_0068;
-      equipped.unknown_0064 = item.unknown_0064;
-      equipped.unknown_0070 = item.unknown_0070;
+      equipped.expireTime = item.expireTime;
+      equipped.bindOnEquip = item.bindOnEquip;
+      equipped.sprite = item.sprite;
     }
   }
 
@@ -985,7 +985,7 @@ bool CSession::EquipItem2B50(const ITEM_INFO& item, const char* name) {
 // OFFSET: 0x00E09900
 // FUNCTION: fn_23785
 ITEM_INFO CSession::GetItem5C68(int index) const {
-  return this->unknown_5C68[index];
+  return this->selectionItems[index];
 }
 
 // OFFSET: 0x00E09970
@@ -1015,7 +1015,7 @@ ITEM_INFO CSession::GetItem3500(int index) const {
   }
 
   if (index >= 0 && index < 10) {
-    return this->unknown_3500[index];
+    return this->alternateCostumeItems[index];
   }
 
   return ITEM_INFO(0);
@@ -1026,9 +1026,9 @@ ITEM_INFO CSession::GetItem3500(int index) const {
 void CSession::FindTopRecords6144(int* second, int* first) {
   int bestValue = -1;
   int secondValue;
-  for (auto it = this->unknown_6144.begin(); it != this->unknown_6144.end(); ++it) {
-    if (reinterpret_cast<const unsigned char*>(&it->second.unknown_0000)[1]) {
-      const int value = it->second.unknown_002C;
+  for (auto it = this->achievements.begin(); it != this->achievements.end(); ++it) {
+    if (reinterpret_cast<const unsigned char*>(&it->second.completionFlags)[1]) {
+      const int value = it->second.completedAt;
       if (bestValue < value) {
         secondValue = bestValue;
         bestValue = value;
@@ -1092,6 +1092,6 @@ void CSession::ClearPairValues(unsigned char clearThird, unsigned char clearSeco
 // OFFSET: 0x00E19B90
 // FUNCTION: fn_23846
 void CSession::ResetUnknown1050() {
-  g_session.unknown_1050 = -1;
-  g_session.unknown_103C = -1;
+  g_session.petEggIndex = -1;
+  g_session.petJob = -1;
 }

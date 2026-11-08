@@ -33,36 +33,36 @@ void UIWindowMgr::RefreshGuildWindows() {
   if (this->window_0324) {
     this->window_0324->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->unknown_0328) {
-    this->unknown_0328->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildPositionManageWnd) {
+    this->guildPositionManageWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->window_032C) {
     this->window_032C->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->unknown_0330) {
-    this->unknown_0330->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildBanishedMemberWnd) {
+    this->guildBanishedMemberWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->unknown_0334) {
-    this->unknown_0334->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildNoticeWnd) {
+    this->guildNoticeWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->unknown_0338) {
-    this->unknown_0338->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildTotalInfoWnd) {
+    this->guildTotalInfoWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00A96810
 // FUNCTION: fn_17187
 void UIWindowMgr::RefreshRouletteWnd() {
-  if (this->unknown_0464) {
-    this->unknown_0464->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->roulletteWnd) {
+    this->roulletteWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00A96830
 // FUNCTION: fn_17188
 void UIWindowMgr::EnableRouletteWnd() {
-  if (this->unknown_0464) {
-    this->unknown_0464->m_enabled = 1;
+  if (this->roulletteWnd) {
+    this->roulletteWnd->m_enabled = 1;
   }
 }
 
@@ -140,11 +140,11 @@ void UIWindowMgr::Promote(UIWindow* window) {
 // OFFSET: 0x00A969D0
 // FUNCTION: fn_17190
 void UIWindowMgr::InvalidateFrames() {
-  if (this->unknown_04FC != 0) {
+  if (this->framesInvalidated != 0) {
     return;
   }
 
-  this->unknown_04FC = 1;
+  this->framesInvalidated = 1;
 
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     if ((*it)->NeedsFrameRefresh()) {

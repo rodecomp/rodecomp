@@ -19,10 +19,10 @@ public:
 
   /* 00CC */ CEZ2STRParticle* first;
   /* 00D0 */ CEZ2STRParticle* second;
-  /* 00D4 */ float unknown_00D4;
-  /* 00D8 */ float unknown_00D8;
-  /* 00DC */ float unknown_00DC;
-  /* 00E0 */ int unknown_00E0;
+  /* 00D4 */ float velocityX;
+  /* 00D8 */ float velocityY;
+  /* 00DC */ float velocityZ;
+  /* 00E0 */ int travelFrames;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -13,7 +13,7 @@
 
 // OFFSET: 0x00708E70
 // FUNCTION: fn_07085
-CPowderingEffect::CPowderingEffect() : CEffect(-1), unknown_00E4(0) {
+CPowderingEffect::CPowderingEffect() : CEffect(-1), particleGridSize(0) {
 }
 
 // OFFSET: 0x007092C0
@@ -33,51 +33,51 @@ void CPowderingEffect::Close() {
 // OFFSET: 0x00709330
 // FUNCTION: fn_07089
 void CPowderingEffect::Open() {
-  if (this->unknown_00B0 == 1 || this->unknown_00B0 == 2) {
-    this->unknown_00E4 = 3;
-  } else if (this->unknown_00B0 == 3 || this->unknown_00B0 == 4) {
-    this->unknown_00E4 = 5;
-  } else if (this->unknown_00B0 == 5) {
-    this->unknown_00E4 = 7;
+  if (this->effectLevel == 1 || this->effectLevel == 2) {
+    this->particleGridSize = 3;
+  } else if (this->effectLevel == 3 || this->effectLevel == 4) {
+    this->particleGridSize = 5;
+  } else if (this->effectLevel == 5) {
+    this->particleGridSize = 7;
   }
 
-  for (int i = 0; i < this->unknown_00E4 * this->unknown_00E4; ++i) {
+  for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (!particle) {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
 
     particle->SetTexture("smoke2.bmp");
 
-    const int span1 = this->unknown_00E4 * 5;
+    const int span1 = this->particleGridSize * 5;
     int r1 = 0;
     if (span1 != 0) {
       r1 = std::max(rand() % span1, 0);
     }
     const int r1Final = r1 - span1 / 2 + 1;
 
-    const int span2 = this->unknown_00E4 * 5;
+    const int span2 = this->particleGridSize * 5;
     int r2 = 0;
     if (span2 != 0) {
       r2 = std::max(rand() % span2, 0);
     }
     const int r2Final = r2 - span2 / 2 + 1;
 
-    particle->unknown_00D4 = 0.0f;
-    particle->unknown_00D0 = static_cast<float>(r1Final);
-    particle->unknown_00D8 = static_cast<float>(r2Final);
+    particle->offsetY = 0.0f;
+    particle->offsetX = static_cast<float>(r1Final);
+    particle->offsetZ = static_cast<float>(r2Final);
 
     this->InitSmokeParticle(particle);
     InitParticleQuad(particle->vertices);
     this->smokeParticles.push_back(particle);
   }
 
-  for (int i = 0; i < this->unknown_00E4 * this->unknown_00E4; ++i) {
+  for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(
       CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1)
     );
@@ -85,10 +85,10 @@ void CPowderingEffect::Open() {
       continue;
     }
 
-    particle->unknown_0004 = this->id;
-    particle->unknown_000C = i;
-    particle->unknown_0010 = 0;
-    particle->unknown_0008 = 1;
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
 
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
@@ -104,7 +104,7 @@ void CPowderingEffect::Open() {
 void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
-  const int span1 = this->unknown_00E4 * 5;
+  const int span1 = this->particleGridSize * 5;
   int r1 = 0;
   if (span1 != 0) {
     r1 = std::max(rand() % span1, 0);
@@ -113,7 +113,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
 
   const float yVal = static_cast<float>(std::max(rand() % 7, 0) + 7);
 
-  const int span2 = this->unknown_00E4 * 5;
+  const int span2 = this->particleGridSize * 5;
   int r2 = 0;
   if (span2 != 0) {
     r2 = std::max(rand() % span2, 0);
@@ -127,7 +127,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   const int r3 = std::max(rand() % 3, 0) + 1;
 
   spriteParticle->alpha = 0;
-  spriteParticle->unknown_00A8 = 0;
+  spriteParticle->animationState = 0;
   spriteParticle->scale = 0.5f - static_cast<float>(r3) * 0.1f;
 }
 
@@ -148,36 +148,36 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
   particle->alpha = 0;
 
   const int r2Clamped = std::max(r2, 0);
-  particle->unknown_0050 = r2Clamped + 30;
+  particle->angleParameter = r2Clamped + 30;
 
   const int r1Clamped = std::max(r1, 0);
-  particle->unknown_00C0 =
-    (static_cast<float>(r1Clamped + 1) * 0.1f + 6.0f) / static_cast<float>(particle->unknown_0050 * 2);
+  particle->speedParameter =
+    (static_cast<float>(r1Clamped + 1) * 0.1f + 6.0f) / static_cast<float>(particle->angleParameter * 2);
 
   const int r3 = std::max(rand() % 100, 0);
   const int targetAlpha = r3 + 50;
-  *reinterpret_cast<int*>(particle->unknown_0048) = targetAlpha;
-  *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(targetAlpha / particle->unknown_0050);
+  *reinterpret_cast<int*>(particle->effectParameters) = targetAlpha;
+  *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(targetAlpha / particle->angleParameter);
 
   const int r4 = rand() % 100;
   const int r5 = rand() % 50;
   const short s4 = static_cast<short>(std::max(r4, 0));
   const short s5 = static_cast<short>(std::max(r5, 0));
   particle->SetColor(115 - s5, 255, 150 - s4);
-  particle->unknown_00A8 = 0;
+  particle->animationState = 0;
 }
 
 // OFFSET: 0x007097B0
 // FUNCTION: fn_07093
 bool CPowderingEffect::IsAlive() {
   for (CParticle* particle : this->smokeParticles) {
-    if (particle->unknown_00A8 != 2) {
+    if (particle->animationState != 2) {
       return true;
     }
   }
 
   for (CParticle* particle : this->spriteParticles) {
-    if (particle->unknown_00A8 != 2) {
+    if (particle->animationState != 2) {
       return true;
     }
   }
@@ -190,31 +190,31 @@ bool CPowderingEffect::IsAlive() {
 void CPowderingEffect::OnProcess() {
   for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || particle->unknown_00A8 == 2) {
+    if (!particle || particle->animationState == 2) {
       continue;
     }
 
-    const int targetAlpha = *reinterpret_cast<int*>(particle->unknown_0048);
-    const float scale = particle->unknown_00C0 + particle->scale;
+    const int targetAlpha = *reinterpret_cast<int*>(particle->effectParameters);
+    const float scale = particle->speedParameter + particle->scale;
     int alpha = particle->alpha;
-    const int step = targetAlpha / particle->unknown_0050;
+    const int step = targetAlpha / particle->angleParameter;
 
-    if (particle->unknown_00A8 == 0) {
+    if (particle->animationState == 0) {
       alpha += step;
       if (targetAlpha <= alpha) {
         alpha = targetAlpha;
-        particle->unknown_00A8 = 1;
+        particle->animationState = 1;
       }
-    } else if (particle->unknown_00A8 == 1) {
+    } else if (particle->animationState == 1) {
       alpha -= step;
       if (alpha < 0) {
         if (this->ActorExists()) {
-          particle->unknown_00A8 = 0;
+          particle->animationState = 0;
           this->InitSmokeParticle(particle);
           continue;
         } else {
           alpha = 0;
-          particle->unknown_00A8 = 2;
+          particle->animationState = 2;
         }
       }
     }
@@ -233,35 +233,35 @@ void CPowderingEffect::OnProcess() {
     result.Compose(scaleMat, rotation);
     particle->transform = result;
 
-    particle->position.x = this->position[0] + 0.0f + particle->unknown_00D0;
-    particle->position.y = this->position[1] - 10.0f + particle->unknown_00D4;
-    particle->position.z = this->position[2] + 0.0f + particle->unknown_00D8;
-    ++particle->unknown_00E8;
+    particle->position.x = this->position[0] + 0.0f + particle->offsetX;
+    particle->position.y = this->position[1] - 10.0f + particle->offsetY;
+    particle->position.z = this->position[2] + 0.0f + particle->offsetZ;
+    ++particle->elapsedFrames;
   }
 
   for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    if (!particle || particle->unknown_00A8 == 2) {
+    if (!particle || particle->animationState == 2) {
       continue;
     }
 
     int alpha = particle->alpha;
-    if (particle->unknown_00A8 == 0) {
+    if (particle->animationState == 0) {
       alpha += std::max(rand() % 30, 0);
       if (alpha >= 255) {
         alpha = 254;
-        particle->unknown_00A8 = 1;
+        particle->animationState = 1;
       }
-    } else if (particle->unknown_00A8 == 1) {
+    } else if (particle->animationState == 1) {
       alpha -= std::max(rand() % 30, 0);
       if (alpha < 0) {
         if (this->ActorExists()) {
-          particle->unknown_00A8 = 0;
+          particle->animationState = 0;
           this->InitSpriteParticle(particle);
           continue;
         } else {
           alpha = 0;
-          particle->unknown_00A8 = 2;
+          particle->animationState = 2;
         }
       }
     }
@@ -270,7 +270,7 @@ void CPowderingEffect::OnProcess() {
     particle->alpha = alpha;
     velocity.y += static_cast<float>(std::max(rand() % 10, 0)) * 0.01f;
     particle->velocity = velocity;
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
     particle->position.x = velocity.x + this->position[0];
     particle->position.y = velocity.y + this->position[1];
     particle->position.z = velocity.z + this->position[2];
@@ -282,14 +282,14 @@ void CPowderingEffect::OnProcess() {
 void CPowderingEffect::Render() {
   for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->unknown_00A8 != 2) {
+    if (particle && particle->animationState != 2) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 
   for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    if (particle && particle->unknown_00A8 != 2) {
+    if (particle && particle->animationState != 2) {
       particle->Draw(1);
     }
   }

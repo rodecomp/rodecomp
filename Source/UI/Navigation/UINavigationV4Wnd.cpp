@@ -9,9 +9,9 @@ UINavigationRuideWnd::UINavigationRuideWnd()
 // OFFSET: 0x005C28C0
 // FUNCTION: fn_03537
 UINavigationV4Wnd::UINavigationV4Wnd() : UIFrameWnd(0) {
-  this->unknown_0118 = 0;
-  this->unknown_0100 = nullptr;
-  this->unknown_011C = 2000;
+  this->noticeUntil = 0;
+  this->moveButton = nullptr;
+  this->animationDuration = 2000;
 }
 
 // OFFSET: 0x005C2960

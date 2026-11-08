@@ -23,11 +23,11 @@ public:
   __declspec(noinline) void SetValues(int current, int maximum);
   void SetLimits(int first, int second);
 
-  /* 009C */ int unknown_009C;
+  /* 009C */ int displayMode;
   /* 00A0 */ int current;
   /* 00A4 */ int maximum;
-  /* 00A8 */ int unknown_00A8;
-  /* 00AC */ int unknown_00AC;
+  /* 00A8 */ int secondaryValue;
+  /* 00AC */ int secondaryMaximum;
 };
 
 class UIRechargeGage : public UIGage {
@@ -50,7 +50,7 @@ public:
   void SetThirdValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
   void SetFourthValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
 
-  /* 009C */ int unknown_009C;
+  /* 009C */ int actorKind;
   /* 00A0 */ std::function<std::int64_t()> m_firstCurrent;
   /* 00C8 */ std::function<std::int64_t()> m_firstMaximum;
   /* 00F0 */ std::function<std::int64_t()> m_secondCurrent;

@@ -140,13 +140,13 @@ bool CSession::IsNavigationAllowed() const {
 // OFFSET: 0x00DFA810
 // FUNCTION: fn_23579
 bool IsNavigationActive() {
-  if (g_windowMgr.unknown_0250 != 0) {
+  if (g_windowMgr.itemShopWnd != 0) {
     return false;
   }
   if (g_windowMgr.HasNavigationBlocker() == true) {
     return false;
   }
-  if (g_windowMgr.unknown_01E4 != 0) {
+  if (g_windowMgr.nCashWnd != 0) {
     return false;
   }
   return true;
@@ -1098,7 +1098,7 @@ std::string CSession::GetWeaponName(int weapon) {
 // FUNCTION: fn_23482
 const char* CSession::GetWeaponClassName(int item) {
   const char* name = nullptr;
-  if (g_session.m_hotkeyScript->Call("ReqWeaponNameByClassNum", "d>s", FindItemDescription(item).unknown_0040, &name)) {
+  if (g_session.m_hotkeyScript->Call("ReqWeaponNameByClassNum", "d>s", FindItemDescription(item).viewId, &name)) {
     return name;
   }
 
@@ -1200,7 +1200,7 @@ std::string GetJobTitleString(int job) {
 // OFFSET: 0x00E19530
 // FUNCTION: fn_23841
 int __stdcall GetWeaponViewValue(int weapon) {
-  const int value = FindItemDescription(weapon).unknown_0040;
+  const int value = FindItemDescription(weapon).viewId;
 
   if (weapon > 2100 && weapon < 2200 || static_cast<unsigned>(weapon - 28901) <= 0x61 || static_cast<unsigned>(weapon - 460000) <= 0x270F) {
     return -1;
@@ -1292,14 +1292,14 @@ bool ResetHotkeySlots() {
 // OFFSET: 0x00E25E60
 // FUNCTION: fn_23909
 std::pair<int, int>* CSession::InsertPair(int key, int value) {
-  for (std::vector<std::pair<int, int>>::iterator it = this->unknown_0778.begin(); it != this->unknown_0778.end(); ++it) {
+  for (std::vector<std::pair<int, int>>::iterator it = this->keyValues.begin(); it != this->keyValues.end(); ++it) {
     if (key == it->first) {
       it->second = value;
       return &*it;
     }
   }
 
-  return &this->unknown_0778.emplace_back(std::make_pair(key, value));
+  return &this->keyValues.emplace_back(std::make_pair(key, value));
 }
 
 // OFFSET: 0x00E0A1F0
@@ -1322,7 +1322,7 @@ int CSession::GetPairValue() const {
 // FUNCTION: fn_23793
 int CSession::GetPetTargetAid() const {
   int target = 0;
-  std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(&this->unknown_5570[8]);
+  std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]);
   CGameMode* mode;
   CRenderObject* actor;
   if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
@@ -1330,7 +1330,7 @@ int CSession::GetPetTargetAid() const {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;
   }
 
-  aid = *reinterpret_cast<const std::uint32_t*>(&this->unknown_5620[8]);
+  aid = *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
   if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
       (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;
@@ -1348,7 +1348,7 @@ int CSession::GetPetTargetAid() const {
 // OFFSET: 0x00E1D950
 // FUNCTION: fn_23854
 int CSession::WorldUnknown0050() const {
-  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_0050;
+  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isBattleFieldMode;
 }
 
 // OFFSET: 0x00E1D970
@@ -1416,49 +1416,49 @@ int CSession::IsTrickDeadActive() const {
 // OFFSET: 0x00E1DAA0
 // FUNCTION: fn_23860
 int CSession::GetMapProperty08() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 8);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 8);
 }
 
 // OFFSET: 0x00E1DAB0
 // FUNCTION: fn_23861
 int CSession::GetMapProperty07() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 7);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 7);
 }
 
 // OFFSET: 0x00E1DAC0
 // FUNCTION: fn_23862
 int CSession::GetMapProperty13() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x13);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 0x13);
 }
 
 // OFFSET: 0x00E1DAD0
 // FUNCTION: fn_23863
 int CSession::GetMapProperty11() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x11);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 0x11);
 }
 
 // OFFSET: 0x00E1DAE0
 // FUNCTION: fn_23864
 int CSession::GetMapProperty10() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x10);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 0x10);
 }
 
 // OFFSET: 0x00E1DAF0
 // FUNCTION: fn_23865
 int CSession::GetMapProperty12() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x12);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 0x12);
 }
 
 // OFFSET: 0x00E1DB00
 // FUNCTION: fn_23866
 int CSession::GetMapProperty09() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 9);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 9);
 }
 
 // OFFSET: 0x00E1DB10
 // FUNCTION: fn_23867
 int CSession::GetMapProperty0F() const {
-  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0xF);
+  return g_mapPropertyMgr->GetValue(this->mapPropertyId, 0xF);
 }
 
 // OFFSET: 0x00E1DB20
@@ -1482,7 +1482,7 @@ bool CSession::IsMiscItemType(int type) const {
 // OFFSET: 0x00E1DBA0
 // FUNCTION: fn_23870
 bool CSession::HasUnknown6178Records() const {
-  return this->unknown_6178.size() != 0;
+  return this->trackedAchievements.size() != 0;
 }
 
 // OFFSET: 0x00E1DBD0
@@ -1593,11 +1593,11 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
   for (int index = 0; index < 2; ++index) {
     NormalItemSlot& entry = this->SkillHotkey(index);
 
-    if (id == static_cast<int>(entry.itemId) && value == entry.unknown_0005 && enabled == static_cast<char>(entry.unknown_0000) ||
+    if (id == static_cast<int>(entry.itemId) && value == entry.value && enabled == static_cast<char>(entry.enabled) ||
       !CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(entry.itemId)) && id == static_cast<int>(entry.itemId)) {
-      entry.unknown_0000 = 0;
+      entry.enabled = 0;
       entry.itemId = 0;
-      entry.unknown_0005 = 0;
+      entry.value = 0;
       g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, index + 36, 0, 0, 0);
     }
   }
@@ -1608,9 +1608,9 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
   }
 
   NormalItemSlot& target = this->SkillHotkey(slot);
-  target.unknown_0000 = static_cast<unsigned char>(enabled);
+  target.enabled = static_cast<unsigned char>(enabled);
   target.itemId = static_cast<std::uint32_t>(id);
-  target.unknown_0005 = static_cast<std::int16_t>(value);
+  target.value = static_cast<std::int16_t>(value);
 
   return g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
 }
@@ -1619,8 +1619,8 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
 // FUNCTION: fn_23912
 int CSession::SetFlag(char value) {
   const int result = value & 1;
-  this->unknown_0E98 = result;
-  this->unknown_5558 = result;
+  this->cachedSex = result;
+  this->currentSex = result;
   return result;
 }
 
@@ -1804,7 +1804,7 @@ public:
 
   /* 0038 */ bool m_active;
   /* 003C */ int m_type;
-  /* 0040 */ int unknown_0040;
+  /* 0040 */ int equippedItemIndex;
   /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
   /* 0050 */ std::list<CEquipmentProperties*> m_children;
 };
@@ -1815,7 +1815,7 @@ public:
   /* 0004 */ unsigned char unknown_0004[0x9];
   /* 000D */ bool m_dirty;
   /* 000E */ unsigned char unknown_000E[0x12];
-  /* 0020 */ UIWindow* unknown_0020;
+  /* 0020 */ UIWindow* observerWindow;
   /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
 
   CEquipmentPropertiesMgr();
@@ -1837,8 +1837,8 @@ void CEquipmentPropertiesMgr::RemoveWearable(const int& location) {
     delete wearable;
     this->properties1.erase(key);
   }
-  if (this->unknown_0020 != nullptr) {
-    this->unknown_0020->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->observerWindow != nullptr) {
+    this->observerWindow->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 }
@@ -1852,27 +1852,27 @@ bool CSession::UnequipItem2B50(int location) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
-        ITEM_INFO& item = this->unknown_2B50[slots.values[2]];
+        ITEM_INFO& item = this->costumeItems[slots.values[2]];
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
         const std::string name = item.DisplayName(0);
         const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
-        item.unknown_0000[3] = 0;
+        item.identity[3] = 0;
         this->AddItem1710(item, 1);
         item.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
-        this->unknown_2B50[slots.values[1]].Reset();
+        this->costumeItems[slots.values[1]].Reset();
       }
       if (slots.values[0] != -1 && slots.values[0] < 10) {
-        this->unknown_2B50[slots.values[0]].Reset();
+        this->costumeItems[slots.values[0]].Reset();
       }
     }
     RequestBasicInfoRefresh();
   }
 
   this->InvalidateWindowFrames();
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (g_equipmentPropertiesMgr == nullptr) {
@@ -1967,49 +1967,49 @@ bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
 // FUNCTION: fn_24162
 int CSession::GetMaxBaseLevel(int job) const {
   if (g_session.IsTreeGroupThree(job) == true) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x74]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x74]);
   }
   if (g_session.IsTreeGroupTwo(job)) {
     return g_session.m_maxLevel;
   }
   if (g_session.IsSuperNovice2Job(job)) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0]);
   }
   if (g_session.IsExpandedJob(job)) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[4]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
   }
-  return g_session.IsDoramJob(job) == true ? *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x28])
-                                           : *reinterpret_cast<const int*>(g_session.unknown_7EE8);
+  return g_session.IsDoramJob(job) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
+                                           : *reinterpret_cast<const int*>(g_session.maxBaseLevel);
 }
 
 // OFFSET: 0x00E2FA80
 // FUNCTION: fn_24163
 int CSession::GetMaxJobLevel(int job) const {
   if (g_session.IsSuperNoviceJob(job)) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x10]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x10]);
   }
   if ((job >= JT_KNIGHT_H && job < JT_NOVICE_B) || job == JT_GUNSLINGER || job == JT_NINJA || job == JT_GUNSLINGER_B || job == JT_NINJA_B ||
       job == JT_DRUID || job == JT_DRUID_B) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x18]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x18]);
   }
   if (job == JT_NOVICE || job == JT_NOVICE_B || job == JT_NOVICE_H) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x0C]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x0C]);
   }
   if (g_session.IsTreeGroupThree(job) == true) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x78]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x78]);
   }
   if (g_session.IsTreeGroupTwo(job)) {
-    return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x1C]);
+    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x1C]);
   }
   if (!g_session.IsExpandedJob(job)) {
     if (g_session.IsDoramJob(job) == true) {
-      return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x2C]);
+      return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x2C]);
     }
     if (!g_session.IsSuperNovice2Job(job)) {
-      return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x14]);
+      return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x14]);
     }
   }
-  return *reinterpret_cast<const int*>(&g_session.unknown_7EF0[0x24]);
+  return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x24]);
 }
 
 // OFFSET: 0x00E1E690

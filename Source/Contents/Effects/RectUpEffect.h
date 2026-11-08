@@ -22,14 +22,14 @@ public:
   virtual void ProcessParticle(CParticle* particle);
   virtual void InitParticle(CParticle* particle);
 
-  /* 00CC */ vector3d unknown_00CC[2];
-  /* 00E4 */ int unknown_00E4;
+  /* 00CC */ vector3d previousEdge[2];
+  /* 00E4 */ int particleLifetime;
   /* 00E8 */ std::vector<CParticle*> particles;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRectUpEffect) == 0xF4);
-static_assert(offsetof(CRectUpEffect, unknown_00E4) == 0xE4);
+static_assert(offsetof(CRectUpEffect, particleLifetime) == 0xE4);
 static_assert(offsetof(CRectUpEffect, particles) == 0xE8);
 #endif
 

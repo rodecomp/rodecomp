@@ -241,7 +241,7 @@ void CTextureDX7::ReleaseDC(HDC dc) {
 // FUNCTION: fn_01826
 void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  this->unknown_0008 = (this->unknown_0008 & 255) | (static_cast<unsigned char>(option) << 8);
+  this->textureFlags = (this->textureFlags & 255) | (static_cast<unsigned char>(option) << 8);
 
   if (!this->m_surface || !pixels) {
     return;

@@ -15,7 +15,7 @@ std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
 
   for (auto it = this->cards.begin(); it != this->cards.end(); ++it) {
     const CActorNameCard& card = it->second;
-    const std::size_t needed = card.name.size() + card.unknown_001C.size() + card.unknown_0034.size() + card.unknown_004C.size() + 0x14 + offset;
+    const std::size_t needed = card.name.size() + card.partyName.size() + card.guildName.size() + card.clanName.size() + 0x14 + offset;
     if (buffer.size() < needed) {
       buffer.resize(needed + 1, 0);
     }
@@ -30,27 +30,27 @@ std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
       offset += length;
     }
 
-    length = static_cast<int>(card.unknown_001C.size());
+    length = static_cast<int>(card.partyName.size());
     *reinterpret_cast<int*>(&buffer[offset]) = length;
     offset += 4;
     if (length > 0) {
-      std::memcpy(&buffer[offset], card.unknown_001C.c_str(), length);
+      std::memcpy(&buffer[offset], card.partyName.c_str(), length);
       offset += length;
     }
 
-    length = static_cast<int>(card.unknown_0034.size());
+    length = static_cast<int>(card.guildName.size());
     *reinterpret_cast<int*>(&buffer[offset]) = length;
     offset += 4;
     if (length > 0) {
-      std::memcpy(&buffer[offset], card.unknown_0034.c_str(), length);
+      std::memcpy(&buffer[offset], card.guildName.c_str(), length);
       offset += length;
     }
 
-    length = static_cast<int>(card.unknown_004C.size());
+    length = static_cast<int>(card.clanName.size());
     *reinterpret_cast<int*>(&buffer[offset]) = length;
     offset += 4;
     if (length > 0) {
-      std::memcpy(&buffer[offset], card.unknown_004C.c_str(), length);
+      std::memcpy(&buffer[offset], card.clanName.c_str(), length);
       offset += length;
     }
   }
@@ -87,21 +87,21 @@ std::size_t CActorNameCardHolder::Load(const std::vector<char>& input) {
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].unknown_001C.assign(&input[offset], length);
+      this->cards[id].partyName.assign(&input[offset], length);
       offset += length;
     }
 
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].unknown_0034.assign(&input[offset], length);
+      this->cards[id].guildName.assign(&input[offset], length);
       offset += length;
     }
 
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].unknown_004C.assign(&input[offset], length);
+      this->cards[id].clanName.assign(&input[offset], length);
       offset += length;
     }
   }

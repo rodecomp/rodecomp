@@ -14,13 +14,13 @@ class UIWindowMgr;
 struct SubChatHisWndInfo;
 
 struct SubChatHistoryState {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ int width;
+  /* 000C */ int height;
+  /* 0010 */ int borderStyle;
+  /* 0014 */ int backgroundColor;
+  /* 0018 */ int flags;
 };
 
 class UISubChatHisWnd : public UIFrameWnd {
@@ -55,7 +55,7 @@ private:
   /* 00E4 */ UIBitmapButton* m_miniButton;
   /* 00E8 */ int m_inputHeight;
   /* 00EC */ int m_inputWidth;
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ int headerHeight;
   /* 00F4 */ int m_index;
   /* 00F8 */ bool m_options[25];
   /* 0111 */ unsigned char unknown_0111[3];

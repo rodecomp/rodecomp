@@ -15,7 +15,7 @@ void FreeParticle(CParticle* particle);
 // OFFSET: 0x0072ED00
 // FUNCTION: fn_07521
 CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1), current{}, direction{}, origin{} {
-  this->unknown_0050 = 0;
+  this->rotationParameter = 0;
 }
 
 // OFFSET: 0x0072EE80

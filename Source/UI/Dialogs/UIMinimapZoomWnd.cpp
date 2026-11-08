@@ -5,6 +5,6 @@
 UIMinimapZoomWnd::UIMinimapZoomWnd()
     : UIFrameWnd(0),
       m_zoom(),
-      unknown_00BC(0),
-      unknown_00C0(0),
-      unknown_00C4(0) {}
+      townButtonsStorage(0),
+      townButtonsEnd(0),
+      townButtonsCapacity(0) {}

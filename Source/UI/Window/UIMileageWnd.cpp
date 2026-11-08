@@ -74,7 +74,7 @@ void UIMileageWnd::OnLBtnDown(int x, int y) {
 // OFFSET: 0x0094EF10
 // FUNCTION: fn_12923
 void UIMileageWnd::OnLBtnUp(int x, int y) {
-  if (g_session.unknown_0000 == 20) {
+  if (g_session.mapPropertyId == 20) {
     return;
   }
 

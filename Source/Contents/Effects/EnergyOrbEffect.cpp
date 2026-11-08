@@ -44,26 +44,26 @@ void CEnergyOrbEffect::Open() {
         continue;
       }
 
-      particle->unknown_0004 = this->id;
-      particle->unknown_0010 = i;
-      particle->unknown_000C = j;
-      particle->unknown_0008 = 1;
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(360 / this->count * i);
+      particle->effectId = this->id;
+      particle->rowIndex = i;
+      particle->columnIndex = j;
+      particle->groupIndex = 1;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(360 / this->count * i);
       particle->SetTexture("effect\\thunder_center.bmp");
       particle->alpha = 0;
       particle->scale = 0.8f;
-      particle->unknown_00C0 = 0.15f;
-      particle->unknown_0054 = 8.0f;
-      particle->unknown_004C = angle;
-      *reinterpret_cast<float*>(&particle->unknown_0058[0]) = static_cast<float>(phase);
-      *reinterpret_cast<float*>(&particle->unknown_0058[4]) = -12.0f;
+      particle->speedParameter = 0.15f;
+      particle->animationParameter = 8.0f;
+      particle->phaseParameter = angle;
+      *reinterpret_cast<float*>(&particle->animationParameters[0]) = static_cast<float>(phase);
+      *reinterpret_cast<float*>(&particle->animationParameters[4]) = -12.0f;
       if (j == 0) {
         particle->destinationBlend = 6;
       }
 
       switch (this->id) {
       case EF_CHOOKGI:
-        particle->SetColor(particle->unknown_000C != 0 ? -1 : 0, particle->unknown_000C != 0 ? -1 : 0, particle->unknown_000C != 0 ? 0 : 255);
+        particle->SetColor(particle->columnIndex != 0 ? -1 : 0, particle->columnIndex != 0 ? -1 : 0, particle->columnIndex != 0 ? 0 : 255);
         break;
       case EF_CHOOKGI_FIRE:
         particle->SetTexture("effect\\FireOrb.bmp");
@@ -84,10 +84,10 @@ void CEnergyOrbEffect::Open() {
       case EF_OB_GENSOU:
         particle->SetTexture("effect\\fog1.tga");
         particle->scale = 6.0f;
-        particle->unknown_00C0 = 0.05f;
-        particle->unknown_0054 = 4.0f;
-        *reinterpret_cast<float*>(&particle->unknown_0058[0]) = 0.0f;
-        *reinterpret_cast<float*>(&particle->unknown_0058[4]) = -8.0f;
+        particle->speedParameter = 0.05f;
+        particle->animationParameter = 4.0f;
+        *reinterpret_cast<float*>(&particle->animationParameters[0]) = 0.0f;
+        *reinterpret_cast<float*>(&particle->animationParameters[4]) = -8.0f;
         particle->destinationBlend = 6;
         break;
       }
@@ -111,15 +111,15 @@ void CEnergyOrbEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
-      if (particle->unknown_00E8 <= 200) {
+      if (particle->elapsedFrames <= 200) {
         ++particle->alpha;
       }
 
-      float angle = particle->unknown_00C0 * 5.0f + *reinterpret_cast<float*>(&particle->unknown_00C4);
+      float angle = particle->speedParameter * 5.0f + *reinterpret_cast<float*>(&particle->angleBits);
       if (angle > 360.0f) {
         angle -= 360.0f;
       }
-      *reinterpret_cast<float*>(&particle->unknown_00C4) = angle;
+      *reinterpret_cast<float*>(&particle->angleBits) = angle;
 
       if (particle->alpha > 0) {
         matrix rotation;
@@ -128,9 +128,9 @@ void CEnergyOrbEffect::OnProcess() {
         rotation.AppendXRotation(3.141592f);
 
         const float scale = particle->scale;
-        particle->unknown_004C = static_cast<int>(static_cast<float>(particle->unknown_004C) + *reinterpret_cast<float*>(&particle->unknown_0058[0])) % 360;
-        float pulse = scale * 0.1f * g_sinTable[particle->unknown_004C];
-        if (this->mode > 1 && particle->unknown_000C == 0) {
+        particle->phaseParameter = static_cast<int>(static_cast<float>(particle->phaseParameter) + *reinterpret_cast<float*>(&particle->animationParameters[0])) % 360;
+        float pulse = scale * 0.1f * g_sinTable[particle->phaseParameter];
+        if (this->mode > 1 && particle->columnIndex == 0) {
           pulse = static_cast<float>(scale * 0.1 + pulse);
         }
         const float size = scale + pulse;
@@ -138,12 +138,12 @@ void CEnergyOrbEffect::OnProcess() {
         std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
         scaling.SetScale(size, size, size);
 
-        const float wave = g_sinTable[particle->unknown_004C] * 0.6f;
-        const int index = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4));
-        const float radius = wave + particle->unknown_0054;
+        const float wave = g_sinTable[particle->phaseParameter] * 0.6f;
+        const int index = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+        const float radius = wave + particle->animationParameter;
         matrix translation;
         std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-        translation.MakeTranslate(radius * g_cosTable[index], wave * *reinterpret_cast<float*>(&particle->unknown_0058[0]) + *reinterpret_cast<float*>(&particle->unknown_0058[4]), radius * g_sinTable[index]);
+        translation.MakeTranslate(radius * g_cosTable[index], wave * *reinterpret_cast<float*>(&particle->animationParameters[0]) + *reinterpret_cast<float*>(&particle->animationParameters[4]), radius * g_sinTable[index]);
 
         matrix scaled;
         scaled.Compose(scaling, rotation);
@@ -152,7 +152,7 @@ void CEnergyOrbEffect::OnProcess() {
         particle->transform = result;
       }
     }
-    ++particle->unknown_00E8;
+    ++particle->elapsedFrames;
   }
 }
 

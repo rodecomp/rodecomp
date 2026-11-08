@@ -39,7 +39,7 @@ public:
   void OnMouseHover(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ int activeTabIndex;
   /* 0080 */ int layout;
   /* 0084 */ int tabHeight;
   /* 0088 */ int tabPadding;
@@ -51,8 +51,8 @@ public:
   /* 009C */ std::uint32_t inactiveBorderColor;
   /* 00A0 */ std::uint32_t activeTextColor;
   /* 00A4 */ std::uint32_t inactiveTextColor;
-  /* 00A8 */ unsigned char unknown_00A8;
-  /* 00A9 */ unsigned char unknown_00A9;
+  /* 00A8 */ unsigned char allowTabRename;
+  /* 00A9 */ unsigned char skipTabFill;
   /* 00AC */ int dragX;
   /* 00B0 */ int dragY;
   /* 00B4 */ std::vector<std::string> labels;
@@ -60,7 +60,7 @@ public:
   /* 00CC */ std::vector<int> widths;
   /* 00D8 */ UIEditCtrl* edit;
   /* 00DC */ std::vector<std::string> tooltips;
-  /* 00E8 */ int unknown_00E8;
+  /* 00E8 */ int fontSize;
   /* 00EC */ std::vector<bool> flags;
 };
 
