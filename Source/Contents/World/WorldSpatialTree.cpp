@@ -237,7 +237,7 @@ void WorldSpatialTree::RefreshBounds(int depth) {
         node->minimum[1] = this->minimum[1];
       }
 
-      if (this->maximum[1] > node->maximum[1]) {
+      if (node->maximum[1] < this->maximum[1]) {
         node->maximum[1] = this->maximum[1];
       }
 

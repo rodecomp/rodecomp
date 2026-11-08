@@ -1313,14 +1313,14 @@ struct AchievementStatePacket {
 // FUNCTION: fn_21601
 __declspec(noinline) void ReceiveShortcutPage(int position, const ShortcutPagePayload* payload, std::int16_t bank) {
   int base = 0;
-  if (bank == 0) {
+  if (0 == bank) {
     g_session.ClearShortcutSlots();
     memcpy_s(g_session.m_shortcutSlots, sizeof(g_session.m_shortcutSlots), payload, sizeof(payload->slots));
     g_session.ClearSlots06EB();
     g_session.quickSlot = payload->slot06EB;
     g_session.alternateQuickSlot = payload->slot06F2;
     base = g_session.mainShortcutRow;
-  } else if (bank == 1) {
+  } else if (1 == bank) {
     g_session.ClearSecondaryShortcutSlots();
     memcpy_s(g_session.m_secondaryShortcutSlots, sizeof(g_session.m_secondaryShortcutSlots), payload, sizeof(payload->slots));
     base = g_session.alternateShortcutRow;
@@ -1671,12 +1671,13 @@ void CGameMode::ReceiveLapineBoxResult(std::uint16_t result) {
 // FUNCTION: fn_22072
 void CGameMode::ReceiveRouletteInfo(const unsigned char* packet) {
   const auto* info = reinterpret_cast<const RouletteInfoPacket*>(packet);
-  for (int i = 0; i < 42; ++i) {
+  const RouletteInfoSlot* s = info->slots;
+  for (int i = 0; i < 42; ++i, ++s) {
     RouletteSlot slot;
-    slot.row = info->slots[i].row;
-    slot.column = info->slots[i].column;
-    slot.itemId = info->slots[i].itemId;
-    slot.count = info->slots[i].count;
+    slot.row = s->row;
+    slot.column = s->column;
+    slot.itemId = s->itemId;
+    slot.count = s->count;
     g_rouletteMgr->AddItem(slot);
   }
 

@@ -693,13 +693,13 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
   for (auto it = this->merchantMyShopItems.begin(); it != this->merchantMyShopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
-      if (type == 0) {
+      if (type != 0) {
+        this->merchantMyShopItems.erase(it);
+      } else {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
           this->merchantMyShopItems.erase(it);
         }
-      } else {
-        this->merchantMyShopItems.erase(it);
       }
 
       if (refresh == 1) {

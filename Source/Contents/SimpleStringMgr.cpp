@@ -51,12 +51,12 @@ const char* CSimpleStringMgr::GetString(const char* key) {
   }
 
   auto table = this->m_tables.find(type);
-  if (table == this->m_tables.end()) {
+  if (this->m_tables.end() == table) {
     return nullptr;
   }
 
   auto entry = table->second.find(std::string(key));
-  if (entry == table->second.end()) {
+  if (table->second.end() == entry) {
     return nullptr;
   }
 

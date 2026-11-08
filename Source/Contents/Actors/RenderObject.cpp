@@ -1922,8 +1922,8 @@ void CRenderObject::DrawPulseOutline(
     left -= spread;
     right += spread;
   }
-  outline.left = left;
   outline.right = right;
+  outline.left = left;
   outline.bottomRhw = bottomRhw - 0.00005f;
   outline.topRhw = topRhw - 0.00005f;
   outline.image = image;

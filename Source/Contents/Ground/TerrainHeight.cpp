@@ -68,7 +68,7 @@ void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum)
 
       if (cell) {
         for (int index = 0; index < 4; ++index) {
-          if (cell->heights[index] > maximum) {
+          if (maximum < cell->heights[index]) {
             maximum = cell->heights[index];
           }
         }

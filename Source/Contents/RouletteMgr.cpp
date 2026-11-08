@@ -205,7 +205,7 @@ void RouletteMgr::Update() {
   }
 
   if (this->m_cycle > 6) {
-    if (this->m_frame >= 8 - this->m_stage - this->m_index) {
+    if (8 - this->m_stage - this->m_index <= this->m_frame) {
       this->m_resultShown = 1;
       const int originY = static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0);
       const int originX = static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0);
@@ -216,15 +216,15 @@ void RouletteMgr::Update() {
       return;
     }
 
-    if (timeGetTime() - this->m_lastTick < this->m_interval) {
+    if (this->m_interval > timeGetTime() - this->m_lastTick) {
       return;
     }
   } else {
-    if (timeGetTime() - this->m_lastTick < this->m_interval) {
+    if (this->m_interval > timeGetTime() - this->m_lastTick) {
       return;
     }
 
-    if (this->m_frame >= 8 - this->m_stage) {
+    if (8 - this->m_stage <= this->m_frame) {
       for (int i = 0; i < 6; ++i) {
         this->m_quads.current.vertices[i] = this->m_quads.start.vertices[i];
       }

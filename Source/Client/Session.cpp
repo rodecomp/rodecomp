@@ -692,7 +692,7 @@ bool CSession::IsNumberWithCommas(char* text) {
 // FUNCTION: fn_23361
 int CSession::FindUnknown0708(int key) const {
   auto found = this->skillEffectIds.find(key);
-  if (found != this->skillEffectIds.end()) {
+  if (this->skillEffectIds.end() != found) {
     return found->second;
   }
 
@@ -703,7 +703,7 @@ int CSession::FindUnknown0708(int key) const {
 // FUNCTION: fn_23362
 int CSession::FindUnknown0700(int key) const {
   auto found = this->skillFollowEffects.find(key);
-  if (found != this->skillFollowEffects.end()) {
+  if (this->skillFollowEffects.end() != found) {
     return found->second;
   }
 
