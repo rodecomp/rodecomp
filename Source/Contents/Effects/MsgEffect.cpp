@@ -113,22 +113,19 @@ static float MsgEffectElapsedFrames(CMsgEffect* effect) {
 // INLINED
 __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
   float dirX = effect->m_drift.x;
+  const int skinMode = g_session.m_damageSkinMode;
   if (effect->m_drift.x == 0.0f && effect->m_owner != nullptr) {
-    if (g_session.m_damageSkinMode == 0) {
+    if (skinMode == 0) {
       const int angle = static_cast<int>(static_cast<CRenderObject*>(effect->m_owner)->render.angle);
-      if (angle < 0) {
-        dirX = 0.8f;
-        effect->m_drift.x = 0.8f;
-        effect->m_drift.z = 0.8f;
-      } else if (angle < 90) {
+      if (angle >= 0 && angle < 90) {
         dirX = -0.8f;
         effect->m_drift.x = -0.8f;
         effect->m_drift.z = 0.8f;
-      } else if (angle < 180) {
+      } else if (angle >= 90 && angle < 180) {
         dirX = -0.8f;
         effect->m_drift.x = -0.8f;
         effect->m_drift.z = -0.8f;
-      } else if (angle < 270) {
+      } else if (angle >= 180 && angle < 270) {
         dirX = 0.8f;
         effect->m_drift.x = 0.8f;
         effect->m_drift.z = -0.8f;
@@ -138,13 +135,13 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
         effect->m_drift.z = 0.8f;
       }
     } else {
-      if (g_session.m_damageSkinMode == 1) {
+      if (skinMode == 1) {
         effect->m_drift.x = 0.8f;
         effect->m_drift.z = -0.8f;
-      } else if (g_session.m_damageSkinMode == 2) {
+      } else if (skinMode == 2) {
         effect->m_drift.x = 0.01f;
         effect->m_drift.z = 0.01f;
-      } else if (g_session.m_damageSkinMode == 3) {
+      } else if (skinMode == 3) {
         effect->m_drift.x = -0.8f;
         effect->m_drift.z = -0.8f;
       }
@@ -231,7 +228,10 @@ bool CMsgEffect::OnProcess() {
         this->render.scale = 1.3f;
       }
       this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
-      return !(elapsed > 70.0f);
+      if (elapsed > 70.0f) {
+        return false;
+      }
+      return true;
 
     case 0x1B:
     case 0x1F: {
@@ -267,7 +267,10 @@ bool CMsgEffect::OnProcess() {
         this->render.scale = 1.2f;
       }
       this->SetColor(static_cast<int>(250.0f - elapsed * 3.4f), -1, -1, -1);
-      return !(elapsed > 70.0f);
+      if (elapsed > 70.0f) {
+        return false;
+      }
+      return true;
 
     case MET_GUARD: {
       elapsed = MsgEffectElapsedFrames(this);
@@ -284,7 +287,10 @@ bool CMsgEffect::OnProcess() {
       this->SetColor(250, -1, -1, -1);
       this->render.scale = 1.2f;
       this->m_scale = 1.2f;
-      return !(elapsed > 10.0f);
+      if (elapsed > 10.0f) {
+        return false;
+      }
+      return true;
     }
 
     case MET_MISS:
@@ -294,7 +300,10 @@ bool CMsgEffect::OnProcess() {
       this->SetColor(static_cast<int>(250.0f - elapsed * 3.0f), -1, -1, -1);
       this->render.scale = 1.0f;
       this->GetActRes();
-      return !(elapsed > 80.0f);
+      if (elapsed > 80.0f) {
+        return false;
+      }
+      return true;
 
     case MET_NUMBER_TOTAL: {
       elapsed = MsgEffectElapsedFrames(this);
@@ -310,7 +319,10 @@ bool CMsgEffect::OnProcess() {
       } else if (this->render.scale > 3.0f) {
         this->render.scale = 3.0f;
       }
-      return !(elapsed > 120.0f);
+      if (elapsed > 120.0f) {
+        return false;
+      }
+      return true;
     }
 
     case MET_BLUE_EFFECT: {
@@ -338,7 +350,10 @@ bool CMsgEffect::OnProcess() {
       } else if (this->render.scale > 2.0f) {
         this->render.scale = 2.0f;
       }
-      return !(elapsed > 120.0f);
+      if (elapsed > 120.0f) {
+        return false;
+      }
+      return true;
     }
 
     case MET_CRITICAL_EFFECT: {
@@ -356,7 +371,10 @@ bool CMsgEffect::OnProcess() {
         this->render.curMotion = static_cast<int>(elapsed * g_depthAverageHalf) % frames;
       }
       this->SetColor(static_cast<int>(255.0f - elapsed * 3.45f), -1, -1, -1);
-      return !(elapsed > 70.0f);
+      if (elapsed > 70.0f) {
+        return false;
+      }
+      return true;
     }
 
     case 0x1C:
@@ -510,7 +528,10 @@ bool CMsgEffect::OnProcess() {
       } else if (this->render.scale < 1.0f) {
         this->render.scale = 1.0f;
       }
-      return !(elapsed > 120.0f);
+      if (elapsed > 120.0f) {
+        return false;
+      }
+      return true;
   }
 }
 
