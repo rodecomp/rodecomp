@@ -409,13 +409,13 @@ void UIGradeEnchant_BtnEnhancedUp::OnMouseHover(int x, int y) {
 // FUNCTION: fn_09763
 void UIGradeEnchantWnd::OnProcess() {
   const int frameCounts[3] = {6, 6, 5};
-  if (this->itemFrame >= frameCounts[this->state]) {
+  if (frameCounts[this->state] <= this->itemFrame) {
     return;
   }
 
   const DWORD now = timeGetTime();
   if (now > this->itemFrameInterval + this->stateTick) {
-    if (++this->itemFrame >= frameCounts[this->state]) {
+    if (frameCounts[this->state] <= ++this->itemFrame) {
       this->itemFrame = 1;
     }
     this->stateTick = timeGetTime();
@@ -585,7 +585,11 @@ int UIGradeEnchantWnd::SendMsg(
 void UIGradeEnchantWnd::SetEnchantInfo(
   short index, int value, int materialCount, GradeEnchantInfo info, int enchantOption, int enchantOptionCount, const GradeEnchantMaterial* materials
 ) {
-  if (this->state != 0 && this->state != 1) {
+  switch (this->state) {
+  case 0:
+  case 1:
+    break;
+  default:
     return;
   }
 
