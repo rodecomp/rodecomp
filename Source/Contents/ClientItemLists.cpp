@@ -1614,7 +1614,8 @@ void CSession::RemoveItem1760(const ITEM_INFO& item) {
 // FUNCTION: fn_23345
 void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
   for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
-    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+    const int itemId = std::atoi(it->itemId.c_str());
+    if (itemId == std::atoi(item.itemId.c_str())) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
