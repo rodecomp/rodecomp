@@ -484,20 +484,10 @@ void UITabControl::OnMouseHover(int x, int y) {
     return;
   }
 
-  int screenX = 0;
-
-  for (int i = 0; i < index; ++i) {
-    screenX = (screenX - 1 + this->widths[i]);
-  }
-
-  int screenY = -20;
-
-  this->ToScreen(screenX, screenY);
-
-
-
-
-  g_modeMgr.gameMode->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+  x = TabOffset(*this, index);
+  y = -20;
+  this->ToScreen(x, y);
+  g_modeMgr.gameMode->ShowTooltip(this->tooltips[index].c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x00822660
@@ -617,14 +607,11 @@ void UIServerListBox::OnMouseHover(int x, int y) {
 // OFFSET: 0x00891BC0
 // FUNCTION: fn_11456
 void UIMemberListBox::OnMouseHover(int, int y) {
+  const unsigned visible =
+    std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine), static_cast<unsigned>(this->lines.size()));
   const int line = this->topLine + y / this->lineHeight;
   if (line < this->topLine) {
     return;
-  }
-
-  unsigned visible = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine);
-  if (this->lines.size() < visible) {
-    visible = static_cast<unsigned>(this->lines.size());
   }
 
   if (line >= static_cast<int>(visible)) {
@@ -1362,12 +1349,7 @@ void UIComboBoxID::Resize(int width, int height) {
 void UIListBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  int overflow = count - visible;
-
-  if (overflow < 0) {
-    overflow = 0;
-  }
-
+  const int overflow = std::max(count - visible, 0);
   this->verticalOverflow = overflow != 0;
   auto* bar = this->verticalBar;
 
@@ -2276,10 +2258,7 @@ void UIMemberListBox::Paint() {
   this->ClearSurface((this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16));
 
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
-  }
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
 
   for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
     if (index == this->selected) {
@@ -2295,11 +2274,8 @@ void UIMemberListBox::Paint() {
 // FUNCTION: fn_11343
 void UIBasicItemCtrl::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const char* name = "유저인터페이스\\basic_interface\\itemwin_mid.bmp";
-  if (std::atoi(this->m_item.itemId.c_str()) > 0 && this->m_item.identity[1] == 0) {
-    name = "유저인터페이스\\ExMacro\\no_item.bmp";
-  }
-
+  const char* name = std::atoi(this->m_item.itemId.c_str()) <= 0 || this->m_item.identity[1] > 0 ? "유저인터페이스\\basic_interface\\itemwin_mid.bmp"
+                                                                                                : "유저인터페이스\\ExMacro\\no_item.bmp";
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))), false);
   this->DrawItemIcon(4, 0, 0, false);
 }
@@ -2615,8 +2591,7 @@ std::string UIComboBoxV2Wnd::SelectedText() {
     return std::string();
   }
 
-  const std::string& text = this->list->lines[index].text;
-  return std::string(text.c_str(), text.size());
+  return this->list->lines[index].text;
 }
 
 // OFFSET: 0x00880FF0
