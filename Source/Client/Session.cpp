@@ -996,6 +996,12 @@ int CSession::GetCommandId(const char* name) const {
   return 3;
 }
 
+// INLINED
+template <std::size_t Length>
+static bool IsTalkCommand(const std::string& token, const char (&command)[Length]) {
+  return token.size() == Length && std::memcmp(token.data(), command, Length) == 0;
+}
+
 // OFFSET: 0x00DE1010
 // FUNCTION: fn_23478
 int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
@@ -4709,49 +4715,42 @@ CSession::CSession() {
   CSpecialPopupMgr::Create();
   CRuneSystemMgr::Create();
   if (!CUserHotkeyMgr::Initialize()) {
-    const std::uint8_t captionSource[] = {0x3A, 0x61, 0xAD, 0xBE, 0xF7, 0x67};
+    const std::array<char, 6> captionSource = {'\x3A', '\x61', '\xAD', '\xBE', '\xF7', '\x67'};
     thread_local EncryptedName<sizeof(captionSource), 0xED796785D1DF137FULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::uint8_t textSource[] = {0xB2, 0x92, 0x4A, 0x6C, 0x65, 0x31, 0x20, 0x85, 0x9A, 0xA2, 0x40, 0x44, 0x70, 0x0B, 0x75, 0xCB, 0xB2,
-                                       0xB5, 0x5C, 0x68, 0x63, 0x1C, 0x06, 0x9F, 0x82, 0xB3, 0x58, 0x67, 0x74, 0x1C, 0x67, 0xD8, 0xF1};
+    const std::array<char, 33> textSource = {'\xB2', '\x92', '\x4A', '\x6C', '\x65', '\x31', '\x20', '\x85', '\x9A', '\xA2', '\x40', '\x44', '\x70', '\x0B', '\x75', '\xCB', '\xB2', '\xB5', '\x5C', '\x68', '\x63', '\x1C', '\x06', '\x9F', '\x82', '\xB3', '\x58', '\x67', '\x74', '\x1C', '\x67', '\xD8', '\xF1'};
     thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CBarterMarketItemMgr::CreateInstance()) {
-    const std::uint8_t captionSource[] = {0xE2, 0x87, 0x0D, 0x56, 0x43, 0x4B};
+    const std::array<char, 6> captionSource = {'\xE2', '\x87', '\x0D', '\x56', '\x43', '\x4B'};
     thread_local EncryptedName<sizeof(captionSource), 0xBF2B4B31397FF5A7ULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::uint8_t textSource[] = {0x40, 0x49, 0x5C, 0xCF, 0xDC, 0x33, 0x1E, 0xBC, 0x4A, 0x65, 0x4E, 0xC9, 0xC9, 0x38, 0x0F, 0x94,
-                                       0x68, 0x55, 0x44, 0xDE, 0xC9, 0x14, 0x09, 0xBC, 0x64, 0x6A, 0x48, 0xC9, 0x87, 0x67, 0x3E, 0xAB,
-                                       0x6C, 0x46, 0x5B, 0xDE, 0xF4, 0x33, 0x0E, 0xAD, 0x68, 0x49, 0x4C, 0xDE, 0x95, 0x74, 0x7D};
+    const std::array<char, 47> textSource = {'\x40', '\x49', '\x5C', '\xCF', '\xDC', '\x33', '\x1E', '\xBC', '\x4A', '\x65', '\x4E', '\xC9', '\xC9', '\x38', '\x0F', '\x94', '\x68', '\x55', '\x44', '\xDE', '\xC9', '\x14', '\x09', '\xBC', '\x64', '\x6A', '\x48', '\xC9', '\x87', '\x67', '\x3E', '\xAB', '\x6C', '\x46', '\x5B', '\xDE', '\xF4', '\x33', '\x0E', '\xAD', '\x68', '\x49', '\x4C', '\xDE', '\x95', '\x74', '\x7D'};
     thread_local EncryptedName<sizeof(textSource), 0xD97D5DBDBB2F2709ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CExpandedBarterMarketItemMgr::CreateInstance()) {
-    const std::uint8_t captionSource[] = {0xDE, 0x25, 0x71, 0xF6, 0x15, 0x05};
+    const std::array<char, 6> captionSource = {'\xDE', '\x25', '\x71', '\xF6', '\x15', '\x05'};
     thread_local EncryptedName<sizeof(captionSource), 0x050505679903579BULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::uint8_t textSource[] = {0xF4, 0xD3, 0x9E, 0x43, 0xDA, 0xD1, 0x8C, 0xE6, 0xFE, 0xFF, 0x8C, 0x45, 0xCF, 0xDA, 0x9D, 0xCE,
-                                       0xDC, 0xCF, 0x86, 0x52, 0xCF, 0xF6, 0x9B, 0xE6, 0xD0, 0x8F, 0xA0, 0x50, 0xC9, 0x85, 0xD5, 0xC0,
-                                       0xCF, 0xD8, 0x8C, 0x43, 0xDE, 0xF6, 0x81, 0xF0, 0xC9, 0xDC, 0x83, 0x54, 0xDE, 0x97, 0xC6, 0x83};
+    const std::array<char, 48> textSource = {'\xF4', '\xD3', '\x9E', '\x43', '\xDA', '\xD1', '\x8C', '\xE6', '\xFE', '\xFF', '\x8C', '\x45', '\xCF', '\xDA', '\x9D', '\xCE', '\xDC', '\xCF', '\x86', '\x52', '\xCF', '\xF6', '\x9B', '\xE6', '\xD0', '\x8F', '\xA0', '\x50', '\xC9', '\x85', '\xD5', '\xC0', '\xCF', '\xD8', '\x8C', '\x43', '\xDE', '\xF6', '\x81', '\xF0', '\xC9', '\xDC', '\x83', '\x54', '\xDE', '\x97', '\xC6', '\x83'};
     thread_local EncryptedName<sizeof(textSource), 0x83EFBFBB37EDBDBDULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CPetEvolutionMgr::Create()) {
-    const std::uint8_t captionSource[] = {0x88, 0x83, 0xEB, 0xDA, 0xFF, 0x5B};
+    const std::array<char, 6> captionSource = {'\x88', '\x83', '\xEB', '\xDA', '\xFF', '\x5B'};
     thread_local EncryptedName<sizeof(captionSource), 0xAD075B8DB599F1CDULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::uint8_t textSource[] = {0xA2, 0x2B, 0x9C, 0xA3, 0x90, 0x65, 0x56, 0xB1, 0x94, 0x0F, 0x90, 0xB8, 0xBB, 0x5E,
-                                       0x5E, 0xAF, 0xC1, 0x1D, 0x90, 0xBB, 0xB0, 0x33, 0x70, 0xB3, 0x88, 0x0F, 0xF9};
+    const std::array<char, 27> textSource = {'\xA2', '\x2B', '\x9C', '\xA3', '\x90', '\x65', '\x56', '\xB1', '\x94', '\x0F', '\x90', '\xB8', '\xBB', '\x5E', '\x5E', '\xAF', '\xC1', '\x1D', '\x90', '\xBB', '\xB0', '\x33', '\x70', '\xB3', '\x88', '\x0F', '\xF9'};
     thread_local EncryptedName<sizeof(textSource), 0xDD3913D5D7F97BE1ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CAchievementMgr::CreateInstance()) {
-    const std::uint8_t captionSource[] = {0xCA, 0xEB, 0x99, 0x62, 0xC7, 0x7F};
+    const std::array<char, 6> captionSource = {'\xCA', '\xEB', '\x99', '\x62', '\xC7', '\x7F'};
     thread_local EncryptedName<sizeof(captionSource), 0x39FF7FB50DEB998FULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::uint8_t textSource[] = {0x3C, 0x54, 0xEE, 0x79, 0x5E, 0x6A, 0xFD, 0x4A, 0x12, 0x70, 0xE3, 0x65, 0x7A,
-                                       0x68, 0xF9, 0x0F, 0x19, 0x7C, 0xE1, 0x74, 0x17, 0x66, 0xE5, 0x46, 0x0B, 0x15};
+    const std::array<char, 26> textSource = {'\x3C', '\x54', '\xEE', '\x79', '\x5E', '\x6A', '\xFD', '\x4A', '\x12', '\x70', '\xE3', '\x65', '\x7A', '\x68', '\xF9', '\x0F', '\x19', '\x7C', '\xE1', '\x74', '\x17', '\x66', '\xE5', '\x46', '\x0B', '\x15'};
     thread_local EncryptedName<sizeof(textSource), 0x2F8B0F37118D157FULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
@@ -7069,10 +7068,10 @@ void CSession::LoadSessionTables() {
   Sub7739F0();
   g_simpleStringMgr->Init();
 
-  const std::uint8_t source[] = {0xA5, 0xA8, 0x04, 0x07, 0x1C, 0xEB, 0x1E, 0xFA, 0xD7, 0x9A, 0x06, 0x1D, 0x08, 0xE9, 0x71};
+  const std::array<char, 15> source = {'\xA5', '\xA8', '\x04', '\x07', '\x1C', '\xEB', '\x1E', '\xFA', '\xD7', '\x9A', '\x06', '\x1D', '\x08', '\xE9', '\x71'};
   thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> setupName(source);
   if (HWND window = FindWindowA(nullptr, setupName.Text())) {
-    ShowErrorDialog(nullptr, LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD), 0);
+    ShowErrorDialog(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD), 0);
     SendMessageA(window, WM_CLOSE, 0, 0);
   }
 
