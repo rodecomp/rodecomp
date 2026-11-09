@@ -4,9 +4,7 @@
 #include "Resource/World/GroundResource.h"
 
 #include "Utility/Math/AffineMatrix.h"
-#include "Utility/Math/ScalarConversion.h"
 #include <bit>
-#include <cstring>
 
 namespace {
   struct NormalVector {
@@ -14,13 +12,13 @@ namespace {
     NormalVector() : values{0.0f, 0.0f, 0.0f} {
     }
 
-    float values[3];
+    /* 0000 */ float values[3];
   };
 
   struct CellNormals {
-    NormalVector faces[2];
-    NormalVector side2;
-    NormalVector side1;
+    /* 0000 */ NormalVector faces[2];
+    /* 0018 */ NormalVector side2;
+    /* 0024 */ NormalVector side1;
   };
 
   // INLINED
@@ -45,38 +43,80 @@ namespace {
     result[2] = result[2] + value[2];
   }
 
+  struct GroundCellRecord {
+    /* 0000 */ float heights[4];
+    /* 0010 */ int tiles[3];
+  };
+
+  struct GroundTileRecord {
+    /* 0000 */ float u[4];
+    /* 0010 */ float v[4];
+    /* 0020 */ std::int16_t texture;
+    /* 0022 */ std::uint16_t lightmap;
+    /* 0024 */ std::uint32_t color;
+  };
+
   // INLINED
-  __forceinline std::uint32_t
-  LitColor(const float* normal, bool normalize, bool side, const float* direction, const float* diffuse, const float* ambient, const GroundQuad* source) {
-    float vector[3] = {normal[0], normal[1], normal[2]};
+  __forceinline const GroundCellRecord& CellRecord(const CGndRes& resource, int index) {
+    return reinterpret_cast<const GroundCellRecord*>(resource.cells)[index];
+  }
 
-    if (normalize) {
-      NormalizeGroundNormal(vector, false);
-    }
+  // INLINED
+  __forceinline const GroundTileRecord& TileRecord(const CGndRes& resource, int index) {
+    return reinterpret_cast<const GroundTileRecord*>(resource.tiles)[index];
+  }
 
-    const float dot = side ? (direction[1] * vector[1] + vector[0] * direction[0]) + direction[2] * vector[2]
-                           : (vector[1] * direction[1] + vector[0] * direction[0]) + vector[2] * direction[2];
-    const float amount = dot > 0.0f ? dot : 0.0f;
-    const std::uint32_t color = source ? source->color : 0xFFFFFFFFu;
-    std::uint32_t result = 0xFF000000u;
+  union VertexColor {
+    /* 0000 */ std::uint32_t value;
+    struct {
+      /* 0000 */ unsigned char blue;
+      /* 0001 */ unsigned char green;
+      /* 0002 */ unsigned char red;
+      /* 0003 */ unsigned char alpha;
+    };
+  };
 
-    for (unsigned channel = 0; channel < 3; ++channel) {
-      const float illumination = amount * diffuse[channel] + ambient[channel];
-      const float light = illumination < 1.0f ? illumination : 1.0f;
-      const unsigned shift = 16 - channel * 8;
-      const float scaled = static_cast<float>((color >> shift) & 255u) * light;
-      const unsigned value = static_cast<unsigned>(TruncateToInt(scaled)) & 255u;
-      result |= value << shift;
-    }
+  // INLINED
+  __forceinline void SetPoint(float* point, float x, float y, float z) {
+    point[0] = x;
+    point[1] = y;
+    point[2] = z;
+  }
 
-    return result;
+  // INLINED
+  __forceinline void TriangleNormal(float* normal, const float* a, const float* b, const float* c) {
+    const float u[3] = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
+    const float v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+    SetPoint(normal, u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]);
+  }
+
+  // INLINED
+  __forceinline float Clamp(float value) {
+    return value < 1.0f ? value : 1.0f;
+  }
+
+  // INLINED
+  __forceinline void Shade(VertexColor& color, float red, float green, float blue) {
+    color.alpha = 0xFF;
+    color.red = static_cast<unsigned char>(color.red * red);
+    color.green = static_cast<unsigned char>(color.green * green);
+    color.blue = static_cast<unsigned char>(color.blue * blue);
   }
 }
 
 // INLINED
-GroundBase::GroundBase()
-    : terrain(nullptr), cellSize(10.0f), waterLevel(0.0f), waterAnimation(3), waterPitch(50), waterPhase(2), waterType(0), waterHeight(1.0f),
-      waterStateA(0), waterStateB(0), loaded(0) {
+GroundBase::GroundBase() {
+  this->waterStateA = 0;
+  this->cellSize = 10.0f;
+  this->waterLevel = 0.0f;
+  this->waterAnimation = 3;
+  this->waterPitch = 50;
+  this->waterPhase = 2;
+  this->waterHeight = 1.0f;
+  this->waterType = 0;
+  this->terrain = nullptr;
+  this->waterStateB = 0;
+  this->loaded = 0;
 }
 
 // INLINED
@@ -84,7 +124,7 @@ GroundBase::~GroundBase() = default;
 
 // OFFSET: 0x00ABD640
 // FUNCTION: fn_17546
-GroundGeometry::GroundGeometry() : waterColumns(1), waterRows(1), waterPartitioned(false) {
+GroundGeometry::GroundGeometry() : waterColumns(1), waterRows(1) {
 }
 
 // INLINED
@@ -104,10 +144,11 @@ void GroundGeometry::Reset(int columns, int rows) {
   this->ClearGeometry();
   this->width = columns;
   this->height = rows;
+  const std::array<float, 3> white = {1.0f, 1.0f, 1.0f};
   this->cells.resize(static_cast<unsigned>(columns) * static_cast<unsigned>(rows));
-  this->lighting.resize(4u * static_cast<unsigned>(columns) * static_cast<unsigned>(rows), {1.0f, 1.0f, 1.0f});
-  this->waterStateD = 0;
+  this->lighting.resize(4u * static_cast<unsigned>(columns) * static_cast<unsigned>(rows), white);
   this->waterStateC = 0;
+  this->waterStateD = 0;
 }
 
 // OFFSET: 0x00AC0350
@@ -128,109 +169,148 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
 
   for (int row = 0; row < this->height; ++row) {
     for (int column = 0; column < this->width; ++column) {
-      const unsigned index = static_cast<unsigned>(row) * static_cast<unsigned>(this->width) + static_cast<unsigned>(column);
+      const int index = row * this->width + column;
       GroundCell& cell = this->cells[index];
-      const unsigned char* record = resource.cells + 28u * index;
-      std::memcpy(cell.heights, record, sizeof(cell.heights));
-      const float left = static_cast<float>(column - this->width / 2) * this->cellSize;
-      const float right = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
-      const float top = static_cast<float>(row - this->height / 2) * this->cellSize;
-      const float bottom = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
-      const float corners[4][3] = {{left, 0, top}, {right, 0, top}, {left, 0, bottom}, {right, 0, bottom}};
-      std::memcpy(cell.corners, corners, sizeof(corners));
-      int tileIndices[3];
-      std::memcpy(tileIndices, record + 16, sizeof(tileIndices));
+      CellNormals& cellNormals = normals[index];
+      const GroundCellRecord& record = CellRecord(resource, index);
 
-      for (unsigned face = 0; face < 3; ++face) {
-        if ((face == 1 && row >= this->height - 1) || (face == 2 && column >= this->width - 1)) {
-          continue;
-        }
+      for (int corner = 0; corner < 4; ++corner) {
+        cell.heights[corner] = record.heights[corner];
+      }
 
-        const int tileIndex = tileIndices[face];
+      SetPoint(cell.corners[0], static_cast<float>(column - this->width / 2) * this->cellSize, 0.0f,
+               static_cast<float>(row - this->height / 2) * this->cellSize);
+      SetPoint(cell.corners[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, 0.0f,
+               static_cast<float>(row - this->height / 2) * this->cellSize);
+      SetPoint(cell.corners[2], static_cast<float>(column - this->width / 2) * this->cellSize, 0.0f,
+               static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+      SetPoint(cell.corners[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, 0.0f,
+               static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
 
-        if (tileIndex < 0 || tileIndex >= resource.tileCount) {
-          continue;
-        }
+      const int topIndex = record.tiles[0];
 
-        GroundQuad& tile = this->tiles[tileIndex];
-        const unsigned char* tileBytes = resource.tiles + 40u * static_cast<unsigned>(tileIndex);
-        std::memcpy(&tile.color, tileBytes + 36, sizeof(tile.color));
-        std::int16_t textureIndex;
-        std::uint16_t lightmapIndex;
-        std::memcpy(&textureIndex, tileBytes + 32, sizeof(textureIndex));
-        std::memcpy(&lightmapIndex, tileBytes + 34, sizeof(lightmapIndex));
-        tile.texture = g_texMgr.Load(resource.textureNames[textureIndex], 0, false, true, false);
-        float positions[4][3];
-
-        if (face == 0) {
-          for (unsigned corner = 0; corner < 4; ++corner) {
-            positions[corner][0] = cell.corners[corner][0];
-            positions[corner][1] = cell.heights[corner];
-            positions[corner][2] = cell.corners[corner][2];
-          }
-        } else if (face == 1) {
-          float next[4];
-          std::memcpy(next, resource.cells + 28u * (index + this->width), sizeof(next));
-          const float values[4][3] = {{left, cell.heights[2], bottom}, {right, cell.heights[3], bottom}, {left, next[0], bottom}, {right, next[1], bottom}};
-          std::memcpy(positions, values, sizeof(positions));
-          normals[index].side2.values[2] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
-        } else {
-          float next[4];
-          std::memcpy(next, resource.cells + 28u * (index + 1), sizeof(next));
-          const float values[4][3] = {{right, cell.heights[3], bottom}, {right, cell.heights[1], top}, {right, next[2], bottom}, {right, next[0], top}};
-          std::memcpy(positions, values, sizeof(positions));
-          normals[index].side1.values[0] = next[0] <= cell.heights[2] ? 1.0f : -1.0f;
-        }
-
+      if (topIndex >= 0 && topIndex < resource.tileCount) {
+        const GroundTileRecord& tileRecord = TileRecord(resource, topIndex);
+        GroundQuad& tile = this->tiles[topIndex];
+        tile.color = tileRecord.color;
+        tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
+        SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[0],
+                 static_cast<float>(row - this->height / 2) * this->cellSize);
+        SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[1],
+                 static_cast<float>(row - this->height / 2) * this->cellSize);
+        SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[2],
+                 static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+        SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[3],
+                 static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
         const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
         const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
-        GroundLightmap& lightmap = this->lightmapSet.lightmaps[lightmapIndex];
 
-        tile.lightmap = &lightmap;
-        tile.lightmapTexture = lightmap.texture;
-
-        for (unsigned corner = 0; corner < 4; ++corner) {
-          std::memcpy(tile.vertices[corner], positions[corner], sizeof(positions[corner]));
-          float u;
-          float v;
-          std::memcpy(&u, tileBytes + corner * 4, sizeof(u));
-          std::memcpy(&v, tileBytes + 16 + corner * 4, sizeof(v));
-          tile.vertices[corner][4] = scaleU * u;
-          tile.vertices[corner][5] = scaleV * v;
-          tile.vertices[corner][6] = lightmap.uv[corner][0];
-          tile.vertices[corner][7] = lightmap.uv[corner][1];
+        for (int corner = 0; corner < 4; ++corner) {
+          tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
+          tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
         }
 
-        if (face == 0) {
-          for (unsigned channel = 0; channel < 3; ++channel) {
-            const unsigned value = 2u * lightmap.color[channel];
-            cell.color[channel] = static_cast<unsigned char>(value > 255 ? 255 : value);
+        GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
+        tile.lightmap = lightmap;
+        tile.lightmapTexture = lightmap->texture;
+
+        for (int corner = 0; corner < 4; ++corner) {
+          tile.vertices[corner][6] = lightmap->uv[corner][0];
+          tile.vertices[corner][7] = lightmap->uv[corner][1];
+        }
+
+        for (int channel = 0; channel < 3; ++channel) {
+          const unsigned value = 2u * tile.lightmap->color[channel];
+          cell.color[channel] = static_cast<unsigned char>(value > 255 ? 255 : value);
+        }
+
+        NormalVector points[4];
+        SetPoint(points[0].values, 0.0f, cell.heights[0], 0.0f);
+        SetPoint(points[1].values, this->cellSize, cell.heights[1], 0.0f);
+        SetPoint(points[2].values, 0.0f, cell.heights[2], this->cellSize);
+        SetPoint(points[3].values, this->cellSize, cell.heights[3], this->cellSize);
+        TriangleNormal(cellNormals.faces[0].values, points[0].values, points[1].values, points[2].values);
+        NormalizeGroundNormal(cellNormals.faces[0].values, true);
+        TriangleNormal(cellNormals.faces[1].values, points[2].values, points[1].values, points[3].values);
+        NormalizeGroundNormal(cellNormals.faces[1].values, true);
+        cell.top = &tile;
+      }
+
+      if (row < this->height - 1) {
+        const GroundCellRecord& below = CellRecord(resource, (row + 1) * this->width + column);
+        const int sideIndex = record.tiles[1];
+
+        if (sideIndex >= 0 && sideIndex < resource.tileCount) {
+          const GroundTileRecord& tileRecord = TileRecord(resource, sideIndex);
+          GroundQuad& tile = this->tiles[sideIndex];
+          tile.color = tileRecord.color;
+          tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
+          SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2) * this->cellSize, record.heights[2],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2) * this->cellSize, below.heights[0],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, below.heights[1],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
+          const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
+
+          for (int corner = 0; corner < 4; ++corner) {
+            tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
+            tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
           }
 
-          float* first = normals[index].faces[0].values;
-          float* second = normals[index].faces[1].values;
-          const float ab = cell.heights[2] - cell.heights[0];
-          const float ac = cell.heights[2] - cell.heights[1];
+          GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
+          tile.lightmap = lightmap;
+          tile.lightmapTexture = lightmap->texture;
 
-          first[0] = ac * (this->cellSize - 0.0f) - (this->cellSize - 0.0f) * ab;
-          first[1] = (this->cellSize - 0.0f) * 0.0f - (this->cellSize - 0.0f) * (0.0f - this->cellSize);
-          first[2] = ab * (0.0f - this->cellSize) - ac * 0.0f;
-          NormalizeGroundNormal(first, true);
-          const float db = cell.heights[3] - cell.heights[1];
-          const float dc = cell.heights[3] - cell.heights[2];
-          const float dz = this->cellSize - 0.0f;
-          const float dx = this->cellSize - 0.0f;
-          const float zero = this->cellSize - this->cellSize;
+          for (int corner = 0; corner < 4; ++corner) {
+            tile.vertices[corner][6] = lightmap->uv[corner][0];
+            tile.vertices[corner][7] = lightmap->uv[corner][1];
+          }
 
-          second[0] = db * zero - dx * dc;
-          second[1] = dz * dx - zero * zero;
-          second[2] = zero * dc - dz * db;
-          NormalizeGroundNormal(second, true);
-          cell.top = &tile;
-        } else if (face == 1) {
+          SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] <= record.heights[2] ? 1.0f : -1.0f);
           cell.side2 = &tile;
-        } else {
+        }
+      }
+
+      if (column < this->width - 1) {
+        const GroundCellRecord& right = CellRecord(resource, row * this->width + column + 1);
+        const int sideIndex = record.tiles[2];
+
+        if (sideIndex >= 0 && sideIndex < resource.tileCount) {
+          const GroundTileRecord& tileRecord = TileRecord(resource, sideIndex);
+          GroundQuad& tile = this->tiles[sideIndex];
+          tile.color = tileRecord.color;
+          tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
+          SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[1],
+                   static_cast<float>(row - this->height / 2) * this->cellSize);
+          SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[2],
+                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[0],
+                   static_cast<float>(row - this->height / 2) * this->cellSize);
+          const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
+          const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
+
+          for (int corner = 0; corner < 4; ++corner) {
+            tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
+            tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
+          }
+
+          GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
+          tile.lightmap = lightmap;
+          tile.lightmapTexture = lightmap->texture;
+
+          for (int corner = 0; corner < 4; ++corner) {
+            tile.vertices[corner][6] = lightmap->uv[corner][0];
+            tile.vertices[corner][7] = lightmap->uv[corner][1];
+          }
+
           cell.frame = 0xFFFFFFFFu;
+          SetPoint(cellNormals.side1.values, right.heights[0] <= record.heights[2] ? 1.0f : -1.0f, 0.0f, 0.0f);
           cell.side1 = &tile;
         }
       }
@@ -239,108 +319,264 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
 
   for (int row = 0; row < this->height; ++row) {
     for (int column = 0; column < this->width; ++column) {
-      const unsigned index = static_cast<unsigned>(row) * static_cast<unsigned>(this->width) + static_cast<unsigned>(column);
+      const int index = row * this->width + column;
       GroundCell& cell = this->cells[index];
-      const auto neighbor = [&](int x, int y) -> const GroundCell* {
-        return x >= 0 && x < this->width && y >= 0 && y < this->height
-                 ? &this->cells[static_cast<unsigned>(y) * static_cast<unsigned>(this->width) + static_cast<unsigned>(x)]
-                 : nullptr;
-      };
-      const GroundCell* north = neighbor(column, row - 1);
-      const GroundCell* west = neighbor(column - 1, row);
-      const GroundCell* northwest = neighbor(column - 1, row - 1);
-      const GroundCell* northeast = neighbor(column + 1, row - 1);
-      const GroundCell* east = neighbor(column + 1, row);
-      const GroundCell* south = neighbor(column, row + 1);
-      const GroundCell* southwest = neighbor(column - 1, row + 1);
-      const GroundCell* southeast = neighbor(column + 1, row + 1);
-      float smooth[4][3]{};
-      const auto add = [&](unsigned corner, const GroundCell* source, unsigned first, unsigned count) {
-        const auto sourceIndex = static_cast<unsigned>(source - this->cells.data());
+      const CellNormals& cellNormals = normals[index];
+      NormalVector smooth[4];
+      const GroundCell* northwest;
+      const CellNormals* northwestNormals;
 
-        for (unsigned normal = first; normal < first + count; ++normal) {
-          Add(smooth[corner], normals[sourceIndex].faces[normal].values);
-        }
-      };
-      add(0, &cell, 0, 1);
+      if (column > 0 && row > 0) {
+        northwest = &this->cells[(row - 1) * this->width + column - 1];
+        northwestNormals = &normals[(row - 1) * this->width + column - 1];
+      } else {
+        northwest = nullptr;
+        northwestNormals = nullptr;
+      }
+
+      const GroundCell* north;
+      const CellNormals* northNormals;
+
+      if (row > 0) {
+        north = &this->cells[(row - 1) * this->width + column];
+        northNormals = &normals[(row - 1) * this->width + column];
+      } else {
+        north = nullptr;
+        northNormals = nullptr;
+      }
+
+      const GroundCell* northeast;
+      const CellNormals* northeastNormals;
+
+      if (column < this->width - 1 && row > 0) {
+        northeast = &this->cells[(row - 1) * this->width + column + 1];
+        northeastNormals = &normals[(row - 1) * this->width + column + 1];
+      } else {
+        northeast = nullptr;
+        northeastNormals = nullptr;
+      }
+
+      const GroundCell* west;
+      const CellNormals* westNormals;
+
+      if (column > 0) {
+        west = &this->cells[row * this->width + column - 1];
+        westNormals = &normals[row * this->width + column - 1];
+      } else {
+        west = nullptr;
+        westNormals = nullptr;
+      }
+
+      const GroundCell* east;
+      const CellNormals* eastNormals;
+
+      if (column < this->width - 1) {
+        east = &this->cells[row * this->width + column + 1];
+        eastNormals = &normals[row * this->width + column + 1];
+      } else {
+        east = nullptr;
+        eastNormals = nullptr;
+      }
+
+      const GroundCell* southwest;
+      const CellNormals* southwestNormals;
+
+      if (column > 0 && row < this->height - 1) {
+        southwest = &this->cells[(row + 1) * this->width + column - 1];
+        southwestNormals = &normals[(row + 1) * this->width + column - 1];
+      } else {
+        southwest = nullptr;
+        southwestNormals = nullptr;
+      }
+
+      const GroundCell* south;
+      const CellNormals* southNormals;
+
+      if (row < this->height - 1) {
+        south = &this->cells[(row + 1) * this->width + column];
+        southNormals = &normals[(row + 1) * this->width + column];
+      } else {
+        south = nullptr;
+        southNormals = nullptr;
+      }
+
+      const GroundCell* southeast;
+      const CellNormals* southeastNormals;
+
+      if (column < this->width - 1 && row < this->height - 1) {
+        southeast = &this->cells[(row + 1) * this->width + column + 1];
+        southeastNormals = &normals[(row + 1) * this->width + column + 1];
+      } else {
+        southeast = nullptr;
+        southeastNormals = nullptr;
+      }
+
+      SetPoint(smooth[0].values, 0.0f, 0.0f, 0.0f);
+      Add(smooth[0].values, cellNormals.faces[0].values);
 
       if (north && north->heights[2] == cell.heights[0]) {
-        add(0, north, 0, 2);
+        Add(smooth[0].values, northNormals->faces[0].values);
+        Add(smooth[0].values, northNormals->faces[1].values);
       }
 
       if (west && west->heights[1] == cell.heights[0]) {
-        add(0, west, 0, 2);
+        Add(smooth[0].values, westNormals->faces[0].values);
+        Add(smooth[0].values, westNormals->faces[1].values);
       }
 
       if (northwest && northwest->heights[3] == cell.heights[0]) {
-        add(0, northwest, 1, 1);
+        Add(smooth[0].values, northwestNormals->faces[1].values);
       }
 
-      add(1, &cell, 0, 2);
+      SetPoint(smooth[1].values, 0.0f, 0.0f, 0.0f);
+      Add(smooth[1].values, cellNormals.faces[0].values);
+      Add(smooth[1].values, cellNormals.faces[1].values);
 
       if (east && east->heights[0] == cell.heights[1]) {
-        add(1, east, 0, 1);
+        Add(smooth[1].values, eastNormals->faces[0].values);
       }
 
       if (north && north->heights[3] == cell.heights[1]) {
-        add(1, north, 1, 1);
+        Add(smooth[1].values, northNormals->faces[1].values);
       }
 
       if (northeast && northeast->heights[2] == cell.heights[1]) {
-        add(1, northeast, 0, 2);
+        Add(smooth[1].values, northeastNormals->faces[0].values);
+        Add(smooth[1].values, northeastNormals->faces[1].values);
       }
 
-      add(2, &cell, 0, 2);
+      SetPoint(smooth[2].values, 0.0f, 0.0f, 0.0f);
+      Add(smooth[2].values, cellNormals.faces[0].values);
+      Add(smooth[2].values, cellNormals.faces[1].values);
 
       if (west && west->heights[3] == cell.heights[2]) {
-        add(2, west, 1, 1);
+        Add(smooth[2].values, westNormals->faces[1].values);
       }
 
       if (south && south->heights[0] == cell.heights[2]) {
-        add(2, south, 0, 1);
+        Add(smooth[2].values, southNormals->faces[0].values);
       }
 
       if (southwest && southwest->heights[1] == cell.heights[2]) {
-        add(2, southwest, 0, 2);
+        Add(smooth[2].values, southwestNormals->faces[0].values);
+        Add(smooth[2].values, southwestNormals->faces[1].values);
       }
 
-      add(3, &cell, 0, 1);
+      SetPoint(smooth[3].values, 0.0f, 0.0f, 0.0f);
+      Add(smooth[3].values, cellNormals.faces[0].values);
 
       if (east && east->heights[2] == cell.heights[3]) {
-        add(3, east, 0, 2);
+        Add(smooth[3].values, eastNormals->faces[0].values);
+        Add(smooth[3].values, eastNormals->faces[1].values);
       }
 
       if (south && south->heights[1] == cell.heights[3]) {
-        add(3, south, 0, 2);
+        Add(smooth[3].values, southNormals->faces[0].values);
+        Add(smooth[3].values, southNormals->faces[1].values);
       }
 
       if (southeast && southeast->heights[0] == cell.heights[3]) {
-        add(3, southeast, 0, 1);
+        Add(smooth[3].values, southeastNormals->faces[0].values);
       }
 
       if (cell.top) {
-        const GroundCell* sources[4] = {&cell, east, south, southeast};
+        for (int corner = 0; corner < 4; ++corner) {
+          float* normal = smooth[corner].values;
+          NormalizeGroundNormal(normal, false);
+          const float dot = normal[1] * lightDirection[1] + normal[0] * lightDirection[0] + normal[2] * lightDirection[2];
+          const float amount = dot > 0.0f ? dot : 0.0f;
+          const float red = Clamp(amount * diffuse[0] + ambient[0]);
+          const float green = Clamp(amount * diffuse[1] + ambient[1]);
+          const float blue = Clamp(amount * diffuse[2] + ambient[2]);
+          VertexColor color;
+          color.value = 0xFFFFFFFFu;
+          const GroundCell* source = nullptr;
 
-        for (unsigned corner = 0; corner < 4; ++corner) {
-          const GroundQuad* source = sources[corner] ? sources[corner]->top : nullptr;
-          const auto color = LitColor(smooth[corner], true, false, lightDirection, diffuse, ambient, source);
-          cell.top->vertices[corner][3] = std::bit_cast<float>(color);
+          switch (corner) {
+          case 0:
+            source = &cell;
+            break;
+          case 1:
+            source = east;
+            break;
+          case 2:
+            source = south;
+            break;
+          case 3:
+            source = southeast;
+            break;
+          }
+
+          if (source && source->top) {
+            color.value = source->top->color;
+          }
+
+          Shade(color, red, green, blue);
+          cell.top->vertices[corner][3] = std::bit_cast<float>(color.value);
         }
       }
 
       if (cell.side2) {
-        for (unsigned corner = 0; corner < 4; ++corner) {
-          const GroundCell* source = (corner & 1) ? southeast : south;
-          const auto color = LitColor(normals[index].side2.values, false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
-          cell.side2->vertices[corner][3] = std::bit_cast<float>(color);
+        for (int corner = 0; corner < 4; ++corner) {
+          const float* normal = cellNormals.side2.values;
+          const float dot = lightDirection[1] * normal[1] + normal[0] * lightDirection[0] + lightDirection[2] * normal[2];
+          const float amount = dot > 0.0f ? dot : 0.0f;
+          const float red = Clamp(amount * diffuse[0] + ambient[0]);
+          const float green = Clamp(amount * diffuse[1] + ambient[1]);
+          const float blue = Clamp(amount * diffuse[2] + ambient[2]);
+          VertexColor color;
+          color.value = 0xFFFFFFFFu;
+          const GroundCell* source = nullptr;
+
+          switch (corner) {
+          case 0:
+          case 2:
+            source = south;
+            break;
+          case 1:
+          case 3:
+            source = southeast;
+            break;
+          }
+
+          if (source && source->top) {
+            color.value = source->top->color;
+          }
+
+          Shade(color, red, green, blue);
+          cell.side2->vertices[corner][3] = std::bit_cast<float>(color.value);
         }
       }
 
       if (cell.side1) {
-        for (unsigned corner = 0; corner < 4; ++corner) {
-          const GroundCell* source = (corner & 1) ? east : southeast;
-          const auto color = LitColor(normals[index].side1.values, false, true, lightDirection, diffuse, ambient, source ? source->top : nullptr);
-          cell.side1->vertices[corner][3] = std::bit_cast<float>(color);
+        for (int corner = 0; corner < 4; ++corner) {
+          const float* normal = cellNormals.side1.values;
+          const float dot = lightDirection[1] * normal[1] + normal[0] * lightDirection[0] + lightDirection[2] * normal[2];
+          const float amount = dot > 0.0f ? dot : 0.0f;
+          const float red = Clamp(amount * diffuse[0] + ambient[0]);
+          const float green = Clamp(amount * diffuse[1] + ambient[1]);
+          const float blue = Clamp(amount * diffuse[2] + ambient[2]);
+          VertexColor color;
+          color.value = 0xFFFFFFFFu;
+          const GroundCell* source = nullptr;
+
+          switch (corner) {
+          case 0:
+          case 2:
+            source = southeast;
+            break;
+          case 1:
+          case 3:
+            source = east;
+            break;
+          }
+
+          if (source && source->top) {
+            color.value = source->top->color;
+          }
+
+          Shade(color, red, green, blue);
+          cell.side1->vertices[corner][3] = std::bit_cast<float>(color.value);
         }
       }
     }
