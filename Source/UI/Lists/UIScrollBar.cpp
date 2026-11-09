@@ -1805,7 +1805,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
   const std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
   std::string remaining = this->taggedText;
   const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
-  int found = static_cast<int>(remaining.find(fitted));
+  int found = static_cast<int>(this->taggedText.find(fitted));
 
   if (found == -1) {
     this->RemoveTagChild(entry->child);
@@ -1817,12 +1817,12 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
   int count = 0;
 
   do {
-    std::string before;
+    std::string before = "";
     if (found > 0) {
       before = remaining.substr(found - 1, 1);
     }
 
-    std::string after;
+    std::string after = "";
     if (found + bytes >= 0) {
       after = remaining.substr(found + bytes, 1);
     }
@@ -1842,20 +1842,26 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
       atCursor = false;
     } else {
       remaining = remaining.substr(found + bytes);
-      absolute = (absolute == found ? absolute : absolute + found) + bytes;
+      if (absolute != found) {
+        absolute += found;
+      }
+      absolute += bytes;
       found = static_cast<int>(remaining.find(fitted));
       continue;
     }
 
     if (atCursor) {
-      remaining = before.find("<") != std::string::npos ? this->taggedText.substr(0, absolute - 1) : this->taggedText.substr(0, absolute);
+      if (before.find("<") != std::string::npos) {
+        remaining = this->taggedText.substr(0, absolute - 1);
+      } else {
+        remaining = this->taggedText.substr(0, absolute);
+      }
       int end = absolute;
       if (after.find(">") != std::string::npos) {
         ++end;
       }
       remaining += this->taggedText.substr(end + bytes);
-      g_serverLanguage->ResetInput();
-      g_serverLanguage->Insert(remaining.c_str());
+      g_serverLanguage->ReplaceInput(remaining.c_str());
       this->RemoveTagChild(entry->child);
       entry = this->tags.erase(entry);
       return true;
