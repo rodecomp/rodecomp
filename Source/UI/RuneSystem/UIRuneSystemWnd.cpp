@@ -80,14 +80,17 @@ int UIRune_Decom::HitTestItem(int x, int y) {
 
   const int offsetX = x - 211;
   const int offsetY = y - 354;
-  int index = offsetX / 54;
-  if (offsetX % 54 > 38) {
+  const std::div_t cell = std::div(offsetX, 54);
+  int index = cell.quot;
+  if (cell.rem > 38) {
     return -1;
   }
-  if (offsetY - 54 > 0) {
+  if (offsetY - 54 <= 0) {
+    if (offsetY > 38) {
+      return -1;
+    }
+  } else {
     index += 4;
-  } else if (offsetY > 38) {
-    return -1;
   }
 
   if (list->size() > static_cast<unsigned int>(index)) {
@@ -855,11 +858,11 @@ void UIRuneSystem_ActiveWnd::DrawCount(int x, int y, int count, int total, std::
 // FUNCTION: fn_10235
 void UIRuneSetList::DrawRuneIcon(int x, int y, const char* name, bool active) {
   this->DrawBitmap(
-    x, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\collection_stroke_small.bmp")))->image, false
+    x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\collection_stroke_small.bmp"))), false
   );
   const std::string icon = FormatOwnedString("유저인터페이스\\runesystem\\rune_icon\\%s.bmp", name);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str())));
-  this->DrawBitmap(x + 1, y + 1, &bitmap->image, false);
+  this->DrawBitmap(x + 1, y + 1, bitmap, false);
   if (!active) {
     this->geometry.surface->Dim(x + 1, y + 1, bitmap->image.width, bitmap->image.height, 55);
   }
@@ -1012,12 +1015,12 @@ void UIRuneSystem_Decom_RadioBtn::Paint() {
 // FUNCTION: fn_10185
 void UIRuneSystemWnd::Paint() {
   this->DrawBitmap(
-    0, 16, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_title.bmp").c_str())))->image,
+    0, 16, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_title.bmp").c_str()))),
     false
   );
   this->DrawBitmap(
     0, this->geometry.height - 36,
-    &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_down.bmp").c_str())))->image, false
+    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_down.bmp").c_str()))), false
   );
   this->DrawTitleBar(true, LookupMessage(MSI_ADVENTURE_GUIDE), 0);
 }
@@ -1470,7 +1473,7 @@ void UIRune_Info::Paint() {
 // OFFSET: 0x0081BA00
 // FUNCTION: fn_10193
 void UIRune_ViewInfo::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\View_bg_main.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\View_bg_main.bmp"))), true);
   const int total = g_runeSystemMgr->GetTag(-1)->GetRuneCount(1);
   const int active = g_runeSystemMgr->GetTag(-1)->m_activeCount[1];
   const int center = static_cast<int>(static_cast<float>(this->m_gauge->geometry.width) * 0.5f + static_cast<float>(this->m_gauge->geometry.x));
