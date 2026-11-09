@@ -314,6 +314,10 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
 // OFFSET: 0x00BF3BD0
 // FUNCTION: fn_19993
 __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -322,10 +326,6 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
       continue;
     }
 
-    vector3d vec1;
-    vector3d vec2;
-    vector3d vec3;
-    vector3d vec4;
     vec1.x = slot.distance * g_cosTable[45];
     vec1.y = 0.0f;
     vec1.z = slot.distance * g_sinTable[45];
@@ -340,45 +340,57 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     vec4.z = slot.distance * g_sinTable[315];
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    vector3d corner1;
-    vector3d corner2;
-    vector3d corner3;
-    vector3d corner4;
-    corner1.x = slot.vecBNow.x + vec1.x;
-    corner1.y = slot.vecBNow.y + vec1.y;
-    corner1.z = slot.vecBNow.z + vec1.z;
-    corner2.x = slot.vecBNow.x + vec2.x;
-    corner2.y = slot.vecBNow.y + vec2.y;
-    corner2.z = slot.vecBNow.z + vec2.z;
-    corner3.x = slot.vecBNow.x + vec3.x;
-    corner3.y = slot.vecBNow.y + vec3.y;
-    corner3.z = slot.vecBNow.z + vec3.z;
-    corner4.x = slot.vecBNow.x + vec4.x;
-    corner4.y = slot.vecBNow.y + vec4.y;
-    corner4.z = slot.vecBNow.z + vec4.z;
+    vector3d base1;
+    base1.x = vec1.x;
+    base1.y = vec1.y;
+    base1.z = vec1.z;
+    vector3d base2;
+    base2.x = vec2.x;
+    base2.y = vec2.y;
+    base2.z = vec2.z;
+    vector3d base3;
+    base3.x = vec3.x;
+    base3.y = vec3.y;
+    base3.z = vec3.z;
+    vector3d base4;
+    base4.x = vec4.x;
+    base4.y = vec4.y;
+    base4.z = vec4.z;
+    vec1.x = slot.vecBNow.x + vec1.x;
+    vec1.y = slot.vecBNow.y + vec1.y;
+    vec1.z = slot.vecBNow.z + vec1.z;
+    vec2.x = slot.vecBNow.x + vec2.x;
+    vec2.y = slot.vecBNow.y + vec2.y;
+    vec2.z = slot.vecBNow.z + vec2.z;
+    vec3.x = slot.vecBNow.x + vec3.x;
+    vec3.y = slot.vecBNow.y + vec3.y;
+    vec3.z = slot.vecBNow.z + vec3.z;
+    vec4.x = slot.vecBNow.x + vec4.x;
+    vec4.y = slot.vecBNow.y + vec4.y;
+    vec4.z = slot.vecBNow.z + vec4.z;
 
     const short alpha = slot.alphaB < 0 ? 0 : slot.alphaB;
     if (slot.flag1[0] == 0) {
-      this->RenderTeiRect(&rpCnt, alpha, corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (slot.flag1[0] == 1) {
-      this->RenderTeiRect(&rpCnt, alpha, corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 255, 160, 160, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 160, 160, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (slot.flag1[0] == 2) {
-      this->RenderTeiRect(&rpCnt, alpha, corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 255, 90, 90, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 90, 90, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     }
 
-    corner1.x = vec1.x * 1.1f + slot.vecBNow.x;
-    corner1.y = vec1.y * 1.1f + slot.vecBNow.y;
-    corner1.z = vec1.z * 1.1f + slot.vecBNow.z;
-    corner2.x = vec2.x * 1.1f + slot.vecBNow.x;
-    corner2.y = vec2.y * 1.1f + slot.vecBNow.y;
-    corner2.z = vec2.z * 1.1f + slot.vecBNow.z;
-    corner3.x = vec3.x * 1.1f + slot.vecBNow.x;
-    corner3.y = vec3.y * 1.1f + slot.vecBNow.y;
-    corner3.z = vec3.z * 1.1f + slot.vecBNow.z;
-    corner4.x = vec4.x * 1.1f + slot.vecBNow.x;
-    corner4.y = vec4.y * 1.1f + slot.vecBNow.y;
-    corner4.z = vec4.z * 1.1f + slot.vecBNow.z;
-    this->RenderTeiRect(&rpCnt, alpha, corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 255, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+    vec1.x = base1.x * 1.1f + slot.vecBNow.x;
+    vec1.y = base1.y * 1.1f + slot.vecBNow.y;
+    vec1.z = base1.z * 1.1f + slot.vecBNow.z;
+    vec2.x = base2.x * 1.1f + slot.vecBNow.x;
+    vec2.y = base2.y * 1.1f + slot.vecBNow.y;
+    vec2.z = base2.z * 1.1f + slot.vecBNow.z;
+    vec3.x = base3.x * 1.1f + slot.vecBNow.x;
+    vec3.y = base3.y * 1.1f + slot.vecBNow.y;
+    vec3.z = base3.z * 1.1f + slot.vecBNow.z;
+    vec4.x = base4.x * 1.1f + slot.vecBNow.x;
+    vec4.y = base4.y * 1.1f + slot.vecBNow.y;
+    vec4.z = base4.z * 1.1f + slot.vecBNow.z;
+    this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }
 
