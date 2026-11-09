@@ -1608,8 +1608,7 @@ struct ZoneServerChangePacket {
 // FUNCTION: fn_21777
 void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
   const auto* change = reinterpret_cast<const ZoneServerChangePacket*>(packet);
-  const std::string mapName(change->mapName, change->mapName + sizeof(change->mapName));
-  this->ChangeZoneServer(mapName.c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string());
+  this->ChangeZoneServer(std::string(change->mapName, change->mapName + sizeof(change->mapName)).c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string());
 }
 
 // OFFSET: 0x00D79F00
@@ -2212,7 +2211,7 @@ __declspec(noinline) void CGameMode::ReceiveBuyingStoreClose(const unsigned char
 // OFFSET: 0x00D7A0E0
 // FUNCTION: fn_22187
 __declspec(noinline) void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
-  const std::int16_t length = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
+  const int length = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
   if (length == 0) {
     return;
   }
@@ -3672,8 +3671,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
     return;
   }
 
-  switch (status) {
-  case EF_HPTIME:
+  if (status == EF_HPTIME) {
     if (aid == g_session.m_aid) {
       g_session.UpdateRandomStats();
       const int hp = g_session.hp + amount;
@@ -3683,8 +3681,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
       }
     }
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_SPTIME:
+  } else if (status == EF_SPTIME) {
     if (aid == g_session.m_aid) {
       g_session.UpdateRandomStats();
       int& sp = *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0]);
@@ -3695,33 +3692,22 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
       }
     }
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_GREEN_NUMBER:
+  } else if (status == EF_GREEN_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF00FF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_BLUE_NUMBER:
+  } else if (status == EF_BLUE_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF0000FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_RED_NUMBER:
+  } else if (status == EF_RED_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF0000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_PURPLE_NUMBER:
+  } else if (status == EF_PURPLE_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF00FF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_BLACK_NUMBER:
+  } else if (status == EF_BLACK_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFF000000, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_WHITE_NUMBER:
+  } else if (status == EF_WHITE_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFFFFFF, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_YELLOW_NUMBER:
+  } else if (status == EF_YELLOW_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFFFF00, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  case EF_PINK_NUMBER:
+  } else if (status == EF_PINK_NUMBER) {
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
-    break;
-  default:
-    break;
   }
 
   CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, status, actor->render.position.x, actor->render.position.y,
@@ -9012,7 +8998,8 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
       item.GetIdDisplayName(name, capacity, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_REFRESH), name, count).c_str()), 0xFFFF64, 0, 0, 0);
+      const std::string message = FormatOwnedString(LookupMessage(MSI_REFRESH), name, count);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
@@ -9031,7 +9018,8 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       item.SetItemId(packet->itemId);
       int capacity = sizeof(name);
       item.GetIdDisplayName(name, capacity, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_HOMUN_SELF_FEEDING_EXP_INFORMATION), name, count).c_str()), 0xFFFF64, 0, 0, 0);
+      const std::string message = FormatOwnedString(LookupMessage(MSI_HOMUN_SELF_FEEDING_EXP_INFORMATION), name, count);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF64, 0, 0, 0);
     } else {
       ITEM_INFO item;
       item.SetItemId(packet->itemId);
@@ -9206,7 +9194,7 @@ void CGameMode::ReceiveGuildInfo(const unsigned char* data) {
   std::memcpy(masterName, packet->masterName, sizeof(packet->masterName));
   std::memcpy(manageLand, packet->manageLand, sizeof(packet->manageLand));
   if (g_forbiddenWords.Contains(guildName) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(guildName, &masked);
   }
 
@@ -10032,7 +10020,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
   CGameActor* speaker = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (speaker && !speaker->objectType && g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
 
@@ -10070,7 +10058,7 @@ void CGameMode::ReceivePartyChat(const unsigned char* data) {
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), data + 8, length);
   if (g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
 
@@ -10280,7 +10268,7 @@ void CGameMode::ReceiveGuildChat(const unsigned char* data) {
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), data + 4, length);
   if (g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
   if (!g_serviceOptions.Get(0x94)) {
@@ -10450,10 +10438,12 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 3, hungerLevel), 0, 0, 0);
       this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
     }
-    if (g_serviceType == 4) {
+    if (g_serviceType != 4) {
+      if (!g_windowMgr.CloseWindow(WID_ESCOPTIONWND)) {
+        g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
+      }
+    } else {
       g_windowMgr.Confirm(LookupMessage(MSI_PRESS_ESC_TO_RESTART), 0, true, false, 0, "Message", 280, 120, 0);
-    } else if (!g_windowMgr.CloseWindow(WID_ESCOPTIONWND)) {
-      g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
     }
     RefreshPartyWindows(&g_session);
     break;
@@ -10660,7 +10650,7 @@ void CGameMode::ReceiveGuildInfo4(const unsigned char* data) {
   std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
   std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
   if (g_forbiddenWords.Contains(guildName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(guildName, &masked);
   }
 
@@ -10708,7 +10698,7 @@ void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   std::memset(subject, 0, sizeof(subject));
   strcpy_s(subject, sizeof(subject), packet->subject);
   if (g_forbiddenWords.Contains(subject) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(subject, &masked);
   }
   std::string subjectLine = "[ ";
@@ -10722,7 +10712,7 @@ void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   std::memset(notice, 0, sizeof(notice));
   strcpy_s(notice, sizeof(notice), packet->notice);
   if (g_forbiddenWords.Contains(notice) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(notice, &masked);
   }
   std::string noticeLine = "[ ";
@@ -10991,7 +10981,7 @@ void CGameMode::ReceiveGuildRelationList(const unsigned char* data) {
     std::memcpy(name, record->name, sizeof(record->name));
     name[24] = '\0';
     if (g_forbiddenWords.Contains(name) == true) {
-      std::string masked;
+      std::string masked("");
       g_forbiddenWords.Mask(name, &masked);
     }
 
@@ -11068,12 +11058,7 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
   }
 
   unsigned char sameMap;
-  if (std::strcmp(mapName.c_str(), g_session.m_navigationPlayerMap) == 0) {
-    this->ReloadScene();
-    this->InitializeState();
-    FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
-    sameMap = 1;
-  } else {
+  if (std::strcmp(mapName.c_str(), g_session.m_navigationPlayerMap) != 0) {
     g_session.SetNavigationPlayerMap(mapName.c_str());
     g_session.m_loginTimeTicks = _Xtime_get_ticks();
     mapName.append(".rsw", 4);
@@ -11082,6 +11067,11 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
     g_windowMgr.modalResponse = 185;
     g_session.ClearStoreSearchResults();
     sameMap = 0;
+  } else {
+    this->ReloadScene();
+    this->InitializeState();
+    FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+    sameMap = 1;
   }
   this->sameMapMove[0] = sameMap;
 
@@ -11763,7 +11753,7 @@ void CGameMode::ReceiveAddRelatedGuild(const unsigned char* data) {
   std::memcpy(name, data + 0xA, 24);
   name[24] = '\0';
   if (g_forbiddenWords.Contains(name) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(name, &masked);
   }
 
@@ -12199,7 +12189,7 @@ void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
   std::vector<char> text(length - 3, 0);
   memcpy_s(text.data(), text.size(), packet + 4, size);
   if (g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
 
@@ -15428,7 +15418,7 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
   std::memcpy(text, data + 16, *reinterpret_cast<const std::uint16_t*>(data + 2) - 16);
   const int length = static_cast<int>(std::strlen(text));
   if (g_forbiddenWords.Contains(text)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text, &masked);
   }
 
@@ -15911,7 +15901,7 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
   partyName[24] = '\0';
   std::memcpy(partyName, packet->partyName, sizeof(packet->partyName));
   if (g_forbiddenWords.Contains(partyName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
   }
   g_session.partyName = partyName;
@@ -15950,7 +15940,7 @@ void CGameMode::SetPartyMemberList(const char* value, std::vector<PartyRosterEnt
   partyName[24] = '\0';
   std::memcpy(partyName, value, 24);
   if (g_forbiddenWords.Contains(partyName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
   }
   g_session.partyName = partyName;
@@ -16003,7 +15993,7 @@ void CGameMode::UpdatePartyMemberInfo(
   partyName[24] = '\0';
   std::strncpy(partyName, value, 24);
   if (g_forbiddenWords.Contains(partyName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
   }
   g_session.partyName = partyName;
