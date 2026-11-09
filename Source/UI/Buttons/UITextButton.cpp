@@ -84,16 +84,19 @@ namespace {
 void UITextButton::Configure(const char* text, std::uint32_t color, int family, int height, unsigned char outline, unsigned char underline) {
   SetButtonLabel(*this, text);
   this->m_text = this->label;
-  this->m_normalColor = this->m_hoverColor = this->m_color = color;
+  this->m_normalColor = color;
+  this->m_hoverColor = color;
+  this->m_color = color;
   this->m_family = family;
   this->m_height = height;
   this->m_outline = outline;
   this->m_underline = underline;
   const auto extent = static_cast<std::uint32_t>(height) * static_cast<std::uint32_t>(std::strlen(text));
-  const int width = static_cast<int>(extent / 2 + 4u * outline + 12u);
-  this->UIWindow::Resize(width, height + 2);
-  this->OnCreate(width, height + 2);
-  this->OnSize(width, height + 2);
+  const int newHeight = height + 2;
+  const int width = static_cast<int>(extent / 2) + 4 * outline + 12;
+  this->UIWindow::Resize(width, newHeight);
+  this->OnCreate(width, newHeight);
+  this->OnSize(width, newHeight);
 }
 
 // OFFSET: 0x0088F820
