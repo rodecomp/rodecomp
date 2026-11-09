@@ -69,7 +69,7 @@ protected:
   bool ReadTableV2();
   bool ReadTableV3();
 
-  /* 0008 */ alignas(8) CPakFile* m_file;
+  /* 0008 */ CPakFile* m_file;
   /* 000C */ std::uint32_t m_version;
   /* 0010 */ std::uint32_t m_entryCount;
   /* 0014 */ std::uint32_t unknown_0014;

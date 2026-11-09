@@ -3,6 +3,7 @@
 
 #include "Utility/Cipher/XorBytes.h"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -18,6 +19,14 @@ public:
 
   // INLINED
   explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  template <typename Element>
+  explicit EncryptedName(const std::array<Element, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
