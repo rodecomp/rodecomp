@@ -5041,9 +5041,9 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
   const unsigned char* cursor = data + sizeof(OngoingQuestListPacket);
   for (int index = 0; index < packet->count; ++index) {
     const auto* entry = reinterpret_cast<const OngoingQuestEntry*>(cursor);
-    const auto* hunts = reinterpret_cast<const OngoingQuestHunt*>(cursor + sizeof(OngoingQuestEntry));
+    cursor += sizeof(OngoingQuestEntry);
     if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, entry->state)) {
-      cursor = reinterpret_cast<const unsigned char*>(hunts + entry->huntCount);
+      cursor += entry->huntCount * sizeof(OngoingQuestHunt);
       continue;
     }
 
@@ -5053,16 +5053,17 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
     if (entry->endTime > 0) {
       endTime = entry->endTime;
     }
-    const tm* time = _localtime32(&endTime);
-    info.m_day = time->tm_mday;
-    info.m_year = time->tm_year + 1900;
-    info.m_month = time->tm_mon + 1;
-    info.m_hour = entry->endTime != 0 ? time->tm_hour : 0;
-    info.m_minute = entry->endTime != 0 ? time->tm_min : 0;
+    const tm time = *_localtime32(&endTime);
+    info.m_year = time.tm_year + 1900;
+    info.m_month = time.tm_mon + 1;
+    info.m_day = time.tm_mday;
+    info.m_hour = entry->endTime != 0 ? time.tm_hour : 0;
+    info.m_minute = entry->endTime != 0 ? time.tm_min : 0;
     info.m_huntCount = static_cast<char>(entry->huntCount);
 
-    const OngoingQuestHunt* hunt = hunts;
-    for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
+    for (int i = 0; i < entry->huntCount; ++i) {
+      const auto* hunt = reinterpret_cast<const OngoingQuestHunt*>(cursor);
+      cursor += sizeof(OngoingQuestHunt);
       info.m_huntId[i] = hunt->huntId;
       info.m_huntUnknown01A0[i] = hunt->conditionFlags;
       info.m_huntUnknown00D4[i] = hunt->mobId;
@@ -5086,7 +5087,6 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
       }
     }
-    cursor = reinterpret_cast<const unsigned char*>(hunt);
 
     g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
   }
@@ -5101,9 +5101,9 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
   const unsigned char* cursor = data + sizeof(OngoingQuestListPacket);
   for (int index = 0; index < packet->count; ++index) {
     const auto* entry = reinterpret_cast<const OngoingQuestEntry*>(cursor);
-    const auto* hunts = reinterpret_cast<const OngoingQuestHunt2*>(cursor + sizeof(OngoingQuestEntry));
+    cursor += sizeof(OngoingQuestEntry);
     if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, entry->state)) {
-      cursor = reinterpret_cast<const unsigned char*>(hunts + entry->huntCount);
+      cursor += entry->huntCount * sizeof(OngoingQuestHunt2);
       continue;
     }
 
@@ -5113,16 +5113,17 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
     if (entry->endTime > 0) {
       endTime = entry->endTime;
     }
-    const tm* time = _localtime32(&endTime);
-    info.m_day = time->tm_mday;
-    info.m_year = time->tm_year + 1900;
-    info.m_month = time->tm_mon + 1;
-    info.m_hour = entry->endTime != 0 ? time->tm_hour : 0;
-    info.m_minute = entry->endTime != 0 ? time->tm_min : 0;
+    const tm time = *_localtime32(&endTime);
+    info.m_year = time.tm_year + 1900;
+    info.m_month = time.tm_mon + 1;
+    info.m_day = time.tm_mday;
+    info.m_hour = entry->endTime != 0 ? time.tm_hour : 0;
+    info.m_minute = entry->endTime != 0 ? time.tm_min : 0;
     info.m_huntCount = static_cast<char>(entry->huntCount);
 
-    const OngoingQuestHunt2* hunt = hunts;
-    for (int i = 0; i < entry->huntCount; ++i, ++hunt) {
+    for (int i = 0; i < entry->huntCount; ++i) {
+      const auto* hunt = reinterpret_cast<const OngoingQuestHunt2*>(cursor);
+      cursor += sizeof(OngoingQuestHunt2);
       info.m_huntId[i] = hunt->huntId;
       info.m_huntUnknown01A0[i] = hunt->conditionFlags;
       info.m_huntUnknown00D4[i] = hunt->mobId;
@@ -5146,7 +5147,6 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
       }
     }
-    cursor = reinterpret_cast<const unsigned char*>(hunt);
 
     g_renewQuestMgr->AddOngoingQuest(entry->questId, info);
   }
