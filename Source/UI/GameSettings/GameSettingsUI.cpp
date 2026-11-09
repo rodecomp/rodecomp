@@ -667,9 +667,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -677,8 +677,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -866,9 +865,9 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -876,8 +875,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
       GameSettingsUI::CUIOptionItem* item = new GameSettingsUI::CUIOptionItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIOptionItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -2280,10 +2278,7 @@ void GameSettingsUI::CUIGroupGraphics::OnInit() {
   GetRenderSystemHolder();
   this->m_pendingAdapter = SelectedRenderAdapter();
   this->m_adapter = this->m_pendingAdapter;
-  DisplayMode mode{};
-  mode.width = g_configuredScreenWidth;
-  mode.height = g_configuredScreenHeight;
-  mode.bitsPerPixel = g_configuredBitsPerPixel;
+  DisplayMode mode{static_cast<unsigned>(g_configuredScreenWidth), static_cast<unsigned>(g_configuredScreenHeight), static_cast<unsigned>(g_configuredBitsPerPixel)};
   this->m_pendingMode = std::move(mode);
   this->m_mode = this->m_pendingMode;
 }
@@ -4423,15 +4418,18 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     CUIGroupGraphics* graphics = this->m_graphics;
     graphics->m_adapter = graphics->m_pendingAdapter;
     graphics->m_mode = graphics->m_pendingMode;
-    if (g_configuredRenderBackend == 1) {
+    switch (g_configuredRenderBackend) {
+    case 1:
       strncpy_s(g_deviceName, sizeof(g_deviceName), graphics->m_pendingAdapter.description.c_str(), _TRUNCATE);
       std::memcpy(g_guidDevice, &graphics->m_pendingAdapter.renderGuid, sizeof(GUID));
       std::memcpy(g_guidDriver, &graphics->m_pendingAdapter.drawGuid, sizeof(GUID));
       g_configuredDeviceCount = graphics->m_adapterCombo->listBox->selected;
       g_configuredModeCount = graphics->m_modeCombo->listBox->selected;
-    } else if (g_configuredRenderBackend == 2) {
+      break;
+    case 2:
       g_configuredDeviceGuid = graphics->m_pendingAdapter.deviceGuid;
       strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), graphics->m_pendingAdapter.deviceName.c_str(), _TRUNCATE);
+      break;
     }
     g_configuredScreenWidth = graphics->m_pendingMode.width;
     g_configuredScreenHeight = graphics->m_pendingMode.height;
@@ -4480,9 +4478,9 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     }
   }
 
-  const bool trilinear = this->m_trilinear->m_onButton->checked;
-  if (trilinear != (g_textureFiltering != 0)) {
-    g_textureFiltering = trilinear;
+  CUIRadioButton* trilinearButton = this->m_trilinear->m_onButton;
+  if (trilinearButton->checked != static_cast<bool>(g_textureFiltering)) {
+    g_textureFiltering = trilinearButton->checked;
     GetRenderSystemHolder()->UpdateOption();
     g_texMgr.Reload();
   } else if (reloadTextures) {
