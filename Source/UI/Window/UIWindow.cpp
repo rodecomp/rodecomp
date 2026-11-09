@@ -2945,7 +2945,12 @@ void UIListBox_NaviSearch::Refresh() {
 int UIListBox_NaviSearch::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message != UM_SCROLLVERT && message != UM_SCROLLVERTPAGEUP && message != UM_SCROLLVERTPAGEDOWN) {
+  switch (message) {
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
+    break;
+  default:
     return this->UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
