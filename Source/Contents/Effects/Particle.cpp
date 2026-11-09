@@ -415,7 +415,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
 
 // OFFSET: 0x00B3E010
 // FUNCTION: fn_18822
-void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
+__declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   RenderVertex screen = {0, 0, 0, 0, 0, 0xFF000000, 0, 0};
   g_renderer->viewport.Project(&this->position.x, mode->camera->frame.view.values, screen);
@@ -842,8 +842,8 @@ void CParticle::Render(const ParticleQuad& quad) {
 // FUNCTION: fn_18839
 void CParticle::Render(bool billboard, float top, float bottom, float left, float right, bool unused, bool depth) {
   bool shaped = false;
-  for (const RenderVertex& vertex : this->vertices) {
-    if (vertex.x != 0.0f || vertex.y != 0.0f || vertex.z != 0.0f) {
+  for (int i = 0; i < 4; ++i) {
+    if (this->vertices[i].x != 0.0f || this->vertices[i].y != 0.0f || this->vertices[i].z != 0.0f) {
       shaped = true;
     }
   }
