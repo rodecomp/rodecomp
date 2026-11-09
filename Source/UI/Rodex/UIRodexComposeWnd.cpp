@@ -287,18 +287,16 @@ void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 1) {
+  if (drag->source == 1) {
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+    } else {
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 13, 0, 0, 0);
+    }
+  } else {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return;
   }
-
-  if (drag->quantity == 1) {
-    this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
-    return;
-  }
-
-  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 13, 0, 0, 0);
 }
 
 // OFFSET: 0x007FF4A0
