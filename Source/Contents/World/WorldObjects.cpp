@@ -69,7 +69,9 @@ CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
     return reinterpret_cast<CRenderObject*>(this->player);
   }
 
-  for (CRenderObject* actor : this->actors) {
+  for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
+    CRenderObject* actor = *it;
+
     if (actor->render.accountId == aid) {
       return actor;
     }
@@ -140,8 +142,9 @@ void CWorld::OnProcess() {
     while (this->published < end) {
       C3dActor& model = *this->models[this->published];
       for (int index = 0; index < 4; ++index) {
-        if (model.oriented.Intersects(this->spatial.children[index]->minimum)) {
-          this->spatial.children[index]->InsertModel(model, 1);
+        WorldSpatialTree* child = this->spatial.children[index];
+        if (model.oriented.Intersects(child->minimum)) {
+          child->InsertModel(model, 1);
         }
       }
 
@@ -168,45 +171,42 @@ void CWorld::OnProcess() {
       }
     }
 
-    delete object;
+    delete *objectEntry;
     objectEntry = this->objects.erase(objectEntry);
   }
 
-  for (const std::uint32_t aid : this->pendingActorIds) {
+  for (auto idEntry = this->pendingActorIds.begin(); idEntry != this->pendingActorIds.end(); ++idEntry) {
+    std::uint32_t aid = *idEntry;
     auto skillEntry = this->skills.begin();
     for (; skillEntry != this->skills.end(); ++skillEntry) {
-      CSkill* skill = static_cast<CSkill*>(*skillEntry);
-      if (skill->skillAid != aid) {
-        continue;
-      }
-
-      if (skill == nullptr) {
+      if (static_cast<CSkill*>(*skillEntry)->skillAid == aid) {
         break;
       }
+    }
 
-      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      if (skill->HasPendingDamage()) {
-        bool found = false;
-        for (const std::uint32_t pendingAid : this->pendingActorIds) {
-          if (pendingAid == aid) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          this->pendingActorIds.push_back(aid);
-        }
-      } else {
-        for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
-          if (*entry == skill) {
-            delete skill;
-            this->objects.erase(entry);
-            break;
-          }
-        }
-        this->skills.erase(skillEntry);
+    if (skillEntry == this->skills.end()) {
+      continue;
+    }
+
+    CSkill* skill = static_cast<CSkill*>(*skillEntry);
+    if (skill == nullptr) {
+      continue;
+    }
+
+    skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (skill->HasPendingDamage() == true) {
+      if (std::find(this->pendingActorIds.begin(), this->pendingActorIds.end(), aid) == this->pendingActorIds.end()) {
+        this->pendingActorIds.push_back(aid);
       }
-      break;
+    } else {
+      for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+        if (*entry == skill) {
+          delete skill;
+          this->objects.erase(entry);
+          break;
+        }
+      }
+      this->skills.erase(skillEntry);
     }
   }
 }
@@ -274,7 +274,7 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
     return;
   }
 
-  auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CRenderObject* object) { return object->identity == identity; });
+  auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CRenderObject* object) { return identity == object->identity; });
 
   if (it != this->objects.end()) {
     (*it)->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
@@ -581,26 +581,26 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
 // FUNCTION: fn_21303
 CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration) {
   CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(packId, emotionId);
-  CMsgEffect* effect = nullptr;
+  if (!data) {
+    return nullptr;
+  }
 
-  if (data) {
-    struct {
-      std::string sprite;
-      std::string action;
-    } names;
-    names.sprite = g_cashEmotionMgr->GetSprFileName(data->actId);
-    names.action = g_cashEmotionMgr->GetPackName(data->sprId);
+  struct {
+    std::string sprite;
+    std::string action;
+  } names;
+  names.sprite = g_cashEmotionMgr->GetSprFileName(data->actId);
+  names.action = g_cashEmotionMgr->GetPackName(data->sprId);
 
-    effect = new (std::nothrow) CMsgEffect;
-    if (effect) {
-      if (this->scene) {
-        this->scene->objects.emplace_back(effect);
-      }
-
-      effect->SendMsg(nullptr, AM_SETMASTERGID, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->actionIndex,
-                      data->actionIndex >> 31, 0, 0, 0, 0, 0, 0);
+  CMsgEffect* effect = new (std::nothrow) CMsgEffect;
+  if (effect) {
+    if (this->scene) {
+      this->scene->objects.emplace_back(effect);
     }
+
+    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->actionIndex,
+                    data->actionIndex >> 31, 0, 0, 0, 0, 0, 0);
   }
 
   return effect;
