@@ -264,12 +264,12 @@ void UIHotkeyGuideWnd::OnProcess() {
       int id = (*tab)->geometry.id;
       if (id != this->m_current) {
         this->m_keys.clear();
-        for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
-          if (id == entry->id) {
-            if (entry->firstKey != 0) {
-              this->m_keys.push_back(entry->firstKey);
-              if (entry->secondKey != 0) {
-                this->m_keys.push_back(entry->secondKey);
+        for (auto& entry : this->m_entries) {
+          if (id == entry.id) {
+            if (entry.firstKey != 0) {
+              this->m_keys.push_back(entry.firstKey);
+              if (entry.secondKey != 0) {
+                this->m_keys.push_back(entry.secondKey);
               }
             }
             break;
@@ -320,16 +320,16 @@ void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
   } else {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_left.bmp")));
     this->DrawBitmap(key->x, key->y, bitmap, true);
-    for (int i = 1, offset = 6; i <= (key->width - 12) / 6; ++i, offset += 6) {
+    for (int i = 1; i <= (key->width - 12) / 6; ++i) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
-      this->DrawBitmap(key->x + offset, key->y, bitmap, true);
+      this->DrawBitmap(key->x + i * 6, key->y, bitmap, true);
     }
     if ((key->width - 12) % 6 != 0) {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_mid.bmp")));
       this->DrawBitmap(key->x + (key->width - 12), key->y, bitmap, true);
     }
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_right.bmp")));
-    x = key->x + (key->width - 6);
+    x = key->width - 6 + key->x;
   }
   this->DrawBitmap(x, key->y, bitmap, true);
 }
