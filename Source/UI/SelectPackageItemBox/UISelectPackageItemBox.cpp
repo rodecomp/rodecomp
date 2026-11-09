@@ -1017,7 +1017,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->tabList->scrollBar->SetSize(13, 238);
   this->tabList->scrollBar->Move(0, 0);
   this->tabList->scrollBar->step = 34;
-  this->tabList->scrollBar->SetButtonImages(
+  this->tabList->SetScrollBarButtonImages(
     std::string([] {
       constexpr char bytes[] = {
         '\x79', '\xAA', '\xB7', '\xB5', '\xCB', '\xD3', '\x4A', '\xB8', '\x7F', '\xE1', '\xB7', '\x83', '\xB6', '\xA7', '\xD3', '\x06',
@@ -1037,7 +1037,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
       return name.Text();
     }())
   );
-  this->tabList->scrollBar->SetBackground(
+  this->tabList->SetScrollBarBackground(
     std::string([] {
       constexpr char bytes[] = {
         '\x55', '\x20', '\x21', '\xF7', '\x9D', '\xC7', '\xA4', '\x3C', '\x53', '\x6B', '\x21', '\xC1', '\xE0', '\xB3', '\x3D', '\x82',
@@ -1048,7 +1048,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
       return name.Text();
     }())
   );
-  this->tabList->scrollBar->SetThumbImages(
+  this->tabList->SetScrollBarThumbImages(
     std::string([] {
       constexpr char bytes[] = {
         '\x2F', '\xDE', '\x1F', '\xE9', '\xAD', '\x81', '\x02', '\x20', '\x29', '\x95', '\x1F', '\xDF', '\xD0', '\xF5', '\x9B', '\x9E',
@@ -1137,7 +1137,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->itemList->scrollBar->SetSize(13, 238);
   this->itemList->scrollBar->Move(200, 0);
   this->itemList->scrollBar->step = 34;
-  this->itemList->scrollBar->SetButtonImages(
+  this->itemList->SetScrollBarButtonImages(
     std::string([] {
       constexpr char bytes[] = {
         '\x05', '\x82', '\xEB', '\xC5', '\x49', '\xD3', '\xA8', '\x22', '\x03', '\xC9', '\xEB', '\xF3', '\x34', '\xA7', '\x31', '\x9C',
@@ -1157,7 +1157,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
       return name.Text();
     }())
   );
-  this->itemList->scrollBar->SetBackground(
+  this->itemList->SetScrollBarBackground(
     std::string([] {
       constexpr char bytes[] = {
         '\xB7', '\x38', '\x47', '\xE7', '\xE3', '\x9D', '\x24', '\xA2', '\xB1', '\x73', '\x47', '\xD1', '\x9E', '\xE9', '\xBD', '\x1C',
@@ -1168,7 +1168,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
       return name.Text();
     }())
   );
-  this->itemList->scrollBar->SetThumbImages(
+  this->itemList->SetScrollBarThumbImages(
     std::string([] {
       constexpr char bytes[] = {
         '\x9B', '\xFC', '\x9F', '\x27', '\x47', '\x51', '\x66', '\xF4', '\x9D', '\xB7', '\x9F', '\x11', '\x3A', '\x25', '\xFF', '\x4A',

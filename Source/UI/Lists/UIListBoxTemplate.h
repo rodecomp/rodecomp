@@ -264,6 +264,26 @@ public:
     this->Invalidate();
   }
 
+  // INLINED
+  void SetScrollBarButtonImages(const std::string& up, const std::string& down) {
+    this->scrollBar->SetButtonImages(up, down);
+  }
+
+  // INLINED
+  void SetScrollBarThumbImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+    this->scrollBar->SetThumbImages(top, middle, bottom);
+  }
+
+  // INLINED
+  void SetScrollBarThumbImage(const std::string& name) {
+    this->scrollBar->SetThumbImage(name);
+  }
+
+  // INLINED
+  void SetScrollBarBackground(const std::string& name) {
+    this->scrollBar->SetBackground(name);
+  }
+
   CResPtr<CBitmapRes>& NormalImage() {
     return this->normalImage;
   }
@@ -463,6 +483,26 @@ public:
       (*it)->index = -1;
       (*it)->Show(0);
     }
+  }
+
+  // INLINED
+  void SetScrollBarButtonImages(const std::string& up, const std::string& down) {
+    this->scrollBar->SetButtonImages(up, down);
+  }
+
+  // INLINED
+  void SetScrollBarThumbImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+    this->scrollBar->SetThumbImages(top, middle, bottom);
+  }
+
+  // INLINED
+  void SetScrollBarThumbImage(const std::string& name) {
+    this->scrollBar->SetThumbImage(name);
+  }
+
+  // INLINED
+  void SetScrollBarBackground(const std::string& name) {
+    this->scrollBar->SetBackground(name);
   }
 
   CResPtr<CBitmapRes>& NormalImage() {
