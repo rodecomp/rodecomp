@@ -180,9 +180,9 @@ const char* GetLicenceText() {
       text.assign(static_cast<const char*>(file.GetData()), file.GetSize());
       file.Close();
     } else {
-      const char source[] = {'\x25', '\x64', '\x85', '\x80', '\xD2', '\x91', '\xEC', '\x9D', '\x1F', '\x6E', '\xDD', '\xB1', '\xA7', '\xBB', '\xC4', '\xD1', '\x0E',
-                                     '\x25', '\x85', '\xED', '\xEB', '\xB4', '\xCE', '\xD8', '\x05', '\x68', '\xC0', '\xEB', '\xF3', '\xA5', '\xD9', '\x94', '\x6B'};
-      text = DecryptString<0xBDADDD87C5A50B6BULL>(source);
+      text = DecryptString<0xBDADDD87C5A50B6BULL>({'\x25', '\x64', '\x85', '\x80', '\xD2', '\x91', '\xEC', '\x9D', '\x1F', '\x6E', '\xDD', '\xB1', '\xA7', '\xBB',
+                                                   '\xC4', '\xD1', '\x0E', '\x25', '\x85', '\xED', '\xEB', '\xB4', '\xCE', '\xD8', '\x05', '\x68', '\xC0', '\xEB',
+                                                   '\xF3', '\xA5', '\xD9', '\x94', '\x6B'});
     }
   }
 
@@ -332,10 +332,9 @@ void LoadLoadingScreens(int count) {
   }
 
   for (int index = 0; index < count; ++index) {
-    const std::uint8_t source[] = {0x7D, 0x32, 0xFB, 0x1D, 0xCD, 0x4D, 0x4C, 0xB4, 0x7B, 0x79, 0xFB, 0x2B, 0xB0, 0x39, 0xD5, 0x15,
-                                   0xD2, 0xFC, 0x5F, 0x8E, 0x63, 0xE4, 0xAC, 0x49, 0x8F, 0xF9, 0x15, 0x8D, 0x7D, 0xE4, 0x89};
     char name[256];
-    std::sprintf(name, DecryptText<0x7989830DE73B9DBDULL>(source), index);
+    std::sprintf(name, DecryptString<0x7989830DE73B9DBDULL>({'\x7D', '\x32', '\xFB', '\x1D', '\xCD', '\x4D', '\x4C', '\xB4', '\x7B', '\x79', '\xFB', '\x2B', '\xB0', '\x39', '\xD5', '\x15',
+                                                                            '\xD2', '\xFC', '\x5F', '\x8E', '\x63', '\xE4', '\xAC', '\x49', '\x8F', '\xF9', '\x15', '\x8D', '\x7D', '\xE4', '\x89'}), index);
     if (ResourceMgr::Instance().Exists(name)) {
       g_loadingScreens.push_back(std::string(name));
     }
