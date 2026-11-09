@@ -491,8 +491,8 @@ UIFriendOptionWnd::~UIFriendOptionWnd() = default;
 // FUNCTION: fn_07681
 void UIFriendOptionWnd::OnCreate(int, int) {
 
-  const char* label = LookupMessage(MSI_AUTOOPEN_1ON1_WINDOW);
-  int width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  int width = this->TextWidth(LookupMessage(MSI_AUTOOPEN_1ON1_WINDOW), 0, 0, 12, 0, 0) + 12;
+  width = std::min(width, this->geometry.width - 15);
   this->option0Box = new UICheckBox();
   this->option0Box->SetSize(width, 12);
   this->option0Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_AUTOOPEN_1ON1_WINDOW));
@@ -500,8 +500,8 @@ void UIFriendOptionWnd::OnCreate(int, int) {
   this->option0Box->SetChecked(g_session.m_autoOpenWhisperWindow);
   this->AddChild(this->option0Box);
 
-  label = LookupMessage(MSI_AUTOOPENWHISPERLISTWND_FRIEND);
-  width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  width = this->TextWidth(LookupMessage(MSI_AUTOOPENWHISPERLISTWND_FRIEND), 0, 0, 12, 0, 0) + 12;
+  width = std::min(width, this->geometry.width - 15);
   this->option2Box = new UICheckBox();
   this->option2Box->SetSize(width, 12);
   this->option2Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_AUTOOPENWHISPERLISTWND_FRIEND));
@@ -509,8 +509,8 @@ void UIFriendOptionWnd::OnCreate(int, int) {
   this->option2Box->SetChecked(g_session.m_autoOpenFriendWhisperWindow);
   this->AddChild(this->option2Box);
 
-  label = LookupMessage(MSI_WHISPER_OPEN_SOUND);
-  width = std::min(this->TextWidth(label, 0, 0, 12, 0, 0) + 12, this->geometry.width - 15);
+  width = this->TextWidth(LookupMessage(MSI_WHISPER_OPEN_SOUND), 0, 0, 12, 0, 0) + 12;
+  width = std::min(width, this->geometry.width - 15);
   this->option1Box = new UICheckBox();
   this->option1Box->SetSize(width, 12);
   this->option1Box->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_WHISPER_OPEN_SOUND));
