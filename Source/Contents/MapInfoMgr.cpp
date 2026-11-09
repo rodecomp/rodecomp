@@ -315,7 +315,8 @@ int CMapInfoMgr::L_AddMapSignName(lua_State* state) {
         const std::string subName = lua_tostring(state, -1);
         lua_pushboolean(state, 1);
         lua_pushstring(state, "good");
-        g_mapInfoMgr->AddMapSignName(map, name, subName);
+        CMapInfoMgr* const manager = g_mapInfoMgr;
+        manager->AddMapSignName(map, name, subName);
       }
     }
   }
