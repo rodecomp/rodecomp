@@ -55,9 +55,9 @@ void UIMiniPartyWnd::OnCreate(int, int) {
   UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd();
   this->m_infoWnd = info;
   info->m_owner = this;
-  info->SetSize(174, 52);
-  info->Move(0, 0);
-  this->AddChild(info);
+  this->m_infoWnd->SetSize(174, 52);
+  this->m_infoWnd->Move(0, 0);
+  this->AddChild(this->m_infoWnd);
   this->m_widths.resize(3);
   this->m_widths[0] = 174;
   this->m_widths[1] = 101;
