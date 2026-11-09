@@ -2109,8 +2109,7 @@ void UIMessageBoxAutoreturn::OnProcess() {
 // OFFSET: 0x008AA9D0
 // FUNCTION: fn_11723
 void UIItemWnd::DrawNewItemMark(int x, int y) {
-  auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\new_item.bmp")));
-  this->DrawBitmap(x, y, mark, false);
+  this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\new_item.bmp"))), false);
 }
 
 // OFFSET: 0x008AAA10
