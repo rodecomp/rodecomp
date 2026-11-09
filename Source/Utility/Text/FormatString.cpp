@@ -51,13 +51,14 @@ namespace {
   char* ThreadSafeBuffer::GetBuffer() {
     NSyncObject lock(&this->m_criticalSection);
     const int thread = reinterpret_cast<int>(GetCurrentThread());
+    std::map<int, std::array<char, 2048>>& buffers = this->m_buffers;
 
-    if (this->m_buffers.find(thread) == this->m_buffers.end()) {
+    if (buffers.find(thread) == buffers.end()) {
       std::array<char, 2048> buffer{};
-      this->m_buffers[thread] = buffer;
+      buffers[thread] = buffer;
     }
 
-    return this->m_buffers[thread].data();
+    return buffers[thread].data();
   }
 }
 
