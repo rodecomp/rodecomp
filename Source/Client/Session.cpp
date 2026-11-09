@@ -2785,18 +2785,15 @@ void CSession::Init() {
   const char* fileName = std::strrchr(modulePath, '\\');
   std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName + 1));
 
-  const std::uint8_t keySource[] = {
-    0xC4, 0x9E, 0x87, 0xA9, 0xA6, 0xF2, 0x9B, 0x4A, 0xCB, 0xB6, 0x93, 0xBC, 0xA7, 0xFA, 0x9D, 0x56,
-    0xCB, 0xA3, 0x80, 0xBA, 0xBF, 0xF2, 0x9B, 0x40, 0xFC, 0xBE, 0x8F, 0xB1, 0xB8, 0xFD, 0x8C, 0x2F
-  };
+  const std::array<char, 32> keySource = {'\xC4', '\x9E', '\x87', '\xA9', '\xA6', '\xF2', '\x9B', '\x4A', '\xCB', '\xB6', '\x93', '\xBC', '\xA7', '\xFA', '\x9D', '\x56', '\xCB', '\xA3', '\x80', '\xBA', '\xBF', '\xF2', '\x9B', '\x40', '\xFC', '\xBE', '\x8F', '\xB1', '\xB8', '\xFD', '\x8C', '\x2F'};
   thread_local EncryptedName<sizeof(keySource), 0x2FE993D1DDE1F197ULL> keyName(keySource);
   HKEY key;
   if (RegCreateKeyExA(HKEY_CURRENT_USER, keyName.Text(), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
-    const std::uint8_t pathSource[] = {0xAF, 0xB6, 0x2A, 0xF9, 0xD4, 0xFB, 0xFF, 0xE7};
+    const std::array<char, 8> pathSource = {'\xAF', '\xB6', '\x2A', '\xF9', '\xD4', '\xFB', '\xFF', '\xE7'};
     thread_local EncryptedName<sizeof(pathSource), 0xE7978FB5A94DD7FDULL> pathName(pathSource);
     std::string valueName = pathName.Text();
     if (g_serviceMode == 1) {
-      const std::uint8_t sakraySource[] = {0x38, 0xD8, 0xAC, 0x7D, 0x06, 0xF6, 0xAD, 0xD6, 0x1F, 0xD1, 0xC7};
+      const std::array<char, 11> sakraySource = {'\x38', '\xD8', '\xAC', '\x7D', '\x06', '\xF6', '\xAD', '\xD6', '\x1F', '\xD1', '\xC7'};
       thread_local EncryptedName<sizeof(sakraySource), 0xB7FD8F670FC7B96BULL> sakrayName(sakraySource);
       std::string sakrayValueName = sakrayName.Text();
     }
