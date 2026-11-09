@@ -2111,7 +2111,7 @@ int UIMenuWnd::ItemAt(int x, int y) {
   }
 
   int row = y / (this->m_itemHeight / 2);
-  const unsigned index = row < 0 ? 0 : row;
+  const unsigned index = row >= 0 ? row : 0;
   const unsigned last = static_cast<unsigned>(this->m_items.size()) - 1;
   return index <= last ? index : last;
 }
@@ -4479,11 +4479,11 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
 // FUNCTION: fn_12417
 void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines) {
   y -= (static_cast<int>(lines.end() - lines.begin()) - 1) * (lineHeight / 2);
-  for (auto line = lines.begin(); line != lines.end(); ++line) {
+  for (const auto& line : lines) {
     int left = x;
-    for (auto it = line->begin(); it != line->end(); ++it) {
-      this->DrawShadowedText(left, y, it->second.c_str(), it->second.size(), it->first, 0xE0E0E0, family, 12, 0);
-      left += this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
+    for (const auto& segment : line) {
+      this->DrawShadowedText(left, y, segment.second.c_str(), segment.second.size(), segment.first, 0xE0E0E0, family, 12, 0);
+      left += this->TextWidth(segment.second.c_str(), segment.second.size(), 0, 12, 0, 0);
     }
     y += lineHeight;
   }
@@ -5711,38 +5711,38 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
 
   this->m_limit = 20;
   this->m_type = 0;
-  this->m_typeLabels.insert(this->m_typeLabels.end(), std::string(LookupMessage(MSI_CHAT_ROOM)));
+  this->m_typeLabels.push_back(std::string(LookupMessage(MSI_CHAT_ROOM)));
   {
     const std::uint32_t value = 0;
     this->m_types.push_back(value);
   }
 
-  this->m_limitLabels.insert(this->m_limitLabels.end(), std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)).insert(0, "2 ", 2));
+  this->m_limitLabels.push_back("2 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 2;
     this->m_limits.push_back(value);
   }
-  this->m_limitLabels.insert(this->m_limitLabels.end(), "3 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
+  this->m_limitLabels.push_back("3 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 3;
     this->m_limits.push_back(value);
   }
-  this->m_limitLabels.insert(this->m_limitLabels.end(), "5 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
+  this->m_limitLabels.push_back("5 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 5;
     this->m_limits.push_back(value);
   }
-  this->m_limitLabels.insert(this->m_limitLabels.end(), "10 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
+  this->m_limitLabels.push_back("10 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 10;
     this->m_limits.push_back(value);
   }
-  this->m_limitLabels.insert(this->m_limitLabels.end(), "15 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
+  this->m_limitLabels.push_back("15 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 15;
     this->m_limits.push_back(value);
   }
-  this->m_limitLabels.insert(this->m_limitLabels.end(), "20 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
+  this->m_limitLabels.push_back("20 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
   {
     const std::uint32_t value = 20;
     this->m_limits.push_back(value);
@@ -6030,11 +6030,7 @@ void UIItemIdentifyWnd::UpdateScroll() {
 
   auto* bar = static_cast<UIScrollBar*>(this->m_scrollBar);
 
-  const int count = static_cast<int>(this->m_items.size());
-  int total = count / this->m_columns;
-  if (count % this->m_columns != 0) {
-    ++total;
-  }
+  const int total = this->m_items.size() / this->m_columns + (this->m_items.size() % this->m_columns != 0);
 
   int maximum = total - this->m_rows;
   if (maximum < 0) {
@@ -8356,7 +8352,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       packet.packetType = ID_CZ_REQ_WEAR_EQUIP_V5;
       packet.index = static_cast<std::uint16_t>(this->m_index);
       packet.location = this->m_location;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       g_windowMgr.CloseWindow(WID_YOURITEMWND);
       break;
     }
@@ -10805,7 +10801,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         this->DisableButtons();
         break;
       }
@@ -10835,7 +10831,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.packetType = ID_CH_SECOND_PASSWD_ACK;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         this->DisableButtons();
           break;
         }
@@ -10907,7 +10903,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             packet.accountId = g_session.m_passwordWndAccountId;
             std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
             std::memcpy(packet.newPassword, this->confirmPassword, sizeof(packet.newPassword));
-            GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
             this->DisableButtons();
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11213,7 +11209,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         this->DisableButtons();
         break;
       }
@@ -11243,7 +11239,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.packetType = ID_CH_DELETE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         this->DisableButtons();
           break;
         }
@@ -11292,38 +11288,38 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
 
       case 3:
-        if (std::strlen(this->confirmPassword) != static_cast<std::size_t>(this->passwordLength)) {
-          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
-          this->passwordStage = 3;
-          this->activeInputY = this->confirmPasswordY;
+        if (std::strlen(this->confirmPassword) == static_cast<std::size_t>(this->passwordLength)) {
+          if (std::strcmp(this->newPassword, this->confirmPassword) == 0) {
+            std::atoi(this->currentPassword);
+            std::atoi(this->confirmPassword);
+            SecondPasswordPacket packet;
+            packet.packetType = ID_CH_MAKE_SECOND_PASSWD;
+            packet.accountId = g_session.m_passwordWndAccountId;
+            std::memcpy(packet.password, this->confirmPassword, sizeof(packet.password));
+            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+            this->DisableButtons();
+            break;
+          }
+          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
+          this->passwordStage = 2;
+          this->activeInputY = this->newPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
+          std::memset(this->newPassword, 0, sizeof(this->newPassword));
           std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+          this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+          this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
+          this->actionButtons[0]->Enable(0);
+          this->actionButtons[3]->Enable(1);
           break;
         }
-        if (std::strcmp(this->newPassword, this->confirmPassword) == 0) {
-          std::atoi(this->currentPassword);
-          std::atoi(this->confirmPassword);
-          SecondPasswordPacket packet;
-          packet.packetType = ID_CH_MAKE_SECOND_PASSWD;
-          packet.accountId = g_session.m_passwordWndAccountId;
-          std::memcpy(packet.password, this->confirmPassword, sizeof(packet.password));
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-          this->DisableButtons();
-          break;
-        }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
-        this->passwordStage = 2;
-        this->activeInputY = this->newPasswordY;
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        this->passwordStage = 3;
+        this->activeInputY = this->confirmPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-        this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
-        this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
-        this->actionButtons[0]->Enable(0);
-        this->actionButtons[3]->Enable(1);
+        this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
         break;
       }
       break;
