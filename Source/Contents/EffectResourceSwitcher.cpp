@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // GLOBAL: gl_24485
 template <>
 CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
