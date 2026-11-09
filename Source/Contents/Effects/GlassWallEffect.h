@@ -17,7 +17,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  void AddPanel(float angle, float scale, float x, float y, float z);
+  void AddPanel(float angle, float scale, vector3d offset);
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ CEffect* effect;

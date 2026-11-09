@@ -17,7 +17,7 @@ CGlassWall::~CGlassWall() {
 
 // OFFSET: 0x00B44860
 // FUNCTION: fn_18890
-void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
+void CGlassWall::AddPanel(float angle, float scale, vector3d offset) {
   const int startFrame = this->effectLifetime - 6;
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
   float* params = &particle->animationParameter;
@@ -25,9 +25,9 @@ void CGlassWall::AddPanel(float angle, float scale, float x, float y, float z) {
   particle->speedParameter = 0.25f;
   particle->alpha = 0;
   *reinterpret_cast<float*>(&particle->angleBits) = angle;
-  particle->offsetX = x;
-  particle->offsetY = y;
-  particle->offsetZ = z;
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
   params[0] = 40.0f;
   params[1] = 30.0f;
   params[2] = static_cast<float>(startFrame);
@@ -62,10 +62,10 @@ void CGlassWall::Open() {
   const float depth = 2.6f;
   const float scale = 3.0f;
 
-  this->AddPanel(static_cast<float>(angle + 90), scale, 0.0f, 0.0f, depth);
-  this->AddPanel(static_cast<float>(angle + 90), scale, 0.0f, 0.0f, -depth);
-  this->AddPanel(static_cast<float>(angle), depth, scale, 0.0f, 0.0f);
-  this->AddPanel(static_cast<float>(angle), depth, -scale, 0.0f, 0.0f);
+  this->AddPanel(static_cast<float>(angle + 90), scale, vector3d{0.0f, 0.0f, depth});
+  this->AddPanel(static_cast<float>(angle + 90), scale, vector3d{0.0f, 0.0f, -depth});
+  this->AddPanel(static_cast<float>(angle), depth, vector3d{scale, 0.0f, 0.0f});
+  this->AddPanel(static_cast<float>(angle), depth, vector3d{-scale, 0.0f, 0.0f});
 
   this->effect = new CEZ2STRScreenEffect();
   this->effect->SetActor(this->actor);
