@@ -525,8 +525,7 @@ std::string CNavigationManager::DestinationText() {
 
   if (!this->nodes.empty() && this->selectedNode >= 0) {
     if (this->nodes.size() <= static_cast<unsigned>(this->selectedNode)) {
-      this->destinationText.assign(buffer, std::strlen(buffer));
-      return this->destinationText;
+      return std::string(buffer);
     }
 
     CNavi_Object* node = this->nodes[this->selectedNode];
