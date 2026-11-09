@@ -926,12 +926,16 @@ void CGameActor::ApplySavedShapeShift() {
   this->render.specialMotionLocked = 0;
 
   int value;
-  if (pending == 1) {
+  switch (pending) {
+  case 1:
     value = 0x1104;
-  } else if (pending == 2) {
+    break;
+  case 2:
     value = 0x1105;
-  } else {
+    break;
+  default:
     value = this->job;
+    break;
   }
   this->SetSprJob(value);
   this->SetBodyPaletteName();
@@ -1101,6 +1105,20 @@ void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c,
 }
 
 namespace {
+// INLINED
+int TransformSlot(int efst) {
+  switch (efst) {
+  case EFST_MONSTER_TRANSFORM:
+    return 0;
+  case EFST_KYOUGAKU:
+    return 1;
+  case EFST_ACTIVE_MONSTER_TRANSFORM:
+    return 2;
+  default:
+    return 0;
+  }
+}
+
 struct PcStandEntry {
   /* 0000 */ std::uint32_t aid;
   /* 0004 */ int job;
