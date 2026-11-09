@@ -104,17 +104,13 @@ void UIIngredientInfoWnd::OnMouseHover(int x, int y) {
 // OFFSET: 0x00600770
 // FUNCTION: fn_04161
 void UILapineBoxWnd::OnLBtnDblClk(int x, int y) {
-  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
-  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  this->ReadMaterial(&item, x, y);
+  const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (item.identity[1] != 0) {
     if (this->ingredientList->AddIngredient(item.identity[1]) == 1) {
       this->SendMsg(this, UM_DECITEM, item.identity[1], 0, 0, 0);
     }
   }
-
-  item.~ITEM_INFO();
 }
 
 // OFFSET: 0x00600870
@@ -124,15 +120,11 @@ void UILapineBoxWnd::OnLBtnDown(int x, int y) {
     UIFrameWnd::OnLBtnDown(x, y);
   }
 
-  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
-  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  this->ReadMaterial(&item, x, y);
+  const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (item.identity[1] != 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 0x1A, item, item.quantity, -1);
   }
-
-  item.~ITEM_INFO();
 }
 
 // OFFSET: 0x006009F0
@@ -140,9 +132,7 @@ void UILapineBoxWnd::OnLBtnDown(int x, int y) {
 void UILapineBoxWnd::OnMouseHover(int x, int y) {
   this->OnMouseMove(x, y);
 
-  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
-  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  this->ReadMaterial(&item, x, y);
+  const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (item.identity[1] != 0) {
     int tipX = 0;
@@ -161,8 +151,6 @@ void UILapineBoxWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tipX, tipY);
     g_modeMgr.gameMode->ShowTooltip(item.displayName.c_str(), tipX, tipY, -1, 0, 1);
   }
-
-  item.~ITEM_INFO();
 }
 
 // OFFSET: 0x00600B60
@@ -223,17 +211,16 @@ __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) 
 
 // OFFSET: 0x00602410
 // FUNCTION: fn_04180
-__declspec(noinline) void UILapineBoxWnd::ReadMaterial(ITEM_INFO* out, int x, int y) {
+__declspec(noinline) ITEM_INFO UILapineBoxWnd::ReadMaterial(int x, int y) {
   const unsigned int count = this->items.size();
   for (unsigned int index = 0; index < count; ++index) {
     int position[2];
     this->MaterialPosition(position, index);
     if (x >= position[0] && x <= position[0] + 0x18 && y >= position[1] && y <= position[1] + 0x18) {
-      new (out) ITEM_INFO(this->items[index]);
-      return;
+      return this->items[index];
     }
   }
-  new (out) ITEM_INFO(0);
+  return ITEM_INFO(0);
 }
 
 // OFFSET: 0x00602620
@@ -304,16 +291,12 @@ void UILapineBoxWnd::SetWaiting(unsigned char waiting) {
 // OFFSET: 0x00600C40
 // FUNCTION: fn_04169
 void UILapineBoxWnd::OnRBtnDown(int x, int y) {
-  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
-  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  this->ReadMaterial(&item, x, y);
+  const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (static_cast<unsigned>(item.identity[1]) > 0) {
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
-
-  item.~ITEM_INFO();
 }
 
 // OFFSET: 0x00600D00

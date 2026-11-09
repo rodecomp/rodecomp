@@ -99,7 +99,7 @@ public:
   void OnRBtnDown(int x, int y) override;
   void SetIngredient(int id);
   void AddMaterial(int id, int quantity);
-  __declspec(noinline) void ReadMaterial(ITEM_INFO* out, int x, int y);
+  __declspec(noinline) ITEM_INFO ReadMaterial(int x, int y);
   __declspec(noinline) void MaterialPosition(int* out, int index);
   void SetWaiting(unsigned char waiting);
   // INLINED
