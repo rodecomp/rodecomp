@@ -690,24 +690,22 @@ void CHalluPC::SendMsg(
 void CHalluPlant::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  if (message == 0 && a == 0) {
+  if ((message | a) != 0) {
+    if (message == 1 && a == 0) {
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      return;
+    }
+
+    if (message == 3 && a == 0) {
+      this->render.isMotionFreezed = 1;
+      return;
+    }
+
+    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  } else {
     this->SetColor(180, b, d, f);
-    return;
   }
-
-  if (message == 1 && a == 0) {
-    this->render.color &= (b << 24) + 0xFFFFFF;
-    return;
-  }
-
-  if (message == 3 && a == 0) {
-    this->render.isMotionFreezed = 1;
-    return;
-  }
-
-  CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
-
 struct NpcAppearInfo {
   /* 0000 */ int aid;
   /* 0004 */ int job;
