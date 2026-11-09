@@ -499,21 +499,9 @@ UICostumeChangeWnd::UICostumeChangeWnd() : UIStylingshopTabParentWnd() {
 
 // OFFSET: 0x00822F20
 // FUNCTION: fn_10289
-UIDisplayCharacter::UIDisplayCharacter() : UIWindow(0) {
-  this->slotNumber = 0;
-  this->direction = 0;
-  this->robe = 0;
-  this->head = 0;
-  this->job = 0;
-  this->headPalette = 0;
-  this->bodyStyle = 0;
-  this->topAccessory = 0;
-  this->middleAccessory = 0;
-  this->bottomAccessory = 0;
-  *reinterpret_cast<unsigned char*>(&this->hideFavoriteButton) = 0;
-  this->topAccessoryItemId = 0;
-  this->middleAccessoryItemId = 0;
-  this->bottomAccessoryItemId = 0;
+UIDisplayCharacter::UIDisplayCharacter()
+    : UIWindow(0), slotNumber(0), direction(0), robe(0), head(0), job(0), headPalette(0), bodyStyle(0), topAccessory(0), middleAccessory(0),
+      bottomAccessory(0), hideFavoriteButton(false), topAccessoryItemId(0), middleAccessoryItemId(0), bottomAccessoryItemId(0) {
   this->shadowX = 0;
   this->shadowY = 0;
   this->shadowBitmapName = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
@@ -1300,7 +1288,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   }
 
   if (!enabled) {
-    this->DrawAuxiliary(1, this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, bitmap ? &bitmap->image : nullptr, true, false);
+    this->DrawAuxiliary(1, this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, reinterpret_cast<BitmapImage*>(bitmap), true, false);
     return;
   }
 
@@ -1354,16 +1342,12 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       }
 
       memset(table, 0, sizeof(table));
-      switch (button->m_slot) {
-      case 0:
+      if (button->m_slot == 0) {
         strcpy_s(table, sizeof(table), "TopAccessory");
-        break;
-      case 1:
+      } else if (button->m_slot == 1) {
         strcpy_s(table, sizeof(table), "MidAccessory");
-        break;
-      case 2:
+      } else if (button->m_slot == 2) {
         strcpy_s(table, sizeof(table), "BottomAccessory");
-        break;
       }
 
       bool apply = true;
@@ -1381,16 +1365,12 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     if (sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       memset(table, 0, sizeof(table));
-      switch (button->m_slot) {
-      case 0:
+      if (button->m_slot == 0) {
         strcpy_s(table, sizeof(table), "TopAccessory");
-        break;
-      case 1:
+      } else if (button->m_slot == 1) {
         strcpy_s(table, sizeof(table), "MidAccessory");
-        break;
-      case 2:
+      } else if (button->m_slot == 2) {
         strcpy_s(table, sizeof(table), "BottomAccessory");
-        break;
       }
 
       ITEM_DESC desc = FindItemDescription(button->m_itemId);
@@ -1543,11 +1523,7 @@ void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char*
 // OFFSET: 0x00829220
 // FUNCTION: fn_10339
 void UISlotOfMyStyleWnd::OnCreate(int, int) {
-  UIDisplayCharacter* display = new (std::nothrow) UIDisplayCharacter();
-  if (display) {
-    *reinterpret_cast<unsigned char*>(&display->hideFavoriteButton) = 1;
-  }
-  this->m_display = display;
+  this->m_display = new (std::nothrow) UIDisplayCharacter(true);
 
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
   this->m_display->SetSize(this->geometry.width - line->image.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.73f)));
