@@ -423,17 +423,20 @@ std::string UINewSkillListWnd::ValueText(int id) {
 // OFFSET: 0x009B0460
 // FUNCTION: fn_13806
 CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
-  CSkillInfo result(0);
   int sequentialIndex = 0;
-  for (const CSkillInfo& skill : this->SkillList(this->m_tab, live)) {
-    int key = skill.treePosition;
+  CSkillInfo result(0);
+  std::list<CSkillInfo>& list = this->SkillList(this->m_tab, live);
+  std::list<CSkillInfo>::iterator it = list.begin();
+  while (it != list.end()) {
+    int key = it->treePosition;
     if (g_session.m_simplifiedSkillList != 0) {
       key = sequentialIndex;
     }
     if (key == index) {
-      result = skill;
+      result = *it;
       break;
     }
+    ++it;
     if (g_session.m_simplifiedSkillList != 0) {
       ++sequentialIndex;
     }
@@ -930,7 +933,12 @@ void UINewSkillListWnd::Paint() {
   const int points = this->m_skillPoints;
   char text[80];
   std::memset(text, 0, sizeof(text));
-  if (g_session.m_simplifiedSkillList == 0) {
+  if (g_session.m_simplifiedSkillList != 0) {
+    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), points);
+    this->TextWidth(text, 0, 0, 12, 0, 0);
+    this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
+    this->DrawSkillList();
+  } else {
     const int total = g_session.m_skillPoint;
     if (points < total) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE), points, total - points,
@@ -941,11 +949,6 @@ void UINewSkillListWnd::Paint() {
     this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
     this->DrawSkillTree();
     this->DrawCharacter();
-  } else {
-    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), points);
-    this->TextWidth(text, 0, 0, 12, 0, 0);
-    this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
-    this->DrawSkillList();
   }
 
   this->m_needsRedraw = 0;
@@ -1143,26 +1146,28 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
     const int key = static_cast<int>(skill.treePosition);
     if (key != -1 && this->m_firstRow * this->m_columns <= key && key == this->m_selectedSkill) {
       this->m_values.push_back({static_cast<int>(skill.id), 0});
-      for (SkillInfoEntry& entry : skill.entries) {
-        NewSkillListValue required{static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)};
-        const int tab = SkillTabOf(required.id);
-        UITabControl* tabs = this->m_tabs;
-        if (tab != this->m_tab && tab < static_cast<int>(tabs->labels.size())) {
-          tabs->colors[tab] = 0xE1E7FC;
-          tabs->Invalidate();
+      for (std::size_t i = 0; i < skill.entries.size(); ++i) {
+        const int id = static_cast<int>(skill.entries[i].skillId);
+        const int tab = SkillTabOf(id);
+        if (tab != this->m_tab) {
+          UITabControl* tabs = this->m_tabs;
+          if (tab < static_cast<int>(tabs->labels.size())) {
+            tabs->colors[tab] = 0xE1E7FC;
+            tabs->Invalidate();
+          }
         }
 
+        int level = static_cast<int>(skill.entries[i].requiredLevel);
         for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
-          if (it->id == required.id) {
-            if (required.value < it->value) {
-              required.value = it->value;
-            }
+          if (it->id == id) {
+            level = (std::max)(level, it->value);
             this->m_values.erase(it);
             break;
           }
         }
-        entry.requiredLevel = required.value;
-        this->m_values.push_back(required);
+        skill.entries[i].requiredLevel = level;
+        const SkillInfoEntry& entry = skill.entries[i];
+        this->m_values.push_back({static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)});
       }
       return;
     }
@@ -1172,13 +1177,12 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
 // OFFSET: 0x009B3040
 // FUNCTION: fn_13823
 void UINewSkillListWnd::UpdateScrollBar() {
-  const int initialGate = g_session.m_simplifiedSkillList;
-  if (initialGate == 0) {
-    this->m_columns = 7;
-    this->m_visibleRows = 6;
-  } else {
+  if (g_session.m_simplifiedSkillList != 0) {
     this->m_columns = 1;
     this->m_visibleRows = (this->geometry.height - this->m_bottomMargin - 30) / 32;
+  } else {
+    this->m_columns = 7;
+    this->m_visibleRows = 6;
   }
 
   if (!this->m_scrollBar) {
@@ -1187,10 +1191,12 @@ void UINewSkillListWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Move(this->geometry.width - 15, 20);
 
-  const int gate = g_session.m_simplifiedSkillList;
+  const int visibleRows = this->m_visibleRows;
   const std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
   int total = 0;
-  if (gate == 0) {
+  if (g_session.m_simplifiedSkillList != 0) {
+    total = list.size() / this->m_columns + (list.size() % this->m_columns != 0);
+  } else {
     int maxKey = 0;
     for (const CSkillInfo& skill : list) {
       const int key = static_cast<int>(skill.treePosition);
@@ -1201,21 +1207,15 @@ void UINewSkillListWnd::UpdateScrollBar() {
 
     const int count = maxKey + 1;
     total = count / this->m_columns + (count % this->m_columns != 0);
-  } else {
-    const int count = static_cast<int>(list.size());
-    total = count / this->m_columns + (count % this->m_columns != 0);
   }
 
-  int maxScroll = total - this->m_visibleRows;
+  int maxScroll = total - visibleRows;
   if (maxScroll < 0) {
     maxScroll = 0;
   }
   this->m_scrollable = maxScroll != 0;
-  if (maxScroll == 0) {
-    this->m_firstRow = 0;
-    this->m_scrollBar->SetRange(0, this->m_visibleRows, total);
-  } else {
-    this->m_scrollBar->SetRange(maxScroll, this->m_visibleRows, total);
+  if (maxScroll != 0) {
+    this->m_scrollBar->SetRange(maxScroll, visibleRows, total);
     if (this->m_firstRow < 0) {
       this->m_firstRow = 0;
     }
@@ -1223,6 +1223,9 @@ void UINewSkillListWnd::UpdateScrollBar() {
       this->m_firstRow = total - this->m_visibleRows;
     }
     this->m_scrollBar->SetPosition(this->m_firstRow);
+  } else {
+    this->m_firstRow = 0;
+    this->m_scrollBar->SetRange(0, visibleRows, total);
   }
 
   this->m_scrollBar->Invalidate();
@@ -1233,13 +1236,12 @@ void UINewSkillListWnd::UpdateScrollBar() {
 // FUNCTION: fn_13824
 void UINewSkillListWnd::LayoutButtons() {
   int inset = 0;
-  const int gate = g_session.m_simplifiedSkillList;
-  if (gate == 0) {
-    this->m_btnDetail->Move(-100, -100);
-  } else {
+  if (g_session.m_simplifiedSkillList != 0) {
     this->m_selectedSkill = -1;
     inset = 15;
-    this->m_btnDetail->Move(this->geometry.width - 15, this->geometry.height - 15);
+    this->m_btnDetail->Move(this->geometry.width - inset, this->geometry.height - inset);
+  } else {
+    this->m_btnDetail->Move(-100, -100);
   }
 
   this->m_btnMinimize->Move(this->geometry.width - 30, 5);
@@ -1264,34 +1266,31 @@ void UINewSkillListWnd::LayoutButtons() {
   }
 
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
-  if (g_session.m_simplifiedSkillList == 0) {
-    if (!this->m_locked) {
-      for (const CSkillInfo& skill : list) {
-        const unsigned int slot = skill.treePosition - this->m_columns * this->m_firstRow;
-        if (slot < 42 && skill.available != 0 && skill.treePosition != 0xFFFFFFFF && skill.level != 0 &&
-            CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
-          const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
-          const int x = static_cast<int>(slot) % this->m_columns * 68;
-          this->m_btnSkillUps[slot]->Move(x + 111, y);
-          this->m_btnSkills[slot]->Move(x + 56, y);
-        }
+  if (g_session.m_simplifiedSkillList != 0) {
+    for (int row = 0; row < 10; ++row) {
+      const int y = row * 32 + 48;
+      CSkillInfo skill = this->VisibleSkill(row);
+      if (skill.level < static_cast<int>(skill.maxLevel) && row < this->m_visibleRows &&
+          static_cast<unsigned int>(this->m_firstRow + row) < list.size() && this->m_skillPoints != 0 && skill.available != 0 &&
+          skill.upgradable != 0) {
+        this->m_btnLevelUp[row]->Move(78, y - 14);
+      }
+      if (!this->m_locked && row < this->m_visibleRows && static_cast<unsigned int>(this->m_firstRow + row) < list.size() &&
+          skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
+        this->m_btnSkills[row]->Move(112, y);
+        this->m_btnSkillUps[row]->Move(192, y);
       }
     }
-    return;
-  }
-
-  for (int row = 0; row < 10; ++row) {
-    const int y = row * 32 + 48;
-    CSkillInfo skill = this->VisibleSkill(row);
-    if (skill.level < static_cast<int>(skill.maxLevel) && row < this->m_visibleRows &&
-        static_cast<unsigned int>(this->m_firstRow + row) < list.size() && this->m_skillPoints != 0 && skill.available != 0 &&
-        skill.upgradable != 0) {
-      this->m_btnLevelUp[row]->Move(78, y - 14);
-    }
-    if (!this->m_locked && row < this->m_visibleRows && static_cast<unsigned int>(this->m_firstRow + row) < list.size() &&
-        skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
-      this->m_btnSkills[row]->Move(112, y);
-      this->m_btnSkillUps[row]->Move(192, y);
+  } else if (!this->m_locked) {
+    for (std::list<CSkillInfo>::iterator it = list.begin(); it != list.end(); ++it) {
+      const unsigned int slot = it->treePosition - this->m_columns * this->m_firstRow;
+      if (slot < 42 && it->available != 0 && it->treePosition != 0xFFFFFFFF && it->level != 0 &&
+          CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, it->id)) {
+        const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
+        const int x = static_cast<int>(slot) % this->m_columns * 68 + 56;
+        this->m_btnSkillUps[slot]->Move(x + 55, y);
+        this->m_btnSkills[slot]->Move(x, y);
+      }
     }
   }
 }
@@ -1539,14 +1538,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       int target;
       if (id == skillId) {
-        int current = 0;
-        for (const NewSkillListValue& value : this->m_plannedSkillLevels) {
-          if (value.id == id) {
-            current = value.value;
-            break;
-          }
-        }
-        target = (std::max)(static_cast<int>(info->learnedLevel), current) + 1;
+        target = (std::max)(static_cast<int>(info->learnedLevel), SkillValueOf(this->m_plannedSkillLevels, id)) + 1;
         if (static_cast<int>(info->learnedLevel) >= static_cast<int>(info->maxLevel)) {
           return false;
         }
@@ -1558,14 +1550,10 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
         continue;
       }
 
-      int current = 0;
-      for (const NewSkillListValue& value : this->m_plannedSkillLevels) {
-        if (value.id == id) {
-          current = value.value;
-          break;
-        }
-      }
-      current = (std::max)(static_cast<int>(info->learnedLevel), current);
+      const auto planned = std::find_if(this->m_plannedSkillLevels.begin(), this->m_plannedSkillLevels.end(), [id](const NewSkillListValue& value) {
+        return value.id == id;
+      });
+      const int current = (std::max)(static_cast<int>(info->learnedLevel), planned != this->m_plannedSkillLevels.end() ? planned->value : 0);
       if (current >= target) {
         continue;
       }
@@ -1576,7 +1564,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
         return false;
       }
 
-      const int added = (std::min)(target - current, this->m_skillPoints);
+      const int added = (std::min)(this->m_skillPoints, target - current);
       this->m_skillPoints -= added;
       const int level = current + added;
 
