@@ -94,7 +94,7 @@ public:
   /* 0078 */ int robe;
 
   __declspec(noinline) CNavi_Object();
-  CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info);
+  __declspec(noinline) CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info);
   virtual ~CNavi_Object();
   virtual int GetId() const;
   virtual int GetType() const;
@@ -263,7 +263,7 @@ public:
   void Clear();
   void ClearAll();
   __declspec(noinline) bool AddDestination(CNaviInfo* info);
-  bool AddObject(CNavi_Link* link);
+  __declspec(noinline) bool AddObject(CNavi_Link* link);
   CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   __declspec(noinline) void ResetLinkDepths();
