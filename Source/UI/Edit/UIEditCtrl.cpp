@@ -10198,7 +10198,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
     return;
   }
 
-  char* text = static_cast<char*>(std::malloc(static_cast<std::size_t>(length)));
+  char* text = new char[length];
   strcpy_s(text, length, link.c_str());
 
   std::string value;
@@ -10267,7 +10267,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
     }
   }
 
-  std::free(text);
+  delete[] text;
 }
 
 // OFFSET: 0x00859220
