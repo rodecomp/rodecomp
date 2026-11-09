@@ -40,6 +40,62 @@ struct ShadeVector {
 
 static_assert(sizeof(ShadeVector) == 12);
 
+struct ModelFaceRecordV1 {
+  // INLINED
+  void CopyTo(ModelFace& face) const {
+    for (int index = 0; index < 3; ++index) {
+      face.vertices[index] = this->vertices[index];
+    }
+
+    for (int index = 0; index < 3; ++index) {
+      face.textureVertices[index] = this->textureVertices[index];
+    }
+
+    face.texture = this->texture;
+    face.twoSided = this->twoSided;
+  }
+
+  /* 0000 */ std::uint16_t vertices[3];
+  /* 0006 */ std::uint16_t textureVertices[3];
+  /* 000C */ std::uint16_t texture;
+  /* 000E */ std::uint16_t padding;
+  /* 0010 */ std::uint32_t twoSided;
+};
+
+struct ModelFaceRecord : ModelFaceRecordV1 {
+  /* 0014 */ std::uint32_t smoothGroup;
+};
+
+struct ModelVolumeRecordV1 {
+  // INLINED
+  void CopyTo(ModelVolume& volume) const {
+    for (int index = 0; index < 3; ++index) {
+      volume.position[index] = this->position[index];
+    }
+
+    for (int index = 0; index < 3; ++index) {
+      volume.rotation[index] = this->rotation[index];
+    }
+
+    for (int index = 0; index < 3; ++index) {
+      volume.size[index] = this->size[index];
+    }
+  }
+
+  /* 0000 */ float size[3];
+  /* 000C */ float position[3];
+  /* 0018 */ float rotation[3];
+};
+
+struct ModelVolumeRecord : ModelVolumeRecordV1 {
+  /* 0024 */ int flag;
+};
+
+static_assert(sizeof(ModelFaceRecordV1) == 20);
+static_assert(sizeof(ModelFaceRecord) == 24);
+static_assert(sizeof(ModelVolumeRecordV1) == 36);
+static_assert(sizeof(ModelVolumeRecord) == 40);
+
 // OFFSET: 0x00756D60
 // FUNCTION: fn_07997
 AnimatedModelRecord::~AnimatedModelRecord() {
@@ -169,17 +225,17 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   int vertexCount = 0;
   file.Read(&vertexCount, 4);
   mesh.vertexCount = vertexCount;
-  auto* vertices = new std::array<float, 3>[vertexCount]{};
+  ShadeVector* vertices = new ShadeVector[vertexCount];
   file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-  mesh.vertices = vertices;
+  mesh.vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
 
   for (int index = 0; index < vertexCount; ++index) {
-    auto& vertex = vertices[index];
-    const float y = ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + matrix[7] * vertex[2]) + matrix[10];
-    const float z = ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + matrix[8] * vertex[2]) + matrix[11];
-    vertex[0] = ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9];
-    vertex[1] = y;
-    vertex[2] = z;
+    ShadeVector& vertex = vertices[index];
+    const float y = ((vertex.x * matrix[1] + vertex.y * matrix[4]) + matrix[7] * vertex.z) + matrix[10];
+    const float z = ((vertex.x * matrix[2] + vertex.y * matrix[5]) + matrix[8] * vertex.z) + matrix[11];
+    vertex.x = ((vertex.x * matrix[0] + vertex.y * matrix[3]) + vertex.z * matrix[6]) + matrix[9];
+    vertex.y = y;
+    vertex.z = z;
   }
 
   int textureVertexCount = 0;
@@ -191,7 +247,9 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
     for (int index = 0; index < textureVertexCount; ++index) {
       float uv[2];
       file.Read(uv, sizeof(uv));
-      textureVertices[index] = {0xFFFFFFFFu, uv[0], uv[1]};
+      textureVertices[index].shaded = 0xFFFFFFFFu;
+      textureVertices[index].u = uv[0];
+      textureVertices[index].v = uv[1];
     }
   } else {
     file.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
@@ -206,12 +264,9 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   if (minor == 1) {
     for (int index = 0; index < faceCount; ++index) {
       ModelFace& face = faces[index];
-      unsigned char record[20];
-      file.Read(record, sizeof(record));
-      std::memcpy(face.vertices, record, sizeof(face.vertices));
-      std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
-      std::memcpy(&face.texture, record + 12, sizeof(face.texture));
-      std::memcpy(&face.twoSided, record + 16, sizeof(face.twoSided));
+      ModelFaceRecordV1 record;
+      file.Read(&record, sizeof(record));
+      record.CopyTo(face);
 
       if (face.smoothing.empty()) {
         face.smoothing.push_back(0);
@@ -220,17 +275,12 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   } else {
     for (int index = 0; index < faceCount; ++index) {
       ModelFace& face = faces[index];
-      unsigned char record[24];
-      file.Read(record, sizeof(record));
-      std::memcpy(face.vertices, record, sizeof(face.vertices));
-      std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
-      std::memcpy(&face.texture, record + 12, sizeof(face.texture));
-      std::memcpy(&face.twoSided, record + 16, sizeof(face.twoSided));
-      std::uint32_t group;
-      std::memcpy(&group, record + 20, sizeof(group));
+      ModelFaceRecord record;
+      file.Read(&record, sizeof(record));
+      record.CopyTo(face);
 
       if (face.smoothing.empty()) {
-        face.smoothing.push_back(group);
+        face.smoothing.push_back(record.smoothGroup);
       }
     }
   }
@@ -239,14 +289,7 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   // INLINED
   std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
   mesh.CalculateNormals();
-  int rotationCount;
-  file.Read(&rotationCount, 4);
-
-  for (int index = 0; index < rotationCount; ++index) {
-    ModelRotationKey key;
-    file.Read(&key, sizeof(key));
-    node->rotationKeys.push_back(key);
-  }
+  static_cast<ModelKeyList2&>(node->rotationKeys).Read(file);
 
   this->nodes.push_back(node);
   this->meshes[node->name] = node->mesh.get();
@@ -377,6 +420,18 @@ void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
 // OFFSET: 0x00758E40
 // FUNCTION: fn_08009
 void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const granny_model* model) {
+  auto findTexture = [this](const granny_texture* texture) -> GrannyTextureEntry* {
+    if (texture) {
+      for (int index = 0; index < this->textureCount; ++index) {
+        if (std::strcmp(this->textures[index].name, texture->fromFileName) == 0) {
+          return &this->textures[index];
+        }
+      }
+    }
+
+    return nullptr;
+  };
+
   const int boneCount = model->skeleton->boneCount;
   if (this->maxBoneCount < boneCount) {
     this->maxBoneCount = boneCount;
@@ -413,7 +468,7 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
 
       entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
       if (!entry.deformer) {
-        ShowErrorDialog(GetRenderSystemHolder()->system, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+        ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
       }
     }
 
@@ -421,18 +476,7 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
     entry.textures = new GrannyTextureEntry*[entry.materialCount];
 
     for (int material = 0; material < entry.materialCount; ++material) {
-      GrannyTextureEntry* found = nullptr;
-      const granny_texture* texture = GrannyGetMaterialTextureByType(mesh->materialBindings[material].material, 2);
-      if (texture) {
-        for (int textureIndex = 0; textureIndex < this->textureCount; ++textureIndex) {
-          if (std::strcmp(this->textures[textureIndex].name, texture->fromFileName) == 0) {
-            found = &this->textures[textureIndex];
-            break;
-          }
-        }
-      }
-
-      entry.textures[material] = found;
+      entry.textures[material] = findTexture(GrannyGetMaterialTextureByType(mesh->materialBindings[material].material, 2));
     }
   }
 }
@@ -771,10 +815,8 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
   rect[2] = (halfWidth + screenX) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
   rect[3] = (halfHeight + screenY) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
 
-  const unsigned width = g_renderer->viewport.width;
-  const unsigned screenHeight = g_renderer->viewport.height;
-  return !(static_cast<unsigned>(rect[0]) > width && static_cast<unsigned>(rect[2]) > width && static_cast<unsigned>(rect[1]) > screenHeight &&
-           static_cast<unsigned>(rect[3]) > screenHeight);
+  return !(static_cast<unsigned>(rect[0]) > g_renderer->viewport.width && static_cast<unsigned>(rect[2]) > g_renderer->viewport.width &&
+           static_cast<unsigned>(rect[1]) > g_renderer->viewport.height && static_cast<unsigned>(rect[3]) > g_renderer->viewport.height);
 }
 
 // OFFSET: 0x00757850
