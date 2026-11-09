@@ -62,7 +62,9 @@ void UIStaticText::SetTextFitted(const char* value) {
     int width = this->TextWidth(value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
     this->TextWidth("...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
 
-    if (this->geometry.width < width) {
+    if (this->geometry.width >= width) {
+      this->text = value;
+    } else {
       this->tooltipEnabled = 1;
       this->text = value;
       std::string truncated = value;
@@ -80,13 +82,11 @@ void UIStaticText::SetTextFitted(const char* value) {
         this->text = truncated + "...";
         width = this->TextWidth(this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
       }
-
-      this->Invalidate();
-      return;
     }
+  } else {
+    this->text = value;
   }
 
-  this->text = value;
   this->Invalidate();
 }
 
@@ -271,25 +271,27 @@ void UIStaticText::SetFont(int family, int height, unsigned char bold, unsigned 
 // OFFSET: 0x008685E0
 // FUNCTION: fn_10962
 void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, unsigned char bold, unsigned char shadow, int x, int y) {
+  BitmapButtonTextStyle style{state, x, y, height, bold, color, shadow};
+
   if (x == -1000) {
     const int width = this->TextWidth(this->text.c_str(), this->text.size(), 0, height, bold, 0
     );
-    x = static_cast<int>((this->geometry.width - width) * 0.5);
+    style.x = static_cast<int>((this->geometry.width - width) * 0.5);
   }
 
   if (y == -1000) {
     const int textHeight = this->TextHeight(this->text.c_str(), this->text.size(), 0, height, bold, 0
     );
-    y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
+    style.y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
   }
 
-  for (const BitmapButtonTextStyle style : this->styles) {
-    if (style.state == state) {
+  for (const BitmapButtonTextStyle existing : this->styles) {
+    if (existing.state == state) {
       return;
     }
   }
 
-  this->styles.push_back(BitmapButtonTextStyle{state, x, y, height, bold, color, shadow});
+  this->styles.push_back(style);
 }
 
 // OFFSET: 0x00868750
