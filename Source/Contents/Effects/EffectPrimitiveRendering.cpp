@@ -5288,8 +5288,12 @@ void CEffectPrim::RenderRecordQuads(matrix& wtm) {
 // OFFSET: 0x00BC97E0
 // FUNCTION: fn_19858
 void CEffectPrim::RenderRecordRings(matrix& wtm) {
+  ZeroVector3d point1;
+  ZeroVector3d point2;
+  ZeroVector3d point3;
+  ZeroVector3d point4;
   const float* tm = this->state.transform;
-  RenderTriangle* triangle = this->state.triangles;
+  int rpCnt = 0;
   const float last = 360.0f - this->state.arcAngle;
   float uInc = 0.0f;
 
@@ -5301,70 +5305,80 @@ void CEffectPrim::RenderRecordRings(matrix& wtm) {
     for (float i = 0.0f; last >= i; i += this->state.arcAngle) {
       const int angle1 = static_cast<int>(i);
       const int angle2 = static_cast<int>(this->state.arcAngle + i);
-      const float local[4][2] = {
-        {inner * g_cosTable[angle1], inner * g_sinTable[angle1]},
-        {inner * g_cosTable[angle2], inner * g_sinTable[angle2]},
-        {outer * g_cosTable[angle1], outer * g_sinTable[angle1]},
-        {outer * g_cosTable[angle2], outer * g_sinTable[angle2]},
+      const vector3d vert1 = {inner * g_cosTable[angle1], inner * g_sinTable[angle1], 0.0f};
+      const vector3d vert2 = {inner * g_cosTable[angle2], inner * g_sinTable[angle2], 0.0f};
+      const vector3d vert3 = {outer * g_cosTable[angle1], outer * g_sinTable[angle1], 0.0f};
+      const vector3d vert4 = {outer * g_cosTable[angle2], outer * g_sinTable[angle2], 0.0f};
+      point1 = {
+        tm[0] * vert1.x + tm[3] * vert1.y + tm[6] * 0.0f + tm[9] + record.position.x,
+        tm[1] * vert1.x + tm[4] * vert1.y + tm[7] * 0.0f + tm[10] + record.position.y,
+        tm[2] * vert1.x + tm[5] * vert1.y + tm[8] * 0.0f + tm[11] + record.position.z
       };
-      float world[4][3];
-      for (int corner = 0; corner < 4; ++corner) {
-        const float x = local[corner][0];
-        const float y = local[corner][1];
-        world[corner][0] = x * tm[0] + y * tm[3] + tm[6] * 0.0f + tm[9] + record.position.x;
-        world[corner][1] = x * tm[1] + y * tm[4] + tm[7] * 0.0f + tm[10] + record.position.y;
-        world[corner][2] = x * tm[2] + y * tm[5] + tm[8] * 0.0f + tm[11] + record.position.z;
-      }
+      point2 = {
+        tm[0] * vert2.x + tm[3] * vert2.y + tm[6] * 0.0f + tm[9] + record.position.x,
+        tm[1] * vert2.x + tm[4] * vert2.y + tm[7] * 0.0f + tm[10] + record.position.y,
+        tm[2] * vert2.x + tm[5] * vert2.y + tm[8] * 0.0f + tm[11] + record.position.z
+      };
+      point3 = {
+        tm[0] * vert3.x + tm[3] * vert3.y + tm[6] * 0.0f + tm[9] + record.position.x,
+        tm[1] * vert3.x + tm[4] * vert3.y + tm[7] * 0.0f + tm[10] + record.position.y,
+        tm[2] * vert3.x + tm[5] * vert3.y + tm[8] * 0.0f + tm[11] + record.position.z
+      };
+      point4 = {
+        tm[0] * vert4.x + tm[3] * vert4.y + tm[6] * 0.0f + tm[9] + record.position.x,
+        tm[1] * vert4.x + tm[4] * vert4.y + tm[7] * 0.0f + tm[10] + record.position.y,
+        tm[2] * vert4.x + tm[5] * vert4.y + tm[8] * 0.0f + tm[11] + record.position.z
+      };
 
       const float uNext = uInc + 0.25f;
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
-      g_renderer->viewport.Project(world[0], wtm.values, projected);
-      triangle->vertices[0] = projected;
-      triangle->vertices[0].diffuse = record.color;
-      triangle->vertices[0].u = uInc;
-      triangle->vertices[0].v = 1.0f;
+      g_renderer->viewport.Project(&point1.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[0] = projected;
+      this->state.triangles[rpCnt].vertices[0].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[0].u = uInc;
+      this->state.triangles[rpCnt].vertices[0].v = 1.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(world[1], wtm.values, projected);
-      triangle->vertices[1] = projected;
-      triangle->vertices[1].diffuse = record.color;
-      triangle->vertices[1].u = uNext;
-      triangle->vertices[1].v = 1.0f;
+      g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[1] = projected;
+      this->state.triangles[rpCnt].vertices[1].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[1].u = uNext;
+      this->state.triangles[rpCnt].vertices[1].v = 1.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(world[2], wtm.values, projected);
-      triangle->vertices[2] = projected;
-      triangle->vertices[2].diffuse = record.color;
-      triangle->vertices[2].u = uInc;
-      triangle->vertices[2].v = 0.0f;
-      triangle->texture = this->state.textures[0];
-      if (triangle->Visible()) {
+      g_renderer->viewport.Project(&point3.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[2] = projected;
+      this->state.triangles[rpCnt].vertices[2].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[2].u = uInc;
+      this->state.triangles[rpCnt].vertices[2].v = 0.0f;
+      this->state.triangles[rpCnt].texture = this->state.textures[0];
+      if (this->state.triangles[rpCnt].Visible()) {
         g_renderer->queues.SubmitTriangle(
-          *triangle++, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+          this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
         );
       }
 
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(world[3], wtm.values, projected);
-      triangle->vertices[0] = projected;
-      triangle->vertices[0].diffuse = record.color;
-      triangle->vertices[0].u = uNext;
-      triangle->vertices[0].v = 0.0f;
+      g_renderer->viewport.Project(&point4.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[0] = projected;
+      this->state.triangles[rpCnt].vertices[0].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[0].u = uNext;
+      this->state.triangles[rpCnt].vertices[0].v = 0.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(world[2], wtm.values, projected);
-      triangle->vertices[1] = projected;
-      triangle->vertices[1].diffuse = record.color;
-      triangle->vertices[1].u = uInc;
-      triangle->vertices[1].v = 0.0f;
+      g_renderer->viewport.Project(&point3.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[1] = projected;
+      this->state.triangles[rpCnt].vertices[1].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[1].u = uInc;
+      this->state.triangles[rpCnt].vertices[1].v = 0.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-      g_renderer->viewport.Project(world[1], wtm.values, projected);
-      triangle->vertices[2] = projected;
-      triangle->vertices[2].diffuse = record.color;
-      triangle->vertices[2].u = uNext;
-      triangle->vertices[2].v = 1.0f;
-      triangle->texture = this->state.textures[0];
-      if (triangle->Visible()) {
+      g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+      this->state.triangles[rpCnt].vertices[2] = projected;
+      this->state.triangles[rpCnt].vertices[2].diffuse = record.color;
+      this->state.triangles[rpCnt].vertices[2].u = uNext;
+      this->state.triangles[rpCnt].vertices[2].v = 1.0f;
+      this->state.triangles[rpCnt].texture = this->state.textures[0];
+      if (this->state.triangles[rpCnt].Visible()) {
         g_renderer->queues.SubmitTriangle(
-          *triangle++, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+          this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
         );
       }
 
