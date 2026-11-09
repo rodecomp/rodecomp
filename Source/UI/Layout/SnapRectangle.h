@@ -15,6 +15,9 @@ struct SnapRectangle {
   /* 0018 */ Edge top;
   /* 0024 */ Edge bottom;
 
+  SnapRectangle() {
+  }
+
   void Set(int x, int y, int width, int height);
   void ReverseEdges();
   void Snap(const SnapRectangle& other, int& dx, int& dy) const;
