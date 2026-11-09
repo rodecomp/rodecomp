@@ -2220,9 +2220,9 @@ int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterI
 // OFFSET: 0x00DFFB70
 // FUNCTION: fn_23627
 void CSession::SetHomunSkillLevel(int skillId, int level) {
-  const int index = skillId - 8000;
-  if (index > -1) {
-    this->m_homunSkillLevels[index] = level;
+  skillId -= 8000;
+  if (skillId > -1) {
+    this->m_homunSkillLevels[skillId] = level;
   }
 }
 
