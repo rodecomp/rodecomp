@@ -3,6 +3,8 @@
 
 #include <new>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // STATIC: 0x01389940
 // GLOBAL: gl_24357
 CWhisperBlockMgr* g_whisperBlockMgr;

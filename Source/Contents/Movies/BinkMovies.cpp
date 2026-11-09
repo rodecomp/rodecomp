@@ -12,6 +12,8 @@
 #include <cmath>
 #include <new>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // INLINED
 NamedBinkMovie::NamedBinkMovie() : radius(150.0f) {
 }
