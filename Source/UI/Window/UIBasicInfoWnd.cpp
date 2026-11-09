@@ -223,6 +223,11 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
+    case 373:
+      if (!g_windowMgr.CloseWindow(WID_GUILDWND)) {
+        g_windowMgr.EnsureWindow(WID_GUILDWND);
+      }
+      break;
     case ID_STATUS:
       if (!g_windowMgr.CloseWindow(WID_STATUSWND)) {
         g_windowMgr.EnsureWindow(WID_STATUSWND);
@@ -233,9 +238,24 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
       }
       break;
+    case 247:
+      if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
+        g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
+      }
+      break;
     case ID_ITEMS:
       if (!g_windowMgr.CloseWindow(WID_ITEMWND)) {
         g_windowMgr.EnsureWindow(WID_ITEMWND);
+      }
+      break;
+    case ID_QUEST:
+      if (!g_windowMgr.CloseWindow(WID_RENEWQUESTUI)) {
+        g_windowMgr.EnsureWindow(WID_RENEWQUESTUI);
+      }
+      break;
+    case ID_SKILL:
+      if (!g_windowMgr.CloseWindow(WID_SKILLLISTWND)) {
+        g_windowMgr.EnsureWindow(WID_SKILLLISTWND);
       }
       break;
     case ID_EQUIP: {
@@ -255,9 +275,9 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       equip->m_tabs->SelectTab(0);
       break;
     }
-    case ID_SKILL:
-      if (!g_windowMgr.CloseWindow(WID_SKILLLISTWND)) {
-        g_windowMgr.EnsureWindow(WID_SKILLLISTWND);
+    case ID_MAP:
+      if (!g_windowMgr.CloseWindow(WID_ROMAPWND)) {
+        g_windowMgr.EnsureWindow(WID_ROMAPWND);
       }
       break;
     case ID_FRIEND:
@@ -265,17 +285,6 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
       break;
-    case ID_MINI: {
-      const int height = this->geometry.height;
-      this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
-      g_windowMgr.StoreSnapRectangle(this);
-      g_windowMgr.Promote(this);
-      const int delta = this->geometry.height - height;
-      if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3);
-      }
-      break;
-    }
     case 214:
       if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.chatRoomWnd) {
         if (!g_windowMgr.merchantShopMakeWnd && !g_windowMgr.merchantItemMyShopWnd) {
@@ -283,11 +292,6 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         } else {
           g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
         }
-      }
-      break;
-    case ID_MAP:
-      if (!g_windowMgr.CloseWindow(WID_ROMAPWND)) {
-        g_windowMgr.EnsureWindow(WID_ROMAPWND);
       }
       break;
     case 222:
@@ -310,21 +314,17 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->SetHeight(this->collapsedHeight);
       g_windowMgr.StoreSnapRectangle(this);
       break;
-    case 247:
-      if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
-        g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
+    case ID_MINI: {
+      const int height = this->geometry.height;
+      this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
+      g_windowMgr.StoreSnapRectangle(this);
+      g_windowMgr.Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
       break;
-    case ID_QUEST:
-      if (!g_windowMgr.CloseWindow(WID_RENEWQUESTUI)) {
-        g_windowMgr.EnsureWindow(WID_RENEWQUESTUI);
-      }
-      break;
-    case 373:
-      if (!g_windowMgr.CloseWindow(WID_GUILDWND)) {
-        g_windowMgr.EnsureWindow(WID_GUILDWND);
-      }
-      break;
+    }
     case 578: {
       UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
       if (equip) {
