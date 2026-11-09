@@ -673,7 +673,7 @@ void UIChatEditCtrl::PushHistory() {
 // OFFSET: 0x0086A060
 // FUNCTION: fn_10976
 void UIWhisperEditCtrl::AddHistory() {
-  if (static_cast<int>(g_windowMgr.hoverWindow == this ? g_serverLanguage->text.size() : this->text.size()) == 0) {
+  if (static_cast<int>(g_windowMgr.GetHoverWindow() == this ? g_serverLanguage->text.size() : this->text.size()) == 0) {
     this->historyIndex = static_cast<int>(this->history.size());
     return;
   }
