@@ -871,9 +871,11 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
 // FUNCTION: fn_22282
 void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
   std::string message;
-  if (packet->result == 0) {
+  switch (packet->result) {
+  case 0:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
-  } else if (packet->result == 1) {
+    break;
+  case 1:
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].gid == packet->gid) {
         this->characters[i].deleteDate = 0;
@@ -881,10 +883,13 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
       }
     }
     this->pendingCursorType = 7;
-  } else if (packet->result == 2) {
+    break;
+  case 2:
     message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
-  } else {
+    break;
+  default:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
+    break;
   }
 
   if (!message.empty()) {
