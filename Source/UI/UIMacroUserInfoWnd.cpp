@@ -190,17 +190,20 @@ void UIMacroUserInfoWnd::OnCreate(int, int) {
 // OFFSET: 0x007F0EF0
 // FUNCTION: fn_09848
 void UIMacroReporterWnd::Paint() {
-  switch (this->m_mode) {
-  case 2:
-  case 3:
-    this->m_reportButton->SetDisabled(!(this->m_namesValid == 1 && this->m_targetValid == 1));
+  if (this->m_mode == 0 || this->m_mode == 1) {
+    if (this->m_entries.empty()) {
+      this->m_reportButton->SetDisabled(1);
+    } else {
+      this->m_reportButton->SetDisabled(0);
+    }
     this->m_reportButton->Invalidate();
-    break;
-  case 0:
-  case 1:
-    this->m_reportButton->SetDisabled(this->m_entries.empty());
+  } else if (this->m_mode == 2 || this->m_mode == 3) {
+    if (this->m_namesValid == 1 && this->m_targetValid == 1) {
+      this->m_reportButton->SetDisabled(0);
+    } else {
+      this->m_reportButton->SetDisabled(1);
+    }
     this->m_reportButton->Invalidate();
-    break;
   }
   DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
   this->DrawTitleBar(true, "", 0);
@@ -210,8 +213,10 @@ void UIMacroReporterWnd::Paint() {
     return;
   }
 
-  for (int row = 0, y = 56; row < this->m_visibleRows; ++row, y += 22) {
+  int y = 56;
+  for (int row = 0; row < this->m_visibleRows; ++row) {
     this->FillRegion(14, y, 214, 18, 0xE6E6E6);
+    y += 22;
   }
 
   for (unsigned int index = 0; index < this->m_rows.size(); ++index) {
@@ -219,7 +224,7 @@ void UIMacroReporterWnd::Paint() {
     this->m_rows[index].second->Enable(0);
   }
 
-  int y = 57;
+  y = 57;
   for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, y += 22) {
     if (index >= this->m_rows.size()) {
       return;
@@ -312,20 +317,20 @@ void UIMacroReporterWnd::UpdateScrollBar() {
 
   const int maximum = (std::max)(count - this->m_visibleRows, 0);
   this->m_scrollable = maximum > 0;
-  if (maximum < 1) {
-    this->m_firstRow = 0;
-    this->m_scrollBar->SetRange(0, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
-  } else {
+  if (maximum > 0) {
     this->m_scrollBar->SetRange(maximum, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
     if (this->m_firstRow < 0) {
       this->m_firstRow = 0;
       this->m_scrollBar->SetPosition(0);
     } else {
-      if (maximum < this->m_firstRow) {
+      if (this->m_firstRow > maximum) {
         this->m_firstRow = maximum;
       }
       this->m_scrollBar->SetPosition(this->m_firstRow);
     }
+  } else {
+    this->m_firstRow = 0;
+    this->m_scrollBar->SetRange(0, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
   }
 
   this->m_scrollBar->Invalidate();
@@ -436,7 +441,9 @@ void UIMacroReporterWnd::StoreInfo() {
     this->m_state->entries.clear();
     this->m_state->entries.resize(this->m_entries.size());
     for (unsigned int index = 0; index < this->m_entries.size(); ++index) {
-      this->m_state->entries[index] = this->m_entries[index];
+      this->m_state->entries[index].name = this->m_entries[index].name;
+      this->m_state->entries[index].id = this->m_entries[index].id;
+      this->m_state->entries[index].reportValue = this->m_entries[index].reportValue;
     }
   }
 }
@@ -607,12 +614,7 @@ int UIMacroReporterWnd::SendMsg(
     case ID_DELETE: {
       for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
         if (argument2 == it->id) {
-          for (auto next = it + 1; next != this->m_entries.end(); ++next, ++it) {
-            it->name.swap(next->name);
-            it->id = next->id;
-            it->reportValue = next->reportValue;
-          }
-          this->m_entries.pop_back();
+          this->m_entries.erase(it);
           break;
         }
       }
