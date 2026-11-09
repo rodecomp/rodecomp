@@ -1082,26 +1082,26 @@ void UIWindowMgr::SendFlagEffect(int message) {
 // FUNCTION: fn_17149
 bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
   UIWindow* window = this->HitTestWindows(x, y);
-  if (!window) {
-    return false;
+  if (window) {
+    int offsetX = 0;
+    int offsetY = 0;
+    for (UIWindow* node = window; node; node = node->parent) {
+      offsetX += node->geometry.x;
+      offsetY += node->geometry.y;
+    }
+
+    const int localX = x - offsetX;
+    const int localY = y - offsetY;
+    window->RecordDrop(localX, localY, *drag, -1);
+    drag->sourceWindow = reinterpret_cast<std::uint32_t>(window);
+    if (this->itemDropCntWnd != window->Root()) {
+      window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
+    }
+
+    return true;
   }
 
-  int offsetX = 0;
-  int offsetY = 0;
-  for (UIWindow* node = window; node; node = node->parent) {
-    offsetX += node->geometry.x;
-    offsetY += node->geometry.y;
-  }
-
-  const int localX = x - offsetX;
-  const int localY = y - offsetY;
-  window->RecordDrop(localX, localY, *drag, -1);
-  drag->sourceWindow = reinterpret_cast<std::uint32_t>(window);
-  if (this->itemDropCntWnd != window->Root()) {
-    window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
-  }
-
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00A8FD30
@@ -1134,9 +1134,9 @@ void __stdcall Nullsub369(int, int, int, int) {
 // OFFSET: 0x00A91DB0
 // FUNCTION: fn_17173
 void UIWindowMgr::RestoreHiddenWindows() {
-  for (UIWindow* window : this->rendered) {
-    if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) != this->hiddenWindows.end()) {
-      window->Show(1);
+  for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), *it) != this->hiddenWindows.end()) {
+      (*it)->Show(1);
     }
   }
 
