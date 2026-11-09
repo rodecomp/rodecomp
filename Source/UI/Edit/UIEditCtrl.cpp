@@ -8884,10 +8884,12 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   }
 
   this->itemTags->taggedText = this->text;
-  const std::string name = item.DisplayName(0);
-  const std::string tag = this->itemTags->AppendTag(name);
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(tag.c_str());
+  {
+    const std::string name = item.DisplayName(0);
+    const std::string tag = this->itemTags->AppendTag(name);
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->Insert(tag.c_str());
+  }
   this->itemTags->AddItemTag(item, 0x12B8A4);
 }
 
