@@ -146,7 +146,7 @@ protected:
   /* 00D0 */ UIStaticText* m_rowTexts[4][6];
   /* 0130 */ UIBitmapButton* m_rowButtons[6];
   /* 0148 */ UIScrollBar* m_scrollBar;
-  /* 014C */ UIButton* m_button;
+  /* 014C */ UIBitmapButton* m_button;
   /* 0150 */ std::vector<MiniPartyInfoEntry> memberMenuEntries;
   /* 015C */ int m_scrollTop;
   /* 0160 */ int m_hoverRow;
@@ -210,7 +210,7 @@ protected:
   /* 01AC */ UIStaticText* taxLabels[11];
   /* 01D8 */ UIStaticText* positionNameLabels[11];
   /* 0204 */ UIScrollBar* m_scrollBar;
-  /* 0208 */ UIButton* m_button;
+  /* 0208 */ UIBitmapButton* m_button;
   /* 020C */ int m_scrollTop;
   /* 0210 */ int m_hoverIndex;
   /* 0214 */ int m_columns;

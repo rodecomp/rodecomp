@@ -186,11 +186,9 @@ void UIGuildPositionManageWnd::Invalidate() {
 void UIGuildMemberManageWnd::OnRBtnDown(int x, int y) {
   const int previous = this->m_hoverRow;
   int row;
-  if (static_cast<unsigned>(x - 5) <= 377 && static_cast<unsigned>(y - 66) <= 217) {
-    row = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
-    if (static_cast<unsigned>(row) >= this->m_members.size()) {
-      row = -1;
-    }
+  if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
+    const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
+    row = index >= this->m_members.size() ? -1 : index;
   } else {
     row = -1;
   }
@@ -382,10 +380,10 @@ int UIGuildPositionManageWnd::PositionIndexAt(int x, int y) {
 // FUNCTION: fn_13041
 GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* found) {
   *found = 1;
+  int current = 0;
   // GLOBAL: gl_24922
   static GuildPositionEntry s_emptyGuildPosition;
 
-  int current = 0;
   for (auto position = this->m_positions.begin(); position != this->m_positions.end(); ++position, ++current) {
     if (index == current) {
       return *position;
@@ -465,16 +463,10 @@ void UIGuildMemberManageWnd::UpdateScroll() {
   this->m_visibleRows = 6 - this->m_rowSpacing * 6 / 36;
   const int visible = this->m_visibleRows;
   const int rows = this->m_members.size() / this->m_columns + (this->m_members.size() % this->m_columns != 0);
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
-  }
+  const int range = rows - visible < 0 ? 0 : rows - visible;
 
   this->m_scrollable = range != 0;
-  if (range == 0) {
-    this->m_scrollTop = 0;
-    this->m_scrollBar->SetRange(0, visible, rows);
-  } else {
+  if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, rows);
     int top = this->m_scrollTop;
     if (top < 0) {
@@ -482,11 +474,14 @@ void UIGuildMemberManageWnd::UpdateScroll() {
       top = 0;
     }
     const int last = rows - this->m_visibleRows;
-    if (last < top) {
+    if (top > last) {
       this->m_scrollTop = last;
       top = last;
     }
     this->m_scrollBar->SetPosition(top);
+  } else {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
   }
 
   this->m_scrollBar->Invalidate();
@@ -501,16 +496,10 @@ void UIGuildPositionManageWnd::UpdateScroll() {
 
   const int visible = this->m_visibleRows;
   const int rows = this->m_positions.size() / this->m_columns + (this->m_positions.size() % this->m_columns != 0);
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
-  }
+  const int range = rows - visible < 0 ? 0 : rows - visible;
 
   this->m_scrollable = range != 0;
-  if (range == 0) {
-    this->m_scrollTop = 0;
-    this->m_scrollBar->SetRange(0, visible, rows);
-  } else {
+  if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, rows);
     int top = this->m_scrollTop;
     if (top < 0) {
@@ -518,11 +507,14 @@ void UIGuildPositionManageWnd::UpdateScroll() {
       top = 0;
     }
     const int last = rows - this->m_visibleRows;
-    if (last < top) {
+    if (top > last) {
       this->m_scrollTop = last;
       top = last;
     }
     this->m_scrollBar->SetPosition(top);
+  } else {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
   }
 
   this->m_scrollBar->Invalidate();
@@ -537,16 +529,10 @@ void UIGuildSkillWnd::UpdateScroll() {
 
   const int visible = this->m_visibleRows;
   const int rows = this->m_skills.size() / this->m_columns + (this->m_skills.size() % this->m_columns != 0);
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
-  }
+  const int range = rows - visible < 0 ? 0 : rows - visible;
 
   this->m_scrollable = range != 0;
-  if (range == 0) {
-    this->m_scrollTop = 0;
-    this->m_scrollBar->SetRange(0, visible, rows);
-  } else {
+  if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, rows);
     int top = this->m_scrollTop;
     if (top < 0) {
@@ -554,11 +540,14 @@ void UIGuildSkillWnd::UpdateScroll() {
       top = 0;
     }
     const int last = rows - this->m_visibleRows;
-    if (last < top) {
+    if (top > last) {
       this->m_scrollTop = last;
       top = last;
     }
     this->m_scrollBar->SetPosition(top);
+  } else {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
   }
 
   this->m_scrollBar->Invalidate();
@@ -605,16 +594,12 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
   names[4] = LookupMessage(MSI_GUILDBANISHEDMEMBER);
   names[5] = LookupMessage(MSI_GUILDNOTICE);
 
-  const char** name = names;
-  UIStaticText** tab = this->m_tabs;
-  for (int x = 3; x < 399; x += 66) {
-    *tab = new UIStaticText();
-    (*tab)->SetSize(62, 15);
-    (*tab)->SetTextFitted(*name);
-    (*tab)->Move(x, 22);
-    this->AddChild(*tab);
-    ++name;
-    ++tab;
+  for (int index = 0; index < 6; ++index) {
+    this->m_tabs[index] = new UIStaticText();
+    this->m_tabs[index]->SetSize(62, 15);
+    this->m_tabs[index]->SetTextFitted(names[index]);
+    this->m_tabs[index]->Move(index * 66 + 3, 22);
+    this->AddChild(this->m_tabs[index]);
   }
 
   this->AddCloseButton("Alt+G", 0);
@@ -689,18 +674,12 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
     return;
   }
 
-  const int rows = g_guildInfo.bannedMembers.size() / this->m_columns + (g_guildInfo.bannedMembers.size() % this->m_columns != 0);
   const int visible = this->m_visibleRows;
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
-  }
+  const int rows = g_guildInfo.bannedMembers.size() / this->m_columns + (g_guildInfo.bannedMembers.size() % this->m_columns != 0);
+  const int range = rows - visible < 0 ? 0 : rows - visible;
 
   this->m_scrollable = range != 0;
-  if (range == 0) {
-    this->m_scrollTop = 0;
-    this->m_scrollBar->SetRange(0, visible, rows);
-  } else {
+  if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, rows);
     int top = this->m_scrollTop;
     if (top < 0) {
@@ -708,11 +687,14 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
       top = 0;
     }
     const int last = rows - this->m_visibleRows;
-    if (last < top) {
+    if (top > last) {
       this->m_scrollTop = last;
       top = last;
     }
     this->m_scrollBar->SetPosition(top);
+  } else {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
   }
 
   this->m_scrollBar->Invalidate();
@@ -791,18 +773,12 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
     return;
   }
 
-  const int rows = g_guildInfo.guildList.size() / this->m_columns + (g_guildInfo.guildList.size() % this->m_columns != 0);
   const int visible = this->m_visibleRows;
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
-  }
+  const int rows = g_guildInfo.guildList.size() / this->m_columns + (g_guildInfo.guildList.size() % this->m_columns != 0);
+  const int range = rows - visible < 0 ? 0 : rows - visible;
 
   this->m_scrollable = range != 0;
-  if (range == 0) {
-    this->m_scrollTop = 0;
-    this->m_scrollBar->SetRange(0, visible, rows);
-  } else {
+  if (range != 0) {
     this->m_scrollBar->SetRange(range, visible, rows);
     int top = this->m_scrollTop;
     if (top < 0) {
@@ -810,11 +786,14 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
       top = 0;
     }
     const int last = rows - this->m_visibleRows;
-    if (last < top) {
+    if (top > last) {
       this->m_scrollTop = last;
       top = last;
     }
     this->m_scrollBar->SetPosition(top);
+  } else {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
   }
 
   this->m_scrollBar->Invalidate();
@@ -1090,10 +1069,12 @@ int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
 
   switch (a1) {
-  case ID_OK:
-    g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GUILD, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
+  case ID_OK: {
+    CMode* gameMode = g_modeMgr.gameMode;
+    gameMode->SendMsg(MM_REQ_LEAVE_GUILD, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
     g_windowMgr.CloseWindow(WID_GUILDLEAVEREASONDESCWND);
     break;
+  }
   case ID_CANCEL:
     g_windowMgr.CloseWindow(WID_GUILDLEAVEREASONDESCWND);
     break;
