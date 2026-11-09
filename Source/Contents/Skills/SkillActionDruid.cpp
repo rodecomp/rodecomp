@@ -474,10 +474,12 @@ void CSkillAction_DR_HUNGER::OnSkillEffect(int level, CGameActor* source, CGameA
     return;
   }
 
-  const char effectSource[] = {'\x3D', '\x88', '\xDB', '\xBC', '\xA2', '\xC3', '\x2A', '\x47', '\x34', '\x8F', '\xD2', '\xBE', '\xB3', '\xB1'};
-  thread_local EncryptedName<sizeof(effectSource), 0x3375B1C7DBB5FD55ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x3D', '\x88', '\xDB', '\xBC', '\xA2', '\xC3', '\x2A', '\x47', '\x34', '\x8F', '\xD2', '\xBE', '\xB3', '\xB1'};
+    thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620BE0
@@ -1152,10 +1154,12 @@ void CSkillAction_DR_ENRAGE_WOLF::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  const char effectSource[] = {'\x08', '\x8D', '\x37', '\xC2', '\x8A', '\xA4', '\x88', '\x46', '\x02', '\x8F', '\x23', '\xA3'};
-  thread_local EncryptedName<sizeof(effectSource), 0x31D7C1EDA345E36DULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x08', '\x8D', '\x37', '\xC2', '\x8A', '\xA4', '\x88', '\x46', '\x02', '\x8F', '\x23', '\xA3'};
+    thread_local EncryptedName<sizeof(bytes), 0x31D7C1EDA345E36DULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620530
@@ -1230,10 +1234,12 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  const std::uint8_t effectSource[] = {0xB6, 0xA5, 0xE8, 0x9A, 0xD5, 0xCA, 0x89, 0xF4, 0x9A, 0xAB, 0xE2, 0x94, 0xD5, 0xCB, 0x82, 0xE1, 0xC5};
-  thread_local EncryptedName<sizeof(effectSource), 0x93E7A3A1F587CDC5ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xB6, 0xA5, 0xE8, 0x9A, 0xD5, 0xCA, 0x89, 0xF4, 0x9A, 0xAB, 0xE2, 0x94, 0xD5, 0xCB, 0x82, 0xE1, 0xC5};
+    thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
   }
 }
