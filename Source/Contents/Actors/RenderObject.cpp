@@ -1820,13 +1820,7 @@ void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const int* input, float 
 
   float jitter[4];
   for (int index = 0; index < 4; ++index) {
-    int value = 0;
-    if (spread != 0) {
-      const int remainder = rand() % spread;
-      if (remainder >= 0) {
-        value = remainder;
-      }
-    }
+    const int value = spread == 0 ? 0 : std::max(0, rand() % spread);
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
@@ -2662,13 +2656,14 @@ void CCharacterNpc::Render(int) {
     return;
   }
 
-  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->characterRender);
-  characterRender->actionIndex = this->render.previousAnimation;
-  characterRender->frameIndex = this->render.curMotion;
+  reinterpret_cast<CCharacterRender*>(this->characterRender)->actionIndex = this->render.previousAnimation;
+  reinterpret_cast<CCharacterRender*>(this->characterRender)->frameIndex = this->render.curMotion;
 
   char useBounds = 0;
-  std::list<CharacterRenderDrawItem> drawList = characterRender->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
+  std::list<CharacterRenderDrawItem> drawList =
+    reinterpret_cast<CCharacterRender*>(this->characterRender)->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
 
+  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->characterRender);
   float bounds[5];
   std::memcpy(bounds, characterRender->renderBounds, sizeof(bounds));
   const float tlvertX = *reinterpret_cast<float*>(&characterRender->screenX);
@@ -2952,7 +2947,7 @@ void CRenderObject::ScaleByFadePulse(float& scale) const {
     if (index > 270) {
       scale = scale * 0.5f;
     } else {
-      scale = ((g_sinTable[std::max(index, 90u)] + 1.0f) * 0.25f + 0.5f) * scale;
+      scale = ((g_sinTable[index >= 90u ? index : 90u] + 1.0f) * 0.25f + 0.5f) * scale;
     }
   }
 }
@@ -3170,7 +3165,7 @@ bool CGameActor::ApplyEffectState(int effectId, bool on) {
 void CGameActor::SetHatEffect(int effectId, bool on) {
   int hatEffect = 0;
   g_session.m_hotkeyScript->Call("GetHatEffectID", "d>d", effectId - 2485, &hatEffect);
-  if (hatEffect < 1) {
+  if (hatEffect <= 0) {
     return;
   }
 
@@ -3301,11 +3296,48 @@ CActRes* CRenderObject::GetActRes() {
 int CGameActor::WeaponActionBase(int weaponType) {
   int base = 0;
   switch (weaponType) {
-  case ST_STAND:
-    base = 0;
+  case ST_AUTOCOUNTER:
+    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
     break;
-  case ST_MOVE:
-    base = 8;
+  case ST_A_COUNTER:
+    switch (this->GetEffectiveJob(-1)) {
+    case JT_LINKER:
+    case JT_LINKER_B:
+    case JT_SOUL_REAPER:
+    case JT_SOUL_REAPER_B:
+    case JT_SOUL_ASCETIC:
+      base = 88;
+      break;
+    default:
+      base = 40;
+      break;
+    }
+    break;
+  case ST_ATTACK2:
+  case ST_READYSHOT:
+  case ST_A_TURN:
+  case 49:
+  case 53:
+  case 54:
+  case 59:
+  case 70:
+  case 73:
+  case 76:
+  case 77:
+    base = 88;
+    break;
+  case ST_THROW:
+  case ST_READYJUMP:
+  case ST_THROW2:
+  case ST_GUNSKILL3:
+  case ST_GUNREADY2:
+  case 50:
+  case 51:
+  case 58:
+    base = 40;
+    break;
+  case ST_DAMAGE:
+    base = 48;
     break;
   case ST_ATTACK:
   case ST_MADOSKILL:
@@ -3324,42 +3356,19 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case ST_DEAD:
     base = 64;
     break;
-  case ST_DAMAGE:
-    base = 48;
+  case ST_STAND:
+    base = 0;
+    break;
+  case ST_MOVE:
+    base = 8;
     break;
   case ST_PICKUP:
   case ST_LANDJUMP:
   case ST_R_DODGE:
     base = 24;
     break;
-  case ST_ATTACK2:
-  case ST_READYSHOT:
-  case ST_A_TURN:
-  case 49:
-  case 53:
-  case 54:
-  case 59:
-  case 70:
-  case 73:
-  case 76:
-  case 77:
-    base = 88;
-    break;
   case ST_ATTACKWAIT:
     base = 32;
-    break;
-  case ST_THROW:
-  case ST_READYJUMP:
-  case ST_THROW2:
-  case ST_GUNSKILL3:
-  case ST_GUNREADY2:
-  case 50:
-  case 51:
-  case 58:
-    base = 40;
-    break;
-  case ST_AUTOCOUNTER:
-    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
     break;
   case ST_DANCE:
   case ST_SING:
@@ -3392,20 +3401,6 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case 80:
   case 81:
     base = 96;
-    break;
-  case ST_A_COUNTER:
-    switch (this->GetEffectiveJob(-1)) {
-    case JT_LINKER:
-    case JT_LINKER_B:
-    case JT_SOUL_REAPER:
-    case JT_SOUL_REAPER_B:
-    case JT_SOUL_ASCETIC:
-      base = 88;
-      break;
-    default:
-      base = 40;
-      break;
-    }
     break;
   case 74:
   case 75:
@@ -4468,109 +4463,110 @@ void CGameActor::UpdateMaxLevelAura() {
 // FUNCTION: fn_21139
 void CGameActor::SetActorJob(int job) {
   this->job = job;
-  if (job < 0xfaf) {
-    if (job == JT_CHICKEN_H) {
-      this->job = 0xfa8;
-    } else if (job == JT_CHICKEN) {
-      this->job = 7;
-    } else if (job == JT_CHICKEN2) {
-      this->job = 0xe;
-    }
-  } else if (job < 0x10b7) {
-    if (job == JT_WOLF_WINDHAWK) {
-      this->job = 0x10a1;
-    } else {
-      switch (job) {
-      case JT_CHICKEN2_H:
-        this->job = 0xfaf;
-        break;
-      case JT_CHICKEN_B:
-        this->job = 0xfbe;
-        break;
-      case JT_CHICKEN2_B:
-        this->job = 0xfc5;
-        break;
-      case JT_STAR2:
-        this->job = 0xfcf;
-        break;
-      case JT_RUNE_CHICKEN:
-      case JT_RUNE_CHICKEN2:
-      case JT_RUNE_CHICKEN3:
-      case JT_RUNE_CHICKEN4:
-      case JT_RUNE_CHICKEN5:
-        this->job = 0xfd6;
-        break;
-      case JT_RUNE_CHICKEN_H:
-      case JT_RUNE_CHICKEN2_H:
-      case JT_RUNE_CHICKEN3_H:
-      case JT_RUNE_CHICKEN4_H:
-      case JT_RUNE_CHICKEN5_H:
-        this->job = 0xfdc;
-        break;
-      case JT_ROYAL_CHICKEN:
-        this->job = 0xfe2;
-        break;
-      case JT_ROYAL_CHICKEN_H:
-        this->job = 0xfe9;
-        break;
-      case JT_WOLF_RANGER:
-        this->job = 0xfd8;
-        break;
-      case JT_WOLF_RANGER_H:
-        this->job = 0xfde;
-        break;
-      case JT_MADOGEAR:
-        this->job = 0xfda;
-        break;
-      case JT_MADOGEAR_H:
-        this->job = 0xfe0;
-        break;
-      case JT_RUNE_CHICKEN_B:
-        this->job = 0x1000;
-        break;
-      case JT_ROYAL_CHICKEN_B:
-        this->job = 0x1006;
-        break;
-      case JT_WOLF_RANGER_B:
-        this->job = 0x1002;
-        break;
-      case JT_MADOGEAR_B:
-        this->job = 0x1004;
-        break;
-      case JT_STAR2_B:
-        this->job = 0x1082;
-        break;
-      case JT_STAR2_EMPEROR_B:
-        this->job = 0x1091;
-        break;
-      }
-    }
-  } else {
-    switch (job) {
-    case JT_MEISTER_MADOGEAR:
-      this->job = 0x109d;
-      break;
-    case JT_DRAGON_KNIGHT_CHICKEN:
-      this->job = 0x109c;
-      break;
-    case JT_IMPERIAL_GUARD_CHICKEN:
-      this->job = 0x10a2;
-      break;
-    case JT_SKY_EMPEROR2:
-      this->job = 0x10ce;
-      break;
-    }
+  switch (job) {
+  case JT_CHICKEN_H:
+    this->job = 0xfa8;
+    break;
+  case JT_CHICKEN:
+    this->job = 7;
+    break;
+  case JT_CHICKEN2:
+    this->job = 0xe;
+    break;
+  case JT_WOLF_WINDHAWK:
+    this->job = 0x10a1;
+    break;
+  case JT_CHICKEN2_H:
+    this->job = 0xfaf;
+    break;
+  case JT_CHICKEN_B:
+    this->job = 0xfbe;
+    break;
+  case JT_CHICKEN2_B:
+    this->job = 0xfc5;
+    break;
+  case JT_STAR2:
+    this->job = 0xfcf;
+    break;
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN5:
+    this->job = 0xfd6;
+    break;
+  case JT_RUNE_CHICKEN_H:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5_H:
+    this->job = 0xfdc;
+    break;
+  case JT_ROYAL_CHICKEN:
+    this->job = 0xfe2;
+    break;
+  case JT_ROYAL_CHICKEN_H:
+    this->job = 0xfe9;
+    break;
+  case JT_WOLF_RANGER:
+    this->job = 0xfd8;
+    break;
+  case JT_WOLF_RANGER_H:
+    this->job = 0xfde;
+    break;
+  case JT_MADOGEAR:
+    this->job = 0xfda;
+    break;
+  case JT_MADOGEAR_H:
+    this->job = 0xfe0;
+    break;
+  case JT_RUNE_CHICKEN_B:
+    this->job = 0x1000;
+    break;
+  case JT_ROYAL_CHICKEN_B:
+    this->job = 0x1006;
+    break;
+  case JT_WOLF_RANGER_B:
+    this->job = 0x1002;
+    break;
+  case JT_MADOGEAR_B:
+    this->job = 0x1004;
+    break;
+  case JT_STAR2_B:
+    this->job = 0x1082;
+    break;
+  case JT_STAR2_EMPEROR_B:
+    this->job = 0x1091;
+    break;
+  case JT_MEISTER_MADOGEAR:
+    this->job = 0x109d;
+    break;
+  case JT_DRAGON_KNIGHT_CHICKEN:
+    this->job = 0x109c;
+    break;
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    this->job = 0x10a2;
+    break;
+  case JT_SKY_EMPEROR2:
+    this->job = 0x10ce;
+    break;
   }
 
   int slotJob;
   if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
     slotJob = this->GetEffectiveJob(-1);
-  } else if (this->shapeShift == 1) {
-    slotJob = 0x1104;
-  } else if (this->shapeShift == 2) {
-    slotJob = 0x1105;
   } else {
-    slotJob = this->job;
+    switch (this->shapeShift) {
+    case 1:
+      slotJob = 0x1104;
+      break;
+    case 2:
+      slotJob = 0x1105;
+      break;
+    default:
+      slotJob = this->job;
+      break;
+    }
   }
 
   this->SetSprJob(slotJob);
