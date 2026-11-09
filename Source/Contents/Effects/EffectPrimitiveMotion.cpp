@@ -39,6 +39,14 @@
 
 namespace {
   // INLINED
+  vector3d& operator+=(vector3d& target, const vector3d& offset) {
+    target.x += offset.x;
+    target.y += offset.y;
+    target.z += offset.z;
+    return target;
+  }
+
+  // INLINED
   __forceinline int ClampedRandom(int range) {
     const int value = rand() % range;
     return value >= 0 ? value : 0;
@@ -4363,6 +4371,47 @@ bool CEffectPrim::PrimWind() {
   return true;
 }
 
+namespace {
+  // INLINED
+  __forceinline int SafeRandom(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    return ClampedRandom(range);
+  }
+
+  // INLINED
+  __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
+    for (int axis = 0; axis < count * 2; axis += 2) {
+      float& angle = slot.height[axis];
+      float& target = slot.height[axis + 1];
+
+      if (target > angle) {
+        angle += rise;
+
+        if (angle > 359.0f) {
+          angle = 359.0f;
+        }
+
+        if (angle > target) {
+          target = static_cast<float>(SafeRandom(static_cast<int>(angle)));
+        }
+      } else {
+        angle -= fall;
+
+        if (angle < 0.0f) {
+          angle = 0.0f;
+        }
+
+        if (angle <= target) {
+          target = static_cast<float>(359 - SafeRandom(static_cast<int>(angle)));
+        }
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00BC5580
 // FUNCTION: fn_19848
 bool CEffectPrim::PrimDriftingSquares() {
@@ -7151,47 +7200,6 @@ void CEffectPrim::PrimSTIN3() {
         slots[trail + 1].vecBNow = slots[trail].vecBNow;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
-      }
-    }
-  }
-}
-
-namespace {
-  // INLINED
-  __forceinline int SafeRandom(int range) {
-    if (range == 0) {
-      return 0;
-    }
-
-    return NonNegativeRandom(range);
-  }
-
-  // INLINED
-  __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
-    for (int axis = 0; axis < count * 2; axis += 2) {
-      float& angle = slot.height[axis];
-      float& target = slot.height[axis + 1];
-
-      if (target > angle) {
-        angle += rise;
-
-        if (angle > 359.0f) {
-          angle = 359.0f;
-        }
-
-        if (angle > target) {
-          target = static_cast<float>(SafeRandom(static_cast<int>(angle)));
-        }
-      } else {
-        angle -= fall;
-
-        if (angle < 0.0f) {
-          angle = 0.0f;
-        }
-
-        if (angle <= target) {
-          target = static_cast<float>(359 - SafeRandom(static_cast<int>(angle)));
-        }
       }
     }
   }
