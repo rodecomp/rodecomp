@@ -2099,11 +2099,11 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   ResourceMgr::Instance().Load(this->imfName.c_str());
   int count = 0;
   bool drawn = false;
-  if (std::strlen(this->equipActions[0] ? this->equipActions[0]->name.text : "") == 0) {
+  if (std::strlen(this->equipActions[0] ? this->equipActions[0]->GetName() : "") == 0) {
     return;
   }
 
-  if (std::strlen(this->equipSprites[0] ? this->equipSprites[0]->name.text : "") == 0) {
+  if (std::strlen(this->equipSprites[0] ? this->equipSprites[0]->GetName() : "") == 0) {
     return;
   }
 
@@ -2441,29 +2441,24 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   this->render.bodyPalette = tenth;
   this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);
 
-  int job = first;
-  bool applyJob = true;
   if (StateFlag12(eleventh)) {
-    job = 0x16;
+    this->SetActorJob(0x16);
   } else if (StateFlag16(eleventh) && !StateFlag15(eleventh)) {
-    job = 0x1a;
+    this->SetActorJob(0x1a);
   } else if (StateFlag18(eleventh) && !StateFlag15(eleventh)) {
-    job = 0x1b;
+    this->SetActorJob(0x1b);
   } else if (StateFlag27(eleventh) && !StateFlag15(eleventh)) {
-    job = 0x1c;
+    this->SetActorJob(0x1c);
   } else if (StateFlag28(eleventh) && !StateFlag15(eleventh)) {
-    job = 0x1d;
+    this->SetActorJob(0x1d);
   } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
-    job = 0x1e;
-  } else if (this->HasShapeShift()) {
-    applyJob = false;
+    this->SetActorJob(0x1e);
+  } else if (this->HasShapeShift() == true) {
     this->SetSprJob(this->GetShapeShiftJob());
   } else if (this->isRiding != 0) {
-    job = g_session.GetRidingJob(first);
-  }
-
-  if (applyJob) {
-    this->SetActorJob(job);
+    this->SetActorJob(g_session.GetRidingJob(first));
+  } else {
+    this->SetActorJob(first);
   }
 
   this->SetSprHead(this->head);
@@ -2815,11 +2810,11 @@ float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
     return std::max(distance - 20.0f, 0.0f);
   }
 
-  if (target->GetNpcLocationRadius() <= 0) {
-    return std::max(distance, 0.0f);
+  if (target->GetNpcLocationRadius() > 0) {
+    return std::max(distance - static_cast<float>(target->GetNpcLocationRadius() + 1) * 4.0f, 0.0f);
   }
 
-  return std::max(distance - static_cast<float>(target->GetNpcLocationRadius() + 1) * 4.0f, 0.0f);
+  return std::max(distance, 0.0f);
 }
 
 // GLOBAL: gl_25248
