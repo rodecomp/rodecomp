@@ -362,7 +362,8 @@ bool ICashEmotionAction::ExecuteNamed(const char* name) {
     return false;
   }
 
-  return this->Execute(g_cashEmotionMgr->BasePackId(), g_cashEmotionMgr->FindEmotionId(name));
+  const int emotionId = g_cashEmotionMgr->FindEmotionId(name);
+  return this->Execute(g_cashEmotionMgr->BasePackId(), emotionId);
 }
 
 // OFFSET: 0x00591EB0
@@ -676,11 +677,20 @@ int CCashEmotionMgr::GetActFilePath(const char* name, bool add) {
   return this->RegisterFileName(this->actIds, this->m_packNames, [this]() { return ++this->m_lastActId; }, name, add);
 }
 
+// INLINED
+static const char* FindFileName(CashEmotionFileNames& names, int id) {
+  auto it = names.find(id);
+  if (names.end() == it) {
+    return nullptr;
+  }
+
+  return it->second.c_str();
+}
+
 // OFFSET: 0x005998C0
 // FUNCTION: fn_02943
 const char* CCashEmotionMgr::GetPackName(int packId) {
-  auto it = this->m_packNames.find(packId);
-  return it != this->m_packNames.end() ? it->second.c_str() : nullptr;
+  return FindFileName(this->m_packNames, packId);
 }
 
 // OFFSET: 0x00599930
@@ -733,8 +743,9 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
 // OFFSET: 0x00599C60
 // FUNCTION: fn_02945
 CashEmotionTable* CCashEmotionMgr::GetBasePackEmotions() {
-  auto it = this->m_emotionsByPack.find(this->basePackId);
-  return it != this->m_emotionsByPack.end() ? &it->second : nullptr;
+  const int packId = this->basePackId;
+  auto it = this->m_emotionsByPack.find(packId);
+  return this->m_emotionsByPack.end() != it ? &it->second : nullptr;
 }
 
 // OFFSET: 0x00599CA0
@@ -998,12 +1009,7 @@ int CCashEmotionMgr::GetSprFilePath(const char* name, bool add) {
 // OFFSET: 0x0059AC40
 // FUNCTION: fn_02963
 const char* CCashEmotionMgr::GetSprFileName(int sprId) {
-  auto it = this->m_sprNames.find(sprId);
-  if (it != this->m_sprNames.end()) {
-    return it->second.c_str();
-  }
-
-  return nullptr;
+  return FindFileName(this->m_sprNames, sprId);
 }
 
 // OFFSET: 0x0059ACE0
@@ -1131,6 +1137,15 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
   return inserted;
 }
 
+// INLINED
+static void AddSearchKey(std::unordered_map<std::string, std::pair<int, int>>& index, const char* key, int packId, int emotionId) {
+  if (!key || std::strlen(key) == 0) {
+    return;
+  }
+
+  index.try_emplace(key, packId, emotionId);
+}
+
 // OFFSET: 0x0059BC30
 // FUNCTION: fn_02971
 void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int unknown20, int unknown24, const char* actFile, const char* sprFile) {
@@ -1162,7 +1177,7 @@ void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int u
 bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
   if (this->m_action) {
     auto found = this->m_searchIndex.find(name);
-    const std::pair<int, int>* emotion = found == this->m_searchIndex.end() ? nullptr : &found->second;
+    const std::pair<int, int>* emotion = found != this->m_searchIndex.end() ? &found->second : nullptr;
     if (emotion) {
       return this->m_action->Execute(emotion->first, emotion->second);
     }
