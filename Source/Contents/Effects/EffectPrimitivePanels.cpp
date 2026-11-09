@@ -3,15 +3,28 @@
 #include "Contents/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
+struct ZeroVector3d : vector3d {
+  // INLINED
+  ZeroVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+
+  using vector3d::operator=;
+
+  // INLINED
+  void Set(float x, float y, float z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+};
+
 // OFFSET: 0x00BF4630
 // FUNCTION: fn_19995
 void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
-  vector3d vec[4];
-  for (int i = 0; i < 4; ++i) {
-    vec[i].x = 0.0f;
-    vec[i].y = 0.0f;
-    vec[i].z = 0.0f;
-  }
+  ZeroVector3d vec[4];
   int rpCnt = 0;
 
   EffectPrimitiveSlot* slotIt = this->state.slots;
