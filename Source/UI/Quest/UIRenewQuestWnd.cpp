@@ -1034,11 +1034,7 @@ void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
   if (detail) {
     const std::vector<unsigned int>& current = this->m_questIds[this->m_tab];
     const bool recommended = this->m_tab == 1;
-    if (current.empty()) {
-      detail->SetQuest(0, recommended);
-    } else {
-      detail->SetQuest(current[this->m_selected], recommended);
-    }
+    detail->SetQuest(current.empty() ? 0 : current[this->m_selected], recommended);
   }
 }
 
