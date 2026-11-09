@@ -13,12 +13,6 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CRegisterPartyAsyncWork.cpp";
 
-  // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
   template <std::size_t Length, std::uint64_t Key>
   class EncryptedName {
   public:
@@ -93,77 +87,51 @@ void CRegisterPartyAsyncWork::Bind(
 // FUNCTION: fn_03709
 bool CRegisterPartyAsyncWork::Execute() {
   char account[64] = {};
-  char character[64] = {};
-  char minimum[10] = {};
-  char maximum[10] = {};
-  char type[10] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
+  char minimum[10] = {};
   StringFormat(minimum, sizeof(minimum), _TRUNCATE, "%d", this->m_info.minimumLevel);
+  char maximum[10] = {};
   StringFormat(maximum, sizeof(maximum), _TRUNCATE, "%d", this->m_info.maximumLevel);
+  char type[10] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_info.type);
   const std::string world = ToUtf8(this->m_world);
   const std::string name = ToUtf8(std::string(g_session.DecodePlayerName()));
   const std::string memo = ToUtf8(this->m_info.memo);
   CCURLPostHander handler(this->m_url);
-
-  const std::uint8_t aid[] = {0xC8, 0x74, 0x29, 0xE5};
-  handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>(aid), account, 4);
-  const std::uint8_t gid[] = {0x62, 0xD8, 0x43, 0xA3};
-  handler.AddField(DecryptName<0x6B3301E1A3079125ULL>(gid), character, 4);
-  const std::uint8_t authToken[] = {0xEE, 0xD4, 0xB1, 0x5F, 0x43, 0x06, 0xDC, 0x14, 0xC1, 0xA1};
-  handler.AddField(DecryptName<0x71B7691737C5A1AFULL>(authToken), this->m_token, 4);
-  const std::uint8_t worldName[] = {0x34, 0x56, 0x0F, 0xCD, 0x3D, 0xFB, 0xFE, 0xAE, 0x06, 0x39};
-  handler.AddField(DecryptName<0xC39FB559A17D3963ULL>(worldName), world, 4);
-  const std::uint8_t charName[] = {0xB6, 0x4D, 0x32, 0x9B, 0x99, 0x44, 0xEA, 0x4E, 0xF5};
-  handler.AddField(DecryptName<0x2B8725D7E95325F5ULL>(charName), name, 4);
-  const std::uint8_t minLevel[] = {0x40, 0x32, 0x07, 0xCF, 0xED, 0x11};
-  handler.AddField(DecryptName<0x899D11BB83695B0DULL>(minLevel), minimum, 4);
-  const std::uint8_t maxLevel[] = {0x26, 0x6A, 0xDD, 0x89, 0xD1, 0xDD};
-  handler.AddField(DecryptName<0xBDADDD87C5A50B6BULL>(maxLevel), maximum, 4);
-
-  const std::uint8_t tankerOn[] = {0x66, 0xEF};
-  const std::uint8_t tankerOff[] = {0xEF, 0x9B};
-  const std::uint8_t tanker[] = {0xE9, 0xFC, 0x55, 0x8C, 0x68, 0xF1, 0x89};
+  handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>({0xC8, 0x74, 0x29, 0xE5}), account, 4);
+  handler.AddField(DecryptName<0x6B3301E1A3079125ULL>({0x62, 0xD8, 0x43, 0xA3}), character, 4);
+  handler.AddField(DecryptName<0x71B7691737C5A1AFULL>({0xEE, 0xD4, 0xB1, 0x5F, 0x43, 0x06, 0xDC, 0x14, 0xC1, 0xA1}), this->m_token, 4);
+  handler.AddField(DecryptName<0xC39FB559A17D3963ULL>({0x34, 0x56, 0x0F, 0xCD, 0x3D, 0xFB, 0xFE, 0xAE, 0x06, 0x39}), world, 4);
+  handler.AddField(DecryptName<0x2B8725D7E95325F5ULL>({0xB6, 0x4D, 0x32, 0x9B, 0x99, 0x44, 0xEA, 0x4E, 0xF5}), name, 4);
+  handler.AddField(DecryptName<0x899D11BB83695B0DULL>({0x40, 0x32, 0x07, 0xCF, 0xED, 0x11}), minimum, 4);
+  handler.AddField(DecryptName<0xBDADDD87C5A50B6BULL>({0x26, 0x6A, 0xDD, 0x89, 0xD1, 0xDD}), maximum, 4);
   handler.AddField(
-    DecryptName<0x7989830DE73B9DBDULL>(tanker),
-    this->m_info.tanker ? std::string(DecryptName<0x5FFD7FABB5D1EF57ULL>(tankerOn)) : std::string(DecryptName<0xA7471985F93F9BDFULL>(tankerOff)), 4
+    DecryptName<0x7989830DE73B9DBDULL>({0xE9, 0xFC, 0x55, 0x8C, 0x68, 0xF1, 0x89}),
+    this->m_info.tanker ? std::string(DecryptName<0x5FFD7FABB5D1EF57ULL>({0x66, 0xEF})) : std::string(DecryptName<0xA7471985F93F9BDFULL>({0xEF, 0x9B})), 4
   );
-  const std::uint8_t healerOn[] = {0xE0, 0x61};
-  const std::uint8_t healerOff[] = {0xEF, 0x5D};
-  const std::uint8_t healer[] = {0xC5, 0x76, 0x1E, 0x7F, 0x04, 0x97, 0x35};
   handler.AddField(
-    DecryptName<0xF535E561137F138DULL>(healer),
-    this->m_info.healer ? std::string(DecryptName<0xD3E5516F89F161D1ULL>(healerOn)) : std::string(DecryptName<0x01E7898D9D235DDFULL>(healerOff)), 4
+    DecryptName<0xF535E561137F138DULL>({0xC5, 0x76, 0x1E, 0x7F, 0x04, 0x97, 0x35}),
+    this->m_info.healer ? std::string(DecryptName<0xD3E5516F89F161D1ULL>({0xE0, 0x61})) : std::string(DecryptName<0x01E7898D9D235DDFULL>({0xEF, 0x5D})), 4
   );
-  const std::uint8_t dealerOn[] = {0x40, 0x2F};
-  const std::uint8_t dealerOff[] = {0x33, 0xA3};
-  const std::uint8_t dealer[] = {0x3D, 0x8E, 0x40, 0xF3, 0x58, 0xC1, 0xF5};
   handler.AddField(
-    DecryptName<0x0DF5B33D9F21EB79ULL>(dealer),
-    this->m_info.dealer ? std::string(DecryptName<0x9DEFC105A1EB2F71ULL>(dealerOn)) : std::string(DecryptName<0x6961FF056999A303ULL>(dealerOff)), 4
+    DecryptName<0x0DF5B33D9F21EB79ULL>({0x3D, 0x8E, 0x40, 0xF3, 0x58, 0xC1, 0xF5}),
+    this->m_info.dealer ? std::string(DecryptName<0x9DEFC105A1EB2F71ULL>({0x40, 0x2F})) : std::string(DecryptName<0x6961FF056999A303ULL>({0x33, 0xA3})), 4
   );
-  const std::uint8_t assistOn[] = {0x7A, 0xD3};
-  const std::uint8_t assistOff[] = {0xA7, 0x71};
-  const std::uint8_t assist[] = {0xBC, 0x22, 0xC6, 0x30, 0x72, 0x37, 0x3F};
   handler.AddField(
-    DecryptName<0xBD3F430159B551FDULL>(assist),
-    this->m_info.assist ? std::string(DecryptName<0xC7FB6DF18577D34BULL>(assistOn)) : std::string(DecryptName<0x5B832361BDA77197ULL>(assistOff)), 4
+    DecryptName<0xBD3F430159B551FDULL>({0xBC, 0x22, 0xC6, 0x30, 0x72, 0x37, 0x3F}),
+    this->m_info.assist ? std::string(DecryptName<0xC7FB6DF18577D34BULL>({0x7A, 0xD3})) : std::string(DecryptName<0x5B832361BDA77197ULL>({0xA7, 0x71})), 4
   );
-
-  const std::uint8_t typeName[] = {0x55, 0xCA, 0x49, 0x3E, 0x9B};
-  handler.AddField(DecryptName<0x2B477F9B5B39B301ULL>(typeName), type, 4);
-  const std::uint8_t memoName[] = {0x04, 0x9A, 0xB8, 0x90, 0xD1};
-  handler.AddField(DecryptName<0xFFBF43D1FFD5FF49ULL>(memoName), memo, 4);
+  handler.AddField(DecryptName<0x2B477F9B5B39B301ULL>({0x55, 0xCA, 0x49, 0x3E, 0x9B}), type, 4);
+  handler.AddField(DecryptName<0xFFBF43D1FFD5FF49ULL>({0x04, 0x9A, 0xB8, 0x90, 0xD1}), memo, 4);
 
   if (handler.Perform() != 0) {
-    const std::uint8_t fail[] = {0xBD, 0xE2, 0xA8, 0x63, 0xAB};
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xEB3D4FAB0FC183DBULL>(fail), 118);
+    AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xEB3D4FAB0FC183DBULL>({0xBD, 0xE2, 0xA8, 0x63, 0xAB})), sourceFile, 118);
     this->m_diagnostic.MoveFrom(diagnostic);
   } else {
     this->m_response = FromUtf8(handler.Response());
-    const std::uint8_t success[] = {0xEC, 0x0A, 0xF4, 0x3A, 0xCC, 0x5C, 0x4C, 0x8F};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x8F3F2FA959977F9FULL>(success), 127);
+    AsyncDiagnostic diagnostic(true, std::string(DecryptName<0x8F3F2FA959977F9FULL>({0xEC, 0x0A, 0xF4, 0x3A, 0xCC, 0x5C, 0x4C, 0x8F})), sourceFile, 127);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
 
@@ -173,7 +141,8 @@ bool CRegisterPartyAsyncWork::Execute() {
 // OFFSET: 0x005D3E90
 // FUNCTION: fn_03708
 void CRegisterPartyAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteRegistration(this->m_diagnostic, this->m_response);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompleteRegistration(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CRegisterPartyAsyncWork*>::push_back(CRegisterPartyAsyncWork*&&);
