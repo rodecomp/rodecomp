@@ -2440,7 +2440,7 @@ void UINavigationroadiconWnd::OnCreate(int, int) {
   this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
 
   const int slot = g_navigationManager.viewIcon;
-  const int column = slot <= 4 ? slot : slot - 4;
+  const int column = slot > 4 ? slot - 4 : slot;
   this->icon->Move(slot >= 1 && slot <= 8 ? column * 36 - 26 : 0, slot < 5 ? 24 : 60);
   this->icon->Show(1);
   this->AddChild(this->icon);
