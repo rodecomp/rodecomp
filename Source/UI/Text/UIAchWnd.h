@@ -87,8 +87,11 @@ class UIAchTab : public UIWindow {
 public:
   // INLINED
   UIAchTab()
-      : UIWindow(0), selectedGroup(-1), selectedSub(-1), fontHeight(0), hoverGroup(0), hoverSub(0), scrollBar(nullptr), scrollable(0),
-        scrollBarX(13), visibleSubs(3) {
+      : UIWindow(0), selectedGroup(-1), selectedSub(-1), fontHeight(0), hoverGroup(0), hoverSub(0) {
+    this->scrollBar = nullptr;
+    this->scrollable = 0;
+    this->scrollBarX = 13;
+    this->visibleSubs = 3;
     this->fontHeight = 12;
     this->scrollPos = 0;
   }
