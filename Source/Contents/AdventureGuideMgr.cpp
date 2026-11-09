@@ -1307,10 +1307,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonReward(int id, std::string
 // OFFSET: 0x00665340
 // FUNCTION: fn_05242
 AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLevel, int maxLevel, std::string_view text) {
-  const AdventureGuideDetail detail{minLevel, maxLevel, 0, std::string(text)};
+  AdventureGuideDetail detail;
+  detail.minLevel = minLevel;
+  detail.maxLevel = maxLevel;
+  detail.questId = 0;
+  detail.text = text;
   for (auto& [key, intro] : m_intros) {
     if (intro.type == 4) {
-      intro.details.try_emplace(id, detail);
+      intro.details.try_emplace(id, std::as_const(detail));
       break;
     }
   }
@@ -1349,10 +1353,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeReward(int id, std::string
 // OFFSET: 0x00665940
 // FUNCTION: fn_05245
 AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int unknown, std::string_view text) {
-  const AdventureGuideDetail detail{minLevel, maxLevel, unknown, std::string(text)};
+  AdventureGuideDetail detail;
+  detail.minLevel = minLevel;
+  detail.maxLevel = maxLevel;
+  detail.questId = unknown;
+  detail.text = text;
   for (auto& [key, intro] : m_intros) {
     if (intro.type == 1) {
-      intro.details.try_emplace(id, detail);
+      intro.details.try_emplace(id, std::as_const(detail));
       break;
     }
   }
@@ -1413,10 +1421,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertObtainGuide(int type, int id, std
 // OFFSET: 0x00666080
 // FUNCTION: fn_05248
 AdventureGuideResult CAdventureGuideMgr::InsertEntrySubMenu(int type, int id, int minLevel, int maxLevel, std::string_view text) {
-  const AdventureGuideDetail detail{minLevel, maxLevel, 0, std::string(text)};
+  AdventureGuideDetail detail;
+  detail.minLevel = minLevel;
+  detail.maxLevel = maxLevel;
+  detail.questId = 0;
+  detail.text = text;
   for (auto& [key, intro] : m_intros) {
     if (intro.type == type) {
-      intro.details.try_emplace(id, detail);
+      intro.details.try_emplace(id, std::as_const(detail));
       break;
     }
   }
@@ -1503,10 +1515,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestReward(int id, std::string_v
 // OFFSET: 0x00667060
 // FUNCTION: fn_05255
 AdventureGuideResult CAdventureGuideMgr::InsertQuestSubMenu(int id, int minLevel, int maxLevel, std::string_view text) {
-  const AdventureGuideDetail detail{minLevel, maxLevel, 0, std::string(text)};
+  AdventureGuideDetail detail;
+  detail.minLevel = minLevel;
+  detail.maxLevel = maxLevel;
+  detail.questId = 0;
+  detail.text = text;
   for (auto& [key, intro] : m_intros) {
     if (intro.type == 3) {
-      intro.details.try_emplace(id, detail);
+      intro.details.try_emplace(id, std::as_const(detail));
       break;
     }
   }
