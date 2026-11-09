@@ -575,8 +575,7 @@ void CGameMode::ReceiveBossMonsterInfo(const unsigned char* data) {
 // OFFSET: 0x00D230E0
 // FUNCTION: fn_21660
 __declspec(noinline) void CGameMode::ReceiveColoredNotice(const unsigned char* packet) {
-  std::string text;
-  text.assign(reinterpret_cast<const char*>(packet + 9), *reinterpret_cast<const short*>(packet + 2) - 9);
+  std::string text(reinterpret_cast<const char*>(packet + 9), *reinterpret_cast<const short*>(packet + 2) - 9);
   if (!text.empty()) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), *reinterpret_cast<const std::uint32_t*>(packet + 5), packet[4], 0, 0);
   }
@@ -1132,8 +1131,8 @@ std::FILE* CGameMode::OpenPackageSimulatorFile(const std::string& folder, int it
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %d!!!!!!!!!!!!", file ? "success" : "Fail", itemId).c_str()),
-                         file ? 0xFFFF : 0xFF, 0, 0, 0);
+  const std::string message = FormatOwnedString("Simulator Result File Create %s %d!!!!!!!!!!!!", file ? "success" : "Fail", itemId);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
 
@@ -1153,7 +1152,8 @@ std::FILE* CGameMode::OpenSimulatorFile(const std::string& folder, const std::st
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s Simulator File Create %s !!!!!!!!!!!!", name.c_str(), file ? "success" : "Fail").c_str()),
+  const std::string message = FormatOwnedString("%s Simulator File Create %s !!!!!!!!!!!!", name.c_str(), file ? "success" : "Fail");
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()),
                          file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
@@ -6976,8 +6976,8 @@ std::FILE* CGameMode::OpenRandomOptionSimulatorFile(const std::string& folder, c
   }
 
   std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %s!!!!!!!!!!!!", file ? "success" : "Fail", itemName.c_str()).c_str()),
-                         file ? 0xFFFF : 0xFF, 0, 0, 0);
+  const std::string message = FormatOwnedString("Simulator Result File Create %s %s!!!!!!!!!!!!", file ? "success" : "Fail", itemName.c_str());
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), file ? 0xFFFF : 0xFF, 0, 0, 0);
   return file;
 }
 
@@ -10570,7 +10570,7 @@ void CGameMode::ReceiveGuildInfo2(const unsigned char* data) {
   std::memcpy(masterName, packet->masterName, sizeof(packet->masterName));
   std::memcpy(manageLand, packet->manageLand, sizeof(packet->manageLand));
   if (g_forbiddenWords.Contains(guildName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(guildName, &masked);
   }
 
@@ -10610,7 +10610,7 @@ void CGameMode::ReceiveGuildInfo3(const unsigned char* data) {
   std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
   std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
   if (g_forbiddenWords.Contains(guildName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(guildName, &masked);
   }
 
@@ -11109,7 +11109,7 @@ void CGameMode::ReceiveGuildPositionNames(const unsigned char* data) {
     std::memcpy(name, position.name, sizeof(position.name));
     name[24] = '\0';
     if (g_forbiddenWords.Contains(name)) {
-      std::string masked;
+      std::string masked("");
       g_forbiddenWords.Mask(name, &masked);
     }
 
