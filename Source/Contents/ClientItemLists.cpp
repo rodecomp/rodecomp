@@ -367,8 +367,11 @@ void ReceiveFriendAddResult(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   char buffer[128];
-  int message;
   switch (packet->result) {
+    case FRIEND_ADD_FALSE:
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_ADD_FALSE), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
+      break;
     case FRIEND_ADD_SUCCEED: {
       std::sprintf(buffer, LookupMessage(MSI_FRIEND_ADD_SUCCEED), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
@@ -380,35 +383,32 @@ void ReceiveFriendAddResult(const unsigned char* data) {
       member.offline = 0;
       g_session.AddFriend(member);
       g_session.RefreshMessengerGroupWindow();
-      return;
-    }
-    case FRIEND_ADD_FALSE:
-      message = 822;
       break;
+    }
     case FRIEND_ADD_ME_OVERSIZE:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FRIEND_ADD_ME_OVERSIZE)), 0xFF, 0, 0, 0);
-      return;
+      break;
     case FRIEND_ADD_OTHER_OVERSIZE:
-      message = 820;
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_ADD_OTHER_OVERSIZE), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 4:
-      message = 2737;
+      std::sprintf(buffer, LookupMessage(2737), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 6:
-      message = 3448;
+      std::sprintf(buffer, LookupMessage(3448), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 7:
-      message = 3449;
+      std::sprintf(buffer, LookupMessage(3449), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 8:
-      message = 3450;
+      std::sprintf(buffer, LookupMessage(3450), name);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
-    default:
-      return;
   }
-
-  std::sprintf(buffer, LookupMessage(message), name);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D1FDA0
@@ -1068,7 +1068,7 @@ bool CSession::EquipInventoryItem(const ITEM_INFO& item, const char* name) {
 // OFFSET: 0x00DFC9B0
 // FUNCTION: fn_23599
 bool CSession::OnItemEquipped(ITEM_INFO& item) {
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_EQUIPED)).c_str()), 0xC8FF00, 7, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_EQUIPED)).c_str()), 0xC8FF00, 7, 0, 0);
   if (item.bindOnEquip == 1) {
     item.bindOnEquip = 2;
   }
@@ -1488,7 +1488,7 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
 // FUNCTION: fn_23338
 void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
   for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
-    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+    if (std::atoi(item.itemId.c_str()) == std::atoi(it->itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
@@ -1827,15 +1827,16 @@ bool CSession::AddExchangeItem(ITEM_INFO item) {
   this->RemoveInventoryItem(item.identity[1], item.quantity);
 
   ITEM_INFO added = item;
-  int index = 0;
-  for (; index < 10; ++index) {
+  bool merged = false;
+  for (int index = 0; index < 10; ++index) {
     if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].identity[1] == added.identity[1]) {
       this->m_exchangeItems[index].quantity += added.quantity;
+      merged = true;
       break;
     }
   }
 
-  if (index == 10) {
+  if (!merged) {
     for (int i = 0; i < 10; ++i) {
       if (this->m_exchangeItems[i].quantity == 0) {
         this->m_exchangeItems[i] = added;
