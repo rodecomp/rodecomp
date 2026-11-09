@@ -612,7 +612,10 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
     reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
     owner->questId = data.questId;
-    owner->stampImage->Show(g_renewQuestMgr->IsNewQuest(data.questId));
+    {
+      const bool isNew = g_renewQuestMgr->IsNewQuest(data.questId);
+      owner->stampImage->Show(isNew);
+    }
     break;
   case 3:
     owner->SetTitle(data.id);
@@ -996,10 +999,10 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 // OFFSET: 0x009DC950
 // FUNCTION: fn_14329
 void CUIAdventureGuide::OnInit() {
-  const char* title = LookupMessage(MSI_RUNESYSTEM_CLOSE_RODEX);
-  this->titleBar->SetTitle(title);
+  this->titleBar->SetTitle(LookupMessage(MSI_RUNESYSTEM_CLOSE_RODEX));
 
-  if (g_adventureGuideMgr->m_intros.empty()) {
+  CAdventureGuideMgr* mgr = g_adventureGuideMgr;
+  if (mgr->m_intros.empty()) {
     return;
   }
 
@@ -1014,42 +1017,43 @@ void CUIAdventureGuide::OnInit() {
   };
 
   const int level = g_session.m_level;
-  for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
+  for (const auto& [type, intro] : mgr->m_intros) {
     AdventureGuide::CUITab* tab = this->tabs->CreateItem();
     tab->type = type;
     tab->labelText->SetText(intro.text);
     tab->title = intro.title;
     tab->collapsedHeight = this->tabs->rowHeight;
 
-    auto page = pages.find(tab->type);
-    if (page != pages.end() && page->first == tab->type) {
+    auto page = pages.find(static_cast<int>(tab->type));
+    if (pages.end() != page) {
       tab->page = page->second;
     }
 
     if (!intro.details.empty()) {
       std::map<int, AdventureGuideDetail> details;
-      std::copy_if(intro.details.begin(), intro.details.end(), std::inserter(details, details.begin()),
+      std::copy_if(intro.details.begin(), intro.details.end(), std::inserter(details, details.end()),
                    [type, level](const std::pair<const int, AdventureGuideDetail>& entry) {
                      return g_adventureGuideMgr->IsAvailable(type, entry.first);
                    });
-      if (!details.empty()) {
-        CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->CreateSubTabList();
-        subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
-        for (const auto& [id, detail] : details) {
-          AdventureGuide::CUISubTab* subTab = subTabs->CreateItem();
-          subTab->labelText->SetText(detail.text);
-          subTab->id = id;
-          subTab->questId = detail.questId;
-          if (tab->type == 1) {
-            const bool isNew = g_renewQuestMgr->IsNewQuest(detail.questId);
-            subTab->stampImage->Show(isNew);
-            if (!isNew) {
-              g_renewQuestMgr->AddStatusRequest(detail.questId);
-            }
+      if (details.empty()) {
+        continue;
+      }
+      CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->CreateSubTabList();
+      subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
+      for (const auto& [id, detail] : details) {
+        AdventureGuide::CUISubTab* subTab = subTabs->CreateItem();
+        subTab->labelText->SetText(detail.text);
+        subTab->id = id;
+        subTab->questId = detail.questId;
+        if (tab->type == 1) {
+          const bool isNew = g_renewQuestMgr->IsNewQuest(detail.questId);
+          subTab->stampImage->Show(isNew);
+          if (!isNew) {
+            g_renewQuestMgr->AddStatusRequest(detail.questId);
           }
         }
-        tab->Resize(tab->geometry.width, this->tabs->rowHeight + subTabs->geometry.height);
       }
+      tab->Resize(tab->geometry.width, this->tabs->rowHeight + subTabs->geometry.height);
     }
   }
 
@@ -1177,10 +1181,13 @@ void CUICharacterInfo::OnCreate(int width, int height) {
   this->level->SetText("");
   this->level->SetFitText(0);
   this->level->SetAlign(0, 0);
-  const char levelFontSource[] = {'\xFE', '\x70', '\x1B', '\x26', '\x66', '\x1D'};
-  // GLOBAL: gl_25126
-  thread_local EncryptedName<sizeof(levelFontSource), 0x758F1D0B4F7705B9ULL> levelFont(levelFontSource);
-  this->level->SetFont(std::string(levelFont.Text()));
+  this->level->SetFont(std::string([]() {
+    constexpr char bytes[] = {'\xFE', '\x70', '\x1B', '\x26', '\x66', '\x1D'};
+    constexpr EncryptedSource<6> source(bytes);
+    // GLOBAL: gl_25126
+    thread_local EncryptedName<6, 0x758F1D0B4F7705B9ULL> levelFont(source);
+    return levelFont.Text();
+  }()));
   this->level->SetFontHeight(12);
   this->level->SetBold(0);
   this->level->SetColor(0);
@@ -1194,10 +1201,13 @@ void CUICharacterInfo::OnCreate(int width, int height) {
   this->jobLevel->SetText("");
   this->jobLevel->SetFitText(0);
   this->jobLevel->SetAlign(0, 0);
-  const char jobLevelFontSource[] = {'\x70', '\x32', '\xC1', '\x50', '\xD2', '\xE5'};
-  // GLOBAL: gl_25127
-  thread_local EncryptedName<sizeof(jobLevelFontSource), 0x17A9E5BF39AD4737ULL> jobLevelFont(jobLevelFontSource);
-  this->jobLevel->SetFont(std::string(jobLevelFont.Text()));
+  this->jobLevel->SetFont(std::string([]() {
+    constexpr char bytes[] = {'\x70', '\x32', '\xC1', '\x50', '\xD2', '\xE5'};
+    constexpr EncryptedSource<6> source(bytes);
+    // GLOBAL: gl_25127
+    thread_local EncryptedName<6, 0x17A9E5BF39AD4737ULL> jobLevelFont(source);
+    return jobLevelFont.Text();
+  }()));
   this->jobLevel->SetFontHeight(12);
   this->jobLevel->SetBold(0);
   this->jobLevel->SetColor(0);
@@ -1211,10 +1221,13 @@ void CUICharacterInfo::OnCreate(int width, int height) {
   this->name->SetText("");
   this->name->SetFitText(1);
   this->name->SetAlign(0, 0);
-  const char nameFontSource[] = {'\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'};
-  // GLOBAL: gl_25128
-  thread_local EncryptedName<sizeof(nameFontSource), 0x13E33FA1A591AB67ULL> nameFont(nameFontSource);
-  this->name->SetFont(std::string(nameFont.Text()));
+  this->name->SetFont(std::string([]() {
+    constexpr char bytes[] = {'\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'};
+    constexpr EncryptedSource<6> source(bytes);
+    // GLOBAL: gl_25128
+    thread_local EncryptedName<6, 0x13E33FA1A591AB67ULL> nameFont(source);
+    return nameFont.Text();
+  }()));
   this->name->SetFontHeight(12);
   this->name->SetBold(0);
   this->name->SetColor(0);
