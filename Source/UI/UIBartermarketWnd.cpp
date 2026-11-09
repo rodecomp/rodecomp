@@ -37,7 +37,6 @@
 // FUNCTION: fn_10567
 UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd()
     : UIFrameWnd(0) {
-  new (&this->entryListStorage) std::list<BarterMarketEntry>();
   this->resizer = nullptr;
   this->scrollBar = nullptr;
   this->firstRow = 0;
@@ -50,7 +49,6 @@ UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd()
 // FUNCTION: fn_10569
 UIExpandedBartermarketWnd::UIExpandedBartermarketWnd()
     : UIFrameWnd(0) {
-  new (&this->entryListStorage) std::list<BarterMarketEntry>();
   this->resizer = nullptr;
   this->scrollBar = nullptr;
   this->firstRow = 0;
@@ -114,7 +112,7 @@ void UIBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_10547
 std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
-    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+    return std::make_pair(false, BarterMarketItem());
   }
 
   const int row = (y - 17) / 32;
@@ -124,19 +122,19 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int 
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
-        return std::pair<bool, BarterMarketItem>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 // OFFSET: 0x00840FF0
 // FUNCTION: fn_10548
 std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
-    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+    return std::make_pair(false, BarterMarketItem());
   }
 
   const int column = (x - 40) / 32;
@@ -148,7 +146,7 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
         if (column == 0) {
-          return std::pair<bool, BarterMarketItem>(true, *it);
+          return std::make_pair(true, *it);
         }
         BarterMarketItem price;
         char buffer[100];
@@ -156,19 +154,19 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
         _itoa(it->field_2c, buffer, 10);
         price.name = buffer;
         price.field_1c = 20;
-        return std::pair<bool, BarterMarketItem>(true, price);
+        return std::make_pair(true, price);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 // OFFSET: 0x00841320
 // FUNCTION: fn_10549
 std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
-    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+    return std::make_pair(false, BarterMarketItem());
   }
 
   const int column = (x - 40) / 32;
@@ -180,7 +178,7 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
         if (column == 0) {
-          return std::pair<bool, BarterMarketItem>(true, *it);
+          return std::make_pair(true, *it);
         }
         BarterMarketItem price;
         char buffer[100];
@@ -188,19 +186,19 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
         _itoa(it->field_2c, buffer, 10);
         price.name = buffer;
         price.field_1c = 20;
-        return std::pair<bool, BarterMarketItem>(true, price);
+        return std::make_pair(true, price);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 // OFFSET: 0x00841650
 // FUNCTION: fn_10550
 std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
-    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+    return std::make_pair(false, BarterMarketItem());
   }
 
   const int row = (y - 17) / 32;
@@ -210,12 +208,12 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
-        return std::pair<bool, BarterMarketItem>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 
@@ -275,7 +273,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(i
   const int row = (y - 17) / 64;
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
         return std::pair<bool, BarterMarketEntry>(true, *it);
@@ -295,7 +293,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
 
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == (y - 17) / 64) {
         return std::pair<bool, BarterMarketEntry>(true, *it);
@@ -317,7 +315,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
   const int row = offsetY / 64;
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
         BarterMarketEntry entry;
@@ -356,7 +354,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
   const int row = offsetY / 64;
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
         BarterMarketEntry entry;
@@ -416,7 +414,7 @@ void UIExpandedBarterItemPurchaseWnd::UpdateScrollBar() {
   }
 
   const int rows = this->rowCount;
-  const int count = this->itemCount;
+  const int count = static_cast<int>(this->entries.size());
   int overflow = count - rows;
   if (overflow < 0) {
     overflow = 0;
@@ -456,7 +454,7 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
   }
 
   const int rows = this->rowCount;
-  const int count = this->itemCount;
+  const int count = static_cast<int>(this->entries.size());
   int overflow = count - rows;
   if (overflow < 0) {
     overflow = 0;
@@ -647,10 +645,10 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
   }
 
   case UM_REFRESHITEM: {
-    this->Entries().erase(this->Entries().begin(), this->Entries().end());
+    this->entries.erase(this->entries.begin(), this->entries.end());
     std::vector<BarterMarketEntry>* entries = g_expandedBarterMarketItemMgr->GetEntries();
     for (std::vector<BarterMarketEntry>::iterator it = entries->begin(); it != entries->end(); ++it) {
-      this->Entries().emplace_back(*it);
+      this->entries.emplace_back(*it);
     }
     this->Invalidate();
     this->UpdateScrollBar();
@@ -731,10 +729,10 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
 
   case UM_REFRESHITEM: {
-    this->Entries().clear();
+    this->entries.clear();
     std::vector<BarterMarketEntry>* items = g_expandedBarterMarketItemMgr->GetItems();
     for (std::vector<BarterMarketEntry>::iterator it = items->begin(); it != items->end(); ++it) {
-      this->Entries().push_back(*it);
+      this->entries.push_back(*it);
     }
     this->Invalidate();
     this->UpdateScrollBar();
@@ -797,6 +795,28 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   }
 }
 
+// INLINED
+__forceinline int UIBartermarketWnd::GetBarterItemIndexAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return -1;
+  }
+
+  const int column = std::min((x - 40) / 32, this->columns - 1);
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row + column) {
+        return index;
+      }
+      ++visible;
+    }
+  }
+  return -1;
+}
+
 // OFFSET: 0x00843270
 // FUNCTION: fn_10557
 void UIBartermarketWnd::OnLBtnDown(int x, int y) {
@@ -805,24 +825,8 @@ void UIBartermarketWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->hovered;
-  int hovered = -1;
-  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->visibleRows * 32 + 17) {
-    const int column = std::min((x - 40) / 32, this->columns - 1);
-    int visible = 0;
-    int index = 0;
-    std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
-    for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
-      if (index >= this->scroll * this->columns) {
-        if (visible == this->columns * ((y - 17) / 32) + column) {
-          hovered = index;
-          break;
-        }
-        ++visible;
-      }
-    }
-  }
-  this->hovered = hovered;
-  if (previous != hovered) {
+  this->hovered = this->GetBarterItemIndexAt(x, y);
+  if (previous != this->hovered) {
     this->Invalidate();
   }
 
@@ -860,6 +864,26 @@ void UIBartermarketWnd::OnRBtnDown(int x, int y) {
   }
 }
 
+// INLINED
+__forceinline int UIExpandedBarterItemPurchaseWnd::GetEntryIndexAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+    return -1;
+  }
+
+  const int row = (y - 17) / 64;
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
+    if (index >= this->firstRow) {
+      if (visible == row) {
+        return index;
+      }
+      ++visible;
+    }
+  }
+  return -1;
+}
+
 // OFFSET: 0x008481E0
 // FUNCTION: fn_10587
 void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
@@ -868,23 +892,8 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->hoveredRow;
-  int hovered = -1;
-  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->rowCount * 64 + 17) {
-    const int row = (y - 17) / 64;
-    int visible = 0;
-    int index = 0;
-    for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
-      if (index >= this->firstRow) {
-        if (visible == row) {
-          hovered = index;
-          break;
-        }
-        ++visible;
-      }
-    }
-  }
-  this->hoveredRow = hovered;
-  if (previous != hovered) {
+  this->hoveredRow = this->GetEntryIndexAt(x, y);
+  if (previous != this->hoveredRow) {
     this->Invalidate();
   }
 
@@ -896,6 +905,26 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   }
 }
 
+// INLINED
+__forceinline int UIExpandedBartermarketWnd::GetEntryIndexAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+    return -1;
+  }
+
+  const int row = (y - 17) / 64;
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
+    if (index >= this->firstRow) {
+      if (visible == row) {
+        return index;
+      }
+      ++visible;
+    }
+  }
+  return -1;
+}
+
 // OFFSET: 0x00848320
 // FUNCTION: fn_10588
 void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
@@ -904,23 +933,8 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->hoveredRow;
-  int hovered = -1;
-  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->rowCount * 64 + 17) {
-    const int row = (y - 17) / 64;
-    int visible = 0;
-    int index = 0;
-    for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
-      if (index >= this->firstRow) {
-        if (visible == row) {
-          hovered = index;
-          break;
-        }
-        ++visible;
-      }
-    }
-  }
-  this->hoveredRow = hovered;
-  if (previous != hovered) {
+  this->hoveredRow = this->GetEntryIndexAt(x, y);
+  if (previous != this->hoveredRow) {
     this->Invalidate();
   }
 
@@ -1413,39 +1427,35 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x00846FB0
 // FUNCTION: fn_10583
 void UIExpandedBarterItemPurchaseWnd::OnCreate(int width, int height) {
-  UIResizer* resizer = new UIResizer();
-  this->resizer = resizer;
-  resizer->SetSize(16, 16);
-  resizer->SetDirection(3);
-  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
-  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
-  this->AddChild(resizer);
+  this->resizer = new UIResizer();
+  this->resizer->SetSize(16, 16);
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
 
-  UIScrollBar* scrollBar = new UIScrollBar();
-  this->scrollBar = scrollBar;
-  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
-  this->AddChild(scrollBar);
+  this->scrollBar = new UIScrollBar();
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
+  this->AddChild(this->scrollBar);
 
-  UIExpandedBarterPurchaseButton* buyButton = new UIExpandedBarterPurchaseButton();
-  this->buyButton = buyButton;
-  buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
-  buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
-  buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
-  buyButton->SetSize(buyButton->BitmapWidth(), buyButton->BitmapHeight());
-  buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
-  buyButton->SetId(184);
-  this->AddChild(buyButton);
+  this->buyButton = new UIExpandedBarterPurchaseButton;
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
+  this->buyButton->SetSize(this->buyButton->BitmapWidth(), this->buyButton->BitmapHeight());
+  this->buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
+  this->buyButton->SetId(184);
+  this->AddChild(this->buyButton);
 
-  UIBitmapButton* cancelButton = new UIBitmapButton();
-  this->cancelButton = cancelButton;
-  cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
-  cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
-  cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
-  cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
-  cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
-  cancelButton->SetId(185);
-  this->AddChild(cancelButton);
+  this->cancelButton = new UIBitmapButton();
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
+  this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
+  this->cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
+  this->cancelButton->SetId(185);
+  this->AddChild(this->cancelButton);
 
   this->rowCount = (height - 46) / 64;
 
@@ -1828,7 +1838,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
 
   int visible = 0;
   int index = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index < this->firstRow) {
       continue;
     }
@@ -1843,9 +1853,11 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(red, green, blue));
     }
 
-    const ITEM_INFO item = it->ToItemInfo();
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, item, 0, 0);
-    this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, it->ToItemInfo(), 0, 0);
+    {
+      const ITEM_INFO item = it->ToItemInfo();
+      this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
+    }
 
     if (it->field_28 > 0) {
       std::uint32_t color = 0xFFFFFF;
@@ -1913,7 +1925,7 @@ void UIExpandedBartermarketWnd::Paint() {
 
   int visible = 0;
   int index = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index < this->firstRow) {
       continue;
     }

@@ -30,11 +30,9 @@ public:
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
-  // INLINED
-  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->entryListStorage); }
+  int GetEntryIndexAt(int x, int y);
 
-  /* 00B4 */ int entryListStorage;
-  /* 00B8 */ int itemCount;
+  /* 00B4 */ std::list<BarterMarketEntry> entries;
   /* 00BC */ UIResizer* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
   /* 00C4 */ int firstRow;
@@ -59,11 +57,9 @@ public:
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
-  // INLINED
-  std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->entryListStorage); }
+  int GetEntryIndexAt(int x, int y);
 
-  /* 00B4 */ int entryListStorage;
-  /* 00B8 */ int itemCount;
+  /* 00B4 */ std::list<BarterMarketEntry> entries;
   /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
   /* 00C4 */ int firstRow;
@@ -100,6 +96,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
+  int GetBarterItemIndexAt(int x, int y);
 };
 
 class UIPurchaseButton : public UIBitmapButton {
