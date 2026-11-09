@@ -1275,14 +1275,15 @@ void CSkillAction_AT_ROARING_PIERCER::OnSkillEffect(int level, CGameActor* sourc
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::uint8_t bytes[] = {0xBB, 0xD8, 0x44, 0xE5, 0xD2, 0x5D, 0xE4, 0x58, 0xB9, 0xDE, 0x40, 0xE5, 0xD8, 0x56, 0xF1, 0x58,
-                                      0xAE, 0xB7};
-        thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
-        return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xBB, 0xD8, 0x44, 0xE5, 0xD2, 0x5D, 0xE4, 0x58, 0xB9, 0xDE, 0x40, 0xE5, 0xD8, 0x56, 0xF1, 0x58,
+                                  0xAE, 0xB7};
+    thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
+    return name.Text();
+  }());
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
     effect->SetAngle(angle);
   }
@@ -1299,14 +1300,15 @@ void CSkillAction_AT_ROARING_PIERCEER_S::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::uint8_t bytes[] = {0xC7, 0x1A, 0x00, 0x2D, 0x94, 0x35, 0x7C, 0xD0, 0xC5, 0x1C, 0x04, 0x2D, 0x9E, 0x3E, 0x69, 0xD0,
-                                      0xCC, 0x75};
-        thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
-        return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xC7, 0x1A, 0x00, 0x2D, 0x94, 0x35, 0x7C, 0xD0, 0xC5, 0x1C, 0x04, 0x2D, 0x9E, 0x3E, 0x69, 0xD0,
+                                  0xCC, 0x75};
+    thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
+    return name.Text();
+  }());
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
     effect->SetAngle(angle);
   }
