@@ -2468,7 +2468,7 @@ void UIMenuWnd::Move(int x, int y) {
   if (x > g_renderer->viewport.width - this->geometry.width) {
     x += -2 - this->geometry.width;
   }
-  this->geometry.Move(x, y);
+  UIWindow::Move(x, y);
 }
 
 // OFFSET: 0x008DB030
@@ -6062,7 +6062,7 @@ void UIItemIdentifyWnd::UpdateScroll() {
 // OFFSET: 0x00909CD0
 // FUNCTION: fn_12398
 void UIPasswordWnd::Show(int visible) {
-  this->geometry.Show(visible);
+  this->geometry.visible = visible;
 }
 
 // OFFSET: 0x00907610
@@ -6072,8 +6072,11 @@ int UIToolTipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == ID_OK || argument1 == ID_CANCEL) {
+  switch (argument1) {
+  case ID_OK:
+  case ID_CANCEL:
     g_windowMgr.Schedule(this);
+    break;
   }
 
   return 0;
@@ -6137,10 +6140,13 @@ int UINoticeConfirmWnd::SendMsg(
 ) {
   switch (message) {
   case UM_COMMAND: {
-    if (argument1 == ID_OK) {
+    switch (argument1) {
+    case ID_OK:
       g_modeMgr.gameMode->SendMsg(this->m_event, 0, 0, 0, 0);
-    } else if (argument1 == ID_CANCEL) {
+      break;
+    case ID_CANCEL:
       g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+      break;
     }
 
     return 0;
