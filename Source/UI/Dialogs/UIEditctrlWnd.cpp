@@ -165,9 +165,10 @@ void UIEditctrlWnd::OnCreate(int, int) {
   this->edit->Background(232, 232, 232);
   this->edit->Border(200, 100, 100);
   this->edit->flat = 0;
+  UIEditCtrl* edit = this->edit;
   const char* tooltip = LookupMessage(MSI_EA7);
   if (tooltip) {
-    this->edit->tooltip = tooltip;
+    edit->tooltip = tooltip;
   }
   this->AddChild(this->edit);
   g_windowMgr.SetFocus(this->edit);
