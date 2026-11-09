@@ -91,7 +91,7 @@ CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture) : CT
     }
     this->m_format = format;
 
-    this->m_width = this->m_height = this->m_description.Width;
+    this->m_height = this->m_width = this->m_description.Width;
   }
 }
 

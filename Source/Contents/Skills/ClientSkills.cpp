@@ -493,12 +493,12 @@ void CSession::ClearUnknown0420() {
 // FUNCTION: fn_23760
 void CSession::EraseUnknownKey(std::int64_t key) {
   auto first = this->summonHp.find(key);
-  if (first != this->summonHp.end()) {
+  if (this->summonHp.end() != first) {
     this->summonHp.erase(first);
   }
 
   auto second = this->summonMaxHp.find(key);
-  if (second != this->summonMaxHp.end()) {
+  if (this->summonMaxHp.end() != second) {
     this->summonMaxHp.erase(second);
   }
 }

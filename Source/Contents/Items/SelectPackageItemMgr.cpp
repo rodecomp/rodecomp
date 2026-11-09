@@ -24,7 +24,7 @@ CSelectPackageItemMgr::CSelectPackageItemMgr() {
 // OFFSET: 0x0061EC30
 // FUNCTION: fn_04445
 void CSelectPackageItemMgr::AddTab(int packageId, int tabIndex, const std::string& name, int itemCount) {
-  if (this->m_packages.find(packageId) == this->m_packages.end()) {
+  if (this->m_packages.end() == this->m_packages.find(packageId)) {
     this->m_packages[packageId] = std::map<int, SelectPackageTab>();
   }
 

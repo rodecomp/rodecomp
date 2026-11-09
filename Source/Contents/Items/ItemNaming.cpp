@@ -93,26 +93,25 @@ bool ITEM_INFO::HasCards() const {
 // FUNCTION: fn_06577
 __declspec(noinline) int ITEM_INFO::Grade(char* output, int& capacity, unsigned char consume) const {
   char grade[2] = {};
-  if (this->grade == 1) {
+  if (1 == this->grade) {
     grade[0] = 'D';
-  } else if (this->grade == 2) {
+  } else if (2 == this->grade) {
     grade[0] = 'C';
-  } else if (this->grade == 3) {
+  } else if (3 == this->grade) {
     grade[0] = 'B';
-  } else if (this->grade == 4) {
+  } else if (4 == this->grade) {
     grade[0] = 'A';
   }
 
   const int bytes = StringFormat(output, capacity, _TRUNCATE, "[%s] ", grade);
-  if (bytes <= 0) {
-    return 0;
+  if (bytes > 0) {
+    if (consume) {
+      capacity -= bytes;
+    }
+    return bytes;
   }
 
-  if (consume) {
-    capacity -= bytes;
-  }
-
-  return bytes;
+  return 0;
 }
 
 // OFFSET: 0x006D6C10

@@ -214,7 +214,7 @@ CTagData* CRuneSystemMgr::GetTag(int tagId) {
 // OFFSET: 0x00766B60
 // FUNCTION: fn_08121
 CTagData* CRuneSystemMgr::GetTagByIndex(int index) {
-  if (index < 0 || static_cast<unsigned int>(index) >= this->m_tags.size()) {
+  if (index < 0 || this->m_tags.size() <= index) {
     return nullptr;
   }
 
