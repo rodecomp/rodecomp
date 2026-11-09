@@ -1007,8 +1007,8 @@ bool CWhirlwindEffect::OnProcess() {
   EffectActor* parent = this->state.parent;
   const std::map<int, std::int64_t>& values = parent->render.instant.Values();
   const auto entry = values.find(25);
-  const int angle = static_cast<int>(entry == values.end() ? 0 : entry->second);
-  parent->render.angle = static_cast<float>(angle) / 1000.0f;
+  const std::int64_t angle = entry == values.end() ? 0 : entry->second;
+  parent->render.angle = static_cast<float>(static_cast<int>(angle)) / 1000.0f;
   return false;
 }
 
