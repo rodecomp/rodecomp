@@ -1247,10 +1247,12 @@ void CSkillAction_DR_CRUEL_BITE::OnSkillEffect(int level, CGameActor* source, CG
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
-  const char effectSource[] = {'\xC2', '\x4F', '\xEA', '\xB2', '\x0F', '\xD0', '\x45', '\x30', '\xD5', '\x58', '\x9F'};
-  thread_local EncryptedName<sizeof(effectSource), 0x59278F63D79F3DA1ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\xC2', '\x4F', '\xEA', '\xB2', '\x0F', '\xD0', '\x45', '\x30', '\xD5', '\x58', '\x9F'};
+    thread_local EncryptedName<sizeof(bytes), 0x59278F63D79F3DA1ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006215E0
