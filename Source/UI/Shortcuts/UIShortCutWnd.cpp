@@ -702,13 +702,15 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
       }
 
-      const int height = static_cast<int>((std::min)(this->fieldNames.size() * 16, 160u));
+      const int height = static_cast<int>((std::min)(160u, this->fieldNames.size() * 16));
       menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       menu->Resize(width, height);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 140, 0, 0, 0);
 
-      const int menuY = this->geometry.height - (y + 1) - height >= 0 ? y + 1 : this->geometry.height - height;
-      const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
+      const int below = y + 1;
+      const int right = x + 2;
+      const int menuY = this->geometry.height - below - height >= 0 ? below : this->geometry.height - height;
+      const int menuX = this->geometry.width - right - width >= 0 ? right : this->geometry.width - width;
       menu->Move(menuX, menuY);
     }
   } else if (this->selectedRecord) {
