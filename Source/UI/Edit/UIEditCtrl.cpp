@@ -3084,58 +3084,57 @@ void UIMerchantShopMakeWnd::OnProcess() {
     }
   }
 
-  if (this->editIndex != index) {
+  if (this->editIndex == index) {
+    if (index == -1) {
+      return;
+    }
+
+    const int length = this->priceEdits[index]->Length();
+    if (length == this->previousPriceLength) {
+      return;
+    }
+    this->previousPriceLength = length;
+    if (!length) {
+      return;
+    }
+
+    UIEditCtrl* edit = this->priceEdits[index];
+    char text[24];
+    std::sprintf(text, "%s ", edit->Text());
+    if (!g_session.IsNumberWithCommas(text)) {
+      g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
+      edit->SetText(this->previousPriceText.c_str());
+      g_windowMgr.SetFocus(edit);
+      return;
+    }
+
+    std::int64_t price = _atoi64(text);
+    if (price < 0) {
+      price = 0;
+    } else if (price > 1000000000) {
+      const int result = g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0);
+      price = 1000000000;
+      if (result == 187) {
+        edit->SetText(_itoa(1000000000, text, 10));
+      } else {
+        edit->SetText(_itoa(1000000000, text, 10));
+        g_windowMgr.SetFocus(edit);
+      }
+    }
+
+    const PriceColors colors = PriceColor(price);
+    edit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
+    edit->SetText(FormatGroupedInteger(price, text, sizeof(text)));
+    this->previousPriceText = this->priceEdits[index]->Text();
+    this->previousPriceLength = this->priceEdits[index]->Length();
+    edit->SetCursor(edit->Length());
+  } else {
     if (index != -1) {
       this->previousPriceText = this->priceEdits[index]->Text();
     }
     this->CommitPrice(index);
     this->InvalidateChildren();
-    return;
   }
-
-  if (index == -1) {
-    return;
-  }
-
-  const int length = this->priceEdits[index]->Length();
-  if (length == this->previousPriceLength) {
-    return;
-  }
-  this->previousPriceLength = length;
-  if (!length) {
-    return;
-  }
-
-  UIEditCtrl* edit = this->priceEdits[index];
-  char text[24];
-  std::sprintf(text, "%s ", edit->Text());
-  if (!g_session.IsNumberWithCommas(text)) {
-    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
-    edit->SetText(this->previousPriceText.c_str());
-    g_windowMgr.SetFocus(edit);
-    return;
-  }
-
-  std::int64_t price = _atoi64(text);
-  if (price < 0) {
-    price = 0;
-  } else if (price > 1000000000) {
-    const int result = g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0);
-    price = 1000000000;
-    if (result == 187) {
-      edit->SetText(_itoa(1000000000, text, 10));
-    } else {
-      edit->SetText(_itoa(1000000000, text, 10));
-      g_windowMgr.SetFocus(edit);
-    }
-  }
-
-  const PriceColors colors = PriceColor(price);
-  edit->TextColor(colors.primary, colors.secondary);
-  edit->SetText(FormatGroupedInteger(price, text, sizeof(text)));
-  this->previousPriceText = this->priceEdits[index]->Text();
-  this->previousPriceLength = this->priceEdits[index]->Length();
-  edit->SetCursor(edit->Length());
 }
 
 // OFFSET: 0x00988C20
@@ -4018,7 +4017,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   }
 
   const PriceColors colors = PriceColor(price);
-  edit->TextColor(colors.primary, colors.secondary);
+  edit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
   FormatGroupedInteger(price, text, sizeof(text));
   edit->SetText(text);
 
@@ -4028,7 +4027,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     return 1;
   }
 
-  this->priceEdits[next]->TextColor(0, 0xFFFFFFFF);
+  this->priceEdits[next]->TextColor(0, 0, 0, 0xFFFFFFFF);
   g_windowMgr.SetFocus(this->priceEdits[next]);
   this->priceEdits[next]->SelectAll();
   return 1;
