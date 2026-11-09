@@ -10200,13 +10200,13 @@ void CRagEffect::NapalmFragments() {
 
   this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.currentPrimitive->duration = 30;
-  const int distance = std::max(rand() % 50, 0) + 10;
+  const int distance = ClampedRandom(50) + 10;
   const float radius = static_cast<float>(distance);
-  const float angle = static_cast<float>(std::max(rand() % 360, 0));
+  const float angle = static_cast<float>(ClampedRandom(360));
   this->state.currentPrimitive->deltaPos2.x = ClientSine(static_cast<int>(angle)) * radius;
   this->state.currentPrimitive->deltaPos2.y = ClientCosine(static_cast<int>(angle)) * -static_cast<float>(distance);
   this->state.currentPrimitive->deltaPos2.y -= 20.0f;
-  const float size = static_cast<float>(std::max(rand() % 40, 0) + 20);
+  const float size = static_cast<float>(ClampedRandom(40) + 20);
   this->state.currentPrimitive->heightSize = size;
   this->state.currentPrimitive->widthSize = size;
   this->state.currentPrimitive->alpha = 0.0f;
@@ -10216,13 +10216,13 @@ void CRagEffect::NapalmFragments() {
   this->state.currentPrimitive->repeatAnim = 0;
   this->state.currentPrimitive->animSpeed = 2;
   this->state.currentPrimitive->totalTexture = 8;
-  AllocateTextures(*this->state.currentPrimitive);
+  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   for (int index = 0; index < static_cast<int>(this->state.currentPrimitive->totalTexture); ++index) {
     char name[128];
     std::sprintf(name, "effect\\폭발%d.TGA", index + 1);
     this->state.currentPrimitive->textures[index] = g_texMgr.Load(name, 0, false, true, false);
   }
-  this->state.currentPrimitive->slots[0].flag1[0] = 0;
+  this->state.currentPrimitive->slots[0].life = 0;
 }
 
 // OFFSET: 0x00C20240
