@@ -1727,7 +1727,10 @@ bool CUIGraphicsPage::IsModified() {
   if (!graphics->m_mode.Matches(graphics->m_pendingMode)) {
     return true;
   }
-  return this->m_fullscreen->m_onButton->checked != (g_configuredFullscreen != 0);
+  if (this->m_fullscreen->m_onButton->checked != static_cast<bool>(g_configuredFullscreen)) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00A40270
@@ -2017,21 +2020,17 @@ void SetNormalProcessPriority() {
 // OFFSET: 0x00A421E0
 // FUNCTION: fn_16013
 void CUIGameSettingsUI::UpdateApplyButton() {
-  bool visible = false;
-  if (this->m_tab->current && this->m_tab->current->geometry.id == 3) {
-    GameSettingsUI::CUIGraphicsPage* page = this->m_graphicsPage;
-    if (page->IsModified() || page->m_spriteDetailLevel->m_slider->position != g_effectDetailLevel ||
-        page->m_textureDetailLevel->m_slider->position != g_textureDetailLevel ||
-        page->m_trilinear->m_onButton->checked != (g_textureFiltering != 0)) {
-      visible = true;
-    }
-  }
+  GameSettingsUI::CUIGraphicsPage* page = this->m_graphicsPage;
+  const bool visible = this->m_tab->current && this->m_tab->current->geometry.id == 3 &&
+                       (page->IsModified() || page->m_spriteDetailLevel->m_slider->position != g_effectDetailLevel ||
+                        page->m_textureDetailLevel->m_slider->position != g_textureDetailLevel ||
+                        page->m_trilinear->m_onButton->checked != static_cast<bool>(g_textureFiltering));
   this->m_applyButton->Show(visible);
 }
 
 // OFFSET: 0x00A41E10
 // FUNCTION: fn_45466
-void CUIGameSettingsUI::SelectTab4() {
+__declspec(noinline) void CUIGameSettingsUI::SelectTab4() {
   this->m_tab->Select(static_cast<CUITabButton*>(this->m_tab->FindChildById(4)));
 }
 
