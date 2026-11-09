@@ -733,32 +733,30 @@ namespace myGPack {
   bool CGPakUpdate::CopyEntry(const PakName& name) {
     PakEntry entry;
 
-    for (CGPakRead* source : this->m_sources) {
-      if (!source->Find(name, &entry)) {
-        continue;
+    for (auto& source : this->m_sources) {
+      if (source->Find(name, &entry) == true) {
+        std::vector<std::uint8_t> buffer(entry.compressedSize);
+        if (!source->ReadEntry(&entry, buffer.data())) {
+          return false;
+        }
+
+        const std::uint64_t offset = this->Allocate(entry.alignedSize);
+        if (!this->m_output.Write(offset, buffer.data(), entry.alignedSize)) {
+          return false;
+        }
+
+        entry.dataOffset = offset - kPakHeaderSize;
+
+        auto found = std::lower_bound(this->m_entries.begin(), this->m_entries.end(), entry.name,
+                                      [](const PakEntry& candidate, const PakName& key) { return candidate.name < key; });
+        if (found != this->m_entries.end() && found->name == entry.name) {
+          *found = entry;
+        } else {
+          this->m_added.push_back(entry);
+        }
+
+        return true;
       }
-
-      std::vector<std::uint8_t> buffer(entry.compressedSize);
-      if (!source->ReadEntry(&entry, buffer.data())) {
-        return false;
-      }
-
-      const std::uint64_t offset = this->Allocate(entry.alignedSize);
-      if (!this->m_output.Write(offset, buffer.data(), entry.alignedSize)) {
-        return false;
-      }
-
-      entry.dataOffset = offset - kPakHeaderSize;
-
-      auto found = std::lower_bound(this->m_entries.begin(), this->m_entries.end(), entry.name,
-                                    [](const PakEntry& candidate, const PakName& key) { return candidate.name < key; });
-      if (found != this->m_entries.end() && found->name == entry.name) {
-        *found = entry;
-      } else {
-        this->m_added.push_back(entry);
-      }
-
-      return true;
     }
 
     return false;
