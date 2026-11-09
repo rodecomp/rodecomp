@@ -208,13 +208,13 @@ void CPowderingEffect::OnProcess() {
     } else if (particle->animationState == 1) {
       alpha -= step;
       if (alpha < 0) {
-        if (this->ActorExists()) {
+        if (!this->ActorExists()) {
+          alpha = 0;
+          particle->animationState = 2;
+        } else {
           particle->animationState = 0;
           this->InitSmokeParticle(particle);
           continue;
-        } else {
-          alpha = 0;
-          particle->animationState = 2;
         }
       }
     }
@@ -255,13 +255,13 @@ void CPowderingEffect::OnProcess() {
     } else if (particle->animationState == 1) {
       alpha -= std::max(rand() % 30, 0);
       if (alpha < 0) {
-        if (this->ActorExists()) {
+        if (!this->ActorExists()) {
+          alpha = 0;
+          particle->animationState = 2;
+        } else {
           particle->animationState = 0;
           this->InitSpriteParticle(particle);
           continue;
-        } else {
-          alpha = 0;
-          particle->animationState = 2;
         }
       }
     }
