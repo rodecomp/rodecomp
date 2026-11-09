@@ -473,13 +473,13 @@ void UIEditCtrl::PaintText() {
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768
 int UIEditCtrl::Length() const {
-  return static_cast<int>(g_windowMgr.hoverWindow == this ? g_serverLanguage->text.size() : this->text.size());
+  return static_cast<int>(g_windowMgr.GetHoverWindow() == this ? g_serverLanguage->text.size() : this->text.size());
 }
 
 // OFFSET: 0x00858D20
 // FUNCTION: fn_10767
-const char* UIEditCtrl::Text() {
-  if (g_windowMgr.hoverWindow == this) {
+__declspec(noinline) const char* UIEditCtrl::Text() {
+  if (g_windowMgr.GetHoverWindow() == this) {
     this->Synchronize();
   }
 
