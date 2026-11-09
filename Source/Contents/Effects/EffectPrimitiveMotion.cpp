@@ -4452,42 +4452,7 @@ bool CEffectPrim::PrimDriftingSquares() {
       }
     }
 
-    for (int pair = 0; pair < 8; ++pair) {
-      float& current = slot.height[2 * pair];
-      float& target = slot.height[2 * pair + 1];
-      int next;
-      if (target > current) {
-        current += 3.0f;
-        if (current > 359.0f) {
-          current = 359.0f;
-        }
-        if (current <= target) {
-          continue;
-        }
-        const int range = static_cast<int>(current);
-        next = 0;
-        if (range != 0) {
-          const int value = std::rand() % range;
-          next = value >= 0 ? value : 0;
-        }
-      } else {
-        current -= 2.0f;
-        if (current < 0.0f) {
-          current = 0.0f;
-        }
-        if (target < current) {
-          continue;
-        }
-        const int range = static_cast<int>(current);
-        int pick = 0;
-        if (range != 0) {
-          const int value = std::rand() % range;
-          pick = value >= 0 ? value : 0;
-        }
-        next = 359 - pick;
-      }
-      target = static_cast<float>(next);
-    }
+    DriftSlotAngles(slot, 8, 3.0f, 2.0f);
 
     const char mode = slot.flag1[0];
     if (mode == 1) {
