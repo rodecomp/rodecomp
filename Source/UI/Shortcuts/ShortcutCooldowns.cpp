@@ -271,7 +271,7 @@ __forceinline void PaintCooldowns(
 // FUNCTION: fn_12673
 void UIRebirthWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox1.bmp")));
-  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawBitmap(0, 0, background, false);
 }
 
 // OFFSET: 0x0092DE20
