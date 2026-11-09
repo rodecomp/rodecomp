@@ -145,7 +145,7 @@ void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
 - Read `td_disassemble` as ground truth and `td_decompile` as a starting point, not a specification.
 - Run `td_check` on each changed translation unit independently while fixing compilation errors.
 - After changing a header, check its includers before submitting. Compile using `data/compile.json`; Clank does
-  not run CMake, CTest or a complete application link during these checks.
+  not run CTest or a complete application link during these checks.
 - Validate the exact proposed payload against clean current server main, without unrelated working-tree
   changes. Include the real prerequisite interfaces, implementations and affected callers, or land them first.
 - Preserve functions that already match. Fix compile errors and structural differences; byte identity is a

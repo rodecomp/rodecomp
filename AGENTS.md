@@ -93,6 +93,10 @@ td sync
    `td compile --out build/exe` incrementally builds the whole working tree and
    links `Ragexe.exe` plus its PDB, exposing cross-unit/link errors. It neither
    compares against the original nor replaces `td check`; test the executable too.
+   For an IDE, `python scripts/exe/gen_ide.py` generates `build/Ragexe.sln` (Visual Studio:
+   Build runs the same build as `td compile`, Debug starts the exe) and
+   `build/editor-x86/compile_commands.json` (clangd, VS Code, CLion) from `data/compile.json`.
+   Rerun it after `td sync`; the files are git-ignored and never edited by hand.
 6. **`td_submit` tool** (or `td submit` CLI) the whole region as one batch. The server compiles it once:
    - **byte-identical** functions merge **automatically**;
    - **not byte-identical but compiling** goes to **peer review**: it merges once
@@ -258,7 +262,7 @@ annotation is removed from main. IDs remain reserved; unrelated symbols must not
 
 ## Ragnarok target
 
-Use only this workspace’s configured server and clank-together MCP. The project is rodecomp, version 2026-02-19. Preserve existing stable IDs and permitted OFFSET/STATIC provenance comments, except OFFSET annotations attached to inline-only functions. Missing original evidence is a blocker to a verdict, not permission to invent behavior. The source contains subsystem libraries, not a completed standalone game. Clank compiles individual units from data/compile.json; it does not run CMake or CTest during checks.
+Use only this workspace’s configured server and clank-together MCP. The project is rodecomp, version 2026-02-19. Preserve existing stable IDs and permitted OFFSET/STATIC provenance comments, except OFFSET annotations attached to inline-only functions. Missing original evidence is a blocker to a verdict, not permission to invent behavior. The source contains subsystem libraries, not a completed standalone game. Clank compiles individual units from data/compile.json; it does not run CTest during checks.
 
 ## td binary
 > td --help
