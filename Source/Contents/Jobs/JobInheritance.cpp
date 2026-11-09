@@ -254,6 +254,33 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_TROUVERE:
   case JT_HYPER_NOVICE:
     return shield == 1;
+  case JT_SWORDMAN:
+  case JT_KNIGHT:
+  case JT_CRUSADER:
+  case JT_SWORDMAN_H:
+  case JT_KNIGHT_H:
+  case JT_CRUSADER_H:
+  case JT_SWORDMAN_B:
+  case JT_KNIGHT_B:
+  case JT_CRUSADER_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_ROYAL_GUARD_B:
+  case JT_DRAGON_KNIGHT:
+  case JT_IMPERIAL_GUARD:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    switch (shield) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    }
+    return false;
   case JT_ACOLYTE:
   case JT_MERCHANT:
   case JT_THIEF:
@@ -304,27 +331,8 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
       return true;
     }
     return false;
-  case JT_SWORDMAN:
-  case JT_KNIGHT:
-  case JT_CRUSADER:
-  case JT_SWORDMAN_H:
-  case JT_KNIGHT_H:
-  case JT_CRUSADER_H:
-  case JT_SWORDMAN_B:
-  case JT_KNIGHT_B:
-  case JT_CRUSADER_B:
-  case JT_RUNE_KNIGHT:
-  case JT_RUNE_KNIGHT_H:
-  case JT_ROYAL_GUARD:
-  case JT_ROYAL_GUARD_H:
-  case JT_RUNE_KNIGHT_B:
-  case JT_ROYAL_GUARD_B:
   case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
-  case JT_DRAGON_KNIGHT:
-  case JT_IMPERIAL_GUARD:
-  case JT_DRAGON_KNIGHT_CHICKEN:
-  case JT_IMPERIAL_GUARD_CHICKEN:
   case JT_SPIRIT_HANDLER:
     switch (shield) {
     case 1:
@@ -728,10 +736,10 @@ void CSession::InitializeSkillTree() {
     int group = 1;
     if (inherited == JT_NOVICE || this->InheritedJob(index + 1) == JT_NOVICE || inherited == JT_DO_SUMMONER || inherited == JT_DO_SUMMONER_B) {
       group = 0;
-    } else if (this->IsTreeGroupTwo(inherited) || inherited == JT_STAR_EMPEROR || inherited == JT_SOUL_REAPER || inherited == JT_STAR_EMPEROR_B ||
+    } else if (this->IsTreeGroupTwo(inherited) == 1 || inherited == JT_STAR_EMPEROR || inherited == JT_SOUL_REAPER || inherited == JT_STAR_EMPEROR_B ||
       inherited == JT_SOUL_REAPER_B) {
       group = 2;
-    } else if (this->IsTreeGroupThree(inherited)) {
+    } else if (this->IsTreeGroupThree(inherited) == true) {
       group = 3;
     }
 
@@ -1199,7 +1207,7 @@ std::string GetJobTitleString(int job) {
 
 // OFFSET: 0x00E19530
 // FUNCTION: fn_23841
-int __stdcall GetWeaponViewValue(int weapon) {
+__declspec(noinline) int __stdcall GetWeaponViewValue(int weapon) {
   const int value = FindItemDescription(weapon).viewId;
 
   if (weapon > 2100 && weapon < 2200 || static_cast<unsigned>(weapon - 28901) <= 0x61 || static_cast<unsigned>(weapon - 460000) <= 0x270F) {
@@ -1216,9 +1224,7 @@ int __stdcall GetDualWieldWeaponType(int first, int second) {
   int result = 0;
   int sub;
 
-  if (first != 0) {
-    sub = second;
-  } else {
+  if (first == 0) {
     main = second;
 
     if (second == 0) {
@@ -1226,6 +1232,8 @@ int __stdcall GetDualWieldWeaponType(int first, int second) {
     }
 
     sub = 0;
+  } else {
+    sub = second;
   }
 
   if (main >= 1100 && main < 1150 || main >= 13400 && main < 13500 || static_cast<unsigned>(main - 500000) <= 0x270F) {
@@ -1233,48 +1241,28 @@ int __stdcall GetDualWieldWeaponType(int first, int second) {
 
     if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || static_cast<unsigned>(sub - 500000) <= 0x270F) {
       return 26;
+    } else if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 ||
+      static_cast<unsigned>(sub - 510000) <= 0x270F) {
+      return 28;
+    } else if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
+      return 30;
     }
-
-    if ((sub < 1200 || sub >= 1250) && (sub < 13000 || sub >= 13100) && (sub < 28700 || sub >= 28900) &&
-      static_cast<unsigned>(sub - 510000) > 0x270F) {
-      if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
-        return 30;
-      }
-
-      return result;
-    }
-
-    return 28;
-  }
-
-  if (main >= 1200 && main < 1250 || main >= 13000 && main < 13100 || main >= 28700 && main < 28900 ||
+  } else if (main >= 1200 && main < 1250 || main >= 13000 && main < 13100 || main >= 28700 && main < 28900 ||
     static_cast<unsigned>(main - 510000) <= 0x270F) {
     result = 1;
 
-    if ((sub < 1100 || sub >= 1150) && (sub < 13400 || sub >= 13500) && static_cast<unsigned>(sub - 500000) > 0x270F) {
-      if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 ||
-        static_cast<unsigned>(sub - 510000) <= 0x270F) {
-        return 25;
-      }
-
-      if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
-        return 29;
-      }
-
-      return result;
+    if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || static_cast<unsigned>(sub - 500000) <= 0x270F) {
+      return 28;
+    } else if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 ||
+      static_cast<unsigned>(sub - 510000) <= 0x270F) {
+      return 25;
+    } else if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
+      return 29;
     }
-
-    return 28;
-  }
-
-  if (main >= 1300 && main < 1350 || static_cast<unsigned>(main - 520000) <= 0x270F) {
+  } else if (main >= 1300 && main < 1350 || static_cast<unsigned>(main - 520000) <= 0x270F) {
     result = 6;
 
-    if (sub >= 1300 && sub < 1350) {
-      return 27;
-    }
-
-    if (static_cast<unsigned>(sub - 520000) <= 0x270F) {
+    if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
       return 27;
     }
   }
@@ -1851,21 +1839,21 @@ bool CSession::UnequipCostumeItem(int location) {
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
+      ITEM_INFO* const items = this->costumeItems;
       if (slots.values[2] != -1) {
-        ITEM_INFO& item = this->costumeItems[slots.values[2]];
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
-        const std::string name = item.DisplayName(0);
-        const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
+        ITEM_INFO& item = items[slots.values[2]];
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), message).c_str()),
+          0xFF, 7, 0, 0);
         item.identity[3] = 0;
         this->AddInventoryItem(item, 1);
         item.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
-        this->costumeItems[slots.values[1]].Reset();
+        items[slots.values[1]].Reset();
       }
       if (slots.values[0] != -1 && slots.values[0] < 10) {
-        this->costumeItems[slots.values[0]].Reset();
+        items[slots.values[0]].Reset();
       }
     }
     RequestBasicInfoRefresh();
@@ -1885,11 +1873,14 @@ bool CSession::UnequipCostumeItem(int location) {
 // OFFSET: 0x00E1E250
 // FUNCTION: fn_45483
 bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
-  vector3d position{0.0f, 0.0f, 0.0f};
-  std::uint32_t sourceId = 0;
+  vector3d position;
+  std::uint32_t sourceId;
   if (source != nullptr) {
     position = source->render.position;
     sourceId = source->render.accountId;
+  } else {
+    position = vector3d{0.0f, 0.0f, 0.0f};
+    sourceId = 0;
   }
   const std::uint32_t targetId = target != nullptr ? target->render.accountId : 0;
 
