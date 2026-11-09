@@ -23,7 +23,7 @@ void UIRuneSetList::ScrollBy(int delta) {
   const int previous = this->position;
   int next = delta + previous;
   next = next >= 0 ? next : 0;
-  next = next > this->maximum ? this->maximum : next;
+  next = std::min(next, this->maximum);
   this->position = next;
   if (previous != next) {
     this->Invalidate();
@@ -122,7 +122,7 @@ void UIRune_Info::OnCreate(int, int) {
 // FUNCTION: fn_10181
 void UIRuneSetReWard::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const std::string* name;
+  const std::string* name = nullptr;
   if (this->m_state == 3) {
     name = &this->m_texts[1];
   } else if (this->m_state == 0) {
@@ -136,9 +136,6 @@ void UIRuneSetReWard::Paint() {
     case 2:
       name = &this->m_texts[2];
       break;
-    default:
-      name = nullptr;
-      break;
     }
   } else {
     switch (this->geometry.state) {
@@ -151,14 +148,11 @@ void UIRuneSetReWard::Paint() {
     case 2:
       name = &this->m_names[2];
       break;
-    default:
-      name = nullptr;
-      break;
     }
   }
 
   if (name && !name->empty()) {
-    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name->c_str())))->image, true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name->c_str()))), true);
   }
   if (this->parent) {
     this->parent->Invalidate();
@@ -169,8 +163,7 @@ void UIRuneSetReWard::Paint() {
 // FUNCTION: fn_10184
 void UIRuneSystemTab::Paint() {
   ResourceMgr& resources = ResourceMgr::Instance();
-  const std::string name = FormatOwnedString(this->m_label.c_str(), this->geometry.state);
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString(this->m_label.c_str(), this->geometry.state).c_str()))), false);
 }
 
 // OFFSET: 0x0081BD10
@@ -216,14 +209,14 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
   }
 
   int slot = -1;
-  for (int index = x > 200; index < 6; index += 2) {
-    if (g_runeSetSlotX[index] < x && x < g_runeSetSlotX[index] + 90 && g_runeSetSlotY[index] < y && y < g_runeSetSlotY[index] + 120) {
+  for (int index = x >= 201; index < 6; index += 2) {
+    if (g_runeSetSlotX[index] < x && g_runeSetSlotX[index] + 90 > x && g_runeSetSlotY[index] < y && g_runeSetSlotY[index] + 120 > y) {
       slot = index;
       break;
     }
   }
 
-  if (slot != -1 && static_cast<unsigned int>(slot) < runeSet->m_slots.size() && runeSet->m_slots[slot]) {
+  if (slot != -1 && runeSet->m_slots.size() > static_cast<unsigned int>(slot) && runeSet->m_slots[slot]) {
     if (g_runeSystemMgr->GetSelectTag() != runeSet->GetTagId()) {
       g_runeSystemMgr->SetSelectTag(this->m_runeSet->GetTagId());
       g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
@@ -335,16 +328,16 @@ void UIEquipRuneSetWnd::OnMouseHover(int x, int y) {
     int screenX = 6;
     int screenY = -15;
     this->ToScreen(screenX, screenY);
-    if (!g_modeMgr.gameMode) {
+    CMode* const mode = g_modeMgr.gameMode;
+    if (!mode) {
       return;
     }
 
-    CTagData* tag = g_runeSystemMgr->GetTag(runeSet->GetTagId());
-    g_modeMgr.gameMode->ShowTooltip(tag->m_name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+    mode->ShowTooltip(g_runeSystemMgr->GetTag(runeSet->GetTagId())->m_name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
     return;
   }
 
-  if (x < 22 || x > this->geometry.width - 24 || y < 34 || y > this->geometry.height - 11) {
+  if (x < 22 || this->geometry.width - 24 < x || y < 34 || this->geometry.height - 11 < y) {
     return;
   }
 
@@ -357,7 +350,7 @@ void UIEquipRuneSetWnd::OnMouseHover(int x, int y) {
   if (x - column * 40 - 22 > 37) {
     return;
   }
-  if (static_cast<unsigned int>(column) >= runeSet->m_slots.size()) {
+  if (runeSet->m_slots.size() <= static_cast<unsigned int>(column)) {
     return;
   }
 
@@ -687,12 +680,13 @@ void UIRuneSetinfoList::ClearLines() {
 // OFFSET: 0x0081A100
 // FUNCTION: fn_10183
 void UIRuneSetinfoList::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc.bmp"))), true);
   for (int row = 0; row < this->visible; ++row) {
+    const int y = this->m_itemHeight * row + 30;
     const int index = this->position + row;
-    if (index >= 0 && static_cast<unsigned int>(index) < this->m_lines.size()) {
+    if (index >= 0 && this->m_lines.size() > static_cast<unsigned int>(index)) {
       const RuneSetInfoLine& line = this->m_lines[index];
-      this->DrawTextAt(line.x, this->m_itemHeight * row + 30, line.text.c_str(), 0, 0, 12, line.color, line.bold, 0
+      this->DrawTextAt(line.x, y, line.text.c_str(), 0, 0, 12, line.color, line.bold, 0
       );
     }
   }
@@ -738,10 +732,10 @@ void UIRuneSet_Info::UpdateRewards() {
     reward->SendMsg(this, UM_SETID, 0, 0, 0, 0);
   }
 
-  if (this->m_runeSet && this->m_runeSet->m_reward.values[0] != 0) {
+  if (this->m_runeSet && 0 != this->m_runeSet->m_reward.values[0]) {
     for (int index = 0; index < 7; ++index) {
       const std::int64_t itemId = this->m_runeSet->m_reward.values[index + 1];
-      if (itemId != 0) {
+      if (0 != itemId) {
         if (index < this->m_runeSet->m_rewardStep) {
           this->m_rewards[index]->SendMsg(this, UM_SETID, 3, static_cast<std::intptr_t>(itemId), 0, 0);
         } else if (index == 0) {
@@ -1001,7 +995,7 @@ void UIRuneSystem_Decom_RadioBtn::Paint() {
   }
 
   if (bitmap) {
-    this->DrawBitmap(0, static_cast<int>((this->geometry.height - bitmap->image.height) * 0.5f), &bitmap->image, true);
+    this->DrawBitmap(0, static_cast<int>((this->geometry.height - bitmap->image.height) * 0.5f), bitmap, true);
   }
   if (!this->text.empty()) {
     const int textHeight = this->TextHeight(this->text.c_str(), 0, 0, this->fontHeight, 0, 0);
@@ -1052,9 +1046,9 @@ int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t a
 // OFFSET: 0x00818880
 // FUNCTION: fn_10176
 void UIDecomlist::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_decom_list.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_decom_list.bmp"))), true);
   if (g_runeSystemMgr->GetOwnedDecomItemCount() == 0) {
-    this->DrawBitmap(56, 175, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\decom_empty.bmp")))->image, true);
+    this->DrawBitmap(56, 175, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\decom_empty.bmp"))), true);
     return;
   }
 
@@ -1067,7 +1061,7 @@ void UIDecomlist::Paint() {
 
     const int y = this->m_itemHeight * row + 4;
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_decom_item_1_%d.bmp", index == this->m_selected);
-    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+    this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
 
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
     char text[128];
@@ -1077,7 +1071,7 @@ void UIDecomlist::Paint() {
     if (!icon) {
       icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
     }
-    this->DrawBitmap(19, y + 5, &icon->image, true);
+    this->DrawBitmap(19, y + 5, icon, true);
 
     std::memset(text, 0, sizeof(text));
     int capacity = sizeof(text);
@@ -1094,11 +1088,11 @@ void UIEquipRuneSetWnd::Paint() {
   RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
   ResourceMgr& resources = ResourceMgr::Instance();
   if (!runeSet) {
-    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip_empty.bmp")))->image, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip_empty.bmp"))), false);
     return;
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp")))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp"))), false);
   int x = 25;
   for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index, x += 40) {
     RuneData* rune = runeSet->m_slots[index];
@@ -1109,7 +1103,7 @@ void UIEquipRuneSetWnd::Paint() {
     const std::string name = FormatOwnedString("유저인터페이스\\runesystem\\rune_icon\\%s.bmp", rune->GetResName());
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     if (bitmap) {
-      this->DrawBitmap(x, 35, &bitmap->image, false);
+      this->DrawBitmap(x, 35, bitmap, false);
       if (!runeSet->m_slots[index]->IsActive()) {
         this->geometry.surface->Dim(x, 35, bitmap->image.width, bitmap->image.height, 55);
       }
@@ -1129,18 +1123,18 @@ void UIEquipRuneSetWnd::Paint() {
   this->DrawTextAt(titleX, 12, title.c_str(), 0, 0, 13, 0xFCDEE6, 1, 0);
   this->DrawTextAt(titleX, 11, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   const std::string tag = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d_equip.bmp", runeSet->GetTagId());
-  this->DrawBitmap(9, 6, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(tag.c_str())))->image, false);
+  this->DrawBitmap(9, 6, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(tag.c_str()))), false);
 }
 
 // OFFSET: 0x00818EB0
 // FUNCTION: fn_10178
 void UIGage_Circle::Paint() {
   if (this->m_max) {
-    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_maxBitmap.c_str())))->image, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_maxBitmap.c_str()))), false);
     return;
   }
 
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_fullBitmap.c_str())))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_fullBitmap.c_str()))), false);
   CBitmapRes* empty = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_emptyBitmap.c_str())));
   this->DrawBitmapRegion(
     0, 0, &empty->image, true, false, 0, 0, empty->image.width,
@@ -1157,7 +1151,7 @@ void UIGage_Circle::Paint() {
 // OFFSET: 0x00819090
 // FUNCTION: fn_10179
 void UIRuneList::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_rune_list.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_rune_list.bmp"))), true);
   for (int row = 0; row < 9; ++row) {
     const int index = this->position + row;
     RuneData* rune = g_runeSystemMgr->GetCurrentRune(1, index);
@@ -1166,9 +1160,9 @@ void UIRuneList::Paint() {
     }
 
     const int y = this->m_itemHeight * row + 1;
-    const bool active = rune->IsActive();
+    const int active = rune->IsActive();
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_rune_item_%d_%d.bmp", active, index == this->m_selected);
-    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+    this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
     this->DrawRuneIcon(18, y + 6, rune->GetResName(), active);
     const std::string name = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEMAXDESC), rune->GetName());
     this->DrawTextAt(62, y + 9, name.c_str(), 0, 0, 12, 0, 0, 0);
@@ -1180,9 +1174,9 @@ void UIRuneList::Paint() {
 // FUNCTION: fn_10180
 void UIRuneSetList::Paint() {
   this->ClearSurface(0xFF00FF);
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_list.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_list.bmp"))), true);
   if (!g_runeSystemMgr->GetTag(-1)->m_locked) {
-    this->DrawBitmap(57, 100, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\loding.bmp")))->image, false);
+    this->DrawBitmap(57, 100, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\loding.bmp"))), false);
     return;
   }
 
@@ -1195,7 +1189,7 @@ void UIRuneSetList::Paint() {
 
     const int y = this->m_itemHeight * row + 1;
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_runeset_item_%d_%d.bmp", runeSet->IsActive(), index == this->m_selected);
-    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+    this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
     for (unsigned int slot = 0; slot < runeSet->m_slots.size(); ++slot) {
       if (runeSet->m_slots[slot]) {
         this->DrawRuneIcon(this->m_slotSpacing * slot + 20, y + 25, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
@@ -1311,7 +1305,7 @@ void UIRuneSystem_ActiveWnd::Paint() {
   for (int row = 0; row < this->m_rows; ++row, y += 54) {
     int x = 18;
     for (int column = 0; column < this->m_columns; ++column, x += 54) {
-      this->DrawBitmap(x, y, &blue->image, true);
+      this->DrawBitmap(x, y, blue, true);
       const std::pair<int, int>& entry = g_runeSystemMgr->GetItemListEntry(this->m_listId, this->m_columns * row + column);
       const int itemId = entry.first;
       const int required = entry.second;
@@ -1333,9 +1327,9 @@ void UIRuneSystem_ActiveWnd::Paint() {
       ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
       const bool lacking = required > owned.quantity;
       owned.identified = 1;
-      this->DrawBitmap(x, y, &(lacking ? red : blue)->image, true);
+      this->DrawBitmap(x, y, lacking ? red : blue, true);
       if (icon) {
-        this->DrawBitmap(x + 8, y + 4, &icon->image, true);
+        this->DrawBitmap(x + 8, y + 4, icon, true);
       }
       this->DrawCount(x + 18, y + 39, owned.quantity > required ? required : owned.quantity, required, lacking ? 0xFF : 0x875F51, 10);
     }
@@ -1376,7 +1370,7 @@ void UIRuneSystem_DecomItemWnd::Paint() {
       const bool lacking = required > owned.quantity;
       owned.identified = 1;
       if (icon) {
-        this->DrawBitmap(x - 9, y - 36, &icon->image, true);
+        this->DrawBitmap(x - 9, y - 36, icon, true);
       }
       this->DrawCount(x, y, required, owned.quantity, lacking ? 0xB4B4B4 : 0, 10);
     }
@@ -1428,25 +1422,25 @@ void UIRuneSystem_DecomResultWnd::Paint() {
 // FUNCTION: fn_10190
 void UIRuneSystem_tagListWnd::Paint() {
   const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\bg_tag%d.bmp", (this->geometry.y == 44) + 1);
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
   CBitmapRes* empty = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\tag\\bt_tag_bg.bmp")));
   int x = 22;
   for (int index = 0; index < this->m_visibleCount; ++index, x += 27) {
     CTagData* tag = g_runeSystemMgr->GetTagByIndex(this->m_firstTag + index);
     if (!tag) {
-      this->DrawBitmap(x, 4, &empty->image, true);
+      this->DrawBitmap(x, 4, empty, true);
       continue;
     }
 
     const std::string name = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d%s", tag->m_id, g_runeSystemMgr->GetTag(-1) == tag ? "_1.bmp" : "_0.bmp");
-    this->DrawBitmap(x, 4, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())))->image, true);
+    this->DrawBitmap(x, 4, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str()))), true);
   }
 }
 
 // OFFSET: 0x0081B7C0
 // FUNCTION: fn_10192
 void UIRune_Info::Paint() {
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp")))->image, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
   if (!this->m_rune) {
     return;
   }
@@ -1455,11 +1449,11 @@ void UIRune_Info::Paint() {
   CBitmapRes* bitmap =
     static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_rune->GetResName()).c_str())));
   if (this->m_rune->IsActive()) {
-    this->DrawBitmap(225, 134, &bitmap->image, true);
-    this->DrawBitmap(214, 123, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\card_stone_frame.bmp")))->image, true);
+    this->DrawBitmap(225, 134, bitmap, true);
+    this->DrawBitmap(214, 123, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\card_stone_frame.bmp"))), true);
   } else {
-    this->DrawBitmap(221, 80, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp")))->image, true);
-    this->DrawBitmap(225, 84, &bitmap->image, true);
+    this->DrawBitmap(221, 80, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
+    this->DrawBitmap(225, 84, bitmap, true);
     this->geometry.surface->Dim(225, 84, bitmap->image.width, bitmap->image.height, 55);
   }
 
@@ -2046,7 +2040,7 @@ void UIRuneSet_Info::Paint() {
     this->DrawBitmap(
       0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_reward.bmp"))), true
     );
-    if (this->m_runeSet->m_reward.values[0] == 1) {
+    if (1 == this->m_runeSet->m_reward.values[0]) {
       const int rewardX[7] = {0, 417, 505, 559, 559, 505, 417};
       const int rewardY[7] = {0, 116, 141, 216, 309, 384, 410};
       int count = this->m_runeSet->CountSlots();
@@ -2057,7 +2051,7 @@ void UIRuneSet_Info::Paint() {
       }
       for (int index = 1; index <= count; ++index) {
         const std::int64_t itemId = this->m_runeSet->m_reward.values[index];
-        if (itemId == 0) {
+        if (0 == itemId) {
           continue;
         }
 
@@ -2075,7 +2069,7 @@ void UIRuneSet_Info::Paint() {
       const char* resource = ItemResourcePath(item);
       const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
       this->DrawBitmap(0x188, 0xE1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
-      if (this->m_runeSet->m_reward.values[0] != 0) {
+      if (0 != this->m_runeSet->m_reward.values[0]) {
         this->DrawTextAt(0x1BC, 0x30, LookupMessage(MSI_REMOVE_HEAD_COLOR), 0, 0, 13, 0xFFF0E1, 1, 0);
         this->DrawTextAt(0x1BC, 0x31, LookupMessage(MSI_REMOVE_HEAD_COLOR), 0, 0, 13, 0x864D43, 1, 0);
       }
@@ -2204,64 +2198,18 @@ void UIRune_Decom::Paint() {
 // FUNCTION: fn_10225
 int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case UM_COMMAND:
-    if (argument1 == ID_CLOSE) {
-      g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
-    }
-    break;
-  case UM_SCROLLVERT:
-  case UM_SCROLLVERTPAGEUP:
-  case UM_SCROLLVERTPAGEDOWN:
-    if (this->m_lists[this->m_tab->geometry.state]) {
-      this->m_lists[this->m_tab->geometry.state]->ScrollBy(argument1);
-      this->Invalidate();
-    }
-    break;
-  case UM_TAB:
-    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
-    this->SelectTab();
-    break;
-  case UM_REFRESH: {
-    UIRuneSetList* list = this->m_lists[this->m_tab->geometry.state];
-    if (!list) {
-      break;
-    }
-
-    list->Invalidate();
-    switch (this->m_tab->geometry.state) {
-    case 0:
-      this->m_equipRuneSet->Invalidate();
-      this->m_runeSetInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
-      this->m_lists[0]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
-      break;
-    case 1:
-      this->m_runeInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
-      this->m_lists[1]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
-      break;
-    case 2: {
-      const int count = g_runeSystemMgr->UpdateOwnedDecomItems();
-      if (this->m_lists[2]->total == count) {
-        this->m_runeDecom->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
-        break;
+  case UM_RUNE_REWARD_EFFECT:
+    if (argument1 == 0xE0) {
+      const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
+                                     {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};
+      const int effects[7] = {0x975, 0x975, 0x975, 0x975, 0x975, 0x975, 0x976};
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (effect) {
+        const vector3d& position = positions[argument2];
+        effect->SetWindowOffset(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
       }
-
-      this->m_lists[2]->SetRange(std::max(count - 10, 0), 10, count);
-      UIRuneSetList* decomList = this->m_lists[2];
-      const int previous = decomList->position;
-      const int next = decomList->maximum < 0 ? decomList->maximum : 0;
-      decomList->m_selected = -1;
-      decomList->position = next;
-      if (previous != next) {
-        decomList->Invalidate();
-      }
-      decomList->Invalidate();
-      this->m_runeDecom->Reset();
-      break;
     }
-    }
-    this->Invalidate();
     break;
-  }
   case UM_TEXT_LBTN_DblClk:
     if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
       g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
@@ -2282,21 +2230,24 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->m_tab->geometry.state = argument1;
     this->m_tab->Invalidate();
     this->SelectTab();
-    if (argument1 == 0) {
+    switch (argument1) {
+    case 0:
       if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
         this->m_lists[0]->Select(argument2);
         this->SendMsg(this, 0xAB, 0xC2, argument2, 0, 0);
       }
-    } else if (argument1 == 1) {
+      this->Invalidate();
+      break;
+    case 1: {
       unsigned int index = 0;
       if (g_runeSystemMgr->FindRune(-1, 1, argument2, &index)) {
         this->m_lists[1]->Select(index);
         this->SendMsg(this, 0xAB, 0xC2, index, 0, 0);
       }
-    } else {
+      this->Invalidate();
       break;
     }
-    this->Invalidate();
+    }
     break;
   case 0xAB:
     if (argument1 == 0xC2) {
@@ -2318,7 +2269,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         const int activeCount = info->m_runeSet->CountActiveSlots();
         for (int index = 0; index < 7; ++index) {
           RuneSetData* runeSet = info->m_runeSet;
-          if (runeSet->m_reward.values[0] == 0) {
+          if (0 == runeSet->m_reward.values[0]) {
             info->m_rewards[index]->SendMsg(info, UM_SETID, 0, 0, 0, 0);
             runeSet = info->m_runeSet;
           }
@@ -2383,18 +2334,64 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
     }
     break;
-  case UM_RUNE_REWARD_EFFECT:
-    if (argument1 == 0xE0) {
-      const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
-                                     {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};
-      const int effects[7] = {0x975, 0x975, 0x975, 0x975, 0x975, 0x975, 0x976};
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (effect) {
-        const vector3d& position = positions[argument2];
-        effect->SetWindowOffset(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
-      }
+  case UM_SCROLLVERT:
+  case UM_SCROLLVERTPAGEUP:
+  case UM_SCROLLVERTPAGEDOWN:
+    if (this->m_lists[this->m_tab->geometry.state]) {
+      this->m_lists[this->m_tab->geometry.state]->ScrollBy(argument1);
+      this->Invalidate();
     }
     break;
+  case UM_TAB:
+    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
+    this->SelectTab();
+    break;
+  case UM_COMMAND:
+    if (argument1 == ID_CLOSE) {
+      g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
+    }
+    break;
+  case UM_REFRESH: {
+    UIRuneSetList* list = this->m_lists[this->m_tab->geometry.state];
+    if (!list) {
+      break;
+    }
+
+    list->Invalidate();
+    switch (this->m_tab->geometry.state) {
+    case 0:
+      this->m_equipRuneSet->Invalidate();
+      this->m_runeSetInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
+      this->m_lists[0]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
+      break;
+    case 1:
+      this->m_runeInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
+      this->m_lists[1]->SendMsg(this, UM_REFRESH, g_runeSystemMgr->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
+      break;
+    case 2: {
+      const int count = g_runeSystemMgr->UpdateOwnedDecomItems();
+      if (this->m_lists[2]->total == count) {
+        this->m_runeDecom->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
+        break;
+      }
+
+      this->m_lists[2]->SetRange(std::max(count - 10, 0), 10, count);
+      UIRuneSetList* decomList = this->m_lists[2];
+      const int previous = decomList->position;
+      const int next = decomList->maximum < 0 ? decomList->maximum : 0;
+      decomList->m_selected = -1;
+      decomList->position = next;
+      if (previous != next) {
+        decomList->Invalidate();
+      }
+      decomList->Invalidate();
+      this->m_runeDecom->Reset();
+      break;
+    }
+    }
+    this->Invalidate();
+    break;
+  }
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
