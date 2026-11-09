@@ -121,8 +121,9 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   if (const char* tooltip = LookupMessage(MSI_SSI_TOOLTIP_OF_SERACHING_THE_CARD)) {
     edit->tooltip = tooltip;
   }
-  this->m_edits[0]->disabled = 1;
-  this->m_edits[0]->Invalidate();
+  edit = this->m_edits[0];
+  edit->disabled = 1;
+  edit->Invalidate();
   this->m_edits[0]->invalidatesParent = 1;
   this->AddChild(this->m_edits[0]);
 
@@ -133,8 +134,9 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   this->m_edits[2]->Background(0xE8, 0xE8, 0xE8);
   this->m_edits[2]->Border(0xC0, 0xC0, 0xC0);
   this->m_edits[2]->flat = 0;
-  this->m_edits[2]->disabled = 1;
-  this->m_edits[2]->Invalidate();
+  edit = this->m_edits[2];
+  edit->disabled = 1;
+  edit->Invalidate();
   this->AddChild(this->m_edits[2]);
 
   this->m_edits[3] = new UIEditCtrl();
@@ -144,8 +146,9 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   this->m_edits[3]->Background(0xE8, 0xE8, 0xE8);
   this->m_edits[3]->Border(0xC0, 0xC0, 0xC0);
   this->m_edits[3]->flat = 0;
-  this->m_edits[3]->disabled = 1;
-  this->m_edits[3]->Invalidate();
+  edit = this->m_edits[3];
+  edit->disabled = 1;
+  edit->Invalidate();
   this->AddChild(this->m_edits[3]);
 
   UICheckBox* check = new UICheckBox();
