@@ -240,8 +240,9 @@ void CUIExchangeUI::Conclude() {
   }
 
   mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
-  this->tradeButton->disabled = 1;
-  this->tradeButton->Invalidate();
+  CUIImageButton* button = this->tradeButton;
+  button->disabled = 1;
+  button->Invalidate();
 }
 
 // OFFSET: 0x00A17420
@@ -257,14 +258,15 @@ void CUIExchangeUI::SubmitZeny() {
   if (g_session.IsNumberWithCommas(text)) {
     int amount = g_session.m_zeny;
     const int value = std::atoi(text);
-    if (value <= amount) {
+    if (amount >= value) {
       amount = value < 0 ? 0 : value;
     }
 
     mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.exchangeMoney + amount, 0, 0);
     mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
-    this->lockButton->disabled = 1;
-    this->lockButton->Invalidate();
+    CUIImageButton* button = this->lockButton;
+    button->disabled = 1;
+    button->Invalidate();
   } else {
     g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
   }
