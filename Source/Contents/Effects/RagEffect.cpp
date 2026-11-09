@@ -17009,28 +17009,28 @@ void CRagEffect::LineStreakLayered(short kind) {
     this->state.currentPrimitive->slots[i].distance = 100.0f;
 
     if (kind % 10 == 0) {
-      this->state.currentPrimitive->slots[i].height[0] = -15.0f - static_cast<float>(std::max(rand() % 11, 0));
+      this->state.currentPrimitive->slots[i].height[0] = -15.0f - static_cast<float>(ClampedRandom(11));
     } else if (kind % 10 == 1) {
-      this->state.currentPrimitive->slots[i].height[0] = static_cast<float>(std::max(rand() % 11, 0)) + 15.0f;
+      this->state.currentPrimitive->slots[i].height[0] = static_cast<float>(ClampedRandom(11)) + 15.0f;
     }
 
-    this->state.currentPrimitive->slots[i].height[1] = static_cast<float>(std::max(rand() % 200, 0));
+    this->state.currentPrimitive->slots[i].height[1] = static_cast<float>(ClampedRandom(200));
 
     if (kind < 10) {
       this->state.currentPrimitive->slots[i].maxHeight = static_cast<float>(rand() % 4) * 0.1f + 0.3f;
-      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 31, 0)) + 20.0f;
+      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 20.0f;
       this->state.currentPrimitive->slots[i].flag1[0] = static_cast<char>(rand() % 3);
-      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(std::max(rand() % 21, 0)) * 0.1f + 1.5f;
+      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
     } else if (kind > 19) {
       this->state.currentPrimitive->slots[i].maxHeight = static_cast<float>(rand() % 4) * 0.1f + 0.4f;
-      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 31, 0)) + 30.0f;
+      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 30.0f;
       this->state.currentPrimitive->slots[i].flag1[0] = static_cast<char>(rand() % 3 + 20);
-      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(std::max(rand() % 21, 0)) * 0.1f + 1.5f;
+      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
     } else {
-      this->state.currentPrimitive->slots[i].maxHeight = static_cast<float>(std::max(rand() % 6, 0)) * 0.1f + g_depthAverageHalf;
-      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 31, 0)) + 40.0f;
+      this->state.currentPrimitive->slots[i].maxHeight = static_cast<float>(ClampedRandom(6)) * 0.1f + g_depthAverageHalf;
+      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 40.0f;
       this->state.currentPrimitive->slots[i].flag1[0] = static_cast<char>(rand() % 3 + 10);
-      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(std::max(rand() % 11, 0)) * 0.1f + 1.0f;
+      this->state.currentPrimitive->slots[i].height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
     }
 
     Get_Angle(
