@@ -23,7 +23,7 @@ class UITextButton;
 using RodexMailEntry = std::pair<int, std::int64_t>;
 
 // INLINED
-inline std::map<std::int64_t, RodexMail>* RodexMailsOfType(int type) {
+inline RodexMailMap* RodexMailsOfType(int type) {
   if (type == 0) {
     return &g_rodexMailStore->m_mails0;
   }
@@ -64,6 +64,8 @@ public:
   void SearchByTitle(std::string keyword);
   void InitializeMailActions();
   void RequestAllMailActions();
+  void RequestMailAttachments(int type, std::int64_t mailId);
+  bool RequestMailAction(int type, std::int64_t mailId);
 
   /* 0130 */ UIBmpRadioBtn* mailTab;
   /* 0134 */ UIBmpRadioBtn* accountTab;

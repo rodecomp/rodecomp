@@ -41,6 +41,11 @@ public:
 
   bool SetBitmap(const char* name, int state);
   void AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y);
+  // INLINED
+  void SetLabel(std::string label) {
+    this->m_label = label;
+    this->Invalidate();
+  }
 
 protected:
   /* 007C */ std::string m_names[4];

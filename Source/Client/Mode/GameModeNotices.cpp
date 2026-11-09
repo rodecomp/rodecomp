@@ -583,8 +583,8 @@ void CGameMode::NotifyCaptchaRegistrationResult(int result) {
 // FUNCTION: fn_22051
 void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
   const auto* deleted = reinterpret_cast<const RodexMailDeletedPacket*>(packet);
-  std::map<std::int64_t, RodexMail>::iterator mail;
-  std::map<std::int64_t, RodexMail>::iterator end;
+  RodexMailMap::iterator mail;
+  RodexMailMap::iterator end;
 
   switch (deleted->type) {
   case MAIL_INBOX_NORMAL:
@@ -2504,7 +2504,7 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
   case 0: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
 
-    std::map<std::int64_t, RodexMail>::iterator mail;
+    RodexMailMap::iterator mail;
     switch (packet->type) {
     case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
@@ -2697,7 +2697,7 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ZENY_FROM_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
     g_session.ClearItemQuantities();
 
-    std::map<std::int64_t, RodexMail>::iterator mail;
+    RodexMailMap::iterator mail;
     switch (packet->type) {
     case MAIL_INBOX_NORMAL:
       mail = g_rodexMailStore->m_mails0.find(packet->mailId);
@@ -4404,7 +4404,7 @@ struct RodexMailListEntry {
 void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
   for (int offset = 5; offset < *reinterpret_cast<const std::int16_t*>(packet + 2);) {
     const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
-    std::map<std::int64_t, RodexMail>* mails = nullptr;
+    RodexMailMap* mails = nullptr;
     switch (entry->openType) {
     case MAIL_INBOX_NORMAL:
       mails = &g_rodexMailStore->m_mails0;
@@ -5354,7 +5354,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   g_rodexMailStore->currentMailId = packet->mailId;
   g_rodexMailStore->inboxType = packet->type;
 
-  std::map<std::int64_t, RodexMail>* mails;
+  RodexMailMap* mails;
   switch (packet->type) {
   case MAIL_INBOX_NORMAL:
     mails = &g_rodexMailStore->m_mails0;
@@ -5369,7 +5369,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
     return;
   }
 
-  std::map<std::int64_t, RodexMail>::iterator found = mails->find(packet->mailId);
+  RodexMailMap::iterator found = mails->find(packet->mailId);
   if (found == mails->end()) {
     return;
   }
@@ -5447,7 +5447,7 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
   g_rodexMailStore->inboxType = packet->type;
   g_rodexMailStore->isPageComplete = packet->isEnd;
 
-  std::map<std::int64_t, RodexMail>* mails;
+  RodexMailMap* mails;
   if (g_rodexMailStore->inboxType == 0) {
     mails = &g_rodexMailStore->m_mails0;
   } else if (g_rodexMailStore->inboxType == 1) {

@@ -1918,7 +1918,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
       reinterpret_cast<UIWindow*>(g_windowMgr.rodexContentsWnd)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
 
-    std::map<std::int64_t, RodexMail>::iterator mail = g_rodexMailStore->m_mails0.find(mailId);
+    RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(mailId);
     if (mail != g_rodexMailStore->m_mails0.end()) {
       if (!mail->second.isRead) {
         --g_rodexMailStore->unreadCount;

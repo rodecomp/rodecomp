@@ -383,7 +383,7 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
 
 // OFFSET: 0x00835B00
 // FUNCTION: fn_10422
-std::pair<bool, std::string> RemoveLineBreakTag(std::string value) {
+std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::string value) {
   std::string text = value;
   const std::size_t position = text.find(g_parserLineBreakTag);
 

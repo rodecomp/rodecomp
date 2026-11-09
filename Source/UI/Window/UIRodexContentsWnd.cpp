@@ -115,7 +115,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   RodexMailStore* store = g_rodexMailStore;
   switch (store->inboxType) {
   case MAIL_INBOX_NORMAL: {
-    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails0.find(store->currentMailId);
+    RodexMailMap::iterator mail = store->m_mails0.find(store->currentMailId);
     if (mail != store->m_mails0.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
@@ -133,7 +133,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
     break;
   }
   case MAIL_INBOX_ACCOUNT: {
-    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails1.find(store->currentMailId);
+    RodexMailMap::iterator mail = store->m_mails1.find(store->currentMailId);
     if (mail != store->m_mails1.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
@@ -141,7 +141,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
     break;
   }
   case MAIL_INBOX_RETURNED: {
-    std::map<std::int64_t, RodexMail>::iterator mail = store->m_mails2.find(store->currentMailId);
+    RodexMailMap::iterator mail = store->m_mails2.find(store->currentMailId);
     if (mail != store->m_mails2.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
@@ -288,7 +288,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_DELETE: {
       RodexMailStore* store = g_rodexMailStore;
-      std::map<std::int64_t, RodexMail>* mails;
+      RodexMailMap* mails;
       if (store->inboxType == 0) {
         mails = &store->m_mails0;
       } else if (store->inboxType == 1) {
@@ -297,7 +297,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         mails = &store->m_mails2;
       }
 
-      std::map<std::int64_t, RodexMail>::iterator mail = mails->find(store->currentMailId);
+      RodexMailMap::iterator mail = mails->find(store->currentMailId);
       if (mail == mails->end()) {
         break;
       }
@@ -357,7 +357,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_sender = sender;
   std::string text = body;
 
-  std::pair<bool, std::string> lineBreak = RemoveLineBreakTag(this->m_sender);
+  std::pair<bool, std::string> lineBreak = g_navigationLinkParser->RemoveLineBreakTag(this->m_sender);
   this->m_hasLineBreak = lineBreak.first;
   this->m_sender = lineBreak.second;
 

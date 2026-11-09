@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <string>
 
@@ -23,6 +24,8 @@ struct RodexMail {
   /* 0191 */ std::array<std::byte, 3> unknown_0191;
   /* 0194 */ int isKnownSender = -1;
 };
+
+typedef std::map<std::int64_t, RodexMail, std::greater<std::int64_t>> RodexMailMap;
 
 class RodexMailStore {
 public:
@@ -60,9 +63,9 @@ public:
   /* 0014 */ int dailySendCount;
   /* 0018 */ int unreadCount;
   /* 001C */ bool isPageComplete;
-  /* 0020 */ std::map<std::int64_t, RodexMail> m_mails0;
-  /* 0028 */ std::map<std::int64_t, RodexMail> m_mails1;
-  /* 0030 */ std::map<std::int64_t, RodexMail> m_mails2;
+  /* 0020 */ RodexMailMap m_mails0;
+  /* 0028 */ RodexMailMap m_mails1;
+  /* 0030 */ RodexMailMap m_mails2;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
