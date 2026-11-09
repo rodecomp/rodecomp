@@ -42,7 +42,9 @@ CActRes* CActRes::Create() {
 bool CActRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
+    const std::string path(name);
+    const std::string message = std::string("Cannot find File : ") + path;
+    ShowErrorDialog(message.c_str(), 0);
     return false;
   }
 
@@ -55,8 +57,8 @@ bool CActRes::Load(const char* name) {
   file.Read(&header, sizeof(header));
 
   if (header.magic != 0x4341) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal file format", 0);
-    ShowErrorDialog(GetRenderSystemHolder()->system, name, 0);
+    ShowErrorDialog("Illegal file format", 0);
+    ShowErrorDialog(name, 0);
     file.Close();
 
     return false;
@@ -67,7 +69,7 @@ bool CActRes::Load(const char* name) {
   spriteName.append(".spr", 4);
 
   if (header.version > 0x0205) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupported Version. Content may be corrupted", 0);
+    ShowErrorDialog("Unsupported Version. Content may be corrupted", 0);
     file.Close();
     return false;
   }
