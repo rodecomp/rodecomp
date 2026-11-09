@@ -5383,9 +5383,10 @@ void CEZ2STRScreenEffect::OnProcess() {
     }
   }
 
-  this->particle->position.x = this->position[0];
-  this->particle->position.y = this->position[1];
-  this->particle->position.z = this->position[2];
+  CEZ2STRParticle* target = this->particle;
+  target->position.x = this->position[0];
+  target->position.y = this->position[1];
+  target->position.z = this->position[2];
 
   if (CEZ2STRParticle* particle = this->particle) {
     if (this->ApplyHeadOffset(particle) || this->id == 0x584) {
@@ -5419,8 +5420,10 @@ void CEZ2STRScreenEffect::OnProcess() {
     CEZ2STRParticle* particle = this->particle;
     float extent[2];
     const float* shift = actor->GetExtent(extent);
-    particle->m_shiftX = factor * shift[0];
-    particle->m_shiftY = factor * shift[1];
+    float shiftX = factor * shift[0];
+    float shiftY = factor * shift[1];
+    particle->m_shiftX = shiftX;
+    particle->m_shiftY = shiftY;
   }
 
   this->particle->m_lift = *reinterpret_cast<const long long*>(&actor->render.hoverOffsetLow);
