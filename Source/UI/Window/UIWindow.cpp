@@ -2106,8 +2106,9 @@ void UIPrivateAirplaneWnd::Paint() {
 
   int offset = 0;
   for (auto it = lines.begin(); it != lines.end(); ++it, offset += 12) {
-    const int y = static_cast<int>(static_cast<unsigned>(32 - lines.size() * 12) * 0.5 + 78.0 + offset);
-    this->DrawTextAt(26, y, it->c_str(), 0, 0, 12, 0x3512b5, 0, 0);
+    this->DrawTextAt(
+      26, static_cast<int>(static_cast<unsigned>(32 - lines.size() * 12) * 0.5 + 78.0 + offset), it->c_str(), 0, 0, 12, 0x3512b5, 0, 0
+    );
   }
 }
 
