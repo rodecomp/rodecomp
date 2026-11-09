@@ -210,19 +210,16 @@ void CEZ2STRParticle::Restart() {
   this->m_finishedClips = 0;
   this->m_frame = 0;
   this->m_data = reinterpret_cast<EZeffectData*>(&resource->maximumFrame);
-  this->m_clipLimit = resource->clipCount;
-  if (resource->clips[0].frameCount == 0) {
-    this->m_clipLimit = resource->clipCount - 1;
+  this->m_clipLimit = this->m_data->clipCount;
+  if (this->m_data->clips[0].frameCount == 0) {
+    --this->m_clipLimit;
   }
 
   for (int i = 0; i < this->m_data->clipCount; ++i) {
     this->m_cursors[i] = 0;
   }
 
-  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->m_transforms);
-  for (int count = sizeof(this->m_transforms); count != 0; --count) {
-    *bytes++ = 0;
-  }
+  SecureZeroMemory(this->m_transforms, sizeof(this->m_transforms));
 }
 
 // OFFSET: 0x00B3D7A0
