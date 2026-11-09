@@ -351,8 +351,10 @@ void UIEditCtrl::OnMouseHover(int x, int y) {
 // INLINED
 __forceinline void UIEditCtrl::InsertLink(const char* value) {
   const std::string name = FormatNavigationLink(value, false);
-
-  const std::string display = this->BracketFittedText(name);
+  FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  std::string display = "<";
+  display += name;
+  display += ">";
   std::string before;
   bool removed = false;
   std::size_t position = std::string::npos;
@@ -364,12 +366,13 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
     if (window->geometry.id == 438) {
       removed = true;
       const auto* button = static_cast<const UINaviLinkButton*>(window);
-      const std::string fitted = FitText(
-        *this->geometry.surface, FormatNavigationLink(button->link, false), this->geometry.width / 2
-      );
-      const std::string old = "<" + fitted + ">";
+      const std::string linkName = FormatNavigationLink(button->link, false);
+      FitText(*this->geometry.surface, linkName, this->geometry.width / 2);
+      std::string old = "<";
+      old += linkName;
+      old += ">";
 
-      oldBytes = old.size();
+      oldBytes = std::strlen(old.c_str());
       position = this->text.find(old);
 
       if (position != std::string::npos) {
@@ -383,8 +386,8 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
     }
   }
 
-  if (!_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>("<NAVIL>")) &&
-      !_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>("</NAVIL>"))) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagBegin.c_str())) &&
+      !_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagEnd.c_str()))) {
     this->SetText(value);
     return;
   }
@@ -397,12 +400,14 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
     return;
   }
 
-  if (removed) {
-    if (position != std::string::npos) {
-      this->text = before + display + this->text.substr(position + oldBytes);
-    }
-  } else {
-    this->text += transformed;
+  if (!removed) {
+    std::string appended;
+    DisplayNavigationLink(appended, value);
+    this->text += appended;
+  } else if (position != std::string::npos) {
+    before += display;
+    before += this->text.substr(position + oldBytes);
+    this->text = before;
   }
 
   this->SetText(this->text.c_str());
@@ -421,22 +426,28 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
 // OFFSET: 0x008641C0
 // FUNCTION: fn_10914
 int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == UM_INSERT_ITEM_LINK) {
-    this->InsertLink(reinterpret_cast<const char*>(a));
-  } else if (message == UM_TEXT_LBTN_UP && c > 0) {
-    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-
-    if (window) {
-      window->SendMsg(nullptr, UM_ITEMEXPLANATION, c, 0, 0, 0);
+  switch (message) {
+  case UM_DEFPUSH:
+    UIWindow::SendMsg(sender, message, a, b, c, d);
+    if (this->preserveInput == 0) {
+      g_serverLanguage->ResetInput();
     }
+    return 0;
+  case UM_TEXT_LBTN_UP:
+    if (c > 0) {
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+
+      if (window) {
+        window->SendMsg(nullptr, UM_ITEMEXPLANATION, c, 0, 0, 0);
+      }
+    }
+    break;
+  case UM_INSERT_ITEM_LINK:
+    this->InsertLink(reinterpret_cast<const char*>(a));
+    break;
   }
 
   UIWindow::SendMsg(sender, message, a, b, c, d);
-
-  if (message == UM_DEFPUSH && this->preserveInput == 0) {
-    g_serverLanguage->ResetInput();
-  }
-
   return 0;
 }
 
