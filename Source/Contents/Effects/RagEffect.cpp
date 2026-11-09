@@ -3294,11 +3294,11 @@ void CRagEffect::TexturedScatterLow(const char* name, char flag) {
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].process = -20 - std::max(rand() % 10, 0);
+    this->state.lastPrim->state.slots[index].process = -20 - ClampedRandom(10);
     this->state.lastPrim->state.slots[index].distance = -10.0f;
     this->state.lastPrim->state.slots[index].height[0] = 2.0f;
-    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
     this->state.lastPrim->state.slots[index].height[1] = 1.0f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.slots[index].flag1[0] = flag;
