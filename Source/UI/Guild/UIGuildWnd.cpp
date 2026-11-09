@@ -1464,9 +1464,11 @@ void UIGuildInfoManageWnd::Paint() {
   this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %d", LookupMessage(MSI_GUILDLEVEL), guild.guildLevel);
   this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
-  const std::string master = this->StripNamelessTag(g_guildInfo.masterName);
-  std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILD_MASTER_NAME), master.c_str());
-  this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
+  {
+    const std::string master = this->StripNamelessTag(g_guildInfo.masterName);
+    std::sprintf(text, "%s : %s", LookupMessage(MSI_GUILD_MASTER_NAME), master.c_str());
+    this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);
+  }
   std::sprintf(text, "%s : %d / %d", LookupMessage(MSI_GUILD_NUM_MEMBER), guild.memberCount, guild.maxMemberCount);
   this->DrawTextAt(8, 97, text, 0, 0, 12, 0, 0, 0);
 
@@ -1825,7 +1827,8 @@ void UIGuildBanishedMemberWnd::Paint() {
       this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
-    this->m_names[drawn]->SetTextFitted(this->StripNamelessTag(member->name).c_str());
+    const std::string name = this->StripNamelessTag(member->name);
+    this->m_names[drawn]->SetTextFitted(name.c_str());
     this->m_names[drawn]->Move(8, y);
 
     char reason[260];
@@ -1838,7 +1841,7 @@ void UIGuildBanishedMemberWnd::Paint() {
     this->m_reasons[drawn]->SetTextFitted(reason);
     this->m_reasons[drawn]->Move(g_guildBanishedColumnWidths[0] + 9, y);
     if (++drawn == this->m_visibleRows * this->m_columns) {
-      return;
+      break;
     }
   }
 }
@@ -2122,7 +2125,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   }
 
   case UM_REFRESHITEM: {
-    this->m_skills.clear();
+    this->m_skills.erase(this->m_skills.begin(), this->m_skills.end());
     const int count = static_cast<int>(g_session.m_additionalSkills.size());
     for (int index = 0; index < count; ++index) {
       CSkillInfo skill = g_session.AdditionalSkillAt(index);
@@ -2156,12 +2159,12 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDSKILLWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(1, g_mouse.x + 1);
+      int x = std::max(g_mouse.x + 1, 1);
       int maxX = g_renderer->viewport.width - menu->geometry.width;
       if (x > maxX) {
         x = maxX;
       }
-      int y = std::max(1, g_mouse.y + 1);
+      int y = std::max(g_mouse.y + 1, 1);
       int maxY = g_renderer->viewport.height - menu->geometry.height;
       if (y > maxY) {
         y = maxY;
@@ -2189,7 +2192,8 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
+      const int level = g_session.UseLevel(skill->id);
+      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, a1, level, 0, 0);
     }
     break;
   }
@@ -2239,51 +2243,45 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
     std::string normal("유저인터페이스\\basic_interface\\skill_up_a.bmp");
     std::string hover("유저인터페이스\\basic_interface\\skill_up_b.bmp");
     std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
-    UIBitmapButton** button = this->m_levelUpButtons;
-    int* id = ids;
-    for (int y = 45; y < 283; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton();
-      (*button)->SetBitmap(normal.c_str(), 0, 0);
-      (*button)->SetBitmap(hover.c_str(), 1, 0);
-      (*button)->SetBitmap(pressed.c_str(), 2, 0);
-      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(78, y);
-      (*button)->SetId(*id);
-      this->AddChild(*button);
+    for (int index = 0; index < 7; ++index) {
+      this->m_levelUpButtons[index] = new UIBitmapButton();
+      this->m_levelUpButtons[index]->SetBitmap(normal.c_str(), 0, 0);
+      this->m_levelUpButtons[index]->SetBitmap(hover.c_str(), 1, 0);
+      this->m_levelUpButtons[index]->SetBitmap(pressed.c_str(), 2, 0);
+      this->m_levelUpButtons[index]->SetSize(this->m_levelUpButtons[index]->BitmapWidth(), this->m_levelUpButtons[index]->BitmapHeight());
+      this->m_levelUpButtons[index]->Move(78, index * 34 + 45);
+      this->m_levelUpButtons[index]->SetId(ids[index]);
+      this->AddChild(this->m_levelUpButtons[index]);
     }
   }
 
   {
     int ids[7] = {253, 254, 255, 256, 257, 258, 259};
     std::string bitmap("유저인터페이스\\basic_interface\\arw_left.bmp");
-    UIBitmapButton** button = this->m_previousButtons;
-    int* id = ids;
-    for (int y = 58; y < 296; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton();
-      (*button)->SetBitmap(bitmap.c_str(), 0, 0);
-      (*button)->SetBitmap(bitmap.c_str(), 1, 0);
-      (*button)->SetBitmap(bitmap.c_str(), 2, 0);
-      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(112, y);
-      (*button)->SetId(*id);
-      this->AddChild(*button);
+    for (int index = 0; index < 7; ++index) {
+      this->m_previousButtons[index] = new UIBitmapButton();
+      this->m_previousButtons[index]->SetBitmap(bitmap.c_str(), 0, 0);
+      this->m_previousButtons[index]->SetBitmap(bitmap.c_str(), 1, 0);
+      this->m_previousButtons[index]->SetBitmap(bitmap.c_str(), 2, 0);
+      this->m_previousButtons[index]->SetSize(this->m_previousButtons[index]->BitmapWidth(), this->m_previousButtons[index]->BitmapHeight());
+      this->m_previousButtons[index]->Move(112, index * 34 + 58);
+      this->m_previousButtons[index]->SetId(ids[index]);
+      this->AddChild(this->m_previousButtons[index]);
     }
   }
 
   {
     int ids[7] = {260, 261, 262, 263, 264, 265, 266};
     std::string bitmap("유저인터페이스\\basic_interface\\arw_right.bmp");
-    UIBitmapButton** button = this->m_nextButtons;
-    int* id = ids;
-    for (int y = 58; y < 296; y += 34, ++button, ++id) {
-      *button = new UIBitmapButton();
-      (*button)->SetBitmap(bitmap.c_str(), 0, 0);
-      (*button)->SetBitmap(bitmap.c_str(), 1, 0);
-      (*button)->SetBitmap(bitmap.c_str(), 2, 0);
-      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(192, y);
-      (*button)->SetId(*id);
-      this->AddChild(*button);
+    for (int index = 0; index < 7; ++index) {
+      this->m_nextButtons[index] = new UIBitmapButton();
+      this->m_nextButtons[index]->SetBitmap(bitmap.c_str(), 0, 0);
+      this->m_nextButtons[index]->SetBitmap(bitmap.c_str(), 1, 0);
+      this->m_nextButtons[index]->SetBitmap(bitmap.c_str(), 2, 0);
+      this->m_nextButtons[index]->SetSize(this->m_nextButtons[index]->BitmapWidth(), this->m_nextButtons[index]->BitmapHeight());
+      this->m_nextButtons[index]->Move(192, index * 34 + 58);
+      this->m_nextButtons[index]->SetId(ids[index]);
+      this->AddChild(this->m_nextButtons[index]);
     }
   }
 
@@ -2352,9 +2350,6 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         return 0;
       }
       return 0;
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_GUILDWND);
-      return 0;
     case ID_CHECK:
       if (this->inviteChecks[0] && this->expelChecks[0] && this->storageChecks[0]) {
         for (int index = 0; index < 11; ++index) {
@@ -2385,6 +2380,9 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         }
         break;
       }
+      return 0;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_GUILDWND);
       return 0;
     case ID_POSNAME_EDIT:
       if (this->positionNameEdits[0]) {
@@ -2579,9 +2577,6 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         return 0;
       }
       break;
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_GUILDWND);
-      return 0;
     case ID_CHECK:
       g_session.m_guildMemberListSort = !g_session.m_guildMemberListSort;
       this->Invalidate();
@@ -2623,6 +2618,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         return 0;
       }
       break;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_GUILDWND);
+      return 0;
     }
     break;
   case UM_SCROLLVERT:
@@ -2696,16 +2694,8 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDMEMBERMANAGEWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(1, g_mouse.x + 1);
-      int maxX = g_renderer->viewport.width - menu->geometry.width;
-      if (x > maxX) {
-        x = maxX;
-      }
-      int y = std::max(1, g_mouse.y + 1);
-      int maxY = g_renderer->viewport.height - menu->geometry.height;
-      if (y > maxY) {
-        y = maxY;
-      }
+      const int x = std::min(g_renderer->viewport.width - menu->geometry.width, std::max(1, g_mouse.x + 1));
+      const int y = std::min(g_renderer->viewport.height - menu->geometry.height, std::max(1, g_mouse.y + 1));
       menu->Move(x, y);
       return 0;
     }
@@ -2946,13 +2936,12 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
     const std::string prefix("유저인터페이스\\");
     int x = this->geometry.width - 61;
     int y = this->geometry.height - 23;
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_button = button;
-    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-    button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->m_button = new UIBitmapButton();
+    this->m_button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
+    this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
     if (!g_guildInfo.isMaster || this->m_positionMap.empty()) {
       x = -200;
       y = -200;
@@ -3027,12 +3016,12 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDINFOMANAGEWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(1, g_mouse.x + 1);
+      int x = std::max(g_mouse.x + 1, 1);
       int maxX = g_renderer->viewport.width - menu->geometry.width;
       if (x > maxX) {
         x = maxX;
       }
-      int y = std::max(1, g_mouse.y + 1);
+      int y = std::max(g_mouse.y + 1, 1);
       int maxY = g_renderer->viewport.height - menu->geometry.height;
       if (y > maxY) {
         y = maxY;
@@ -3091,7 +3080,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     int index = 0;
     for (std::list<std::string>::iterator it = this->emblemFiles.begin(); it != this->emblemFiles.end(); ++it) {
       if (a1 == index) {
-        name = it->c_str();
+        name = *it;
         break;
       }
       ++index;
