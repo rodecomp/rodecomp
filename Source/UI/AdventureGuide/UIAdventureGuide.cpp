@@ -446,7 +446,7 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   this->tabs->scrollBar->step = 20;
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->scrollBar->SetButtonImages(std::string([]() {
+    tabs->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\xA9', '\x2A', '\x9F', '\xDF', '\x77', '\xB9', '\xAE', '\x74', '\xAF', '\x61', '\x9F', '\xE9', '\x0A', '\xCD', '\x37', '\xF8', '\x0D', '\xF3', '\x3A',
         '\x4B', '\xC3', '\x02', '\x19', '\xDC', '\x2E', '\xF0', '\x36', '\x41', '\xD2', '\x2B', '\x18', '\xDA', '\x1B', '\xEA', '\x33', '\x49', '\xE8', '\x16',
@@ -466,7 +466,7 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->scrollBar->SetBackground(std::string([]() {
+    tabs->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x9B', '\x32', '\xE5', '\xD7', '\x47', '\xE3', '\xE8', '\xCA', '\x9D', '\x79', '\xE5', '\xE1', '\x3A', '\x97', '\x71', '\x46', '\x3F', '\xEB', '\x40',
         '\x43', '\xF3', '\x58', '\x5F', '\x62', '\x1C', '\xE8', '\x4C', '\x49', '\xE2', '\x71', '\x5E', '\x64', '\x29', '\xF2', '\x49', '\x41', '\xD8', '\x4F',
@@ -478,7 +478,7 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->scrollBar->SetThumbImages(std::string([]() {
+    tabs->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\x4D', '\xBC', '\xBF', '\xE9', '\xA1', '\x2B', '\xF0', '\x38', '\x4B', '\xF7', '\xBF', '\xDF', '\xDC', '\x5F', '\x69', '\xB4', '\xE9', '\x65', '\x1A',
         '\x7D', '\x15', '\x90', '\x47', '\x90', '\xCA', '\x66', '\x16', '\x77', '\x04', '\xB9', '\x46', '\x96', '\xFF', '\x7C', '\x13', '\x7F', '\x3E', '\x91',
