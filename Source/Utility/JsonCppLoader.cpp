@@ -386,14 +386,14 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const JsonValue& node, const std:
 // OFFSET: 0x00509D40
 // FUNCTION: fn_00892
 bool JsonCppLoader::GetIntVectorValue(const JsonValue& node, const std::string& key, std::vector<int>* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::ARRAY_VALUE);
-  if (value.IsNull() == true) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::ARRAY_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  const JsonArray& items = value.ArrayRange();
+  const JsonArray& items = value.value.ArrayRange();
   for (JsonArray::const_iterator item = items.begin(); item != items.end(); ++item) {
     if (item->GetType() != JsonValue::INT64_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
