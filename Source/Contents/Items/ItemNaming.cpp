@@ -91,16 +91,14 @@ namespace {
 // OFFSET: 0x006D77E0
 // FUNCTION: fn_06595
 bool ITEM_INFO::HasCards() const {
-  int ids[4];
-  CardIds(*this, ids);
-  const bool first = g_itemCardNames.contains(ids[0]);
+  const bool first = g_itemCardNames.contains(CardId(*this, 0));
   const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
 
-  if (id - 9001u <= 498 || id - 10000u <= 999 || ids[0] == 254 || ids[0] == 255 || !Equipment(*this)) {
+  if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || !Equipment(*this)) {
     return first;
   }
 
-  return first || g_itemCardNames.contains(ids[1]) || g_itemCardNames.contains(ids[2]) || g_itemCardNames.contains(ids[3]);
+  return first || IsItemCard(CardId(*this, 1)) || IsItemCard(CardId(*this, 2)) || IsItemCard(CardId(*this, 3));
 }
 
 // OFFSET: 0x006D5780
@@ -143,8 +141,7 @@ int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const
 // OFFSET: 0x006D6F50
 // FUNCTION: fn_06588
 __declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) const {
-  int ids[4];
-  CardIds(*this, ids);
+  int ids[4] = {CardId(*this, 0), CardId(*this, 1), CardId(*this, 2), CardId(*this, 3)};
   int remaining = capacity;
   char* cursor = output;
 
@@ -167,28 +164,32 @@ __declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsign
       }
     }
 
-    int message = 0;
+    int bytes = 0;
     switch (count) {
     case 2:
-      message = 446;
-      break;
-    case 3:
-      message = 447;
-      break;
-    case 4:
-      message = 448;
-      break;
-    }
-
-    if (message) {
-      const int bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(message));
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(MSI_DOUBLE));
       if (bytes > 0) {
         cursor += bytes;
         remaining -= bytes;
       }
+      break;
+    case 3:
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(MSI_TRIPLE));
+      if (bytes > 0) {
+        cursor += bytes;
+        remaining -= bytes;
+      }
+      break;
+    case 4:
+      bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", LookupMessage(MSI_QUADROPLE));
+      if (bytes > 0) {
+        cursor += bytes;
+        remaining -= bytes;
+      }
+      break;
     }
 
-    const int bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", FindItemCardName(ids[index], g_itemCardNames).prefix);
+    bytes = StringFormat(cursor, remaining, _TRUNCATE, "%s ", FindItemCardName(ids[index], g_itemCardNames).prefix);
     if (bytes > 0) {
       cursor += bytes;
       remaining -= bytes;
@@ -206,8 +207,7 @@ __declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsign
 // OFFSET: 0x006D6DB0
 // FUNCTION: fn_06587
 int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) const {
-  int ids[4];
-  CardIds(*this, ids);
+  int ids[4] = {CardId(*this, 0), CardId(*this, 1), CardId(*this, 2), CardId(*this, 3)};
   int remaining = capacity;
   char* cursor = output;
 
