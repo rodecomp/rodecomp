@@ -171,9 +171,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.changeAccel3d = {sentinel, sentinel, sentinel};
   }
 
-  this->state.speed3d.x = this->state.speed3d.x + this->state.deltaPosAccel.x;
-  this->state.speed3d.y = this->state.deltaPosAccel.y + this->state.speed3d.y;
-  this->state.speed3d.z = this->state.deltaPosAccel.z + this->state.speed3d.z;
+  this->state.speed3d += this->state.deltaPosAccel;
   this->state.widthSpeed = this->state.widthAccel + this->state.widthSpeed;
   this->state.speed = this->state.accel + this->state.speed;
   this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
@@ -189,9 +187,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   } else if ((this->state.pattern & 0x100u) != 0) {
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+    this->state.deltaPos += this->state.speed3d;
   } else {
     Forward(this->state.speed3d, this->state.speed, this->state.transform);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
