@@ -30,7 +30,7 @@ namespace {
   public:
     // OFFSET: 0x00733F00
     // FUNCTION: fn_07592
-    ThreadSafeBuffer() {
+    __declspec(noinline) ThreadSafeBuffer() {
       InitializeCriticalSection(&this->m_criticalSection);
     }
 
@@ -70,7 +70,7 @@ const char* FormatString(const char* format, ...) {
 
   va_list args;
   va_start(args, format);
-  std::vsnprintf(buffer, 2048, format, args);
+  _vsnprintf(buffer, 2048, format, args);
   va_end(args);
 
   return s_buffer.GetBuffer();
