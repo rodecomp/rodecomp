@@ -1723,19 +1723,19 @@ bool CSkillActionMgr::OnSkillEffect(int skillId, int level, CGameActor* source, 
 // OFFSET: 0x0077C1D0
 // FUNCTION: fn_08430
 void CSkillActionMgr::RegisterEfstAction(int efstId, std::function<CEfstAction*()> factory) {
-  this->m_efstActions.insert({efstId, factory});
+  this->m_efstActions.insert(std::make_pair(efstId, factory));
 }
 
 // OFFSET: 0x0077C360
 // FUNCTION: fn_08431
 void CSkillActionMgr::RegisterSkillObjectAction(int skillId, std::function<CSkillObjectAction*()> factory) {
-  this->m_skillObjectActions.insert({skillId, factory});
+  this->m_skillObjectActions.insert(std::make_pair(skillId, factory));
 }
 
 // OFFSET: 0x0077C4F0
 // FUNCTION: fn_08432
 void CSkillActionMgr::RegisterSkillAction(int skillId, std::function<CSkillAction*()> factory) {
-  this->m_skillActions.insert({skillId, factory});
+  this->m_skillActions.insert(std::make_pair(skillId, factory));
 }
 
 // OFFSET: 0x0077CCC0
