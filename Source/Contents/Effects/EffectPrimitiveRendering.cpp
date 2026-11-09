@@ -5527,16 +5527,30 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
 // OFFSET: 0x00BCB9F0
 // FUNCTION: fn_19862
 void CEffectPrim::RenderPyramid(matrix& wtm) {
-  vector3d corners[12]{};
+  float uInc = 0.0f;
+  vector3d table[12];
+  for (vector3d& entry : table) {
+    entry = {0.0f, 0.0f, 0.0f};
+  }
+  vector3d corners[12];
+  for (vector3d& entry : corners) {
+    entry = {0.0f, 0.0f, 0.0f};
+  }
   const float size = this->state.size;
   const float height = this->state.heightSize;
-  const vector3d table[12] = {
-    {-size, -size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f},
-    {-size, -size, 0.0f}, {0.0f, 0.0f, height}, {-size, size, 0.0f},
-    {-size, size, 0.0f}, {0.0f, 0.0f, height}, {size, size, 0.0f},
-    {size, size, 0.0f}, {0.0f, 0.0f, height}, {size, -size, 0.0f},
-  };
-  float uInc = 0.0f;
+  const float negative = -size;
+  table[0] = {negative, negative, 0.0f};
+  table[1] = {0.0f, 0.0f, height};
+  table[2] = {size, negative, 0.0f};
+  table[3] = {negative, negative, 0.0f};
+  table[4] = {0.0f, 0.0f, height};
+  table[5] = {negative, size, 0.0f};
+  table[6] = {negative, size, 0.0f};
+  table[7] = {0.0f, 0.0f, height};
+  table[8] = {size, size, 0.0f};
+  table[9] = {size, size, 0.0f};
+  table[10] = {0.0f, 0.0f, height};
+  table[11] = {size, negative, 0.0f};
 
   if (this->state.slots[0].flag1[0] == 3) {
     const int first = std::rand() % 11;
@@ -5544,46 +5558,47 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
     this->state.argb = static_cast<std::uint32_t>((((first << 8) + second) << 8) - 0xD7D701);
   }
 
-  RenderTriangle* triangle = this->state.triangles;
-  const float* tm = this->state.rotTransform;
-  for (int index = 0; index < 12; ++index) {
-    const vector3d& local = table[index];
-    corners[index] = {
-      local.y * tm[3] + local.x * tm[0] + local.z * tm[6] + tm[9], local.y * tm[4] + local.x * tm[1] + local.z * tm[7] + tm[10],
-      local.y * tm[5] + local.x * tm[2] + local.z * tm[8] + tm[11]
-    };
-  }
-
+  int count = 0;
   for (int face = 0; face < 4; ++face) {
+    const float* tm = this->state.rotTransform;
+    for (int corner = 0; corner < 3; ++corner) {
+      const vector3d& local = table[face * 3 + corner];
+      corners[face * 3 + corner] = {
+        local.y * tm[3] + local.x * tm[0] + local.z * tm[6] + tm[9], local.y * tm[4] + local.x * tm[1] + local.z * tm[7] + tm[10],
+        local.y * tm[5] + local.x * tm[2] + local.z * tm[8] + tm[11]
+      };
+    }
+
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     const vector3d& corner0 = corners[face * 3 + 0];
-    const float point0[3] = {corner0.x + this->render.position.x, this->render.position.y + corner0.y, this->render.position.z + corner0.z};
-    g_renderer->viewport.Project(point0, wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = this->state.argb;
-    triangle->vertices[0].u = uInc;
-    triangle->vertices[0].v = 1.0f;
+    const vector3d point0 = {corner0.x + this->render.position.x, this->render.position.y + corner0.y, this->render.position.z + corner0.z};
+    g_renderer->viewport.Project(&point0.x, wtm.values, projected);
+    this->state.triangles[count].vertices[0] = projected;
+    this->state.triangles[count].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[count].vertices[0].u = uInc;
+    this->state.triangles[count].vertices[0].v = 1.0f;
     const vector3d& corner1 = corners[face * 3 + 1];
-    const float point1[3] = {corner1.x + this->render.position.x, corner1.y + this->render.position.y, this->render.position.z + corner1.z};
+    const vector3d point1 = {corner1.x + this->render.position.x, corner1.y + this->render.position.y, this->render.position.z + corner1.z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(point1, wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = this->state.argb;
-    triangle->vertices[1].u = uInc;
-    triangle->vertices[1].v = 0.0f;
+    g_renderer->viewport.Project(&point1.x, wtm.values, projected);
+    this->state.triangles[count].vertices[1] = projected;
+    this->state.triangles[count].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[count].vertices[1].u = uInc;
+    this->state.triangles[count].vertices[1].v = 0.0f;
     const vector3d& corner2 = corners[face * 3 + 2];
-    const float point2[3] = {corner2.x + this->render.position.x, corner2.y + this->render.position.y, this->render.position.z + corner2.z};
+    const vector3d point2 = {corner2.x + this->render.position.x, corner2.y + this->render.position.y, this->render.position.z + corner2.z};
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(point2, wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = this->state.argb;
+    g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+    this->state.triangles[count].vertices[2] = projected;
+    this->state.triangles[count].vertices[2].diffuse = this->state.argb;
     uInc += 0.2f;
-    triangle->vertices[2].u = uInc;
-    triangle->vertices[2].v = 1.0f;
-    triangle->texture = this->state.textures[0];
+    this->state.triangles[count].vertices[2].u = uInc;
+    this->state.triangles[count].vertices[2].v = 1.0f;
+    this->state.triangles[count].texture = this->state.textures[0];
 
-    if (triangle->Visible()) {
-      RenderTriangle& submitted = *triangle++;
+    if (this->state.triangles[count].Visible()) {
+      RenderTriangle& submitted = this->state.triangles[count];
+      ++count;
       if (this->state.slots[0].flag1[0] == 3) {
         submitted.sourceBlend = 5;
         submitted.destinationBlend = 2;
