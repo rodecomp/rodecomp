@@ -4315,11 +4315,11 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
 
 // OFFSET: 0x00BD9FC0
 // FUNCTION: fn_19893
-void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, unsigned char green, unsigned char blue) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+__declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, unsigned char green, unsigned char blue) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4349,88 +4349,157 @@ void CEffectPrim::RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, 
     slot.vecTNow.z = g_sinTable[angle3] * 4.0f;
 
     const float rx = scale * slot.distance;
-    vec1 = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
-    vec2 = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
-    vec3 = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
-    vec4 = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
+    vec1.Set(rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]);
+    vec2.Set(rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]);
+    vec3.Set(rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]);
+    vec4.Set(rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    const vector3d quad[4] = {vec1, vec2, vec3, vec4};
 
-    const int delta0 = static_cast<int>(slot.height[3] - static_cast<float>(this->state.slots[0].alphaT));
-    const bool back0 = (delta0 >= 70 || delta0 <= -80) && static_cast<unsigned>(delta0 + 270) <= 540;
-    const float mode0 = slot.height[2];
-    const bool flipped0 = mode0 == 0.0f || mode0 == 2.0f ? back0 : !back0;
-    const vector3d corner00{(flipped0 ? vec2.x : vec1.x) + slot.vecBPre.x,
-                            (flipped0 ? vec2.y : vec1.y) + slot.vecBPre.y - slot.height[20],
-                            (flipped0 ? vec2.z : vec1.z) + slot.vecBPre.z};
-    const vector3d corner01{(flipped0 ? vec1.x : vec2.x) + slot.vecBPre.x,
-                            (flipped0 ? vec1.y : vec2.y) + slot.vecBPre.y - slot.height[20],
-                            (flipped0 ? vec1.z : vec2.z) + slot.vecBPre.z};
-    const vector3d corner02{(flipped0 ? vec4.x : vec3.x) + slot.vecBPre.x,
-                            (flipped0 ? vec4.y : vec3.y) + slot.vecBPre.y - slot.height[20],
-                            (flipped0 ? vec4.z : vec3.z) + slot.vecBPre.z};
-    const vector3d corner03{(flipped0 ? vec3.x : vec4.x) + slot.vecBPre.x,
-                            (flipped0 ? vec3.y : vec4.y) + slot.vecBPre.y - slot.height[20],
-                            (flipped0 ? vec3.z : vec4.z) + slot.vecBPre.z};
-    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[1])), corner00, corner01, corner02, corner03, wtm, 0,
-                        static_cast<unsigned char>(static_cast<int>(mode0)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+    const vector3d vec5{vec1.x, vec1.y, vec1.z};
+    const vector3d vec6{vec2.x, vec2.y, vec2.z};
+    const vector3d vec7{vec3.x, vec3.y, vec3.z};
+    const vector3d vec8{vec4.x, vec4.y, vec4.z};
+    int dif;
 
-    const int delta1 = static_cast<int>(slot.height[7] - static_cast<float>(this->state.slots[0].alphaT));
-    const bool back1 = (delta1 >= 70 || delta1 <= -80) && static_cast<unsigned>(delta1 + 270) <= 540;
-    const float mode1 = slot.height[6];
-    const bool flipped1 = mode1 == 0.0f || mode1 == 2.0f ? back1 : !back1;
-    const vector3d corner10{(flipped1 ? vec2.x : vec1.x) + slot.vecBNow.x,
-                            (flipped1 ? vec2.y : vec1.y) + slot.vecBNow.y - slot.height[20],
-                            (flipped1 ? vec2.z : vec1.z) + slot.vecBNow.z};
-    const vector3d corner11{(flipped1 ? vec1.x : vec2.x) + slot.vecBNow.x,
-                            (flipped1 ? vec1.y : vec2.y) + slot.vecBNow.y - slot.height[20],
-                            (flipped1 ? vec1.z : vec2.z) + slot.vecBNow.z};
-    const vector3d corner12{(flipped1 ? vec4.x : vec3.x) + slot.vecBNow.x,
-                            (flipped1 ? vec4.y : vec3.y) + slot.vecBNow.y - slot.height[20],
-                            (flipped1 ? vec4.z : vec3.z) + slot.vecBNow.z};
-    const vector3d corner13{(flipped1 ? vec3.x : vec4.x) + slot.vecBNow.x,
-                            (flipped1 ? vec3.y : vec4.y) + slot.vecBNow.y - slot.height[20],
-                            (flipped1 ? vec3.z : vec4.z) + slot.vecBNow.z};
-    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[5])), corner10, corner11, corner12, corner13, wtm, 0,
-                        static_cast<unsigned char>(static_cast<int>(mode1)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+    dif = static_cast<int>(slot.height[3] - this->state.slots[0].alphaT);
+    if (slot.height[2] == 0.0f || slot.height[2] == 2.0f) {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+        vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+        vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+        vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+      } else {
+        vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+        vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+        vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+        vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+      }
+    } else {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+        vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+        vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+        vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+      } else {
+        vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+        vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+        vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+        vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+      }
+    }
+    vec1.y -= slot.height[20];
+    vec2.y -= slot.height[20];
+    vec3.y -= slot.height[20];
+    vec4.y -= slot.height[20];
+    this->RenderTeiRect(
+      &rpCnt, static_cast<short>(static_cast<int>(slot.height[1])), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[2]), 0, red, green, blue,
+      0.0f, 1.0f, 0.0f, 1.0f, 2
+    );
 
-    const int delta2 = static_cast<int>(slot.height[11] - static_cast<float>(this->state.slots[0].alphaT));
-    const bool back2 = (delta2 >= 70 || delta2 <= -80) && static_cast<unsigned>(delta2 + 270) <= 540;
-    const float mode2 = slot.height[10];
-    const bool flipped2 = mode2 == 0.0f || mode2 == 2.0f ? back2 : !back2;
-    const vector3d corner20{(flipped2 ? vec2.x : vec1.x) + slot.vecTPre.x,
-                            (flipped2 ? vec2.y : vec1.y) + slot.vecTPre.y - slot.height[20],
-                            (flipped2 ? vec2.z : vec1.z) + slot.vecTPre.z};
-    const vector3d corner21{(flipped2 ? vec1.x : vec2.x) + slot.vecTPre.x,
-                            (flipped2 ? vec1.y : vec2.y) + slot.vecTPre.y - slot.height[20],
-                            (flipped2 ? vec1.z : vec2.z) + slot.vecTPre.z};
-    const vector3d corner22{(flipped2 ? vec4.x : vec3.x) + slot.vecTPre.x,
-                            (flipped2 ? vec4.y : vec3.y) + slot.vecTPre.y - slot.height[20],
-                            (flipped2 ? vec4.z : vec3.z) + slot.vecTPre.z};
-    const vector3d corner23{(flipped2 ? vec3.x : vec4.x) + slot.vecTPre.x,
-                            (flipped2 ? vec3.y : vec4.y) + slot.vecTPre.y - slot.height[20],
-                            (flipped2 ? vec3.z : vec4.z) + slot.vecTPre.z};
-    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[9])), corner20, corner21, corner22, corner23, wtm, 0,
-                        static_cast<unsigned char>(static_cast<int>(mode2)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+    dif = static_cast<int>(slot.height[7] - this->state.slots[0].alphaT);
+    if (slot.height[6] == 0.0f || slot.height[6] == 2.0f) {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+        vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+        vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+        vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+      } else {
+        vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+        vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+        vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+        vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+      }
+    } else {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+        vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+        vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+        vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+      } else {
+        vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+        vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+        vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+        vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+      }
+    }
+    vec1.y -= slot.height[20];
+    vec2.y -= slot.height[20];
+    vec3.y -= slot.height[20];
+    vec4.y -= slot.height[20];
+    this->RenderTeiRect(
+      &rpCnt, static_cast<short>(static_cast<int>(slot.height[5])), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[6]), 0, red, green, blue,
+      0.0f, 1.0f, 0.0f, 1.0f, 2
+    );
 
-    const int delta3 = static_cast<int>(slot.height[15] - static_cast<float>(this->state.slots[0].alphaT));
-    const bool back3 = (delta3 >= 70 || delta3 <= -80) && static_cast<unsigned>(delta3 + 270) <= 540;
-    const float mode3 = slot.height[14];
-    const bool flipped3 = mode3 == 0.0f || mode3 == 2.0f ? back3 : !back3;
-    const vector3d corner30{(flipped3 ? vec2.x : vec1.x) + slot.vecTNow.x,
-                            (flipped3 ? vec2.y : vec1.y) + slot.vecTNow.y - slot.height[20],
-                            (flipped3 ? vec2.z : vec1.z) + slot.vecTNow.z};
-    const vector3d corner31{(flipped3 ? vec1.x : vec2.x) + slot.vecTNow.x,
-                            (flipped3 ? vec1.y : vec2.y) + slot.vecTNow.y - slot.height[20],
-                            (flipped3 ? vec1.z : vec2.z) + slot.vecTNow.z};
-    const vector3d corner32{(flipped3 ? vec4.x : vec3.x) + slot.vecTNow.x,
-                            (flipped3 ? vec4.y : vec3.y) + slot.vecTNow.y - slot.height[20],
-                            (flipped3 ? vec4.z : vec3.z) + slot.vecTNow.z};
-    const vector3d corner33{(flipped3 ? vec3.x : vec4.x) + slot.vecTNow.x,
-                            (flipped3 ? vec3.y : vec4.y) + slot.vecTNow.y - slot.height[20],
-                            (flipped3 ? vec3.z : vec4.z) + slot.vecTNow.z};
-    this->RenderTeiRect(&rpCnt, static_cast<short>(static_cast<int>(slot.height[13])), corner30, corner31, corner32, corner33, wtm, 0,
-                        static_cast<unsigned char>(static_cast<int>(mode3)), 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 2);
+    dif = static_cast<int>(slot.height[11] - this->state.slots[0].alphaT);
+    if (slot.height[10] == 0.0f || slot.height[10] == 2.0f) {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+        vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+        vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+        vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+      } else {
+        vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+        vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+        vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+        vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+      }
+    } else {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+        vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+        vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+        vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+      } else {
+        vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+        vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+        vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+        vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+      }
+    }
+    vec1.y -= slot.height[20];
+    vec2.y -= slot.height[20];
+    vec3.y -= slot.height[20];
+    vec4.y -= slot.height[20];
+    this->RenderTeiRect(
+      &rpCnt, static_cast<short>(static_cast<int>(slot.height[9])), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[10]), 0, red, green, blue,
+      0.0f, 1.0f, 0.0f, 1.0f, 2
+    );
+
+    dif = static_cast<int>(slot.height[15] - this->state.slots[0].alphaT);
+    if (slot.height[14] == 0.0f || slot.height[14] == 2.0f) {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+        vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+        vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+        vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+      } else {
+        vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+        vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+        vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+        vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+      }
+    } else {
+      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+        vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+        vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+        vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+        vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+      } else {
+        vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+        vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+        vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+        vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+      }
+    }
+    vec1.y -= slot.height[20];
+    vec2.y -= slot.height[20];
+    vec3.y -= slot.height[20];
+    vec4.y -= slot.height[20];
+    this->RenderTeiRect(
+      &rpCnt, static_cast<short>(static_cast<int>(slot.height[13])), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[14]), 0, red, green, blue,
+      0.0f, 1.0f, 0.0f, 1.0f, 2
+    );
   }
 }
 
@@ -4544,10 +4613,9 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const bool distant = 10.0f <= slot.distance;
-    const unsigned char r = distant ? 100 : 200;
-    const unsigned char g = distant ? 100 : 250;
-    const unsigned char b = distant ? 250 : 200;
+    const unsigned char r = slot.height[4] < 10.0f ? 200 : 100;
+    const unsigned char g = slot.height[4] < 10.0f ? 250 : 100;
+    const unsigned char b = slot.height[4] < 10.0f ? 200 : 250;
 
     slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
     slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
@@ -4574,10 +4642,9 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const bool distant = 10.0f <= slot.distance;
-    const unsigned char r = distant ? 50 : 150;
-    const unsigned char g = distant ? 50 : 250;
-    const unsigned char b = distant ? 250 : 150;
+    const unsigned char r = slot.height[4] < 10.0f ? 150 : 50;
+    const unsigned char g = slot.height[4] < 10.0f ? 250 : 50;
+    const unsigned char b = slot.height[4] < 10.0f ? 150 : 250;
     const float w = slot.height[0];
     const float h = slot.height[1];
     const float dist = slot.distance;
@@ -5706,88 +5773,13 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
   }
 }
 
-// INLINED
-static __forceinline void RenderGroundFogQuad(CEffectPrim& prim, int* rpCnt, const EffectPrimitiveSlot& slot, const vector3d* corners, const vector3d& point, int copy, vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, matrix& wtm) {
-  vec1 = {point.x + corners[0].x, point.y + corners[0].y, point.z + corners[0].z};
-  vec2 = {point.x + corners[1].x, point.y + corners[1].y, point.z + corners[1].z};
-  vec3 = {point.x + corners[2].x, point.y + corners[2].y, point.z + corners[2].z};
-  vec4 = {point.x + corners[3].x, point.y + corners[3].y, point.z + corners[3].z};
-  const float y = vec1.y;
-  const char kind = slot.flag1[0];
-  int alpha;
-
-  if (kind <= 1) {
-    alpha = 250;
-    if (-20.0f > y) {
-      alpha = static_cast<int>((y + 20.0f) * 25.0f + 250.0f);
-    }
-  } else if (kind == 14 || kind == 16) {
-    alpha = 100;
-    if (y > -10.0f) {
-      alpha = static_cast<int>(150.0f - (y + 10.0f) * 15.0f);
-    } else if (-40.0f > y) {
-      alpha = 0;
-    }
-  } else if (kind == 11) {
-    alpha = 250;
-    if (-40.0f > y) {
-      alpha = static_cast<int>((y + 40.0f) * 25.0f + 250.0f);
-    }
-  } else if (kind == 15) {
-    alpha = 255 - 2 * slot.flag1[1 + copy];
-  } else {
-    alpha = 50;
-    if (-4.0f > y) {
-      alpha = static_cast<int>((y + 4.0f) * 15.0f + 50.0f);
-    }
-    if (y > -0.5f) {
-      alpha = static_cast<int>(y * -100.0f);
-    }
-  }
-  if (alpha < 0) {
-    alpha = 0;
-  }
-
-  if (kind == 15) {
-    if (slot.flag1[5] == 7) {
-      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (slot.flag1[5] == 8) {
-      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else {
-      prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    }
-    return;
-  }
-
-  if (y <= 0.0f) {
-    const short shade = static_cast<short>(alpha);
-    if (kind == 0) {
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 1) {
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 3) {
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 10 || kind == 14) {
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 11) {
-      if (copy == 0) {
-        prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      }
-    } else {
-      prim.RenderTeiRect(rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    }
-  }
-}
-
 // OFFSET: 0x00BC7580
 // FUNCTION: fn_19854
-void CEffectPrim::RenderGroundFog(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+__declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5798,17 +5790,239 @@ void CEffectPrim::RenderGroundFog(matrix& wtm) {
     }
 
     const float rx = slot.distance;
-    vec1 = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
-    vec2 = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
-    vec3 = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
-    vec4 = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
+    vec1.Set(rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]);
+    vec2.Set(rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]);
+    vec3.Set(rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]);
+    vec4.Set(rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    const vector3d corners[4] = {vec1, vec2, vec3, vec4};
+    const vector3d corner1{vec1.x, vec1.y, vec1.z};
+    const vector3d corner2{vec2.x, vec2.y, vec2.z};
+    const vector3d corner3{vec3.x, vec3.y, vec3.z};
+    const vector3d corner4{vec4.x, vec4.y, vec4.z};
+    int alpha;
 
-    RenderGroundFogQuad(*this, &rpCnt, slot, corners, slot.vecBPre, 0, vec1, vec2, vec3, vec4, wtm);
-    RenderGroundFogQuad(*this, &rpCnt, slot, corners, slot.vecBNow, 1, vec1, vec2, vec3, vec4, wtm);
-    RenderGroundFogQuad(*this, &rpCnt, slot, corners, slot.vecTPre, 2, vec1, vec2, vec3, vec4, wtm);
-    RenderGroundFogQuad(*this, &rpCnt, slot, corners, slot.vecTNow, 3, vec1, vec2, vec3, vec4, wtm);
+    vec1 = {slot.vecBPre.x + corner1.x, slot.vecBPre.y + corner1.y, slot.vecBPre.z + corner1.z};
+    vec2 = {slot.vecBPre.x + corner2.x, slot.vecBPre.y + corner2.y, slot.vecBPre.z + corner2.z};
+    vec3 = {slot.vecBPre.x + corner3.x, slot.vecBPre.y + corner3.y, slot.vecBPre.z + corner3.z};
+    vec4 = {slot.vecBPre.x + corner4.x, slot.vecBPre.y + corner4.y, slot.vecBPre.z + corner4.z};
+    if (slot.flag1[0] <= 1) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+      alpha = 100;
+      if (vec1.y > -10.0f) {
+        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
+      } else if (vec1.y < -40.0f) {
+        alpha = 0;
+      }
+    } else if (slot.flag1[0] == 11) {
+      alpha = 250;
+      if (vec1.y < -40.0f) {
+        alpha = static_cast<int>((vec1.y + 40.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[1];
+    } else {
+      alpha = 50;
+      if (vec1.y < -4.0f) {
+        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      }
+      if (vec1.y > -0.5f) {
+        alpha = static_cast<int>(vec1.y * -100.0f);
+      }
+    }
+    if (alpha < 0) {
+      alpha = 0;
+    }
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else if (vec1.y <= 0.0f) {
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    }
+
+    vec1 = {slot.vecBNow.x + corner1.x, slot.vecBNow.y + corner1.y, slot.vecBNow.z + corner1.z};
+    vec2 = {slot.vecBNow.x + corner2.x, slot.vecBNow.y + corner2.y, slot.vecBNow.z + corner2.z};
+    vec3 = {slot.vecBNow.x + corner3.x, slot.vecBNow.y + corner3.y, slot.vecBNow.z + corner3.z};
+    vec4 = {slot.vecBNow.x + corner4.x, slot.vecBNow.y + corner4.y, slot.vecBNow.z + corner4.z};
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+      alpha = 100;
+      if (vec1.y > -10.0f) {
+        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
+      } else if (vec1.y < -40.0f) {
+        alpha = 0;
+      }
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[2];
+    } else {
+      alpha = 50;
+      if (vec1.y < -4.0f) {
+        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      }
+      if (vec1.y > -0.5f) {
+        alpha = static_cast<int>(vec1.y * -100.0f);
+      }
+    }
+    if (alpha < 0) {
+      alpha = 0;
+    }
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else if (vec1.y <= 0.0f) {
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    }
+
+    vec1 = {slot.vecTPre.x + corner1.x, slot.vecTPre.y + corner1.y, slot.vecTPre.z + corner1.z};
+    vec2 = {slot.vecTPre.x + corner2.x, slot.vecTPre.y + corner2.y, slot.vecTPre.z + corner2.z};
+    vec3 = {slot.vecTPre.x + corner3.x, slot.vecTPre.y + corner3.y, slot.vecTPre.z + corner3.z};
+    vec4 = {slot.vecTPre.x + corner4.x, slot.vecTPre.y + corner4.y, slot.vecTPre.z + corner4.z};
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+      alpha = 100;
+      if (vec1.y > -10.0f) {
+        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
+      } else if (vec1.y < -40.0f) {
+        alpha = 0;
+      }
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[3];
+    } else {
+      alpha = 50;
+      if (vec1.y < -4.0f) {
+        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      }
+      if (vec1.y > -0.5f) {
+        alpha = static_cast<int>(vec1.y * -100.0f);
+      }
+    }
+    if (alpha < 0) {
+      alpha = 0;
+    }
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else if (vec1.y <= 0.0f) {
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    }
+
+    vec1 = {slot.vecTNow.x + corner1.x, slot.vecTNow.y + corner1.y, slot.vecTNow.z + corner1.z};
+    vec2 = {slot.vecTNow.x + corner2.x, slot.vecTNow.y + corner2.y, slot.vecTNow.z + corner2.z};
+    vec3 = {slot.vecTNow.x + corner3.x, slot.vecTNow.y + corner3.y, slot.vecTNow.z + corner3.z};
+    vec4 = {slot.vecTNow.x + corner4.x, slot.vecTNow.y + corner4.y, slot.vecTNow.z + corner4.z};
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+      alpha = 100;
+      if (vec1.y > -10.0f) {
+        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
+      } else if (vec1.y < -40.0f) {
+        alpha = 0;
+      }
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[4];
+    } else {
+      alpha = 50;
+      if (vec1.y < -4.0f) {
+        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      }
+      if (vec1.y > -0.5f) {
+        alpha = static_cast<int>(vec1.y * -100.0f);
+      }
+    }
+    if (alpha < 0) {
+      alpha = 0;
+    }
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else if (vec1.y <= 0.0f) {
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    }
   }
 }
 
@@ -6298,7 +6512,11 @@ __declspec(safebuffers) void CEffectPrim::RenderColorPaper(matrix& wtm) {
 
 // OFFSET: 0x00BD5730
 // FUNCTION: fn_19883
-void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
   unsigned char red;
   unsigned char green;
@@ -6377,149 +6595,175 @@ void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
       slot.vecTNow.x = g_cosTable[static_cast<int>(slot.height[15])] * length;
       slot.vecTNow.z = g_sinTable[static_cast<int>(slot.height[15])] * length;
 
-      vector3d vec1 = {g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx};
-      vector3d vec2 = {g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx};
-      vector3d vec3 = {g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx};
-      vector3d vec4 = {g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx};
+      vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
+      vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
+      vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
+      vec4.Set(g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
 
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-      const vector3d vec5 = vec1;
-      const vector3d vec6 = vec2;
-      const vector3d vec7 = vec3;
-      const vector3d vec8 = vec4;
+      const vector3d vec5{vec1.x, vec1.y, vec1.z};
+      const vector3d vec6{vec2.x, vec2.y, vec2.z};
+      const vector3d vec7{vec3.x, vec3.y, vec3.z};
+      const vector3d vec8{vec4.x, vec4.y, vec4.z};
+      int dif;
+      int count;
 
-      {
-        const vector3d& center = slot.vecBPre;
-        const float* const height = &slot.height[0];
-        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
-        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
-        if (height[2] != 0.0f && height[2] != 2.0f) {
-          front = !front;
-        }
-        if (front) {
-          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
-          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+      dif = static_cast<int>(slot.height[3] - this->state.slots[0].alphaT);
+      if (slot.height[2] == 0.0f || slot.height[2] == 2.0f) {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+          vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+          vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+          vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
         } else {
-          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
-          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+          vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+          vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+          vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
         }
-        vec1.y -= slot.height[20];
-        vec2.y -= slot.height[20];
-        vec3.y -= slot.height[20];
-        vec4.y -= slot.height[20];
-        int count = static_cast<int>(height[1]);
-        if (count > slot.process) {
-          count = slot.process;
+      } else {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+          vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+          vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+          vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+        } else {
+          vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+          vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+          vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+          vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
         }
-        this->RenderTeiRect(
-          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
-          1.0f, 2
-        );
       }
+      vec1.y -= slot.height[20];
+      vec2.y -= slot.height[20];
+      vec3.y -= slot.height[20];
+      vec4.y -= slot.height[20];
+      count = static_cast<int>(slot.height[1]);
+      if (count > slot.process) {
+        count = slot.process;
+      }
+      this->RenderTeiRect(
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        1.0f, 2
+      );
 
-      {
-        const vector3d& center = slot.vecBNow;
-        const float* const height = &slot.height[4];
-        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
-        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
-        if (height[2] != 0.0f && height[2] != 2.0f) {
-          front = !front;
-        }
-        if (front) {
-          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
-          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+      dif = static_cast<int>(slot.height[7] - this->state.slots[0].alphaT);
+      if (slot.height[6] == 0.0f || slot.height[6] == 2.0f) {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+          vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+          vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+          vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
         } else {
-          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
-          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+          vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+          vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+          vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
         }
-        vec1.y -= slot.height[20];
-        vec2.y -= slot.height[20];
-        vec3.y -= slot.height[20];
-        vec4.y -= slot.height[20];
-        int count = static_cast<int>(height[1]);
-        if (count > slot.process) {
-          count = slot.process;
+      } else {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+          vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+          vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+          vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+        } else {
+          vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+          vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+          vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+          vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
         }
-        this->RenderTeiRect(
-          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
-          1.0f, 2
-        );
       }
+      vec1.y -= slot.height[20];
+      vec2.y -= slot.height[20];
+      vec3.y -= slot.height[20];
+      vec4.y -= slot.height[20];
+      count = static_cast<int>(slot.height[5]);
+      if (count > slot.process) {
+        count = slot.process;
+      }
+      this->RenderTeiRect(
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[6]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        1.0f, 2
+      );
 
-      {
-        const vector3d& center = slot.vecTPre;
-        const float* const height = &slot.height[8];
-        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
-        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
-        if (height[2] != 0.0f && height[2] != 2.0f) {
-          front = !front;
-        }
-        if (front) {
-          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
-          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+      dif = static_cast<int>(slot.height[11] - this->state.slots[0].alphaT);
+      if (slot.height[10] == 0.0f || slot.height[10] == 2.0f) {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+          vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+          vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+          vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
         } else {
-          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
-          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+          vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+          vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+          vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
         }
-        vec1.y -= slot.height[20];
-        vec2.y -= slot.height[20];
-        vec3.y -= slot.height[20];
-        vec4.y -= slot.height[20];
-        int count = static_cast<int>(height[1]);
-        if (count > slot.process) {
-          count = slot.process;
+      } else {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+          vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+          vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+          vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+        } else {
+          vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+          vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+          vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+          vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
         }
-        this->RenderTeiRect(
-          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
-          1.0f, 2
-        );
       }
+      vec1.y -= slot.height[20];
+      vec2.y -= slot.height[20];
+      vec3.y -= slot.height[20];
+      vec4.y -= slot.height[20];
+      count = static_cast<int>(slot.height[9]);
+      if (count > slot.process) {
+        count = slot.process;
+      }
+      this->RenderTeiRect(
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[10]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        1.0f, 2
+      );
 
-      {
-        const vector3d& center = slot.vecTNow;
-        const float* const height = &slot.height[12];
-        const int dif = static_cast<int>(height[3] - this->state.slots[0].alphaT);
-        bool front = (dif < 70 && dif > -80) || dif < -270 || dif > 270;
-        if (height[2] != 0.0f && height[2] != 2.0f) {
-          front = !front;
-        }
-        if (front) {
-          vec1 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec2 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec3 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
-          vec4 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
+      dif = static_cast<int>(slot.height[15] - this->state.slots[0].alphaT);
+      if (slot.height[14] == 0.0f || slot.height[14] == 2.0f) {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+          vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+          vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+          vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
         } else {
-          vec1 = {vec6.x + center.x, vec6.y + center.y, vec6.z + center.z};
-          vec2 = {vec5.x + center.x, vec5.y + center.y, vec5.z + center.z};
-          vec3 = {vec8.x + center.x, vec8.y + center.y, vec8.z + center.z};
-          vec4 = {vec7.x + center.x, vec7.y + center.y, vec7.z + center.z};
+          vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+          vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+          vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+          vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
         }
-        vec1.y -= slot.height[20];
-        vec2.y -= slot.height[20];
-        vec3.y -= slot.height[20];
-        vec4.y -= slot.height[20];
-        int count = static_cast<int>(height[1]);
-        if (count > slot.process) {
-          count = slot.process;
+      } else {
+        if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
+          vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+          vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+          vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+          vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+        } else {
+          vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+          vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+          vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+          vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
         }
-        this->RenderTeiRect(
-          &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
-          1.0f, 2
-        );
       }
+      vec1.y -= slot.height[20];
+      vec2.y -= slot.height[20];
+      vec3.y -= slot.height[20];
+      vec4.y -= slot.height[20];
+      count = static_cast<int>(slot.height[13]);
+      if (count > slot.process) {
+        count = slot.process;
+      }
+      this->RenderTeiRect(
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[14]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        1.0f, 2
+      );
     }
   }
 }
