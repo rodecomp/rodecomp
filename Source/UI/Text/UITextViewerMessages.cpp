@@ -341,7 +341,10 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           const int type = std::atoi(button->GetLine(3).c_str());
           int policy = std::atoi(button->GetLine(4).c_str());
           if (policy == -222) {
-            std::string name = type == 3 ? "$$DB " : "";
+            std::string name = "$$DB ";
+            if (type != 3) {
+              name = "";
+            }
             name += map;
             g_navigationManager.SearchNavigation(name, type, 0);
             break;
