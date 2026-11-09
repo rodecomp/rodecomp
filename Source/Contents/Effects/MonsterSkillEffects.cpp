@@ -393,11 +393,13 @@ CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 // FUNCTION: fn_07151
 void CStemSpearEffect::Open() {
   for (int i = 0; i < 4; ++i) {
-    CSpriteParticle* particle =
-        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-    if (!particle) {
+    EZ2STREmitter* emitter =
+        reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+    if (!emitter) {
       continue;
     }
+
+    CSpriteParticle* particle = reinterpret_cast<CSpriteParticle*>(emitter);
 
     particle->effectId = this->id;
     particle->columnIndex = i;
@@ -406,7 +408,6 @@ void CStemSpearEffect::Open() {
     particle->SetSprite("이팩트\\sv_stemspear\\sv_stemspear.spr");
     particle->SetAction("이팩트\\sv_stemspear\\sv_stemspear.act");
 
-    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     emitter->velocity.x = 0.0f;
     emitter->velocity.y = 0.0f;
     emitter->velocity.z = 0.0f;
@@ -424,7 +425,8 @@ void CStemSpearEffect::Open() {
       direction += 360.0f;
     }
     emitter->baseAngle = static_cast<int>(direction);
-    emitter->speed = SquareRoot(dx * dx + dz * dz) / static_cast<float>(this->effectLifetime);
+    const float distance = SquareRoot(dx * dx + dz * dz);
+    emitter->speed = distance / static_cast<float>(this->effectLifetime);
     emitter->elapsed = -(this->effectLifetime / 4) * i;
     this->emitters.push_back(emitter);
   }
@@ -502,29 +504,29 @@ bool CSvgSpiritEffect::IsAlive() {
 // OFFSET: 0x0070DB50
 // FUNCTION: fn_07161
 void CSvgSpiritEffect::OnProcess() {
-  EZ2STREmitter* emitter = this->emitter;
-  if (emitter->elapsed >= 0) {
+  if (this->emitter->elapsed >= 0) {
     this->SetSourceActor(this->sourceActor);
-    emitter->angle = static_cast<float>(emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->emitter->angle = static_cast<float>(this->emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
 
     const float dx = this->sourcePosition[0] - this->position[0];
     const float dy = this->sourcePosition[1] - this->position[1];
     const float dz = this->sourcePosition[2] - this->position[2];
     const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
 
+    EZ2STREmitter* emitter = this->emitter;
     emitter->velocity.x += dx * inverse * emitter->speed;
     emitter->velocity.y += dy * inverse * emitter->speed;
     emitter->velocity.z += dz * inverse * emitter->speed;
 
     const vector3d position = {this->position[0] + emitter->velocity.x, this->position[1] - 10.0f, this->position[2] + emitter->velocity.z};
-    emitter->position = position;
+    this->emitter->position = position;
 
     if (this->frame >= 10) {
-      emitter->alpha -= 40;
+      this->emitter->alpha -= 40;
     }
   }
 
-  ++emitter->elapsed;
+  ++this->emitter->elapsed;
 }
 
 // OFFSET: 0x0070DCD0
@@ -988,11 +990,11 @@ void CFloralFlareRoad::Open() {
 
   for (int delay = 0; delay < 4500; delay += 300) {
     vector3d position = {this->position[0], this->position[1], this->position[2]};
-    const int distanceX = std::max(rand() % 20, 0);
-    const int angleX = std::max(rand() % 360, 0);
+    const int distanceX = ClampedRandom(20);
+    const int angleX = ClampedRandom(360);
     position.x = ClientSine(angleX) * static_cast<float>(distanceX) + position.x;
-    const int distanceZ = std::max(rand() % 20, 0);
-    const int angleZ = std::max(rand() % 360, 0);
+    const int distanceZ = ClampedRandom(20);
+    const int angleZ = ClampedRandom(360);
     position.z = ClientCosine(angleZ) * static_cast<float>(distanceZ) + position.z;
 
     CEZ2STRParticle* flare = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
@@ -2422,9 +2424,9 @@ void CPneumaticusProcellaEffect::Open() {
   const double offsetsX[6] = {-12.0, -6.0, 0.0, 0.0, 6.0, 12.0};
   const double offsetsZ[9] = {-12.0, -10.0, -6.0, -4.0, 0.0, 4.0, 6.0, 10.0, 12.0};
   for (int i = 0; i < 40; ++i) {
-    const double x = scale * offsetsX[std::max(0, rand() % 6)];
-    const double z = scale * offsetsZ[std::max(0, rand() % 9)];
-    const int delay = std::max(0, rand() % 200) + (i + i / 10 * 20) * 100;
+    const double x = scale * offsetsX[ClampedRandom(6)];
+    const double z = scale * offsetsZ[ClampedRandom(9)];
+    const int delay = ClampedRandom(200) + (i + i / 10 * 20) * 100;
 
     EZ2STREmitter* emitter =
         reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
@@ -2710,7 +2712,7 @@ void CRandomOptEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
 
-    if (particle) {
+    if (*it) {
       const int angle = static_cast<int>(
           static_cast<float>(particle->rowIndex) + *reinterpret_cast<const float*>(&particle->angleBits) + 3.0f);
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
@@ -2762,8 +2764,6 @@ void CRichsCoinEffect::Open() {
   int count = this->coinCount;
   if (count > 5) {
     count = 5;
-  } else if (count <= 0) {
-    return;
   }
 
   for (int i = 0; i < count; ++i) {
@@ -3204,18 +3204,18 @@ CSevereRainStorm::~CSevereRainStorm() {
 // FUNCTION: fn_07334
 void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
   particle->alpha = 0;
-  *reinterpret_cast<int*>(particle->effectParameters) = std::max(rand() % 50, 0) + 150;
+  *reinterpret_cast<int*>(particle->effectParameters) = ClampedRandom(50) + 150;
   particle->animationState = 0;
   particle->elapsedFrames = 0;
   InitParticleQuad(particle->vertices);
 
-  const int spread = std::max(rand() % 15, 0) + 2;
-  const int angle = std::max(rand() % 360, 0);
+  const int spread = ClampedRandom(15) + 2;
+  const int angle = ClampedRandom(360);
   particle->offsetY = 0.0f;
   particle->offsetZ = static_cast<float>(spread) * g_sinTable[angle];
   particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
-  particle->scale = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 0.5f;
-  particle->speedParameter = static_cast<float>(std::max(rand() % 30, 0)) * 0.01f + 0.05f;
+  particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 0.5f;
+  particle->speedParameter = static_cast<float>(ClampedRandom(30)) * 0.01f + 0.05f;
 }
 
 // OFFSET: 0x0071D760
@@ -3265,7 +3265,7 @@ void CNewCloudKillEffect::Open() {
       particle->groupIndex = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
       ResetSmokeParticle(particle);
-      particle->elapsedFrames = -std::max(0, rand() % 71);
+      particle->elapsedFrames = -ClampedRandom(71);
       this->smokeEmitters.push_back(emitter);
     }
   }
@@ -3295,7 +3295,7 @@ void CNewCloudKillEffect::Open() {
       particle->groupIndex = 1;
       particle->SetTexture("effect\\new_cloud_kill\\ef_cloud_kill.tga");
       ResetMistParticle(particle);
-      particle->elapsedFrames = -std::max(0, rand() % 80);
+      particle->elapsedFrames = -ClampedRandom(80);
       this->mistEmitters.push_back(emitter);
     }
   }
@@ -3320,13 +3320,13 @@ void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
 // OFFSET: 0x0071DC70
 // FUNCTION: fn_07338
 void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
-  particle->scale = static_cast<float>(std::max(rand() % 5, 0)) + 10.0f;
+  particle->scale = static_cast<float>(ClampedRandom(5)) + 10.0f;
   particle->animationState = 10;
-  particle->frameParameters[0] = std::max(rand() % 4, 0);
-  particle->phaseParameter = std::max(rand() % 50, 0) + 10;
-  *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
-  particle->offsetZ = static_cast<float>(std::max(rand() % 10, 0)) - 5.0f;
-  particle->offsetX = static_cast<float>(std::max(rand() % 10, 0)) - 5.0f;
+  particle->frameParameters[0] = ClampedRandom(4);
+  particle->phaseParameter = ClampedRandom(50) + 10;
+  *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
+  particle->offsetZ = static_cast<float>(ClampedRandom(10)) - 5.0f;
+  particle->offsetX = static_cast<float>(ClampedRandom(10)) - 5.0f;
   particle->offsetY = -10.0f;
   particle->elapsedFrames = 0;
   InitParticleQuad(particle->vertices);
@@ -3340,17 +3340,17 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->elapsedFrames = 0;
   InitParticleQuad(particle->vertices);
 
-  particle->scale = static_cast<float>(std::max(rand() % 51, 0)) * 0.1f + 7.0f;
+  particle->scale = static_cast<float>(ClampedRandom(51)) * 0.1f + 7.0f;
   particle->offsetY = particle->scale * -0.5f;
 
-  const int spread = std::max(rand() % 13, 0) + 2;
-  const int angle = std::max(rand() % 360, 0);
+  const int spread = ClampedRandom(13) + 2;
+  const int angle = ClampedRandom(360);
   particle->offsetZ = static_cast<float>(spread) * g_sinTable[angle];
   particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
 
-  particle->frameParameters[0] = std::max(rand() % 4, 0);
-  *reinterpret_cast<int*>(particle->effectParameters) = std::max(rand() % 151, 0) + 50;
-  particle->speedParameter = static_cast<float>(std::max(rand() % 10, 0)) * 0.01f + 0.05f;
+  particle->frameParameters[0] = ClampedRandom(4);
+  *reinterpret_cast<int*>(particle->effectParameters) = ClampedRandom(151) + 50;
+  particle->speedParameter = static_cast<float>(ClampedRandom(10)) * 0.01f + 0.05f;
 }
 
 // OFFSET: 0x0070C2B0
@@ -3620,8 +3620,8 @@ void CSevereRainStorm::SpawnParticles() {
   case EF_UNK_2026:
     if (this->elapsedFrames % 5 == 0) {
       vector3d position = {this->position[0], this->position[1], this->position[2]};
-      position.x = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.x;
-      position.z = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.z;
+      position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + position.x;
+      position.z = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
       EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
@@ -3635,8 +3635,8 @@ void CSevereRainStorm::SpawnParticles() {
       const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 10u) - 1] * 50;
       vector3d position = {this->position[0], this->position[1], this->position[2]};
       const float half = static_cast<float>(spread) * 0.5f;
-      position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
-      position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+      position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
+      position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
       EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
@@ -4141,11 +4141,9 @@ void CSvgSpiritEffect::Open() {
   sprite->columnIndex = 0;
   sprite->rowIndex = 0;
   sprite->groupIndex = 1;
-  sprite->SetSprite("몬스터\\svg_spirit.spr");
-  sprite->SetAction("몬스터\\svg_spirit.act");
-  this->emitter->velocity.x = 0.0f;
-  this->emitter->velocity.y = 0.0f;
-  this->emitter->velocity.z = 0.0f;
+  AsSprite(this->emitter)->SetSprite("몬스터\\svg_spirit.spr");
+  AsSprite(this->emitter)->SetAction("몬스터\\svg_spirit.act");
+  this->emitter->velocity = {0.0f, 0.0f, 0.0f};
   this->effectLifetime = 16;
   const float deltaX = this->sourcePosition[0] - this->position[0];
   const float deltaZ = this->sourcePosition[2] - this->position[2];
@@ -4158,7 +4156,8 @@ void CSvgSpiritEffect::Open() {
     angle += 360.0f;
   }
   this->emitter->baseAngle = static_cast<int>(angle);
-  this->emitter->speed = SquareRoot(deltaX * deltaX + deltaZ * deltaZ) / static_cast<float>(this->effectLifetime);
+  const float distance = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
+  this->emitter->speed = distance / static_cast<float>(this->effectLifetime);
   this->emitter->elapsed = 0;
 }
 
@@ -4190,7 +4189,7 @@ void CCurseOfCubeEffect::SpawnShock() {
 void CNewCloudKillEffect::Render() {
   for (auto it = this->circleEmitters.begin(); it != this->circleEmitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->animationState != 0 || !particle) {
+    if (particle->animationState != 0 || !*it) {
       continue;
     }
 
@@ -4199,7 +4198,7 @@ void CNewCloudKillEffect::Render() {
 
   for (auto it = this->cloudEmitters.begin(); it != this->cloudEmitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->animationState != 0 || !particle) {
+    if (particle->animationState != 0 || !*it) {
       continue;
     }
 
@@ -4210,7 +4209,7 @@ void CNewCloudKillEffect::Render() {
 
   for (auto it = this->smokeEmitters.begin(); it != this->smokeEmitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->elapsedFrames <= 0 || !particle) {
+    if (particle->elapsedFrames <= 0 || !*it) {
       continue;
     }
 
@@ -4221,16 +4220,18 @@ void CNewCloudKillEffect::Render() {
 
   for (auto it = this->lightningEmitters.begin(); it != this->lightningEmitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (static_cast<signed char>(particle->animationState) <= 0 || !particle) {
+    if (static_cast<signed char>(particle->animationState) <= 0 || !*it) {
       continue;
     }
 
     const int frame = static_cast<signed char>(particle->frameParameters[0]);
+    const int column = frame % 2;
+    const int row = frame / 2;
     const ParticleQuad quad = {false,
-                               static_cast<float>(frame / 2) * 0.5f,
-                               static_cast<float>(frame / 2 + 1) * 0.5f,
-                               static_cast<float>(frame % 2) * 0.5f,
-                               static_cast<float>(frame % 2 + 1) * 0.5f,
+                               static_cast<float>(row) * 0.5f,
+                               static_cast<float>(row + 1) * 0.5f,
+                               static_cast<float>(column) * 0.5f,
+                               static_cast<float>(column + 1) * 0.5f,
                                false,
                                true};
     particle->Render(quad);
@@ -4238,7 +4239,7 @@ void CNewCloudKillEffect::Render() {
 
   for (auto it = this->mistEmitters.begin(); it != this->mistEmitters.end(); ++it) {
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->elapsedFrames <= 0 || !particle) {
+    if (particle->elapsedFrames <= 0 || !*it) {
       continue;
     }
 
@@ -4424,19 +4425,18 @@ void CCurseOfCubeEffect::OnProcess() {
 // OFFSET: 0x0070C750
 // FUNCTION: fn_07136
 void CSprArrowEffect::Open() {
-  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-  this->spriteParticle = reinterpret_cast<int>(particle);
-  if (!particle) {
+  this->spriteParticle = reinterpret_cast<int>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (!this->spriteParticle) {
     return;
   }
 
+  CSpriteParticle* particle = reinterpret_cast<CSpriteParticle*>(this->spriteParticle);
   particle->effectId = this->id;
   particle->columnIndex = 0;
   particle->rowIndex = 0;
   particle->groupIndex = 1;
-  particle->velocity.x = 0.0f;
-  particle->velocity.y = -10.0f;
-  particle->velocity.z = 0.0f;
+  reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->velocity = {0.0f, -10.0f, 0.0f};
+  particle = reinterpret_cast<CSpriteParticle*>(this->spriteParticle);
   particle->position.x = this->position[0];
   particle->position.y = this->position[1];
   particle->position.z = this->position[2];
@@ -4488,7 +4488,7 @@ void CCylinderEffect::OnProcess() {
     emitter->position.x = this->position[0];
     emitter->position.y = this->position[1];
     emitter->position.z = this->position[2];
-    if (!emitter) {
+    if (!*it) {
       continue;
     }
 
@@ -4583,11 +4583,7 @@ void CGravityControlEffect::OnProcess() {
     return;
   }
 
-  float depth = this->heightOffset - g_depthAverageHalf;
-  if (this->minimumHeightOffset > depth) {
-    depth = this->minimumHeightOffset;
-  }
-  this->heightOffset = depth;
+  this->heightOffset = std::max(this->heightOffset - g_depthAverageHalf, this->minimumHeightOffset);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float height = mode->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
@@ -4612,10 +4608,10 @@ void CGravityControlEffect::OnProcess() {
 void CGaleStorm::SpawnArrow() {
   vector3d position = {this->position[0], this->position[1], this->position[2]};
   const int spanX = static_cast<int>(this->count) * 5 + 1;
-  const int offsetX = spanX == 0 ? 0 : std::max(rand() % spanX, 0);
+  const int offsetX = spanX == 0 ? 0 : ClampedRandom(spanX);
   position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
   const int spanZ = static_cast<int>(this->count) * 5 + 1;
-  const int offsetZ = spanZ == 0 ? 0 : std::max(rand() % spanZ, 0);
+  const int offsetZ = spanZ == 0 ? 0 : ClampedRandom(spanZ);
   position.z = static_cast<float>(offsetZ) - static_cast<float>(this->count * 5) * 0.5f + position.z;
 
   CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
@@ -4635,10 +4631,10 @@ void CGaleStorm::SpawnArrow() {
 void CGaleStorm::SpawnStorm() {
   vector3d position = {this->position[0], this->position[1], this->position[2]};
   const int spanX = static_cast<int>(this->count) * 5 + 1;
-  const int offsetX = spanX == 0 ? 0 : std::max(rand() % spanX, 0);
+  const int offsetX = spanX == 0 ? 0 : ClampedRandom(spanX);
   position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
   const int spanZ = static_cast<int>(this->count) * 5 + 1;
-  const int offsetZ = spanZ == 0 ? 0 : std::max(rand() % spanZ, 0);
+  const int offsetZ = spanZ == 0 ? 0 : ClampedRandom(spanZ);
   position.z = static_cast<float>(offsetZ) - static_cast<float>(this->count * 5) * 0.5f + position.z;
 
   CEZ2STRParticle* storm = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
@@ -4664,7 +4660,7 @@ void CGaleStorm::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
-      if (emitter) {
+      if (*it) {
         AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
