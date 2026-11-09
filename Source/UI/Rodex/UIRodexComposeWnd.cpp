@@ -558,7 +558,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_recipientEdit->Background(0xFF, 0xFF, 0xFF);
   this->m_recipientEdit->flat = 0;
   this->m_recipientEdit->Border(0xA6, 0xA6, 0xA6);
-  this->m_recipientEdit->TextColor(0x313131, 0xFFFFFFFF);
+  this->m_recipientEdit->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
   this->m_recipientEdit->labelOffsetX = 1;
   this->m_recipientEdit->labelOffsetY = 1;
   this->AddChild(this->m_recipientEdit);
@@ -570,7 +570,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_confirmedRecipientEdit->Background(0x110, 0x110, 0x110);
   this->m_confirmedRecipientEdit->flat = 0;
   this->m_confirmedRecipientEdit->Border(0xA6, 0xA6, 0xA6);
-  this->m_confirmedRecipientEdit->TextColor(0x95330F, 0xFFFFFFFF);
+  this->m_confirmedRecipientEdit->TextColor(0x0F, 0x33, 0x95, 0xFFFFFFFF);
   this->m_confirmedRecipientEdit->labelBold = 1;
   this->m_confirmedRecipientEdit->labelOffsetX = 1;
   this->m_confirmedRecipientEdit->labelOffsetY = 1;
@@ -645,7 +645,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   const SkinPaletteCell cell = {1, 2};
   const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
   this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
-  this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
+  this->m_contents->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
   this->AddChild(this->m_contents);
   g_windowMgr.SetFocus(this->m_contents);
   this->m_contents->SetId(0x1EB);
