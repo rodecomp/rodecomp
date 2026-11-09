@@ -259,7 +259,7 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
     return 0xFFFFFFFF;
   }
 
-  while (offset < data.size()) {
+  while (data.size() > offset) {
     header.Clear();
     std::memcpy(&header, data.data() + offset, sizeof(header));
     offset += 6;
@@ -278,6 +278,18 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
       std::memcpy(&this->characterId, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
+    case 258:
+      std::memcpy(&this->leader, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    case 259:
+      std::memcpy(&this->offline, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    case 260:
+      std::memcpy(&this->color, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
     case 256: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
@@ -294,18 +306,6 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
       this->map = buffer;
       break;
     }
-    case 258:
-      std::memcpy(&this->leader, data.data() + offset, header.bytes);
-      offset += header.bytes;
-      break;
-    case 259:
-      std::memcpy(&this->offline, data.data() + offset, header.bytes);
-      offset += header.bytes;
-      break;
-    case 260:
-      std::memcpy(&this->color, data.data() + offset, header.bytes);
-      offset += header.bytes;
-      break;
     default:
       offset += header.bytes;
       break;
