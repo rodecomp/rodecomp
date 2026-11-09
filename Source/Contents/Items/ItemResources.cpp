@@ -8,14 +8,22 @@
 
 template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
+// INLINED
+static const char* ItemResourceName(const char* id, int identified) {
+  const ITEM_DESC& value = FindItemDescription(std::atoi(id));
+  return identified != 0 ? value.identifiedResource : value.unidentifiedResource;
+}
+
 // OFFSET: 0x00DDDA20
 // FUNCTION: fn_23391
 const char* CSession::ItemDragResource(const char* id, int identified) {
   static std::string resource;
   resource = "아이템\\";
-  const ITEM_DESC& value = FindItemDescription(std::atoi(id));
-  const char* name = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
-  resource += name ? name : "사과";
+  if (ItemResourceName(id, identified) == nullptr) {
+    resource += std::string("사과");
+  } else {
+    resource += ItemResourceName(id, identified);
+  }
 
   return resource.c_str();
 }
