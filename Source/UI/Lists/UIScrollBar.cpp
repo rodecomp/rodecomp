@@ -1908,13 +1908,13 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   }
 
   std::string remaining = source;
-  std::string result;
-  std::vector<UIItemTagButton*> buttons;
+  std::string result = "";
   unsigned position = 0;
   unsigned previous = 0;
+  std::vector<UIItemTagButton*> buttons;
 
-  for (;;) {
-    std::string encoded;
+  for (;; previous = position) {
+    std::string encoded = "";
     if (!this->Next(remaining, encoded, position, source.c_str()) || result.size() >= std::strlen(lineText)) {
       break;
     }
@@ -1930,66 +1930,65 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
     }
     result += prefix;
 
-    int titleId = 0;
-    if (encoded.substr(0, 6) == "00000T" && (titleId = ItemLinkMessageId(encoded)) <= g_itemTagOwner->maxTipId) {
-      std::string label;
-      const std::string title = g_itemTagOwner->Title(titleId, &label, 17);
-      if (!title.empty()) {
-        UIItemTagButton* button = this->CreateItemTagButton(title, label, titleId, this, 0x7F00E4);
-        if (button) {
-          buttons.push_back(button);
-          button->line = static_cast<int>(this->lines.size());
-          button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-          result += button->GetLine(0);
-        }
-      }
-      position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
-    } else {
-      std::vector<std::int32_t> fields;
-      DecodeItemLinkFields(encoded, fields);
-      ITEM_INFO item;
-      if (ItemFromLinkFields(fields, item)) {
-        const std::string label = this->BracketName(item.DisplayName(0));
-        if (result.size() + label.size() > std::strlen(lineText)) {
-          previous += static_cast<unsigned>(prefix.size());
-          break;
-        }
-
-        UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
-        if (button) {
-          std::memcpy(button->itemPayload, &item, sizeof(item));
-          button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
-          button->SetTooltip(item.DisplayName(0).c_str());
-          button->m_hoverColor = 0x82F2E1;
-          button->SetId(0x1D0);
-          button->ResizeToTextClipped(
-              this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
-              button->geometry.height);
-
-          const std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
-          if (label.find(unknownName) != std::string::npos) {
-            std::uint32_t creator[2];
-            std::memcpy(creator, item.cards + 8, sizeof(creator));
-            button->tipId = creator[0] + (creator[1] << 16);
-            g_session.AddPendingActorName(button->tipId);
+    if (encoded.substr(0, 6) == "00000T") {
+      const int titleId = ItemLinkMessageId(encoded);
+      if (g_itemTagOwner->maxTipId >= titleId) {
+        std::string label;
+        const std::string title = g_itemTagOwner->Title(titleId, &label, 17);
+        if (!title.empty()) {
+          UIItemTagButton* button = this->CreateItemTagButton(title, label, titleId, this, 0x7F00E4);
+          if (button) {
+            buttons.push_back(button);
+            button->line = static_cast<int>(this->lines.size());
+            button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+            result += std::string(button->label);
           }
-
-          this->AddChild(button);
-          buttons.push_back(button);
-          button->line = static_cast<int>(this->lines.size());
-          button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-          result += label;
-          position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
         }
+        position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
+        continue;
       }
     }
 
-    previous = position;
+    std::vector<std::int32_t> fields;
+    DecodeItemLinkFields(encoded, fields);
+    ITEM_INFO item;
+    if (ItemFromLinkFields(fields, item)) {
+      const std::string label = this->BracketName(item.DisplayName(0));
+      if (label.size() + result.size() > std::strlen(lineText)) {
+        previous += static_cast<unsigned>(prefix.size());
+        break;
+      }
+
+      UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
+      reinterpret_cast<ITEM_INFO&>(button->itemPayload) = item;
+      button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
+      button->SetTooltip(item.DisplayName(0).c_str());
+      button->m_hoverColor = 0x82F2E1;
+      button->SetId(0x1D0);
+      button->ResizeToTextClipped(
+          this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
+          button->geometry.height);
+
+      const std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
+      if (label.find(unknownName) != std::string::npos) {
+        std::uint32_t creator[2];
+        std::memcpy(creator, item.cards + 8, sizeof(creator));
+        button->tipId = creator[0] + (creator[1] << 16);
+        g_session.AddPendingActorName(button->tipId);
+      }
+
+      this->AddChild(button);
+      buttons.push_back(button);
+      button->line = static_cast<int>(this->lines.size());
+      button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+      result += label;
+      position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
+    }
   }
 
   if (result.size() < std::strlen(lineText)) {
     const int available = static_cast<int>(std::strlen(lineText) - result.size());
-    if (available > 0 && static_cast<unsigned>(available) <= remaining.size()) {
+    if (available > 0 && remaining.size() >= static_cast<unsigned>(available)) {
       result += remaining.substr(0, available);
       previous += available;
     }
