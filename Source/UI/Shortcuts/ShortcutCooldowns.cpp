@@ -654,7 +654,7 @@ int g_charViewOffsetY;
 void UISelCharForUServerWnd::Paint() {
   const char* background =
     g_session.characterCount > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
-  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))->image, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), false);
 
   for (int index = 0; index < g_session.characterCount; ++index) {
     if (this->m_slotEnabled[index] != 0) {
