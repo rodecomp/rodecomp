@@ -103,9 +103,9 @@ void TagTextViewer::UIScroll::UpdateScroll() {
   if (height > this->geometry.height) {
     this->m_scrollBar->Show(1);
     this->m_scrollBar->SetRange(height - this->geometry.height, this->geometry.height, height);
-    const int position = this->m_scrollPos > 0 ? this->m_scrollPos : 0;
+    const int position = std::max(0, this->m_scrollPos);
     const int range = height - this->geometry.height;
-    this->m_scrollPos = position < range ? position : range;
+    this->m_scrollPos = std::min(range, position);
     this->m_scrollBar->SetPosition(this->m_scrollPos);
     for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
       it->first->Move(static_cast<int>(it->second.x), static_cast<int>(it->second.y - static_cast<float>(this->m_scrollPos)));
