@@ -87,11 +87,15 @@ std::string Base64Decode(const std::string& encoded, bool removeLinebreaks) {
   return DecodeBase64(encoded, removeLinebreaks);
 }
 
+// INLINED
+template <typename String> static std::string Encode(String bytes, bool urlSafe) {
+  return EncodeBase64(reinterpret_cast<const unsigned char*>(bytes.data()), static_cast<unsigned int>(bytes.length()), urlSafe);
+}
+
 // OFFSET: 0x00619D70
 // FUNCTION: fn_04413
 std::string EncodeBase64(const std::string& input, bool urlSafe) {
-  const std::string bytes(input);
-  return EncodeBase64(reinterpret_cast<const unsigned char*>(bytes.c_str()), static_cast<unsigned int>(bytes.size()), urlSafe);
+  return Encode(input, urlSafe);
 }
 
 // OFFSET: 0x00619E10
