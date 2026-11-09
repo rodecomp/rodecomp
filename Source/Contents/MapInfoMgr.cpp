@@ -287,7 +287,8 @@ int CMapInfoMgr::L_AddMapDisplayName(lua_State* state) {
         const bool show = lua_toboolean(state, -1) > 0;
         lua_pushboolean(state, 1);
         lua_pushstring(state, "good");
-        g_mapInfoMgr->AddMapDisplayName(map, name, show);
+        CMapInfoMgr* const manager = g_mapInfoMgr;
+        manager->AddMapDisplayName(map, name, show);
       }
     }
   }
