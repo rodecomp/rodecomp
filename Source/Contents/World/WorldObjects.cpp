@@ -324,8 +324,8 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
     corpse->render.position.x = x;
     corpse->render.position.y = y;
     corpse->render.position.z = z;
-    corpse->SetActionName(ResourceMgr::Instance(), action);
-    corpse->SetSpriteName(ResourceMgr::Instance(), sprite);
+    corpse->SetActionName(action);
+    corpse->SetSpriteName(sprite);
     corpse->render.previousAnimation = animation;
     corpse->render.animation = animation;
     corpse->render.curMotion = motion;
@@ -338,8 +338,8 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 // OFFSET: 0x00AC8350
 // FUNCTION: fn_17669
 CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
-  for (CRenderObject* object : this->items) {
-    CItem* item = static_cast<CItem*>(object);
+  for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+    CItem* item = static_cast<CItem*>(*it);
 
     if (item->itemAid == aid) {
       return item;
@@ -367,8 +367,8 @@ CRenderObject* CWorld::GetActorByGID(int gid) const {
 // OFFSET: 0x00AC8440
 // FUNCTION: fn_17671
 CRenderObject* CWorld::GetSkillByAID(std::uint32_t aid) const {
-  for (CRenderObject* object : this->skills) {
-    CSkill* skill = static_cast<CSkill*>(object);
+  for (auto it = this->skills.begin(); it != this->skills.end(); ++it) {
+    CSkill* skill = static_cast<CSkill*>(*it);
 
     if (skill->skillAid == aid) {
       return skill;
