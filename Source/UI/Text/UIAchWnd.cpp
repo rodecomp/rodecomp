@@ -38,6 +38,11 @@ struct PACKET_CZ_REQ_ACH_REWARD {
 
 namespace {
   // INLINED
+  bool HasReward(const AchievementInfo& info) {
+    return info.rewardBuffId > 0 || info.rewardTitleId > 0 || info.rewardItemId > 0;
+  }
+
+  // INLINED
   CBitmapRes* AchievementBitmap(const char* name) {
     return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   }
@@ -45,8 +50,12 @@ namespace {
 
 // OFFSET: 0x007B2420
 // FUNCTION: fn_09186
-UIAchievementWnd::UIAchievementWnd()
-    : UIFrameWnd(0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1) {
+UIAchievementWnd::UIAchievementWnd() : UIFrameWnd(0) {
+  this->upper = nullptr;
+  this->tab = nullptr;
+  this->list = nullptr;
+  this->group = 0;
+  this->sub = -1;
 }
 
 // OFFSET: 0x007B2E80
@@ -1500,9 +1509,12 @@ void UIAchViewWnd::UpdateInfo() {
 
 // OFFSET: 0x007B1E60
 // FUNCTION: fn_09181
-UIAchListWnd::UIAchListWnd()
-    : UIWindow(0), buttons(nullptr), rowHeight(0), rowCount(0), firstRow(0), selectedIndex(0), scrollBarWidth(11), scrollable(0),
-      listState(0), achievementList(nullptr), scrollBar(nullptr) {
+UIAchListWnd::UIAchListWnd() : UIWindow(0), rowHeight(0), rowCount(0), firstRow(0), selectedIndex(0), listState(0) {
+  this->scrollable = 0;
+  this->scrollBarWidth = 11;
+  this->achievementList = nullptr;
+  this->scrollBar = nullptr;
+  this->buttons = nullptr;
 }
 
 // INLINED

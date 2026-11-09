@@ -113,6 +113,18 @@ public:
   /* 00C4 */ int visibleSubs;
   /* 00C8 */ unsigned char scrollable;
 
+  // INLINED
+  void Select(int group, int sub) {
+    this->selectedGroup = group;
+    this->selectedSub = sub;
+    this->Invalidate();
+  }
+
+  // INLINED
+  int SubCount(int group) {
+    return static_cast<int>(this->groups[group].subs.size());
+  }
+
   void ClearGroups();
   void DrawGroup(int group);
   __declspec(noinline) std::string Label(int group, int sub);
@@ -177,6 +189,13 @@ public:
   /* 00E4 */ AchievementInfo* info;
 
   __declspec(noinline) void UpdateInfo();
+
+  // INLINED
+  void SetAchievement(int id, AchievementInfo* achievement) {
+    this->achievementId = id;
+    this->info = achievement;
+    this->UpdateInfo();
+  }
 
   void OnCreate(int width, int height) override;
   void Paint() override;
