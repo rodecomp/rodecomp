@@ -274,24 +274,24 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   this->m_entries.clear();
 
   std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
-  for (auto it = library.begin(); it != library.end(); ++it) {
-    const std::vector<ChangeMaterialRecipe>& recipes = it->second.m_recipes;
-    for (auto recipe = recipes.begin(); recipe != recipes.end(); ++recipe) {
+  for (const auto& item : library) {
+    std::vector<ChangeMaterialRecipe> recipes = item.second.m_recipes;
+    for (const ChangeMaterialRecipe& recipe : recipes) {
       MaterialListEntry entry = {};
-      if (recipe->materials.empty() || recipe->products.empty()) {
+      if (recipe.materials.empty() || recipe.products.empty()) {
         continue;
       }
 
-      entry.materials.resize(recipe->materials.size());
+      entry.materials.resize(recipe.materials.size());
       auto material = entry.materials.begin();
-      for (auto source = recipe->materials.begin(); source != recipe->materials.end(); ++source, ++material) {
+      for (auto source = recipe.materials.begin(); source != recipe.materials.end(); ++source, ++material) {
         material->id = source->itemId;
         material->quantity = source->count;
       }
 
-      entry.results.resize(recipe->products.size());
+      entry.results.resize(recipe.products.size());
       auto result = entry.results.begin();
-      for (auto source = recipe->products.begin(); source != recipe->products.end(); ++source, ++result) {
+      for (auto source = recipe.products.begin(); source != recipe.products.end(); ++source, ++result) {
         result->id = source->itemId;
         result->quantity = source->count;
         result->amount = source->rate;
