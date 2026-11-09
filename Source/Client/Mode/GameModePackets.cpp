@@ -7830,7 +7830,7 @@ void CGameMode::ReceiveBroadcastText(const unsigned char* data) {
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), data + 4, length);
   if (g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
   if (!g_serviceOptions.Get(0x94)) {
