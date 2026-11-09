@@ -7963,7 +7963,9 @@ bool CEffectPrim::OnProcess() {
     case 161:
     case 171:
     case 173:
-      this->render.position = this->state.master->render.position;
+      this->render.position.x = this->state.master->render.position.x;
+      this->render.position.y = this->state.master->render.position.y;
+      this->render.position.z = this->state.master->render.position.z;
       [[fallthrough]];
     default:
       if (g_updateTick == 0) {
@@ -10085,7 +10087,7 @@ bool CEffectPrim::OnProcess() {
     default: {
       char text[128];
       std::sprintf(text, "Illegal Effect PrimitiveId %d", this->state.count);
-      ShowErrorDialog(GetRenderSystemHolder()->system, text, 0);
+      ShowErrorDialog(text, 0);
     } break;
     case 17:
       break;
