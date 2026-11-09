@@ -244,16 +244,16 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       *reinterpret_cast<int*>(&g_session.itemSendState[0x8]) = a;
       switch (a) {
       case 0:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0, 0, 0, 0xFFFFFFFF);
         break;
       case 1:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(RGB(128, 0, 128), 0xFFFFFFFF);
+        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0x80, 0, 0x80, 0xFFFFFFFF);
         break;
       case 2:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(RGB(0, 128, 128), 0xFFFFFFFF);
+        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0, 0x80, 0x80, 0xFFFFFFFF);
         break;
       case 4:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(RGB(148, 0, 211), 0xFFFFFFFF);
+        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0x94, 0, 0xD3, 0xFFFFFFFF);
         break;
       }
       this->Invalidate();
@@ -342,9 +342,21 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
     }
     return 0;
-  case UM_SETINFO:
-    if (g_windowMgr.chatWndX < 0 || g_windowMgr.chatWndY < 0 || g_windowMgr.chatWndX > g_renderer->viewport.width - this->geometry.width
-        || g_windowMgr.chatWndY > g_renderer->viewport.height - this->geometry.height) {
+  case UM_SETINFO: {
+    bool reset = false;
+    if (g_windowMgr.chatWndX < 0) {
+      reset = true;
+    }
+    if (g_windowMgr.chatWndY < 0) {
+      reset = true;
+    }
+    if (g_windowMgr.chatWndX > g_renderer->viewport.width - this->geometry.width) {
+      reset = true;
+    }
+    if (g_windowMgr.chatWndY > g_renderer->viewport.height - this->geometry.height) {
+      reset = true;
+    }
+    if (reset) {
       g_windowMgr.chatWndX = 0;
       g_windowMgr.chatWndY = g_renderer->viewport.height - this->geometry.height;
     }
@@ -353,6 +365,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->ResizeRows(g_windowMgr.chatWndStatus);
     this->Move(this->geometry.x, this->geometry.y);
     return 0;
+  }
   case UM_COMMAND:
     switch (a) {
     case ID_OPTION:
@@ -401,28 +414,27 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
       const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
-      if (count == 0) {
+      if (count != 0) {
+        UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
+        for (int i = 0; i < count; ++i) {
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[i].c_str()), 0, 0, 0);
+        }
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
+        int height = (count + 1) * 16;
+        if (height > 0x50) {
+          height = 0x50;
+        }
+        menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex, 0, 0, 0);
+        menu->Resize(0x70, height);
+        menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
+        int x = 0;
+        int y = this->geometry.height - this->m_inputAreaHeight;
+        this->ToScreen(x, y);
+        menu->Move(x + 1, y - height + 1);
+      } else {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWHISPERLIST)), 0xFF, 0, 0, 0);
-        return 0;
       }
-
-      UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
-      for (int i = 0; i < count; ++i) {
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[i].c_str()), 0, 0, 0);
-      }
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
-      int height = (count + 1) * 16;
-      if (height > 0x50) {
-        height = 0x50;
-      }
-      menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex, 0, 0, 0);
-      menu->Resize(0x70, height);
-      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
-      int x = 0;
-      int y = this->geometry.height - this->m_inputAreaHeight;
-      this->ToScreen(x, y);
-      menu->Move(x + 1, y - height + 1);
       return 0;
     }
     case ID_OK: {
@@ -448,16 +460,18 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags->ClearTags();
           rejected = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0;
         }
-        if (!rejected) {
-          if (static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0) {
-            text = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText();
-          }
-          edit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
-          rejected = HasNaviLinkTag(std::string(edit->Text()));
-        }
+      }
+      if (rejected) {
+        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+        return 0;
       }
 
-      if (rejected) {
+      if (static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0) {
+        text = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText();
+      }
+      edit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
+      if (HasNaviLinkTag(std::string(edit->Text())) != 0) {
         static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
@@ -515,14 +529,16 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      SubChatWndInfo info = {};
+      SubChatWndInfo info;
+      std::memset(info.options, 0, sizeof(info.options));
+      info.height = 0;
+      info.width = 0;
+      info.x = 0;
+      info.y = 0;
       info.name = "NewTab_";
       char number[16];
       info.name += _itoa(total + 1, number, 10);
-      if ((noSubCount + 1) * this->m_tabWidth > this->geometry.width - 0x5A) {
-        g_session.m_subChatWnds[subCount] = info;
-        g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0);
-      } else {
+      if ((noSubCount + 1) * this->m_tabWidth <= this->geometry.width - 0x5A) {
         g_session.m_noSubChatWnds[noSubCount] = info;
         this->m_tabControl->AddTab(info.name.c_str(), "");
         this->m_tabWidth = this->m_tabControl->geometry.width / g_session.m_noSubChatWnds.size();
@@ -542,6 +558,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         this->m_tabControl->activeTabIndex = noSubCount;
         this->RefreshTabs(true);
         this->ApplyHeaderLayout();
+      } else {
+        g_session.m_subChatWnds[subCount] = info;
+        g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0);
       }
       return 0;
     }
@@ -596,11 +615,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_RESIZE:
     if (a == 2 && static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0) {
       const int top = this->m_inputOffsetY + 0x38;
-      if (c < top) {
-        if (this->geometry.state != 0) {
-          this->ResizeRows(0);
-        }
-      } else {
+      if (c >= top) {
         int rows = (c - top) / 14 + 1;
         if (rows > 15) {
           rows = 15;
@@ -608,6 +623,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         if (this->geometry.state != rows) {
           this->ResizeRows(rows);
         }
+      } else if (this->geometry.state != 0) {
+        this->ResizeRows(0);
       }
     }
     return 0;
