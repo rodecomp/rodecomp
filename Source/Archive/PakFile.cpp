@@ -828,9 +828,8 @@ namespace myGPack {
       return false;
     }
 
-    std::uint64_t end = offset + length;
-    if (this->m_size < end) {
-      this->m_size = end;
+    if (this->m_size < offset + length) {
+      this->m_size = offset + length;
     }
 
     return true;
