@@ -730,13 +730,11 @@ UIWindow* UIWindow::NextFocusable(UIWindow* child) {
 // OFFSET: 0x00A7FF30
 // FUNCTION: fn_16969
 UIWindow* UIWindow::PreviousFocusable(UIWindow* child) {
-  for (auto it = this->m_children.end(); it != this->m_children.begin(); --it) {
-    UIWindow* window = *std::prev(it);
-    if (window == child && window->IsEditable()) {
-      for (--it; it != this->m_children.begin(); --it) {
-        UIWindow* previous = *std::prev(it);
-        if (previous->IsEditable()) {
-          return previous;
+  for (auto it = this->m_children.rbegin(); it != this->m_children.rend(); ++it) {
+    if (*it == child && (*it)->IsEditable()) {
+      for (++it; it != this->m_children.rend(); ++it) {
+        if ((*it)->IsEditable()) {
+          return *it;
         }
       }
 
@@ -1925,8 +1923,8 @@ void UIListBox_NaviSearch::Resize(int width, int height) {
 // OFFSET: 0x005C3360
 // FUNCTION: fn_03555
 bool UINavigationV4Wnd::ClearRouteTexts() {
-  for (std::string& text : this->routeFiles) {
-    text.clear();
+  for (auto it = this->routeFiles.begin(); it != this->routeFiles.end(); ++it) {
+    it->clear();
   }
 
   this->routeFiles.clear();
@@ -3534,11 +3532,10 @@ void UINavigationV4Wnd::SetRoadIcon(int slot) {
   std::sprintf(over, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_over.bmp", slot);
   std::sprintf(press, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_press.bmp", slot);
 
-  UIBitmapButton* button = static_cast<UIBitmapButton*>(this->roadIconButton);
-  button->SetBitmap(normal, 0, 0);
-  button->SetBitmap(over, 1, 0);
-  button->SetBitmap(press, 2, 0);
-  button->Invalidate();
+  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(normal, 0, 0);
+  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(over, 1, 0);
+  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(press, 2, 0);
+  this->roadIconButton->Invalidate();
   g_navigationManager.BuildGridLabels();
 }
 
