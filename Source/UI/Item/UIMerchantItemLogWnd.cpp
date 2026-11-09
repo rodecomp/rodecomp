@@ -31,6 +31,8 @@
 #include <cstdlib>
 #include <cstring>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
 UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {

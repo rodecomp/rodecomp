@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <cstring>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // GLOBAL: gl_24582
 ResourceFailures g_resourceFailures;
 

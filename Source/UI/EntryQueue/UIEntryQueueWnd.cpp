@@ -31,6 +31,8 @@
 #include <utility>
 #include <windows.h>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x00BA3920
 // FUNCTION: fn_19677
 UIEntryQueueHelpWnd::UIEntryQueueHelpWnd() : UIFrameWnd(0), m_viewer(nullptr), m_close(nullptr) {
