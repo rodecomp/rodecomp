@@ -1318,10 +1318,10 @@ __declspec(noinline) void UIWindowMgr::ShowWindows189(unsigned char show) {
     }
 
     if (show == 1) {
-      if (g_serviceOptions.Get(250)) {
-        (*it)->Show(1);
-      } else {
+      if (!g_serviceOptions.Get(250)) {
         (*it)->Show(0);
+      } else {
+        (*it)->Show(1);
       }
     } else {
       (*it)->Show(0);
@@ -1504,18 +1504,8 @@ std::vector<unsigned char> UIWindowMgr::SaveReplaySettings() {
 // FUNCTION: fn_17243
 std::vector<unsigned char> UIWindowMgr::SaveReplayReserved() {
   std::vector<unsigned char> data;
-  {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 26000;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
-  {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 26001;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
+  AppendReplayChunk(data, MakeReplayMarker(26000));
+  AppendReplayChunk(data, MakeReplayMarker(26001));
   return data;
 }
 
@@ -1544,19 +1534,23 @@ int UIWindowMgr::LoadReplaySettings(const std::vector<unsigned char>& data) {
   ReplaySettingHeader header;
   unsigned offset = 6;
   header.Read(data.data());
-  if (header.tag != 25000) {
+  if (25000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
-    while (offset < data.size()) {
+    while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
-      if (header.tag == 25001) {
+      switch (header.tag) {
+      case 25001:
+        return static_cast<int>(offset);
+      case 25010:
+        std::memcpy(&this->dragAllItems, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      default:
+        offset += header.size;
         break;
       }
-      if (header.tag == 25010) {
-        std::memcpy(&this->dragAllItems, data.data() + offset, header.size);
-      }
-      offset += header.size;
     }
   }
   return static_cast<int>(offset);
@@ -1572,10 +1566,10 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
   ReplaySettingHeader header;
   unsigned offset = 6;
   header.Read(data.data());
-  if (header.tag != 26000) {
+  if (26000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
-    while (offset < data.size()) {
+    while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
       if (header.tag == 26001) {
@@ -1846,13 +1840,13 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
   }
 
   ReplaySettingHeader header;
-  std::vector<unsigned char> payload;
+  std::vector<char> payload;
   unsigned offset = 6;
   header.Read(data.data());
-  if (header.tag != 20000) {
+  if (20000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
-    while (offset < data.size()) {
+    while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
       if (header.tag == 20001) {
@@ -1861,7 +1855,7 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
       if (static_cast<unsigned short>(header.tag - 20100) <= 399) {
         UIWindow* window = this->EnsureWindow(header.tag - 20100);
         if (window && header.size > 0) {
-          payload.resize(header.size);
+          payload.resize(header.size, 0);
           std::memcpy(payload.data(), data.data() + offset, header.size);
           offset += header.size;
           window->SendMsg(nullptr, UM_REPLAY_FRAMED_DATA, reinterpret_cast<std::intptr_t>(payload.data()), payload.size(), 0, 0);
