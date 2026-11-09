@@ -310,7 +310,7 @@ int L_AddRandomUpgradeEnchant(lua_State* L) {
   if (firstItemId != 0) {
     int secondItemId = CItemDBToIDMgr::GetInstance()->GetItemID(secondItemName);
     if (secondItemId != 0) {
-      mgr->m_enchants[id].options[optionKey].randomUpgrades[firstItemId].rates[secondItemId] = rate;
+      mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].randomUpgrades[firstItemId].rates[secondItemId] = rate;
     }
   }
   return 2;
@@ -358,7 +358,7 @@ int L_ApproveRandomOption(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   bool approve = lua_toboolean(L, -1) != 0;
-  CEnchantMgr::GetInstance()->m_enchants[id].approveRandomOption = approve;
+  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].approveRandomOption = approve;
   return 2;
 }
 
@@ -396,7 +396,7 @@ int L_SetCaution(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   std::string caution(lua_tostring(L, -1));
-  CEnchantMgr::GetInstance()->m_enchants[id].caution = caution;
+  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].caution = caution;
   return 2;
 }
 
@@ -425,8 +425,8 @@ int L_SetCondition(lua_State* L) {
   uint32_t condition1 = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint32_t condition2 = static_cast<uint32_t>(lua_tonumber(L, -1));
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[id].condition1 = condition1;
-  mgr->m_enchants[id].condition2 = condition2;
+  mgr->m_enchants[static_cast<uint64_t>(id)].condition1 = condition1;
+  mgr->m_enchants[static_cast<uint64_t>(id)].condition2 = condition2;
   return 2;
 }
 
@@ -489,7 +489,7 @@ int L_SetSlotOrder(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr::GetInstance()->m_enchants[id].slots = slots;
+  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].slots = slots;
   return 2;
 }
 
@@ -517,7 +517,7 @@ int L_SetSuccessRate(lua_State* L) {
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -3));
   uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint64_t rate = static_cast<uint64_t>(lua_tonumber(L, -1));
-  CEnchantMgr::GetInstance()->m_enchants[id].options[optionKey].successRate = rate;
+  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].options[optionKey].successRate = rate;
   return 2;
 }
 
@@ -817,7 +817,7 @@ int L_AddUpgradeEnchant(lua_State* L) {
   }
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[id].options[optionKey].isUpgrade = true;
+  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].isUpgrade = true;
   mgr->AddPerfectUpgradeEnchant(id, optionKey, baseItemName, itemName, cost, materials);
   return 2;
 }
@@ -957,8 +957,8 @@ int L_SetRequire(lua_State* L) {
   }
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[id].options[optionKey].requireCost = cost;
-  mgr->m_enchants[id].options[optionKey].requireMaterials = mgr->ConvertMaterials(materials);
+  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].requireCost = cost;
+  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].requireMaterials = mgr->ConvertMaterials(materials);
   return 2;
 }
 
