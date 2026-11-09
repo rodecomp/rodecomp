@@ -307,7 +307,7 @@ bool CBlurPC::OnProcess() {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
-    if (owner && (owner->render.flags & 0x10) != 0) {
+    if (owner && 0 != (owner->render.flags & 0x10)) {
       this->render.flags = 0x10;
       this->render.pulsePhases[0] = 45;
     }
@@ -327,7 +327,7 @@ bool CHalluPC2::OnProcess() {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
-    if (owner && (owner->render.flags & 0x10) != 0) {
+    if (owner && 0 != (owner->render.flags & 0x10)) {
       this->render.flags = 0x10;
       this->render.pulsePhases[0] = 45;
     }

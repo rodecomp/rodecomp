@@ -72,7 +72,8 @@ void NAsyncWorkRequestQueue::PushFront(NAsyncWorkPtr& work) {
 // FUNCTION: fn_07568
 void NAsyncWorkRequestQueue::Complete(std::uint32_t group, std::uint32_t key) {
   NSyncObject held(&this->m_criticalSection);
-  for (auto active = this->m_active.begin(); active != this->m_active.end(); ++active) {
+  const auto end = this->m_active.end();
+  for (auto active = this->m_active.begin(); active != end; ++active) {
     if (active->first == group && active->second == key) {
       this->m_active.erase(active);
       break;

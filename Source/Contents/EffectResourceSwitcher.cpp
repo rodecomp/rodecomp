@@ -529,11 +529,12 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
 // FUNCTION: fn_06988
 EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
   auto it = this->effects.begin();
-  while (it != this->effects.end() && id != it->second.id + 10000) {
+  const auto end = this->effects.end();
+  while (it != end && id != it->second.id + 10000) {
     ++it;
   }
 
-  return it != this->effects.end() ? &it->second : nullptr;
+  return it != end ? &it->second : nullptr;
 }
 
 // OFFSET: 0x00700A90

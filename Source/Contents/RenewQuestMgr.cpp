@@ -178,7 +178,7 @@ void CRenewQuestMgr::RemoveStatusRequest(unsigned int id) {
 // OFFSET: 0x00677D80
 // FUNCTION: fn_05438
 std::string RenewQuestOngoingInfo::GetDateString() const {
-  return this->m_year > 1970 ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(MSI_NAVIGATION_ROUTEINFO), this->m_year,
+  return 1970 < this->m_year ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(MSI_NAVIGATION_ROUTEINFO), this->m_year,
                                            this->m_month, this->m_day, this->m_hour, this->m_minute)
                               : std::string("");
 }

@@ -2442,7 +2442,7 @@ bool CSession::HasItem1740Number(int value) const {
 // FUNCTION: fn_23574
 bool CSession::HasUnknown809C(std::string name) {
   for (std::vector<std::string>::iterator it = this->characterNames.begin(); it != this->characterNames.end(); ++it) {
-    if (*it == name) {
+    if (name == *it) {
       return true;
     }
   }

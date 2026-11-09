@@ -191,7 +191,7 @@ std::vector<const ReputeInfo*> CReputeMgr::GetGroupReputes(const std::string& gr
         }
 
         const ReputeVisibility visibility = found->second.visibility;
-        if (visibility == REPUTE_VISIBLE || (visibility == REPUTE_VISIBLE_WITH_POINT && found->second.point != 0)) {
+        if (REPUTE_VISIBLE == visibility || (visibility == REPUTE_VISIBLE_WITH_POINT && 0 != found->second.point)) {
           reputes.push_back(&found->second);
         }
       }
@@ -213,7 +213,7 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
       }
 
       const ReputeVisibility visibility = found->second.visibility;
-      if (visibility == REPUTE_VISIBLE || (visibility == REPUTE_VISIBLE_WITH_POINT && found->second.point != 0)) {
+      if (REPUTE_VISIBLE == visibility || (visibility == REPUTE_VISIBLE_WITH_POINT && 0 != found->second.point)) {
         reputes.push_back(&found->second);
       }
     }

@@ -1943,7 +1943,7 @@ void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* exp
     }
   }
 
-  if (it != this->m_items.end()) {
+  if (this->m_items.end() != it) {
     (*it)->UpdateExpiry(expiry);
   }
 }

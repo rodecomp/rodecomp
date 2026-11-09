@@ -707,7 +707,7 @@ void ReplayFileList::Refresh() {
 // OFFSET: 0x00B84300
 // FUNCTION: fn_19313
 const char* ReplayFileList::FileName(int index) const {
-  if (static_cast<unsigned>(index) >= this->files.size()) {
+  if (this->files.size() <= static_cast<unsigned>(index)) {
     return nullptr;
   }
 
