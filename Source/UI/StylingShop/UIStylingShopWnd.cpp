@@ -519,6 +519,15 @@ UIDisplayCharacter::UIDisplayCharacter() : UIWindow(0) {
   this->shadowBitmapName = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
 }
 
+// INLINED
+inline UIDisplayCharacter::UIDisplayCharacter(bool hideFavoriteButton)
+    : UIWindow(0), slotNumber(0), direction(0), robe(0), head(0), job(0), headPalette(0), bodyStyle(0), topAccessory(0), middleAccessory(0),
+      bottomAccessory(0), hideFavoriteButton(hideFavoriteButton), topAccessoryItemId(0), middleAccessoryItemId(0), bottomAccessoryItemId(0) {
+  this->shadowX = 0;
+  this->shadowY = 0;
+  this->shadowBitmapName = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
+}
+
 // OFFSET: 0x00823CE0
 // FUNCTION: fn_10298
 void UIDisplayCharacter::CopyStyle(const UIDisplayCharacter* other) {
@@ -767,13 +776,8 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
     for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
       for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
-        UICheckBox* check = this->m_checks[row * 2 + column];
-        check->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
-        int y = this->m_checkTop;
-        if (row > 0) {
-          y += this->geometry.height / 8 * row;
-        }
-        check->Move(column * 105 + 7, y);
+        this->m_checks[row * 2 + column]->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
+        this->m_checks[row * 2 + column]->Move(column * 105 + 7, row > 0 ? this->geometry.height / 8 * row + this->m_checkTop : this->m_checkTop);
       }
     }
     break;
@@ -801,13 +805,8 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
     for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
       for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
-        UICheckBox* check = this->m_checks[row * 2 + column];
-        check->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
-        int y = this->m_checkTop;
-        if (row > 0) {
-          y += this->geometry.height / 8 * row;
-        }
-        check->Move(column * 105 + 7, y);
+        this->m_checks[row * 2 + column]->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
+        this->m_checks[row * 2 + column]->Move(column * 105 + 7, row > 0 ? this->geometry.height / 8 * row + this->m_checkTop : this->m_checkTop);
       }
     }
     break;
@@ -2318,7 +2317,7 @@ void UIDisplayCharacter::CreateButtons() {
 void UIDisplayCharacter::OnCreate(int width, int height) {
   this->Resize(width, height);
   this->animationStartTick = timeGetTime();
-  if (!*reinterpret_cast<unsigned char*>(&this->hideFavoriteButton)) {
+  if (!this->hideFavoriteButton) {
     this->CreateButtons();
   }
 

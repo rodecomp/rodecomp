@@ -15,6 +15,7 @@
 class UIDisplayCharacter : public UIWindow {
 public:
   UIDisplayCharacter();
+  explicit UIDisplayCharacter(bool hideFavoriteButton);
   __declspec(noinline) void LoadSessionStyle();
   void CopyStyle(const UIDisplayCharacter* other);
   void LoadCostumes();
@@ -39,7 +40,7 @@ public:
   /* 00A4 */ int bottomAccessory;
   /* 00A8 */ int animationStartTick;
   /* 00AC */ UIBitmapButton* m_favoriteButton;
-  /* 00B0 */ int hideFavoriteButton;
+  /* 00B0 */ bool hideFavoriteButton;
   /* 00B4 */ int shadowX;
   /* 00B8 */ int shadowY;
   /* 00BC */ int topAccessoryItemId;
