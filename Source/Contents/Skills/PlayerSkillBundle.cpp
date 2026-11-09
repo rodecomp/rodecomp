@@ -10,6 +10,10 @@
 
 bool IsIndexedSkill(int id);
 
+using SkillGroupTreeValue = std::_Tree_val<std::_Tree_simple_types<std::pair<const int, std::list<CSkillInfo>>>>;
+extern template std::_Tree_unchecked_const_iterator<SkillGroupTreeValue, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<SkillGroupTreeValue, std::_Iterator_base0>::operator++() noexcept;
+
 // INLINED
 std::size_t SkillIdHash::operator()(std::uint32_t id) const {
   return std::hash<std::uint32_t>()(id);
@@ -230,9 +234,10 @@ void CPlayerSkillBundle::ClearGroups() {
 // OFFSET: 0x00771D50
 // FUNCTION: fn_08290
 CSkillInfo* CPlayerSkillBundle::FindGrouped(std::uint32_t id) {
-  for (auto group = this->groups.begin(); group != this->groups.end(); ++group) {
+  const auto end = this->groups.end();
+  for (auto group = this->groups.begin(); group != end; ++group) {
     for (CSkillInfo& value : group->second) {
-      if (value.id == id) {
+      if (id == value.id) {
         return &value;
       }
     }
