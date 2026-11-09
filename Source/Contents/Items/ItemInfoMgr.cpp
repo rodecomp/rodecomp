@@ -230,7 +230,7 @@ int CItemInfoMgr::LuaAddItemIdentifiedDesc(lua_State* state) {
     int id = static_cast<int>(lua_tonumber(state, -2));
     {
       std::string line = lua_tostring(state, -1);
-      g_itemInfoMgr->m_items[id].identifiedDescription.push_back(line);
+      g_itemInfoMgr->m_items[static_cast<int>(id)].identifiedDescription.push_back(line);
     }
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
@@ -289,7 +289,7 @@ int CItemInfoMgr::LuaAddItemUnidentifiedDesc(lua_State* state) {
     int id = static_cast<int>(lua_tonumber(state, -2));
     {
       std::string line = lua_tostring(state, -1);
-      g_itemInfoMgr->m_items[id].unidentifiedDescription.push_back(line);
+      g_itemInfoMgr->m_items[static_cast<int>(id)].unidentifiedDescription.push_back(line);
     }
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
