@@ -507,15 +507,15 @@ bool CGndRiser::OnProcess() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode) {
     const float half = static_cast<float>(this->lifetime / 2);
-    float alpha;
     if (frame > half) {
       const float rise = frame - half;
       const float span = static_cast<float>(this->lifetime) * g_depthAverageHalf;
-      alpha = (rise * rise - span * span) / 25.0f;
-    } else {
-      alpha = -(frame * frame) / 25.0f;
+      const float alpha = (rise * rise - span * span) / 25.0f;
+      mode->scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
+      return true;
     }
 
+    const float alpha = -(frame * frame) / 25.0f;
     mode->scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
   }
 
