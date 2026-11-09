@@ -77,6 +77,17 @@ namespace {
   void SetButtonLabel(UIButton& button, std::string text) {
     button.label = text;
   }
+
+  // INLINED
+  __forceinline int TabOffset(const UITabControl& control, int count) {
+    int offset = 0;
+
+    for (int index = 0; index < count; ++index) {
+      offset += control.widths[index] - 1;
+    }
+
+    return offset;
+  }
 }
 
 // OFFSET: 0x0087C590
@@ -850,18 +861,16 @@ int TableBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, st
 // OFFSET: 0x008984E0
 // FUNCTION: fn_11547
 int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND: {
     if (argument1 != 273) {
       return 0;
     }
 
-    int height = this->auxiliaryWindow->geometry.height;
-
-    if (this->geometry.height <= height) {
-      height += this->list->geometry.height;
-    }
-
-    this->Resize(this->geometry.width, height);
+    this->Resize(
+      this->geometry.width, this->geometry.height > this->auxiliaryWindow->geometry.height ? this->auxiliaryWindow->geometry.height
+                                                                                         : this->auxiliaryWindow->geometry.height + this->list->geometry.height
+    );
 
     if (this->parent) {
       this->parent->Invalidate();
@@ -871,23 +880,24 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
 
-  if (message != UM_COMBOBOX_SELECTED) {
+  case UM_COMBOBOX_SELECTED:
+    if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) == 0) {
+      return 0;
+    }
+
+    this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
+    this->selected = argument1;
+
+    if (this->parent) {
+      this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, argument1, 0, 0, 0);
+    }
+
+    this->Invalidate();
+    return 0;
+
+  default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) == 0) {
-    return 0;
-  }
-
-  this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
-  this->selected = argument1;
-
-  if (this->parent) {
-    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, argument1, 0, 0, 0);
-  }
-
-  this->Invalidate();
-  return 0;
 }
 
 // OFFSET: 0x00898730
@@ -2422,7 +2432,7 @@ void UIBmpRadioBtn::Paint() {
 // OFFSET: 0x008894A0
 // FUNCTION: fn_11346
 void UICaptchaImage::Paint() {
-  this->DrawBitmap(0, 0, &this->m_bitmap.image, true);
+  this->DrawBitmap(0, 0, &this->m_bitmap, true);
 }
 
 // OFFSET: 0x00889900
@@ -2736,12 +2746,7 @@ void UITabControl::OnLBtnDblClk(int, int) {
   this->edit->SetText(this->labels[this->activeTabIndex].c_str());
   this->edit->Resize(this->widths[this->activeTabIndex] - 4, this->geometry.height - 2);
 
-  int x = 0;
-  for (int index = 0; index < this->activeTabIndex; ++index) {
-    x += this->widths[index] - 1;
-  }
-
-  this->edit->Move(x + 2, 2);
+  this->edit->Move(TabOffset(*this, this->activeTabIndex) + 2, 2);
   g_windowMgr.SetFocus(this->edit);
 }
 
