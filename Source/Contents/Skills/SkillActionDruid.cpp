@@ -1101,15 +1101,19 @@ void CSkillAction_DR_EARTH_FLOWER::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const char effectSource[] = {'\x98', '\x9C', '\x0F', '\x87', '\x89', '\x4A', '\x9F', '\x77', '\x92', '\x8A', '\x18', '\x81', '\xE1'};
-  thread_local EncryptedName<sizeof(effectSource), 0x1BF915E1F37DFDFDULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x98', '\x9C', '\x0F', '\x87', '\x89', '\x4A', '\x9F', '\x77', '\x92', '\x8A', '\x18', '\x81', '\xE1'};
+    thread_local EncryptedName<sizeof(bytes), 0x1BF915E1F37DFDFDULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\xBA', '\xB8', '\x2F', '\x1D', '\x7B', '\xCC', '\x99', '\x6D', '\xB0', '\xAE', '\x38', '\x1B', '\x4C', '\xF1', '\x90', '\x75', '\xAB', '\xB6', '\x30', '\x69'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x01FF9313695DD9DFULL> bottomName(bottomSource);
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\xBA', '\xB8', '\x2F', '\x1D', '\x7B', '\xCC', '\x99', '\x6D', '\xB0', '\xAE', '\x38', '\x1B', '\x4C', '\xF1', '\x90', '\x75', '\xAB', '\xB6', '\x30', '\x69'};
+    thread_local EncryptedName<sizeof(bytes), 0x01FF9313695DD9DFULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624D80
