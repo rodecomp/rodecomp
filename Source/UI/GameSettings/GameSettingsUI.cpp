@@ -2499,12 +2499,12 @@ GameSettingsUI::CUIGraphicsPage::CUIGraphicsPage() : CUIPage(), m_graphicsApi(nu
 
 // OFFSET: 0x00A3C680
 // FUNCTION: fn_15890
-GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem() : CUIGroup(0), m_onButton((this->m_title = nullptr, nullptr)), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3C730
 // FUNCTION: fn_15891
-GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen() : CUIGroup(0), m_onButton((this->m_title = nullptr, nullptr)), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3C7E0
@@ -2516,47 +2516,47 @@ GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics()
 
 // OFFSET: 0x00A3C910
 // FUNCTION: fn_15893
-GameSettingsUI::CUIGroupGraphicsAPI::CUIGroupGraphicsAPI() : CUIGroup(), m_combo(nullptr), m_backend(-1), m_pendingBackend(-1) {
+GameSettingsUI::CUIGroupGraphicsAPI::CUIGroupGraphicsAPI() : CUIGroup(0), m_combo((this->m_title = nullptr, nullptr)), m_backend(-1), m_pendingBackend(-1) {
 }
 
 // OFFSET: 0x00A3C9B0
 // FUNCTION: fn_15894
-GameSettingsUI::CUIGroupLogInOut::CUIGroupLogInOut() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupLogInOut::CUIGroupLogInOut() : CUIGroup(0), m_onButton((this->m_title = nullptr, nullptr)), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CA60
 // FUNCTION: fn_15895
-GameSettingsUI::CUIGroupProcessPriority::CUIGroupProcessPriority() : CUIGroup(), m_highButton(nullptr), m_highText(nullptr), m_normalButton(nullptr), m_normalText(nullptr), m_idleButton(nullptr), m_idleText(nullptr) {
+GameSettingsUI::CUIGroupProcessPriority::CUIGroupProcessPriority() : CUIGroup(0), m_highButton((this->m_title = nullptr, nullptr)), m_highText(nullptr), m_normalButton(nullptr), m_normalText(nullptr), m_idleButton(nullptr), m_idleText(nullptr) {
 }
 
 // OFFSET: 0x00A3CB20
 // FUNCTION: fn_15896
-GameSettingsUI::CUIGroupRodexSpam::CUIGroupRodexSpam() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupRodexSpam::CUIGroupRodexSpam() : CUIGroup(0), m_onButton((this->m_title = nullptr, nullptr)), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CBD0
 // FUNCTION: fn_15897
-GameSettingsUI::CUIGroupSkin::CUIGroupSkin() : CUIGroup(), m_combo(nullptr) {
+GameSettingsUI::CUIGroupSkin::CUIGroupSkin() : CUIGroup(0), m_combo((this->m_title = nullptr, nullptr)) {
 }
 
 // OFFSET: 0x00A3CC60
 // FUNCTION: fn_15898
-GameSettingsUI::CUIGroupSound::CUIGroupSound() : CUIGroup(), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), m_bgmMuteText(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), m_effectMuteText(nullptr) {
+GameSettingsUI::CUIGroupSound::CUIGroupSound() : CUIGroup(0), m_bgmText((this->m_title = nullptr, nullptr)), m_bgmSlider(nullptr), m_bgmMute(nullptr), m_bgmMuteText(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), m_effectMuteText(nullptr) {
 }
 
 // OFFSET: 0x00A3CD30
 // FUNCTION: fn_15899
-GameSettingsUI::CUIGroupSpriteDetailLevel::CUIGroupSpriteDetailLevel() : CUIGroup(), m_slider(nullptr) {
+GameSettingsUI::CUIGroupSpriteDetailLevel::CUIGroupSpriteDetailLevel() : CUIGroup(0), m_slider((this->m_title = nullptr, nullptr)) {
 }
 
 // OFFSET: 0x00A3CDC0
 // FUNCTION: fn_15900
-GameSettingsUI::CUIGroupTextureDetailLevel::CUIGroupTextureDetailLevel() : CUIGroup(), m_slider(nullptr) {
+GameSettingsUI::CUIGroupTextureDetailLevel::CUIGroupTextureDetailLevel() : CUIGroup(0), m_slider((this->m_title = nullptr, nullptr)) {
 }
 
 // OFFSET: 0x00A3CE50
 // FUNCTION: fn_15901
-GameSettingsUI::CUIGroupTrilinear::CUIGroupTrilinear() : CUIGroup(), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+GameSettingsUI::CUIGroupTrilinear::CUIGroupTrilinear() : CUIGroup(0), m_onButton((this->m_title = nullptr, nullptr)), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
 }
 
 // OFFSET: 0x00A3CF00

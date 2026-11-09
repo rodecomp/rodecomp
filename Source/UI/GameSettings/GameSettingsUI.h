@@ -72,6 +72,10 @@ public:
   explicit CUIGroup() : CUIControl(), m_title(nullptr) {
   }
 
+  // INLINED
+  explicit CUIGroup(int) : CUIControl() {
+  }
+
   virtual void Apply();
   virtual void Refresh() = 0;
 
