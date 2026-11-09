@@ -72,8 +72,7 @@ CEnchantMgr::~CEnchantMgr() {
 void CEnchantMgr::SendCloseEnchant() {
   CloseEnchantPacket packet;
   packet.packetType = 0xBA0;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
 }
 
@@ -173,10 +172,9 @@ void CEnchantMgr::RequestPerfectEnchant(uint64_t group, int16_t index, int16_t s
   packet.group = group;
   packet.index = index;
   packet.itemId = itemId;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xB9C, group, index, slot};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xB9C, group, index, slot};
 }
 
 // OFFSET: 0x00683D10
@@ -191,10 +189,9 @@ void CEnchantMgr::RequestRandomEnchant(uint64_t group, int16_t index, int16_t sl
   packet.packetType = 0xB9B;
   packet.group = group;
   packet.index = index;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xB9B, group, index, slot};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xB9B, group, index, slot};
 }
 
 // OFFSET: 0x00683E00
@@ -209,10 +206,9 @@ void CEnchantMgr::RequestResetEnchant(uint64_t group, int16_t index) {
   packet.packetType = 0xB9E;
   packet.group = group;
   packet.index = index;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xB9E, group, index, -1};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xB9E, group, index, -1};
 }
 
 // OFFSET: 0x00683EF0
@@ -229,10 +225,9 @@ void CEnchantMgr::RequestUpgradePerfectEnchant(uint64_t group, int16_t index, in
   packet.index = index;
   packet.slot = slot;
   packet.itemId = itemId;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xBF1, group, index, slot};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xBF1, group, index, slot};
 }
 
 // OFFSET: 0x00683FF0
@@ -248,10 +243,9 @@ void CEnchantMgr::RequestUpgradeEnchant(uint64_t group, int16_t index, int16_t s
   packet.group = group;
   packet.index = index;
   packet.slot = slot;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xB9D, group, index, slot};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xB9D, group, index, slot};
 }
 
 // OFFSET: 0x006840E0
@@ -267,10 +261,9 @@ void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int
   packet.group = group;
   packet.index = index;
   packet.slot = slot;
-  CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_request = EnchantRequest{0xBF0, group, index, slot};
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
   m_inputBlocked = true;
+  m_request = EnchantRequest{0xBF0, group, index, slot};
 }
 
 // OFFSET: 0x00686BF0
