@@ -311,8 +311,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 // OFFSET: 0x00A558B0
 // FUNCTION: fn_16308
 void CUIOngoingQuestInfo::OnInit() {
-  const char* title = LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD);
-  this->titleBar->SetTitle(title);
+  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
   UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
@@ -344,8 +343,9 @@ void CUIRewards::OnInit() {
   this->firstLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM));
   this->secondLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM));
   this->thirdLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM));
-  this->rewardList->layoutFlag = 1;
-  this->rewardList->Invalidate();
+  CUIListBoxEx<CUIRewardItem, CRewardItemData>* list = this->rewardList;
+  list->layoutFlag = 1;
+  list->Invalidate();
   this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
   this->npcSprite->Show(0);
@@ -457,7 +457,7 @@ void CUIOngoingQuestInfo::OnCreate(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
-  title->SetText("QUEST", 5);
+  title->SetText("QUEST");
   title->SetFitText(0);
   title->SetAlign(0, 6);
   title->SetFont("Gulim");
@@ -466,8 +466,9 @@ void CUIOngoingQuestInfo::OnCreate(int width, int height) {
   title->SetColor(0);
   title->SetShadow(0, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->titleBar->titleText = title;
-  this->titleBar->AddChild(title);
+  CUITitleBar* titleBar = this->titleBar;
+  titleBar->titleText = title;
+  titleBar->AddChild(title);
 
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
@@ -524,8 +525,9 @@ void CUIOngoingQuestInfo::OnCreate(int width, int height) {
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(288, 388);
   this->closeButton->SetOnClick([this]() { this->OnClose(); });
-  this->closeButton->disabled = 0;
-  this->closeButton->Invalidate();
+  CUIImageButton* closeButton = this->closeButton;
+  closeButton->disabled = 0;
+  closeButton->Invalidate();
   this->closeButton->SetImages(
     "유저인터페이스\\basic_interface\\btn_close.bmp", "유저인터페이스\\basic_interface\\btn_close_b.bmp",
     "유저인터페이스\\basic_interface\\btn_close_a.bmp","유저인터페이스\\basic_interface\\btn_close.bmp"
@@ -668,7 +670,7 @@ void CUIScrollWindow::OnCreate(int width, int height) {
   this->scrollBar->SetButtonImages(
     "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
   );
-  this->scrollBar->SetBackground(std::string());
+  this->scrollBar->SetBackground("");
   this->scrollBar->SetThumbImages(
     "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
     "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
