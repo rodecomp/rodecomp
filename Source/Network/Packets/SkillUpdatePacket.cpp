@@ -62,16 +62,16 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
 // OFFSET: 0x00D06AF0
 // FUNCTION: fn_21577
 void CGameMode::ReceiveLearnedSkill(
-  std::uint16_t id, std::int16_t level, int unknown000C, std::uint8_t unknown0018, std::int16_t unknown0014, std::int16_t unknown001C, std::int16_t unknown0030
+  std::uint16_t id, std::int16_t level, int type, std::uint8_t upgradable, std::int16_t spCost, std::int16_t range, std::int16_t unknown0030
 ) {
   CSkillInfo value;
-  value.type = unknown000C;
+  value.type = type;
   value.id = id;
   value.level = level;
-  value.upgradable = unknown0018;
+  value.upgradable = upgradable;
   value.name = value.IdName(*g_session.m_hotkeyScript);
-  value.spCost = unknown0014;
-  value.range = unknown001C;
+  value.spCost = spCost;
+  value.range = range;
   value.learnedLevel = unknown0030;
   value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, level);
 
@@ -112,11 +112,11 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
 
   g_session.m_guildSkillPoint = Read<std::int16_t>(bytes + 4);
   g_session.InvalidateWindowFrames();
-  if (g_windowMgr.window_032C) {
-    g_windowMgr.window_032C->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.guildSkillWnd) {
+    g_windowMgr.guildSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.shortCutWnd) {
+    g_windowMgr.shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }

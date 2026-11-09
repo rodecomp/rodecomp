@@ -505,7 +505,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   if (owned.refiningLevel < this->minRefine || owned.refiningLevel > this->maxRefine || owned.optionCount < this->minOptionCount) {
     return false;
   }
-  if ((g_session.IsPetEgg(itemId) == 1 && owned.damaged == 1) || g_session.HasItem61B8(owned.identity[1]) == 1) {
+  if ((g_session.IsPetEgg(itemId) == 1 && owned.damaged == 1) || g_session.HasSwapEquipmentItem(owned.identity[1]) == 1) {
     return false;
   }
   const auto material = std::find_if(this->materials.begin(), this->materials.end(), [itemId](ITEM_INFO value) {

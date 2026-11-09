@@ -292,7 +292,7 @@ void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     } else {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 13, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 13, 0, 0, 0);
     }
   } else {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -327,7 +327,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         packet.packetType = 0xB97;
         std::memset(packet.name, 0, sizeof(packet.name));
         strcpy_s(packet.name, sizeof(packet.name), this->m_recipientEdit->Text());
-        if (g_session.HasUnknown809C(packet.name)) {
+        if (g_session.HasCharacterName(packet.name)) {
           packet.known = 1;
         } else {
           packet.known = g_session.IsKnownName(packet.name);
@@ -409,7 +409,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   case UM_REFRESHITEM:
     this->m_items.clear();
     for (int i = 0; i < 5; ++i) {
-      ITEM_INFO item = g_session.GetItem5C68(i);
+      ITEM_INFO item = g_session.GetSelectionItemAt(i);
       if (item.quantity > 0) {
         this->m_items.push_back(item);
       }
@@ -487,7 +487,7 @@ void UIRodexComposeWnd::Paint() {
   this->DrawBitmap(9, 377, taxBg, true);
 
   char taxBuf[260] = {};
-  std::int64_t tax = static_cast<std::int64_t>(g_session.CountItems5C68()) * 2500;
+  std::int64_t tax = static_cast<std::int64_t>(g_session.CountSelectionItems()) * 2500;
   char inputBuf[260] = {};
   strcpy_s(inputBuf, sizeof(inputBuf), this->m_zeny->Text());
   g_session.IsNumberWithCommas(inputBuf);

@@ -72,7 +72,7 @@ public:
 
 // INLINED
 inline UINewChatWnd* ChatWindow() {
-  return static_cast<UINewChatWnd*>(g_windowMgr.window_01C8);
+  return static_cast<UINewChatWnd*>(g_windowMgr.chatWnd);
 }
 
 #endif

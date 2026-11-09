@@ -97,14 +97,14 @@ public:
 
   GuildInfo();
   void ChangeMemberPosition(int aid, int cid, int position);
-  void ClearUnknown0114();
+  void ClearAgitIds();
   void ClearMembers();
-  void RemoveUnknown0114(int value);
+  void RemoveAgitId(int value);
   void RemoveRelatedGuild(int unknown_0000, int unknown_0004);
   int GetMemberAccountId(const char* name);
-  int GetUnknown0114(int index);
+  int GetAgitId(int index);
   int CountRelatedGuilds(int unknown_0004);
-  int GetUnknown0114Count();
+  int GetAgitCount();
   void Init();
   bool HasRelatedGuild(int unknown_0000);
   void UpdateMemberExpRatios();
@@ -112,10 +112,10 @@ public:
   void UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024);
   void SetMemberOnline(int accountId, int online);
   void SetMasterCharacterId(int characterId);
-  void UpdateUnknown00D4(Unknown00D4Entry entry);
-  void AddUnknown0114(int value);
+  void UpdatePosition(Unknown00D4Entry entry);
+  void AddAgitId(int value);
   void AddMember(const Member& member);
-  void AddUnknown00EC(const Unknown00ECEntry& entry);
+  void AddBannedMember(const Unknown00ECEntry& entry);
   int DeleteMemberByCharacterId(int characterId);
   void UpdateCharacterName(int characterId, const char* name);
 };

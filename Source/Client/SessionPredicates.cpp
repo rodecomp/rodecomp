@@ -32,7 +32,7 @@ int CSession::IsState291To303(int state) const {
 
 // OFFSET: 0x00E1D700
 // FUNCTION: fn_23851
-bool CSession::HasUnknown6178Record(int id) const {
+bool CSession::HasTrackedAchievement(int id) const {
   auto it = this->trackedAchievements.begin();
   for (; it != this->trackedAchievements.end(); ++it) {
     const SessionRecord6178 record = *it;

@@ -225,7 +225,7 @@ void CPc::SetBodyCostume(int first, int second) {
   if (static_cast<unsigned char>(second) != 0) {
     int job;
     if (this->IsShapeShifted()) {
-      job = this->GetUnknown0404Job();
+      job = this->GetShapeShiftJob();
     } else {
       job = this->GetEffectiveJob(-1);
     }
@@ -812,7 +812,7 @@ void CPc::AddMsgEffect(CGameObject* effect) {
 // OFFSET: 0x00DA8180
 // FUNCTION: fn_22564
 void CPc::SetSex(int value) {
-  this->SetUnknown0260(value);
+  this->SetSexBit(value);
   this->SetSprActFull(
     this->appearanceJob, this->sex, this->head, this->weapon, this->secondaryWeapon, this->accessory, this->accessory2,
     this->accessory3, this->shield, this->headPalette, this->render.bodyPalette
@@ -886,7 +886,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
       }
     }
 
-    this->RaiseUnknown03C8((box[3] - box[1]) / 4);
+    this->RaiseTransformPriority((box[3] - box[1]) / 4);
     quad.image = image;
     quad.color = color;
     if (this->render.unknown_0130[0] == 1) {
@@ -2041,7 +2041,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
       }
     }
 
-    this->RaiseUnknown03C8((box[3] - box[1]) / 4);
+    this->RaiseTransformPriority((box[3] - box[1]) / 4);
     if (this->render.unknown_0130[0] == 1) {
       quad.color = quad.color & 0xFFFFFF | 0x46000000;
     }
@@ -2350,9 +2350,9 @@ void CPc::Render(int argument) {
 
 // OFFSET: 0x00DAD8C0
 // FUNCTION: fn_22599
-void CPc::DrawLayers(const float* matrix, int unknown0030, char unknown0034) {
+void CPc::DrawLayers(const float* matrix, int unknown0030, char blendVariant) {
   SpriteLayerRenderer renderer(this);
-  renderer.Render(matrix, unknown0030, unknown0034);
+  renderer.Render(matrix, unknown0030, blendVariant);
 }
 
 // OFFSET: 0x00DABF50
@@ -2383,7 +2383,7 @@ void CPc::UpdateGaugeWindow() {
 // FUNCTION: fn_22635
 void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->appearanceJob = first;
-  this->SetUnknown0260(second);
+  this->SetSexBit(second);
   this->head = third;
   this->weapon = fourth;
   this->secondaryWeapon = fifth;
@@ -2429,7 +2429,7 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
 // FUNCTION: fn_22633
 void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->appearanceJob = first;
-  this->SetUnknown0260(second);
+  this->SetSexBit(second);
   this->head = third;
   this->weapon = fourth;
   this->secondaryWeapon = fifth;
@@ -2457,7 +2457,7 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
     job = 0x1e;
   } else if (this->HasShapeShift()) {
     applyJob = false;
-    this->SetSprJob(this->GetUnknown0404Job());
+    this->SetSprJob(this->GetShapeShiftJob());
   } else if (this->isRiding != 0) {
     job = g_session.GetRidingJob(first);
   }
@@ -2617,7 +2617,7 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
 // OFFSET: 0x00DB0FC0
 // FUNCTION: fn_22634
 void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
-  this->SetUnknown0260(second);
+  this->SetSexBit(second);
   this->head = third;
   this->weapon = fourth;
   this->accessory = sixth;
@@ -3077,8 +3077,8 @@ void CPlayer::UpdatePendingAction() {
 
     if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
       this->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-      if (!mode->HasUnknown01A4(this->proceedTargetGid)) {
-        mode->PushUnknown01A4(this->proceedTargetGid);
+      if (!mode->HasPendingItemPickup(this->proceedTargetGid)) {
+        mode->AddPendingItemPickup(this->proceedTargetGid);
         mode->SendMsg(MM_ITEMPICKUP, this->proceedTargetGid, 0, 0, 0);
       }
       break;
@@ -4313,7 +4313,7 @@ void CPlayer::Initialize() {
 
   *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = *reinterpret_cast<const int*>(&g_session.healthPoints[0]);
   this->render.isCharacter = 1;
-  this->SetUnknown0260(g_session.SyncUnknown0E98());
+  this->SetSexBit(g_session.GetCurrentSex());
 
   const int bodyState = this->bodyState;
   const std::uint32_t stateFlags = this->stateFlags;
@@ -4324,7 +4324,7 @@ void CPlayer::Initialize() {
   this->SetMadogearType(g_session.madogearType);
   this->SetBodyCostume(g_session.m_bodyCostume, 0);
   this->SetSprAct2(
-    g_session.GetDisplayJob(), g_session.SyncUnknown0E98(), g_session.m_head, *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]),
+    g_session.GetDisplayJob(), g_session.GetCurrentSex(), g_session.m_head, *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]),
     *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]),
     *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]),
     g_session.m_headPalette, g_session.m_bodyStyle, g_session.m_jobFlags
@@ -4349,7 +4349,7 @@ void CPlayer::Initialize() {
 
   this->msgEffect = nullptr;
   this->objectType = 0;
-  this->SetUnknown0404(g_session.GetUnknown8134());
+  this->SetShapeShift(g_session.GetPlayerSkillMode());
 }
 
 // OFFSET: 0x00DB4290
@@ -4492,9 +4492,9 @@ void CPc::SetState(int state, int resetPosition) {
     }
 
     bool weaponAllowed;
-    if (this->GetUnknown0404() == 1) {
+    if (this->GetShapeShift() == 1) {
       weaponAllowed = false;
-    } else if (this->GetUnknown0404() == 2) {
+    } else if (this->GetShapeShift() == 2) {
       weaponAllowed = true;
     } else {
       weaponAllowed = IsJobWeaponAllowed(
@@ -4811,7 +4811,7 @@ void CPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -4850,7 +4850,7 @@ void CPc::SendMsg(
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     this->pkState = entry->pkState;
@@ -4907,7 +4907,7 @@ void CPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -4953,7 +4953,7 @@ void CPc::SendMsg(
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -4989,7 +4989,7 @@ void CPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
@@ -5022,7 +5022,7 @@ void CPc::SendMsg(
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
@@ -5055,7 +5055,7 @@ void CPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
@@ -5082,7 +5082,7 @@ void CPc::SendMsg(
     );
     this->SetSprRobe(entry->robe, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
@@ -5233,7 +5233,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -5270,7 +5270,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -5322,7 +5322,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     switch (entry->state) {
@@ -5357,7 +5357,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
@@ -5391,7 +5391,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
@@ -5423,7 +5423,7 @@ void CGrannyPc::SendMsg(
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    this->SetUnknown02C8(entry->healthState);
+    this->SetHealthState(entry->healthState);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {

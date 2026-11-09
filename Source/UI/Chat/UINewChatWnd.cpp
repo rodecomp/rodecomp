@@ -498,7 +498,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         }
       }
       if (offset != -1) {
-        g_windowMgr.SetUnknown04DC(buffer + offset);
+        g_windowMgr.SetChatInputText(buffer + offset);
       }
       g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
       return 0;

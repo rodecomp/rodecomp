@@ -1969,7 +1969,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
             std::uint32_t creator[2];
             std::memcpy(creator, item.cards + 8, sizeof(creator));
             button->tipId = creator[0] + (creator[1] << 16);
-            g_session.AddUnknown7F94(button->tipId);
+            g_session.AddPendingActorName(button->tipId);
           }
 
           this->AddChild(button);

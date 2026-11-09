@@ -2124,7 +2124,7 @@ ITEM_INFO UIItemParamChangeDisplayWnd::FindEquippedItem(int location) {
   }
 
   for (int index = 0; index < 8; ++index) {
-    ITEM_INFO item = g_session.GetItem17F0(index);
+    ITEM_INFO item = g_session.GetEquippedItemAt(index);
     if (item.identity[1] > 0 && item.quantity == 1 && (item.identity[2] & location) != 0) {
       return item;
     }
@@ -2231,7 +2231,7 @@ void UIExchangeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
     return;
   }
 
@@ -2260,11 +2260,11 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     break;
   case 17:
     fromStorage = true;
-    item = g_session.GetItem61B8(drag->slot);
+    item = g_session.GetSwapCostumeItem(drag->slot);
     break;
   case 18:
     fromStorage = true;
-    item = g_session.GetItem6B68(drag->slot);
+    item = g_session.GetSwapEquippedItem(drag->slot);
     break;
   }
 
@@ -2309,14 +2309,14 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       }
 
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 20, quantity, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 20, quantity, 0, 0);
       return;
     }
     break;
   case 6:
     if (x > 444) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
       return;
     }
     break;
@@ -2587,7 +2587,7 @@ void UIItemParamChangeDisplayWnd::SumEquippedStats() {
 
   int locations = 0;
   for (int index = 0; index < 8; ++index) {
-    ITEM_INFO item = g_session.GetItem17F0(index);
+    ITEM_INFO item = g_session.GetEquippedItemAt(index);
     if (item.identity[1] > 0 && item.quantity == 1) {
       const ITEM_DESC& description = FindItemDescription(std::atoi(item.itemId.c_str()));
       const bool duplicate = (description.descriptionFlags & locations) != 0;
@@ -2651,8 +2651,8 @@ void UIExchangeWnd::CancelInput() {
     g_windowMgr.SetFocus(nullptr);
     this->zenyEdit->Move(129, 500);
     this->zenyEdit = nullptr;
-    if (g_windowMgr.window_01C8) {
-      g_windowMgr.window_01C8->SendMsg(nullptr, UM_GET_EDIT_FOCUS, 0, 0, 0, 0);
+    if (g_windowMgr.chatWnd) {
+      g_windowMgr.chatWnd->SendMsg(nullptr, UM_GET_EDIT_FOCUS, 0, 0, 0, 0);
     }
   }
   this->Invalidate();
@@ -2771,7 +2771,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             std::vector<unsigned char> packet(header.length, 0);
             std::memcpy(packet.data(), records + position, header.length);
             position += header.length;
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveUnknownD4E2A0(packet.data());
+            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveCardCompositionItemList(packet.data());
           break;
         }
         default:
@@ -2869,7 +2869,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           std::vector<unsigned char> packet(header.length, 0);
           std::memcpy(packet.data(), records + position, header.length);
           position += header.length;
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveUnknownD4E3F0(packet.data());
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveItemIdentificationList(packet.data());
           break;
         }
         default:
@@ -3202,12 +3202,12 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       g_session.m_damageSkinMode = this->damageSkinMode;
       const char* resourceName = nullptr;
-      const char* name80EC = nullptr;
-      const char* name8104 = nullptr;
-      g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_hoverSlot, &resourceName, &name80EC, &name8104);
+      const char* damageSpriteName = nullptr;
+      const char* damageSkinAuxiliaryName = nullptr;
+      g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_hoverSlot, &resourceName, &damageSpriteName, &damageSkinAuxiliaryName);
       g_session.m_damageResourceName = resourceName;
-      g_session.damageSpriteName = name80EC;
-      g_session.damageSkinAuxiliaryName = name8104;
+      g_session.damageSpriteName = damageSpriteName;
+      g_session.damageSkinAuxiliaryName = damageSkinAuxiliaryName;
       int millionUnit = 0;
       g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_hoverSlot, &millionUnit);
       g_session.m_damageMillionUnit = millionUnit;
@@ -3274,13 +3274,13 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     if (a == 575) {
       if (this->m_page == 1) {
         UIBitmapButton* button = this->unequipButton;
-        button->SetDisabled(g_session.CountItems2B50() == 0);
+        button->SetDisabled(g_session.CountDistinctCostumeItems() == 0);
         button->Invalidate();
         return 0;
       }
       if (this->m_page == 0) {
         UIBitmapButton* button = this->unequipButton;
-        button->SetDisabled(g_session.CountItems17F0() == 0);
+        button->SetDisabled(g_session.CountDistinctEquippedItems() == 0);
         button->Invalidate();
         return 0;
       }
@@ -4651,7 +4651,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int talkType;
       const int offset = g_session.GetTalkType(text, &talkType, parts);
       if (offset != -1) {
-        g_windowMgr.SetUnknown04DC(&text[offset]);
+        g_windowMgr.SetChatInputText(&text[offset]);
       }
 
       if (talkType == 24) {
@@ -4665,9 +4665,9 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     if (this->m_edit->links.size() != 0) {
-      g_windowMgr.SetUnknown04DC(this->m_edit->LinkedText().c_str());
+      g_windowMgr.SetChatInputText(this->m_edit->LinkedText().c_str());
     } else if (this->m_edit->itemTags != nullptr) {
-      g_windowMgr.SetUnknown04DC(this->m_edit->itemTags->linkedText.c_str());
+      g_windowMgr.SetChatInputText(this->m_edit->itemTags->linkedText.c_str());
     } else {
       g_windowMgr.chatInputText.assign(text, std::strlen(text));
     }
@@ -6281,7 +6281,7 @@ void UInCashWnd::OnCreate(int width, int height) {
   this->m_otherItems.clear();
   this->m_pageCount = 1;
   this->m_page = 1;
-  g_session.ClearItems1784(10);
+  g_session.ClearInventoryCategoryItems(10);
   this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   this->AddCloseButton("Alt+X", 0);
 
@@ -6456,7 +6456,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   }
 
   case UM_REFRESH_PAGES:
-    this->m_pageCount = (g_session.GetList1788(this->m_tab) + 7) / 8;
+    this->m_pageCount = (g_session.GetInventoryCategorySize(this->m_tab) + 7) / 8;
     if (this->m_pageCount < 1) {
       this->m_pageCount = 1;
     }
@@ -6502,7 +6502,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   case UM_REFRESH: {
     this->items.clear();
-    const int count = g_session.GetList1788(this->m_tab);
+    const int count = g_session.GetInventoryCategorySize(this->m_tab);
     for (int index = 0; index < count; ++index) {
       ITEM_INFO item = g_session.GetItem1784At(this->m_tab, index);
       if (item.identity[1] != 0 && (this->m_tab != 8 || item.bindOnEquip != 0xFFFF)) {
@@ -6517,7 +6517,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     switch (argument1) {
     case 386:
       this->m_totalPrice = 0;
-      g_session.ClearItems1720();
+      g_session.ClearPurchaseItems();
       this->m_otherItems.clear();
       this->m_firstOther = 0;
       this->m_otherScroll->SetPosition(0);
@@ -6589,18 +6589,18 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case 365: {
       std::string query(this->m_searchEdit->Text());
       if (query.size() != 0) {
-        g_session.ClearItems1784(10);
+        g_session.ClearInventoryCategoryItems(10);
         for (int list = 0; list < 9; ++list) {
-          const int count = g_session.GetList1788(list);
+          const int count = g_session.GetInventoryCategorySize(list);
           for (int index = 0; index < count; ++index) {
             ITEM_INFO item = g_session.GetItem1784At(list, index);
             std::string name(item.displayName);
-            if (name.find(query) != std::string::npos && !g_session.HasItem17D4(std::atoi(item.itemId.c_str()))) {
+            if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(std::atoi(item.itemId.c_str()))) {
               g_session.inventoryCategories[10].push_back(item);
             }
           }
         }
-        if (g_session.GetList1788(10) == 0) {
+        if (g_session.GetInventoryCategorySize(10) == 0) {
           g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
         }
         this->m_searchEdit->SetText("");
@@ -6867,9 +6867,9 @@ ITEM_INFO UIEquipWnd::GetSlotItem(int slot) {
 
   if (this->m_page == 1) {
     if (this->m_viewOther == 0) {
-      return g_session.GetItem2B50(slot);
+      return g_session.GetCostumeItemAt(slot);
     }
-    return g_session.GetItem3500(slot);
+    return g_session.GetAlternateCostumeItemAt(slot);
   }
 
   if (this->m_page != 0) {
@@ -6877,9 +6877,9 @@ ITEM_INFO UIEquipWnd::GetSlotItem(int slot) {
   }
 
   if (this->m_viewOther == 0) {
-    return g_session.GetItem17F0(slot);
+    return g_session.GetEquippedItemAt(slot);
   }
-  return g_session.GetItem21A0(slot);
+  return g_session.GetAlternateEquippedItemAt(slot);
 }
 
 // OFFSET: 0x008D8580
@@ -7125,7 +7125,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int index = row + (this->m_page - 1) * 8;
-        int count = lists.GetList1788(this->m_tab);
+        int count = lists.GetInventoryCategorySize(this->m_tab);
         if (this->m_tab == 8) {
           count = static_cast<int>(this->items.size());
         }
@@ -7148,7 +7148,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int index = this->m_page * 8 - 4 + row;
-        int count = lists.GetList1788(this->m_tab);
+        int count = lists.GetInventoryCategorySize(this->m_tab);
         if (this->m_tab == 8) {
           count = static_cast<int>(this->items.size());
         }
@@ -9930,7 +9930,7 @@ void UILoadingWnd::OnCreate(int, int) {
   }
 
   ResourceMgr::Instance().Load(Resolve(name));
-  g_windowMgr.SetSurface0478(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
+  g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))));
 }
 // OFFSET: 0x008C8A50
 // FUNCTION: fn_11966
@@ -9960,14 +9960,14 @@ void UIEquipWnd::DrawEquipSlots() {
     ITEM_INFO item;
     if (this->m_page == 1) {
       if (this->m_viewOther == 0) {
-        item = g_session.GetItem2B50(slot);
+        item = g_session.GetCostumeItemAt(slot);
       } else {
-        item = g_session.GetItem3500(slot);
+        item = g_session.GetAlternateCostumeItemAt(slot);
       }
     } else if (this->m_viewOther == 0) {
-      item = g_session.GetItem17F0(slot);
+      item = g_session.GetEquippedItemAt(slot);
     } else {
-      item = g_session.GetItem21A0(slot);
+      item = g_session.GetAlternateEquippedItemAt(slot);
     }
 
     if (item.identity[1] == 0) {
@@ -11593,7 +11593,7 @@ void UIEquipWnd::RefreshLook()
 {
   if (m_viewOther == 0) {
     appearance[0] = g_session.GetDisplayJob();
-    appearance[1] = g_session.SyncUnknown0E98();
+    appearance[1] = g_session.GetCurrentSex();
     appearance[2] = g_session.m_head;
     appearance[6] = g_session.m_bodyStyle;
     appearance[7] = g_session.m_headPalette;

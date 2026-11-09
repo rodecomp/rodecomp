@@ -872,7 +872,7 @@ ReplayFileList& ReplayFileList::Instance() {
 // OFFSET: 0x00B87110
 // FUNCTION: fn_19339
 bool Replay::SetHeaderInfo(
-  std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int unknown0078, int service,
+  std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int playerDirection, int service,
   int serviceType, int unknown0014
 ) {
   if (!characterName || !mapName) {
@@ -888,7 +888,7 @@ bool Replay::SetHeaderInfo(
   this->header.accountId = accountId;
   this->header.cellX = cellX;
   this->header.cellY = cellY;
-  this->header.playerDirection = unknown0078;
+  this->header.playerDirection = playerDirection;
   this->header.signature = 0x52414705;
   this->header.closingSignature = 0x52414705;
   return true;

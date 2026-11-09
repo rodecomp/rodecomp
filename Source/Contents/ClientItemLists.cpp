@@ -230,14 +230,14 @@ void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
   if (mgr->itemWnd) {
     reinterpret_cast<UIWindow*>(mgr->itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (mgr->window_01E8) {
-    mgr->window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (mgr->shortCutWnd) {
+    mgr->shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (UIWindow* window = mgr->LookupWindow(WID_QUIKSLOTWND)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (mgr->window_4F260) {
-    mgr->window_4F260->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (mgr->barterMarketWnd) {
+    mgr->barterMarketWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
@@ -271,7 +271,7 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = 0;
-  g_session.AddItem1738(item, 1);
+  g_session.AddCartItem(item, 1);
 }
 
   struct ItemAddSlotPacket {
@@ -307,7 +307,7 @@ void ReceiveItemSlot(const unsigned char* data) {
   }
 
   if (packet.itemId == 0) {
-    g_session.SetUnknown5214(packet.slot);
+    g_session.SetOtherExchangeMoney(packet.slot);
     return;
   }
 
@@ -336,7 +336,7 @@ void ReceiveItemSlotOptions(const unsigned char* data) {
   }
 
   if (packet.itemId == 0) {
-    g_session.SetUnknown5214(packet.slot);
+    g_session.SetOtherExchangeMoney(packet.slot);
     return;
   }
 
@@ -379,7 +379,7 @@ void ReceiveFriendAddResult(const unsigned char* data) {
       member.characterId = packet->characterId;
       member.offline = 0;
       g_session.AddFriend(member);
-      g_session.RefreshWindow02C8();
+      g_session.RefreshMessengerGroupWindow();
       return;
     }
     case FRIEND_ADD_FALSE:
@@ -430,7 +430,7 @@ void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = 0;
-  g_session.AddItem1740(item);
+  g_session.AddMerchantShopItem(item);
 }
 
 // OFFSET: 0x00D1FF70
@@ -453,7 +453,7 @@ void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = 0;
-  g_session.AddItem1740(item);
+  g_session.AddMerchantShopItem(item);
 }
 
 // OFFSET: 0x00D20180
@@ -476,7 +476,7 @@ void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = packet.grade;
-  g_session.AddItem1740(item);
+  g_session.AddMerchantShopItem(item);
 }
 
 // OFFSET: 0x00D204B0
@@ -499,7 +499,7 @@ void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = 0;
-  g_session.AddItem1738(item, 1);
+  g_session.AddCartItem(item, 1);
 }
 
 // OFFSET: 0x00D206C0
@@ -522,7 +522,7 @@ void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
     reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
   }
   item.grade = packet.grade;
-  g_session.AddItem1738(item, 1);
+  g_session.AddCartItem(item, 1);
 }
 
 namespace {
@@ -597,7 +597,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipItemListItem(item, record, options);
-      g_session.AddItem1738(item, 0);
+      g_session.AddCartItem(item, 0);
     }
     break;
   case INVTYPE_INVENTORY:
@@ -613,14 +613,14 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       }
 
       if (item.identity[3] == 0) {
-        g_session.AddItem1710(item, 0);
+        g_session.AddInventoryItem(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
         if (g_session.IsCostumeLocation(item.identity[3])) {
-          g_session.EquipItem2B50(item, &equipped);
+          g_session.EquipCostumeItem(item, &equipped);
         } else {
-          g_session.EquipUnknown17F0(item, &equipped);
+          g_session.EquipInventoryItem(item, &equipped);
         }
       }
 
@@ -647,7 +647,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipItemListItem(item, record, options);
-      g_session.AddItem1740(item);
+      g_session.AddMerchantShopItem(item);
     }
     break;
   }
@@ -676,11 +676,11 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
       g_session.UpdateInventoryItem(item, 0);
       break;
     case INVTYPE_CART:
-      g_session.AddItem1740(item);
+      g_session.AddMerchantShopItem(item);
       break;
     case INVTYPE_STORAGE:
     case INVTYPE_GUILD_STORAGE:
-      g_session.AddItem1738(item, 0);
+      g_session.AddCartItem(item, 0);
       break;
     }
   }
@@ -696,7 +696,7 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
   switch (listType) {
   case INVTYPE_STORAGE:
   case INVTYPE_GUILD_STORAGE:
-    if (UIWindow* window = g_windowMgr.window_0288) {
+    if (UIWindow* window = g_windowMgr.itemStoreWnd) {
       window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       reinterpret_cast<unsigned char*>(window)[0x190] = 1;
     }
@@ -736,7 +736,7 @@ __declspec(noinline) EquipSlots EquipSlotDecoder::Decode(int mask) const {
 
 // OFFSET: 0x00DD7030
 // FUNCTION: fn_23282
-__declspec(noinline) bool CSession::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
+__declspec(noinline) bool CSession::AddInventoryItem(const ITEM_INFO& item, unsigned char refresh) {
   for (ITEM_INFO& value : this->m_inventoryItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -758,7 +758,7 @@ __declspec(noinline) bool CSession::AddItem1710(const ITEM_INFO& item, unsigned 
 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
-bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
+bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
   for (ITEM_INFO& value : this->merchantPurchaseSavedItems) {
     if (value.identity[1] == item.identity[1]) {
       if (!alternate) {
@@ -785,7 +785,7 @@ bool CSession::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsig
 
 // OFFSET: 0x00DD72C0
 // FUNCTION: fn_23285
-bool CSession::AddItem1740(const ITEM_INFO& item) {
+bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->merchantShopItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -805,7 +805,7 @@ bool CSession::AddItem1740(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7350
 // FUNCTION: fn_23286
-bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned char refresh) {
   for (ITEM_INFO& value : this->merchantMyShopItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -841,7 +841,7 @@ bool CSession::AddItem1750(const ITEM_INFO& item, int type, unsigned char refres
 
 // OFFSET: 0x00DD7420
 // FUNCTION: fn_23287
-void CSession::AddItem1758(const ITEM_INFO& item) {
+void CSession::AddMerchantPurchaseItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->merchantPurchaseItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -854,7 +854,7 @@ void CSession::AddItem1758(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7470
 // FUNCTION: fn_23288
-void CSession::AddItem1760(const ITEM_INFO& item) {
+void CSession::AddMerchantHopeToSellItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->merchantHopeToSellItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -867,7 +867,7 @@ void CSession::AddItem1760(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD74C0
 // FUNCTION: fn_23289
-void CSession::AddItem1748(const ITEM_INFO& item) {
+void CSession::AddMerchantMirrorItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->merchantMirrorItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
@@ -901,7 +901,7 @@ bool CSession::Equip(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD75C0
 // FUNCTION: fn_23291
-void CSession::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
+void CSession::AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
   ITEM_INFO value;
   value.AssignBasic(item);
   value.quantity = quantity;
@@ -914,7 +914,7 @@ void CSession::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
-void CSession::AppendItem1718(const ITEM_INFO& item) {
+void CSession::AppendShopItem(const ITEM_INFO& item) {
   this->shopItems.push_back(item);
 }
 
@@ -946,7 +946,7 @@ void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
-void CSession::MergeItem1720(const ITEM_INFO& item) {
+void CSession::MergePurchaseItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->purchaseItems) {
     const bool same = item.flags[3] ? value.identity[1] == item.identity[1] : value.itemId == item.itemId;
     if (same) {
@@ -960,7 +960,7 @@ void CSession::MergeItem1720(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7890
 // FUNCTION: fn_23296
-void CSession::AddItem1730(const ITEM_INFO& item) {
+void CSession::AddStorageItem(const ITEM_INFO& item) {
   const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.identity[1]);
   if (owned.identity[1] > 0) {
     for (ITEM_INFO& value : this->storageItems) {
@@ -981,7 +981,7 @@ void CSession::AddItem1730(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7970
 // FUNCTION: fn_23297
-void CSession::AddItem1718(const RawItemBasic& item, int mode) {
+void CSession::AddShopItem(const RawItemBasic& item, int mode) {
   if (mode != 0) {
     const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.id);
     if (owned.identity[1] != 0) {
@@ -1004,7 +1004,7 @@ void CSession::AddItem1718(const RawItemBasic& item, int mode) {
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
-void CSession::MergeItem1718(const ITEM_INFO& item) {
+void CSession::MergeShopItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->shopItems) {
     if (value.identity[1] == item.identity[1]) {
       if (value.quantity != -1) {
@@ -1019,7 +1019,7 @@ void CSession::MergeItem1718(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7B80
 // FUNCTION: fn_23299
-bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
+bool CSession::AddCartItem(const ITEM_INFO& item, unsigned char refresh) {
   if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Item)) {
     return true;
   }
@@ -1027,23 +1027,23 @@ bool CSession::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
   for (ITEM_INFO& value : this->cartItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
-      if (refresh && g_windowMgr.window_0288) {
-        g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      if (refresh && g_windowMgr.itemStoreWnd) {
+        g_windowMgr.itemStoreWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return false;
     }
   }
 
   this->cartItems.push_back(item);
-  if (refresh && g_windowMgr.window_0288) {
-    g_windowMgr.window_0288->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (refresh && g_windowMgr.itemStoreWnd) {
+    g_windowMgr.itemStoreWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return true;
 }
 
 // OFFSET: 0x00DD6D70
 // FUNCTION: fn_23280
-bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
+bool CSession::EquipInventoryItem(const ITEM_INFO& item, const char* name) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
@@ -1075,7 +1075,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
 
   if (g_session.IsCostumeLocation(item.identity[3])) {
     char name[1] = "";
-    g_session.EquipItem2B50(item, name);
+    g_session.EquipCostumeItem(item, name);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
     const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
@@ -1098,7 +1098,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
   }
 
   if (item.identity[3] != 0x8000) {
-    this->RemoveItem1710(item.identity[1], 1);
+    this->RemoveInventoryItem(item.identity[1], 1);
   }
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -1260,49 +1260,49 @@ void CSession::ClearItems1760And1748() {
 
 // OFFSET: 0x00DD8900
 // FUNCTION: fn_23315
-void CSession::ClearItems1768() {
+void CSession::ClearMerchantPurchaseSavedItems() {
   this->merchantPurchaseSavedItems.erase(this->merchantPurchaseSavedItems.begin(), this->merchantPurchaseSavedItems.end());
 }
 
 // OFFSET: 0x00DD8920
 // FUNCTION: fn_23316
-void CSession::ClearItems1740() {
+void CSession::ClearMerchantShopItems() {
   this->merchantShopItems.erase(this->merchantShopItems.begin(), this->merchantShopItems.end());
 }
 
 // OFFSET: 0x00DD8940
 // FUNCTION: fn_23317
-__declspec(noinline) void CSession::ClearItems1750() {
+__declspec(noinline) void CSession::ClearMerchantMyShopItems() {
   this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
 }
 
 // OFFSET: 0x00DD8960
 // FUNCTION: fn_23318
-void CSession::ClearItems1758() {
+void CSession::ClearMerchantPurchaseItems() {
   this->merchantPurchaseItems.erase(this->merchantPurchaseItems.begin(), this->merchantPurchaseItems.end());
 }
 
 // OFFSET: 0x00DD8980
 // FUNCTION: fn_23319
-void CSession::ClearItems1760() {
+void CSession::ClearMerchantHopeToSellItems() {
   this->merchantHopeToSellItems.erase(this->merchantHopeToSellItems.begin(), this->merchantHopeToSellItems.end());
 }
 
 // OFFSET: 0x00DD89A0
 // FUNCTION: fn_23320
-void CSession::ClearItems1748() {
+void CSession::ClearMerchantMirrorItems() {
   this->merchantMirrorItems.erase(this->merchantMirrorItems.begin(), this->merchantMirrorItems.end());
 }
 
 // OFFSET: 0x00DD89C0
 // FUNCTION: fn_23321
-void CSession::ClearRecords0734() {
+void CSession::ClearMiniPartyRecords() {
   this->miniPartyRecords.clear();
 }
 
 // OFFSET: 0x00DD8A20
 // FUNCTION: fn_23322
-void CSession::ClearItems1784(int index) {
+void CSession::ClearInventoryCategoryItems(int index) {
   if (index >= 0 && static_cast<unsigned>(index) < 11) {
     this->inventoryCategories[index].erase(this->inventoryCategories[index].begin(), this->inventoryCategories[index].end());
   }
@@ -1347,7 +1347,7 @@ void CSession::ClearPartyMembers() {
 
 // OFFSET: 0x00DD8BD0
 // FUNCTION: fn_23326
-void CSession::ResetUnknown166C() {
+void CSession::ResetStatBonuses() {
   this->strengthBonus = 0;
   this->dexterityBonus = 0;
   this->luckBonus = 0;
@@ -1358,7 +1358,7 @@ void CSession::ResetUnknown166C() {
 
 // OFFSET: 0x00DD8C10
 // FUNCTION: fn_23327
-void CSession::ClearItems1720() {
+void CSession::ClearPurchaseItems() {
   this->purchaseItems.erase(this->purchaseItems.begin(), this->purchaseItems.end());
 }
 
@@ -1372,7 +1372,7 @@ void CSession::ResetHotkeyDescriptions() {
 
 // OFFSET: 0x00DD8CA0
 // FUNCTION: fn_23329
-void CSession::ClearItems1738() {
+void CSession::ClearCartItems() {
   this->cartItems.erase(this->cartItems.begin(), this->cartItems.end());
 }
 
@@ -1398,7 +1398,7 @@ void CSession::CopyItems1760To1770() {
 
 // OFFSET: 0x00DD8EA0
 // FUNCTION: fn_23332
-std::pair<bool, ITEM_INFO> CSession::FindItem1750(const ITEM_INFO& item, unsigned char) {
+std::pair<bool, ITEM_INFO> CSession::FindMerchantMyShopItem(const ITEM_INFO& item, unsigned char) {
   auto found = this->merchantMyShopItems.begin();
 
   for (; found != this->merchantMyShopItems.end(); ++found) {
@@ -1501,7 +1501,7 @@ void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA510
 // FUNCTION: fn_23339
-void CSession::RemoveItem1710(std::uint32_t id, int quantity) {
+void CSession::RemoveInventoryItem(std::uint32_t id, int quantity) {
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
     if (it->identity[1] == id) {
       if (it->quantity <= quantity) {
@@ -1531,7 +1531,7 @@ void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
 
 // OFFSET: 0x00DDA5A0
 // FUNCTION: fn_23340
-bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
+bool CSession::RemoveMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char alternate) {
   int index = 0;
   for (auto it = this->merchantPurchaseSavedItems.begin(); it != this->merchantPurchaseSavedItems.end(); ++it, ++index) {
     if (it->identity[1] == item.identity[1]) {
@@ -1556,7 +1556,7 @@ bool CSession::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
 
 // OFFSET: 0x00DDA690
 // FUNCTION: fn_23341
-bool CSession::RemoveItem1740(const ITEM_INFO& item) {
+bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
   for (auto it = this->merchantShopItems.begin(); it != this->merchantShopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
@@ -1583,7 +1583,7 @@ bool CSession::RemoveItem1740(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA8B0
 // FUNCTION: fn_23343
-void CSession::RemoveItem1758(ITEM_INFO& item) {
+void CSession::RemoveMerchantPurchaseItem(ITEM_INFO& item) {
   for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       item.itemId = it->itemId;
@@ -1598,7 +1598,7 @@ void CSession::RemoveItem1758(ITEM_INFO& item) {
 
 // OFFSET: 0x00DDA920
 // FUNCTION: fn_23344
-void CSession::RemoveItem1760(const ITEM_INFO& item) {
+void CSession::RemoveMerchantHopeToSellItem(const ITEM_INFO& item) {
   for (auto it = this->merchantHopeToSellItems.begin(); it != this->merchantHopeToSellItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
@@ -1629,7 +1629,7 @@ void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAA50
 // FUNCTION: fn_23346
-void CSession::RemoveItem1718(const ITEM_INFO& item) {
+void CSession::RemoveShopItem(const ITEM_INFO& item) {
   for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       if (it->quantity != -1) {
@@ -1659,7 +1659,7 @@ void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAC40
 // FUNCTION: fn_23349
-void CSession::RemoveItem1730(const ITEM_INFO& item) {
+void CSession::RemoveStorageItem(const ITEM_INFO& item) {
   for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
@@ -1673,7 +1673,7 @@ void CSession::RemoveItem1730(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDAC90
 // FUNCTION: fn_23350
-void CSession::ReduceItem1718(const ITEM_INFO& item) {
+void CSession::ReduceShopItemQuantity(const ITEM_INFO& item) {
   for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
@@ -1687,7 +1687,7 @@ void CSession::ReduceItem1718(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DDACE0
 // FUNCTION: fn_23351
-bool CSession::RemoveItem1738(const ITEM_INFO& item) {
+bool CSession::RemoveCartItem(const ITEM_INFO& item) {
   for (auto it = this->cartItems.begin(); it != this->cartItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
@@ -1700,13 +1700,13 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
           break;
         }
       }
-      if (UIWindow* window = g_windowMgr.window_0288) {
+      if (UIWindow* window = g_windowMgr.itemStoreWnd) {
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return true;
     }
   }
-  if (UIWindow* window = g_windowMgr.window_0288) {
+  if (UIWindow* window = g_windowMgr.itemStoreWnd) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return false;
@@ -1714,7 +1714,7 @@ bool CSession::RemoveItem1738(const ITEM_INFO& item) {
 
 // OFFSET: 0x00E2EC10
 // FUNCTION: fn_24149
-bool CSession::EquipItem6B68(const ITEM_INFO& item) {
+bool CSession::EquipSwapEquipmentItem(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
@@ -1756,9 +1756,9 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
     const int slot = order[index];
     if (slot != -1) {
       if (this->IsCostumeLocation(location)) {
-        item = this->GetItem2B50(slot);
+        item = this->GetCostumeItemAt(slot);
       } else {
-        item = this->GetItem17F0(slot);
+        item = this->GetEquippedItemAt(slot);
       }
       if (item.identity[1] == identity) {
         break;
@@ -1775,8 +1775,8 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
 
 // OFFSET: 0x00E49F40
 // FUNCTION: fn_24247
-void CSession::SetItems1750(int count, const short* ids) {
-  this->ClearItems1750();
+void CSession::SetMerchantMyShopItems(int count, const short* ids) {
+  this->ClearMerchantMyShopItems();
   for (int i = 0; i < count; ++i) {
     const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, ids[i]);
     if (item.identity[1] > 0) {
@@ -1824,7 +1824,7 @@ bool CSession::AddExchangeItem(ITEM_INFO item) {
     return false;
   }
 
-  this->RemoveItem1710(item.identity[1], item.quantity);
+  this->RemoveInventoryItem(item.identity[1], item.quantity);
 
   ITEM_INFO added = item;
   int index = 0;

@@ -1347,7 +1347,7 @@ int CSession::GetPetTargetAid() const {
 
 // OFFSET: 0x00E1D950
 // FUNCTION: fn_23854
-int CSession::WorldUnknown0050() const {
+int CSession::GetBattleFieldMode() const {
   return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isBattleFieldMode;
 }
 
@@ -1481,7 +1481,7 @@ bool CSession::IsMiscItemType(int type) const {
 
 // OFFSET: 0x00E1DBA0
 // FUNCTION: fn_23870
-bool CSession::HasUnknown6178Records() const {
+bool CSession::HasTrackedAchievements() const {
   return this->trackedAchievements.size() != 0;
 }
 
@@ -1845,9 +1845,9 @@ void CEquipmentPropertiesMgr::RemoveWearable(const int& location) {
 
 // OFFSET: 0x00E24B30
 // FUNCTION: fn_23899
-bool CSession::UnequipItem2B50(int location) {
+bool CSession::UnequipCostumeItem(int location) {
   if (location == 0x8000) {
-    this->SetUnknown16EC(0);
+    this->SetEquippedArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
@@ -1858,7 +1858,7 @@ bool CSession::UnequipItem2B50(int location) {
         const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
         item.identity[3] = 0;
-        this->AddItem1710(item, 1);
+        this->AddInventoryItem(item, 1);
         item.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {

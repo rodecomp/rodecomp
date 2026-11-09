@@ -520,7 +520,7 @@ int UIItemReformWnd_List::SendMsg(
       }
       std::vector<int> indices = g_session.FindInventoryIndicesByItemId(*base, 1);
       for (std::vector<int>::iterator index = indices.begin(); index != indices.end(); ++index) {
-        if (g_session.HasItem61B8(*index) != 0) {
+        if (g_session.HasSwapEquipmentItem(*index) != 0) {
           continue;
         }
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);

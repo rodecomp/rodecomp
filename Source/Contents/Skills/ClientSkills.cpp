@@ -179,12 +179,12 @@ CSkillInfo CSession::LookupSkill(std::uint32_t id) {
 // OFFSET: 0x00E25240
 // FUNCTION: fn_23904
 void CSession::NotifySkillWindows() {
-  if (g_windowMgr.window_02C4) {
-    g_windowMgr.window_02C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.skillListWnd) {
+    g_windowMgr.skillListWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.shortCutWnd) {
+    g_windowMgr.shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUIKSLOTWND)) {
@@ -213,20 +213,20 @@ void CSession::RemoveSkill(std::uint32_t id) {
 
 // OFFSET: 0x00E07540
 // FUNCTION: fn_23746
-bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C) {
+bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateType) {
   {
     CSkillInfo snapshot(value);
-    const auto update = [](CSkillInfo& target, const CSkillInfo& source, bool copy000C, bool copy0030) {
+    const auto update = [](CSkillInfo& target, const CSkillInfo& source, bool copyType, bool copyLearnedLevel) {
       target.level = source.level;
       std::memcpy(&target.spCost, &source.spCost, sizeof(target.spCost));
       std::memcpy(&target.range, &source.range, sizeof(target.range));
       std::memcpy(&target.upgradable, &source.upgradable, sizeof(target.upgradable));
 
-      if (copy000C) {
+      if (copyType) {
         std::memcpy(&target.type, &source.type, sizeof(target.type));
       }
 
-      if (copy0030) {
+      if (copyLearnedLevel) {
         target.learnedLevel = source.learnedLevel;
       }
 
@@ -262,7 +262,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
     std::memcpy(&existing->range, &value.range, sizeof(existing->range));
     std::memcpy(&existing->upgradable, &value.upgradable, sizeof(existing->upgradable));
 
-    if (updateUnknown000C == 1) {
+    if (updateType == 1) {
       std::memcpy(&existing->type, &value.type, sizeof(existing->type));
     }
 
@@ -366,7 +366,7 @@ void CSession::AddUnknownId(int id) {
 
 // OFFSET: 0x00E07470
 // FUNCTION: fn_23744
-bool CSession::EquipItem3500(const ITEM_INFO& item) {
+bool CSession::EquipAlternateCostumeItem(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
@@ -448,7 +448,7 @@ void CSession::ClearItemQuantities() {
 
 // OFFSET: 0x00E082D0
 // FUNCTION: fn_23755
-void CSession::ResetItems3500() {
+void CSession::ResetAlternateCostumeItems() {
   for (int index = 0; index < 10; ++index) {
     this->alternateCostumeItems[index].Reset();
   }
@@ -456,7 +456,7 @@ void CSession::ResetItems3500() {
 
 // OFFSET: 0x00E08300
 // FUNCTION: fn_23756
-void CSession::ClearSlots06EB() {
+void CSession::ClearQuickSlots() {
   this->quickSlot.enabled = 0;
   this->quickSlot.itemId = 0;
   this->quickSlot.value = 0;
@@ -483,7 +483,7 @@ void CSession::ClearSecondaryShortcutSlots() {
 
 // OFFSET: 0x00E08380
 // FUNCTION: fn_23759
-void CSession::ClearUnknown0420() {
+void CSession::ClearHotkeySkillLevels() {
   for (int index = 0; index < 36; ++index) {
     this->hotkeySkillLevels[index] = 0;
   }
@@ -550,7 +550,7 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 
 // OFFSET: 0x00E08690
 // FUNCTION: fn_23764
-std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
+std::int64_t CSession::FindSummonHp(std::int64_t key) const {
   auto found = this->summonHp.lower_bound(key);
   if (found == this->summonHp.end() || key < found->first) {
     return -1;
@@ -561,7 +561,7 @@ std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
 
 // OFFSET: 0x00E086F0
 // FUNCTION: fn_23765
-std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
+std::int64_t CSession::FindSummonMaxHp(std::int64_t key) const {
   auto found = this->summonMaxHp.lower_bound(key);
   if (found == this->summonMaxHp.end() || key < found->first) {
     return -1;
@@ -572,7 +572,7 @@ std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
 
 // OFFSET: 0x00E08750
 // FUNCTION: fn_23766
-SessionRecord6144 CSession::FindRecord6144(int key) const {
+SessionRecord6144 CSession::FindAchievementRecord(int key) const {
   auto found = this->achievements.find(key);
   if (found != this->achievements.end()) {
     return found->second;
@@ -583,7 +583,7 @@ SessionRecord6144 CSession::FindRecord6144(int key) const {
 
 // OFFSET: 0x00E06FD0
 // FUNCTION: fn_23738
-void CSession::UpdateRecord6144(const AchievementRecordPacket& packet) {
+void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   auto found = this->achievements.find(packet.id);
   if (found != this->achievements.end()) {
     SessionRecord6144& record = found->second;
@@ -629,7 +629,7 @@ const char* CSession::DecodePlayerName() const {
 
 // OFFSET: 0x00E08EE0
 // FUNCTION: fn_23773
-ITEM_INFO CSession::GetItem2B50(int index) const {
+ITEM_INFO CSession::GetCostumeItemAt(int index) const {
   if (index == 15) {
     return ITEM_INFO(0);
   }
@@ -643,7 +643,7 @@ ITEM_INFO CSession::GetItem2B50(int index) const {
 
 // OFFSET: 0x00E08F70
 // FUNCTION: fn_23774
-int CSession::CountItems5C68() const {
+int CSession::CountSelectionItems() const {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
     if (this->selectionItems[index].quantity != 0) {
@@ -675,7 +675,7 @@ int CSession::GetDefaultOptionValue(const char* name, int fallback) const {
 
 // OFFSET: 0x00E094B0
 // FUNCTION: fn_23777
-int CSession::FindUnknown0778(int key) const {
+int CSession::FindActorSkillAnimationValue(int key) const {
   for (const std::pair<int, int>& entry : this->keyValues) {
     if (key == entry.first) {
       return entry.second;
@@ -726,30 +726,30 @@ CSkillInfo CSession::HomunSkillAt(int index) const {
 // OFFSET: 0x00E251C0
 // FUNCTION: fn_23902
 __declspec(noinline) void CSession::NotifyHomunSkillWindows() {
-  if (g_windowMgr.window_03C4) {
-    g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.homunculusSkillWnd) {
+    g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.shortCutWnd) {
+    g_windowMgr.shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00E25200
 // FUNCTION: fn_23903
 __declspec(noinline) void CSession::NotifyMercSkillWindows() {
-  if (g_windowMgr.window_03CC) {
-    g_windowMgr.window_03CC->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.mercenarySkillWnd) {
+    g_windowMgr.mercenarySkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  if (g_windowMgr.window_01E8) {
-    g_windowMgr.window_01E8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.shortCutWnd) {
+    g_windowMgr.shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00E08260
 // FUNCTION: fn_23753
-void CSession::ResetItems2B50() {
+void CSession::ResetCostumeItems() {
   for (int index = 0; index < 10; ++index) {
     this->costumeItems[index].Reset();
   }
@@ -911,12 +911,12 @@ int CSession::ProcessEmotionShortcut(const char* text) {
 
 // OFFSET: 0x00E08190
 // FUNCTION: fn_23751
-void CSession::RestoreItems5C68() {
+void CSession::RestoreSelectionItems() {
   bool restored = false;
   for (int index = 0; index < 5; ++index) {
     if (this->selectionItems[index].quantity != 0) {
       restored = true;
-      g_session.AddItem1710(this->selectionItems[index], 0);
+      g_session.AddInventoryItem(this->selectionItems[index], 0);
     }
   }
 
@@ -932,7 +932,7 @@ void CSession::ReturnStackedItem(int index, int count) {
     const int quantity = this->selectionItems[slot].quantity;
     if (quantity != 0 && this->selectionItems[slot].identity[1] == index) {
       this->selectionItems[slot].quantity = count;
-      g_session.AddItem1710(this->selectionItems[slot], 0);
+      g_session.AddInventoryItem(this->selectionItems[slot], 0);
       this->selectionItems[slot].quantity = quantity - count;
       RefreshItemWindows(&g_windowMgr);
       break;
@@ -957,7 +957,7 @@ public:
 
 // OFFSET: 0x00E07150
 // FUNCTION: fn_23739
-bool CSession::EquipItem2B50(const ITEM_INFO& item, const char* name) {
+bool CSession::EquipCostumeItem(const ITEM_INFO& item, const char* name) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
@@ -984,7 +984,7 @@ bool CSession::EquipItem2B50(const ITEM_INFO& item, const char* name) {
 
 // OFFSET: 0x00E09900
 // FUNCTION: fn_23785
-ITEM_INFO CSession::GetItem5C68(int index) const {
+ITEM_INFO CSession::GetSelectionItemAt(int index) const {
   return this->selectionItems[index];
 }
 
@@ -1009,7 +1009,7 @@ CSkillInfo CSession::MercSkillAt(int index) const {
 
 // OFFSET: 0x00E0AAD0
 // FUNCTION: fn_23802
-ITEM_INFO CSession::GetItem3500(int index) const {
+ITEM_INFO CSession::GetAlternateCostumeItemAt(int index) const {
   if (index == 15) {
     return ITEM_INFO(0);
   }
@@ -1023,7 +1023,7 @@ ITEM_INFO CSession::GetItem3500(int index) const {
 
 // OFFSET: 0x00E13000
 // FUNCTION: fn_23822
-void CSession::FindTopRecords6144(int* second, int* first) {
+void CSession::FindLatestCompletedAchievements(int* second, int* first) {
   int bestValue = -1;
   int secondValue;
   for (auto it = this->achievements.begin(); it != this->achievements.end(); ++it) {
@@ -1091,7 +1091,7 @@ void CSession::ClearPairValues(unsigned char clearThird, unsigned char clearSeco
 
 // OFFSET: 0x00E19B90
 // FUNCTION: fn_23846
-void CSession::ResetUnknown1050() {
+void CSession::ResetPetEggAndJob() {
   g_session.petEggIndex = -1;
   g_session.petJob = -1;
 }

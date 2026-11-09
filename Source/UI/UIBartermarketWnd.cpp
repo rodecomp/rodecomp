@@ -1168,8 +1168,8 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
 
   int count = g_session.GetList0Size();
-  count += g_session.CountItems17F0();
-  count += g_session.CountItems2B50();
+  count += g_session.CountDistinctEquippedItems();
+  count += g_session.CountDistinctCostumeItems();
 
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
@@ -1577,8 +1577,8 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
   std::vector<BarterMarketEntry> entries = *g_expandedBarterMarketItemMgr->GetEntries();
 
   int count = g_session.GetList0Size();
-  count += g_session.CountItems17F0();
-  count += g_session.CountItems2B50();
+  count += g_session.CountDistinctEquippedItems();
+  count += g_session.CountDistinctCostumeItems();
 
   for (std::vector<BarterMarketEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);

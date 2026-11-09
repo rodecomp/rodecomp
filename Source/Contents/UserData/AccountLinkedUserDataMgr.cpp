@@ -57,7 +57,7 @@ namespace {
   }
 
   // INLINED
-  const char* UnknownAccountName() {
+  const char* DefaultAccountName() {
     const std::uint8_t source[] = {0x6A, 0x5F, 0xA6, 0x89, 0x82, 0x02, 0x03, 0x1D};
     return DecryptText<0x1D6D75EDE7CD311FULL>(source);
   }
@@ -69,7 +69,7 @@ CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
 // INLINED
 CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
-    : m_accountId(0), m_accountName(UnknownAccountName()), m_loaded(false), m_pendingLoads(0), m_saveUrl(""), m_loadUrl("") {
+    : m_accountId(0), m_accountName(DefaultAccountName()), m_loaded(false), m_pendingLoads(0), m_saveUrl(""), m_loadUrl("") {
   this->m_enabled = true;
 }
 

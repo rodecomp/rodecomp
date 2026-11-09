@@ -3026,7 +3026,7 @@ void UIBasicSkillCtrl::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_11576
 void UISlotBmpButton::SetSlot(int slot, int fallback) {
   this->m_slot = slot;
-  this->m_inRange = g_session.IsWithinUnknown59C0(slot == -1 ? fallback : slot);
+  this->m_inRange = g_session.IsRestrictedCharacterSlot(slot == -1 ? fallback : slot);
   if (this->m_slot < 0) {
     this->icon->Show(0);
     return;

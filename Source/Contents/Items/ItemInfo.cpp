@@ -690,7 +690,7 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 
 // OFFSET: 0x00DDA740
 // FUNCTION: fn_23342
-bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned char refresh) {
   for (auto it = this->merchantMyShopItems.begin(); it != this->merchantMyShopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       if (type != 0) {
@@ -735,7 +735,7 @@ bool CSession::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char ref
 
 // OFFSET: 0x00DDAB30
 // FUNCTION: fn_23348
-void CSession::RemoveItem1720(const ITEM_INFO& item) {
+void CSession::RemovePurchaseItem(const ITEM_INFO& item) {
   const bool hasFlag = item.flags[3] != 0;
   for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
     const bool same = hasFlag ? it->identity[1] == item.identity[1] : it->itemId == item.itemId;

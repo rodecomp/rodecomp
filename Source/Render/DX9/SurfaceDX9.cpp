@@ -33,7 +33,7 @@ namespace {
 
   // OFFSET: 0x00570D70
   // FUNCTION: fn_02441
-  std::uint16_t Color1555(std::uint32_t color) {
+  std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
     return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
   }
 
@@ -177,7 +177,7 @@ void CSurfaceDX9::Upload(int x, int y, int width, int height, const std::uint32_
             break;
           case D3DFMT_X1R5G5B5:
           case D3DFMT_A1R5G5B5:
-            value = Color1555(color);
+            value = PackColorA1R5G5B5(color);
             break;
           case D3DFMT_A4R4G4B4:
             value = ((color >> 16) & 0xF000) | ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00);

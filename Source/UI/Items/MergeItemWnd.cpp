@@ -345,9 +345,9 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
   }
   case UM_REFRESH: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-    g_session.RemoveItem1710(item.identity[1], item.quantity);
+    g_session.RemoveInventoryItem(item.identity[1], item.quantity);
     item.quantity = argument2;
-    g_session.AddItem1710(item, 1);
+    g_session.AddInventoryItem(item, 1);
     break;
   }
   case UM_COMMAND:

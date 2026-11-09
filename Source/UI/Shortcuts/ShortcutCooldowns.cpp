@@ -88,13 +88,13 @@ namespace {
 
 // OFFSET: 0x00E1DCE0
 // FUNCTION: fn_23876
-int CSession::IsSkillIdInRange6018(unsigned id) const {
+int CSession::IsHirelingJob(unsigned id) const {
   return id - 6018u <= 34;
 }
 
 // OFFSET: 0x00E1DD00
 // FUNCTION: fn_23877
-int CSession::IsSkillIdInRange6001(unsigned id) const {
+int CSession::IsCompanionJob(unsigned id) const {
   return id - 6001u <= 51;
 }
 
@@ -662,7 +662,7 @@ void UISelCharForUServerWnd::Paint() {
     }
 
     CharSlotInfo& slot = this->m_slots[index];
-    this->DrawRobeSprite(slot.job, g_session.SyncUnknown0E98(), slot.robe, slot.x, slot.y, false, 0, 0);
+    this->DrawRobeSprite(slot.job, g_session.GetCurrentSex(), slot.robe, slot.x, slot.y, false, 0, 0);
 
     SpriteAtlasRecord record{};
     for (int layer = 0; layer < 5; ++layer) {
@@ -705,7 +705,7 @@ void UISelCharForUServerWnd::Paint() {
           direction = 0;
         }
 
-        g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.SyncUnknown0E98(), &x, &y);
+        g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.GetCurrentSex(), &x, &y);
         offsetX = x;
         offsetY = y;
       }

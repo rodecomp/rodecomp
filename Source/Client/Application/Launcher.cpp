@@ -1749,7 +1749,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   g_modeMgr.Run(0, "login.rsw");
 
-  g_windowMgr.DestroyWindow0478();
+  g_windowMgr.DestroyBackgroundSurface();
   GetRagConnection().Close();
   Cleanup();
   g_windowMgr.Shutdown();

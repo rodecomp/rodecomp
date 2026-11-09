@@ -71,7 +71,7 @@ __declspec(noinline) std::uint32_t ResolveSkillId(std::uint32_t id);
 // OFFSET: 0x00CACF20
 // FUNCTION: fn_21049
 std::uint32_t ResolveSkillId(std::uint32_t id) {
-  if (g_session.GetUnknown8134() != 1 || (id != 6578 && id != 6579)) {
+  if (g_session.GetPlayerSkillMode() != 1 || (id != 6578 && id != 6579)) {
     return id;
   }
 

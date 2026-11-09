@@ -129,5 +129,5 @@ void UIWindowMgr::SetPressedWindowRoot(UIWindow* window) {
       root = root->parent;
     }
   }
-  this->window_4F1D4 = root;
+  this->keyboardCommandRootWnd = root;
 }

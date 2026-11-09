@@ -31,11 +31,11 @@ public:
   /* 00B8 */ int unknown_00B8;
   union {
     struct {
-      /* 00BC */ UIWindow* window_00BC;
-      /* 00C0 */ UIWindow* window_00C0;
-      /* 00C4 */ UIWindow* window_00C4;
+      /* 00BC */ UIWindow* recordStartButton;
+      /* 00C0 */ UIWindow* recordStopButton;
+      /* 00C4 */ UIWindow* confirmFilenameButton;
       /* 00C8 */ UIButton* button_00C8;
-      /* 00CC */ UIWindow* window_00CC;
+      /* 00CC */ UIWindow* closeOptionsButton;
       /* 00D0 */ UIButton* button_00D0;
     };
     /* 00BC */ UIBitmapButton* buttons[6];
@@ -43,8 +43,8 @@ public:
   /* 00D4 */ UIWindow* tabs[5];
   union {
     struct {
-      /* 00E8 */ UIStaticText* window_00E8;
-      /* 00EC */ UIWindow* window_00EC;
+      /* 00E8 */ UIStaticText* recordTimeText;
+      /* 00EC */ UIWindow* optionsTitleText;
     };
     /* 00E8 */ UIStaticText* texts[2];
   };
@@ -54,15 +54,15 @@ public:
   /* 0126 */ unsigned char unknown_0126[2];
   union {
     struct {
-      /* 0128 */ UIWindow* window_0128;
-      /* 012C */ UIWindow* window_012C;
+      /* 0128 */ UIWindow* userFilenameCheckBox;
+      /* 012C */ UIWindow* rejectExistingNameCheckBox;
     };
     /* 0128 */ UICheckBox* fileOptions[2];
   };
   /* 0130 */ bool replayPathEnabled;
   /* 0131 */ bool replayOption119;
   /* 0132 */ unsigned char unknown_0132[2];
-  /* 0134 */ UIWindow* window_0134;
+  /* 0134 */ UIWindow* filenameEdit;
   /* 0138 */ ReplayRECControlWndInfo* saved;
 };
 

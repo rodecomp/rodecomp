@@ -111,7 +111,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
-      g_session.AddItem1738(item, 0);
+      g_session.AddCartItem(item, 0);
     }
     break;
   case INVTYPE_INVENTORY:
@@ -127,14 +127,14 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       }
 
       if (item.identity[3] == 0) {
-        g_session.AddItem1710(item, 0);
+        g_session.AddInventoryItem(item, 0);
         g_session.UpdateInventoryItem(item, 0);
       } else {
         char equipped = 1;
         if (g_session.IsCostumeLocation(item.identity[3])) {
-          g_session.EquipItem2B50(item, &equipped);
+          g_session.EquipCostumeItem(item, &equipped);
         } else {
-          g_session.EquipUnknown17F0(item, &equipped);
+          g_session.EquipInventoryItem(item, &equipped);
         }
       }
 
@@ -161,7 +161,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
-      g_session.AddItem1740(item);
+      g_session.AddMerchantShopItem(item);
     }
     break;
   }
@@ -194,10 +194,10 @@ void CGameMode::ReceiveInventoryStart(const unsigned char* packet) {
   case INVTYPE_INVENTORY:
     g_session.ClearInventory();
     g_session.ResetEquipment();
-    g_session.ResetItems2B50();
+    g_session.ResetCostumeItems();
     break;
   case INVTYPE_CART:
-    g_session.ClearItems1740();
+    g_session.ClearMerchantShopItems();
     break;
   }
 }

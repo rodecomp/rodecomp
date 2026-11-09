@@ -574,7 +574,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   window->SendMsg(nullptr, UM_SETINFO, actor->render.accountId, guildId, 0, 0);
   g_windowMgr.AddRenderedFront(window);
   actor->sceneNameWindow = reinterpret_cast<int>(window);
-  this->AddUnknown0604(window);
+  this->AddNotificationWindow(window);
 }
 
 // OFFSET: 0x00CD8950
@@ -645,7 +645,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   }
 
   const bool isAdmin = IsAdminAccount(g_session.m_aid);
-  if (pick == nullptr || handled != 0 || g_mouse.buttons[1] != 3 || g_windowMgr.window_0288 != nullptr) {
+  if (pick == nullptr || handled != 0 || g_mouse.buttons[1] != 3 || g_windowMgr.itemStoreWnd != nullptr) {
     return;
   }
 
@@ -653,7 +653,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   char text[256];
   const int job = pick->job;
   CGameActor* actor = nullptr;
-  if ((job >= 45 && job < 1000) || g_session.IsMonsterClass(job) || g_session.IsSkillIdInRange6001(job) ||
+  if ((job >= 45 && job < 1000) || g_session.IsMonsterClass(job) || g_session.IsCompanionJob(job) ||
       pick->kind == 4) {
     actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
   }
@@ -1017,26 +1017,26 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     type = 10;
     break;
   case MAKETYPE_ANGELUS_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text80EC());
-    names[1] = FormatOwnedString("%s.act", g_session.Text80EC());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 1;
     type = 11;
     break;
   case MAKETYPE_CRUSIS_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text80EC());
-    names[1] = FormatOwnedString("%s.act", g_session.Text80EC());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 2;
     type = 12;
     break;
   case MAKETYPE_CRITICAL_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text80EC());
-    names[1] = FormatOwnedString("%s.act", g_session.Text80EC());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 2;
     type = 15;
     break;
   case MAKETYPE_LUCKY_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text80EC());
-    names[1] = FormatOwnedString("%s.act", g_session.Text80EC());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 3;
     type = 17;
     break;
@@ -1066,8 +1066,8 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     type = 3;
     break;
   case MAKETYPE_GUARD_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text80EC());
-    names[1] = FormatOwnedString("%s.act", g_session.Text80EC());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 1;
     type = 24;
     break;
@@ -1077,11 +1077,11 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     type = 3;
     break;
   case MAKETYPE_BLUE_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.Text8104());
+    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSkinAuxiliaryName());
     if (g_session.m_damageSkinIndex == 0) {
       names[1] = "이팩트\\msg.act";
     } else {
-      names[1] = FormatOwnedString("%s.act", g_session.Text8104());
+      names[1] = FormatOwnedString("%s.act", g_session.GetDamageSkinAuxiliaryName());
     }
     animation = 2;
     type = 25;

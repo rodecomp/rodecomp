@@ -58,17 +58,17 @@ void UIWindowMgr::NotifyHoverWindow() {
 // OFFSET: 0x00A91400
 // FUNCTION: fn_17159
 UIWindow* UIWindowMgr::GetGuildWindow() {
-  if (this->window_0320) {
-    return this->window_0320;
+  if (this->guildInfoManageWnd) {
+    return this->guildInfoManageWnd;
   }
-  if (this->window_0324) {
-    return this->window_0324;
+  if (this->guildMemberManageWnd) {
+    return this->guildMemberManageWnd;
   }
   if (this->guildPositionManageWnd) {
     return this->guildPositionManageWnd;
   }
-  if (this->window_032C) {
-    return this->window_032C;
+  if (this->guildSkillWnd) {
+    return this->guildSkillWnd;
   }
   if (this->guildBanishedMemberWnd) {
     return this->guildBanishedMemberWnd;
@@ -110,15 +110,15 @@ int UIWindowMgr::GetRenderedWindowIds(int* ids) {
 
 // OFFSET: 0x00A91C50
 // FUNCTION: fn_17170
-void UIWindowMgr::HideWindow01C8() {
-  if (this->window_01C8) {
-    this->window_01C8->Show(0);
+void UIWindowMgr::HideChatWnd() {
+  if (this->chatWnd) {
+    this->chatWnd->Show(0);
   }
 }
 
 // OFFSET: 0x00A91D90
 // FUNCTION: fn_17172
-bool CGameActor::HasUnknown030CEntry() {
+bool CGameActor::HasActiveHomunculusAI() {
   const int* entry = reinterpret_cast<const int*>(this->homunAI);
   return entry && entry[1] != 0;
 }
@@ -133,7 +133,7 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
       continue;
     }
 
-    const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
+    const SessionRecord0734 record = g_session.FindMiniPartyRecord(member.accountId);
     UIMiniPartyWnd* window = new UIMiniPartyWnd();
     window->SetSize(174, 52);
     window->m_cell = record.cell;
@@ -161,7 +161,7 @@ void UIWindowMgr::LoadShortcutItems() {
     HKEY key;
     if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
       g_session.ResetHotkeyDescriptions();
-      g_session.ClearUnknown0420();
+      g_session.ClearHotkeySkillLevels();
       for (int index = 0; index < 36; ++index) {
         DWORD type = REG_SZ;
         DWORD size = 32;
@@ -634,7 +634,7 @@ void UIWindowMgr::SaveVisibleWindowIds() {
     } else if ((id == 69 || id == 34) && this->messengerGroupWndVisible) {
       this->savedWindowIds.push_back(id);
     } else if (id == 271) {
-      if (g_session.HasUnknown6178Records() == true) {
+      if (g_session.HasTrackedAchievements() == true) {
         this->savedWindowIds.push_back(id);
       }
     } else if (id == 286) {
@@ -660,8 +660,8 @@ void UIWindowMgr::SaveVisibleWindowIds() {
 // OFFSET: 0x00AAB8A0
 // FUNCTION: fn_17282
 void UIWindowMgr::UpdateNavigationList() {
-  if (this->window_4F174 && !g_navigationManager.expandedMap && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
-    this->window_4F174->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
+  if (this->navigationWnd && !g_navigationManager.expandedMap && static_cast<UINavigationV4Wnd*>(this->navigationWnd)->IsListShown()) {
+    this->navigationWnd->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
 
@@ -691,7 +691,7 @@ void UIWindowMgr::SaveShortcutItems() {
     std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
     RegSetValueExA(key, name, 0, REG_SZ, reinterpret_cast<const BYTE*>(description), 32);
 
-    DWORD level = g_session.GetUnknown0420(index);
+    DWORD level = g_session.GetHotkeySkillLevel(index);
     std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.selectedCharacterSlot);
     RegSetValueExA(key, name, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&level), 4);
   }
@@ -1005,13 +1005,13 @@ void UIWindowMgr::SaveUIRectInfo() {
 // OFFSET: 0x00AA9F70
 // FUNCTION: fn_17264
 void UIWindowMgr::RefreshWindow01C8Edits() {
-  if (this->window_01C8) {
-    UIEditCtrl* const* edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+  if (this->chatWnd) {
+    UIEditCtrl* const* edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->chatWnd) + 0xBC);
     if (this->hoverWindow == edits[0]) {
       edits[0]->SetText("");
     }
 
-    edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+    edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->chatWnd) + 0xBC);
     UIEditCtrl* edit = edits[1];
     if (this->hoverWindow == edit) {
       edit->SetText(edit->Text());
@@ -1021,7 +1021,7 @@ void UIWindowMgr::RefreshWindow01C8Edits() {
 
 // OFFSET: 0x00AA9FD0
 // FUNCTION: fn_17265
-void UIWindowMgr::SetSurface0478(CBitmapRes* bitmap) {
+void UIWindowMgr::SetBackgroundSurface(CBitmapRes* bitmap) {
   if (!bitmap) {
     if (this->backgroundSurface) {
       delete this->backgroundSurface;
@@ -1097,7 +1097,7 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
   const int localY = y - offsetY;
   window->RecordDrop(localX, localY, *drag, -1);
   drag->sourceWindow = reinterpret_cast<std::uint32_t>(window);
-  if (this->window_01EC != window->Root()) {
+  if (this->itemDropCntWnd != window->Root()) {
     window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
   }
 
@@ -1107,11 +1107,11 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
 // OFFSET: 0x00A8FD30
 // FUNCTION: fn_17150
 void UIWindowMgr::FocusWindow01C8Edit() {
-  if (!this->window_01C8) {
+  if (!this->chatWnd) {
     return;
   }
 
-  UIWindow* edit = *reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+  UIWindow* edit = *reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(this->chatWnd) + 0xBC);
   if (this->hoverWindow) {
     this->hoverWindow->OnFinishEdit(!edit ? false : edit->GetEditWindow() == this->hoverWindow);
   }

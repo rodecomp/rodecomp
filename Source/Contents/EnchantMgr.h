@@ -60,10 +60,10 @@ class CEnchantMgr : public Singleton<CEnchantMgr> {
 public:
   /* 0004 */ std::map<uint64_t, EnchantInfo> m_enchants;
   /* 000C */ CLuaInstance m_lua;
-  /* 0014 */ int32_t m_unknown_0014;
+  /* 0014 */ int32_t m_requestAlignmentPadding;
   /* 0018 */ EnchantRequest m_request;
-  /* 0030 */ bool m_unknown_0030;
-  /* 0031 */ uint8_t m_unknown_0031[7];
+  /* 0030 */ bool m_inputBlocked;
+  /* 0031 */ uint8_t m_tailPadding[7];
 
   CEnchantMgr();
   virtual ~CEnchantMgr();
@@ -133,13 +133,13 @@ static_assert(offsetof(EnchantInfo, options) == 0x60);
 static_assert(sizeof(CEnchantMgr) == 0x38);
 static_assert(offsetof(CEnchantMgr, m_enchants) == 0x04);
 static_assert(offsetof(CEnchantMgr, m_lua) == 0x0C);
-static_assert(offsetof(CEnchantMgr, m_unknown_0014) == 0x14);
+static_assert(offsetof(CEnchantMgr, m_requestAlignmentPadding) == 0x14);
 static_assert(sizeof(EnchantRequest) == 0x18);
 static_assert(offsetof(EnchantRequest, group) == 0x08);
 static_assert(offsetof(EnchantRequest, index) == 0x10);
 static_assert(offsetof(EnchantRequest, slot) == 0x12);
 static_assert(offsetof(CEnchantMgr, m_request) == 0x18);
-static_assert(offsetof(CEnchantMgr, m_unknown_0030) == 0x30);
+static_assert(offsetof(CEnchantMgr, m_inputBlocked) == 0x30);
 #endif
 
 #endif

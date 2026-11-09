@@ -3000,7 +3000,7 @@ void CUIMonster::SearchNavigation() {
     g_navigationManager.SetViewMode(1);
     g_navigationManager.ClearSavedTarget();
     g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
     g_windowMgr.Promote(g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND));
   } else {
     g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);

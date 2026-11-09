@@ -40,7 +40,7 @@ int CSession::GetItemDescription40(int id) {
 
 // OFFSET: 0x00E13C10
 // FUNCTION: fn_23829
-std::uint32_t CSession::GetUnknown0420(int index) {
+std::uint32_t CSession::GetHotkeySkillLevel(int index) {
   return this->hotkeySkillLevels[index];
 }
 

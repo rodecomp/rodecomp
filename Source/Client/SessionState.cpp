@@ -200,14 +200,14 @@ bool CSession::IsThirdJobOrHigher(int job) {
 
 // OFFSET: 0x00E2ECD0
 // FUNCTION: fn_24150
-bool CSession::EquipItem61B8(const ITEM_INFO& item) {
+bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
   int order[3];
   order[0] = slots.values[2];
   order[1] = slots.values[1];
   order[2] = slots.values[0];
   if (item.identity[3] == 0x8000) {
-    g_session.SetUnknown7EC8(item.identity[1]);
+    g_session.SetSwapArrowIndex(item.identity[1]);
   }
 
   for (int i = 0; i < 3; ++i) {
@@ -228,10 +228,10 @@ bool CSession::EquipItem61B8(const ITEM_INFO& item) {
 
 // OFFSET: 0x00E3D8A0
 // FUNCTION: fn_24192
-void CSession::UnequipItem6B68(const ITEM_INFO& item) {
+void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
   if (location == 0x8000) {
-    this->SetUnknown7EC8(0);
+    this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
@@ -256,7 +256,7 @@ void CSession::UnequipItem6B68(const ITEM_INFO& item) {
 
 // OFFSET: 0x00E3D960
 // FUNCTION: fn_24193
-void CSession::UnequipItem61B8(const ITEM_INFO& item) {
+void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
   if (location == 0x8000) {
     ITEM_INFO equipped = g_session.FindItemByIdentity(item.identity[1], location);
@@ -266,7 +266,7 @@ void CSession::UnequipItem61B8(const ITEM_INFO& item) {
       const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
     }
-    this->SetUnknown7EC8(0);
+    this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
@@ -310,7 +310,7 @@ void CSession::SetJob(int job) {
 
 // OFFSET: 0x00E497F0
 // FUNCTION: fn_24237
-void CSession::SetUnknown7EC8(std::uint32_t value) {
+void CSession::SetSwapArrowIndex(std::uint32_t value) {
   this->swapArrowIndex = value;
   this->InvalidateWindowFrames();
 
@@ -335,12 +335,12 @@ void CSession::SetUnknown7EC8(std::uint32_t value) {
 
 // OFFSET: 0x00E49930
 // FUNCTION: fn_24238
-void CSession::NotifyUnknown7F94Name(std::uint32_t id, const char* name) {
+void CSession::ResolvePendingActorName(std::uint32_t id, const char* name) {
   if (!name || std::strlen(name) == 0) {
     return;
   }
 
-  UIWindow* chat = g_windowMgr.window_01C8;
+  UIWindow* chat = g_windowMgr.chatWnd;
   if (!chat) {
     return;
   }

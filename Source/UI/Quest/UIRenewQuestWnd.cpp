@@ -722,10 +722,10 @@ void UIRenewQuestWnd::OnCreate(int, int) {
   this->AddChild(this->m_tabs);
   this->m_tabs->SendMsg(this, UM_SETSTATE, this->m_tab, 0, 0, 0);
 
-  if (!g_windowMgr.window_0428) {
+  if (!g_windowMgr.questDisplayWnd) {
     g_windowMgr.EnsureWindow(WID_QUESTDISPLAY);
   }
-  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(MSI_QUEST_DISPLAY_ONOFF), 38, 447, g_windowMgr.window_0428->geometry.visible != 0, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
+  this->m_optionCheckBox = this->AddStyledCheckBox(213, 10, 12, LookupMessage(MSI_QUEST_DISPLAY_ONOFF), 38, 447, g_windowMgr.questDisplayWnd->geometry.visible != 0, nullptr, 12, 0x212121, "유저인터페이스\\renew_questui\\checkbox_on.bmp",
     "유저인터페이스\\renew_questui\\checkbox_off.bmp"
   );
 
@@ -1070,8 +1070,8 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.CloseWindow(WID_RENEWQUESTWND);
       return 0;
     case ID_CHECK:
-      if (g_windowMgr.window_0428) {
-        g_windowMgr.window_0428->Show(argument2);
+      if (g_windowMgr.questDisplayWnd) {
+        g_windowMgr.questDisplayWnd->Show(argument2);
         return 0;
       }
       break;
@@ -1097,8 +1097,8 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         } else if (checkMessage == 0) {
           g_renewQuestMgr->SetOngoingSimpleView(questId, argument2 != 0);
           g_renewQuestMgr->SaveOngoingSimpleViewList();
-          if (g_windowMgr.window_0428) {
-            g_windowMgr.window_0428->Invalidate();
+          if (g_windowMgr.questDisplayWnd) {
+            g_windowMgr.questDisplayWnd->Invalidate();
             return 0;
           }
         } else {

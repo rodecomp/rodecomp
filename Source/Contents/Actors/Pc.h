@@ -103,7 +103,7 @@ public:
   void DrawBody(int argument, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth);
   void RenderOverlaySprite(const float* matrix, int);
   void UpdateGaugeWindow();
-  void DrawLayers(const float* matrix, int unknown0030, char unknown0034);
+  void DrawLayers(const float* matrix, int unknown0030, char blendVariant);
 
   float* GetExtent(float* extent) const override;
 

@@ -59,7 +59,7 @@ CEnchantMgr::CEnchantMgr() {
   m_request.group = 0;
   m_request.index = -1;
   m_request.slot = -1;
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // INLINED
@@ -74,7 +74,7 @@ void CEnchantMgr::SendCloseEnchant() {
   packet.packetType = 0xBA0;
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00683BC0
@@ -88,7 +88,7 @@ void CEnchantMgr::OpenEnchant(uint64_t group) {
     CUIEnchantUI* window = static_cast<CUIEnchantUI*>(g_windowMgr.EnsureWindow(WID_ENCHANTUI));
     if (window) {
       window->SetEnchantGroup(group);
-      this->m_unknown_0030 = false;
+      this->m_inputBlocked = false;
     }
   }
 }
@@ -157,7 +157,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
   }
 
   g_windowMgr.CloseWindow(WID_ENCHANTUI);
-  this->m_unknown_0030 = false;
+  this->m_inputBlocked = false;
 }
 
 // OFFSET: 0x00683C20
@@ -176,7 +176,7 @@ void CEnchantMgr::RequestPerfectEnchant(uint64_t group, int16_t index, int16_t s
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xB9C, group, index, slot};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00683D10
@@ -194,7 +194,7 @@ void CEnchantMgr::RequestRandomEnchant(uint64_t group, int16_t index, int16_t sl
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xB9B, group, index, slot};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00683E00
@@ -212,7 +212,7 @@ void CEnchantMgr::RequestResetEnchant(uint64_t group, int16_t index) {
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xB9E, group, index, -1};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00683EF0
@@ -232,7 +232,7 @@ void CEnchantMgr::RequestUpgradePerfectEnchant(uint64_t group, int16_t index, in
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xBF1, group, index, slot};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00683FF0
@@ -251,7 +251,7 @@ void CEnchantMgr::RequestUpgradeEnchant(uint64_t group, int16_t index, int16_t s
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xB9D, group, index, slot};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x006840E0
@@ -270,7 +270,7 @@ void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_request = EnchantRequest{0xBF0, group, index, slot};
-  m_unknown_0030 = true;
+  m_inputBlocked = true;
 }
 
 // OFFSET: 0x00686BF0

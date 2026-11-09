@@ -321,7 +321,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
     return 0;
   }
 
-  if (g_session.HasItem61B8(owned.identity[1]) == 1) {
+  if (g_session.HasSwapEquipmentItem(owned.identity[1]) == 1) {
     return 0;
   }
 

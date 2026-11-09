@@ -168,7 +168,7 @@ timer:
     DrawActionSprite(system, 100, 200, action, sprite, 1, 0, static_cast<float>(scale), 0.0f, 0xFFFFFFFF, 0x201);
   }
 
-  if (g_session.WorldUnknown0050() == 1) {
+  if (g_session.GetBattleFieldMode() == 1) {
     this->DrawBattleFieldIcon(system);
   }
 

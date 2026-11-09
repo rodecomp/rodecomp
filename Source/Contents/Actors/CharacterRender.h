@@ -17,7 +17,7 @@ struct tagRECT;
 
 class CCharacterRender {
 public:
-  CCharacterRender(int unknown0068, int unknown006C);
+  CCharacterRender(int width, int renderHeight);
   virtual ~CCharacterRender();
 
   void RenderRobe(

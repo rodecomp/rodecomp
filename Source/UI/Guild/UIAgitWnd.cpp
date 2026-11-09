@@ -152,13 +152,13 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   switch (a) {
   case 0: {
-    if (g_session.GetSceneUnknown004C() == 1) {
+    if (g_session.GetSiegeMode() == 1) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TOOLTIP_OF_OPTIONOFF_BTN)), 0xFF, 0, 0, 0);
       return 0;
     }
 
     GuildInfo* guildInfo = &g_guildInfo;
-    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
+    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetAgitId(this->m_agitIndex));
 
     char* agitName = nullptr;
     g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
@@ -183,7 +183,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case 1: {
     CMode* mode = g_modeMgr.GetGameMode();
     GuildInfo* guildInfo = &g_guildInfo;
-    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
+    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetAgitId(this->m_agitIndex));
     mode->SendMsg(MM_REQ_AGIT_INVESTMENT, agitId, 0, 0, 0);
     break;
   }

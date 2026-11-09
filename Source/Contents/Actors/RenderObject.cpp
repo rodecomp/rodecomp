@@ -483,7 +483,7 @@ void CRenderObject::SetRenderInfo(const float*, float, float) {
 
 // OFFSET: 0x00CC2DA0
 // FUNCTION: fn_21146
-__declspec(noinline) void CGameActor::SetUnknown0260(int value) {
+__declspec(noinline) void CGameActor::SetSexBit(int value) {
   this->sex = value & 1;
 }
 
@@ -589,14 +589,14 @@ void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
 
 // OFFSET: 0x00CC1C20
 // FUNCTION: fn_21125
-void CGameActor::SetUnknown0305(unsigned char value, int extra) {
+void CGameActor::SetSpGauge(unsigned char value, int extra) {
   this->hasSp = value;
   this->spGaugeValue = extra;
 }
 
 // OFFSET: 0x00CC1D20
 // FUNCTION: fn_21127
-void CGameActor::RaiseUnknown03C8(int value) {
+void CGameActor::RaiseTransformPriority(int value) {
   if (value <= 0 || this->transformPriority < value) {
     this->transformPriority = value;
   }
@@ -669,7 +669,7 @@ void CRenderObject::SetFrameSequence(
 
 // OFFSET: 0x00CC2050
 // FUNCTION: fn_21134
-void CGameActor::SetUnknown02E4(int value) {
+void CGameActor::SetGroupMemberVisible(int value) {
   this->isGroupMemberVisible = value;
 }
 
@@ -687,7 +687,7 @@ void CRenderObject::SetAnimationSpeed(float speed) {
 
 // OFFSET: 0x00CC2810
 // FUNCTION: fn_21142
-void CGameActor::SetUnknown02C8(int value) {
+void CGameActor::SetHealthState(int value) {
   this->healthState = value;
 }
 
@@ -868,7 +868,7 @@ void CGameActor::SetImfFileName() {
 
 // OFFSET: 0x00CC27C0
 // FUNCTION: fn_21141
-void CGameActor::SetUnknown0318(const float* value, int index) {
+void CGameActor::SetMsg2AI(const float* value, int index) {
   if (index == 0) {
     std::memcpy(this->homunMsg, value, sizeof(this->homunMsg));
   } else if (index == 1) {
@@ -885,14 +885,14 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
 
     float depth = 0.0f;
     if ((g_pickModifierKey != 0) == (g_pickInvert != 0)) {
-      if (g_session.GetSceneUnknown004C() != 0) {
+      if (g_session.GetSiegeMode() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 400.0f;
-        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
       } else {
@@ -902,19 +902,19 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 400.0f;
-        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
       }
     } else {
-      if (g_session.GetSceneUnknown004C() != 0) {
+      if (g_session.GetSiegeMode() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 400.0f : 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 200.0f;
-        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
       } else {
@@ -924,7 +924,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 200.0f;
-        } else if (g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0) {
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
       }
@@ -958,7 +958,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       if (this->objectType == 7) {
         info->kind = 3;
       } else {
-        info->kind = g_session.IsSkillIdInRange6001(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
+        info->kind = g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
       }
       switch (this->objectType) {
       case 9:
@@ -1245,7 +1245,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
 
 // OFFSET: 0x00CC2D50
 // FUNCTION: fn_21145
-void CGameActor::SetUnknown0330(const float* value, int index) {
+void CGameActor::SetResMsg2AI(const float* value, int index) {
   if (index == 0) {
     std::memcpy(this->homunResMsg, value, sizeof(this->homunResMsg));
   } else if (index == 1) {
@@ -2069,7 +2069,7 @@ int CGameActor::GetShield() {
 // OFFSET: 0x005A1280
 // FUNCTION: fn_03042
 void CGameActor::SetSex(int value) {
-  this->SetUnknown0260(value);
+  this->SetSexBit(value);
 }
 
 // OFFSET: 0x005A1290
@@ -2794,7 +2794,7 @@ void CCharacterNpc::SendMsg(
 
 // OFFSET: 0x00CAC760
 // FUNCTION: fn_21044
-int CGameActor::GetUnknown0404Job() const {
+int CGameActor::GetShapeShiftJob() const {
   switch (this->shapeShift) {
   case 1:
     return 0x1104;
@@ -2807,7 +2807,7 @@ int CGameActor::GetUnknown0404Job() const {
 
 // OFFSET: 0x00CC1D40
 // FUNCTION: fn_21128
-void CGameActor::SetUnknown03B8(int value, int slot) {
+void CGameActor::SetTransformJob(int value, int slot) {
   this->transformPriority = 0;
   if (this->render.accountId == g_session.m_aid) {
     g_session.SetPairValue(value, slot);
@@ -2829,7 +2829,7 @@ void CGameActor::SetUnknown03B8(int value, int slot) {
   if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
     job = this->GetEffectiveJob(-1);
   } else {
-    job = this->GetUnknown0404Job();
+    job = this->GetShapeShiftJob();
   }
 
   this->SetBodyPaletteName();
@@ -2913,13 +2913,13 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
 
 // OFFSET: 0x00CC40C0
 // FUNCTION: fn_21157
-void CGameActor::SetUnknown0404(int value) {
+void CGameActor::SetShapeShift(int value) {
   this->shapeShift = value;
 }
 
 // OFFSET: 0x00CC3DE0
 // FUNCTION: fn_21155
-void CGameActor::SetUnknown008C(const std::uint32_t* value) {
+void CGameActor::SetMotionTintState(const std::uint32_t* value) {
   this->render.motionStartTime = value[0];
   this->render.savedTintColor = value[1];
   this->render.targetTintColor = value[2];
@@ -2933,7 +2933,7 @@ void CGameActor::UnRegisterPos() {
 
 // OFFSET: 0x00CC1E30
 // FUNCTION: fn_21129
-void CGameActor::SetUnknown03C4(int value) {
+void CGameActor::SetMonsterTransformJob(int value) {
   this->transformPriority = 0;
   this->monsterTransformJob = value;
   if (value > 0) {
@@ -3250,7 +3250,7 @@ void CGameActor::ResetJobEffects() {
 
 // OFFSET: 0x00CAB020
 // FUNCTION: fn_21024
-__declspec(noinline) void CGameActor::ClearUnknown037C(int value) {
+__declspec(noinline) void CGameActor::ClearStatusEffectInstance(int value) {
   if (this->statusEffects[1] == value) {
     this->statusEffects[1] = 0;
   } else if (this->statusEffects[0] == value) {
@@ -3438,7 +3438,7 @@ int CGameActor::MountHeightOffset() {
 
 // OFFSET: 0x00CABD30
 // FUNCTION: fn_21036
-int CGameActor::GetUnknown0404() {
+int CGameActor::GetShapeShift() {
   return this->shapeShift;
 }
 
@@ -3469,7 +3469,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
 // FUNCTION: fn_21189
 void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->SetActorJob(job);
-  this->SetUnknown0260(value);
+  this->SetSexBit(value);
   this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
   this->instance = GrannyInstantiateModel(this->model->model);
   for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
@@ -4580,9 +4580,9 @@ void CGameActor::SetActorJob(int job) {
 
 // OFFSET: 0x00CAAFD0
 // FUNCTION: fn_21023
-void CGameActor::ClearUnknown0188() {
-  if (g_session.GetSceneUnknown004C() != 0 && this->sceneNameWindow != 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->sceneNameWindow);
+void CGameActor::ClearSiegeNameWindow() {
+  if (g_session.GetSiegeMode() != 0 && this->sceneNameWindow != 0) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
     g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->sceneNameWindow));
     this->sceneNameWindow = 0;
   }
@@ -4591,7 +4591,7 @@ void CGameActor::ClearUnknown0188() {
 // OFFSET: 0x00CAE5E0
 // FUNCTION: fn_21075
 void CGameActor::RefreshGuildEmblemWindow() {
-  if (g_session.GetSceneUnknown004C() == 0) {
+  if (g_session.GetSiegeMode() == 0) {
     return;
   }
   if (g_session.m_aid == this->render.accountId) {
@@ -4790,7 +4790,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end();) {
       CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
       if (effect->m_type == 22) {
-        this->ClearUnknown037C(reinterpret_cast<int>(effect));
+        this->ClearStatusEffectInstance(reinterpret_cast<int>(effect));
         effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         it = this->msgEffectList.erase(it);
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(effect);
@@ -4896,7 +4896,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
-        this->ClearUnknown0188();
+        this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
         g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
@@ -4951,7 +4951,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
-        this->ClearUnknown0188();
+        this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
         g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
@@ -5039,7 +5039,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
-        this->ClearUnknown0188();
+        this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
         g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
@@ -5408,8 +5408,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         case ABC_FROM_THE_ABYSS_ATK:
         case NPC_BO_THROWROCK:
         case NPC_BO_WOODEN_ATTACK:
-          effect = g_session.FindUnknown0708(skillId);
-          followEffect = g_session.FindUnknown0700(skillId);
+          effect = g_session.FindSkillEffectId(skillId);
+          followEffect = g_session.FindSkillFollowEffect(skillId);
           break;
         }
 
@@ -5542,8 +5542,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     return;
   }
 
-  const int hitEffect = g_session.FindUnknown0708(skillId);
-  int followEffect = g_session.FindUnknown0700(skillId);
+  const int hitEffect = g_session.FindSkillEffectId(skillId);
+  int followEffect = g_session.FindSkillFollowEffect(skillId);
   if (followEffect == 186) {
     switch (level) {
     case 2:
@@ -5752,7 +5752,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   switch (skillId) {
   case MO_TRIPLEATTACK:
     this->SetSequenceInterval(4);
-    this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     break;
   case MO_INVESTIGATE:
   case MO_FINGEROFFENSIVE:
@@ -5774,14 +5774,14 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
     break;
   case MO_CHAINCOMBO:
-    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case MO_COMBOFINISH:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -5795,7 +5795,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     break;
   case CH_TIGERFIST:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     this->LaunchEffect(0x179, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -5811,16 +5811,16 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   }
   case SR_DRAGONCOMBO:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     break;
   case SR_SKYNETBLOW:
   case SR_TIGERCANNON:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     break;
   case SR_EARTHSHAKER:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     if (!this->HasId(0x378)) {
       static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_EARTHSHAKER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -5830,7 +5830,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     break;
   case SR_FALLENEMPIRE:
     this->SetSequenceInterval(6);
-    this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindUnknown0778(this->render.accountId), 0);
+    this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\SR_FALLENEMPIRE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     g_effectMgr->Spawn(target->render.accountId, 0x622, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -5926,7 +5926,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       break;
     case ABC_DEFT_STAB:
       message.hitEffect = -1;
-      message.effectId = g_session.FindUnknown0700(skillId);
+      message.effectId = g_session.FindSkillFollowEffect(skillId);
       message.action = action;
       break;
     case AG_SOUL_VC_STRIKE:
@@ -5950,7 +5950,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     case MH_TWISTER_CUTTER:
     case MH_ABSOLUTE_ZEPHYR:
     case MH_BLAZING_AND_FURIOUS:
-      message.effectId = g_session.FindUnknown0700(skillId);
+      message.effectId = g_session.FindSkillFollowEffect(skillId);
       message.action = action;
       break;
     case TK_STORMKICK:

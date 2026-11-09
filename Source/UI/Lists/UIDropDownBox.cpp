@@ -64,7 +64,7 @@ void CUIDropDownBox::Paint() {
 // OFFSET: 0x00AA27B0
 // FUNCTION: fn_17217
 void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
-  CUIDropDownBox*& popup = reinterpret_cast<CUIDropDownBox*&>(this->window_0A30);
+  CUIDropDownBox*& popup = reinterpret_cast<CUIDropDownBox*&>(this->dropDownBoxWnd);
   if (popup && popup->geometry.visible != 0) {
     popup->Detach();
     popup->Show(0);
@@ -90,7 +90,7 @@ void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
 // OFFSET: 0x00A8C750
 // FUNCTION: fn_17133
 bool UIWindowMgr::CloseDropDown() {
-  CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->window_0A30);
+  CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->dropDownBoxWnd);
   if (!popup || popup->geometry.visible == 0) {
     return false;
   }

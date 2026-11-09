@@ -72,10 +72,10 @@ CHalluNPC::CHalluNPC(CGameActor* source) {
   this->render.visible = 1;
   this->render.visibilityOptions[0] = 0;
   this->render.motionStartTime = timeGetTime();
-  this->SetUnknown0260(source->sex);
+  this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->isRiding = source->isRiding;
-  this->SetUnknown03C4(source->GetMonsterTransformJob());
+  this->SetMonsterTransformJob(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.distanceScale = source->render.distanceScale;
   this->render.spriteOffsetX = source->render.spriteOffsetX;
@@ -106,10 +106,10 @@ CHalluPlant::CHalluPlant() {
   this->render.visible = 1;
   this->render.visibilityOptions[0] = 0;
   this->render.motionStartTime = timeGetTime();
-  this->SetUnknown0260(0);
+  this->SetSexBit(0);
   this->SetActorJob(1079);
   this->isRiding = 0;
-  this->SetUnknown03C4(-1);
+  this->SetMonsterTransformJob(-1);
   this->render.position.x = 0.0f;
   this->render.position.y = 0.0f;
   this->render.position.z = 0.0f;
@@ -441,7 +441,7 @@ void Nullsub502() {
 
 // OFFSET: 0x00DA2E00
 // FUNCTION: fn_22395
-void CMasterChaser::ClearUnknown0138() {
+void CMasterChaser::ClearChaseState() {
   this->chaseState = 0;
 }
 
@@ -798,8 +798,8 @@ void CNpc::SendMsg(
           }
           case 13: {
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
-              [this] { return g_session.FindUnknown0784(this->render.accountId); },
-              [this] { return g_session.FindUnknown078C(this->render.accountId); }
+              [this] { return g_session.FindSummonHp(this->render.accountId); },
+              [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 13;
@@ -807,8 +807,8 @@ void CNpc::SendMsg(
           }
           case 14: {
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
-              [this] { return g_session.FindUnknown0784(this->render.accountId); },
-              [this] { return g_session.FindUnknown078C(this->render.accountId); }
+              [this] { return g_session.FindSummonHp(this->render.accountId); },
+              [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 14;
@@ -909,7 +909,7 @@ void CSoundMaker::SendMsg(
 void CNpc::SetSprAct(int job, int value, int) {
   char name[64];
   this->SetActorJob(job);
-  this->SetUnknown0260(value);
+  this->SetSexBit(value);
   this->render.bodyPalette = 0;
   if (g_session.IsGuildMemberCharacter(this->GetEffectiveJob(-1), name)) {
     this->render.bodyPalette = 1;
@@ -1181,11 +1181,11 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->render.visible = 1;
   this->render.visibilityOptions[0] = 0;
   this->render.motionStartTime = timeGetTime();
-  this->SetUnknown0260(source->sex);
+  this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
-  this->SetUnknown0404(source->GetUnknown0404());
+  this->SetShapeShift(source->GetShapeShift());
   this->SetRiding(source->isRiding);
-  this->SetUnknown03C4(source->GetMonsterTransformJob());
+  this->SetMonsterTransformJob(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.distanceScale = source->render.distanceScale;
   this->render.spriteOffsetX = source->render.spriteOffsetX;
@@ -1226,11 +1226,11 @@ CBlurPC::CBlurPC(CPc* source) {
   this->render.visible = 1;
   this->render.visibilityOptions[0] = 0;
   this->render.motionStartTime = timeGetTime();
-  this->SetUnknown0260(source->sex);
+  this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
-  this->SetUnknown0404(source->GetUnknown0404());
+  this->SetShapeShift(source->GetShapeShift());
   this->SetRiding(source->isRiding);
-  this->SetUnknown03C4(source->GetMonsterTransformJob());
+  this->SetMonsterTransformJob(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.distanceScale = source->render.distanceScale;
   this->render.spriteOffsetX = source->render.spriteOffsetX;
@@ -1270,11 +1270,11 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.visible = 1;
   this->render.visibilityOptions[0] = 0;
   this->render.motionStartTime = timeGetTime();
-  this->SetUnknown0260(source->sex);
+  this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
-  this->SetUnknown0404(source->GetUnknown0404());
+  this->SetShapeShift(source->GetShapeShift());
   this->SetRiding(source->isRiding);
-  this->SetUnknown03C4(source->GetMonsterTransformJob());
+  this->SetMonsterTransformJob(source->GetMonsterTransformJob());
   this->render.position = source->render.position;
   this->render.distanceScale = source->render.distanceScale;
   this->render.spriteOffsetX = source->render.spriteOffsetX;

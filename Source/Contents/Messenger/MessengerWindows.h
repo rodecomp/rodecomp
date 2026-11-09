@@ -35,7 +35,7 @@ public:
   void OnLBtnUp(int argument1, int argument2) override;
   void MoveGauge(int x, int y);
   void RemoveGauge();
-  void SetUnknown010C(int first, int second);
+  void SetDragStartPosition(int first, int second);
   void SetGaugeValues(int current, int maximum);
 
   /* 00B4 */ MessengerMember member;

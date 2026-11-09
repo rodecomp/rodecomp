@@ -70,7 +70,7 @@ public:
   CSkyCube();
 
   /* 0000 */ SkyCubeVertex m_vertices[10];
-  /* 0140 */ int m_unknown_0140;
+  /* 0140 */ int m_loopRotationY;
   /* 0144 */ CLensFlare m_flare;
 };
 
@@ -87,7 +87,7 @@ public:
 
   /* 0000 */ CRes* m_model;
   /* 0004 */ C3dActor* m_actor;
-  /* 0008 */ int m_unknown_0008;
+  /* 0008 */ int m_loopRotationX;
   /* 000C */ CLensFlare m_flare;
 };
 

@@ -935,7 +935,7 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 7101:
-      g_session.ClearSlots06EB();
+      g_session.ClearQuickSlots();
       std::memcpy(&this->quickSlot, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1014,7 +1014,7 @@ void RequestBasicInfoRefresh() {
 
 // OFFSET: 0x00E49290
 // FUNCTION: fn_24232
-void CSession::SetUnknown5BC0(int value) {
+void CSession::SetElementalGid(int value) {
   this->elementalGid = value;
   UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLDELAYINFO);
   if (window != nullptr) {

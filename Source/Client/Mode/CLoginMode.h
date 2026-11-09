@@ -122,7 +122,7 @@ public:
   /* 6EE4 */ std::string wallpaperName;
   /* 6EFC */ CharacterSlotExtension slotExtension;
   /* 6F10 */ std::uint32_t nextKeepaliveTime;
-  /* 6F14 */ UIWindow* window_6F14;
+  /* 6F14 */ UIWindow* waitWnd;
   /* 6F18 */ int passwordRetryCount;
   /* 6F1C */ std::vector<int> noticeCommands;
   /* 6F28 */ int authChallengeId;

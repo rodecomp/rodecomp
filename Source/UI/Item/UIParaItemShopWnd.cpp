@@ -357,8 +357,8 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_STORAGE_ITEM_COUNT)), 255, 0, 0, 0);
       } else {
         if (item.flags[3] == 1) {
-          g_session.RemoveItem1718(item);
-          g_session.MergeItem1720(item);
+          g_session.RemoveShopItem(item);
+          g_session.MergePurchaseItem(item);
         } else {
           g_session.RemoveItem1718ByItemId(item);
           g_session.MergeItem1720ByName(item);
@@ -513,8 +513,8 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
       CSession* lists = &g_session;
       if (item.flags[3] == 1) {
-        lists->RemoveItem1720(item);
-        lists->MergeItem1718(item);
+        lists->RemovePurchaseItem(item);
+        lists->MergeShopItem(item);
       } else {
         lists->RemoveItem1720ByName(item);
         lists->MergeItem1718ByName(item);

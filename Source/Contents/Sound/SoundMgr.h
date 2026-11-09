@@ -59,7 +59,7 @@ public:
   /* 00E0 */ int targetVolume = 100;
   /* 00E4 */ int streamVolume = 100;
   /* 00E8 */ int sampleVolume = 100;
-  /* 00EC */ int unknown250 = 250;
+  /* 00EC */ int volumeMaxDist = 250;
   /* 00F0 */ int unknown40 = 40;
   /* 00F4 */ int rate = 0;
   /* 00F8 */ int bits = 0;
@@ -103,7 +103,7 @@ static_assert(offsetof(CSoundMgr, samples) == 0x020);
 static_assert(offsetof(CSoundMgr, targetVolume) == 0x0E0);
 static_assert(offsetof(CSoundMgr, streamVolume) == 0x0E4);
 static_assert(offsetof(CSoundMgr, sampleVolume) == 0x0E8);
-static_assert(offsetof(CSoundMgr, unknown250) == 0x0EC);
+static_assert(offsetof(CSoundMgr, volumeMaxDist) == 0x0EC);
 static_assert(offsetof(CSoundMgr, unknown40) == 0x0F0);
 static_assert(offsetof(CSoundMgr, rate) == 0x0F4);
 static_assert(offsetof(CSoundMgr, bits) == 0x0F8);

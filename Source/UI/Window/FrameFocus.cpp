@@ -94,11 +94,11 @@ UIWindow* UIWindowMgr::Capture() const {
 // OFFSET: 0x00A96A40
 // FUNCTION: fn_17191
 bool UIWindowMgr::IsDropDownChild(const UIWindow* window) {
-  if (!this->window_0A30 || !this->window_0A30->geometry.visible) {
+  if (!this->dropDownBoxWnd || !this->dropDownBoxWnd->geometry.visible) {
     return false;
   }
 
-  return static_cast<CUIDropDownBox*>(this->window_0A30)->HasChild(window);
+  return static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->HasChild(window);
 }
 
 // OFFSET: 0x00A96E60
@@ -106,7 +106,7 @@ bool UIWindowMgr::IsDropDownChild(const UIWindow* window) {
 bool UIWindowMgr::IsHoverParentVisible() {
   if (this->hoverWindow) {
     UIWindow* parent = this->hoverWindow->parent;
-    if (parent && parent != this->window_01C8 && parent->geometry.visible) {
+    if (parent && parent != this->chatWnd && parent->geometry.visible) {
       return true;
     }
   }
@@ -152,13 +152,13 @@ bool UIWindowMgr::IsSharedWindowId(int id) {
 // OFFSET: 0x00A97070
 // FUNCTION: fn_17198
 bool UIWindowMgr::HasNavigationBlocker() {
-  return this->window_4F260 || this->window_4F264 || this->window_4F268 || this->window_4F26C;
+  return this->barterMarketWnd || this->barterItemPurchaseWnd || this->expandedBarterMarketWnd || this->expandedBarterItemPurchaseWnd;
 }
 
 // OFFSET: 0x00A97380
 // FUNCTION: fn_17202
 int UIWindowMgr::Window4F250Ready() {
-  UIWindow* window = this->window_4F250;
+  UIWindow* window = this->transientWnd;
   if (window == nullptr) {
     return false;
   }
@@ -206,7 +206,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
         return true;
       }
 
-      const std::uint32_t ownerAid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->FindUnknown01AC(roomId);
+      const std::uint32_t ownerAid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->FindChatRoomActorId(roomId);
       if (ownerAid == 0) {
         return true;
       }
@@ -231,7 +231,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
 // OFFSET: 0x00A97490
 // FUNCTION: fn_17204
 void UIWindowMgr::CancelActiveDialog() {
-  UIWindow* window = this->window_03DC ? this->window_03DC : this->bookWnd;
+  UIWindow* window = this->changeNameWnd ? this->changeNameWnd : this->bookWnd;
   if (window) {
     window->SendMsg(nullptr, UM_LEFTPUSH, 0, 0, 0, 0);
     return;

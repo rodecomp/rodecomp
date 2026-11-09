@@ -424,7 +424,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     case EM_VENOM_SWAMP:
     case EM_CONFLAGRATION:
     case MH_BLAST_FORGE:
-      effectId = g_session.FindUnknown0700(skillId);
+      effectId = g_session.FindSkillFollowEffect(skillId);
       break;
     case WH_DEEPBLINDTRAP:
       effectId = 0x753;

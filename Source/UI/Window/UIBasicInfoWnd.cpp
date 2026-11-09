@@ -277,7 +277,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     }
     case 214:
-      if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.window_027C) {
+      if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.chatRoomWnd) {
         if (!g_windowMgr.merchantShopMakeWnd && !g_windowMgr.merchantItemMyShopWnd) {
           g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
         } else {

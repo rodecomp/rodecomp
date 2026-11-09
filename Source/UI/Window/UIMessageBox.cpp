@@ -869,7 +869,7 @@ int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
 // OFFSET: 0x008C1ED0
 // FUNCTION: fn_11818
-void UIWindowMgr::SetUnknown04DC(const char* text) {
+void UIWindowMgr::SetChatInputText(const char* text) {
   this->chatInputText = text;
 }
 
@@ -1178,79 +1178,79 @@ void UIReplayRECControlWnd::ApplyMode() {
   this->Resize(194, 34);
 
   if (this->mode == 0) {
-    this->window_00C0->Move(-100, -100);
+    this->recordStopButton->Move(-100, -100);
 
     for (int index = 0; index < 5; ++index) {
       this->tabs[index]->Move(-100, -100);
     }
 
-    this->window_00C4->Move(-100, -100);
-    this->window_0134->Move(-100, -100);
+    this->confirmFilenameButton->Move(-100, -100);
+    this->filenameEdit->Move(-100, -100);
     this->button_00D0->Move(-100, -100);
-    this->window_00EC->Move(-100, -100);
+    this->optionsTitleText->Move(-100, -100);
 
     for (int index = 0; index < 10; ++index) {
       this->options[index]->Move(-100, -100);
     }
 
-    this->window_0128->Move(-100, -100);
-    this->window_012C->Move(-100, -100);
-    this->window_0134->Move(-100, -100);
-    this->window_00BC->Move(110, 5);
+    this->userFilenameCheckBox->Move(-100, -100);
+    this->rejectExistingNameCheckBox->Move(-100, -100);
+    this->filenameEdit->Move(-100, -100);
+    this->recordStartButton->Move(110, 5);
     this->button_00C8->Move(136, 5);
     this->button_00C8->SetDisabled(0);
     this->button_00C8->Invalidate();
     this->button_00D0->Move(162, 5);
     this->button_00D0->SetDisabled(0);
     this->button_00D0->Invalidate();
-    this->window_00E8->Move(32, 12);
+    this->recordTimeText->Move(32, 12);
     this->tabs[0]->Move(6, 5);
   } else if (this->mode == 1) {
     this->recordStart = timeGetTime();
-    this->window_00BC->Move(-100, -100);
+    this->recordStartButton->Move(-100, -100);
 
     for (int index = 0; index < 4; ++index) {
       this->tabs[index]->Move(-100, -100);
     }
 
     this->tabs[4]->Move(-100, -100);
-    this->window_00CC->Move(-100, -100);
+    this->closeOptionsButton->Move(-100, -100);
     this->options[7]->Move(-100, -100);
 
     for (int index = 0; index < 10; ++index) {
       this->options[index]->Move(-100, -100);
     }
 
-    this->window_0128->Move(-100, -100);
-    this->window_012C->Move(-100, -100);
-    this->window_00C4->Move(-100, -100);
-    this->window_0134->Move(-100, -100);
-    this->window_00C0->Move(110, 5);
+    this->userFilenameCheckBox->Move(-100, -100);
+    this->rejectExistingNameCheckBox->Move(-100, -100);
+    this->confirmFilenameButton->Move(-100, -100);
+    this->filenameEdit->Move(-100, -100);
+    this->recordStopButton->Move(110, 5);
     this->button_00C8->Move(136, 5);
     this->button_00C8->SetDisabled(1);
     this->button_00C8->Invalidate();
     this->button_00D0->Move(162, 5);
     this->button_00D0->SetDisabled(1);
     this->button_00D0->Invalidate();
-    this->window_00E8->Move(32, 12);
+    this->recordTimeText->Move(32, 12);
     this->tabs[0]->Move(6, 5);
   } else if (this->mode == 2) {
     this->Resize(194, 200);
-    this->window_00BC->Move(-100, -100);
-    this->window_00C0->Move(-100, -100);
+    this->recordStartButton->Move(-100, -100);
+    this->recordStopButton->Move(-100, -100);
     this->button_00C8->Move(-100, -100);
     this->button_00D0->Move(-100, -100);
-    this->window_00E8->Move(-100, -100);
+    this->recordTimeText->Move(-100, -100);
 
     for (int index = 0; index < 4; ++index) {
       this->tabs[index]->Move(-100, -100);
     }
 
-    this->window_00C4->Move(-100, -100);
-    this->window_0134->Move(-100, -100);
+    this->confirmFilenameButton->Move(-100, -100);
+    this->filenameEdit->Move(-100, -100);
     this->tabs[4]->Move(6, 5);
-    this->window_00CC->Move(162, 5);
-    this->window_00EC->Move(42, 12);
+    this->closeOptionsButton->Move(162, 5);
+    this->optionsTitleText->Move(42, 12);
     this->options[0]->Move(17, 63);
     this->options[1]->Move(17, 81);
     this->options[2]->Move(17, 99);
@@ -1260,32 +1260,32 @@ void UIReplayRECControlWnd::ApplyMode() {
     this->options[6]->Move(104, 99);
     this->options[7]->Move(104, 117);
     this->options[9]->Move(104, 63);
-    this->window_0128->Move(17, 160);
-    this->window_012C->Move(17, 178);
+    this->userFilenameCheckBox->Move(17, 160);
+    this->rejectExistingNameCheckBox->Move(17, 178);
   } else if (this->mode == 3) {
-    this->window_00BC->Move(-100, -100);
-    this->window_00C0->Move(-100, -100);
+    this->recordStartButton->Move(-100, -100);
+    this->recordStopButton->Move(-100, -100);
     this->button_00C8->Move(-100, -100);
     this->button_00D0->Move(-100, -100);
-    this->window_00E8->Move(-100, -100);
+    this->recordTimeText->Move(-100, -100);
 
     for (int index = 0; index < 4; ++index) {
       this->tabs[index]->Move(-100, -100);
     }
 
     this->tabs[4]->Move(-100, -100);
-    this->window_00CC->Move(-100, -100);
+    this->closeOptionsButton->Move(-100, -100);
     this->options[7]->Move(-100, -100);
 
     for (int index = 0; index < 10; ++index) {
       this->options[index]->Move(-100, -100);
     }
 
-    this->window_0128->Move(-100, -100);
-    this->window_012C->Move(-100, -100);
-    this->window_00C4->Move(162, 5);
-    this->window_0134->Move(7, 8);
-    g_windowMgr.SetFocus(this->window_0134);
+    this->userFilenameCheckBox->Move(-100, -100);
+    this->rejectExistingNameCheckBox->Move(-100, -100);
+    this->confirmFilenameButton->Move(162, 5);
+    this->filenameEdit->Move(7, 8);
+    g_windowMgr.SetFocus(this->filenameEdit);
   }
 
   this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -1925,7 +1925,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   this->replayOption119 = option119;
 
   UIEditCtrl* edit = new UIEditCtrl();
-  this->window_0134 = edit;
+  this->filenameEdit = edit;
   edit->SetSize(151, 18);
   edit->Move(-100, -100);
   edit->maximum = 80;
@@ -2270,14 +2270,14 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
   const int minutes = seconds / 60;
   const int hours = minutes / 60;
   if (hours == 100) {
-    this->window_00E8->Move(124, 47);
+    this->recordTimeText->Move(124, 47);
   } else if (hours == 1000) {
-    this->window_00E8->Move(116, 47);
+    this->recordTimeText->Move(116, 47);
   }
 
   char text[100] = {};
   std::sprintf(text, "%03d:%02d:%02d", hours, minutes % 60, seconds % 60);
-  this->window_00E8->SetTextFitted(text);
+  this->recordTimeText->SetTextFitted(text);
   this->Invalidate();
   this->InvalidateChildren();
   this->recordStart = timeGetTime();
@@ -2315,7 +2315,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_modeMgr.gameMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
       return 0;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
-      auto* edit = static_cast<UIEditCtrl*>(this->window_0134);
+      auto* edit = static_cast<UIEditCtrl*>(this->filenameEdit);
       int error;
 
       if (edit->Length() <= 0) {
@@ -2354,13 +2354,13 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
       return 0;
     case ID_CHECK:
-      if (sender == this->window_0128) {
+      if (sender == this->userFilenameCheckBox) {
         ReplayFileList::Instance().pathEnabled = b != 0;
         this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
         return 0;
       }
 
-      if (sender == this->window_012C) {
+      if (sender == this->rejectExistingNameCheckBox) {
         ReplayFileList::Instance().rejectExistingName = b != 0;
         this->replayOption119 = ReplayFileList::Instance().rejectExistingName;
         return 0;
@@ -3029,7 +3029,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case ID_SELECT_REPLAY:
       reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
       ReplayFileList::Instance().selectionState = g_session.m_aid;
-      ReplayFileList::Instance().dialogState = g_session.SyncUnknown0E98();
+      ReplayFileList::Instance().dialogState = g_session.GetCurrentSex();
       g_modeMgr.gameMode->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
       return 0;
@@ -3228,7 +3228,7 @@ UIPetInfoWnd::UIPetInfoWnd()
   this->saved = nullptr;
   this->renameButton = 0;
   this->statusButton = 0;
-  this->window_00C4 = nullptr;
+  this->feedConfirmationWnd = nullptr;
 }
 
 // OFFSET: 0x008A43E0
@@ -3288,8 +3288,8 @@ UILoginWnd::~UILoginWnd() = default;
 // OFFSET: 0x008A54C0
 // FUNCTION: fn_11681
 UIPetInfoWnd::~UIPetInfoWnd() {
-  if (this->window_00C4) {
-    g_windowMgr.Schedule(this->window_00C4);
+  if (this->feedConfirmationWnd) {
+    g_windowMgr.Schedule(this->feedConfirmationWnd);
   }
 }
 
@@ -3794,7 +3794,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
 // OFFSET: 0x008BFE80
 // FUNCTION: fn_11812
 int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (this->window_00C4 && sender != this->window_00C4) {
+  if (this->feedConfirmationWnd && sender != this->feedConfirmationWnd) {
     return 0;
   }
 
@@ -3809,9 +3809,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR)), 255, 0, 0, 0);
         break;
       }
-      this->window_00C4 = new UINormalMB();
-      this->window_00C4->Create(this, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
-      g_windowMgr.AddRendered(this->window_00C4);
+      this->feedConfirmationWnd = new UINormalMB();
+      this->feedConfirmationWnd->Create(this, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
+      g_windowMgr.AddRendered(this->feedConfirmationWnd);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
     case 468:
@@ -3924,15 +3924,15 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     case 488: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (sender == this->window_00C4 && b == 187) {
+      if (sender == this->feedConfirmationWnd && b == 187) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARTERITEM_NAME_COUNT)), 255, 0, 0, 0);
-          this->window_00C4 = nullptr;
+          this->feedConfirmationWnd = nullptr;
           return 0;
         }
         mode->SendMsg(MM_COMMAND_PET, 1, 0, 0, 0);
       }
-      this->window_00C4 = nullptr;
+      this->feedConfirmationWnd = nullptr;
       return 0;
     }
     default:

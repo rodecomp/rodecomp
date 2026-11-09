@@ -360,7 +360,7 @@ void UIAchListWnd::Paint() {
     }
 
     const AchievementInfo& info = found->second;
-    const SessionRecord6144 record = g_session.FindRecord6144(found->first);
+    const SessionRecord6144 record = g_session.FindAchievementRecord(found->first);
     const bool completed = static_cast<unsigned char>(record.completionFlags >> 8) == 1;
     const int top = this->rowHeight * row;
     if (this->selectedIndex == this->firstRow + row) {
@@ -381,7 +381,7 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(8, top + 3, icon, true);
     }
 
-    if (g_session.HasUnknown6178Record(this->ids[this->firstRow + row])) {
+    if (g_session.HasTrackedAchievement(this->ids[this->firstRow + row])) {
       this->DrawBitmap(8, top + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
     }
 
@@ -521,13 +521,13 @@ void UIAchSummaryWnd::Paint() {
 
   int x = 260;
   for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
-    std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetUnknown0068(it->first) + ".bmp";
+    std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetIconName(it->first) + ".bmp";
     this->DrawBitmap(x - 242, 314, AchievementBitmap(icon.c_str()), true);
     this->DrawBitmap(x, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
-    this->DrawTextAt(x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetUnknown0048(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
-    this->DrawTextAt(x - 241, 365, g_achievementMgr->GetUnknown0018(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
+    this->DrawTextAt(x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetPoints(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(x - 241, 365, g_achievementMgr->GetSummaryText(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
 
-    SessionRecord6144 record = g_session.FindRecord6144(it->first);
+    SessionRecord6144 record = g_session.FindAchievementRecord(it->first);
     if (g_achievementMgr->HasReward(it->first) == 1 && record.rewarded == 0) {
       this->DrawBitmap(x + 12, 360, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
     }
@@ -594,7 +594,7 @@ void UIAchViewWnd::Paint() {
     return;
   }
 
-  if (static_cast<unsigned char>(g_session.FindRecord6144(this->achievementId).completionFlags >> 8) == 1) {
+  if (static_cast<unsigned char>(g_session.FindAchievementRecord(this->achievementId).completionFlags >> 8) == 1) {
     this->DrawBitmap(264, 3, AchievementBitmap("유저인터페이스\\achievement_re\\detail_stamp.bmp"), true);
   }
 
@@ -939,25 +939,25 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
   this->ids.clear();
 
   auto byProgress = [this](int left, int right) {
-    return g_session.FindRecord6144(left).completedAt < g_session.FindRecord6144(right).completedAt;
+    return g_session.FindAchievementRecord(left).completedAt < g_session.FindAchievementRecord(right).completedAt;
   };
 
   if (mode == 0) {
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).completionFlags >> 8) == 1) {
+      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 1) {
         this->ids.push_back(it->first);
       }
       std::sort(this->ids.begin(), this->ids.end(), byProgress);
     }
 
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).completionFlags >> 8) == 0) {
+      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 0) {
         this->ids.push_back(it->first);
       }
     }
   } else if (mode == 1) {
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      SessionRecord6144 record = g_session.FindRecord6144(it->first);
+      SessionRecord6144 record = g_session.FindAchievementRecord(it->first);
       if (static_cast<unsigned char>(record.completionFlags >> 8) == 1 && g_achievementMgr->HasReward(it->first) == 1 && record.rewarded == 0) {
         this->ids.push_back(it->first);
       }
@@ -965,7 +965,7 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
     }
 
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).completionFlags >> 8) == 0) {
+      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 0) {
         this->ids.push_back(it->first);
       }
     }
@@ -1366,7 +1366,7 @@ void UIAchSummaryWnd::UpdateInfo() {
 
   int second = 0;
   int first = 0;
-  g_session.FindTopRecords6144(&second, &first);
+  g_session.FindLatestCompletedAchievements(&second, &first);
 
   {
     AchievementInfo info;
@@ -1422,7 +1422,7 @@ void UIAchViewWnd::UpdateInfo() {
   this->receiveButton->Enable(0);
 
   if (this->info) {
-    const SessionRecord6144 record = g_session.FindRecord6144(this->achievementId);
+    const SessionRecord6144 record = g_session.FindAchievementRecord(this->achievementId);
     this->description->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->description.c_str()), 50, 0, 0);
 
     const bool hasReward = this->info->rewardBuffId > 0 || this->info->rewardTitleId > 0 || this->info->rewardItemId > 0;

@@ -2019,7 +2019,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Search::AddResults(char type
 // OFFSET: 0x007C5B10
 // FUNCTION: fn_09382
 __declspec(noinline) void UICashEmotionListChildWnd_Search::Refresh(const char* filter) {
-  g_windowMgr.ClearWindow01B8();
+  g_windowMgr.ClearPreviousMouseWnd();
   this->m_items.clear();
   this->Clear();
   this->horizontalBar = nullptr;

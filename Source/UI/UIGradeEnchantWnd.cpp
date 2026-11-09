@@ -561,7 +561,7 @@ int UIGradeEnchantWnd::SendMsg(
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-      if (g_session.HasItem61B8(dropped.identity[1]) == 1) {
+      if (g_session.HasSwapEquipmentItem(dropped.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
       }
@@ -582,7 +582,7 @@ int UIGradeEnchantWnd::SendMsg(
 // OFFSET: 0x007E9650
 // FUNCTION: fn_09767
 void UIGradeEnchantWnd::SetEnchantInfo(
-  short index, int value, int materialCount, GradeEnchantInfo info, int value0108, int value010C, const GradeEnchantMaterial* materials
+  short index, int value, int materialCount, GradeEnchantInfo info, int enchantOption, int enchantOptionCount, const GradeEnchantMaterial* materials
 ) {
   if (this->state != 0 && this->state != 1) {
     return;
@@ -599,8 +599,8 @@ void UIGradeEnchantWnd::SetEnchantInfo(
 
   this->item = owned;
   this->info = info;
-  this->enchantOption = value0108;
-  this->enchantOptionCount = value010C;
+  this->enchantOption = enchantOption;
+  this->enchantOptionCount = enchantOptionCount;
   this->materials.assign(materials, materials + materialCount);
   this->selectedMaterial = -1;
   this->blessingAmount = 0;
@@ -705,8 +705,8 @@ void UIGradeEnchantWnd::UpdateEnchantMessages() {
   }
 
   if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
-      g_session.GetList0Size() + g_session.CountItems17F0() +
-          g_session.CountItems2B50() >=
+      g_session.GetList0Size() + g_session.CountDistinctEquippedItems() +
+          g_session.CountDistinctCostumeItems() >=
         g_session.extraInventorySlots + 100) {
     this->messageIds.push_back(3710);
   }

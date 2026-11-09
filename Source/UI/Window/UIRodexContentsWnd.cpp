@@ -330,7 +330,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   } else if (message == UM_REFRESHITEM) {
     this->m_items.clear();
     for (int i = 0; i < 5; ++i) {
-      ITEM_INFO item = g_session.GetItem5C68(i);
+      ITEM_INFO item = g_session.GetSelectionItemAt(i);
       if (item.quantity > 0) {
         this->m_items.push_back(item);
       }

@@ -23,7 +23,7 @@ void UIEmblemWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   const bool framed = g_serviceOptions.Get(243) != 0;
-  if (framed && g_session.GetSceneUnknown004C() && !g_session.WorldUnknown0050()) {
+  if (framed && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
     CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
     if (frame) {
       this->DrawBitmap(0, 0, frame, true);
@@ -32,7 +32,7 @@ void UIEmblemWnd::Paint() {
 
   const std::string name = g_guildMgr->GetEmblemFilename(this->guildId);
   CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
-  if (emblem && g_session.GetSceneUnknown004C() && !g_session.WorldUnknown0050()) {
+  if (emblem && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
     this->DrawBitmap(framed ? 2 : 0, framed ? 2 : 0, &emblem->gif, true);
   }
 }

@@ -690,8 +690,8 @@ void UIItemImage::Paint() {
 // OFFSET: 0x00836970
 // FUNCTION: fn_10433
 CCreateLineInfo::CCreateLineInfo(
-  UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool unknown0028,
-  int unknown002C, bool unknown0030, int unknown0034, unsigned char align
+  UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool outlineEnabled,
+  int outlineColorValue, bool unknown0030, int shadowColorValue, unsigned char align
 )
     : m_align(align), m_newSegment(true), m_height(0) {
   if (parent && (this->m_parent = parent, text)) {
@@ -705,9 +705,9 @@ CCreateLineInfo::CCreateLineInfo(
     this->m_bold = flags.bold;
     this->m_italic = flags.italic;
     this->shadow = unknown0030;
-    this->shadowColor = unknown0034;
-    this->outline = unknown0028;
-    this->outlineColor = unknown002C;
+    this->shadowColor = shadowColorValue;
+    this->outline = outlineEnabled;
+    this->outlineColor = outlineColorValue;
 
     if (!s_fontStackCache.empty()) {
       this->m_fontStack.swap(s_fontStackCache);

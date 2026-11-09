@@ -18,7 +18,7 @@ CLanguageTC::CLanguageTC() : keys() {
                                            'I', 'J', 'K', 'L', 'N', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                                            VK_OEM_MINUS, VK_OEM_1, VK_OEM_COMMA, VK_OEM_PERIOD, VK_OEM_2, 0};
 
-  this->unknown04C1 = 0;
+  this->keyStroke = 0;
 
   for (auto& mapping : this->mappings) {
     mapping.category = 4;

@@ -74,7 +74,7 @@ public:
   int SuccessRate();
   void UpdateEnchantMessages();
   void SetEnchantInfo(
-    short index, int value, int materialCount, GradeEnchantInfo info, int value0108, int value010C, const GradeEnchantMaterial* materials
+    short index, int value, int materialCount, GradeEnchantInfo info, int enchantOption, int enchantOptionCount, const GradeEnchantMaterial* materials
   );
   void SetResult(int state, int result);
 

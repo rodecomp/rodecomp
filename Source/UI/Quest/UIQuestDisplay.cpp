@@ -72,8 +72,8 @@ void UIQuestDisplay::Paint() {
     description = static_cast<const std::string&>(DisplayTipBoxTextTag(description));
     description = static_cast<const std::string&>(DisplayItemTextTag(description));
     description = static_cast<const std::string&>(RemoveTextLinkInfo(description));
-    if (g_windowMgr.window_01C8) {
-      description = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(description);
+    if (g_windowMgr.chatWnd) {
+      description = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(description);
     }
     std::string navigation;
     DisplayNavigationLink(navigation, description);
@@ -120,8 +120,8 @@ void UIQuestDisplay::Paint() {
         description = static_cast<const std::string&>(DisplayTipBoxTextTag(description));
         description = static_cast<const std::string&>(DisplayItemTextTag(description));
         description = static_cast<const std::string&>(RemoveTextLinkInfo(description));
-        if (g_windowMgr.window_01C8) {
-          description = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(description);
+        if (g_windowMgr.chatWnd) {
+          description = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(description);
         }
         std::string huntNavigation;
         DisplayNavigationLink(huntNavigation, description);

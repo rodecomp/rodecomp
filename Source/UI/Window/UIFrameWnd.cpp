@@ -714,7 +714,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           int talkType;
           const int offset = g_session.GetTalkType(buffer, &talkType, parts);
           if (offset != -1) {
-            g_windowMgr.SetUnknown04DC(buffer + offset);
+            g_windowMgr.SetChatInputText(buffer + offset);
           }
           if (talkType == 0) {
             talkType = 50;

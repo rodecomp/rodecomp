@@ -59,7 +59,7 @@ void CStoveMgr::FetchAllProducts() {
     Sleep(200);
   } while (g_stoveWaitingCallback);
 
-  g_session.ClearItems1784(9);
+  g_session.ClearInventoryCategoryItems(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam categoryParam;
   categoryParam.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   categoryParam.SetPageNumber(1);
@@ -88,7 +88,7 @@ void FetchStoveTermsAgreement() {
 // OFFSET: 0x0063E910
 // FUNCTION: fn_45460
 void CStoveMgr::FetchCategoryProducts() {
-  g_session.ClearItems1784(9);
+  g_session.ClearInventoryCategoryItems(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam param;
   param.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
   param.SetPageNumber(1);
@@ -281,7 +281,7 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
         item.quantity = product.GetPurchaseLimitCount();
         item.saleData[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
         item.saleData[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
-        g_session.AddItem1784(item, 9);
+        g_session.AddInventoryCategoryItem(item, 9);
       }
     }
   } else {
@@ -320,7 +320,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
                                           unsigned int count) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
-    g_session.ClearAllItems1784();
+    g_session.ClearAllInventoryCategories();
     for (unsigned int index = 0; index < count; ++index) {
       const Stove::PCSDK::IAP::StovePCProduct& product = products[index];
       std::string categoryId = EncodeText(CP_ACP, std::wstring(product.GetCategoryId()));
@@ -406,11 +406,11 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
           item.quantity = product.GetPurchaseLimitCount();
           item.saleData[1] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
           item.saleData[2] = static_cast<std::uint32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
-          g_session.AddItem1784(item, 9);
+          g_session.AddInventoryCategoryItem(item, 9);
         }
       } else if (product.GetPurchaseLimitCount() == 0 && product.GetSaleBeginDate() == 0 && product.GetSaleEndDate() == 0) {
         item.bindOnEquip = static_cast<std::uint16_t>(list);
-        g_session.AddItem1784(item, list);
+        g_session.AddInventoryCategoryItem(item, list);
       }
     }
   } else {
@@ -499,7 +499,7 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
 
 // OFFSET: 0x0063DB80
 // FUNCTION: fn_04794
-void CSession::AddItem1784(const ITEM_INFO& item, int list) {
+void CSession::AddInventoryCategoryItem(const ITEM_INFO& item, int list) {
   if (static_cast<unsigned int>(list) <= 10) {
     this->inventoryCategories[list].push_back(item);
   }

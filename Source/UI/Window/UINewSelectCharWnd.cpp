@@ -76,7 +76,7 @@ static_assert(sizeof(CharacterMovePacket) == 8);
 // FUNCTION: fn_09577
 UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   this->m_slotsPerPage = 15;
-  this->m_unknown13C = false;
+  this->m_gameStartPending = false;
   this->m_window100 = nullptr;
   this->m_textButton = nullptr;
   this->m_button416 = nullptr;
@@ -88,7 +88,7 @@ UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   this->m_slotButtons2.resize(this->m_slotsPerPage);
   this->m_characterWindows.resize(this->m_slotsPerPage);
 
-  this->m_unknown118 = false;
+  this->m_navigationBlocked = false;
   this->m_page = 0;
   this->m_pageSlot = 0;
   this->m_totalCharacters = this->m_maxCharacters = g_session.m_normalSlotCount + g_session.m_premiumSlotCount + g_session.m_billingSlotCount;
@@ -108,7 +108,7 @@ UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   }
 
   this->m_lastTick = timeGetTime();
-  this->m_unknown138 = -1;
+  this->m_slotMoveSource = -1;
 }
 
 UINewSelectCharWnd::~UINewSelectCharWnd() = default;
@@ -589,7 +589,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_COMMAND:
     switch (argument1) {
     case ID_OK: {
-      if (this->m_unknown13C) {
+      if (this->m_gameStartPending) {
         break;
       }
 
@@ -606,7 +606,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
       g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_session.m_sex) : static_cast<char>(info->sex));
-      this->m_unknown118 = true;
+      this->m_navigationBlocked = true;
       const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
       for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
@@ -614,14 +614,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
           g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
-          this->m_unknown118 = false;
+          this->m_navigationBlocked = false;
           return 0;
         }
       }
 
       g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2712, 0, 0, 0);
-      this->m_unknown13C = true;
+      this->m_gameStartPending = true;
       if (this->m_windowFC != nullptr) {
         UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_windowFC);
         button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
@@ -652,7 +652,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       break;
     case ID_SLOT: {
-      if (this->m_unknown13C || g_windowMgr.HasModalWindow() == 1) {
+      if (this->m_gameStartPending || g_windowMgr.HasModalWindow() == 1) {
         break;
       }
 
@@ -678,9 +678,9 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         const CharacterInfo* info =
           reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
         const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
-        if (this->m_unknown138 != selected && selected < this->m_maxCharacters) {
+        if (this->m_slotMoveSource != selected && selected < this->m_maxCharacters) {
           if (info == nullptr) {
-            if (this->m_unknown138 != -1) {
+            if (this->m_slotMoveSource != -1) {
               static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->ShowNotice(0x2E, false);
             }
           } else {
@@ -720,12 +720,12 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        this->m_unknown118 = true;
+        this->m_navigationBlocked = true;
         if (g_windowMgr.RunEmailAddress() == 0xB8) {
           g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x271A, 0, 0, 0);
           g_windowMgr.Schedule(this);
         }
-        this->m_unknown118 = false;
+        this->m_navigationBlocked = false;
       }
       break;
     }
@@ -870,7 +870,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     case ID_CHANGE_NAME: {
-      if (g_windowMgr.window_03DC != nullptr) {
+      if (g_windowMgr.changeNameWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
       }
       const std::intptr_t info = g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
@@ -933,22 +933,22 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     case 0x1B0:
-      this->m_unknown138 = static_cast<unsigned char>(g_selectedSlotIndex);
+      this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
       break;
     case 0x1B1: {
       const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
       if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_unknown138, 0, 0, 0));
+        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;
           packet.id = 0x8D4;
-          packet.from = static_cast<std::int16_t>(this->m_unknown138);
+          packet.from = static_cast<std::int16_t>(this->m_slotMoveSource);
           packet.to = selected;
           packet.count = static_cast<std::int16_t>(info->slotChangeCount);
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         }
       }
-      this->m_unknown138 = -1;
+      this->m_slotMoveSource = -1;
       break;
     }
     case 0x1B2:
@@ -966,18 +966,18 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     break;
   case UM_SETSTATE:
-    if (!this->m_unknown13C) {
+    if (!this->m_gameStartPending) {
       this->m_pageSlot = argument1;
     }
     break;
   case UM_UPPUSH:
-    if (this->m_unknown13C) {
+    if (this->m_gameStartPending) {
       break;
     }
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
       const int previous = this->m_pageSlot;
       this->m_pageSlot -= 5;
       if (this->m_pageSlot < 0) {
@@ -997,13 +997,13 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     break;
   case UM_DOWNPUSH:
-    if (this->m_unknown13C) {
+    if (this->m_gameStartPending) {
       break;
     }
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
       const int previous = this->m_pageSlot;
       this->m_pageSlot = previous + 5;
       if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
@@ -1025,13 +1025,13 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     break;
   case UM_LEFTPUSH:
-    if (this->m_unknown13C) {
+    if (this->m_gameStartPending) {
       break;
     }
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
       if (--this->m_pageSlot < 0) {
         if (this->m_page <= 0) {
           this->m_pageSlot = 0;
@@ -1049,13 +1049,13 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     break;
   case UM_RIGHTPUSH:
-    if (this->m_unknown13C) {
+    if (this->m_gameStartPending) {
       break;
     }
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_unknown118 != true) {
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
       const int previous = this->m_pageSlot;
       this->m_pageSlot = previous + 1;
       if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {

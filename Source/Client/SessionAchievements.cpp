@@ -27,8 +27,8 @@ bool JobTitleLess::operator()(int left, int right) const {
 
 // OFFSET: 0x00E064C0
 // FUNCTION: fn_23736
-int CSession::AddUnknown6160(int id) {
-  int value = g_achievementMgr->GetUnknown0050(id);
+int CSession::AddAchievementJobTitle(int id) {
+  int value = g_achievementMgr->GetRewardTitleId(id);
   if (value == -1) {
     return -1;
   }

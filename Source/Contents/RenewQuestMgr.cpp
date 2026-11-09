@@ -661,8 +661,8 @@ void CRenewQuestMgr::UpdateOngoingQuestInfo() {
 // OFFSET: 0x0067B6B0
 // FUNCTION: fn_05460
 void CRenewQuestMgr::UpdateQuestWindows() {
-  if (g_windowMgr.window_0428 != nullptr) {
-    g_windowMgr.window_0428->Invalidate();
+  if (g_windowMgr.questDisplayWnd != nullptr) {
+    g_windowMgr.questDisplayWnd->Invalidate();
   }
 
   if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {
@@ -781,8 +781,8 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
     this->AddOngoingQuest(record.questId, info);
   }
 
-  if (g_windowMgr.window_0428 != nullptr) {
-    g_windowMgr.window_0428->Invalidate();
+  if (g_windowMgr.questDisplayWnd != nullptr) {
+    g_windowMgr.questDisplayWnd->Invalidate();
   }
 
   if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {

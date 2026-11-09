@@ -53,7 +53,7 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   }
 
   FuncDrawWNDChar drawer(
-    this, x, y, static_cast<unsigned char>(g_session.SyncUnknown0E98()), static_cast<short>(g_session.GetDisplayJob()), g_session.GetDisplayJob(),
+    this, x, y, static_cast<unsigned char>(g_session.GetCurrentSex()), static_cast<short>(g_session.GetDisplayJob()), g_session.GetDisplayJob(),
     static_cast<short>(body), static_cast<short>(head), bottomAccessory, topAccessory, midAccessory, robe, flags, 0, bodyStyle, headPalette, action, 0,
     static_cast<int>(time)
   );
@@ -64,7 +64,7 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
 // FUNCTION: fn_12885
 void UISecondCostumeWnd::LoadLists() {
   const int job = g_session.GetDisplayJob();
-  const int sex = g_session.SyncUnknown0E98();
+  const int sex = g_session.GetCurrentSex();
 
   for (int index = 1;; ++index) {
     const char* name = nullptr;

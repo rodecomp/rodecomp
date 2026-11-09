@@ -305,7 +305,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // FUNCTION: fn_09887
 void UIPreviewEquipWnd::RefreshHeadgearLocations() {
   if (this->m_render->lowerHeadgear) {
-    ITEM_INFO equipped = g_session.GetItem17F0(0);
+    ITEM_INFO equipped = g_session.GetEquippedItemAt(0);
     if (this->m_render->lowerHeadgear == equipped.sprite) {
       this->m_render->lowerHeadgearLocation = 1;
       if (equipped.identity[2] == 0x301) {
@@ -315,7 +315,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
       }
     }
 
-    ITEM_INFO costume = g_session.GetItem2B50(0);
+    ITEM_INFO costume = g_session.GetCostumeItemAt(0);
     if (this->m_render->lowerHeadgear == costume.sprite) {
       this->m_render->lowerHeadgearLocation = 1;
       if (costume.identity[2] == 0x1C00) {
@@ -327,7 +327,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
   }
 
   if (this->m_render->upperHeadgear) {
-    ITEM_INFO equipped = g_session.GetItem17F0(8);
+    ITEM_INFO equipped = g_session.GetEquippedItemAt(8);
     if (this->m_render->upperHeadgear == equipped.sprite) {
       if (equipped.identity[2] == 0x100) {
         this->m_render->upperHeadgearLocation = 0x100;
@@ -350,7 +350,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
       }
     }
 
-    ITEM_INFO costume = g_session.GetItem2B50(8);
+    ITEM_INFO costume = g_session.GetCostumeItemAt(8);
     if (this->m_render->upperHeadgear == costume.sprite) {
       if (costume.identity[2] == 0x400) {
         this->m_render->upperHeadgearLocation = 0x100;
@@ -375,7 +375,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
   }
 
   if (this->m_render->middleHeadgear) {
-    ITEM_INFO equipped = g_session.GetItem17F0(9);
+    ITEM_INFO equipped = g_session.GetEquippedItemAt(9);
     if (this->m_render->middleHeadgear == equipped.sprite) {
       if (equipped.identity[2] == 0x200) {
         this->m_render->middleHeadgearLocation = 0x200;
@@ -387,7 +387,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
       }
     }
 
-    ITEM_INFO costume = g_session.GetItem2B50(9);
+    ITEM_INFO costume = g_session.GetCostumeItemAt(9);
     if (this->m_render->middleHeadgear == costume.sprite) {
       if (costume.identity[2] == 0x800) {
         this->m_render->middleHeadgearLocation = 0x200;

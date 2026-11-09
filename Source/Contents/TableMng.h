@@ -7,20 +7,20 @@ struct EntryQueueInfo {
   /* 0000 */ unsigned int id;
   /* 0004 */ char name[260];
   /* 0108 */ char description[260];
-  /* 020C */ int value020C;
-  /* 0210 */ int value0210;
-  /* 0214 */ unsigned char flag0214;
-  /* 0215 */ unsigned char flag0215;
-  /* 0216 */ unsigned char flag0216;
-  /* 0217 */ unsigned char flag0217;
-  /* 0218 */ unsigned char flag0218;
-  /* 021C */ int value021C;
-  /* 0220 */ int value0220;
-  /* 0224 */ char text0224[260];
-  /* 0328 */ char text0328[260];
-  /* 042C */ char text042C[260];
-  /* 0530 */ char text0530[260];
-  /* 0634 */ char text0634[260];
+  /* 020C */ int minLevel;
+  /* 0210 */ int maxLevel;
+  /* 0214 */ unsigned char queueFlagA;
+  /* 0215 */ unsigned char queueFlagB;
+  /* 0216 */ unsigned char queueFlagC;
+  /* 0217 */ unsigned char queueFlagD;
+  /* 0218 */ unsigned char limitType;
+  /* 021C */ int limitValue;
+  /* 0220 */ int limitValueEnd;
+  /* 0224 */ char detailsText[260];
+  /* 0328 */ char rulesText[260];
+  /* 042C */ char rewardText[260];
+  /* 0530 */ char extraText[260];
+  /* 0634 */ char bitmapName[260];
 };
 
 // VTABLE: vt_01823

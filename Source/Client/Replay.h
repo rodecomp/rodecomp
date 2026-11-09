@@ -149,7 +149,7 @@ public:
   bool AllowsEvent(int event) const;
   void Rewind();
   bool SetHeaderInfo(
-    std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int unknown0078, int service,
+    std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int playerDirection, int service,
     int serviceType, int unknown0014
   );
   void IncreaseSpeed();

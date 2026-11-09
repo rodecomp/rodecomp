@@ -87,7 +87,7 @@ void UIRoMapWnd::ResetKafraBounds() {
 // FUNCTION: fn_12634
 void UIRoMapWnd::UpdateNavigationButtons() {
   UIWindow** buttons = reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this) + 0x20C);
-  if (g_windowMgr.window_4F174 != nullptr && !g_navigationManager.expandedMap) {
+  if (g_windowMgr.navigationWnd != nullptr && !g_navigationManager.expandedMap) {
     buttons[0]->Move(-100, -100);
     buttons[1]->Move(-100, -100);
     buttons[2]->Move(-100, -100);
@@ -742,8 +742,8 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     case ID_BASE:
       g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
-      if (g_windowMgr.window_4F174) {
-        g_windowMgr.window_4F174->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
+      if (g_windowMgr.navigationWnd) {
+        g_windowMgr.navigationWnd->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
       }
       this->UpdateNavigationButtons();
       return 0;
@@ -773,8 +773,8 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       g_navigationManager.expandedMap = false;
       g_navigationManager.SearchNavigation(name, 0, false);
       if (g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND)) {
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRoute(0);
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->SelectRouteNode(0);
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRoute(0);
+        static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRouteNode(0);
       }
       this->UpdateNavigationButtons();
       }

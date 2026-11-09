@@ -724,7 +724,7 @@ int AiMercenaryGetV(lua_State* state) {
     if (!actor) {
       result = -1.0;
     } else {
-      if (g_session.IsSkillIdInRange6018(actor->GetEffectiveJob(-1))) {
+      if (g_session.IsHirelingJob(actor->GetEffectiveJob(-1))) {
         result = actor->GetEffectiveJob(-1) % 6017 + 1.0;
       } else {
         result = 1.0;
@@ -900,7 +900,7 @@ int AiGetMsg(lua_State* state) {
   }
 
   message.type = 0;
-  actor->SetUnknown0318(reinterpret_cast<const float*>(&message), index);
+  actor->SetMsg2AI(reinterpret_cast<const float*>(&message), index);
   return 1;
 }
 
@@ -951,7 +951,7 @@ int AiGetResMsg(lua_State* state) {
   }
 
   message.type = 0;
-  actor->SetUnknown0330(reinterpret_cast<const float*>(&message), index);
+  actor->SetResMsg2AI(reinterpret_cast<const float*>(&message), index);
   return 1;
 }
 

@@ -19,25 +19,25 @@ void UIWindowMgr::InvalidateAll() {
 // OFFSET: 0x00A96710
 // FUNCTION: fn_17185
 void UIWindowMgr::RefreshClanWnd() {
-  if (this->window_0444) {
-    this->window_0444->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->clanInfoManageWnd) {
+    this->clanInfoManageWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00A96730
 // FUNCTION: fn_17186
 void UIWindowMgr::RefreshGuildWindows() {
-  if (this->window_0320) {
-    this->window_0320->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildInfoManageWnd) {
+    this->guildInfoManageWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->window_0324) {
-    this->window_0324->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildMemberManageWnd) {
+    this->guildMemberManageWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->guildPositionManageWnd) {
     this->guildPositionManageWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  if (this->window_032C) {
-    this->window_032C->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+  if (this->guildSkillWnd) {
+    this->guildSkillWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (this->guildBanishedMemberWnd) {
     this->guildBanishedMemberWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -103,7 +103,7 @@ char UIWindowMgr::UpdateSnapRectangles() {
 // OFFSET: 0x00A976C0
 // FUNCTION: fn_17206
 void UIWindowMgr::Promote(UIWindow* window) {
-  if (!window || (this->modal != nullptr && this->window_4F174 != window)) {
+  if (!window || (this->modal != nullptr && this->navigationWnd != window)) {
     return;
   }
 

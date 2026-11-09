@@ -1439,8 +1439,8 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = DisplayItemTextTag(display);
   display = RemoveTextLinkInfo(display);
 
-  if (g_windowMgr.window_01C8) {
-    display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
+  if (g_windowMgr.chatWnd) {
+    display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(display));
   }
 
   std::string navigation;
@@ -1511,8 +1511,8 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   display = static_cast<const std::string&>(DisplayItemTextTag(display));
   display = static_cast<const std::string&>(RemoveTextLinkInfo(display));
 
-  if (g_windowMgr.window_01C8) {
-    display = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(display));
+  if (g_windowMgr.chatWnd) {
+    display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(display));
   }
 
   std::string navigation;
@@ -2072,8 +2072,8 @@ void UINavigationroadiconWnd::OnLBtnUp(int x, int y) {
   }
 
   if (slot != 0) {
-    if (g_windowMgr.window_4F174) {
-      g_windowMgr.window_4F174->SendMsg(nullptr, UM_SETCURITEM, slot, 0, 0, 0);
+    if (g_windowMgr.navigationWnd) {
+      g_windowMgr.navigationWnd->SendMsg(nullptr, UM_SETCURITEM, slot, 0, 0, 0);
     }
 
     const int column = slot <= 4 ? slot : slot - 4;
@@ -2657,9 +2657,9 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
             window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
           }
 
-          g_windowMgr.window_4F258 = window;
+          g_windowMgr.privateAirplaneWnd = window;
           if (g_windowMgr.RunModal(window) == 0xBC) {
-            g_windowMgr.window_4F258 = nullptr;
+            g_windowMgr.privateAirplaneWnd = nullptr;
           }
         }
         break;

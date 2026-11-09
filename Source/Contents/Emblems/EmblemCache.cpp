@@ -131,7 +131,7 @@ void CGuildMgr::UpdateEmblemRequests(
 // FUNCTION: fn_05180
 void CGuildMgr::RefreshEmblem(std::uint32_t guild) {
   if (g_modeMgr.GetGameMode()) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyUnknown0604(guild);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshNotificationWindows(guild);
   }
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_GUILDINFOMANAGEWND);

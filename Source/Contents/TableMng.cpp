@@ -145,67 +145,67 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->value020C = cell->GetInteger();
+    info->minLevel = cell->GetInteger();
 
     cell = sheet->Cell(row, 4);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->value0210 = cell->GetInteger();
+    info->maxLevel = cell->GetInteger();
 
     cell = sheet->Cell(row, 5);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->flag0214 = static_cast<unsigned char>(cell->GetInteger());
+    info->queueFlagA = static_cast<unsigned char>(cell->GetInteger());
 
     cell = sheet->Cell(row, 6);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->flag0215 = static_cast<unsigned char>(cell->GetInteger());
+    info->queueFlagB = static_cast<unsigned char>(cell->GetInteger());
 
     cell = sheet->Cell(row, 7);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->flag0216 = static_cast<unsigned char>(cell->GetInteger());
+    info->queueFlagC = static_cast<unsigned char>(cell->GetInteger());
 
     cell = sheet->Cell(row, 8);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->flag0217 = static_cast<unsigned char>(cell->GetInteger());
+    info->queueFlagD = static_cast<unsigned char>(cell->GetInteger());
 
     cell = sheet->Cell(row, 9);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->flag0218 = static_cast<unsigned char>(cell->GetInteger());
+    info->limitType = static_cast<unsigned char>(cell->GetInteger());
 
     cell = sheet->Cell(row, 10);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->value021C = cell->GetInteger();
+    info->limitValue = cell->GetInteger();
 
     cell = sheet->Cell(row, 11);
     if (cell == nullptr) {
       goto fail_row;
     }
-    info->value0220 = cell->GetInteger();
+    info->limitValueEnd = cell->GetInteger();
 
     cell = sheet->Cell(row, 12);
     if (cell == nullptr) {
       goto fail_row;
     }
     if (cell->Type() == 3) {
-      strcpy_s(info->text0224, sizeof(info->text0224), cell->GetString());
+      strcpy_s(info->detailsText, sizeof(info->detailsText), cell->GetString());
     } else if (cell->Type() == 4) {
       wchar_t wbuf[260];
       memset(wbuf, 0, sizeof(wbuf));
       wcscpy_s(wbuf, 260, cell->GetWString());
-      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->text0224, sizeof(info->text0224), nullptr, nullptr);
+      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->detailsText, sizeof(info->detailsText), nullptr, nullptr);
     }
 
     cell = sheet->Cell(row, 13);
@@ -213,12 +213,12 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
       goto fail_row;
     }
     if (cell->Type() == 3) {
-      strcpy_s(info->text0328, sizeof(info->text0328), cell->GetString());
+      strcpy_s(info->rulesText, sizeof(info->rulesText), cell->GetString());
     } else if (cell->Type() == 4) {
       wchar_t wbuf[260];
       memset(wbuf, 0, sizeof(wbuf));
       wcscpy_s(wbuf, 260, cell->GetWString());
-      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->text0328, sizeof(info->text0328), nullptr, nullptr);
+      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->rulesText, sizeof(info->rulesText), nullptr, nullptr);
     }
 
     cell = sheet->Cell(row, 14);
@@ -226,12 +226,12 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
       goto fail_row;
     }
     if (cell->Type() == 3) {
-      strcpy_s(info->text042C, sizeof(info->text042C), cell->GetString());
+      strcpy_s(info->rewardText, sizeof(info->rewardText), cell->GetString());
     } else if (cell->Type() == 4) {
       wchar_t wbuf[260];
       memset(wbuf, 0, sizeof(wbuf));
       wcscpy_s(wbuf, 260, cell->GetWString());
-      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->text042C, sizeof(info->text042C), nullptr, nullptr);
+      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->rewardText, sizeof(info->rewardText), nullptr, nullptr);
     }
 
     cell = sheet->Cell(row, 15);
@@ -239,12 +239,12 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
       goto fail_row;
     }
     if (cell->Type() == 3) {
-      strcpy_s(info->text0530, sizeof(info->text0530), cell->GetString());
+      strcpy_s(info->extraText, sizeof(info->extraText), cell->GetString());
     } else if (cell->Type() == 4) {
       wchar_t wbuf[260];
       memset(wbuf, 0, sizeof(wbuf));
       wcscpy_s(wbuf, 260, cell->GetWString());
-      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->text0530, sizeof(info->text0530), nullptr, nullptr);
+      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->extraText, sizeof(info->extraText), nullptr, nullptr);
     }
 
     cell = sheet->Cell(row, 16);
@@ -252,12 +252,12 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
       goto fail_row;
     }
     if (cell->Type() == 3) {
-      strcpy_s(info->text0634, sizeof(info->text0634), cell->GetString());
+      strcpy_s(info->bitmapName, sizeof(info->bitmapName), cell->GetString());
     } else if (cell->Type() == 4) {
       wchar_t wbuf[260];
       memset(wbuf, 0, sizeof(wbuf));
       wcscpy_s(wbuf, 260, cell->GetWString());
-      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->text0634, sizeof(info->text0634), nullptr, nullptr);
+      WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->bitmapName, sizeof(info->bitmapName), nullptr, nullptr);
     }
 
     if (this->m_entryQueue.find(info->id) != this->m_entryQueue.end()) {
@@ -300,20 +300,20 @@ bool CTableMng::ReadEntryQueueBinary() {
     ReadFile(file, &info->id, 4, &bytesRead, nullptr);
     ReadFile(file, info->name, 0x104, &bytesRead, nullptr);
     ReadFile(file, info->description, 0x104, &bytesRead, nullptr);
-    ReadFile(file, &info->value020C, 4, &bytesRead, nullptr);
-    ReadFile(file, &info->value0210, 4, &bytesRead, nullptr);
-    ReadFile(file, &info->flag0214, 1, &bytesRead, nullptr);
-    ReadFile(file, &info->flag0215, 1, &bytesRead, nullptr);
-    ReadFile(file, &info->flag0216, 1, &bytesRead, nullptr);
-    ReadFile(file, &info->flag0217, 1, &bytesRead, nullptr);
-    ReadFile(file, &info->flag0218, 1, &bytesRead, nullptr);
-    ReadFile(file, &info->value021C, 4, &bytesRead, nullptr);
-    ReadFile(file, &info->value0220, 4, &bytesRead, nullptr);
-    ReadFile(file, info->text0224, 0x104, &bytesRead, nullptr);
-    ReadFile(file, info->text0328, 0x104, &bytesRead, nullptr);
-    ReadFile(file, info->text042C, 0x104, &bytesRead, nullptr);
-    ReadFile(file, info->text0530, 0x104, &bytesRead, nullptr);
-    ReadFile(file, info->text0634, 0x104, &bytesRead, nullptr);
+    ReadFile(file, &info->minLevel, 4, &bytesRead, nullptr);
+    ReadFile(file, &info->maxLevel, 4, &bytesRead, nullptr);
+    ReadFile(file, &info->queueFlagA, 1, &bytesRead, nullptr);
+    ReadFile(file, &info->queueFlagB, 1, &bytesRead, nullptr);
+    ReadFile(file, &info->queueFlagC, 1, &bytesRead, nullptr);
+    ReadFile(file, &info->queueFlagD, 1, &bytesRead, nullptr);
+    ReadFile(file, &info->limitType, 1, &bytesRead, nullptr);
+    ReadFile(file, &info->limitValue, 4, &bytesRead, nullptr);
+    ReadFile(file, &info->limitValueEnd, 4, &bytesRead, nullptr);
+    ReadFile(file, info->detailsText, 0x104, &bytesRead, nullptr);
+    ReadFile(file, info->rulesText, 0x104, &bytesRead, nullptr);
+    ReadFile(file, info->rewardText, 0x104, &bytesRead, nullptr);
+    ReadFile(file, info->extraText, 0x104, &bytesRead, nullptr);
+    ReadFile(file, info->bitmapName, 0x104, &bytesRead, nullptr);
     this->m_entryQueue.insert(std::pair<unsigned int, EntryQueueInfo*>(info->id, info));
   }
 
@@ -407,54 +407,54 @@ bool CTableMng::WriteEntryQueueXls() {
 
               cell = sheet2->Cell(row, 3);
               if (cell != nullptr) {
-                cell->SetInteger(info->value020C);
+                cell->SetInteger(info->minLevel);
               }
 
               cell = sheet2->Cell(row, 4);
               if (cell != nullptr) {
-                cell->SetInteger(info->value0210);
+                cell->SetInteger(info->maxLevel);
               }
 
               cell = sheet2->Cell(row, 5);
               if (cell != nullptr) {
-                cell->SetInteger(info->flag0214);
+                cell->SetInteger(info->queueFlagA);
               }
 
               cell = sheet2->Cell(row, 6);
               if (cell != nullptr) {
-                cell->SetInteger(info->flag0215);
+                cell->SetInteger(info->queueFlagB);
               }
 
               cell = sheet2->Cell(row, 7);
               if (cell != nullptr) {
-                cell->SetInteger(info->flag0216);
+                cell->SetInteger(info->queueFlagC);
               }
 
               cell = sheet2->Cell(row, 8);
               if (cell != nullptr) {
-                cell->SetInteger(info->flag0217);
+                cell->SetInteger(info->queueFlagD);
               }
 
               cell = sheet2->Cell(row, 9);
               if (cell != nullptr) {
-                cell->SetInteger(info->flag0218);
+                cell->SetInteger(info->limitType);
               }
 
               cell = sheet2->Cell(row, 10);
               if (cell != nullptr) {
-                cell->SetInteger(info->value021C);
+                cell->SetInteger(info->limitValue);
               }
 
               cell = sheet2->Cell(row, 11);
               if (cell != nullptr) {
-                cell->SetInteger(info->value0220);
+                cell->SetInteger(info->limitValueEnd);
               }
 
               cell = sheet2->Cell(row, 12);
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->text0224, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, info->detailsText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -462,7 +462,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->text0328, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, info->rulesText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -470,7 +470,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->text042C, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, info->rewardText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -478,7 +478,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->text0530, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, info->extraText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -486,7 +486,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->text0634, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, info->bitmapName, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
             }

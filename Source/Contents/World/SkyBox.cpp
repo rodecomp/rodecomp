@@ -49,7 +49,7 @@ CSkyCube::CSkyCube() {
   this->m_vertices[7].y = 650.0f;
   this->m_vertices[7].z = -1250.0f;
   this->m_vertices[7].diffuse = 0xFFFFFFFF;
-  this->m_unknown_0140 = 0;
+  this->m_loopRotationY = 0;
   this->m_vertices[8].x = -1250.0f;
   this->m_vertices[8].y = -350.0f;
   this->m_vertices[8].z = 1240.0f;

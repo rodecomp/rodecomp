@@ -86,24 +86,24 @@ void UIWindowMgr::AddMiniPartyWindow(UIWindow* window) {
 void UIWindowMgr::RebuildMiniPartyWindows() {
   for (auto entry = this->snapExcluded.begin(); entry != this->snapExcluded.end();) {
     UIWindow* window = *entry;
-    if (window == this->window_03D4) {
-      this->window_03D4 = nullptr;
+    if (window == this->newSelectCharWnd) {
+      this->newSelectCharWnd = nullptr;
     }
 
-    if (window == this->window_03D8) {
-      this->window_03D8 = nullptr;
+    if (window == this->selCharForUServerWnd) {
+      this->selCharForUServerWnd = nullptr;
     }
 
-    if (window == this->window_03DC) {
-      this->window_03DC = nullptr;
+    if (window == this->changeNameWnd) {
+      this->changeNameWnd = nullptr;
     }
 
-    if (window == this->window_01B8) {
-      this->window_01B8 = nullptr;
+    if (window == this->previousMouseWnd) {
+      this->previousMouseWnd = nullptr;
     }
 
-    if (window == this->window_4F2AC) {
-      this->window_4F2AC = nullptr;
+    if (window == this->waitDBSaveWnd) {
+      this->waitDBSaveWnd = nullptr;
     }
 
     this->retired.push_back(window);
@@ -119,7 +119,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
       continue;
     }
 
-    const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
+    const SessionRecord0734 record = g_session.FindMiniPartyRecord(member.accountId);
     if (record.active == 0) {
       continue;
     }
@@ -127,7 +127,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     records.push_back(record);
   }
 
-  g_session.ClearRecords0734();
+  g_session.ClearMiniPartyRecords();
 
   for (const SessionRecord0734& record : records) {
     MessengerMember member = g_session.PartyByAccount(record.id);
@@ -140,7 +140,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     window->m_cell = record.cell;
     this->AddMiniPartyWindow(window);
     window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
-    g_session.AddRecord0734(record.id, record.cell);
+    g_session.AddMiniPartyRecord(record.id, record.cell);
 
     UIWindow* drag = this->menuWnd;
     if (drag != nullptr && *reinterpret_cast<int*>(reinterpret_cast<char*>(drag) + 0xB4) == 301 &&
@@ -153,7 +153,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
   }
 
   if (this->Window4F250Ready()) {
-    this->Promote(this->window_4F250);
+    this->Promote(this->transientWnd);
   }
 
   this->Promote(this->menuWnd);

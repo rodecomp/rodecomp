@@ -694,39 +694,39 @@ int AddEntryQueue(lua_State* state) {
   const int id = static_cast<int>(luaL_checknumber(state, 1));
   std::string name = luaL_checkstring(state, 2);
   std::string displayName = luaL_checkstring(state, 3);
-  const int value020C = static_cast<int>(luaL_checknumber(state, 4));
-  const int value0210 = static_cast<int>(luaL_checknumber(state, 5));
-  const int value0214 = static_cast<int>(luaL_checknumber(state, 6));
-  const int value0215 = static_cast<int>(luaL_checknumber(state, 7));
-  const int value0216 = static_cast<int>(luaL_checknumber(state, 8));
-  const int value0217 = static_cast<int>(luaL_checknumber(state, 9));
-  const int value0218 = static_cast<int>(luaL_checknumber(state, 10));
-  const int value021C = static_cast<int>(luaL_checknumber(state, 11));
-  const int value0220 = static_cast<int>(luaL_checknumber(state, 12));
-  std::string text0224 = luaL_checkstring(state, 13);
-  std::string text0328 = luaL_checkstring(state, 14);
-  std::string text042C = luaL_checkstring(state, 15);
-  std::string text0530 = luaL_checkstring(state, 16);
-  std::string text0634 = luaL_checkstring(state, 17);
+  const int minLevel = static_cast<int>(luaL_checknumber(state, 4));
+  const int maxLevel = static_cast<int>(luaL_checknumber(state, 5));
+  const int queueFlagA = static_cast<int>(luaL_checknumber(state, 6));
+  const int queueFlagB = static_cast<int>(luaL_checknumber(state, 7));
+  const int queueFlagC = static_cast<int>(luaL_checknumber(state, 8));
+  const int queueFlagD = static_cast<int>(luaL_checknumber(state, 9));
+  const int limitType = static_cast<int>(luaL_checknumber(state, 10));
+  const int limitValue = static_cast<int>(luaL_checknumber(state, 11));
+  const int limitValueEnd = static_cast<int>(luaL_checknumber(state, 12));
+  std::string detailsText = luaL_checkstring(state, 13);
+  std::string rulesText = luaL_checkstring(state, 14);
+  std::string rewardText = luaL_checkstring(state, 15);
+  std::string extraText = luaL_checkstring(state, 16);
+  std::string bitmapName = luaL_checkstring(state, 17);
 
   EntryQueueInfo* info = new EntryQueueInfo;
   info->id = id;
   strcpy_s(info->name, sizeof(info->name), name.c_str());
   strcpy_s(info->displayName, sizeof(info->displayName), displayName.c_str());
-  info->minLevel = value020C;
-  info->maxLevel = value0210;
-  info->queueFlagA = static_cast<unsigned char>(value0214);
-  info->queueFlagB = static_cast<unsigned char>(value0215);
-  info->queueFlagC = static_cast<unsigned char>(value0216);
-  info->queueFlagD = static_cast<unsigned char>(value0217);
-  info->limitType = static_cast<unsigned char>(value0218);
-  info->limitValue = value021C;
-  info->limitValueEnd = value0220;
-  strcpy_s(info->description, sizeof(info->description), text0224.c_str());
-  strcpy_s(info->rulesText, sizeof(info->rulesText), text0328.c_str());
-  strcpy_s(info->rewardText, sizeof(info->rewardText), text042C.c_str());
-  strcpy_s(info->extraText, sizeof(info->extraText), text0530.c_str());
-  strcpy_s(info->bitmapName, sizeof(info->bitmapName), text0634.c_str());
+  info->minLevel = minLevel;
+  info->maxLevel = maxLevel;
+  info->queueFlagA = static_cast<unsigned char>(queueFlagA);
+  info->queueFlagB = static_cast<unsigned char>(queueFlagB);
+  info->queueFlagC = static_cast<unsigned char>(queueFlagC);
+  info->queueFlagD = static_cast<unsigned char>(queueFlagD);
+  info->limitType = static_cast<unsigned char>(limitType);
+  info->limitValue = limitValue;
+  info->limitValueEnd = limitValueEnd;
+  strcpy_s(info->description, sizeof(info->description), detailsText.c_str());
+  strcpy_s(info->rulesText, sizeof(info->rulesText), rulesText.c_str());
+  strcpy_s(info->rewardText, sizeof(info->rewardText), rewardText.c_str());
+  strcpy_s(info->extraText, sizeof(info->extraText), extraText.c_str());
+  strcpy_s(info->bitmapName, sizeof(info->bitmapName), bitmapName.c_str());
 
   g_entryQueueList.insert(std::make_pair(id, info));
   return 0;
@@ -1299,7 +1299,7 @@ int UIWindowMgr::GetHotkeyBehavior() {
 
   if (this->modifierKey == VK_SHIFT && !g_windowMgr.inputSuggestionsEnabled) {
     UIWindow* parent = this->hoverWindow ? this->hoverWindow->parent : nullptr;
-    if (!parent || parent == this->window_01C8 || parent->geometry.visible == 0) {
+    if (!parent || parent == this->chatWnd || parent->geometry.visible == 0) {
       const int count = HotkeyCount(*g_session.m_hotkeyScript, 0);
       for (int index = 0; index < count; ++index) {
         const HotkeyInfo hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);

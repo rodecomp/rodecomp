@@ -46,10 +46,10 @@ void UIMerchantShopMakeWnd::Refresh() {
 
   for (int index = 0; index < count; ++index) {
     const ITEM_INFO item = g_session.GetItem1768At(index);
-    g_session.AddItem1750(item, this->mode, 0);
+    g_session.AddMerchantMyShopItem(item, this->mode, 0);
   }
 
-  g_session.ClearItems1768();
+  g_session.ClearMerchantPurchaseSavedItems();
   backup.Restore(this->mode != 0, this->slotCount);
 
   const std::vector<ITEM_INFO> displayed(backup.items);

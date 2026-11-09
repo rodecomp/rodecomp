@@ -241,7 +241,7 @@ void CWorld::InitWorld() {
       lastPercent = percent;
       lastNoticeTime = now;
       g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
-      g_windowMgr.CenterSurface0478();
+      g_windowMgr.DrawCenteredBackground();
       g_windowMgr.DrawWindows();
       if (g_renderer->Draw()) {
         g_renderer->Present(0);

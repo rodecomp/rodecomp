@@ -70,8 +70,8 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
   parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
-  if (g_windowMgr.window_01C8) {
-    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
+  if (g_windowMgr.chatWnd) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(parsed));
   }
 
   {
@@ -116,8 +116,8 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
   parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
-  if (g_windowMgr.window_01C8) {
-    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
+  if (g_windowMgr.chatWnd) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(parsed));
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -219,8 +219,8 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
   parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
-  if (g_windowMgr.window_01C8) {
-    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
+  if (g_windowMgr.chatWnd) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(parsed));
   }
 
   {
@@ -267,8 +267,8 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
-  if (g_windowMgr.window_01C8) {
-    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
+  if (g_windowMgr.chatWnd) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(parsed));
   }
 
   {
@@ -362,8 +362,8 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
   parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
-  if (g_windowMgr.window_01C8) {
-    parsed = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::move(parsed));
+  if (g_windowMgr.chatWnd) {
+    parsed = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(parsed));
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));

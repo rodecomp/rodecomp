@@ -24,7 +24,7 @@ static MessengerMember PartyMember(UIMiniPartyWnd* window) {
 
 // INLINED
 static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) {
-  if (!window || (manager->modal != nullptr && manager->window_4F174 != window)) {
+  if (!window || (manager->modal != nullptr && manager->navigationWnd != window)) {
     return;
   }
 
@@ -157,8 +157,8 @@ int UIWindowMgr::ProcessMouse() {
   if (this->modalWindows.empty() || !this->modalWindows.back()) {
     for (auto entry = this->retired.begin(); entry != this->retired.end(); ++entry) {
       UIWindow* window = *entry;
-      if (this->window_4F16C == window) {
-        this->window_4F16C = nullptr;
+      if (this->replayMessageBoxWnd == window) {
+        this->replayMessageBoxWnd = nullptr;
       }
       if (this->inputWindow && (this->inputWindow == window || this->inputWindow->IsDescendantOf(window))) {
         this->inputWindow = nullptr;
@@ -166,8 +166,8 @@ int UIWindowMgr::ProcessMouse() {
       if (this->hoverWindow && (this->hoverWindow == window || this->hoverWindow->IsDescendantOf(window))) {
         this->hoverWindow = nullptr;
       }
-      if (this->window_01B8 && (this->window_01B8 == window || this->window_01B8->IsDescendantOf(window))) {
-        this->window_01B8 = nullptr;
+      if (this->previousMouseWnd && (this->previousMouseWnd == window || this->previousMouseWnd->IsDescendantOf(window))) {
+        this->previousMouseWnd = nullptr;
       }
       this->Destroy(window);
     }
@@ -195,8 +195,8 @@ int UIWindowMgr::ProcessMouse() {
   }
   this->closedMiniPartyIds.clear();
 
-  if (g_mouse.buttons[0] == 1 && this->window_01C8) {
-    UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->window_01C8);
+  if (g_mouse.buttons[0] == 1 && this->chatWnd) {
+    UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->chatWnd);
     if (suggestions->SuggestionsVisible() == 1) {
       int left;
       int top;
@@ -263,7 +263,7 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (g_mouse.buttons[0] == 1) {
-      ::SetPressedWindowRoot(this->window_4F1D4, window);
+      ::SetPressedWindowRoot(this->keyboardCommandRootWnd, window);
     }
 
     if (window) {
@@ -288,7 +288,7 @@ int UIWindowMgr::ProcessMouse() {
           PromoteWindow(this, root);
         }
 
-        CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->window_0A30);
+        CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->dropDownBoxWnd);
         if (popup && window != popup && root != popup && !popup->HasOwnerChild(window)) {
           this->CloseDropDown();
         }
@@ -342,8 +342,8 @@ int UIWindowMgr::ProcessMouse() {
       }
     }
 
-    if (this->window_03D4) {
-      this->window_03D4->Invalidate();
+    if (this->newSelectCharWnd) {
+      this->newSelectCharWnd->Invalidate();
     }
     if (this->equipWnd) {
       this->equipWnd->Invalidate();
@@ -354,26 +354,26 @@ int UIWindowMgr::ProcessMouse() {
     if (this->otherEquipWnd) {
       this->otherEquipWnd->Invalidate();
     }
-    if (this->window_03D8) {
-      this->window_03D8->Invalidate();
+    if (this->selCharForUServerWnd) {
+      this->selCharForUServerWnd->Invalidate();
     }
-    if (this->window_02C4 && g_session.m_simplifiedSkillList == 0) {
-      this->window_02C4->Invalidate();
+    if (this->skillListWnd && g_session.m_simplifiedSkillList == 0) {
+      this->skillListWnd->Invalidate();
     }
-    if (this->window_4F170) {
-      this->window_4F170->Invalidate();
+    if (this->secondCostumeWnd) {
+      this->secondCostumeWnd->Invalidate();
     }
 
     if (window) {
-      if (this->window_01B8 && window != this->window_01B8) {
+      if (this->previousMouseWnd && window != this->previousMouseWnd) {
         int left = 0;
         int top = 0;
-        this->window_01B8->ToScreen(left, top);
-        this->window_01B8->OnMouseMove(x - left, y - top);
-        this->window_01B8->ResetCursor(x - left, y - top);
+        this->previousMouseWnd->ToScreen(left, top);
+        this->previousMouseWnd->OnMouseMove(x - left, y - top);
+        this->previousMouseWnd->ResetCursor(x - left, y - top);
       }
 
-      this->window_01B8 = window;
+      this->previousMouseWnd = window;
     }
   }
 

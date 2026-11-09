@@ -728,7 +728,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
       g_windowMgr.Schedule(this);
-      g_windowMgr.window_4F174 = nullptr;
+      g_windowMgr.navigationWnd = nullptr;
       return 0;
     case ID_BUTTON1:
       g_navigationManager.displayMode = 1;

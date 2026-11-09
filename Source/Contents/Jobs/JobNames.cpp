@@ -329,7 +329,7 @@ const char* CSession::GetJobName(unsigned job, int sex) {
   const unsigned base = JobNames::BaseJob(job);
 
   if (sex == -1) {
-    sex = this->SyncUnknown0E98();
+    sex = this->GetCurrentSex();
   }
 
   if (sex == 0) {

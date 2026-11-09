@@ -194,7 +194,7 @@ int CGameActor::Get8Dir(float angle) {
 
   if ((IsPlayerJob(this->GetEffectiveJob(-1)) && (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16)) ||
       (this->GetEffectiveJob(-1) > 45 && this->GetEffectiveJob(-1) < 1000 && this->render.animation == 0) ||
-      (g_session.IsSkillIdInRange6018(this->GetEffectiveJob(-1)) &&
+      (g_session.IsHirelingJob(this->GetEffectiveJob(-1)) &&
        (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16))) {
     if (relative < 22.5f || relative > 337.5f) {
       return 0;
@@ -916,7 +916,7 @@ void CRenderObject::SendValueMessage(int value, CGameObject* target) {
 
 // OFFSET: 0x00CB4070
 // FUNCTION: fn_21110
-void CGameActor::ApplyPendingUnknown0408() {
+void CGameActor::ApplySavedShapeShift() {
   const int pending = this->savedShapeShift;
   this->shapeShift = pending;
   this->savedShapeShift = 0;
@@ -1230,7 +1230,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     this->hitTargetAid = b;
     break;
   case AM_MAKE_NUMBER: {
-    if ((g_session.GetSceneUnknown004C() != 0 || g_session.WorldUnknown0050() != 0) && g_session.IsAdminSubMode(7) == 0) {
+    if ((g_session.GetSiegeMode() != 0 || g_session.GetBattleFieldMode() != 0) && g_session.IsAdminSubMode(7) == 0) {
       break;
     }
     if ((static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b)) == -29999) {
@@ -1567,20 +1567,20 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     break;
   case AM_WILL_BE_DEAD:
     if (g_session.IsHomunAid(this->render.accountId)) {
-      if (g_windowMgr.window_03C0 != nullptr) {
+      if (g_windowMgr.homunInfoWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
       }
-      if (g_windowMgr.window_03C4 != nullptr) {
+      if (g_windowMgr.homunculusSkillWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
       }
       g_session.ClearHomunStatus();
       g_session.homunAlive = 0;
     }
     if (g_session.IsMercenaryAid(this->render.accountId)) {
-      if (g_windowMgr.window_03C8 != nullptr) {
+      if (g_windowMgr.mercenaryInfoWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_MERINFOWND);
       }
-      if (g_windowMgr.window_03CC != nullptr) {
+      if (g_windowMgr.mercenarySkillWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
       }
       g_session.ResetMercenaryStats();
@@ -2178,8 +2178,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     break;
   case AM_CHAT: {
     std::string text(reinterpret_cast<const char*>(b));
-    if (g_windowMgr.window_01C8 != nullptr) {
-      text = static_cast<UINewChatWnd*>(g_windowMgr.window_01C8)->ConvertChat(std::string(reinterpret_cast<const char*>(b)));
+    if (g_windowMgr.chatWnd != nullptr) {
+      text = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::string(reinterpret_cast<const char*>(b)));
     }
     std::string linked;
     DisplayNavigationLink(linked, text);
@@ -3282,9 +3282,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         break;
       }
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
-        this->SetUnknown03B8(f, slot);
+        this->SetTransformJob(f, slot);
       } else {
-        this->SetUnknown03B8(-1, slot);
+        this->SetTransformJob(-1, slot);
         if (this->render.state == 3) {
           this->SetAction(this->WeaponActionBase(3), 4, 1);
         }

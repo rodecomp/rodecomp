@@ -11,24 +11,24 @@ extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplac
 // OFFSET: 0x00AA2C90
 // FUNCTION: fn_17219
 __declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {
-  if (window == this->window_03D4) {
-    this->window_03D4 = nullptr;
+  if (window == this->newSelectCharWnd) {
+    this->newSelectCharWnd = nullptr;
   }
 
-  if (window == this->window_03D8) {
-    this->window_03D8 = nullptr;
+  if (window == this->selCharForUServerWnd) {
+    this->selCharForUServerWnd = nullptr;
   }
 
-  if (window == this->window_03DC) {
-    this->window_03DC = nullptr;
+  if (window == this->changeNameWnd) {
+    this->changeNameWnd = nullptr;
   }
 
-  if (window == this->window_01B8) {
-    this->window_01B8 = nullptr;
+  if (window == this->previousMouseWnd) {
+    this->previousMouseWnd = nullptr;
   }
 
-  if (window == this->window_4F2AC) {
-    this->window_4F2AC = nullptr;
+  if (window == this->waitDBSaveWnd) {
+    this->waitDBSaveWnd = nullptr;
   }
 
   this->retired.push_back(window);
@@ -74,15 +74,15 @@ void UIWindowMgr::Destroy(UIWindow* window) {
 // OFFSET: 0x00AA71E0
 // FUNCTION: fn_17235
 void UIWindowMgr::DismissTransient() {
-  if (this->window_4F250) {
-    this->Schedule(this->window_4F250);
-    this->window_4F250 = nullptr;
+  if (this->transientWnd) {
+    this->Schedule(this->transientWnd);
+    this->transientWnd = nullptr;
   }
 }
 
 // OFFSET: 0x00A8F840
 // FUNCTION: fn_17145
-void UIWindowMgr::DestroyWindow0478() {
+void UIWindowMgr::DestroyBackgroundSurface() {
   if (this->backgroundSurface) {
     delete this->backgroundSurface;
     this->backgroundSurface = nullptr;

@@ -357,7 +357,7 @@ bool CGameActor::ProcessState() {
       mode->SendMsg(MM_DELETEREGISTERPOS, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
       if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->objectType == 9 ||
-          g_session.IsSkillIdInRange6001(job)) {
+          g_session.IsCompanionJob(job)) {
         this->MakeCorpse();
         return false;
       }
@@ -653,8 +653,8 @@ void CGameActor::ReleaseAttachments() {
   }
   this->msgEffectList.clear();
 
-  if (g_session.GetSceneUnknown004C() && this->sceneNameWindow) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->sceneNameWindow);
+  if (g_session.GetSiegeMode() && this->sceneNameWindow) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
     g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->sceneNameWindow));
     this->sceneNameWindow = 0;
   }
@@ -1091,7 +1091,7 @@ int CGameActor::GetGaugeMaximum() {
 
 // OFFSET: 0x00CADB30
 // FUNCTION: fn_21060
-void CGameActor::ResetUnknown03B8() {
+void CGameActor::ResetTransformJobs() {
   this->transformJobs[0] = -1;
   this->transformJobs[1] = -1;
   this->transformJobs[2] = -1;
@@ -1116,7 +1116,7 @@ bool CGameActor::HasPendingDamage() {
 
 // OFFSET: 0x00CADCF0
 // FUNCTION: fn_21067
-bool CGameActor::UpdateUnknown03E8(std::int64_t value) {
+bool CGameActor::UpdateMaximumValue(std::int64_t value) {
   bool result = false;
   if (this->maximumValue < value) {
     result = true;
@@ -1183,7 +1183,7 @@ void __stdcall CreateHallucinationPc(
 
 // OFFSET: 0x00AA20D0
 // FUNCTION: fn_17210
-bool CGameActor::HasUnknown0310Entry() {
+bool CGameActor::HasActiveMercenaryAI() {
   const int* entry = reinterpret_cast<const int*>(this->merAI);
   return entry && entry[1] != 0;
 }

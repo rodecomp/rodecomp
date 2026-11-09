@@ -76,7 +76,7 @@ protected:
   /* 010C */ char* m_slotStatus;
   /* 0110 */ short* m_slotShorts;
   /* 0114 */ DWORD m_lastTick;
-  /* 0118 */ bool m_unknown118;
+  /* 0118 */ bool m_navigationBlocked;
   /* 011C */ int m_page;
   /* 0120 */ int m_pageSlot;
   /* 0124 */ int m_pageCount;
@@ -84,10 +84,10 @@ protected:
   /* 012C */ int m_totalSlots;
   /* 0130 */ int m_totalCharacters;
   /* 0134 */ int m_maxCharacters;
-  /* 0138 */ int m_unknown138;
+  /* 0138 */ int m_slotMoveSource;
 
 public:
-  /* 013C */ bool m_unknown13C;
+  /* 013C */ bool m_gameStartPending;
 };
 
 #endif

@@ -558,13 +558,13 @@ int CSkillAction_Thundering::GetSkillAttackMotion() {
 // OFFSET: 0x005A5E10
 // FUNCTION: fn_03168
 bool CSkillAction_DamageWereRaptorForm::IsInForm(CGameActor* actor) {
-  return actor->GetUnknown0404() == 2;
+  return actor->GetShapeShift() == 2;
 }
 
 // OFFSET: 0x005A5E30
 // FUNCTION: fn_03169
 bool CSkillAction_DamageWereWolfForm::IsInForm(CGameActor* actor) {
-  return actor->GetUnknown0404() == 1;
+  return actor->GetShapeShift() == 1;
 }
 
 // OFFSET: 0x005A5E90
@@ -699,10 +699,10 @@ void CEfstAction_AnimalForm::ResetAnimalForm(CRenderObject* actor) {
 
   CGameActor* gameActor = static_cast<CGameActor*>(actor);
   if (g_session.m_aid == actor->render.accountId) {
-    g_session.SetUnknown8134(0);
+    g_session.SetPlayerSkillMode(0);
   }
-  gameActor->SetUnknown0404(0);
-  gameActor->SetSprJob(gameActor->GetUnknown0404Job());
+  gameActor->SetShapeShift(0);
+  gameActor->SetSprJob(gameActor->GetShapeShiftJob());
   EffectLists* effects = g_effectMgr;
   effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char bytes[] = {'\xC5', '\x62', '\x23', '\xB8', '\x59', '\x89', '\x2B'};
@@ -718,11 +718,11 @@ void CEfstAction_AnimalForm::ApplyAnimalForm(CRenderObject* actor, int form) {
   if (actor) {
     CGameActor* gameActor = static_cast<CGameActor*>(actor);
     if (g_session.m_aid == actor->render.accountId) {
-      g_session.SetUnknown8134(form);
+      g_session.SetPlayerSkillMode(form);
     }
 
-    gameActor->SetUnknown0404(form);
-    gameActor->SetSprJob(gameActor->GetUnknown0404Job());
+    gameActor->SetShapeShift(form);
+    gameActor->SetSprJob(gameActor->GetShapeShiftJob());
   }
 }
 
@@ -769,7 +769,7 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source
 // OFFSET: 0x005A6A00
 // FUNCTION: fn_03192
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
-  if (source && source->GetUnknown0404() != 0) {
+  if (source && source->GetShapeShift() != 0) {
     this->IsInForm(source);
   }
 

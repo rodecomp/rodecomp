@@ -23,7 +23,7 @@ __declspec(noinline) void TraceSelection(int selection) {
 
 // OFFSET: 0x00DDC6F0
 // FUNCTION: fn_23368
-ITEM_INFO CSession::GetItem17F0(int index) const {
+ITEM_INFO CSession::GetEquippedItemAt(int index) const {
   if (index == 15) {
     return LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
   }
@@ -53,7 +53,7 @@ __declspec(noinline) unsigned char CSession::IsAllyActor(std::uint32_t aid, int 
 
 // OFFSET: 0x00CD3400
 // FUNCTION: fn_21263
-std::uint32_t CGameMode::FindUnknown01AC(std::uint32_t key) {
+std::uint32_t CGameMode::FindChatRoomActorId(std::uint32_t key) {
   const auto found = this->chatRoomActorIds.find(key);
   if (found != this->chatRoomActorIds.end()) {
     return found->second;
@@ -98,13 +98,13 @@ const CActorNameCard& CGameMode::LookupNameCard(std::uint32_t id) {
 
 // OFFSET: 0x00CD3580
 // FUNCTION: fn_21267
-const char* CSession::Text8104() const {
+const char* CSession::GetDamageSkinAuxiliaryName() const {
   return this->damageSkinAuxiliaryName.c_str();
 }
 
 // OFFSET: 0x00CD35A0
 // FUNCTION: fn_21268
-const char* CSession::Text80EC() const {
+const char* CSession::GetDamageSpriteName() const {
   return this->damageSpriteName.c_str();
 }
 
@@ -114,7 +114,7 @@ const char* CGameMode::DragItemName() {
   switch (this->drag.source) {
   case 2:
   case 24: {
-    const ITEM_INFO item = g_session.GetItem17F0(this->drag.slot);
+    const ITEM_INFO item = g_session.GetEquippedItemAt(this->drag.slot);
     return item.identity[1] > 0 ? item.itemId.c_str() : nullptr;
   }
   default:

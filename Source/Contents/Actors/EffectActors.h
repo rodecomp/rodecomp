@@ -35,7 +35,7 @@ public:
   CMasterChaser();
   ~CMasterChaser() override;
 
-  void ClearUnknown0138();
+  void ClearChaseState();
 
   /* 0138 */ std::uint32_t chaseState;
   /* 013C */ std::uint32_t unknown_013C;

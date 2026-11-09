@@ -755,20 +755,20 @@ void CSession::LoadRobeAlpha() {
 
 // OFFSET: 0x00E010B0
 // FUNCTION: fn_23646
-int CSession::SetUnknown8134(int value) {
+int CSession::SetPlayerSkillMode(int value) {
   this->playerSkillMode = value;
   return value;
 }
 
 // OFFSET: 0x00DDBB50
 // FUNCTION: fn_23359
-int CSession::GetUnknown8134() const {
+int CSession::GetPlayerSkillMode() const {
   return this->playerSkillMode;
 }
 
 // OFFSET: 0x00E01670
 // FUNCTION: fn_23647
-void CSession::ClearUnknown1710(int id) {
+void CSession::UnflagInventoryItem(int id) {
   for (ITEM_INFO& entry : this->m_inventoryItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
       entry.flags[2] = 0;
@@ -779,7 +779,7 @@ void CSession::ClearUnknown1710(int id) {
 
 // OFFSET: 0x00E016A0
 // FUNCTION: fn_23648
-void CSession::ClearUnknown1740(int id) {
+void CSession::UnflagMerchantShopItem(int id) {
   for (ITEM_INFO& entry : this->merchantShopItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
       entry.flags[2] = 0;
@@ -790,7 +790,7 @@ void CSession::ClearUnknown1740(int id) {
 
 // OFFSET: 0x00E016D0
 // FUNCTION: fn_23649
-void CSession::ClearUnknown1738(int id) {
+void CSession::UnflagCartItem(int id) {
   for (ITEM_INFO& entry : this->cartItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
       entry.flags[2] = 0;
@@ -835,17 +835,17 @@ void CSession::LoadDamageSkinSettings() {
   }
 
   const char* resourceName = nullptr;
-  const char* name80EC = nullptr;
-  const char* name8104 = nullptr;
-  g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_damageSkinIndex, &resourceName, &name80EC, &name8104);
+  const char* damageSpriteName = nullptr;
+  const char* damageSkinAuxiliaryName = nullptr;
+  g_session.m_hotkeyScript->Call("GetDamageResourceName", "d>sss", this->m_damageSkinIndex, &resourceName, &damageSpriteName, &damageSkinAuxiliaryName);
   if (resourceName) {
     this->m_damageResourceName = resourceName;
   }
-  if (name80EC) {
-    this->damageSpriteName = name80EC;
+  if (damageSpriteName) {
+    this->damageSpriteName = damageSpriteName;
   }
-  if (name8104) {
-    this->damageSkinAuxiliaryName = name8104;
+  if (damageSkinAuxiliaryName) {
+    this->damageSkinAuxiliaryName = damageSkinAuxiliaryName;
   }
   g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
 }

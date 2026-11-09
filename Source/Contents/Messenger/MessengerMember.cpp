@@ -96,7 +96,7 @@ public:
   void OnLBtnUp(int argument1, int argument2) override;
   void MoveGauge(int x, int y);
   void RemoveGauge();
-  void SetUnknown010C(int first, int second);
+  void SetDragStartPosition(int first, int second);
   void SetGaugeValues(int current, int maximum);
 
   /* 00B4 */ MessengerMember member;
@@ -450,7 +450,7 @@ __declspec(noinline) void UIDragMiniPartyWnd::RemoveGauge() {
 
 // OFFSET: 0x00738D50
 // FUNCTION: fn_07674
-__declspec(noinline) void UIDragMiniPartyWnd::SetUnknown010C(int first, int second) {
+__declspec(noinline) void UIDragMiniPartyWnd::SetDragStartPosition(int first, int second) {
   this->dragStartX = first;
   this->dragStartY = second;
 }
@@ -687,7 +687,7 @@ __declspec(noinline) void UIMessengerGroupWnd::DropMember(int x, int y, int inde
   }
 
   MessengerMember member = this->MemberAtIndex(index);
-  SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
+  SessionRecord0734 record = g_session.FindMiniPartyRecord(member.accountId);
   UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
   if (record.active != 1) {
     int top = static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.3f);
@@ -745,7 +745,7 @@ __declspec(noinline) void UIMessengerGroupWnd::OpenMiniPartyWnd(int cell, const 
   window->m_cell = cell;
   g_windowMgr.AddMiniPartyWindow(window);
   window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
-  g_session.AddRecord0734(member.accountId, cell);
+  g_session.AddMiniPartyRecord(member.accountId, cell);
 }
 
 // OFFSET: 0x0073A540
@@ -964,7 +964,7 @@ void UIMessengerGroupWnd::Paint() {
 
     if (this->mode == 1) {
       MessengerMember entry = this->MemberAtIndex(index);
-      SessionRecord0734 record = g_session.FindRecord0734(entry.accountId);
+      SessionRecord0734 record = g_session.FindMiniPartyRecord(entry.accountId);
       if (record.active == 1) {
         this->FillRegion(0, top + 2, this->geometry.width, this->rowHeight, 0xFFE8DD);
       }
@@ -1154,7 +1154,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
   MessengerMember selectedMember = this->MemberAtIndex(this->selected);
   if (this->mode == 1 && !g_session.m_lockMouse && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
     gameMode->SetDragIds(29, this->selected);
-    if (!g_windowMgr.window_4F250) {
+    if (!g_windowMgr.transientWnd) {
       UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(selectedMember);
       {
         window->SetSize(this->geometry.width, this->rowHeight);
@@ -1164,7 +1164,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
         window->iconIndex = this->iconIndex;
         window->MoveGauge(47, static_cast<int>(this->rowHeight * 0.76f));
         const int itemY = ((this->selected - this->scrollTop * this->columns) / this->columns) * this->rowHeight + 17;
-        window->SetUnknown010C(x, y - itemY);
+        window->SetDragStartPosition(x, y - itemY);
 
         int index = 0;
         for (const MessengerMember& entry : this->members) {
@@ -1632,7 +1632,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     case 0x3C: {
       MessengerMember target = this->MemberAtIndex(this->selected);
-      if (target.valid && g_session.FindRecord0734(target.accountId).active != 1) {
+      if (target.valid && g_session.FindMiniPartyRecord(target.accountId).active != 1) {
         this->OpenMiniPartyWnd(g_windowMgr.FindMiniPartyCell(), target);
       }
       return 0;
@@ -2040,7 +2040,7 @@ void UIMiniPartyInfoWnd::OnCreate(int width, int) {
 // OFFSET: 0x00AA24D0
 // FUNCTION: fn_17213
 void UIWindowMgr::MoveTransient(int x, int y) {
-  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
+  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->transientWnd);
   if (transient && transient->member.valid) {
     transient->Move(x - transient->dragStartX, y - transient->dragStartY);
   }
@@ -2049,10 +2049,10 @@ void UIWindowMgr::MoveTransient(int x, int y) {
 // OFFSET: 0x00AA9E90
 // FUNCTION: fn_17262
 __declspec(noinline) void UIWindowMgr::RetireTransientWindow() {
-  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
+  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->transientWnd);
   if (transient && transient->member.valid) {
     transient->geometry.state = 1;
-    this->Schedule(this->window_4F250);
-    this->window_4F250 = nullptr;
+    this->Schedule(this->transientWnd);
+    this->transientWnd = nullptr;
   }
 }

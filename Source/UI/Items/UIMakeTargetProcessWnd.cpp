@@ -56,7 +56,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       if (item.identity[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
         this->materials[emptySlot] = item;
         this->materials[emptySlot].quantity = 1;
-        g_session.RemoveItem1710(item.identity[1], 1);
+        g_session.RemoveInventoryItem(item.identity[1], 1);
         if (g_windowMgr.itemWnd) {
           reinterpret_cast<UIWindow*>(g_windowMgr.itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
@@ -186,7 +186,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     for (int index = 2; index >= 0; --index) {
       ITEM_INFO& material = this->materials[index];
       if (material.identity[1] > 0 && material.itemId == name) {
-        g_session.AddItem1710(material, 1);
+        g_session.AddInventoryItem(material, 1);
         material.Reset();
         this->Invalidate();
         return 0;
@@ -212,7 +212,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       for (int index = 0; index < 3; ++index) {
         if (this->materials[index].identity[1] > 0) {
           restored = true;
-          g_session.AddItem1710(this->materials[index], 0);
+          g_session.AddInventoryItem(this->materials[index], 0);
         }
       }
 

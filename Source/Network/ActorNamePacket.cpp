@@ -27,7 +27,7 @@ void CGameMode::ReceiveActorNameTitle(const ActorNameTitlePacket* packet) {
 
   if (packet->actorId == g_session.petGid) {
     std::sprintf(g_session.petName, packet->name);
-    if (UIPetInfoWnd* window = static_cast<UIPetInfoWnd*>(g_windowMgr.window_038C)) {
+    if (UIPetInfoWnd* window = static_cast<UIPetInfoWnd*>(g_windowMgr.petInfoWnd)) {
       window->nameEdit->SetText(packet->name);
     }
   }

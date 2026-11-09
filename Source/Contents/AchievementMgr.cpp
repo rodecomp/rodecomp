@@ -71,7 +71,7 @@ bool CAchievementMgr::GetAchievement(AchievementInfo& out, int id) {
 
 // OFFSET: 0x0066D720
 // FUNCTION: fn_05314
-std::string CAchievementMgr::GetUnknown0068(int id) {
+std::string CAchievementMgr::GetIconName(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
     return this->achievements[id].iconName;
   }
@@ -106,7 +106,7 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
 
 // OFFSET: 0x0066E250
 // FUNCTION: fn_05316
-int CAchievementMgr::GetUnknown0048(int id) {
+int CAchievementMgr::GetPoints(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
     return this->achievements[id].points;
   }
@@ -115,7 +115,7 @@ int CAchievementMgr::GetUnknown0048(int id) {
 
 // OFFSET: 0x0066E2A0
 // FUNCTION: fn_05317
-std::string CAchievementMgr::GetUnknown0018(int id) {
+std::string CAchievementMgr::GetSummaryText(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
     return this->achievements[id].summaryText;
   }
@@ -124,7 +124,7 @@ std::string CAchievementMgr::GetUnknown0018(int id) {
 
 // OFFSET: 0x0066E460
 // FUNCTION: fn_05318
-int CAchievementMgr::GetUnknown0050(int id) {
+int CAchievementMgr::GetRewardTitleId(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
     return this->achievements[id].rewardTitleId;
   }
@@ -151,7 +151,7 @@ namespace {
 
 // INLINED
 bool IsAchievementCompleted(int id) {
-  const SessionRecord6144 record = g_session.FindRecord6144(id);
+  const SessionRecord6144 record = g_session.FindAchievementRecord(id);
   return static_cast<unsigned char>(record.completionFlags >> 8) == 1;
 }
 
@@ -277,13 +277,13 @@ bool CAchievementMgr::LoadAchievementInfo() {
 
 // OFFSET: 0x0066ED90
 // FUNCTION: fn_05323
-std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string unknown0030, int unknown0048) {
+std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string description, int points) {
   if (this->achievements.find(id) != this->achievements.end()) {
     const std::string message = FormatOwnedString("duplicate achievement info [%d]", id);
     return std::make_pair(false, message);
   }
 
-  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, unknown0018, unknown0030, unknown0048))).second) {
+  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, unknown0018, description, points))).second) {
     return std::make_pair(true, "good");
   }
 
@@ -415,9 +415,9 @@ int CAchievementMgr::L_InsertAchieveInfo(lua_State* state) {
     const int id = static_cast<int>(lua_tonumber(state, -5));
     const std::string title = lua_tostring(state, -4);
     const std::string unknown0018 = lua_tostring(state, -3);
-    const std::string unknown0030 = lua_tostring(state, -2);
+    const std::string description = lua_tostring(state, -2);
     const std::pair<bool, std::string> result =
-      g_achievementMgr->InsertAchieveInfo(id, title, unknown0018, unknown0030, static_cast<int>(lua_tonumber(state, -1)));
+      g_achievementMgr->InsertAchieveInfo(id, title, unknown0018, description, static_cast<int>(lua_tonumber(state, -1)));
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveInfo : %s", result.second.c_str()));

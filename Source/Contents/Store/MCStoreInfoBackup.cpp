@@ -37,7 +37,7 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
   auto saved = this->items.begin();
 
   while (saved != this->items.end() && examined < maximum) {
-    std::pair<bool, ITEM_INFO> found = lists.FindItem1750(*saved, wholeItem);
+    std::pair<bool, ITEM_INFO> found = lists.FindMerchantMyShopItem(*saved, wholeItem);
 
     if (!found.first) {
       saved = this->items.erase(saved);
@@ -47,8 +47,8 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
       }
 
       if (found.second.identity[1] != 0) {
-        lists.AddItem1768(found.second, wholeItem, 0);
-        lists.RemoveItem1750(found.second, wholeItem, 0);
+        lists.AddMerchantPurchaseSavedItem(found.second, wholeItem, 0);
+        lists.RemoveMerchantMyShopItem(found.second, wholeItem, 0);
       }
 
       ++saved;

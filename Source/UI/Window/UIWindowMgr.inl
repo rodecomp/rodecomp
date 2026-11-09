@@ -14,10 +14,10 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
 
   this->m_normalItemSlotWindow.show = value;
   g_windowMgr.EnsureWindow(36);
-  this->window_01E8->Show(value);
+  this->shortCutWnd->Show(value);
 
   if (value != 0) {
-    g_windowMgr.Promote(this->window_01E8);
+    g_windowMgr.Promote(this->shortCutWnd);
   }
 
   if (g_serviceOptions.Get(0x10E)) {

@@ -18,7 +18,7 @@ struct CLanguageTC : CLanguageBase {
   /* 00B8 */ std::list<std::uint8_t> keys;
   /* 00C0 */ std::array<TraditionalKeyMapping, 256> mappings;
   /* 04C0 */ unsigned char keyStrokeEnabled;
-  /* 04C1 */ std::uint8_t unknown04C1;
+  /* 04C1 */ std::uint8_t keyStroke;
   /* 04C2 */ unsigned char unknown_04C2[2];
 
   CLanguageTC();
@@ -37,7 +37,7 @@ static_assert(sizeof(TraditionalKeyMapping) == 4);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CLanguageTC, keys) == 0xB8);
 static_assert(offsetof(CLanguageTC, mappings) == 0xC0);
-static_assert(offsetof(CLanguageTC, unknown04C1) == 0x4C1);
+static_assert(offsetof(CLanguageTC, keyStroke) == 0x4C1);
 static_assert(sizeof(CLanguageTC) == 0x4C4);
 #endif
 

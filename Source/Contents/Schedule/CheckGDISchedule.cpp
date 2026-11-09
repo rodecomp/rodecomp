@@ -48,7 +48,7 @@ perform_check:
     return;
   }
 
-  g_timeScheduler->m_unknown_000D = true;
+  g_timeScheduler->m_processingStopped = true;
 
   if (roll == 2) {
     g_windowMgr.Confirm(LookupMessage(MSI_NPGAMEMON_XP_COMPATIBILITY), 0, true, false, 0, "Message", 280, 120, 0);

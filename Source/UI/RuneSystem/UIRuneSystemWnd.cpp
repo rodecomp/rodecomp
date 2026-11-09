@@ -1744,7 +1744,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
       if (!g_runeSystemMgr->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
-            g_session.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
+            g_session.GetList0Size() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems() + 8 >=
               g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_MACRO_USER_REPORT), 0, true, false, 0, "Message", 280, 120, 0);
         } else {

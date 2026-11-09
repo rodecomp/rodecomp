@@ -141,7 +141,7 @@ void UINewSkillListWnd::OnWheel(int delta) {
 // FUNCTION: fn_13800
 void UINewSkillListWnd::ApplySkillPoints() {
   if (g_session.m_simplifiedSkillList == 0) {
-    for (auto it = this->m_unknown_02A0.begin(); it != this->m_unknown_02A0.end(); ++it) {
+    for (auto it = this->m_plannedSkillLevels.begin(); it != this->m_plannedSkillLevels.end(); ++it) {
       const int id = it->id;
       const int value = it->value;
       CSkillInfo* skill = g_session.m_skillBundle.FindGrouped(id);
@@ -151,7 +151,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
         }
       }
     }
-    this->m_unknown_02A0.clear();
+    this->m_plannedSkillLevels.clear();
   } else {
     std::list<CSkillInfo>& live = this->SkillList(this->m_tab, true);
     std::list<CSkillInfo>& pending = this->SkillList(this->m_tab, false);
@@ -185,7 +185,7 @@ void UINewSkillListWnd::DrawCharacter() {
   SpriteAtlasRecord record{};
 
   const int job = g_session.m_job;
-  const int sex = g_session.SyncUnknown0E98();
+  const int sex = g_session.GetCurrentSex();
   int head = g_session.m_head;
   const int bodyPalette = g_session.m_bodyStyle;
   const int headPalette = g_session.m_headPalette;
@@ -231,7 +231,7 @@ void UINewSkillListWnd::DrawCharacter() {
       }
       int x = 0;
       int y = 0;
-      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.SyncUnknown0E98(), &x, &y);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.GetCurrentSex(), &x, &y);
       offsetX = x;
       offsetY = y;
     }
@@ -746,7 +746,7 @@ void UINewSkillListWnd::ResetLists() {
   for (unsigned i = 0; i < 4; ++i) {
     this->m_lists[i] = g_session.m_skillBundle.Group(i);
   }
-  this->m_unknown_02A0.clear();
+  this->m_plannedSkillLevels.clear();
   g_session.m_skillBundle.MarkLevelChanges();
 }
 
@@ -1540,7 +1540,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       int target;
       if (id == skillId) {
         int current = 0;
-        for (const NewSkillListValue& value : this->m_unknown_02A0) {
+        for (const NewSkillListValue& value : this->m_plannedSkillLevels) {
           if (value.id == id) {
             current = value.value;
             break;
@@ -1559,7 +1559,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       }
 
       int current = 0;
-      for (const NewSkillListValue& value : this->m_unknown_02A0) {
+      for (const NewSkillListValue& value : this->m_plannedSkillLevels) {
         if (value.id == id) {
           current = value.value;
           break;
@@ -1581,7 +1581,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       const int level = current + added;
 
       bool found = false;
-      for (NewSkillListValue& value : this->m_unknown_02A0) {
+      for (NewSkillListValue& value : this->m_plannedSkillLevels) {
         if (value.id == id) {
           value.value = level;
           found = true;
@@ -1589,7 +1589,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
         }
       }
       if (!found) {
-        this->m_unknown_02A0.push_back(NewSkillListValue{id, level});
+        this->m_plannedSkillLevels.push_back(NewSkillListValue{id, level});
       }
     }
 
@@ -1672,7 +1672,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawBitmap(x + 4, y + 44, bitmap, true);
       }
 
-      const int planned = SkillValueOf(this->m_unknown_02A0, static_cast<int>(skill.id));
+      const int planned = SkillValueOf(this->m_plannedSkillLevels, static_cast<int>(skill.id));
       const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
       if (current) {
         int added = planned - current->learnedLevel;
@@ -1717,7 +1717,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = skill.id;
-        int target = SkillValueOf(this->m_unknown_02A0, static_cast<int>(id));
+        int target = SkillValueOf(this->m_plannedSkillLevels, static_cast<int>(id));
         const int grouped = g_session.m_skillBundle.GroupedLevel(id);
         if (target < grouped) {
           target = grouped;

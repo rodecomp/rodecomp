@@ -21,7 +21,7 @@ GuildInfo::GuildInfo() {
 
 // OFFSET: 0x00AE40C0
 // FUNCTION: fn_18029
-void GuildInfo::AddUnknown00EC(const Unknown00ECEntry& entry) {
+void GuildInfo::AddBannedMember(const Unknown00ECEntry& entry) {
   this->bannedMembers.push_back(entry);
   g_windowMgr.RefreshGuildWindows();
 }
@@ -40,7 +40,7 @@ void GuildInfo::ChangeMemberPosition(int aid, int cid, int position) {
 
 // OFFSET: 0x00AE4230
 // FUNCTION: fn_18031
-void GuildInfo::ClearUnknown0114() {
+void GuildInfo::ClearAgitIds() {
   this->agitIds.clear();
 }
 
@@ -52,7 +52,7 @@ void GuildInfo::ClearMembers() {
 
 // OFFSET: 0x00AE4270
 // FUNCTION: fn_18033
-void GuildInfo::RemoveUnknown0114(int value) {
+void GuildInfo::RemoveAgitId(int value) {
   for (auto it = this->agitIds.begin(); it != this->agitIds.end(); ++it) {
     if (*it == value) {
       this->agitIds.erase(it);
@@ -86,7 +86,7 @@ int GuildInfo::GetMemberAccountId(const char* name) {
 
 // OFFSET: 0x00AE43E0
 // FUNCTION: fn_18036
-int GuildInfo::GetUnknown0114(int index) {
+int GuildInfo::GetAgitId(int index) {
   return this->agitIds[index];
 }
 
@@ -104,7 +104,7 @@ int GuildInfo::CountRelatedGuilds(int unknown_0004) {
 
 // OFFSET: 0x00AE46C0
 // FUNCTION: fn_18038
-int GuildInfo::GetUnknown0114Count() {
+int GuildInfo::GetAgitCount() {
   return static_cast<int>(this->agitIds.size());
 }
 
@@ -299,7 +299,7 @@ void GuildInfo::SetMasterCharacterId(int characterId) {
 
 // OFFSET: 0x00AE5090
 // FUNCTION: fn_18048
-void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
+void GuildInfo::UpdatePosition(Unknown00D4Entry entry) {
   for (auto it = this->positions.begin(); it != this->positions.end(); ++it) {
     if (it->positionId == entry.positionId) {
       *it = entry;
@@ -310,7 +310,7 @@ void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
 
 // OFFSET: 0x00AE3F40
 // FUNCTION: fn_18027
-void GuildInfo::AddUnknown0114(int value) {
+void GuildInfo::AddAgitId(int value) {
   const auto found = std::find_if(this->agitIds.begin(), this->agitIds.end(),
                                   [value](int entry) { return value == entry; });
   if (found != this->agitIds.end()) {

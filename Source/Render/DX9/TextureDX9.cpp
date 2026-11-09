@@ -14,7 +14,7 @@
 namespace {
   // OFFSET: 0x00573170
   // FUNCTION: fn_02487
-  std::uint16_t Color4444(std::uint32_t color) {
+  std::uint16_t PackArgb4444(std::uint32_t color) {
     return ((color >> 16) & 0xF000) | ((color >> 12) & 0xF00) | ((color >> 8) & 0xF0) | ((color >> 4) & 0xF);
   }
 
@@ -32,7 +32,7 @@ namespace {
     case D3DFMT_A1R5G5B5:
       return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
     case D3DFMT_A4R4G4B4:
-      return Color4444(color);
+      return PackArgb4444(color);
     default:
       return 0;
     }

@@ -1405,7 +1405,7 @@ void CUIUpgradeRandom::RequestEnchant() {
 // OFFSET: 0x00A08110
 // FUNCTION: fn_15017
 bool CUIEnchantUI::CanHitTest() {
-  return !CEnchantMgr::GetInstance()->m_unknown_0030;
+  return !CEnchantMgr::GetInstance()->m_inputBlocked;
 }
 
 // OFFSET: 0x009F6D40
@@ -1454,7 +1454,7 @@ void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
   for (int itemId : this->enchantInfo->targetItems) {
     const std::vector<int> indices = g_session.FindInventoryIndicesByItemId(itemId, 1);
     for (int index : indices) {
-      if (g_session.HasItem61B8(index)) {
+      if (g_session.HasSwapEquipmentItem(index)) {
         continue;
       }
       const ITEM_INFO target = LookupClientItemByIdentity(g_session.m_inventoryItems, index);

@@ -11,7 +11,7 @@
 namespace {
   // INLINED
   __forceinline void PromoteWindow(UIWindow* window) {
-    if ((g_windowMgr.modal != nullptr && g_windowMgr.window_4F174 != window) || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_MAKECHARWND) ||
+    if ((g_windowMgr.modal != nullptr && g_windowMgr.navigationWnd != window) || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_MAKECHARWND) ||
         g_windowMgr.LookupWindow(WID_SECONDPASSWORDINPUTWND) || g_windowMgr.LookupWindow(WID_SECONDPASSWORDEDITWND)) {
       return;
     }
@@ -53,12 +53,12 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
     this->chatWndVisible = visible;
 
-    if (!this->window_01C8) {
+    if (!this->chatWnd) {
       g_windowMgr.EnsureWindow(WID_CHATWND);
     }
 
-    this->window_01C8->Show(visible);
-    UIWindow* window = this->window_01C8;
+    this->chatWnd->Show(visible);
+    UIWindow* window = this->chatWnd;
 
     if (visible == 0) {
       window->StoreInfo();
@@ -72,12 +72,12 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
   case WID_ITEMDROPCNTWND:
     g_windowMgr.EnsureWindow(WID_ITEMDROPCNTWND);
 
-    if (this->window_01EC->geometry.visible != visible) {
-      this->window_01EC->Show(visible);
+    if (this->itemDropCntWnd->geometry.visible != visible) {
+      this->itemDropCntWnd->Show(visible);
     }
 
     if (visible != 0) {
-      PromoteWindow(this->window_01EC);
+      PromoteWindow(this->itemDropCntWnd);
     }
 
     return false;
@@ -89,10 +89,10 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
     this->m_normalItemSlotWindow.show = visible;
     g_windowMgr.EnsureWindow(WID_SHORTCUTWND);
-    this->window_01E8->Show(visible);
+    this->shortCutWnd->Show(visible);
 
     if (visible != 0) {
-      PromoteWindow(this->window_01E8);
+      PromoteWindow(this->shortCutWnd);
     }
 
     if (g_serviceOptions.Get(0x10E)) {
@@ -112,20 +112,20 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
   case WID_SKILLDESCRIBEWND: {
     this->skillDescriptionVisible = visible;
 
-    if (!this->window_0230) {
+    if (!this->skillDescribeWnd) {
       if (visible == 0) {
         return true;
       }
 
       g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
 
-      if (!this->window_0230) {
+      if (!this->skillDescribeWnd) {
         return true;
       }
     }
 
-    this->window_0230->Show(visible);
-    UIWindow* window = this->window_0230;
+    this->skillDescribeWnd->Show(visible);
+    UIWindow* window = this->skillDescribeWnd;
 
     if (visible == 0) {
       window->StoreInfo();
@@ -143,19 +143,19 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
   case WID_ROUNDBOXTOOLTIPWND:
     this->visible_276 = visible;
 
-    if (!this->window_4F1E4) {
+    if (!this->roundBoxTooltipWnd) {
       if (visible == 0) {
         return true;
       }
 
       g_windowMgr.EnsureWindow(WID_ROUNDBOXTOOLTIPWND);
 
-      if (!this->window_4F1E4) {
+      if (!this->roundBoxTooltipWnd) {
         return true;
       }
     }
 
-    this->window_4F1E4->Show(visible);
+    this->roundBoxTooltipWnd->Show(visible);
     return true;
   }
 

@@ -11,7 +11,7 @@ CTimeScheduler* g_timeScheduler;
 // INLINED
 CTimeScheduler::CTimeScheduler() {
   this->m_initialized = this->Init();
-  this->m_unknown_000D = false;
+  this->m_processingStopped = false;
 }
 
 // INLINED
@@ -22,7 +22,7 @@ CTimeScheduler::~CTimeScheduler() {
     }
   }
   this->m_schedules.clear();
-  this->m_unknown_000D = false;
+  this->m_processingStopped = false;
 }
 
 // OFFSET: 0x00BA91E0
@@ -92,7 +92,7 @@ void CTimeScheduler::RemoveAllSchedules() {
     }
   }
   this->m_schedules.clear();
-  this->m_unknown_000D = false;
+  this->m_processingStopped = false;
 }
 
 // OFFSET: 0x00BA9430
@@ -118,7 +118,7 @@ CSchedule* CTimeScheduler::AddSchedule(CSchedule* schedule) {
 // OFFSET: 0x00BA9550
 // FUNCTION: fn_19738
 void CTimeScheduler::Process() {
-  if (this->m_unknown_000D) {
+  if (this->m_processingStopped) {
     return;
   }
 

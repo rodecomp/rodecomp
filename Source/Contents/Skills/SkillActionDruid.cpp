@@ -759,7 +759,7 @@ void CEfstAction_NATURE_PROTECTION::OnEfstBegin(int efstId, int value, int argum
 // FUNCTION: fn_04513
 void CEfstAction_NATURE_PROTECTION::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    static_cast<CGameActor*>(actor)->ApplyPendingUnknown0408();
+    static_cast<CGameActor*>(actor)->ApplySavedShapeShift();
   }
   CEfstAction_BasicAction::OnEfstEnd(efstId, argument2, argument3, argument4, actor);
 }

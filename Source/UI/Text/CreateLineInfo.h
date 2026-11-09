@@ -95,8 +95,8 @@ public:
   /* 007C */ int m_height;
 
   CCreateLineInfo(
-    UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool unknown0028,
-    int unknown002C, bool unknown0030, int unknown0034, unsigned char align
+    UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool outlineEnabled,
+    int outlineColorValue, bool unknown0030, int shadowColorValue, unsigned char align
   );
   virtual ~CCreateLineInfo();
 

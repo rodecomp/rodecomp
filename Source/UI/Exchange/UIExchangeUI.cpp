@@ -305,8 +305,8 @@ void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     } else {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      if (g_windowMgr.window_01EC != nullptr) {
-        g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
+      if (g_windowMgr.itemDropCntWnd != nullptr) {
+        g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
       }
     }
   } else {

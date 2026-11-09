@@ -347,17 +347,17 @@ namespace EquipmentProperties {
     virtual ~CEquipmentPropertiesMgr();
     void Clear();
     void SetWindow(UIWindow* window);
-    const int& GetUnknown0134(const int& key);
-    int GetUnknown001C();
+    const int& GetConstantValue(const int& key);
+    int GetCurrentEquipment();
     CEquipmentWearable* FindProperty1(const int& key);
-    CEquipmentInfo* FindUnknown0094(const int& key);
+    CEquipmentInfo* FindEquipmentInfo(const int& key);
     CLuaInstance& GetScript();
-    EquipmentPropertyDefinition* GetUnknown0174(const int& key);
-    std::list<unsigned int>* FindUnknown0114(const int& key);
-    std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
-    bool HasUnknown0194(const std::uint64_t& key);
+    EquipmentPropertyDefinition* FindRandomOptionDefinition(const int& key);
+    std::list<unsigned int>* FindSkillGroup(const int& key);
+    std::unordered_map<int, EquipmentValueC>& GetDisplayValues();
+    bool HasFunctionPair(const std::uint64_t& key);
     EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
-    int GetUnknown01BC(const int& first, const int& second, const unsigned int& third);
+    int GetRefiningBonus(const int& first, const int& second, const unsigned int& third);
     __declspec(noinline) void SetCurrentEquipment(CEquipment* equipment);
     void RefreshPretend();
     __declspec(noinline) void RefreshShop();
@@ -372,7 +372,7 @@ namespace EquipmentProperties {
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
     void RefreshWearable(const int& key);
-    int GetUnknown01DC(const int& first, const int& second, const int& third);
+    int GetGradeBonus(const int& first, const int& second, const int& third);
     void LoadADSkill();
     void LoadCombiitem();
     void LoadEnumVar();
@@ -734,7 +734,7 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
 
   EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindDefinition(nameKey);
   if (definition == nullptr) {
-    CEquipmentPropertiesMgr::GetInstance()->HasUnknown0194(nameKey);
+    CEquipmentPropertiesMgr::GetInstance()->HasFunctionPair(nameKey);
     return;
   }
 
@@ -936,7 +936,7 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
       }
 
       if (!g_session.IsCostumeLocation(this->m_type) && this->m_info != nullptr) {
-        const ITEM_INFO equipped = g_session.GetItem17F0(this->inventoryIndex);
+        const ITEM_INFO equipped = g_session.GetEquippedItemAt(this->inventoryIndex);
         if (equipped.identity[1] > 0) {
           const int key = this->GetValue(2);
           const int level = equipped.refiningLevel;
@@ -944,19 +944,19 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
             switch (this->m_info->kind) {
             case 2:
             case 3: {
-              const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(1, key, level);
+              const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(1, key, level);
               if (bonus != 0) {
-                const int rate = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01DC(1, equipped.grade, 1);
+                const int rate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 1);
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x29), "AddExtParam", -1,
                                   static_cast<int>(static_cast<float>(rate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
                 if (this->m_info->kind == 2) {
-                  const int magicRate = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01DC(1, equipped.grade, 2);
+                  const int magicRate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 2);
                   this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xC8), "AddExtParam", -1,
                                     static_cast<int>(static_cast<float>(magicRate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
                 }
               }
 
-              const int defense = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(2, key, level);
+              const int defense = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(2, key, level);
               if (defense != 0) {
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
@@ -964,12 +964,12 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
               break;
             }
             case 1: {
-              const int attack = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(3, key, level);
+              const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
               if (attack != 0) {
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
               }
 
-              const int resist = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(4, key, level);
+              const int resist = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(4, key, level);
               if (resist != 0) {
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
@@ -1161,7 +1161,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
     }
     switch (hash) {
     case 0xA2AF91ED: {
-      const int& skillId = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0134(entry->first);
+      const int& skillId = CEquipmentPropertiesMgr::GetInstance()->GetConstantValue(entry->first);
       if (skillId == 0) {
         continue;
       }
@@ -1173,7 +1173,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
     }
     case 0x8F918611:
       if (entry->first != 0) {
-        std::list<unsigned int>* skills = CEquipmentPropertiesMgr::GetInstance()->FindUnknown0114(entry->first);
+        std::list<unsigned int>* skills = CEquipmentPropertiesMgr::GetInstance()->FindSkillGroup(entry->first);
         if (skills == nullptr) {
           failed = true;
           continue;
@@ -1304,7 +1304,7 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
 
 // OFFSET: 0x006AC2A0
 // FUNCTION: fn_06172
-const int& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0134(const int& key) {
+const int& EquipmentProperties::CEquipmentPropertiesMgr::GetConstantValue(const int& key) {
   auto found = this->constantValues.find(key);
   if (this->constantValues.end() == found) {
     return key;
@@ -1314,7 +1314,7 @@ const int& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0134(const in
 
 // OFFSET: 0x006AC3B0
 // FUNCTION: fn_06174
-int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown001C() {
+int EquipmentProperties::CEquipmentPropertiesMgr::GetCurrentEquipment() {
   return this->currentEquipment;
 }
 
@@ -1330,7 +1330,7 @@ EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentProperti
 
 // OFFSET: 0x006AC440
 // FUNCTION: fn_06176
-EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0094(const int& key) {
+EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindEquipmentInfo(const int& key) {
   auto found = this->equipmentInfo.find(key);
   if (this->equipmentInfo.end() == found) {
     return nullptr;
@@ -1973,7 +1973,7 @@ int GetNormalThirdJob(int job) {
 
 // OFFSET: 0x006AD500
 // FUNCTION: fn_06184
-EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key) {
+EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindRandomOptionDefinition(const int& key) {
   auto found = this->randomOptionDefinitions.find(key);
   if (this->randomOptionDefinitions.end() == found) {
     return nullptr;
@@ -2072,7 +2072,7 @@ int GetEquipLocationIndex(const int& mask) {
 
 // OFFSET: 0x006AD880
 // FUNCTION: fn_06187
-std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0114(const int& key) {
+std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindSkillGroup(const int& key) {
   auto found = this->skillGroups.find(key);
   if (found == this->skillGroups.end()) {
     return nullptr;
@@ -2082,13 +2082,13 @@ std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindUnkno
 
 // OFFSET: 0x006AD900
 // FUNCTION: fn_06188
-std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown019C() {
+std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropertiesMgr::GetDisplayValues() {
   return this->displayValues;
 }
 
 // OFFSET: 0x006B0120
 // FUNCTION: fn_06190
-bool EquipmentProperties::CEquipmentPropertiesMgr::HasUnknown0194(const std::uint64_t& key) {
+bool EquipmentProperties::CEquipmentPropertiesMgr::HasFunctionPair(const std::uint64_t& key) {
   return this->functionPairs.contains(key);
 }
 
@@ -4076,7 +4076,7 @@ EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindD
 
 // OFFSET: 0x006AD580
 // FUNCTION: fn_06185
-int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01BC(const int& first, const int& second, const unsigned int& third) {
+int EquipmentProperties::CEquipmentPropertiesMgr::GetRefiningBonus(const int& first, const int& second, const unsigned int& third) {
   auto outer = this->levelRates.find(first);
   if (this->levelRates.end() == outer) {
     return 0;
@@ -5255,8 +5255,8 @@ void CGameMode::NotifyItemBounds() {
   if (this->itemWindow) {
     this->itemWindow->Invalidate();
   }
-  if (g_windowMgr.window_02C8) {
-    g_windowMgr.window_02C8->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
+  if (g_windowMgr.messengerGroupWnd) {
+    g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
   }
   g_windowMgr.NotifyItemWindows(g_session.m_aid, g_session.hp, g_session.maxHp);
 }
@@ -5499,7 +5499,7 @@ bool CGameMode::IsRegisterCell(int x, int y) {
 
 // OFFSET: 0x00CD7560
 // FUNCTION: fn_21294
-bool CGameMode::HasUnknown01A4(int value) {
+bool CGameMode::HasPendingItemPickup(int value) {
   for (int entry : this->pickupReqItemNaidList) {
     if (entry == value) {
       return true;
@@ -5646,7 +5646,7 @@ int CSession::GetList7Size() const {
 
 // OFFSET: 0x00DDF920
 // FUNCTION: fn_23435
-int CSession::GetList1788(int index) const {
+int CSession::GetInventoryCategorySize(int index) const {
   if (index < 0) {
     return 0;
   }
@@ -5682,7 +5682,7 @@ int CSession::GetList5Size() const {
 
 // OFFSET: 0x00DD8380
 // FUNCTION: fn_23305
-void CSession::ClearAllItems1784() {
+void CSession::ClearAllInventoryCategories() {
   for (int index = 0; index < 11; ++index) {
     std::list<ITEM_INFO>& items = this->inventoryCategories[index];
     items.erase(items.begin(), items.end());
@@ -5959,8 +5959,8 @@ UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
 // OFFSET: 0x00AA64D0
 // FUNCTION: fn_17230
 void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
-  if (this->window_02C8) {
-    this->window_02C8->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (this->messengerGroupWnd) {
+    this->messengerGroupWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
@@ -5996,7 +5996,7 @@ int GetEquipGrade(lua_State* state) {
   if (args[0] != 0) {
     const int mask = GetEquipLocationMask(args[0]);
     const EquipSlots slots = g_session.GetEquipSlots(mask);
-    const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+    const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
     if (item.identity[1] > 0) {
       grade = item.grade;
     }
@@ -6023,7 +6023,7 @@ int GetEquipItemId(lua_State* state) {
 
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
   int itemId = 0;
   if (item.identity[1] > 0) {
     itemId = std::atoi(item.itemId.c_str());
@@ -6050,7 +6050,7 @@ int GetEquipRefine(lua_State* state) {
 
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
   int refine = 0;
   if (item.identity[1] > 0) {
     refine = item.refiningLevel;
@@ -6100,7 +6100,7 @@ void CGameMode::ReceiveShopItemList(const unsigned char* data) {
 
 // OFFSET: 0x006AC320
 // FUNCTION: fn_06173
-int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01DC(const int& first, const int& second, const int& third) {
+int EquipmentProperties::CEquipmentPropertiesMgr::GetGradeBonus(const int& first, const int& second, const int& third) {
   auto outer = this->categoryValues.find(first);
   if (this->categoryValues.end() != outer) {
     auto middle = outer->second.find(second);
@@ -6129,7 +6129,7 @@ int GetEquipTempValue(lua_State* state) {
     ++number;
   }
 
-  std::unordered_map<int, EquipmentValueC> values = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetUnknown019C();
+  std::unordered_map<int, EquipmentValueC> values = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDisplayValues();
   auto found = values.find(args[0]);
   lua_pushnumber(state, found != values.end() ? found->second.value : 0);
   return 1;
@@ -6150,7 +6150,7 @@ int SetEquipTempValue(lua_State* state) {
     ++number;
   }
 
-  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetUnknown019C()[args[0]].value = args[1];
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDisplayValues()[args[0]].value = args[1];
   return 0;
 }
 
@@ -6721,7 +6721,7 @@ static_assert(sizeof(EquipmentItemOption) == 5);
 EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* item) : CEquipment(), m_active(true) {
   this->m_id = std::atoi(item->itemId.c_str());
   this->m_type = item->identity[3];
-  this->m_info = CEquipmentPropertiesMgr::GetInstance()->FindUnknown0094(this->m_id);
+  this->m_info = CEquipmentPropertiesMgr::GetInstance()->FindEquipmentInfo(this->m_id);
   this->inventoryIndex = g_session.GetEquipSlots(this->m_type).values[2];
 
   for (int index = 0; index < 4; ++index) {
@@ -6737,7 +6737,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
     EquipmentItemOption option;
     std::memcpy(&option, item->options + index * sizeof(option), sizeof(option));
     const int optionId = option.id;
-    EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0174(optionId);
+    EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(optionId);
     if (definition == nullptr || definition->functions.front() == "SetWeaponAttr") {
       continue;
     }
@@ -6764,7 +6764,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
       this->m_children.push_back(property);
       if (optionId == 35) {
         const int additionalId = 25;
-        definition = CEquipmentPropertiesMgr::GetInstance()->GetUnknown0174(additionalId);
+        definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(additionalId);
         if (definition != nullptr) {
           CEquipmentProperties1Dim* additional = new CEquipmentProperties1Dim(definition);
           const int negative = -option.value;

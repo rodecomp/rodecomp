@@ -26,8 +26,8 @@ struct AchievementInfo {
   AchievementInfo() {
   }
   // INLINED
-  AchievementInfo(std::string title, std::string unknown0018, std::string unknown0030, int unknown0048)
-      : title(title), summaryText(unknown0018), description(unknown0030), points(unknown0048) {
+  AchievementInfo(std::string title, std::string unknown0018, std::string description, int points)
+      : title(title), summaryText(unknown0018), description(description), points(points) {
   }
 
   /* 0000 */ std::string title;
@@ -65,15 +65,15 @@ public:
   /* 0014 */ std::map<int, std::vector<int>> groups;
 
   bool GetAchievement(AchievementInfo& out, int id);
-  std::string GetUnknown0068(int id);
+  std::string GetIconName(int id);
   bool GetGroupAchievements(std::map<int, AchievementInfo>& out, int group, int index);
-  int GetUnknown0048(int id);
-  std::string GetUnknown0018(int id);
-  int GetUnknown0050(int id);
+  int GetPoints(int id);
+  std::string GetSummaryText(int id);
+  int GetRewardTitleId(int id);
   int GetAchievementCount(int group, int index);
   int GetCompletedCount(int group, int index);
   bool FindTab(int id, int& group, int& index);
-  std::pair<bool, std::string> InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string unknown0030, int unknown0048);
+  std::pair<bool, std::string> InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string description, int points);
   std::pair<bool, std::string> InsertAchieveResource(int id, std::string text, int unknown0018, int unknown001C);
   std::pair<bool, std::string> InsertAchieveRewardBuff(int id, int value);
   std::pair<bool, std::string> InsertAchieveRewardItem(int id, int value);

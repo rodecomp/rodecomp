@@ -174,15 +174,15 @@ void CGameMode::RemoveMiniMapPing(std::uint32_t id) {
 // FUNCTION: fn_21253
 void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   int index = 0;
-  if (g_windowMgr.window_4F1CC) {
-    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 0, this->partyPosList.size(), 0, 0);
-    g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 1, this->guildPosList.size(), 0, 0);
+  if (g_windowMgr.miniMapWnd) {
+    g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 0, this->partyPosList.size(), 0, 0);
+    g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_COUNT, 1, this->guildPosList.size(), 0, 0);
   }
 
   for (auto it = this->partyPosList.begin(); it != this->partyPosList.end(); ++it) {
     this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, it->second.color, false);
-    if (g_windowMgr.window_4F1CC) {
-      g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 0, index, it->second.x, it->second.y);
+    if (g_windowMgr.miniMapWnd) {
+      g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 0, index, it->second.x, it->second.y);
     }
     ++index;
   }
@@ -190,8 +190,8 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   for (auto it = this->guildPosList.begin(); it != this->guildPosList.end(); ++it) {
     if (this->partyPosList.find(it->first) == this->partyPosList.end()) {
       this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 1, it->second.color, false);
-      if (g_windowMgr.window_4F1CC) {
-        g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 1, index, it->second.x, it->second.y);
+      if (g_windowMgr.miniMapWnd) {
+        g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 1, index, it->second.x, it->second.y);
       }
     }
     ++index;
@@ -439,10 +439,10 @@ void CGameMode::DrawMiniMapMarker(
     this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(texture.c_str(), 0, false, true, false), region);
   } else if (kind == 5) {
     this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(texture.c_str(), 0, false, true, false), region);
-    if (g_windowMgr.window_4F1CC && (s_lastMarkerX != x || s_lastMarkerY != y)) {
+    if (g_windowMgr.miniMapWnd && (s_lastMarkerX != x || s_lastMarkerY != y)) {
       s_lastMarkerX = x;
       s_lastMarkerY = y;
-      g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_BOSS_POS, x, y, 0, 0);
+      g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_BOSS_POS, x, y, 0, 0);
     }
   } else if (kind == 1) {
     this->DrawMiniMapTriangle(static_cast<float>(drawX), static_cast<float>(drawY), static_cast<float>(size + 1), 0xAAFFFFFF);
@@ -455,8 +455,8 @@ void CGameMode::DrawMiniMapMarker(
     border.bottom = rect.bottom + 1;
     this->DrawTexture(border, 0, 0.0999f, 0x99FFFFFF, g_texMgr.Default(), region);
     this->DrawTexture(rect, 0, 0.0999f, color, g_texMgr.Default(), region);
-    if (g_windowMgr.window_4F1CC) {
-      g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, x, y, 0, 0);
+    if (g_windowMgr.miniMapWnd) {
+      g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, x, y, 0, 0);
     }
   } else if (kind == 3) {
     const double arm = size * 4;
@@ -484,8 +484,8 @@ void CGameMode::DrawMiniMapMarker(
     if (s_lastPlayerX != x || s_lastPlayerY != y) {
       s_lastPlayerX = x;
       s_lastPlayerY = y;
-      if (g_windowMgr.window_4F1CC) {
-        g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_SET_PLAYER_POS, x, y, 0, 0);
+      if (g_windowMgr.miniMapWnd) {
+        g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_PLAYER_POS, x, y, 0, 0);
       }
       if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
         window->Invalidate();

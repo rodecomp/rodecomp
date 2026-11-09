@@ -27,16 +27,16 @@ __forceinline void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
     this->hoverWindow = nullptr;
   }
 
-  if (this->window_01B8 && (this->window_01B8 == removed || this->window_01B8->IsDescendantOf(removed))) {
-    this->window_01B8 = nullptr;
+  if (this->previousMouseWnd && (this->previousMouseWnd == removed || this->previousMouseWnd->IsDescendantOf(removed))) {
+    this->previousMouseWnd = nullptr;
   }
 
-  if (this->window_0A30 && this->window_0A30 == removed) {
-    this->window_0A30 = nullptr;
+  if (this->dropDownBoxWnd && this->dropDownBoxWnd == removed) {
+    this->dropDownBoxWnd = nullptr;
   }
 
-  if (this->window_4F1D4 && (this->window_4F1D4 == removed || this->window_4F1D4->IsDescendantOf(removed))) {
-    this->window_4F1D4 = nullptr;
+  if (this->keyboardCommandRootWnd && (this->keyboardCommandRootWnd == removed || this->keyboardCommandRootWnd->IsDescendantOf(removed))) {
+    this->keyboardCommandRootWnd = nullptr;
   }
 }
 
@@ -54,8 +54,8 @@ void UIWindowMgr::DeferDeletion(UIWindow* window) {
 
 // OFFSET: 0x00AA8F30
 // FUNCTION: fn_17250
-void UIWindowMgr::ClearWindow01B8() {
-  this->window_01B8 = nullptr;
+void UIWindowMgr::ClearPreviousMouseWnd() {
+  this->previousMouseWnd = nullptr;
 }
 
 // OFFSET: 0x00AA8110

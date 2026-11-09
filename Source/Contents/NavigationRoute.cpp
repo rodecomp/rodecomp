@@ -241,8 +241,8 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
     }
   }
 
-  if (g_windowMgr.window_4F174 != nullptr) {
-    g_windowMgr.window_4F174->Invalidate();
+  if (g_windowMgr.navigationWnd != nullptr) {
+    g_windowMgr.navigationWnd->Invalidate();
   }
   return found;
 }
@@ -688,11 +688,11 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   }
 
   this->displayMode = 1;
-  if (g_windowMgr.window_4F174) {
+  if (g_windowMgr.navigationWnd) {
     this->hideWindow = false;
   }
-  if (g_windowMgr.window_4F174) {
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
+  if (g_windowMgr.navigationWnd) {
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
   } else if (!this->hideWindow) {
     g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
@@ -730,16 +730,16 @@ bool CNavigationManager::SearchNavigation(std::string name, int type, bool flag)
     g_navigationManager.UpdateSearchResults();
 
     if (!this->hideWindow) {
-      if (g_windowMgr.window_4F174 == nullptr) {
+      if (g_windowMgr.navigationWnd == nullptr) {
         g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
       } else {
-        g_windowMgr.window_4F174->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
+        g_windowMgr.navigationWnd->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
         if (g_windowMgr.modal != nullptr) {
           static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
         }
       }
 
-      g_windowMgr.Promote(g_windowMgr.window_4F174);
+      g_windowMgr.Promote(g_windowMgr.navigationWnd);
     }
 
     return true;
@@ -1178,8 +1178,8 @@ CNavi_Object* CNaviData::FindMobByTitle(std::string title) {
 // OFFSET: 0x00B9C6B0
 // FUNCTION: fn_19621
 void CNavigationManager::RefreshSearch() {
-  if (this->data.Search(this->searchText, this->searchType, this->states) && g_windowMgr.window_4F174) {
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->FillRouteGroups();
+  if (this->data.Search(this->searchText, this->searchType, this->states) && g_windowMgr.navigationWnd) {
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->FillRouteGroups();
   }
 }
 
@@ -1315,13 +1315,13 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
 
   this->LoadTargetPreview();
   g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
-  if (g_windowMgr.window_4F174) {
-    UIWindow* window = g_windowMgr.window_4F174;
+  if (g_windowMgr.navigationWnd) {
+    UIWindow* window = g_windowMgr.navigationWnd;
     window->geometry.targetAlpha = 255;
     window->geometry.alphaStart = timeGetTime();
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->LayoutWithDetails();
-    g_windowMgr.window_4F174->Invalidate();
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->LayoutWithDetails();
+    g_windowMgr.navigationWnd->Invalidate();
   }
 
   if (g_windowMgr.modal) {
@@ -1667,8 +1667,8 @@ void CNavigationManager::CancelRoute() {
   this->displayMode = 0;
   if (!this->hideWindow) {
     this->viewMode = 1;
-    if (g_windowMgr.window_4F174 != nullptr) {
-      static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
+    if (g_windowMgr.navigationWnd != nullptr) {
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
     }
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_RS_POSTMAP_SUCCESS)), 0x62B0FF, 0, 0, 0);

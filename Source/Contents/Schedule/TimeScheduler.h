@@ -12,7 +12,7 @@ class CTimeScheduler {
 public:
   /* 0004 */ std::list<CSchedule*> m_schedules;
   /* 000C */ bool m_initialized;
-  /* 000D */ bool m_unknown_000D;
+  /* 000D */ bool m_processingStopped;
 
   CTimeScheduler();
   virtual ~CTimeScheduler();
@@ -34,7 +34,7 @@ public:
 static_assert(sizeof(CTimeScheduler) == 0x10);
 static_assert(offsetof(CTimeScheduler, m_schedules) == 0x04);
 static_assert(offsetof(CTimeScheduler, m_initialized) == 0x0C);
-static_assert(offsetof(CTimeScheduler, m_unknown_000D) == 0x0D);
+static_assert(offsetof(CTimeScheduler, m_processingStopped) == 0x0D);
 #endif
 
 extern CTimeScheduler* g_timeScheduler;

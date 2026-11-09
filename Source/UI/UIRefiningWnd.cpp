@@ -832,7 +832,7 @@ int UIRefiningWnd::SendMsg(
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
       const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
-      if (g_session.HasItem61B8(info.identity[1]) == 1) {
+      if (g_session.HasSwapEquipmentItem(info.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
       }

@@ -28,7 +28,7 @@ public:
   /* 00B8 */ PetInfoWndInfo* saved;
   /* 00BC */ UIBitmapButton* renameButton;
   /* 00C0 */ UINoneVisibleButton* statusButton;
-  /* 00C4 */ UINormalMB* window_00C4;
+  /* 00C4 */ UINormalMB* feedConfirmationWnd;
   /* 00C8 */ UIPetInfoBarGraph* friendlyGauge;
   /* 00CC */ std::string friendlyText;
   /* 00E4 */ unsigned char autoFeedAvailable;

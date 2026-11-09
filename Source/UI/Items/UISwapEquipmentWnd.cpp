@@ -68,11 +68,11 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     break;
   case 2:
     equipped = 1;
-    item = g_session.GetItem17F0(drag->slot);
+    item = g_session.GetEquippedItemAt(drag->slot);
     break;
   case 24:
     equipped = 1;
-    item = g_session.GetItem2B50(drag->slot);
+    item = g_session.GetCostumeItemAt(drag->slot);
     break;
   }
 
@@ -111,9 +111,9 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
     if (item.identity[1] == 0) {
       fromSwap = false;
       if (this->equipmentPage == 2) {
-        item = g_session.GetItem2B50(slot);
+        item = g_session.GetCostumeItemAt(slot);
       } else {
-        item = g_session.GetItem17F0(slot);
+        item = g_session.GetEquippedItemAt(slot);
       }
     }
 
@@ -280,11 +280,11 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
   }
 
   if (this->equipmentPage == 2) {
-    ITEM_INFO item = g_session.GetItem6B68(slot);
+    ITEM_INFO item = g_session.GetSwapEquippedItem(slot);
     return item.identity[1] > 0 ? item : ITEM_INFO(0);
   }
 
-  ITEM_INFO item = g_session.GetItem61B8(slot);
+  ITEM_INFO item = g_session.GetSwapCostumeItem(slot);
   return item.identity[1] > 0 ? item : ITEM_INFO(0);
 }
 
@@ -348,7 +348,7 @@ void UISwapEquipmentWnd::Paint() {
     this,
     this->geometry.width / 2 + 1,
     this->geometry.height - 53,
-    g_session.SyncUnknown0E98(),
+    g_session.GetCurrentSex(),
     static_cast<short>(g_session.m_job),
     g_session.m_job,
     static_cast<short>(g_session.m_bodyCostume),

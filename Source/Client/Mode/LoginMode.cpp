@@ -403,7 +403,7 @@ void CLoginMode::SubD8D4F0(int) {
 // OFFSET: 0x00D8D500
 // FUNCTION: fn_22266
 void CLoginMode::SubD8D500(const char* packet) {
-  UIWindow* window = g_windowMgr.window_03D4;
+  UIWindow* window = g_windowMgr.newSelectCharWnd;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 0:
     g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
@@ -412,7 +412,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 1:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -425,7 +425,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 3:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -438,12 +438,12 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 5:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 6:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -472,7 +472,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 10:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.window_03DC) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -707,7 +707,7 @@ void CLoginMode::SubD8EDC0(int) {
 // OFFSET: 0x00D8EDD0
 // FUNCTION: fn_22277
 void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
-  UIWindow* window = g_windowMgr.window_03D4;
+  UIWindow* window = g_windowMgr.newSelectCharWnd;
   int message;
   switch (packet->result) {
   case 0:
@@ -1016,7 +1016,7 @@ void CLoginMode::OnUpdateEx(int value) {
     GetRenderSystemHolder()->TestDevice();
     g_windowMgr.InvalidateAll();
     CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
-    g_windowMgr.SetSurface0478(bitmap);
+    g_windowMgr.SetBackgroundSurface(bitmap);
   }
 
   if (g_isAppActive == 0 && GetRenderSystemHolder()->IsWindowed()) {
@@ -1031,10 +1031,10 @@ void CLoginMode::OnUpdateEx(int value) {
         g_serviceType == 20) {
       g_windowMgr.DrawLoginOverlay();
       if (this->cursorType == 0) {
-        g_windowMgr.CenterSurface0478();
+        g_windowMgr.DrawCenteredBackground();
       }
     } else {
-      g_windowMgr.CenterSurface0478();
+      g_windowMgr.DrawCenteredBackground();
     }
     g_windowMgr.DrawWindows();
     this->DrawCursor();
@@ -1062,14 +1062,14 @@ void CLoginMode::SubD97780(int value) {
     }
     if (g_serviceType == 5 || g_serviceType == 7) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
-        if (this->window_6F14 == nullptr) {
-          this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-          if (this->window_6F14 == nullptr) {
+        if (this->waitWnd == nullptr) {
+          this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
+          if (this->waitWnd == nullptr) {
             break;
           }
         }
-        this->window_6F14->SendMsg(nullptr, UM_ENABLE_CANCEL, 0, 0, 0, 0);
-        this->window_6F14->Invalidate();
+        this->waitWnd->SendMsg(nullptr, UM_ENABLE_CANCEL, 0, 0, 0, 0);
+        this->waitWnd->Invalidate();
       }
     }
     break;
@@ -1166,7 +1166,7 @@ void CLoginMode::Update() {
     GetRenderSystemHolder()->TestDevice();
     g_windowMgr.InvalidateAll();
     CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
-    g_windowMgr.SetSurface0478(bitmap);
+    g_windowMgr.SetBackgroundSurface(bitmap);
   }
 
   if (g_isAppActive == 0 && GetRenderSystemHolder()->IsWindowed()) {
@@ -1181,10 +1181,10 @@ void CLoginMode::Update() {
         g_serviceType == 20 || g_serviceType == 15) {
       g_windowMgr.DrawLoginOverlay();
       if (this->cursorType == 0) {
-        g_windowMgr.CenterSurface0478();
+        g_windowMgr.DrawCenteredBackground();
       }
     } else {
-      g_windowMgr.CenterSurface0478();
+      g_windowMgr.DrawCenteredBackground();
     }
     g_windowMgr.DrawWindows();
     this->DrawCursor();
@@ -1590,8 +1590,8 @@ ConnectionEndpoint g_zoneServerEndpoint;
 void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host) {
   g_session.m_gid = gid;
   g_modeMgr.gameMode->SendMsg(LMM_SELECT_CHARACTER, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
-  if (g_windowMgr.window_03D4) {
-    g_windowMgr.Schedule(g_windowMgr.window_03D4);
+  if (g_windowMgr.newSelectCharWnd) {
+    g_windowMgr.Schedule(g_windowMgr.newSelectCharWnd);
   }
 
   std::string name = mapName;
@@ -1827,7 +1827,7 @@ void CLoginMode::Initialize(const char* name) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
   }
   this->slotExtension = CharacterSlotExtension();
-  g_session.ClearAllItems1784();
+  g_session.ClearAllInventoryCategories();
   g_entryQueueMgr->ready = 0;
   g_entryQueueMgr->current = nullptr;
   g_session.ClearShortcutSlots();
@@ -1898,7 +1898,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
     g_pingLogFirstTick = 0;
   }
 
-  g_session.SetUnknown5C1C(0);
+  g_session.SetReplayPacketMode(0);
   g_session.characterNames.clear();
   for (unsigned int i = 0; i < 68; ++i) {
     std::string name = this->characters[i].name;
@@ -2239,7 +2239,7 @@ CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), ac
   this->savedInlineCharset = g_inlineCharset;
   g_inlineCharset = 0;
   this->selectedAccount = -1;
-  this->window_6F14 = nullptr;
+  this->waitWnd = nullptr;
   this->passwordRetryCount = 0;
   SecureZeroMemory(this->characters, sizeof(this->characters));
   this->receivedCharacterCount = 0;
@@ -2631,7 +2631,7 @@ void CLoginMode::PollNetworkStatus() {
         break;
       }
 
-      if (UIWindow* window = g_windowMgr.window_03D4) {
+      if (UIWindow* window = g_windowMgr.newSelectCharWnd) {
         window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
       }
       break;
@@ -2775,7 +2775,7 @@ void CLoginMode::PollNetworkStatus() {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
-        static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->EnableButtonById(0x1A2);
+        static_cast<UINewSelectCharWnd*>(g_windowMgr.newSelectCharWnd)->EnableButtonById(0x1A2);
         g_session.m_passwordWndMode = 1;
         break;
       case 1:
@@ -2791,7 +2791,7 @@ void CLoginMode::PollNetworkStatus() {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
-        static_cast<UINewSelectCharWnd*>(g_windowMgr.window_03D4)->DisableButtonById(0x1A2);
+        static_cast<UINewSelectCharWnd*>(g_windowMgr.newSelectCharWnd)->DisableButtonById(0x1A2);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
@@ -3032,8 +3032,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), reinterpret_cast<const char*>(&this->loginCredentials[0x80]));
       *reinterpret_cast<std::int16_t*>(buffer + 2) = 14;
       GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(buffer + 2), buffer);
-      this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-      static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+      this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
+      static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
       _freea(buffer);
     }
     return 0;
@@ -3071,8 +3071,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     packet.id = 0xAD0;
     memcpy_s(packet.code, sizeof(packet.code), &this->loginCredentials[0x80], sizeof(packet.code));
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
-    this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
+    static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     return 0;
   }
   case LMM_QUERY_LAST_CHARACTER_INFO:
@@ -3714,8 +3714,8 @@ void CLoginMode::OnChangeState(int value) {
     StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
-    this->window_6F14 = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->window_6F14)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
+    static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 2:
@@ -3726,7 +3726,7 @@ void CLoginMode::OnChangeState(int value) {
     g_guildMgr->m_guilds.clear();
     g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!g_session.characterRenameEnabled) {
       if (g_session.m_loginModeFlag == true) {
         this->otpStarted = timeGetTime();
@@ -3755,7 +3755,7 @@ void CLoginMode::OnChangeState(int value) {
   case 6: {
     Replay::Instance().SetState(1);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
     const std::uint8_t countNameSource[] = {0x39, 0xC2, 0xCA, 0x4E, 0x66, 0x01, 0xB7, 0x2A, 0x25, 0x97};
     thread_local EncryptedName<sizeof(countNameSource), 0x6FE153231D879777ULL> countName(countNameSource);
@@ -3842,64 +3842,64 @@ void CLoginMode::OnChangeState(int value) {
     g_session.cartCount = 0;
     g_session.cartWeight = 0;
     g_session.petJob = -1;
-    g_session.SetUnknown16EC(0);
+    g_session.SetEquippedArrowIndex(0);
     g_session.guildLeader = 0;
     g_renewQuestMgr->m_ongoingQuests.clear();
     g_session.ClearAchievements();
     g_nProtectGameGuardMgr->IncrementCounter();
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_rodexMailStore->Clear();
     if (UINewSelectCharWnd* window = dynamic_cast<UINewSelectCharWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_NEWSELECTCHARWND)))) {
-      window->m_unknown13C = false;
+      window->m_gameStartPending = false;
     }
-    g_session.ClearEntryList5BD4();
+    g_session.ClearStoreSearchResults();
     g_session.ClearPairValues(1, 1, 1);
     g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
     g_windowMgr.CloseWindow(WID_ROULLETTEWND);
-    g_session.RestoreItems5C68();
+    g_session.RestoreSelectionItems();
     g_session.ClearItemQuantities();
     g_session.ClearInventory();
     g_session.ResetEquipment();
-    g_session.ResetItems2B50();
-    g_session.ClearItems1740();
-    g_session.ResetItems61B8();
-    g_session.ResetItems6B68();
+    g_session.ResetCostumeItems();
+    g_session.ClearMerchantShopItems();
+    g_session.ResetSwapCostumeItems();
+    g_session.ResetSwapEquippedItems();
     switch (g_session.m_passwordWndMode) {
     case 2:
       g_session.m_passwordInputAlternate = false;
-      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       break;
     case 3:
       g_session.m_passwordInputAlternate = false;
-      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       g_windowMgr.secondPasswordInputWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       break;
     case 4:
       g_session.m_passwordInputAlternate = true;
-      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
     case 5:
       g_session.m_passwordInputAlternate = true;
-      g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       break;
     }
     break;
   case 8:
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND);
     break;
   case 4: {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!std::strstr(g_session.clientVersion, "Dev")) {
       const std::uint8_t hostSource[] = {0xBA, 0x29, 0xF8, 0xC8, 0x58, 0xE4, 0x88, 0x1E, 0xFF, 0x29, 0xF6, 0x82, 0x57, 0xE6, 0x99,
                                          0x40, 0xBA, 0x75, 0xF4, 0x8A, 0x17, 0xEC, 0x99, 0x15, 0xE7, 0x62, 0xA7, 0xD5, 0x39};
@@ -3970,7 +3970,7 @@ void CLoginMode::OnChangeState(int value) {
     break;
   case 5: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_session.m_partyBooking.Reset();
     GetRagConnection().Close();
     this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
@@ -3999,7 +3999,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 10: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     MakeCharacterPacket packet;
     packet.id = 0xA39;
     std::memcpy(packet.name, g_charInfo.name, sizeof(packet.name));
@@ -4016,7 +4016,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 11: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     DeleteCharacterPacket packet;
     packet.id = 0x829;
     std::strncpy(packet.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(packet.code));
@@ -4042,7 +4042,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 9: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     SelectCharacterPacket packet;
     packet.id = 0x66;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
@@ -4056,7 +4056,7 @@ void CLoginMode::OnChangeState(int value) {
     g_runeSystemMgr->Reset();
     g_session.memorialWindowOpen = 0;
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     this->connectionReady = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
@@ -4090,7 +4090,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.aid = g_session.m_aid;
     packet.gid = g_session.m_gid;
     packet.authCode = account.authCode;
-    packet.sex = static_cast<unsigned char>(g_session.SyncUnknown0E98());
+    packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
     GetRagConnection().SetBlock(1);
@@ -4102,9 +4102,9 @@ void CLoginMode::OnChangeState(int value) {
     g_statusRefreshSuppressed = 0;
     g_skillTooltipActive = 0;
     g_session.petJob = -1;
-    g_session.SetUnknown16EC(0);
+    g_session.SetEquippedArrowIndex(0);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_SELCHARFORUSERVERWND);
     break;
   case 29: {
@@ -4119,7 +4119,7 @@ void CLoginMode::OnChangeState(int value) {
                                             0xC5, 0x38, 0xD6, 0x43, 0x81, 0xAA, 0x6D, 0xB8, 0xAB, 0x61, 0xD5, 0x5C, 0x9F, 0xC3};
     thread_local EncryptedName<sizeof(wallpaperSource), 0x4F99DF03C3EF31B7ULL> wallpaper(wallpaperSource);
     this->wallpaperName = std::string(wallpaper.Text());
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, 10026, 0, 0, 0);
     break;
   }
@@ -4143,7 +4143,7 @@ void CLoginMode::OnChangeState(int value) {
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
   case 27: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetSurface0478(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectReplayDataWnd* window = static_cast<UISelectReplayDataWnd*>(g_windowMgr.EnsureWindow(WID_SELECTREPLAYDATAWND));
     ReplayFileList::Instance().Refresh();
     const int count = static_cast<int>(ReplayFileList::Instance().files.size());
@@ -4169,14 +4169,14 @@ void CLoginMode::OnChangeState(int value) {
     g_pakRegistry.ApplyAuxiliary(digest, sizeof(digest));
     SecureZeroMemory(digest, sizeof(digest));
     g_windowMgr.CloseWindow(WID_ROULLETTEWND);
-    g_session.RestoreItems5C68();
+    g_session.RestoreSelectionItems();
     g_session.ClearItemQuantities();
     g_session.ClearInventory();
     g_session.ResetEquipment();
-    g_session.ResetItems2B50();
-    g_session.ClearItems1740();
-    g_session.ResetItems61B8();
-    g_session.ResetItems6B68();
+    g_session.ResetCostumeItems();
+    g_session.ClearMerchantShopItems();
+    g_session.ResetSwapCostumeItems();
+    g_session.ResetSwapEquippedItems();
     Replay::Instance().SetState(6);
     ReplayHeader header = Replay::Instance().header;
     g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(header.characterName));

@@ -25,14 +25,14 @@
 
 // OFFSET: 0x0063F500
 // FUNCTION: fn_04807
-void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char unknown0034) {
+void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char blendVariant) {
   if (!this->pc) {
     return;
   }
 
   std::memcpy(this->matrix, matrix, sizeof(this->matrix));
   this->blendMode = unknown0030;
-  this->blendVariant = unknown0034;
+  this->blendVariant = blendVariant;
   this->layerShift = 0;
   this->swingX = 0;
   this->swingY = 0;

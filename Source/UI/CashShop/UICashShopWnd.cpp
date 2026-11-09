@@ -141,8 +141,8 @@ void UICashShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  if (g_windowMgr.window_01EC != nullptr) {
-    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 20, drag->quantity, 0, 0);
+  if (g_windowMgr.itemDropCntWnd != nullptr) {
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 20, drag->quantity, 0, 0);
   }
 }
 
@@ -166,8 +166,8 @@ void UICashShopWnd_Cart::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  if (g_windowMgr.window_01EC != nullptr) {
-    g_windowMgr.window_01EC->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
+  if (g_windowMgr.itemDropCntWnd != nullptr) {
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
   }
 }
 
@@ -807,7 +807,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_REFRESHITEM:
     this->m_items.clear();
-    for (int index = 0; index < lists.GetList1788(this->m_selectedTab); ++index) {
+    for (int index = 0; index < lists.GetInventoryCategorySize(this->m_selectedTab); ++index) {
       ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
       if (item.identity[1] != 0) {
         this->m_items.push_back(item);
@@ -950,7 +950,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
 
       if (g_session.characterRenameEnabled) {
-        const int owned = lists.GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50();
+        const int owned = lists.GetList0Size() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
         if (g_session.m_weight > g_session.m_maxWeight * 0.7f || cartItems.front().quantity + owned > g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_ANOTHER_WORKING), 0, true, false, 0, "Message", 0x118, 0x78, 0);
           return 0;
@@ -1019,24 +1019,24 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     case ID_SEARCH: {
       std::string query(this->m_searchEdit->Text());
       if (query.size() != 0 && strcmp(query.c_str(), LookupMessage(MSI_CASHSHOP_CASH_POINT)) != 0) {
-        itemLists.ClearItems1784(10);
+        itemLists.ClearInventoryCategoryItems(10);
         for (int list = 0; list < 11; ++list) {
           if (list == 10 || list == 8 || list == 9) {
             continue;
           }
 
-          for (int index = 0; index < lists.GetList1788(list); ++index) {
+          for (int index = 0; index < lists.GetInventoryCategorySize(list); ++index) {
             ITEM_INFO item = g_session.GetItem1784At(list, index);
             std::string name(item.displayName);
-            if (name.find(query) != std::string::npos && !g_session.HasItem17D4(atoi(item.itemId.c_str()))) {
+            if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(atoi(item.itemId.c_str()))) {
               g_session.inventoryCategories[10].push_back(item);
             }
           }
         }
 
-        if (lists.GetList1788(10) > 0) {
+        if (lists.GetInventoryCategorySize(10) > 0) {
           this->m_items.clear();
-          for (int index = 0; index < lists.GetList1788(10); ++index) {
+          for (int index = 0; index < lists.GetInventoryCategorySize(10); ++index) {
             this->m_items.push_back(g_session.GetItem1784At(10, index));
           }
 

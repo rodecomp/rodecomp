@@ -1048,10 +1048,10 @@ void UIGuildInfoManageWnd::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_13052
 void UIGuildInfoManageWnd::RefreshAgitList() {
   this->m_agitList->Clear();
-  const int count = g_guildInfo.GetUnknown0114Count();
+  const int count = g_guildInfo.GetAgitCount();
   if (count != 0) {
     for (int index = 0; index < count; ++index) {
-      const int agitId = g_guildInfo.GetUnknown0114(index);
+      const int agitId = g_guildInfo.GetAgitId(index);
       char* agitName = nullptr;
       g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
       if (strnlen(agitName, 256) != 0) {

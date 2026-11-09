@@ -260,8 +260,8 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         text = FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapClickX, g_windowMgr.miniMapClickY, this->edit->Text());
         std::fwrite(text.c_str(), text.size(), 1, file);
         std::fclose(file);
-        if (g_windowMgr.window_4F1CC) {
-          static_cast<UIMiniMapWnd*>(g_windowMgr.window_4F1CC)->LoadMemos();
+        if (g_windowMgr.miniMapWnd) {
+          static_cast<UIMiniMapWnd*>(g_windowMgr.miniMapWnd)->LoadMemos();
         }
         g_windowMgr.CloseWindow(WID_EDITCTRLWND);
       }

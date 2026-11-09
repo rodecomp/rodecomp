@@ -16,7 +16,7 @@ EquipWindowLook g_equipWindowLook;
 // FUNCTION: fn_21743
 void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
   g_session.ResetEquipped();
-  g_session.ResetItems3500();
+  g_session.ResetAlternateCostumeItems();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 45) / 37u;
@@ -42,7 +42,7 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
 
     if (item.identity[3] != 0) {
       if (g_session.IsCostumeLocation(item.identity[3])) {
-        g_session.EquipItem3500(item);
+        g_session.EquipAlternateCostumeItem(item);
       } else {
         g_session.Equip(item);
       }

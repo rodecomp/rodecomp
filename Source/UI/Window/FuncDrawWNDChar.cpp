@@ -81,7 +81,7 @@ void FuncDrawWNDChar::Draw(bool option) {
         direction = 0;
       }
 
-      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.SyncUnknown0E98(), &x, &y);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.GetCurrentSex(), &x, &y);
       offset.x = x;
       offset.y = y;
     }
@@ -361,7 +361,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
     short accessory = this->m_topAccessory;
     if (accessory == 181 || accessory == 197) {
       offset.y -= 7;
-    } else if (accessory == 200 && g_session.SyncUnknown0E98() == 0) {
+    } else if (accessory == 200 && g_session.GetCurrentSex() == 0) {
       offset.y -= 4;
     }
   }

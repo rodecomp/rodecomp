@@ -682,7 +682,7 @@ void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
     item.sprite = record.sprite;
     item.id = -1;
     item.identified = 1;
-    g_session.AddItem1718(item, 0);
+    g_session.AddShopItem(item, 0);
   }
 
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND)) {
@@ -764,7 +764,7 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
       item.realPrice = record.realPrice;
       item.type = owned.identity[0];
       item.identified = owned.identified;
-      g_session.AddItem1718(item, 1);
+      g_session.AddShopItem(item, 1);
     }
   }
 
@@ -815,7 +815,7 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
 
 // OFFSET: 0x00D3CDF0
 // FUNCTION: fn_21797
-void CGameMode::NotifyResult2571(int result) {
+void CGameMode::NotifyPetEvolutionResult(int result) {
   switch (result) {
   case 0:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RECIPE)), 0xFF, 0, 0, 0);
@@ -836,7 +836,7 @@ void CGameMode::NotifyResult2571(int result) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING_ON)), 0xFF, 0, 0, 0);
     break;
   case 7:
-    g_session.ResetUnknown1050();
+    g_session.ResetPetEggAndJob();
     break;
   }
 }
@@ -928,8 +928,8 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
   g_session.InvalidateWindowFrames();
   *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
-  if (g_windowMgr.window_03C4) {
-    g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.homunculusSkillWnd) {
+    g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   int& notified = *reinterpret_cast<int*>(&g_session.companionTargetState[0]);
@@ -985,12 +985,12 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
   g_session.InvalidateWindowFrames();
-  if (g_windowMgr.window_03C4) {
-    g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.homunculusSkillWnd) {
+    g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
-  if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.window_03C0)) {
+  if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.homunInfoWnd)) {
     window->expBar->FillBackground(0xFFFFFF);
     window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
     window->intimacyBar->SetValues(&g_session.homunHunger, &g_session.homunMaxHunger);
@@ -1032,8 +1032,8 @@ void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
   g_session.InvalidateWindowFrames();
   *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
-  if (g_windowMgr.window_03C4) {
-    g_windowMgr.window_03C4->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (g_windowMgr.homunculusSkillWnd) {
+    g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
   int& notified = *reinterpret_cast<int*>(&g_session.companionTargetState[0]);
@@ -1059,10 +1059,10 @@ void CGameMode::ReceiveMinimapMarker(const unsigned char* data) {
   this->minimapMarkers[packet->key].y = y;
   this->minimapMarkers[packet->key].effectType = packet->type;
   this->minimapMarkers[packet->key].questIconId = packet->color;
-  if (g_windowMgr.window_4F1CC) {
+  if (g_windowMgr.miniMapWnd) {
     for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
       if (0 != it->second.questIconId) {
-        g_windowMgr.window_4F1CC->SendMsg(nullptr, UM_MINIMAP_ADD_QUEST_MARK, it->second.effectType, it->second.questIconId, it->second.x, it->second.y);
+        g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_ADD_QUEST_MARK, it->second.effectType, it->second.questIconId, it->second.x, it->second.y);
       }
     }
   }
@@ -1093,7 +1093,7 @@ void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
 
 // OFFSET: 0x00D3DF40
 // FUNCTION: fn_21807
-void CGameMode::ReceiveResultNotice00FC(const unsigned char* packet) {
+void CGameMode::ReceiveChatRoomEntryFailure(const unsigned char* packet) {
   this->isWaitingEnterRoom = 0;
 
   switch (packet[2]) {
@@ -1460,7 +1460,7 @@ void CGameMode::ReceiveNamedResultNotice(const unsigned char* packet) {
 
 // OFFSET: 0x00D40360
 // FUNCTION: fn_21818
-void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
+void CGameMode::ReceiveWhisperFilterResult(const unsigned char* packet) {
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   switch (packet[2]) {
   case WT_EXCLUDE_WHISPER:
@@ -1575,7 +1575,7 @@ void CGameMode::ReceiveSummonHpInit(const unsigned char* buffer) {
 // FUNCTION: fn_22000
 void CGameMode::ReceiveSummonHpUpdate(const unsigned char* buffer) {
   const SummonHpUpdatePacket* packet = reinterpret_cast<const SummonHpUpdatePacket*>(buffer);
-  if (g_session.FindUnknown078C(packet->summonId) == -1) {
+  if (g_session.FindSummonMaxHp(packet->summonId) == -1) {
     return;
   }
 
@@ -1601,7 +1601,7 @@ void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
   g_clanInfo->Clear();
   this->nameCard.SetValue3(g_session.m_aid, g_clanInfo->m_clanName);
   if (this->scene->player) {
-    this->scene->player->SetUnknown0305(0, 0);
+    this->scene->player->SetSpGauge(0, 0);
   }
 
   g_windowMgr.RefreshClanWnd();
@@ -2159,10 +2159,10 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
 // OFFSET: 0x00D67C20
 // FUNCTION: fn_22038
 void CGameMode::ReceiveAchievementUpdate(
-  int unknown01738784, short unknown01738788, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
+  int score, short achievementLevel, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
   __time32_t completedAt, unsigned char rewarded
 ) {
-  const SessionRecord6144 previous = g_session.FindRecord6144(id);
+  const SessionRecord6144 previous = g_session.FindAchievementRecord(id);
   if (reinterpret_cast<const unsigned char*>(&previous.completionFlags)[1] == 0 && achieved == 1) {
     this->achievementBalloonTick = timeGetTime();
     if (!this->achievementBalloon) {
@@ -2190,8 +2190,8 @@ void CGameMode::ReceiveAchievementUpdate(
     }
   }
 
-  g_session.achievementScore = unknown01738784;
-  g_session.achievementLevel = unknown01738788;
+  g_session.achievementScore = score;
+  g_session.achievementLevel = achievementLevel;
   g_session.achievementCompleted = completed;
   g_session.achievementTotal = total;
 
@@ -2201,14 +2201,14 @@ void CGameMode::ReceiveAchievementUpdate(
   std::memcpy(record.objectives, objectives, sizeof(record.objectives));
   record.completedAt = completedAt;
   record.rewarded = rewarded;
-  g_session.UpdateRecord6144(record);
+  g_session.UpdateAchievementRecord(record);
 
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_ACHIEVEMENTWND)) {
     window->SendMsg(nullptr, UM_REFRESH, id, 0, 0, 0);
   }
 
   g_session.RefreshTrackedAchievement(id);
-  if (g_session.HasUnknown6178Records() == true) {
+  if (g_session.HasTrackedAchievements() == true) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ACHTRACINGWND)) {
       window->Invalidate();
     }
@@ -2226,7 +2226,7 @@ void CGameMode::ReceiveAchievementResult(unsigned char result, int id) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
-  const int index = g_session.AddUnknown6160(id);
+  const int index = g_session.AddAchievementJobTitle(id);
   if (index != -1) {
     g_session.AddUnknownId(index);
   }
@@ -2267,7 +2267,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
   switch (packet->result) {
   case 0:
     g_session.AddStackedItem(reward);
-    g_session.RemoveItem1710(reward.identity[1], reward.quantity);
+    g_session.RemoveInventoryItem(reward.identity[1], reward.quantity);
     g_session.achievementResult = value;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL)), 0x64FFFF, 0, 0, 0);
     break;
@@ -2308,7 +2308,7 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     }
     item.flags[0] = packet->bound;
     g_session.AddStackedItem(item);
-    g_session.RemoveItem1710(packet->index, packet->quantity);
+    g_session.RemoveInventoryItem(packet->index, packet->quantity);
     g_session.achievementResult = packet->value;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL)), 0x64FFFF, 0, 0, 0);
     break;
@@ -2494,7 +2494,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
 
 // OFFSET: 0x00D65870
 // FUNCTION: fn_22003
-void CGameMode::ReceiveUnknownD65870(const unsigned char* packet) {
+void CGameMode::ReceivePartyMemberInfoWithCharacterId(const unsigned char* packet) {
   this->UpdatePartyMemberInfo(
     reinterpret_cast<const char*>(packet + 0x2F), *reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const char*>(packet + 0x47),
     *reinterpret_cast<const int*>(packet + 10), packet[0x16], *reinterpret_cast<const std::uint16_t*>(packet + 0x0E),
@@ -2900,7 +2900,7 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.type = record->type;
     item.id = -1;
     item.identified = 1;
-    g_session.AddItem1718(item, 0);
+    g_session.AddShopItem(item, 0);
     if (g_unknown_015D4818 && g_unknown_015D4818->entry) {
       Unknown015D4818Values& values = g_unknown_015D4818->entry->values;
       values.sprite = record->sprite;
