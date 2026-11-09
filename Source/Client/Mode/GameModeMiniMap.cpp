@@ -531,19 +531,22 @@ void CGameMode::DrawMiniMapCoordinates() {
     }
   }
 
-  digits[0] = value % 10;
-  digits[1] = value / 10 % 10;
-  digits[2] = value / 100 % 10;
-  digits[3] = value / 1000 % 10;
+  int remaining = value;
+  digits[0] = remaining % 10;
+  remaining /= 10;
+  digits[1] = remaining % 10;
+  remaining /= 10;
+  digits[2] = remaining % 10;
+  digits[3] = remaining / 10;
 
   int x = g_renderer->viewport.width - 80 + count * 25;
   const int y = g_renderer->viewport.height - 30;
   for (int index = 0; index < count; ++index, x -= 25) {
-    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, digits[index], 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 
   DrawActionSprite(
-    reinterpret_cast<CRenderSystemBase&>(*this), g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 0, 10, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+    reinterpret_cast<CRenderSystemBase&>(*this), g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
   );
 
   value = coordinateX;
@@ -556,15 +559,18 @@ void CGameMode::DrawMiniMapCoordinates() {
     count = 2;
   }
 
-  digits[0] = value % 10;
-  digits[1] = value / 10 % 10;
-  digits[2] = value / 100 % 10;
-  digits[3] = value / 1000 % 10;
+  remaining = value;
+  digits[0] = remaining % 10;
+  remaining /= 10;
+  digits[1] = remaining % 10;
+  remaining /= 10;
+  digits[2] = remaining % 10;
+  digits[3] = remaining / 10;
 
   x = g_renderer->viewport.width - 105;
   const int secondY = g_renderer->viewport.height - 50;
   for (int index = 0; index < count; ++index, x -= 25) {
-    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, secondY, action, sprite, 0, digits[index], 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 }
 
