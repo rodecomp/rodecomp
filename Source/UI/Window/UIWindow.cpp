@@ -492,15 +492,28 @@ bool UIWindow::Update(int redraw) {
     return true;
   }
 
-  int x = this->geometry.x >= 0 ? this->geometry.x : 0;
-  int y = this->geometry.y >= 0 ? this->geometry.y : 0;
-  int sourceX = this->geometry.x >= 0 ? 0 : (0 - this->geometry.x);
-  int sourceY = this->geometry.y >= 0 ? 0 : (0 - this->geometry.y);
-  int width = this->geometry.x >= 0 ? this->geometry.width : (this->geometry.width + this->geometry.x);
-  int height = this->geometry.y >= 0 ? this->geometry.height : (this->geometry.height + this->geometry.y);
+  const int x = this->geometry.x >= 0 ? this->geometry.x : 0;
+  int width = this->geometry.width;
+  int sourceX;
+  if (this->geometry.x < 0) {
+    width += this->geometry.x;
+    sourceX = -this->geometry.x;
+  } else {
+    sourceX = 0;
+  }
 
   if (parentWindow->geometry.width < (x + width)) {
     width = (parentWindow->geometry.width - x);
+  }
+
+  const int y = this->geometry.y >= 0 ? this->geometry.y : 0;
+  int height = this->geometry.height;
+  int sourceY;
+  if (this->geometry.y < 0) {
+    height += this->geometry.y;
+    sourceY = -this->geometry.y;
+  } else {
+    sourceY = 0;
   }
 
   if (parentWindow->geometry.height < (y + height)) {
@@ -655,22 +668,22 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
     anchorY += node->geometry.y;
   }
 
-  const int screenWidth = g_renderer->viewport.width;
-  const int anchorWidth = anchor->geometry.width;
-  const int width = this->geometry.width;
   int x;
-  if (width + anchorWidth + anchorX <= screenWidth) {
-    x = anchorX + anchorWidth;
-  } else {
-    const int rightSpace = screenWidth - anchorWidth - anchorX;
-    if (anchorX >= width) {
-      x = anchorX - width;
+  if (this->geometry.width + anchor->geometry.width + anchorX > g_renderer->viewport.width) {
+    const int rightSpace = g_renderer->viewport.width - anchor->geometry.width - anchorX;
+    if (anchorX >= this->geometry.width) {
+      x = anchorX - this->geometry.width;
     } else {
-      x = rightSpace >= anchorX ? screenWidth - width : 0;
+      x = rightSpace >= anchorX ? g_renderer->viewport.width - this->geometry.width : 0;
     }
+  } else {
+    x = anchorX + anchor->geometry.width;
   }
 
-  const int y = this->geometry.height + anchorY <= g_renderer->viewport.height ? anchorY : g_renderer->viewport.height - this->geometry.height;
+  int y = anchorY;
+  if (this->geometry.height + anchorY > g_renderer->viewport.height) {
+    y = g_renderer->viewport.height - this->geometry.height;
+  }
 
   int parentX = 0;
   int parentY = 0;
@@ -1755,7 +1768,7 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
   char text[260];
   std::memset(text, 0, sizeof(text));
 
-  for (UIWindow* child : this->m_children) {
+  for (UIWindow*& child : this->m_children) {
     if (child->GetWindowType() != 2) {
       continue;
     }
@@ -1770,8 +1783,9 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
     std::memset(text, 0, sizeof(text));
     std::memcpy(text, data + offset, length);
     offset += length;
-    static_cast<UIEditCtrl*>(child)->SetText(text);
-    child->Invalidate();
+    UIEditCtrl* edit = static_cast<UIEditCtrl*>(child);
+    edit->SetText(text);
+    edit->Invalidate();
   }
 
   return offset;
@@ -2074,7 +2088,7 @@ void UINavigationroadiconWnd::OnLBtnUp(int x, int y) {
       g_windowMgr.navigationWnd->SendMsg(nullptr, UM_SETCURITEM, slot, 0, 0, 0);
     }
 
-    const int column = slot <= 4 ? slot : slot - 4;
+    const int column = slot > 4 ? slot - 4 : slot;
     this->icon->Move(column * 36 - 26, slot < 5 ? 24 : 60);
   }
 
@@ -2160,7 +2174,7 @@ int UIWindow::RecordEditTexts() {
     return offset;
   }
 
-  for (UIWindow* child : this->m_children) {
+  for (UIWindow*& child : this->m_children) {
     if (child->GetWindowType() != 2) {
       continue;
     }
@@ -2175,10 +2189,11 @@ int UIWindow::RecordEditTexts() {
     }
   }
 
-  record.bytes = static_cast<std::uint16_t>(offset);
+  const std::uint16_t bytes = static_cast<std::uint16_t>(offset);
+  record.bytes = bytes;
   record.marker = 0x038608AEu;
   record.windowId = this->geometry.id;
-  Replay::Instance().Record(record.bytes, &record, 41, 0);
+  Replay::Instance().Record(bytes, &record, 41, 0);
   return offset;
 }
 
@@ -2210,7 +2225,7 @@ void UIListBox_NaviSearch::Paint() {
 
   const int first = this->topLine;
   const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
-  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = 0;
 
   for (int index = first, row = 0; index < end; ++index, ++row) {
@@ -2934,14 +2949,13 @@ void UINavigationRuideWnd::Paint() {
 void UIListBox_NaviSearch::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max(count - visible, 0);
-  int maximum;
+  const int overflow = std::max(0, count - visible);
+  int maximum = 0;
   if (overflow != 0) {
     this->verticalOverflow = 1;
     maximum = this->bottomMargin + overflow;
   } else {
     this->verticalOverflow = 0;
-    maximum = 0;
   }
 
   this->verticalBar->SetRange(maximum, visible, static_cast<int>(this->lines.size()));
@@ -3027,20 +3041,24 @@ void UINavigationRuideWnd::RefreshRoute() {
     std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), x, y);
 
     UIListBox_NaviSearch* list = this->routeList;
-    list->icons.push_back(index == 0 ? 100 : 200);
+    if (index == 0) {
+      list->icons.push_back(100);
+    } else {
+      list->icons.push_back(200);
+    }
     list->AddLine(text);
     list->Invalidate();
   }
 
   NaviCell cell;
-  if (g_navigationManager.GetDestinationCell(&cell)->x < 1) {
-    std::sprintf(text, "%s", g_navigationManager.GetDestinationInfo()->GetName());
-  } else {
+  if (g_navigationManager.GetDestinationCell(&cell)->x > 0) {
     NaviCell first;
     const int y = g_navigationManager.GetDestinationCell(&first)->y;
     NaviCell second;
     const int x = g_navigationManager.GetDestinationCell(&second)->x;
     std::sprintf(text, "%s (%d %d)", g_navigationManager.GetDestinationInfo()->GetName(), x, y);
+  } else {
+    std::sprintf(text, "%s", g_navigationManager.GetDestinationInfo()->GetName());
   }
 
   UIListBox_NaviSearch* list = this->routeList;
@@ -3313,6 +3331,8 @@ void UINavigationV4Wnd::OnLBtnUp(int x, int y) {
       const int height = info->GetCellY();
       const int size = width > height ? width : height;
       const float scale = static_cast<float>(size) / 265.0f;
+      float positionX = static_cast<float>(mapX) * scale;
+      float positionY = static_cast<float>(size) - static_cast<float>(mapY) * scale;
       const int difference = width - height;
 
       double offsetX = 0.0;
@@ -3323,8 +3343,8 @@ void UINavigationV4Wnd::OnLBtnUp(int x, int y) {
         offsetX = difference * 0.5;
       }
 
-      const int cellX = static_cast<int>(static_cast<float>(mapX) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetX))));
-      const int cellY = static_cast<int>(static_cast<float>(size) - static_cast<float>(mapY) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetY))));
+      const int cellX = static_cast<int>(positionX - static_cast<float>(static_cast<int>(std::fabs(offsetX))));
+      const int cellY = static_cast<int>(positionY - static_cast<float>(static_cast<int>(std::fabs(offsetY))));
 
       if (cellX >= 0 && cellY >= 0 && width >= cellX && height >= cellY) {
         this->InsertNavigationLink(info->GetName(), cellX, cellY);
@@ -3344,8 +3364,8 @@ static const std::string g_windowNaviLinkCloseTag = "</NAVIL>";
 // OFFSET: 0x005C9E00
 // FUNCTION: fn_03636
 void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
-  const std::string xText = g_navigationLinkParser->EncodeNavigationNumber(x < 0 ? 1000 : x);
-  const std::string yText = g_navigationLinkParser->EncodeNavigationNumber(y < 0 ? 1000 : y);
+  const std::string xText = g_navigationLinkParser->EncodeNavigationNumber(x >= 0 ? x : 1000);
+  const std::string yText = g_navigationLinkParser->EncodeNavigationNumber(y >= 0 ? y : 1000);
   std::string link = g_windowNaviLinkTag;
   link += name;
   link += xText;
@@ -3575,6 +3595,18 @@ int UIPrivateAirplaneWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case 154:
+    this->m_text = reinterpret_cast<const char*>(argument1);
+    this->Invalidate();
+    break;
+  case UM_REFRESHBUTTON:
+    for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
+      (*it)->SetDisabled(1);
+      (*it)->Invalidate();
+    }
+
+    this->Invalidate();
+    break;
   case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
@@ -3584,18 +3616,6 @@ int UIPrivateAirplaneWnd::SendMsg(
       const std::string mapName = g_navigationManager.GetCurrentTargetName() + ".gat";
       g_navigationManager.RequestPrivateAirship(mapName, static_cast<int>(argument2));
     }
-    break;
-  case UM_REFRESHBUTTON:
-    for (UIBasicButton* button : this->m_buttons) {
-      button->SetDisabled(1);
-      button->Invalidate();
-    }
-
-    this->Invalidate();
-    break;
-  case 154:
-    this->m_text = reinterpret_cast<const char*>(argument1);
-    this->Invalidate();
     break;
   }
 
