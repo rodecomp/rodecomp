@@ -3686,8 +3686,8 @@ void CSevereRainStorm::SpawnCrossRain() {
   const int spread = ranges[index] * 50;
 
   const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(std::max(0, rand() % (spread + 1))) - half) * 0.1f + position.x;
-  position.z = (static_cast<float>(std::max(0, rand() % (spread + 1))) - half) * 0.1f + position.z;
+  position.x = (static_cast<float>(ClampedRandom(spread + 1)) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(ClampedRandom(spread + 1)) - half) * 0.1f + position.z;
   position.y -= 10.0f;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
@@ -3705,8 +3705,8 @@ void CSevereRainStorm::SpawnGrenades() {
     const float half = static_cast<float>(spread) * 0.5f;
     const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
     vector3d position = base;
-    position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
-    position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+    position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+    position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
 
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (particle) {
@@ -3730,14 +3730,14 @@ void CSevereRainStorm::SpawnBombardHits() {
   for (int count = 0; count < 3; ++count) {
     const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
     vector3d position = base;
-    position.x = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + base.x;
-    position.z = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + base.z;
+    position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.x;
+    position.z = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.z;
 
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_MISSION_BOMBARD\\mission_bombard\\mission_bombard_hit.str"));
       particle->position = position;
-      particle->m_scale = static_cast<float>(std::max(0, rand() % 51) + 50) * 0.01f;
+      particle->m_scale = static_cast<float>(ClampedRandom(51) + 50) * 0.01f;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
     }
   }
@@ -3750,8 +3750,8 @@ void CSevereRainStorm::SpawnCrystalRain() {
   const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 5u) - 1] * 50;
   vector3d position = {this->position[0], this->position[1], this->position[2]};
   const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
-  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 13));
   particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack_bottom\\rain_of_crystal_attack_bottom.str"));
@@ -3771,15 +3771,15 @@ void CSevereRainStorm::SpawnCrystalRain() {
 void CSevereRainStorm::SpawnSevereRain() {
   vector3d position = {this->position[0], this->position[1], this->position[2]};
   position.z += 10.0f;
-  if (std::max(0, rand() % 10) >= 5) {
-    position.x = static_cast<float>(std::max(0, rand() % 251)) * 0.1f + position.x;
+  if (ClampedRandom(10) >= 5) {
+    position.x = static_cast<float>(ClampedRandom(251)) * 0.1f + position.x;
   } else {
-    position.x = position.x - static_cast<float>(std::max(0, rand() % 251)) * 0.1f;
+    position.x = position.x - static_cast<float>(ClampedRandom(251)) * 0.1f;
   }
-  if (std::max(0, rand() % 10) >= 5) {
-    position.z = static_cast<float>(std::max(0, rand() % 251)) * 0.1f + position.z;
+  if (ClampedRandom(10) >= 5) {
+    position.z = static_cast<float>(ClampedRandom(251)) * 0.1f + position.z;
   } else {
-    position.z = position.z - static_cast<float>(std::max(0, rand() % 251)) * 0.1f;
+    position.z = position.z - static_cast<float>(ClampedRandom(251)) * 0.1f;
   }
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 1));
@@ -3824,8 +3824,8 @@ void CSevereRainStorm::SpawnStarCannon() {
   const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
   vector3d position = base;
   const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
-  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
@@ -3852,8 +3852,8 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
   vector3d position = base;
   const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
-  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
