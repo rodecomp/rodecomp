@@ -129,10 +129,11 @@ void UINewSkillListWnd::OnWheel(int delta) {
     if (step > 3) {
       step = 3;
     }
-    if (delta >= 0) {
-      step = -step;
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
     }
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -140,16 +141,13 @@ void UINewSkillListWnd::OnWheel(int delta) {
 // FUNCTION: fn_13800
 void UINewSkillListWnd::ApplySkillPoints() {
   if (g_session.m_simplifiedSkillList == 0) {
-    for (const NewSkillListValue& entry : this->m_unknown_02A0) {
-      const int id = entry.id;
-      const int value = entry.value;
+    for (auto it = this->m_unknown_02A0.begin(); it != this->m_unknown_02A0.end(); ++it) {
+      const int id = it->id;
+      const int value = it->value;
       CSkillInfo* skill = g_session.m_skillBundle.FindGrouped(id);
       if (skill != nullptr && skill->available != 0) {
-        const int next = skill->learnedLevel + 1;
-        if (next <= value) {
-          for (int count = value - next + 1; count != 0; --count) {
-            g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
-          }
+        for (int level = skill->learnedLevel + 1; level <= value; ++level) {
+          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
         }
       }
     }
@@ -448,9 +446,9 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
 CSkillInfo UINewSkillListWnd::VisibleSkill(int row) {
   std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
   int index = 0;
-  for (const CSkillInfo& skill : list) {
+  for (std::list<CSkillInfo>::iterator it = list.begin(); it != list.end(); ++it) {
     if (row + this->m_firstRow == index) {
-      return skill;
+      return *it;
     }
     ++index;
   }
@@ -1499,6 +1497,26 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   return 0;
 }
 
+// INLINED
+static bool HasSkillValue(const std::list<NewSkillListValue>& values, int id) {
+  for (const NewSkillListValue& entry : values) {
+    if (entry.id == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// INLINED
+static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
+  for (const NewSkillListValue& entry : values) {
+    if (entry.id == id) {
+      return entry.value;
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x009B3EB0
 // FUNCTION: fn_13827
 bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
@@ -1590,26 +1608,6 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
     }
   }
   return false;
-}
-
-// INLINED
-static bool HasSkillValue(const std::list<NewSkillListValue>& values, int id) {
-  for (const NewSkillListValue& entry : values) {
-    if (entry.id == id) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// INLINED
-static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
-  for (const NewSkillListValue& entry : values) {
-    if (entry.id == id) {
-      return entry.value;
-    }
-  }
-  return 0;
 }
 
 // OFFSET: 0x009AF960
