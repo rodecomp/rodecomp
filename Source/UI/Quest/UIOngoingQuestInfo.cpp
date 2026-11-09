@@ -27,7 +27,7 @@
 
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
-template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(int resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
+template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(bool resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
 // OFFSET: 0x00A4F580
 // FUNCTION: fn_16213
 bool UnusedTrueA4F580() {
@@ -382,10 +382,8 @@ void CUIOngoingQuestInfo::SetQuest(unsigned int id) {
   const auto found = g_renewQuestMgr->m_ongoingQuests.find(id);
   if (found != g_renewQuestMgr->m_ongoingQuests.end()) {
     const RenewQuestOngoingInfo& quest = found->second;
-    this->titleText->SetText(quest.m_title.c_str(), quest.m_title.size());
-    CUIStaticText* date = this->dateText;
-    const std::string text = quest.GetDateString();
-    date->SetText(text.c_str(), text.size());
+    this->titleText->SetText(quest.m_title);
+    this->dateText->SetText(quest.GetDateString());
     this->scrollWindow->SetQuest(id);
     this->questId = id;
   }
@@ -749,9 +747,9 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned count = static_cast<unsigned>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -759,8 +757,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
       OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -781,7 +778,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // OFFSET: 0x00A53CF0
 // FUNCTION: fn_16234
 template <>
-void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -906,10 +903,11 @@ void CUIRewards::OnCreate(int width, int height) {
   this->thirdLabel->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->thirdLabel);
 
-  this->rewardList = new CUIListBoxEx<CUIRewardItem, CRewardItemData>();
-  this->rewardList->itemWidth = 225;
-  this->rewardList->rowHeight = 41;
-  this->rewardList->SetSize(225, 41);
+  CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList = new CUIListBoxEx<CUIRewardItem, CRewardItemData>();
+  this->rewardList = rewardList;
+  rewardList->itemWidth = 225;
+  rewardList->rowHeight = 41;
+  rewardList->SetSize(225, 41);
   this->rewardList->Move(110, 72);
   this->rewardList->onSelect = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnPrepareItem(item, data); };
   this->rewardList->binder = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnBindItem(item, data); };

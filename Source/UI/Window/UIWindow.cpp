@@ -624,7 +624,7 @@ void UIWindow::VisitChildren() {
 
 // OFFSET: 0x005C7AC0
 // FUNCTION: fn_03621
-void UIWindow::ApplySkin(int) {
+void UIWindow::ApplySkin(bool) {
 }
 
 // OFFSET: 0x00A7A080

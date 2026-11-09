@@ -50,7 +50,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem();
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(bool resolveSkin);
 
 
 
@@ -154,8 +154,9 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
   }
   if (this->data.size() == 0) {
     for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+      ExchangeUI::CUIItem* item = *it;
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -196,8 +197,9 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
   }
 
   for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+    ExchangeUI::CUIItem* item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -1382,7 +1384,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
 // OFFSET: 0x00A15530
 // FUNCTION: fn_15198
 template <>
-void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

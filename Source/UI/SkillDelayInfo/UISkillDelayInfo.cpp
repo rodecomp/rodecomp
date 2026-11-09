@@ -30,7 +30,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem();
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(bool resolveSkin);
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height);
 
@@ -249,13 +249,12 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
     if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (SkillDelayInfo::CUIDelayItem*& slot : this->items) {
       SkillDelayInfo::CUIDelayItem* item = new SkillDelayInfo::CUIDelayItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (SkillDelayInfo::CUIDelayItem* row : this->items) {
           row->SetHighlighted(listItem == row);
@@ -300,14 +299,13 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 // OFFSET: 0x00A75F80
 // FUNCTION: fn_16815
 template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(int resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(bool resolveSkin) {
+  this->normalImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (SkillDelayInfo::CUIDelayItem* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 
@@ -426,7 +424,7 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
 // OFFSET: 0x00A77200
 // FUNCTION: fn_16872
 CUISkillDelayInfo::CUISkillDelayInfo()
-    : titleBar(nullptr), skillNameText(nullptr), labels{}, columns{}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
+    : titleBar(nullptr), skillNameText(nullptr), labels{nullptr, nullptr, nullptr}, columns{nullptr, nullptr, nullptr, nullptr}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
 }
 
 namespace SkillDelayInfo {

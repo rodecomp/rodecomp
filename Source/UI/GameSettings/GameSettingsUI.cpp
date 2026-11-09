@@ -139,15 +139,15 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem();
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem();
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(bool resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(bool resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(bool resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(bool resolveSkin);
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(bool resolveSkin);
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Resize(int width, int height);
 template <>
@@ -521,7 +521,7 @@ void CUICheckBox::SetOnCheck(std::function<void(bool)> callback) {
 // OFFSET: 0x00A354A0
 // FUNCTION: fn_15427
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -535,7 +535,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(int res
 // OFFSET: 0x00A356B0
 // FUNCTION: fn_15428
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -549,7 +549,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(int resol
 // OFFSET: 0x00A358C0
 // FUNCTION: fn_15429
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -563,7 +563,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(int res
 // OFFSET: 0x00A35AD0
 // FUNCTION: fn_15430
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -577,7 +577,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(int resol
 // OFFSET: 0x00A35CE0
 // FUNCTION: fn_15431
 template <>
-void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

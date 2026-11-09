@@ -24,7 +24,7 @@ public:
 
 class CUIDelayItem : public CUIListItem {
 public:
-  CUIDelayItem();
+  __declspec(noinline) CUIDelayItem();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;

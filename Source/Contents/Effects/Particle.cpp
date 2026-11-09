@@ -142,7 +142,7 @@ CEZ2STRParticle::~CEZ2STRParticle() {
 // OFFSET: 0x00B3CFC0
 // FUNCTION: fn_18815
 void CEZ2STRParticle::ReleaseResource() {
-  this->m_res = CResPtr<CEZeffectRes>();
+  this->m_res = nullptr;
 }
 
 // OFFSET: 0x00B3D030
@@ -164,7 +164,7 @@ std::string CEZ2STRParticle::ResolvePath(const std::string& name) {
 // FUNCTION: fn_18817
 void CEZ2STRParticle::Clear() {
   this->Reset();
-  this->m_res = CResPtr<CEZeffectRes>();
+  this->m_res = nullptr;
   this->m_data = nullptr;
   this->m_finishedClips = 0;
   this->m_frame = 0;

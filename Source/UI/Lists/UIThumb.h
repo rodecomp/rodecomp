@@ -13,7 +13,7 @@ public:
   ~CUIThumb() override;
   void ResetCursor(int x, int y) override;
   void OnMouseHover(int x, int y) override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   __declspec(noinline) void SetImages(const std::string& top, const std::string& middle, const std::string& bottom);
   void SetImage(const std::string& name);

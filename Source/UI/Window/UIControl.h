@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <utility>
 
 template <class T> class CResPtr {
 public:
@@ -28,15 +29,26 @@ public:
     }
   }
 
-  CResPtr& operator=(CResPtr&& other) {
-    T* res = other.m_res;
+  // INLINED
+  CResPtr(CResPtr&& other) : m_res(other.m_res) {
     other.m_res = nullptr;
-    T* old = this->m_res;
-    this->m_res = res;
-    if (old) {
-      old->Unlock();
-    }
+  }
+
+  // INLINED
+  CResPtr& operator=(CResPtr&& other) {
+    CResPtr(std::move(other)).Swap(*this);
     return *this;
+  }
+
+  // INLINED
+  CResPtr& operator=(T* res) {
+    CResPtr(res).Swap(*this);
+    return *this;
+  }
+
+  // INLINED
+  void Swap(CResPtr& other) {
+    std::swap(this->m_res, other.m_res);
   }
 
   operator T*() const {
@@ -75,8 +87,8 @@ public:
   void OnRBtnDblClk(int x, int y) override;
   void OnWheel(int value) override;
   void Invalidate() override;
-  void ApplySkin(int value) override;
-  virtual void LoadSkin(int value);
+  void ApplySkin(bool value) override;
+  virtual void LoadSkin(bool value);
 
   bool IsPointInside(int x, int y);
   UIWindow* FindChildById(int id);
@@ -178,7 +190,7 @@ public:
   CUIImageTextButton();
   ~CUIImageTextButton() override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
 
@@ -195,7 +207,7 @@ public:
   ~CUIBasicButton() override;
   void Resize(int width, int height) override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
   void DrawLabel() override;
 
   void Create(int width, int height);
@@ -219,7 +231,7 @@ public:
   void OnMouseEnter() override;
   void OnMouseLeave() override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
   void ResizeToText(int padding) override;
 
   __declspec(noinline) void SetSelected(bool selected);
@@ -241,7 +253,7 @@ public:
   CUIImageButton();
   ~CUIImageButton() override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
 
@@ -261,7 +273,7 @@ public:
 
   void Paint() override;
   void OnMouseHover(int x, int y) override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SetImage(const std::string& name);
 
@@ -282,7 +294,7 @@ public:
 
   void Resize(int width, int height) override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
   void SetSecondButton(CUIButton* button);
@@ -351,7 +363,7 @@ public:
   void OnMouseMove(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SetImage(const std::string& name);
 

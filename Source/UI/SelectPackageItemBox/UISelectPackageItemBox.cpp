@@ -30,9 +30,9 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem();
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::AddNewItem();
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(bool resolveSkin);
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(bool resolveSkin);
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Resize(int width, int height);
 template <>
@@ -308,7 +308,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A6D660
 // FUNCTION: fn_16672
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -322,7 +322,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(int re
 // OFFSET: 0x00A6D870
 // FUNCTION: fn_16673
 template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

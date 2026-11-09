@@ -137,7 +137,7 @@ template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem();
 
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(bool resolveSkin);
 
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height);
@@ -279,18 +279,14 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
     return;
   }
 
-  for (ProbabilityTable::CUIItem* item : this->items) {
-    this->RemoveChild(item, 1);
-  }
-  this->items.clear();
-  this->selected = static_cast<unsigned int>(-1);
+  this->ClearItems();
 
   if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
     if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (ProbabilityTable::CUIItem*& slot : this->items) {
       ProbabilityTable::CUIItem* item = new ProbabilityTable::CUIItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -317,7 +313,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
 // OFFSET: 0x00A4C2F0
 // FUNCTION: fn_16123
 template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

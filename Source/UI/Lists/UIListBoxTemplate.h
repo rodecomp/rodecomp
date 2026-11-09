@@ -244,7 +244,7 @@ public:
     this->scrollBar->SetPosition(this->scrollBar->position);
   }
 
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 
   void SelectItem(CUIListItem* item);
   T* CreateItem();
@@ -341,9 +341,7 @@ public:
   void Resize(int width, int height) override {
     UIWindow::Resize(width, height);
   }
-  void LoadSkin(int resolveSkin) override {
-    (void)resolveSkin;
-  }
+  void LoadSkin(bool resolveSkin) override;
 
   // OFFSET: 0x00A04B30
   // FUNCTION: fn_14963

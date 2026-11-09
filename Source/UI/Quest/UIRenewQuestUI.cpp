@@ -697,21 +697,22 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
   }
   if (this->data.size() == 0) {
     for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+      RenewQuestUI::CUIQuestItem* item = *it;
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
 
   const int first = (*it)->index;
-  unsigned int row = position / this->rowHeight;
+  int row = position / this->rowHeight;
   if (first != -1) {
-    if (first < static_cast<int>(row)) {
-      if (row - first < static_cast<unsigned int>(this->items.size())) {
+    if (first < row) {
+      if (static_cast<unsigned int>(row - first) < this->items.size()) {
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
-    } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
+    } else if (first > row) {
+      if (static_cast<unsigned int>(first - row) < this->items.size()) {
         std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
       }
     }
@@ -719,19 +720,15 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
 
   it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
-    if (it == this->items.end() || row >= this->data.size()) {
+    if (it == this->items.end() || static_cast<unsigned int>(row) >= this->data.size()) {
       break;
     }
     RenewQuestUI::CUIQuestItem* item = *it;
     if (item) {
-      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
+      if (this->rebind || row != item->index) {
         item->index = row;
         if (this->binder) {
-          auto node = this->data.begin();
-          for (int count = static_cast<int>(row); count > 0; --count) {
-            ++node;
-          }
-          this->binder(item, *node);
+          this->binder(item, *std::next(this->data.begin(), row));
         }
       }
       item->SetSelected(row == this->selected);
@@ -1366,8 +1363,9 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->simpleViewCheckBox->SetSize(14, 14);
   this->simpleViewCheckBox->Move(312, 3);
   this->simpleViewCheckBox->SetOnCheck([this](bool checked) { this->OnSimpleView(checked); });
-  this->simpleViewCheckBox->disabled = 0;
-  this->simpleViewCheckBox->Invalidate();
+  CUICheckBox* simpleViewCheckBox = this->simpleViewCheckBox;
+  simpleViewCheckBox->disabled = 0;
+  simpleViewCheckBox->Invalidate();
   this->simpleViewCheckBox->SetImages(
     std::string(DecryptName<0x050505679903579BULL>({
       '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x57',
@@ -1398,8 +1396,9 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->activeCheckBox->SetSize(20, 17);
   this->activeCheckBox->Move(306, 22);
   this->activeCheckBox->SetOnCheck([this](bool checked) { this->OnActiveStateChanged(checked); });
-  this->activeCheckBox->disabled = 0;
-  this->activeCheckBox->Invalidate();
+  CUICheckBox* activeCheckBox = this->activeCheckBox;
+  activeCheckBox->disabled = 0;
+  activeCheckBox->Invalidate();
   this->activeCheckBox->SetImages(
     std::string(DecryptName<0xED796785D1DF137FULL>({
       '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\xBF',
@@ -1776,8 +1775,9 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->checkBox->SetSize(10, 10);
   this->checkBox->Move(38, 448);
   this->checkBox->SetOnCheck([this](bool checked) { this->RecordWindowFlag(checked); });
-  this->checkBox->disabled = 0;
-  this->checkBox->Invalidate();
+  CUICheckBox* checkBox = this->checkBox;
+  checkBox->disabled = 0;
+  checkBox->Invalidate();
   this->checkBox->SetImages(
     std::string(DecryptName<0x7DE349D717D7F123ULL>({
       '\xE3', '\x5E', '\x17', '\xED', '\x17', '\x87', '\x26', '\xB0', '\xE5', '\x15', '\x17', '\xDB', '\x6A', '\xF3', '\xBF', '\x2F',
@@ -1822,8 +1822,9 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(327, 442);
   this->closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_RENEWQUESTUI); });
-  this->closeButton->disabled = 0;
-  this->closeButton->Invalidate();
+  CUIImageButton* closeButton = this->closeButton;
+  closeButton->disabled = 0;
+  closeButton->Invalidate();
   this->closeButton->SetImages(
     std::string(DecryptName<0xCB1D253B7FE1F563ULL>({
       '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xA9',
@@ -2050,8 +2051,9 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
     this->searchText = this->searchEdit->edit->Text();
     this->UpdateQuestLists(0xF);
   });
-  this->searchButton->disabled = 0;
-  this->searchButton->Invalidate();
+  CUIImageButton* searchButton = this->searchButton;
+  searchButton->disabled = 0;
+  searchButton->Invalidate();
   this->searchButton->SetImages(
     std::string(SearchNormalButtonName().Text()), std::string(SearchPressButtonName().Text()),
     std::string(SearchOverButtonName().Text()), std::string(SearchDisableButtonName().Text())
@@ -2085,13 +2087,12 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
     if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (RenewQuestUI::CUIQuestItem*& slot : this->items) {
       RenewQuestUI::CUIQuestItem* item = new RenewQuestUI::CUIQuestItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (RenewQuestUI::CUIQuestItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -2112,7 +2113,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
 // OFFSET: 0x00A63CD0
 // FUNCTION: fn_16442
 template <>
-void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -2249,8 +2250,9 @@ void CUIRenewQuestUI::OnInit() {
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
     visible = window->geometry.visible != 0;
   }
-  this->checkBox->checked = visible;
-  this->checkBox->Invalidate();
+  CUICheckBox* checkBox = this->checkBox;
+  checkBox->checked = visible;
+  checkBox->Invalidate();
 
   for (unsigned int index = 0; index < this->questLists.size(); ++index) {
     this->questLists[index]->type = 1 << index;

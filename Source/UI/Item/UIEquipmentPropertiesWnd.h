@@ -21,7 +21,7 @@ public:
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
-  void LoadSkin(int resolveSkin) override;
+  void LoadSkin(bool resolveSkin) override;
 };
 }
 
@@ -71,7 +71,7 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Resize(int width, int height);
 template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::LoadSkin(bool resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine) == 0xF8);

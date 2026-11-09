@@ -110,7 +110,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem();
 template <>
 void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, int height);
 template <>
-void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(int resolveSkin);
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::LoadSkin(bool resolveSkin);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestUI::CUIQuestItem) == 0x110);

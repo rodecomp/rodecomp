@@ -354,7 +354,7 @@ void CUIControl::Invalidate() {
 
 // OFFSET: 0x009EF820
 // FUNCTION: fn_14648
-void CUIControl::ApplySkin(int value) {
+void CUIControl::ApplySkin(bool value) {
   this->LoadSkin(value);
 
   for (UIWindow* child : this->m_children) {
@@ -364,7 +364,7 @@ void CUIControl::ApplySkin(int value) {
 
 // OFFSET: 0x009D3FC0
 // FUNCTION: fn_14036
-void CUIControl::LoadSkin(int) {
+void CUIControl::LoadSkin(bool) {
 }
 
 // OFFSET: 0x009C0220
@@ -623,7 +623,7 @@ void CUIVScrollBar::Paint() {
 
 // OFFSET: 0x009F2800
 // FUNCTION: fn_14719
-void CUIVScrollBar::LoadSkin(int resolveSkin) {
+void CUIVScrollBar::LoadSkin(bool resolveSkin) {
   this->background = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->backgroundName, resolveSkin));
 }
 
@@ -999,7 +999,7 @@ void CUIBasicButton::Paint() {
 
 // OFFSET: 0x009E20B0
 // FUNCTION: fn_14406
-void CUIBasicButton::LoadSkin(int resolveSkin) {
+void CUIBasicButton::LoadSkin(bool resolveSkin) {
   this->leftImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
   this->leftImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
   this->leftImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
@@ -1016,7 +1016,7 @@ void CUIBasicButton::LoadSkin(int resolveSkin) {
 
 // OFFSET: 0x009F26B0
 // FUNCTION: fn_14718
-void CUIThumb::LoadSkin(int resolveSkin) {
+void CUIThumb::LoadSkin(bool resolveSkin) {
   this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
   if (this->resizable) {
     this->top = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->topName, resolveSkin));
@@ -1194,7 +1194,7 @@ void CUITabButton::OnLBtnUp(int, int) {
 
 // OFFSET: 0x009F1690
 // FUNCTION: fn_14694
-void CUITabButton::LoadSkin(int resolveSkin) {
+void CUITabButton::LoadSkin(bool resolveSkin) {
   this->normalColor = SkinPaletteColor(ResourceMgr::Instance(), this->normalCell, resolveSkin);
   this->selectedColor = SkinPaletteColor(ResourceMgr::Instance(), this->selectedCell, resolveSkin);
   this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->borderCell, resolveSkin);
@@ -1257,7 +1257,7 @@ void CUIStaticImage::OnMouseHover(int, int) {
 
 // OFFSET: 0x009F08A0
 // FUNCTION: fn_14667
-void CUIStaticImage::LoadSkin(int resolveSkin) {
+void CUIStaticImage::LoadSkin(bool resolveSkin) {
   this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
 }
 
@@ -1342,7 +1342,7 @@ void CUITitleBar::Paint() {
 
 // OFFSET: 0x009F1AA0
 // FUNCTION: fn_14699
-void CUITitleBar::LoadSkin(int resolveSkin) {
+void CUITitleBar::LoadSkin(bool resolveSkin) {
   this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
   if (this->resizable) {
     this->left = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->leftName, resolveSkin));
@@ -1469,7 +1469,7 @@ void CUIImageButton::Paint() {
 
 // OFFSET: 0x009EF900
 // FUNCTION: fn_14650
-void CUIImageButton::LoadSkin(int resolveSkin) {
+void CUIImageButton::LoadSkin(bool resolveSkin) {
   this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1555,7 +1555,7 @@ CUIImageTextButton::~CUIImageTextButton() = default;
 
 // OFFSET: 0x009E8150
 // FUNCTION: fn_14490
-void CUIImageTextButton::LoadSkin(int resolveSkin) {
+void CUIImageTextButton::LoadSkin(bool resolveSkin) {
   this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1979,7 +1979,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
 // OFFSET: 0x009D3360
 // FUNCTION: fn_14030
 template <>
-void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(int resolveSkin) {
+void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -1992,7 +1992,7 @@ void CUIListBox<AdventureGuide::CUISubTab>::LoadSkin(int resolveSkin) {
 // OFFSET: 0x009D3570
 // FUNCTION: fn_14031
 template <>
-void CUIListBox<AdventureGuide::CUITab>::LoadSkin(int resolveSkin) {
+void CUIListBox<AdventureGuide::CUITab>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2005,7 +2005,7 @@ void CUIListBox<AdventureGuide::CUITab>::LoadSkin(int resolveSkin) {
 // OFFSET: 0x009D3780
 // FUNCTION: fn_14032
 template <>
-void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2018,7 +2018,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::LoadS
 // OFFSET: 0x009D3990
 // FUNCTION: fn_14033
 template <>
-void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2031,7 +2031,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
 // OFFSET: 0x009D3BA0
 // FUNCTION: fn_14034
 template <>
-void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2044,7 +2044,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Loa
 // OFFSET: 0x009D3DB0
 // FUNCTION: fn_14035
 template <>
-void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::LoadSkin(bool resolveSkin) {
   this->NormalImage() = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
   this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
@@ -2587,7 +2587,7 @@ void CUIResizer::ResetCursor(int, int) {
 
 // OFFSET: 0x009E96C0
 // FUNCTION: fn_14508
-void CUIResizer::LoadSkin(int resolveSkin) {
+void CUIResizer::LoadSkin(bool resolveSkin) {
   this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
   if (this->image) {
     this->Resize(this->image->image.width, this->image->image.height);

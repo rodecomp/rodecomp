@@ -182,7 +182,7 @@ void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNe
 // OFFSET: 0x00A022A0
 // FUNCTION: fn_14839
 template <>
-void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
@@ -280,7 +280,7 @@ void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem() {
 // OFFSET: 0x00A024B0
 // FUNCTION: fn_14840
 template <>
-void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::LoadSkin(int resolveSkin) {
+void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::LoadSkin(bool resolveSkin) {
   CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
   images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
   images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));

@@ -92,7 +92,7 @@ public:
   virtual RenderPrimitive* DrawPrimitive();
   virtual UIWindow* HitTest(int x, int y);
   virtual void VisitChildren();
-  virtual void ApplySkin(int argument);
+  virtual void ApplySkin(bool argument);
 
   void AddChild(UIWindow* child);
   void AddChildFront(UIWindow* child);
