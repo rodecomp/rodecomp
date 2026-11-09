@@ -78,9 +78,9 @@ std::string SHA3::GetHash() {
   this->ProcessBlock(this->buffer);
 
   std::string result;
+  const unsigned int hashLength = this->digestBits / 64;
   result.reserve(this->digestBits / 4);
 
-  const unsigned int hashLength = this->digestBits / 64;
   for (unsigned int i = 0; i < hashLength; ++i) {
     for (unsigned int j = 0; j < 8; ++j) {
       const unsigned char oneByte = static_cast<unsigned char>(this->state[i] >> (8 * j));
