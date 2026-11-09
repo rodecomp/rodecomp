@@ -247,8 +247,7 @@ void CPc::SetBodyPalette(int value) {
 // FUNCTION: fn_22613
 void CGrannyPc::SetHeadPaletteName() {
   if (this->headPalette != 0) {
-    const std::string palName = g_session.GetHeadPalName(this->head, this->GetEffectiveJob(-1), this->sex, this->headPalette);
-    this->headPaletteName = palName;
+    this->headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(this->head, this->GetEffectiveJob(-1), this->sex, this->headPalette));
   }
 }
 
@@ -256,8 +255,7 @@ void CGrannyPc::SetHeadPaletteName() {
 // FUNCTION: fn_22614
 void CPc::SetHeadPaletteName() {
   if (this->headPalette != 0) {
-    const std::string palName = g_session.GetHeadPalName(this->head, this->appearanceJob, this->sex, this->headPalette);
-    this->headPaletteName = palName;
+    this->headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(this->head, this->appearanceJob, this->sex, this->headPalette));
   }
 }
 
