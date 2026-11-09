@@ -2552,9 +2552,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     }
   }
 
-  particle.speed3d.x = particle.deltaPosAccel.x + particle.speed3d.x;
-  particle.speed3d.y = particle.deltaPosAccel.y + particle.speed3d.y;
-  particle.speed3d.z = particle.deltaPosAccel.z + particle.speed3d.z;
+  particle.speed3d += particle.deltaPosAccel;
   particle.speed = particle.accel + particle.speed;
   particle.widthSpeed = particle.widthAccel + particle.widthSpeed;
   particle.heightSpeed = particle.heightSpeed + particle.heightAccel;
@@ -2568,9 +2566,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
   } else if ((particle.pattern & 0x100u) != 0) {
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+    particle.deltaPos += particle.speed3d;
   } else {
     Forward(particle.speed3d, particle.speed, particle.transform);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
