@@ -15,6 +15,7 @@
 #include "Utility/Text/StringUtil.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <list>
@@ -22,6 +23,8 @@
 #include <new>
 #include <string>
 #include <windows.h>
+
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
@@ -270,6 +273,13 @@ class EncryptedName {
 public:
   // INLINED
   explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  explicit EncryptedName(const std::array<char, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -888,10 +898,12 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width,
   this->labelText->SetText("");
   this->labelText->SetFitText(0);
   this->labelText->SetAlign(6, 0);
-  const char titleFontSource[] = {'\x9E', '\x8C', '\x8D', '\x8A', '\x00', '\x15'};
-  // GLOBAL: gl_25121
-  thread_local EncryptedName<sizeof(titleFontSource), 0x2BAD156DE3E1F9D9ULL> titleFont(titleFontSource);
-  this->labelText->SetFont(std::string(titleFont.Text()));
+  this->labelText->SetFont(std::string([] {
+    const char source[] = {'\x9E', '\x8C', '\x8D', '\x8A', '\x00', '\x15'};
+    // GLOBAL: gl_25121
+    thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
+    return name.Text();
+  }()));
   this->labelText->SetFontHeight(12);
   this->labelText->SetBold(0);
   this->labelText->SetColor(0xFF2A00);
@@ -905,10 +917,12 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width,
   this->valueText->SetText("");
   this->valueText->SetFitText(1);
   this->valueText->SetAlign(0, 0);
-  const char textFontSource[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
-  // GLOBAL: gl_25122
-  thread_local EncryptedName<sizeof(textFontSource), 0x23BBD58F8B5FF5C9ULL> textFont(textFontSource);
-  this->valueText->SetFont(std::string(textFont.Text()));
+  this->valueText->SetFont(std::string([] {
+    const char source[] = {'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'};
+    // GLOBAL: gl_25122
+    thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
+    return name.Text();
+  }()));
   this->valueText->SetFontHeight(12);
   this->valueText->SetBold(0);
   this->valueText->SetColor(0);
