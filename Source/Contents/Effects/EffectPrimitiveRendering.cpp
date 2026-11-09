@@ -5629,69 +5629,79 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
 // OFFSET: 0x00BCA060
 // FUNCTION: fn_19859
 void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
+  ZeroVector3d vert[8];
+  ZeroVector3d tvert[4];
   const float width = this->state.widthSize;
   const float height = this->state.heightSize;
-  const vector3d planes[2][4] = {
-    {{-height, 0.0f, width}, {-height, 0.0f, -width}, {height, 0.0f, width}, {height, 0.0f, -width}},
-    {{0.0f, -height, width}, {0.0f, -height, -width}, {0.0f, height, width}, {0.0f, height, -width}},
-  };
-  const float* tm = this->state.transform;
-  const vector3d& position = this->render.position;
-  RenderTriangle* triangle = this->state.triangles;
+  vert[0] = {-height, 0.0f, width};
+  vert[1] = {-height, 0.0f, -width};
+  vert[2] = {height, 0.0f, width};
+  vert[3] = {height, 0.0f, -width};
+  vert[4] = {0.0f, -height, width};
+  vert[5] = {0.0f, -height, -width};
+  vert[6] = {0.0f, height, width};
+  vert[7] = {0.0f, height, -width};
+  int rpCnt = 0;
 
-  for (const auto& plane : planes) {
-    float world[4][3];
+  for (int plane = 0; plane < 2; ++plane) {
     for (int corner = 0; corner < 4; ++corner) {
-      const vector3d& local = plane[corner];
-      world[corner][0] = local.x * tm[0] + local.y * tm[3] + local.z * tm[6] + tm[9] + position.x;
-      world[corner][1] = local.x * tm[1] + local.y * tm[4] + local.z * tm[7] + tm[10] + position.y;
-      world[corner][2] = local.x * tm[2] + local.y * tm[5] + local.z * tm[8] + tm[11] + position.z;
+      const vector3d& local = vert[plane * 4 + corner];
+      tvert[corner] = {
+        local.y * this->state.transform[3] + local.x * this->state.transform[0] + local.z * this->state.transform[6] + this->state.transform[9], local.y * this->state.transform[4] + local.x * this->state.transform[1] + local.z * this->state.transform[7] + this->state.transform[10],
+        local.y * this->state.transform[5] + local.x * this->state.transform[2] + local.z * this->state.transform[8] + this->state.transform[11]
+      };
     }
 
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[0], wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = this->state.argb;
-    triangle->vertices[0].u = 0.0f;
-    triangle->vertices[0].v = 1.0f;
+    const vector3d point0 = {tvert[0].x + this->render.position.x, tvert[0].y + this->render.position.y, tvert[0].z + this->render.position.z};
+    g_renderer->viewport.Project(&point0.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[0].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[0].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[1], wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = this->state.argb;
-    triangle->vertices[1].u = 1.0f;
-    triangle->vertices[1].v = 1.0f;
+    const vector3d point1 = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
+    g_renderer->viewport.Project(&point1.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[1].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[1].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[2], wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = this->state.argb;
-    triangle->vertices[2].u = 0.0f;
-    triangle->vertices[2].v = 0.0f;
-    triangle->texture = this->state.textures[this->render.curMotion];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    const vector3d point2 = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
+    g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[2].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[2].v = 0.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[3], wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = this->state.argb;
-    triangle->vertices[0].u = 1.0f;
-    triangle->vertices[0].v = 0.0f;
+    const vector3d point3 = {tvert[3].x + this->render.position.x, tvert[3].y + this->render.position.y, tvert[3].z + this->render.position.z};
+    g_renderer->viewport.Project(&point3.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[0].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[0].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[2], wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = this->state.argb;
-    triangle->vertices[1].u = 0.0f;
-    triangle->vertices[1].v = 0.0f;
+    const vector3d point4 = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
+    g_renderer->viewport.Project(&point4.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[1].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[1].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[1], wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = this->state.argb;
-    triangle->vertices[2].u = 1.0f;
-    triangle->vertices[2].v = 1.0f;
-    triangle->texture = this->state.textures[this->render.curMotion];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    const vector3d point5 = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
+    g_renderer->viewport.Project(&point5.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[2].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[2].v = 1.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
   }
 }
@@ -6831,10 +6841,10 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
 // OFFSET: 0x00BCCD50
 // FUNCTION: fn_19864
 void CEffectPrim::RenderSphere(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   const float longitudeEnd = 360.0f - this->state.arcAngle;
@@ -6851,31 +6861,34 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       const float yaw2 = GetRadian(static_cast<int>(longitude + this->state.arcAngle + 0.25f + this->state.longitude));
       const float pitch2 = GetRadian(static_cast<int>(latitude + this->state.arcAngle));
 
-      matrix rotation;
-      rotation.MakeXRotation(pitch1);
-      rotation.AppendYRotation(yaw1);
-      const float* m1 = rotation.values;
+      matrix rotation1;
+      rotation1.MakeXRotation(pitch1);
+      rotation1.AppendYRotation(yaw1);
+      const float* m1 = rotation1.values;
       vec1.x = m1[3] * 0.0f + m1[0] * 0.0f + this->state.radius * m1[6] + m1[9];
       vec1.y = m1[4] * 0.0f + m1[1] * 0.0f + this->state.radius * m1[7] + m1[10];
       vec1.z = m1[5] * 0.0f + m1[2] * 0.0f + this->state.radius * m1[8] + m1[11];
 
-      rotation.MakeXRotation(pitch2);
-      rotation.AppendYRotation(yaw1);
-      const float* m2 = rotation.values;
+      matrix rotation2;
+      rotation2.MakeXRotation(pitch2);
+      rotation2.AppendYRotation(yaw1);
+      const float* m2 = rotation2.values;
       vec2.x = m2[3] * 0.0f + m2[0] * 0.0f + this->state.radius * m2[6] + m2[9];
       vec2.y = m2[4] * 0.0f + m2[1] * 0.0f + this->state.radius * m2[7] + m2[10];
       vec2.z = m2[5] * 0.0f + m2[2] * 0.0f + this->state.radius * m2[8] + m2[11];
 
-      rotation.MakeXRotation(pitch1);
-      rotation.AppendYRotation(yaw2);
-      const float* m3 = rotation.values;
+      matrix rotation3;
+      rotation3.MakeXRotation(pitch1);
+      rotation3.AppendYRotation(yaw2);
+      const float* m3 = rotation3.values;
       vec3.x = m3[3] * 0.0f + m3[0] * 0.0f + this->state.radius * m3[6] + m3[9];
       vec3.y = m3[4] * 0.0f + m3[1] * 0.0f + this->state.radius * m3[7] + m3[10];
       vec3.z = m3[5] * 0.0f + m3[2] * 0.0f + this->state.radius * m3[8] + m3[11];
 
-      rotation.MakeXRotation(pitch2);
-      rotation.AppendYRotation(yaw2);
-      const float* m4 = rotation.values;
+      matrix rotation4;
+      rotation4.MakeXRotation(pitch2);
+      rotation4.AppendYRotation(yaw2);
+      const float* m4 = rotation4.values;
       vec4.x = m4[3] * 0.0f + m4[0] * 0.0f + this->state.radius * m4[6] + m4[9];
       vec4.y = m4[4] * 0.0f + m4[1] * 0.0f + this->state.radius * m4[7] + m4[10];
       vec4.z = m4[5] * 0.0f + m4[2] * 0.0f + this->state.radius * m4[8] + m4[11];
@@ -6965,10 +6978,10 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
 // OFFSET: 0x00BD6510
 // FUNCTION: fn_19884
 __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec4{};
-  vector3d vec3{};
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec4;
+  ZeroVector3d vec3;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6985,9 +6998,15 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     vec1 = {dist * g_cosTable[angle], 0.0f, dist * g_sinTable[angle]};
 
     if (shape == 0.0f) {
-      angle = angle >= 90 ? angle - 90 : angle + 270;
+      angle -= 90;
+      if (angle < 0) {
+        angle += 360;
+      }
     } else if (shape == 1.0f) {
-      angle = angle >= 60 ? angle - 60 : angle + 300;
+      angle -= 60;
+      if (angle < 0) {
+        angle += 360;
+      }
     } else if (shape == 2.0f) {
       angle -= 130;
       if (angle < 0) {
