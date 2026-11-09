@@ -73,9 +73,10 @@ namespace {
 // OFFSET: 0x0076C3E0
 // FUNCTION: fn_45544
 CNProtectGameGuardMgr::~CNProtectGameGuardMgr() {
-  if (this->m_gameLib) {
+  void* gameLib = this->m_gameLib;
+  if (gameLib) {
     CloseNPGameMon();
-    ::operator delete(this->m_gameLib, 1);
+    ::operator delete(gameLib, 1);
     this->m_gameLib = nullptr;
   }
 
