@@ -53,7 +53,7 @@ void UIMacroBlackListCheckWnd::OnCreate(int width, int height) {
   std::mt19937 engine(std::random_device{}());
   std::shuffle(this->digits, this->digits + 10, engine);
 
-  std::string directory;
+  std::string directory("");
 
   this->okButton = new UIBitmapButton();
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok.bmp", 0, 0);
