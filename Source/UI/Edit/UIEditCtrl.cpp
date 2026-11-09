@@ -2721,8 +2721,7 @@ void UIMerchantItemWnd::Paint() {
 // OFFSET: 0x009834F0
 // FUNCTION: fn_13345
 void UINoticeMessageBox_LockSellItem::Paint() {
-  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp")));
-  this->DrawBitmap(0, 0, background, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp"))), false);
   this->DrawCenteredText(0, 5, LookupMessage(MSI_CONNECT_SNS_WHOLE_SCREEN_SHOT), this->geometry.width, 0, 12, 0xFFFFFF, 0);
 }
 
