@@ -560,7 +560,7 @@ std::string& EquipmentPropertyGroup::GetName() {
 
 // OFFSET: 0x0069BD00
 // FUNCTION: fn_05809
-std::map<std::int64_t, EquipmentPropertyDefinition*>& EquipmentPropertyGroup::GetDefinitions() {
+__declspec(noinline) std::map<std::int64_t, EquipmentPropertyDefinition*>& EquipmentPropertyGroup::GetDefinitions() {
   return this->definitions;
 }
 
@@ -600,12 +600,12 @@ EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
 
 // OFFSET: 0x0068A0C0
 // FUNCTION: fn_05600
-EquipmentProperties::CEquipmentCombiitem::CEquipmentCombiitem(const int& id) : CEquipment(id) {
+__declspec(noinline) EquipmentProperties::CEquipmentCombiitem::CEquipmentCombiitem(const int& id) : CEquipment(id) {
 }
 
 // OFFSET: 0x0068A140
 // FUNCTION: fn_05601
-EquipmentProperties::CEquipmentExpansion::CEquipmentExpansion(const int& id, const int& kind) : CEquipment(id), m_kind(kind) {
+__declspec(noinline) EquipmentProperties::CEquipmentExpansion::CEquipmentExpansion(const int& id, const int& kind) : CEquipment(id), m_kind(kind) {
   this->m_pretend = true;
 }
 
@@ -637,7 +637,7 @@ int EquipmentProperties::CEquipment::GetValue(const int& key) {
 
 // OFFSET: 0x0068C0F0
 // FUNCTION: fn_05628
-int& EquipmentProperties::CEquipment::GetId() {
+__declspec(noinline) int& EquipmentProperties::CEquipment::GetId() {
   return this->m_id;
 }
 
@@ -676,7 +676,7 @@ int EquipmentProperties::CEquipmentWearable::GetType() {
 
 // OFFSET: 0x0068C010
 // FUNCTION: fn_05623
-std::vector<EquipmentProperties::CEquipmentAttachable>& EquipmentProperties::CEquipmentWearable::GetAttachables() {
+__declspec(noinline) std::vector<EquipmentProperties::CEquipmentAttachable>& EquipmentProperties::CEquipmentWearable::GetAttachables() {
   return this->m_attachables;
 }
 
@@ -1049,7 +1049,7 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
 
 // OFFSET: 0x00698560
 // FUNCTION: fn_05769
-EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStore& other) {
+__declspec(noinline) EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStore& other) {
   for (auto& group : other.properties) {
     for (auto& entry : group.second) {
       EquipmentPropertyDefinition* definition = entry.second->m_definition;
@@ -1069,7 +1069,7 @@ EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStor
 
 // OFFSET: 0x00698C30
 // FUNCTION: fn_05770
-EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* property) {
+__declspec(noinline) EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* property) {
   EquipmentPropertyDefinition* definition = property->m_definition;
   if (definition == nullptr) {
     return *this;
@@ -1304,7 +1304,7 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
 
 // OFFSET: 0x006AC2A0
 // FUNCTION: fn_06172
-const int& EquipmentProperties::CEquipmentPropertiesMgr::GetConstantValue(const int& key) {
+__declspec(noinline) const int& EquipmentProperties::CEquipmentPropertiesMgr::GetConstantValue(const int& key) {
   auto found = this->constantValues.find(key);
   if (this->constantValues.end() == found) {
     return key;
@@ -1341,50 +1341,70 @@ EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMg
 // OFFSET: 0x006AC4C0
 // FUNCTION: fn_06177
 int GetEquipLocationMask(const int& location) {
+  int mask = 0;
   switch (location) {
   case 1:
-    return 0x1;
+    mask = 0x1;
+    break;
   case 2:
-    return 0x10;
+    mask = 0x10;
+    break;
   case 3:
-    return 0x20;
+    mask = 0x20;
+    break;
   case 4:
-    return 0x2;
+    mask = 0x2;
+    break;
   case 5:
-    return 0x4;
+    mask = 0x4;
+    break;
   case 6:
-    return 0x40;
+    mask = 0x40;
+    break;
   case 7:
-    return 0x8;
+    mask = 0x8;
+    break;
   case 8:
-    return 0x80;
+    mask = 0x80;
+    break;
   case 10:
-    return 0x100;
+    mask = 0x100;
+    break;
   case 11:
-    return 0x200;
+    mask = 0x200;
+    break;
   case 20:
-    return 0x400;
+    mask = 0x400;
+    break;
   case 21:
-    return 0x800;
+    mask = 0x800;
+    break;
   case 22:
-    return 0x1000;
+    mask = 0x1000;
+    break;
   case 23:
-    return 0x2000;
+    mask = 0x2000;
+    break;
   case 30:
-    return 0x10000;
+    mask = 0x10000;
+    break;
   case 31:
-    return 0x20000;
+    mask = 0x20000;
+    break;
   case 32:
-    return 0x40000;
+    mask = 0x40000;
+    break;
   case 33:
-    return 0x80000;
+    mask = 0x80000;
+    break;
   case 34:
-    return 0x100000;
+    mask = 0x100000;
+    break;
   case 35:
-    return 0x200000;
-  default:
-    return 0;
+    mask = 0x200000;
+    break;
   }
+  return mask;
 }
 
 // OFFSET: 0x006AC610
@@ -2072,7 +2092,7 @@ int GetEquipLocationIndex(const int& mask) {
 
 // OFFSET: 0x006AD880
 // FUNCTION: fn_06187
-std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindSkillGroup(const int& key) {
+__declspec(noinline) std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindSkillGroup(const int& key) {
   auto found = this->skillGroups.find(key);
   if (found == this->skillGroups.end()) {
     return nullptr;
@@ -2088,7 +2108,7 @@ std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropert
 
 // OFFSET: 0x006B0120
 // FUNCTION: fn_06190
-bool EquipmentProperties::CEquipmentPropertiesMgr::HasFunctionPair(const std::uint64_t& key) {
+__declspec(noinline) bool EquipmentProperties::CEquipmentPropertiesMgr::HasFunctionPair(const std::uint64_t& key) {
   return this->functionPairs.contains(key);
 }
 
@@ -4066,7 +4086,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& gr
 
 // OFFSET: 0x006AD4A0
 // FUNCTION: fn_06183
-EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindDefinition(const std::uint64_t& key) {
+__declspec(noinline) EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindDefinition(const std::uint64_t& key) {
   auto found = this->m_definitionsByName.find(key);
   if (this->m_definitionsByName.end() == found) {
     return nullptr;
@@ -4101,8 +4121,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
   this->m_dirty = true;
 
   int key = itemId;
-  if (kind == 0 || kind == 1) {
+  switch (kind) {
+  case 0:
+  case 1:
     key = kind;
+    break;
   }
 
   auto found = this->properties2.find(key);
@@ -4130,8 +4153,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
   this->m_dirty = true;
 
   int key = itemId;
-  if (kind == 0 || kind == 1) {
+  switch (kind) {
+  case 0:
+  case 1:
     key = kind;
+    break;
   }
 
   auto found = this->properties2.find(key);
@@ -4151,8 +4177,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
 // FUNCTION: fn_06204
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& kind, const int& itemId) {
   int key = itemId;
-  if (kind == 0 || kind == 1) {
+  switch (kind) {
+  case 0:
+  case 1:
     key = kind;
+    break;
   }
 
   auto found = this->properties2.find(key);
@@ -4784,7 +4813,7 @@ int GetPureJob(lua_State* state) {
 
 // OFFSET: 0x00E16510
 // FUNCTION: fn_23832
-CSkillInfo* CSession::FindGroupedSkill(std::uint32_t id) {
+__declspec(noinline) CSkillInfo* CSession::FindGroupedSkill(std::uint32_t id) {
   return this->m_skillBundle.FindGrouped(id);
 }
 
@@ -4958,9 +4987,6 @@ std::int32_t CSession::MemberColor(int index) {
     return -16746376;
   case 2:
     return -16777216;
-  case 3:
-  case 15:
-    return -8912896;
   case 4:
     return -16746496;
   case 5:
@@ -4983,6 +5009,9 @@ std::int32_t CSession::MemberColor(int index) {
     return -13487616;
   case 14:
     return -13500366;
+  case 3:
+  case 15:
+    return -8912896;
   default:
     return -13487566;
   }
@@ -4993,10 +5022,10 @@ std::int32_t CSession::MemberColor(int index) {
 void CSession::AddFriend(MessengerMember& member) {
   int index = 0;
 
-  for (MessengerMember& existing : this->m_friends) {
-    if (existing.name == member.name) {
+  for (std::list<MessengerMember>::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
+    if (it->name == member.name) {
       member.color = MemberColor(index);
-      existing = member;
+      *it = member;
     }
 
     ++index;
@@ -5016,10 +5045,10 @@ void CSession::AddPartyMember(MessengerMember& member) {
 
   int index = 0;
 
-  for (MessengerMember& existing : this->m_partyMembers) {
-    if (existing.name == member.name) {
+  for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
+    if (it->name == member.name) {
       member.color = MemberColor(index);
-      existing = member;
+      *it = member;
       return;
     }
 
@@ -5171,7 +5200,7 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
 }
 
 struct ItemNotificationWindow : UIWindow {
-  /* 0080 */ unsigned char unknown_0080[0x34];
+  /* 007C */ unsigned char unknown_007C[0x38];
   /* 00B4 */ MessengerMember member;
 };
 
@@ -5251,7 +5280,7 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
 
 // OFFSET: 0x00CD6E40
 // FUNCTION: fn_21290
-void CGameMode::NotifyItemBounds() {
+__declspec(noinline) void CGameMode::NotifyItemBounds() {
   if (this->itemWindow) {
     this->itemWindow->Invalidate();
   }
@@ -5433,45 +5462,72 @@ int CLuaInstance::GetInt(int& value, int index) {
 // OFFSET: 0x00CD7180
 // FUNCTION: fn_21291
 bool CGameMode::IsAllowedPair(int kind, int value) {
+  bool result = false;
   switch (kind) {
   case 8:
-    return value == 6 || value == 9;
+    if (value == 6 || value == 9) {
+      result = true;
+    }
+    break;
   case 0x16:
     if (g_windowMgr.dragAllItems != 0) {
-      return false;
+      break;
     }
   case 0xA0:
-    return value == 4 || value == 5;
+    if (value == 4 || value == 5) {
+      result = true;
+    }
+    break;
   case 0x18:
     if (g_windowMgr.dragAllItems != 0) {
-      return false;
+      break;
     }
   case 0x17:
   case 0xA1:
-    return value == 3;
-  case 0x1F:
-  case 0x271B:
-    return value == 1;
+    result = value == 3;
+    break;
   case 0x21:
-    return value == 9 || value == 1;
+    if (value == 9 || value == 1) {
+      result = true;
+    }
+    break;
   case 0x28:
-    return value == 1 || value == 6;
+    if (value == 1 || value == 6) {
+      result = true;
+    }
+    break;
   case 0x29:
-    return value == 0xB;
+    result = value == 0xB;
+    break;
   case 0x2A:
-    return value == 0xA;
+    result = value == 0xA;
+    break;
   case 0x2B:
-    return value == 0xD;
+    result = value == 0xD;
+    break;
   case 0x2C:
   case 0xB2:
-    return value == 0xC || value == 0x16;
+    if (value == 0xC || value == 0x16) {
+      result = true;
+    }
+    break;
   case 0xAF:
-    return value == 0x15;
+    result = value == 0x15;
+    break;
   case 0xB8:
   case 0x13E:
-    return value == 6 || value == 4;
+    if (value == 6 || value == 4) {
+      result = true;
+    }
+    break;
+  case 0x1F:
+  case 0x271B:
+    if (value == 1) {
+      result = true;
+    }
+    break;
   }
-  return false;
+  return result;
 }
 
 // OFFSET: 0x00CD73B0
@@ -5483,9 +5539,9 @@ bool CGameMode::IsWithinRange(const int& x1, const int& y1, const int& x2, const
 // OFFSET: 0x00CD74B0
 // FUNCTION: fn_21293
 bool CGameMode::IsRegisterCell(int x, int y) {
-  for (auto& entry : this->actorPosList) {
-    if (entry.second.first == x && entry.second.second == y) {
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.first));
+  for (auto it = this->actorPosList.begin(); it != this->actorPosList.end(); ++it) {
+    if (it->second.first == x && it->second.second == y) {
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(it->first));
       if (actor == nullptr) {
         return true;
       }
@@ -6364,7 +6420,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
 // OFFSET: 0x006B71F0
 // FUNCTION: fn_06205
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& key) {
-  auto found = this->properties1.find(key);
+  const int index = key;
+  auto found = this->properties1.find(index);
   if (found == this->properties1.end()) {
     return;
   }
@@ -6785,7 +6842,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO
 
   this->m_dirty = true;
   const int key = GetEquipLocationIndex(item->identity[3]);
-  const auto found = this->properties1.find(key);
+  const auto found = this->properties1.find(static_cast<int>(key));
   if (found != this->properties1.end()) {
     delete found->second;
     this->properties1.erase(found);
