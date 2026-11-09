@@ -161,7 +161,7 @@ void UILapineUpgradeBoxWnd::Paint() {
   this->DrawCenteredText(35, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 156, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
 
-  if (this->item.identity[1] != 0) {
+  if (this->item.identity[1] > 0) {
     DrawItemIcon(*this, ResourceMgr::Instance(), 101, 165, this->item, 0);
   }
 
@@ -223,7 +223,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
     UIFrameWnd::OnLBtnDown(x, y);
   }
-  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.identity[1] != 0) {
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.identity[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 26, this->item, 1, -1);
   }
 }
@@ -231,7 +231,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
 // OFFSET: 0x00603E80
 // FUNCTION: fn_04206
 void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDown(int x, int y) {
-  if (this->item.identity[1] != 0) {
+  if (this->item.identity[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 27, this->item, this->quantity, -1);
   }
 }
@@ -431,14 +431,14 @@ void UILapineUpgradeBoxWnd::OnProcess() {
       this->selectButton->Invalidate();
       this->Invalidate();
     }
-  } else if (this->selectButton->Disabled() == 1 && this->item.identity[1] == 0) {
+  } else if (this->selectButton->Disabled() == 1 && this->item.identity[1] <= 0) {
     this->selectButton->SetDisabled(0);
     this->selectButton->Invalidate();
     this->Invalidate();
   }
 
   if (this->waiting == 0) {
-    if (this->item.identity[1] != 0) {
+    if (this->item.identity[1] > 0) {
       if (this->upgradeButton->Disabled() == 1) {
         this->upgradeButton->SetDisabled(0);
         this->upgradeButton->Invalidate();
@@ -499,13 +499,13 @@ void UILapineUpgradeBoxWnd::AddMaterial(int id) {
 // FUNCTION: fn_04220
 bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity) {
   ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
-  if (owned.identity[1] == 0) {
+  if (owned.identity[1] <= 0) {
     return false;
   }
-  const int itemId = std::atoi(owned.itemId.c_str());
   if (owned.refiningLevel < this->minRefine || owned.refiningLevel > this->maxRefine || owned.optionCount < this->minOptionCount) {
     return false;
   }
+  const int itemId = std::atoi(owned.itemId.c_str());
   if ((g_session.IsPetEgg(itemId) == 1 && owned.damaged == 1) || g_session.HasSwapEquipmentItem(owned.identity[1]) == 1) {
     return false;
   }
