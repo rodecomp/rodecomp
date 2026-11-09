@@ -851,7 +851,7 @@ void UIRenewQuestWnd::OnLBtnDown(int x, int y) {
 
   if (x >= 38 && x <= 368 && y >= 24 && y <= 438) {
     const unsigned int row = (y - 24) / 46 + this->m_scroll;
-    if (row < this->m_questIds[this->m_tab].size()) {
+    if (this->m_questIds[this->m_tab].size() > row) {
       this->m_pressed = 1;
       this->m_selected = row;
       this->Invalidate();
@@ -859,11 +859,7 @@ void UIRenewQuestWnd::OnLBtnDown(int x, int y) {
       if (detail) {
         const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
         const bool recommended = this->m_tab == 1;
-        if (ids.empty()) {
-          detail->SetQuest(0, recommended);
-        } else {
-          detail->SetQuest(ids[this->m_selected], recommended);
-        }
+        detail->SetQuest(ids.empty() ? 0 : ids[this->m_selected], recommended);
       }
     }
   }
