@@ -57,8 +57,7 @@ void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
     }
 
     short packetType = 0xA5A;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packetType), &packetType);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
   }
 }
 
