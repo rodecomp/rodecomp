@@ -11529,7 +11529,7 @@ void CRagEffect::Sightrasher() {
       this->state.currentPrimitive->speed3d.y = 0.0f;
       this->state.currentPrimitive->speed3d.x = static_cast<float>(static_cast<double>(sine));
       this->state.currentPrimitive->speed3d.z = static_cast<float>(static_cast<double>(cosine) * -1.0);
-      this->state.currentPrimitive->animSpeed = std::max(rand() % 2, 0) + 3;
+      this->state.currentPrimitive->animSpeed = ClampedRandom(2) + 3;
       this->state.currentPrimitive->size = 2.5f - static_cast<float>(this->state.stateCnt) / 10.0f;
       this->state.currentPrimitive->alpha = static_cast<float>((75 - this->state.stateCnt) * 2);
       this->state.currentPrimitive->deltaPosAccel = {0.0f, 0.0f, 0.0f};
@@ -11541,8 +11541,8 @@ void CRagEffect::Sightrasher() {
       this->state.currentPrimitive->changeAccel3d.y = 0.0f;
       this->state.currentPrimitive->changeAccel3d.z = 0.004f;
       this->state.currentPrimitive->fadeOutCnt = 65 - this->state.stateCnt;
-      Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
-      Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+      Owner(this->state.currentPrimitive).SetSpriteName("이팩트\\Sight.spr");
+      Owner(this->state.currentPrimitive).SetActionName("이팩트\\Sight.act");
       Owner(this->state.currentPrimitive).InitSegment();
     }
 
@@ -11570,8 +11570,8 @@ void CRagEffect::Sightrasher() {
       this->state.currentPrimitive->changeAccel3d.x = -0.004f;
       this->state.currentPrimitive->changeAccel3d.z = 0.004f;
       this->state.currentPrimitive->fadeOutCnt = 65 - this->state.stateCnt;
-      Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
-      Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "Shadow.act");
+      Owner(this->state.currentPrimitive).SetSpriteName("Shadow.spr");
+      Owner(this->state.currentPrimitive).SetActionName("Shadow.act");
       Owner(this->state.currentPrimitive).InitSegment();
     }
   }
@@ -12722,7 +12722,7 @@ void CRagEffect::IceArrow() {
 
   if (this->state.stateCnt == 12) {
     char soundBuffer[64];
-    sprintf(soundBuffer, "effect\\EF_IceArrow%d.wav", std::max(rand() % 3, 0) + 1);
+    sprintf(soundBuffer, "effect\\EF_IceArrow%d.wav", ClampedRandom(3) + 1);
     PlayEffectWave(*this, soundBuffer);
     this->state.count *= 10;
   }
@@ -12734,38 +12734,41 @@ void CRagEffect::IceArrow() {
       this->state.currentPrimitive->duration = 70;
       this->state.currentPrimitive->pattern = 20;
 
-      this->state.currentPrimitive->deltaPos2.y = -60.0f;
-      this->state.currentPrimitive->deltaPos2.x = static_cast<float>(std::max(rand() % 10, 0) + 25);
-      this->state.currentPrimitive->deltaPos2.z = static_cast<float>(std::max(rand() % 10, 0) + 15);
+      EffectPrimitiveState& arrow = *this->state.currentPrimitive;
+      const int spreadZ = ClampedRandom(10);
+      const int spreadX = ClampedRandom(10);
+      arrow.deltaPos2.y = -60.0f;
+      arrow.deltaPos2.x = static_cast<float>(spreadX + 25);
+      arrow.deltaPos2.z = static_cast<float>(spreadZ + 15);
 
-      const int rx = std::max(rand() % 4, 0) - 2;
-      const int rz = std::max(rand() % 4, 0) - 2;
+      const int aimZ = ClampedRandom(4);
+      const int aimX = ClampedRandom(4);
       const float angleY = -CRenderObject::Heading(
         this->state.currentPrimitive->deltaPos2.x,
         this->state.currentPrimitive->deltaPos2.z,
-        static_cast<float>(rx),
-        static_cast<float>(rz)
+        static_cast<float>(aimX - 2),
+        static_cast<float>(aimZ - 2)
       );
       this->state.currentPrimitive->longitude = angleY;
       this->state.longitude = angleY;
 
-      const float distXZ = SquareRoot(
-        this->state.currentPrimitive->deltaPos2.x * this->state.currentPrimitive->deltaPos2.x +
-        this->state.currentPrimitive->deltaPos2.z * this->state.currentPrimitive->deltaPos2.z
-      );
-      const float angleX = CRenderObject::Heading(-this->state.currentPrimitive->deltaPos2.y, distXZ, 0.0f, 0.0f);
+      const float dx = std::fabs(this->state.currentPrimitive->deltaPos2.x);
+      const float dz = std::fabs(this->state.currentPrimitive->deltaPos2.z);
+      const float distXZ = SquareRoot(dx * dx + dz * dz);
+      const float angleX = CRenderObject::Heading(-std::fabs(this->state.currentPrimitive->deltaPos2.y), distXZ, 0.0f, 0.0f);
       this->state.currentPrimitive->latitude = angleX;
       this->state.latitude = angleX;
 
-      matrix rotation;
-      rotation.MakeXRotation(GetRadian(static_cast<int>(this->state.currentPrimitive->latitude)));
-      rotation.AppendYRotation(GetRadian(static_cast<int>(this->state.currentPrimitive->longitude)));
+      EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+      reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+      EffectPrimitiveState& turn = *this->state.currentPrimitive;
+      reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
 
       this->state.currentPrimitive->speed = -2.75f;
       this->state.currentPrimitive->widthSize = 11.5f;
       this->state.currentPrimitive->heightSize = 3.8f;
       this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-      AllocateTextures(*this->state.currentPrimitive);
+      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
       this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\icearrow.tga", 0, false, true, false);
       this->state.currentPrimitive->slots[0].life = 0;
     }
@@ -12784,7 +12787,7 @@ void CRagEffect::IceArrow() {
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 10;
     Owner(this->state.currentPrimitive).InitSegment();
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 }
