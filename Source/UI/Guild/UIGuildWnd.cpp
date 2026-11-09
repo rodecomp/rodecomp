@@ -1226,7 +1226,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
 // FUNCTION: fn_13086
 void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   UIGuildWnd::OnLBtnDown(x, y);
-  if (x >= 6 && x <= 381 && y >= 47 && y <= 66) {
+  if (x > 5 && x < 382 && y > 46 && y < 67) {
     int left = 6;
     for (int column = 0; column < 6; ++column) {
       const int right = g_guildMemberColumnWidths[column] + left;
@@ -1241,11 +1241,9 @@ void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
 
   const int previous = this->m_hoverRow;
   int row;
-  if (static_cast<unsigned>(x - 5) <= 377 && static_cast<unsigned>(y - 66) <= 217) {
-    row = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
-    if (static_cast<unsigned>(row) >= this->m_members.size()) {
-      row = -1;
-    }
+  if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
+    const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
+    row = index >= this->m_members.size() ? -1 : index;
   } else {
     row = -1;
   }
@@ -1999,15 +1997,17 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       g_windowMgr.CloseWindow(WID_GUILDWND);
       break;
     case ID_SEND_GUILD_NOTICE: {
-      std::string body(this->m_bodyEdit->Text());
+      std::string body;
+      body = this->m_bodyEdit->Text();
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        if (g_guildInfo.isMaster) {
-          g_modeMgr.gameMode->SendMsg(MM_GUILD_NOTICE, g_guildInfo.m_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
-        }
-        this->InvalidateChildren();
+        return 0;
       }
+      if (g_guildInfo.isMaster) {
+        CMode* gameMode = g_modeMgr.gameMode;
+        gameMode->SendMsg(MM_GUILD_NOTICE, g_guildInfo.m_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
+      }
+      this->InvalidateChildren();
       break;
     }
     }
