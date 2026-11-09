@@ -97,9 +97,9 @@ CSkill::~CSkill() {
   }
 
   this->ReleaseModel();
-  for (std::uint64_t target : this->m_targets) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    mode->scene->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
+  for (std::vector<std::uint64_t>::iterator it = this->m_targets.begin(); it != this->m_targets.end(); ++it) {
+    std::uint64_t target = *it;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
   }
 
   this->m_targets.clear();
@@ -193,26 +193,26 @@ void CSkill::ReleaseModel() {
 // OFFSET: 0x00E503F0
 // FUNCTION: fn_24294
 void CSkill::Render(int argument) {
-  if (!this->render.enabled) {
+  if (this->render.enabled) {
+    float x;
+    float y;
+    float reciprocalDepth;
+    g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
+    CRenderer* renderer = g_renderer;
+    float scale = renderer->ScaleDistance(reciprocalDepth);
+    scale /= g_heightScale;
+    this->render.distanceScale = scale;
+
+    float bounds[5];
+    bounds[0] = x - (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale;
+    bounds[1] = y - (renderer->viewport.uiScaleY + renderer->viewport.uiScaleY) * scale;
+    bounds[2] = (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale + x;
+    bounds[3] = y;
+    bounds[4] = reciprocalDepth;
+    this->SetRenderInfo(bounds, x, y);
+  } else {
     this->UpdateTlvertex(reinterpret_cast<const float*>(argument));
-    return;
   }
-
-  float x;
-  float y;
-  float reciprocalDepth;
-  g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
-  CRenderer* renderer = g_renderer;
-  const float scale = renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
-  this->render.distanceScale = scale;
-
-  float bounds[5];
-  bounds[0] = x - (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale;
-  bounds[1] = y - (renderer->viewport.uiScaleY + renderer->viewport.uiScaleY) * scale;
-  bounds[2] = (renderer->viewport.uiScaleX + renderer->viewport.uiScaleX) * scale + x;
-  bounds[3] = y;
-  bounds[4] = reciprocalDepth;
-  this->SetRenderInfo(bounds, x, y);
 }
 
 // OFFSET: 0x00E4B690
@@ -222,10 +222,10 @@ void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
     g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 1, 0);
   }
 
-  if (duration <= 0) {
-    duration = EffectLifetime(effectId);
+  unsigned interval = EffectLifetime(effectId) - 20;
+  if (duration > 0) {
+    interval = duration - 20;
   }
-  const unsigned interval = duration - 20;
   if (this->m_effectTimer < interval) {
     return;
   }
@@ -251,62 +251,41 @@ void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
   }
 }
 
-struct SkillPickInfo {
-  /* 0000 */ float left;
-  /* 0004 */ float top;
-  /* 0008 */ float depth;
-  /* 000C */ float right;
-  /* 0010 */ float bottom;
-  /* 0014 */ float depthOffset;
-  /* 0018 */ std::uint32_t aid;
-  /* 001C */ int job;
-  /* 0020 */ int kind;
-  /* 0024 */ float unused;
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(SkillPickInfo) == 0x28);
-#endif
-
 // OFFSET: 0x00E55100
 // FUNCTION: fn_24303
 void CSkill::SetRenderInfo(const float* box, float x, float y) {
   if (this->render.visibilityOptions[1] != 0) {
     // GLOBAL: gl_25171
     static int minimum = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
-    auto* info = static_cast<SkillPickInfo*>(operator new(sizeof(SkillPickInfo)));
-    if (info != nullptr) {
-      info->left = 0.0f;
-      info->top = 0.0f;
-      info->depth = 0.0f;
-      info->right = 0.0f;
-      info->bottom = 0.0f;
-      info->depthOffset = 0.0f;
-    }
+    ActorPickInfo* info = new ActorPickInfo;
     info->left = box[0] < box[2] ? box[0] : box[2];
     info->top = box[1];
     info->depth = box[4] + 350.0f;
     info->right = box[0] > box[2] ? box[0] : box[2];
     info->bottom = box[3];
     info->depthOffset = box[4] + 350.0f;
-    info->aid = this->skillAid;
+    info->accountId = this->skillAid;
     info->job = this->GetEffectiveJob(-1);
+    info->healthState = 0;
     info->kind = 2;
-    info->unused = 0.0f;
+
     const int width = static_cast<int>(info->right - info->left);
     if (width < minimum) {
       const float pad = static_cast<float>((minimum - width) / 2);
       info->right += pad;
       info->left -= pad;
     }
+
     const int height = static_cast<int>(info->bottom - info->top);
     if (height < minimum) {
       const float pad = static_cast<float>((minimum - height) / 2);
       info->bottom += pad;
       info->top -= pad;
     }
-    g_actorPickNode.AddPickInfo(reinterpret_cast<ActorPickInfo*>(info));
+
+    g_actorPickNode.AddPickInfo(info);
   }
+
   this->SetTlvert(x, y);
 }
 
@@ -330,15 +309,16 @@ void CSkill::ShowModel(const char* modelName) {
 
   this->m_model->CopyVolumes(resource->volumes);
   this->m_model->SetSpeed(1.0f);
-  std::memcpy(this->m_model->position, &this->render.position.x, sizeof(this->m_model->position));
+  const vector3d position = this->render.position;
+  this->m_model->position[0] = position.x;
+  this->m_model->position[1] = position.y;
+  this->m_model->position[2] = position.z;
   this->m_model->dirty = 1;
   this->m_model->Assign(*resource);
   this->m_model->Animate(3.0);
   this->m_model->occlusionEnabled = 0;
   this->m_model->playback = 0;
-  using PrepareFn = void (__thiscall*)(C3dActor*, const float*, const float*, const float*);
-  const PrepareFn prepare = reinterpret_cast<PrepareFn>((*reinterpret_cast<void***>(this->m_model))[4]);
-  prepare(this->m_model, diffuse, white, ambient);
+  this->m_model->Prepare(diffuse, white, ambient);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->spatial.InsertModel(*this->m_model, 0);
 }
 
