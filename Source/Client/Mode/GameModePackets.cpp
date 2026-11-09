@@ -7851,7 +7851,7 @@ void CGameMode::ReceiveActorBroadcastText(const unsigned char* data) {
   std::vector<char> text(length, 0);
   std::memcpy(text.data(), data + 0x20, text.size());
   if (g_forbiddenWords.Contains(text.data()) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
   const int aid = *reinterpret_cast<const int*>(data + 4);
