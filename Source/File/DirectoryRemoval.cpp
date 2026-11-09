@@ -24,13 +24,12 @@ void RemoveDirectoryTree(const char* path) {
     std::string dot(".");
     std::string dotdot("..");
     do {
-      if (found.cFileName[0] == '.' && (found.cFileName[1] == 0 || (found.cFileName[1] == '.' && found.cFileName[2] == 0))) {
-        continue;
-      }
-      if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
-        directories.push_back(std::string(found.cFileName));
-      } else {
-        files.push_back(std::string(found.cFileName));
+      if (dot != found.cFileName && dotdot != found.cFileName) {
+        if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+          directories.push_back(std::string(found.cFileName));
+        } else {
+          files.push_back(std::string(found.cFileName));
+        }
       }
     } while (FindNextFileA(search, &found));
     FindClose(search);
