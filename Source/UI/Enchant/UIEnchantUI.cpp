@@ -1178,12 +1178,13 @@ void CUIUpgradeEnchantPage::OnSelectSlot(int value) {
 void CUIUpgradeEnchantPage::SetSlot(int value) {
   this->selectedSlot = value;
   for (const auto& slot : this->slots) {
+    CUISlot* item = slot.second;
     const bool selected = value == slot.first;
-    slot.second->radioButton->checked = selected;
-    slot.second->radioButton->Invalidate();
-    slot.second->description->SetTextColor(selected ? 0x644031 : 0xB6752E);
-    slot.second->description->SetBold(selected);
-    slot.second->description->Relayout();
+    item->radioButton->checked = selected;
+    item->radioButton->Invalidate();
+    item->description->SetTextColor(selected ? 0x644031 : 0xB6752E);
+    item->description->SetBold(selected);
+    item->description->Relayout();
   }
   this->UpdateEnchantInfo();
 }
@@ -1191,8 +1192,9 @@ void CUIUpgradeEnchantPage::SetSlot(int value) {
 // OFFSET: 0x00A05290
 // FUNCTION: fn_14972
 int CUIEnchantPage::FindEmptySlot() {
+  const ITEM_INFO* info = this->gameItem->GetItemInfo();
   const std::vector<int>& slots = this->enchantInfo->slots;
-  auto it = std::find_if(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
+  auto it = std::find_if(slots.begin(), slots.end(), [item = *info](int slot) {
     if (slot >= 4) {
       return true;
     }
@@ -1200,10 +1202,10 @@ int CUIEnchantPage::FindEmptySlot() {
     std::memcpy(&card, item.cards + slot * 4, sizeof(card));
     return card == 0;
   });
-  if (it == slots.end()) {
-    return -1;
+  if (it != slots.end()) {
+    return *it;
   }
-  return *it;
+  return -1;
 }
 
 // OFFSET: 0x00A053D0
@@ -1219,11 +1221,12 @@ std::optional<EnchantOptionInfo*> CUIEnchantPage::FindOption(uint32_t key) {
     return std::nullopt;
   }
 
-  auto it = this->enchantInfo->options.find(key);
-  if (it != this->enchantInfo->options.end()) {
-    return &it->second;
+  auto& options = this->enchantInfo->options;
+  auto it = options.find(key);
+  if (it == options.end()) {
+    return std::nullopt;
   }
-  return std::nullopt;
+  return &it->second;
 }
 
 // OFFSET: 0x00A05CE0
