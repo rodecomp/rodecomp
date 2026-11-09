@@ -270,7 +270,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
             tile.vertices[corner][7] = lightmap->uv[corner][1];
           }
 
-          SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] <= record.heights[2] ? 1.0f : -1.0f);
+          SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] > record.heights[2] ? -1.0f : 1.0f);
           cell.side2 = &tile;
         }
       }
@@ -310,7 +310,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           cell.frame = 0xFFFFFFFFu;
-          SetPoint(cellNormals.side1.values, right.heights[0] <= record.heights[2] ? 1.0f : -1.0f, 0.0f, 0.0f);
+          SetPoint(cellNormals.side1.values, right.heights[0] > record.heights[2] ? -1.0f : 1.0f, 0.0f, 0.0f);
           cell.side1 = &tile;
         }
       }
