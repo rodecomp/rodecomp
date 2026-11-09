@@ -6,8 +6,9 @@
 // FUNCTION: fn_18285
 int ParseHexString(const char* text) {
   int value = 0;
+  int index = static_cast<int>(std::strlen(text)) - 1;
   int shift = 0;
-  for (int index = static_cast<int>(std::strlen(text)) - 1; index > 1; --index) {
+  for (; index >= 2; --index) {
     const int digit = text[index];
     switch (digit) {
     case '0':
