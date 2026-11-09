@@ -5910,7 +5910,9 @@ bool CEffectPrim::Prim3DSlotParticle() {
 // FUNCTION: fn_19799
 bool CEffectPrim::PrimFieldFireflies() {
   FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5962,28 +5964,28 @@ bool CEffectPrim::PrimFieldFireflies() {
           if (this->render.position.y > slot.height[6]) {
             slot.process = 300;
           }
-          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
-          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
+          slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
         } else if (respawn == 2.0f || respawn == 5.0f) {
-          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
-          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
+          slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
         } else if (respawn == 3.0f) {
-          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
-          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
+          slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
           const C3dAttr* grid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain;
-          const int sink = Random(5);
+          const int sink = ClampedRandom(5);
           slot.vecBNow.y = grid->Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
         } else {
-          slot.vecBNow.x = static_cast<float>(Random(200) + 25);
-          slot.vecBNow.z = static_cast<float>(Random(200) + 25);
+          slot.vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
+          slot.vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
           if (std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw") {
-            slot.vecBNow.x = static_cast<float>(Random(400) + 25);
-            slot.vecBNow.z = static_cast<float>(Random(400) + 25);
+            slot.vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
+            slot.vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
           }
-          if (Random(2) == 0) {
+          if (ClampedRandom(2) == 0) {
             slot.vecBNow.x *= -1.0f;
           }
-          if (Random(2) == 0) {
+          if (ClampedRandom(2) == 0) {
             slot.vecBNow.z *= -1.0f;
           }
         }
@@ -5992,42 +5994,7 @@ bool CEffectPrim::PrimFieldFireflies() {
         slot.vecBNow.z = this->render.position.z + slot.vecBNow.z;
       }
 
-      for (int pair = 0; pair < 2; ++pair) {
-        float& current = slot.height[2 * pair];
-        float& target = slot.height[2 * pair + 1];
-        int next;
-        if (target <= current) {
-          current -= 1.0f;
-          if (current < 0.0f) {
-            current = 0.0f;
-          }
-          if (target < current) {
-            continue;
-          }
-          const int range = static_cast<int>(current);
-          int pick = 0;
-          if (range != 0) {
-            const int value = std::rand() % range;
-            pick = value >= 0 ? value : 0;
-          }
-          next = 359 - pick;
-        } else {
-          current += 1.0f;
-          if (current > 359.0f) {
-            current = 359.0f;
-          }
-          if (current <= target) {
-            continue;
-          }
-          const int range = static_cast<int>(current);
-          next = 0;
-          if (range != 0) {
-            const int value = std::rand() % range;
-            next = value >= 0 ? value : 0;
-          }
-        }
-        target = static_cast<float>(next);
-      }
+      DriftSlotAngles(slot, 2);
 
       const float motion = slot.height[7];
       const float driftX = g_sinTable[static_cast<int>(slot.height[0])];
