@@ -5444,77 +5444,79 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
   const float* tm = this->state.transform;
   const vector3d& position = this->render.position;
   float uInc = 0.0f;
-  RenderTriangle* triangle = this->state.triangles;
+  int rpCnt = 0;
   const float last = 360.0f - this->state.arcAngle;
 
   for (float i = 0.0f; last >= i; i += this->state.arcAngle) {
     const int angle1 = static_cast<int>(i);
     const int angle2 = static_cast<int>(this->state.arcAngle + i);
-    const float inner = this->state.innerSize;
-    const float outer = this->state.outerSize;
-    const float depth = -this->state.heightSize;
-    const float local[4][3] = {
-      {inner * g_cosTable[angle1], 0.0f, inner * g_sinTable[angle1]},
-      {inner * g_cosTable[angle2], 0.0f, inner * g_sinTable[angle2]},
-      {outer * g_cosTable[angle1], depth, outer * g_sinTable[angle1]},
-      {outer * g_cosTable[angle2], depth, outer * g_sinTable[angle2]},
+    const vector3d vert1 = {this->state.innerSize * g_cosTable[angle1], 0.0f, this->state.innerSize * g_sinTable[angle1]};
+    const vector3d vert2 = {this->state.innerSize * g_cosTable[angle2], 0.0f, this->state.innerSize * g_sinTable[angle2]};
+    const vector3d vert3 = {this->state.outerSize * g_cosTable[angle1], -this->state.heightSize, this->state.outerSize * g_sinTable[angle1]};
+    const vector3d vert4 = {this->state.outerSize * g_cosTable[angle2], -this->state.heightSize, this->state.outerSize * g_sinTable[angle2]};
+    const vector3d point1 = {
+      vert1.x * tm[0] + vert1.y * tm[3] + vert1.z * tm[6] + tm[9] + position.x, vert1.x * tm[1] + vert1.y * tm[4] + vert1.z * tm[7] + tm[10] + position.y,
+      vert1.x * tm[2] + vert1.y * tm[5] + vert1.z * tm[8] + tm[11] + position.z
     };
-    float world[4][3];
-    for (int corner = 0; corner < 4; ++corner) {
-      const float x = local[corner][0];
-      const float y = local[corner][1];
-      const float z = local[corner][2];
-      world[corner][0] = x * tm[0] + y * tm[3] + z * tm[6] + tm[9] + position.x;
-      world[corner][1] = x * tm[1] + y * tm[4] + z * tm[7] + tm[10] + position.y;
-      world[corner][2] = x * tm[2] + y * tm[5] + z * tm[8] + tm[11] + position.z;
-    }
+    const vector3d point2 = {
+      vert2.x * tm[0] + vert2.y * tm[3] + vert2.z * tm[6] + tm[9] + position.x, vert2.x * tm[1] + vert2.y * tm[4] + vert2.z * tm[7] + tm[10] + position.y,
+      vert2.x * tm[2] + vert2.y * tm[5] + vert2.z * tm[8] + tm[11] + position.z
+    };
+    const vector3d point3 = {
+      vert3.x * tm[0] + vert3.y * tm[3] + vert3.z * tm[6] + tm[9] + position.x, vert3.x * tm[1] + vert3.y * tm[4] + vert3.z * tm[7] + tm[10] + position.y,
+      vert3.x * tm[2] + vert3.y * tm[5] + vert3.z * tm[8] + tm[11] + position.z
+    };
+    const vector3d point4 = {
+      vert4.x * tm[0] + vert4.y * tm[3] + vert4.z * tm[6] + tm[9] + position.x, vert4.x * tm[1] + vert4.y * tm[4] + vert4.z * tm[7] + tm[10] + position.y,
+      vert4.x * tm[2] + vert4.y * tm[5] + vert4.z * tm[8] + tm[11] + position.z
+    };
 
     const float uNext = uInc + 0.25f;
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
-    g_renderer->viewport.Project(world[0], wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = this->state.argb;
-    triangle->vertices[0].u = uInc;
-    triangle->vertices[0].v = 1.0f;
+    g_renderer->viewport.Project(&point1.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[0].u = uInc;
+    this->state.triangles[rpCnt].vertices[0].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[1], wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = this->state.argb;
-    triangle->vertices[2].u = uNext;
-    triangle->vertices[2].v = 1.0f;
+    g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[2].u = uNext;
+    this->state.triangles[rpCnt].vertices[2].v = 1.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[2], wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = this->state.argb;
-    triangle->vertices[1].u = uInc;
-    triangle->vertices[1].v = 0.0f;
-    triangle->texture = this->state.textures[this->render.curMotion];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->viewport.Project(&point3.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[1].u = uInc;
+    this->state.triangles[rpCnt].vertices[1].v = 0.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[3], wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = this->state.argb;
-    triangle->vertices[2].u = uNext;
-    triangle->vertices[2].v = 0.0f;
+    g_renderer->viewport.Project(&point4.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[2].u = uNext;
+    this->state.triangles[rpCnt].vertices[2].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[2], wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = this->state.argb;
-    triangle->vertices[1].u = uInc;
-    triangle->vertices[1].v = 0.0f;
+    g_renderer->viewport.Project(&point3.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[1].u = uInc;
+    this->state.triangles[rpCnt].vertices[1].v = 0.0f;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    g_renderer->viewport.Project(world[1], wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = this->state.argb;
-    triangle->vertices[0].u = uNext;
-    triangle->vertices[0].v = 1.0f;
-    triangle->texture = this->state.textures[this->render.curMotion];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->viewport.Project(&point2.x, wtm.values, projected);
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[rpCnt].vertices[0].u = uNext;
+    this->state.triangles[rpCnt].vertices[0].v = 1.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
 
     uInc = uNext;
