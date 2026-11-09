@@ -551,16 +551,16 @@ void CRagEffect::IceWall() {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
-    const int angle = std::max(rand() % 360, 0);
+    const int angle = ClampedRandom(360);
     const float sine = ClientSine(angle);
     const float cosine = ClientCosine(angle);
     this->state.lastPrim->state.deltaPos2.y = 30.0f;
     this->state.lastPrim->state.deltaPos2.x = sine * 0.0f;
     this->state.lastPrim->state.deltaPos2.z = -static_cast<float>(offset) * cosine;
-    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 40, 0) / 100) + 2.5f;
-    this->state.lastPrim->state.heightSize = static_cast<float>(std::max(rand() % 100, 0) + 300) / 10.0f;
-    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 6, 0) + 87);
+    this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) / 100) + 2.5f;
+    this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(100) + 300) / 10.0f;
+    this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(6) + 87);
     this->state.lastPrim->state.chCnt = 20;
     this->state.lastPrim->state.alpha = 200.0f;
     EffectPrimitiveState& tilt = this->state.lastPrim->state;
@@ -1064,8 +1064,8 @@ void CRagEffect::SoulStrike(char F1) {
   this->state.lastPrim->state.size = 2.75f;
   const char* action = F1 != 0 ? "이팩트\\particle5.act" : "이팩트\\particle1.act";
   const char* sprite = F1 != 0 ? "이팩트\\particle5.spr" : "이팩트\\particle1.spr";
-  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), sprite);
-  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), action);
+  this->state.lastPrim->SetSpriteName(sprite);
+  this->state.lastPrim->SetActionName(action);
   this->state.lastPrim->state.numSegment = 12;
   this->state.lastPrim->InitSegment();
 }
@@ -1109,8 +1109,8 @@ void CRagEffect::SpearBmr() {
   }
 
   this->SetAction(this->Get8Dir2(this->state.parent->render.angle, 1), 1, 1);
-  Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\창.spr");
-  Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\창.act");
+  Owner(this->state.currentPrimitive).SetSpriteName("이팩트\\창.spr");
+  Owner(this->state.currentPrimitive).SetActionName("이팩트\\창.act");
   Owner(this->state.currentPrimitive).InitSegment();
 }
 
@@ -1134,7 +1134,7 @@ void CRagEffect::SprayPond() {
       this->state.currentPrimitive->alpha = 120.0f;
       this->state.currentPrimitive->widthSize = 5.0f;
       this->state.currentPrimitive->heightSize = 2.7f;
-      AllocateTextures(*this->state.currentPrimitive);
+      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
       this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\pond_water.bmp", 0, false, true, false);
     }
   }
@@ -1158,7 +1158,7 @@ void CRagEffect::SprayPond() {
       this->state.currentPrimitive->fadeOutCnt = 0;
       this->state.currentPrimitive->widthSize = 5.5f;
       this->state.currentPrimitive->heightSize = 1.0f;
-      AllocateTextures(*this->state.currentPrimitive);
+      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
       this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
     }
   }
@@ -1178,7 +1178,7 @@ void CRagEffect::SprayPond() {
     this->state.currentPrimitive->alpha = 100.0f;
     this->state.currentPrimitive->fadeOutCnt = 0;
     Owner(this->state.currentPrimitive).InitSegment();
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   }
 }
@@ -1192,8 +1192,8 @@ void CRagEffect::WaterBall2() {
 
   PlayEffectWave(*this, "effect\\wizard_waterball_chulung.wav");
   this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
-  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Waterball.spr");
-  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Waterball.act");
+  this->state.lastPrim->SetSpriteName("이팩트\\Waterball.spr");
+  this->state.lastPrim->SetActionName("이팩트\\Waterball.act");
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
   this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
@@ -1866,31 +1866,31 @@ void CRagEffect::Steal() {
 
   for (int count = 0; count < 10; ++count) {
     this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    this->state.currentPrimitive->longitude = static_cast<float>(ClampedRandom(360));
+    this->state.currentPrimitive->latitude = static_cast<float>(ClampedRandom(100) - 50);
     EffectPrimitiveState& aimed = *this->state.currentPrimitive;
     reinterpret_cast<matrix*>(aimed.transform)->MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
     EffectPrimitiveState& pitched = *this->state.currentPrimitive;
     reinterpret_cast<matrix*>(pitched.transform)->AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
     EffectPrimitiveState& launched = *this->state.currentPrimitive;
-    launched.deltaPos3 = RotatedForward(launched.transform, static_cast<float>(std::max(rand() % 4, 0) + 4));
+    launched.deltaPos3 = RotatedForward(launched.transform, static_cast<float>(ClampedRandom(4) + 4));
     EffectPrimitiveState& placed = *this->state.currentPrimitive;
     placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
     EffectPrimitiveState& level = *this->state.currentPrimitive;
     reinterpret_cast<matrix*>(level.transform)->MakeYRotation(GetRadian(static_cast<int>(level.longitude)));
     this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 50, 0) + 50) / 100.0f;
+    this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(50) + 50) / 100.0f;
     EffectPrimitiveState& braking = *this->state.currentPrimitive;
     braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
-    this->state.currentPrimitive->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    this->state.currentPrimitive->gravSpeed = -static_cast<float>(ClampedRandom(90) + 60) / 100.0f;
     EffectPrimitiveState& falling = *this->state.currentPrimitive;
     falling.gravAccel = -(falling.gravSpeed / static_cast<float>(falling.duration)) * 2.0f;
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 100) / 100.0f;
+    this->state.currentPrimitive->size = static_cast<float>(ClampedRandom(100) + 100) / 100.0f;
     EffectPrimitiveState& shrinking = *this->state.currentPrimitive;
     shrinking.sizeSpeed = -(shrinking.size / static_cast<float>(shrinking.duration));
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 3;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle7.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle7.act");
+    Owner(this->state.currentPrimitive).SetSpriteName("이팩트\\particle7.spr");
+    Owner(this->state.currentPrimitive).SetActionName("이팩트\\particle7.act");
     Owner(this->state.currentPrimitive).InitSegment();
   }
 }
@@ -2027,8 +2027,8 @@ void CRagEffect::RemoveTrap() {
     this->state.lastPrim->state.radiusSpeed = 0.2f;
     rand();
     this->state.lastPrim->state.gravSpeed = -2.0f;
-    this->state.lastPrim->state.gravAccel = static_cast<float>(std::max(rand() % 10, 0)) / 1000.0f + 0.08f;
-    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.gravAccel = static_cast<float>(ClampedRandom(10)) / 1000.0f + 0.08f;
+    this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.size = 0.8f;
     reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     const float* m = this->state.lastPrim->state.transform;
@@ -2039,8 +2039,8 @@ void CRagEffect::RemoveTrap() {
       m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]
     };
     this->state.lastPrim->state.fadeOutCnt = 35;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle1.act");
     this->state.lastPrim->InitSegment();
   }
 }
@@ -2081,8 +2081,8 @@ void CRagEffect::Sphere() {
   this->state.lastPrim->state.chPoint.push_back(95.0f);
   this->state.lastPrim->state.chVal1.push_back(-0.15f);
   this->state.lastPrim->state.chVal2.push_back(this->state.lastPrim->state.radiusAccel);
-  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+  this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+  this->state.lastPrim->SetActionName("이팩트\\particle1.act");
   this->state.lastPrim->InitSegment();
 }
 
@@ -2168,7 +2168,7 @@ bool CRagEffect::Signum() {
     this->state.currentPrimitive->maxAlpha = 170.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 6.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 3;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
     for (int ray = 0; ray < 20; ++ray) {
@@ -2176,16 +2176,16 @@ bool CRagEffect::Signum() {
       this->state.currentPrimitive->duration = 35;
       this->state.currentPrimitive->deltaPos2.y = -40.0f;
       this->state.currentPrimitive->alpha = 0.0f;
-      this->state.currentPrimitive->longitude = static_cast<float>(std::max(0, rand() % 360));
-      this->state.currentPrimitive->longSpeed = static_cast<float>(std::max(0, rand() % 60) + 10) / 10.0f;
+      this->state.currentPrimitive->longitude = static_cast<float>(ClampedRandom(360));
+      this->state.currentPrimitive->longSpeed = static_cast<float>(ClampedRandom(60) + 10) / 10.0f;
       EffectPrimitiveState& turning = *this->state.currentPrimitive;
       turning.longAccel = -(turning.longSpeed / static_cast<float>(turning.duration)) / 1.5f;
-      this->state.currentPrimitive->arcAngle = static_cast<float>(std::max(0, rand() % 25) + 15) / 10.0f;
-      this->state.currentPrimitive->heightSize = static_cast<float>(std::max(0, rand() % 60) + 30);
-      this->state.currentPrimitive->heightSpeed = static_cast<float>(std::max(0, rand() % 35) + 95) / 10.0f;
+      this->state.currentPrimitive->arcAngle = static_cast<float>(ClampedRandom(25) + 15) / 10.0f;
+      this->state.currentPrimitive->heightSize = static_cast<float>(ClampedRandom(60) + 30);
+      this->state.currentPrimitive->heightSpeed = static_cast<float>(ClampedRandom(35) + 95) / 10.0f;
       this->state.currentPrimitive->maxAlpha = 200.0f;
       this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
-      AllocateTextures(*this->state.currentPrimitive);
+      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
       this->state.currentPrimitive->textures[0] = g_texMgr.Load("EFFECT\\alpha_center.tga", 0, false, true, false);
     }
   }
@@ -2210,8 +2210,8 @@ void CRagEffect::Snow() {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 21, 0.0f, 0.0f, 0.0f, WorldObjects());
     this->state.lastPrim->state.orgPos = this->render.position;
     this->state.lastPrim->state.duration = 320;
-    reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
-    const float z = static_cast<float>(std::max(rand() % 300, 0) - 300);
+    reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(ClampedRandom(360)));
+    const float z = static_cast<float>(ClampedRandom(300) - 300);
     const float y = world->terrain->Height(this->render.position.x, this->render.position.z) - 100.0f;
     const float* m = this->state.lastPrim->state.transform;
     this->state.lastPrim->state.deltaPos2 = {
@@ -2222,14 +2222,14 @@ void CRagEffect::Snow() {
     reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = -0.5f;
     this->state.lastPrim->state.accel = 0.0f;
-    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 15, 0) + 25) / 50.0f;
+    this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(15) + 25) / 50.0f;
     this->state.lastPrim->state.rollSpeed = 0.0f;
     this->state.lastPrim->state.alpha = 0.0f;
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
     const int duration = this->state.lastPrim->state.duration;
     this->state.lastPrim->state.fadeOutCnt = duration - duration / 5;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\ef_snow.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\ef_snow.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\ef_snow.spr");
+    this->state.lastPrim->SetActionName("이팩트\\ef_snow.act");
     this->state.lastPrim->InitSegment();
   }
 }
@@ -2494,14 +2494,14 @@ void CRagEffect::Warp() {
 
   if ((this->state.stateCnt & 1) == 0) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
-    const int band = std::max(rand() % 200, 0) / 100;
+    const int band = ClampedRandom(200) / 100;
     this->state.lastPrim->state.radius = static_cast<float>(band) * 0.7f + 1.0f;
     this->state.lastPrim->state.duration = 40;
-    const int longitude = std::max(rand() % 360, 0);
+    const int longitude = ClampedRandom(360);
     const float spin = static_cast<float>(band) * 3.0f + 3.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(longitude);
     this->state.lastPrim->state.longSpeed = spin;
-    this->state.lastPrim->state.gravSpeed = static_cast<float>(60 - std::max(rand() % 240, 0)) / 100.0f;
+    this->state.lastPrim->state.gravSpeed = static_cast<float>(60 - ClampedRandom(240)) / 100.0f;
     EffectPrimitiveState& rise = this->state.lastPrim->state;
     rise.gravAccel = -(rise.gravSpeed / static_cast<float>(rise.duration)) * 0.5f;
     EffectPrimitiveState& particle = this->state.lastPrim->state;
@@ -2510,8 +2510,8 @@ void CRagEffect::Warp() {
     this->state.lastPrim->state.size = 0.2f;
     const int life = this->state.lastPrim->state.duration;
     this->state.lastPrim->state.fadeOutCnt = life - life / 3;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle1.act");
     this->state.lastPrim->InitSegment();
   }
 }
@@ -2553,12 +2553,12 @@ bool CRagEffect::Potion_Berserk() {
     this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.currentPrimitive->duration = 40;
     EffectPrimitiveState& particle = *this->state.currentPrimitive;
-    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = *this->state.currentPrimitive;
-    spot.deltaPos2 = RotatedForward(spot.transform, static_cast<float>(std::max(rand() % 7, 0) + 2));
+    spot.deltaPos2 = RotatedForward(spot.transform, static_cast<float>(ClampedRandom(7) + 2));
     reinterpret_cast<matrix*>(this->state.currentPrimitive->transform)->MakeXRotation(GetRadian(90));
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 60.0f;
-    this->state.currentPrimitive->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+    this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(50) + 20) / 60.0f;
+    this->state.currentPrimitive->widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
     this->state.currentPrimitive->heightSize = 0.2f;
     this->state.currentPrimitive->red = 240;
     this->state.currentPrimitive->green = 0;
@@ -2567,7 +2567,7 @@ bool CRagEffect::Potion_Berserk() {
     this->state.currentPrimitive->maxAlpha = 180.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 20.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
     this->state.currentPrimitive->slots[0].life = 0;
   }
@@ -10633,7 +10633,7 @@ void CRagEffect::StoneCurseRing() {
   const float slowdown = -(ring.radiusSpeed / (ring.duration + 40));
   ring.radiusAccel = slowdown + slowdown;
   this->state.currentPrimitive->fadeOutCnt = 0;
-  AllocateTextures(*this->state.currentPrimitive);
+  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
 }
 
@@ -11233,7 +11233,7 @@ void CRagEffect::Portal() {
     this->state.currentPrimitive->maxAlpha = 128.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 6.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
     this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.currentPrimitive->duration = this->state.duration;
@@ -11246,7 +11246,7 @@ void CRagEffect::Portal() {
     this->state.currentPrimitive->maxAlpha = 128.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 6.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 
@@ -11264,7 +11264,7 @@ void CRagEffect::Portal() {
     const int duration = this->state.currentPrimitive->duration;
     this->state.currentPrimitive->fadeOutCnt = duration - duration / 2;
     Owner(this->state.currentPrimitive).InitSegment();
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 }
@@ -12524,7 +12524,7 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
 
   const char* textureName = name;
   if (kind == 5) {
-    const int pick = std::max(rand() % 3, 0);
+    const int pick = ClampedRandom(3);
     if (pick == 0) {
       textureName = "effect\\레드젬스톤.bmp";
     } else if (pick == 1) {
@@ -12533,14 +12533,14 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
       textureName = "effect\\옐로우젬스톤.bmp";
     }
   } else if (kind == 2) {
-    const int pick = std::max(rand() % 2, 0);
+    const int pick = ClampedRandom(2);
     if (pick == 0) {
       textureName = "effect\\melody_a.bmp";
     } else {
       textureName = "effect\\melody_b.bmp";
     }
   } else if (kind == 8) {
-    const int pick = std::max(rand() % 8, 0);
+    const int pick = ClampedRandom(8);
     if (pick == 0) {
       textureName = "effect\\spell_01.bmp";
     } else if (pick == 1) {
@@ -12587,7 +12587,7 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].vecBNow.x = this->render.position.x;
   this->state.lastPrim->state.slots[0].vecBNow.z = this->render.position.z;
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 6.0f;
-  this->state.lastPrim->state.slots[0].rotStart = std::max(rand() % 360, 0);
+  this->state.lastPrim->state.slots[0].rotStart = ClampedRandom(360);
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 45;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
   this->state.lastPrim->state.slots[0].flag1[2] = 2;
@@ -13003,20 +13003,20 @@ check_cadence:
   int result = this->state.stateCnt / 10;
   if (this->state.stateCnt % 10 == 0) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
-    this->state.lastPrim->state.radius = static_cast<float>(std::max(rand() % 200, 0) / 100) * 0.75f + 5.0f;
+    this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 5.0f;
     this->state.lastPrim->state.radiusSpeed = 0.0005f;
     this->state.lastPrim->state.duration = 130;
-    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     rand();
     this->state.lastPrim->state.longSpeed = 2.0f;
     this->state.lastPrim->state.gravSpeed = -0.2f;
     this->state.lastPrim->state.gravAccel = -(this->state.lastPrim->state.gravSpeed / static_cast<float>(this->state.lastPrim->state.duration)) / 1.5f;
     reinterpret_cast<matrix*>(this->state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform, this->state.lastPrim->state.radius);
-    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 10, 0) / 10) + 0.7f;
+    this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(10) / 10) + 0.7f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 3;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\particle1.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\particle1.act");
+    this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\particle1.spr");
+    this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\particle1.act");
     this->state.lastPrim->InitSegment();
   }
   return result;
@@ -15067,18 +15067,18 @@ void CRagEffect::SandScatter() {
 
   this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.currentPrimitive->pattern = 8;
-  this->state.currentPrimitive->duration = this->state.duration - std::max(0, rand() % 100);
-  this->state.currentPrimitive->speed = static_cast<float>(std::max(0, rand() % 300) + 260) / 100.0f;
-  this->state.currentPrimitive->longitude = static_cast<float>(std::max(0, rand() % 15) + 130);
+  this->state.currentPrimitive->duration = this->state.duration - ClampedRandom(100);
+  this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(300) + 260) / 100.0f;
+  this->state.currentPrimitive->longitude = static_cast<float>(ClampedRandom(15) + 130);
   this->state.currentPrimitive->widthSize = 30.0f;
   this->state.currentPrimitive->heightSize = 30.0f;
-  this->state.currentPrimitive->deltaPos2.x = static_cast<float>(std::max(0, rand() % 640) - 500);
-  this->state.currentPrimitive->deltaPos2.y = static_cast<float>(std::max(0, rand() % 50) - 240);
-  this->state.currentPrimitive->chCnt = std::max(0, rand() % 10) + 10;
+  this->state.currentPrimitive->deltaPos2.x = static_cast<float>(ClampedRandom(640) - 500);
+  this->state.currentPrimitive->deltaPos2.y = static_cast<float>(ClampedRandom(50) - 240);
+  this->state.currentPrimitive->chCnt = ClampedRandom(10) + 10;
   this->state.currentPrimitive->alpha = 128.0f;
   this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 3;
   this->state.currentPrimitive->totalTexture = 1;
-  AllocateTextures(*this->state.currentPrimitive);
+  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\sand1.bmp", 0, false, true, false);
   this->state.currentPrimitive->slots[0].life = 0;
 }
@@ -15236,8 +15236,8 @@ void CRagEffect::Sight() {
   this->state.currentPrimitive->sizeSpeed = -0.1f;
   this->state.currentPrimitive->alpha = 150.0f;
   this->state.currentPrimitive->alphaSpeed = -3.0f;
-  Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
-  Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+  Owner(this->state.currentPrimitive).SetSpriteName("이팩트\\Sight.spr");
+  Owner(this->state.currentPrimitive).SetActionName("이팩트\\Sight.act");
   Owner(this->state.currentPrimitive).InitSegment();
 
   this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
@@ -15250,8 +15250,8 @@ void CRagEffect::Sight() {
   this->state.currentPrimitive->sizeSpeed = -0.06f;
   this->state.currentPrimitive->alpha = 120.0f;
   this->state.currentPrimitive->alphaSpeed = -1.0f;
-  Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
-  Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "Shadow.act");
+  Owner(this->state.currentPrimitive).SetSpriteName("Shadow.spr");
+  Owner(this->state.currentPrimitive).SetActionName("Shadow.act");
   Owner(this->state.currentPrimitive).InitSegment();
 }
 // OFFSET: 0x00C3D190
@@ -15268,18 +15268,18 @@ void CRagEffect::AlphaCenterRise() {
       this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
       this->state.currentPrimitive->duration = 40;
       this->state.currentPrimitive->deltaPos2.y = -40.0f;
-      this->state.currentPrimitive->longitude = static_cast<float>(std::max(0, rand() % 360));
-      this->state.currentPrimitive->longSpeed = static_cast<float>(std::max(0, rand() % 60) + 10) / 10.0f;
+      this->state.currentPrimitive->longitude = static_cast<float>(ClampedRandom(360));
+      this->state.currentPrimitive->longSpeed = static_cast<float>(ClampedRandom(60) + 10) / 10.0f;
       const float accel = -(this->state.currentPrimitive->longSpeed / static_cast<float>(this->state.currentPrimitive->duration));
       this->state.currentPrimitive->longAccel = accel / 1.5f;
-      this->state.currentPrimitive->arcAngle = static_cast<float>(std::max(0, rand() % 25) + 5) / 10.0f;
-      this->state.currentPrimitive->heightSize = static_cast<float>(std::max(0, rand() % 40) + 20);
-      this->state.currentPrimitive->heightSpeed = static_cast<float>(std::max(0, rand() % 30) + 20) / 10.0f;
+      this->state.currentPrimitive->arcAngle = static_cast<float>(ClampedRandom(25) + 5) / 10.0f;
+      this->state.currentPrimitive->heightSize = static_cast<float>(ClampedRandom(40) + 20);
+      this->state.currentPrimitive->heightSpeed = static_cast<float>(ClampedRandom(30) + 20) / 10.0f;
       this->state.currentPrimitive->alpha = 0.0f;
       this->state.currentPrimitive->maxAlpha = 200.0f;
       this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
       this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 3;
-      AllocateTextures(*this->state.currentPrimitive);
+      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
       this->state.currentPrimitive->textures[0] = g_texMgr.Load("EFFECT\\alpha_center.tga", 0, false, true, false);
     }
 
@@ -15308,12 +15308,12 @@ bool CRagEffect::Potion_Awakening() {
     this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.currentPrimitive->duration = 40;
     EffectPrimitiveState& particle = *this->state.currentPrimitive;
-    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = *this->state.currentPrimitive;
-    spot.deltaPos2 = RotatedForward(spot.transform, static_cast<float>(std::max(rand() % 7, 0) + 2));
+    spot.deltaPos2 = RotatedForward(spot.transform, static_cast<float>(ClampedRandom(7) + 2));
     reinterpret_cast<matrix*>(this->state.currentPrimitive->transform)->MakeXRotation(GetRadian(90));
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 60.0f;
-    this->state.currentPrimitive->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+    this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(50) + 20) / 60.0f;
+    this->state.currentPrimitive->widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
     this->state.currentPrimitive->heightSize = 0.2f;
     this->state.currentPrimitive->red = 240;
     this->state.currentPrimitive->green = 240;
@@ -15322,7 +15322,7 @@ bool CRagEffect::Potion_Awakening() {
     this->state.currentPrimitive->maxAlpha = 180.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 20.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
     this->state.currentPrimitive->slots[0].life = 0;
   }
@@ -15432,19 +15432,19 @@ bool CRagEffect::StormGust() {
       static_cast<unsigned int>(this->state.stateCnt - 31) <= 119u) {
     for (int count = 2; count != 0; --count) {
       const int longitudeAngle = rand() % 360;
-      const int radius = std::max(rand() % 25, 0) + 3;
+      const int radius = ClampedRandom(25) + 3;
       this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
       EffectPrimitiveState& particle = this->state.lastPrim->state;
       particle.duration = 215 - this->state.stateCnt;
       particle.pattern |= 1u;
 
-      const int angle = static_cast<int>(static_cast<float>(std::max(rand() % 360, 0)));
+      const int angle = static_cast<int>(static_cast<float>(ClampedRandom(360)));
       const float sine = ClientSine(angle);
       const float cosine = ClientCosine(angle);
       particle.deltaPos2.x = sine * static_cast<float>(radius);
       particle.deltaPos2.y = 20.0f;
       particle.deltaPos2.z = -static_cast<float>(radius) * cosine;
-      particle.size = static_cast<float>(std::max(rand() % 100, 0) + 400) / 100.0f;
+      particle.size = static_cast<float>(ClampedRandom(100) + 400) / 100.0f;
       particle.heightSize = 20.0f;
       particle.longitude = static_cast<float>(std::max(longitudeAngle, 0));
       particle.latitude = 100.0f;
