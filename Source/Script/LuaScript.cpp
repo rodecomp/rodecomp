@@ -1242,7 +1242,7 @@ std::list<int> LuaScript::TableKeys(std::string_view name) {
     lua_pushnil(this->m_state);
 
     while (lua_next(this->m_state, -2)) {
-      keys.push_back(static_cast<int>(lua_tonumber(this->m_state, -2)));
+      keys.push_back(lua_tointeger(this->m_state, -2));
       lua_pop(this->m_state, 1);
     }
 
