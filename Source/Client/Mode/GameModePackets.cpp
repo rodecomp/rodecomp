@@ -1889,11 +1889,11 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
       message += ") : " + this->lastWhisper;
     }
 
-    if (g_pendingWhisperCount <= 0) {
+    if (g_pendingWhisperCount > 0) {
+      --g_pendingWhisperCount;
+    } else {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 2, reinterpret_cast<std::intptr_t>(copied.c_str()), 0);
-    } else {
-      --g_pendingWhisperCount;
     }
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(message.c_str());
