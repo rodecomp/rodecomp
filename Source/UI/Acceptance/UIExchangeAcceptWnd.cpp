@@ -38,12 +38,6 @@ namespace {
   }
 }
 
-// OFFSET: 0x008C7AA0
-// FUNCTION: fn_11941
-UIExchangeAcceptWnd::UIExchangeAcceptWnd()
-    : UIChooseSellBuyWnd(), saved(nullptr) {
-}
-
 // OFFSET: 0x008CAAE0
 // FUNCTION: fn_11996
 UIExchangeAcceptWnd::~UIExchangeAcceptWnd() = default;

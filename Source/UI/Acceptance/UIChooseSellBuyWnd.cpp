@@ -236,6 +236,12 @@ UIChooseSellBuyWnd::UIChooseSellBuyWnd()
     : UIFrameWnd(0), identity(0) {
 }
 
+// OFFSET: 0x008C7AA0
+// FUNCTION: fn_11941
+UIExchangeAcceptWnd::UIExchangeAcceptWnd()
+    : UIChooseSellBuyWnd(), saved(nullptr) {
+}
+
 // OFFSET: 0x008C6FA0
 // FUNCTION: fn_11926
 UIBookWnd::UIBookWnd()
