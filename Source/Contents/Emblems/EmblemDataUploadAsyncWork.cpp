@@ -59,7 +59,7 @@ namespace {
 // FUNCTION: fn_03978
 CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
     : NAsyncWork("Emblem_Upload"), m_accountId(0), m_guildId(0),
-      m_diagnostic(Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93}), 27)) {
+      m_diagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 27) {
 }
 
 // INLINED
@@ -82,7 +82,7 @@ void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, 
   this->m_guildId = guildId;
   this->m_path = path;
   const std::uint8_t unknown[] = {0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5};
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xC52FB5FBB94FF917ULL>(unknown), 54);
+  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>(unknown)), sourceFile, 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 
