@@ -301,15 +301,14 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->itemHeight = itemHeight;
   this->SetSize(width + 2, itemHeight + 2);
 
-  T*& display = this->display;
-  display = new T();
-  display->SetSize(this->width, this->itemHeight);
-  display->Move(1, 1);
-  this->AddChild(display);
+  this->display = new T();
+  this->display->SetSize(this->width, this->itemHeight);
+  this->display->Move(1, 1);
+  this->AddChild(this->display);
 
   this->button = new CUIButton();
-  this->button->SetSize(display->geometry.width, display->geometry.height);
-  this->button->Move(display->geometry.x, display->geometry.y);
+  this->button->SetSize(this->display->geometry.width, this->display->geometry.height);
+  this->button->Move(this->display->geometry.x, this->display->geometry.y);
   this->button->SetOnClick([this]() {
     if (!g_windowMgr.CloseDropDown()) {
       int x = 0;
