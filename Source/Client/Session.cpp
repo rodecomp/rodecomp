@@ -75,6 +75,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
 CSession g_session;

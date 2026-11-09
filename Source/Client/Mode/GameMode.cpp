@@ -9123,6 +9123,8 @@ void CGameMode::UpdateHoverNameBalloon() {
 #include <format>
 #include <io.h>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 #pragma pack(push, 1)
 struct TalkWhisperSettingPacket {
   /* 0000 */ std::int16_t id;

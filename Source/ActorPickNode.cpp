@@ -15,6 +15,8 @@
 #include <map>
 #include <string>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x00AD9530
 // FUNCTION: fn_17878
 std::uint32_t MovementRouteInterpolation::Duration() const {
