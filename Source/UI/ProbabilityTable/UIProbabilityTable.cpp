@@ -363,33 +363,34 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnWhe
 // FUNCTION: fn_16125
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (ProbabilityTable::CUIItem* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
-      if (row - first < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
+      const unsigned int shift = row - first;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.begin() + shift, this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -410,9 +411,10 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScr
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (auto end = this->items.end(); it != end; ++it) {
+    ProbabilityTable::CUIItem* item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
