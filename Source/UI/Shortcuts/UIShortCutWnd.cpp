@@ -1044,6 +1044,12 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     case ID_OK:
       g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
       return 0;
+    case ID_CLOSE:
+      this->Show(0);
+      if (g_session.memorialDungeonState == 2) {
+        g_session.memorialWindowOpen = 0;
+      }
+      return 0;
     case ID_CANCEL: {
       MemorialDungeonCommandPacket packet;
       packet.id = 0x2CF;
@@ -1052,15 +1058,9 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       } else if (g_session.memorialDungeonState == 1) {
         packet.command = 1;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       return 0;
     }
-    case ID_CLOSE:
-      this->Show(0);
-      if (g_session.memorialDungeonState == 2) {
-        g_session.memorialWindowOpen = 0;
-      }
-      return 0;
     case ID_DELETE:
       if (g_session.partyLeader != 0) {
         g_modeMgr.GetGameMode()->SendMsg(MM_MEMORIALDUNGEON_COMMAND, 0, 0, 0, 0);
