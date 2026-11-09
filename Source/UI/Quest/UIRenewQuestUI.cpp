@@ -1089,8 +1089,9 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_COMMAND:
     if (a == ID_CHECK) {
       const bool checked = b != 0;
-      this->checkBox->checked = checked;
-      this->checkBox->Invalidate();
+      CUICheckBox* checkBox = this->checkBox;
+      checkBox->checked = checked;
+      checkBox->Invalidate();
       this->RecordValues(6, a, b != 0, 0, 0);
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_QUESTDISPLAY)) {
         window->Show(checked);
