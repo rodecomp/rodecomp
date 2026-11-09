@@ -977,9 +977,9 @@ vector3d CellWorldPosition(int column, int row) {
     return vector3d{0.0f, 0.0f, 0.0f};
   }
 
-  float x = 0.0f;
-  float y = 0.0f;
   float z = 0.0f;
+  float y = 0.0f;
+  float x = 0.0f;
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->CellOrigin(column, row, x, z);
   y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(x, z);
   return vector3d{x + 2.5f, y + 0.0f, z + 2.5f};
