@@ -307,7 +307,7 @@ void CReputeMgr::SetPointsReceived(bool received) {
 // FUNCTION: fn_04287
 void CReputeMgr::InfoInserter::operator()(const std::pair<int, ReputeInfoRecord>& entry) const {
   ReputeInfo info;
-  info.name = FromUtf8(entry.second.name, g_textCodePage);
+  info.name = static_cast<const std::string&>(FromUtf8(entry.second.name, g_textCodePage));
   info.maxPointPositive = entry.second.maxPointPositive;
   info.maxPointNegative = entry.second.maxPointNegative;
   const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
