@@ -745,14 +745,13 @@ int CRenderObject::HoverHeight() {
 // FUNCTION: fn_21122
 void CRenderObject::DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* palette) {
   if ((this->render.flags & 0x100) != 0) {
-    const short level = this->render.effectPhase;
     bool draw = true;
-    if (level <= 5) {
-      quad.color = (static_cast<short>(level * 50) << 24) + 0xFFFFFF;
-    } else if (level <= 8) {
+    if (this->render.effectPhase <= 5) {
+      quad.color = (static_cast<short>(this->render.effectPhase * 50) << 24) + 0xFFFFFF;
+    } else if (this->render.effectPhase <= 8) {
       quad.color = 0xFFFFFFFF;
-    } else if (level <= 11) {
-      quad.color = (static_cast<short>(895 - level * 80) << 24) + 0xFFFFFF;
+    } else if (this->render.effectPhase <= 11) {
+      quad.color = (static_cast<short>(895 - this->render.effectPhase * 80) << 24) + 0xFFFFFF;
     } else {
       draw = false;
     }
@@ -775,7 +774,8 @@ void CRenderObject::DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* pal
 // FUNCTION: fn_21123
 void CRenderObject::ScaleByPulse(float& scale) const {
   if ((this->render.flags & 0x10) != 0) {
-    const unsigned index = std::max(this->render.pulsePhases[0] * 4u + 90u, 90u);
+    const unsigned phase = this->render.pulsePhases[0] * 4u + 90u;
+    const unsigned index = phase >= 90u ? phase : 90u;
     if (index < 270) {
       scale = ((g_sinTable[index] + 1.0f) * 0.25f + 0.5f) * scale;
     } else {
@@ -784,7 +784,8 @@ void CRenderObject::ScaleByPulse(float& scale) const {
   }
 
   if ((this->render.flags & 0x400) != 0) {
-    const unsigned index = std::max(this->render.pulsePhases[1] * 4u + 90u, 90u);
+    const unsigned phase = this->render.pulsePhases[1] * 4u + 90u;
+    const unsigned index = phase >= 90u ? phase : 90u;
     if (index < 270) {
       scale = (1.5f - (g_sinTable[index] + 1.0f) * 0.25f) * scale;
     } else {
@@ -2241,9 +2242,10 @@ void CGameActor::MakeCorpse() {
   const int animation = this->render.animation;
   const char* sprite = !this->render.sprite ? nullptr : this->render.sprite->GetName();
   const char* action = !this->render.action ? nullptr : this->render.action->GetName();
-  CCorpse* corpse = mode->SpawnCorpse(
-    this->render.position.x, this->render.position.y, this->render.position.z, action, sprite, animation, motion, angle
-  );
+  const float x = this->render.position.x;
+  const float y = this->render.position.y;
+  const float z = this->render.position.z;
+  CCorpse* corpse = mode->SpawnCorpse(x, y, z, action, sprite, animation, motion, angle);
 
   if (corpse) {
     if (static_cast<int>(this->render.spriteJob) > 0) {
@@ -2433,20 +2435,19 @@ int CGameActor::GetMonsterTransformJob() {
 
   int result = -1;
   if (this->render.accountId == g_session.m_aid) {
-    return g_session.GetPairValue();
+    result = g_session.GetPairValue();
+  } else {
+    if (this->transformJobs[0] != -1) {
+      result = this->transformJobs[0];
+    }
+    if (this->transformJobs[1] != -1) {
+      result = this->transformJobs[1];
+    }
+    if (this->transformJobs[2] != -1) {
+      result = this->transformJobs[2];
+    }
   }
-
-  if (this->transformJobs[0] != -1) {
-    result = this->transformJobs[0];
-  }
-  int second = this->transformJobs[1];
-  if (second == -1) {
-    second = result;
-  }
-  if (this->transformJobs[2] != -1) {
-    second = this->transformJobs[2];
-  }
-  return second;
+  return result;
 }
 
 // OFFSET: 0x00CABFA0
@@ -2935,10 +2936,11 @@ void CGameActor::UnRegisterPos() {
 void CGameActor::SetUnknown03C4(int value) {
   this->transformPriority = 0;
   this->monsterTransformJob = value;
-  if (value <= 0) {
-    value = this->GetEffectiveJob(-1);
+  if (value > 0) {
+    this->SetSprJob(value);
+  } else {
+    this->SetSprJob(this->GetEffectiveJob(-1));
   }
-  this->SetSprJob(value);
   this->SetState(this->render.state, 1);
 }
 
@@ -3416,20 +3418,22 @@ int CGameActor::WeaponActionBase(int weaponType) {
 // OFFSET: 0x00CABC80
 // FUNCTION: fn_21035
 int CGameActor::MountHeightOffset() {
-  if (!g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) && !g_session.IsNpcJob(this->GetEffectiveJob(-1)) &&
-      this->render.accountId != g_session.m_aid) {
-    return 0;
-  }
+  int offset = 0;
+  if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) || g_session.IsNpcJob(this->GetEffectiveJob(-1)) ||
+      this->render.accountId == g_session.m_aid) {
+    if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
+      return !this->isRiding ? -20 : 10;
+    }
 
-  if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
-    return this->isRiding ? 10 : -20;
-  }
+    if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
+      return !this->isRiding ? -30 : -40;
+    }
 
-  if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
-    return this->isRiding ? -40 : -30;
+    if (this->isRiding) {
+      offset = 30;
+    }
   }
-
-  return this->isRiding ? 30 : 0;
+  return offset;
 }
 
 // OFFSET: 0x00CABD30
@@ -3857,11 +3861,13 @@ void C3dGrannyGameActor::ProcessMotion() {
   this->model->Animate(this->motionProgress, this->instance);
   this->lastClock = this->clock;
 
-  if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
-    this->motion = 0;
-    this->controls[this->motion] = this->model->PlayAnimation(0, this->instance, this->controls[0], 0);
-    this->render.motionSpeed = 1.0f;
+  if (this->motion != 2 || this->controls[2] == nullptr || GrannyGetControlDurationLeft(this->controls[2]) > 0.0f) {
+    return;
   }
+
+  this->motion = 0;
+  this->controls[this->motion] = this->model->PlayAnimation(0, this->instance, this->controls[0], 0);
+  this->render.motionSpeed = 1.0f;
 }
 
 // OFFSET: 0x00CC5EE0
@@ -4594,8 +4600,7 @@ void CGameActor::RefreshGuildEmblemWindow() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   CGuildMgr* guildMgr = g_guildMgr;
-  const int emblemVersion = guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->GetGdid()));
-  mode->ShowGuildEmblem(this, this->GetGdid(), emblemVersion);
+  mode->ShowGuildEmblem(this, this->GetGdid(), guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->GetGdid())));
 }
 
 // OFFSET: 0x00CC4640
