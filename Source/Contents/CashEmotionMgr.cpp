@@ -1599,15 +1599,22 @@ int CCashEmotionMgr::InsertOrderList(lua_State* state) {
 
   CCashEmotionMgr* mgr = g_cashEmotionMgr;
   auto it = mgr->emotionOrder.find(packId);
-  if (it == mgr->emotionOrder.end()) {
+  if (mgr->emotionOrder.end() != it) {
+    std::vector<int>& order = it->second;
+    auto found = order.begin();
+    for (; order.end() != found; ++found) {
+      if (*found == emotionId) {
+        break;
+      }
+    }
+
+    if (order.end() == found) {
+      order.push_back(emotionId);
+    }
+  } else {
     std::vector<int> order;
     order.push_back(emotionId);
     mgr->emotionOrder.emplace(packId, std::move(order));
-  } else {
-    std::vector<int>& order = it->second;
-    if (std::find(order.begin(), order.end(), emotionId) == order.end()) {
-      order.push_back(emotionId);
-    }
   }
 
   return 1;
