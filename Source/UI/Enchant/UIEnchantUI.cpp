@@ -115,8 +115,7 @@ EnchantUI::CUIEnchantItem* CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CE
   EnchantUI::CUIEnchantItem* item = new EnchantUI::CUIEnchantItem();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->onHover = [this](CUIListItem* listItem) {
     for (EnchantUI::CUIEnchantItem* other : this->items) {
       other->SetHighlighted(other == listItem);
@@ -213,8 +212,7 @@ EnchantUI::CUITargetItem* CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Cre
   EnchantUI::CUITargetItem* item = new EnchantUI::CUITargetItem();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->onHover = [this](CUIListItem* listItem) {
     for (EnchantUI::CUITargetItem* other : this->items) {
       other->SetHighlighted(other == listItem);
@@ -1684,7 +1682,8 @@ bool CUINormalPerfect::LoadEnchantList() {
     const bool lackMaterial = std::any_of(entry.second.materials.begin(), entry.second.materials.end(), [](const std::pair<const int, int>& material) {
       return static_cast<unsigned int>(g_session.GetInventoryItemCount(material.first)) < static_cast<unsigned int>(material.second);
     });
-    this->enchantList->AddData({entry.first, lackZeny || lackMaterial}, false);
+    const bool frozen = lackZeny || lackMaterial;
+    this->enchantList->AddData({entry.first, frozen}, false);
   }
 
   this->enchantList->UpdateScrollBar();
@@ -1823,12 +1822,12 @@ void CUIIngredient::SetMaterial(int itemId, int required) {
 void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
   auto material = info.materials.begin();
   for (CUIIngredient* ingredient : this->ingredients) {
-    if (material == info.materials.end()) {
-      ingredient->Show(0);
-    } else {
+    if (material != info.materials.end()) {
       ingredient->Show(1);
       ingredient->SetMaterial(material->first, material->second);
       ++material;
+    } else {
+      ingredient->Show(0);
     }
   }
 
