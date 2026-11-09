@@ -1001,9 +1001,11 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const char effectSource[] = {'\x70', '\xB2', '\x77', '\x61', '\x92', '\xFF', '\x70', '\x10', '\x64', '\xAE', '\x6D', '\x71', '\xFB'};
-  thread_local EncryptedName<sizeof(effectSource), 0x4F1791FB1503C713ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x70', '\xB2', '\x77', '\x61', '\x92', '\xFF', '\x70', '\x10', '\x64', '\xAE', '\x6D', '\x71', '\xFB'};
+    thread_local EncryptedName<sizeof(bytes), 0x4F1791FB1503C713ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetAngle(ScreenAngle(&target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
   }
 }
@@ -1066,10 +1068,12 @@ void CSkillAction_DR_WIND_BOMB::OnSkillDamage(int level, CGameActor* source, CGa
     return;
   }
 
-  const char effectSource[] = {'\xE8', '\xAA', '\x29', '\xD9', '\xB4', '\x25', '\x8E', '\xFC', '\xFD', '\x9C', '\x2F', '\xD4', '\x9F', '\x47'};
-  thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\xE8', '\xAA', '\x29', '\xD9', '\xB4', '\x25', '\x8E', '\xFC', '\xFD', '\x9C', '\x2F', '\xD4', '\x9F', '\x47'};
+    thread_local EncryptedName<sizeof(bytes), 0x91E147EBBD47C39FULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624640
