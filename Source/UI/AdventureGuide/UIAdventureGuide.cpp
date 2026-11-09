@@ -2135,10 +2135,16 @@ CUIListBox<CUISubTab>* CUITab::CreateSubTabList() {
     }()));
   }
 
-  this->subTabs->itemWidth = 98;
-  this->subTabs->rowHeight = 26;
-  this->subTabs->itemX = 0;
-  this->subTabs->itemY = 0;
+  {
+    CUIListBox<CUISubTab>* subTabs = this->subTabs;
+    subTabs->itemWidth = 98;
+    subTabs->rowHeight = 26;
+  }
+  {
+    CUIListBox<CUISubTab>* subTabs = this->subTabs;
+    subTabs->itemX = 0;
+    subTabs->itemY = 0;
+  }
   this->subTabs->scrollBar->SetSize(9, 26);
   this->subTabs->scrollBar->Move(89, 0);
   this->subTabs->scrollBar->step = 20;
