@@ -39,6 +39,7 @@
 #include "Utility/Text/StringUtil.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 extern "C" {
 #include <lua.h>
 }
@@ -778,7 +779,7 @@ struct ConfigPacket {
 // FUNCTION: fn_06368
 void SendServiceOptionPacket() {
   ServiceOptionPacket packet;
-  packet.id = 0xAE8;
+  packet.id = ID_CZ_NOCOSPLAY;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
@@ -863,7 +864,7 @@ void RotatePlayerDirection(bool clockwise) {
 void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     ConfigPacket packet;
-    packet.id = 0x2D8;
+    packet.id = ID_CZ_CONFIG;
     packet.type = 1;
     packet.value = value;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
@@ -1218,7 +1219,7 @@ void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int 
 void EnableWhisperBlock() {
   g_whisperBlockMgr->Clear();
   WhisperBlockPacket packet;
-  packet.id = 0xD0;
+  packet.id = ID_CZ_SETTING_WHISPER_STATE;
   packet.enabled = 1;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
@@ -1227,7 +1228,7 @@ void EnableWhisperBlock() {
 // FUNCTION: fn_06382
 void DisableWhisperBlock() {
   WhisperBlockPacket packet;
-  packet.id = 0xD0;
+  packet.id = ID_CZ_SETTING_WHISPER_STATE;
   packet.enabled = 0;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
@@ -1236,7 +1237,7 @@ void DisableWhisperBlock() {
 // FUNCTION: fn_06383
 void SendWhisperBlockPacket() {
   ServiceOptionPacket packet;
-  packet.id = 0xD3;
+  packet.id = ID_CZ_REQ_WHISPER_LIST;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 

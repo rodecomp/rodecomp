@@ -97,6 +97,7 @@
 static const std::string g_whisperItemLinkTag = "<ITEML>";
 
 #include "UI/Rodex/UIRodexInboxWnd.h"
+#include "Network/Packets/PacketId.h"
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
   /* 0000 */ std::int16_t id;
@@ -1614,7 +1615,7 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
   switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
   case 0: {
     PacketIdOnly request;
-    request.id = 0xA48;
+    request.id = ID_CZ_CLOSE_UI_STYLINGSHOP;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME), 0, true, false, 0, "Message", 280, 120, 0);
     g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
@@ -1802,7 +1803,7 @@ void CGameMode::ReceiveMacroBlackListCode(unsigned char state, const char* code)
     window->SetCode(state, code);
 
     PacketIdOnly request;
-    request.id = 0xBC4;
+    request.id = ID_CZ_START_MACROBLUSER_HUMAN_CHECK;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
   }
 }
@@ -1899,7 +1900,7 @@ void CGameMode::OpenServiceWindow(unsigned char type) {
   case 0:
     if (!g_windowMgr.LookupWindow(251)) {
       AccountRequestPacket request;
-      request.id = 0x9AB;
+      request.id = ID_CZ_REQ_BANKING_CHECK;
       request.aid = g_session.m_aid;
       GetRagConnection().Send(6, &request);
     }
@@ -2001,7 +2002,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
 
     if (g_rouletteMgr->m_items.size() == 0) {
       PacketIdOnly request;
-      request.id = 0xA1B;
+      request.id = ID_CZ_REQ_ROULETTE_INFO;
       GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
     } else if (!g_windowMgr.roulletteWnd) {
       g_windowMgr.EnsureWindow(WID_ROULLETTEWND);
@@ -4521,7 +4522,7 @@ void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
   const unsigned int count = (packet->length - 4u) >> 1;
   if (count == 0) {
     PacketIdOnly request;
-    request.id = 0x974;
+    request.id = ID_CZ_CANCEL_MERGE_ITEM;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
     return;
   }
@@ -4931,7 +4932,7 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
   }
 
   PacketIdOnly request;
-  request.id = 0x447;
+  request.id = ID_CZ_BLOCKING_PLAY_CANCEL;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
 }
 

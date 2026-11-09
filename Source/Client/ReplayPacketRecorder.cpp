@@ -23,7 +23,7 @@ bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uin
   std::uint16_t id;
   std::memcpy(&id, packet, sizeof(id));
 
-  if (id != ID_REPLAY_WINDOW_RESPONSE) {
+  if (id != ID_CC_REPLAYPACKET) {
     if (g_packetLengths.IsRecorded(id) == 0) {
       return false;
     }
@@ -136,7 +136,7 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
   std::uint16_t id;
   std::memcpy(&id, data, sizeof(id));
 
-  if (id != ID_REPLAY_WINDOW_RESPONSE) {
+  if (id != ID_CC_REPLAYPACKET) {
     if (g_packetLengths.IsRecorded(id) == 0) {
       return false;
     }
@@ -306,7 +306,7 @@ int UIWindow::RecordData(std::uint16_t type, std::vector<unsigned char> data) {
   std::vector<unsigned char> record(data.size() + 6);
   std::memcpy(record.data() + 6, data.data(), data.size());
 
-  const std::uint16_t header[2] = {ID_REPLAY_WINDOW_RESPONSE, type};
+  const std::uint16_t header[2] = {ID_CC_REPLAYPACKET, type};
   const std::uint16_t bytes = static_cast<std::uint16_t>(record.size());
   std::memcpy(record.data(), header, sizeof(header));
   std::memcpy(record.data() + 4, &bytes, sizeof(bytes));

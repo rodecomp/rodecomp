@@ -69,6 +69,7 @@
 #include <string>
 #include <vector>
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 
 namespace {
 #pragma pack(push, 1)
@@ -1052,7 +1053,7 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     case ID_CANCEL: {
       MemorialDungeonCommandPacket packet;
-      packet.id = 0x2CF;
+      packet.id = ID_CZ_MEMORIALDUNGEON_COMMAND;
       if (g_session.memorialDungeonState == 0) {
         packet.command = 0;
       } else if (g_session.memorialDungeonState == 1) {

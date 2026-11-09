@@ -22,6 +22,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdlib>
 #include <cstring>
 #include <list>
@@ -170,7 +171,7 @@ int UICaptchaRegisterWnd::SendMsg(
           this->registerButton->Invalidate();
 
           CaptchaRegisterPacket packet;
-          packet.id = 0x0A52;
+          packet.id = ID_CZ_REQ_UPLOAD_MACRO_DETECTOR;
           memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
           packet.size = static_cast<std::int16_t>(this->m_decompressedSize);
 

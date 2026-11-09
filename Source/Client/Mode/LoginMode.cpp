@@ -2427,22 +2427,22 @@ void CLoginMode::PollNetworkStatus() {
 
   while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr, g_packetLengths)) {
     switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
-    case ID_AC_ACCEPT_LOGIN_V1:
-    case ID_HC_ACCEPT_MAKECHAR_V1:
+    case ID_AC_ACCEPT_LOGIN:
+    case ID_HC_ACCEPT_MAKECHAR:
     case ID_PING:
-    case 0x283:
-    case 0x8E3:
-    case 0x8E4:
-    case ID_HC_ACK_CHARINFO_PER_PAGE_V1:
-    case 0x9C2:
-    case 0xA4D:
-    case 0xA73:
-    case 0xA79:
-    case 0xA7B:
-    case 0xAE0:
+    case ID_ZC_AID:
+    case ID_HC_UPDATE_CHARINFO:
+    case ID_AC_SHUTDOWN_INFO:
+    case ID_HC_ACK_CHARINFO_PER_PAGE:
+    case ID_HC_SECRETSCAN_DATA:
+    case ID_AC_ACCEPT_LOGIN3:
+    case ID_AC_GOOGLE_OTP:
+    case ID_AC_ACCEPT_LOGIN4:
+    case ID_ZC_SEND_EAC_MESSAGE:
+    case ID_AC_REFUSE_LOGIN_USA:
     case 0xC20:
       break;
-    case ID_AC_REFUSE_LOGIN_V1: {
+    case ID_AC_REFUSE_LOGIN: {
       RefuseLoginPacket* packet = reinterpret_cast<RefuseLoginPacket*>(g_gameModePacketBuffer);
       packet->blockDate[19] = '\0';
       this->ShowLoginError(packet->result, reinterpret_cast<int>(packet->blockDate));
@@ -2459,16 +2459,16 @@ void CLoginMode::PollNetworkStatus() {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
-      case 0x6F:
+      case ID_HC_ACCEPT_DELETECHAR:
         g_windowMgr.Confirm(LookupMessage(MSI_OVER_CONNECT_USER), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
-      case 0x76:
+      case ID_ZC_NOTIFY_UPDATECHAR:
         g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_REFINING_LEVEL_LACK), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
-      case 0x77:
+      case ID_ZC_NOTIFY_UPDATEPLAYER:
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_ASSISTANT_TRADE_DATE), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
@@ -2544,10 +2544,10 @@ void CLoginMode::PollNetworkStatus() {
       this->pendingCursorType = 7;
       break;
     }
-    case ID_HC_NOTIFY_ZONESVR_V1:
+    case ID_HC_NOTIFY_ZONESVR:
       this->ReceiveNotifyZoneServer(reinterpret_cast<const NotifyZoneServerPacket*>(g_gameModePacketBuffer));
       break;
-    case ID_ZC_ACCEPT_ENTER_V1:
+    case ID_ZC_ACCEPT_ENTER:
       this->Zc_Accept_Enter2(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
       return;
     case ID_ZC_REFUSE_ENTER:
@@ -2559,13 +2559,13 @@ void CLoginMode::PollNetworkStatus() {
     case ID_SC_NOTIFY_BAN:
       this->ReceiveNotifyBan(g_gameModePacketBuffer);
       break;
-    case 0x1B5:
+    case ID_SC_BILLING_INFO:
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
-    case 0x1BE:
+    case ID_AC_ASK_PNGAMEROOM:
       if (g_windowMgr.Confirm(LookupMessage(MSI_ASK_PNGAMEROOM), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
         GameRoomReplyPacket reply;
-        reply.id = 0x1BF;
+        reply.id = ID_CA_REPLY_PNGAMEROOM;
         reply.permission = 1;
         GetRagConnection().Send(g_packetLengths.FixedLength(reply.id), &reply);
       } else {
@@ -2574,14 +2574,14 @@ void CLoginMode::PollNetworkStatus() {
         this->pendingCursorType = 3;
       }
       break;
-    case 0x1C7: {
+    case ID_SC_ACK_ENCRYPTION: {
       const std::uint8_t source[] = {0x17, 0x62, 0xEB, 0xFF, 0x1C, 0x00, 0xFE, 0xD4, 0x2D, 0x2D, 0x8E, 0xC1, 0x1E, 0x11, 0xEC, 0xC1,
                                      0x2D, 0x64, 0xA4, 0xC1, 0x5D, 0x42, 0xB4, 0x90, 0x59};
       thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> text(source);
       ShowErrorDialog(GetRenderSystemHolder()->system, text.Text(), 0);
       break;
     }
-    case 0x1F1: {
+    case ID_AC_NOTIFY_ERROR: {
       const LoginMessagePacket* packet = reinterpret_cast<const LoginMessagePacket*>(g_gameModePacketBuffer);
       const std::string message(packet->text, packet->length - offsetof(LoginMessagePacket, text));
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
@@ -2597,10 +2597,10 @@ void CLoginMode::PollNetworkStatus() {
       memcpy(blocked, packet->characters, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
       break;
     }
-    case 0x23D:
+    case ID_AC_EVENT_RESULT:
       g_windowMgr.Confirm(LookupMessage(MSI_EVENT_RESULT), 0, true, false, 0, "Message", 280, 120, 0);
       break;
-    case 0x28B: {
+    case ID_HC_CHARNOTBEENSELECTED: {
       const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
       this->slotExtension = packet->extension;
       this->slotExtension.code = htonl(this->slotExtension.code);
@@ -2622,7 +2622,7 @@ void CLoginMode::PollNetworkStatus() {
         sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), reinterpret_cast<const char*>(&g_session.characterRenameData[5]));
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           ChangeCharacterNamePacket request;
-          request.id = 0x28F;
+          request.id = ID_CH_REQ_CHANGE_CHARNAME;
           request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1]);
           GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
           break;
@@ -2636,10 +2636,10 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case ID_HC_ACK_CHANGE_CHARNAME_V1:
+    case ID_HC_ACK_CHANGE_CHARNAME:
       this->ReceiveCharacterResult(reinterpret_cast<const CharacterResultPacket*>(g_gameModePacketBuffer));
       break;
-    case 0x2CA:
+    case ID_HC_REFUSE_SELECTCHAR:
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_SLOT), 0, true, false, 0, "Message", 280, 120, 0);
@@ -2662,10 +2662,10 @@ void CLoginMode::PollNetworkStatus() {
       }
       this->pendingCursorType = GetRagConnection().NativeSocket() != INVALID_SOCKET ? 7 : 3;
       break;
-    case ID_ZC_ACCEPT_ENTER:
+    case ID_ZC_ACCEPT_ENTER2:
       this->Zc_Accept_Enter3(reinterpret_cast<const AcceptEnterPositionPacket*>(g_gameModePacketBuffer));
       return;
-    case 0x448:
+    case ID_HC_CHARACTER_LIST:
       this->ReceiveCharacterList(reinterpret_cast<const CharacterListPacket*>(g_gameModePacketBuffer));
       break;
     case ID_HC_DELETE_CHAR3_RESERVED:
@@ -2680,7 +2680,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_ACCEPT_ENTER2:
       this->ReceiveCharacterSlots(reinterpret_cast<const CharacterSlotsPacket*>(g_gameModePacketBuffer));
       break;
-    case ID_AC_REFUSE_LOGIN: {
+    case ID_AC_REFUSE_LOGIN_SSO: {
       LoginErrorCodePacket* packet = reinterpret_cast<LoginErrorCodePacket*>(g_gameModePacketBuffer);
       packet->text[19] = '\0';
       this->ShowLoginError(packet->code, reinterpret_cast<int>(packet->text));
@@ -2689,13 +2689,13 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_NOTIFY_ACCESSIBLE_MAPNAME:
       this->ReceiveMapStates(reinterpret_cast<const MapStatePacket*>(g_gameModePacketBuffer));
       break;
-    case 0x851:
+    case ID_ZC_GPK_DYNCODE:
       IgnoreRemovedPacket(g_gameModePacketBuffer);
       break;
     case ID_HC_SECOND_PASSWD_LOGIN:
       this->SubD911C0(reinterpret_cast<const PasswordModePacket*>(g_gameModePacketBuffer));
       break;
-    case 0x8BB: {
+    case ID_HC_MAKE_SECOND_PASSWD: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
@@ -2726,7 +2726,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case 0x8BD: {
+    case ID_HC_DELETE_SECOND_PASSWD: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
@@ -2742,7 +2742,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case 0x8BF: {
+    case ID_HC_EDIT_SECOND_PASSWD: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
@@ -2768,7 +2768,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case 0x8C4: {
+    case ID_HC_NOT_AVAILABLE_SECOND_PASSWD: {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
@@ -2786,7 +2786,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case 0x8C6:
+    case ID_HC_AVAILABLE_SECOND_PASSWD:
       switch (reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
@@ -2800,16 +2800,16 @@ void CLoginMode::PollNetworkStatus() {
         break;
       }
       break;
-    case ID_HC_ACK_CHANGE_CHARACTER_SLOT_V1:
     case ID_HC_ACK_CHANGE_CHARACTER_SLOT:
+    case ID_HC_ACK_CHANGE_CHARACTER_SLOT2:
       if (reinterpret_cast<const SecondPasswordStatePacket*>(g_gameModePacketBuffer)->result == 1) {
         g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
-    case ID_HC_ACK_CHANGE_CHARNAME:
+    case ID_CH_ACK_CHANGE_CHARACTERNAME:
       this->SubD8D500(reinterpret_cast<const char*>(g_gameModePacketBuffer));
       break;
-    case 0x986: {
+    case ID_AC_SHUTDOWN_NOTIFY: {
       const ShutdownNoticePacket* packet = reinterpret_cast<const ShutdownNoticePacket*>(g_gameModePacketBuffer);
       __time32_t endTime = packet->endTime;
       const __time32_t startTime = packet->startTime;
@@ -2831,11 +2831,11 @@ void CLoginMode::PollNetworkStatus() {
         GetRagConnection().Send(sizeof(request), &request);
       }
       break;
-    case 0x9A2:
+    case ID_AC_REQ_MOBILE_OTP:
       this->authChallengeId = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
       this->pendingCursorType = 24;
       break;
-    case 0x9A5: {
+    case ID_AC_REFUSE_LOGIN3: {
       const LoginErrorTimePacket* packet = reinterpret_cast<const LoginErrorTimePacket*>(g_gameModePacketBuffer);
       if (packet->code != 0x12) {
         GetRagConnection().Close();
@@ -2844,16 +2844,16 @@ void CLoginMode::PollNetworkStatus() {
       this->ShowLoginError(packet->code, reinterpret_cast<int>(""));
       break;
     }
-    case ID_AC_ACCEPT_LOGIN:
+    case ID_AC_ACCEPT_LOGIN_DOMAIN:
       this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 5);
       break;
-    case ID_HC_NOTIFY_ZONESVR:
+    case ID_HC_NOTIFY_ZONESVR_DOMAIN:
       this->ReceiveNotifyZoneServer2(reinterpret_cast<const NotifyZoneServer2Packet*>(g_gameModePacketBuffer));
       break;
-    case 0xAC9:
+    case ID_AC_LOGIN_TAREN_ACCEPT:
       this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 4);
       break;
-    case 0xACA: {
+    case ID_AC_LOGIN_TAREN_REFUSE: {
       const ResultPacket* packet = reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer);
       int message = 0xC82;
       switch (packet->result) {
@@ -2892,32 +2892,32 @@ void CLoginMode::PollNetworkStatus() {
       this->pendingCursorType = 3;
       break;
     }
-    case 0xACD:
+    case ID_AC_LOGIN_TAREN_REFUSE2:
       this->ReceiveRefuseLogin(reinterpret_cast<const RefuseLoginPacket*>(g_gameModePacketBuffer));
       break;
-    case 0xAD1:
+    case ID_TC_RESULT:
       this->ReceiveLoginError(reinterpret_cast<const LoginErrorPacket*>(g_gameModePacketBuffer));
       break;
-    case 0xADE: {
+    case ID_ZC_RECOVER_PENALTY_OVERWEIGHT: {
       const int value = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
       if (value > 0) {
         g_unknown173A5BC = value;
       }
       break;
     }
-    case ID_TC_RESULT:
+    case ID_TC_RESULT2:
       this->ReceiveLoginErrorDetail(reinterpret_cast<const LoginErrorDetailPacket*>(g_gameModePacketBuffer));
       break;
-    case 0xAE9:
+    case ID_HC_SECOND_PASSWD_LOGIN2:
       this->SubD90C90(reinterpret_cast<const PasswordModePacket*>(g_gameModePacketBuffer));
       break;
-    case 0xB02: {
+    case ID_AC_REFUSE_LOGIN_EX: {
       const LoginErrorCodePacket* packet = reinterpret_cast<const LoginErrorCodePacket*>(g_gameModePacketBuffer);
       const std::string text(packet->text, sizeof(packet->text));
       this->ShowLoginError(packet->code, reinterpret_cast<int>(text.c_str()));
       break;
     }
-    case 0xB07:
+    case ID_AC_ACCEPT_LOGIN_VIETNAM:
       this->ReceiveAcceptLogin(reinterpret_cast<const AcceptLoginPacket*>(g_gameModePacketBuffer), 6);
       break;
     case ID_ZC_EXTEND_BODYITEM_SIZE: {
@@ -2927,7 +2927,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case ID_HC_ACCEPT_MAKECHAR: {
+    case ID_HC_ACCEPT_MAKECHAR2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       g_charInfo = packet->info;
       g_selectedSlotIndex = static_cast<char>(g_charInfo.slot);
@@ -2939,7 +2939,7 @@ void CLoginMode::PollNetworkStatus() {
       this->pendingCursorType = 7;
       break;
     }
-    case 0xB71: {
+    case ID_HC_UPDATE_CHARINFO2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, packet->info.slot, 0, 0, 0));
       if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1])) {
@@ -2949,14 +2949,14 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     }
-    case ID_HC_ACK_CHARINFO_PER_PAGE:
+    case ID_HC_ACK_CHARINFO_PER_PAGE2:
       this->ReceiveCharacterPage(reinterpret_cast<const CharacterPagePacket*>(g_gameModePacketBuffer));
       break;
     case 0xC05: {
       const CharacterSlotCountsPacket* packet = reinterpret_cast<const CharacterSlotCountsPacket*>(g_gameModePacketBuffer);
       g_session.restrictedCharacterSlots = packet->counts[1];
       CharacterSlotsPacket slots;
-      slots.id = 0x82D;
+      slots.id = ID_HC_ACCEPT_ENTER2;
       slots.length = sizeof(CharacterSlotsPacket);
       slots.normalSlots = packet->counts[0] + packet->counts[1];
       slots.premiumSlots = packet->counts[2];
@@ -3068,7 +3068,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       /* 0002 */ char code[9];
     };
     PacketAD0 packet;
-    packet.id = 0xAD0;
+    packet.id = ID_CT_MOTP;
     memcpy_s(packet.code, sizeof(packet.code), &this->loginCredentials[0x80], sizeof(packet.code));
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
@@ -3697,7 +3697,7 @@ void CLoginMode::OnChangeState(int value) {
 
     ZoneLoginPacket packet;
     std::memset(&packet, 0, sizeof(packet));
-    packet.id = 0xACF;
+    packet.id = ID_CT_AUTH;
     const std::uint8_t codeSource[] = {0x7F, 0x57, 0xDC, 0xB4, 0x09};
     thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
@@ -3948,7 +3948,7 @@ void CLoginMode::OnChangeState(int value) {
     g_packetReassembler->Notify(2);
     SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()));
     AccountLoginPacket packet;
-    packet.id = 0x64;
+    packet.id = ID_CA_LOGIN;
     packet.version = g_patchedClientVersion;
     std::memcpy(packet.name, &this->loginCredentials[0x40], sizeof(packet.name));
     if (g_serviceType == 7) {
@@ -3986,7 +3986,7 @@ void CLoginMode::OnChangeState(int value) {
     g_packetReassembler->Notify(2);
     g_charServerAccountIdPending = 1;
     CharServerEnterPacket packet;
-    packet.id = 0x65;
+    packet.id = ID_CH_ENTER;
     packet.clientType = 0;
     packet.aid = g_session.m_aid;
     packet.authCode = account.authCode;
@@ -4001,7 +4001,7 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     MakeCharacterPacket packet;
-    packet.id = 0xA39;
+    packet.id = ID_CH_MAKE_CHAR_TRIBE;
     std::memcpy(packet.name, g_charInfo.name, sizeof(packet.name));
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     packet.headPalette = g_charInfo.headPalette;
@@ -4018,7 +4018,7 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     DeleteCharacterPacket packet;
-    packet.id = 0x829;
+    packet.id = ID_CH_DELETE_CHAR3;
     std::strncpy(packet.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(packet.code));
     const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(this->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
     packet.gid = character->gid;
@@ -4030,7 +4030,7 @@ void CLoginMode::OnChangeState(int value) {
     } else if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 1) {
       DeleteCharacterEmailPacket email;
       email.gid = character->gid;
-      email.id = 0x1FB;
+      email.id = ID_CH_DELETE_CHAR2;
       std::strncpy(email.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(email.code));
       email.code[49] = '\0';
       GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(email.id), &email);
@@ -4044,7 +4044,7 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     SelectCharacterPacket packet;
-    packet.id = 0x66;
+    packet.id = ID_CH_SELECT_CHAR;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     g_cashEmotionMgr->ClearOwnedPacks();
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
@@ -4085,7 +4085,7 @@ void CLoginMode::OnChangeState(int value) {
     }
 
     ZoneEnterPacket packet;
-    packet.packetType = 0x436;
+    packet.packetType = ID_CZ_ENTER2;
     packet.clientTime = timeGetTime();
     packet.aid = g_session.m_aid;
     packet.gid = g_session.m_gid;
@@ -4208,7 +4208,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 31: {
     SelectMapPacket packet;
-    packet.id = 0x841;
+    packet.id = ID_CH_SELECT_ACCESSIBLE_MAPNAME;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     packet.map = static_cast<unsigned char>(this->mapStates.front().index);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);

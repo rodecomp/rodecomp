@@ -2,6 +2,7 @@
 
 #include "Contents/ShowRankingScheduler.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -46,7 +47,7 @@ void CCaptchaUploadSchedule::Process(const std::uint64_t& now) {
     }
 
     CaptchaUploadHeader* header = new CaptchaUploadHeader;
-    header->packetType = 0xA54;
+    header->packetType = ID_CZ_UPLOAD_MACRO_DETECTOR_CAPTCHA;
     header->length = static_cast<std::int16_t>(chunk + 8);
     memcpy_s(&header->sessionId, sizeof(header->sessionId), &this->sessionId, sizeof(this->sessionId));
 

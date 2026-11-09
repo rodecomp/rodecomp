@@ -4522,7 +4522,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
     } else {
       BankingCheckPacket packet;
-      packet.id = 0x9AB;
+      packet.id = ID_CZ_REQ_BANKING_CHECK;
       packet.aid = g_session.m_aid;
       CRagConnection& connection = GetRagConnection();
       GetRagConnection();
@@ -4539,7 +4539,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       window->SendMsg(nullptr, UM_ROTATE_SHORTCUT_ROWS, 1, g_session.GetOption(10), 0, 0);
     }
     ShortcutRotatePacket packet;
-    packet.id = 0xB22;
+    packet.id = ID_CZ_SHORTCUTKEYBAR_ROTATE_V2;
     packet.option = static_cast<std::uint16_t>(g_session.GetOption(10));
     if (packet.option == 0) {
       packet.state = static_cast<unsigned char>(g_session.mainShortcutRow);

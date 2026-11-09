@@ -27,6 +27,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstring>
 
 #include <windows.h>
@@ -523,7 +524,7 @@ int UIGradeEnchantWnd::SendMsg(
             this->requestPending = 1;
 
             GradeEnchantRequestPacket packet;
-            packet.id = 0xB5B;
+            packet.id = ID_CZ_GRADE_ENCHANT_REQUEST;
             packet.index = static_cast<std::uint16_t>(this->item.identity[1]);
             packet.material = this->selectedMaterial;
             packet.useBlessing = this->blessingAmount > 0;
@@ -537,7 +538,7 @@ int UIGradeEnchantWnd::SendMsg(
     case ID_CANCEL:
     case ID_CLOSE: {
       GradeEnchantClosePacket packet;
-      packet.id = 0xB5C;
+      packet.id = ID_CZ_GRADE_ENCHANT_CLOSE_UI;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_GRADEENCHANTWND);
       break;
@@ -568,7 +569,7 @@ int UIGradeEnchantWnd::SendMsg(
 
       if (dropped.identity[1] != 0 && dropped.identified == 1) {
         GradeEnchantSelectPacket packet;
-        packet.id = 0xB59;
+        packet.id = ID_CZ_GRADE_ENCHANT_SELECT_EQUIPMENT;
         packet.index = static_cast<std::uint16_t>(argument1);
         GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       }

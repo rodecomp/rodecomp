@@ -4,6 +4,7 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstdint>
 #include <cstring>
@@ -45,7 +46,7 @@ inline void SendShortcutUpdate(
 
   const auto position = static_cast<std::uint16_t>(index);
   std::memcpy(packet + 4, &position, sizeof(position));
-  connection.Send(lengths.FixedLength(2849), packet);
+  connection.Send(lengths.FixedLength(ID_CZ_SHORTCUT_KEY_CHANGE_V2), packet);
 }
 
 #endif

@@ -2,6 +2,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Security/NProtectGameGuardMgr.h"
+#include "Network/Packets/PacketId.h"
 
 #include <timeapi.h>
 
@@ -29,7 +30,7 @@ void SendGameTick(bool force, std::uint32_t& pendingTick, std::uint32_t& lastTic
   lastTick = timeGetTime();
 
   GameTickPacket packet;
-  packet.id = 0x0360;
+  packet.id = ID_CZ_REQUEST_TIME2;
   packet.tick = timeGetTime();
   connection.Send(lengths.FixedLength(packet.id), &packet);
 

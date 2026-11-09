@@ -40,6 +40,7 @@
 #include "Resource/SkinPalette.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -324,7 +325,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         }
 
         RodexCheckRecipientPacket packet;
-        packet.packetType = 0xB97;
+        packet.packetType = ID_CZ_CHECK_RODEX_RECEIVE;
         std::memset(packet.name, 0, sizeof(packet.name));
         strcpy_s(packet.name, sizeof(packet.name), this->m_recipientEdit->Text());
         if (g_session.HasCharacterName(packet.name)) {

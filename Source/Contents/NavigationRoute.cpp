@@ -37,6 +37,7 @@
 #include "Render/TextureQuad.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 namespace {
   // GLOBAL: gl_25136
   int g_locationFrame = 1;
@@ -276,7 +277,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
   }
 
   PrivateAirshipRequestPacket packet;
-  packet.id = 0xA49;
+  packet.id = ID_CZ_REQ_PRIVATE_AIRPLANE_CALL;
   strcpy_s(packet.mapName, sizeof(packet.mapName), mapName.c_str());
   packet.itemId = itemId;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);

@@ -2,6 +2,7 @@
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 
 #include <timeapi.h>
 
@@ -26,7 +27,7 @@ void CLoginMode::SendKeepalive() {
     this->nextKeepaliveTime = timeGetTime() + 12000;
 
     KeepalivePacket packet;
-    packet.id = 0x0187;
+    packet.id = ID_PING;
     packet.accountId = g_session.m_aid;
     CRagConnection& connection = GetRagConnection();
     connection.Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);

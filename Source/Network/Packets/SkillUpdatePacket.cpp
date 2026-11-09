@@ -33,7 +33,7 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   case ID_ZC_HOSKILLINFO_UPDATE:
     value = g_session.LookupHomunSkill(id);
     break;
-  case 670:
+  case ID_ZC_MER_SKILLINFO_UPDATE:
     value = g_session.LookupMercSkill(id);
     break;
   }
@@ -53,7 +53,7 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   case ID_ZC_HOSKILLINFO_UPDATE:
     g_session.UpdateHomunSkill(value, 1);
     break;
-  case 670:
+  case ID_ZC_MER_SKILLINFO_UPDATE:
     g_session.UpdateMercSkill(value, 1);
     break;
   }

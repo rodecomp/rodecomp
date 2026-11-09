@@ -2,6 +2,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Md5State.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstdio>
 #include <cstdint>
@@ -26,7 +27,7 @@ void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTA
   }
 
   ExecutableDigestPacket packet;
-  packet.id = 0x0204;
+  packet.id = ID_CA_EXE_HASHCHECK;
   MD5State md5;
   md5.Init();
   char filename[MAX_PATH];

@@ -38,6 +38,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstddef>
 #include <cstring>
 
@@ -1100,7 +1101,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         } else {
           PACKET_CZ_ACTIVE_QUEST packet;
           packet.questId = questId;
-          packet.packetType = 0x2B6;
+          packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.active = argument2 != 0;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
           return 0;

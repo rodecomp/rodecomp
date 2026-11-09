@@ -19,6 +19,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <algorithm>
 #include <cstring>
 
@@ -230,7 +231,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         switch (this->m_menuItems[argument1].value) {
         case 48: {
           PACKET_CZ_ACTIVE_QUEST packet;
-          packet.packetType = 0x2B6;
+          packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.questId = it->first;
           packet.active = !it->second.m_active;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);

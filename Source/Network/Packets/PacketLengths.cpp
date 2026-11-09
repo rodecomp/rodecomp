@@ -29,7 +29,7 @@ __declspec(noinline) PacketLengthResult PacketLengths::Lookup(int id) const {
 // FUNCTION: fn_20391
 int PacketLengths::FixedLength(int id) const {
   switch (id) {
-  case 703:
+  case ID_ZC_SRPACKETR2_INIT:
     return 12;
 
   case ID_CZ_SRPACKETR2_START:

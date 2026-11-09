@@ -33,6 +33,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <algorithm>
 #include <atlconv.h>
 #include <cstdlib>
@@ -693,7 +694,7 @@ int UIMacroReporterWnd::SendMsg(
         if (result != 188) {
           for (auto it = accounts.begin(); it != accounts.end(); ++it) {
             PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
-            packet.packetType = 0xA56;
+            packet.packetType = ID_CZ_REQ_APPLY_MACRO_DETECTOR;
             packet.accountId = *it;
             GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
           }

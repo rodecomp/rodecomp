@@ -12,6 +12,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Script/LuaScript.h"
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstring>
 #include <string>
 
@@ -51,7 +52,7 @@ CEntryQueueMgr::~CEntryQueueMgr() {
 void CEntryQueueMgr::SendAdmissionReply(int result) {
   if (this->current) {
     EntryQueueAdmissionPacket packet;
-    packet.id = 0x8E0;
+    packet.id = ID_CZ_REPLY_LOBBY_ADMISSION;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
     strcpy_s(packet.characterName, sizeof(packet.characterName), this->characterName.text);
     packet.result = static_cast<std::uint8_t>(result);
@@ -69,7 +70,7 @@ void CEntryQueueMgr::SendAdmissionReply(int result) {
 // FUNCTION: fn_19661
 void CEntryQueueMgr::SendApply(std::uint16_t type, const char* name) {
   EntryQueueApplyPacket packet;
-  packet.id = 0x8D7;
+  packet.id = ID_CZ_REQ_ENTRY_QUEUE_APPLY;
   packet.type = type;
   strncpy_s(packet.queueName, sizeof(packet.queueName), name, 23);
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
@@ -80,7 +81,7 @@ void CEntryQueueMgr::SendApply(std::uint16_t type, const char* name) {
 void CEntryQueueMgr::SendCancel() {
   if (this->current) {
     EntryQueueNamePacket packet;
-    packet.id = 0x8DA;
+    packet.id = ID_CZ_REQ_ENTRY_QUEUE_CANCEL;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
@@ -91,7 +92,7 @@ void CEntryQueueMgr::SendCancel() {
 void CEntryQueueMgr::SendRankingRequest() {
   if (this->current) {
     EntryQueueNamePacket packet;
-    packet.id = 0x90A;
+    packet.id = ID_CZ_REQ_ENTRY_QUEUE_RANKING;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }

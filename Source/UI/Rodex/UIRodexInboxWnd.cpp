@@ -71,7 +71,7 @@ UIRodexInboxWnd::UIRodexInboxWnd()
   std::memset(this->returnButtons, 0, sizeof(this->returnButtons));
   g_rodexMailStore->isPageComplete = false;
   PACKET_CZ_OPEN_RODEXBOX packet;
-  packet.packetType = ID_CZ_OPEN_RODEXBOX;
+  packet.packetType = ID_CZ_OPEN_ALL_RODEX;
   packet.lastMailId0 = 0;
   if (g_rodexMailStore->m_mails0.size() > 0) {
     packet.lastMailId0 = g_rodexMailStore->m_mails0.rbegin()->first;
@@ -952,7 +952,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
 
       PACKET_CZ_REQ_REFRESH_RODEX packet;
-      packet.packetType = ID_CZ_REQ_REFRESH_RODEX;
+      packet.packetType = ID_CZ_UPDATE_ALL_RODEX;
       packet.lastMailId0 = 0;
       if (g_rodexMailStore->m_mails0.size() > 0) {
         packet.lastMailId0 = g_rodexMailStore->m_mails0.rbegin()->first;

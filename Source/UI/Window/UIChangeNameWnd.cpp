@@ -21,6 +21,7 @@
 #include "Network/Packets/PacketLengths.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -165,7 +166,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
       if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         CharacterRenamePacket packet;
-        packet.id = 0x8FC;
+        packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
         packet.gid = this->m_character->gid;
         g_renameGid = packet.gid;
         std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));

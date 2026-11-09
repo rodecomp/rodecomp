@@ -27,6 +27,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -68,7 +69,7 @@ UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
   this->item = ITEM_INFO();
 
   LapineUpgradeClosePacket packet;
-  packet.id = 0x0AB5;
+  packet.id = ID_CZ_RANDOM_UPGRADE_ITEM_UI_CLOSE;
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
@@ -628,7 +629,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_LAPINE_START_UPGRADE:
       if (this->item.identity[1] != 0) {
         LapineUpgradeStartPacket packet;
-        packet.id = 0xAB6;
+        packet.id = ID_CZ_REQ_RANDOM_UPGRADE_ITEM;
         packet.ingredientId = this->ingredientId;
         packet.itemId = static_cast<std::int16_t>(this->item.identity[1]);
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);

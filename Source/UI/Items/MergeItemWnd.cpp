@@ -26,6 +26,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdlib>
 #include <string>
 #include <windows.h>
@@ -358,7 +359,7 @@ int CMergeItemWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     case ID_CANCEL:
     case ID_CLOSE: {
       MergeItemCancelPacket packet;
-      packet.id = 0x974;
+      packet.id = ID_CZ_CANCEL_MERGE_ITEM;
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_MERGEITEMWND);
       break;

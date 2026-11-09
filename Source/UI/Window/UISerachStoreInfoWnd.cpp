@@ -20,6 +20,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdlib>
 #include <cstring>
 #include <list>
@@ -209,7 +210,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     switch (argument1) {
     case ID_CLOSE: {
       SearchStoreRequestHeader packet;
-      packet.packetType = 0x83B;
+      packet.packetType = ID_CZ_CLOSE_SEARCH_STORE_INFO;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       g_session.storeSearchX = -1;
       g_session.storeSearchY = -1;
@@ -297,7 +298,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             } else if (this->m_searchPending != 0) {
               SearchStoreQueryPacket packet;
               packet.maxPrice = maximum;
-              packet.packetType = 0x835;
+              packet.packetType = ID_CZ_SEARCH_STORE_INFO;
               packet.packetLength = length;
               packet.searchType = searchType;
               packet.minPrice = minimum;
@@ -390,7 +391,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] != 0) {
         this->m_page = page + 1;
         SearchStoreRequestHeader packet;
-        packet.packetType = 0x838;
+        packet.packetType = ID_CZ_SEARCH_STORE_INFO_NEXT_PAGE;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         return 0;
       }
@@ -435,7 +436,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   g_session.storeSearchOwnerAid = 0xFFFFFFFF;
 
   SearchStoreClickPacket packet;
-  packet.packetType = 0x83C;
+  packet.packetType = ID_CZ_SSILIST_ITEM_CLICK;
   packet.accountId = entry->accountId;
   packet.storeId = entry->storeId;
   packet.itemId = entry->item.GetItemId();

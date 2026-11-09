@@ -28,6 +28,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <windows.h>
 #include <shellapi.h>
 #include <timeapi.h>
@@ -796,7 +797,7 @@ int UIRefiningWnd::SendMsg(
           } else {
             this->requestPending = 1;
             RefiningRequestPacket packet;
-            packet.id = 0xAA3;
+            packet.id = ID_CZ_REQ_REFINING;
             packet.index = static_cast<std::uint16_t>(index);
             packet.materialId = this->materials[this->selectedMaterial].itemId;
             packet.useCatalyst = this->catalystEnabled;
@@ -809,7 +810,7 @@ int UIRefiningWnd::SendMsg(
     case ID_CLOSE:
       if (this->state != 2) {
         RefiningClosePacket packet;
-        packet.id = 0xAA4;
+        packet.id = ID_CZ_CLOSE_REFINING_UI;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         g_windowMgr.CloseWindow(WID_REFININGWND);
       }
@@ -840,7 +841,7 @@ int UIRefiningWnd::SendMsg(
       if (info.identity[1] > 0) {
         if (info.identified == 1) {
           RefiningSelectPacket packet;
-          packet.id = 0xAA1;
+          packet.id = ID_CZ_REFINING_SELECT_ITEM;
           packet.index = static_cast<std::uint16_t>(argument1);
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         } else {

@@ -2,6 +2,7 @@
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstdint>
 
@@ -20,7 +21,7 @@ namespace {
 // FUNCTION: fn_24219
 void CSession::SendClientOption(unsigned char value) {
   ClientOptionPacket packet;
-  packet.id = 0x02D8;
+  packet.id = ID_CZ_CONFIG;
   packet.option = 6;
   packet.value = value;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
@@ -30,7 +31,7 @@ void CSession::SendClientOption(unsigned char value) {
 // FUNCTION: fn_24227
 void CSession::SendHomunculusAutoFeedOption(unsigned char enabled) {
   ClientOptionPacket packet;
-  packet.id = 0x02D8;
+  packet.id = ID_CZ_CONFIG;
   packet.option = 3;
   packet.value = enabled;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
@@ -40,7 +41,7 @@ void CSession::SendHomunculusAutoFeedOption(unsigned char enabled) {
 // FUNCTION: fn_24234
 void CSession::SendPetAutoFeedOption(unsigned char enabled) {
   ClientOptionPacket packet;
-  packet.id = 0x02D8;
+  packet.id = ID_CZ_CONFIG;
   packet.option = 2;
   packet.value = enabled;
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);

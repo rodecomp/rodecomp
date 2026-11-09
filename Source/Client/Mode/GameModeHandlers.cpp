@@ -70,6 +70,7 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 
 #pragma pack(push, 1)
 struct ClanInfoPacket {
@@ -2833,7 +2834,7 @@ void CGameMode::ReceiveSpriteChange2Mirrored(const unsigned char* packet) {
   if (*reinterpret_cast<const std::uint32_t*>(packet + 2) == g_session.m_aid) {
     for (std::uint32_t aid : this->spriteMirrorActorIds) {
       SpriteChange2RelayPacket relay;
-      relay.id = 0x1D7;
+      relay.id = ID_ZC_SPRITE_CHANGE2;
       relay.aid = aid;
       relay.type = packet[6];
       relay.value = *reinterpret_cast<const std::int64_t*>(packet + 7);

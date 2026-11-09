@@ -464,7 +464,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           g_windowMgr.CloseWindow(WID_CHECKATTENDANCEWND);
         } else {
           MenuIconOpenUiPacket packet;
-          packet.id = 0xA68;
+          packet.id = ID_CZ_UI_OPEN;
           packet.type = 5;
           GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
         }

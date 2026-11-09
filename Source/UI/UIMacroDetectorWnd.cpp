@@ -12,6 +12,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
@@ -112,7 +113,7 @@ int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
     } else if (a == 345 && this->m_editCtrl->Length() != 0 && this->m_lastAnswer != this->m_editCtrl->Text()) {
       CaptchaAnswerPacket packet;
-      packet.id = 0xA5C;
+      packet.id = ID_CZ_ACK_ANSWER_MACRO_DETECTOR;
       memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
       GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       this->m_lastAnswer = this->m_editCtrl->Text();

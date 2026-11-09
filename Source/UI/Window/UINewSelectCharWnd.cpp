@@ -34,6 +34,7 @@
 #include "UI/Window/UIChangeNameWnd.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <windows.h>
 #include <mmsystem.h>
 #include <algorithm>
@@ -905,14 +906,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       const CharacterInfo* info =
         reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
       CharacterGidPacket packet;
-      packet.id = 0x827;
+      packet.id = ID_CH_DELETE_CHAR3_RESERVED;
       packet.gid = info->gid;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       break;
     }
     case 0x198: {
       CharacterGidPacket packet;
-      packet.id = 0x82B;
+      packet.id = ID_CH_DELETE_CHAR3_CANCEL;
       packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       break;
@@ -927,7 +928,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case 0x1A2: {
       CharacterGidPacket packet;
-      packet.id = 0x8C5;
+      packet.id = ID_CH_AVAILABLE_SECOND_PASSWD;
       packet.gid = g_session.m_aid;
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       break;
@@ -941,7 +942,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;
-          packet.id = 0x8D4;
+          packet.id = ID_CH_REQ_CHANGE_CHARACTER_SLOT;
           packet.from = static_cast<std::int16_t>(this->m_slotMoveSource);
           packet.to = selected;
           packet.count = static_cast<std::int16_t>(info->slotChangeCount);

@@ -22,6 +22,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -879,7 +880,7 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
 #pragma pack(pop)
 
     QuestActivePacket packet;
-    packet.id = 0x02B6;
+    packet.id = ID_CZ_ACTIVE_QUEST;
     packet.questId = questId;
     packet.active = active;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);

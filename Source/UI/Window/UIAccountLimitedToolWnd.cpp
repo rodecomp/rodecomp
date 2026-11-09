@@ -15,6 +15,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -300,7 +301,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (argument1) {
     case ID_DELETE: {
       AccountLimitedDeletePacket packet;
-      packet.id = 0xB4A;
+      packet.id = ID_CZ_DEL_ACCOUNT_LIMTIED_SALE_ITEM;
       packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
       break;
@@ -320,7 +321,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->m_edits[0]->SelectAll();
       } else if (name.size() < 50) {
         AccountLimitedSearchPacket packet;
-        packet.id = 0xB53;
+        packet.id = ID_CZ_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM;
         std::memset(packet.name, 0, sizeof(packet.name));
         strncpy_s(packet.name, sizeof(packet.name), name.c_str(), name.size());
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
@@ -403,7 +404,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       period = _mktime32(periodDate);
 
       AccountLimitedAddPacket packet;
-      packet.id = 0xBAC;
+      packet.id = ID_CZ_ADD_ACCOUNT_LIMTIED_SALE_ITEM2;
       packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
       packet.itemId = std::atoi(this->m_edits[1]->Text());
       packet.start = startTime;

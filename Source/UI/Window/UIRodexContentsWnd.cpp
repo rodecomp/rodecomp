@@ -36,6 +36,7 @@
 #include "Utility/Text/GroupedInteger.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -252,7 +253,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           break;
         }
         RodexMailAttachmentRequestPacket packet;
-        packet.packetType = 0x9F3;
+        packet.packetType = ID_CZ_REQ_ITEM_FROM_RODEX;
         packet.mailId = g_rodexMailStore->currentMailId;
         packet.mailType = g_rodexMailStore->inboxType;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
@@ -268,7 +269,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           break;
         }
         RodexMailAttachmentRequestPacket packet;
-        packet.packetType = 0x9F1;
+        packet.packetType = ID_CZ_REQ_ZENY_FROM_RODEX;
         packet.mailId = g_rodexMailStore->currentMailId;
         packet.mailType = g_rodexMailStore->inboxType;
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
@@ -321,7 +322,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_REPORT_RODEX: {
       RodexMailReportPacket packet;
-      packet.packetType = 0xB98;
+      packet.packetType = ID_CZ_RODEX_RETURN;
       packet.mailId = static_cast<std::int32_t>(g_rodexMailStore->currentMailId);
       GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
       break;

@@ -3257,7 +3257,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       } else {
         return 0;
       }
-      packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL;
+      packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL_0bf5;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
       this->unequipButton->SetDisabled(1);
       this->unequipButton->Invalidate();
@@ -6541,7 +6541,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         notice = 1254;
       } else if (std::atoi(this->m_pointEdit->Text()) <= this->m_totalPrice) {
         NCashBuyHeader header = {};
-        header.packetType = 0x848;
+        header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
         const int points = std::atoi(this->m_pointEdit->Text());
         const int total = this->m_totalPrice;
         header.points = points;
@@ -6586,7 +6586,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
     case ID_CLOSE: {
       NCashClosePacket packet;
-      packet.packetType = 0x84A;
+      packet.packetType = ID_CZ_SE_CASHSHOP_CLOSE;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
       g_windowMgr.CloseWindow(WID_NCASHWND);
       return 0;
@@ -6641,7 +6641,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       if (this->items.begin() != this->items.end()) {
         for (ITEM_INFO& item : this->items) {
           NCashRentalPacket packet;
-          packet.packetType = 0x9C3;
+          packet.packetType = ID_CZ_REQ_COUNT_BARGAIN_SALE_ITEM;
           packet.accountId = g_session.m_aid;
           packet.itemId = std::atoi(item.itemId.c_str());
           GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -10802,7 +10802,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
-        packet.packetType = 0x8C3;
+        packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -10832,7 +10832,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
-        packet.packetType = 0x8B8;
+        packet.packetType = ID_CH_SECOND_PASSWD_ACK;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -10903,7 +10903,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             std::atoi(this->currentPassword);
             std::atoi(this->confirmPassword);
             SecondPasswordChangePacket packet;
-            packet.packetType = 0x8BE;
+            packet.packetType = ID_CH_EDIT_SECOND_PASSWD;
             packet.accountId = g_session.m_passwordWndAccountId;
             std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
             std::memcpy(packet.newPassword, this->confirmPassword, sizeof(packet.newPassword));
@@ -11210,7 +11210,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
-        packet.packetType = 0x8C3;
+        packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -11240,7 +11240,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
-        packet.packetType = 0x8BC;
+        packet.packetType = ID_CH_DELETE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
@@ -11306,7 +11306,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           std::atoi(this->currentPassword);
           std::atoi(this->confirmPassword);
           SecondPasswordPacket packet;
-          packet.packetType = 0x8BA;
+          packet.packetType = ID_CH_MAKE_SECOND_PASSWD;
           packet.accountId = g_session.m_passwordWndAccountId;
           std::memcpy(packet.password, this->confirmPassword, sizeof(packet.password));
           GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);

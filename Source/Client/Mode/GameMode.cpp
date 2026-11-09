@@ -897,7 +897,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       char text[24];
       std::strcpy(text, reinterpret_cast<const char*>(argument1));
       GameModePacketDwordPayload24 packet;
-      packet.packetId = 0xE0;
+      packet.packetId = ID_CZ_REQ_ROLE_CHANGE;
       packet.argument = static_cast<std::uint32_t>(argument2);
       std::memcpy(packet.payload, text, sizeof(text));
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -907,7 +907,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       char text[24];
       std::strcpy(text, reinterpret_cast<const char*>(argument1));
       GameModePacketPayload24 packet;
-      packet.packetId = 0xE2;
+      packet.packetId = ID_CZ_REQ_EXPEL_MEMBER;
       std::memcpy(packet.payload, text, sizeof(text));
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
@@ -1061,7 +1061,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_ITEM_CREATE:
       if (argument1 != 0) {
         GameModePacketText100 packet;
-        packet.packetId = 0x9CE;
+        packet.packetId = ID_CZ_ITEM_CREATE_EX;
         std::memset(packet.text, 0, sizeof(packet.text));
         StringFormat(packet.text, sizeof(packet.text), static_cast<std::size_t>(-1), "%s",
                      reinterpret_cast<const char*>(argument1));
@@ -1117,7 +1117,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_GUILD_NOTICE: {
       GameModePacketDwordText60Text120 packet;
-      packet.packetId = 0x16E;
+      packet.packetId = ID_CZ_GUILD_NOTICE;
       packet.argument = static_cast<std::uint32_t>(argument1);
       if (g_inlineCharset == 0) {
         std::strncpy(packet.firstText, reinterpret_cast<const char*>(argument2), 0x3B);
@@ -1251,7 +1251,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_PET_RENAME: {
       GameModePacketPayload24 packet;
-      packet.packetId = 0x1A5;
+      packet.packetId = ID_CZ_RENAME_PET;
       const char* text = reinterpret_cast<const char*>(argument1);
       const std::size_t length = std::strlen(text);
       if (length < sizeof(packet.payload)) {
@@ -1372,7 +1372,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_REPAIRITEM_SELECT_FROM_LIST: {
       GameModePacketPayload24 packet;
-      packet.packetId = 0xB66;
+      packet.packetId = ID_CZ_REQ_ITEMREPAIR2;
       if (argument1 == -1) {
         packet.payload[0] = 0xFF;
         packet.payload[1] = 0xFF;
@@ -1548,7 +1548,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_MER_RENAME: {
       GameModePacketPayload24 packet;
-      packet.packetId = 0x231;
+      packet.packetId = ID_CZ_RENAME_MER;
       const char* text = reinterpret_cast<const char*>(argument1);
       const std::size_t length = std::strlen(text);
       if (length < sizeof(packet.payload)) {
@@ -1789,7 +1789,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           value = 0;
         }
         const GameModePacketDword packet{
-          static_cast<std::uint16_t>(ID_CZ_SE_CASHSHOP_OPEN2), static_cast<std::uint32_t>(value)
+          static_cast<std::uint16_t>(ID_CZ_SE_CASHSHOP_OPEN_V2), static_cast<std::uint32_t>(value)
         };
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       }
@@ -2078,7 +2078,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       GameModePacketPayload24 packet;
-      packet.packetId = 0x916;
+      packet.packetId = ID_CZ_REQ_JOIN_GUILD2;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, sizeof(packet.payload));
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       const std::string notice = FormatOwnedString(LookupMessage(MSI_REQ_JOIN_GUILD), name);
@@ -2127,7 +2127,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       GameModePacketPayload24 packet;
-      packet.packetId = 0x2C4;
+      packet.packetId = ID_CZ_PARTY_JOIN_REQ;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, sizeof(packet.payload));
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       if (g_session.partyLeader != 0) {
@@ -2452,7 +2452,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->isWaitingEnterRoom = 1;
       lastTick = timeGetTime();
       GameModePacketDwordDwordDword packet;
-      packet.packetId = 0xD9;
+      packet.packetId = ID_CZ_REQ_ENTER_ROOM;
       packet.firstArgument = static_cast<std::uint32_t>(argument1);
       if (argument2) {
         char text[8];
@@ -2495,7 +2495,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       GameModePacketText40 packet;
-      packet.packetId = 0x15D;
+      packet.packetId = ID_CZ_REQ_DISORGANIZE_GUILD;
       const char* name = reinterpret_cast<const char*>(argument1);
       std::strncpy(packet.text, name, 39);
       packet.text[39] = 0;
@@ -3465,7 +3465,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       GameModePacketDwordPayload24 packet;
-      packet.packetId = 0x103;
+      packet.packetId = ID_CZ_REQ_EXPEL_GROUP_MEMBER;
       std::strncpy(reinterpret_cast<char*>(packet.payload), reinterpret_cast<const char*>(argument1), 24);
       const MessengerMember member = g_session.PartyByName(reinterpret_cast<const char*>(argument1));
       packet.argument = member.accountId;
@@ -3836,7 +3836,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::strncpy(text, reinterpret_cast<const char*>(argument1), 39);
       }
       text[39] = 0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(0x159), packet);
+      GetRagConnection().Send(g_packetLengths.FixedLength(ID_CZ_REQ_LEAVE_GUILD), packet);
       return 0;
     }
     case MM_REQ_MAKE_GUILD: {
@@ -3872,7 +3872,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       GameModePacketDwordPayload24 packet;
-      packet.packetId = 0x165;
+      packet.packetId = ID_CZ_REQ_MAKE_GUILD;
       packet.argument = g_session.m_gid;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, 23);
       packet.payload[23] = 0;
@@ -3958,7 +3958,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       *reinterpret_cast<std::uint32_t*>(packet + 4) = g_session.m_aid;
       *reinterpret_cast<std::uint32_t*>(packet + 8) = static_cast<std::uint32_t>(argument2);
       *reinterpret_cast<std::uint32_t*>(packet + 12) = static_cast<std::uint32_t>(argument3);
-      GetRagConnection().Send(g_packetLengths.FixedLength(0xBAF), packet);
+      GetRagConnection().Send(g_packetLengths.FixedLength(ID_CZ_USE_PACKAGEITEM), packet);
       g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX);
       return 0;
     }
@@ -4642,7 +4642,7 @@ void CGameMode::RequestAdminStatus() {
   }
 
   AdminStatusRequestPacket packet = {};
-  packet.id = 0x149;
+  packet.id = ID_CZ_REQ_GIVE_MANNER_POINT;
   packet.accountId = static_cast<std::uint32_t>(g_session.m_aid);
   packet.requestType = 2;
   packet.requestValue = 0xA;
@@ -5732,7 +5732,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   for (CRenderObject* object : this->scene->skills) {
     CSkill* skill = static_cast<CSkill*>(object);
     SkillEntryPacket packet;
-    packet.packetType = 0x11F;
+    packet.packetType = ID_ZC_SKILL_ENTRY;
     packet.aid = skill->skillAid;
     packet.creatorAid = static_cast<std::uint32_t>(skill->sourceActorId);
     packet.job = static_cast<unsigned char>(skill->GetEffectiveJob(-1));
@@ -5992,7 +5992,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
     if (shop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
-      packet->packetType = 0x131;
+      packet->packetType = ID_ZC_STORE_ENTRY;
       packet->aid = actor->render.accountId;
       std::memcpy(packet->name, shop->label->tooltip.c_str(), sizeof(packet->name));
 
@@ -6004,7 +6004,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       scratch.resize(sizeof(ProgressPacket), 0);
       auto* packet = reinterpret_cast<ProgressPacket*>(scratch.data());
       packet->color = 0;
-      packet->packetType = 0x2F0;
+      packet->packetType = ID_ZC_PROGRESS;
       packet->seconds = (actor->skillRechargeEndTick - actor->skillRechargeStartTick) / 1000;
 
       const std::vector<unsigned char> chunk = MakeDataChunk(0xCB, scratch);
@@ -6015,7 +6015,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
     if (buyingShop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
-      packet->packetType = 0x814;
+      packet->packetType = ID_ZC_BUYING_STORE_ENTRY;
       packet->aid = actor->render.accountId;
       std::memcpy(packet->name, buyingShop->label->tooltip.c_str(), sizeof(packet->name));
 
@@ -6360,7 +6360,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
   for (CRenderObject* object : this->scene->items) {
     CItem* item = static_cast<CItem*>(object);
     ItemEntryPacket packet;
-    packet.packetType = 0x9D;
+    packet.packetType = ID_ZC_ITEM_ENTRY;
     packet.aid = item->itemAid;
     packet.itemId = item->itemId;
     packet.identified = item->identified;
@@ -8922,7 +8922,7 @@ void CGameMode::Update() {
     }
 
     StatusPointRequestPacket packet;
-    packet.packetType = 0xBB;
+    packet.packetType = ID_CZ_STATUS_CHANGE;
     if (index == 0) {
       packet.statusId = 13;
     } else if (index == 1) {
@@ -9968,7 +9968,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_MACRO_DETECTOR: {
     TalkConfigPacket packet;
     packet.value = talkType == TT_MACRO_REGISTER ? 2 : 3;
-    packet.id = 0xA68;
+    packet.id = ID_CZ_UI_OPEN;
     GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
     break;
   }
@@ -10028,7 +10028,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_REMOVE_ON:
   case TT_REMOVE_OFF: {
     TalkSelectPacket packet;
-    packet.id = 0xA5F;
+    packet.id = ID_CZ_MACRO_CHECK_REMOVE_CHEAT;
     if (talkType == TT_REMOVE_ON) {
       packet.enabled = 1;
       packet.value = std::atoi(parts[0].c_str());
