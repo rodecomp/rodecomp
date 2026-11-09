@@ -378,10 +378,10 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
     return false;
   }
 
-  if (emotionId == this->m_diceEmotion) {
-    emotionId = this->m_diceEmotion + std::max(rand() % 6, 0);
-  } else if (emotionId == this->m_yutEmotion) {
-    emotionId = this->m_yutEmotion + std::max(rand() % 7, 0);
+  if (this->m_diceEmotion == emotionId) {
+    emotionId = std::max(0, rand() % 6) + this->m_diceEmotion;
+  } else if (this->m_yutEmotion == emotionId) {
+    emotionId = std::max(0, rand() % 7) + this->m_yutEmotion;
   }
 
   mode->SendMsg(MM_REQ_EMOTION, emotionId, packId, 0, 0);
@@ -645,29 +645,33 @@ void CCashEmotionMgr::RefreshCommands() {
 // OFFSET: 0x00599730
 // FUNCTION: fn_02942
 void CCashEmotionMgr::ProcessChatCommand(const char* command) {
-  if (!ChatWindow() || !ChatWindow()->m_suggestions) {
+  UINewChatWnd* chatWnd = ChatWindow();
+  if (!chatWnd) {
+    return;
+  }
+
+  UIWindow* suggestions = chatWnd->m_suggestions;
+  if (!suggestions) {
     return;
   }
 
   if (!command || std::strlen(command) < 1 || command[0] != '/') {
-    ChatWindow()->ShowSuggestions(0);
+    chatWnd->ShowSuggestions(0);
     return;
   }
 
-  const char* key = command + 1;
-  auto it = this->m_commands.find(key);
-  int actionId = 0;
-
-  if (it != this->m_commands.end()) {
-    actionId = it->second;
+  int actionId;
+  {
+    std::string key(command + 1);
+    auto it = this->m_commands.find(key);
+    actionId = this->m_commands.end() == it ? 0 : it->second;
   }
 
-  if (actionId != 0) {
-    ChatWindow()->ShowSuggestions(1);
-    auto* miniWnd = reinterpret_cast<UICashEmotionMiniWnd*>(ChatWindow()->m_suggestions);
-    miniWnd->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
-  } else {
+  if (actionId == 0) {
     this->HideSuggestions();
+  } else {
+    chatWnd->ShowSuggestions(1);
+    reinterpret_cast<UICashEmotionMiniWnd*>(suggestions)->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
   }
 }
 
@@ -871,13 +875,18 @@ int CCashEmotionMgr::GetPackUnknown18(int packId) {
 // OFFSET: 0x0059A150
 // FUNCTION: fn_02955
 Timestamp* CCashEmotionMgr::FindExpiry(int packId) {
-  for (auto& expiry : this->m_expiry) {
-    if (expiry.first == packId) {
-      return &expiry.second;
+  auto it = this->m_expiry.begin();
+  for (; this->m_expiry.end() != it; ++it) {
+    if (it->first == packId) {
+      break;
     }
   }
 
-  return nullptr;
+  if (this->m_expiry.end() == it) {
+    return nullptr;
+  }
+
+  return &it->second;
 }
 
 // OFFSET: 0x0059A1C0
@@ -1123,12 +1132,12 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
   const int actId = this->GetActFilePath(actFile, true);
   const int sprId = this->GetSprFilePath(sprFile, true);
 
-  CashEmotionTable* emotions = this->GetPackEmotionTable(packId);
-  if (emotions) {
-    return emotions->try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second;
+  bool inserted = false;
+  auto it = this->m_emotionsByPack.find(packId);
+  if (this->m_emotionsByPack.end() != it) {
+    return it->second.try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second;
   }
 
-  bool inserted = false;
   CashEmotionTable table;
   if (table.try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second == true) {
     inserted = this->m_emotionsByPack.emplace(packId, table).second;
@@ -1162,10 +1171,7 @@ void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int u
   std::string name = FormatOwnedString("%s_%s", baseName, packName);
   this->AddEmotion(packId, emotionId, name.c_str(), unknown20, unknown24, actFile, sprFile);
 
-  const char* key = name.c_str();
-  if (key && std::strlen(key) != 0) {
-    this->m_searchIndex.try_emplace(key, packId, emotionId);
-  }
+  AddSearchKey(this->m_searchIndex, name.c_str(), packId, emotionId);
 
   if (std::strlen(baseName) > 1) {
     this->AddShortcut(baseName + 1, packId, emotionId);
@@ -1196,21 +1202,32 @@ void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
   if (!this->IsOwnedPack(packId)) {
     this->m_ownedPacks.push_back(packId);
 
-    auto it = std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId);
-    if (it != this->m_unownedPacks.end()) {
-      this->m_unownedPacks.erase(it);
+    auto unowned = this->m_unownedPacks.begin();
+    for (; this->m_unownedPacks.end() != unowned; ++unowned) {
+      if (*unowned == packId) {
+        break;
+      }
+    }
+
+    if (this->m_unownedPacks.end() != unowned) {
+      this->m_unownedPacks.erase(unowned);
     }
   }
 
-  for (auto it = this->m_expiry.begin(); it != this->m_expiry.end(); ++it) {
+  auto it = this->m_expiry.begin();
+  for (; this->m_expiry.end() != it; ++it) {
     if (it->first == packId) {
-      if (expiry) {
-        it->second.Set(expiry);
-      } else {
-        this->m_expiry.erase(it);
-      }
-      return;
+      break;
     }
+  }
+
+  if (this->m_expiry.end() != it) {
+    if (expiry) {
+      it->second.Set(expiry);
+    } else {
+      this->m_expiry.erase(it);
+    }
+    return;
   }
 
   if (expiry > 0) {
@@ -1253,26 +1270,16 @@ bool CCashEmotionMgr::RemoveExpiredPacks() {
   const __time32_t now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
 
   for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
-    if (!it->second.IsBefore(now + 1)) {
+    if (it->second.IsBefore(now + 1)) {
+      this->RemoveOwnedPack(it->first, false, false);
+      it = this->m_expiry.erase(it);
+      expired = true;
+    } else {
       if (listWnd) {
         listWnd->UpdateExpiry(it->first, &it->second);
       }
       ++it;
-      continue;
     }
-
-    int packId = it->first;
-    auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
-    if (owned != this->m_ownedPacks.end()) {
-      this->m_ownedPacks.erase(owned);
-    }
-
-    if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
-      this->m_unownedPacks.push_back(packId);
-    }
-
-    it = this->m_expiry.erase(it);
-    expired = true;
   }
 
   return expired;
@@ -1281,12 +1288,25 @@ bool CCashEmotionMgr::RemoveExpiredPacks() {
 // OFFSET: 0x0059C730
 // FUNCTION: fn_02978
 void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry) {
-  auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
-  if (owned != this->m_ownedPacks.end()) {
+  auto owned = this->m_ownedPacks.begin();
+  for (; this->m_ownedPacks.end() != owned; ++owned) {
+    if (*owned == packId) {
+      break;
+    }
+  }
+
+  if (this->m_ownedPacks.end() != owned) {
     this->m_ownedPacks.erase(owned);
   }
 
-  if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
+  auto unowned = this->m_unownedPacks.begin();
+  for (; this->m_unownedPacks.end() != unowned; ++unowned) {
+    if (*unowned == packId) {
+      break;
+    }
+  }
+
+  if (this->m_unownedPacks.end() == unowned) {
     this->m_unownedPacks.push_back(packId);
   }
 
@@ -1297,11 +1317,15 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
   }
 
   if (clearExpiry) {
-    for (auto it = this->m_expiry.begin(); it != this->m_expiry.end(); ++it) {
+    auto it = this->m_expiry.begin();
+    for (; this->m_expiry.end() != it; ++it) {
       if (packId == it->first) {
-        this->m_expiry.erase(it);
         break;
       }
+    }
+
+    if (this->m_expiry.end() != it) {
+      this->m_expiry.erase(it);
     }
   }
 }
@@ -1434,32 +1458,22 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
 // FUNCTION: fn_02986
 bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
   auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd);
-  if (!listWnd) {
-    return false;
+  if (listWnd) {
+    for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
+      if (it->second.IsBeforeNow()) {
+        this->RemoveOwnedPack(it->first, false, false);
+        it = this->m_expiry.erase(it);
+      } else {
+        listWnd->UpdateExpiry(it->first, &it->second);
+        ++it;
+      }
+    }
+
+    listWnd->RefreshPackLists();
+    return this->m_expiry.size() != 0;
   }
 
-  for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
-    int packId = it->first;
-    if (!it->second.IsBeforeNow()) {
-      listWnd->UpdateExpiry(packId, &it->second);
-      ++it;
-      continue;
-    }
-
-    auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
-    if (owned != this->m_ownedPacks.end()) {
-      this->m_ownedPacks.erase(owned);
-    }
-
-    if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
-      this->m_unownedPacks.push_back(packId);
-    }
-
-    it = this->m_expiry.erase(it);
-  }
-
-  listWnd->RefreshPackLists();
-  return this->m_expiry.size() != 0;
+  return false;
 }
 
 // OFFSET: 0x0059FC50
