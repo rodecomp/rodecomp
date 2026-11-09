@@ -210,7 +210,7 @@ int CItemInfoMgr::LuaAddItemEffectInfo(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     int effectId = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[id].effectId = effectId;
+    g_itemInfoMgr->m_items[static_cast<int>(id)].effectId = effectId;
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -250,7 +250,7 @@ int CItemInfoMgr::LuaAddItemIsCostume(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     bool isCostume = lua_toboolean(state, -1) != 0;
-    g_itemInfoMgr->m_items[id].isCostume = isCostume;
+    g_itemInfoMgr->m_items[static_cast<int>(id)].isCostume = isCostume;
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -269,7 +269,7 @@ int CItemInfoMgr::LuaAddItemPackageID(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     int packageId = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[id].packageId = packageId;
+    g_itemInfoMgr->m_items[static_cast<int>(id)].packageId = packageId;
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
