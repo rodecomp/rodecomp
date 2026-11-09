@@ -63,9 +63,14 @@ const char* DecryptName(const char (&source)[Length]) {
 
 }
 
+// INLINED
+inline std::string EditBoxText(CUIEditBox* editBox) {
+  return editBox->edit->Text();
+}
+
 #pragma pack(push, 1)
 struct ReportUserPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ short id;
   /* 0002 */ std::uint32_t accountId;
   /* 0006 */ int targetId;
   /* 000A */ char targetName[24];
@@ -99,10 +104,7 @@ void CUIMacroReport::SendReport() {
   packet.accountId = g_session.m_aid;
   packet.type = static_cast<std::uint16_t>(this->m_reportType);
   strncpy_s(packet.targetName, sizeof(packet.targetName), this->targetName.c_str(), _TRUNCATE);
-  {
-    const std::string message = this->m_messageEdit->edit->Text();
-    strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
-  }
+  strncpy_s(packet.message, sizeof(packet.message), EditBoxText(this->m_messageEdit).c_str(), _TRUNCATE);
   GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   g_windowMgr.CloseWindow(WID_MACROREPORT);
 }
