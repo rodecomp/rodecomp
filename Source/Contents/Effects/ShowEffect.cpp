@@ -27,15 +27,16 @@ void CShowEffect::Add(int tag, int effectId) {
     }
 
     CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-    EffectActor* target;
     if (actorId == g_session.m_aid) {
-      target = world->player;
+      EffectActor* player = world->player;
+      if (!player || !player->LaunchTaggedEffect(effectId, tag)) {
+        return;
+      }
     } else {
-      target = static_cast<EffectActor*>(world->GetGameActorByAID(actorId));
-    }
-
-    if (!target || !target->LaunchTaggedEffect(effectId, tag)) {
-      return;
+      EffectActor* target = static_cast<EffectActor*>(world->GetGameActorByAID(actorId));
+      if (!target || !target->LaunchTaggedEffect(effectId, tag)) {
+        return;
+      }
     }
   }
 
