@@ -453,10 +453,13 @@ const char* CSkillInfo::DisplayName(LuaScript& script) const {
 // OFFSET: 0x00773920
 // FUNCTION: fn_08318
 const char* CSkillInfo::DisplayName(LuaScript& script, int skillId) {
-  if (skillId == SU_CN_METEOR2) {
+  switch (skillId) {
+  case SU_CN_METEOR2:
     skillId = SU_CN_METEOR;
-  } else if (skillId == SU_LUNATICCARROTBEAT2) {
+    break;
+  case SU_LUNATICCARROTBEAT2:
     skillId = SU_LUNATICCARROTBEAT;
+    break;
   }
 
   const char* result = nullptr;
