@@ -2446,7 +2446,7 @@ void CUIIntro::OnCreate(int width, int height) {
   this->contents->scrollBar->Move(595, 0);
   this->contents->scrollBar->step = 44;
   {
-    this->contents->scrollBar->SetButtonImages(std::string([]() {
+    this->contents->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\x9C', '\x85', '\x0D', '\x9C',
         '\xB9', '\xA1', '\x66', '\x4B', '\xB8', '\xA6', '\x0E', '\x90', '\xB3', '\xB0', '\x4F', '\x4A', '\xBE', '\x93', '\x14', '\x95', '\xBB', '\x8A', '\x72',
@@ -2465,7 +2465,7 @@ void CUIIntro::OnCreate(int width, int height) {
     }()));
   }
   {
-    this->contents->scrollBar->SetBackground(std::string([]() {
+    this->contents->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xC2', '\xD9', '\xCB', '\x88',
         '\x59', '\xCF', '\xCA', '\x9D', '\xE6', '\xFA', '\xC8', '\x84', '\x53', '\xDE', '\xE3', '\x9C', '\xE0', '\xCF', '\xD2', '\x81', '\x5B', '\xE4', '\xDD',
@@ -2476,7 +2476,7 @@ void CUIIntro::OnCreate(int width, int height) {
     }()));
   }
   {
-    this->contents->scrollBar->SetThumbImages(std::string([]() {
+    this->contents->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\xAC', '\x1B', '\x65', '\xBA',
         '\xBF', '\xF1', '\x12', '\x0B', '\x88', '\x38', '\x66', '\xB6', '\xB5', '\xE0', '\x3B', '\x0A', '\x8E', '\x0D', '\x7C', '\xB3', '\xBD', '\xDA', '\x13',
@@ -2888,7 +2888,7 @@ void CUIMonster::OnCreate(int width, int height) {
   this->monsterList->scrollBar->Move(619, 0);
   this->monsterList->scrollBar->step = 20;
   {
-    this->monsterList->scrollBar->SetButtonImages(std::string([]() {
+    this->monsterList->SetScrollBarButtonImages(std::string([]() {
       constexpr char bytes[] = {
         '\xF1', '\x56', '\x13', '\x03', '\xDD', '\x81', '\x0E', '\xCC', '\xF7', '\x1D', '\x13', '\x35', '\xA0', '\xF5', '\x97', '\x40', '\x55', '\x8F', '\xB6',
         '\x97', '\x69', '\x3A', '\xB9', '\x64', '\x76', '\x8C', '\xBA', '\x9D', '\x78', '\x13', '\xB8', '\x62', '\x43', '\x96', '\xBF', '\x95', '\x42', '\x2E',
@@ -2907,7 +2907,7 @@ void CUIMonster::OnCreate(int width, int height) {
     }()));
   }
   {
-    this->monsterList->scrollBar->SetBackground(std::string([]() {
+    this->monsterList->SetScrollBarBackground(std::string([]() {
       constexpr char bytes[] = {
         '\x21', '\x2C', '\x11', '\x17', '\xD1', '\x4F', '\x7E', '\x0C', '\x27', '\x67', '\x11', '\x21', '\xAC', '\x3B', '\xE7', '\x80', '\x85', '\xF5', '\xB4',
         '\x83', '\x65', '\xF4', '\xC9', '\xA4', '\xA6', '\xF6', '\xB8', '\x89', '\x74', '\xDD', '\xC8', '\xA2', '\x93', '\xEC', '\xBD', '\x81', '\x4E', '\xE3',
@@ -2918,7 +2918,7 @@ void CUIMonster::OnCreate(int width, int height) {
     }()));
   }
   {
-    this->monsterList->scrollBar->SetThumbImages(std::string([]() {
+    this->monsterList->SetScrollBarThumbImages(std::string([]() {
       constexpr char bytes[] = {
         '\x4B', '\x32', '\xB7', '\x77', '\x21', '\x13', '\xA2', '\xDA', '\x4D', '\x79', '\xB7', '\x41', '\x5C', '\x67', '\x3B', '\x56', '\xEF', '\xEB', '\x12',
         '\xE3', '\x95', '\xA8', '\x15', '\x72', '\xCC', '\xE8', '\x1E', '\xE9', '\x84', '\x81', '\x14', '\x74', '\xF9', '\xF2', '\x1B', '\xE1', '\xBE', '\xA9',
