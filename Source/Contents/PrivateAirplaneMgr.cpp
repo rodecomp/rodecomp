@@ -145,7 +145,8 @@ int CPrivateAirplaneMgr::L_InsertEndableMap(lua_State* state) {
     lua_pushstring(state, "[InsertEndableMap] argument 1st is must string");
   } else {
     const std::string map = lua_tostring(state, -1) + std::string(".gat");
-    g_privateAirplaneItems->InsertEndableMap(map);
+    CPrivateAirplaneMgr* const manager = g_privateAirplaneItems;
+    manager->InsertEndableMap(map);
     lua_pushboolean(state, 1);
     lua_pushstring(state, "good");
   }
@@ -161,7 +162,8 @@ int CPrivateAirplaneMgr::L_InsertStartableMap(lua_State* state) {
     lua_pushstring(state, "[InsertStartableMap] argument 1st is must string");
   } else {
     const std::string map = lua_tostring(state, -1) + std::string(".gat");
-    g_privateAirplaneItems->InsertStartableMap(map);
+    CPrivateAirplaneMgr* const manager = g_privateAirplaneItems;
+    manager->InsertStartableMap(map);
     lua_pushboolean(state, 1);
     lua_pushstring(state, "good");
   }
