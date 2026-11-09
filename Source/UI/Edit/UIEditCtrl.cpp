@@ -4326,10 +4326,10 @@ int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int
 // FUNCTION: fn_10743
 std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
   if (!_mbsstr(reinterpret_cast<const unsigned char*>(source.c_str()), reinterpret_cast<const unsigned char*>(g_itemLinkOpen.c_str()))) {
-    return std::string(source.c_str(), source.size());
+    return source;
   }
 
-  std::string remaining(source.c_str(), source.size());
+  std::string remaining = source;
   std::string result;
   int position = 0;
   int previous = 0;
