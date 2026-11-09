@@ -2604,7 +2604,7 @@ void GameSettingsUI::CUIListPage::OnCreate(int width, int height) {
   this->m_optionList->scrollBar->SetSize(13, 286);
   this->m_optionList->scrollBar->Move(387, 0);
   this->m_optionList->scrollBar->step = 26;
-  this->m_optionList->scrollBar->SetButtonImages(std::string([]() {
+  this->m_optionList->SetScrollBarButtonImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x89, 0xC2, 0xBF, 0x19, 0x07, 0xCF, 0x8C, 0xDC, 0x8F, 0x89, 0xBF, 0x2F, 0x7A, 0xBB, 0x15,
                                    0x62, 0x2A, 0x1F, 0x10, 0x8F, 0xAB, 0x31, 0x3C, 0x61, 0x67, 0x0F, 0x12, 0x93, 0xC7};
     constexpr EncryptedSource<29> source(bytes);
@@ -2617,14 +2617,14 @@ void GameSettingsUI::CUIListPage::OnCreate(int width, int height) {
     thread_local EncryptedName<31, 0x7D5D0F110B6B8371ULL> name(source);
     return name.Text();
   }()));
-  this->m_optionList->scrollBar->SetBackground(std::string([]() {
+  this->m_optionList->SetScrollBarBackground(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x99, 0x28, 0xC3, 0x87, 0x95, 0x05, 0xE2, 0x16, 0x9F, 0x63, 0xC3, 0xB1, 0xE8, 0x71, 0x7B,
                                            0xA8, 0x3A, 0xF5, 0x6C, 0x11, 0x39, 0xFB, 0x4A, 0xB2, 0x3D, 0xA9, 0x61, 0x10, 0x25, 0xCB};
     constexpr EncryptedSource<30> source(bytes);
     thread_local EncryptedName<30, 0xDB27CB557D038759ULL> name(source);
     return name.Text();
   }()));
-  this->m_optionList->scrollBar->SetThumbImages(std::string([]() {
+  this->m_optionList->SetScrollBarThumbImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x3F, 0x4C, 0x9D, 0xF9, 0x67, 0x61, 0x66, 0xF2, 0x39, 0x07, 0x9D, 0xCF, 0x1A, 0x15, 0xFF, 0x4C, 0x9C,
                                     0x91, 0x32, 0x6F, 0xCB, 0x9F, 0xC1, 0x5E, 0x8D, 0xBC, 0x28, 0x73, 0x89, 0xCD, 0xCE, 0x4F, 0xFF};
     constexpr EncryptedSource<33> source(bytes);
