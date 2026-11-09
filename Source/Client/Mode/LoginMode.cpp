@@ -708,45 +708,48 @@ void CLoginMode::SubD8EDC0(int) {
 // FUNCTION: fn_22277
 void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
   UIWindow* window = g_windowMgr.newSelectCharWnd;
-  int message;
   switch (packet->result) {
   case 0:
     g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME_SUCCESS, 0, 0, 0);
     }
-    return;
+    break;
   case 1:
-    message = 1218;
+    if (g_windowMgr.Confirm(LookupMessage(1218), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+    }
     break;
   case 2:
-    message = 1219;
+    if (g_windowMgr.Confirm(LookupMessage(1219), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+    }
     break;
   case 3:
     if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
-    return;
+    break;
   case 4:
     if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
-    return;
+    break;
   case 5:
-    message = 2022;
+    if (g_windowMgr.Confirm(LookupMessage(2022), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+    }
     break;
   case 6:
-    message = 2023;
+    if (g_windowMgr.Confirm(LookupMessage(2023), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+    }
     break;
   case 10:
-    message = 2024;
+    if (g_windowMgr.Confirm(LookupMessage(2024), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+    }
     break;
-  default:
-    return;
-  }
-
-  if (g_windowMgr.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
-    window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
   }
 }
 
@@ -995,10 +998,12 @@ void CLoginMode::End() {
 // OFFSET: 0x00D975C0
 // FUNCTION: fn_22301
 void CLoginMode::OnUpdateEx(int value) {
-  if (value != 0) {
+  if (value == 0) {
+    if (this->running == 0 || g_modalImmediate != 0) {
+      return;
+    }
+  } else {
     GetRagConnection().UpdateStatus();
-  } else if (this->running == 0 || g_modalImmediate != 0) {
-    return;
   }
 
   PumpApplicationMessages();
@@ -1083,14 +1088,6 @@ void CLoginMode::SubD97780(int value) {
       }
     }
     break;
-  case 6:
-    if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
-      GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
-        g_modeMgr.Quit();
-      }
-    }
-    break;
   case 12:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
@@ -1101,13 +1098,21 @@ void CLoginMode::SubD97780(int value) {
       }
     }
     break;
+  case 6:
+    if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
+      GetRagConnection().Close();
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+        g_modeMgr.Quit();
+      }
+    }
+    break;
   case 38:
     if (this->otpPending == true) {
       if (static_cast<int>(timeGetTime()) >= this->otpStarted + 0xEA60) {
         GetRagConnection().Close();
         if (this->loginResponseReceived == true && this->otpPending == true) {
           this->otpTimedOut = true;
-          if (!g_windowMgr.HasModalWindow()) {
+          if (g_windowMgr.HasModalWindow() != true) {
             if (g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_SAME_MAP), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
               this->otpPending = false;
               this->otpTimedOut = false;
@@ -1375,7 +1380,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
   case 0:
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
-      std::min<std::size_t>(packet->length - 28, sizeof(g_session.m_loginErrorText)));
+      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), packet->length - 28));
     GetRagConnection().Close();
     g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
@@ -1454,7 +1459,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
   case 0:
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
-      std::min<std::size_t>(packet->length - 8, sizeof(g_session.m_loginErrorText)));
+      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), packet->length - 8));
     GetRagConnection().Close();
     g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
@@ -1643,11 +1648,31 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     g_session.m_passwordWndMode = 0;
     this->pendingCursorType = 7;
     break;
-  case PINCODE_ASK:
-    g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 2;
-    this->passwordRetryCount = 0;
+  case PINCODE_PASSED:
+    g_session.m_passwordWndMode = 1;
     this->pendingCursorType = 7;
+    break;
+  case PINCODE_WRONG:
+    if (packet->count == 0) {
+      g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNTLINKEDUSERDATA_LOAD_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+      this->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    } else {
+      g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+      this->pendingCursorType = 7;
+      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count);
+      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    }
+    break;
+  case PINCODE_ILLEGAL:
+    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+    this->pendingCursorType = 7;
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case PINCODE_KSSN:
+    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+    this->pendingCursorType = 7;
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_NOTSET:
     g_session.m_passwordWndAccountId = packet->value;
@@ -1664,30 +1689,11 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     g_session.m_passwordWndMode = 5;
     this->pendingCursorType = 7;
     break;
-  case PINCODE_ILLEGAL:
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+  case PINCODE_ASK:
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 2;
+    this->passwordRetryCount = 0;
     this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
-    break;
-  case PINCODE_KSSN:
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
-    break;
-  case PINCODE_PASSED:
-    g_session.m_passwordWndMode = 1;
-    this->pendingCursorType = 7;
-    break;
-  case PINCODE_WRONG:
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    if (packet->count != 0) {
-      this->pendingCursorType = 7;
-      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count);
-      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
-    } else {
-      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNTLINKEDUSERDATA_LOAD_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
-      this->SendMsg(MM_QUIT, 0, 0, 0, 0);
-    }
     break;
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
@@ -1723,11 +1729,33 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     g_session.m_passwordWndMode = 0;
     this->pendingCursorType = 7;
     break;
-  case PINCODE_ASK:
-    g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 2;
-    this->passwordRetryCount = 0;
+  case PINCODE_PASSED:
+    g_session.m_passwordWndMode = 1;
     this->pendingCursorType = 7;
+    break;
+  case PINCODE_WRONG: {
+    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+    ++this->passwordRetryCount;
+    const int remaining = 3 - this->passwordRetryCount;
+    this->pendingCursorType = 7;
+    if (remaining <= 0) {
+      g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_3), 0, true, false, 0, "Message", 280, 120, 0);
+      this->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    } else {
+      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), remaining);
+      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    }
+    break;
+  }
+  case PINCODE_ILLEGAL:
+    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+    this->pendingCursorType = 7;
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case PINCODE_KSSN:
+    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+    this->pendingCursorType = 7;
+    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case PINCODE_NOTSET:
     g_session.m_passwordWndAccountId = packet->value;
@@ -1744,34 +1772,12 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     g_session.m_passwordWndMode = 5;
     this->pendingCursorType = 7;
     break;
-  case PINCODE_ILLEGAL:
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
-    break;
-  case PINCODE_KSSN:
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
-    g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
-    break;
-  case PINCODE_PASSED:
-    g_session.m_passwordWndMode = 1;
+  case PINCODE_ASK:
+    g_session.m_passwordWndAccountId = packet->value;
+    g_session.m_passwordWndMode = 2;
+    this->passwordRetryCount = 0;
     this->pendingCursorType = 7;
     break;
-  case PINCODE_WRONG: {
-    g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    ++this->passwordRetryCount;
-    const int remaining = 3 - this->passwordRetryCount;
-    this->pendingCursorType = 7;
-    if (remaining > 0) {
-      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), remaining);
-      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
-    } else {
-      g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_3), 0, true, false, 0, "Message", 280, 120, 0);
-      this->SendMsg(MM_QUIT, 0, 0, 0, 0);
-    }
-    break;
-  }
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
     const char source[] = {'\x16', '\x10', '\x7D', '\xD4', '\x4D', '\x1C', '\xD3'};
@@ -1957,8 +1963,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
     break;
   case 0x1394: {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
-    message = text;
+    message = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
     break;
   }
   case 0x1395:
@@ -2062,13 +2067,11 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_DELETED_ACCOUNT);
     break;
   case REFUSE_BLOCK_TEMPORARY: {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), argument);
-    message = text;
+    message = FormatOwnedString(LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), argument);
     break;
   }
   case REFUSE_TEMP_BAN_HACKING_INVESTIGATION: {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_HACKING_INVESTIGATION), argument);
-    message = text;
+    message = FormatOwnedString(LookupMessage(MSI_HACKING_INVESTIGATION), argument);
     break;
   }
   case REFUSE_TEMP_BAN_BUG_INVESTIGATION:
@@ -2108,8 +2111,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE);
     break;
   case REFUSE_ALREADY_CONNECT: {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument);
-    message = text;
+    message = FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument);
     break;
   }
   case 16:
@@ -2139,8 +2141,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_PHONE_BLOCK);
     break;
   case 17: {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_RE17), argument);
-    message = text;
+    message = FormatOwnedString(LookupMessage(MSI_RE17), argument);
     if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
       g_modeMgr.Quit();
     }
@@ -2197,9 +2198,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED);
     break;
   case 36: {
-    const int remaining = this->remainingLoginSeconds;
-    const std::string text = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_RODEX_CONTENTS), remaining / 3600, static_cast<int>(std::ceil(static_cast<float>(remaining % 3600) / 60.0f)));
-    message = text;
+    const std::div_t remaining = std::div(this->remainingLoginSeconds, 3600);
+    message = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_RODEX_CONTENTS), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f)));
     break;
   }
   case 243:
@@ -2260,7 +2260,7 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
   if (append) {
     window = g_windowMgr.menuWnd;
   } else {
-    this->noticeCommands.clear();
+    this->noticeCommands.erase(this->noticeCommands.begin(), this->noticeCommands.end());
     if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
@@ -2346,8 +2346,12 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     g_session.m_sex = packet->sex;
   }
 
-  if (g_serviceType == 6 || g_serviceType == 10 || g_serviceType == 12) {
+  switch (g_serviceType) {
+  case 6:
+  case 10:
+  case 12:
     g_serviceOptions.Set(0x6C, 0);
+    break;
   }
   const unsigned char flags = g_serviceOptions.Get(0x6C);
   g_session.SetServiceFlags(flags, flags);
@@ -2980,30 +2984,6 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   (void)argument4;
 
   switch (event) {
-  case MM_COMMAND:
-    switch (argument1) {
-    case LMM_MAKECHARACTER:
-      this->pendingCursorType = 8;
-      return 0;
-    case LMM_TRANSFERCHARACTER:
-      this->pendingCursorType = 9;
-      return 0;
-    case LMM_SELECTCHARACTER:
-      this->pendingCursorType = 7;
-      return 0;
-    case LMM_CANCEL:
-      if (this->cursorType == 7) {
-        g_windowMgr.Shutdown();
-        GetRagConnection().Close();
-        this->pendingCursorType = 6;
-      }
-      return 0;
-    case LMM_DELETE_CHARACTER:
-      this->pendingCursorType = 11;
-      return 0;
-    default:
-      return 0;
-    }
   case MM_SOCKETERROR:
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
@@ -3011,12 +2991,9 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       this->pendingCursorType = 3;
     }
     return 0;
-  case MM_QUERYCHARICTORINFO:
-    for (int i = 0; i < this->characterCount; ++i) {
-      if (this->characters[i].slot == argument1) {
-        return reinterpret_cast<int>(&this->characters[i]);
-      }
-    }
+  case LMM_RESET_TO_LOGIN:
+    g_charServerAccountIdPending = 0;
+    this->pendingCursorType = 3;
     return 0;
   case LMM_SEND_CHARACTER_AUTH_CODE: {
     unsigned char* buffer = static_cast<unsigned char*>(
@@ -3038,6 +3015,37 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   }
+  case MM_QUERYCHARICTORINFO:
+    for (int i = 0; i < this->characterCount; ++i) {
+      if (this->characters[i].slot == argument1) {
+        return reinterpret_cast<int>(&this->characters[i]);
+      }
+    }
+    return 0;
+  case MM_COMMAND:
+    switch (argument1) {
+    case LMM_SELECTCHARACTER:
+      this->pendingCursorType = 7;
+      return 0;
+    case LMM_DELETE_CHARACTER:
+      this->pendingCursorType = 11;
+      return 0;
+    case LMM_MAKECHARACTER:
+      this->pendingCursorType = 8;
+      return 0;
+    case LMM_TRANSFERCHARACTER:
+      this->pendingCursorType = 9;
+      return 0;
+    case LMM_CANCEL:
+      if (this->cursorType == 7) {
+        g_windowMgr.Shutdown();
+        GetRagConnection().Close();
+        this->pendingCursorType = 6;
+      }
+      return 0;
+    default:
+      return 0;
+    }
   case LMM_DISPATCH_CHARACTER_SLOT_ACTION:
     switch (this->noticeCommands[argument1]) {
     case 45:
@@ -3058,10 +3066,11 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     default:
       return 0;
     }
-  case LMM_RESET_TO_LOGIN:
-    g_charServerAccountIdPending = 0;
-    this->pendingCursorType = 3;
-    return 0;
+  case LMM_QUERY_LAST_CHARACTER_INFO:
+    if (this->characterCount == 0) {
+      return 0;
+    }
+    return reinterpret_cast<int>(&this->characters[this->characterCount - 1]);
   case LMM_SEND_LOGIN_AUTH_CODE: {
     struct PacketAD0 {
       /* 0000 */ std::int16_t id;
@@ -3075,66 +3084,45 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     return 0;
   }
-  case LMM_QUERY_LAST_CHARACTER_INFO:
-    if (this->characterCount == 0) {
-      return 0;
-    }
-    return reinterpret_cast<int>(&this->characters[this->characterCount - 1]);
   case LMM_CONNECT_TO_ACSVR:
     this->pendingCursorType = 4;
     return 0;
-  case LMM_SELECTSVR: {
-    *reinterpret_cast<int*>(this->selectedServerStorage) = argument1;
-    if (argument1 == -1) {
-      return 0;
-    }
-
-    ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
-    if (servers[argument1].address.state == 3) {
-      g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "Message", 280, 120, 0);
-      this->pendingCursorType = 6;
-      return 0;
-    }
-
-    g_session.m_accountName = servers[argument1].address.name;
-    const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
-    const std::uint32_t ip = servers[selected].address.ip;
-    const std::uint8_t ipFormatSource[] = {0xB0, 0xEB, 0xCF, 0x28, 0x39, 0x27, 0x44, 0x95, 0xBB, 0xAA, 0x85, 0x0D};
-    thread_local EncryptedName<sizeof(ipFormatSource), 0xF161095D0DE18F95ULL> ipFormat(ipFormatSource);
-    CharServerEndpoint endpoint;
-    wsprintfA(endpoint.ip, ipFormat.Text(), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
-    const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
-    endpoint.port = servers[selected2].address.port;
-    const std::uint8_t hostFormatSource[] = {0xFC, 0x8A, 0xE1};
-    thread_local EncryptedName<sizeof(hostFormatSource), 0x2BAD156DE3E1F9D9ULL> hostFormat(hostFormatSource);
-    StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), hostFormat.Text(), servers[selected2].domain);
-    g_charServerEndpoint = endpoint;
-    g_charServerIp = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.ip;
-    g_session.m_serverName = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.name;
-    g_checkAttendanceMgr->LoadLocal(g_session.m_serverName);
-    this->pendingCursorType = 5;
+  case LMM_SET_STATE_GET_EMAIL_ADDRESS:
+    this->pendingCursorType = argument1;
+  case LMM_GET_EMAIL_ADDRESS:
+    return reinterpret_cast<int>(this->billingInfo);
+  case LMM_SET_EMAIL_ADDRESS:
+    g_windowMgr.InvalidateAll();
+    strcpy(reinterpret_cast<char*>(this->billingInfo), reinterpret_cast<const char*>(argument1));
+    return 0;
+  case LMM_GET_MAKING_CHAR_NAME:
+    return reinterpret_cast<int>(&this->makingCharNameFirstByte);
+  case LMM_SET_MAKING_CHAR_NAME:
+    strcpy(reinterpret_cast<char*>(&this->makingCharNameFirstByte), reinterpret_cast<const char*>(argument1));
+    return 0;
+  case LMM_GET_CHAR_PARAM:
+    return reinterpret_cast<int>(this->charParams);
+  case LMM_SET_CHAR_PARAM: {
+    const int* values = reinterpret_cast<const int*>(argument1);
+    this->charParams[0] = values[0];
+    this->charParams[1] = values[1];
+    this->charParams[2] = values[2];
+    this->charParams[3] = values[3];
+    this->charParams[4] = values[4];
+    this->charParams[5] = values[5];
+    this->characterParameter7 = values[6];
+    this->characterParameter8 = values[7];
     return 0;
   }
-  case LMM_SENDCHARINFO:
-    this->pendingCursorType = 10;
-    return 0;
-  case LMM_CANCEL:
-    if (this->cursorType == 6 || this->cursorType == 27) {
-      GetRagConnection().Close();
-      g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
-      return 0;
-    }
-    if (this->cursorType == 30) {
-      this->pendingCursorType = 7;
-    }
-    return 0;
   case LMM_PASSWORD:
     strcpy(reinterpret_cast<char*>(this->loginCredentials), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_ID:
     strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x40]), reinterpret_cast<const char*>(argument1));
     strcpy(reinterpret_cast<char*>(g_session.characterSelectionData), reinterpret_cast<const char*>(argument1));
+    return 0;
+  case LMM_SET_AUTH_CODE:
+    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x80]), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SELECT_CHARACTER: {
     g_session.selectedCharacterSlot = static_cast<unsigned char>(g_selectedSlotIndex);
@@ -3217,36 +3205,6 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   }
-  case LMM_GOTO_LOGIN:
-    GetRagConnection().Close();
-    g_charServerAccountIdPending = 0;
-    this->pendingCursorType = 3;
-    return 0;
-  case LMM_SET_EMAIL_ADDRESS:
-    g_windowMgr.InvalidateAll();
-    strcpy(reinterpret_cast<char*>(this->billingInfo), reinterpret_cast<const char*>(argument1));
-    return 0;
-  case LMM_GET_EMAIL_ADDRESS:
-    return reinterpret_cast<int>(this->billingInfo);
-  case LMM_GET_MAKING_CHAR_NAME:
-    return reinterpret_cast<int>(&this->makingCharNameFirstByte);
-  case LMM_SET_MAKING_CHAR_NAME:
-    strcpy(reinterpret_cast<char*>(&this->makingCharNameFirstByte), reinterpret_cast<const char*>(argument1));
-    return 0;
-  case LMM_GET_CHAR_PARAM:
-    return reinterpret_cast<int>(this->charParams);
-  case LMM_SET_CHAR_PARAM: {
-    const int* values = reinterpret_cast<const int*>(argument1);
-    this->charParams[0] = values[0];
-    this->charParams[1] = values[1];
-    this->charParams[2] = values[2];
-    this->charParams[3] = values[3];
-    this->charParams[4] = values[4];
-    this->charParams[5] = values[5];
-    this->characterParameter7 = values[6];
-    this->characterParameter8 = values[7];
-    return 0;
-  }
   case LMM_GOTOSELECTACCOUNT:
     if (argument2 == 201) {
       g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
@@ -3283,6 +3241,74 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       g_session.IgnoreText(suffix);
     }
     this->pendingCursorType = (g_serviceType == 5 || g_serviceType == 7) ? 13 : 3;
+    return 0;
+  case LMM_SELECTACCOUNT2:
+    this->selectedSecondaryAccount = argument1;
+    this->accountInfo.clear();
+    TraceSelectionRange(this->selectedAccount, this->selectedSecondaryAccount);
+    this->pendingCursorType = 3;
+    return 0;
+  case LMM_GOTO_LOGIN:
+    GetRagConnection().Close();
+    g_charServerAccountIdPending = 0;
+    this->pendingCursorType = 3;
+    return 0;
+  case LMM_SET_LOGIN_EXTRA:
+    strcpy(reinterpret_cast<char*>(this->loginExtra), reinterpret_cast<const char*>(argument1));
+    return 0;
+  case LMM_DISCONNECT_ACSVR:
+    GetRagConnection().Close();
+    if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      this->otpStarted = timeGetTime();
+      g_charServerAccountIdPending = 0;
+      this->pendingCursorType = 3;
+    }
+    return 0;
+  case LMM_SELECTSVR: {
+    *reinterpret_cast<int*>(this->selectedServerStorage) = argument1;
+    if (argument1 == -1) {
+      return 0;
+    }
+
+    ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
+    if (servers[argument1].address.state == 3) {
+      g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "Message", 280, 120, 0);
+      this->pendingCursorType = 6;
+      return 0;
+    }
+
+    g_session.m_accountName = servers[argument1].address.name;
+    const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
+    const std::uint32_t ip = servers[selected].address.ip;
+    const std::uint8_t ipFormatSource[] = {0xB0, 0xEB, 0xCF, 0x28, 0x39, 0x27, 0x44, 0x95, 0xBB, 0xAA, 0x85, 0x0D};
+    thread_local EncryptedName<sizeof(ipFormatSource), 0xF161095D0DE18F95ULL> ipFormat(ipFormatSource);
+    CharServerEndpoint endpoint;
+    wsprintfA(endpoint.ip, ipFormat.Text(), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
+    const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
+    endpoint.port = servers[selected2].address.port;
+    const std::uint8_t hostFormatSource[] = {0xFC, 0x8A, 0xE1};
+    thread_local EncryptedName<sizeof(hostFormatSource), 0x2BAD156DE3E1F9D9ULL> hostFormat(hostFormatSource);
+    StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), hostFormat.Text(), servers[selected2].domain);
+    g_charServerEndpoint = endpoint;
+    g_charServerIp = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.ip;
+    g_session.m_serverName = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.name;
+    g_checkAttendanceMgr->LoadLocal(g_session.m_serverName);
+    this->pendingCursorType = 5;
+    return 0;
+  }
+  case LMM_SENDCHARINFO:
+    this->pendingCursorType = 10;
+    return 0;
+  case LMM_CANCEL:
+    if (this->cursorType == 6 || this->cursorType == 27) {
+      GetRagConnection().Close();
+      g_charServerAccountIdPending = 0;
+      this->pendingCursorType = 3;
+      return 0;
+    }
+    if (this->cursorType == 30) {
+      this->pendingCursorType = 7;
+    }
     return 0;
   case LMM_GET_BILLING_INFO: {
     char* output = reinterpret_cast<char*>(argument1);
@@ -3323,29 +3349,6 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       return 0;
     }
   }
-  case LMM_DISCONNECT_ACSVR:
-    GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
-      this->otpStarted = timeGetTime();
-      g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
-    }
-    return 0;
-  case LMM_SELECTACCOUNT2:
-    this->selectedSecondaryAccount = argument1;
-    this->accountInfo.clear();
-    TraceSelectionRange(this->selectedAccount, this->selectedSecondaryAccount);
-    this->pendingCursorType = 3;
-    return 0;
-  case LMM_SET_AUTH_CODE:
-    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x80]), reinterpret_cast<const char*>(argument1));
-    return 0;
-  case LMM_REPLAY_SELECT_SERVER:
-    reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 0;
-    g_session.m_aid = ReplayFileList::Instance().selectionState;
-    g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().dialogState));
-    this->pendingCursorType = 6;
-    return 0;
   case LMM_SELECT_REPLAY_DATA:
     reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 1;
     this->pendingCursorType = 27;
@@ -3353,6 +3356,12 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   case LMM_START_REPLAY:
     g_session.SetFlag(static_cast<char>(Replay::Instance().header.sessionSyncValue));
     this->pendingCursorType = 28;
+    return 0;
+  case LMM_REPLAY_SELECT_SERVER:
+    reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 0;
+    g_session.m_aid = ReplayFileList::Instance().selectionState;
+    g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().dialogState));
+    this->pendingCursorType = 6;
     return 0;
   case LMM_SELECT_MAP:
     if (argument1 != -1) {
@@ -3362,12 +3371,6 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       this->mapStates.push_back(entry);
       this->pendingCursorType = 31;
     }
-    return 0;
-  case LMM_SET_STATE_GET_EMAIL_ADDRESS:
-    this->pendingCursorType = argument1;
-    return reinterpret_cast<int>(this->billingInfo);
-  case LMM_SET_LOGIN_EXTRA:
-    strcpy(reinterpret_cast<char*>(this->loginExtra), reinterpret_cast<const char*>(argument1));
     return 0;
   default:
     return CMode::SendMsg(event, argument1, argument2, argument3, 0);
