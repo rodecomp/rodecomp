@@ -93,9 +93,5 @@ RenderVertex* RenderVertexPool::Block::Append(unsigned count) {
 
   this->resize(first + count);
 
-  for (unsigned index = first; index < this->size(); ++index) {
-    (*this)[index].specular = 0xFF000000u;
-  }
-
   return this->data() + (this->size() - count);
 }
