@@ -62,7 +62,12 @@ ModelNode::~ModelNode() {
   }
 
   this->textures.clear();
-  this->mesh.reset();
+
+  if (this->mesh) {
+    delete this->mesh.get();
+    this->mesh.release();
+  }
+
   this->children.clear();
 }
 
