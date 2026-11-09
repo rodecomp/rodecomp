@@ -644,7 +644,7 @@ void UIEditCtrlWheel::OnWheel(int value) {
 // OFFSET: 0x00869E30
 // FUNCTION: fn_10975
 void UIChatEditCtrl::PushHistory() {
-  if (static_cast<int>(g_windowMgr.hoverWindow == this ? g_serverLanguage->text.size() : this->text.size()) == 0) {
+  if (static_cast<int>(g_windowMgr.GetHoverWindow() == this ? g_serverLanguage->text.size() : this->text.size()) == 0) {
     return;
   }
 
