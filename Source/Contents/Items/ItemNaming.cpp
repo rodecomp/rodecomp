@@ -72,6 +72,20 @@ namespace {
   ItemMoveInfo MakeEmptyItemMoveInfo() {
     return ItemMoveInfo{};
   }
+
+  // INLINED
+  __forceinline int CopyText(char* output, int& capacity, unsigned char consume, const char* text) {
+    const int error = strncpy_s(output, capacity, text, _TRUNCATE);
+    if (error != 0 && error != 80) {
+      return 0;
+    }
+
+    const int written = !output ? 0 : static_cast<int>(strnlen(output, capacity));
+    if (consume) {
+      capacity -= written;
+    }
+    return written;
+  }
 }
 
 // OFFSET: 0x006D77E0
@@ -117,20 +131,13 @@ __declspec(noinline) int ITEM_INFO::Grade(char* output, int& capacity, unsigned 
 // OFFSET: 0x006D6C10
 // FUNCTION: fn_06585
 int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const {
-  int ids[4];
-  CardIds(*this, ids);
-  std::string name = g_playerNameDictionary->Lookup(static_cast<unsigned>(ids[2]) + (static_cast<unsigned>(ids[3]) << 16));
+  std::string name = LookupPlayerName(static_cast<unsigned>(CardId(*this, 2)) + (static_cast<unsigned>(CardId(*this, 3)) << 16));
 
   if (name.empty()) {
     name = LookupMessage(MSI_NAMELESS_USER);
   }
 
-  const int bytes = Copy(output, capacity, name.c_str());
-  if (consume) {
-    capacity -= bytes;
-  }
-
-  return bytes;
+  return CopyText(output, capacity, consume, name.c_str());
 }
 
 // OFFSET: 0x006D6F50
@@ -870,32 +877,17 @@ int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const
 
 // OFFSET: 0x006D6B90
 // FUNCTION: fn_06584
-int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
-  const char* text = nullptr;
+__declspec(noinline) int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
   switch (this->cards[5]) {
   case 5:
-    text = LookupMessage(MSI_ONE_STARPIECE);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_ONE_STARPIECE));
   case 10:
-    text = LookupMessage(MSI_TWO_STARPIECE);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_TWO_STARPIECE));
   case 15:
-    text = LookupMessage(MSI_THREE_STARPIECE);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_THREE_STARPIECE));
   default:
     return 0;
   }
-
-  const int error = strncpy_s(output, capacity, text, _TRUNCATE);
-  if (error != 0 && error != 80) {
-    return 0;
-  }
-
-  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
-  if (consume) {
-    capacity -= written;
-  }
-  return written;
 }
 
 // OFFSET: 0x006D6D50
