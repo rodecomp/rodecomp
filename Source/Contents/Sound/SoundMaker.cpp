@@ -223,7 +223,10 @@ bool CNumEffect::OnProcess() {
 
   if (this->render.scale > 1.0f) {
     this->render.scale = this->baseScale - elapsed * 0.24f;
-  } else if (this->render.scale < 1.0f) {
+    return elapsed <= 120.0f;
+  }
+
+  if (this->render.scale < 1.0f) {
     this->render.scale = 1.0f;
   }
 
