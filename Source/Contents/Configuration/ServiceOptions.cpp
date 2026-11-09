@@ -872,10 +872,11 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
 }
 #pragma inline_depth()
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C4220
 // FUNCTION: fn_06352
 void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(id) != value) {
+  if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
@@ -884,6 +885,7 @@ void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabl
 
   g_session.SetServiceFlags(value, value);
 }
+#pragma inline_depth()
 
 #pragma inline_depth(0)
 // OFFSET: 0x006C4270
@@ -894,23 +896,6 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
     }
-  }
-}
-#pragma inline_depth()
-
-#pragma inline_depth(0)
-// OFFSET: 0x006C5A10
-// FUNCTION: fn_06362
-void ApplyServiceOptionItemWnd(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (value != g_serviceOptions.Get(id)) {
-    g_serviceOptions.Set(id, value);
-    if (notify) {
-      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
-    }
-  }
-
-  if (g_windowMgr.itemWnd != nullptr) {
-    static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
   }
 }
 #pragma inline_depth()
@@ -1332,6 +1317,7 @@ void RequestModeAction48() {
   }
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x006C5A10
 // FUNCTION: fn_06362
 void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1346,6 +1332,7 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
     static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
   }
 }
+#pragma inline_depth()
 
 // OFFSET: 0x006C5A60
 // FUNCTION: fn_45464
