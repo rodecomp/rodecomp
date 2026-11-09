@@ -478,12 +478,8 @@ int ItemSlotsCount(const ITEM_INFO& item) {
 // OFFSET: 0x006D7760
 // FUNCTION: fn_06594
 int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
-  int id = std::atoi(item.itemId.c_str());
-  int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
-  if (consume) {
-    capacity -= written;
-  }
-  return written;
+  const char* name = FindItemDescription(std::atoi(item.itemId.c_str())).unidentifiedName;
+  return CopyText(output, capacity, consume, name ? name : " ");
 }
 
 // OFFSET: 0x006D3770
@@ -838,41 +834,26 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
-int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
-  const char* text = nullptr;
-
+__declspec(noinline) int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
   switch (this->cards[4]) {
   case 0: {
     const int id = std::atoi(this->itemId.c_str());
-    text = LookupMessage(id == 2634 || id == 2635 ? 2976 : 450);
-    break;
+    if (id == 2634 || id == 2635) {
+      return CopyText(output, capacity, consume, LookupMessage(2976));
+    }
+    return CopyText(output, capacity, consume, LookupMessage(450));
   }
   case 1:
-    text = LookupMessage(MSI_MANUFACTURED_ICE_ITEM);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_ICE_ITEM));
   case 2:
-    text = LookupMessage(MSI_MANUFACTURED_EARTH_ITEM);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_EARTH_ITEM));
   case 3:
-    text = LookupMessage(MSI_MANUFACTURED_FIRE_ITEM);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_FIRE_ITEM));
   case 4:
-    text = LookupMessage(MSI_MANUFACTURED_WIND_ITEM);
-    break;
+    return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_WIND_ITEM));
   default:
     return 0;
   }
-
-  const int error = strncpy_s(output, capacity, text, _TRUNCATE);
-  if (error != 0 && error != 80) {
-    return 0;
-  }
-
-  const int written = output ? static_cast<int>(strnlen(output, capacity)) : 0;
-  if (consume) {
-    capacity -= written;
-  }
-  return written;
 }
 
 // OFFSET: 0x006D6B90
