@@ -150,10 +150,10 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
       return 0;
     }
     default:
-      if (this->m_closable == 0) {
-        return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      if (this->m_closable != 0) {
+        return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
       }
-      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
 
