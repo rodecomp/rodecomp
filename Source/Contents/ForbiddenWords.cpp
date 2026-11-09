@@ -3,6 +3,7 @@
 #include "Network/TextEncoding.h"
 #include "Utility/StackAlloc.h"
 
+#include <algorithm>
 #include <atlconv.h>
 #include <atlexcept.h>
 #include <cctype>
@@ -147,9 +148,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
   std::string lowercase(text);
 
-  for (char& byte : lowercase) {
-    byte = static_cast<char>(std::tolower(static_cast<unsigned char>(byte)));
-  }
+  std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), [](unsigned char byte) { return static_cast<char>(std::tolower(byte)); });
 
   strcpy_s(scanBuffer, sizeof(scanBuffer), text);
   char* current = Lowercase(scanBuffer);
