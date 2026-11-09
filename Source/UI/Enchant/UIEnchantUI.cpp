@@ -1502,12 +1502,11 @@ void CUIEnchantPage::UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemD
 // FUNCTION: fn_14979
 void UpdateTargetItem(CUITargetItem* item, ITEM_INFO* info) {
   item->itemIcon->SetItem(*info);
-  if (info->grade > 0) {
+  if (0 < info->grade) {
     item->targetIcon->SetImage(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", info->grade));
   }
-  item->targetIcon->Show(info->grade > 0);
-  const std::string name = info->DisplayName(0);
-  item->targetText->SetText(name);
+  item->targetIcon->Show(0 < info->grade);
+  item->targetText->SetText(info->DisplayName(0));
 }
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
@@ -1772,7 +1771,7 @@ bool CUIReset::LoadEnchantList() {
 // OFFSET: 0x00A079E0
 // FUNCTION: fn_15014
 bool CUIEnchantPage::SetItem(const ITEM_INFO& item) {
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return false;
   }
 
@@ -1927,13 +1926,14 @@ bool CUIUpgradePerfect::LoadEnchantList() {
   }
 
   this->isUpgrade = (*option)->isUpgrade;
-  if ((*option)->perfectUpgrades.size() == 0) {
+  const auto& upgrades = (*option)->perfectUpgrades;
+  if (upgrades.size() == 0) {
     return false;
   }
 
   const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
-  auto base = (*option)->perfectUpgrades.find(baseItemId);
-  if (base == (*option)->perfectUpgrades.end() || base->second.size() == 0) {
+  auto base = upgrades.find(baseItemId);
+  if (base == upgrades.end() || base->second.size() == 0) {
     return false;
   }
 
@@ -1942,7 +1942,8 @@ bool CUIUpgradePerfect::LoadEnchantList() {
     const bool lackMaterial = std::any_of(entry.second.materials.begin(), entry.second.materials.end(), [](const std::pair<const int, int>& material) {
       return static_cast<unsigned int>(g_session.GetInventoryItemCount(material.first)) < static_cast<unsigned int>(material.second);
     });
-    this->enchantList->AddData({entry.first, lackZeny || lackMaterial}, false);
+    const bool frozen = lackZeny || lackMaterial;
+    this->enchantList->AddData({entry.first, frozen}, false);
   }
 
   this->enchantList->UpdateScrollBar();
@@ -2053,8 +2054,11 @@ void CUIEnchantPage::OnCreate(int width, int height) {
       return name.Text();
     }()));
   }
-  this->enchantList->itemX = 3;
-  this->enchantList->itemY = 0;
+  {
+    auto* const list = this->enchantList;
+    list->itemX = 3;
+    list->itemY = 0;
+  }
   this->enchantList->scrollBar->SetSize(16, 377);
   this->enchantList->scrollBar->Move(153, 0);
   this->enchantList->scrollBar->step = 30;
