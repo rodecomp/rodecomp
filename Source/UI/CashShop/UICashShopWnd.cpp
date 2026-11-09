@@ -35,6 +35,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
+#include <array>
 #include <cstdarg>
 #include <cstddef>
 #include <cstdint>
@@ -1269,7 +1270,8 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x007D3430
 // FUNCTION: fn_09561
 int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
     switch (argument1) {
     case ID_DELETE:
       if (this->parent != nullptr) {
@@ -1290,10 +1292,12 @@ int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t
       this->Invalidate();
       break;
     }
-  } else if (message == UM_REFRESHITEM) {
+    break;
+  case UM_REFRESHITEM:
     this->m_item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     this->Show(1);
     this->Invalidate();
+    break;
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
