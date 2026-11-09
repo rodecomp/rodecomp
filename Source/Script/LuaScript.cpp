@@ -1229,14 +1229,14 @@ bool LuaScript::HasTable(const char* name) {
 
 // OFFSET: 0x00AFD4D0
 // FUNCTION: fn_18332
-std::list<int> LuaScript::TableKeys(const char* name, int) {
+std::list<int> LuaScript::TableKeys(std::string_view name) {
   std::list<int> keys;
 
   if (!this->m_state) {
     return keys;
   }
 
-  lua_getglobal(this->m_state, name);
+  lua_getglobal(this->m_state, name.data());
 
   if (lua_type(this->m_state, -1) == LUA_TTABLE) {
     lua_pushnil(this->m_state);

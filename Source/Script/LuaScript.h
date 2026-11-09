@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 struct lua_State;
@@ -23,7 +24,7 @@ public:
   int GlobalInteger(const char* name);
   std::string GlobalString(const char* name);
   bool HasTable(const char* name);
-  std::list<int> TableKeys(const char* name, int unused);
+  std::list<int> TableKeys(std::string_view name);
   int TableInteger(std::string table, int keyType, std::intptr_t key);
   void Close();
   void Register(std::string name, int (*function)(lua_State*));

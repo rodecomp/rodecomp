@@ -79,6 +79,7 @@
 #include "Contents/Effects/Particle.h"
 #include "Script/LuaScript.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <new>
@@ -275,14 +276,15 @@ CEffect* EffectLists::At(int id, unsigned index) const {
 void EffectLists::Add(int actor, CEffect* effect) {
   this->active[actor].push_back(effect);
 
-  switch (effect->id) {
+  const int id = effect->id;
+  switch (id) {
   case EF_EMITTER:
   case EF_MAGIC_FLOOR:
   case EF_EVILS_PAW:
   case EF_ANIMATED_EMITTER:
   case EF_NEW_RANGEDATTACK:
   case EF_UNK_2343:
-    this->indexed[effect->id].push_back(effect);
+    this->indexed[id].push_back(effect);
     break;
   }
 }
@@ -496,7 +498,7 @@ bool CreateEffectMgr() {
     return false;
   }
 
-  EffectLists* mgr = new (std::nothrow) EffectLists();
+  EffectLists* mgr = new (std::nothrow) EffectLists;
   if (mgr) {
     mgr->initialized = false;
     if (mgr->RegisterAllocators()) {
@@ -1783,7 +1785,7 @@ bool EffectLists::RegisterAllocators() {
     return false;
   }
 
-  std::list<int> hatEffects = g_session.m_hotkeyScript->TableKeys("hatEffectTable", 14);
+  std::list<int> hatEffects = g_session.m_hotkeyScript->TableKeys("hatEffectTable");
   for (int hatEffect : hatEffects) {
     if (!this->RegisterAllocator(hatEffect + 2485, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
       return false;
@@ -5205,19 +5207,20 @@ bool EffectLists::RegisterAllocators() {
 // OFFSET: 0x00B3A430
 // FUNCTION: fn_18787
 bool EffectLists::RegisterAllocator(int id, CAllocator* allocator) {
-  return this->allocators.try_emplace(id, allocator).second;
+  return this->allocators.insert(std::make_pair(id, allocator)).second;
 }
 
 // OFFSET: 0x00B3AF30
 // FUNCTION: fn_18793
 void EffectLists::Update() {
-  for (auto& entry : this->active) {
+  std::for_each(this->active.begin(), this->active.end(), [](std::pair<const int, std::list<CEffect*>>& entry) {
+    const int actor = entry.first;
     std::list<CEffect*>& effects = entry.second;
     effects.remove_if([](CEffect* effect) { return effect->RetireIfInactive(); });
     for (CEffect* effect : effects) {
-      effect->Update(entry.first);
+      effect->Update(actor);
     }
-  }
+  });
 }
 
 // OFFSET: 0x00B3A9C0
