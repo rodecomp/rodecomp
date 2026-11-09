@@ -442,6 +442,9 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     return 0;
   }
+  case UM_MENU_SELECTED:
+    this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    return 0;
   case UM_COMMAND:
     if (argument1 == 34 && this->m_member.accountId == static_cast<std::uint32_t>(argument2) && this->m_member.offline == 0 && this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, 34, argument2, argument3, argument4);
@@ -509,9 +512,6 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     return 0;
   }
-  case UM_MENU_SELECTED:
-    this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
-    return 0;
   case UM_MAKEMENU:
     if (this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
