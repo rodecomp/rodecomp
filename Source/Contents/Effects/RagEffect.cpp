@@ -604,9 +604,9 @@ void CRagEffect::IncAgiDex() {
     this->state.currentPrimitive->maxAlpha = 200.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 15.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 15;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\dex_agi_up.bmp", 0, false, true, false);
-    this->state.currentPrimitive->slots[0].flag1[0] = 0;
+    this->state.currentPrimitive->slots[0].life = 0;
   }
 
   if ((this->state.stateCnt & 1) != 0) {
@@ -616,25 +616,25 @@ void CRagEffect::IncAgiDex() {
   this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.currentPrimitive->duration = 50;
   EffectPrimitiveState& spin = *this->state.currentPrimitive;
-  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = *this->state.currentPrimitive;
-  const float distance = static_cast<float>(std::max(rand() % 7, 0) + 2);
+  const float distance = static_cast<float>(ClampedRandom(7) + 2);
   const vector3d step = RotatedForward(moving.transform, distance);
   moving.deltaPos2.x = step.x;
   moving.deltaPos2.y = step.y;
   moving.deltaPos2.z = step.z;
   EffectPrimitiveState& tilt = *this->state.currentPrimitive;
   reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(90));
-  this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 100.0f;
-  this->state.currentPrimitive->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+  this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
+  this->state.currentPrimitive->widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
   this->state.currentPrimitive->heightSize = 0.18f;
   this->state.currentPrimitive->alpha = 0.0f;
   this->state.currentPrimitive->maxAlpha = 200.0f;
   this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 20.0f;
   this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-  AllocateTextures(*this->state.currentPrimitive);
+  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
-  this->state.currentPrimitive->slots[0].flag1[0] = 0;
+  this->state.currentPrimitive->slots[0].life = 0;
 }
 
 // OFFSET: 0x00C1BDC0
@@ -662,9 +662,9 @@ void CRagEffect::IncAgility() {
     this->state.currentPrimitive->maxAlpha = 200.0f;
     this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 15.0f;
     this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 15;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
     this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\agi_up.bmp", 0, false, true, false);
-    this->state.currentPrimitive->slots[0].flag1[0] = 99;
+    this->state.currentPrimitive->slots[0].life = 99;
   }
 
   if ((this->state.stateCnt & 1) != 0) {
@@ -674,25 +674,25 @@ void CRagEffect::IncAgility() {
   this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.currentPrimitive->duration = 50;
   EffectPrimitiveState& spin = *this->state.currentPrimitive;
-  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = *this->state.currentPrimitive;
-  const float distance = static_cast<float>(std::max(rand() % 7, 0) + 2);
+  const float distance = static_cast<float>(ClampedRandom(7) + 2);
   const vector3d step = RotatedForward(moving.transform, distance);
   moving.deltaPos2.x = step.x;
   moving.deltaPos2.y = step.y;
   moving.deltaPos2.z = step.z;
   EffectPrimitiveState& tilt = *this->state.currentPrimitive;
   reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(90));
-  this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 100.0f;
-  this->state.currentPrimitive->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+  this->state.currentPrimitive->speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
+  this->state.currentPrimitive->widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
   this->state.currentPrimitive->heightSize = 0.18f;
   this->state.currentPrimitive->alpha = 0.0f;
   this->state.currentPrimitive->maxAlpha = 200.0f;
   this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 20.0f;
   this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-  AllocateTextures(*this->state.currentPrimitive);
+  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
-  this->state.currentPrimitive->slots[0].flag1[0] = 99;
+  this->state.currentPrimitive->slots[0].life = 99;
 }
 
 // OFFSET: 0x00C18490
