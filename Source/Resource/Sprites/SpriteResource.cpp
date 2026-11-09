@@ -33,7 +33,7 @@ CSprRes* CSprRes::Create() {
 bool CSprRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Spr :: Cannot find File : ") + std::string(name)).c_str(), 0);
+    ShowErrorDialog((std::string("Spr :: Cannot find File : ") + std::string(name)).c_str(), 0);
     return false;
   }
 
@@ -45,13 +45,13 @@ bool CSprRes::Load(const char* name) {
   file.Read(&header, sizeof(header));
 
   if (header.magic != 0x5053) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Illegal File Format", 0);
-    ShowErrorDialog(GetRenderSystemHolder()->system, name, 0);
+    ShowErrorDialog("Illegal File Format", 0);
+    ShowErrorDialog(name, 0);
     return false;
   }
 
   if (header.version > 0x0201) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Unsupported Version. Content may be corrupted", 0);
+    ShowErrorDialog("Unsupported Version. Content may be corrupted", 0);
     return false;
   }
 
@@ -96,13 +96,11 @@ bool CSprRes::Load(const char* name) {
         delete[] pixels;
       }
     } else {
-      std::uint8_t* pixels;
-
       if (header.version >= 0x0201) {
         file.Read(&encodedBytes, sizeof(encodedBytes));
         auto* runs = new std::uint8_t[encodedBytes];
         file.Read(runs, encodedBytes);
-        pixels = new std::uint8_t[dimensions[0] * dimensions[1]];
+        auto* pixels = new std::uint8_t[dimensions[0] * dimensions[1]];
         const std::uint8_t* current = runs;
         std::uint16_t zeroCount = 0;
         std::uint8_t value;
@@ -124,25 +122,38 @@ bool CSprRes::Load(const char* name) {
         }
 
         delete[] runs;
+        auto* reduced = this->ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
+        delete[] pixels;
+        image->runs = this->EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
+        delete[] reduced;
+
+        if (g_spriteHalfWidth != 0) {
+          image->width /= 2;
+          image->doubleWidth = 1;
+        }
+
+        if (g_spriteHalfHeight != 0) {
+          image->height /= 2;
+          image->doubleHeight = 1;
+        }
       } else {
         const int count = image->width * image->height;
-        pixels = new std::uint8_t[count];
+        auto* pixels = new std::uint8_t[count];
         file.Read(pixels, count);
-      }
+        auto* reduced = this->ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
+        delete[] pixels;
+        image->runs = this->EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
+        delete[] reduced;
 
-      auto* reduced = this->ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
-      delete[] pixels;
-      image->runs = this->EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
-      delete[] reduced;
+        if (g_spriteHalfWidth != 0) {
+          image->width /= 2;
+          image->doubleWidth = 1;
+        }
 
-      if (g_spriteHalfWidth != 0) {
-        image->width /= 2;
-        image->doubleWidth = 1;
-      }
-
-      if (g_spriteHalfHeight != 0) {
-        image->height /= 2;
-        image->doubleHeight = 1;
+        if (g_spriteHalfHeight != 0) {
+          image->height /= 2;
+          image->doubleHeight = 1;
+        }
       }
     }
 
