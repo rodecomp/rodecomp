@@ -427,7 +427,7 @@ void UIQuickSlotWnd::Paint() {
       g_session.ItemBitmapPath(skill.name, text);
       auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
       g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
-      this->DrawBitmap(x, 5, &image->image, true);
+      this->DrawBitmap(x, 5, image, true);
       if (entry.count != 0) {
         std::sprintf(text, "%d", entry.count);
         this->DrawTextAt(x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
@@ -446,7 +446,7 @@ void UIQuickSlotWnd::Paint() {
       if (item.grade > 0) {
         const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
         auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-        this->DrawBitmap(x, 17, &grade->image, true);
+        this->DrawBitmap(x, 17, grade, true);
       }
     }
   }
