@@ -109,17 +109,14 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
 // OFFSET: 0x00889D60
 // FUNCTION: fn_11352
 void UIComboBoxDefWnd::Paint() {
-  const COLORREF background = RGB(this->red, this->green, this->blue);
-  const COLORREF border = RGB(this->borderRed, this->borderGreen, this->borderBlue);
-
   if (this->borderless == 0) {
     RECT rectangle = {0, 0, this->geometry.width, this->geometry.height};
-    this->FillSurface(border, &rectangle);
+    this->FillSurface(RGB(this->borderRed, this->borderGreen, this->borderBlue), &rectangle);
 
     SetRect(&rectangle, 1, 1, this->geometry.width - 1, this->geometry.height - 1);
-    this->FillSurface(background, &rectangle);
+    this->FillSurface(RGB(this->red, this->green, this->blue), &rectangle);
   } else {
-    this->ClearSurface(background);
+    this->ClearSurface(RGB(this->red, this->green, this->blue));
   }
 }
 
@@ -157,9 +154,11 @@ void UIComboBoxDefWnd::Select(int index) {
 // OFFSET: 0x008A28B0
 // FUNCTION: fn_11643
 void TrimTrailing(std::string& text, const char* characters) {
-  const std::size_t end = text.find_last_not_of(characters) + 1;
-  if (end < text.size()) {
-    text.erase(end, text.size() - end);
+  if (!text.empty()) {
+    const std::size_t end = text.find_last_not_of(characters) + 1;
+    if (end < text.size()) {
+      text.erase(end, text.size() - end);
+    }
   }
 }
 
