@@ -34,6 +34,14 @@
 #include <cstring>
 #include <timeapi.h>
 #include <format>
+namespace {
+// INLINED
+__forceinline int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // INLINED
 static void SetScreenVertex(RenderVertex& vertex, float x, float y, std::uint32_t color, float u, float v) {
   vertex.x = x;
@@ -1012,7 +1020,7 @@ void CFloralFlareRoad::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
-      if (emitter) {
+      if (*it) {
         AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
       }
       ++it;
@@ -2443,7 +2451,7 @@ void CPneumaticusProcellaEffect::Render() {
     AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+  for (auto it = this->emitters.begin(); it < this->emitters.end(); ++it) {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
