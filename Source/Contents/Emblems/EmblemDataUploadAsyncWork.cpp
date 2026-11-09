@@ -132,7 +132,8 @@ bool CEmblemDataUploadAsyncWork::Execute() {
 // OFFSET: 0x005EC700
 // FUNCTION: fn_03982
 void CEmblemDataUploadAsyncWork::Complete() {
-  g_emblemDataMgr->CompleteUpload(this->m_diagnostic, this->m_response, this->m_guildId);
+  CEmblemDataMgr* emblems = g_emblemDataMgr;
+  emblems->CompleteUpload(this->m_diagnostic, this->m_response, this->m_guildId);
 }
 
 template void std::deque<CEmblemDataUploadAsyncWork*>::push_back(CEmblemDataUploadAsyncWork*&&);
