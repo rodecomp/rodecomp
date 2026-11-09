@@ -129,8 +129,8 @@ namespace {
   static_assert(offsetof(PakAuxiliaryFile, identifier) == 4);
 
   // INLINED
-  std::uint8_t SwapNibbles(std::uint8_t byte) {
-    return static_cast<std::uint8_t>((byte << 4) | (byte >> 4));
+  char SwapNibbles(char c) {
+    return static_cast<char>((c << 4) | ((c >> 4) & 0x0F));
   }
 
   __declspec(noinline) std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size);
@@ -541,49 +541,47 @@ struct VectorUint32_654D10 {
 // FUNCTION: fn_05051
 __declspec(noinline) void VectorUint32_654D10::AssignFill(unsigned int count, unsigned int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
-  if (count <= old_size) {
-    FillUint32(this->first, this->last, val);
-    return;
-  }
-  if (count > 0x3fffffff) {
-    std::_Throw_bad_array_new_length();
-  }
-  unsigned int bytes = count * sizeof(unsigned int);
-  unsigned int* new_ptr;
-  if (bytes < 0x1000) {
-    if (bytes == 0) {
-      new_ptr = nullptr;
-    } else {
-      new_ptr = static_cast<unsigned int*>(::operator new(bytes));
-    }
-  } else {
-    if (bytes + 0x23 <= bytes) {
+  if (old_size < count) {
+    if (count > 0x3fffffff) {
       std::_Throw_bad_array_new_length();
     }
-    void* raw = ::operator new(bytes + 0x23);
-    if (!raw) {
-      _invalid_parameter_noinfo_noreturn();
-    }
-    new_ptr = reinterpret_cast<unsigned int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
-    reinterpret_cast<void**>(new_ptr)[-1] = raw;
-  }
-  if (old_size != 0) {
-    unsigned int old_bytes = old_size * sizeof(unsigned int);
-    void* old_raw = this->first;
-    if (old_bytes >= 0x1000) {
-      old_raw = reinterpret_cast<void**>(this->first)[-1];
-      if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+    unsigned int bytes = count * sizeof(unsigned int);
+    unsigned int* new_ptr;
+    if (bytes >= 0x1000) {
+      if (bytes + 0x23 <= bytes) {
+        std::_Throw_bad_array_new_length();
+      }
+      void* raw = ::operator new(bytes + 0x23);
+      if (!raw) {
         _invalid_parameter_noinfo_noreturn();
       }
-      old_bytes += 0x23;
+      new_ptr = reinterpret_cast<unsigned int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
+      reinterpret_cast<void**>(new_ptr)[-1] = raw;
+    } else if (bytes != 0) {
+      new_ptr = static_cast<unsigned int*>(::operator new(bytes));
+    } else {
+      new_ptr = nullptr;
     }
-    ::operator delete(old_raw, old_bytes);
-  }
-  this->first = new_ptr;
-  this->last = new_ptr + count;
-  this->end = new_ptr + count;
-  for (unsigned int* p = new_ptr; p != this->last; ++p) {
-    *p = val;
+    if (old_size != 0) {
+      unsigned int old_bytes = old_size * sizeof(unsigned int);
+      void* old_raw = this->first;
+      if (old_bytes >= 0x1000) {
+        old_raw = reinterpret_cast<void**>(this->first)[-1];
+        if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+          _invalid_parameter_noinfo_noreturn();
+        }
+        old_bytes += 0x23;
+      }
+      ::operator delete(old_raw, old_bytes);
+    }
+    this->first = new_ptr;
+    this->last = new_ptr + count;
+    this->end = new_ptr + count;
+    for (unsigned int* p = new_ptr; p != this->last; ++p) {
+      *p = val;
+    }
+  } else {
+    FillUint32(this->first, this->last, val);
   }
 }
 
@@ -604,49 +602,47 @@ struct VectorInt32_654E00 {
 // FUNCTION: fn_05052
 __declspec(noinline) void VectorInt32_654E00::AssignFill(unsigned int count, int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
-  if (count <= old_size) {
-    FillInt32(this->first, this->last, val);
-    return;
-  }
-  if (count > 0x3fffffff) {
-    std::_Throw_bad_array_new_length();
-  }
-  unsigned int bytes = count * sizeof(int);
-  int* new_ptr;
-  if (bytes < 0x1000) {
-    if (bytes == 0) {
-      new_ptr = nullptr;
-    } else {
-      new_ptr = static_cast<int*>(::operator new(bytes));
-    }
-  } else {
-    if (bytes + 0x23 <= bytes) {
+  if (old_size < count) {
+    if (count > 0x3fffffff) {
       std::_Throw_bad_array_new_length();
     }
-    void* raw = ::operator new(bytes + 0x23);
-    if (!raw) {
-      _invalid_parameter_noinfo_noreturn();
-    }
-    new_ptr = reinterpret_cast<int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
-    reinterpret_cast<void**>(new_ptr)[-1] = raw;
-  }
-  if (old_size != 0) {
-    unsigned int old_bytes = old_size * sizeof(int);
-    void* old_raw = this->first;
-    if (old_bytes >= 0x1000) {
-      old_raw = reinterpret_cast<void**>(this->first)[-1];
-      if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+    unsigned int bytes = count * sizeof(int);
+    int* new_ptr;
+    if (bytes >= 0x1000) {
+      if (bytes + 0x23 <= bytes) {
+        std::_Throw_bad_array_new_length();
+      }
+      void* raw = ::operator new(bytes + 0x23);
+      if (!raw) {
         _invalid_parameter_noinfo_noreturn();
       }
-      old_bytes += 0x23;
+      new_ptr = reinterpret_cast<int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
+      reinterpret_cast<void**>(new_ptr)[-1] = raw;
+    } else if (bytes != 0) {
+      new_ptr = static_cast<int*>(::operator new(bytes));
+    } else {
+      new_ptr = nullptr;
     }
-    ::operator delete(old_raw, old_bytes);
-  }
-  this->first = new_ptr;
-  this->last = new_ptr + count;
-  this->end = new_ptr + count;
-  for (int* p = new_ptr; p != this->last; ++p) {
-    *p = val;
+    if (old_size != 0) {
+      unsigned int old_bytes = old_size * sizeof(int);
+      void* old_raw = this->first;
+      if (old_bytes >= 0x1000) {
+        old_raw = reinterpret_cast<void**>(this->first)[-1];
+        if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+          _invalid_parameter_noinfo_noreturn();
+        }
+        old_bytes += 0x23;
+      }
+      ::operator delete(old_raw, old_bytes);
+    }
+    this->first = new_ptr;
+    this->last = new_ptr + count;
+    this->end = new_ptr + count;
+    for (int* p = new_ptr; p != this->last; ++p) {
+      *p = val;
+    }
+  } else {
+    FillInt32(this->first, this->last, val);
   }
 }
 
@@ -1347,7 +1343,7 @@ bool CGPak::ReadTableV1() {
       std::int32_t length = static_cast<std::int32_t>(std::strlen(reinterpret_cast<const char*>(cursor)) + 1);
 
       for (std::int32_t j = 0; j < length; ++j) {
-        name[j] = static_cast<char>(SwapNibbles(cursor[j]));
+        name[j] = SwapNibbles(static_cast<char>(cursor[j]));
       }
     } else {
       if (this->m_version > 0x103) {
@@ -1358,7 +1354,7 @@ bool CGPak::ReadTableV1() {
       std::int32_t length = static_cast<std::int32_t>(nameSize - 6);
 
       for (std::int32_t j = 0; j < length; ++j) {
-        name[j] = static_cast<char>(SwapNibbles(cursor[j]));
+        name[j] = SwapNibbles(static_cast<char>(cursor[j]));
       }
 
       std::int32_t number = legacyKey;
@@ -2220,6 +2216,7 @@ namespace GPakEx {
     public:
       Base() : m_key{} {
       }
+
 
       std::size_t BlockSize() const override;
       std::size_t OptimalDataAlignment() const override;
@@ -3434,18 +3431,19 @@ __forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t key
   AES cipher;
   bool result = false;
   if (cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), std::span<const UCHAR>(iv.data(), iv.size()), mode)) {
+    const std::size_t encryptedSize = chunkSize + 16;
     if (input.size() <= prefixSize) {
       XorWithKey16(mask, input, output);
       result = true;
+    } else if (input.size() <= prefixSize + encryptedSize) {
+      XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
+      const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
+      if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, input.size() - prefixSize, remaining.data(), remaining.size(), 1) == remaining.size()) {
+        result = true;
+      }
     } else {
       XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
-      const std::size_t encryptedSize = chunkSize + 16;
-      if (input.size() <= prefixSize + encryptedSize) {
-        const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
-        if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, input.size() - prefixSize, remaining.data(), remaining.size(), 1) == remaining.size()) {
-          result = true;
-        }
-      } else if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, encryptedSize, output.data() + prefixSize, chunkSize, 1) == chunkSize) {
+      if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, encryptedSize, output.data() + prefixSize, chunkSize, 1) == chunkSize) {
         XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + chunkSize));
         result = true;
       }
@@ -3550,7 +3548,7 @@ bool PakDecryptor::Decrypt00F(std::span<const std::uint8_t> data, std::span<cons
 template<class CipherMode>
 __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint32_t keyOffset, std::uint32_t keySize, std::uint32_t ivOffset, std::uint32_t ivSize,
                                          std::size_t prefixSize, std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed,
-                                         std::span<const std::uint8_t, 16> block, const std::span<const std::uint8_t>& input, std::span<std::uint8_t> output) {
+                                         std::span<const std::uint8_t, 16> block, const std::span<const std::uint8_t>& input, const std::span<std::uint8_t>& output) {
   if (input.empty()) {
     return true;
   }
@@ -3571,12 +3569,15 @@ __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint3
   if (input.size() <= prefixSize) {
     XorWithKey16(mask, input, output);
     succeeded = true;
+  } else if (input.size() <= prefixSize + encryptedSize) {
+    XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
+    const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
+    if (cipher.Process(input.subspan(prefixSize), remaining, true) == remaining.size()) {
+      succeeded = true;
+    }
   } else {
     XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
-    if (input.size() <= prefixSize + encryptedSize) {
-      const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
-      succeeded = cipher.Process(input.subspan(prefixSize), remaining, true) == remaining.size();
-    } else if (cipher.Process(input.subspan(prefixSize, encryptedSize), output.subspan(prefixSize, 0x400), true) == 0x400) {
+    if (cipher.Process(input.subspan(prefixSize, encryptedSize), output.subspan(prefixSize, 0x400), true) == 0x400) {
       XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + 0x400));
       succeeded = true;
     }
