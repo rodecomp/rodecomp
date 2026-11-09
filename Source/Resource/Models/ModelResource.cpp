@@ -827,15 +827,15 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   // GLOBAL: gl_24736
   static ShadeVector vertexNormals[30000];
   std::list<int> groups[32];
-  auto* colors = reinterpret_cast<std::array<std::uint32_t, 3>*>(this->faceNormals);
+  auto faceColors = [this](int index) { return reinterpret_cast<std::uint32_t*>(this->faceNormals[index].data()); };
 
   switch (shadeType) {
   case 0: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
-      colors[index][0] = color;
-      colors[index][1] = color;
-      colors[index][2] = color;
+      faceColors(index)[0] = color;
+      faceColors(index)[1] = color;
+      faceColors(index)[2] = color;
     }
     break;
   }
@@ -859,15 +859,19 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
       const float ny = bz * ax - bx * az;
       const float nz = bx * ay - by * ax;
       const float inverse = 1.0f / SquareRoot(ny * ny + nx * nx + nz * nz);
-      const float intensity = std::max(0.0f, nx * inverse * light[0] + ny * inverse * light[1] + nz * inverse * light[2]);
-      const float red = std::min(intensity * diffuse[0] + ambient[0], 1.0f);
-      const float green = std::min(intensity * diffuse[1] + ambient[1], 1.0f);
-      const float blue = std::min(intensity * diffuse[2] + ambient[2], 1.0f);
+      const float dot = nx * inverse * light[0] + ny * inverse * light[1] + nz * inverse * light[2];
+      const float intensity = 0.0f > dot ? 0.0f : dot;
+      const float redLevel = intensity * diffuse[0] + ambient[0];
+      const float red = 1.0f < redLevel ? 1.0f : redLevel;
+      const float greenLevel = intensity * diffuse[1] + ambient[1];
+      const float green = 1.0f < greenLevel ? 1.0f : greenLevel;
+      const float blueLevel = intensity * diffuse[2] + ambient[2];
+      const float blue = 1.0f < blueLevel ? 1.0f : blueLevel;
 
       for (int corner = 0; corner < 3; ++corner) {
-        const int source = this->sharedTextureVertices ? 0 : frame;
+        const int source = this->sharedTextureVertices == 0 ? frame : 0;
         const float scale = this->frames[source].textureVertices[face.textureVertices[corner]].shaded ? 128.0f : 255.0f;
-        colors[index][corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(scale * green)) << 8) | static_cast<int>(scale * blue);
+        faceColors(index)[corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(scale * green)) << 8) | static_cast<int>(scale * blue);
       }
     }
     break;
@@ -932,13 +936,17 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
 
         for (int corner = 0; corner < 3; ++corner) {
           const ShadeVector& normal = vertexNormals[face.vertices[corner]];
-          const int source = this->sharedTextureVertices ? 0 : frame;
-          const float intensity = std::max(0.0f, normal.y * light[1] + light[0] * normal.x + normal.z * light[2]);
-          const float red = std::min(intensity * diffuse[0] + ambient[0], 1.0f);
-          const float green = std::min(intensity * diffuse[1] + ambient[1], 1.0f);
-          const float blue = std::min(intensity * diffuse[2] + ambient[2], 1.0f);
+          const int source = this->sharedTextureVertices == 0 ? frame : 0;
+          const float dot = normal.y * light[1] + light[0] * normal.x + normal.z * light[2];
+          const float intensity = 0.0f > dot ? 0.0f : dot;
+          const float redLevel = intensity * diffuse[0] + ambient[0];
+          const float red = 1.0f < redLevel ? 1.0f : redLevel;
+          const float greenLevel = intensity * diffuse[1] + ambient[1];
+          const float green = 1.0f < greenLevel ? 1.0f : greenLevel;
+          const float blueLevel = intensity * diffuse[2] + ambient[2];
+          const float blue = 1.0f < blueLevel ? 1.0f : blueLevel;
           const float scale = this->frames[source].textureVertices[face.textureVertices[corner]].shaded ? 128.0f : 255.0f;
-          colors[index][corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(green * scale)) << 8) | static_cast<int>(blue * scale);
+          faceColors(index)[corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(green * scale)) << 8) | static_cast<int>(blue * scale);
         }
       }
     }
@@ -947,9 +955,9 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   default: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
-      colors[index][0] = color;
-      colors[index][1] = color;
-      colors[index][2] = color;
+      faceColors(index)[0] = color;
+      faceColors(index)[1] = color;
+      faceColors(index)[2] = color;
     }
 
     ShowErrorDialog("Invalid Shade Type", 0);
