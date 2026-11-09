@@ -358,7 +358,11 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   makeButton->SetSize(makeButton->BitmapWidth(), makeButton->BitmapHeight());
   makeButton->Move(0x268, 0x17B);
-  makeButton->SetText(LookupMessage(MSI_MAKECHARWND_DOUBLECHECK_NAME));
+  {
+    std::string text = LookupMessage(MSI_MAKECHARWND_DOUBLECHECK_NAME);
+    makeButton->text = text;
+    makeButton->Invalidate();
+  }
   makeButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
@@ -371,7 +375,11 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
   cancelButton->Move(0x19, 0x17B);
-  cancelButton->SetText(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_DEAD_STATE));
+  {
+    std::string text = LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_DEAD_STATE);
+    cancelButton->text = text;
+    cancelButton->Invalidate();
+  }
   cancelButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
