@@ -683,9 +683,11 @@ void CSkillAction_DR_NATURE_SHIELD::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00622240
 // FUNCTION: fn_04504
 void CSkillAction_DR_NATURE_SHIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
-  const char effectSource[] = {'\xA9', '\xAC', '\x91', '\x48', '\x6D', '\x18', '\x3A', '\x86', '\xAF', '\xA4', '\x80', '\x51', '\x7B', '\x7D'};
-  thread_local EncryptedName<sizeof(effectSource), 0xF5657D1F3DE5CDC7ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\xA9', '\xAC', '\x91', '\x48', '\x6D', '\x18', '\x3A', '\x86', '\xAF', '\xA4', '\x80', '\x51', '\x7B', '\x7D'};
+    thread_local EncryptedName<sizeof(bytes), 0xF5657D1F3DE5CDC7ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00622440
@@ -743,9 +745,11 @@ EfstActionMessage CEfstAction_NATURE_PROTECTION::GetEfstEndMessage() {
 // OFFSET: 0x00622980
 // FUNCTION: fn_04511
 int CEfstAction_NATURE_PROTECTION::GetEffectId(int efstId, int argument4) {
-  const char effectSource[] = {'\xAD', '\xA2', '\xA1', '\xFE', '\x29', '\x8E', '\x60', '\xFB', '\xB1', '\xAC', '\xA1', '\xEE', '\x38', '\x9F', '\x56', '\xE4', '\xAD', '\xC3'};
-  thread_local EncryptedName<sizeof(effectSource), 0x8B3FEB5B8BD5C3C3ULL> effectName(effectSource);
-  return CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+  return CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\xAD', '\xA2', '\xA1', '\xFE', '\x29', '\x8E', '\x60', '\xFB', '\xB1', '\xAC', '\xA1', '\xEE', '\x38', '\x9F', '\x56', '\xE4', '\xAD', '\xC3'};
+    thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
+    return name.Text();
+  }());
 }
 
 // OFFSET: 0x00622B20
@@ -803,9 +807,11 @@ EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::GetEfstEndMessage() {
 // OFFSET: 0x00622E30
 // FUNCTION: fn_04518
 int CEfstAction_THUNDERING_ROD_MAX::GetEffectId(int efstId, int argument4) {
-  const char effectSource[] = {'\x5B', '\xF7', '\xC6', '\xB5', '\x8B', '\xAC', '\x65', '\xF2', '\x41', '\xF8', '\xEC', '\xA9', '\x80', '\xAD', '\x48', '\xFD', '\x5A', '\xF3', '\xDF', '\xDB'};
-  thread_local EncryptedName<sizeof(effectSource), 0x9B17C9EFDBB39F2FULL> effectName(effectSource);
-  return CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+  return CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x5B', '\xF7', '\xC6', '\xB5', '\x8B', '\xAC', '\x65', '\xF2', '\x41', '\xF8', '\xEC', '\xA9', '\x80', '\xAD', '\x48', '\xFD', '\x5A', '\xF3', '\xDF', '\xDB'};
+    thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes);
+    return name.Text();
+  }());
 }
 
 // OFFSET: 0x00622FD0
@@ -835,13 +841,17 @@ void CSkillAction_DR_TRUTH_OF_EARTH::OnSkillEffect(int level, CGameActor* source
     return;
   }
 
-  const char effectSource[] = {'\x05', '\x69', '\x86', '\x8B', '\xEF', '\x7A', '\xFE', '\xA1', '\x2E', '\x7E', '\x92', '\x8D', '\xF3', '\x4D', '\x91'};
-  thread_local EncryptedName<sizeof(effectSource), 0xC7912587FFF31B71ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x05', '\x69', '\x86', '\x8B', '\xEF', '\x7A', '\xFE', '\xA1', '\x2E', '\x7E', '\x92', '\x8D', '\xF3', '\x4D', '\x91'};
+    thread_local EncryptedName<sizeof(bytes), 0xC7912587FFF31B71ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\x19', '\x41', '\x7A', '\xE1', '\xB3', '\x1A', '\xBC', '\x0F', '\x32', '\x56', '\x6E', '\xE7', '\xAF', '\x2D', '\x8C', '\x0B', '\x02', '\x47', '\x7B', '\xFA', '\xB6', '\x45'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x69D345DB950F336DULL> bottomName(bottomSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x19', '\x41', '\x7A', '\xE1', '\xB3', '\x1A', '\xBC', '\x0F', '\x32', '\x56', '\x6E', '\xE7', '\xAF', '\x2D', '\x8C', '\x0B', '\x02', '\x47', '\x7B', '\xFA', '\xB6', '\x45'};
+    thread_local EncryptedName<sizeof(bytes), 0x69D345DB950F336DULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006233D0
@@ -883,15 +893,19 @@ void CSkillAction_DR_TRUTH_OF_ICE::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const char effectSource[] = {'\x47', '\x55', '\x46', '\x7B', '\xD5', '\x12', '\x56', '\x4B', '\x6C', '\x4E', '\x50', '\x6A', '\xBD'};
-  thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x47', '\x55', '\x46', '\x7B', '\xD5', '\x12', '\x56', '\x4B', '\x6C', '\x4E', '\x50', '\x6A', '\xBD'};
+    thread_local EncryptedName<sizeof(bytes), 0x2D394DBD0F332733ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\x33', '\x53', '\xCE', '\x9F', '\x83', '\x28', '\x70', '\x73', '\x18', '\x48', '\xD8', '\x8E', '\xB4', '\x15', '\x70', '\x61', '\x33', '\x4E', '\xD6', '\xEB'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x33', '\x53', '\xCE', '\x9F', '\x83', '\x28', '\x70', '\x73', '\x18', '\x48', '\xD8', '\x8E', '\xB4', '\x15', '\x70', '\x61', '\x33', '\x4E', '\xD6', '\xEB'};
+    thread_local EncryptedName<sizeof(bytes), 0x151F77EBEBBB2147ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00623820
@@ -933,15 +947,19 @@ void CSkillAction_DR_TRUTH_OF_WIND::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  const char effectSource[] = {'\x95', '\xE9', '\x86', '\x0F', '\x85', '\xD8', '\x90', '\x07', '\xBE', '\xEC', '\x9A', '\x15', '\x89', '\x87'};
-  thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x95', '\xE9', '\x86', '\x0F', '\x85', '\xD8', '\x90', '\x07', '\xBE', '\xEC', '\x9A', '\x15', '\x89', '\x87'};
+    thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\x8B', '\xF7', '\x52', '\x79', '\x0D', '\x60', '\xF6', '\x1B', '\xA0', '\xF2', '\x4E', '\x63', '\x01', '\x60', '\xFB', '\x12', '\x8B', '\xF1', '\x48', '\x60', '\x65'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x7D993F650D2785FFULL> bottomName(bottomSource);
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bytes[] = {'\x8B', '\xF7', '\x52', '\x79', '\x0D', '\x60', '\xF6', '\x1B', '\xA0', '\xF2', '\x4E', '\x63', '\x01', '\x60', '\xFB', '\x12', '\x8B', '\xF1', '\x48', '\x60', '\x65'};
+    thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00623C70
