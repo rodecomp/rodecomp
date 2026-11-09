@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
@@ -446,13 +447,13 @@ int CSkillInfo::UseSpAmount(LuaScript& script, int skillLevel) const {
 
 // OFFSET: 0x007736F0
 // FUNCTION: fn_08315
-const char* CSkillInfo::DisplayName(LuaScript& script) const {
-  return CSkillInfo::DisplayName(script, static_cast<int>(this->id));
+const char* CSkillInfo::DisplayName(LuaScript&) const {
+  return CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(this->id));
 }
 
 // OFFSET: 0x00773920
 // FUNCTION: fn_08318
-const char* CSkillInfo::DisplayName(LuaScript& script, int skillId) {
+const char* CSkillInfo::DisplayName(LuaScript&, int skillId) {
   switch (skillId) {
   case SU_CN_METEOR2:
     skillId = SU_CN_METEOR;
@@ -463,7 +464,7 @@ const char* CSkillInfo::DisplayName(LuaScript& script, int skillId) {
   }
 
   const char* result = nullptr;
-  return script.Call("GetSkillName", "d>s", skillId, &result) ? result : "Unknown-Skill";
+  return g_session.m_hotkeyScript->Call("GetSkillName", "d>s", skillId, &result) ? result : "Unknown-Skill";
 }
 
 // OFFSET: 0x007739F0
