@@ -224,16 +224,15 @@ void UIEditctrlWnd::Paint() {
 // OFFSET: 0x0099C820
 // FUNCTION: fn_13560
 void UIMiniMapWnd::OnLBtnDown(int x, int y) {
-  if (y <= 17) {
+  if (y > 17) {
+    if (x >= 2 && y >= 19 && this->geometry.width - 2 >= x && this->geometry.height - 19 >= y && this->dragging) {
+      this->dragging = 0;
+      g_windowMgr.miniMapClickY = y - 6;
+      g_windowMgr.miniMapClickX = x - 6 < 0 ? 0 : x - 6;
+      g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
+    }
+  } else {
     UIFrameWnd::OnLBtnDown(x, y);
-    return;
-  }
-
-  if (x >= 2 && y >= 19 && this->geometry.width - 2 >= x && this->geometry.height - 19 >= y && this->dragging) {
-    this->dragging = 0;
-    g_windowMgr.miniMapClickY = y - 6;
-    g_windowMgr.miniMapClickX = x - 6 < 0 ? 0 : x - 6;
-    g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
   }
 }
 
