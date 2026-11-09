@@ -24,6 +24,26 @@
 #include <cstring>
 #include <vector>
 
+namespace {
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+
+// INLINED
+inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + 6u, 0);
+  const ReplayTaggedRecordHeader header{id, bytes};
+  std::memcpy(record.data(), &header, sizeof(header));
+  if (bytes != 0) {
+    std::memcpy(record.data() + sizeof(header), data, bytes);
+  }
+  return record;
+}
+}
+
 // OFFSET: 0x009A0490
 // FUNCTION: fn_13600
 std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
@@ -33,7 +53,7 @@ std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
     records.insert(records.end(), record.begin(), record.end());
   }
   for (auto it = this->itemIds.begin(); it != this->itemIds.end(); ++it) {
-    const auto record = BuildReplayTaggedRecord(22052, &*it, sizeof(*it));
+    const auto record = MakeReplayTaggedRecord(22052, &*it, sizeof(*it));
     records.insert(records.end(), record.begin(), record.end());
   }
   {
