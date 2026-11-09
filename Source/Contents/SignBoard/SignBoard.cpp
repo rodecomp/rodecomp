@@ -341,7 +341,8 @@ void C3DCooRendering::Render(int argument) {
   float y;
   float reciprocalDepth;
   g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
-  this->render.distanceScale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+  const float distance = g_renderer->ScaleDistance(reciprocalDepth);
+  this->render.distanceScale = distance / g_heightScale;
   this->SetTlvert(x, y);
 }
 
@@ -371,8 +372,10 @@ void CIcon::Load(const std::string& name) {
   if (name.find(".") != std::string::npos) {
     stem = name.substr(0, name.find("."));
   }
-  this->SetSpriteName(ResourceMgr::Instance(), (stem + ".spr").c_str());
-  this->SetActionName(ResourceMgr::Instance(), (stem + ".act").c_str());
+  const std::string spriteName = stem + ".spr";
+  const std::string actionName = stem + ".act";
+  this->SetSpriteName(spriteName.c_str());
+  this->SetActionName(actionName.c_str());
   this->SetAction(0, 10, 0);
 }
 
