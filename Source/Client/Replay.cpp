@@ -224,8 +224,7 @@ int Replay::WriteHeader(int event) {
   this->header.fileOffset = this->fileOffset;
   this->header.closingSignature = 0x52414705;
   this->header.signature = 0x52414705;
-  switch (event) {
-  case 11: {
+  if (event == 11) {
     this->sections[25].id = 111;
     bool written;
     {
@@ -242,27 +241,24 @@ int Replay::WriteHeader(int event) {
     std::fwrite(text, sizeof(text), 1, this->file);
     std::fwrite(&this->header, 12, 1, this->file);
     return 1;
-  }
-  case 12: {
-    if (++g_replayFlushCounter != 1200) {
-      return 1;
+  } else if (event == 12) {
+    if (++g_replayFlushCounter == 1200) {
+      this->header.closingSignature = 0x51404605;
+      this->header.signature = 0x51404605;
+      bool written;
+      {
+        std::vector<unsigned char> metadata = this->BuildMetadata();
+        written = this->WriteSection(2, metadata, 15);
+      }
+      if (!written) {
+        return 0;
+      }
+      std::fseek(this->file, 112, SEEK_SET);
+      std::fwrite(this->sections, sizeof(this->sections), 1, this->file);
+      g_replayFlushCounter = 0;
     }
-    this->header.closingSignature = 0x51404605;
-    this->header.signature = 0x51404605;
-    bool written;
-    {
-      std::vector<unsigned char> metadata = this->BuildMetadata();
-      written = this->WriteSection(2, metadata, 15);
-    }
-    if (!written) {
-      return 0;
-    }
-    std::fseek(this->file, 112, SEEK_SET);
-    std::fwrite(this->sections, sizeof(this->sections), 1, this->file);
-    g_replayFlushCounter = 0;
     return 1;
-  }
-  case 13: {
+  } else if (event == 13) {
     bool written;
     {
       std::vector<unsigned char> metadata = this->BuildMetadata();
@@ -275,9 +271,7 @@ int Replay::WriteHeader(int event) {
     std::fwrite(this->sections, sizeof(this->sections), 1, this->file);
     return 1;
   }
-  default:
-    return 0;
-  }
+  return 0;
 }
 
 // OFFSET: 0x00B85A20
