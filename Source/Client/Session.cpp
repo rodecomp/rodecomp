@@ -110,9 +110,9 @@ public:
 // OFFSET: 0x00DDE860
 // FUNCTION: fn_23401
 int CSession::MercSkillLevel(int skillId) const {
-  const int index = skillId - 8200;
-  if (index > -1) {
-    return this->m_mercSkillLevels[index];
+  skillId -= 8200;
+  if (skillId > -1) {
+    return this->m_mercSkillLevels[skillId];
   }
 
   return 0;
@@ -2250,9 +2250,9 @@ void CSession::UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh)
 // OFFSET: 0x00DFFC10
 // FUNCTION: fn_23629
 void CSession::SetMercSkillLevel(int skillId, int level) {
-  const int index = skillId - 8200;
-  if (index > -1) {
-    this->m_mercSkillLevels[index] = level;
+  skillId -= 8200;
+  if (skillId > -1) {
+    this->m_mercSkillLevels[skillId] = level;
   }
 }
 
