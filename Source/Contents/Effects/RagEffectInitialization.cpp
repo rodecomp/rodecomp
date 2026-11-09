@@ -6,6 +6,7 @@
 #include "Resource/EZeffectResource.h"
 #include "Resource/ResourceMgr.h"
 
+#include <algorithm>
 #include <bit>
 #include <cstdio>
 #include <cstdlib>
@@ -13,17 +14,16 @@
 
 // INLINED
 __forceinline static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
-  name[0] = '\0';
   std::sprintf(name, "");
   switch (effect.type) {
   case EF_WINDHIT:
-    std::sprintf(name, "WindHit%d.str", std::rand() % 3 + 1);
+    std::sprintf(name, "WindHit%d.str", std::max(0, std::rand() % 3) + 1);
     break;
   case EF_COIN:
     std::sprintf(name, options.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
     break;
   case EF_FIREWALL:
-    std::sprintf(name, "Firewall%d.str", std::rand() % 2 + 1);
+    std::sprintf(name, "Firewall%d.str", std::max(0, std::rand() % 2) + 1);
     break;
   case EF_THUNDERSTORM:
     std::sprintf(name, "ThunderStorm.str");
@@ -92,7 +92,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Benedictio.str");
     break;
   case EF_METEORSTORM:
-    std::sprintf(name, "Meteor%d.str", std::rand() % 3 + 1);
+    std::sprintf(name, "Meteor%d.str", std::max(0, std::rand() % 3) + 1);
     break;
   case EF_QUAGMIRE:
     std::sprintf(name, "Quagmire.str");
@@ -128,7 +128,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Spring.str");
     break;
   case EF_BUBBLE:
-    std::sprintf(name, "Bubble%d.str", std::rand() % 4 + 1);
+    std::sprintf(name, "Bubble%d.str", std::max(0, std::rand() % 4) + 1);
     break;
   case EF_GASPUSH:
     std::sprintf(name, "GasPush.str");
@@ -167,7 +167,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "SandMan.str");
     break;
   case EF_PNEUMA:
-    std::sprintf(name, "Pneuma%d.str", std::rand() % 3 + 1);
+    std::sprintf(name, "Pneuma%d.str", std::max(0, std::rand() % 3) + 1);
     break;
   case EF_SONICBLOW2:
     std::sprintf(name, "SonicBlow.str");
@@ -283,7 +283,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "StoneCurse.str");
     break;
   case EF_PONG:
-    std::sprintf(name, "Pong%d.str", std::rand() % 3 + 1);
+    std::sprintf(name, "Pong%d.str", std::max(0, std::rand() % 3) + 1);
     break;
   case EF_POTION1:
     std::sprintf(name, "빨간포션.str");
@@ -390,7 +390,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_FIREHIT:
   case EF_FIREHIT2:
-    std::sprintf(name, "FireHit%d.str", std::rand() % 3 + 1);
+    std::sprintf(name, "FireHit%d.str", std::max(0, std::rand() % 3) + 1);
     break;
   case EF_HFLIMOON1:
     std::sprintf(name, "moonlight_1.str");
@@ -622,7 +622,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Guardian.str");
     break;
   case EF_VENOMFOG:
-    std::sprintf(name, "bubble%d_1.str", std::rand() % 4 + 1);
+    std::sprintf(name, "bubble%d_1.str", std::max(0, std::rand() % 4) + 1);
     break;
   case EF_DUSTSTORM:
     std::sprintf(name, "dust.str");
