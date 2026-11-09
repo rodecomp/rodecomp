@@ -914,7 +914,7 @@ void CUITextButton::Paint() {
 // OFFSET: 0x009ECF60
 // FUNCTION: fn_14565
 void CUITextButton::OnMouseHover(int, int) {
-  if (!this->tooltipText.empty()) {
+  if (this->tooltipText.size() > 0) {
     int screenX = 0;
     int screenY = -20;
     this->ToScreen(screenX, screenY);
