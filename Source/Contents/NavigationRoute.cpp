@@ -572,7 +572,7 @@ std::string CNavigationManager::DestinationTitle() {
   if (this->viewMode == 2) {
     NaviCell cell;
     this->data.GetCell(&cell);
-    CNaviInfo* info = this->data.GetInfo();
+    CNaviInfo* info = this->data.info;
     if (info != nullptr) {
       this->destinationTitle.assign(info->GetTitle());
     }
@@ -935,17 +935,14 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
 
 // OFFSET: 0x00B888F0
 // FUNCTION: fn_19378
-NaviCell* CNaviData::GetCell(NaviCell* out) {
-  const int x = this->cellX;
-  const int y = this->cellY;
-  out->x = x;
-  out->y = y;
+__declspec(noinline) NaviCell* CNaviData::GetCell(NaviCell* out) {
+  *out = NaviCell{this->cellX, this->cellY};
   return out;
 }
 
 // OFFSET: 0x00B88920
 // FUNCTION: fn_19380
-CNaviInfo* CNaviData::GetInfo() {
+__declspec(noinline) CNaviInfo* CNaviData::GetInfo() {
   return this->info;
 }
 
@@ -1011,7 +1008,9 @@ bool CNavigationManager::SavedTargetText(char* out, int size) {
     CNaviInfo* info = static_cast<CNaviInfo*>(this->savedTarget.object);
     NaviCell cellY;
     NaviCell cellX;
-    std::sprintf(text, "%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
+    const int y = this->data.GetCell(&cellY)->y;
+    const int x = this->data.GetCell(&cellX)->x;
+    std::sprintf(text, "%s %d %d", info->GetName(), x, y);
   } else {
     return false;
   }
