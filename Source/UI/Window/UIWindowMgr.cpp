@@ -1478,25 +1478,9 @@ void UIWindowMgr::DrawCenteredBackground() {
 // FUNCTION: fn_17242
 std::vector<unsigned char> UIWindowMgr::SaveReplaySettings() {
   std::vector<unsigned char> data;
-  {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25000;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
-  {
-    std::vector<unsigned char> chunk(10);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25010;
-    *reinterpret_cast<int*>(&chunk[2]) = 4;
-    *reinterpret_cast<int*>(&chunk[6]) = this->dragAllItems;
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
-  {
-    std::vector<unsigned char> chunk(6);
-    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25001;
-    *reinterpret_cast<int*>(&chunk[2]) = 0;
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
+  AppendReplayChunk(data, MakeReplayMarker(25000));
+  AppendReplayChunk(data, MakeReplayValue(25010, this->dragAllItems));
+  AppendReplayChunk(data, MakeReplayMarker(25001));
   return data;
 }
 
@@ -2143,22 +2127,16 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
 // FUNCTION: fn_17244
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   std::vector<unsigned char> data;
-  {
-    std::vector<unsigned char> chunk = MakeReplayMarker(20000);
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
+  AppendReplayChunk(data, MakeReplayMarker(20000));
   for (UIWindow* window : this->rendered) {
     const unsigned id = static_cast<unsigned>(window->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
       std::vector<unsigned char> state = window->GetReplayData();
-      std::vector<unsigned char> chunk = MakeReplayChunk(window->geometry.id + 20100, state);
-      data.insert(data.end(), chunk.begin(), chunk.end());
+      const std::vector<unsigned char> chunk = MakeReplayChunk(window->geometry.id + 20100, state);
+      AppendReplayChunk(data, chunk);
     }
   }
-  {
-    std::vector<unsigned char> chunk = MakeReplayMarker(20001);
-    data.insert(data.end(), chunk.begin(), chunk.end());
-  }
+  AppendReplayChunk(data, MakeReplayMarker(20001));
   return data;
 }
 
