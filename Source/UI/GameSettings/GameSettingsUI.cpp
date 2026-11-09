@@ -709,9 +709,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -719,8 +719,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -752,9 +751,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -762,8 +761,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -795,9 +793,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
 
-  if (this->rowHeight <= this->geometry.height) {
+  if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight > 1) {
+    if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
     this->items.resize(count);
@@ -805,8 +803,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
