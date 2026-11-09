@@ -1685,37 +1685,34 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   }
 
   CMode* mode = g_modeMgr.gameMode;
-  if (text[0] == '/') {
-    if (g_session.ProcessEmotionShortcut(text) == 0) {
-      std::string parts[3];
-      int talkType;
-      const int offset = g_session.GetTalkType(text, &talkType, parts);
-      if (offset != -1) {
-        g_windowMgr.chatInputText = text + offset;
+  if (text[0] != '/') {
+    g_windowMgr.chatInputText = text;
+    const int& chatTarget = *reinterpret_cast<const int*>(&g_session.itemSendState[0x8]);
+    if (chatTarget == 2) {
+      if (g_guildInfo.m_guildId != 0) {
+        mode->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
+        return;
       }
-      g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
+    } else {
+      if (chatTarget == 1 && g_session.PartyCount() != 0) {
+        mode->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
+        return;
+      }
+      if (chatTarget == 3 && g_clanInfo->m_hasClan) {
+        mode->SendMsg(MM_CHAT_CLAN, 0, 0, 0, 0);
+        return;
+      }
     }
-    return;
+    mode->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
+  } else if (g_session.ProcessEmotionShortcut(text) == 0) {
+    std::string parts[3];
+    int talkType;
+    const int offset = g_session.GetTalkType(text, &talkType, parts);
+    if (offset != -1) {
+      g_windowMgr.chatInputText = text + offset;
+    }
+    g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
   }
-
-  g_windowMgr.chatInputText = text;
-  const int& chatTarget = *reinterpret_cast<const int*>(&g_session.itemSendState[0x8]);
-  if (chatTarget == 2) {
-    if (g_guildInfo.m_guildId != 0) {
-      mode->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
-      return;
-    }
-  } else {
-    if (chatTarget == 1 && g_session.PartyCount() != 0) {
-      mode->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
-      return;
-    }
-    if (chatTarget == 3 && g_clanInfo->m_hasClan) {
-      mode->SendMsg(MM_CHAT_CLAN, 0, 0, 0, 0);
-      return;
-    }
-  }
-  mode->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00AA5B00
@@ -1749,11 +1746,13 @@ void UIWindowMgr::CycleWindowVisibility(int) {
       UIWindow* window = *it;
       if (window->geometry.visible) {
         const int id = window->geometry.id;
-        if (!this->IsOrderFixed(id)) {
+        if (this->IsOrderFixed(id)) {
+          if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) == this->hiddenWindows.end()) {
+            this->hiddenWindows.push_back(*it);
+          }
+        } else {
           this->CloseWindow(id);
           closed = true;
-        } else if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) == this->hiddenWindows.end()) {
-          this->hiddenWindows.push_back(*it);
         }
       }
     }
@@ -1804,7 +1803,11 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     }
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
       if ((*it)->geometry.id == 189) {
-        (*it)->Show(g_serviceOptions.Get(250) ? 1 : 0);
+        if (!g_serviceOptions.Get(250)) {
+          (*it)->Show(0);
+        } else {
+          (*it)->Show(1);
+        }
       }
     }
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
