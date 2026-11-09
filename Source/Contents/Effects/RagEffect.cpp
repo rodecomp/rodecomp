@@ -9603,20 +9603,20 @@ void CRagEffect::TurnUndead() {
       this->state.lastPrim->state.speed3d.x = this->state.parent->render.position.x;
       this->state.lastPrim->state.speed3d.y = this->state.parent->render.position.z;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
-      this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 360, 0));
-      this->state.lastPrim->state.longSpeed = static_cast<float>(std::max(rand() % 60, 0) + 10) / 10.0f;
+      this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
+      this->state.lastPrim->state.longSpeed = static_cast<float>(ClampedRandom(60) + 10) / 10.0f;
       EffectPrimitiveState& flash = this->state.lastPrim->state;
       flash.longAccel = -(flash.longSpeed / static_cast<float>(flash.duration)) / 1.5f;
-      this->state.lastPrim->state.arcAngle = static_cast<float>(std::max(rand() % 25, 0) + 5) / 10.0f;
+      this->state.lastPrim->state.arcAngle = static_cast<float>(ClampedRandom(25) + 5) / 10.0f;
 
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim->state.heightSize = static_cast<float>(std::max(rand() % 30, 0) + 350);
-        this->state.lastPrim->state.heightSpeed = -static_cast<float>(std::max(rand() % 30, 0) + 150) / 10.0f;
+        this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(30) + 350);
+        this->state.lastPrim->state.heightSpeed = -static_cast<float>(ClampedRandom(30) + 150) / 10.0f;
       } else {
         this->state.lastPrim->state.heightSize = 0.0f;
-        this->state.lastPrim->state.heightSpeed = static_cast<float>(std::max(rand() % 20, 0) + 50) / 10.0f;
+        this->state.lastPrim->state.heightSpeed = static_cast<float>(ClampedRandom(20) + 50) / 10.0f;
         this->state.lastPrim->state.changePoint = 40;
-        this->state.lastPrim->state.changeSpeed = static_cast<float>(std::max(rand() % 10, 0) + 15) / 10.0f;
+        this->state.lastPrim->state.changeSpeed = static_cast<float>(ClampedRandom(10) + 15) / 10.0f;
         this->state.lastPrim->state.changeAccel = 0.0f;
         this->state.lastPrim->state.changeHeightSpeed = 0.0f;
       }
