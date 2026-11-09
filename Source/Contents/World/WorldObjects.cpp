@@ -482,8 +482,9 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   }
 
   const unsigned char showEmblem = g_serviceOptions.Get(0x40);
-  if (((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) ||
-      (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId)) {
+  if ((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) {
+    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
+  } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId) {
     this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
   } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
