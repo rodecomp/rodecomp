@@ -757,18 +757,18 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_list->scrollBar->SetSize(13, 360);
   this->m_list->scrollBar->Move(312, 0);
   this->m_list->scrollBar->step = 30;
-  this->m_list->scrollBar->SetButtonImages(std::string(DecryptName<0x35E5656B5DEDCD75ULL>({
+  this->m_list->SetScrollBarButtonImages(std::string(DecryptName<0x35E5656B5DEDCD75ULL>({
     '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x46',
     '\x16', '\xBF', '\x82', '\x31', '\x07', '\x55', '\x90', '\x45', '\x5B', '\xAF', '\x80', '\x2D', '\x6B'
   })), std::string(DecryptName<0x793F370985ED674FULL>({
     '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x0A',
     '\x2C', '\x15', '\x82', '\xE9', '\x65', '\x07', '\x5B', '\x16', '\x38', '\x09', '\xC3', '\xE7', '\x64', '\x47', '\x3F'
   })));
-  this->m_list->scrollBar->SetBackground(std::string(DecryptName<0xE55723712993051DULL>({
+  this->m_list->SetScrollBarBackground(std::string(DecryptName<0xE55723712993051DULL>({
     '\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x96',
     '\x7E', '\x77', '\xFC', '\x45', '\x1D', '\x13', '\x3A', '\x8C', '\x79', '\x2B', '\xF1', '\x44', '\x01', '\x23'
   })));
-  this->m_list->scrollBar->SetThumbImages(
+  this->m_list->SetScrollBarThumbImages(
     std::string(DecryptName<0x7115D9F973F913C9ULL>({
     '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x02',
     '\xAA', '\x61', '\x96', '\x1F', '\x95', '\xE9', '\x77', '\x10', '\xBB', '\x4C', '\x8C', '\x03', '\xD7', '\xBB', '\x78', '\x01',

@@ -1491,9 +1491,9 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
       '\x18', '\xCB', '\xE5', '\x48', '\xE1', '\xD5', '\x75', '\xA8', '\x1D', '\xBB'
     };
     const std::string up(DecryptName<0xC517FB932D95BB6DULL>(upSource));
-    list->scrollBar->SetButtonImages(up, down);
+    list->SetScrollBarButtonImages(up, down);
   }
-  this->list->scrollBar->SetBackground("");
+  this->list->SetScrollBarBackground("");
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
     const char bottomSource[] = {
@@ -1517,7 +1517,7 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
       '\x87'
     };
     const std::string top(DecryptName<0x0B7109397F6B1387ULL>(topSource));
-    list->scrollBar->SetThumbImages(top, middle, bottom);
+    list->SetScrollBarThumbImages(top, middle, bottom);
   }
   this->list->AddNewItem();
   this->AddChild(this->list);
