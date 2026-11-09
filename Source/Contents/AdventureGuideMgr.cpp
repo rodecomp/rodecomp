@@ -120,16 +120,17 @@ int InsertEpisode(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(1, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(1, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertEpisode : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -310,16 +311,17 @@ int InsertMonster(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(2, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(2, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertMonster : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -347,16 +349,17 @@ int InsertMonsterContents(lua_State* state) {
   const std::string name = lua_tostring(state, -3);
   const int minLevel = static_cast<int>(lua_tonumber(state, -2));
   const int maxLevel = static_cast<int>(lua_tonumber(state, -1));
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertMonsterContents(name, minLevel, maxLevel);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertMonsterContents(name, minLevel, maxLevel);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertMonsterContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -377,16 +380,17 @@ int InsertMonsterReward(lua_State* state) {
 
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertMonsterReward(name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertMonsterReward(name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertMonsterReward : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -414,16 +418,17 @@ int InsertQuest(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(3, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(3, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertQuest : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -592,16 +597,17 @@ int InsertDungeon(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(4, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(4, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertDungeon : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -768,16 +774,17 @@ int InsertWeapon(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(5, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(5, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertWeapon : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -954,16 +961,17 @@ int InsertArmor(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -3));
   const std::string name = lua_tostring(state, -2);
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(6, id, name, text);
+  CAdventureGuideMgr* const manager = g_adventureGuideMgr;
+  const AdventureGuideResult result = manager->InsertGuideMenu(6, id, name, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertArmor : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
@@ -1271,8 +1279,14 @@ void CAdventureGuideMgr::GetEntryList(std::list<std::pair<int, AdventureGuideEnt
 // OFFSET: 0x00664EE0
 // FUNCTION: fn_05240
 AdventureGuideResult CAdventureGuideMgr::InsertDungeonContents(int id, int menu, int minLevel, int maxLevel, bool flag, std::string_view first, std::string_view second) {
-  const AdventureGuideContents contents{flag, minLevel, maxLevel, 0, std::string(first), std::string(second)};
-  dungeonContents[menu].try_emplace(id, contents);
+  AdventureGuideContents contents;
+  contents.minLevel = minLevel;
+  contents.maxLevel = maxLevel;
+  contents.questId = 0;
+  contents.flag = flag;
+  contents.first = first;
+  contents.second = second;
+  dungeonContents[menu].try_emplace(id, std::as_const(contents));
   return AdventureGuideResult(true, "good");
 }
 
@@ -1307,8 +1321,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLev
 // OFFSET: 0x006654E0
 // FUNCTION: fn_05243
 AdventureGuideResult CAdventureGuideMgr::InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int unknown, bool flag, std::string_view first, std::string_view second) {
-  const AdventureGuideContents contents{flag, minLevel, maxLevel, unknown, std::string(first), std::string(second)};
-  episodeContents[menu].try_emplace(id, contents);
+  AdventureGuideContents contents;
+  contents.minLevel = minLevel;
+  contents.maxLevel = maxLevel;
+  contents.questId = unknown;
+  contents.flag = flag;
+  contents.first = first;
+  contents.second = second;
+  episodeContents[menu].try_emplace(id, std::as_const(contents));
   return AdventureGuideResult(true, "good");
 }
 
@@ -1343,13 +1363,19 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLev
 // OFFSET: 0x00665AD0
 // FUNCTION: fn_05246
 AdventureGuideResult CAdventureGuideMgr::InsertEntryContents(int type, int id, int menu, int minLevel, int maxLevel, bool flag0, bool flag1, bool flag2, std::string_view text) {
-  const AdventureGuideEntry entry{flag0, flag1, flag2, minLevel, maxLevel, std::string(text)};
+  AdventureGuideEntry entry;
+  entry.minLevel = minLevel;
+  entry.maxLevel = maxLevel;
+  entry.firstFlag = flag0;
+  entry.secondFlag = flag1;
+  entry.thirdFlag = flag2;
+  entry.text = text;
   switch (type) {
   case 5:
-    itemEntries[menu].try_emplace(id, entry);
+    itemEntries[menu].try_emplace(id, std::as_const(entry));
     break;
   case 6:
-    equipmentEntries[menu].try_emplace(id, entry);
+    equipmentEntries[menu].try_emplace(id, std::as_const(entry));
     break;
   }
 
@@ -1401,8 +1427,10 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntrySubMenu(int type, int id, in
 // OFFSET: 0x00666220
 // FUNCTION: fn_05249
 AdventureGuideResult CAdventureGuideMgr::InsertIntroContents(int id, std::string_view title, std::string_view text) {
-  const AdventureGuideText entry{std::string(title), std::string(text)};
-  introTexts.try_emplace(id, entry);
+  AdventureGuideText entry;
+  entry.first = title;
+  entry.second = text;
+  introTexts.try_emplace(id, std::as_const(entry));
   return AdventureGuideResult(true, "good");
 }
 
@@ -1413,8 +1441,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
     return AdventureGuideResult(false, "GuideType Error");
   }
 
-  const AdventureGuideIntro intro{type, std::string(name), std::string(text)};
-  m_intros.try_emplace(id, intro);
+  AdventureGuideIntro intro;
+  intro.title = name;
+  intro.text = text;
+  intro.type = type;
+  m_intros.try_emplace(id, std::as_const(intro));
   return AdventureGuideResult(true, "good");
 }
 
@@ -1444,8 +1475,14 @@ AdventureGuideResult CAdventureGuideMgr::InsertMonsterReward(std::string_view na
 // OFFSET: 0x00666C00
 // FUNCTION: fn_05253
 AdventureGuideResult CAdventureGuideMgr::InsertQuestContents(int id, int menu, int minLevel, int maxLevel, bool flag, std::string_view first, std::string_view second) {
-  const AdventureGuideContents contents{flag, minLevel, maxLevel, 0, std::string(first), std::string(second)};
-  questContents[menu].try_emplace(id, contents);
+  AdventureGuideContents contents;
+  contents.minLevel = minLevel;
+  contents.maxLevel = maxLevel;
+  contents.questId = 0;
+  contents.flag = flag;
+  contents.first = first;
+  contents.second = second;
+  questContents[menu].try_emplace(id, std::as_const(contents));
   return AdventureGuideResult(true, "good");
 }
 

@@ -70,10 +70,7 @@ struct AdventureGuideEntry {
 };
 
 struct AdventureGuideResult {
-  AdventureGuideResult(bool ok, const char* message) : ok(ok), message(message) {
-  }
-
-  AdventureGuideResult(bool ok, const std::string& message) : ok(ok), message(message) {
+  AdventureGuideResult(bool ok, std::string_view message) : ok(ok), message(message) {
   }
 
   /* 0000 */ bool ok;
