@@ -1427,6 +1427,41 @@ static_assert(sizeof(ReplaySettingHeader) == 6);
 
 }
 
+// INLINED
+static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t tag) {
+  std::vector<unsigned char> chunk(6);
+  unsigned char* bytes = chunk.data();
+  *reinterpret_cast<std::int16_t*>(bytes) = tag;
+  *reinterpret_cast<int*>(bytes + 2) = 0;
+  return chunk;
+}
+
+// INLINED
+static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag, const int& value) {
+  std::vector<unsigned char> chunk(10);
+  unsigned char* bytes = chunk.data();
+  *reinterpret_cast<std::int16_t*>(bytes) = tag;
+  *reinterpret_cast<int*>(bytes + 2) = sizeof(value);
+  *reinterpret_cast<int*>(&chunk[6]) = value;
+  return chunk;
+}
+
+// INLINED
+static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
+  std::vector<unsigned char> chunk(state.size() + 6, 0);
+  *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
+  *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
+  if (state.size()) {
+    std::memcpy(&chunk[6], state.data(), state.size());
+  }
+  return chunk;
+}
+
+// INLINED
+static __forceinline void AppendReplayChunk(std::vector<unsigned char>& data, const std::vector<unsigned char>& chunk) {
+  data.insert(data.end(), chunk.begin(), chunk.end());
+}
+
 // OFFSET: 0x00AA80A0
 // FUNCTION: fn_17240
 void UIWindowMgr::DrawCenteredBackground() {
@@ -1956,15 +1991,15 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
 // OFFSET: 0x00AA8F50
 // FUNCTION: fn_17252
 __declspec(noinline) void UIWindowMgr::BroadcastMessage21() {
-  UIWindow* window = this->changeNameWnd;
-  if (window || (window = this->bookWnd) != nullptr) {
-    window->SendMsg(nullptr, UM_RIGHTPUSH, 0, 0, 0, 0);
-    return;
-  }
-
-  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    if ((*it)->IsFrameWnd()) {
-      (*it)->SendMsg(nullptr, UM_RIGHTPUSH, 0, 0, 0, 0);
+  if (this->changeNameWnd) {
+    this->changeNameWnd->SendMsg(nullptr, UM_RIGHTPUSH, 0, 0, 0, 0);
+  } else if (this->bookWnd) {
+    this->bookWnd->SendMsg(nullptr, UM_RIGHTPUSH, 0, 0, 0, 0);
+  } else {
+    for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if ((*it)->IsFrameWnd()) {
+        (*it)->SendMsg(nullptr, UM_RIGHTPUSH, 0, 0, 0, 0);
+      }
     }
   }
 }
@@ -2110,25 +2145,6 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
   return 4;
 }
 
-// INLINED
-static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t tag) {
-  std::vector<unsigned char> chunk(6);
-  *reinterpret_cast<std::int16_t*>(&chunk[0]) = tag;
-  *reinterpret_cast<int*>(&chunk[2]) = 0;
-  return chunk;
-}
-
-// INLINED
-static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
-  std::vector<unsigned char> chunk(state.size() + 6, 0);
-  *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
-  *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
-  if (state.size()) {
-    std::memcpy(&chunk[6], state.data(), state.size());
-  }
-  return chunk;
-}
-
 // OFFSET: 0x00AA8660
 // FUNCTION: fn_17244
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
@@ -2172,100 +2188,72 @@ bool UIWindowMgr::ProcessEnterKey() {
   bool handled = true;
   if (!this->modalWindows.empty() && this->modalWindows.back() != nullptr) {
     this->Top()->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
-    return true;
-  }
-
-  UIWindow* window = this->quitWnd;
-  if (window == nullptr) {
-    window = this->npcEditDialogWnd;
-    if (window != nullptr) {
-      if (Replay::Instance().state == 2) {
-        window->RecordEditTexts();
-      }
-      window->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
-      return true;
+  } else if (this->quitWnd != nullptr) {
+    this->quitWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->npcEditDialogWnd != nullptr) {
+    if (Replay::Instance().state == 2) {
+      this->npcEditDialogWnd->RecordEditTexts();
     }
-    window = this->npcTextEditDialogWnd;
-    if (window != nullptr) {
-      if (Replay::Instance().state == 2) {
-        window->RecordEditTexts();
-      }
-      window->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
-      return true;
+    this->npcEditDialogWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->npcTextEditDialogWnd != nullptr) {
+    if (Replay::Instance().state == 2) {
+      this->npcTextEditDialogWnd->RecordEditTexts();
     }
-    window = this->choose3Wnd;
-    if (window == nullptr) {
-      window = this->sayDialogWnd;
+    this->npcTextEditDialogWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->choose3Wnd != nullptr) {
+    this->choose3Wnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->sayDialogWnd != nullptr) {
+    this->sayDialogWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->sayDialogOverlayWnd != nullptr) {
+    this->sayDialogOverlayWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->comboBoxWnd != nullptr) {
+    this->comboBoxWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->comboBoxIDWnd != nullptr) {
+    this->comboBoxIDWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->chooseWarpWnd != nullptr) {
+    this->chooseWarpWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->makeTargetListWnd != nullptr) {
+    this->makeTargetListWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->makeTargetProcessWnd != nullptr) {
+    this->makeTargetProcessWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->partySettingWnd != nullptr) {
+    this->partySettingWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->hoverWindow != nullptr) {
+    if (this->chatWnd != nullptr && this->hoverWindow->parent == this->chatWnd) {
+      if (static_cast<const UINewChatWnd*>(this->chatWnd)->SuggestionsVisible() &&
+          static_cast<const UINewChatWnd*>(this->chatWnd)->m_suggestions != nullptr) {
+        static_cast<const UINewChatWnd*>(this->chatWnd)->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, 0xD, 0, 0, 0);
+        return handled;
+      }
+      handled = false;
     }
-    if (window == nullptr) {
-      window = this->sayDialogOverlayWnd;
+    if (Replay::Instance().state == 2 && handled) {
+      this->hoverWindow->Root()->RecordEditTexts();
     }
-    if (window == nullptr) {
-      window = this->comboBoxWnd;
+    if (g_windowMgr.chatModeChanged == 0) {
+      handled = true;
     }
-    if (window == nullptr) {
-      window = this->comboBoxIDWnd;
-      if (window != nullptr) {
-        window->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-        return true;
+    if (handled) {
+      this->hoverWindow->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+    }
+  } else if (this->newSelectCharWnd != nullptr) {
+    this->newSelectCharWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else if (this->chatWnd != nullptr && g_windowMgr.inputSuggestionsEnabled == 1) {
+    handled = false;
+    this->chatWnd->RecordEditTexts();
+    this->chatWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
+  } else {
+    handled = false;
+    for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if (!(*it)->IsFrameWnd()) {
+        continue;
       }
-      window = this->chooseWarpWnd;
-      if (window == nullptr) {
-        window = this->makeTargetListWnd;
+      if (g_replayAnimationScaling == 0) {
+        (*it)->Root()->RecordEditTexts();
       }
-      if (window == nullptr) {
-        window = this->makeTargetProcessWnd;
-      }
-      if (window == nullptr) {
-        window = this->partySettingWnd;
-      }
-      if (window == nullptr) {
-        if (this->hoverWindow != nullptr) {
-          if (this->chatWnd != nullptr && this->hoverWindow->parent == this->chatWnd) {
-            if (static_cast<const UINewChatWnd*>(this->chatWnd)->SuggestionsVisible()) {
-              UIWindow* child = static_cast<const UINewChatWnd*>(this->chatWnd)->m_suggestions;
-              if (child != nullptr) {
-                child->SendMsg(nullptr, UM_CASH_EMOTION_KEY, 0xD, 0, 0, 0);
-                return true;
-              }
-            }
-            handled = false;
-          }
-          if (Replay::Instance().state == 2 && handled) {
-            this->hoverWindow->Root()->RecordEditTexts();
-          }
-          if (g_windowMgr.chatModeChanged == 0) {
-            handled = true;
-          } else if (!handled) {
-            return false;
-          }
-          this->hoverWindow->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
-          return handled;
-        }
-        window = this->newSelectCharWnd;
-        if (window == nullptr) {
-          if (this->chatWnd != nullptr && g_windowMgr.inputSuggestionsEnabled == 1) {
-            handled = false;
-            this->chatWnd->RecordEditTexts();
-            window = this->chatWnd;
-          } else {
-            for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-              if (!(*it)->IsFrameWnd()) {
-                continue;
-              }
-              if (g_replayAnimationScaling == 0) {
-                (*it)->Root()->RecordEditTexts();
-              }
-              (*it)->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
-            }
-            return false;
-          }
-        }
-      }
+      (*it)->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
     }
   }
-
-  window->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
   return handled;
 }
 
