@@ -346,7 +346,7 @@ bool UIMacroReporterWnd::ValidateNames(unsigned char notify) {
     name += ".rsw";
     const char* displayName = g_session.GetMapDisplayName(name.c_str());
     const std::string unknownMap = LookupMessage(MSI_NOWHERE);
-    if (unknownMap == displayName) {
+    if (unknownMap.compare(displayName) == 0) {
       if (notify == 1) {
         g_windowMgr.SendNotice(
           1,

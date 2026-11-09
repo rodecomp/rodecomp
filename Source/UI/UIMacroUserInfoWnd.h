@@ -7,8 +7,10 @@
 #include <utility>
 #include <vector>
 
+class UIBitmapButton;
 class UIButton;
 class UIScrollBar;
+class UITextButton;
 
 class UIMacroUserInfoWnd : public UIFrameWnd {
 public:
@@ -65,7 +67,7 @@ public:
   void AddActorRow(int aid, std::string name);
   std::string EllipsizeText(int maxWidth, const char* text, int font, int height, unsigned char bold);
 
-  /* 00B4 */ std::vector<std::pair<UIButton*, UIButton*>> m_rows;
+  /* 00B4 */ std::vector<std::pair<UIBitmapButton*, UITextButton*>> m_rows;
   /* 00C0 */ UIScrollBar* m_scrollBar;
   /* 00C4 */ bool m_scrollable;
   /* 00C8 */ int scrollBarWidth;
