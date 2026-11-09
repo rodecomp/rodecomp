@@ -478,20 +478,14 @@ void UIScrollBar::Paint() {
 void UIScrollBar::Configure(int x, int y, int vertical, int length) {
   this->vertical = vertical;
 
-  int width;
-  int height;
+  int width = length;
+  int height = length;
   switch (vertical) {
   case 0:
-    width = length;
     height = this->thickness;
     break;
   case 1:
     width = this->thickness;
-    height = length;
-    break;
-  default:
-    width = length;
-    height = length;
     break;
   }
 
@@ -525,7 +519,7 @@ int UIImgMenu::ItemAt(int x, int y) {
     this->itemHeight = height / this->count;
     index = y / this->itemHeight;
   }
-  return std::min(index, this->count - 1);
+  return index > this->count - 1 ? this->count - 1 : index;
 }
 
 // OFFSET: 0x0086ECF0
@@ -825,7 +819,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
     this->DrawBitmap(x, y, bitmap, true);
   }
 
-  if (this->m_item.identity[1] == 0 || this->m_item.quantity == 0) {
+  if (this->m_item.identity[1] <= 0 || this->m_item.quantity == 0) {
     return;
   }
 
@@ -950,7 +944,7 @@ void UIBasicItemCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
         (this->m_itemType == 22 && g_session.IsEquipItemType(this->m_item.identity[0])) ||
         (this->m_itemType == 23 && g_session.IsMiscItemType(this->m_item.identity[0])) || this->m_item.identity[0] == this->m_itemType ||
         this->m_itemType == -1) {
-      if ((this->m_itemMask == -1 || (this->m_item.identity[2] & this->m_itemMask) != 0) && this->m_item.identity[1] != 0) {
+      if ((this->m_itemMask == -1 || (this->m_item.identity[2] & this->m_itemMask) != 0) && this->m_item.identity[1] > 0) {
         if (this->Root()) {
           this->Root()->Invalidate();
           this->Root()->InvalidateChildren();
@@ -1133,7 +1127,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   if (argument1 != 1) {
     std::string text = this->edit->Text();
-    if (text.empty()) {
+    if (text.size() <= 0) {
       return 0;
     }
 
@@ -1657,18 +1651,20 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 // OFFSET: 0x0089E570
 // FUNCTION: fn_11602
 bool UITreeView::DeleteChildNodes(UITreeNode* node) {
+  bool deleted = false;
   if (!node) {
     return false;
   }
 
   int remaining = static_cast<int>(node->children.size());
   if (remaining <= 0) {
-    return false;
+    return deleted;
   }
 
   for (auto it = node->children.begin(); it != node->children.end(); ++it) {
+    deleted = true;
     UITreeNode* child = *it;
-    if (child->children.size() != 0) {
+    if (child->children.size() > 0) {
       this->DeleteChildNodes(child);
     }
 
@@ -1706,7 +1702,7 @@ bool UITreeView::DeleteChildNodes(UITreeNode* node) {
     }
   }
 
-  return true;
+  return deleted;
 }
 
 // OFFSET: 0x0089E6F0
@@ -2213,7 +2209,8 @@ UIListBoxID::UIListBoxID()
 // FUNCTION: fn_11252
 void UIString::SetText(int width, int height, std::string text) {
   this->SetSize(width, height);
-  if (text.size() == 1 && text[0] == '\n') {
+  const char* chars = text.c_str();
+  if (text.size() == 1 && chars[0] == '\n') {
     this->Resize(5, 5);
     this->text = text;
     return;
