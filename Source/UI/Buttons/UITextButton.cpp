@@ -693,7 +693,7 @@ void UIComboBox::OnCreate(int width, int height) {
 // FUNCTION: fn_11509
 void UIComboBox::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int overflow = std::max(static_cast<int>(this->lines.size()) - visible, 0);
+  const int overflow = 0 > static_cast<int>(this->lines.size()) - visible ? 0 : static_cast<int>(this->lines.size()) - visible;
 
   this->verticalOverflow = overflow != 0;
   UIScrollBar* bar = this->verticalBar;
@@ -1375,7 +1375,7 @@ void UIListBoxID::Refresh() {
 void UIComboBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max((count - visible), 0);
+  const int overflow = 0 > count - visible ? 0 : count - visible;
 
   this->verticalOverflow = overflow != 0;
   UIScrollBar* bar = this->verticalBar;
@@ -1921,11 +1921,10 @@ void UIListBoxNavi::Paint() {
   }
 
   const int first = this->topLine;
-  const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
-  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
   std::uint32_t color = 0;
 
-  for (int index = first, row = 0; index < end; ++index, ++row) {
+  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
     if (this->lineColors[index] == 1) {
       color = this->defaultLineColor;
     }
@@ -2082,64 +2081,69 @@ void UIScrollBar4::Paint() {
 // FUNCTION: fn_11382
 void UIScrollBar_Custom::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  if (this->maximum == 0 || this->vertical != 1) {
+  if (this->maximum == 0) {
     return;
   }
 
-  int top = 0;
-  if (this->m_trackTop) {
-    top = this->m_trackTop->image.height;
-    this->DrawBitmap(0, 0, this->m_trackTop, false);
-  }
-
-  int middle;
-  if (!this->m_trackMiddle) {
-    middle = 0;
-  } else {
-    middle = this->m_trackMiddle->image.height;
-    int y = top;
-    for (int index = 0; index < (this->geometry.height - top) / middle; ++index) {
-      this->DrawBitmap(0, y, this->m_trackMiddle, false);
-      y += middle;
+  switch (this->vertical) {
+  case 1: {
+    int top = 0;
+    if (this->m_trackTop) {
+      top = this->m_trackTop->image.height;
+      this->DrawBitmap(0, 0, this->m_trackTop, false);
     }
-  }
 
-  if (this->m_trackBottom && (this->geometry.height - top) % middle > 0) {
-    this->DrawBitmap(0, this->geometry.height - this->m_trackBottom->image.height, this->m_trackBottom, false);
-  }
-
-  if (this->m_arrowUp) {
-    this->DrawBitmap(0, 0, this->m_arrowUp, true);
-  }
-
-  if (this->m_arrowDown) {
-    this->DrawBitmap(0, this->geometry.height - this->m_arrowDown->image.height, this->m_arrowDown, true);
-  }
-
-  const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
-  const int thumb = this->position * (length - this->arrowLength * 2 - this->ThumbLength()) / this->maximum + this->arrowLength;
-  const int thumbLength = this->ThumbLength();
-
-  int thumbTop = 0;
-  if (this->m_thumbTop) {
-    thumbTop = this->m_thumbTop->image.height;
-    this->DrawBitmap(0, thumb, this->m_thumbTop, true);
-  }
-
-  if (this->m_thumbMiddle) {
-    const int step = this->m_thumbMiddle->image.height;
-    int count = (thumbLength - thumbTop) / step;
-    if (count > 0) {
-      int y = thumb + thumbTop;
-      do {
-        this->DrawBitmap(0, y, this->m_thumbMiddle, true);
-        y += step;
-      } while (--count);
+    int middle;
+    if (!this->m_trackMiddle) {
+      middle = 0;
+    } else {
+      middle = this->m_trackMiddle->image.height;
+      int y = top;
+      for (int index = 0; index < (this->geometry.height - top) / middle; ++index) {
+        this->DrawBitmap(0, y, this->m_trackMiddle, false);
+        y += middle;
+      }
     }
-  }
 
-  if (this->m_thumbBottom) {
-    this->DrawBitmap(0, thumbLength - this->m_thumbBottom->image.height + thumb, this->m_thumbBottom, true);
+    if (this->m_trackBottom && (this->geometry.height - top) % middle > 0) {
+      this->DrawBitmap(0, this->geometry.height - this->m_trackBottom->image.height, this->m_trackBottom, false);
+    }
+
+    if (this->m_arrowUp) {
+      this->DrawBitmap(0, 0, this->m_arrowUp, true);
+    }
+
+    if (this->m_arrowDown) {
+      this->DrawBitmap(0, this->geometry.height - this->m_arrowDown->image.height, this->m_arrowDown, true);
+    }
+
+    const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
+    const int thumb = this->position * (length - this->arrowLength * 2 - this->ThumbLength()) / this->maximum + this->arrowLength;
+    const int thumbLength = this->ThumbLength();
+
+    int thumbTop = 0;
+    if (this->m_thumbTop) {
+      thumbTop = this->m_thumbTop->image.height;
+      this->DrawBitmap(0, thumb, this->m_thumbTop, true);
+    }
+
+    if (this->m_thumbMiddle) {
+      const int step = this->m_thumbMiddle->image.height;
+      int count = (thumbLength - thumbTop) / step;
+      if (count > 0) {
+        int y = thumb + thumbTop;
+        do {
+          this->DrawBitmap(0, y, this->m_thumbMiddle, true);
+          y += step;
+        } while (--count);
+      }
+    }
+
+    if (this->m_thumbBottom) {
+      this->DrawBitmap(0, thumbLength - this->m_thumbBottom->image.height + thumb, this->m_thumbBottom, true);
+    }
+    break;
+  }
   }
 }
 
@@ -2429,10 +2433,7 @@ void UIComboBox::Paint() {
   this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
-  }
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
 
   for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
     if (index == this->selected) {
@@ -2846,7 +2847,7 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
   const int left = compose->m_contents->geometry.x;
   const int top = compose->m_contents->geometry.y;
   const int lineHeight = compose->m_contents->lineHeight;
-  std::string rest(name.c_str(), name.size());
+  std::string rest = name;
   const int firstLine = compose->m_contents->firstVisibleLine;
   const int visibleLines = compose->m_contents->geometry.height / lineHeight;
 
@@ -2881,16 +2882,15 @@ void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& n
 
   const int left = owner->edit->geometry.x;
   const int top = owner->edit->geometry.y;
-  int position = x;
+  const int position = x;
   unsigned bytes = 0;
   const int width = reinterpret_cast<UIItemTagCtrl*>(owner)->MeasureText(name.c_str(), bytes);
-  if (owner->edit->geometry.width < this->textWidth + width) {
-    position = 1000;
-  } else if (position == 0) {
-    position = left + 2 + width;
-  }
-
-  button->Move(position, top + 1);
+  button->Move(
+    this->textWidth + width > reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit->geometry.width ? 1000
+    : position != 0                                                                                                     ? position
+                                                                                                                        : left + 2 + width,
+    top + 1
+  );
 }
 
 // OFFSET: 0x0088AC80
@@ -2960,23 +2960,11 @@ void UIComboBoxID::OnLBtnUp(int x, int y) {
   this->selected = line;
 
   if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
-    int extra = 0;
     const auto found = this->lineData.find(this->selected);
-
-    if (found != this->lineData.end()) {
-      extra = found->second;
-    }
-
-    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, extra, 0, 0);
+    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found != this->lineData.end() ? found->second : 0, 0, 0);
   } else if (this->parent) {
-    int extra = 0;
     const auto found = this->lineData.find(this->selected);
-
-    if (found != this->lineData.end()) {
-      extra = found->second;
-    }
-
-    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, extra, 0, 0);
+    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found != this->lineData.end() ? found->second : 0, 0, 0);
   }
 
   g_windowMgr.CloseWindow(WID_COMBOBOXWND);
@@ -3035,11 +3023,8 @@ void UIListBoxID::Paint() {
   }
 
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
   std::uint32_t color = 0;
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
-  }
 
   for (int index = first; index < static_cast<int>(end); ++index) {
     if (index == this->selected) {
@@ -3433,10 +3418,7 @@ void UIChatHisBox2::Paint() {
   this->ClearSurface(RGB(this->backgroundRed, this->backgroundGreen, this->backgroundBlue));
 
   const int top = this->topLine;
-  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
-  if (static_cast<unsigned int>(this->lines.size()) < end) {
-    end = static_cast<unsigned int>(this->lines.size());
-  }
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned>(this->lines.size()));
 
   FontCache& fonts = g_fontCache;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
@@ -3467,10 +3449,7 @@ void UIChatHisBox3::Paint() {
   }
 
   const int top = this->topLine;
-  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
-  if (static_cast<unsigned int>(this->lines.size()) < end) {
-    end = static_cast<unsigned int>(this->lines.size());
-  }
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned>(this->lines.size()));
 
   FontCache& fonts = g_fontCache;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
@@ -3530,23 +3509,27 @@ void UIString::Paint() {
 // OFFSET: 0x00899780
 // FUNCTION: fn_11557
 int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_SETSTATE) {
+  switch (message) {
+  case UM_SETSTATE:
     this->m_selected = argument1 != 0;
-    return 0;
+    break;
+
+  case UM_SET_CHARACTER_SLOT_STYLE: {
+    this->m_displayMode = static_cast<int>(argument1);
+    const char* slot = argument1 != 0 ? "slot" : "slot2";
+    const char* img = this->m_inRange ? "img_buy" : "img_";
+    const std::string base = std::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
+
+    this->SetBitmap(std::format("{}normal.bmp", base).c_str(), 0, 0);
+    this->SetBitmap(std::format("{}over.bmp", base).c_str(), 1, 0);
+    this->SetBitmap(std::format("{}press.bmp", base).c_str(), 2, 0);
+    break;
   }
 
-  if (message != UM_SET_CHARACTER_SLOT_STYLE) {
+  default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  this->m_displayMode = static_cast<int>(argument1);
-  const char* slot = argument1 != 0 ? "slot" : "slot2";
-  const char* img = this->m_inRange ? "img_buy" : "img_";
-  const std::string base = std::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
-
-  this->SetBitmap(std::format("{}normal.bmp", base).c_str(), 0, 0);
-  this->SetBitmap(std::format("{}over.bmp", base).c_str(), 1, 0);
-  this->SetBitmap(std::format("{}press.bmp", base).c_str(), 2, 0);
   return 0;
 }
 
@@ -3574,10 +3557,9 @@ void UISlotBmpButton::Paint() {
         }
       }
     } else if (this->m_displayMode == 1 && this->m_selected == 1) {
-      const int count = this->m_animationTick / this->m_frameInterval;
-      const char* base = this->m_inRange ? "buyslot" : "slot";
-      const std::string path = std::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", base, count);
-      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+        std::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", this->m_inRange ? "buyslot" : "slot", this->m_animationTick / this->m_frameInterval).c_str()
+      )));
       if (bitmap) {
         this->DrawBitmap(0, 0, bitmap, false);
       }
@@ -3591,8 +3573,8 @@ void UISlotBmpButton::Paint() {
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(MSI_ERROR_MDENGEON_IS_FULL), lines, 0x14);
     int y = 0x22;
-    for (const std::string& line : lines) {
-      this->DrawCenteredText(0x21, y, line.c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->DrawCenteredText(0x21, y, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
       y += 0xd;
     }
   }
