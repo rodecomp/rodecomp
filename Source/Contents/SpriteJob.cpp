@@ -101,15 +101,6 @@ int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
     case JT_KNIGHT_H:
       costumeJob = JT_CHICKEN_H;
       break;
-    case JT_CRUSADER_H:
-      costumeJob = JT_CHICKEN2_H;
-      break;
-    case JT_KNIGHT_B:
-      costumeJob = JT_CHICKEN_B;
-      break;
-    case JT_CRUSADER_B:
-      costumeJob = JT_CHICKEN2_B;
-      break;
     case JT_RUNE_KNIGHT:
       costumeJob = JT_RUNE_CHICKEN;
       break;
@@ -146,6 +137,15 @@ int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
     case JT_WINDHAWK:
       costumeJob = JT_WOLF_WINDHAWK;
       break;
+    case JT_CRUSADER_H:
+      costumeJob = JT_CHICKEN2_H;
+      break;
+    case JT_KNIGHT_B:
+      costumeJob = JT_CHICKEN_B;
+      break;
+    case JT_CRUSADER_B:
+      costumeJob = JT_CHICKEN2_B;
+      break;
     }
   } else {
     if (job == JT_MADOGEAR || job == JT_MADOGEAR_H || job == JT_MADOGEAR_B || job == JT_MEISTER_MADOGEAR) {
@@ -171,7 +171,7 @@ int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
   }
 
   if (spriteIndex == true && costumeJob > 3950) {
-    return costumeJob - 3950;
+    costumeJob -= 3950;
   }
 
   return costumeJob;
