@@ -108,7 +108,7 @@ void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
     return;
   }
 
-  tagCtrl->taggedText = this->m_contents->Text();
+  tagCtrl->taggedText = std::string(this->m_contents->Text());
   this->m_contents->SetText(tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->m_contents->MoveCursorToEnd();
   tagCtrl->AddItemTag(item, 0xd630a9);
