@@ -9,6 +9,7 @@
 #include "Utility/Threading/NSyncObject.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <new>
@@ -55,6 +56,13 @@ namespace {
       }
     }
 
+    // INLINED
+    explicit EncryptedName(const std::array<char, Length>& source) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
     ~EncryptedName() {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = 0;
@@ -78,6 +86,13 @@ namespace {
   // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const char (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
+  }
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const std::array<char, Length>& source) {
     thread_local EncryptedName<Length, Key> name(source);
     return name.Text();
   }
@@ -264,14 +279,14 @@ bool CNProtectGameGuardMgr::Initialize() {
   const int status = gameLib->Init();
   if (status != 0x755) {
     char message[0x400] = {};
-    const char bodySource[] = {'\x18', '\x54', '\xC2', '\xF0', '\xDA', '\xFC', '\x92', '\xBD', '\x3B', '\x15', '\xEA', '\xE7', '\xEF', '\xE6', '\x81', '\xF5', '\x7F', '\x10', '\xC3', '\xE0', '\x9D'};
+    const std::array<char, 21> bodySource = {'\x18', '\x54', '\xC2', '\xF0', '\xDA', '\xFC', '\x92', '\xBD', '\x3B', '\x15', '\xEA', '\xE7', '\xEF', '\xE6', '\x81', '\xF5', '\x7F', '\x10', '\xC3', '\xE0', '\x9D'};
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), DecryptName<0xCFF3899D95AF355FULL>(bodySource), status);
 
     char title[0x100] = {};
-    const char titleSource[] = {'\x62', '\x10', '\xC2', '\xAE', '\x4A', '\x86', '\x4C', '\x97', '\x41', '\x51', '\xEA', '\xB9', '\x7F', '\x9C', '\x5F', '\xC5', '\x1F', '\x51', '\x8A', '\xA7', '\x78', '\xF3'};
+    const std::array<char, 22> titleSource = {'\x62', '\x10', '\xC2', '\xAE', '\x4A', '\x86', '\x4C', '\x97', '\x41', '\x51', '\xEA', '\xB9', '\x7F', '\x9C', '\x5F', '\xC5', '\x1F', '\x51', '\x8A', '\xA7', '\x78', '\xF3'};
     StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), DecryptName<0xE52DF30DCBAF7125ULL>(titleSource), status);
 
-    const char tagSource[] = {'\xF6', '\x41', '\x9F', '\xAF', '\x7A', '\x91', '\xC9', '\x08', '\xF2', '\x31'};
+    const std::array<char, 10> tagSource = {'\xF6', '\x41', '\x9F', '\xAF', '\x7A', '\x91', '\xC9', '\x08', '\xF2', '\x31'};
     if (std::strstr(g_commandLine, DecryptName<0x4F99DF03C3EF31B7ULL>(tagSource)) == nullptr) {
       MessageBoxA(hWnd, message, title, 0);
       return false;
