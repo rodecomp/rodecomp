@@ -431,7 +431,7 @@ void CHealEffect::OnProcess() {
     if (particle) {
       const int age = particle->elapsedFrames;
       int alpha = particle->alpha;
-      if (this->columnLifetime < 0 || age < this->columnLifetime) {
+      if (this->columnLifetime < 0 || this->columnLifetime > age) {
         if (age < 16) {
           alpha = (std::min)(alpha + 5, 180);
         }
@@ -442,7 +442,7 @@ void CHealEffect::OnProcess() {
 
       const int segment = particle->columnIndex;
       float height = particle->speedParameter * 0.25f * g_sinTable[((4 - particle->rowIndex) * age + segment * 34) % 360] + particle->speedParameter * 0.75f;
-      if (particle->elapsedFrames < 91) {
+      if (particle->elapsedFrames <= 90) {
         height *= g_sinTable[particle->elapsedFrames];
       }
       height = (std::max)(height, 0.0f);
@@ -494,7 +494,7 @@ void CHealEffect::OnProcess() {
     if (particle) {
       const int age = particle->elapsedFrames;
       int alpha = particle->alpha;
-      if (this->coneLifetime < 0 || age < this->coneLifetime) {
+      if (this->coneLifetime < 0 || this->coneLifetime > age) {
         if (age < 16) {
           alpha = (std::min)(alpha + 5, 180);
         }
@@ -505,7 +505,7 @@ void CHealEffect::OnProcess() {
 
       const int segment = particle->columnIndex;
       float height = particle->speedParameter * 0.25f * g_sinTable[((segment * 17 + age) * 2) % 360] + particle->speedParameter * 0.75f;
-      if (age < 91) {
+      if (age <= 90) {
         height *= g_sinTable[age];
       }
       height = (std::max)(height, 0.0f);
