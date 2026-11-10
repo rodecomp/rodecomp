@@ -9,19 +9,24 @@
 #include <string>
 #include <windows.h>
 
+// GLOBAL: gl_25596
+const char* g_skillUseLevelInfoKeySuffix = "\\SkillUseLevelInfo";
+
 // OFFSET: 0x00A92370
 // FUNCTION: fn_17177
 void LoadSkillUseLevelRegistry() {
   char key[512];
   std::strcpy(key, g_subKey);
-  std::strcat(key, "\\SkillUseLevelInfo");
-  HKEY handle;
+  std::strcat(key, g_skillUseLevelInfoKeySuffix);
+  HKEY probe;
 
-  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &handle) != ERROR_SUCCESS) {
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &probe) != ERROR_SUCCESS) {
     return;
   }
 
-  RegCloseKey(handle);
+  RegCloseKey(probe);
+
+  HKEY handle;
 
   if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &handle) != ERROR_SUCCESS) {
     return;
