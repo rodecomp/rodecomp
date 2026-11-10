@@ -50,7 +50,8 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  std::string directory = FormatOwnedString("%s\\captcha\\", g_applicationDirectory);
+  std::string directory;
+  directory = static_cast<const std::string&>(FormatOwnedString("%s\\captcha\\", g_applicationDirectory));
 
   this->m_pathText = new UIStaticText();
   this->m_pathText->SetSize(240, 16);
