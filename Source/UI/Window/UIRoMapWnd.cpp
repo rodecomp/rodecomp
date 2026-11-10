@@ -238,10 +238,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int left = area[0];
-      const int right = area[2];
-      const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, townHeight, 0, 0);
-      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - right - left) * g_depthAverageHalf));
+      const int x = CenteredTextX(*this, name, area[0], area[2], townHeight, 0);
       const int y = townHeight + 2 + area[1];
       this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
       this->DrawTextAt(x, y, name.c_str(), 0, 0, townHeight, townColor, 0, 0);
@@ -268,8 +265,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         levelY = y - levelHeight - 3;
       }
 
-      const int textWidth = this->TextWidth(name.c_str(), 0, 0, fieldHeight, 0, 0);
-      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - field->right - field->left) * g_depthAverageHalf));
+      const int x = CenteredTextX(*this, name, field->left, field->right, fieldHeight, 0);
       this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
       this->DrawTextAt(x - 1, y - 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
       this->DrawTextAt(x, y, name.c_str(), 0, 0, fieldHeight, fieldColor, 0, 0);
@@ -278,8 +274,7 @@ void UIRoMapWnd::DrawFieldLabels() {
         continue;
       }
 
-      const int levelWidth = this->TextWidth(name.c_str(), 0, 0, levelHeight, 1, 0);
-      const int levelX = std::abs(static_cast<int>(static_cast<float>(levelWidth - field->right - field->left) * g_depthAverageHalf));
+      const int levelX = CenteredTextX(*this, name, field->left, field->right, levelHeight, 1);
       DrawOutlinedText(*this, levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
     }
   }
@@ -469,21 +464,7 @@ void UIRoMapWnd::RefreshPartyRecords() {
         continue;
       }
 
-      bool found;
-      {
-        std::string name = member.name;
-        std::string map = member.map;
-        found = false;
-        for (std::list<WorldViewRecord>::iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
-          if (it->name == map) {
-            it->relatedNames.push_back(name);
-            found = true;
-            break;
-          }
-        }
-      }
-
-      if (!found) {
+      if (!AddRelatedName(member.map, member.name, this->m_records)) {
         WorldViewRecord record;
         record.name = member.map;
         record.relatedNames.push_back(member.name);
@@ -496,8 +477,7 @@ void UIRoMapWnd::RefreshPartyRecords() {
     std::string map = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
     WorldViewRecord record;
     record.name = map;
-    std::string name = g_session.DecodePlayerName();
-    record.relatedNames.push_back(std::move(name));
+    record.relatedNames.push_back(g_session.DecodePlayerName());
     if (this->LocateRecord(record)) {
       this->m_records.push_back(record);
     }
