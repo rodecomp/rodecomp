@@ -1179,43 +1179,30 @@ struct RanluxEngine_655F00 {
 // OFFSET: 0x00655F00
 // FUNCTION: fn_05070
 void RanluxEngine_655F00::Seed(const unsigned int* seed_ptr, char flag, int unused) {
-  unsigned int* state = reinterpret_cast<unsigned int*>(this);
-  unsigned int seed = *seed_ptr;
+  unsigned int seed = *seed_ptr == 0 ? 0x12dd397 : *seed_ptr;
+  seed %= 0x7fffffab;
   if (seed == 0) {
-    seed = 0x12dd397;
-  } else {
-    seed %= 0x7fffffab;
-    if (seed == 0) {
-      seed = 1;
+    seed = 1;
+  }
+  SeedGen_657C30 gen{seed};
+
+  typedef std::_Swc_traits<unsigned int, 0x1000000, 24> Traits;
+  unsigned int* const values = this->values;
+  const int words = Traits::_Get_wc();
+  for (unsigned int i = 0; i < 24; ++i) {
+    const unsigned __int64 product = static_cast<unsigned __int64>(gen.seed) * 40014u;
+    gen.seed = static_cast<unsigned int>(product % 0x7fffffabu);
+    values[i] = gen.seed;
+    for (int j = 1; j < words; ++j) {
+      const unsigned __int64 next_product = static_cast<unsigned __int64>(gen.seed) * 40014u;
+      gen.seed = static_cast<unsigned int>(next_product % 0x7fffffabu);
+      values[i] |= gen.seed << (32 * j);
     }
   }
 
-  for (int i = 1; i <= 24; ++i) {
-    unsigned __int64 product = static_cast<unsigned __int64>(seed) * 40014u;
-    seed = static_cast<unsigned int>(product % 0x7fffffabu);
-    state[i] = seed;
-  }
-
-  for (int i = 1; i <= 16; ++i) {
-    state[i] &= 0x00ffffffu;
-  }
-
-  unsigned char* p = reinterpret_cast<unsigned char*>(this) + 0x47;
-  for (int i = 0; i < 8; ++i) {
-    *p = 0;
-    p += 4;
-  }
-
-  unsigned int carry;
-  if (flag == 0) {
-    carry = (state[24] == 0) ? 1 : 0;
-  } else {
-    SeedGen_657C30 gen{seed};
-    carry = gen.NextSeed();
-  }
-
-  state[0] = 24;
-  state[49] = carry;
+  const int reduced = Traits::_Reduce(values);
+  this->carry = flag == 0 ? reduced : static_cast<int>(gen.NextSeed());
+  this->index = 24;
 }
 
 // OFFSET: 0x00656370
