@@ -67,12 +67,14 @@ void UIWindow::DrawPanelBackgroundAt(int x, int y, int width, const char* bitmap
   unsigned green;
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
-  DrawRoundedBorder(*this, x, y, width, height - y, RGB(red, green, blue));
-  this->FillRegion(x, y, width, 5, RGB(red, green, blue));
+  COLORREF color = RGB(red, green, blue);
+  DrawRoundedBorder(*this, x, y, width, height - y, color);
+  this->FillRegion(x, y, width, 5, color);
 
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->FillRegion(x + 1, y, width - 2, height - y - 2, RGB(red, green, blue));
-  this->FillRegion(x + 2, height - 2, width - 4, 1, RGB(red, green, blue));
+  color = RGB(red, green, blue);
+  this->FillRegion(x + 1, y, width - 2, height - y - 2, color);
+  this->FillRegion(x + 2, height - 2, width - 4, 1, color);
 }
 
 // OFFSET: 0x008D0680
