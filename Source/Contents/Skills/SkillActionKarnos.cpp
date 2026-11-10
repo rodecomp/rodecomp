@@ -17,6 +17,7 @@
 #include "Utility/Math/Vector3d.h"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
@@ -32,6 +33,14 @@ public:
   // INLINED
   template <typename Byte>
   explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const std::array<Byte, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -928,13 +937,13 @@ void CEfstAction_WIND_VEIL::OnEfstEnd(int efstId, int argument2, int argument3, 
 
   EffectLists* effects = g_effectMgr;
   effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char source[] = {'\xD8', '\x26', '\x47', '\x87', '\x80', '\x63', '\x36', '\x56', '\xC3', '\x4F'};
+    const std::array<char, 10> source = {'\xD8', '\x26', '\x47', '\x87', '\x80', '\x63', '\x36', '\x56', '\xC3', '\x4F'};
     thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
     return name.Text();
   }()));
   effects = g_effectMgr;
   effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char source[] = {'\x9E', '\xBA', '\x51', '\x63', '\x6A', '\x5F', '\x6E', '\x8C', '\x85', '\x8C', '\x5F', '\x68', '\x41', '\x5D', '\x64', '\x88', '\xE9'};
+    const std::array<char, 17> source = {'\x9E', '\xBA', '\x51', '\x63', '\x6A', '\x5F', '\x6E', '\x8C', '\x85', '\x8C', '\x5F', '\x68', '\x41', '\x5D', '\x64', '\x88', '\xE9'};
     thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
     return name.Text();
   }()));
