@@ -58,7 +58,7 @@ void UINewChatWnd::ApplyInputLayout() {
 
 // OFFSET: 0x009337F0
 // FUNCTION: fn_12730
-void UINewChatWnd::ApplyHeaderLayout() {
+__declspec(noinline) void UINewChatWnd::ApplyHeaderLayout() {
   if (!g_session.m_canDragWnd && this->geometry.state != 0) {
     this->m_headerButtons[1]->Move(-100, -100);
     this->m_headerButtons[0]->Move(-100, -100);
@@ -113,6 +113,25 @@ void UISubChatHisWnd::ApplyButtonLayout() {
   button->Move(x, 4);
 }
 
+namespace {
+// INLINED
+__forceinline void LayoutInputEdits(UINewChatWnd* wnd, UIWindow& chat) {
+  wnd->m_whisperEdit->Move(6, chat.geometry.height - wnd->m_inputAreaHeight + 4);
+  wnd->m_chatEdit->Move(110, chat.geometry.height - wnd->m_inputAreaHeight + 4);
+  UIWindow* child = wnd->m_inputResizer;
+  child->Move(3, chat.geometry.height - child->geometry.height);
+}
+
+// INLINED
+__forceinline void LayoutInputButtons(UINewChatWnd* wnd, UIWindow& chat) {
+  const int base = chat.geometry.height - wnd->m_inputAreaHeight;
+  const POINT positions[] = {{97, base + 3}, {586, base + 7}, {572, base + 7}};
+  for (int index = 0; index < 3; ++index) {
+    wnd->m_inputButtons[index]->Move(positions[index].x, positions[index].y);
+  }
+}
+}
+
 // OFFSET: 0x0093D2C0
 // FUNCTION: fn_12768
 void UINewChatWnd::ResizeRows(int count) {
@@ -125,15 +144,18 @@ void UINewChatWnd::ResizeRows(int count) {
     return;
   }
 
-  const int rowCount = count > 15 ? 0 : count < 0 ? 15 : count;
+  int rowCount = count <= 15 ? count : 0;
+  if (rowCount < 0) {
+    rowCount = 15;
+  }
   chat.geometry.state = static_cast<unsigned>(rowCount);
   chat.Invalidate();
   const int previousHeight = chat.geometry.height;
-  const int height = rowCount == 0 ? this->m_inputAreaHeight : this->m_inputAreaHeight + (rowCount + 3) * 14 + this->m_inputOffsetY;
-  chat.Resize(chat.geometry.width, height);
-  chat.Move(chat.geometry.x, chat.geometry.y - height + previousHeight);
-
   if (rowCount != 0) {
+    const int height = this->m_inputAreaHeight + (rowCount + 3) * 14 + this->m_inputOffsetY;
+    chat.Resize(chat.geometry.width, height);
+    chat.Move(chat.geometry.x, chat.geometry.y - height + previousHeight);
+
     int index = 0;
     for (std::vector<UIChatHisBox*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it, ++index) {
       (*it)->Resize(chat.geometry.width - 8, height - this->m_inputOffsetY - this->m_inputAreaHeight - 4);
@@ -147,31 +169,25 @@ void UINewChatWnd::ResizeRows(int count) {
     }
 
     chat.Invalidate();
-  } else {
-    for (std::vector<UIChatHisBox*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
-      (*it)->Move(-100 - chat.geometry.width, -100);
-    }
-  }
-
-  this->m_whisperEdit->Move(6, chat.geometry.height - this->m_inputAreaHeight + 4);
-  this->m_chatEdit->Move(110, chat.geometry.height - this->m_inputAreaHeight + 4);
-  UIWindow* child = this->m_inputResizer;
-  child->Move(3, chat.geometry.height - child->geometry.height);
-
-  if (rowCount != 0) {
+    LayoutInputEdits(this, chat);
     this->m_headerButton->Move(this->m_tabWidth * 2 + 4, 4);
     this->m_chatModeButton->Move(this->m_tabWidth * 2 + 19, 4);
     this->m_tabControl->Move(3, 0);
+    LayoutInputButtons(this, chat);
   } else {
+    const int height = this->m_inputAreaHeight;
+    chat.Resize(chat.geometry.width, height);
+    chat.Move(chat.geometry.x, chat.geometry.y - height + previousHeight);
+
+    for (std::vector<UIChatHisBox*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+      (*it)->Move(-100 - chat.geometry.width, -100);
+    }
+
+    LayoutInputEdits(this, chat);
     this->m_headerButton->Move(-100, -100);
     this->m_chatModeButton->Move(-100, -100);
     this->m_tabControl->Move(-100, -100);
-  }
-
-  const int base = chat.geometry.height - this->m_inputAreaHeight;
-  const POINT positions[] = {{97, base + 3}, {586, base + 7}, {572, base + 7}};
-  for (int index = 0; index < 3; ++index) {
-    this->m_inputButtons[index]->Move(positions[index].x, positions[index].y);
+    LayoutInputButtons(this, chat);
   }
 
   if (this->m_suggestions) {
