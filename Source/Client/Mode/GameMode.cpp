@@ -8457,11 +8457,13 @@ int CGameMode::ProcessGroundClick(int result) {
     ground->DrawGrid(matrix, column, row, color);
   };
 
+  int row;
+  int column;
   UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
   if (reporter) {
     if (reporter->activeOnly == true && reporter->m_mode == 1) {
-      int column = -1;
-      int row = -1;
+      column = -1;
+      row = -1;
       this->PickScreenTerrain(column, row);
       const int radius = reporter->reportCount;
       for (int dx = -radius; dx <= radius; ++dx) {
@@ -8486,8 +8488,8 @@ int CGameMode::ProcessGroundClick(int result) {
   if (shop) {
     if (shop->suspended == 1) {
       shopSuspended = true;
-      int column = -1;
-      int row = -1;
+      column = -1;
+      row = -1;
       this->PickScreenTerrain(column, row);
       drawCell(this->scene->ground, this->camera->frame.view.values, column, row, 0x66FF0000);
       if (g_mouse.buttons[0] == 1) {
@@ -8509,14 +8511,14 @@ int CGameMode::ProcessGroundClick(int result) {
     return result;
   }
 
-  int column = -1;
-  int row = -1;
+  column = -1;
+  row = -1;
   if (!this->PickScreenTerrain(column, row)) {
     return result;
   }
 
-  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
   if (g_session.homunAlive != 0) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
       if (g_session.selectHomunEnemy != 0) {
@@ -10136,11 +10138,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
 
   bool resetCursor = false;
   if (pick) {
-    if (this->scene->isBattleFieldMode != 0) {
-      if (actor && g_session.playerTeam[0] != actor->render.battleTeam) {
-        attack = 1;
-      }
-    } else {
+    if (this->scene->isBattleFieldMode == 0) {
       if (g_session.GetMapProperty07()) {
         if (!g_session.IsPartyMember(actor->render.accountId, true)) {
           attack = 1;
@@ -10152,14 +10150,8 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       }
 
       CWorld* scene = this->scene;
-      if (scene->isSiegeMode == 0) {
-        if (pick->healthState != 0 || scene->isPKZone != 0 || scene->isEventPVPMode != 0 ||
-            *reinterpret_cast<const int*>(&g_session.interactionFlags[4]) != 0) {
-          if (!g_session.IsPartyMember(actor->render.accountId, true)) {
-            attack = 1;
-          }
-        }
-      } else if (actor) {
+      if (scene->isSiegeMode != 0) {
+        if (actor) {
         GuildInfo* guildInfo = &g_guildInfo;
         bool friendly = true;
         bool known = true;
@@ -10170,10 +10162,12 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         case 13:
         case 14: {
           CGameActor* summoner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->emblemVersion));
-          if (!summoner) {
+          if (summoner) {
+            if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
+              friendly = guildInfo->HasRelatedGuild(summoner->GetGdid());
+            }
+          } else {
             known = this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->emblemVersion);
-          } else if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
-            friendly = guildInfo->HasRelatedGuild(summoner->GetGdid());
           }
           break;
         }
@@ -10197,7 +10191,15 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
             }
           }
         }
+        }
+      } else if (pick->healthState != 0 || scene->isPKZone != 0 || scene->isEventPVPMode != 0 ||
+                 *reinterpret_cast<const int*>(&g_session.interactionFlags[4]) != 0) {
+        if (!g_session.IsPartyMember(actor->render.accountId, true)) {
+          attack = 1;
+        }
       }
+    } else if (actor && g_session.playerTeam[0] != actor->render.battleTeam) {
+      attack = 1;
     }
   }
 
@@ -10212,10 +10214,9 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     this->SetCursorAction(0);
   }
 
-  const std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
-  const bool engaged = (attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode;
-  if (engaged && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
       if (homun && homun->HasActiveHomunculusAI()) {
@@ -10257,7 +10258,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     return;
   }
 
-  if (engaged && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
