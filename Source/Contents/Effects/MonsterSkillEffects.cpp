@@ -1378,11 +1378,11 @@ void CFootprintStrEffect::Render() {
 // OFFSET: 0x00714250
 // FUNCTION: fn_07259
 CFromTheAbyssEffect::CFromTheAbyssEffect() : CEffect(-1), maxLevel(5), level(0) {
-  this->waves[0] = AbyssWave{0.8f, {-4.8f, -9.1f, 0.0f}};
-  this->waves[1] = AbyssWave{0.6f, {-3.4f, -12.8f, 0.0f}};
-  this->waves[2] = AbyssWave{0.5f, {-0.7f, -14.0f, 0.0f}};
-  this->waves[3] = AbyssWave{0.7f, {2.7f, -14.0f, 0.0f}};
-  this->waves[4] = AbyssWave{0.4f, {4.3f, -10.0f, 0.0f}};
+  this->waves[0] = AbyssWave(0.8f, vector3d{-4.8f, -9.1f, 0.0f});
+  this->waves[1] = AbyssWave(0.6f, vector3d{-3.4f, -12.8f, 0.0f});
+  this->waves[2] = AbyssWave(0.5f, vector3d{-0.7f, -14.0f, 0.0f});
+  this->waves[3] = AbyssWave(0.7f, vector3d{2.7f, -14.0f, 0.0f});
+  this->waves[4] = AbyssWave(0.4f, vector3d{4.3f, -10.0f, 0.0f});
 }
 
 // OFFSET: 0x00715160
@@ -2193,7 +2193,7 @@ void CNewCloudKillEffect::OnProcess() {
   for (auto it = this->smokeEmitters.begin(); it != this->smokeEmitters.end(); ++it) {
     ++AsParticle(*it)->elapsedFrames;
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->elapsedFrames <= 0 || particle == nullptr) {
+    if (AsParticle(*it)->elapsedFrames <= 0 || particle == nullptr) {
       continue;
     }
 
@@ -2277,7 +2277,7 @@ void CNewCloudKillEffect::OnProcess() {
   for (auto it = this->mistEmitters.begin(); it != this->mistEmitters.end(); ++it) {
     ++AsParticle(*it)->elapsedFrames;
     CEZ2STRParticle* particle = AsParticle(*it);
-    if (particle->elapsedFrames <= 0 || particle == nullptr) {
+    if (AsParticle(*it)->elapsedFrames <= 0 || particle == nullptr) {
       continue;
     }
 
@@ -3052,7 +3052,7 @@ static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, EZ2S
     return;
   }
 
-  const vector3d position = {effect->position[0], effect->position[1], effect->position[2]};
+  const vector3d position = *reinterpret_cast<const vector3d*>(effect->position);
   const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
   const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
   const vector3d& offset = effect->offsets[column];

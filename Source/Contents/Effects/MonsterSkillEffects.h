@@ -262,6 +262,9 @@ public:
   };
 
   struct AbyssWave {
+    AbyssWave() : scale(0.0f), offset() {}
+    AbyssWave(float scale, const vector3d& offset) : scale(scale), offset(offset) {}
+
     /* 0000 */ float scale;
     /* 0004 */ vector3d offset;
   };
