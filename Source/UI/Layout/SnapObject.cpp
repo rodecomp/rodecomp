@@ -18,26 +18,28 @@ SnapObject::~SnapObject() = default;
 // OFFSET: 0x007E2770
 // FUNCTION: fn_09703
 int SnapObject::AdjacentSide(const SnapObject& other) const {
-  const WindowGeometry& a = this->window->geometry;
-  const WindowGeometry& b = other.window->geometry;
-  const int right = (a.x + a.width);
-  const int bottom = (a.y + a.height);
-  const int otherRight = (b.x + b.width);
-  const int otherBottom = (b.y + b.height);
+  const int width = this->window->geometry.width;
+  const int height = this->window->geometry.height;
+  const int x = this->window->geometry.x;
+  const int y = this->window->geometry.y;
+  const int otherWidth = other.window->geometry.width;
+  const int otherHeight = other.window->geometry.height;
+  const int otherX = other.window->geometry.x;
+  const int otherY = other.window->geometry.y;
 
-  if (a.x == otherRight && Overlaps(a.y, bottom, b.y, otherBottom)) {
+  if (x == otherX + otherWidth && Overlaps(y, y + height, otherY, otherY + otherHeight)) {
     return 0;
   }
 
-  if (b.x == right && Overlaps(b.y, otherBottom, a.y, bottom)) {
+  if (otherX == x + width && Overlaps(otherY, otherY + otherHeight, y, y + height)) {
     return 2;
   }
 
-  if (a.y == otherBottom && Overlaps(a.x, right, b.x, otherRight)) {
+  if (y == otherY + otherHeight && Overlaps(x, x + width, otherX, otherX + otherWidth)) {
     return 1;
   }
 
-  if (b.y == bottom && Overlaps(b.x, otherRight, a.x, right)) {
+  if (otherY == y + height && Overlaps(otherX, otherX + otherWidth, x, x + width)) {
     return 3;
   }
 
