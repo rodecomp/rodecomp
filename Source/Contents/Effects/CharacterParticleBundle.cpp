@@ -72,15 +72,19 @@ void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
   if (particle) {
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
     const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
-    const float x = this->position[0];
-    const float y = this->position[1];
-    const float z = this->position[2];
-    const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + this->offsetX + particle->offsetX;
-    const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] - this->offsetY + particle->offsetY;
-    const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->offsetZ;
-    particle->position.x = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-    particle->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
-    particle->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const float x = origin.x;
+    const float y = origin.y;
+    const float z = origin.z;
+    vector3d camera;
+    camera.x = view[0] * x + view[3] * y + view[6] * z + view[9] + this->offsetX + particle->offsetX;
+    camera.y = view[1] * x + view[4] * y + view[7] * z + view[10] - this->offsetY + particle->offsetY;
+    camera.z = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->offsetZ;
+    vector3d world;
+    world.x = camera.y * inverse[3] + camera.x * inverse[0] + camera.z * inverse[6] + inverse[9];
+    world.y = camera.x * inverse[1] + camera.y * inverse[4] + camera.z * inverse[7] + inverse[10];
+    world.z = camera.x * inverse[2] + camera.y * inverse[5] + camera.z * inverse[8] + inverse[11];
+    particle->position = world;
   }
 }
 
@@ -211,7 +215,7 @@ bool CChopChopClawMarks::IsAlive() {
 // FUNCTION: fn_03139
 void CharacterParticleBundle::OnProcess() {
   this->EmitParticles();
-  const auto removed = std::remove_if(this->particles.begin(), this->particles.end(), [](CEZ2STRParticle* particle) {
+  this->particles.erase(std::remove_if(this->particles.begin(), this->particles.end(), [](CEZ2STRParticle* particle) {
     if (!particle) {
       return true;
     }
@@ -220,10 +224,9 @@ void CharacterParticleBundle::OnProcess() {
       return true;
     }
     return false;
-  });
-  this->particles.erase(removed, this->particles.end());
+  }), this->particles.end());
 
-  for (CEZ2STRParticle* particle : this->particles) {
+  for (CEZ2STRParticle*& particle : this->particles) {
     this->UpdateParticlePosition(particle);
     this->ProcessParticle(particle);
   }
