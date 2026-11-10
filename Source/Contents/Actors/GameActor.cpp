@@ -712,10 +712,9 @@ void CGameActor::UpdateHpGauge() {
     if (this->render.state == 3 && reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->current != 0) {
       reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->SetValues(0, reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->maximum);
     }
+    const int y = static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.distanceScale + static_cast<float>(this->render.screenY));
     reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Move(
-      this->render.screenX - reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->geometry.width / 2,
-      static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.distanceScale + static_cast<float>(this->render.screenY))
-    );
+      this->render.screenX - reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->geometry.width / 2, y);
     reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Invalidate();
     return;
   }
@@ -904,7 +903,7 @@ float CGameActor::GetNameOffset() {
     if (angle > 270) {
       scale = 0.5f;
     } else {
-      scale = (g_sinTable[angle >= 90 ? angle : 90] + 1.0f) * 0.25f + g_depthAverageHalf;
+      scale = ((angle >= 90 ? g_sinTable[angle] : g_sinTable[90]) + 1.0f) * 0.25f + g_depthAverageHalf;
     }
   }
 
@@ -951,11 +950,17 @@ float CGameActor::GetNameOffset() {
   }
 
   if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
-    return this->isRiding ? 4.0f : -1.0f;
+    if (this->isRiding) {
+      return 4.0f;
+    }
+    return -1.0f;
   }
 
   if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
-    return this->isRiding ? scale * -3.0f : scale * -2.0f;
+    if (this->isRiding) {
+      return scale * -3.0f;
+    }
+    return scale * -2.0f;
   }
 
   if (!this->isRiding) {
