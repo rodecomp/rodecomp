@@ -98,19 +98,17 @@ void CEvilsPawEffect::OnProcess() {
       result.Compose(scale, rotation);
       particle->transform = result;
 
-      particle->position.x = this->position[0] + this->offset.x;
-      particle->position.y = this->position[1] + this->offset.y;
-      particle->position.z = this->position[2] + this->offset.z;
+      particle->position = vector3d{this->position[0] + this->offset.x, this->position[1] + this->offset.y, this->position[2] + this->offset.z};
     }
     ++(*it)->elapsedFrames;
   }
 
   if (--this->delayCounter < 0) {
     ++this->textureIndex;
-    this->delayCounter = this->frameDelay;
     if (this->textureIndex > this->textures.size() - 1) {
       this->textureIndex = 0;
     }
+    this->delayCounter = this->frameDelay;
   }
 }
 
