@@ -14,6 +14,16 @@
 CParticle* CreateEZ2STRParticle(const vector3d* position, int flags);
 void FreeParticle(CParticle* particle);
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // GLOBAL: gl_24871
 static const std::array<std::string, 4> s_talismanStartEffects = {
   "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\blue_dragon_start.str",
@@ -185,11 +195,11 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
     return;
   }
 
-  const vector3d center = {this->position[0], this->position[1], this->position[2]};
+  const vector3d center = *reinterpret_cast<const vector3d*>(this->position);
   const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-  const float viewX = view[0] * center.x + view[3] * center.y + view[6] * center.z + view[9];
-  const float viewY = view[1] * center.x + view[4] * center.y + view[7] * center.z + view[10];
-  const float viewZ = view[2] * center.x + view[5] * center.y + view[8] * center.z + view[11];
+  const float viewX = center.y * view[3] + center.x * view[0] + center.z * view[6] + view[9];
+  const float viewY = center.y * view[4] + center.x * view[1] + center.z * view[7] + view[10];
+  const float viewZ = center.y * view[5] + center.x * view[2] + center.z * view[8] + view[11];
 
   const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
   int angle = particle->phaseParameter;
@@ -204,9 +214,9 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   const float x = offsetX + viewX;
   const float y = offsetY + viewY;
   const float z = viewZ + 0.0f;
-  const float worldX = x * inverse[0] + y * inverse[3] + z * inverse[6] + inverse[9];
-  const float worldY = x * inverse[1] + y * inverse[4] + z * inverse[7] + inverse[10];
-  const float worldZ = x * inverse[2] + y * inverse[5] + z * inverse[8] + inverse[11];
+  const float worldX = y * inverse[3] + x * inverse[0] + z * inverse[6] + inverse[9];
+  const float worldY = y * inverse[4] + x * inverse[1] + z * inverse[7] + inverse[10];
+  const float worldZ = y * inverse[5] + x * inverse[2] + z * inverse[8] + inverse[11];
   particle->position.x = worldX;
   particle->position.y = worldY;
   particle->position.z = worldZ;
