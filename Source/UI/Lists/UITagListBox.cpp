@@ -153,9 +153,9 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
 
   char* buffer = new char[size];
   strcpy_s(buffer, size, text.c_str());
-  std::string value;
-  std::vector<int> options;
+  std::string value = "";
   int optionCount = 0;
+  std::vector<int> options;
   int cardIndex = 0;
 
   fields.resize(260);
@@ -180,26 +180,34 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
       continue;
     }
 
-    for (int type = 0; type < 14; ++type) {
+    for (int type = 0; type < sizeof(delimiters); ++type) {
       if (delimiters[type] != buffer[position]) {
         continue;
       }
 
-      if (type == 7) {
+      switch (type) {
+      case 7: {
         if (!value.empty()) {
           fields[index] = this->DecodeNumber(value);
         }
         int end = static_cast<int>(text.size());
         cardIndex = this->DecodeCards(fields, buffer, position, delimiters[7], end, 6);
-      } else if (type == 9) {
+        break;
+      }
+      case 9: {
         ++optionCount;
         if (!value.empty()) {
           fields[index] = this->DecodeNumber(value);
         }
         int end = static_cast<int>(text.size());
         this->DecodeValues(options, buffer, position, end, delimiters[10], delimiters[11]);
-      } else if (!value.empty()) {
-        fields[index] = this->DecodeNumber(value);
+        break;
+      }
+      default:
+        if (!value.empty()) {
+          fields[index] = this->DecodeNumber(value);
+        }
+        break;
       }
 
       value.clear();
@@ -292,9 +300,9 @@ void UITagListBox::DecodeValues(std::vector<int>& values, const char* text, int&
 // OFFSET: 0x009BB090
 // FUNCTION: fn_13886
 int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& end, int index) {
-  std::vector<int> cards;
-  std::string value;
+  std::string value = "";
   int count = 1;
+  std::vector<int> cards;
 
   while (++position < end + 1) {
     const char byte = text[position];
