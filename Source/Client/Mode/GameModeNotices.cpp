@@ -1986,15 +1986,16 @@ void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
 void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
   const auto* open = reinterpret_cast<const RouletteOpenPacket*>(packet);
   switch (open->result) {
-  case OPEN_ROULETTE_SUCCESS:
+  case OPEN_ROULETTE_SUCCESS: {
     g_rouletteMgr->m_serial = open->serial;
     g_rouletteMgr->m_stage = open->stage;
     g_rouletteMgr->SetAdditionItem(open->additionItemId);
     g_rouletteMgr->m_goldPoint = open->goldPoint;
     g_rouletteMgr->m_silverPoint = open->silverPoint;
     g_rouletteMgr->m_bronzePoint = open->bronzePoint;
-    g_rouletteMgr->SetResult(open->index, open->index != 0xFF, 0);
-    if (open->index != 0xFF) {
+    const unsigned char index = open->index;
+    g_rouletteMgr->SetResult(index, index != 0xFF, 0);
+    if (index != 0xFF) {
       g_rouletteMgr->SetQuad((open->index + open->stage) * 36 + 173, 341 - open->stage * 40,
         static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0), static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
     }
@@ -2002,11 +2003,12 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
     if (g_rouletteMgr->m_items.size() == 0) {
       PacketIdOnly request;
       request.id = ID_CZ_REQ_ROULETTE_INFO;
-      GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
     } else if (!g_windowMgr.roulletteWnd) {
       g_windowMgr.EnsureWindow(WID_ROULLETTEWND);
     }
     break;
+  }
   case OPEN_ROULETTE_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_ENOUGH_ROULLETTE_POINT)), 0x6464FF, 0, 0, 0);
     break;
@@ -4609,7 +4611,13 @@ struct SpriteChange2Packet {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ unsigned char type;
-  /* 0007 */ std::int64_t value;
+  union {
+    /* 0007 */ std::int64_t value;
+    struct {
+      /* 0007 */ std::int32_t valueLow;
+      /* 000B */ std::int32_t valueHigh;
+    };
+  };
 };
 #pragma pack(pop)
 
@@ -4730,10 +4738,10 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.m_head = value;
       break;
     case LOOK_WEAPON: {
-      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x4]) = value;
-      const int shield = static_cast<int>(packet->value >> 32);
-      *reinterpret_cast<int*>(&g_session.weaponAppearance[0x8]) = shield;
-      if (value != 0 && GetWeaponViewValue(shield) == -1) {
+      *reinterpret_cast<std::int64_t*>(&g_session.weaponAppearance[0x4]) = packet->value;
+      const int shield = packet->valueHigh;
+      const int view = GetWeaponViewValue(shield);
+      if (packet->valueLow != 0 && view == -1) {
         *reinterpret_cast<int*>(&g_session.weaponAppearance[0xC]) = shield;
       }
       break;
@@ -4782,7 +4790,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
         return;
       }
       if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, 0, value, static_cast<int>(packet->value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_SETJOB, 0, value, packet->valueHigh, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       return;
     }
@@ -4805,7 +4813,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     actor->RefreshAccessory3();
     break;
   case LOOK_WEAPON: {
-    const int shield = static_cast<int>(packet->value >> 32);
+    const int shield = packet->valueHigh;
     const int weapon = value;
     const int view = GetWeaponViewValue(shield);
     switch (actor->GetEffectiveJob(-1)) {
@@ -4816,7 +4824,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     case JT_GUILLOTINE_CROSS_H:
     case JT_GUILLOTINE_CROSS_B:
     case JT_SHADOW_CROSS:
-      actor->SetSprWeapon2(value, shield);
+      actor->SetSprWeapon2(packet->valueLow, packet->valueHigh);
       break;
     default:
       actor->SetSprWeapon2(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
