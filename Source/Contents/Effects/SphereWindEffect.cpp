@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -110,21 +111,27 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
   const float scale = particle->scale;
   const float radius = particle->speedParameter;
 
-  const float ringX = g_cosTable[tilt] * scale * g_cosTable[angle];
-  const float ringY = g_sinTable[tilt] * scale * g_cosTable[angle];
-  const float ringZ = scale * g_sinTable[angle];
-  const float spreadX = g_sinTable[tilt] * radius;
-  const float spreadY = g_cosTable[tilt] * radius;
+  EffectPoint points[4];
+  points[0].x = g_cosTable[tilt] * scale * g_cosTable[angle];
+  points[0].y = g_sinTable[tilt] * scale * g_cosTable[angle];
+  points[0].z = scale * g_sinTable[angle];
+  points[1].x = -g_sinTable[tilt] * radius;
+  points[1].y = g_cosTable[tilt] * radius;
+  points[1].z = 0.0f;
+  const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
+  points[2].x = points[0].x - points[1].x + offset.x;
+  points[2].y = points[0].y - points[1].y + offset.y;
+  points[2].z = points[0].z - points[1].z + offset.z;
+  points[3].x = points[0].x + points[1].x + offset.x;
+  points[3].y = points[0].y + points[1].y + offset.y;
+  points[3].z = points[0].z + points[1].z + offset.z;
 
-  const vector3d inner = {ringX - spreadX, ringY + spreadY + particle->animationParameter, ringZ};
-  const vector3d outer = {ringX + spreadX, ringY - spreadY + particle->animationParameter, ringZ};
-
-  particle->vertices[1].x = outer.x;
-  particle->vertices[1].y = outer.y;
-  particle->vertices[1].z = outer.z;
-  particle->vertices[3].x = inner.x;
-  particle->vertices[3].y = inner.y;
-  particle->vertices[3].z = inner.z;
+  particle->vertices[1].x = points[2].x;
+  particle->vertices[1].y = points[2].y;
+  particle->vertices[1].z = points[2].z;
+  particle->vertices[3].x = points[3].x;
+  particle->vertices[3].y = points[3].y;
+  particle->vertices[3].z = points[3].z;
 
   if (segment != 0) {
     particle->vertices[0].x = this->lastOuter.x;
@@ -135,8 +142,12 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
     particle->vertices[2].z = this->lastInner.z;
   }
 
-  this->lastInner = inner;
-  this->lastOuter = outer;
+  this->lastInner.x = points[3].x;
+  this->lastInner.y = points[3].y;
+  this->lastInner.z = points[3].z;
+  this->lastOuter.x = points[2].x;
+  this->lastOuter.y = points[2].y;
+  this->lastOuter.z = points[2].z;
 }
 
 // OFFSET: 0x00B78710
