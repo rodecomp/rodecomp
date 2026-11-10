@@ -108,12 +108,8 @@ void UINavigationWnd::OnCreate(int width, int height) {
   this->m_searchType->dropdownHeight = 67;
   this->m_searchType->SetSize(56, 18);
   this->m_searchType->Move(-1000, -1000);
-  this->m_searchType->borderRed = 100;
-  this->m_searchType->borderGreen = 100;
-  this->m_searchType->borderBlue = 100;
-  this->m_searchType->red = 232;
-  this->m_searchType->green = 232;
-  this->m_searchType->blue = 232;
+  this->m_searchType->SetBorderColor(100, 100, 100);
+  this->m_searchType->SetColor(232, 232, 232);
   this->AddChild(this->m_searchType);
   this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
   this->m_searchType->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
@@ -134,8 +130,9 @@ void UINavigationWnd::OnCreate(int width, int height) {
   }
   this->AddChild(this->m_titleBar);
   if (g_replayAnimationScaling) {
-    this->m_titleBar->disabled = 1;
-    this->m_titleBar->Invalidate();
+    UIEditCtrl* titleBar = this->m_titleBar;
+    titleBar->disabled = 1;
+    titleBar->Invalidate();
   }
 
   this->m_includeObjects = new UICheckBox();
