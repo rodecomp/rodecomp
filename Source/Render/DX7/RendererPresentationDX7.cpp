@@ -15,16 +15,16 @@ HRESULT CRendererDX7::Present(int option) {
   ++this->frame;
   const unsigned elapsed = GetTickCount() - this->time;
 
-  if (static_cast<float>(elapsed) < 1000.0f) {
-    ++this->samples;
-  } else {
+  if (static_cast<float>(elapsed) >= 1000.0f) {
     this->time = GetTickCount();
     this->rate = this->samples;
     this->samples = 0;
+  } else {
+    ++this->samples;
   }
 
   DeviceOwnerDX7* owner = g_deviceOwnerDX7;
-  if (owner && owner->RestoreLostSurfaces()) {
+  if (owner && owner->RestoreLostSurfaces() == TRUE) {
     return S_OK;
   }
 
@@ -33,10 +33,13 @@ HRESULT CRendererDX7::Present(int option) {
   }
 
   owner = g_deviceOwnerDX7;
-  if (owner && owner->Present(option != 0) == DDERR_SURFACELOST) {
-    owner = g_deviceOwnerDX7;
-    if (owner) {
-      owner->MarkSurfacesLost();
+  if (owner) {
+    const HRESULT result = owner->Present(option != 0);
+    if (FAILED(result) && result == DDERR_SURFACELOST) {
+      owner = g_deviceOwnerDX7;
+      if (owner) {
+        owner->MarkSurfacesLost();
+      }
     }
   }
   return S_OK;
