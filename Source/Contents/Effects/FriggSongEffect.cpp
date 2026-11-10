@@ -10,7 +10,7 @@
 
 // OFFSET: 0x00701BB0
 // FUNCTION: fn_06999
-CFriggSongEffect::CFriggSongEffect() : CEffect(0x423), lastInner{} {
+CFriggSongEffect::CFriggSongEffect() : CEffect(0x423) {
   this->effectLifetime = EffectLifetime(0x423);
 }
 
@@ -79,8 +79,12 @@ void CFriggSongEffect::Open() {
       particle->vertices[2].z = this->lastInner[0].z;
     }
 
-    this->lastInner[0] = points[0];
-    this->lastInner[1] = points[1];
+    this->lastInner[0].x = points[0].x;
+    this->lastInner[0].y = points[0].y;
+    this->lastInner[0].z = points[0].z;
+    this->lastInner[1].x = points[1].x;
+    this->lastInner[1].y = points[1].y;
+    this->lastInner[1].z = points[1].z;
     this->particles.push_back(particle);
   }
 }

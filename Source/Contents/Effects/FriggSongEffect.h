@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_FRIGGSONGEFFECT_H
 
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -20,7 +21,7 @@ public:
   bool IsAlive() override;
   void InitEvents() override;
 
-  /* 00CC */ vector3d lastInner[2];
+  /* 00CC */ EffectPoint lastInner[2];
   /* 00E4 */ std::vector<CParticle*> particles;
 };
 
