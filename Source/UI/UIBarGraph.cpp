@@ -110,7 +110,12 @@ void UIBarGraph::Paint() {
     return;
   }
 
-  const std::string color = this->m_value >= 25.0f ? "blue" : "red";
+  std::string color;
+  if (this->m_value < 25.0f) {
+    color = "red";
+  } else {
+    color = "blue";
+  }
   const int fill = (this->geometry.width - 8) * static_cast<int>(this->m_value) / 100;
 
   auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
@@ -159,7 +164,10 @@ void UIBarGraphHomun::Paint() {
     return;
   }
 
-  const std::string color = ratio < 0.25 ? "red" : "blue";
+  std::string color = "blue";
+  if (ratio < 0.25) {
+    color = "red";
+  }
   const int fill = static_cast<int>(static_cast<double>(this->geometry.width - 8) * ratio);
 
   auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
@@ -195,7 +203,10 @@ void UIBarGraphPlayer::Paint() {
   }
 
   const double ratio = static_cast<double>(current) / static_cast<double>(maximum);
-  const std::string color = ratio < 0.25 ? "red" : "blue";
+  std::string color = "blue";
+  if (ratio < 0.25) {
+    color = "red";
+  }
   const int fill = static_cast<int>(static_cast<double>(this->geometry.width - 8) * ratio);
 
   auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\basic_interface\\gze" + color + "_left.bmp").c_str())));
