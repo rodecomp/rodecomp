@@ -160,8 +160,7 @@ int CSpecialPopupMgr::LuaAddMsg(lua_State* state) {
 
   const int messageId = static_cast<int>(lua_tonumber(state, -2));
   const unsigned int color = static_cast<unsigned int>(lua_tonumber(state, -1));
-  g_specialPopupMgr->m_popups[id].m_messageId = messageId;
-  g_specialPopupMgr->m_popups[id].m_color = ((((color >> 8) & 0xFF) | ((color & 0xFF) << 8)) << 8) | ((color >> 16) & 0xFF);
+  g_specialPopupMgr->SetMessage(id, messageId, color);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatPopupString("good").c_str());
   return 2;
