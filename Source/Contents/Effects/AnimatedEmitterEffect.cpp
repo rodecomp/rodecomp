@@ -46,6 +46,7 @@ void CAnimatedEmitterEffect::InitParticle(CParticle* particle) {
 // OFFSET: 0x006FA800
 // FUNCTION: fn_06892
 void CAnimatedEmitterEffect::UpdateParticle(CParticle* particle) {
-  particle->SetTexture(this->frames[static_cast<int>(particle->animationParameter)][particle->elapsedFrames / 8 % 5]);
+  int kind = static_cast<int>(particle->animationParameter);
+  particle->SetTexture(this->frames[kind][particle->elapsedFrames / 8 % 5]);
   CEmitterEffect::UpdateParticle(particle);
 }
