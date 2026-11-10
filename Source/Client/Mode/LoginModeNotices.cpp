@@ -10,6 +10,7 @@
 #include "Utility/Cipher/XorBytes.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -22,6 +23,13 @@ namespace {
   class EncryptedName {
   public:
     explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    // INLINED
+    explicit EncryptedName(const std::array<std::uint8_t, Length>& source) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -262,9 +270,9 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   }
 
   if (strlen(text) != 0) {
-    const std::uint8_t source[] = {0x1E, 0x94, 0x29, 0x3E, 0xA5, 0x88, 0x2B};
+    const std::array<std::uint8_t, 7> source = {0x1E, 0x94, 0x29, 0x3E, 0xA5, 0x88, 0x2B};
     // GLOBAL: gl_25060
-    thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> format(source);
+    thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
     char message[256];
     sprintf(message, format.Text(), text, packet->errorCode);
     g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
