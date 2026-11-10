@@ -393,7 +393,11 @@ void DeviceOwnerDX7::DestroySurface(CSurface* surface) {
 HRESULT DeviceOwnerDX7::Initialize(HWND value, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags) {
   this->window = value;
 
-  if (!value || !renderIdentity || (!mode && (flags & 1))) {
+  if (!value || !renderIdentity) {
+    return E_INVALIDARG;
+  }
+
+  if (!mode && (flags & 1)) {
     return E_INVALIDARG;
   }
 
