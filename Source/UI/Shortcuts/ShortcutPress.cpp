@@ -11,11 +11,7 @@
 // OFFSET: 0x009310E0
 // FUNCTION: fn_12699
 void UIShortCutWnd::OnLBtnDown(int x, int y) {
-  ShortcutGrid& grid = this->m_grid;
-  const NormalItemSlot* const* slots = this->m_slots;
-  const NormalItemSlot* const* itemSlots = this->m_itemSlots;
-  const int columnOffset = x - 15;
-  if (columnOffset >= 261 || x < 15 || y < 4) {
+  if (x - 15 >= 261 || x < 15 || y < 4) {
     this->UIFrameWnd::OnLBtnDown(x, y);
     return;
   }
@@ -24,39 +20,48 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
   if (column == -1) {
     return;
   }
 
-  grid.hovered = column;
+  this->m_grid.hovered = column;
   const int index = 9 * g_session.m_hotkeyPage + column;
-  if (9 * grid.rows > index) {
-    const NormalItemSlot& slot = *slots[index];
-    if (slot.itemId == 0) {
+  if (9 * this->m_grid.rows <= index) {
+    if (!g_session.ItemSlotActive()) {
       return;
     }
 
-    if (slot.enabled != 0) {
-      CSkillInfo skill = g_session.LookupSkill(slot.itemId);
-      if (skill.MatchesShortcut(&slot) && g_modeMgr.GetGameMode()) {
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 7, skill.id, skill.name, slot.value, index);
+    if (this->m_itemSlots[column]->itemId == 0) {
+      return;
+    }
+
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_itemSlots[column]->itemId), 1);
+    if (item.identity[1] > 0) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (mode) {
+        mode->drag.BeginItem(g_windowMgr, 7, item, item.quantity, -1);
+      }
+    }
+  } else {
+    if (this->m_slots[index]->itemId == 0) {
+      return;
+    }
+
+    if (this->m_slots[index]->enabled != 0) {
+      CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
+      if (skill.MatchesShortcut(this->m_slots[index])) {
+        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        if (mode) {
+          mode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 7, skill.id, skill.name, this->m_slots[index]->value, index);
+        }
       }
     } else {
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-      if (item.identity[1] != 0 && g_modeMgr.GetGameMode()) {
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 7, item, item.quantity, -1);
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_slots[index]->itemId), 1);
+      if (item.identity[1] > 0) {
+        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        mode->drag.BeginItem(g_windowMgr, 7, item, item.quantity, -1);
       }
-    }
-  } else if (g_session.ItemSlotActive()) {
-    const NormalItemSlot& slot = *itemSlots[column];
-    if (slot.itemId == 0) {
-      return;
-    }
-
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
-    if (item.identity[1] != 0 && g_modeMgr.GetGameMode()) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 7, item, item.quantity, -1);
     }
   }
 }
