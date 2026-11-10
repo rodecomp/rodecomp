@@ -391,6 +391,14 @@ void CSpriteEffect::Render() {
   }
 }
 
+// INLINED
+static __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+
 // OFFSET: 0x00B79520
 // FUNCTION: fn_19199
 bool CSpriteEffect::IsAlive() {
@@ -448,16 +456,22 @@ bool CSpriteEffect::IsAlive() {
   }
 
   for (CSpriteParticle* particle : this->particles) {
-    if (particle->life == 0.0f) {
-      return true;
-    }
-
-    if (particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) {
+    if (IsParticleActive(particle)) {
       return true;
     }
   }
 
   return false;
+}
+
+// INLINED
+static void SetOffsetPosition(vector3d& position, const float* origin, const vector3d& offset) {
+  const float x = origin[0] + offset.x;
+  const float y = origin[1] + offset.y;
+  const float z = origin[2] + offset.z;
+  position.x = x;
+  position.y = y;
+  position.z = z;
 }
 
 // OFFSET: 0x00B79780
@@ -474,17 +488,16 @@ void CSpriteEffect::OnProcess() {
         height = static_cast<int>(actor->GetNameOffset() + 8.0f);
       }
 
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - static_cast<float>(height);
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, -static_cast<float>(height), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_1147:
-    case EF_UNK_1192:
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - 10.0f;
-      particle->position.z = this->position[2];
+    case EF_UNK_1192: {
+      const vector3d offset = {0.0f, -10.0f, 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
+    }
     case EF_UNK_1151:
     case EF_UNK_1152:
     case EF_UNK_1153:
@@ -500,9 +513,8 @@ void CSpriteEffect::OnProcess() {
         height = static_cast<int>(actor->GetNameOffset() + 25.0f);
       }
 
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - static_cast<float>(height);
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, -static_cast<float>(height), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_1211:
@@ -514,9 +526,8 @@ void CSpriteEffect::OnProcess() {
       }
 
       const int height = static_cast<int>(actor->GetNameOffset() + 8.0f);
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - static_cast<float>(height);
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, static_cast<float>(-height), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_1377: {
@@ -526,9 +537,8 @@ void CSpriteEffect::OnProcess() {
       }
 
       const int height = static_cast<int>(actor->GetNameOffset() + 3.0f);
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - static_cast<float>(height);
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, static_cast<float>(-height), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_2394:
@@ -539,9 +549,8 @@ void CSpriteEffect::OnProcess() {
       }
 
       const int height = static_cast<int>(actor->GetNameOffset());
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - static_cast<float>(height);
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, static_cast<float>(-height), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_2428: {
@@ -551,10 +560,9 @@ void CSpriteEffect::OnProcess() {
       }
 
       const float height = actor->GetNameOffset();
-      const float offset = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? height + 13.7f : height + 17.0f;
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - offset;
-      particle->position.z = this->position[2];
+      const float lift = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? height + 13.7f : height + 17.0f;
+      const vector3d offset = {0.0f, -lift, 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_2429: {
@@ -563,10 +571,9 @@ void CSpriteEffect::OnProcess() {
         break;
       }
 
-      const float offset = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? 2.2f : 0.4f;
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - offset;
-      particle->position.z = this->position[2];
+      const float lift = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? 2.2f : 0.4f;
+      const vector3d offset = {0.0f, -lift, 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_2430:
@@ -576,10 +583,8 @@ void CSpriteEffect::OnProcess() {
         break;
       }
 
-      const float height = actor->GetNameOffset();
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1] - height;
-      particle->position.z = this->position[2];
+      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
     case EF_UNK_2443:
