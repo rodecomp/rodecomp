@@ -103,15 +103,14 @@ void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
     }
   }
 
-  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
-  if (!tagCtrl->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
+  if (!static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
     return;
   }
 
-  tagCtrl->taggedText = std::string(this->m_contents->Text());
-  this->m_contents->SetText(tagCtrl->AppendTag(item.DisplayName(0)).c_str());
+  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->taggedText = std::string(this->m_contents->Text());
+  this->m_contents->SetText(static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AppendTag(item.DisplayName(0)).c_str());
   this->m_contents->MoveCursorToEnd();
-  tagCtrl->AddItemTag(item, 0xd630a9);
+  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AddItemTag(item, 0xd630a9);
 }
 
 // OFFSET: 0x007FF940
