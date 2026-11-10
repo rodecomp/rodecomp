@@ -700,7 +700,6 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   {
     std::string recordName = name;
     if (Replay::Instance().state == 2) {
-      char packet[400] = {};
       NavigationRouteRecord record;
       record.header = 0x038E08AE;
       record.length = sizeof(record);
@@ -712,9 +711,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
       record.x = x;
       record.y = y;
       record.id = id;
-      std::memcpy(packet, &record, sizeof(record));
-
-      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x29, 0);
     }
   }
   return true;
