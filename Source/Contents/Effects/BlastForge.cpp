@@ -9,6 +9,35 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// INLINED
+static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d& point) {
+  vector3d result;
+  result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
+  result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
+  result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
+  return result;
+}
+
+// INLINED
+static __forceinline void PlaceParticle(CEZ2STRParticle* particle, const float* position) {
+  particle->position.x = position[0];
+  particle->position.y = position[1];
+  particle->position.z = position[2];
+
+  const vector3d pos = particle->position;
+  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+
+  vector3d viewPos = TransformPoint(view, pos);
+  viewPos.y -= 8.0f;
+  const vector3d worldPos = TransformPoint(inverse, viewPos);
+  particle->position.x = worldPos.x;
+  particle->position.y = worldPos.y;
+  particle->position.z = worldPos.z;
+
+  particle->Process(0.0f, 0.0f, 0.0f);
+}
+
 // OFFSET: 0x006F7360
 // FUNCTION: fn_06858
 CBlastForge::CBlastForge() : CEffect(-1), openToggle(0), startTime(timeGetTime()) {
@@ -80,49 +109,10 @@ bool CBlastForge::IsAlive() {
 // FUNCTION: fn_06864
 void CBlastForge::OnProcess() {
   if (this->loopParticle) {
-    this->loopParticle->position.x = this->position[0];
-    this->loopParticle->position.y = this->position[1];
-    this->loopParticle->position.z = this->position[2];
-
-    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-
-    float px = this->loopParticle->position.x;
-    float py = this->loopParticle->position.y;
-    float pz = this->loopParticle->position.z;
-
-    float vx = py * view.values[3] + px * view.values[0] + pz * view.values[6] + view.values[9];
-    float vy = (py * view.values[4] + px * view.values[1] + pz * view.values[7] + view.values[10]) - 8.0f;
-    float vz = py * view.values[5] + px * view.values[2] + pz * view.values[8] + view.values[11];
-
-    this->loopParticle->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-    this->loopParticle->position.y = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
-    this->loopParticle->position.z = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
-
-    this->loopParticle->Process(0.0f, 0.0f, 0.0f);
+    PlaceParticle(this->loopParticle, this->position);
   }
-
   if (this->loopBottomParticle) {
-    this->loopBottomParticle->position.x = this->position[0];
-    this->loopBottomParticle->position.y = this->position[1];
-    this->loopBottomParticle->position.z = this->position[2];
-
-    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-
-    float px = this->loopBottomParticle->position.x;
-    float py = this->loopBottomParticle->position.y;
-    float pz = this->loopBottomParticle->position.z;
-
-    float vx = py * view.values[3] + px * view.values[0] + pz * view.values[6] + view.values[9];
-    float vy = (py * view.values[4] + px * view.values[1] + pz * view.values[7] + view.values[10]) - 8.0f;
-    float vz = py * view.values[5] + px * view.values[2] + pz * view.values[8] + view.values[11];
-
-    this->loopBottomParticle->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-    this->loopBottomParticle->position.y = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
-    this->loopBottomParticle->position.z = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
-
-    this->loopBottomParticle->Process(0.0f, 0.0f, 0.0f);
+    PlaceParticle(this->loopBottomParticle, this->position);
   }
 
   this->ProcessBlastParticles();
@@ -153,48 +143,9 @@ void CBlastForge::Render() {
 void CBlastForge::ProcessBlastParticles() {
   if (this->blastParticle && this->blastBottomParticle) {
     if (this->blastParticle->life == 0.0f || static_cast<float>(this->blastParticle->elapsedFrames) < this->blastParticle->life * 60.0f) {
-      this->blastParticle->position.x = this->position[0];
-      this->blastParticle->position.y = this->position[1];
-      this->blastParticle->position.z = this->position[2];
-
-      const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-      const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-
-      float px = this->blastParticle->position.x;
-      float py = this->blastParticle->position.y;
-      float pz = this->blastParticle->position.z;
-
-      float vx = py * view.values[3] + px * view.values[0] + pz * view.values[6] + view.values[9];
-      float vy = (py * view.values[4] + px * view.values[1] + pz * view.values[7] + view.values[10]) - 8.0f;
-      float vz = py * view.values[5] + px * view.values[2] + pz * view.values[8] + view.values[11];
-
-      this->blastParticle->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-      this->blastParticle->position.y = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
-      this->blastParticle->position.z = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
-
-      this->blastParticle->Process(0.0f, 0.0f, 0.0f);
-
+      PlaceParticle(this->blastParticle, this->position);
       if (this->blastBottomParticle) {
-        this->blastBottomParticle->position.x = this->position[0];
-        this->blastBottomParticle->position.y = this->position[1];
-        this->blastBottomParticle->position.z = this->position[2];
-
-        const matrix& view2 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-        const matrix& inverse2 = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-
-        float px2 = this->blastBottomParticle->position.x;
-        float py2 = this->blastBottomParticle->position.y;
-        float pz2 = this->blastBottomParticle->position.z;
-
-        float vx2 = py2 * view2.values[3] + px2 * view2.values[0] + pz2 * view2.values[6] + view2.values[9];
-        float vy2 = (py2 * view2.values[4] + px2 * view2.values[1] + pz2 * view2.values[7] + view2.values[10]) - 8.0f;
-        float vz2 = py2 * view2.values[5] + px2 * view2.values[2] + pz2 * view2.values[8] + view2.values[11];
-
-        this->blastBottomParticle->position.x = vy2 * inverse2.values[3] + vx2 * inverse2.values[0] + vz2 * inverse2.values[6] + inverse2.values[9];
-        this->blastBottomParticle->position.y = vy2 * inverse2.values[4] + vx2 * inverse2.values[1] + vz2 * inverse2.values[7] + inverse2.values[10];
-        this->blastBottomParticle->position.z = vy2 * inverse2.values[5] + vx2 * inverse2.values[2] + vz2 * inverse2.values[8] + inverse2.values[11];
-
-        this->blastBottomParticle->Process(0.0f, 0.0f, 0.0f);
+        PlaceParticle(this->blastBottomParticle, this->position);
       }
     } else {
       FreeParticle(this->blastParticle);
