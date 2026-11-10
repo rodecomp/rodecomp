@@ -103,8 +103,8 @@ int CEmbedFont::Load(HANDLE* fontReference, const char* familyName, const char* 
   std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
   TTLOADINFO loadInfo;
   loadInfo.usStructSize = sizeof(TTLOADINFO);
-  loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
   loadInfo.pusRefStr = reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(wideRootUrl.c_str()));
+  loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
   FILE* file = _wfopen(widePath.c_str(), L"rb");
   if (file == nullptr) {
     return -2;
