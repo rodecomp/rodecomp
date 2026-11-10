@@ -217,10 +217,11 @@ void CThrowItemEffect::InitFlameParticle(CParticle* particle) {
   particle->angleBits = 0;
   particle->alpha = 255;
   particle->speedParameter = particle->animationParameter / 25.0f;
-  particle->offsetX = this->position[0];
-  particle->offsetZ = this->position[2];
+  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
   particle->destinationBlend = 6;
-  particle->offsetY = this->position[1] - 8.0f;
 }
 
 // OFFSET: 0x00B7D4D0
@@ -233,9 +234,10 @@ void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
   particle->angleBits = 0;
   particle->alpha = 255;
   particle->speedParameter = particle->animationParameter / 25.0f;
-  particle->offsetX = this->position[0];
-  particle->offsetZ = this->position[2];
-  particle->offsetY = this->position[1] - 8.0f;
+  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
 
   if (kind != 6) {
     particle->destinationBlend = 6;
@@ -258,7 +260,7 @@ void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
 
 // OFFSET: 0x00B7D810
 // FUNCTION: fn_19233
-void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
+__declspec(noinline) void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
   this->effectLifetime = 200;
   this->arcHeight = 1.0f;
   particle->scale = 2.0f;
@@ -266,9 +268,10 @@ void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
   *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
   particle->speedParameter = 3.0f;
   particle->alpha = 255;
-  particle->offsetX = this->position[0];
-  particle->offsetY = this->position[1] - 8.0f;
-  particle->offsetZ = this->position[2];
+  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
   particle->destinationBlend = 6;
 }
 
