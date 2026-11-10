@@ -183,21 +183,33 @@ void CHealSp::Render() {
     const float endCos = g_cosTable[segment * 36 + 36];
     const float endSin = g_sinTable[segment * 36 + 36];
 
-    particle->vertices[0].x = startCos * outer;
-    particle->vertices[0].y = 0.0f;
-    particle->vertices[0].z = startSin * outer;
-    particle->vertices[1].x = endCos * outer;
-    particle->vertices[1].y = 0.0f;
-    particle->vertices[1].z = endSin * outer;
-    particle->vertices[2].x = startCos * inner;
-    particle->vertices[2].y = -height;
-    particle->vertices[2].z = startSin * inner;
-    particle->vertices[3].x = endCos * inner;
-    particle->vertices[3].y = -height;
-    particle->vertices[3].z = endSin * inner;
+    RenderVertex* vertices = particle->vertices;
+    const vector3d outerStart = {startCos * outer, 0.0f, startSin * outer};
+    vertices[0].x = outerStart.x;
+    vertices[0].y = outerStart.y;
+    vertices[0].z = outerStart.z;
+    const vector3d outerEnd = {endCos * outer, 0.0f, endSin * outer};
+    vertices[1].x = outerEnd.x;
+    vertices[1].y = outerEnd.y;
+    vertices[1].z = outerEnd.z;
+    const vector3d innerStart = {startCos * inner, -height, startSin * inner};
+    vertices[2].x = innerStart.x;
+    vertices[2].y = innerStart.y;
+    vertices[2].z = innerStart.z;
+    const vector3d innerEnd = {endCos * inner, -height, endSin * inner};
+    vertices[3].x = innerEnd.x;
+    vertices[3].y = innerEnd.y;
+    vertices[3].z = innerEnd.z;
 
     const float left = static_cast<float>(particle->columnIndex % 4) * 0.25f;
-    const ParticleQuad quad = {false, 1.0f, 0.0f, left, left + 0.25f, false, true};
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 1.0f;
+    quad.bottom = 0.0f;
+    quad.left = left;
+    quad.right = left + 0.25f;
     particle->Render(quad);
   }
 
