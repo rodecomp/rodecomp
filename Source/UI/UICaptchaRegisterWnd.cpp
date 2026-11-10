@@ -71,12 +71,8 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->m_fileComboBox->dropdownHeight = 80;
   this->m_fileComboBox->SetSize(240, 18);
   this->m_fileComboBox->Move(25, 53);
-  this->m_fileComboBox->borderRed = 100;
-  this->m_fileComboBox->borderGreen = 100;
-  this->m_fileComboBox->borderBlue = 100;
-  this->m_fileComboBox->red = 232;
-  this->m_fileComboBox->green = 232;
-  this->m_fileComboBox->blue = 232;
+  this->m_fileComboBox->SetBorderColor(100, 100, 100);
+  this->m_fileComboBox->SetColor(232, 232, 232);
   this->AddChild(this->m_fileComboBox);
 
   for (const std::string& file : files) {
