@@ -236,8 +236,9 @@ void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
-        this->swapEquippedItems[slots.values[2]].identity[3] = 0;
-        this->swapEquippedItems[slots.values[2]].Reset();
+        ITEM_INFO& entry = this->swapEquippedItems[slots.values[2]];
+        entry.identity[3] = 0;
+        entry.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
         this->swapEquippedItems[slots.values[1]].Reset();
@@ -260,19 +261,18 @@ void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
   if (location == 0x8000) {
     ITEM_INFO equipped = g_session.FindItemByIdentity(item.identity[1], location);
-    if (equipped.identity[1] != 0) {
+    if (equipped.identity[1] > 0) {
       const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
-      const std::string name = equipped.DisplayName(0);
-      const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", equipped.DisplayName(0).c_str(), message).c_str()), 0xFF, 7, 0, 0);
     }
     this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
-        this->swapCostumeItems[slots.values[2]].identity[3] = 0;
-        this->swapCostumeItems[slots.values[2]].Reset();
+        ITEM_INFO& entry = this->swapCostumeItems[slots.values[2]];
+        entry.identity[3] = 0;
+        entry.Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
         this->swapCostumeItems[slots.values[1]].Reset();
