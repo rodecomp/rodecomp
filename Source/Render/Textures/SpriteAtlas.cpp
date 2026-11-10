@@ -13,24 +13,24 @@ namespace {
   constexpr unsigned dimensions[5] = {32, 64, 128, 256, 512};
 
   // INLINED
-  unsigned Category(int dimension) {
-    if (dimension > 256) {
-      return 4;
+  unsigned Category(std::int16_t dimension) {
+    if (dimension <= 32) {
+      return 0;
     }
 
-    if (dimension > 128) {
-      return 3;
-    }
-
-    if (dimension > 64) {
-      return 2;
-    }
-
-    if (dimension > 32) {
+    if (dimension <= 64) {
       return 1;
     }
 
-    return 0;
+    if (dimension <= 128) {
+      return 2;
+    }
+
+    if (dimension <= 256) {
+      return 3;
+    }
+
+    return 4;
   }
 }
 
@@ -160,23 +160,37 @@ CTexture* SpriteAtlas::Insert(
   CRenderSystemBase& system, const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output, int serviceType, std::uint32_t reuseDelay
 ) {
   const std::uint32_t threshold = timeGetTime() - (reuseDelay >> 2);
-  const float width = image->width > 256 ? (image->width / 256 + 1) * 256.0f : 256.0f;
-  const float height = image->height > 256 ? (image->height / 256 + 1) * 256.0f : 256.0f;
+  float width = 256.0f;
+  float height = 256.0f;
+  if (image->width > 256) {
+    width = (image->width / 256 + 1) * 256.0f;
+  }
+
+  if (image->height > 256) {
+    height = (image->height / 256 + 1) * 256.0f;
+  }
+
   const unsigned category = Category(image->width) * 5 + Category(image->height);
   SpriteAtlasRecord* selected = nullptr;
+  bool found = false;
 
-  std::forward_list<SpriteAtlasPage>& pages = this->m_classes[category];
-  for (auto page = pages.begin(); page != pages.end() && !selected; ++page) {
-    for (SpriteAtlasRecord& record : page->records) {
+  for (SpriteAtlasPage& candidate : this->m_classes[category]) {
+    for (SpriteAtlasRecord& record : candidate.records) {
       if (record.lastUsed < threshold) {
         selected = &record;
-        this->m_lookup.erase({record.image, record.palette});
+        found = true;
         break;
       }
     }
+
+    if (found) {
+      break;
+    }
   }
 
-  if (!selected) {
+  if (found) {
+    this->m_lookup.erase({selected->image, selected->palette});
+  } else {
     selected = &this->Allocate(category, static_cast<unsigned>(width), static_cast<unsigned>(height))->records[0];
   }
 
@@ -184,30 +198,33 @@ CTexture* SpriteAtlas::Insert(
   record.image = image;
   record.palette = palette;
   float u1 = static_cast<float>(record.x + image->width) / width;
-  float v1 = static_cast<float>(record.y + image->height) / height;
-
-  if (serviceType == 10) {
+  if (serviceType != 10) {
+    record.u1 = u1;
+    record.v1 = static_cast<float>(record.y + image->height) / height;
+  } else {
     if (image->width > 64) {
       u1 -= 0.005f;
     }
 
+    record.u1 = u1;
+    float v1 = static_cast<float>(record.y + image->height) / height;
     if (image->height > 64) {
       v1 -= 0.005f;
     }
+
+    record.v1 = v1;
   }
 
-  record.u1 = u1;
-  record.v1 = v1;
-  CTexture* texture = record.page->texture;
-  texture->UploadSprite(record.x, record.y, record.page->cellWidth, record.page->cellHeight, image, palette);
+  SpriteAtlasPage* page = record.page;
+  page->texture->UploadSprite(record.x, record.y, page->cellWidth, page->cellHeight, image, palette);
   record.lastUsed = timeGetTime();
-  record.page->lastUsed = record.lastUsed;
-  this->m_lookup.emplace(Key{image, palette}, &record);
-  record.u1 = static_cast<float>(record.u1 - 0.5 / texture->Width());
-  record.v1 = static_cast<float>(record.v1 - 0.5 / texture->Height());
+  page->lastUsed = record.lastUsed;
+  this->m_lookup.insert({Key{record.image, record.palette}, &record});
+  record.u1 -= 0.5 / page->texture->Width();
+  record.v1 -= 0.5 / page->texture->Height();
   output = record;
 
-  return texture;
+  return page->texture;
 }
 
 // OFFSET: 0x0056FE60
