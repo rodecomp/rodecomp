@@ -15,9 +15,7 @@ std::uint32_t CooldownNow() {
 // FUNCTION: fn_20946
 CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_t durationValue, std::uint32_t startValue, std::uint32_t elapsedValue,
                              int reverseValue)
-    : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue),
-      x(xValue), y(yValue), slot(slotValue) {
-  this->ClearEdges();
+    : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue) {
   for (int index = 0; index < 24; ++index) {
     RenderVertex& vertex = this->vertices[index];
     vertex.x = 0.0f;
@@ -29,6 +27,10 @@ CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_
     vertex.u = 0.0f;
     vertex.v = 0.0f;
   }
+  this->x = xValue;
+  this->y = yValue;
+  this->slot = slotValue;
+  this->ClearEdges();
   std::memset(this->vertices, 0, sizeof(this->vertices));
   this->color = this->reverse != 0 ? 0xAAFFFFFFu : 0xAA000000u;
 }
@@ -45,7 +47,7 @@ CooldownState::~CooldownState() {
 
 // OFFSET: 0x00CA59C0
 // FUNCTION: fn_20951
-void CooldownState::ClearEdges() noexcept {
+__declspec(noinline) void CooldownState::ClearEdges() noexcept {
   this->edges.clear();
 }
 
@@ -72,26 +74,43 @@ float CooldownState::Update() {
 
   if (this->duration != 0) {
     this->angle = progress != 0 ? static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0) : 0.0f;
-    const float value = this->angle;
-    if (value >= 0 && value < 45) {
+    int forwardCount = 0;
+    int backwardCount = 0;
+    if (this->angle >= 0 && this->angle < 45) {
       this->segment = 0;
-    } else if (value >= 45 && value < 90) {
+      forwardCount = 3;
+      backwardCount = 24;
+    } else if (this->angle >= 45 && this->angle < 90) {
       this->segment = 1;
-    } else if (value >= 90 && value < 135) {
+      forwardCount = 6;
+      backwardCount = 21;
+    } else if (this->angle >= 90 && this->angle < 135) {
       this->segment = 2;
-    } else if (value >= 135 && value < 180) {
+      forwardCount = 9;
+      backwardCount = 18;
+    } else if (this->angle >= 135 && this->angle < 180) {
       this->segment = 3;
-    } else if (value >= 180 && value < 225) {
+      forwardCount = 12;
+      backwardCount = 15;
+    } else if (this->angle >= 180 && this->angle < 225) {
       this->segment = 4;
-    } else if (value >= 225 && value < 270) {
+      forwardCount = 15;
+      backwardCount = 12;
+    } else if (this->angle >= 225 && this->angle < 270) {
       this->segment = 5;
-    } else if (value >= 270 && value < 315) {
+      forwardCount = 18;
+      backwardCount = 9;
+    } else if (this->angle >= 270 && this->angle < 315) {
       this->segment = 6;
+      forwardCount = 21;
+      backwardCount = 6;
     } else {
       this->segment = 7;
+      forwardCount = 24;
+      backwardCount = 3;
     }
 
-    this->vertexCount = this->reverse != 0 ? 3 * (this->segment + 1) : 24 - 3 * this->segment;
+    this->vertexCount = this->reverse != 0 ? forwardCount : backwardCount;
     this->angle = 90.0f - (this->angle - static_cast<float>(this->segment) * 45.0f);
   }
 
