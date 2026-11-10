@@ -14,21 +14,23 @@ bool CRendererDX9::LockBackBuffer() {
   this->backBuffer.pixels = locked.pBits;
   this->backBuffer.pitch = locked.Pitch;
 
+  int bitsPerPixel;
   switch (owner.backBufferDescription.Format) {
   case D3DFMT_A8R8G8B8:
   case D3DFMT_X8R8G8B8:
-    this->backBuffer.bitsPerPixel = 32;
+    bitsPerPixel = 32;
     break;
   case D3DFMT_R5G6B5:
   case D3DFMT_X1R5G5B5:
   case D3DFMT_A1R5G5B5:
   case D3DFMT_A4R4G4B4:
-    this->backBuffer.bitsPerPixel = 16;
+    bitsPerPixel = 16;
     break;
   default:
-    this->backBuffer.bitsPerPixel = 0;
+    bitsPerPixel = 0;
     break;
   }
+  this->backBuffer.bitsPerPixel = bitsPerPixel;
 
   return true;
 }
