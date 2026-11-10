@@ -2868,7 +2868,9 @@ struct StorageEquipRecord3 {
   /* 001C */ int expireTime;
   /* 0020 */ std::uint16_t bindOnEquip;
   /* 0022 */ std::uint16_t sprite;
-  /* 0024 */ unsigned char flags;
+  /* 0024 */ unsigned char identified : 1;
+  /* 0024 */ unsigned char damaged : 1;
+  /* 0024 */ unsigned char etcTab : 1;
 };
 
 struct StorageEquipRecord4 {
@@ -2885,6 +2887,10 @@ struct StorageEquipRecord4 {
   /* 0028 */ unsigned char flags;
 };
 
+struct ItemSlotOptions {
+  /* 0000 */ ItemSlotOption options[5];
+};
+
 struct StorageEquipRecord5 {
   /* 0000 */ std::int16_t index;
   /* 0002 */ int itemId;
@@ -2897,7 +2903,7 @@ struct StorageEquipRecord5 {
   /* 0024 */ std::uint16_t bindOnEquip;
   /* 0026 */ std::uint16_t sprite;
   /* 0028 */ unsigned char optionCount;
-  /* 0029 */ ItemSlotOption options[5];
+  /* 0029 */ ItemSlotOptions options;
   /* 0042 */ unsigned char flags;
 };
 
@@ -2925,10 +2931,6 @@ struct StorageNormalRecord2 {
 
 struct ItemCardSlots {
   /* 0000 */ std::uint32_t cards[4];
-};
-
-struct ItemSlotOptions {
-  /* 0000 */ ItemSlotOption options[5];
 };
 
 struct LongParChangePacket {
@@ -3295,8 +3297,9 @@ void CGameMode::ReceiveStorageEquipList(const unsigned char* data) {
   const auto* header = reinterpret_cast<const StorageListHeader*>(data);
   g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
   const int count = (header->length - sizeof(StorageListHeader)) / sizeof(StorageEquipRecord);
-  const auto* record = reinterpret_cast<const StorageEquipRecord*>(data + sizeof(StorageListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const auto* records = reinterpret_cast<const StorageEquipRecord*>(data + sizeof(StorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageEquipRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
@@ -3321,8 +3324,9 @@ void CGameMode::ReceiveStorageEquipList2(const unsigned char* data) {
   const auto* header = reinterpret_cast<const StorageListHeader*>(data);
   g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
   const int count = (header->length - sizeof(StorageListHeader)) / sizeof(StorageEquipRecord2);
-  const auto* record = reinterpret_cast<const StorageEquipRecord2*>(data + sizeof(StorageListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const auto* records = reinterpret_cast<const StorageEquipRecord2*>(data + sizeof(StorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageEquipRecord2* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
@@ -3354,27 +3358,65 @@ void CGameMode::ReceiveStorageEquipList3(const unsigned char* data) {
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord3);
-  const auto* record = reinterpret_cast<const StorageEquipRecord3*>(data + sizeof(NamedStorageListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const auto* records = reinterpret_cast<const StorageEquipRecord3*>(data + sizeof(NamedStorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageEquipRecord3* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.quantity = 1;
     item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.damaged = (record->flags >> 1) & 1;
+    item.identified = record->identified;
+    item.damaged = record->damaged;
     item.refiningLevel = record->refine;
     item.expireTime = record->expireTime;
     item.bindOnEquip = record->bindOnEquip;
     item.sprite = record->sprite;
-    item.flags[0] = (record->flags >> 2) & 1;
+    item.flags[0] = record->etcTab;
     g_session.AddCartItem(item, 0);
   }
 
   g_session.RefreshItem1738Window();
+}
+
+// INLINED
+static __forceinline void AddStorageEquipItem(
+  unsigned char type, int location, std::int16_t index, int wearState, std::uint32_t card0, std::uint32_t card1, std::uint32_t card2,
+  std::uint32_t card3, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, int expireTime,
+  std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char etcTab, ItemSlotOptions options
+) {
+  if (location == 0x8000) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.identity[0] = type;
+  item.identity[2] = location;
+  item.identity[1] = index;
+  item.identity[3] = wearState;
+  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  cards[0] = card0;
+  cards[1] = card1;
+  cards[2] = card2;
+  cards[3] = card3;
+  item.quantity = 1;
+  item.SetItemId(itemId);
+  item.identified = identified;
+  item.damaged = damaged;
+  item.refiningLevel = refine;
+  item.expireTime = expireTime;
+  item.bindOnEquip = bindOnEquip;
+  item.sprite = sprite;
+  item.flags[0] = etcTab;
+  item.optionCount = CountItemSlotOptions(options.options);
+  item.grade = 0;
+  for (int i = 0; i < item.optionCount; ++i) {
+    reinterpret_cast<ItemSlotOption*>(item.options)[i] = options.options[i];
+  }
+  g_session.AddCartItem(item, 0);
 }
 
 // OFFSET: 0x00D46680
@@ -3388,35 +3430,15 @@ void CGameMode::ReceiveStorageEquipList4(const unsigned char* data) {
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord4);
-  const auto* entry = reinterpret_cast<const StorageEquipRecord4*>(data + sizeof(NamedStorageListHeader));
-  for (int i = 0; i < count; ++i, ++entry) {
-    ItemSlotOption options[5] = {};
-    const StorageEquipRecord4 record = *entry;
-    if (record.location == 0x8000) {
-      continue;
-    }
-
-    ITEM_INFO item;
-    item.identity[0] = record.type;
-    item.identity[2] = record.location;
-    item.identity[1] = record.index;
-    item.identity[3] = record.wearState;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.quantity = 1;
-    item.SetItemId(record.itemId);
-    item.identified = record.flags & 1;
-    item.damaged = (record.flags >> 1) & 1;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.flags[0] = (record.flags >> 2) & 1;
-    item.optionCount = CountItemSlotOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.options)[index] = options[index];
-    }
-    g_session.AddCartItem(item, 0);
+  ItemSlotOptions options = {};
+  const auto* entries = reinterpret_cast<const StorageEquipRecord4*>(data + sizeof(NamedStorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageEquipRecord4* entry = &entries[i];
+    AddStorageEquipItem(
+      entry->type, entry->location, entry->index, entry->wearState, entry->cards[0], entry->cards[1], entry->cards[2], entry->cards[3],
+      entry->itemId, entry->flags & 1, (entry->flags >> 1) & 1, entry->refine, entry->expireTime, entry->bindOnEquip, entry->sprite,
+      (entry->flags >> 2) & 1, options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -3433,35 +3455,14 @@ void CGameMode::ReceiveStorageEquipList5(const unsigned char* data) {
   }
 
   const int count = (static_cast<std::uint16_t>(header->length) - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord5);
-  const auto* record = reinterpret_cast<const StorageEquipRecord5*>(data + sizeof(NamedStorageListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
-    ItemSlotOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    if (record->location == 0x8000) {
-      continue;
-    }
-
-    ITEM_INFO item;
-    item.identity[0] = record->type;
-    item.identity[2] = record->location;
-    item.identity[1] = record->index;
-    item.identity[3] = record->wearState;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
-    item.quantity = 1;
-    item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
-    item.damaged = (record->flags >> 1) & 1;
-    item.refiningLevel = record->refine;
-    item.expireTime = record->expireTime;
-    item.bindOnEquip = record->bindOnEquip;
-    item.sprite = record->sprite;
-    item.flags[0] = (record->flags >> 2) & 1;
-    item.optionCount = CountItemSlotOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.options)[index] = options[index];
-    }
-    g_session.AddCartItem(item, 0);
+  const auto* records = reinterpret_cast<const StorageEquipRecord5*>(data + sizeof(NamedStorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageEquipRecord5* record = &records[i];
+    AddStorageEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2],
+      record->cards[3], record->itemId, record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime,
+      record->bindOnEquip, record->sprite, (record->flags >> 2) & 1, record->options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -3478,15 +3479,16 @@ void CGameMode::ReceiveStorageNormalList(const unsigned char* data) {
   }
 
   const unsigned int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageNormalRecord);
-  const auto* record = reinterpret_cast<const StorageNormalRecord*>(data + sizeof(NamedStorageListHeader));
-  for (unsigned int i = 0; i < count; ++i, ++record) {
+  const auto* records = reinterpret_cast<const StorageNormalRecord*>(data + sizeof(NamedStorageListHeader));
+  for (unsigned int i = 0; i < count; ++i) {
+    const StorageNormalRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.identity[2] = 0;
     item.quantity = record->amount;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
     item.identified = record->flags & 1;
@@ -3510,15 +3512,16 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageNormalRecord2);
-  const auto* record = reinterpret_cast<const StorageNormalRecord2*>(data + sizeof(NamedStorageListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const auto* records = reinterpret_cast<const StorageNormalRecord2*>(data + sizeof(NamedStorageListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StorageNormalRecord2* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.identity[2] = 0;
     item.quantity = record->amount;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
     item.identified = record->flags & 1;
