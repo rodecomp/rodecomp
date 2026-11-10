@@ -2441,10 +2441,7 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
 // OFFSET: 0x00BE0B40
 // FUNCTION: fn_19913
 void CEffectPrim::RenderRotatedRing(matrix& wtm) {
-  vector3d corners[4];
-  for (vector3d& element : corners) {
-    ZeroVector(element);
-  }
+  ZeroVector3d corners[4];
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2461,9 +2458,9 @@ void CEffectPrim::RenderRotatedRing(matrix& wtm) {
     int angle = slot.riseAngle;
 
     for (int index = 0; index < 4; ++index) {
-      angle = angle < 270 ? angle + 90 : angle - 270;
+      angle = angle + 90 < 360 ? angle + 90 : angle - 270;
       const float radial = dist * g_cosTable[angle];
-      corners[index] = {cs * radial + center.x, dist * g_sinTable[angle] + center.y, sn * radial + center.z};
+      corners[index].Set(cs * radial + center.x, dist * g_sinTable[angle] + center.y, sn * radial + center.z);
     }
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 80, 255, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -6420,6 +6417,19 @@ void CEffectPrim::RenderChemical(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
+}
+
+// INLINED
+static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, float rx, float cs2, float sn2, const vector3d& center) {
+  if (angle >= 360) {
+    angle -= 360;
+  }
+  if (angle < 0) {
+    angle += 360;
+  }
+
+  const float ry = rx * g_sinTable[angle];
+  corner.Set(rx * g_cosTable[angle] + center.x, ry * cs2 + center.y, ry * sn2 + center.z);
 }
 
 // OFFSET: 0x00BD53E0
