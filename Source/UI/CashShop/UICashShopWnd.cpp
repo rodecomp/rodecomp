@@ -675,9 +675,9 @@ void UICashShopWnd::OnProcess() {
   if (search.compare(LookupMessage(MSI_CASHSHOP_CASH_POINT)) != 0) {
     if (search.size() == 0) {
       this->m_searchEdit->SetText(LookupMessage(MSI_CASHSHOP_CASH_POINT));
-      this->m_searchEdit->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+      this->m_searchEdit->TextColor(0xB1, 0xB1, 0xB1, 0xFFFFFFFFu);
     } else {
-      this->m_searchEdit->TextColor(0, 0xFFFFFFFFu);
+      this->m_searchEdit->TextColor(0, 0, 0, 0xFFFFFFFFu);
     }
   }
 
