@@ -730,65 +730,45 @@ void HashTable_655340::ForcedRehash(unsigned int bucket_count) {
   if (bucket_count > max_buckets) {
     std::_Xlength_error("invalid hash bucket count");
   }
-  unsigned int new_bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
-  reinterpret_cast<VectorUint32_654D10*>(&this->buckets)->AssignFill(new_bucket_count * 2, reinterpret_cast<uintptr_t>(this->head));
-  this->bucket_count = new_bucket_count;
-  this->mask = new_bucket_count - 1;
+  bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
+  HashNode_655340* const end = this->head;
+  reinterpret_cast<VectorUint32_654D10*>(&this->buckets)->AssignFill(bucket_count * 2, reinterpret_cast<uintptr_t>(end));
+  this->mask = bucket_count - 1;
+  this->bucket_count = bucket_count;
 
-  HashNode_655340* head = this->head;
-  HashNode_655340* node = head->prev;
-  while (node != head) {
-    HashNode_655340* next_node = node->prev;
-    const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&node->key);
-    unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
-    hash = (hash ^ key_bytes[1]) * 0x1000193;
-    unsigned int bucket_idx = hash & this->mask;
-    HashBucket_655340* bucket = &this->buckets[bucket_idx];
-    if (bucket->first == head) {
-      bucket->first = node;
-      bucket->last = node;
-    } else {
-      HashNode_655340* last = bucket->last;
-      if (node->key == last->key) {
-        if (last->prev != node) {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = last->prev;
-          last->prev->next = node;
-          last->prev = node;
-          node->next = last;
-        }
-        bucket->last = node;
-      } else {
-        HashNode_655340* first = bucket->first;
-        HashNode_655340* match = nullptr;
-        HashNode_655340* it = last;
-        while (it != first) {
-          it = it->next;
-          if (it->key == node->key) {
-            match = it;
-            break;
-          }
-        }
-        if (match) {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = match->prev;
-          match->prev->next = node;
-          match->prev = node;
-          node->next = match;
-        } else {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = first;
-          first->next->prev = node;
-          node->next = first->next;
-          first->next = node;
-          bucket->first = node;
-        }
+  HashNode_655340* inserted = this->head->prev;
+  for (HashNode_655340* next_inserted = inserted; inserted != end; inserted = next_inserted) {
+    next_inserted = next_inserted->prev;
+    HashBucket_655340& bucket = this->buckets[std::hash<short>()(inserted->key) & this->mask];
+    if (bucket.first == end) {
+      bucket.first = inserted;
+      bucket.last = inserted;
+      continue;
+    }
+
+    HashNode_655340* insert_before = bucket.last;
+    if (inserted->key == insert_before->key) {
+      insert_before = insert_before->prev;
+      if (insert_before != inserted) {
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+      }
+      bucket.last = inserted;
+      continue;
+    }
+
+    for (;;) {
+      if (bucket.first == insert_before) {
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+        bucket.first = inserted;
+        break;
+      }
+      insert_before = insert_before->next;
+      if (inserted->key == insert_before->key) {
+        insert_before = insert_before->prev;
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+        break;
       }
     }
-    node = next_node;
   }
 }
 
@@ -800,65 +780,45 @@ void HashTable_655340::ForcedRehashSigned(unsigned int bucket_count) {
   if (bucket_count > max_buckets) {
     std::_Xlength_error("invalid hash bucket count");
   }
-  unsigned int new_bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
-  reinterpret_cast<VectorInt32_654E00*>(&this->buckets)->AssignFill(new_bucket_count * 2, reinterpret_cast<uintptr_t>(this->head));
-  this->bucket_count = new_bucket_count;
-  this->mask = new_bucket_count - 1;
+  bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
+  HashNode_655340* const end = this->head;
+  reinterpret_cast<VectorInt32_654E00*>(&this->buckets)->AssignFill(bucket_count * 2, reinterpret_cast<uintptr_t>(end));
+  this->mask = bucket_count - 1;
+  this->bucket_count = bucket_count;
 
-  HashNode_655340* head = this->head;
-  HashNode_655340* node = head->prev;
-  while (node != head) {
-    HashNode_655340* next_node = node->prev;
-    const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&node->key);
-    unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
-    hash = (hash ^ key_bytes[1]) * 0x1000193;
-    unsigned int bucket_idx = hash & this->mask;
-    HashBucket_655340* bucket = &this->buckets[bucket_idx];
-    if (bucket->first == head) {
-      bucket->first = node;
-      bucket->last = node;
-    } else {
-      HashNode_655340* last = bucket->last;
-      if (node->key == last->key) {
-        if (last->prev != node) {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = last->prev;
-          last->prev->next = node;
-          last->prev = node;
-          node->next = last;
-        }
-        bucket->last = node;
-      } else {
-        HashNode_655340* first = bucket->first;
-        HashNode_655340* match = nullptr;
-        HashNode_655340* it = last;
-        while (it != first) {
-          it = it->next;
-          if (it->key == node->key) {
-            match = it;
-            break;
-          }
-        }
-        if (match) {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = match->prev;
-          match->prev->next = node;
-          match->prev = node;
-          node->next = match;
-        } else {
-          node->next->prev = next_node;
-          next_node->next = node->next;
-          node->prev = first;
-          first->next->prev = node;
-          node->next = first->next;
-          first->next = node;
-          bucket->first = node;
-        }
+  HashNode_655340* inserted = this->head->prev;
+  for (HashNode_655340* next_inserted = inserted; inserted != end; inserted = next_inserted) {
+    next_inserted = next_inserted->prev;
+    HashBucket_655340& bucket = this->buckets[std::hash<short>()(inserted->key) & this->mask];
+    if (bucket.first == end) {
+      bucket.first = inserted;
+      bucket.last = inserted;
+      continue;
+    }
+
+    HashNode_655340* insert_before = bucket.last;
+    if (inserted->key == insert_before->key) {
+      insert_before = insert_before->prev;
+      if (insert_before != inserted) {
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+      }
+      bucket.last = inserted;
+      continue;
+    }
+
+    for (;;) {
+      if (bucket.first == insert_before) {
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+        bucket.first = inserted;
+        break;
+      }
+      insert_before = insert_before->next;
+      if (inserted->key == insert_before->key) {
+        insert_before = insert_before->prev;
+        SpliceHashNodes(insert_before, inserted, next_inserted);
+        break;
       }
     }
-    node = next_node;
   }
 }
 
