@@ -66,15 +66,17 @@ namespace {
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
   __declspec(noinline) void SplitTitle(const char* text, std::vector<std::string>& lines, int width) {
-    const char* begin = text;
     const char* current = text;
-    const char* end = text + std::char_traits<char>::length(text);
-    const char* limit = text + width;
+    const char* end = current + std::char_traits<char>::length(current);
+    const char* limit = current + width;
+    const char* begin = current;
 
     while (current < end) {
       if (current >= limit || *current == '\n') {
-        const std::string line(begin, current);
-        lines.push_back(line);
+        {
+          const std::string line(begin, current);
+          lines.push_back(line);
+        }
         begin = current;
         limit = current + width;
       }
