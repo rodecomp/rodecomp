@@ -104,11 +104,11 @@ bool CRenderObject::PrepareSprite(
   if ((this->render.flags & 0x80) != 0) {
     const short phase = this->render.effectPhase;
     float factor = 0.0f;
-    if (phase < 19) {
+    if (phase <= 18) {
       factor = g_sinTable[phase * 5] * 0.3f;
-    } else if (phase < 21) {
+    } else if (phase <= 20) {
       factor = 0.3f;
-    } else if (phase < 24) {
+    } else if (phase <= 23) {
       factor = static_cast<float>(23 - phase) * 0.1f;
     }
     factor *= bottom - top;
@@ -119,9 +119,9 @@ bool CRenderObject::PrepareSprite(
   if ((this->render.flags & 0x20) != 0) {
     const short phase = this->render.effectPhase;
     float factor = 1.0f;
-    if (phase < 4) {
+    if (phase <= 3) {
       factor = (100.0f - static_cast<float>(phase) * 20.0f) * 0.01f;
-    } else if (phase < 34) {
+    } else if (phase <= 33) {
       int remainder = std::rand() % 6;
       if (remainder < 0) {
         remainder = 0;
@@ -178,22 +178,18 @@ bool CRenderObject::PrepareSprite(
     }
   }
 
+  const float alpha = static_cast<float>((this->render.color >> 24) & 0xFF);
+  const float red = static_cast<float>((this->render.color >> 16) & 0xFF) * lightRed;
+  const float green = static_cast<float>((this->render.color >> 8) & 0xFF) * lightGreen;
+  const float blue = static_cast<float>(this->render.color & 0xFF) * lightBlue;
   if (this->render.isSingleColor && this->render.overrideColor != 0xFFFF0000) {
     *color = this->render.overrideColor;
   } else {
     SpriteColor& channels = *reinterpret_cast<SpriteColor*>(color);
-    channels.alpha = static_cast<std::uint8_t>(
-      static_cast<int>((static_cast<float>((cell.color >> 24) & 0xFF) * static_cast<float>((this->render.color >> 24) & 0xFF)) / 255.0f)
-    );
-    channels.red = static_cast<std::uint8_t>(
-      static_cast<int>((static_cast<float>(cell.color & 0xFF) * static_cast<float>((this->render.color >> 16) & 0xFF) * lightRed) / 255.0f)
-    );
-    channels.green = static_cast<std::uint8_t>(
-      static_cast<int>((static_cast<float>((cell.color >> 8) & 0xFF) * static_cast<float>((this->render.color >> 8) & 0xFF) * lightGreen) / 255.0f)
-    );
-    channels.blue = static_cast<std::uint8_t>(
-      static_cast<int>((static_cast<float>((cell.color >> 16) & 0xFF) * static_cast<float>(this->render.color & 0xFF) * lightBlue) / 255.0f)
-    );
+    channels.alpha = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 24) & 0xFF) * alpha) / 255.0f));
+    channels.red = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>(cell.color & 0xFF) * red) / 255.0f));
+    channels.green = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 8) & 0xFF) * green) / 255.0f));
+    channels.blue = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 16) & 0xFF) * blue) / 255.0f));
   }
   quad->color = *color;
 
@@ -217,23 +213,26 @@ bool CRenderObject::PrepareSprite(
 // OFFSET: 0x00CAD9E0
 // FUNCTION: fn_21057
 bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const {
-  const CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  const CRenderObject* player = reinterpret_cast<const CRenderObject*>(world->player);
+  const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  bool found = true;
 
   if (targetAid == g_session.m_aid) {
-    targetPos = {player->render.position.x, player->render.position.y, player->render.position.z};
-    return true;
+    const vector3d& playerPos = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    targetPos.x = playerPos.x;
+    targetPos.y = playerPos.y;
+    targetPos.z = playerPos.z;
+  } else if (const CRenderObject* actor = mode->scene->GetGameActorByAID(targetAid)) {
+    targetPos.x = actor->render.position.x;
+    targetPos.y = actor->render.position.y;
+    targetPos.z = actor->render.position.z;
+  } else {
+    found = false;
+    const vector3d& playerPos = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    const vector3d& position = this->render.position;
+    targetPos = {
+      position.x - (playerPos.x - position.x), position.y - (playerPos.y - position.y), position.z - (playerPos.z - position.z)
+    };
   }
 
-  if (const CRenderObject* actor = world->GetGameActorByAID(targetAid)) {
-    targetPos = {actor->render.position.x, actor->render.position.y, actor->render.position.z};
-    return true;
-  }
-
-  const vector3d& position = this->render.position;
-  targetPos = {
-    position.x - (player->render.position.x - position.x), position.y - (player->render.position.y - position.y),
-    position.z - (player->render.position.z - position.z)
-  };
-  return false;
+  return found;
 }
