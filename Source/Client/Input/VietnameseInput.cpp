@@ -120,7 +120,8 @@ int CVietnameseInput::Release() {
 // FUNCTION: fn_18313
 int CVietnameseInput::Compose(char key, unsigned short* output, int* replaced) {
   int index;
-  if (this->m_state == 1002) {
+  switch (this->m_state) {
+  case 1002:
     this->m_vowel = key;
     this->m_state = 1003;
     switch (key) {
@@ -157,7 +158,8 @@ int CVietnameseInput::Compose(char key, unsigned short* output, int* replaced) {
       index = -1;
       break;
     }
-  } else if (this->m_state == 1003) {
+    break;
+  case 1003:
     index = this->m_mode->Convert(key, this->m_vowel, this->m_index);
     if (index == 1000) {
       *output = this->m_chars[this->m_count - 2];
@@ -170,8 +172,10 @@ int CVietnameseInput::Compose(char key, unsigned short* output, int* replaced) {
       return 1001;
     }
     *replaced = 0;
-  } else {
+    break;
+  default:
     index = reinterpret_cast<int>(output);
+    break;
   }
   this->m_index = index;
   if (this->m_vowel >= 'a') {
@@ -199,9 +203,9 @@ bool CVietnameseInput::SetMode(int type) {
   if (this->m_mode) {
     delete this->m_mode;
   }
-  if (type == 0) {
+  if (this->m_type == 0) {
     this->m_mode = new VNIInputMode;
-  } else if (type == 1) {
+  } else if (this->m_type == 1) {
     this->m_mode = new TELEXInputMode;
   }
   return this->m_mode != nullptr;
