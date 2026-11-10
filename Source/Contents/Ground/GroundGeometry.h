@@ -100,7 +100,7 @@ public:
   bool CellVertices(float* vertices, int column, int row) const override;
   void UpdateWater() override;
 
-  bool CellRectangle(const C3dAttr& terrain, int column, int row, float* vertices) const;
+  bool CellRectangle(int column, int row, float* vertices) const;
   void DrawGridDecal(const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv) const;
   void DrawWaterCell(int column, int row, GroundCell& cell, const float* matrix, const float* ambient);
   __declspec(noinline) void DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip);
