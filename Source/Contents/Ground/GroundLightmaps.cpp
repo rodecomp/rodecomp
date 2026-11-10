@@ -28,12 +28,12 @@ void GroundLightmapSet::Build(CGndRes& resource) {
   this->Clear();
   this->lightmapCount = resource.lightmapCount;
   this->lightmaps.resize(static_cast<unsigned>(this->lightmapCount));
-  this->atlasCount = (static_cast<unsigned>(this->lightmapCount) + 1023u) / 1024u;
+  this->atlasCount = (this->lightmapCount + 1023) / 1024;
   this->lightmapTextures.reserve(this->atlasCount);
   std::array<std::uint32_t, 256 * 256> pixels;
 
-  for (int first = 0; first < resource.lightmapCount; first += 1024) {
-    for (int index = 0; index < 1024 && first + index < resource.lightmapCount; ++index) {
+  for (int first = 0; first < this->lightmapCount; first += 1024) {
+    for (int index = 0; index < 1024 && first + index < this->lightmapCount; ++index) {
       unsigned char decoded[256];
       resource.Lightmap(first + index, decoded);
       const unsigned column = static_cast<unsigned>(index) % 32;
@@ -77,7 +77,7 @@ void GroundLightmapSet::Build(CGndRes& resource) {
     this->lightmapTextures.push_back(g_texMgr.Upload(256, 256, pixels.data(), 4, 0, false, false, false));
   }
 
-  for (unsigned index = 0; index < this->lightmaps.size(); ++index) {
+  for (int index = 0; index < this->lightmapCount; ++index) {
     this->lightmaps[index].texture = this->lightmapTextures[index / 1024];
   }
 }
