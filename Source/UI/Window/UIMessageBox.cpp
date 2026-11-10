@@ -2807,12 +2807,15 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x008C3110
 // FUNCTION: fn_11822
 bool UIReplayControlWnd::RefreshInfo() {
-  const int seconds = static_cast<int>(Replay::Instance().elapsed) / 1000;
-  const int minutes = seconds / 60;
+  const int elapsed = static_cast<int>(Replay::Instance().elapsed) / 1000;
+  const int totalMinutes = elapsed / 60;
+  const int seconds = elapsed % 60;
+  const int hours = totalMinutes / 60;
+  const int minutes = totalMinutes % 60;
   const ReplayTime duration = Replay::Instance().Duration();
   char text[100];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(MSI_REPLAY_ELAPSEDTIME), minutes / 60, minutes % 60, seconds % 60, duration.hours, duration.minutes, duration.seconds);
+  std::sprintf(text, LookupMessage(MSI_REPLAY_ELAPSEDTIME), hours, minutes, seconds, duration.hours, duration.minutes, duration.seconds);
   this->m_texts[0]->SetTextFitted(text);
 
   std::memset(text, 0, sizeof(text));
@@ -4145,8 +4148,8 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->format = text;
   this->started = timeGetTime();
   this->deadline = timeGetTime() + static_cast<unsigned>(timeout);
-  const unsigned interval = this->deadline - this->started;
-  const unsigned seconds = interval / 1000 + (interval % 1000 != 0);
+  const unsigned fraction = (this->deadline - this->started) % 1000 ? 1 : 0;
+  const unsigned seconds = (this->deadline - this->started) / 1000 + fraction;
   this->remaining = seconds;
   this->seconds = seconds;
 
