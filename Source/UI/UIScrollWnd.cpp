@@ -230,38 +230,29 @@ RenderPrimitive* UIScrollWnd::DrawPrimitive() {
 RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = texture;
-  const float textureWidth = static_cast<float>(std::bit_cast<std::int32_t>(texture->TextureWidth()));
-  const float textureHeight = static_cast<float>(std::bit_cast<std::int32_t>(texture->TextureHeight()));
-  const float left = static_cast<float>(x);
-  const float top = static_cast<float>(y);
-  const float right = static_cast<float>(x + width);
-  const float bottom = static_cast<float>(y + height);
-  const float u0 = (static_cast<float>(sourceX) + g_textureOffsetX) / textureWidth;
-  const float v0 = (static_cast<float>(sourceY) + g_textureOffsetY) / textureHeight;
-  const float u1 = (static_cast<float>(sourceX + width) + g_textureOffsetX) / textureWidth;
-  const float v1 = (static_cast<float>(sourceY + height) + g_textureOffsetY) / textureHeight;
+  const std::int32_t textureWidth = std::bit_cast<std::int32_t>(texture->TextureWidth());
+  const std::int32_t textureHeight = std::bit_cast<std::int32_t>(texture->TextureHeight());
+  primitive->quad[0].x = static_cast<float>(x);
+  primitive->quad[0].y = static_cast<float>(y);
+  primitive->quad[0].u = (static_cast<float>(sourceX) + g_textureOffsetX) / static_cast<float>(textureWidth);
+  primitive->quad[0].v = (static_cast<float>(sourceY) + g_textureOffsetY) / static_cast<float>(textureHeight);
+  primitive->quad[1].x = static_cast<float>(x + width);
+  primitive->quad[1].y = static_cast<float>(y);
+  primitive->quad[1].u = (static_cast<float>(sourceX + width) + g_textureOffsetX) / static_cast<float>(textureWidth);
+  primitive->quad[1].v = (static_cast<float>(sourceY) + g_textureOffsetY) / static_cast<float>(textureHeight);
+  primitive->quad[2].x = static_cast<float>(x);
+  primitive->quad[2].y = static_cast<float>(y + height);
+  primitive->quad[2].u = (static_cast<float>(sourceX) + g_textureOffsetX) / static_cast<float>(textureWidth);
+  primitive->quad[2].v = (static_cast<float>(sourceY + height) + g_textureOffsetY) / static_cast<float>(textureHeight);
+  primitive->quad[3].x = static_cast<float>(x + width);
+  primitive->quad[3].y = static_cast<float>(y + height);
+  primitive->quad[3].u = (static_cast<float>(sourceX + width) + g_textureOffsetX) / static_cast<float>(textureWidth);
+  primitive->quad[3].v = (static_cast<float>(sourceY + height) + g_textureOffsetY) / static_cast<float>(textureHeight);
 
-  primitive->quad[0].x = left;
-  primitive->quad[0].y = top;
-  primitive->quad[0].u = u0;
-  primitive->quad[0].v = v0;
-  primitive->quad[1].x = right;
-  primitive->quad[1].y = top;
-  primitive->quad[1].u = u1;
-  primitive->quad[1].v = v0;
-  primitive->quad[2].x = left;
-  primitive->quad[2].y = bottom;
-  primitive->quad[2].u = u0;
-  primitive->quad[2].v = v1;
-  primitive->quad[3].x = right;
-  primitive->quad[3].y = bottom;
-  primitive->quad[3].u = u1;
-  primitive->quad[3].v = v1;
-
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.diffuse = color;
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].z = 0.000001f;
+    primitive->quad[i].rhw = 0.999999f;
+    primitive->quad[i].diffuse = color;
   }
 
   return primitive;
