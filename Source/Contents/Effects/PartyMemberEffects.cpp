@@ -18,7 +18,7 @@
 
 namespace {
   struct CRollingCutterRagEffect : CRagEffect {
-    CRollingCutterRagEffect();
+    __declspec(noinline) CRollingCutterRagEffect();
 
     bool OnProcess() override;
     int GetDuration() override;
@@ -112,22 +112,22 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
 
   if (effectId == 127) {
     this->state.effectLaunched = 1;
-    RecordLaunch(effectId);
+  } else if (effectId < 0 || effectId > 60000) {
+    return nullptr;
+  }
+
+  RecordLaunch(effectId);
+
+  switch (effectId) {
+  case 837:
+    effect = new CRollingCutterRagEffect();
+    break;
+  case 2444:
+    effect = new CWhirlwindEffect();
+    break;
+  default:
     effect = new CRagEffect();
-  } else {
-    if (effectId < 0 || effectId > 60000) {
-      return nullptr;
-    }
-
-    RecordLaunch(effectId);
-
-    if (effectId == 837) {
-      effect = new CRollingCutterRagEffect();
-    } else if (effectId == 2444) {
-      effect = new CWhirlwindEffect();
-    } else {
-      effect = new CRagEffect();
-    }
+    break;
   }
 
   if (!effect) {
