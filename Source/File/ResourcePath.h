@@ -5,6 +5,6 @@
 #include <string>
 
 std::string MakeResourcePath(std::string filename);
-bool ResourceExists(const char* filename, int looseOnly);
+bool ResourceExists(const char* filename, bool looseOnly);
 
 #endif
