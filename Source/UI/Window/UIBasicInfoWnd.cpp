@@ -369,10 +369,9 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x009974F0
 // FUNCTION: fn_13487
 void UIBasicInfoWnd::DrawExpanded() {
-  CBitmapRes* background = static_cast<CBitmapRes*>(
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\w_basewin_bg2.bmp"))
-  );
-  this->DrawBitmap(0, 0, &background->image, false);
+  ), false);
 
   this->DrawTextAt(18, 3, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(17, 2, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0, 0, 0);
@@ -381,42 +380,42 @@ void UIBasicInfoWnd::DrawExpanded() {
   const int family = compact ? 0 : 1;
   const int fontHeight = compact ? 12 : 14;
   const int job = g_session.GetDisplayJob();
-  this->DrawTextAt(9, 36, g_session.GetJobName(job, -1), 0, family, fontHeight, 0, 0, 0
-  );
+  const char* jobName = g_session.GetJobName(job, -1);
+  this->DrawTextAt(9, 36, jobName, 0, family, fontHeight, 0, 0, 0);
   this->DrawTextAt(9, 51, LookupMessage(MSI_BASICINFO_JOBLEVEL), 0, 1, 14, 0, 0, 0);
   this->DrawTextAt(9, 65, LookupMessage(MSI_BASICINFO_EXP), 0, 1, 14, 0, 0, 0);
   this->DrawTextAt(9, 80, LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), 0, 1, 14, 0, 0, 0);
 
   if (g_session.maxHp > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(g_session.hp) * 100 / g_session.maxHp;
-    std::string text = FormatOwnedString("%d%%", percent);
-    this->DrawTextAt(173, 51, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(173, 51, FormatOwnedString("%d%%", percent).c_str(), 0, 1, 14, 0, 0, 0);
   }
 
   const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
   const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
   if (spMax > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(sp) * 100 / spMax;
-    std::string text = FormatOwnedString("%d%%", percent);
-    this->DrawTextAt(173, 65, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(173, 65, FormatOwnedString("%d%%", percent).c_str(), 0, 1, 14, 0, 0, 0);
   }
 
   if (g_session.GetTraitStat(233) > 0) {
-    const int ap = g_session.GetTraitStat(232);
-    std::string text = FormatOwnedString("%d%%", 100 * ap / g_session.GetTraitStat(233));
-    this->DrawTextAt(173, 80, text.c_str(), 0, 1, 14, 0, 0, 0);
+    this->DrawTextAt(
+      173, 80, FormatOwnedString("%d%%", g_session.GetTraitStat(232) * 100 / g_session.GetTraitStat(233)).c_str(), 0, 1, 14, 0, 0, 0
+    );
   }
 
-  std::string baseLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_BASE), g_session.m_level);
-  this->DrawTextAt(17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0
-  );
-
-  std::string jobLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_JOB), g_session.m_jobLevel);
-  if (g_serviceType == 12) {
-    jobLevel = FormatOwnedString("Classe. %d", g_session.m_jobLevel);
+  {
+    std::string baseLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_BASE), g_session.m_level);
+    this->DrawTextAt(17, this->layoutOffset + 71, baseLevel.c_str(), 0, 1, 14, 0, 0, 0);
   }
-  this->DrawTextAt(17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0
-  );
+
+  {
+    std::string jobLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_JOB), g_session.m_jobLevel);
+    if (g_serviceType == 12) {
+      jobLevel = static_cast<const std::string&>(FormatOwnedString("Classe. %d", g_session.m_jobLevel));
+    }
+    this->DrawTextAt(17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0);
+  }
 
   char zenyBuffer[64];
   std::memset(zenyBuffer, 0, sizeof(zenyBuffer));
@@ -428,9 +427,11 @@ void UIBasicInfoWnd::DrawExpanded() {
   );
 
   std::string weightText;
-  weightText = g_serviceType == 12
-    ? FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight)
-    : FormatOwnedString(LookupMessage(MSI_WEIGHT), g_session.m_weight, g_session.m_maxWeight);
+  if (g_serviceType == 12) {
+    weightText = static_cast<const std::string&>(FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight));
+  } else {
+    weightText = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_WEIGHT), g_session.m_weight, g_session.m_maxWeight));
+  }
 
   const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
   const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_unknown173A5BC ? 255 : 0;
