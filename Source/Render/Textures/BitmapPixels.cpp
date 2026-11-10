@@ -25,17 +25,17 @@ BitmapPixels::~BitmapPixels() {
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
 void BitmapPixels::UploadTexture(CTexture*& texture) {
-  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->pixels);
   const std::int32_t size = 4 * static_cast<int>(this->width) * static_cast<int>(this->height);
+  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->pixels);
 
   for (std::int32_t offset = 0; offset < size; offset += 4) {
     bytes[offset + 3] = 255;
   }
 
-  if (texture) {
-    texture->Upload(0, 0, this->width, this->height, this->pixels, 0, 0);
-  } else {
+  if (!texture) {
     texture = g_texMgr.Upload(this->width, this->height, this->pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
+  } else {
+    texture->Upload(0, 0, this->width, this->height, this->pixels, 0, 0);
   }
 }
 
