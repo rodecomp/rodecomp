@@ -13,11 +13,7 @@ __declspec(noinline) void DrawRoundedBorder(UIWindow& window, int x, int y, int 
 // OFFSET: 0x00A7BD60
 // FUNCTION: fn_16938
 void UIWindow::FillRegion(int x, int y, int width, int height, std::uint32_t color) {
-  const int right = (x + width);
-  const int bottom = (y + height);
-  RECT rectangle = {
-    x < 0 ? 0 : x, y < 0 ? 0 : y, this->geometry.width < right ? this->geometry.width : right, this->geometry.height < bottom ? this->geometry.height : bottom
-  };
+  RECT rectangle = {std::max(x, 0), std::max(y, 0), std::min((x + width), this->geometry.width), std::min((y + height), this->geometry.height)};
   this->geometry.surface->Fill(&rectangle, color);
 }
 
