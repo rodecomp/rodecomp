@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_LEVEL99ORB1EFFECT_H
 
 #include "Contents/Effects/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/EffectPoint.h"
 
 #include <cstddef>
 #include <vector>
@@ -18,7 +18,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ vector3d offsets[16];
+  /* 00CC */ EffectPoint offsets[16];
   /* 018C */ std::vector<CParticle*> particles;
 };
 

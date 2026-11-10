@@ -13,7 +13,7 @@
 
 // OFFSET: 0x00B6B210
 // FUNCTION: fn_19089
-CLevel99Orb1Effect::CLevel99Orb1Effect() : CEffect(976), offsets() {
+CLevel99Orb1Effect::CLevel99Orb1Effect() : CEffect(976) {
 }
 
 // OFFSET: 0x00B6B390
@@ -43,9 +43,10 @@ void CLevel99Orb1Effect::Open() {
         particle->SetColor(80, 80, 255);
         particle->alpha = 0;
 
-        vector3d& offset = this->offsets[row * 4 + column];
+        const float height = static_cast<float>(std::max(rand() % 100, 0));
+        EffectPoint& offset = this->offsets[row * 4 + column];
         offset.x = 0.0f;
-        offset.y = static_cast<float>(std::max(rand() % 100, 0));
+        offset.y = height;
         offset.z = 0.0f;
 
         float* angles = &particle->animationParameter;
@@ -69,14 +70,14 @@ bool CLevel99Orb1Effect::IsAlive() {
 // FUNCTION: fn_19094
 void CLevel99Orb1Effect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
       const int index = particle->columnIndex + particle->rowIndex * 4;
       const float speed = particle->speedParameter;
-      vector3d& offset = this->offsets[index];
+      EffectPoint& offset = this->offsets[index];
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
           offset.x = 0.0f;
