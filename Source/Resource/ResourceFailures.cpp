@@ -1,7 +1,8 @@
 #include "Resource/ResourceFailures.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Utility/Threading/NSyncObject.h"
+#include "Utility/Text/GroupedInteger.h"
+#include "Utility/Threading/CSyncObject.h"
 
 #include <cstdint>
 #include <cstring>
@@ -18,13 +19,13 @@ ResourceFailures::ResourceFailures() {
 // OFFSET: 0x00AEE310
 // FUNCTION: fn_18171
 void ResourceFailures::Report(std::string requested, std::string resolved) {
-  const char* extension = std::strrchr(resolved.c_str(), '.');
+  const char* extension = ReverseFindChar(resolved.c_str(), '.');
   if (extension && _stricmp(".ebm", extension) == 0) {
     return;
   }
 
   {
-    NSyncObject lock(&this->m_lock);
+    CSyncObject lock(&this->m_lock);
     if (this->m_reported.find(resolved) != this->m_reported.end()) {
       return;
     }
