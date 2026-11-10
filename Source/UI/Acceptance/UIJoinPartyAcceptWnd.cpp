@@ -15,6 +15,24 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstring>
 
+namespace {
+#pragma pack(push, 1)
+struct FramedMessageHeader {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::uint32_t length;
+
+  FramedMessageHeader() : type(0), length(0) {
+  }
+
+  ~FramedMessageHeader() {
+    this->type = 0;
+    this->length = 0;
+  }
+};
+#pragma pack(pop)
+static_assert(sizeof(FramedMessageHeader) == 6);
+}
+
 // OFFSET: 0x008C8240
 // FUNCTION: fn_11950
 UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd()
@@ -57,35 +75,29 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
-    unsigned offset = 6;
-
-    if (marker == 21750) {
-      while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
-        offset += 6;
-
-        switch (kind) {
+    FramedMessageHeader header;
+    std::memcpy(&header, bytes, sizeof(header));
+    if (header.type == 21750) {
+      unsigned int offset = sizeof(header);
+      while (offset < static_cast<unsigned int>(b)) {
+        std::memcpy(&header, bytes + offset, sizeof(header));
+        offset += sizeof(header);
+        switch (header.type) {
         case 21751:
           return 0;
         case 21752: {
           char text[260] = {};
-          std::memcpy(text, bytes + offset, size);
-          offset += size;
+          std::memcpy(text, bytes + offset, header.length);
+          offset += header.length;
           this->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
           break;
         }
         default:
-          offset += size;
+          offset += header.length;
           break;
         }
       }
     }
-
     return 0;
   }
 
