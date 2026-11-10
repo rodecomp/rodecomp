@@ -105,18 +105,79 @@ HRESULT __stdcall CWebEventReceiver::Disconnect() {
 // OFFSET: 0x00AB3B20
 // FUNCTION: fn_17433
 HRESULT STDMETHODCALLTYPE CWebEventReceiver::Invoke(DISPID id, REFIID, LCID, WORD, DISPPARAMS* args, VARIANT*, EXCEPINFO*, UINT*) {
-  if (id == DISPID_ONQUIT) {
-    return this->Disconnect();
+  switch (id) {
+  case DISPID_HTMLDOCUMENTEVENTS2_ONKEYDOWN: {
+    IHTMLEventObj* event = nullptr;
+    if (FAILED(args->rgvarg[0].pdispVal->QueryInterface(IID_IHTMLEventObj, reinterpret_cast<void**>(&event)))) {
+      break;
+    }
+
+    long key = 0;
+    if (FAILED(event->get_keyCode(&key))) {
+      break;
+    }
+
+    switch (key) {
+    case VK_MENU:
+    case VK_F1:
+    case VK_F3:
+    case VK_F4:
+    case VK_F11: {
+      event->put_keyCode(0);
+
+      VARIANT cancelled;
+      cancelled.vt = VT_BOOL;
+      cancelled.boolVal = VARIANT_FALSE;
+      event->put_returnValue(cancelled);
+      event->Release();
+      return S_FALSE;
+    }
+    }
+    break;
   }
 
-  if (id == DISPID_DOCUMENTCOMPLETE) {
+  case DISPID_HTMLDOCUMENTEVENTS2_ONHELP: {
+    IHTMLEventObj* event = nullptr;
+    if (FAILED(args->rgvarg[0].pdispVal->QueryInterface(IID_IHTMLEventObj, reinterpret_cast<void**>(&event)))) {
+      break;
+    }
+
+    event->put_keyCode(0);
+
+    VARIANT cancelled;
+    cancelled.vt = VT_BOOL;
+    cancelled.boolVal = VARIANT_FALSE;
+    event->put_returnValue(cancelled);
+    event->Release();
+    break;
+  }
+
+  case DISPID_ONQUIT:
+    this->Disconnect();
+    break;
+
+  case DISPID_HTMLDOCUMENTEVENTS2_ONCONTEXTMENU: {
+    IHTMLEventObj* event = nullptr;
+    if (FAILED(args->rgvarg[0].pdispVal->QueryInterface(IID_IHTMLEventObj, reinterpret_cast<void**>(&event)))) {
+      break;
+    }
+
+    VARIANT cancelled;
+    cancelled.vt = VT_BOOL;
+    cancelled.boolVal = VARIANT_FALSE;
+    event->put_returnValue(cancelled);
+    event->Release();
+    break;
+  }
+
+  case DISPID_DOCUMENTCOMPLETE: {
     IDispatch* browserIdentity = nullptr;
     if (FAILED(this->m_browser->QueryInterface(IID_IDispatch, reinterpret_cast<void**>(&browserIdentity)))) {
-      return S_OK;
+      break;
     }
 
     if (args->rgvarg[1].pdispVal != browserIdentity) {
-      return S_OK;
+      break;
     }
 
     this->ReleaseDocument();
@@ -125,47 +186,9 @@ HRESULT STDMETHODCALLTYPE CWebEventReceiver::Invoke(DISPID id, REFIID, LCID, WOR
     }
 
     browserIdentity->Release();
-    return S_OK;
+    break;
+  }
   }
 
-  if (id != DISPID_HTMLDOCUMENTEVENTS2_ONKEYDOWN && id != DISPID_HTMLDOCUMENTEVENTS2_ONHELP && id != DISPID_HTMLDOCUMENTEVENTS2_ONCONTEXTMENU) {
-    return S_OK;
-  }
-
-  IHTMLEventObj* event = nullptr;
-  if (FAILED(args->rgvarg[0].pdispVal->QueryInterface(IID_IHTMLEventObj, reinterpret_cast<void**>(&event)))) {
-    return S_OK;
-  }
-
-  if (id == DISPID_HTMLDOCUMENTEVENTS2_ONKEYDOWN) {
-    long key = 0;
-    if (FAILED(event->get_keyCode(&key))) {
-      return S_OK;
-    }
-
-    switch (key) {
-    case VK_MENU:
-    case VK_F1:
-    case VK_F3:
-    case VK_F4:
-    case VK_F11:
-      break;
-    default:
-
-      return S_OK;
-    }
-  }
-
-  if (id != DISPID_HTMLDOCUMENTEVENTS2_ONCONTEXTMENU) {
-    event->put_keyCode(0);
-  }
-
-  VARIANT cancelled;
-  VariantInit(&cancelled);
-  cancelled.vt = VT_BOOL;
-  cancelled.boolVal = VARIANT_FALSE;
-  event->put_returnValue(cancelled);
-  event->Release();
-
-  return id == DISPID_HTMLDOCUMENTEVENTS2_ONKEYDOWN ? S_FALSE : S_OK;
+  return S_OK;
 }
