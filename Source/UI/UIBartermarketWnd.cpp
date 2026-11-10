@@ -267,7 +267,7 @@ void UIExpandedBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_10578
 std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
-    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+    return std::make_pair(false, BarterMarketEntry());
   }
 
   const int row = (y - 17) / 64;
@@ -276,19 +276,19 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(i
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
-        return std::pair<bool, BarterMarketEntry>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x00846110
 // FUNCTION: fn_10579
 std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
-    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+    return std::make_pair(false, BarterMarketEntry());
   }
 
   int index = 0;
@@ -296,12 +296,12 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == (y - 17) / 64) {
-        return std::pair<bool, BarterMarketEntry>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x008462C0
@@ -347,7 +347,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
 // FUNCTION: fn_10581
 std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
-    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+    return std::make_pair(false, BarterMarketEntry());
   }
 
   const int offsetY = y - 17;
@@ -366,20 +366,20 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
               char buffer[16] = {};
               entry.name = _itoa(chunk->field_0, buffer, 10);
               entry.field_0 = chunk->field_c;
-              return std::pair<bool, BarterMarketEntry>(true, entry);
+              return std::make_pair(true, entry);
             }
             right += 42;
           }
         }
         if (x > 40 && x < 72) {
           entry = *it;
-          return std::pair<bool, BarterMarketEntry>(true, entry);
+          return std::make_pair(true, entry);
         }
       }
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x00849030
@@ -502,8 +502,14 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     found.second.value = mode->drag.quantity;
     for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk) {
       ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, chunk->field_0);
-      bool missing = owned.identity[1] > 0;
-      if (!missing && g_session.HasItemCount(chunk->field_0, chunk->field_4) == true) {
+      if (owned.identity[1] > 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
+        return 0;
+      }
+
+      if (g_session.HasItemCount(chunk->field_0, chunk->field_4) == true) {
         const int itemId = chunk->field_0;
         const int refine = chunk->field_4;
         const int count = g_session.GetList0Size();
@@ -515,14 +521,12 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
             break;
           }
         }
-        missing = available <= 0;
-      }
-
-      if (missing) {
-        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
-        return 0;
+        if (available <= 0) {
+          mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
+          return 0;
+        }
       }
     }
 

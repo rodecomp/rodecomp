@@ -516,8 +516,9 @@ bool CExpandedBarterMarketItemMgr::HasEntryByName(std::string name)
 {
   bool found = false;
   std::find_if(this->entries.begin(), this->entries.end(), [name, &found](BarterMarketEntry entry) {
-    found = name == entry.name;
-    return found;
+    const bool equal = name == entry.name;
+    found = equal;
+    return equal;
   });
   return found;
 }

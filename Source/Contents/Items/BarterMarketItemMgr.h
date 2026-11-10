@@ -66,10 +66,10 @@ public:
 static_assert(sizeof(CBarterMarketItemMgr) == 0x20);
 
 struct BarterChunk16 {
-  /* 0000 */ int field_0;
-  /* 0004 */ int field_4;
-  /* 0008 */ int amount;
-  /* 000C */ int field_c;
+  /* 0000 */ int field_0 = 0;
+  /* 0004 */ int field_4 = 0;
+  /* 0008 */ int amount = 0;
+  /* 000C */ int field_c = 0;
 };
 
 struct BarterMarketEntry {
@@ -97,6 +97,8 @@ struct BarterMarketEntry {
   // OFFSET: 0x00845020
   // FUNCTION: fn_10571
   BarterMarketEntry& operator=(const BarterMarketEntry& other) = default;
+
+  __declspec(noinline) ~BarterMarketEntry() = default;
 
   ITEM_INFO ToItemInfo() const;
 };
