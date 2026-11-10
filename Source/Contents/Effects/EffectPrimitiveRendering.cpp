@@ -6183,29 +6183,29 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int basicAngle = slot.fullDisplayAngle / 10;
+    const int basicAngle = this->state.slots[ec].fullDisplayAngle / 10;
     int order = 0;
 
-    for (int count = 0; count <= slot.fullDisplayAngle; count += basicAngle) {
-      int angle = (count + slot.rotStart) % 360;
-      if (slot.fullDisplayAngle == 360 && order == 10) {
-        angle = slot.rotStart;
+    for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
+      int angle = this->state.slots[ec].rotStart + count;
+      angle %= 360;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && order == 10) {
+        angle = this->state.slots[ec].rotStart;
       }
 
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
 
-      vec2.x = cs1 * slot.distance;
-      vec2.z = sn1 * slot.distance;
+      vec2.x = cs1 * this->state.slots[ec].distance;
+      vec2.z = sn1 * this->state.slots[ec].distance;
       vec2.y = 0.0f;
 
-      float rx = g_cosTable[slot.riseAngle] * slot.height[order];
-      const float ry = g_sinTable[slot.riseAngle] * slot.height[order];
+      float rx = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
+      const float ry = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
       const float rz = sn1 * rx;
       rx = cs1 * rx;
 
@@ -6213,10 +6213,10 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
       vec4.z = vec2.z + rz;
       vec4.y = -ry;
 
-      if (slot.vecBNow.y == 1234.5f) {
+      if (this->state.slots[ec].vecBNow.y == 1234.5f) {
         const int heart = this->state.slots[2].alphaT;
-        const float lx = slot.vecBNow.x;
-        const float lz = slot.vecBNow.z;
+        const float lx = this->state.slots[ec].vecBNow.x;
+        const float lz = this->state.slots[ec].vecBNow.z;
         const float x = g_cosTable[heart] * lx - g_sinTable[heart] * lz;
         const float z = g_sinTable[heart] * lx + g_cosTable[heart] * lz;
         vec2.x += x;
@@ -6226,7 +6226,7 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
       }
 
       if (order > 0) {
-        this->RenderTeiRect(&rpCnt, order - 1, slot.alphaB, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0);
+        this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
       }
 
       ++order;
