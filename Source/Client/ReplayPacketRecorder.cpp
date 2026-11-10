@@ -13,6 +13,16 @@
 #include <windows.h>
 #include <timeapi.h>
 
+namespace {
+#pragma pack(push, 1)
+  struct RecordHeader {
+    /* 0000 */ std::uint32_t frame;
+    /* 0004 */ std::uint32_t tick;
+    /* 0008 */ std::uint16_t bytes;
+  };
+#pragma pack(pop)
+}
+
 // OFFSET: 0x00B86880
 // FUNCTION: fn_19332
 bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
@@ -36,7 +46,7 @@ bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uin
     case ID_ZC_GUILD_CHAT:
     case ID_ZC_BATTLEFIELD_CHAT:
     case ID_ZC_ALLY_CHAT:
-      if (this->header.options.recordRestricted == 0) {
+      if (this->header.options.Get(ReplayRecordOption::Chatting) == 0) {
         return false;
       }
 
@@ -47,25 +57,29 @@ bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uin
   }
 
   std::vector<unsigned char> record(static_cast<std::size_t>(bytes) + 10, 0);
-  std::memcpy(record.data() + 8, &bytes, sizeof(bytes));
+  RecordHeader* recordHeader = reinterpret_cast<RecordHeader*>(record.data());
+  recordHeader->bytes = bytes;
+  recordHeader->frame = 0;
+  recordHeader->tick = 0;
 
-  if (event == 42 || event == 43) {
-    const std::uint32_t frameDelta = this->frame - this->baseFrame;
-    const std::uint32_t tick = event == 43 ? delay - this->started + timeGetTime() : timeGetTime() - this->started;
-    std::memcpy(record.data(), &frameDelta, sizeof(frameDelta));
-    std::memcpy(record.data() + 4, &tick, sizeof(tick));
+  if (event == 43) {
+    recordHeader->frame = this->frame - this->baseFrame;
+    recordHeader->tick = timeGetTime() + (delay - this->started);
+  } else if (event == 42) {
+    recordHeader->frame = this->frame - this->baseFrame;
+    recordHeader->tick = timeGetTime() - this->started;
   }
 
   std::memcpy(record.data() + 10, packet, bytes);
-  this->cipherKey = this->header.key1 >> 3;
-  this->cipherIndex = 0;
-  this->cipherBase = this->header.key0 >> 5;
 
-  for (unsigned index = 0; index < bytes / 4u; ++index) {
-    std::uint32_t word;
-    std::memcpy(&word, record.data() + 10 + index * 4, sizeof(word));
-    word ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
-    std::memcpy(record.data() + 10 + index * 4, &word, sizeof(word));
+  std::uint32_t* words = reinterpret_cast<std::uint32_t*>(record.data() + 10);
+  if (words) {
+    this->cipherKey = this->header.key1 >> 3;
+    this->cipherIndex = 0;
+    this->cipherBase = this->header.key0 >> 5;
+    for (int index = 0; index < bytes / 4; ++index) {
+      words[index] ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
+    }
   }
 
   std::fseek(this->file, static_cast<long>(this->fileOffset), SEEK_SET);
@@ -149,7 +163,7 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
     case ID_ZC_GUILD_CHAT:
     case ID_ZC_BATTLEFIELD_CHAT:
     case ID_ZC_ALLY_CHAT:
-      if (this->header.options.recordRestricted == 0) {
+      if (this->header.options.Get(ReplayRecordOption::Chatting) == 0) {
         return false;
       }
 
@@ -160,19 +174,17 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
   }
 
   std::vector<unsigned char> record(static_cast<std::size_t>(bytes) + 10, 0);
-  std::memcpy(record.data() + 8, &bytes, sizeof(bytes));
-  std::memset(record.data(), 0, 8);
+  RecordHeader* recordHeader = reinterpret_cast<RecordHeader*>(record.data());
+  recordHeader->bytes = bytes;
+  recordHeader->frame = 0;
+  recordHeader->tick = 0;
 
   if (event == 43) {
-    const std::uint32_t frameDelta = this->frame - this->baseFrame;
-    const std::uint32_t tick = timeGetTime() + (delay - this->started);
-    std::memcpy(record.data(), &frameDelta, sizeof(frameDelta));
-    std::memcpy(record.data() + 4, &tick, sizeof(tick));
+    recordHeader->frame = this->frame - this->baseFrame;
+    recordHeader->tick = timeGetTime() + (delay - this->started);
   } else if (event == 42) {
-    const std::uint32_t frameDelta = this->frame - this->baseFrame;
-    const std::uint32_t tick = timeGetTime() - this->started;
-    std::memcpy(record.data(), &frameDelta, sizeof(frameDelta));
-    std::memcpy(record.data() + 4, &tick, sizeof(tick));
+    recordHeader->frame = this->frame - this->baseFrame;
+    recordHeader->tick = timeGetTime() - this->started;
   }
 
   std::memcpy(record.data() + 10, data, bytes);
@@ -286,9 +298,9 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
   packet.identified = drag.identified;
   packet.skillLevel = drag.skillLevel;
   packet.skill = drag.skill;
-  std::memcpy(packet.resource, drag.resource.c_str(), std::min(static_cast<int>(drag.resource.size()), 100));
-  std::memcpy(packet.name, drag.name.c_str(), std::min(static_cast<int>(drag.name.size()), 100));
-  std::memcpy(packet.skillName, drag.skillName.c_str(), std::min(static_cast<int>(drag.skillName.size()), 100));
+  std::memcpy(packet.resource, drag.resource.c_str(), static_cast<int>(drag.resource.size()) > 100 ? 100 : drag.resource.size());
+  std::memcpy(packet.name, drag.name.c_str(), static_cast<int>(drag.name.size()) > 100 ? 100 : drag.name.size());
+  std::memcpy(packet.skillName, drag.skillName.c_str(), static_cast<int>(drag.skillName.size()) > 100 ? 100 : drag.skillName.size());
   std::memcpy(packet.cards, drag.cards, sizeof(packet.cards));
   packet.optionCount = drag.optionCount;
   std::memcpy(packet.options, drag.options, sizeof(packet.options));
