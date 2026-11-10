@@ -11,6 +11,7 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
   }
 
   int left = 0;
+  int right = 0;
   int titleHeight = 0;
   auto* leftBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
   if (leftBar) {
@@ -18,7 +19,6 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
     left = leftBar->image.width;
   }
 
-  int right = 0;
   auto* rightBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
   if (rightBar) {
     right = rightBar->image.width;
@@ -61,14 +61,14 @@ int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* tit
   int titleHeight = 0;
   auto* leftBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
   if (leftBar) {
-    this->DrawBitmap(x, 0, &leftBar->image, false);
+    this->DrawBitmap(x, 0, leftBar, false);
     left = leftBar->image.width;
   }
 
   auto* rightBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
   if (rightBar) {
     right = rightBar->image.width;
-    this->DrawBitmap(x - right + width, 0, &rightBar->image, false);
+    this->DrawBitmap(x - right + width, 0, rightBar, false);
   }
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid.bmp")));
@@ -79,8 +79,7 @@ int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* tit
     const int count = extent / middleWidth + (extent % middleWidth != 0);
 
     for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(x + left, 0, &middle->image, false);
-      left += middleWidth;
+      this->DrawBitmap(x + left + index * middleWidth, 0, middle, false);
     }
   }
 
@@ -90,7 +89,7 @@ int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* tit
   if (closeButton) {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sys_base_off.bmp")));
     if (icon) {
-      this->DrawBitmap(x + 3, 3, &icon->image, true);
+      this->DrawBitmap(x + 3, 3, icon, true);
     }
   }
 
