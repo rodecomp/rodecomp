@@ -99,11 +99,10 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
 
   int totalRows = sheet->GetTotalRows();
   for (int row = 3; row < totalRows; ++row) {
-    EntryQueueInfo* info = new EntryQueueInfo();
+    EntryQueueInfo* info = new EntryQueueInfo;
     if (info == nullptr) {
       continue;
     }
-    memset(info, 0, sizeof(EntryQueueInfo));
 
     BasicExcelCell* cell = sheet->Cell(row, 0);
     if (cell == nullptr) {
@@ -292,7 +291,7 @@ bool CTableMng::ReadEntryQueueBinary() {
   DWORD bytesRead = 0;
   ReadFile(file, &count, 4, &bytesRead, nullptr);
   for (unsigned int i = 0; i < count; ++i) {
-    EntryQueueInfo* info = new EntryQueueInfo();
+    EntryQueueInfo* info = new EntryQueueInfo;
     if (info == nullptr) {
       continue;
     }
@@ -336,7 +335,8 @@ void CTableMng::Clear() {
 // OFFSET: 0x00CA43B0
 // FUNCTION: fn_20936
 bool CTableMng::AddEntryQueueInfo(unsigned int id, EntryQueueInfo* info) {
-  if (this->m_entryQueue.find(id) != this->m_entryQueue.end()) {
+  std::map<unsigned int, EntryQueueInfo*>::iterator it = this->m_entryQueue.find(id);
+  if (it != this->m_entryQueue.end()) {
     return false;
   }
   this->m_entryQueue.insert(std::pair<unsigned int, EntryQueueInfo*>(id, info));

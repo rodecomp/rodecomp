@@ -1,9 +1,14 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_TABLEMNG_H
 #define RAGNAROK_SOURCE_CONTENTS_TABLEMNG_H
 
+#include <cstring>
 #include <map>
 
 struct EntryQueueInfo {
+  EntryQueueInfo() {
+    std::memset(this, 0, sizeof(EntryQueueInfo));
+  }
+
   /* 0000 */ unsigned int id;
   /* 0004 */ char name[260];
   /* 0108 */ char description[260];
