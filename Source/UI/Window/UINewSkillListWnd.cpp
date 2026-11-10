@@ -509,7 +509,7 @@ void UINewSkillListWnd::InitTabs() {
   const char* jobTabs[4] = {};
   g_session.m_hotkeyScript->Call(func, "d>ssss", 0, &defaultTabs[0], &defaultTabs[1], &defaultTabs[2], &defaultTabs[3]);
 
-  const unsigned baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
+  const int baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
   int jobKey = baseJob;
   switch (baseJob) {
   case JT_NOVICE:
@@ -724,7 +724,7 @@ void UINewSkillListWnd::InitTabs() {
 
   g_session.m_hotkeyScript->Call(func, "d>ssss", jobKey, &jobTabs[0], &jobTabs[1], &jobTabs[2], &jobTabs[3]);
 
-  for (size_t i = this->m_tabs->labels.size(); i < 4; ++i) {
+  for (int i = this->m_tabs->labels.size(); i < 4; ++i) {
     if (g_session.m_skillBundle.GroupSize(i) > 0) {
       const char* name = jobTabs[i];
       if (!name) {
