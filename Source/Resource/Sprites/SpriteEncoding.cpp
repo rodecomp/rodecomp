@@ -13,16 +13,14 @@ std::uint8_t* CSprRes::EncodeSpriteRuns(const std::uint8_t* pixels, int width, i
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x, ++index) {
       if (pixels[index] == 0) {
-        if (zeroRun) {
-          if (++zeroCount >= 255) {
-            encoded.push_back(static_cast<std::uint8_t>(zeroCount));
-            zeroRun = 0;
-            zeroCount = 0;
-          }
-        } else {
+        if (!zeroRun) {
           encoded.push_back(0);
           zeroRun = 1;
           ++zeroCount;
+        } else if (++zeroCount >= 255) {
+          encoded.push_back(static_cast<std::uint8_t>(zeroCount));
+          zeroRun = 0;
+          zeroCount = 0;
         }
       } else {
         if (zeroRun) {
