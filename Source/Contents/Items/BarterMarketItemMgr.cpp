@@ -295,10 +295,10 @@ std::pair<bool, BarterMarketItem> CBarterMarketItemMgr::FindItem(int id)
 {
   for (std::list<BarterMarketItem>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
     if (it->id == id) {
-      return std::pair<bool, BarterMarketItem>(true, *it);
+      return std::make_pair(true, *it);
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 // OFFSET: 0x005D8050
@@ -307,10 +307,10 @@ std::pair<bool, BarterMarketItem> CBarterMarketItemMgr::FindAllItem(int id)
 {
   for (std::list<BarterMarketItem>::iterator it = this->allItems.begin(); it != this->allItems.end(); ++it) {
     if (it->id == id) {
-      return std::pair<bool, BarterMarketItem>(true, *it);
+      return std::make_pair(true, *it);
     }
   }
-  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  return std::make_pair(false, BarterMarketItem());
 }
 
 // OFFSET: 0x005D8150
@@ -535,10 +535,10 @@ std::pair<bool, BarterMarketEntry> CExpandedBarterMarketItemMgr::FindItem(int id
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
     if (it->id == id) {
-      return std::pair<bool, BarterMarketEntry>(true, *it);
+      return std::make_pair(true, *it);
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x005DA4E0
@@ -547,10 +547,10 @@ std::pair<bool, BarterMarketEntry> CExpandedBarterMarketItemMgr::FindEntry(int i
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
     if (it->id == id) {
-      return std::pair<bool, BarterMarketEntry>(true, *it);
+      return std::make_pair(true, *it);
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x005DA3B0
