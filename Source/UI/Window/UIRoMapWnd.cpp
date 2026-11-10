@@ -338,15 +338,9 @@ void UIRoMapWnd::DrawDungeonLinks() {
       const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
       CTexture* const lineTexture = g_texMgr.Default();
       if (isSelected) {
-        DrawScreenLine(
-          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000,
-          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        DrawScreenLine(startX, startY, endX, endY, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
       } else {
-        DrawScreenLine(
-          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 1, lineTexture, lineColor, g_renderer->fog.supported != 0,
-          g_depthStart, g_depthEnd
-        );
+        DrawScreenLine(startX, startY, endX, endY, 1, lineTexture, lineColor);
       }
 
       DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture);
@@ -380,11 +374,7 @@ void UIRoMapWnd::DrawMarks() {
         const float startY = static_cast<float>(previous[3] - previous[1]) * g_depthAverageHalf + static_cast<float>(previous[1]);
         const float endX = static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]);
         const float endY = static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1]);
-        DrawScreenLine(
-          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 5,
-          g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF,
-          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        DrawScreenLine(startX, startY, endX, endY, 5, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF);
       }
     }
 

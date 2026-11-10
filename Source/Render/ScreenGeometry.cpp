@@ -1,4 +1,5 @@
 #include "Render/ScreenGeometry.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
@@ -9,10 +10,7 @@
 
 // OFFSET: 0x0054E2B0
 // FUNCTION: fn_01951
-void DrawScreenLine(
-  RenderPrimitivePool& primitives, RenderQueues& queues, float startX, float startY, float endX, float endY, int thickness, CTexture* texture,
-  std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-) {
+void DrawScreenLine(float startX, float startY, float endX, float endY, int thickness, CTexture* texture, std::uint32_t color) {
   if (SquareRoot((endY - startY) * (endY - startY) + (endX - startX) * (endX - startX)) == 0.0f) {
     return;
   }
@@ -30,18 +28,14 @@ void DrawScreenLine(
   const float offsetY = std::sin(angle) * width;
   const float offsetX = std::cos(angle) * width;
   DrawScreenQuad(
-    primitives, queues, startX - offsetX, startY - offsetY, startX + offsetX, startY + offsetY, endX - offsetX, endY - offsetY, endX + offsetX,
-    endY + offsetY, texture, color, depthAlpha, depthStart, depthEnd
+    startX - offsetX, startY - offsetY, startX + offsetX, startY + offsetY, endX - offsetX, endY - offsetY, endX + offsetX, endY + offsetY, texture, color
   );
 }
 
 // OFFSET: 0x0054DB40
 // FUNCTION: fn_01944
-void DrawScreenQuad(
-  RenderPrimitivePool& primitives, RenderQueues& queues, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture,
-  std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-) {
-  RenderPrimitive* primitive = primitives.Acquire();
+void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture, std::uint32_t color) {
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   RenderVertex* vertices = primitive->vertices;
   vertices[0].x = x0;
   vertices[0].y = y0;
@@ -74,7 +68,7 @@ void DrawScreenQuad(
   primitive->texture = texture;
   primitive->sourceBlend = 2;
   primitive->destinationBlend = 4;
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 513);
 }
 
 // OFFSET: 0x00915F60
@@ -113,5 +107,5 @@ void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint 
   primitive->texture = texture;
   primitive->sourceBlend = 2;
   primitive->destinationBlend = 4;
-  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 513);
 }
