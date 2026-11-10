@@ -19,9 +19,9 @@ std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex
   std::string sexName;
   std::string robeName;
 
-  jobName = g_session.GetBodyJobName(spriteJob);
-  sexName = g_session.GetSexName(sex);
-  robeName = this->GetRobeSprName(robe, 0);
+  jobName = static_cast<const std::string&>(g_session.GetBodyJobName(spriteJob));
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  robeName = static_cast<const std::string&>(this->GetRobeSprName(robe, 0));
   if (robeName.size() == 0) {
     return "";
   }
