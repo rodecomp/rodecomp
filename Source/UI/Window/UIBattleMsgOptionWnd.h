@@ -29,7 +29,7 @@ public:
   /* 00C4 */ int scrollPosition;
   /* 00C8 */ std::vector<const char*> messages;
   /* 00D4 */ std::string text;
-  /* 00EC */ unsigned char optionStates[0x1C];
+  /* 00EC */ bool optionStates[0x1C];
   /* 0108 */ int chatWindowIndex;
   /* 010C */ int allChecked;
   /* 0110 */ unsigned char useMainChatOptions;

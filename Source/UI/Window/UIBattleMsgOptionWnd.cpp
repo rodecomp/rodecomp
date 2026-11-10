@@ -94,11 +94,12 @@ void UIBattleMsgOptionWnd::OnCreate(int, int height) {
 int UIBattleMsgOptionWnd::RowAt(int x, int y) {
   if (x >= 0 && y >= 17 && y < this->m_visibleRows * 20 + 17) {
     const int column = x / this->geometry.width;
+    const int target = (y - 17) / 20;
     int row = 0;
     int index = 0;
     for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
       if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) != 0 && index >= this->scrollPosition) {
-        if (row == (y - 17) / 20 + column) {
+        if (row == target + column) {
           return index;
         }
         ++row;
