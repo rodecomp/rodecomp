@@ -228,19 +228,25 @@ void CChargingPierceEffect::OnProcess() {
 void CChargingPierceNewEffect::OnProcess() {
   for (CEZ2STRParticle* particle : this->emitters) {
     const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
-    const float x = origin.x;
-    const float y = origin.y;
-    const float z = origin.z;
 
-    const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    vector3d viewPos;
+    viewPos.x = origin.y * view.values[3] + origin.x * view.values[0] + origin.z * view.values[6] + view.values[9];
+    viewPos.y = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10];
+    viewPos.z = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11];
+
     const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+    viewPos.x += particle->offsetX;
+    viewPos.y += particle->offsetY;
+    viewPos.z += particle->offsetZ;
 
-    const float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + particle->offsetX;
-    const float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] + particle->offsetY;
-    const float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + particle->offsetZ;
-    particle->position.x = viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9];
-    particle->position.y = viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10];
-    particle->position.z = viewY * inverse.values[5] + viewX * inverse.values[2] + viewZ * inverse.values[8] + inverse.values[11];
+    vector3d worldPos;
+    worldPos.x = viewPos.y * inverse.values[3] + viewPos.x * inverse.values[0] + viewPos.z * inverse.values[6] + inverse.values[9];
+    worldPos.y = viewPos.y * inverse.values[4] + viewPos.x * inverse.values[1] + viewPos.z * inverse.values[7] + inverse.values[10];
+    worldPos.z = viewPos.y * inverse.values[5] + viewPos.x * inverse.values[2] + viewPos.z * inverse.values[8] + inverse.values[11];
+    particle->position.x = worldPos.x;
+    particle->position.y = worldPos.y;
+    particle->position.z = worldPos.z;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 }
