@@ -72,7 +72,8 @@ bool CBindTrapEffect::IsAlive() {
 // OFFSET: 0x006FB630
 // FUNCTION: fn_06910
 void CBindTrapEffect::OnProcess() {
-  for (CParticle* particle : this->particles) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
