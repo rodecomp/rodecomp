@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -90,7 +91,7 @@ void CRainbowEffect::OnProcess() {
       const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
       const int angle = static_cast<int>(static_cast<float>(step * particle->columnIndex) + spinAngle) % 360;
 
-      vector3d points[4]{};
+      EffectPoint points[4];
       const float width = particle->scale * g_cosTable[angle];
       const float height = particle->scale * g_sinTable[angle];
 
@@ -123,8 +124,12 @@ void CRainbowEffect::OnProcess() {
         particle->vertices[3].z = this->previousInner.z;
       }
 
-      this->previousOuter = points[1];
-      this->previousInner = points[0];
+      this->previousOuter.x = points[1].x;
+      this->previousOuter.y = points[1].y;
+      this->previousOuter.z = points[1].z;
+      this->previousInner.x = points[0].x;
+      this->previousInner.y = points[0].y;
+      this->previousInner.z = points[0].z;
 
       switch (band) {
       case 0:
