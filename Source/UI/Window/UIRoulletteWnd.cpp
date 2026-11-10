@@ -263,9 +263,8 @@ void UIRoulletteWnd::OnProcess() {
   if (g_effectDetailLevel != 2) {
     if (this->m_startButton->geometry.state == 1 && this->m_enabled == 1) {
       if (g_rouletteMgr->m_spinning == 0) {
-        CBitmapRes* arrow =
-          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
-        this->DrawBitmap(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40, arrow, true);
+        this->DrawBitmap(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40,
+                         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp"))), true);
       }
       if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_bonus == 0) {
         CBitmapRes* arrow =
