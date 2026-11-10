@@ -427,7 +427,7 @@ void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) 
   if (actor) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\x7B', '\x43', '\x92', '\x8F', '\x84', '\x01', '\x32', '\x6A', '\x7A', '\x43', '\xA8', '\x95', '\x8C', '\x05', '\x19', '\x72',
+      const std::array<char, 18> bytes = {'\x7B', '\x43', '\x92', '\x8F', '\x84', '\x01', '\x32', '\x6A', '\x7A', '\x43', '\xA8', '\x95', '\x8C', '\x05', '\x19', '\x72',
                                     '\x6D', '\x31'};
       thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
       return name.Text();
