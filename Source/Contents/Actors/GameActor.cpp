@@ -636,11 +636,29 @@ void CGameActor::ReleaseAttachments() {
     this->merAI = 0;
   }
 
-  for (int index = 0; index < 5; ++index) {
-    if (this->actorWindows[index]) {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[index]));
-      this->actorWindows[index] = 0;
-    }
+  if (this->actorWindows[0]) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+    this->actorWindows[0] = 0;
+  }
+
+  if (this->actorWindows[1]) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[1]));
+    this->actorWindows[1] = 0;
+  }
+
+  if (this->actorWindows[2]) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[2]));
+    this->actorWindows[2] = 0;
+  }
+
+  if (this->actorWindows[3]) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[3]));
+    this->actorWindows[3] = 0;
+  }
+
+  if (this->actorWindows[4]) {
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[4]));
+    this->actorWindows[4] = 0;
   }
 
   if (this->hpGaugeWindow) {
@@ -648,10 +666,10 @@ void CGameActor::ReleaseAttachments() {
     this->hpGaugeWindow = 0;
   }
 
-  for (CGameObject* object : this->msgEffectList) {
-    object->SendMsg(nullptr, AM_MSGMASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  for (std::list<CGameObject*>::iterator it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
+    (*it)->SendMsg(nullptr, AM_MSGMASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
-  this->msgEffectList.clear();
+  this->msgEffectList.erase(this->msgEffectList.begin(), this->msgEffectList.end());
 
   if (g_session.GetSiegeMode() && this->sceneNameWindow) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
