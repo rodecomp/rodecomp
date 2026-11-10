@@ -2409,7 +2409,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
 
   this->searchType = new UIComboBox_BmpWnd();
   static_cast<UIComboBox_BmpWnd*>(this->searchType)->dropdownHeight = 67;
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->Create(61, 18, "유저인터페이스\\navigation_interface3\\bg_combo.bmp", "유저인터페이스\\navigation_interface3\\dropdown_on");
+  static_cast<UIComboBox_BmpWnd*>(this->searchType)->Create(61, 18, "유저인터페이스\\navigation_interface3\\dropdown_on", "유저인터페이스\\navigation_interface3\\bg_combo.bmp");
   static_cast<UIComboBox_BmpWnd*>(this->searchType)->SetBorderColor(100, 100, 100);
   static_cast<UIComboBox_BmpWnd*>(this->searchType)->SetColor(232, 232, 232);
   this->AddChild(this->searchType);
