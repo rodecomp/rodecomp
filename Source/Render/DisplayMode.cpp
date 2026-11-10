@@ -3,10 +3,10 @@
 #include "Render/DisplayMode.h"
 
 #include <algorithm>
+#include <atlbase.h>
 #include <d3d9.h>
 #include <format>
 #include <utility>
-#include <wrl/client.h>
 
 // OFFSET: 0x00569E60
 // FUNCTION: fn_02272
@@ -30,8 +30,8 @@ std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex
 // OFFSET: 0x0056DCF0
 // FUNCTION: fn_02372
 std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter) {
-  Microsoft::WRL::ComPtr<IDirect3D9Ex> direct3D;
-  if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, direct3D.GetAddressOf()))) {
+  CComPtr<IDirect3D9Ex> direct3D;
+  if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, &direct3D))) {
     return {};
   }
 
