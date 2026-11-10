@@ -20,67 +20,115 @@ bool OrientedBounds::Intersects(const float* bounds) const {
   float projected[3];
   float absolute[3][3];
 
-  for (unsigned axis = 0; axis < 3; ++axis) {
-    const float* direction = this->axes[axis];
-    projected[axis] = (direction[1] * delta[1] + direction[0] * delta[0]) + direction[2] * delta[2];
-
-    for (unsigned component = 0; component < 3; ++component) {
-      absolute[axis][component] = Absolute(direction[component]);
-    }
-
-    const float radius = (absolute[axis][1] * extents[1] + absolute[axis][0] * extents[0]) + absolute[axis][2] * extents[2];
-
-    if (static_cast<double>(Absolute(projected[axis])) - (static_cast<double>(radius) + this->halfSize[axis]) > tolerance) {
-      return false;
-    }
+  projected[0] = (this->axes[0][1] * delta[1] + this->axes[0][0] * delta[0]) + this->axes[0][2] * delta[2];
+  absolute[0][0] = Absolute(this->axes[0][0]);
+  absolute[0][1] = Absolute(this->axes[0][1]);
+  absolute[0][2] = Absolute(this->axes[0][2]);
+  if (static_cast<double>(Absolute(projected[0])) -
+        (static_cast<double>((absolute[0][1] * extents[1] + absolute[0][0] * extents[0]) + absolute[0][2] * extents[2]) + this->halfSize[0]) >
+      tolerance) {
+    return false;
   }
 
-  for (unsigned component = 0; component < 3; ++component) {
-    const float radius = (this->halfSize[1] * absolute[1][component] + this->halfSize[0] * absolute[0][component]) + this->halfSize[2] * absolute[2][component];
-
-    if (static_cast<double>(Absolute(delta[component])) - (static_cast<double>(radius) + extents[component]) > tolerance) {
-      return false;
-    }
+  projected[1] = (this->axes[1][1] * delta[1] + this->axes[1][0] * delta[0]) + this->axes[1][2] * delta[2];
+  absolute[1][0] = Absolute(this->axes[1][0]);
+  absolute[1][1] = Absolute(this->axes[1][1]);
+  absolute[1][2] = Absolute(this->axes[1][2]);
+  if (static_cast<double>(Absolute(projected[1])) -
+        (static_cast<double>((absolute[1][1] * extents[1] + absolute[1][0] * extents[0]) + absolute[1][2] * extents[2]) + this->halfSize[1]) >
+      tolerance) {
+    return false;
   }
 
-  const auto separated = [&](float distance, float first, float second) {
-    return static_cast<double>(Absolute(distance)) - (static_cast<double>(first) + static_cast<double>(second)) > tolerance;
-  };
-
-  for (unsigned component = 0; component < 3; ++component) {
-    const unsigned next = (component + 1) % 3;
-    const unsigned last = (component + 2) % 3;
-    const float distance = this->axes[1][component] * projected[2] - this->axes[2][component] * projected[1];
-    const float modelRadius = this->halfSize[2] * absolute[1][component] + this->halfSize[1] * absolute[2][component];
-    const float boxRadius = absolute[0][next] * extents[last] + absolute[0][last] * extents[next];
-
-    if (separated(distance, modelRadius, boxRadius)) {
-      return false;
-    }
+  projected[2] = (this->axes[2][1] * delta[1] + this->axes[2][0] * delta[0]) + this->axes[2][2] * delta[2];
+  absolute[2][0] = Absolute(this->axes[2][0]);
+  absolute[2][1] = Absolute(this->axes[2][1]);
+  absolute[2][2] = Absolute(this->axes[2][2]);
+  if (static_cast<double>(Absolute(projected[2])) -
+        (static_cast<double>((absolute[2][1] * extents[1] + absolute[2][0] * extents[0]) + absolute[2][2] * extents[2]) + this->halfSize[2]) >
+      tolerance) {
+    return false;
   }
 
-  for (unsigned component = 0; component < 3; ++component) {
-    const unsigned next = (component + 1) % 3;
-    const unsigned last = (component + 2) % 3;
-    const float distance = this->axes[2][component] * projected[0] - this->axes[0][component] * projected[2];
-    const float modelRadius = this->halfSize[0] * absolute[2][component] + this->halfSize[2] * absolute[0][component];
-    const float boxRadius = absolute[1][next] * extents[last] + absolute[1][last] * extents[next];
-
-    if (separated(distance, boxRadius, modelRadius)) {
-      return false;
-    }
+  if (static_cast<double>(Absolute(delta[0])) -
+        (static_cast<double>((this->halfSize[1] * absolute[1][0] + this->halfSize[0] * absolute[0][0]) + this->halfSize[2] * absolute[2][0]) + extents[0]) >
+      tolerance) {
+    return false;
   }
 
-  for (unsigned component = 0; component < 3; ++component) {
-    const unsigned next = (component + 1) % 3;
-    const unsigned last = (component + 2) % 3;
-    const float distance = this->axes[0][component] * projected[1] - this->axes[1][component] * projected[0];
-    const float modelRadius = this->halfSize[0] * absolute[1][component] + this->halfSize[1] * absolute[0][component];
-    const float boxRadius = absolute[2][next] * extents[last] + absolute[2][last] * extents[next];
+  if (static_cast<double>(Absolute(delta[1])) -
+        (static_cast<double>((this->halfSize[1] * absolute[1][1] + this->halfSize[0] * absolute[0][1]) + this->halfSize[2] * absolute[2][1]) + extents[1]) >
+      tolerance) {
+    return false;
+  }
 
-    if (separated(distance, modelRadius, boxRadius)) {
-      return false;
-    }
+  if (static_cast<double>(Absolute(delta[2])) -
+        (static_cast<double>((this->halfSize[1] * absolute[1][2] + this->halfSize[0] * absolute[0][2]) + this->halfSize[2] * absolute[2][2]) + extents[2]) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[1][0] * projected[2] - this->axes[2][0] * projected[1])) -
+        (static_cast<double>(this->halfSize[2] * absolute[1][0] + this->halfSize[1] * absolute[2][0]) +
+         static_cast<double>(absolute[0][1] * extents[2] + absolute[0][2] * extents[1])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[1][1] * projected[2] - this->axes[2][1] * projected[1])) -
+        (static_cast<double>(this->halfSize[2] * absolute[1][1] + this->halfSize[1] * absolute[2][1]) +
+         static_cast<double>(absolute[0][2] * extents[0] + absolute[0][0] * extents[2])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[1][2] * projected[2] - this->axes[2][2] * projected[1])) -
+        (static_cast<double>(this->halfSize[2] * absolute[1][2] + this->halfSize[1] * absolute[2][2]) +
+         static_cast<double>(absolute[0][0] * extents[1] + absolute[0][1] * extents[0])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[2][0] * projected[0] - this->axes[0][0] * projected[2])) -
+        (static_cast<double>(absolute[1][1] * extents[2] + absolute[1][2] * extents[1]) +
+         static_cast<double>(this->halfSize[0] * absolute[2][0] + this->halfSize[2] * absolute[0][0])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[2][1] * projected[0] - this->axes[0][1] * projected[2])) -
+        (static_cast<double>(absolute[1][2] * extents[0] + absolute[1][0] * extents[2]) +
+         static_cast<double>(this->halfSize[0] * absolute[2][1] + this->halfSize[2] * absolute[0][1])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[2][2] * projected[0] - this->axes[0][2] * projected[2])) -
+        (static_cast<double>(absolute[1][0] * extents[1] + absolute[1][1] * extents[0]) +
+         static_cast<double>(this->halfSize[0] * absolute[2][2] + this->halfSize[2] * absolute[0][2])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[0][0] * projected[1] - this->axes[1][0] * projected[0])) -
+        (static_cast<double>(this->halfSize[0] * absolute[1][0] + this->halfSize[1] * absolute[0][0]) +
+         static_cast<double>(absolute[2][1] * extents[2] + absolute[2][2] * extents[1])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[0][1] * projected[1] - this->axes[1][1] * projected[0])) -
+        (static_cast<double>(this->halfSize[0] * absolute[1][1] + this->halfSize[1] * absolute[0][1]) +
+         static_cast<double>(absolute[2][2] * extents[0] + absolute[2][0] * extents[2])) >
+      tolerance) {
+    return false;
+  }
+
+  if (static_cast<double>(Absolute(this->axes[0][2] * projected[1] - this->axes[1][2] * projected[0])) -
+        (static_cast<double>(this->halfSize[0] * absolute[1][2] + this->halfSize[1] * absolute[0][2]) +
+         static_cast<double>(absolute[2][0] * extents[1] + absolute[2][1] * extents[0])) >
+      tolerance) {
+    return false;
   }
 
   return true;
