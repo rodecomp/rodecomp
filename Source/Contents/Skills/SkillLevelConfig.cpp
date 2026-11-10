@@ -10,11 +10,10 @@
 void CCharacterLinkedUserDataMgr::LoadUseSkillLevels(Json::Value& data) {
   Json::Value values = data["UseSkillInfo"];
   if (!values.isNull()) {
-    for (auto it = values.begin(); it != values.end(); ++it) {
-      Json::Value& value = *it;
-      if (value.isObject()) {
-        int id = value.get("SKID", 0).asInt();
-        int level = value.get("SKLv", 0).asInt();
+    for (auto it = values.begin(); it != values.end(); it++) {
+      if ((*it).isObject()) {
+        int id = (*it).get("SKID", 0).asInt();
+        int level = (*it).get("SKLv", 0).asInt();
         g_session.m_skillBundle.SetUnknownValue(id, level);
       }
     }
@@ -26,11 +25,10 @@ void CCharacterLinkedUserDataMgr::LoadUseSkillLevels(Json::Value& data) {
 void CCharacterLinkedUserDataMgr::LoadHomunculusSkillLevels(Json::Value& data) {
   Json::Value values = data["HomunSkillInfo"];
   if (!values.isNull()) {
-    for (auto it = values.begin(); it != values.end(); ++it) {
-      Json::Value& value = *it;
-      if (value.isObject()) {
-        int id = value.get("HomunSKID", 0).asInt();
-        int level = value.get("HomunSKLv", 0).asInt();
+    for (auto it = values.begin(); it != values.end(); it++) {
+      if ((*it).isObject()) {
+        int id = (*it).get("HomunSKID", 0).asInt();
+        int level = (*it).get("HomunSKLv", 0).asInt();
 
         g_session.SetHomunSkillLevel(id, level);
       }
