@@ -437,14 +437,14 @@ int RuneSetData::GetGradeValue() const {
 // FUNCTION: fn_08143
 std::vector<Decom_ItemInfo>* CRuneSystemMgr::GetDecomList(int itemId, int which) {
   const auto decom = this->m_itemDecoms.find(itemId);
-  const std::pair<int, int>* types = decom != this->m_itemDecoms.end() ? &decom->second : nullptr;
+  const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
   if (!types) {
     return nullptr;
   }
 
   const int typeId = which == 0 ? types->first : types->second;
   const auto found = this->m_decomTypes.find(typeId);
-  return found != this->m_decomTypes.end() ? &found->second : nullptr;
+  return this->m_decomTypes.end() == found ? nullptr : &found->second;
 }
 
 // OFFSET: 0x00767230
