@@ -104,26 +104,30 @@ void CRendererDX9::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
   }
 }
 
+// INLINED
+static bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
+  if (left.depth < right.depth) {
+    return true;
+  }
+
+  if (right.depth < left.depth) {
+    return false;
+  }
+
+  return left.depth == right.depth && std::less<RenderCommand*>{}(left.primitive, right.primitive);
+}
+
 // OFFSET: 0x005658F0
 // FUNCTION: fn_02221
 void CRendererDX9::DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort) {
   if (sort) {
-    std::sort(queue.begin(), queue.end(), [](const DepthPrimitive& left, const DepthPrimitive& right) {
-      if (left.depth < right.depth) {
-        return true;
-      }
-
-      if (right.depth < left.depth) {
-        return false;
-      }
-
-      return left.depth == right.depth && std::less<RenderCommand*>{}(left.primitive, right.primitive);
-    });
+    std::sort(queue.begin(), queue.end());
   }
 
   for (const DepthPrimitive& entry : queue) {
     RenderCommand* command = entry.primitive;
-    this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+    IDirect3DTexture9* nativeTexture = command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr;
+    this->device->state.SetTexture(0, nativeTexture);
     this->DrawPrimitive(command);
   }
 }
