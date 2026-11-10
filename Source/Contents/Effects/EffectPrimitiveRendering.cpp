@@ -7046,8 +7046,8 @@ void CEffectPrim::Render2DPrimitive() {
 // OFFSET: 0x00BCB660
 // FUNCTION: fn_19861
 void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
-  CSprRes* sprite = this->render.sprite;
-  CActRes* action = this->render.action;
+  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
+  CActRes* action = this->GetActRes();
   if (this->state.numSegment <= 0) {
     return;
   }
