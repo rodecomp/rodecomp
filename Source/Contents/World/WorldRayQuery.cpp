@@ -1,5 +1,6 @@
 #include "Contents/World/WorldRayQuery.h"
 #include "Contents/World/WorldSpatialTree.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cmath>
 
@@ -17,42 +18,147 @@ WorldRayQuery::WorldRayQuery() {
 // OFFSET: 0x00AC7C50
 // FUNCTION: fn_17661
 int WorldRayQuery::Intersects(const float* bounds) const {
-  const float centers[3] = {(bounds[3] + bounds[0]) * 0.5f, (bounds[4] + bounds[1]) * 0.5f, (bounds[5] + bounds[2]) * 0.5f};
-  const float extents[3] = {bounds[3] - centers[0], bounds[4] - centers[1], bounds[5] - centers[2]};
-  const float offsets[3] = {centers[0] - this->origin[0], centers[1] - this->origin[1], centers[2] - this->origin[2]};
   float entry = -999999.0f;
   float exit = 999999.0f;
-  constexpr float epsilon = 0.00001f;
-  constexpr float parallelScale = 0.7f;
+  const vector3d center = {(bounds[3] + bounds[0]) * 0.5f, (bounds[4] + bounds[1]) * 0.5f, (bounds[5] + bounds[2]) * 0.5f};
+  const vector3d extent = {bounds[3] - center.x, bounds[4] - center.y, bounds[5] - center.z};
+  const vector3d offset = {center.x - this->origin[0], center.y - this->origin[1], center.z - this->origin[2]};
 
-  for (unsigned axis = 0; axis < 3; ++axis) {
-    const float direction = this->direction[axis];
-    const float magnitude = std::fabs(direction);
+  if (std::fabs(this->direction[0]) > 0.00001f) {
+    const float inverse = 1.0f / this->direction[0];
+    const float first = (offset.x + extent.x) * inverse;
+    const float second = (offset.x - extent.x) * inverse;
 
-    if (!(magnitude > epsilon)) {
-      const float extent = extents[axis] * parallelScale;
+    if (first > second) {
+      if (second > entry) {
+        entry = second;
+      }
 
-      if (-offsets[axis] - extent > 0.0f || extent - offsets[axis] < 0.0f) {
-        return 0;
+      if (first < exit) {
+        exit = first;
       }
     } else {
-      const float inverse = 1.0f / direction;
-      const float first = (offsets[axis] + extents[axis]) * inverse;
-      const float second = (offsets[axis] - extents[axis]) * inverse;
-      const bool orderedDescending = first > second;
-      const float near = orderedDescending ? second : first;
-      const float far = orderedDescending ? first : second;
-
-      entry = near > entry ? near : entry;
-      exit = far < exit ? far : exit;
-
-      if (entry > exit || exit < 0.0f) {
-        return 0;
+      if (first > entry) {
+        entry = first;
       }
+
+      if (second < exit) {
+        exit = second;
+      }
+    }
+
+    if (entry > exit) {
+      return 0;
+    }
+
+    if (exit < 0.0f) {
+      return 0;
+    }
+  } else {
+    const float scaled = extent.x * 0.7f;
+
+    if (-offset.x - scaled > 0.0f) {
+      return 0;
+    }
+
+    if (scaled - offset.x < 0.0f) {
+      return 0;
     }
   }
 
-  return !((entry > 0.0f ? entry : exit) > this->limit);
+  if (std::fabs(this->direction[1]) > 0.00001f) {
+    const float inverse = 1.0f / this->direction[1];
+    const float first = (offset.y + extent.y) * inverse;
+    const float second = (offset.y - extent.y) * inverse;
+
+    if (first > second) {
+      if (second > entry) {
+        entry = second;
+      }
+
+      if (first < exit) {
+        exit = first;
+      }
+    } else {
+      if (first > entry) {
+        entry = first;
+      }
+
+      if (second < exit) {
+        exit = second;
+      }
+    }
+
+    if (entry > exit) {
+      return 0;
+    }
+
+    if (exit < 0.0f) {
+      return 0;
+    }
+  } else {
+    const float scaled = extent.y * 0.7f;
+
+    if (-offset.y - scaled > 0.0f) {
+      return 0;
+    }
+
+    if (scaled - offset.y < 0.0f) {
+      return 0;
+    }
+  }
+
+  if (std::fabs(this->direction[2]) > 0.00001f) {
+    const float inverse = 1.0f / this->direction[2];
+    const float first = (offset.z + extent.z) * inverse;
+    const float second = (offset.z - extent.z) * inverse;
+
+    if (first > second) {
+      if (second > entry) {
+        entry = second;
+      }
+
+      if (first < exit) {
+        exit = first;
+      }
+    } else {
+      if (first > entry) {
+        entry = first;
+      }
+
+      if (second < exit) {
+        exit = second;
+      }
+    }
+
+    if (entry > exit) {
+      return 0;
+    }
+
+    if (exit < 0.0f) {
+      return 0;
+    }
+  } else {
+    const float scaled = extent.z * 0.7f;
+
+    if (-offset.z - scaled > 0.0f) {
+      return 0;
+    }
+
+    if (scaled - offset.z < 0.0f) {
+      return 0;
+    }
+  }
+
+  if (entry > 0.0f) {
+    if (entry > this->limit) {
+      return 0;
+    }
+  } else if (exit > this->limit) {
+    return 0;
+  }
+
+  return 1;
 }
 
 // OFFSET: 0x00AC7750
