@@ -724,14 +724,20 @@ EquipmentProperties::CEquipmentPropertiesMgr* EquipmentProperties::CEquipmentPro
   return g_equipmentPropertiesMgr;
 }
 
+// INLINED
+inline unsigned int HashName(const char* text) {
+  unsigned int hash = 5381;
+  int character;
+  while ((character = *text++) != 0) {
+    hash = ((hash << 5) + hash) + character;
+  }
+  return hash;
+}
+
 // OFFSET: 0x0068BAD0
 // FUNCTION: fn_05620
 void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const char* op, const int& index, const int& value, const int& key) {
-  unsigned int hash = 5381;
-  for (const char* character = name.c_str(); *character != '\0'; ++character) {
-    hash = hash * 33 + *character;
-  }
-  const std::uint64_t nameKey = hash;
+  const std::uint64_t nameKey = HashName(name.c_str());
 
   EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindDefinition(nameKey);
   if (definition == nullptr) {
