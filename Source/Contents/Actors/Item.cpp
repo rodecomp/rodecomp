@@ -157,8 +157,8 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
   spriteName += ".spr";
   std::string actionName = g_session.ItemDragResource(this->name.c_str(), entry->identified);
   actionName += ".act";
-  this->SetSpriteName(ResourceMgr::Instance(), spriteName.c_str());
-  this->SetActionName(ResourceMgr::Instance(), actionName.c_str());
+  this->SetSpriteName(spriteName.c_str());
+  this->SetActionName(actionName.c_str());
 
   ITEM_INFO item;
   this->itemIndex = std::atoi(entry->itemId);
