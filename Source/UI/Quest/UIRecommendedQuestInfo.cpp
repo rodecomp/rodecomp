@@ -40,7 +40,7 @@ void CUIRecommendedQuestInfo::OnCreate(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
-  title->SetText("QUEST", 5);
+  title->SetText("QUEST");
   title->SetFitText(0);
   title->SetAlign(0, 6);
   title->SetFont(std::string("Gulim"));
