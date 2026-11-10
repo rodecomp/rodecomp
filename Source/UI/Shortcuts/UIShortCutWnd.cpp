@@ -633,7 +633,7 @@ void UINewChatWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->FillRegion(4, this->geometry.height - this->m_inputAreaHeight, this->geometry.width - 8, 1, 0x8E8E8E);
 
-  if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->m_inputAreaHeight + this->m_inputOffsetY < this->geometry.height) {
+  if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->geometry.height > this->m_inputAreaHeight + this->m_inputOffsetY) {
     const int tabsWidth = static_cast<int>(this->m_tabControl->labels.size()) * this->m_tabWidth;
     this->FillRegion(3, this->m_inputOffsetY, 1, this->geometry.height - this->m_inputOffsetY, 0xFFFFFF);
     this->FillRegion(tabsWidth + 3, this->m_inputOffsetY, this->geometry.width - tabsWidth - 10, 1, 0xFFFFFF);
@@ -644,25 +644,23 @@ void UINewChatWnd::Paint() {
 
   if (g_windowMgr.inputSuggestionsEnabled) {
     auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dialog_bg.bmp")));
-    this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
+    this->DrawBitmap(0, this->geometry.height - background->image.height, background, false);
   }
 
   if (static_cast<int>(this->geometry.state) > 0) {
     if (g_windowMgr.chatModeChanged) {
-      auto* chatMode = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-        Resolve(g_windowMgr.inputSuggestionsEnabled ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp")
-      ));
+      const char* chatModeName = g_windowMgr.inputSuggestionsEnabled ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp";
+      auto* chatMode = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(chatModeName)));
       if (chatMode) {
         this->m_chatModeX = this->m_chatModeButton->geometry.x - chatMode->image.width - 2;
-        this->DrawBitmap(this->m_chatModeX, 4, &chatMode->image, true);
+        this->DrawBitmap(this->m_chatModeX, 4, chatMode, true);
       }
     }
 
-    auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(g_session.m_canDragWnd ? "유저인터페이스\\basic_interface\\unlock_dragwnd.bmp" : "유저인터페이스\\basic_interface\\lock_dragwnd.bmp")
-    ));
+    const char* lockName = g_session.m_canDragWnd ? "유저인터페이스\\basic_interface\\unlock_dragwnd.bmp" : "유저인터페이스\\basic_interface\\lock_dragwnd.bmp";
+    auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(lockName)));
     if (lock) {
-      this->DrawBitmap(this->m_lockButtonX, 4, &lock->image, true);
+      this->DrawBitmap(this->m_lockButtonX, 4, lock, true);
     }
   }
 }
