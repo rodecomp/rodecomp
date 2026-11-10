@@ -134,11 +134,12 @@ __declspec(noinline) void GroundGeometry::DrawGridDecal(
 void GroundGeometry::DrawGrid(
   const float* matrix, int column, int row, std::uint32_t color
 ) const {
-  CTexture* texture = g_texMgr.Load("grid.tga", 0, false, true, false);
   // STATIC: 0x01347EB0
   // GLOBAL: gl_25477
   static const float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
-  this->DrawGridDecal(matrix, column, row, color, *texture, uv);
+  this->DrawGridDecal(
+    matrix, column, row, color, *g_texMgr.Load("grid.tga", 0, false, true, false), uv
+  );
 }
 
 // OFFSET: 0x00AC3600
