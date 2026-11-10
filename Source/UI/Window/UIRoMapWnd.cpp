@@ -171,6 +171,11 @@ void UIRoMapWnd::DrawHoverTooltip() {
   DrawRoundedBorder(*this, boxX, y, width, height, 0xFFFFFF);
 }
 
+// INLINED
+static int CenteredTextX(UIWindow& window, std::string text, int left, int right, int fontHeight, unsigned char bold) {
+  return std::abs(static_cast<int>(static_cast<float>(window.TextWidth(text.c_str(), 0, 0, fontHeight, bold, 0) - right - left) * g_depthAverageHalf));
+}
+
 // OFFSET: 0x00919E00
 // FUNCTION: fn_12599
 void UIRoMapWnd::DrawMapNames() {
@@ -192,10 +197,7 @@ void UIRoMapWnd::DrawMapNames() {
       continue;
     }
 
-    const int left = area[0];
-    const int right = area[2];
-    const int textWidth = this->TextWidth(std::string(name).c_str(), 0, 0, fontHeight, 0, 0);
-    const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - right - left) * g_depthAverageHalf));
+    const int x = CenteredTextX(*this, name, area[0], area[2], fontHeight, 0);
     const int y = area[1] + 2;
     this->DrawTextAt(x + 1, y + 1, name.c_str(), 0, 0, fontHeight, outline, 0, 0);
     this->DrawTextAt(x, y, name.c_str(), 0, 0, fontHeight, color, 0, 0);
@@ -442,6 +444,18 @@ void UIRoMapWnd::DrawRecordFaces(int) {
 
     DrawTexturedRectangle(x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF, g_texMgr.Load(image.c_str(), 0, false, true, false));
   }
+}
+
+// INLINED
+static bool AddRelatedName(std::string map, std::string name, std::list<WorldViewRecord>& records) {
+  for (WorldViewRecord& record : records) {
+    if (record.name == map) {
+      record.relatedNames.push_back(name);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x0091BF80
