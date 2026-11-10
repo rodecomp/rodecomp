@@ -1378,41 +1378,49 @@ void CGameMode::ReceiveStatusNotice(const unsigned char* packet) {
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case 21:
     message = LookupMessage(MSI_GOSPEL1);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 22:
     message = LookupMessage(MSI_GOSPEL2);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 23:
     message = LookupMessage(MSI_GOSPEL3);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 24:
     message = LookupMessage(MSI_GOSPEL4);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 25:
     message = LookupMessage(MSI_GOSPEL5);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 28:
     message = LookupMessage(MSI_GOSPEL6);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 29:
     message = LookupMessage(MSI_GOSPEL7);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 30:
     message = LookupMessage(MSI_GOSPEL8);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 31:
     message = LookupMessage(MSI_GOSPEL9);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 32:
     message = LookupMessage(MSI_GOSPEL10);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
   case 40:
     message = LookupMessage(MSI_FULLSTRIP);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  default:
-    return;
   }
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
 }
 
 // OFFSET: 0x00D40080
@@ -1611,7 +1619,8 @@ void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
 // OFFSET: 0x00D657D0
 // FUNCTION: fn_22002
 void CGameMode::ReceiveActorNameCard(const unsigned char* packet) {
-  char name[25] = {};
+  char name[25] = {0};
+
   memcpy_s(name, 24, packet + 6, 24);
   name[24] = '\0';
   this->SetActorNameCard(
@@ -1899,10 +1908,12 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
     return;
   }
 
+  const RuneRewardStepEntry* entry = packet->entries;
   for (int i = 0; i < packet->count; ++i) {
-    const RuneRewardStepEntry& entry = packet->entries[i];
-    g_runeSystemMgr->SetRewardStep(packet->tagId, entry.id, entry.step);
+    g_runeSystemMgr->SetRewardStep(packet->tagId, entry->id, entry->step);
+    ++entry;
   }
+
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND);
   if (window) {
@@ -2078,18 +2089,24 @@ void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSet
 // OFFSET: 0x00D677C0
 // FUNCTION: fn_22033
 void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
-  if (result != 1) {
-    return;
-  }
+  switch (result) {
+  case 1:
+    if (command == 1) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_USERBLOCK)), 0x64FFFF, 0, 0, 0);
+    }
 
-  if (command == 1) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_USERBLOCK)), 0x64FFFF, 0, 0, 0);
-  }
+    g_gameOptionFlag = enabled != 0;
+    g_windowMgr.RefreshGameSettings();
+    if (g_gameOptionFlag) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_FAIL)), 0x64FFFF, 0, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_SUCCESS)), 0x64FFFF, 0, 0, 0);
+    }
 
-  g_gameOptionFlag = enabled != 0;
-  g_windowMgr.RefreshGameSettings();
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_gameOptionFlag ? 0xF17 : 0xF16)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
 }
+
 
 // OFFSET: 0x00D678E0
 // FUNCTION: fn_22035
@@ -2625,8 +2642,10 @@ void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
   data.level = 0;
   packet.visible = 1;
 
+
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
   if (data.owner != g_session.m_aid && !data.visible) {
+
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
