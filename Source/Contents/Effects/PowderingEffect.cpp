@@ -233,9 +233,11 @@ void CPowderingEffect::OnProcess() {
     result.Compose(scaleMat, rotation);
     particle->transform = result;
 
-    particle->position.x = this->position[0] + 0.0f + particle->offsetX;
-    particle->position.y = this->position[1] - 10.0f + particle->offsetY;
-    particle->position.z = this->position[2] + 0.0f + particle->offsetZ;
+    particle->position = {
+      this->position[0] + 0.0f + particle->offsetX,
+      this->position[1] - 10.0f + particle->offsetY,
+      this->position[2] + 0.0f + particle->offsetZ
+    };
     ++particle->elapsedFrames;
   }
 
@@ -271,9 +273,7 @@ void CPowderingEffect::OnProcess() {
     velocity.y += static_cast<float>(std::max(rand() % 10, 0)) * 0.01f;
     particle->velocity = velocity;
     ++particle->elapsedFrames;
-    particle->position.x = velocity.x + this->position[0];
-    particle->position.y = velocity.y + this->position[1];
-    particle->position.z = velocity.z + this->position[2];
+    particle->position = {velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};
   }
 }
 
