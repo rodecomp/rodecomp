@@ -65,7 +65,7 @@ void CTetraBallEffect::RemoveBall(int index) {
 // OFFSET: 0x0072EA90
 // FUNCTION: fn_07514
 unsigned char CTetraBallEffect::ActiveCount() {
-  unsigned char count = 0;
+  int count = 0;
   for (int index = 0; index < 5; ++index) {
     if (this->balls[index]) {
       ++count;
@@ -107,8 +107,9 @@ void CTetraBallEffect::OnProcess() {
 // FUNCTION: fn_07518
 void CTetraBallEffect::Render() {
   for (int index = 0; index < 5; ++index) {
-    if (this->balls[index]) {
-      this->balls[index]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    CEZ2STRParticle* ball = this->balls[index];
+    if (ball) {
+      ball->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }
