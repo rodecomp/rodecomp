@@ -63,6 +63,7 @@ private:
   static const int sm_U4[256];
   static const signed char sm_rcon[30];
   static const int sm_shifts[3][4][2];
+  static const char* sm_szErrorMsg1;
 
   /* 0004 */ bool m_bKeyInit;
   /* 0008 */ int m_Ke[MAX_ROUNDS + 1][MAX_BC];
