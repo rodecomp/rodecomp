@@ -265,8 +265,9 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
 
   if (side != -1 && object->visited != 1) {
     object->visited = 1;
-    int up = 0, down = 0;
+    int up = 0;
     object->AccumulateHeight(up, 1);
+    int down = 0;
     const int y = object->window->geometry.y;
     const int height = object->window->geometry.height;
     object->AccumulateHeight(down, 3);
