@@ -1068,15 +1068,16 @@ int NaviDataEntry::GetCost() const {
 __declspec(noinline) bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out) {
   out->clear();
   for (auto info = this->destinations.begin(); info != this->destinations.end(); ++info) {
-    for (auto link = (*info)->LinksBegin(); link != (*info)->LinksEnd(); ++link) {
+    std::vector<CNavi_Link*>::iterator link;
+    for (link = (*info)->LinksBegin(); link != (*info)->LinksEnd(); ++link) {
       if ((*link)->GetLinkedInfo() == target) {
         out->push_back(*link);
       }
     }
   }
-  for (auto link = this->objects.begin(); link != this->objects.end(); ++link) {
-    if ((*link)->GetLinkedInfo() == target) {
-      out->push_back(*link);
+  for (auto& link : this->objects) {
+    if (link->GetLinkedInfo() == target) {
+      out->push_back(link);
     }
   }
   return out->size() != 0;
