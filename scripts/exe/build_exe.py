@@ -1,11 +1,22 @@
 """Build every unit in data/compile.json and link them into Ragexe.exe (+ .pdb).
 
-Optional and local: clank checks and merges never run this. It uses only the
-toolchain `td toolchain install` provides (the root and runner come from
-.td/config.json), with the exact compiler flags of data/compile.json. Vendor
-DLL imports (Bink, Granny, Stove, ...) come from scripts/exe/imports/*.def, the
-exact import table of the original executable, so a declaration that does not
-match the real DLL export fails at link time.
+Optional and local: clank checks and merges never run this, and it does not
+need td. It compiles with the exact compiler flags of data/compile.json using
+the first MSVC v142 (14.29) + Windows SDK 10.0.19041 toolchain it finds:
+
+  1. --toolchain DIR, or the RODECOMP_TOOLCHAIN environment variable: a
+     directory laid out like td's toolchain (VC/Tools/MSVC/14.29.30133 and
+     Program Files/Windows Kits/10).
+  2. .td/config.json, when `td setup` / `td toolchain install` ran here.
+  3. A regular Visual Studio / Build Tools install found with vswhere, with
+     the "MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.29-16.11)" and
+     "Windows 10 SDK (10.0.19041.0)" components:
+         vs_buildtools.exe --add Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64
+                           --add Microsoft.VisualStudio.Component.Windows10SDK.19041
+
+Vendor DLL imports (Bink, Granny, Stove, ...) come from scripts/exe/imports/*.def,
+the exact import table of the original executable, so a declaration that does
+not match the real DLL export fails at link time.
 
 Compiles are incremental: a unit is rebuilt only when its flags, its source or
 one of the headers it included (recorded with /showIncludes) changed.
@@ -13,6 +24,7 @@ one of the headers it included (recorded with /showIncludes) changed.
     python scripts/exe/build_exe.py                     # compile + link, fail on any error
     python scripts/exe/build_exe.py --force-multiple    # accept duplicate definitions
     python scripts/exe/build_exe.py --link-only         # relink objects from a previous run
+    python scripts/exe/build_exe.py --toolchain DIR     # use this toolchain directory
 """
 
 import argparse
@@ -28,8 +40,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 EXE_DIR = Path(__file__).resolve().parent
 INCLUDE_NOTE = "Note: including file:"
-MSVC = "VC/Tools/MSVC/14.29.30133"
-SDK_LIB = "Program Files/Windows Kits/10/Lib/10.0.19041.0"
+MSVC_VERSION = "14.29.30133"
+SDK_VERSION = "10.0.19041.0"
 SYSTEM_LIBS = [
     "kernel32.lib", "user32.lib", "gdi32.lib", "advapi32.lib", "winmm.lib", "ws2_32.lib",
     "ole32.lib", "oleaut32.lib", "uuid.lib", "shell32.lib", "imm32.lib", "version.lib",
@@ -39,35 +51,214 @@ SYSTEM_LIBS = [
 ]
 
 
-class Toolchain:
-    """The td toolchain, run the way td runs it (native on Windows, wine elsewhere)."""
+class ToolchainNotFound(Exception):
+    pass
 
-    def __init__(self):
-        config = json.loads((ROOT / ".td" / "config.json").read_text(encoding="utf-8"))
-        runner = config["runners"]["ragnarok"]
-        self.kind = runner["type"]
-        if self.kind not in ("native", "wine"):
-            sys.exit(f"runner '{self.kind}' is not supported; use td's native (Windows) or wine runner")
-        self.root = Path(runner["toolchainRoot"])
-        self.bin = self.root / MSVC / "bin" / "Hostx64" / "x86"
-        crt = self.root / MSVC / "lib" / "x86"
-        if not (crt / "msvcrt.lib").exists() or not (self.root / SDK_LIB / "um" / "x86" / "kernel32.Lib").exists():
-            sys.exit(f"{self.root} has no link libraries (msvcrt.lib, kernel32.lib): run 'td toolchain install' to update it")
+
+class Toolchain:
+    """An MSVC v142 + Windows SDK pair, run natively on Windows or through wine elsewhere.
+
+    vc is the directory holding Tools/MSVC/<version> (a Visual Studio "VC" folder),
+    kits the Windows Kits/10 directory; td's toolchain keeps both under one root.
+    """
+
+    def __init__(self, vc, kits, kind, origin, env=None):
+        self.vc = Path(vc)
+        self.kits = Path(kits)
+        self.kind = kind
+        self.origin = origin
+        self.msvc = self.vc / "Tools" / "MSVC" / MSVC_VERSION
+        self.bin = self.msvc / "bin" / "Hostx64" / "x86"
         self.env = dict(os.environ)
-        self.env.update(runner.get("env", {}))
-        self.env["LIB"] = ";".join(self.path(p) for p in (
-            crt, self.root / MSVC / "atlmfc" / "lib" / "x86",
-            self.root / SDK_LIB / "ucrt" / "x86", self.root / SDK_LIB / "um" / "x86"))
+        self.env.update(env or {})
+
+    def problems(self, link=True):
+        """What this toolchain lacks to compile (and, with link, to link) the exe."""
+        missing = []
+        if not (self.bin / "cl.exe").exists():
+            missing.append(str(self.bin / "cl.exe"))
+        if not (self.kits / "Include" / SDK_VERSION / "um" / "windows.h").exists():
+            missing.append(str(self.kits / "Include" / SDK_VERSION / "um" / "windows.h"))
+        if link:
+            if not (self.msvc / "lib" / "x86" / "msvcrt.lib").exists():
+                missing.append(str(self.msvc / "lib" / "x86" / "msvcrt.lib"))
+            if not (self.kits / "Lib" / SDK_VERSION / "um" / "x86" / "kernel32.Lib").exists():
+                missing.append(str(self.kits / "Lib" / SDK_VERSION / "um" / "x86" / "kernel32.Lib"))
+        return missing
+
+    def expand(self, value, native_paths=False):
+        """Substitute data/compile.json's ${TC}/${SRC} placeholders with this toolchain's paths.
+
+        With td's single-root layout ${TC} is that root; with a Visual Studio install the VC and
+        Windows Kits directories live apart, so ${TC}<sep>VC and ${TC}<sep>Program Files<sep>Windows Kits<sep>10
+        are replaced separately.
+        """
+        path = (lambda p: str(p)) if native_paths else self.path
+        root = self.vc.parent
+        if self.kits != root / "Program Files" / "Windows Kits" / "10":
+            for sep in ("\\", "/"):
+                value = value.replace(f"${{TC}}{sep}Program Files{sep}Windows Kits{sep}10", path(self.kits))
+                value = value.replace(f"${{TC}}{sep}VC", path(self.vc))
+        value = value.replace("${TC}", path(root))
+        source = str(ROOT) if native_paths else self.path(ROOT)
+        return value.replace("${SRC}", source.replace("\\", "/"))
 
     def path(self, p):
         if self.kind == "native":
             return str(p)
         return subprocess.run(["winepath", "-w", str(p)], capture_output=True, text=True, check=True).stdout.strip()
 
+    def lib_env(self):
+        sdk_lib = self.kits / "Lib" / SDK_VERSION
+        return ";".join(self.path(p) for p in (
+            self.msvc / "lib" / "x86", self.msvc / "atlmfc" / "lib" / "x86", sdk_lib / "ucrt" / "x86", sdk_lib / "um" / "x86"))
+
     def run(self, tool, args, env=None, cwd=None):
         exe = str(self.bin / tool)
         command = [exe, *args] if self.kind == "native" else ["wine", exe, *args]
         return subprocess.run(command, env=env or self.env, cwd=cwd, capture_output=True, text=True, errors="replace")
+
+
+def _layout(root, kind, origin, env=None):
+    """td's single-root layout: <root>/VC and <root>/Program Files/Windows Kits/10."""
+    root = Path(root)
+    return Toolchain(root / "VC", root / "Program Files" / "Windows Kits" / "10", kind, origin, env)
+
+
+def _from_td():
+    try:
+        config = json.loads((ROOT / ".td" / "config.json").read_text(encoding="utf-8"))
+        runner = config["runners"]["ragnarok"]
+        return _layout(runner["toolchainRoot"], runner["type"], ".td/config.json", runner.get("env", {}))
+    except (OSError, KeyError, ValueError, TypeError):
+        return None
+
+
+def _windows_kits_roots():
+    roots = []
+    try:
+        import winreg
+        for view in (winreg.KEY_WOW64_32KEY, winreg.KEY_WOW64_64KEY):
+            try:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows Kits\Installed Roots",
+                                    0, winreg.KEY_READ | view) as key:
+                    roots.append(Path(winreg.QueryValueEx(key, "KitsRoot10")[0]))
+            except OSError:
+                pass
+    except ImportError:
+        pass
+    for base in (os.environ.get("ProgramFiles(x86)"), os.environ.get("ProgramFiles")):
+        if base:
+            roots.append(Path(base) / "Windows Kits" / "10")
+    return list(dict.fromkeys(roots))
+
+
+def _from_visual_studio(link):
+    if os.name != "nt":
+        return None
+    kits = _windows_kits_roots()
+    for vc in (path / "VC" for path in _vs_installs()):
+        for kit in kits:
+            candidate = Toolchain(vc, kit, "native", f"Visual Studio ({vc.parent})")
+            if not candidate.problems(link):
+                return candidate
+    return None
+
+
+VS_COMPONENTS = ["Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64", "Microsoft.VisualStudio.Component.Windows10SDK.19041"]
+BUILD_TOOLS_URL = "https://aka.ms/vs/17/release/vs_buildtools.exe"
+
+
+def _vs_installs():
+    base = os.environ.get("ProgramFiles(x86)") or r"C:\Program Files (x86)"
+    vswhere = Path(base) / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
+    if not vswhere.exists():
+        return []
+    result = subprocess.run([str(vswhere), "-all", "-products", "*", "-format", "json", "-utf8"],
+                            capture_output=True, text=True, encoding="utf-8", errors="replace")
+    try:
+        return [Path(i["installationPath"]) for i in json.loads(result.stdout or "[]") if i.get("installationPath")]
+    except ValueError:
+        return []
+
+
+def install_build_tools():
+    """Add the MSVC v142 14.29 + Windows SDK 19041 components with the Visual Studio Installer.
+
+    Modifies an existing Visual Studio / Build Tools instance when there is one, otherwise downloads the
+    Build Tools bootstrapper and installs a new instance. The installer asks for elevation (UAC) itself.
+    """
+    add = [arg for component in VS_COMPONENTS for arg in ("--add", component)]
+    installs = _vs_installs()
+    installer = Path(os.environ.get("ProgramFiles(x86)") or r"C:\Program Files (x86)") / "Microsoft Visual Studio" / "Installer" / "setup.exe"
+    if installs and installer.exists():
+        command = [str(installer), "modify", "--installPath", str(installs[0]), *add, "--passive", "--norestart"]
+        print(f"adding the components to {installs[0]} with the Visual Studio Installer...", flush=True)
+    else:
+        import tempfile
+        import urllib.request
+        bootstrapper = Path(tempfile.gettempdir()) / "vs_buildtools.exe"
+        print(f"downloading {BUILD_TOOLS_URL}...", flush=True)
+        urllib.request.urlretrieve(BUILD_TOOLS_URL, bootstrapper)
+        command = [str(bootstrapper), *add, "--passive", "--wait", "--norestart"]
+        print("installing Visual Studio Build Tools (several GB, this takes a while)...", flush=True)
+    code = subprocess.run(command).returncode
+    # 3010: success, restart required
+    if code not in (0, 3010):
+        raise ToolchainNotFound(f"the Visual Studio Installer failed with exit code {code}")
+
+
+def _not_found_message(td, link):
+    hint = ""
+    if td is not None:
+        hint = f"\n.td/config.json points to {td.vc.parent}, which lacks:\n  " + "\n  ".join(td.problems(link))
+    return (
+        f"no MSVC {MSVC_VERSION} (v142) + Windows SDK {SDK_VERSION} toolchain found.{hint}\n"
+        "Either install them with the Visual Studio Installer (Build Tools 2019 or later):\n"
+        f"  vs_buildtools.exe --add {VS_COMPONENTS[0]} --add {VS_COMPONENTS[1]}\n"
+        "or pass --toolchain DIR / set RODECOMP_TOOLCHAIN to a td-layout toolchain directory\n"
+        "(e.g. one installed by `td toolchain install`).")
+
+
+def find_toolchain(explicit=None, link=True, offer_install=True):
+    """The first usable toolchain: explicit path / RODECOMP_TOOLCHAIN, then .td/config.json, then Visual Studio.
+
+    Without one, on an interactive Windows console, offer to install the Build Tools components.
+    """
+    explicit = explicit or os.environ.get("RODECOMP_TOOLCHAIN")
+    if explicit:
+        tc = _layout(explicit, "native" if os.name == "nt" else "wine", f"--toolchain/RODECOMP_TOOLCHAIN ({explicit})")
+        missing = tc.problems(link)
+        if missing:
+            raise ToolchainNotFound(f"{explicit} is not a usable toolchain, missing:\n  " + "\n  ".join(missing))
+        return tc
+
+    td = _from_td()
+    if td is not None:
+        if td.kind not in ("native", "wine"):
+            raise ToolchainNotFound(f"td runner '{td.kind}' is not supported; use td's native (Windows) or wine runner")
+        if not td.problems(link):
+            return td
+
+    vs = _from_visual_studio(link)
+    if vs is not None:
+        return vs
+
+    message = _not_found_message(td, link)
+    if not (offer_install and os.name == "nt" and sys.stdin.isatty()):
+        raise ToolchainNotFound(message)
+    print(message, file=sys.stderr)
+    try:
+        answer = input(f"\nInstall MSVC {MSVC_VERSION} + Windows SDK {SDK_VERSION} now with the Visual Studio Installer? [y/N] ")
+    except EOFError:
+        answer = ""
+    if answer.strip().lower() not in ("y", "yes"):
+        raise ToolchainNotFound("toolchain not installed")
+    install_build_tools()
+    vs = _from_visual_studio(link)
+    if vs is None:
+        raise ToolchainNotFound("the installer finished but the toolchain is still not found:\n" + message)
+    return vs
 
 
 def build_import_libs(tc, out_dir):
@@ -103,14 +294,9 @@ def exe_units(config):
 
 
 def compile_units(tc, config, out_dir, jobs):
-    root = tc.path(ROOT).replace("\\", "/")
-
-    def expand(value):
-        return value.replace("${TC}", tc.path(tc.root)).replace("${SRC}", root)
-
     env = dict(tc.env)
     for key, value in config["env"].items():
-        env[key] = expand(value)
+        env[key] = tc.expand(value)
 
     def stamp(path):
         try:
@@ -129,7 +315,7 @@ def compile_units(tc, config, out_dir, jobs):
         obj = out_dir / (unit.replace("/", "_") + ".obj")
         deps_file = obj.with_suffix(".deps.json")
         extra = [f"/I{tc.path(ROOT / directory)}" for directory in includes]
-        args = [*(expand(a) for a in config["shapes"][shape]), *extra, "/Z7", f"/Fo{tc.path(obj)}", tc.path(ROOT / unit)]
+        args = [*(tc.expand(a) for a in config["shapes"][shape]), *extra, "/Z7", f"/Fo{tc.path(obj)}", tc.path(ROOT / unit)]
         key = "\x00".join(args)
         try:
             record = json.loads(deps_file.read_text(encoding="utf-8"))
@@ -244,13 +430,19 @@ def main():
     parser.add_argument("--force-multiple", action="store_true",
                         help="link despite duplicate definitions (/FORCE:MULTIPLE)")
     parser.add_argument("--link-only", action="store_true", help="reuse the objects from a previous run")
+    parser.add_argument("--toolchain", help="toolchain directory (td layout); default: RODECOMP_TOOLCHAIN, "
+                                            ".td/config.json, then a Visual Studio install")
     args = parser.parse_args()
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     config = json.loads((ROOT / "data" / "compile.json").read_text(encoding="utf-8"))
-    tc = Toolchain()
-    print(f"toolchain: {tc.root} ({tc.kind})", flush=True)
+    try:
+        tc = find_toolchain(args.toolchain)
+    except ToolchainNotFound as error:
+        sys.exit(str(error))
+    tc.env["LIB"] = tc.lib_env()
+    print(f"toolchain: {tc.msvc} + {tc.kits} ({tc.kind}, from {tc.origin})", flush=True)
 
     if args.link_only:
         objects = [out_dir / (unit.replace("/", "_") + ".obj") for unit in exe_units(config)]

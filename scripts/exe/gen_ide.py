@@ -2,10 +2,14 @@
 
     python scripts/exe/gen_ide.py
 
-Writes, all under build/ (git-ignored, regenerate after `td sync`):
+Needs no td. System headers come from the toolchain scripts/exe/build_exe.py would build with (--toolchain DIR,
+RODECOMP_TOOLCHAIN, .td/config.json, then a Visual Studio install with MSVC v142 14.29 + Windows SDK 10.0.19041);
+without one the files are still written, only IntelliSense lacks the system headers until it is installed.
+
+Writes, all under build/ (git-ignored, regenerate after `td sync` or a data/compile.json change):
 
   build/Ragexe.sln, build/Ragexe.vcxproj (+ .filters)
-      A Visual Studio "Makefile" project. Build runs scripts/exe/build_exe.py (what `td compile` runs), Rebuild
+      A Visual Studio "Makefile" project. Build runs scripts/exe/build_exe.py, Rebuild
       runs it after deleting build/exe, Clean deletes build/exe, and Debug starts build/exe/Ragexe.exe. Every
       unit appears in Solution Explorer under its folder; IntelliSense gets the defines and include paths of
       each unit's flag set.
@@ -15,6 +19,7 @@ Writes, all under build/ (git-ignored, regenerate after `td sync`):
 The build itself stays build_exe.py; these files only call it.
 """
 
+import argparse
 import json
 import os
 import re
@@ -36,16 +41,29 @@ def guid(text):
     return "{" + str(uuid.uuid5(NS, text)).upper() + "}"
 
 
-def toolchain_root():
+def find_toolchain(explicit):
     try:
-        config = json.loads((ROOT / ".td" / "config.json").read_text(encoding="utf-8"))
-        return config["runners"]["ragnarok"]["toolchainRoot"]
-    except (OSError, KeyError, ValueError):
-        sys.exit("no .td/config.json toolchain: run 'td setup' / 'td toolchain install' first")
+        return build_exe.find_toolchain(explicit, link=False)
+    except build_exe.ToolchainNotFound as error:
+        print(f"warning: {error}\nIntelliSense will lack the system headers; rerun this script once a toolchain is installed.",
+              file=sys.stderr)
+        return None
 
 
 def expand(value, tc):
-    return value.replace("${TC}", tc).replace("${SRC}", str(ROOT).replace("\\", "/"))
+    if tc is not None:
+        return tc.expand(value, native_paths=True)
+    return value.replace("${SRC}", str(ROOT).replace("\\", "/"))
+
+
+def system_includes(config, tc):
+    if tc is None:
+        return []
+    return [p for p in expand(config["env"]["INCLUDE"], tc).split(";") if p]
+
+
+def compiler(config, tc):
+    return expand(config["compiler"], tc) if tc is not None else "cl.exe"
 
 
 def defines_and_includes(flags):
@@ -62,12 +80,12 @@ def defines_and_includes(flags):
 
 
 def compile_commands(config, units, tc):
-    compiler = expand(config["compiler"], tc)
+    cl = compiler(config, tc)
     # cl.exe reads the system headers from %INCLUDE%; tools reading this database don't, so pass them explicitly
-    system = [f"/imsvc{p}" for p in expand(config["env"]["INCLUDE"], tc).split(";") if p]
+    system = [f"/imsvc{p}" for p in system_includes(config, tc)]
     entries = []
     for unit, (shape, extra) in sorted(units.items()):
-        args = [compiler, *(expand(a, tc) for a in config["shapes"][shape]), *system]
+        args = [cl, *(expand(a, tc) for a in config["shapes"][shape]), *system]
         args += [f"/I{(ROOT / d).as_posix()}" for d in extra]
         args.append((ROOT / unit).as_posix())
         entries.append({"directory": ROOT.as_posix(), "file": (ROOT / unit).as_posix(), "arguments": args})
@@ -82,11 +100,12 @@ def rel(path):
 
 
 def vcxproj(config, units, tc):
-    system_includes = expand(config["env"]["INCLUDE"], tc)
+    system = escape(";".join(system_includes(config, tc)))
     python = sys.executable
     script = rel("scripts/exe/build_exe.py")
     exe_dir = "$(SolutionDir)exe"
-    build_cmd = f'"{python}" "$(SolutionDir){script}" --out "{exe_dir}"'
+    toolchain = f' --toolchain "{tc.vc.parent}"' if tc is not None and tc.origin.startswith("--toolchain") else ""
+    build_cmd = f'"{python}" "$(SolutionDir){script}" --out "{exe_dir}"{toolchain}'
     clean_cmd = f'if exist "{exe_dir}" rmdir /s /q "{exe_dir}"'
 
     # IntelliSense: per-unit defines/includes, grouped by flag set
@@ -142,8 +161,8 @@ def vcxproj(config, units, tc):
     <NMakePreprocessorDefinitions>{escape(";".join(all_defines))}</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath>{escape(";".join(all_includes))}</NMakeIncludeSearchPath>
     <AdditionalOptions>/std:c++20 /Zc:__cplusplus</AdditionalOptions>
-    <IncludePath>{escape(system_includes)}</IncludePath>
-    <ExternalIncludePath>{escape(system_includes)}</ExternalIncludePath>
+    <IncludePath>{system}</IncludePath>
+    <ExternalIncludePath>{system}</ExternalIncludePath>
     <LocalDebuggerCommand>{exe_dir}\\{NAME}.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>{exe_dir}\\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
@@ -214,9 +233,14 @@ EndGlobal
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--toolchain", help="toolchain directory (td layout), passed on to build_exe.py")
+    args = parser.parse_args()
     config = json.loads((ROOT / "data" / "compile.json").read_text(encoding="utf-8"))
     units = build_exe.exe_units(config)
-    tc = toolchain_root()
+    tc = find_toolchain(args.toolchain)
+    if tc is not None:
+        print(f"toolchain: {tc.msvc} + {tc.kits} (from {tc.origin})")
     BUILD.mkdir(exist_ok=True)
     db = compile_commands(config, units, tc)
     sln, n_units, n_headers = vcxproj(config, units, tc)
