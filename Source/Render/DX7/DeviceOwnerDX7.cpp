@@ -126,7 +126,6 @@ DeviceOwnerDX7::~DeviceOwnerDX7() {
 // OFFSET: 0x005498A0
 // FUNCTION: fn_01894
 HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) {
-  const bool buffered = (flags & 2) != 0;
   DDSURFACEDESC2 description;
   HRESULT status;
 
@@ -135,7 +134,11 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     this->width = this->source.right;
     this->height = this->source.bottom;
     this->destination = this->source;
-    const DWORD modeFlags = this->width == 320 && this->height == 200 && mode->ddpfPixelFormat.dwRGBBitCount == 8 ? DDSDM_STANDARDVGAMODE : 0;
+    DWORD modeFlags = 0;
+
+    if (this->width == 320 && this->height == 200 && mode->ddpfPixelFormat.dwRGBBitCount == 8) {
+      modeFlags = DDSDM_STANDARDVGAMODE;
+    }
 
     if (FAILED(this->draw->SetDisplayMode(this->width, this->height, mode->ddpfPixelFormat.dwRGBBitCount, mode->dwRefreshRate, modeFlags))) {
       return DeviceError(9);
@@ -144,7 +147,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     SurfaceDescription(&description, DDSD_CAPS, 0);
     description.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
 
-    if (buffered) {
+    if (flags & 2) {
       description.dwFlags |= DDSD_BACKBUFFERCOUNT;
       description.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
       description.dwBackBufferCount = 1;
@@ -156,7 +159,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       return SurfaceError(status, 7);
     }
 
-    if (buffered) {
+    if (flags & 2) {
       DDSCAPS2 caps{DDSCAPS_BACKBUFFER};
       status = this->primary->GetAttachedSurface(&caps, &this->backBuffer);
 
@@ -164,36 +167,48 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
         return SurfaceError(status, 10);
       }
     }
+
+    IDirectDrawClipper* clipper;
+
+    if (FAILED(this->draw->CreateClipper(0, &clipper, nullptr))) {
+      return DeviceError(8);
+    }
+
+    clipper->SetHWnd(0, this->window);
+    this->primary->SetClipper(clipper);
+
+    if (clipper) {
+      clipper->Release();
+      clipper = nullptr;
+    }
   } else {
     GetClientRect(this->window, &this->source);
     this->width = this->source.right;
     this->height = this->source.bottom;
     this->destination = ClientRectangle(this->window);
     SurfaceDescription(&description, DDSD_CAPS, 0);
-    description.ddsCaps.dwCaps = buffered ? DDSCAPS_PRIMARYSURFACE : DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
+    description.ddsCaps.dwCaps = (flags & 2) ? DDSCAPS_PRIMARYSURFACE : DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
       return SurfaceError(status, 7);
     }
-  }
 
-  IDirectDrawClipper* clipper;
+    IDirectDrawClipper* clipper;
 
-  if (FAILED(this->draw->CreateClipper(0, &clipper, nullptr))) {
-    return DeviceError(8);
-  }
+    if (FAILED(this->draw->CreateClipper(0, &clipper, nullptr))) {
+      return DeviceError(8);
+    }
 
-  clipper->SetHWnd(0, this->window);
-  this->primary->SetClipper(clipper);
+    clipper->SetHWnd(0, this->window);
+    this->primary->SetClipper(clipper);
 
-  if (clipper) {
-    clipper->Release();
-    clipper = nullptr;
-  }
+    if (clipper) {
+      clipper->Release();
+      clipper = nullptr;
+    }
 
-  if (!(flags & 1)) {
-    if (buffered) {
+    if (flags & 2) {
       description.dwWidth = this->width;
       description.dwHeight = this->height;
       description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
@@ -221,7 +236,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   ChannelMask(this->green, this->greenMask);
   ChannelMask(this->blue, this->blueMask);
   ChannelMask(this->alpha, this->alphaMask);
-  this->renderTarget = buffered ? this->backBuffer : this->primary;
+  this->renderTarget = (flags & 2) ? this->backBuffer : this->primary;
   this->renderTarget->AddRef();
   SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
   description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
