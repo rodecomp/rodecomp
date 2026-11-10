@@ -517,7 +517,7 @@ void CGameMode::SetDragIds(int source, int id) {
 
 // OFFSET: 0x00CED190
 // FUNCTION: fn_21363
-void CGameMode::UpdatePetFriendlyNoticeIds(int id, bool add) {
+__declspec(noinline) void CGameMode::UpdatePetFriendlyNoticeIds(int id, bool add) {
   if (add == true) {
     this->petFriendlyNoticeIds.insert(id);
   } else {
@@ -5010,15 +5010,15 @@ int ConfirmGameModeAction96() {
 // OFFSET: 0x00CF1060
 // FUNCTION: fn_21425
 ReplayTime CGameMode::StopReplayRecording() {
-  if (Replay::Instance().state != 2) {
-    return ReplayTime();
+  if (Replay::Instance().state == 2) {
+    Replay::Instance().SetState(1);
+    Replay::Instance().UpdateDuration();
+    const ReplayTime duration = Replay::Instance().Duration();
+    Replay::Instance().CloseFile();
+    return duration;
   }
 
-  Replay::Instance().SetState(1);
-  Replay::Instance().UpdateDuration();
-  const ReplayTime duration = Replay::Instance().Duration();
-  Replay::Instance().CloseFile();
-  return duration;
+  return ReplayTime();
 }
 
 #pragma pack(push, 1)
@@ -5227,10 +5227,7 @@ void CGameMode::UpdatePetFriendlyWindow(int previousFriendly) {
   }
 
   if (previousFriendly < g_session.m_petFriendly && g_session.m_petFriendly > 99) {
-    auto it = this->petFriendlyNoticeIds.find(g_session.petGid);
-    if (it != this->petFriendlyNoticeIds.end()) {
-      this->petFriendlyNoticeIds.erase(it);
-    }
+    this->UpdatePetFriendlyNoticeIds(g_session.petGid, false);
   }
 }
 
