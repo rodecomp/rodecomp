@@ -367,11 +367,10 @@ void UIAchListWnd::Paint() {
         0, this->rowHeight * row,
         AchievementBitmap(flags[1] == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
       );
+    } else if (flags[1] == 1) {
+      this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
     } else {
-      this->DrawBitmap(
-        0, this->rowHeight * row,
-        AchievementBitmap(flags[1] == 1 ? "유저인터페이스\\achievement_re\\list_complete_out.bmp" : "유저인터페이스\\achievement_re\\list_out.bmp"), false
-      );
+      this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
     }
 
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\achievement_re\\icon_" + info.iconName + ".bmp").c_str())));
@@ -379,7 +378,7 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(8, this->rowHeight * row + 3, icon, true);
     }
 
-    if (g_session.HasTrackedAchievement(this->ids[this->firstRow + row])) {
+    if (g_session.HasTrackedAchievement(this->ids[this->firstRow + row]) == true) {
       this->DrawBitmap(8, this->rowHeight * row + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
     }
 
@@ -390,14 +389,12 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(250, this->rowHeight * row + 5, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
     }
 
-    if (HasReward(info) && record.rewarded == 0) {
-      this->DrawBitmap(
-        263, this->rowHeight * row + 49,
-        AchievementBitmap(
-          flags[1] == 1 ? "유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp" : "유저인터페이스\\achievement_re\\list_rewardbox_default.bmp"
-        ),
-        true
-      );
+    if (HasReward(info) == true && record.rewarded == 0) {
+      if (flags[1] == 1) {
+        this->DrawBitmap(263, this->rowHeight * row + 49, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
+      } else {
+        this->DrawBitmap(263, this->rowHeight * row + 49, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_default.bmp"), true);
+      }
     }
 
     if (flags[1] == 1) {

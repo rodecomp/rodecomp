@@ -1661,7 +1661,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
   const char* current = text.c_str();
   const char* end = current + std::strlen(current);
 
-  while (current != end) {
+  while (end != current) {
     if (*current == '\n') {
       lines->push_back(line);
       if (colorCode.empty()) {
@@ -1689,7 +1689,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
         currentBold = 1;
         line.append(current, 2);
         current += 2;
-        if (current == end) {
+        if (end == current) {
           lines->push_back(line);
         }
         continue;
@@ -1699,7 +1699,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
         currentBold = bold;
         line.append(current, 3);
         current += 3;
-        if (current == end) {
+        if (end == current) {
           lines->push_back(line);
         }
         continue;
@@ -1713,7 +1713,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
         colorCode = color;
         line.append(current, 7);
         current += 7;
-        if (current == end) {
+        if (end == current) {
           lines->push_back(line);
         }
         continue;
@@ -1721,17 +1721,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
     }
 
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const std::string character(current, next);
-    const char* const measured = character.c_str();
-    int characterWidth = 0;
-    if (measured) {
-      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
-      if (bytes) {
-        TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, currentBold, 0);
-        characterWidth = context.Measure(measured, bytes).cx;
-      }
-    }
+    const int characterWidth = this->TextWidth(std::string(current, next).c_str(), 0, family, height, currentBold, 0);
 
     if (maxWidth < characterWidth + width) {
       lines->push_back(line);
@@ -1747,7 +1737,7 @@ std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::stri
     width += characterWidth;
     line.append(current, next - current);
     current = next;
-    if (current == end) {
+    if (end == current) {
       lines->push_back(line);
     }
   }
