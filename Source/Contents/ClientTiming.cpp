@@ -488,7 +488,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
 // OFFSET: 0x00DDE770
 // FUNCTION: fn_23399
 const char* CSession::GetMapDisplayName(const char* mapName) {
-  return g_mapInfoMgr->GetDisplayName(mapName);
+  CMapInfoMgr* mapInfoMgr = g_mapInfoMgr;
+  return mapInfoMgr->GetDisplayName(mapName);
 }
 
 // OFFSET: 0x00DDE800
