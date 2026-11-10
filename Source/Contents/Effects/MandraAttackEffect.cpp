@@ -154,8 +154,8 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
       break;
   }
 
-  this->SetSpriteName(ResourceMgr::Instance(), sprite);
-  this->SetActionName(ResourceMgr::Instance(), action);
+  this->SetSpriteName(sprite);
+  this->SetActionName(action);
   vector3d target{0.0f, 0.0f, 0.0f};
   this->GetTargetPos(b, target);
   this->render.position.x = target.x;
