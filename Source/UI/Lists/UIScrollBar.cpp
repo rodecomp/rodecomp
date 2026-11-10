@@ -1285,17 +1285,16 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
     return y;
   }
 
-  for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it, ++this->itemCount) {
-    UITreeNode* node = *it;
+  for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++this->itemCount, ++it) {
     int labelX = x;
-    if (node->collapseButton) {
-      labelX = node->collapseButton->BitmapWidth() + gap + x;
+    if ((*it)->collapseButton) {
+      labelX = (*it)->collapseButton->BitmapWidth() + gap + x;
     }
 
     int bottom = y;
     if (this->itemCount >= first && this->itemCount < last) {
-      if (node->icon > -1) {
-        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(node->icons[node->icon].c_str())));
+      if ((*it)->icon > -1) {
+        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((*it)->icons[(*it)->icon].c_str())));
         bottom = bitmap->image.height + y;
         if (bottom >= this->geometry.height) {
           continue;
@@ -1308,27 +1307,27 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
         continue;
       }
 
-      UITVTextButton* label = node->labelButton;
+      UITVTextButton* label = (*it)->labelButton;
       label->drawBackground = 0;
       label->Invalidate();
-      if (this->selectedNode && this->selectedNode == node) {
-        node->labelButton->drawBackground = 1;
-        node->labelButton->Invalidate();
+      if (this->selectedNode && this->selectedNode == *it) {
+        (*it)->labelButton->drawBackground = 1;
+        (*it)->labelButton->Invalidate();
       }
 
-      label = node->labelButton;
+      label = (*it)->labelButton;
       label->highlighted = 0;
       label->m_highlightColor = 0;
       label->Invalidate();
       if (this->mouseInside && this->dragNode && this->dropNode && this->highlightColor) {
-        if (this->dropNode == node) {
-          label = node->labelButton;
+        if (this->dropNode == *it) {
+          label = (*it)->labelButton;
           label->highlighted = 1;
           label->m_highlightColor = this->highlightColor;
           label->Invalidate();
         }
-        if (node->parent && node->parent->labelButton && node->parent->labelButton->highlighted) {
-          label = node->labelButton;
+        if ((*it)->parent && (*it)->parent->labelButton && (*it)->parent->labelButton->highlighted) {
+          label = (*it)->labelButton;
           label->m_highlightColor = this->highlightColor;
           label->highlighted = 1;
           label->Invalidate();
@@ -1340,8 +1339,8 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
         maxWidth -= this->verticalBar->geometry.width;
       }
 
-      node->labelButton->Move(labelX, y + 2);
-      label = node->labelButton;
+      (*it)->labelButton->Move(labelX, y + 2);
+      label = (*it)->labelButton;
       const int height = label->geometry.height;
       if (maxWidth != label->geometry.width && std::strcmp(label->label.c_str(), "") != 0) {
         label->displayText = label->label;
@@ -1360,13 +1359,13 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
         label->UIWindow::Resize(width, height);
       }
 
-      if (this->editNode == node) {
-        node->labelButton->Move(-100, -100);
-        this->edit->Resize(node->labelButton->geometry.width, node->labelButton->geometry.height);
+      if (this->editNode == *it) {
+        (*it)->labelButton->Move(-100, -100);
+        this->edit->Resize((*it)->labelButton->geometry.width, (*it)->labelButton->geometry.height);
         this->edit->Move(labelX, y + 2);
       }
 
-      rowHeight = node->labelButton->geometry.height + this->itemPadding;
+      rowHeight = (*it)->labelButton->geometry.height + this->itemPadding;
       this->itemHeight = std::max(this->itemHeight, rowHeight);
     }
 
@@ -1374,32 +1373,32 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
       continue;
     }
 
-    if (node->expanded == 0) {
+    if ((*it)->expanded == 0) {
       if (this->itemCount >= first && this->itemCount < last) {
-        if (node->expandButton) {
-          node->expandButton->Move(x, y + 4);
+        if ((*it)->expandButton) {
+          (*it)->expandButton->Move(x, y + 4);
         }
         y += rowHeight;
       }
-    } else if (node->expanded == 1) {
+    } else if ((*it)->expanded == 1) {
       if (this->itemCount >= first && this->itemCount < last) {
-        if (node->collapseButton) {
-          node->collapseButton->Move(x, y + 4);
+        if ((*it)->collapseButton) {
+          (*it)->collapseButton->Move(x, y + 4);
         }
         y += rowHeight;
         bottom += rowHeight;
       }
 
-      if (static_cast<int>(node->children.size()) > 0 && bottom < this->geometry.height) {
-        if (node->collapseButton) {
-          x += node->collapseButton->BitmapWidth() + gap;
+      if (static_cast<int>((*it)->children.size()) > 0 && bottom < this->geometry.height) {
+        if ((*it)->collapseButton) {
+          x += (*it)->collapseButton->BitmapWidth() + gap;
         }
-        const int next = this->LayoutNodes(node->children, x, y);
+        const int next = this->LayoutNodes((*it)->children, x, y);
         if (this->itemCount >= first && this->itemCount < last) {
           y = next;
         }
-        if (node->collapseButton) {
-          x -= node->collapseButton->BitmapWidth() + gap;
+        if ((*it)->collapseButton) {
+          x -= (*it)->collapseButton->BitmapWidth() + gap;
         }
       }
     }
