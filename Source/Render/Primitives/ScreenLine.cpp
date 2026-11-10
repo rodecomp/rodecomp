@@ -151,7 +151,7 @@ void UINewChatWnd::DrawTransBox() {
 
   for (int i = 0; i < static_cast<int>(this->m_tabControl->labels.size()); ++i) {
     const int inactive = i != this->m_currentTab;
-    DrawAlphaRectangle(x + 1 + this->m_tabWidth * i, y + 1 + inactive, this->m_tabWidth - 1, this->m_inputOffsetY - inactive, inactive ? 0x99000000 : 0x66000000);
+    DrawAlphaRectangle(x + 1 + this->m_tabWidth * i, y + 1 + inactive, this->m_tabWidth - 1, this->m_inputOffsetY - inactive, i == this->m_currentTab ? 0x66000000 : 0x99000000);
   }
   DrawAlphaRectangle(this->m_inputX + 1, this->m_inputY + 1, this->m_listWidth - 2, this->m_listHeight - 1, this->m_listColor);
 }
