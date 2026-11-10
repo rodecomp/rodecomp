@@ -109,30 +109,28 @@ void CShadowExceedNew::OnProcess() {
   this->drawBackEmitters = static_cast<unsigned int>(direction - 2) < 4;
 
   for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    emitter->position.x = x + emitter->offsetX;
-    emitter->position.y = y + emitter->offsetY;
-    emitter->position.z = z + emitter->offsetZ;
-    emitter->m_flipX = direction == 0 || direction == 1;
-    if (!emitter->Process(0.0f, 0.0f, 0.0f)) {
+    (*it)->position.x = x + (*it)->offsetX;
+    (*it)->position.y = y + (*it)->offsetY;
+    (*it)->position.z = z + (*it)->offsetZ;
+    (*it)->m_flipX = direction == 0 || direction == 1;
+    if ((*it)->Process(0.0f, 0.0f, 0.0f)) {
+      ++it;
+    } else {
       FreeParticle(*it);
       it = this->frontEmitters.erase(it);
-    } else {
-      ++it;
     }
   }
 
   for (auto it = this->backEmitters.begin(); it != this->backEmitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    emitter->position.x = x + emitter->offsetX;
-    emitter->position.y = y + emitter->offsetY;
-    emitter->position.z = z + emitter->offsetZ;
-    emitter->m_flipX = direction == 4 || direction == 5;
-    if (!emitter->Process(0.0f, 0.0f, 0.0f)) {
+    (*it)->position.x = x + (*it)->offsetX;
+    (*it)->position.y = y + (*it)->offsetY;
+    (*it)->position.z = z + (*it)->offsetZ;
+    (*it)->m_flipX = direction == 4 || direction == 5;
+    if ((*it)->Process(0.0f, 0.0f, 0.0f)) {
+      ++it;
+    } else {
       FreeParticle(*it);
       it = this->backEmitters.erase(it);
-    } else {
-      ++it;
     }
   }
 }
