@@ -120,7 +120,7 @@ PathNode* CPathFinder::FindOrCreateNode(int x, int y) {
   node->x = x;
   node->y = y;
   node->state = 0;
-  this->nodeMap[key] = node;
+  this->nodeMap[y * this->attr->width + x] = node;
   return node;
 }
 
