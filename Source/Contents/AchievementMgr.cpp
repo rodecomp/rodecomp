@@ -301,7 +301,8 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std:
   }
 
   std::vector<AchievementReward>& rewards = found->second.rewards;
-  if (std::find_if(rewards.begin(), rewards.end(), [text](const AchievementReward& reward) { return reward.text == text; }) == rewards.end()) {
+  const auto end = rewards.end();
+  if (std::find_if(rewards.begin(), end, [text](const AchievementReward& reward) { return text.compare(reward.text) == 0; }) == end) {
     const AchievementReward reward(text, unknown0018, unknown001C);
     rewards.push_back(reward);
     return std::make_pair(true, "good");
