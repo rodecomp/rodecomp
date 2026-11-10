@@ -22,14 +22,14 @@ bool CCharacterRender::ProjectCell(
 ) const {
   const float depthBias = scale / g_heightScale * g_cameraScaleX;
   const double scaleY = scale * cell.scaleY;
-  const double scaleX = scale * cell.scaleX;
   const float top = (cell.y + offsetY) * scaleY + y;
-  const float bottom = ((image.doubleHeight + 1) * image.height + cell.y + offsetY) * scaleY + y + 1.0;
+  const float bottom = ((static_cast<short>(image.doubleHeight) + 1) * image.height + cell.y + offsetY) * scaleY + y + 1.0;
+  const double scaleX = scale * cell.scaleX;
   float left;
   float right;
 
   if (cell.mirrored & 1) {
-    left = ((image.doubleWidth + 1) * image.width + cell.x + offsetX) * scaleX + x;
+    left = ((static_cast<short>(image.doubleWidth) + 1) * image.width + cell.x + offsetX) * scaleX + x;
     right = (offsetX + cell.x) * scaleX + x + 1.0;
 
     if (top >= g_renderer->viewport.height || bottom <= 0.0f || right >= g_renderer->viewport.width || left <= 0.0f) {
@@ -37,7 +37,7 @@ bool CCharacterRender::ProjectCell(
     }
   } else {
     left = (cell.x + offsetX) * scaleX + x;
-    right = ((image.doubleWidth + 1) * image.width + cell.x + offsetX) * scaleX + x + 1.0;
+    right = ((static_cast<short>(image.doubleWidth) + 1) * image.width + cell.x + offsetX) * scaleX + x + 1.0;
 
     if (top >= g_renderer->viewport.height || bottom <= 0.0f || left >= g_renderer->viewport.width || right <= 0.0f) {
       return false;
@@ -57,10 +57,10 @@ bool CCharacterRender::ProjectCell(
   bounds.top = static_cast<LONG>(top);
   bounds.right = static_cast<LONG>(right);
   bounds.bottom = static_cast<LONG>(bottom);
-  color.alpha = static_cast<std::uint8_t>((cell.color >> 24) * 255.0f / 255.0f);
-  color.red = static_cast<std::uint8_t>((cell.color & 0xFF) * 255.0f / 255.0f);
-  color.green = static_cast<std::uint8_t>((cell.color >> 8 & 0xFF) * 255.0f / 255.0f);
-  color.blue = static_cast<std::uint8_t>((cell.color >> 16 & 0xFF) * 255.0f / 255.0f);
+  color.alpha = static_cast<std::uint8_t>(static_cast<std::uint8_t>(cell.color >> 24) * 255.0f / 255.0f);
+  color.red = static_cast<std::uint8_t>(GetRValue(cell.color) * 255.0f / 255.0f);
+  color.green = static_cast<std::uint8_t>(GetGValue(cell.color) * 255.0f / 255.0f);
+  color.blue = static_cast<std::uint8_t>(GetBValue(cell.color) * 255.0f / 255.0f);
   quad.color = color;
 
   return true;
