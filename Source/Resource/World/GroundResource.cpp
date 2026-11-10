@@ -5,7 +5,11 @@
 
 // OFFSET: 0x0074E1C0
 // FUNCTION: fn_07906
-CGndRes::CGndRes() : loaded(0), width(0), height(0), cellSize(10.0f) {
+CGndRes::CGndRes() {
+  this->width = 0;
+  this->height = 0;
+  this->cellSize = 10.0f;
+  this->loaded = 0;
 }
 
 // OFFSET: 0x0074E390
