@@ -41,7 +41,7 @@ void CStormKickEffect::CreateStorms(int layer) {
     particle->groupIndex = 1;
     particle->speedParameter = 40.0f;
     particle->alpha = 0;
-    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
+    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
     particle->scale = 2.0f;
     particle->animationParameter = 50.0f;
     float* motion = reinterpret_cast<float*>(particle->animationParameters);
