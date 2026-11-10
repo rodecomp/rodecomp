@@ -2268,7 +2268,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     break;
   }
 
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     switch (item.identity[0]) {
     case 10:
     case 16:
@@ -2277,7 +2277,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       mode->SendMsg(MM_WEAR_EQUIP_ARROW, drag->id, item.identity[2], 0, 0);
       break;
     default:
-      if (fromStorage) {
+      if (fromStorage == true) {
         mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
       } else if (item.identified && item.identity[2] != 0 && item.identity[3] == 0) {
         mode->SendMsg(MM_WEAR_EQUIP, drag->id, item.identity[2], 0, 0);
