@@ -8,6 +8,16 @@
 
 #include <cstring>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleAlive(const CParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x00B4FAF0
 // FUNCTION: fn_19008
 CEmitterEffect::CEmitterEffect()
@@ -59,13 +69,13 @@ void CEmitterEffect::InitParticle(CParticle* particle) {
   particle->motionVelocity.x = RandomRange(this->velocityMin.x, this->velocityMax.x);
   particle->motionVelocity.y = RandomRange(this->velocityMin.y, this->velocityMax.y);
   particle->motionVelocity.z = RandomRange(this->velocityMin.z, this->velocityMax.z);
-  const float x = RandomRange(-this->spread.x, this->spread.x);
-  const float y = RandomRange(-this->spread.y, this->spread.y) - 10.0f;
-  const float z = RandomRange(-this->spread.z, this->spread.z);
-  particle->offsetX = 0.0f + x;
-  particle->offsetY = 0.0f + y;
+  const float x = 0.0f + RandomRange(-this->spread.x, this->spread.x);
+  const float y = 0.0f + (RandomRange(-this->spread.y, this->spread.y) - 10.0f);
+  const float z = 0.0f + RandomRange(-this->spread.z, this->spread.z);
+  particle->offsetX = x;
+  particle->offsetY = y;
   particle->alpha = 0;
-  particle->offsetZ = 0.0f + z;
+  particle->offsetZ = z;
   particle->elapsedFrames = 0;
 
   if (this->sourceBlend != -1) {
@@ -80,14 +90,13 @@ void CEmitterEffect::InitParticle(CParticle* particle) {
 // OFFSET: 0x00B502B0
 // FUNCTION: fn_19014
 void CEmitterEffect::ResetParticles() {
-  if (this->fixedAlpha == 1 && this->rateMin == 0.0f && this->rateMax == 0.0f) {
+  if (this->fixedAlpha == 1 && 0.0f == this->rateMin && 0.0f == this->rateMax) {
     this->pool.ActivateAll();
   }
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     this->InitParticle(particle);
-    if (this->pool.IsActive(particle) == true &&
-        (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames) || this->fixedAlpha == 1)) {
+    if (this->pool.IsActive(particle) == true && (IsParticleAlive(particle) == true || this->fixedAlpha == 1)) {
       particle->alpha = this->alpha;
     }
   }
