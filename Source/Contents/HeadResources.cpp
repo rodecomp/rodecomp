@@ -172,13 +172,13 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
     job = 0;
   }
 
-  std::string result;
+  std::string result = "";
   const int male = sex != 0 ? 1 : 0;
-  std::string sexName;
-  std::string headName;
+  std::string sexName = "";
+  std::string headName = "";
 
   if (g_session.IsDoramJob(job) == true) {
-    if (*head < 1 || *head > 10) {
+    if (*head < 1 || *head >= 11) {
       *head = 10;
     }
 
@@ -188,7 +188,7 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
       headName = g_session.m_doramFemaleHeadNames[*head];
     }
   } else {
-    if (*head < 0 || *head > 45) {
+    if (*head < 0 || *head >= 46) {
       *head = 13;
     }
 
@@ -240,12 +240,12 @@ void CSession::NormalizeHead(int* head, int job) {
 // OFFSET: 0x00BAAB10
 // FUNCTION: fn_19750
 std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int palette) {
-  std::string result;
-  std::string sexName;
-  std::string headName;
+  std::string result = "";
+  std::string sexName = "";
+  std::string headName = "";
 
   if (g_session.IsDoramJob(job) == true) {
-    if (head < 1 || head > 10) {
+    if (head < 1 || head >= 11) {
       head = 10;
     }
 
