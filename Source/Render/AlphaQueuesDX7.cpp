@@ -5,33 +5,29 @@
 
 namespace {
   // INLINED
-  bool Before(const DepthPrimitive& left, const DepthPrimitive& right) {
-    if (left.depth < right.depth) {
-      return true;
-    }
-
-    if (right.depth < left.depth) {
-      return false;
-    }
-
-    return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-  }
-
-  // INLINED
   bool WritesDepth(const RenderCommand& command) {
     return (command.depthFlags & 0xFFu) != 0 && (command.depthFlags & 0xFF00u) != 0;
   }
 }
 
+// INLINED
+static bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
+  if (left.depth < right.depth) {
+    return true;
+  }
+
+  if (right.depth < left.depth) {
+    return false;
+  }
+
+  return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
+}
+
 // OFFSET: 0x0055B160
 // FUNCTION: fn_02089
 void CRendererDX7::DrawAlphaQueues() {
-  const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
-    return Before(left, right);
-  };
-
-  std::sort(this->queues.queue_018C.begin(), this->queues.queue_018C.end(), before);
-  std::sort(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end(), before);
+  std::sort(this->queues.queue_018C.begin(), this->queues.queue_018C.end());
+  std::sort(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end());
 
   DWORD zWrite = 0;
   DWORD alphaTest = 0;
@@ -79,7 +75,7 @@ void CRendererDX7::DrawAlphaQueues() {
 
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 1);
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    std::sort(this->queues.queue_01A4.begin(), this->queues.queue_01A4.end(), before);
+    std::sort(this->queues.queue_01A4.begin(), this->queues.queue_01A4.end());
 
     for (auto it = this->queues.queue_01A4.begin(); it != this->queues.queue_01A4.end(); ++it) {
       RenderCommand* command = it->primitive;
