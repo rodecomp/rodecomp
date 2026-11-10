@@ -557,10 +557,9 @@ void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y,
     }
   }
 
-  const int posX = x;
-  const int posY = y;
-  const int value = flag;
-  actor->SendMsg(nullptr, AM_STOPMOVE, 0, posX, posX >> 31, posY, posY >> 31, 0, 0, value, value >> 31, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_STOPMOVE, 0, static_cast<int>(static_cast<std::int64_t>(x)), static_cast<int>(static_cast<std::int64_t>(x) >> 32),
+    static_cast<int>(static_cast<std::int64_t>(y)), static_cast<int>(static_cast<std::int64_t>(y) >> 32), 0, 0,
+    static_cast<int>(static_cast<std::int64_t>(flag)), static_cast<int>(static_cast<std::int64_t>(flag) >> 32), 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D69140
