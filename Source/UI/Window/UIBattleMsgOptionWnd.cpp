@@ -166,7 +166,7 @@ void UIBattleMsgOptionWnd::UpdateScrollBar() {
     return;
   }
 
-  const int total = static_cast<int>(this->messages.size()) - (this->messages.empty() ? 1 : 0);
+  const int total = static_cast<int>(this->messages.size()) + (this->messages.empty() ? -1 : 0);
   const int visible = this->m_visibleRows;
   const int range = total - visible < 0 ? 0 : total - visible;
   this->m_scrollable = range != 0;
