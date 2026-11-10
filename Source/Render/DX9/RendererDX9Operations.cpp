@@ -12,6 +12,7 @@
 #include "Render/DX9/TextureDX9.h"
 
 #include <algorithm>
+#include <atlbase.h>
 #include <bit>
 #include <functional>
 #include <new>
@@ -151,42 +152,33 @@ bool CRendererDX9::RenderToTexture(int width, int height, const std::list<Render
     return false;
   }
 
-  IDirect3DSurface9* previous = nullptr;
-  IDirect3DSurface9* target = nullptr;
-  bool result = false;
+  CComPtr<IDirect3DSurface9> previous;
+  CComPtr<IDirect3DSurface9> target;
 
-  if (SUCCEEDED(nativeTexture->GetSurfaceLevel(0, &target)) && SUCCEEDED(this->nativeDevice->GetRenderTarget(0, &previous)) &&
-      SUCCEEDED(this->nativeDevice->SetRenderTarget(0, target))) {
-    {
-      ScopedDeviceStateDX9 restore(this->device->state);
-      this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-      this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
-      this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
-      this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-      this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
-      this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 1.0f, 0);
+  if (FAILED(nativeTexture->GetSurfaceLevel(0, &target)) || FAILED(this->nativeDevice->GetRenderTarget(0, &previous)) ||
+      FAILED(this->nativeDevice->SetRenderTarget(0, target))) {
+    return false;
+  }
 
-      if (SUCCEEDED(this->nativeDevice->BeginScene())) {
-        for (RenderPrimitive* primitive : primitives) {
-          this->device->state.SetTexture(0, primitive->texture ? static_cast<CTextureDX9*>(primitive->texture)->NativeTexture() : nullptr);
-          this->DrawPrimitive(primitive);
-        }
+  {
+    ScopedDeviceStateDX9 restore = this->device->SaveState();
+    this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+    this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
+    this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
+    this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+    this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+    this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
-        this->nativeDevice->EndScene();
+    if (SUCCEEDED(this->nativeDevice->BeginScene())) {
+      for (RenderPrimitive* primitive : primitives) {
+        this->device->state.SetTexture(0, primitive->texture ? static_cast<CTextureDX9*>(primitive->texture)->NativeTexture() : nullptr);
+        this->DrawPrimitive(primitive);
       }
+
+      this->nativeDevice->EndScene();
     }
-    this->nativeDevice->SetRenderTarget(0, previous);
-
-    result = true;
   }
+  this->nativeDevice->SetRenderTarget(0, previous);
 
-  if (target) {
-    target->Release();
-  }
-
-  if (previous) {
-    previous->Release();
-  }
-
-  return result;
+  return true;
 }
