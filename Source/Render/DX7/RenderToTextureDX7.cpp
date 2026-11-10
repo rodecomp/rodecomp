@@ -5,9 +5,25 @@
 #include "Render/Textures/TextureCache.h"
 #include "Render/DX7/TextureDX7.h"
 
-#include <wrl/client.h>
+namespace {
+  // VTABLE: vt_00837
+  class lcSurfaceaAapter {
+  public:
+    // INLINED
+    lcSurfaceaAapter() : surface(nullptr) {
+    }
 
-using Microsoft::WRL::ComPtr;
+    // INLINED
+    virtual ~lcSurfaceaAapter() {
+      if (this->surface) {
+        this->surface->Release();
+        this->surface = nullptr;
+      }
+    }
+
+    IDirectDrawSurface7* surface;
+  };
+}
 
 // OFFSET: 0x00544120
 // FUNCTION: fn_01813
@@ -28,7 +44,8 @@ bool CRendererDX7::RenderToTexture(
     }
   }
 
-  DDSURFACEDESC2 description{};
+  DDSURFACEDESC2 description;
+  SecureZeroMemory(&description, sizeof(description));
   description.dwSize = sizeof(description);
   description.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
   description.dwWidth = width;
@@ -40,14 +57,14 @@ bool CRendererDX7::RenderToTexture(
   description.ddpfPixelFormat.dwGBitMask = 0xFF00;
   description.ddpfPixelFormat.dwBBitMask = 0xFF;
   description.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
-  ComPtr<IDirectDrawSurface7> target;
+  lcSurfaceaAapter target;
 
-  if (FAILED((g_deviceOwnerDX7 ? g_deviceOwnerDX7->draw : nullptr)->CreateSurface(&description, target.GetAddressOf(), nullptr))) {
+  if (FAILED((g_deviceOwnerDX7 ? g_deviceOwnerDX7->draw : nullptr)->CreateSurface(&description, &target.surface, nullptr))) {
     return false;
   }
 
-  ComPtr<IDirectDrawSurface7> previous;
-  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->GetRenderTarget(previous.GetAddressOf()) != S_OK) {
+  lcSurfaceaAapter previous;
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->GetRenderTarget(&previous.surface) != S_OK) {
     return false;
   }
 
@@ -61,7 +78,7 @@ bool CRendererDX7::RenderToTexture(
     return false;
   }
 
-  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(target.Get(), 0) == S_OK) {
+  if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(target.surface, 0) == S_OK) {
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 0, 0);
@@ -76,10 +93,10 @@ bool CRendererDX7::RenderToTexture(
 
       (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->EndScene();
       RECT rectangle{0, 0, width, height};
-      static_cast<CTextureDX7*>(texture)->CopySurface(target.Get(), &rectangle);
+      static_cast<CTextureDX7*>(texture)->CopySurface(target.surface, &rectangle);
     }
 
-    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(previous.Get(), 0);
+    (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderTarget(previous.surface, 0);
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_ZENABLE, depth);
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->SetRenderState(D3DRENDERSTATE_FOGENABLE, fog);
   }
