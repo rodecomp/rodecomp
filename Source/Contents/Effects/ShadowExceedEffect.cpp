@@ -13,6 +13,25 @@
 
 #include <string>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+
+// INLINED
+__forceinline vector3d TransformPoint(const matrix& transform, const vector3d& point) {
+  vector3d result;
+  result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
+  result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
+  result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
+  return result;
+}
+}
+
 // OFFSET: 0x00727CF0
 // FUNCTION: fn_07427
 CShadowExceed::CShadowExceed() : CEffect(1867), finishSpawned(0) {
@@ -93,19 +112,16 @@ bool CShadowExceed::IsAlive() {
 void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || emitter->life * 60.0f > static_cast<float>(emitter->elapsedFrames)) {
+    if (IsParticleActive(emitter) == true) {
       if (emitter) {
-        const float x = this->position[0];
-        const float y = this->position[1];
-        const float z = this->position[2];
-        const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-        const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
-        const float viewX = view[0] * x + view[3] * y + view[6] * z + view[9] + emitter->offsetX;
-        const float viewY = view[1] * x + view[4] * y + view[7] * z + view[10] + emitter->offsetY;
-        const float viewZ = view[2] * x + view[5] * y + view[8] * z + view[11] + emitter->offsetZ;
-        emitter->position.x = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-        emitter->position.y = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
-        emitter->position.z = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
+        const vector3d position = {this->position[0], this->position[1], this->position[2]};
+        const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        vector3d viewPos = TransformPoint(view, position);
+        viewPos.x += emitter->offsetX;
+        viewPos.y += emitter->offsetY;
+        viewPos.z += emitter->offsetZ;
+        emitter->position = TransformPoint(inverse, viewPos);
         emitter->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
