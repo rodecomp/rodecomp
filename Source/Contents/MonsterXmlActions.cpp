@@ -43,8 +43,8 @@ __declspec(noinline) int CSession::IsAdminSubMode(int subMode) {
 void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType) {
   *action = -1;
 
-  char tableName[21];
-  std::memcpy(tableName, "Monster_Action_Table", sizeof(tableName));
+  char tableName[256];
+  std::strcpy(tableName, "Monster_Action_Table");
   XmlNode* table = this->m_monsterSkillInfo.FindChild(DecodeMessageRot(tableName));
   if (!table) {
     return;
@@ -68,13 +68,12 @@ void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, 
     return;
   }
 
-  char fieldName[9];
-  std::memcpy(fieldName, "action", 7);
-  XmlNode* actionNode = skillNode->FindChild(DecodeMessageRot(fieldName));
-  std::memcpy(fieldName, "loopType", 9);
-  XmlNode* loopNode = skillNode->FindChild(DecodeMessageRot(fieldName));
+  std::strcpy(tableName, "action");
+  XmlNode* actionNode = skillNode->FindChild(DecodeMessageRot(tableName));
+  std::strcpy(tableName, "loopType");
+  XmlNode* loopNode = skillNode->FindChild(DecodeMessageRot(tableName));
 
-  if (this->IsAdminSubMode(1) && (!actionNode || !loopNode)) {
+  if (g_session.IsAdminSubMode(1) && (!actionNode || !loopNode)) {
     *action = 0;
     *loopType = 0;
     g_windowMgr.Confirm("에러발생. 클라이언트 담당자 에게 에러 사실을 통보 하세요. 위치 - CPlayer :: GetMonsterSkillInfo", 0, true, false, 0, "Message", 280, 120, 0);
