@@ -15,7 +15,9 @@ RenderPrimitive* RenderPrimitivePool::Acquire() {
     return &this->m_commands.back();
   }
 
-  RenderPrimitive* command = &*this->m_current++;
+  RenderPrimitive* command = &*this->m_current;
+  ++this->m_current;
+  new (command) RenderPrimitive;
 
-  return new (command) RenderPrimitive;
+  return command;
 }
