@@ -101,7 +101,7 @@ public:
 struct DeviceOwnerDX7Handle {
   /* 0000 */ DeviceOwnerDX7* owner;
 
-  std::uint16_t PackColor(int red, int green, int blue) const;
+  unsigned int PackColor(int red, int green, int blue) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

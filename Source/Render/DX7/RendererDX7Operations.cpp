@@ -119,7 +119,7 @@ void CRendererDX7::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
 
 // OFFSET: 0x0055AFA0
 // FUNCTION: fn_02086
-std::uint16_t DeviceOwnerDX7Handle::PackColor(int red, int green, int blue) const {
+unsigned int DeviceOwnerDX7Handle::PackColor(int red, int green, int blue) const {
   const DeviceOwnerDX7* owner = this->owner;
   if (owner) {
     return static_cast<std::uint16_t>(
