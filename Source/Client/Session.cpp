@@ -610,13 +610,12 @@ int CSession::GetItem1760QuantityByItemId(const char* itemId) const {
 // FUNCTION: fn_23422
 SessionRecord0734 CSession::FindMiniPartyRecord(int id) const {
   for (const SessionRecord0734& record : this->miniPartyRecords) {
-    if (record.id == id) {
+    if (id == record.id) {
       return record;
     }
   }
 
-  SessionRecord0734 empty;
-  return empty;
+  return SessionRecord0734();
 }
 
 // OFFSET: 0x00DDF320

@@ -109,7 +109,10 @@ struct ProhibitionLogEntry {
 };
 
 struct SessionRecord0734 {
-  /* 0000 */ std::uint32_t active = 0;
+  SessionRecord0734() : active(0) {
+  }
+
+  /* 0000 */ std::uint32_t active;
   /* 0004 */ int id;
   /* 0008 */ std::uint32_t cell;
 };
