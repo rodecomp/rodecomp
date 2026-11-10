@@ -47,7 +47,7 @@ void UITagTextViewer::Clear() {
 int TagTextViewer::UIScroll::ContentHeight() {
   int height = 0;
 
-  for (std::map<UIWindow*, Position>::const_iterator it = this->m_positions.cbegin(); it != this->m_positions.cend(); ++it) {
+  for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); it++) {
     height = static_cast<int>(std::max(static_cast<float>(height), static_cast<float>(it->first->geometry.height) + it->second.y));
   }
 
