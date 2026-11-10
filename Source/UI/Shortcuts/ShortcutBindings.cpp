@@ -111,18 +111,24 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
 // OFFSET: 0x00E492D0
 // FUNCTION: fn_24233
 void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
-  if (id != 0) {
-    for (int index = 0; index < 9; ++index) {
-      if (this->m_normalItemSlots[index].itemId == id) {
-        this->m_normalItemSlots[index] = {};
-        break;
-      }
-    }
-
-    this->m_normalItemSlots[slot].value = 0;
-    this->m_normalItemSlots[slot].enabled = 0;
-    this->m_normalItemSlots[slot].itemId = id;
-  } else {
+  if (id == 0) {
     this->m_normalItemSlots[slot] = {};
+    return;
   }
+
+  int found = -1;
+  for (int index = 0; index < 9; ++index) {
+    if (this->m_normalItemSlots[index].itemId == id) {
+      found = index;
+      break;
+    }
+  }
+
+  if (found >= 0) {
+    this->m_normalItemSlots[found] = {};
+  }
+
+  this->m_normalItemSlots[slot].value = 0;
+  this->m_normalItemSlots[slot].enabled = 0;
+  this->m_normalItemSlots[slot].itemId = id;
 }
