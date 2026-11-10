@@ -5,6 +5,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -30,17 +31,18 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       particle->scale = 4.1f;
       particle->phaseParameter = 80;
       particle->animationParameter = 0.0f;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((particle->rowIndex + 2) * 90 % 360);
+      const int row = particle->rowIndex;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((row + 2) * 90 % 360);
 
       switch (this->id) {
       case EF_COUPLECASTING:
-        particle->alpha += (3 - particle->rowIndex) * 45;
-        particle->speedParameter = 20.0f - static_cast<float>(particle->rowIndex);
+        particle->alpha += (3 - row) * 45;
+        particle->speedParameter = 20.0f - static_cast<float>(row);
         break;
       case EF_AURABLADE:
         particle->alpha = 0;
-        particle->elapsedFrames = -5 * particle->rowIndex;
-        particle->speedParameter = 15.0f - static_cast<float>(particle->rowIndex);
+        particle->elapsedFrames = -5 * row;
+        particle->speedParameter = 15.0f - static_cast<float>(row);
         break;
       case EF_BEGINSPELL:
       case EF_BEGINSPELL6:
@@ -50,8 +52,8 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       case EF_DARKCASTING2:
       case EF_GREENCASTING:
         particle->alpha = 0;
-        particle->elapsedFrames = -5 * particle->rowIndex;
-        particle->speedParameter = 20.0f - static_cast<float>(particle->rowIndex);
+        particle->elapsedFrames = -5 * row;
+        particle->speedParameter = 20.0f - static_cast<float>(row);
         break;
       }
 
@@ -167,20 +169,18 @@ bool CSaintCastingEffect::IsAlive() {
 // FUNCTION: fn_19165
 void CSaintCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
 
+    CParticle* particle = *it;
     if (particle && particle->elapsedFrames > 0) {
       const int previousTilt = particle->phaseParameter - 1;
       float scale = particle->scale + 0.07f;
       int tilt = previousTilt < 10 ? 10 : previousTilt;
       int alpha = previousTilt >= 10 ? particle->alpha : 0;
 
-      if (scale < 4.0f) {
-        alpha += this->id == EF_AURABLADE ? 5 : 10;
-      } else {
+      if (scale >= 4.0f) {
         alpha -= 3;
         if (alpha <= 0) {
           alpha = 0;
@@ -189,6 +189,10 @@ void CSaintCastingEffect::OnProcess() {
             scale = 3.37f;
           }
         }
+      } else if (this->id == EF_AURABLADE) {
+        alpha += 5;
+      } else {
+        alpha += 10;
       }
 
       particle->scale = scale;
@@ -209,15 +213,20 @@ void CSaintCastingEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
 
-      const vector3d inner = {cosine * particle->scale, 0.0f, sine * particle->scale};
-      const vector3d outer = {inner.x + spread * cosine, 0.0f - height, inner.z + spread * sine};
+      EffectPoint points[2];
+      points[0].x = cosine * particle->scale;
+      points[0].y = 0.0f;
+      points[0].z = sine * particle->scale;
+      points[1].x = points[0].x + spread * cosine;
+      points[1].y = points[0].y - height;
+      points[1].z = points[0].z + spread * sine;
 
-      particle->vertices[3].x = inner.x;
-      particle->vertices[3].y = inner.y;
-      particle->vertices[3].z = inner.z;
-      particle->vertices[1].x = outer.x;
-      particle->vertices[1].y = outer.y;
-      particle->vertices[1].z = outer.z;
+      particle->vertices[3].x = points[0].x;
+      particle->vertices[3].y = points[0].y;
+      particle->vertices[3].z = points[0].z;
+      particle->vertices[1].x = points[1].x;
+      particle->vertices[1].y = points[1].y;
+      particle->vertices[1].z = points[1].z;
 
       if (segment != 0) {
         particle->vertices[0].x = this->lastOuter.x;
@@ -228,8 +237,12 @@ void CSaintCastingEffect::OnProcess() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner = inner;
-      this->lastOuter = outer;
+      this->lastInner.x = points[0].x;
+      this->lastInner.y = points[0].y;
+      this->lastInner.z = points[0].z;
+      this->lastOuter.x = points[1].x;
+      this->lastOuter.y = points[1].y;
+      this->lastOuter.z = points[1].z;
     }
 
     ++particle->elapsedFrames;
