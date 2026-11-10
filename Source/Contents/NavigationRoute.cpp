@@ -1789,36 +1789,18 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
 
   std::vector<char> buffer;
   NavigationReplayHeader header;
-  unsigned offset = 6;
+  unsigned offset = 0;
 
-  header.Read(data.data());
-  if (header.tag != 8000) {
+  header.Read(data.data() + offset);
+  offset += 6;
+  if (8000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
-    while (offset < data.size()) {
+    while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
 
       switch (header.tag) {
-      case 8001:
-        this->ResumeRoute();
-        return static_cast<int>(offset);
-      case 8002:
-        std::memcpy(&this->includeObjects, data.data() + offset, header.size);
-        offset += header.size;
-        break;
-      case 8003:
-        std::memcpy(&this->allowWarps, data.data() + offset, header.size);
-        offset += header.size;
-        break;
-      case 8004:
-        std::memcpy(&this->allowGates, data.data() + offset, header.size);
-        offset += header.size;
-        break;
-      case 8005:
-        std::memcpy(&this->routeSide, data.data() + offset, header.size);
-        offset += header.size;
-        break;
       case 8006: {
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
@@ -1887,10 +1869,6 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         std::memcpy(&this->routeFlag, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8020:
-        std::memcpy(&this->selectedNode, data.data() + offset, header.size);
-        offset += header.size;
-        break;
       case 8021: {
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
@@ -1928,9 +1906,15 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         }
 
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        if (mode && mode->scene && mode->scene->terrain) {
-          this->ground = mode->scene->ground;
-          this->pathFinder.attr = mode->scene->terrain;
+        if (mode) {
+          CWorld* scene = mode->scene;
+          if (scene) {
+            C3dAttr* terrain = scene->terrain;
+            if (terrain) {
+              this->ground = scene->ground;
+              this->pathFinder.attr = terrain;
+            }
+          }
         }
         break;
       }
@@ -1944,10 +1928,33 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         }
         break;
       }
+      case 8020:
+        std::memcpy(&this->selectedNode, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8002:
+        std::memcpy(&this->includeObjects, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8003:
+        std::memcpy(&this->allowWarps, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8004:
+        std::memcpy(&this->allowGates, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8005:
+        std::memcpy(&this->routeSide, data.data() + offset, header.size);
+        offset += header.size;
+        break;
       case 8023:
         std::memcpy(&this->hideWindow, data.data() + offset, header.size);
         offset += header.size;
         break;
+      case 8001:
+        this->ResumeRoute();
+        return static_cast<int>(offset);
       default:
         offset += header.size;
         break;
