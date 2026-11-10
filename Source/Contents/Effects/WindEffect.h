@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_WINDEFFECT_H
 
 #include "Contents/Effects/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/EffectPoint.h"
 
 #include <cstddef>
 #include <string>
@@ -33,12 +33,11 @@ public:
   /* 00DC */ float height = 50.0f;
   /* 00E0 */ float angleSpeed = 5.0f;
   /* 00E4 */ unsigned short arcLength = 200;
-  /* 00E8 */ vector3d rotation = {};
+  /* 00E8 */ EffectPoint rotation;
   /* 00F4 */ int sourceBlend = 5;
   /* 00F8 */ int destinationBlend = 7;
   /* 00FC */ std::string textureName = "effect\\cloud11.tga";
-  /* 0114 */ vector3d lastBottom = {};
-  /* 0120 */ vector3d lastTop = {};
+  /* 0114 */ EffectPoint lastPoints[2];
   /* 012C */ std::vector<CParticle*> particles;
 };
 

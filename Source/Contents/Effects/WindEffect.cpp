@@ -9,8 +9,8 @@
 #include <cstdlib>
 
 // INLINED
-static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
-  vector3d result;
+static EffectPoint TransformPoint(const matrix& transform, const EffectPoint& point) {
+  EffectPoint result;
   result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
   result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
   result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
@@ -129,7 +129,7 @@ void CWindEffect::OnProcess() {
     const float cosine = static_cast<float>(std::cos(static_cast<double>(angle / 180.0f * 3.141592f)));
     const float sine = static_cast<float>(std::sin(static_cast<double>(angle / 180.0f * 3.141592f)));
 
-    vector3d points[4] = {};
+    EffectPoint points[4];
     const float scale = particle->scale;
     points[0].x += scale * cosine;
     points[0].y = scale * 0.0f - particle->animationParameter;
@@ -143,8 +143,8 @@ void CWindEffect::OnProcess() {
     transform.AppendZRotation(this->rotation.z / 180.0f * 3.141592f);
     transform.AppendTranslate(this->position);
 
-    const vector3d bottom = TransformPoint(transform, points[0]);
-    const vector3d top = TransformPoint(transform, points[1]);
+    const EffectPoint bottom = TransformPoint(transform, points[0]);
+    const EffectPoint top = TransformPoint(transform, points[1]);
     particle->vertices[1].x = top.x;
     particle->vertices[1].y = top.y;
     particle->vertices[1].z = top.z;
@@ -153,16 +153,16 @@ void CWindEffect::OnProcess() {
     particle->vertices[3].z = bottom.z;
 
     if (particle->columnIndex != 0) {
-      particle->vertices[0].x = this->lastTop.x;
-      particle->vertices[0].y = this->lastTop.y;
-      particle->vertices[0].z = this->lastTop.z;
-      particle->vertices[2].x = this->lastBottom.x;
-      particle->vertices[2].y = this->lastBottom.y;
-      particle->vertices[2].z = this->lastBottom.z;
+      particle->vertices[0].x = this->lastPoints[1].x;
+      particle->vertices[0].y = this->lastPoints[1].y;
+      particle->vertices[0].z = this->lastPoints[1].z;
+      particle->vertices[2].x = this->lastPoints[0].x;
+      particle->vertices[2].y = this->lastPoints[0].y;
+      particle->vertices[2].z = this->lastPoints[0].z;
     }
 
-    this->lastBottom = bottom;
-    this->lastTop = top;
+    this->lastPoints[0] = bottom;
+    this->lastPoints[1] = top;
   }
 }
 
