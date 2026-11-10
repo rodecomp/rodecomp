@@ -306,7 +306,7 @@ std::pair<bool, int> CPlayerSkillBundle::PreviousLevel(int id) const {
 // OFFSET: 0x00771FC0
 // FUNCTION: fn_08295
 void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
-  const int id = static_cast<int>(value.id);
+  const int& id = reinterpret_cast<const int&>(value.id);
   const auto entry = this->levelChanges.find(id);
   if (entry != this->levelChanges.end()) {
     lcEXCInfo& change = entry->second;
