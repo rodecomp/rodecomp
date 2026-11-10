@@ -91,18 +91,11 @@ void CRendererDX7::ApplyFog() {
     const D3DDEVICEDESC7 caps = g_deviceOwnerDX7 ? g_deviceOwnerDX7->caps : empty;
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
-    const bool vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
+    const int vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
     D3DMATRIX identity;
-    identity._11 = 1;
-    identity._12 = identity._13 = identity._14 = 0;
-    identity._21 = 0;
-    identity._22 = 1;
-    identity._23 = identity._24 = 0;
-    identity._31 = identity._32 = 0;
-    identity._33 = 1;
-    identity._34 = 0;
-    identity._41 = identity._42 = identity._43 = 0;
-    identity._44 = 1;
+    identity._12 = identity._13 = identity._14 = identity._21 = identity._23 = identity._24 = identity._31 = identity._32 = identity._34 =
+      identity._41 = identity._42 = identity._43 = 0.0f;
+    identity._11 = identity._22 = identity._33 = identity._44 = 1.0f;
     D3DMATRIX projection;
     PerspectiveMatrixDX7(projection, 0.26179934f, this->viewport.aspect, 10.0f, 1500.0f);
     this->device->SetTransform(D3DTRANSFORMSTATE_WORLD, &identity);
