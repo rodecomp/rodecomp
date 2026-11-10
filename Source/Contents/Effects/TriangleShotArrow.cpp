@@ -87,8 +87,7 @@ void CTriangleShotArrow::Open() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->current.z), static_cast<double>(target.x - this->current.x)));
-  const float cameraYaw = mode->camera ? mode->camera->camera.desiredYaw : 0.0f;
-  float yaw = cameraYaw + angle / 3.141592f * 180.0f;
+  float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
   }
