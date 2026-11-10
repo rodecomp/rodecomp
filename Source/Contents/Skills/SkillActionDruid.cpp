@@ -706,7 +706,8 @@ EfstActionMessage CEfstAction_NATURE_SHIELD::GetEfstEndMessage() {
 // FUNCTION: fn_04507
 void CEfstAction_GROUND_GROW::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   for (int index = 0; index < 12; ++index) {
-    g_effectMgr->Retire(actor->render.accountId, this->GetEffectId(efstId, index + 1));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, this->GetEffectId(efstId, index + 1));
   }
 }
 
@@ -774,7 +775,8 @@ void CEfstAction_NATURE_PROTECTION::OnEfstEnd(int efstId, int argument2, int arg
 // FUNCTION: fn_04514
 void CEfstAction_THUNDERING_ROD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   for (int index = 0; index < 6; ++index) {
-    g_effectMgr->Retire(actor->render.accountId, this->GetEffectId(efstId, index + 1));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, this->GetEffectId(efstId, index + 1));
   }
 }
 
