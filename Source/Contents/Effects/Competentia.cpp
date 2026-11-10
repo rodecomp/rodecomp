@@ -10,6 +10,16 @@
 #include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x007088B0
 // FUNCTION: fn_07076
 void CNyanggrassEffect::Render() {
@@ -69,14 +79,14 @@ bool CCompetentia::IsAlive() {
 // FUNCTION: fn_07082
 void CCompetentia::OnProcess() {
   for (auto current = this->particles.begin(); current != this->particles.end();) {
-    CParticle* particle = *current;
-    if (particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f) {
+    if (IsParticleActive(*current)) {
+      CParticle* particle = *current;
       if (particle) {
         static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, -80.0f, 0.0f);
       }
       ++current;
     } else {
-      FreeParticle(particle);
+      FreeParticle(*current);
       current = this->particles.erase(current);
     }
   }
