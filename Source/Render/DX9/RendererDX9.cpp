@@ -67,14 +67,16 @@ void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
 }
 
 bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapRes* bitmap) {
-  std::unique_ptr<CTexture> overlay;
+  CTexture* overlay = nullptr;
 
   if (bitmap) {
     const auto& image = bitmap->image;
-    overlay.reset(g_texMgr.Upload(image.width, image.height, image.pixels, image.alpha != 0, 0, false, false, false));
+    overlay = g_texMgr.Upload(image.width, image.height, image.pixels, image.alpha != 0, 0, false, false, false);
   }
 
-  return this->SaveScreenshot(filename, format, overlay.get(), nullptr);
+  const bool saved = this->SaveScreenshot(filename, format, overlay, nullptr);
+  delete overlay;
+  return saved;
 }
 
 // OFFSET: 0x00567FC0
