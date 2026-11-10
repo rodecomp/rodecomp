@@ -74,11 +74,14 @@ bool CRollingCutterRagEffect::OnProcess() {
     this->state.parent->render.effectPhaseBytes[0] = 0;
   }
 
-  this->render.position = this->state.parent->render.position;
+  const vector3d& parentPosition = this->state.parent->render.position;
+  this->render.position.x = parentPosition.x;
+  this->render.position.y = parentPosition.y;
+  this->render.position.z = parentPosition.z;
 
   if (this->elapsed == 0) {
     const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
-    g_soundMgr->PlayWave("effect\\ef_beginspell.wav", this->render.position.x - player.x, -100.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", this->render.position.x - player.x, -100.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
   }
 
   this->state.parent->render.angle += 12.0f;
@@ -87,19 +90,19 @@ bool CRollingCutterRagEffect::OnProcess() {
   }
 
   ++this->elapsed;
-  if (this->elapsed < this->GetDuration()) {
-    return true;
-  }
-
-  CGameActor* actor = dynamic_cast<CGameActor*>(static_cast<CRenderObject*>(this->state.parent));
-  if (actor) {
-    actor->render.instant.Set(1, static_cast<int>(actor->GetInstant(1)) - 1);
-    if (static_cast<int>(actor->GetInstant(1)) <= 0) {
-      actor->render.angle = static_cast<int>(actor->GetInstant(0)) / 1000.0f;
+  if (this->elapsed >= this->GetDuration()) {
+    CGameActor* actor = dynamic_cast<CGameActor*>(static_cast<CRenderObject*>(this->state.parent));
+    if (actor) {
+      actor->render.instant.Values()[1] = static_cast<int>(actor->GetInstant(1)) - 1;
+      if (static_cast<int>(actor->GetInstant(1)) <= 0) {
+        actor->render.angle = static_cast<int>(actor->GetInstant(0)) / 1000.0f;
+      }
     }
+
+    return false;
   }
 
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00CADD60
