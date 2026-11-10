@@ -34,6 +34,9 @@
 #include <cstring>
 #include <timeapi.h>
 #include <format>
+
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 namespace {
 // INLINED
 __forceinline int ClampedRandom(int range) {
@@ -1416,14 +1419,20 @@ void CFromTheAbyssEffect::OnProcess() {
 // INLINED
 static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, EZ2STREmitter* emitter) {
   const vector3d origin = *reinterpret_cast<const vector3d*>(effect->position);
-  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const vector3d viewPosition = {origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9],
+                                 origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10],
+                                 origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11]};
   const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-  const float viewX = origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9] + emitter->offset.x;
-  const float viewY = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10] + emitter->offset.y;
-  const float viewZ = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11] + emitter->offset.z;
-  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
-  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
-  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+  const float viewX = viewPosition.x + emitter->offset.x;
+  const float viewY = viewPosition.y + emitter->offset.y;
+  const float viewZ = viewPosition.z + emitter->offset.z;
+  const float worldX = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
+  const float worldY = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
+  const float worldZ = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+  emitter->position.x = worldX;
+  emitter->position.y = worldY;
+  emitter->position.z = worldZ;
 }
 
 // OFFSET: 0x007154A0
@@ -3101,8 +3110,8 @@ void CServantWeaponEffect::OnProcess() {
 // INLINED
 static __forceinline void OrbitServantEmitter(const CServantWeaponNewEffect* effect, EZ2STREmitter* emitter) {
   const float radians = emitter->angle / 180.0f * 3.141592f;
-  const float sine = std::sin(radians) * 13.0f;
-  const float cosine = std::cos(radians) * 13.0f;
+  const float sine = ClientSin(radians) * 13.0f;
+  const float cosine = ClientCos(radians) * 13.0f;
   emitter->position.z = sine + effect->position[2];
   emitter->position.y = effect->position[1] - 10.0f;
   emitter->position.x = cosine + effect->position[0];
