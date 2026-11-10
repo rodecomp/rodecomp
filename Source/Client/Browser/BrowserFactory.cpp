@@ -15,16 +15,15 @@ namespace {
 // OFFSET: 0x00A8C840
 // FUNCTION: fn_17136
 CWebBrowser* UIWindowMgr::CreateBrowser(int width, int height) {
-  if (this->browsers.size() >= maximumBrowserCount) {
-    this->SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_ADD_TAB)), RGB(255, 0, 0), 0, 0, 0);
-    return nullptr;
-  }
-
-  CWebBrowser* browser = new CWebBrowser();
-  if (browser && browser->Create(hWnd, g_instance, width, height)) {
-    this->browsers.emplace(browser->host, browser);
-    return browser;
+  if (this->browsers.size() < maximumBrowserCount) {
+    CWebBrowser* browser = new CWebBrowser();
+    if (browser && browser->Create(hWnd, g_instance, width, height)) {
+      this->browsers.insert(std::make_pair(browser->host, browser));
+      return browser;
+    }
+  } else {
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_ADD_TAB)), RGB(255, 0, 0), 0, 0, 0);
   }
 
   return nullptr;
