@@ -516,8 +516,7 @@ void CLanguageBase::RefreshComposition() {
   ImmReleaseContext(hWnd, context);
   this->candidate.assign(converted, size);
 
-  char combined[256];
-  *std::format_to_n(combined, sizeof(combined) - 1, "{}{}", this->text, this->candidate).out = 0;
+  *std::format_to_n(converted, sizeof(converted) - 1, "{}{}", this->text, this->candidate).out = 0;
 
-  SuggestChatCommand(combined);
+  SuggestChatCommand(converted);
 }
