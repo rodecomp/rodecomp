@@ -33,17 +33,17 @@ void CTokenizer::Parse(const std::string& text) {
   unsigned int length = 0;
   State state = State::Token;
   const int size = static_cast<int>(text.size());
-  this->tokens.clear();
+  this->tokens.erase(this->tokens.begin(), this->tokens.end());
 
   int index = 0;
   for (; index < size; ++index) {
-    const char value = text[index];
-    if (state == State::Token) {
-      if (value == '/' && text[index + 1] == '/') {
+    switch (state) {
+    case State::Token:
+      if (text[index] == '/' && text[index + 1] == '/') {
         return;
       }
 
-      if (std::iswspace(static_cast<wchar_t>(value)) && value >= 0) {
+      if (std::iswspace(static_cast<wchar_t>(text[index])) && text[index] >= 0) {
         if (index != 0) {
           token[length] = '\0';
           this->tokens.push_back(std::string(token));
@@ -51,11 +51,15 @@ void CTokenizer::Parse(const std::string& text) {
         }
         state = State::Whitespace;
       } else {
-        token[length++] = value;
+        token[length++] = text[index];
       }
-    } else if (!std::iswspace(static_cast<wchar_t>(value)) || value < 0) {
-      --index;
-      state = State::Token;
+      break;
+    case State::Whitespace:
+      if (!std::iswspace(static_cast<wchar_t>(text[index])) || text[index] < 0) {
+        --index;
+        state = State::Token;
+      }
+      break;
     }
   }
 
