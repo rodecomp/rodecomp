@@ -164,19 +164,19 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
 // OFFSET: 0x008D17C0
 // FUNCTION: fn_12094
 int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int, int family, int height) {
-  int highlightColor = 0;
-  std::vector<char*> breaks;
   char buffer[256] = {};
-  char* cursor = buffer;
-  std::size_t remaining = sizeof(buffer);
   char* highlight = nullptr;
+  char* cursor = buffer;
+  std::vector<char*> breaks;
+  std::size_t remaining = sizeof(buffer);
+  int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   std::uint32_t color = ItemCardColor(item);
   if (color == 0x00ADFF2F) {
     color = 0x00669900;
   }
-  color = (color >> 16 & 0xFF) | (color & 0x0000FF00) | ((color & 0xFF) << 16);
+  color = (color >> 16 & 0xFF) | ((color & 0xFF) << 16) | (color & 0x0000FF00);
 
   const ItemNameTextInfo info = {x, y, height, family};
   this->DrawItemNameText(&info, buffer, highlight, color, static_cast<std::uint32_t>(highlightColor), width, &breaks);
