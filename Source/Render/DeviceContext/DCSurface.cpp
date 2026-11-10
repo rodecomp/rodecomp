@@ -250,7 +250,7 @@ void CDCSurface::BlendFrom(std::uint32_t, std::uint32_t, int, int, const CDCBitm
 
 // OFFSET: 0x00549230
 // FUNCTION: fn_01870
-void CDCSurface::DrawRleSprite(int, int, std::span<const SpriteFrameCell>, const SpriteRleImage* const* const*, const std::uint32_t*, int) {
+void CDCSurface::DrawRleSprite(int, int, const CSprRes&, const ActionFrame&, const std::uint32_t*) {
 }
 
 // OFFSET: 0x00549240

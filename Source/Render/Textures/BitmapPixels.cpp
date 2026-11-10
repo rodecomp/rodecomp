@@ -5,6 +5,8 @@
 #include "Render/Textures/Surface.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 
 #include <algorithm>
 #include <cstring>
@@ -683,26 +685,24 @@ void CDCBitmap::DrawScaledSurface(
 
 // OFFSET: 0x00545E20
 // FUNCTION: fn_01838
-void BitmapPixels::DrawRleSprite(
-  int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount
-) {
-  const SpriteFrameCell missing{0, 0, -1, 0, 0xFFFFFFFF, 1, 1, 0, 0};
-
-  for (int cellIndex = 0; cellIndex < cellCount; ++cellIndex) {
-    const SpriteFrameCell& cell = static_cast<unsigned>(cellIndex) < cells.size() ? cells[cellIndex] : missing;
+void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionFrame& frame, const std::uint32_t* palette) {
+  for (int cellIndex = 0; cellIndex < frame.cellCount; ++cellIndex) {
+    const SpriteFrameCell& cell = frame.Cell(cellIndex);
     if (cell.image == -1) {
       continue;
     }
 
-    const SpriteRleImage& image = *images[cell.imageType][cell.image];
-    const int left = x - image.width / 2;
-    const int top = y - image.height / 2;
+    const SpriteRleImage* image = sprite.images[cell.imageType][cell.image];
+    const int left = x - image->width / 2;
+    const int top = y - image->height / 2;
     const int destinationX = std::max(left, 0);
+    const int copyWidth = static_cast<int>(std::min(this->m_bitmap.width, static_cast<std::uint32_t>(left + image->width))) - destinationX;
     const int destinationY = std::max(top, 0);
-    const int copyWidth = static_cast<int>(std::min(this->width, static_cast<std::uint32_t>(left + image.width))) - destinationX;
-    const int copyHeight = static_cast<int>(std::min(this->height, static_cast<std::uint32_t>(top + image.height))) - destinationY;
-    const int skip = std::max(-left, 0) + image.width * std::max(-top, 0);
-    const std::uint8_t* runs = image.runs;
+    int copyHeight = static_cast<int>(std::min(this->m_bitmap.height, static_cast<std::uint32_t>(top + image->height))) - destinationY;
+    const int rowSkip = image->width - copyWidth;
+    const int skip = std::max(-top, 0) * image->width + std::max(-left, 0);
+    std::uint32_t* row = this->m_bitmap.pixels + destinationY * this->m_bitmap.width + destinationX;
+    const std::uint8_t* runs = image->runs;
     int remaining = 0;
     auto next = [&]() -> unsigned {
       if (remaining) {
@@ -722,18 +722,38 @@ void BitmapPixels::DrawRleSprite(
       next();
     }
 
-    for (int row = 0; row < copyHeight; ++row) {
-      for (int column = 0; column < copyWidth; ++column) {
-        const unsigned index = next();
-        if (index) {
-          const std::uint32_t color = palette[index];
-          const unsigned pixelX = destinationX + (cell.mirrored ? copyWidth - column - 1 : column);
-          this->pixels[pixelX + (destinationY + row) * this->width] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+    if (!cell.mirrored) {
+      for (; copyHeight > 0; --copyHeight) {
+        for (int column = 0; column < copyWidth; ++column) {
+          const unsigned index = next();
+          if (index) {
+            const std::uint32_t color = palette[index];
+            row[column] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+          }
         }
-      }
 
-      for (int index = 0; index < image.width - copyWidth; ++index) {
-        next();
+        for (int index = 0; index < rowSkip; ++index) {
+          next();
+        }
+
+        row += this->m_bitmap.width;
+      }
+    } else {
+      for (; copyHeight > 0; --copyHeight) {
+        std::uint32_t* pixel = row + copyWidth - 1;
+        for (int column = copyWidth; column > 0; --column, --pixel) {
+          const unsigned index = next();
+          if (index) {
+            const std::uint32_t color = palette[index];
+            *pixel = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+          }
+        }
+
+        for (int index = 0; index < rowSkip; ++index) {
+          next();
+        }
+
+        row += this->m_bitmap.width;
       }
     }
   }

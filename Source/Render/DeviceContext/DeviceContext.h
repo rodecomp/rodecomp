@@ -7,6 +7,8 @@
 
 class CSurface;
 class CDCBitmap;
+class CSprRes;
+struct ActionFrame;
 class CRenderSystemBase;
 class SpriteAtlas;
 
@@ -25,7 +27,7 @@ public:
   virtual void CopyFrom(int x, int y, int sourceX, int sourceY, int width, int height, const CDCBitmap& source) = 0;
   virtual void BlendFrom(std::uint32_t x, std::uint32_t y, int width, int height, const CDCBitmap& source) = 0;
   virtual void DrawRleSprite(
-    int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount
+    int x, int y, const CSprRes& sprite, const ActionFrame& frame, const std::uint32_t* palette
   ) = 0;
   virtual void DrawSurface(
     int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format

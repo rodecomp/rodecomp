@@ -83,12 +83,6 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int width, int heigh
   this->m_bitmap.BlendFrom(x, y, width, height, source.m_bitmap, source.m_cache.m_alpha);
 }
 
-void CDCBitmap::DrawRleSprite(
-  int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount
-) {
-  this->m_bitmap.DrawRleSprite(x, y, cells, images, palette, cellCount);
-}
-
 void CDCBitmap::Fill(const RECT* rectangle, std::uint32_t color) {
   this->m_bitmap.Fill(rectangle, color);
 }

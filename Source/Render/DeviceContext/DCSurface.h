@@ -66,7 +66,7 @@ public:
   void CopyFrom(int x, int y, int sourceX, int sourceY, int width, int height, const CDCBitmap& source) override;
   void BlendFrom(std::uint32_t x, std::uint32_t y, int width, int height, const CDCBitmap& source) override;
   void DrawRleSprite(
-    int x, int y, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, const std::uint32_t* palette, int cellCount
+    int x, int y, const CSprRes& sprite, const ActionFrame& frame, const std::uint32_t* palette
   ) override;
   void DrawSurface(
     int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format
