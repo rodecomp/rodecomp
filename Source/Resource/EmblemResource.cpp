@@ -21,7 +21,8 @@ CEmblemRes* CEmblemRes::Create() {
 // OFFSET: 0x0074CA90
 // FUNCTION: fn_07881
 bool CEmblemRes::Load(const char* name) {
-  if (g_guildMgr->IsInvalidEmblem(name) == true) {
+  CGuildMgr* guildMgr = g_guildMgr;
+  if (guildMgr->IsInvalidEmblem(name) == true) {
     this->gif.CreateBlank(24, 24);
     return true;
   }
@@ -35,7 +36,8 @@ bool CEmblemRes::Load(const char* name) {
   Bytef* buffer = new Bytef[size];
   if (uncompress(buffer, &size, static_cast<const Bytef*>(file.GetData()), file.GetSize()) != Z_OK
       || this->gif.Decode("_emblem.bmp", buffer, size, true) != true) {
-    g_guildMgr->MarkInvalidEmblem(name);
+    guildMgr = g_guildMgr;
+    guildMgr->MarkInvalidEmblem(name);
     this->gif.CreateBlank(24, 24);
   }
 
