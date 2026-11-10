@@ -351,36 +351,24 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
   this->m_jobCategoryCombo->dropdownHeight = 0x50;
   this->m_jobCategoryCombo->SetSize(0x96, 0x12);
   this->m_jobCategoryCombo->Move(0x32, 0x44);
-  this->m_jobCategoryCombo->borderRed = 0x64;
-  this->m_jobCategoryCombo->borderGreen = 0x64;
-  this->m_jobCategoryCombo->borderBlue = 0x64;
-  this->m_jobCategoryCombo->red = 0xE8;
-  this->m_jobCategoryCombo->green = 0xE8;
-  this->m_jobCategoryCombo->blue = 0xE8;
+  this->m_jobCategoryCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_jobCategoryCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_jobCategoryCombo);
 
   this->m_typeCombo = new UIComboBoxDefWnd();
   this->m_typeCombo->dropdownHeight = 0x50;
   this->m_typeCombo->SetSize(0x64, 0x12);
   this->m_typeCombo->Move(0x32, 0x2B);
-  this->m_typeCombo->borderRed = 0x64;
-  this->m_typeCombo->borderGreen = 0x64;
-  this->m_typeCombo->borderBlue = 0x64;
-  this->m_typeCombo->red = 0xE8;
-  this->m_typeCombo->green = 0xE8;
-  this->m_typeCombo->blue = 0xE8;
+  this->m_typeCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_typeCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_typeCombo);
 
   this->m_subTypeCombo = new UIComboBoxDefWnd();
   this->m_subTypeCombo->dropdownHeight = 0x50;
   this->m_subTypeCombo->SetSize(0xBE, 0x12);
   this->m_subTypeCombo->Move(0x9B, 0x2B);
-  this->m_subTypeCombo->borderRed = 0x64;
-  this->m_subTypeCombo->borderGreen = 0x64;
-  this->m_subTypeCombo->borderBlue = 0x64;
-  this->m_subTypeCombo->red = 0xE8;
-  this->m_subTypeCombo->green = 0xE8;
-  this->m_subTypeCombo->blue = 0xE8;
+  this->m_subTypeCombo->SetBorderColor(0x64, 0x64, 0x64);
+  this->m_subTypeCombo->SetColor(0xE8, 0xE8, 0xE8);
   this->AddChild(this->m_subTypeCombo);
 
   this->LoadRegionMaps();
