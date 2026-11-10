@@ -11,72 +11,66 @@ namespace {
   };
 
   static_assert(sizeof(GifLzwEntry) == 12);
-
-  // INLINED
-  int GifLzwRoot(const GifLzwEntry* dictionary, int code) {
-    while (dictionary[code].prefix != -1) {
-      code = dictionary[code].prefix;
-    }
-
-    return code;
-  }
 }
 
 // OFFSET: 0x0074A840
 // FUNCTION: fn_07868
-int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int inputBytes, unsigned char* output) {
-  const int clearCode = 1 << minimumCodeSize;
+int __stdcall DecodeGifLzw(int codeSize, const unsigned char* input, int inputBytes, unsigned char* output) {
+  int previousCode = -1;
+  unsigned int bitMask = 1;
+  int matchLength = 0;
+
+  const int clearCode = 1 << codeSize;
   const int endCode = clearCode + 1;
-  const unsigned int initialBytes = 12u * (1u << (minimumCodeSize + 1));
-  auto* dictionary = static_cast<GifLzwEntry*>(std::malloc(initialBytes));
-  int initial = 0;
-  for (; initial < clearCode; ++initial) {
-    dictionary[initial].value = static_cast<unsigned char>(initial);
-    dictionary[initial].prefix = -1;
-    dictionary[initial].length = 1;
+  const int resetCodeSize = codeSize;
+
+  GifLzwEntry* dictionary = static_cast<GifLzwEntry*>(std::malloc(sizeof(GifLzwEntry) * (1 << (codeSize + 1))));
+  int nextCode;
+  for (nextCode = 0; nextCode < (1 << codeSize); ++nextCode) {
+    dictionary[nextCode].value = static_cast<unsigned char>(nextCode);
+    dictionary[nextCode].prefix = -1;
+    dictionary[nextCode].length = 1;
   }
 
-  int nextCode = initial + 2;
-  int previousCode = -1;
-  int codeSize = minimumCodeSize;
-  int bitMask = 1;
-  int lastLength = 0;
-  while (inputBytes != 0) {
-    const int bits = codeSize + 1;
+  ++nextCode;
+  ++nextCode;
+
+  while (inputBytes) {
     int code = 0;
-    for (int bit = 0; bit < bits; ++bit) {
-      code |= ((*input & bitMask) != 0) << bit;
-      bitMask *= 2;
-      if (bitMask == 256) {
+    for (int bit = 0; bit < codeSize + 1; ++bit) {
+      const int value = (*input & bitMask) ? 1 : 0;
+      bitMask <<= 1;
+
+      if (bitMask == 0x100) {
+        bitMask = 1;
         ++input;
         --inputBytes;
-        bitMask = 1;
       }
+
+      code = code | (value << bit);
     }
 
     if (code == clearCode) {
-      codeSize = minimumCodeSize;
-      dictionary = static_cast<GifLzwEntry*>(std::realloc(dictionary, initialBytes));
-      initial = 0;
-      for (; initial < clearCode; ++initial) {
-        dictionary[initial].value = static_cast<unsigned char>(initial);
-        dictionary[initial].prefix = -1;
-        dictionary[initial].length = 1;
+      codeSize = resetCodeSize;
+      dictionary = static_cast<GifLzwEntry*>(std::realloc(dictionary, sizeof(GifLzwEntry) * (1 << (codeSize + 1))));
+
+      for (nextCode = 0; nextCode < (1 << codeSize); ++nextCode) {
+        dictionary[nextCode].value = static_cast<unsigned char>(nextCode);
+        dictionary[nextCode].prefix = -1;
+        dictionary[nextCode].length = 1;
       }
 
-      nextCode = initial + 2;
+      ++nextCode;
+      ++nextCode;
       previousCode = -1;
       continue;
-    }
-
-    if (code == endCode) {
+    } else if (code == endCode) {
       if (inputBytes > 1) {
         if (dictionary) {
           std::free(dictionary);
         }
         return -1;
       }
-
       break;
     }
 
@@ -88,38 +82,49 @@ int __stdcall DecodeGifLzw(int minimumCodeSize, const unsigned char* input, int 
         return -1;
       }
 
-      const int first = code == nextCode ? GifLzwRoot(dictionary, previousCode) : GifLzwRoot(dictionary, code);
+      if (code == nextCode) {
+        int root = previousCode;
+        while (dictionary[root].prefix != -1) {
+          root = dictionary[root].prefix;
+        }
+        dictionary[nextCode].value = dictionary[root].value;
+      } else {
+        int root = code;
+        while (dictionary[root].prefix != -1) {
+          root = dictionary[root].prefix;
+        }
+        dictionary[nextCode].value = dictionary[root].value;
+      }
 
-      dictionary[nextCode].value = dictionary[first].value;
       dictionary[nextCode].prefix = previousCode;
       dictionary[nextCode].length = dictionary[previousCode].length + 1;
       ++nextCode;
-      if (nextCode == (1 << bits) && codeSize < 11) {
+
+      if (nextCode == (1 << (codeSize + 1)) && codeSize < 11) {
         ++codeSize;
-        dictionary = static_cast<GifLzwEntry*>(std::realloc(dictionary, 12u * (1u << (bits + 1))));
+        dictionary = static_cast<GifLzwEntry*>(std::realloc(dictionary, sizeof(GifLzwEntry) * (1 << (codeSize + 1))));
       }
     }
 
     previousCode = code;
-    lastLength = dictionary[code].length;
+
+    matchLength = dictionary[code].length;
     while (code != -1) {
       output[dictionary[code].length - 1] = dictionary[code].value;
-      const int prefix = dictionary[code].prefix;
-      if (prefix == code) {
+      if (dictionary[code].prefix == code) {
         if (dictionary) {
           std::free(dictionary);
         }
         return -1;
       }
-
-      code = prefix;
+      code = dictionary[code].prefix;
     }
 
-    output += lastLength;
+    output += matchLength;
   }
 
   if (dictionary) {
     std::free(dictionary);
   }
-  return lastLength;
+  return matchLength;
 }
