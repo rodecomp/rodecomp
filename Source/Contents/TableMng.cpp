@@ -383,17 +383,16 @@ bool CTableMng::WriteEntryQueueXls() {
 
             int row = 3;
             for (auto it = this->m_entryQueue.begin(); it != this->m_entryQueue.end(); ++it, ++row) {
-              EntryQueueInfo* info = it->second;
               BasicExcelCell* cell = sheet2->Cell(row, 0);
               if (cell != nullptr) {
-                cell->SetInteger(info->id);
+                cell->SetInteger(it->second->id);
               }
 
               cell = sheet2->Cell(row, 1);
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->name, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->name, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -401,60 +400,60 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->description, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->description, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
               cell = sheet2->Cell(row, 3);
               if (cell != nullptr) {
-                cell->SetInteger(info->minLevel);
+                cell->SetInteger(it->second->minLevel);
               }
 
               cell = sheet2->Cell(row, 4);
               if (cell != nullptr) {
-                cell->SetInteger(info->maxLevel);
+                cell->SetInteger(it->second->maxLevel);
               }
 
               cell = sheet2->Cell(row, 5);
               if (cell != nullptr) {
-                cell->SetInteger(info->queueFlagA);
+                cell->SetInteger(it->second->queueFlagA);
               }
 
               cell = sheet2->Cell(row, 6);
               if (cell != nullptr) {
-                cell->SetInteger(info->queueFlagB);
+                cell->SetInteger(it->second->queueFlagB);
               }
 
               cell = sheet2->Cell(row, 7);
               if (cell != nullptr) {
-                cell->SetInteger(info->queueFlagC);
+                cell->SetInteger(it->second->queueFlagC);
               }
 
               cell = sheet2->Cell(row, 8);
               if (cell != nullptr) {
-                cell->SetInteger(info->queueFlagD);
+                cell->SetInteger(it->second->queueFlagD);
               }
 
               cell = sheet2->Cell(row, 9);
               if (cell != nullptr) {
-                cell->SetInteger(info->limitType);
+                cell->SetInteger(it->second->limitType);
               }
 
               cell = sheet2->Cell(row, 10);
               if (cell != nullptr) {
-                cell->SetInteger(info->limitValue);
+                cell->SetInteger(it->second->limitValue);
               }
 
               cell = sheet2->Cell(row, 11);
               if (cell != nullptr) {
-                cell->SetInteger(info->limitValueEnd);
+                cell->SetInteger(it->second->limitValueEnd);
               }
 
               cell = sheet2->Cell(row, 12);
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->detailsText, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->detailsText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -462,7 +461,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->rulesText, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->rulesText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -470,7 +469,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->rewardText, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->rewardText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -478,7 +477,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->extraText, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->extraText, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
 
@@ -486,7 +485,7 @@ bool CTableMng::WriteEntryQueueXls() {
               if (cell != nullptr) {
                 wchar_t wbuf[260];
                 memset(wbuf, 0, sizeof(wbuf));
-                MultiByteToWideChar(CP_ACP, 0, info->bitmapName, -1, wbuf, 260);
+                MultiByteToWideChar(CP_ACP, 0, it->second->bitmapName, -1, wbuf, 260);
                 cell->SetWString(wbuf);
               }
             }
