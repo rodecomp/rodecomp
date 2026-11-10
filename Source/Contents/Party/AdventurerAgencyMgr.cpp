@@ -107,10 +107,10 @@ std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
 
 // OFFSET: 0x005CAC00
 // FUNCTION: fn_03656
-void CAdventurerAgencyMgr::LoadList(const Json::Value& value) {
+void CAdventurerAgencyMgr::LoadList(Json::Value& value) {
   this->entries.clear();
 
-  for (auto entry = value.begin(); entry != value.end(); ++entry) {
+  for (auto entry = value.begin(); entry != value.end(); entry++) {
     CAdvenPartyInfo info;
     info.characterName = (*entry)["CharName"].asString();
     info.accountId = Id((*entry).get("AID", 0).asDouble());

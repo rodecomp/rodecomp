@@ -14,7 +14,7 @@ public:
   virtual ~CAdventurerAgencyMgr();
   static bool Initialize();
   static void Shutdown();
-  void LoadList(const Json::Value& value);
+  void LoadList(Json::Value& value);
   const std::vector<CAdvenPartyInfo>& Entries() const;
   void RequestChangeMaster(std::uint32_t targetAccountId, std::uint32_t targetCharacterId, std::string targetName);
   void RequestMyParty();
