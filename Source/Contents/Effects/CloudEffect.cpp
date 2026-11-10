@@ -14,17 +14,27 @@
 
 namespace {
   // INLINED
+  __forceinline int Random(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    const int value = rand() % range;
+    return value >= 0 ? value : 0;
+  }
+
+  // INLINED
   __forceinline void StepDrift(int& angle, int& target) {
     int goal = target;
     if (goal > angle) {
       angle = std::min(360, angle + 1);
       if (goal < angle) {
-        goal = angle == 0 ? 0 : std::max(rand() % angle, 0);
+        goal = Random(angle);
       }
     } else {
       angle = std::max(0, angle - 1);
       if (goal >= angle) {
-        goal = 360 - (angle == 0 ? 0 : std::max(rand() % angle, 0));
+        goal = 360 - Random(angle);
       }
     }
     target = goal;
@@ -160,17 +170,13 @@ void CCloud::Drift() {
   StepDrift(this->driftZ, this->driftTargetZ);
 
   CParticle* particle = this->particle;
-  vector3d offset = {particle->offsetX, particle->offsetY, particle->offsetZ};
+  vector3d offset = *reinterpret_cast<const vector3d*>(&particle->offsetX);
   offset.x = g_sinTable[this->driftX] * 0.05f + offset.x;
   offset.z = g_sinTable[this->driftZ] * 0.05f + offset.z;
   particle->offsetX = offset.x;
   particle->offsetY = offset.y;
   particle->offsetZ = offset.z;
 
-  const float x = offset.x + this->position[0];
-  const float y = offset.y + this->position[1];
-  const float z = offset.z + this->position[2];
-  this->particle->position.x = x;
-  this->particle->position.y = y;
-  this->particle->position.z = z;
+  const vector3d position = {offset.x + this->position[0], offset.y + this->position[1], offset.z + this->position[2]};
+  this->particle->position = position;
 }
