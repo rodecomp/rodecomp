@@ -38,12 +38,11 @@ void LoadUserHotkeyTab(Json::Value& values, int tab) {
   Json::Value entries = values;
 
   for (auto item = entries.begin(); item != entries.end(); ++item) {
-    Json::Value& value = *item;
-    if (value.isObject()) {
-      int index = value.get("index", "-1").asInt();
-      int key1 = value.get("key1", "-1").asInt();
-      int key2 = value.get("key2", "-1").asInt();
-      std::string description = FromUtf8(value.get("desc", "").asString(), g_textCodePage);
+    if ((*item).isObject()) {
+      int index = (*item).get("index", "-1").asInt();
+      int key1 = (*item).get("key1", "-1").asInt();
+      int key2 = (*item).get("key2", "-1").asInt();
+      std::string description = FromUtf8((*item).get("desc", "").asString(), g_textCodePage);
 
       if (index != -1 || description.empty()) {
         ChangeUserHotkey(tab, index, key1, key2, description);
