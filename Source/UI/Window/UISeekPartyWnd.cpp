@@ -50,24 +50,29 @@ void UISeekPartyWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   this->AddMinimizeButton("", 0);
 
-  const std::string path = "유저인터페이스\\";
-  this->m_cancelButton = new UIBitmapButton();
-  this->m_cancelButton->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
-  this->m_cancelButton->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
-  this->m_cancelButton->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
-  this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
-  this->m_cancelButton->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
-  this->m_cancelButton->SetId(0xC9);
-  this->AddChild(this->m_cancelButton);
+  {
+    const std::string path = "유저인터페이스\\";
+    this->m_cancelButton = new UIBitmapButton();
+    this->m_cancelButton->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
+    this->m_cancelButton->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
+    this->m_cancelButton->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
+    this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
+    this->m_cancelButton->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
+    this->m_cancelButton->SetId(0xC9);
+    this->AddChild(this->m_cancelButton);
+  }
 
-  this->m_rewriteButton = new UIBitmapButton();
-  this->m_rewriteButton->SetBitmap((path + "btn_rewrite" + ".bmp").c_str(), 0, 0);
-  this->m_rewriteButton->SetBitmap((path + "btn_rewrite_a" + ".bmp").c_str(), 1, 0);
-  this->m_rewriteButton->SetBitmap((path + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);
-  this->m_rewriteButton->SetSize(this->m_rewriteButton->BitmapWidth(), this->m_rewriteButton->BitmapHeight());
-  this->m_rewriteButton->Move(this->geometry.width - 0x5C, this->geometry.height - 0x18);
-  this->m_rewriteButton->SetId(0x11C);
-  this->AddChild(this->m_rewriteButton);
+  {
+    const std::string path = "유저인터페이스\\";
+    this->m_rewriteButton = new UIBitmapButton();
+    this->m_rewriteButton->SetBitmap((path + "btn_rewrite" + ".bmp").c_str(), 0, 0);
+    this->m_rewriteButton->SetBitmap((path + "btn_rewrite_a" + ".bmp").c_str(), 1, 0);
+    this->m_rewriteButton->SetBitmap((path + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);
+    this->m_rewriteButton->SetSize(this->m_rewriteButton->BitmapWidth(), this->m_rewriteButton->BitmapHeight());
+    this->m_rewriteButton->Move(this->geometry.width - 0x5C, this->geometry.height - 0x18);
+    this->m_rewriteButton->SetId(0x11C);
+    this->AddChild(this->m_rewriteButton);
+  }
 
   this->m_type = std::rand() % 5;
   this->m_frameDuration = 1000;
