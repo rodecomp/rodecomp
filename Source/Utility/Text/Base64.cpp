@@ -41,7 +41,7 @@ namespace {
 // FUNCTION: fn_04415
 std::string InsertLinebreaks(std::string text, unsigned int distance) {
   if (text.empty()) {
-    return {};
+    return "";
   }
 
   for (unsigned int pos = distance; pos < text.size(); pos += distance + 1) {
@@ -83,7 +83,7 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
 
 // OFFSET: 0x00619CF0
 // FUNCTION: fn_04412
-std::string Base64Decode(const std::string& encoded, bool removeLinebreaks) {
+__declspec(noinline) std::string Base64Decode(const std::string& encoded, bool removeLinebreaks) {
   return DecodeBase64(encoded, removeLinebreaks);
 }
 
