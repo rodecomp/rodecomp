@@ -492,8 +492,7 @@ void UICashShopWnd_Banner::Paint() {
 // OFFSET: 0x007D05F0
 // FUNCTION: fn_09541
 void UICashShopWnd_Cart::Paint() {
-  ResourceMgr& resources = ResourceMgr::Instance();
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\cashshop\\img_shop_cart_bg.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_cart_bg.bmp"))), false);
 
   unsigned int index = this->m_scrollIndex;
   for (int slot = 0; slot < this->m_visibleCount; ++slot, ++index) {
