@@ -649,12 +649,11 @@ void LineCutter::UIText::Paint() {
 // OFFSET: 0x0083B460
 // FUNCTION: fn_10478
 void UIEmotion::OnProcess() {
-  if (!this->m_action || this->m_action->Speed(this->m_animation) == 0.0f) {
+  if (!this->m_action || 0.0f == this->m_action->Speed(this->m_animation)) {
     return;
   }
 
-  const float elapsed = static_cast<float>(timeGetTime() - this->m_startTime);
-  const unsigned frames = static_cast<unsigned>(elapsed / (this->m_action->Speed(this->m_animation) * 24.0f));
+  const unsigned frames = static_cast<unsigned>(static_cast<float>(timeGetTime() - this->m_startTime) / (this->m_action->Speed(this->m_animation) * 24.0f));
 
   if (this->m_maxLoops != 0) {
     if (this->m_loops > this->m_maxLoops) {
@@ -1064,7 +1063,7 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
 // FUNCTION: fn_10461
 tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const LineTextStyle& style) {
   if (!window) {
-    return tagSIZE{0, 0};
+    return tagSIZE();
   }
 
   return window->TextSize(text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
