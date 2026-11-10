@@ -10,8 +10,9 @@ namespace myGPack {
     HCRYPTPROV provider = 0;
     HCRYPTKEY key = 0;
     HCRYPTHASH hash = 0;
+    DWORD length = dataSize;
     DWORD result = 0;
-    std::memcpy(output, input, dataSize);
+    std::memcpy(output, input, length);
     try {
       if (!CryptAcquireContextA(&provider, nullptr, nullptr, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
         throw GetLastError();
@@ -25,7 +26,7 @@ namespace myGPack {
       if (!CryptDeriveKey(provider, CALG_RC4, hash, CRYPT_EXPORTABLE, &key)) {
         throw GetLastError();
       }
-      if (!CryptDecrypt(key, 0, TRUE, 0, output, &dataSize)) {
+      if (!CryptDecrypt(key, 0, TRUE, 0, output, &length)) {
         throw GetLastError();
       }
     } catch (DWORD error) {
