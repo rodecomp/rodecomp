@@ -50,15 +50,13 @@ void CLanguageBase::DeleteSelection() {
     return;
   }
 
-  const int begin = std::min(this->cursor, this->anchor);
-  const int length = std::max(this->cursor, this->anchor) - begin;
+  const int begin = std::min(this->anchor, this->cursor);
+  const int length = std::abs(this->cursor - this->anchor);
   this->text.erase(static_cast<std::size_t>(begin), length);
-  this->cursor = begin;
   this->anchor = begin;
+  this->cursor = begin;
 
-  if (g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_chatEdit && g_windowMgr.GetHoverWindow() == ChatWindow()->m_chatEdit) {
-    g_cashEmotionMgr->ProcessChatCommand(this->text.c_str());
-  }
+  SuggestChatCommand(this->text.c_str());
 }
 
 // OFFSET: 0x00ACD360
