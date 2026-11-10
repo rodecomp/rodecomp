@@ -943,18 +943,18 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 
 // OFFSET: 0x00BE4C60
 // FUNCTION: fn_19924
-void CEffectPrim::RenderTeiRect(
+__declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw
 ) {
   if (*rpCnt >= 510) {
     return;
   }
 
-  int alpha = alphaB;
   int blend = 2;
-  int red = 255;
-  int green = 255;
-  int blue = 255;
+  int alpha = alphaB;
+  unsigned char red = 255;
+  unsigned char green = 255;
+  unsigned char blue = 255;
   float textureV = 1.0f;
 
   switch (static_cast<int>(this->state.size)) {
@@ -962,12 +962,14 @@ void CEffectPrim::RenderTeiRect(
     blend = 6;
     break;
   case 1:
+    red = 255;
     green = 175;
     blue = 175;
     break;
   case 2:
     red = 195;
     green = 195;
+    blue = 255;
     blend = 6;
     break;
   case 3:
@@ -977,16 +979,21 @@ void CEffectPrim::RenderTeiRect(
   case 4:
     red = 100;
     green = 100;
+    blue = 255;
     break;
   case 6:
+    red = 255;
     green = 100;
     blue = 100;
     break;
   case 7:
     red = 100;
+    green = 255;
     blue = 100;
     break;
   case 8:
+    red = 255;
+    green = 255;
     blue = 170;
     break;
   case 9:
@@ -995,12 +1002,14 @@ void CEffectPrim::RenderTeiRect(
     blue = 140;
     break;
   case 10:
+    red = 255;
     green = 89;
     blue = 182;
     break;
   case 11:
     red = 170;
     green = 170;
+    blue = 255;
     break;
   case 12:
     red = 50;
@@ -1009,42 +1018,56 @@ void CEffectPrim::RenderTeiRect(
     blend = 6;
     break;
   case 13:
+    red = 255;
     green = 50;
+    blue = 255;
     blend = 6;
     break;
   case 14:
     red = 120;
     green = 120;
+    blue = 255;
     blend = 6;
     break;
   case 15:
     red = 10;
+    green = 255;
     blue = 10;
     break;
   case 16:
     red = 20;
+    green = 255;
     blue = 20;
     break;
   case 17:
     red = 0;
     green = 0;
+    blue = 255;
     break;
   case 18:
+    red = 255;
     green = 0;
     blue = 0;
     break;
   case 19:
     red = 0;
+    green = 255;
     blue = 0;
     break;
   case 20:
+    red = 255;
+    green = 255;
     blue = 0;
     break;
   case 21:
+    red = 255;
     green = 0;
+    blue = 255;
     break;
   case 22:
     red = 0;
+    green = 255;
+    blue = 255;
     break;
   case 23:
     red = 41;
@@ -1075,9 +1098,11 @@ void CEffectPrim::RenderTeiRect(
   case 28:
     red = 108;
     green = 26;
+    blue = 255;
     break;
   case 29:
     red = 177;
+    green = 255;
     blue = 58;
     break;
   case 30:
@@ -1099,10 +1124,12 @@ void CEffectPrim::RenderTeiRect(
   case 40:
     red = 70;
     green = 70;
+    blue = 255;
     break;
   case 41:
     red = 30;
     green = 30;
+    blue = 255;
     break;
   case 42:
     red = 43;
@@ -1148,12 +1175,14 @@ void CEffectPrim::RenderTeiRect(
     blue = 84;
     break;
   case 50:
+    red = 255;
     green = 198;
     blue = 91;
     break;
   case 100:
     red = 250;
     green = 250;
+    blue = 255;
     textureV = 0.9f;
     blend = 6;
     break;
@@ -1162,37 +1191,31 @@ void CEffectPrim::RenderTeiRect(
   }
 
   const RagEffectState& master = this->state.master->state;
-  if (master.colorChannels[3] != -1) {
-    blend = master.colorChannels[3];
-  }
-  if (master.colorChannels[0] != -1) {
-    red = master.colorChannels[0];
-  }
-  if (master.colorChannels[1] != -1) {
-    green = master.colorChannels[1];
-  }
-  if (master.colorChannels[2] != -1) {
-    blue = master.colorChannels[2];
-  }
-  const std::uint32_t color = static_cast<std::uint32_t>(((((alpha << 8) + red) << 8) + green) << 8) + blue;
+  const unsigned char finalRed = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : red;
+  const unsigned char finalGreen = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : green;
+  const unsigned char finalBlue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : blue;
+  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
+  const std::uint32_t color = static_cast<std::uint32_t>(((((alpha << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
 
   float left;
   float right;
-  if (texPart < 100) {
+  if (texPart >= 100) {
+    if (texPart == 100) {
+      left = 0.35f;
+      right = 0.45f;
+    } else if (texPart == 101) {
+      left = 0.45f;
+      right = 0.55f;
+    } else {
+      left = 0.55f;
+      right = 0.65f;
+    }
+  } else {
     left = static_cast<float>(texPart) / 21.0f;
     if (texPart == 0) {
       left = 0.0f;
     }
     right = static_cast<float>(texPart + 1) / 21.0f;
-  } else if (texPart == 100) {
-    left = 0.35f;
-    right = 0.45f;
-  } else if (texPart == 101) {
-    left = 0.45f;
-    right = 0.55f;
-  } else {
-    left = 0.55f;
-    right = 0.65f;
   }
 
   const vector3d& position = this->render.position;
@@ -1209,31 +1232,59 @@ void CEffectPrim::RenderTeiRect(
   vec4.y += position.y;
   vec4.z += position.z;
 
-  const vector3d* const corners[2][3] = {{&vec1, &vec2, &vec3}, {&vec4, &vec3, &vec1}};
-  const float us[2][3] = {{left, right, right}, {left, right, left}};
-  const float vs[2][3] = {{textureV, textureV, 0.0f}, {0.0f, 0.0f, textureV}};
+  alignas(16) RenderVertex vertex;
+  this->state.triangles[*rpCnt].sourceBlend = 5;
+  this->state.triangles[*rpCnt].destinationBlend = destBlend;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  this->state.triangles[*rpCnt].vertices[0].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[0].u = left;
+  this->state.triangles[*rpCnt].vertices[0].v = textureV;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec2.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  this->state.triangles[*rpCnt].vertices[1].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[1].u = right;
+  this->state.triangles[*rpCnt].vertices[1].v = textureV;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec3.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  this->state.triangles[*rpCnt].vertices[2].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[2].u = right;
+  this->state.triangles[*rpCnt].vertices[2].v = 0.0f;
+  this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
-  for (int half = 0; half < 2; ++half) {
-    RenderTriangle& triangle = this->state.triangles[*rpCnt];
-    triangle.sourceBlend = 5;
-    triangle.destinationBlend = blend;
+  if (this->state.triangles[*rpCnt].Visible()) {
+    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++*rpCnt;
+  }
 
-    for (int index = 0; index < 3; ++index) {
-      RenderVertex& vertex = triangle.vertices[index];
-      vertex = TransformVert(wtm, *corners[half][index]);
-      vertex.diffuse = color;
-      vertex.u = us[half][index];
-      vertex.v = vs[half][index];
-    }
+  this->state.triangles[*rpCnt].sourceBlend = 5;
+  this->state.triangles[*rpCnt].destinationBlend = destBlend;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec4.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  this->state.triangles[*rpCnt].vertices[0].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[0].u = left;
+  this->state.triangles[*rpCnt].vertices[0].v = 0.0f;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec3.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  this->state.triangles[*rpCnt].vertices[1].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[1].u = right;
+  this->state.triangles[*rpCnt].vertices[1].v = 0.0f;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  this->state.triangles[*rpCnt].vertices[2].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[2].u = left;
+  this->state.triangles[*rpCnt].vertices[2].v = textureV;
+  this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
-    triangle.texture = this->state.textures[pw];
-
-    if (triangle.Visible()) {
-      g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-      );
-      ++*rpCnt;
-    }
+  if (this->state.triangles[*rpCnt].Visible()) {
+    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++*rpCnt;
   }
 }
 
