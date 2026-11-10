@@ -47,15 +47,13 @@ void UIMileageWnd::Paint() {
   this->ClearSurface(0xFF00FF);
 
   std::string text;
-  const std::string background = FormatOwnedString("유저인터페이스\\basic_interface\\mileage_bg%d.bmp", this->m_bonus);
-  text = background;
+  text = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\basic_interface\\mileage_bg%d.bmp", this->m_bonus));
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text.c_str()))), true);
 
   if (this->m_point >= 300) {
     text = std::string("-- : --");
   } else {
-    const std::string remaining = FormatOwnedString("%02d : %02d", this->m_remaining / 60, this->m_remaining % 60);
-    text = remaining;
+    text = static_cast<const std::string&>(FormatOwnedString("%02d : %02d", this->m_remaining / 60, this->m_remaining % 60));
   }
 
   int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
