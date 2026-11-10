@@ -169,43 +169,39 @@ void UILapineBoxWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  UILapineBox_IngredientListWnd* list = new UILapineBox_IngredientListWnd(150, 204);
-  this->ingredientList = list;
-  list->Move(241, 17);
-  this->AddChild(list);
+  this->ingredientList = new UILapineBox_IngredientListWnd(150, 204);
+  this->ingredientList->Move(241, 17);
+  this->AddChild(this->ingredientList);
 
-  UIBitmapButton* cancel = new UIBitmapButton();
-  this->cancelButton = cancel;
-  cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
-  cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
-  cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_press.bmp", 2, 0);
-  cancel->SetBitmap("유저인터페이스\\lapine\\btn_cancel_dis.bmp", 3, 0);
-  cancel->SetSize(cancel->BitmapWidth(), cancel->BitmapHeight());
-  cancel->Move(280, 226);
-  cancel->SetId(201);
-  this->AddChild(cancel);
+  this->cancelButton = new UIBitmapButton();
+  this->cancelButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_press.bmp", 2, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_dis.bmp", 3, 0);
+  this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
+  this->cancelButton->Move(280, 226);
+  this->cancelButton->SetId(201);
+  this->AddChild(this->cancelButton);
 
-  UIBitmapButton* make = new UIBitmapButton();
-  this->makeButton = make;
-  make->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
-  make->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
-  make->SetBitmap("유저인터페이스\\lapine\\btn_make_press.bmp", 2, 0);
-  make->SetBitmap("유저인터페이스\\lapine\\btn_make_dis.bmp", 3, 0);
-  make->SetSize(make->BitmapWidth(), make->BitmapHeight());
-  make->Move(340, 226);
-  make->SetId(503);
-  this->AddChild(make);
+  this->makeButton = new UIBitmapButton();
+  this->makeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
+  this->makeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
+  this->makeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_press.bmp", 2, 0);
+  this->makeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_dis.bmp", 3, 0);
+  this->makeButton->SetSize(this->makeButton->BitmapWidth(), this->makeButton->BitmapHeight());
+  this->makeButton->Move(340, 226);
+  this->makeButton->SetId(503);
+  this->AddChild(this->makeButton);
 
-  UIBitmapButton* move = new UIBitmapButton();
-  this->moveButton = move;
-  move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
-  move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
-  move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_press.bmp", 2, 0);
-  move->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_dis.bmp", 3, 0);
-  move->SetSize(move->BitmapWidth(), move->BitmapHeight());
-  move->Move(213, 110);
-  move->SetId(505);
-  this->AddChild(move);
+  this->moveButton = new UIBitmapButton();
+  this->moveButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
+  this->moveButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
+  this->moveButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_press.bmp", 2, 0);
+  this->moveButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_dis.bmp", 3, 0);
+  this->moveButton->SetSize(this->moveButton->BitmapWidth(), this->moveButton->BitmapHeight());
+  this->moveButton->Move(213, 110);
+  this->moveButton->SetId(505);
+  this->AddChild(this->moveButton);
 }
 
 // OFFSET: 0x005FFCD0
@@ -262,10 +258,8 @@ void UILapineBoxWnd::Paint() {
   this->DrawCenteredText(33, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 160, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(33, 63, this->description.c_str(), 160, 0, 11, 0x844A42, 0);
 
-  const std::string count = FormatOwnedString("%d", static_cast<int>(this->items.size()));
-  this->DrawCenteredText(98, 76, count.c_str(), 14, 0, 11, 0xFFFFFF, 0);
-  const std::string maximum = FormatOwnedString("%d", this->maxItems);
-  this->DrawCenteredText(115, 76, maximum.c_str(), 14, 0, 11, 0xFFFFFF, 0);
+  this->DrawCenteredText(98, 76, FormatOwnedString("%d", static_cast<int>(this->items.size())).c_str(), 14, 0, 11, 0xFFFFFF, 0);
+  this->DrawCenteredText(115, 76, FormatOwnedString("%d", this->maxItems).c_str(), 14, 0, 11, 0xFFFFFF, 0);
 
   for (unsigned index = 0; index < this->items.size(); ++index) {
     int position[2];
