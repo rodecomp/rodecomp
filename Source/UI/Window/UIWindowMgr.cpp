@@ -3265,14 +3265,29 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_GUILDWND:
   {
-    const bool closed60 = g_windowMgr.CloseWindow(WID_GUILDINFOMANAGEWND);
-    const bool closed61 = g_windowMgr.CloseWindow(WID_GUILDMEMBERMANAGEWND);
-    const bool closed62 = g_windowMgr.CloseWindow(WID_GUILDPOSITIONMANAGEWND);
-    const bool closed63 = g_windowMgr.CloseWindow(WID_GUILDSKILLWND);
-    const bool closed64 = g_windowMgr.CloseWindow(WID_GUILDBANISHEDMEMBERWND);
-    const bool closed65 = g_windowMgr.CloseWindow(WID_GUILDNOTICEWND);
-    const bool closed66 = g_windowMgr.CloseWindow(WID_GUILDTOTALINFOWND);
-    closed = closed60 || closed61 || closed62 || closed63 || closed64 || closed65 || closed66;
+    int nothingClosed = 1;
+    if (g_windowMgr.CloseWindow(WID_GUILDINFOMANAGEWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDMEMBERMANAGEWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDPOSITIONMANAGEWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDSKILLWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDBANISHEDMEMBERWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDNOTICEWND)) {
+      nothingClosed = 0;
+    }
+    if (g_windowMgr.CloseWindow(WID_GUILDTOTALINFOWND)) {
+      nothingClosed = 0;
+    }
+    closed = nothingClosed == 0;
     if (g_windowMgr.comboBoxWnd) {
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
@@ -3641,7 +3656,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_NAVIGATIONHELPWND:
-    if (UIWindow* found = this->LookupWindow(id)) {
+    if (UIWindow* found = this->LookupWindow(WID_NAVIGATIONHELPWND)) {
       this->Schedule(found);
       closed = true;
     }
