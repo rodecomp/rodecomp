@@ -156,15 +156,14 @@ void CSpriteParticle::Draw(char mode) {
     primitive->texture = texture;
 
     if ((this->renderOptions & 0x200) != 0) {
-      const std::uint32_t a = static_cast<std::uint32_t>(
+      const int a = static_cast<int>(
         static_cast<float>(this->alpha) * (1.0f / 255.0f) *
-        static_cast<float>(cell.color >> 24) * (1.0f / 255.0f) * 255.0f
+        (static_cast<float>(cell.color >> 24) * (1.0f / 255.0f)) * 255.0f
       );
-      const std::uint32_t color = (((a << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8) | (cell.color >> 16 & 0xFF);
-      primitive->vertices[0].diffuse = color;
-      primitive->vertices[1].diffuse = color;
-      primitive->vertices[2].diffuse = color;
-      primitive->vertices[3].diffuse = color;
+      for (int v = 0; v < 4; ++v) {
+        primitive->vertices[v].diffuse =
+          ((static_cast<std::uint8_t>(a) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8 | (cell.color >> 16 & 0xFF);
+      }
     }
 
     const float halfWidth = static_cast<float>(image->width) * g_depthAverageHalf;
@@ -179,10 +178,10 @@ void CSpriteParticle::Draw(char mode) {
     matrix cellTranslate;
     cellTranslate.MakeTranslate((static_cast<float>(cell.x) + halfWidth) * cellScaleX, (static_cast<float>(cell.y) + halfHeight) * cellScaleY, 0.0f);
 
-    matrix temp1;
-    temp1.Compose(scaleMatrix, cellRotation);
+    matrix temp;
+    temp.Compose(scaleMatrix, cellRotation);
     matrix cellMatrix;
-    cellMatrix.Compose(temp1, cellTranslate);
+    cellMatrix.Compose(temp, cellTranslate);
 
     vector3d cellVertices[4];
     for (int v = 0; v < 4; ++v) {
@@ -208,10 +207,9 @@ void CSpriteParticle::Draw(char mode) {
     matrix worldTranslate;
     worldTranslate.MakeTranslate(this->position.x, this->position.y, this->position.z);
 
-    matrix temp2;
-    temp2.Compose(worldScale, worldRotation);
+    temp.Compose(worldScale, worldRotation);
     matrix world;
-    world.Compose(temp2, worldTranslate);
+    world.Compose(temp, worldTranslate);
     matrix finalTransform;
     finalTransform.Compose(world, this->transform);
 
