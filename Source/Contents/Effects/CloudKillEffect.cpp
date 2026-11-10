@@ -9,6 +9,16 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CSpriteParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x006FC410
 // FUNCTION: fn_06923
 CCloudKillEffect::CCloudKillEffect() : CEffect(1080) {
@@ -86,7 +96,8 @@ bool CCloudKillEffect::IsAlive() {
 // FUNCTION: fn_06930
 void CCloudKillEffect::OnProcess() {
   if (this->emitting && this->frame % 5 == 0) {
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    CParticle* created = CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
     matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
     rotation.IsIdentity();
     rotation.MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
@@ -102,12 +113,15 @@ void CCloudKillEffect::OnProcess() {
     particle->SetSprite("이팩트\\particle3.spr");
     particle->SetAction("이팩트\\particle3.act");
     particle->life = static_cast<float>(this->particleLifetimeFrames) / 60.0f;
-    this->particles.push_back(static_cast<CParticle*>(particle));
+    this->particles.push_back(created);
   }
 
   for (auto it = this->particles.begin(); it != this->particles.end();) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(*it);
-    if (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) {
+    if (IsParticleActive(particle) != true) {
+      FreeParticle(particle);
+      it = this->particles.erase(it);
+    } else {
       const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
       float& angle = reinterpret_cast<float&>(particle->angleBits);
       const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
@@ -130,9 +144,6 @@ void CCloudKillEffect::OnProcess() {
       particle->alpha = static_cast<int>(positive <= 254.0f ? positive : 254.0f);
       particle->elapsedFrames = age + 1;
       ++it;
-    } else {
-      FreeParticle(particle);
-      it = this->particles.erase(it);
     }
   }
 
@@ -142,7 +153,10 @@ void CCloudKillEffect::OnProcess() {
 
   for (auto it = this->sprites.begin(); it != this->sprites.end();) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(*it);
-    if (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) {
+    if (IsParticleActive(particle) != true) {
+      FreeParticle(particle);
+      it = this->sprites.erase(it);
+    } else {
       const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
       float& angle = reinterpret_cast<float&>(particle->angleBits);
       const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
@@ -165,9 +179,6 @@ void CCloudKillEffect::OnProcess() {
       particle->alpha = static_cast<int>(positive <= 254.0f ? positive : 254.0f);
       particle->elapsedFrames = age + 1;
       ++it;
-    } else {
-      FreeParticle(particle);
-      it = this->sprites.erase(it);
     }
   }
 
