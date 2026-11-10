@@ -7006,9 +7006,9 @@ void CGameMode::ReceiveRandomOptionSimulation(const unsigned char* packet) {
     ++record;
   }
 
+  int total = 0;
   std::fprintf(file, "\t%s", ToUtf8(std::string(name), g_textCodePage).c_str());
   std::fprintf(file, "============================\tSTART\t============================\n");
-  int total = 0;
   for (int type = 0; type < 6; ++type) {
     if (options[type].empty()) {
       continue;
