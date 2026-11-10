@@ -91,7 +91,7 @@ void CCharacterLinkedUserDataMgr::Save() {
   data["SortPrivateTab"] = g_sortPrivateTab;
   this->ExportNormalItemSlots(data);
 
-  if (!data.isNull()) {
+  if (data.isNull() != true) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
