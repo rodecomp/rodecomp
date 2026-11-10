@@ -71,7 +71,7 @@ void CViolentQuakeEffect::Open() {
   switch (this->id) {
   case EF_UNK_1760: {
     CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-    emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", std::max(rand() % 3, 0) + 1));
+    emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", std::max(0, rand() % 3) + 1));
     emitter->offsetX = 0.0f;
     emitter->offsetY = -8.0f;
     emitter->offsetZ = 0.0f;
