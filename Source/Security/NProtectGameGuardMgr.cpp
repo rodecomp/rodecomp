@@ -31,6 +31,19 @@ int __stdcall GameGuardCallback(int code, const int* packet);
 void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*));
 void WriteMyLog(const char* file, int line, const char* format, ...);
 
+class CNPGameLib {
+public:
+  // INLINED
+  explicit CNPGameLib(const char* gameName) {
+    PreInitNPGameMonA(gameName);
+  }
+
+  // INLINED
+  int Init() {
+    return InitNPGameMon();
+  }
+};
+
 namespace {
   template <std::size_t Length, std::uint64_t Key>
   class EncryptedName {
@@ -194,29 +207,35 @@ void CNProtectGameGuardMgr::Send(const char*) {
 // FUNCTION: fn_08219
 int __stdcall GameGuardCallback(int code, const int* packet) {
   switch (code) {
-  case 0x3E9:
-  case 0x3EA: {
-    const char source[] = {'\x98', '\x1B', '\x0A', '\x4D', '\xD8', '\x94', '\x3F', '\x05', '\xC8', '\x11', '\x48', '\x23'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13B, std::string(FormatString(DecryptName<0x2D51E3B7236175EDULL>(source), code)));
+  case 0x3F3: {
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+    const char source[] = {'\x32', '\x68', '\x05', '\x86', '\xD9', '\xC2', '\x41'};
+    manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
-  case 0x3F3: {
-    const char source[] = {'\x32', '\x68', '\x05', '\x86', '\xD9', '\xC2', '\x41'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
+  case 0x3E9:
+  case 0x3EA: {
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+    const char source[] = {'\x98', '\x1B', '\x0A', '\x4D', '\xD8', '\x94', '\x3F', '\x05', '\xC8', '\x11', '\x48', '\x23'};
+    manager->SetError(g_nprotectSource, 0x13B, std::string(FormatString(DecryptName<0x2D51E3B7236175EDULL>(source), code)));
+    return 0;
+  }
+  case 0x3F6: {
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+    const char source[] = {'\x40', '\x80', '\xFF', '\x78', '\xE9', '\x3A', '\x6F'};
+    manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
   case 0x3F4:
-  case 0x3F5:
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_USA_PERSONALINFO_DROP)));
-    return 0;
-  case 0x3F6: {
-    const char source[] = {'\x40', '\x80', '\xFF', '\x78', '\xE9', '\x3A', '\x6F'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(MSI_INIT_ERROR), code)));
+  case 0x3F5: {
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+    manager->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_USA_PERSONALINFO_DROP)));
     return 0;
   }
   case 0x3F7: {
+    CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     const char source[] = {'\xE4', '\x34', '\xED', '\x32', '\x85', '\xB0', '\xD5'};
-    g_nProtectGameGuardMgr->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
+    manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
   case 0x3FB: {
@@ -236,25 +255,19 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
 // OFFSET: 0x0076C9D0
 // FUNCTION: fn_08209
 bool CNProtectGameGuardMgr::Initialize() {
-  void* created = ::operator new(1, std::nothrow);
-  if (created != nullptr) {
-    PreInitNPGameMonA(GameName());
-  }
-  this->m_gameLib = created;
-  if (created == nullptr) {
+  CNPGameLib* gameLib = new (std::nothrow) CNPGameLib(GameName());
+  this->m_gameLib = gameLib;
+  if (gameLib == nullptr) {
     return false;
   }
 
-  const int status = InitNPGameMon();
+  const int status = gameLib->Init();
   if (status != 0x755) {
-    char message[0x400];
-    char title[0x100];
-    std::memset(message, 0, sizeof(message));
-    std::memset(title, 0, sizeof(title));
-
+    char message[0x400] = {};
     const char bodySource[] = {'\x18', '\x54', '\xC2', '\xF0', '\xDA', '\xFC', '\x92', '\xBD', '\x3B', '\x15', '\xEA', '\xE7', '\xEF', '\xE6', '\x81', '\xF5', '\x7F', '\x10', '\xC3', '\xE0', '\x9D'};
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), DecryptName<0xCFF3899D95AF355FULL>(bodySource), status);
 
+    char title[0x100] = {};
     const char titleSource[] = {'\x62', '\x10', '\xC2', '\xAE', '\x4A', '\x86', '\x4C', '\x97', '\x41', '\x51', '\xEA', '\xB9', '\x7F', '\x9C', '\x5F', '\xC5', '\x1F', '\x51', '\x8A', '\xA7', '\x78', '\xF3'};
     StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), DecryptName<0xE52DF30DCBAF7125ULL>(titleSource), status);
 
