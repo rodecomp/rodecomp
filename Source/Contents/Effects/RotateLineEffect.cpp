@@ -10,7 +10,7 @@
 
 // OFFSET: 0x00B741B0
 // FUNCTION: fn_19153
-CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread(0), alpha(0), started(false), previous{} {
+CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread(0), alpha(0), started(false) {
 }
 
 // OFFSET: 0x00B74360
@@ -77,7 +77,8 @@ void CRotateLineEffect::OnProcess() {
     (*it)->position.x = this->position[0];
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    if (particle) {
       float& particleAngle = *reinterpret_cast<float*>(&particle->angleBits);
       int& particleSpread = particle->angleParameter;
       if (particle->columnIndex == 0) {
@@ -87,7 +88,7 @@ void CRotateLineEffect::OnProcess() {
         this->scale = particle->scale;
         this->started = true;
       } else if (!this->started) {
-        ++(*it)->elapsedFrames;
+        ++particle->elapsedFrames;
         continue;
       }
 
@@ -122,7 +123,7 @@ void CRotateLineEffect::OnProcess() {
       const float sine = g_sinTable[index];
       const int tilt = particle->phaseParameter;
       const float tiltCosine = g_cosTable[tilt];
-      vector3d points[2] = {};
+      EffectPoint points[2];
       const float height = *reinterpret_cast<float*>(particle->animationParameters);
       points[0].x = cosine * particle->scale;
       points[0].y = -particle->animationParameter;
@@ -145,10 +146,14 @@ void CRotateLineEffect::OnProcess() {
         particle->vertices[2].y = this->previous[0].y;
         particle->vertices[2].z = this->previous[0].z;
       }
-      this->previous[0] = points[0];
-      this->previous[1] = points[1];
+      this->previous[0].x = points[0].x;
+      this->previous[0].y = points[0].y;
+      this->previous[0].z = points[0].z;
+      this->previous[1].x = points[1].x;
+      this->previous[1].y = points[1].y;
+      this->previous[1].z = points[1].z;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 

@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_ROTATELINEEFFECT_H
 
 #include "Contents/Effects/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/EffectPoint.h"
 
 #include <cstddef>
 #include <vector>
@@ -24,7 +24,7 @@ public:
   /* 00D4 */ int spread;
   /* 00D8 */ int alpha;
   /* 00DC */ bool started;
-  /* 00E0 */ vector3d previous[2];
+  /* 00E0 */ EffectPoint previous[2];
   /* 00F8 */ std::vector<CParticle*> particles;
 };
 
