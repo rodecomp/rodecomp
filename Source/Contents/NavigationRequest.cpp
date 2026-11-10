@@ -321,11 +321,9 @@ std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
   return &this->npcs;
 }
 
-// OFFSET: 0x00B8E010
-// FUNCTION: fn_19465
-CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
-  const CNavi_Link target = link;
-  for (CNavi_Link* candidate : this->links) {
+// INLINED
+static CNavi_Link* FindSameLink(const std::vector<CNavi_Link*>& links, CNavi_Link target) {
+  for (CNavi_Link* candidate : links) {
     if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->linkedCellX == target.linkedCellX &&
         candidate->linkedCellY == target.linkedCellY && candidate->info != nullptr &&
         std::strcmp(candidate->info->name.c_str(), target.info->name.c_str()) == 0 && candidate->linkedInfo != nullptr &&
@@ -334,6 +332,12 @@ CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
     }
   }
   return nullptr;
+}
+
+// OFFSET: 0x00B8E010
+// FUNCTION: fn_19465
+CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
+  return FindSameLink(this->links, link);
 }
 
 // OFFSET: 0x00B8D6F0
@@ -417,26 +421,28 @@ void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
 
   if (type == 2 || type == 0) {
     target.type = 2;
-    for (CNavi_Object* npc : this->npcs) {
+    const std::vector<CNavi_Object*>::iterator end = this->npcs.end();
+    for (std::vector<CNavi_Object*>::iterator it = this->npcs.begin(); it != end; ++it) {
       NaviCell cell;
-      const NaviCell* position = npc->GetCell(&cell);
+      const NaviCell* position = (*it)->GetCell(&cell);
       target.x = position->x;
       target.y = position->y;
-      target.name = npc->GetName();
-      target.object = npc;
+      target.name = (*it)->GetName();
+      target.object = *it;
       out.push_back(target);
     }
   }
 
   if (type == 3 || type == 0) {
     target.type = 3;
-    for (CNavi_Object* mob : this->mobs) {
+    const std::vector<CNavi_Object*>::iterator end = this->mobs.end();
+    for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != end; ++it) {
       NaviCell cell;
-      const NaviCell* position = mob->GetCell(&cell);
+      const NaviCell* position = (*it)->GetCell(&cell);
       target.x = position->x;
       target.y = position->y;
-      target.name = mob->GetName();
-      target.object = mob;
+      target.name = (*it)->GetName();
+      target.object = *it;
       out.push_back(target);
     }
   }
@@ -446,16 +452,17 @@ void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
 // FUNCTION: fn_19501
 void CNaviInfo::CollectMobsInRange(int minimum, int maximum, std::vector<NavigationTarget>& out) {
   NavigationTarget target(3, nullptr);
-  for (CNavi_Object* mob : this->mobs) {
+  const std::vector<CNavi_Object*>::iterator end = this->mobs.end();
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != end; ++it) {
     NaviCell lower;
     NaviCell upper;
-    if (minimum <= mob->GetCell(&lower)->x && mob->GetCell(&upper)->x <= maximum) {
+    if (minimum <= (*it)->GetCell(&lower)->x && maximum >= (*it)->GetCell(&upper)->x) {
       NaviCell cell;
-      const NaviCell* position = mob->GetCell(&cell);
+      const NaviCell* position = (*it)->GetCell(&cell);
       target.x = position->x;
       target.y = position->y;
-      target.name = mob->GetName();
-      target.object = mob;
+      target.name = (*it)->GetName();
+      target.object = *it;
       out.push_back(target);
     }
   }
@@ -465,14 +472,14 @@ void CNaviInfo::CollectMobsInRange(int minimum, int maximum, std::vector<Navigat
 // FUNCTION: fn_19505
 void CNaviInfo::CollectMobsByTitle(std::string title, std::vector<NavigationTarget>& out) {
   NavigationTarget target(3, nullptr);
-  for (CNavi_Object* mob : this->mobs) {
-    if (std::strcmp(mob->GetTitle(), title.c_str()) == 0) {
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
+    if (std::strcmp((*it)->GetTitle(), title.c_str()) == 0) {
       NaviCell cell;
-      const NaviCell* position = mob->GetCell(&cell);
+      const NaviCell* position = (*it)->GetCell(&cell);
       target.x = position->x;
       target.y = position->y;
-      target.name = mob->GetName();
-      target.object = mob;
+      target.name = (*it)->GetName();
+      target.object = *it;
       out.push_back(target);
     }
   }
