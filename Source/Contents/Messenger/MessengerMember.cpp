@@ -1466,11 +1466,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
         char path[256];
         memset(path, 0, sizeof(path));
-        bool dead = false;
+        int dead = 0;
         if (it->dead == 1) {
-          dead = true;
-        } else if (g_session.m_aid == it->accountId) {
-          dead = gameMode->isPlayerDead == 1;
+          dead = 1;
+        } else if (g_session.m_aid == it->accountId && gameMode->isPlayerDead == 1) {
+          dead = 1;
         }
         std::string prefix = "유저인터페이스\\renewalparty\\";
         sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", prefix.c_str(), it->job);
@@ -1499,25 +1499,24 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       g_windowMgr.modal->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
 
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
     int tooltip;
     if (this->mode == 0) {
-      button->SetDisabled(1);
-      button->Invalidate();
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetDisabled(1);
+      static_cast<UIBitmapButton*>(this->buttons[0])->Invalidate();
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
       tooltip = 0x62;
     } else {
-      button->SetDisabled(0);
-      button->Invalidate();
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
-      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetDisabled(0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->Invalidate();
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
+      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
       tooltip = 0xDBA;
     }
-    button->SetTooltip(LookupMessage(tooltip));
+    static_cast<UIBitmapButton*>(this->buttons[0])->SetTooltip(LookupMessage(tooltip));
     this->LayoutButtons();
     return 0;
   }
