@@ -85,8 +85,7 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 void UIMerchantShopTitle::OnRBtnDown(int, int) {
   if (g_serviceOptions.Get(167)) {
     g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
-    g_session.merchantHopeToSellItems.clear();
-    g_session.merchantMirrorItems.clear();
+    g_session.ClearItems1760And1748();
   }
 }
 
