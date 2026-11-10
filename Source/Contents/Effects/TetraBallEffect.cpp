@@ -26,14 +26,14 @@ void CTetraBallEffect::AddBall(int id, int index) {
   case EF_TETRA_VORTEX_BALL_1:
     ball->Open("tetravortex\\tetra_ball_01_fire\\tetra_01_fire.str");
     break;
-  case EF_TETRA_VORTEX_BALL_2:
-    ball->Open("tetravortex\\tetra_ball_04_water\\tetra_04_water.str");
-    break;
   case EF_TETRA_VORTEX_BALL_3:
     ball->Open("tetravortex\\tetra_ball_02_wind\\tetra_02_wind.str");
     break;
   case EF_TETRA_VORTEX_BALL_4:
     ball->Open("tetravortex\\tetra_ball_03_earth\\tetra_03_earth.str");
+    break;
+  case EF_TETRA_VORTEX_BALL_2:
+    ball->Open("tetravortex\\tetra_ball_04_water\\tetra_04_water.str");
     break;
   }
 
