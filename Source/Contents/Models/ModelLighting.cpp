@@ -109,26 +109,29 @@ void C3dNode::OverrideColors() {
 // OFFSET: 0x00ABB450
 // FUNCTION: fn_17515
 void C3dNode::SampleGroundColors(const CRenderer*, const float* matrix, const GroundGeometry& ground) {
-  const float* position = this->model->position;
+  const std::array<float, 3>* vertices = this->mesh->vertices;
+  const ModelFace* faces = this->mesh->faces;
+
+  std::uint32_t sampled[3];
 
   for (int index = 0; index < this->mesh->faceCount; ++index) {
-    const ModelFace& face = this->mesh->faces[index];
+    const ModelFace& face = faces[index];
+    const ModelFaceState& state = this->faceState[index];
 
-    for (unsigned corner = 0; corner < 3; ++corner) {
-      const auto& vertex = this->mesh->vertices[face.vertices[corner]];
-      const float x = (((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9]) + position[0];
-      const float y = (((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10]) + position[1];
-      const float z = (((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]) + position[2];
-      std::uint32_t sampled[3];
-      ground.WorldColor(x, y, z, sampled);
+    GroundColor(this, ground, matrix, vertices[face.vertices[0]], sampled);
+    this->faceValues[index * 9] = AddChannel(sampled[0], (state.colors[0] >> 16) & 255u);
+    this->faceValues[index * 9 + 1] = AddChannel(sampled[1], (state.colors[0] >> 8) & 255u);
+    this->faceValues[index * 9 + 2] = AddChannel(sampled[2], state.colors[0] & 255u);
 
-      for (unsigned component = 0; component < 3; ++component) {
-        const unsigned shift = 16u - component * 8u;
-        const unsigned base = (this->faceState[index].colors[corner] >> shift) & 255u;
-        const int value = static_cast<int>(sampled[component]) + base;
-        this->faceValues[index * 9u + corner * 3u + component] = value > 255 ? 255 : value;
-      }
-    }
+    GroundColor(this, ground, matrix, vertices[face.vertices[1]], sampled);
+    this->faceValues[index * 9 + 3] = AddChannel(sampled[0], (state.colors[1] >> 16) & 255u);
+    this->faceValues[index * 9 + 4] = AddChannel(sampled[1], (state.colors[1] >> 8) & 255u);
+    this->faceValues[index * 9 + 5] = AddChannel(sampled[2], state.colors[1] & 255u);
+
+    GroundColor(this, ground, matrix, vertices[face.vertices[2]], sampled);
+    this->faceValues[index * 9 + 6] = AddChannel(sampled[0], (state.colors[2] >> 16) & 255u);
+    this->faceValues[index * 9 + 7] = AddChannel(sampled[1], (state.colors[2] >> 8) & 255u);
+    this->faceValues[index * 9 + 8] = AddChannel(sampled[2], state.colors[2] & 255u);
   }
 }
 
