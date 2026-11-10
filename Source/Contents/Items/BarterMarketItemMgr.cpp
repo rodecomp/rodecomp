@@ -547,7 +547,7 @@ std::pair<bool, BarterMarketEntry> CExpandedBarterMarketItemMgr::FindItem(int id
 std::pair<bool, BarterMarketEntry> CExpandedBarterMarketItemMgr::FindEntry(int id)
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
-    if (it->id == id) {
+    if (id == it->id) {
       return std::make_pair(true, *it);
     }
   }
