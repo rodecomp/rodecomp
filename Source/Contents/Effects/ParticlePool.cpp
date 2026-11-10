@@ -18,14 +18,15 @@ ParticlePool::~ParticlePool() {
 // OFFSET: 0x00B40740
 // FUNCTION: fn_18854
 CParticle* ParticlePool::Acquire() {
-  if (this->particles.size() <= this->active) {
+  if (this->active >= this->particles.size()) {
     return nullptr;
   }
 
   CParticle* particle = nullptr;
   auto it = this->particles.begin();
   for (; it != this->particles.end(); ++it) {
-    if (!it->second) {
+    auto entry = *it;
+    if (!entry.second) {
       break;
     }
   }
@@ -68,8 +69,8 @@ bool ParticlePool::IsActive(CParticle* particle) {
 // OFFSET: 0x00B408E0
 // FUNCTION: fn_18858
 void ParticlePool::ActivateAll() {
-  for (auto& entry : this->particles) {
-    entry.second = true;
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    it->second = true;
   }
   this->active = this->particles.size();
 }
