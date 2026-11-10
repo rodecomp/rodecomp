@@ -82,8 +82,8 @@ std::string SHA3::GetHash() {
   this->buffer[offset - 1] |= 0x80;
   this->ProcessBlock(this->buffer);
 
-  std::string result;
   const unsigned int hashLength = this->digestBits / 64;
+  std::string result;
   result.reserve(this->digestBits / 4);
 
   for (unsigned int i = 0; i < hashLength; ++i) {
