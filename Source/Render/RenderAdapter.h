@@ -37,7 +37,6 @@ RenderAdapter SelectedRenderAdapter();
 std::vector<RenderAdapter> EnumerateRenderAdapters(int backend);
 std::vector<RenderAdapter> EnumerateAdaptersDX7();
 std::vector<RenderAdapter> EnumerateAdaptersDX9();
-HRESULT InitializeConfiguredDeviceDX9(DeviceOwnerDX9& owner, HWND window);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderAdapter) == 104);

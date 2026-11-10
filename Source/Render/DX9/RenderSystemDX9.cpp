@@ -24,13 +24,6 @@ std::int32_t CRenderSystemDX9::Backend() {
   return 2;
 }
 
-// INLINED
-HRESULT CRenderSystemDX9::Initialize(HWND window) {
-  const HRESULT result =
-    InitializeConfiguredDeviceDX9(*this->m_device, window);
-  return result;
-}
-
 // OFFSET: 0x0056D670
 // FUNCTION: fn_02363
 HRESULT CRenderSystemDX9::Close() {

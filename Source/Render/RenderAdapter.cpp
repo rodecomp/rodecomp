@@ -1,4 +1,5 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
+#include "Render/DX9/RenderSystemDX9.h"
 #include "Render/RenderAdapter.h"
 #include "Client/Session.h"
 #include "Render/DeviceSelection.h"
@@ -84,7 +85,7 @@ std::vector<RenderAdapter> EnumerateAdaptersDX9() {
     D3DADAPTER_IDENTIFIER9 identifier;
 
     if (SUCCEEDED(direct3D->GetAdapterIdentifier(ordinal, 0, &identifier))) {
-      adapters.push_back({2, ordinal, identifier.Description, {}, {}, identifier.DeviceIdentifier, identifier.DeviceName});
+      adapters.push_back({2, ordinal, identifier.Description, g_defaultDrawGuidDX7, g_defaultDrawGuidDX7, identifier.DeviceIdentifier, identifier.DeviceName});
     }
   }
 
@@ -93,10 +94,10 @@ std::vector<RenderAdapter> EnumerateAdaptersDX9() {
 
 // OFFSET: 0x0056E270
 // FUNCTION: fn_02375
-HRESULT InitializeConfiguredDeviceDX9(DeviceOwnerDX9& owner, HWND window) {
+HRESULT CRenderSystemDX9::Initialize(HWND window) {
   const std::vector<RenderAdapter> adapters = EnumerateAdaptersDX9();
 
-  if (adapters.empty()) {
+  if (adapters.size() == 0) {
     MessageBoxA(nullptr, "No compatible devices", "Error", MB_OK);
     return D3DERR_NOTAVAILABLE;
   }
@@ -104,12 +105,12 @@ HRESULT InitializeConfiguredDeviceDX9(DeviceOwnerDX9& owner, HWND window) {
   const RenderAdapter selected = SelectedRenderAdapter();
   UINT ordinal = D3DADAPTER_DEFAULT;
 
-  for (const RenderAdapter& adapter : adapters) {
-    if (adapter.Matches(selected)) {
-      ordinal = adapter.ordinal;
+  for (size_t i = 0; i < adapters.size(); ++i) {
+    if (adapters[i].Matches(selected)) {
+      ordinal = adapters[i].ordinal;
       break;
     }
   }
 
-  return owner.Initialize(window, ordinal);
+  return this->m_device->Initialize(window, ordinal);
 }
