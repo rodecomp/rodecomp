@@ -33,7 +33,7 @@ public:
   matrix AlternateView(float yaw) const;
   void Refresh();
 
-  void Apply(CameraState& camera, int& frameLatch);
+  void Apply();
   void Start(int enabled, unsigned duration, float horizontal, float distance, float pitch);
   void SetAmplitudes(float horizontal, float distance, float pitch);
 

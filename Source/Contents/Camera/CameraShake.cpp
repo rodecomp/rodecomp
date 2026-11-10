@@ -1,7 +1,6 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Camera/CameraState.h"
 #include "Utility/Math/AffineMatrix.h"
-#include "Utility/Math/ScalarConversion.h"
 
 #include <cstdlib>
 #include <windows.h>
@@ -48,48 +47,42 @@ void CView::SetAmplitudes(float horizontal, float distance, float pitch) {
 
 // OFFSET: 0x00ADC7A0
 // FUNCTION: fn_17931
-void CView::Apply(CameraState& camera, int& frameLatch) {
+void CView::Apply() {
   if (!this->shake.enabled) {
     return;
   }
 
   if (timeGetTime() >= this->shake.start + this->shake.duration) {
-    camera.target[0] = camera.desiredTarget[0];
-    camera.target[1] = camera.desiredTarget[1];
-    camera.target[2] = camera.desiredTarget[2];
-    camera.distance = camera.desiredDistance;
+    this->camera.target[0] = this->camera.desiredTarget[0];
+    this->camera.target[1] = this->camera.desiredTarget[1];
+    this->camera.target[2] = this->camera.desiredTarget[2];
+    this->camera.distance = this->camera.desiredDistance;
     this->shake.enabled = 0;
-    camera.pitch = camera.desiredPitch;
+    this->camera.pitch = this->camera.desiredPitch;
 
     return;
   }
 
-  if (!frameLatch) {
+  if (!g_worldViewDrawn) {
     return;
   }
 
-  frameLatch = 0;
+  g_worldViewDrawn = 0;
 
   // GLOBAL: gl_24565
   static float horizontal = this->shake.horizontal;
-  const float horizontalX = Jitter(10.0f) + horizontal;
-  const int yawX = TruncateToInt(camera.yaw);
-  const float x = static_cast<float>(static_cast<double>(ClientCosine(yawX)) * horizontalX);
-  camera.target[0] = x + camera.target[0];
-  const float horizontalZ = Jitter(10.0f) + horizontal;
-  const int yawZ = TruncateToInt(camera.yaw);
-  const float sine = -ClientSine(yawZ);
-
+  this->camera.target[0] += (Jitter(10.0f) + horizontal) * ClientCosine(static_cast<int>(this->camera.yaw));
+  const float offsetZ = (Jitter(10.0f) + horizontal) * -ClientSine(static_cast<int>(this->camera.yaw));
   horizontal = -horizontal;
-  camera.target[2] = horizontalZ * sine + camera.target[2];
+  this->camera.target[2] += offsetZ;
   // GLOBAL: gl_24566
   static float distance = this->shake.distance;
   const float distanceDelta = Jitter(10.0f) + distance;
   distance = -distance;
-  camera.distance = distanceDelta + camera.distance;
+  this->camera.distance = distanceDelta + this->camera.distance;
   // GLOBAL: gl_24567
   static float pitch = this->shake.pitch;
   const float pitchDelta = Jitter(15.0f) + pitch;
   pitch = -pitch;
-  camera.pitch = pitchDelta + camera.pitch;
+  this->camera.pitch = pitchDelta + this->camera.pitch;
 }
