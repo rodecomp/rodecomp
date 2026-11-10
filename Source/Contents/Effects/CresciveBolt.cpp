@@ -57,15 +57,15 @@ void CCresciveBolt::Open() {
 // OFFSET: 0x0070AE90
 // FUNCTION: fn_07110
 bool CCresciveBolt::IsAlive() {
-  if (!this->particle) {
-    return false;
+  if (this->particle) {
+    if (0.0f == this->particle->life) {
+      return true;
+    }
+
+    return static_cast<float>(this->particle->elapsedFrames) < this->particle->life * 60.0f;
   }
 
-  if (this->particle->life == 0.0f) {
-    return true;
-  }
-
-  return static_cast<float>(this->particle->elapsedFrames) < this->particle->life * 60.0f;
+  return false;
 }
 
 // OFFSET: 0x0070AED0
@@ -75,17 +75,15 @@ void CCresciveBolt::OnProcess() {
     return;
   }
 
-  this->particle->position.x = this->position[0] + 0.0f;
-  this->particle->position.y = this->position[1] - 3.0f;
-  this->particle->position.z = this->position[2] + 0.0f;
+  this->particle->position = vector3d(this->position[0] + 0.0f, this->position[1] - 3.0f, this->position[2] + 0.0f);
 
   const float angle = static_cast<float>(static_cast<double>(this->particle->m_angle));
-  if (angle > 90.0f && angle < 270.0f) {
-    this->particle->Process(0.0f, 0.0f, 0.0f);
+  if (angle <= 90.0f || angle >= 270.0f) {
+    this->particle->Process(0.0f, -40.0f, 0.0f);
     return;
   }
 
-  this->particle->Process(0.0f, -40.0f, 0.0f);
+  this->particle->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x0070AF80
