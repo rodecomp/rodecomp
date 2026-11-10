@@ -161,41 +161,38 @@ void UINameBalloonText::Paint() {
   if (this->framed == 1) {
     CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
     if (frame) {
-      this->DrawBitmap(2, (this->geometry.height - frame->image.height) / 2, &frame->image, true);
+      this->DrawBitmap(2, (this->geometry.height - frame->image.height) / 2, frame, true);
       x = frame->image.width + 4;
     }
   }
 
   if (this->iconName.size() != 0 && ResourceMgr::Instance().Exists(this->iconName.c_str())) {
-    const BitmapImage* image;
     if (this->iconName.find(".bmp", 0, 4) != std::string::npos) {
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->iconName.c_str())));
-      if (!bitmap) {
-        goto lines;
+      if (bitmap) {
+        g_modeMgr.GetGameMode();
+        this->DrawBitmap(4, (this->geometry.height - 24) / 2, bitmap, true);
+        if (this->framed == 0) {
+          x += 28;
+        }
       }
-
-      g_modeMgr.GetGameMode();
-      image = &bitmap->image;
     } else if (this->iconName.find(".gif", 0, 4) != std::string::npos) {
       CGifRes* gif = static_cast<CGifRes*>(ResourceMgr::Instance().Load(Resolve(this->iconName.c_str())));
-      if (!gif) {
-        goto lines;
+      if (gif) {
+        this->DrawBitmap(4, (this->geometry.height - 24) / 2, gif, true);
+        if (this->framed == 0) {
+          x += 28;
+        }
       }
-
-      image = &gif->image;
     } else {
       CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
-      if (!emblem) {
-        goto lines;
+      if (emblem) {
+        g_modeMgr.GetGameMode();
+        this->DrawBitmap(4, (this->geometry.height - 24) / 2, &emblem->gif, true);
+        if (this->framed == 0) {
+          x += 28;
+        }
       }
-
-      g_modeMgr.GetGameMode();
-      image = &emblem->gif.image;
-    }
-
-    this->DrawBitmap(4, (this->geometry.height - 24) / 2, image, true);
-    if (this->framed == 0) {
-      x += 28;
     }
   } else if (this->monsterType != 0) {
     const char* name;
@@ -209,7 +206,7 @@ void UINameBalloonText::Paint() {
 
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
     if (icon) {
-      this->DrawBitmap(0, 0, &icon->image, true);
+      this->DrawBitmap(0, 0, icon, true);
       x += icon->image.width;
     }
   }
