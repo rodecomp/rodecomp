@@ -7,6 +7,15 @@
 #include <algorithm>
 #include <cstdlib>
 
+struct HitLineVector3d : vector3d {
+  // INLINED
+  HitLineVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+};
+
 // OFFSET: 0x00705040
 // FUNCTION: fn_07035
 void CHitLineEffect::Close() {
@@ -22,9 +31,9 @@ void CHitLineEffect::Close() {
 void CHitLineEffect::Open() {
   for (int pass = 0; pass < 4; ++pass) {
     for (int line = 0; line < 4; ++line) {
-      const int delay = -std::max(rand() % 26, 0);
-      const int brightness = std::max(rand() % 51, 0) + 125;
-      const int angle = std::max(rand() % 360, 0);
+      const int delay = -std::max(0, rand() % 26);
+      const int brightness = std::max(0, rand() % 51) + 125;
+      const int angle = std::max(0, rand() % 360);
       for (int segment = 0; segment < 20; ++segment) {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
         if (particle) {
@@ -38,11 +47,9 @@ void CHitLineEffect::Open() {
           *reinterpret_cast<int*>(particle->effectParameters) = brightness;
           particle->phaseParameter = angle;
           particle->speedParameter = 14.0f;
-          float* turns = &particle->animationParameter;
-          unsigned char* halfTurns = &particle->animationState;
           for (int index = 0; index < 21; ++index) {
-            halfTurns[index] = 0;
-            turns[index] = 0.0f;
+            (&particle->animationState)[index] = 0;
+            (&particle->animationParameter)[index] = 0.0f;
           }
           InitParticleQuad(particle->vertices);
           this->particles.push_back(particle);
