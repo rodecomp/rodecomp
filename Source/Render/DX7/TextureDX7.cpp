@@ -241,12 +241,14 @@ void CTextureDX7::ReleaseDC(HDC dc) {
 // FUNCTION: fn_01826
 void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  this->textureFlags = (this->textureFlags & 255) | (static_cast<unsigned char>(option) << 8);
+  std::uint8_t& transparent = reinterpret_cast<std::uint8_t*>(&this->textureFlags)[1];
+  transparent = static_cast<std::uint8_t>(option);
 
   if (!this->m_surface || !pixels) {
     return;
   }
 
+  const unsigned stride = sourceWidth ? sourceWidth : width;
   DDSURFACEDESC2 description{};
   description.dwSize = sizeof(description);
 
@@ -265,6 +267,8 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     ++stepY;
   }
 
+  const int left = x / stepX;
+  const int top = y / stepY;
   const int columns = width / stepX;
   const int rows = height / stepY;
 
@@ -272,25 +276,28 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
-  const RECT rectangle = Rectangle(x / stepX, y / stepY, columns, rows);
+  const RECT rectangle = Rectangle(left, top, columns, rows);
 
   if (FAILED(this->m_surface->Lock(const_cast<RECT*>(&rectangle), &description, DDLOCK_WAIT | DDLOCK_WRITEONLY, nullptr))) {
     return;
   }
 
-  const unsigned stride = sourceWidth ? sourceWidth : width;
   auto* output = static_cast<unsigned char*>(description.lpSurface);
-  const bool transparent = static_cast<unsigned char>(option) != 0;
 
   switch (this->m_format) {
   case TextureFormat::A1R5G5B5:
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
-        std::uint16_t value = ((color >> 16) & 0x8000) | ((color >> 3) & 0x1F) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
+        const unsigned packed = ((color >> 9) & 0x7C00) + ((color >> 6) & 0x3E0) + ((color >> 3) & 0x1F) + ((color >> 16) & 0x8000);
+        std::uint16_t value;
 
-        if (value == 0xFC1F || (transparent && !(value & 0x7FFF))) {
+        if (packed == 0xFC1F) {
           value = 0;
+        } else if (transparent && !(packed & 0x7FFF)) {
+          value = 0;
+        } else {
+          value = static_cast<std::uint16_t>(packed);
         }
 
         std::memcpy(output + column * sizeof(value), &value, sizeof(value));
@@ -304,10 +311,15 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
-        std::uint16_t value = ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00) | ((color >> 16) & 0xF000);
+        const unsigned packed = ((color >> 16) & 0xF000) + ((color >> 12) & 0xF00) + ((color >> 8) & 0xF0) + ((color >> 4) & 0xF);
+        std::uint16_t value;
 
-        if ((value & 0xFFF) == 0xF0F || (transparent && !(value & 0xFFF))) {
+        if ((packed & 0xFFF) == 0xF0F) {
           value = 0;
+        } else if (transparent && !(packed & 0xFFF)) {
+          value = 0;
+        } else {
+          value = static_cast<std::uint16_t>(packed);
         }
 
         std::memcpy(output + column * sizeof(value), &value, sizeof(value));
@@ -321,9 +333,10 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
-        const std::uint16_t value = ((color >> 8) & 0xF800) | ((color >> 3) & 0x1F) | ((color >> 5) & 0x7E0);
+        const unsigned packed = ((color >> 5) & 0x7E0) + ((color >> 3) & 0x1F) + ((color >> 8) & 0xF800);
 
-        if (!transparent || value != 0xF81F) {
+        if (!transparent || packed != 0xF81F) {
+          const std::uint16_t value = static_cast<std::uint16_t>(packed);
           std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
       }
