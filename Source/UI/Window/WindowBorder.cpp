@@ -39,31 +39,16 @@ void DrawRoundedBorder(UIWindow& window, int x, int y, int width, int height, st
 // OFFSET: 0x00A7BC30
 // FUNCTION: fn_16937
 void DrawRectangleBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
-  const int left = std::max(x, 0);
-  const int top = std::max(y, 0);
-  const int right = (x + width);
-  const int bottom = (y + height);
-  RECT rectangle{left, top, std::min(window.geometry.width, right), std::min(window.geometry.height, (y + 1))};
-  window.geometry.surface->Fill(&rectangle, color);
-
-  rectangle = {left, top, std::min(window.geometry.width, (x + 1)), std::min(window.geometry.height, bottom)};
-  window.geometry.surface->Fill(&rectangle, color);
-
-  rectangle = {std::max((right - 1), 0), top, std::min(window.geometry.width, right), std::min(window.geometry.height, bottom)};
-  window.geometry.surface->Fill(&rectangle, color);
-
-  rectangle = {left, std::max((bottom - 1), 0), std::min(window.geometry.width, right), std::min(window.geometry.height, bottom)};
-  window.geometry.surface->Fill(&rectangle, color);
+  window.FillRegion(x, y, width, 1, color);
+  window.FillRegion(x, y, 1, height, color);
+  window.FillRegion(((x + width) - 1), y, 1, height, color);
+  window.FillRegion(x, ((y + height) - 1), width, 1, color);
 }
 
 // OFFSET: 0x00A7C3E0
 // FUNCTION: fn_16943
 void DrawFilledRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
-  const RECT rectangle{
-    std::max((x + 1), 0), std::max((y + 1), 0), std::min(window.geometry.width, ((x + 1) + (width - 2))),
-    std::min(window.geometry.height, ((y + 1) + (height - 2)))
-  };
-  window.geometry.surface->Fill(&rectangle, color);
+  window.FillRegion((x + 1), (y + 1), (width - 2), (height - 2), color);
   DrawRoundedBorder(window, x, y, width, height, color);
 }
 
