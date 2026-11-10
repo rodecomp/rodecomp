@@ -61,12 +61,12 @@ void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, c
 // OFFSET: 0x006D2140
 // FUNCTION: fn_06524
 __declspec(noinline) std::optional<std::map<int, PackageGroup>*> CNeoPackageItemMgr::FindPackage(int itemId) {
-  const int packageId = g_itemInfoMgr->GetPackageId(itemId);
-  if (packageId != 0) {
-    itemId = packageId;
+  int packageId = g_itemInfoMgr->GetPackageId(itemId);
+  if (packageId == 0) {
+    packageId = itemId;
   }
 
-  std::map<int, std::map<int, PackageGroup>>::iterator package = this->m_packages.find(itemId);
+  std::map<int, std::map<int, PackageGroup>>::iterator package = this->m_packages.find(packageId);
   if (package != this->m_packages.end()) {
     return &package->second;
   }
