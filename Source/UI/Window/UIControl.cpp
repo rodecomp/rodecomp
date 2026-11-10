@@ -3652,7 +3652,7 @@ void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitm
 // OFFSET: 0x009ED5C0
 // FUNCTION: fn_14580
 void CUIEditBox::OnCreate(int width, int height) {
-  this->edit = new CUIEditCtrl();
+  this->edit = new CUIEditCtrl;
   this->edit->SetSize(width, height);
   this->edit->invalidatesParent = 1;
   reinterpret_cast<unsigned char*>(&this->edit->editFlags)[1] = 1;
