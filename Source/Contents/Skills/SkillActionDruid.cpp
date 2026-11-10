@@ -16,6 +16,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/Vector3d.h"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <format>
@@ -29,6 +30,14 @@ public:
   // INLINED
   template <typename Byte>
   explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const std::array<Byte, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -747,7 +756,7 @@ EfstActionMessage CEfstAction_NATURE_PROTECTION::GetEfstEndMessage() {
 // FUNCTION: fn_04511
 int CEfstAction_NATURE_PROTECTION::GetEffectId(int efstId, int argument4) {
   return CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\xAD', '\xA2', '\xA1', '\xFE', '\x29', '\x8E', '\x60', '\xFB', '\xB1', '\xAC', '\xA1', '\xEE', '\x38', '\x9F', '\x56', '\xE4', '\xAD', '\xC3'};
+    const std::array<char, 18> bytes = {'\xAD', '\xA2', '\xA1', '\xFE', '\x29', '\x8E', '\x60', '\xFB', '\xB1', '\xAC', '\xA1', '\xEE', '\x38', '\x9F', '\x56', '\xE4', '\xAD', '\xC3'};
     thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
     return name.Text();
   }());
@@ -810,7 +819,7 @@ EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::GetEfstEndMessage() {
 // FUNCTION: fn_04518
 int CEfstAction_THUNDERING_ROD_MAX::GetEffectId(int efstId, int argument4) {
   return CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x5B', '\xF7', '\xC6', '\xB5', '\x8B', '\xAC', '\x65', '\xF2', '\x41', '\xF8', '\xEC', '\xA9', '\x80', '\xAD', '\x48', '\xFD', '\x5A', '\xF3', '\xDF', '\xDB'};
+    const std::array<char, 20> bytes = {'\x5B', '\xF7', '\xC6', '\xB5', '\x8B', '\xAC', '\x65', '\xF2', '\x41', '\xF8', '\xEC', '\xA9', '\x80', '\xAD', '\x48', '\xFD', '\x5A', '\xF3', '\xDF', '\xDB'};
     thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes);
     return name.Text();
   }());
