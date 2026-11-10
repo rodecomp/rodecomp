@@ -129,7 +129,12 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
     lstrcpynA(record.description, name, 39);
   }
 
-  if ((record.drawGuid && !record.hardware) || (g_directDrawFilter && FAILED(g_directDrawFilter(&record.driverCaps, &record.device)))) {
+  if (record.drawGuid && !record.hardware) {
+    delete[] record.modes;
+    return D3DENUMRET_OK;
+  }
+
+  if (g_directDrawFilter && FAILED(g_directDrawFilter(&record.driverCaps, &record.device))) {
     delete[] record.modes;
     return D3DENUMRET_OK;
   }
