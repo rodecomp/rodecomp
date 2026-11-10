@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <emmintrin.h>
+#include <functional>
 #include <random>
 #include <span>
 #include <xhash>
@@ -708,6 +709,19 @@ struct HashTable_655340 {
   HashSearchResult_655D70 FindLast(const short* key, unsigned int hash);
 };
 
+// INLINED
+__forceinline void SpliceHashNodes(HashNode_655340* before, HashNode_655340* first, HashNode_655340* last) {
+  HashNode_655340* const first_prev = first->next;
+  first_prev->prev = last;
+  HashNode_655340* const last_prev = last->next;
+  last_prev->prev = before;
+  HashNode_655340* const before_prev = before->next;
+  before_prev->prev = first;
+  before->next = last_prev;
+  last->next = first_prev;
+  first->next = before_prev;
+}
+
 // OFFSET: 0x00654FF0
 // FUNCTION: fn_05057
 void HashTable_655340::ForcedRehash(unsigned int bucket_count) {
@@ -899,105 +913,106 @@ void HashTable_655340::RehashForInsert() {
   this->ForcedRehash(buckets);
 }
 
+struct HashValueNode_655340 {
+  /* 0000 */ HashNode_655340* prev;
+  /* 0004 */ HashNode_655340* next;
+  /* 0008 */ std::pair<const short, std::function<bool(Span8_654FB0, Span4_654FB0, Span4_654FB0, Span8_654FB0, Span8_654FB0)>> value;
+};
+
+static_assert(sizeof(HashValueNode_655340) == 0x38);
+
+struct HashList_655340 {
+  /* 0000 */ HashNode_655340* head;
+  /* 0004 */ unsigned int size;
+};
+
+struct HashRangeEraser_655470 {
+  // INLINED
+  HashRangeEraser_655470(HashList_655340& list_, HashNode_655340* first_) noexcept
+      : list(list_), predecessor(first_->next), next(first_) {}
+
+  // INLINED
+  void BumpErased() noexcept {
+    HashNode_655340* const old_next = this->next;
+    this->next = old_next->prev;
+    std::_Destroy_in_place(reinterpret_cast<HashValueNode_655340*>(old_next)->value);
+    ::operator delete(old_next, sizeof(HashValueNode_655340));
+    --this->list.size;
+  }
+
+  ~HashRangeEraser_655470() noexcept {
+    this->predecessor->prev = this->next;
+    this->next->next = this->predecessor;
+  }
+
+  /* 0000 */ HashList_655340& list;
+  /* 0004 */ HashNode_655340* const predecessor;
+  /* 0008 */ HashNode_655340* next;
+};
+
 // OFFSET: 0x00655470
 // FUNCTION: fn_05065
 HashNode_655340* HashTable_655340::EraseRange(HashNode_655340* first, HashNode_655340* last) {
   if (first == last) {
     return last;
   }
-  HashNode_655340* head = this->head;
-  HashBucket_655340* bucket_base = this->buckets;
-  HashNode_655340* prev_node = first->next;
-  HashNode_655340* cur = first;
 
-  const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&cur->key);
-  unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
-  hash = (hash ^ key_bytes[1]) * 0x1000193;
-  HashBucket_655340* cur_bucket = &bucket_base[hash & this->mask];
-
-  HashNode_655340* bucket_first = cur_bucket->first;
-  HashNode_655340* bucket_last = cur_bucket->last;
-
-  while (true) {
-    HashNode_655340* next_node = cur->prev;
-    bool is_bucket_last = (cur == bucket_last);
-
-    char* cur_bytes = reinterpret_cast<char*>(cur);
-    void** p_impl = reinterpret_cast<void**>(cur_bytes + 0x34);
-    if (*p_impl != nullptr) {
-      void* impl = *p_impl;
-      void** vtbl = *reinterpret_cast<void***>(impl);
-      typedef void (__thiscall *DeleteThisFn)(void*, bool);
-      DeleteThisFn delete_this = reinterpret_cast<DeleteThisFn>(vtbl[4]);
-      bool not_local = (impl != cur_bytes + 0x10);
-      delete_this(impl, not_local);
-      *p_impl = nullptr;
-    }
-    ::operator delete(cur, 0x38);
-    --this->size;
-
-    if (is_bucket_last) {
-      if (cur_bucket->first == first) {
-        cur_bucket->first = head;
-        cur_bucket->last = head;
-      } else {
-        cur_bucket->last = prev_node;
-      }
-
-      if (next_node != last) {
-        cur = next_node;
-        while (true) {
-          const unsigned char* k = reinterpret_cast<const unsigned char*>(&cur->key);
-          unsigned int h = (k[0] ^ 0x811c9dc5) * 0x1000193;
-          h = (h ^ k[1]) * 0x1000193;
-          cur_bucket = &bucket_base[h & this->mask];
-          bucket_last = cur_bucket->last;
-          HashNode_655340* nxt = cur->prev;
-          bool is_last = (cur == bucket_last);
-
-          char* cur_b = reinterpret_cast<char*>(cur);
-          void** pi = reinterpret_cast<void**>(cur_b + 0x34);
-          if (*pi != nullptr) {
-            void* imp = *pi;
-            void** vt = *reinterpret_cast<void***>(imp);
-            typedef void (__thiscall *DeleteThisFn)(void*, bool);
-            DeleteThisFn delete_this = reinterpret_cast<DeleteThisFn>(vt[4]);
-            bool not_local = (imp != cur_b + 0x10);
-            delete_this(imp, not_local);
-            *pi = nullptr;
-          }
-          ::operator delete(cur, 0x38);
-          --this->size;
-
-          if (is_last) {
-            cur_bucket->first = head;
-            cur_bucket->last = head;
-            if (nxt == last) {
-              break;
-            }
-          } else {
-            if (nxt == last) {
-              cur_bucket->first = nxt;
-              break;
-            }
-          }
-          cur = nxt;
-        }
-      }
-      break;
-    } else {
-      if (next_node == last) {
-        if (cur_bucket->first == first) {
-          cur_bucket->first = next_node;
-        }
+  HashNode_655340* const end = this->head;
+  HashBucket_655340* const bucket_bounds = this->buckets;
+  HashRangeEraser_655470 eraser(*reinterpret_cast<HashList_655340*>(&this->head), first);
+  {
+    HashNode_655340* const predecessor = first->next;
+    const unsigned int bucket = std::hash<short>()(eraser.next->key) & this->mask;
+    HashNode_655340*& bucket_lo = bucket_bounds[bucket].first;
+    HashNode_655340*& bucket_hi = bucket_bounds[bucket].last;
+    const bool update_lo = bucket_lo == eraser.next;
+    HashNode_655340* const old_hi = bucket_hi;
+    for (;;) {
+      const bool at_bucket_back = eraser.next == old_hi;
+      eraser.BumpErased();
+      if (at_bucket_back) {
         break;
       }
-      cur = next_node;
+
+      if (eraser.next == last) {
+        if (update_lo) {
+          bucket_lo = eraser.next;
+        }
+
+        return last;
+      }
+    }
+
+    if (update_lo) {
+      bucket_lo = end;
+      bucket_hi = end;
+    } else {
+      bucket_hi = predecessor;
     }
   }
 
-  prev_node->prev = last;
-  last->next = prev_node;
+  while (eraser.next != last) {
+    const unsigned int bucket = std::hash<short>()(eraser.next->key) & this->mask;
+    HashNode_655340*& bucket_lo = bucket_bounds[bucket].first;
+    HashNode_655340*& bucket_hi = bucket_bounds[bucket].last;
+    HashNode_655340* const old_hi = bucket_hi;
+    for (;;) {
+      const bool at_bucket_back = eraser.next == old_hi;
+      eraser.BumpErased();
+      if (at_bucket_back) {
+        break;
+      }
+
+      if (eraser.next == last) {
+        bucket_lo = eraser.next;
+        return last;
+      }
+    }
+
+    bucket_lo = end;
+    bucket_hi = end;
+  }
+
   return last;
 }
 
@@ -1154,6 +1169,10 @@ __declspec(noinline) unsigned int SeedGen_657C30::NextSeed() {
 }
 
 struct RanluxEngine_655F00 {
+  /* 0000 */ unsigned int index;
+  /* 0004 */ unsigned int values[48];
+  /* 00C4 */ int carry;
+
   void Seed(const unsigned int* seed_ptr, char flag, int unused);
 };
 
