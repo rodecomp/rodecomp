@@ -90,15 +90,12 @@ void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t co
 
 // OFFSET: 0x0054EFD0
 // FUNCTION: fn_01955
-void DrawTextureRegion(
-  RenderPrimitivePool& primitives, RenderQueues& queues, float x, float y, float width, float height, std::uint32_t color,
-  CTexture* texture, bool depthAlpha, float depthStart, float depthEnd
-) {
+void DrawTextureRegion(float x, float y, float width, float height, std::uint32_t color, CTexture* texture) {
   if ((color & 0xFF000000u) == 0) {
     return;
   }
 
-  RenderPrimitive* primitive = primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = texture ? texture : g_texMgr.Default();
   primitive->quad[0].x = x;
   primitive->quad[0].y = y;
@@ -121,5 +118,5 @@ void DrawTextureRegion(
     vertex.rhw = 0.999999f;
     vertex.diffuse = color;
   }
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }

@@ -867,9 +867,8 @@ void UITextureButton::VisitChildren() {
   }
 
   DrawTextureRegion(
-    g_renderer->primitives, g_renderer->queues, static_cast<float>(this->geometry.x), static_cast<float>(this->geometry.y),
-    static_cast<float>(texture->Width()), static_cast<float>(texture->Height()), 0xFFFFFFFF, texture, g_renderer->fog.supported != 0, g_depthStart,
-    g_depthEnd
+    static_cast<float>(this->geometry.x), static_cast<float>(this->geometry.y), static_cast<float>(texture->Width()),
+    static_cast<float>(texture->Height()), 0xFFFFFFFF, texture
   );
 }
 
