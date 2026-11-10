@@ -4,6 +4,7 @@
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <algorithm>
 #include <cstring>
 #include <string>
 #include <windows.h>
@@ -12,6 +13,8 @@
 // OFFSET: 0x00AD6510
 // FUNCTION: fn_17834
 void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert) {
+  const std::uint32_t red = color & 255;
+  const std::uint32_t blue = (color >> 16) & 255;
   if (std::strlen(value) == 0) {
     return;
   }
@@ -38,16 +41,15 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
 
   this->tooltip->SetRichText(option);
   this->tooltip->SetText(text, 35);
-  const std::uint32_t rgb = ((color & 255) << 16) | (color & 0xFF00) | ((color >> 16) & 255);
-  this->tooltip->SetColors(rgb, 0);
+  this->tooltip->SetColors((red << 16) | (color & 0xFF00) | blue, 0);
   this->tooltip->SetBackground(0x88000000u);
 
   const int maximumX = g_renderer->viewport.width - this->tooltip->geometry.width + 3;
   const int maximumY = g_renderer->viewport.height - this->tooltip->geometry.height + 3;
-  const int left = x < -3 ? -3 : x;
-  const int top = y < -3 ? -3 : y;
+  const int left = (std::max)(x, -3);
+  const int top = (std::max)(y, -3);
 
-  this->tooltip->Move(left < maximumX ? left : maximumX, top < maximumY ? top : maximumY);
+  this->tooltip->Move((std::min)(left, maximumX), (std::min)(top, maximumY));
 }
 
 // OFFSET: 0x00AD67A0
