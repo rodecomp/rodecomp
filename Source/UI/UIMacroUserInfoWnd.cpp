@@ -450,7 +450,7 @@ void UIMacroReporterWnd::StoreInfo() {
 
 // OFFSET: 0x007F13C0
 // FUNCTION: fn_09855
-void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third) {
+void UIMacroReporterWnd::SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third) {
   struct Packet {
     std::int16_t id;
     std::uint16_t first;

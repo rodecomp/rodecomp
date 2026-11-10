@@ -66,6 +66,7 @@ public:
   void AddActorByAID(int aid);
   void AddActorRow(int aid, std::string name);
   std::string EllipsizeText(int maxWidth, const char* text, int font, int height, unsigned char bold);
+  void SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third);
 
   /* 00B4 */ std::vector<std::pair<UIBitmapButton*, UITextButton*>> m_rows;
   /* 00C0 */ UIScrollBar* m_scrollBar;

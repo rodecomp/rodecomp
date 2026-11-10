@@ -7756,6 +7756,8 @@ struct AiMessage {
   /* 000C */ int level;
   /* 0010 */ int skill;
   /* 0014 */ int target;
+
+  AiMessage() : type(0), x(0), y(0), level(0), skill(0), target(0) {}
 };
 
 #pragma pack(push, 1)
@@ -8450,7 +8452,6 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
 #include "Contents/World/WorldModelView.h"
 #include "Contents/World/WorldTerrainPicking.h"
 
-void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third);
 
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
@@ -8459,14 +8460,13 @@ int CGameMode::ProcessGroundClick(int result) {
     ground->DrawGrid(matrix, column, row, color);
   };
 
-  UIWindow* macroArea = g_windowMgr.LookupWindow(WID_MACROREPORTERWND);
-  if (macroArea) {
-    const unsigned char* macroFields = reinterpret_cast<const unsigned char*>(macroArea);
-    if (macroFields[0x10C] == 1 && *reinterpret_cast<const int*>(macroFields + 0xEC) == 1) {
+  UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
+  if (reporter) {
+    if (reporter->activeOnly == true && reporter->m_mode == 1) {
       int column = -1;
       int row = -1;
       this->PickScreenTerrain(column, row);
-      const int radius = *reinterpret_cast<const int*>(macroFields + 0xF4);
+      const int radius = reporter->reportCount;
       for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
           drawCell(this->scene->ground, this->camera->frame.view.values, column + dx, row + dy, 0x660000FF);
@@ -8474,7 +8474,7 @@ int CGameMode::ProcessGroundClick(int result) {
       }
 
       if (g_mouse.buttons[1] == 1) {
-        SendMacroUserInfoPacket(static_cast<std::uint16_t>(column), static_cast<std::uint16_t>(row), static_cast<std::uint8_t>(radius));
+        reporter->SendMacroUserInfoPacket(static_cast<std::uint16_t>(column), static_cast<std::uint16_t>(row), static_cast<std::uint8_t>(radius));
         return -1;
       }
     }
@@ -10532,10 +10532,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         } else {
           result = 1;
         }
-      } else if (pick->job == 45) {
-        this->SetCursorAction(7);
-        result = 2;
-      } else {
+      } else if (pick->job != 45) {
         result = 1;
         if (IsPlayerJob(pick->job)) {
           const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
@@ -10662,6 +10659,9 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             result = 2;
           }
         }
+      } else {
+        this->SetCursorAction(7);
+        result = 2;
       }
       break;
     case 2: {
