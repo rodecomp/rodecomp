@@ -2949,7 +2949,8 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
   }
 
   static_cast<EffectActor*>(source)->LaunchEffect(1449, level / 16);
-  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -3031,8 +3032,7 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
   const int count = (level - 1) / 3 * 2 + 3;
   std::vector<int> columns = shuffledIndices(count);
   std::vector<int> rows = shuffledIndices(count);
-  int frame = 0;
-  for (int index = 0; index < count; ++index, frame += 32) {
+  for (int index = 0; index < count; ++index) {
     float offsetZ = 0.0f;
     if (!rows.empty()) {
       offsetZ = static_cast<float>((rows.front() - count / 2) * 5.0);
@@ -3044,23 +3044,27 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
       columns.erase(columns.begin());
     }
 
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           0, CEZ2STREffectMgr::GetInstance()->EffectId("hells_drive_bottom"), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
         )) {
-      effect->position[0] = offsetX + source->render.position.x;
-      effect->position[2] = offsetZ + source->render.position.z;
-      effect->position[1] = source->render.position.y + 0.0f;
-      effect->SetDelay(frame);
+      const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
+      effect->position[0] = position.x;
+      effect->position[2] = position.z;
+      effect->position[1] = position.y;
+      effect->SetDelay(index * 32);
     }
 
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", std::max(std::rand() % 3, 0))), source->render.position.x,
           source->render.position.y, source->render.position.z, 0, -1, 0, 0
         )) {
-      effect->position[0] = offsetX + source->render.position.x;
-      effect->position[2] = offsetZ + source->render.position.z;
-      effect->position[1] = source->render.position.y + 0.0f;
-      effect->SetDelay(frame);
+      const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
+      effect->position[0] = position.x;
+      effect->position[2] = position.z;
+      effect->position[1] = position.y;
+      effect->SetDelay(index * 32);
     }
   }
 }
