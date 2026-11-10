@@ -3,6 +3,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/World/World.h"
 #include "Render/AuxiliarySubmission.h"
@@ -90,12 +91,7 @@ void CMultiTexParticle::Render(int column, int row) {
     return;
   }
 
-  vector3d corners[4];
-  for (vector3d& corner : corners) {
-    corner.x = 0.0f;
-    corner.y = 0.0f;
-    corner.z = 0.0f;
-  }
+  EffectPoint corners[4];
 
   if (!gameMode->scene->ground->TerrainCellCorners(column, row, &corners[0].x)) {
     return;
@@ -108,14 +104,13 @@ void CMultiTexParticle::Render(int column, int row) {
   const float* cameraMatrix = mode->camera->frame.view.values;
 
   for (int i = 0; i < 4; ++i) {
-    LightmappedVertex& vertex = this->command.vertices[i];
-    g_renderer->viewport.Project(&corners[i].x, cameraMatrix, vertex);
-    vertex.z -= 0.000030517578125f;
-    vertex.diffuse = 0xFFFFFFFF;
-    vertex.u = this->uv1[i][0] + this->offsetU;
-    vertex.v = this->uv1[i][1] + this->offsetV;
-    vertex.lightU = this->uv2[i][0];
-    vertex.lightV = this->uv2[i][1];
+    g_renderer->viewport.Project(&corners[i].x, cameraMatrix, this->command.vertices[i]);
+    this->command.vertices[i].z -= 0.000030517578125f;
+    this->command.vertices[i].diffuse = 0xFFFFFFFF;
+    this->command.vertices[i].u = this->uv1[i][0] + this->offsetU;
+    this->command.vertices[i].v = this->uv1[i][1] + this->offsetV;
+    this->command.vertices[i].lightU = this->uv2[i][0];
+    this->command.vertices[i].lightV = this->uv2[i][1];
   }
 
   g_renderer->SubmitAuxiliaryPrimitive(reinterpret_cast<LightmappedPrimitive*>(&this->command));
