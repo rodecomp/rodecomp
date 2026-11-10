@@ -40,14 +40,10 @@ void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char blen
   this->hideAccessories = false;
   this->alternateLayerRendering = false;
 
-  int slot = 2;
-  this->layerViews[slot] = this->pc->accessory;
-  slot = 3;
-  this->layerViews[slot] = this->pc->accessory2;
-  slot = 4;
-  this->layerViews[slot] = this->pc->accessory3;
-  slot = 8;
-  this->layerViews[slot] = this->pc->robe;
+  this->layerViews[2] = this->pc->accessory;
+  this->layerViews[3] = this->pc->accessory2;
+  this->layerViews[4] = this->pc->accessory3;
+  this->layerViews[8] = this->pc->robe;
   this->LoadLayers();
 
   const vector3d& origin = this->pc->render.position;
@@ -275,44 +271,44 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     outline.color = color;
 
     outline.top = quad.top + negative;
-    outline.left = quad.left + 0.0f;
     outline.bottom = quad.bottom + negative;
+    outline.left = quad.left + 0.0f;
     outline.right = quad.right + 0.0f;
     this->QueueQuad(layer, &outline, palette, 5);
 
     outline.top = quad.top + negative;
-    outline.left = quad.left + negative;
     outline.bottom = quad.bottom + negative;
+    outline.left = quad.left + negative;
     outline.right = quad.right + negative;
     this->QueueQuad(layer, &outline, palette, 5);
 
     outline.top = quad.top + offset;
-    outline.left = quad.left + negative;
     outline.bottom = quad.bottom + offset;
+    outline.left = quad.left + negative;
     outline.right = quad.right + negative;
     this->QueueQuad(layer, &outline, palette, 5);
 
     outline.top = quad.top + negative;
-    outline.left = quad.left + offset;
     outline.bottom = quad.bottom + negative;
-    outline.right = quad.right + offset;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + offset;
     outline.left = quad.left + offset;
-    outline.bottom = quad.bottom + offset;
     outline.right = quad.right + offset;
     this->QueueQuad(layer, &outline, palette, 5);
 
     outline.top = quad.top + offset;
-    outline.left = quad.left + 0.0f;
     outline.bottom = quad.bottom + offset;
+    outline.left = quad.left + offset;
+    outline.right = quad.right + offset;
+    this->QueueQuad(layer, &outline, palette, 5);
+
+    outline.top = quad.top + offset;
+    outline.bottom = quad.bottom + offset;
+    outline.left = quad.left + 0.0f;
     outline.right = quad.right + 0.0f;
     this->QueueQuad(layer, &outline, palette, 5);
 
     outline.top = quad.top + negative;
-    outline.left = quad.left + 0.0f;
     outline.bottom = quad.bottom + negative;
+    outline.left = quad.left + 0.0f;
     outline.right = quad.right + 0.0f;
     this->QueueQuad(layer, &outline, palette, 5);
   }
@@ -331,9 +327,11 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
   }
 
   if (this->pc->sex == 0) {
-    const int job = this->pc->GetEffectiveJob(-1);
-    if (job == 0xFF6 || job == 0xFF7 || job == 0x1010) {
-      return;
+    switch (this->pc->GetEffectiveJob(-1)) {
+      case 0xFF6:
+      case 0xFF7:
+      case 0x1010:
+        return;
     }
   }
 
@@ -377,11 +375,11 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     float bottomRhw = 0.0f;
     float topRhw = 0.0f;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t quadColor;
     this->pc->PrepareSprite(
       this->layerShift, this->layerShift, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
-      image, &quad, box, &quadColor, 0, 0, !drawOnTop
+      image, &quad, reinterpret_cast<int*>(&box), &quadColor, 0, 0, !drawOnTop
     );
     if (this->pc->render.unknown_0130[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
@@ -391,7 +389,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     quad.image = image;
     int blend = this->pc->blend;
     this->pc->ApplyLayerEffects(
-      &quad, &cell, 0, box, this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
+      &quad, &cell, 0, reinterpret_cast<const int*>(&box), this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
     );
     if (drawOnTop && g_session.IsTopLayerRobe(this->pc->robe)) {
       SpriteLayerQuad entry;
@@ -497,10 +495,10 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
         offsetY = this->swingY + anchorY;
       }
 
-      if (cell->scaleX != 1.0f) {
+      if (1.0f != cell->scaleX) {
         offsetX = static_cast<int>(static_cast<float>(offsetX) / cell->scaleX);
       }
-      if (cell->scaleY != 1.0f) {
+      if (1.0f != cell->scaleY) {
         offsetY = static_cast<int>(static_cast<float>(offsetY) / cell->scaleY);
       }
       break;
