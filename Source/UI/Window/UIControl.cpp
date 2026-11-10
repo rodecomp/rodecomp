@@ -3214,17 +3214,17 @@ void CUIImageTextButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   CBitmapRes* image = nullptr;
-  if (!this->disabled) {
+  if (this->disabled) {
+    image = this->disabledImage;
+  } else {
     const auto found = this->images.find(this->state);
     if (found != this->images.end()) {
       image = found->second;
     }
-  } else {
-    image = this->disabledImage;
   }
 
   if (image) {
-    this->DrawBitmap(0, 0, &image->image, false);
+    this->DrawBitmap(0, 0, image, false);
   }
   this->CUITextButton::DrawLabel();
 }
