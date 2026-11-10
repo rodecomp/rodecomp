@@ -3924,11 +3924,12 @@ void CGrannyCorpse3d::Render(int argument) {
     matrix world;
     world.Compose(local, view);
 
+    const std::uint16_t* index = indices;
     int vertexCount = 0;
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       command = this->commands[mesh];
       for (int corner = 0; corner < 3; ++corner) {
-        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        const GrannyPNT332Vertex& vertex = source[index[vertexCount]];
         RenderVertex& output = command->vertices[vertexCount];
         ++vertexCount;
         position.x = vertex.position[0];
@@ -3938,7 +3939,8 @@ void CGrannyCorpse3d::Render(int argument) {
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
-        this->brightness = static_cast<unsigned>(std::max(0.0f, std::min(1.0f, shade)) * 100.0f + 155.0f);
+        const float clamped = 1.0f < shade ? 1.0f : shade;
+        this->brightness = static_cast<unsigned>((0.0f > clamped ? 0.0f : clamped) * 100.0f + 155.0f);
         output.diffuse = (this->alpha << 24) + static_cast<unsigned char>(this->brightness) * 0x10101;
       }
     }
