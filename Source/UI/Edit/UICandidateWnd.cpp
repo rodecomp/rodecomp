@@ -45,9 +45,8 @@ void UICandidateWnd::Paint() {
   case 0: {
     std::memset(text, 0, sizeof(text));
     int x = 14;
-    for (int i = 0; i < this->m_count;) {
-      ++i;
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i, this->m_candidates[i - 1].c_str());
+    for (int i = 0; i < this->m_count; ++i) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
       x += 8 + this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0);
     }
@@ -56,9 +55,8 @@ void UICandidateWnd::Paint() {
   case 2: {
     std::memset(text, 0, sizeof(text));
     int y = 12;
-    for (int i = 0; i < this->m_count;) {
-      int number = i + 1;
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", number, this->m_candidates[i].c_str());
+    for (int i = 0; i < this->m_count; ++i) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (this->m_selection == i) {
         unsigned red, green, blue;
         SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
@@ -66,7 +64,6 @@ void UICandidateWnd::Paint() {
       }
       this->DrawTextAt(10, y, text, 0, 0, 12, 0, 0, 0);
       y += 20;
-      i = number;
     }
     std::sprintf(text, "%d / %d", this->m_page + 1, this->m_lastPage + 1);
     this->DrawTextAt(110 - this->TextWidth(text, 0, 0, 12, 0, 0), 192, text, 0, 0, 12, 0, 0, 0);
@@ -76,16 +73,14 @@ void UICandidateWnd::Paint() {
   case 4: {
     std::memset(text, 0, sizeof(text));
     int x = 14;
-    for (int i = 0; i < this->m_count;) {
-      int number = i + 1;
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", number, this->m_candidates[i].c_str());
+    for (int i = 0; i < this->m_count; ++i) {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (i == this->m_selection) {
         this->DrawTextAt(x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
       } else {
         this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
       }
       x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
-      i = number;
     }
     break;
   }
@@ -148,9 +143,8 @@ int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   char text[65];
   std::memset(text, 0, sizeof(text));
   int width = 0;
-  for (int i = 0; i < this->m_count;) {
-    ++i;
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i, this->m_candidates[i - 1].c_str());
+  for (int i = 0; i < this->m_count; ++i) {
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
     if (g_language == 2) {
       int textWidth = this->TextWidth(text, 0, 0, 12, 0, 0) + 8;
       if (textWidth < width) {
