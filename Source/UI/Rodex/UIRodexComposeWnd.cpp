@@ -315,9 +315,11 @@ std::int64_t UIRodexComposeWnd::GetZeny() {
 int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == ID_CLOSE) {
+    switch (argument1) {
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_RODEXCOMPOSEWND);
-    } else if (argument1 == ID_CHECK) {
+      break;
+    case ID_CHECK:
       if (this->m_recipientEdit->Length() != 0 && this->m_recipientEdit->Length() < 24) {
         if (g_navigationLinkParser->HasLink(this->m_recipientEdit->Text())) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
@@ -345,7 +347,8 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       } else {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
       }
-    } else if (argument1 == ID_SEND) {
+      break;
+    case ID_SEND: {
       if (this->m_recipientEdit->Length() == 0 && this->m_confirmedRecipientEdit->Length() == 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
         return 0;
@@ -405,6 +408,8 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       mail.body = body;
       mail.zeny = static_cast<int>(zeny);
       g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
+      break;
+    }
     }
     return 0;
   case UM_REFRESHITEM:
