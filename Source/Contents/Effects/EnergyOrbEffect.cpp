@@ -106,10 +106,11 @@ bool CEnergyOrbEffect::IsAlive() {
 // OFFSET: 0x00B51250
 // FUNCTION: fn_19027
 void CEnergyOrbEffect::OnProcess() {
-  for (CParticle* particle : this->particles) {
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
+    CParticle* particle = *it;
     if (particle) {
       if (particle->elapsedFrames <= 200) {
         ++particle->alpha;
