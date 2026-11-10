@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
+#include <array>
 #include <cstdio>
 #include <windows.h>
 #include <timeapi.h>
@@ -25,6 +26,13 @@ namespace {
   class EncryptedName {
   public:
     explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    // INLINED
+    explicit EncryptedName(const std::array<std::uint8_t, Length>& source) : m_encrypted(true) {
       for (std::uint64_t index = 0; index < Length; ++index) {
         this->m_text[index] = source[index];
       }
@@ -53,6 +61,13 @@ namespace {
   // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
+    thread_local EncryptedName<Length, Key> name(source);
+    return name.Text();
+  }
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  const char* DecryptName(const std::array<std::uint8_t, Length>& source) {
     thread_local EncryptedName<Length, Key> name(source);
     return name.Text();
   }
@@ -96,14 +111,14 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0x56, 0xB0, 0x0B, 0xB9};
+  const std::array<std::uint8_t, 4> aid = {0x56, 0xB0, 0x0B, 0xB9};
   handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);
-  const std::uint8_t worldName[] = {0x92, 0xA2, 0xF5, 0x99, 0xC5, 0xED, 0x86, 0xFE, 0xA0, 0xCD};
+  const std::array<std::uint8_t, 10> worldName = {0x92, 0xA2, 0xF5, 0x99, 0xC5, 0xED, 0x86, 0xFE, 0xA0, 0xCD};
   handler.AddField(DecryptName<0x93E7A3A1F587CDC5ULL>(worldName), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    const std::uint8_t good[] = {0x40, 0x6E, 0x68, 0x09, 0x03};
+    const std::array<std::uint8_t, 5> good = {0x40, 0x6E, 0x68, 0x09, 0x03};
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FF3C5036D070127ULL>(good), 92);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
