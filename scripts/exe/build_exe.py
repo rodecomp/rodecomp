@@ -152,8 +152,16 @@ def compile_units(tc, config, out_dir, jobs):
                 deps_file.write_text(json.dumps({"key": key, "deps": deps}), encoding="utf-8")
         return unit, obj, result.returncode, "\n".join(output), False
 
+    items = list(exe_units(config).items())
+    results = [None] * len(items)
+    progress = Progress(len(items))
     with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
-        results = list(pool.map(build, exe_units(config).items()))
+        pending = {pool.submit(build, item): index for index, item in enumerate(items)}
+        for future in concurrent.futures.as_completed(pending):
+            result = future.result()
+            results[pending[future]] = result
+            progress.update(result)
+    progress.finish()
     failures = [r for r in results if r[2] != 0]
     for unit, _, _, output, _ in failures:
         print(f"== {unit}")
@@ -161,6 +169,41 @@ def compile_units(tc, config, out_dir, jobs):
     cached = sum(1 for r in results if r[4])
     print(f"compiled {len(results) - len(failures)}/{len(results)} units ({cached} up to date, {len(results) - cached} rebuilt)")
     return [r[1] for r in results if r[2] == 0], len(failures)
+
+
+class Progress:
+    """Compile progress on stderr: one rewritten line on a terminal, a line per 10% otherwise."""
+
+    def __init__(self, total):
+        self.total = total
+        self.done = self.rebuilt = self.failed = 0
+        self.tty = sys.stderr.isatty()
+        self.next_step = 10
+        self.width = 0
+
+    def update(self, result):
+        unit, _, code, _, cached = result
+        self.done += 1
+        self.rebuilt += 0 if cached else 1
+        self.failed += 1 if code != 0 else 0
+        counts = f"[{self.done}/{self.total}] {self.rebuilt} rebuilt" + (f", {self.failed} failed" if self.failed else "")
+        if self.tty:
+            line = f"{counts}  {unit}"
+            self.width = max(self.width, len(line))
+            sys.stderr.write("\r" + line.ljust(self.width))
+            sys.stderr.flush()
+        else:
+            if code != 0:
+                print(f"failed: {unit}", file=sys.stderr, flush=True)
+            if self.done * 100 >= self.next_step * self.total:
+                print(counts, file=sys.stderr, flush=True)
+                while self.next_step * self.total <= self.done * 100:
+                    self.next_step += 10
+
+    def finish(self):
+        if self.tty and self.width:
+            sys.stderr.write("\r" + " " * self.width + "\r")
+            sys.stderr.flush()
 
 
 def link(tc, objects, out_dir, extra_args):
@@ -207,7 +250,7 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     config = json.loads((ROOT / "data" / "compile.json").read_text(encoding="utf-8"))
     tc = Toolchain()
-    print(f"toolchain: {tc.root} ({tc.kind})")
+    print(f"toolchain: {tc.root} ({tc.kind})", flush=True)
 
     if args.link_only:
         objects = [out_dir / (unit.replace("/", "_") + ".obj") for unit in exe_units(config)]
@@ -216,6 +259,7 @@ def main():
         objects, compile_failures = compile_units(tc, config, out_dir, args.jobs)
 
     extra = ["/FORCE:MULTIPLE"] if args.force_multiple else []
+    print(f"linking {len(objects)} objects...", flush=True)
     code, log, exe = link(tc, [*objects, *build_import_libs(tc, out_dir)], out_dir, extra)
     summarize(log, out_dir)
     if code == 0:
