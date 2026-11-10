@@ -345,7 +345,7 @@ namespace {
 
 // OFFSET: 0x00C7D930
 // FUNCTION: fn_20410
-void ReleaseConnectionBlocks(int, ConnectionBlockList& list) {
+void ReleaseConnectionBlocks(int, ConnectionBlockList& list) noexcept {
   *list.count = 0;
   ConnectionBlock* block = list.head;
   while (block) {
