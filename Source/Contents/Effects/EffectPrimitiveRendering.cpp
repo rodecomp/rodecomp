@@ -4012,6 +4012,10 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
 // OFFSET: 0x00BCFE80
 // FUNCTION: fn_19868
 void CEffectPrim::RenderHaloLayers(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4044,10 +4048,10 @@ void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       }
       slot.vecTPre = {radius * g_cosTable[angle4], 0.0f, g_sinTable[angle4] * radius};
 
-      vector3d vec1{slot.height[0] + slot.vecBPre.x, 0.0f, slot.vecBPre.z};
-      vector3d vec2{slot.height[0] + slot.vecBNow.x, 0.0f, slot.vecBNow.z};
-      vector3d vec3{slot.height[0] + slot.vecTNow.x, 0.0f, slot.vecTNow.z};
-      vector3d vec4{slot.height[0] + slot.vecTPre.x, 0.0f, slot.vecTPre.z};
+      vec1.Set(slot.height[0] + slot.vecBPre.x, 0.0f, slot.vecBPre.z);
+      vec2.Set(slot.height[0] + slot.vecBNow.x, 0.0f, slot.vecBNow.z);
+      vec3.Set(slot.height[0] + slot.vecTNow.x, 0.0f, slot.vecTNow.z);
+      vec4.Set(slot.height[0] + slot.vecTPre.x, 0.0f, slot.vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
       const float lift = mode == 2 || mode == 4 || mode == 6 || mode == 7 ? 40.0f : 30.0f;
       vec1.y -= lift;
@@ -4075,10 +4079,10 @@ void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         slot.vecBNow = {slot.vecBNow.x * 1.1f, slot.vecBNow.y * 1.1f, slot.vecBNow.z * 1.1f};
         slot.vecTPre = {slot.vecTPre.x * 1.1f, slot.vecTPre.y * 1.1f, slot.vecTPre.z * 1.1f};
         slot.vecTNow = {slot.vecTNow.x * 1.1f, slot.vecTNow.y * 1.1f, slot.vecTNow.z * 1.1f};
-        vec1 = {slot.vecBPre.x + slot.height[0], slot.vecBPre.y, slot.vecBPre.z};
-        vec2 = {slot.vecBNow.x + slot.height[0], slot.vecBNow.y, slot.vecBNow.z};
-        vec3 = {slot.vecTNow.x + slot.height[0], slot.vecTNow.y, slot.vecTNow.z};
-        vec4 = {slot.vecTPre.x + slot.height[0], slot.vecTPre.y, slot.vecTPre.z};
+        vec1.Set(slot.vecBPre.x + slot.height[0], slot.vecBPre.y, slot.vecBPre.z);
+        vec2.Set(slot.vecBNow.x + slot.height[0], slot.vecBNow.y, slot.vecBNow.z);
+        vec3.Set(slot.vecTNow.x + slot.height[0], slot.vecTNow.y, slot.vecTNow.z);
+        vec4.Set(slot.vecTPre.x + slot.height[0], slot.vecTPre.y, slot.vecTPre.z);
         this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
         const float outerLift = mode == 5 ? 30.0f : 40.0f;
         vec1.y -= outerLift;
