@@ -662,23 +662,21 @@ void UIChatEditCtrl::PushHistory() {
   if (this->historyIndex == static_cast<int>(this->history.size())) {
     if (this->history.size() >= static_cast<unsigned>(this->historyLimit)) {
       --this->historyIndex;
-      std::move(this->history.begin() + 1, this->history.end(), this->history.begin());
-      this->history.pop_back();
+      this->history.erase(this->history.begin());
     }
     if (g_windowMgr.GetHoverWindow() == this) {
       this->Synchronize();
     }
     this->history.push_back(std::string(this->text.c_str()));
   } else {
-    this->history[this->historyIndex] = this->Text();
+    if (g_windowMgr.GetHoverWindow() == this) {
+      this->Synchronize();
+    }
+    this->history[this->historyIndex] = this->text.c_str();
   }
 
   ++this->historyIndex;
-  if (this->historyIndex == static_cast<int>(this->history.size())) {
-    this->SetText("");
-  } else {
-    this->SetText(this->history[this->historyIndex].c_str());
-  }
+  this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
 }
 
 // OFFSET: 0x0086A060
@@ -701,8 +699,7 @@ void UIWhisperEditCtrl::AddHistory() {
   if (this->historyIndex == static_cast<int>(this->history.size())) {
     if (this->history.size() >= 30) {
       --this->historyIndex;
-      std::move(this->history.begin() + 1, this->history.end(), this->history.begin());
-      this->history.pop_back();
+      this->history.erase(this->history.begin());
     }
     if (g_windowMgr.GetHoverWindow() == this) {
       this->Synchronize();
@@ -712,9 +709,9 @@ void UIWhisperEditCtrl::AddHistory() {
     bool found = false;
     for (std::size_t index = 0; index < this->history.size(); ++index) {
       if (g_windowMgr.GetHoverWindow() == this) {
-      this->Synchronize();
-    }
-    if (this->history[index] == this->text.c_str()) {
+        this->Synchronize();
+      }
+      if (this->history[index] == this->text.c_str()) {
         this->historyIndex = static_cast<int>(index);
         found = true;
         break;
@@ -723,18 +720,14 @@ void UIWhisperEditCtrl::AddHistory() {
 
     if (!found) {
       if (g_windowMgr.GetHoverWindow() == this) {
-      this->Synchronize();
-    }
-    this->history.push_back(std::string(this->text.c_str()));
+        this->Synchronize();
+      }
+      this->history.push_back(std::string(this->text.c_str()));
       this->historyIndex = static_cast<int>(this->history.size()) - 1;
     }
   }
 
-  if (this->historyIndex == static_cast<int>(this->history.size())) {
-    this->SetText("");
-  } else {
-    this->SetText(this->history[this->historyIndex].c_str());
-  }
+  this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
 }
 
 // OFFSET: 0x0086A550
