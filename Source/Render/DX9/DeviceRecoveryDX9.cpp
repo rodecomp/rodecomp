@@ -18,39 +18,41 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState() {
     return invalidDevice;
   }
 
-  if (this->lastPresent == D3D_OK) {
-    lastReported = D3D_OK;
-    return D3D_OK;
-  }
+  HRESULT result;
 
-  HRESULT result = this->device->CheckDeviceState(this->window);
+  if (this->lastPresent != D3D_OK) {
+    result = this->device->CheckDeviceState(this->window);
 
-  if (result == S_PRESENT_OCCLUDED) {
-    Sleep(16);
+    if (result == S_PRESENT_OCCLUDED) {
+      Sleep(16);
+    } else {
+      if (result == S_PRESENT_MODE_CHANGED) {
+        if (!this->device) {
+          result = invalidDevice;
+        } else if (this->presentation.Windowed == 1) {
+          result = this->device->ResetEx(&this->presentation, nullptr);
+        } else {
+          result = this->device->ResetEx(&this->presentation, &this->displayMode);
+        }
+      } else if (FAILED(result)) {
+        if (lastReported != result) {
+          const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
+          ShowErrorDialog(message.c_str(), 0);
+          lastReported = result;
+        }
+      }
+
+      if (result == D3D_OK) {
+        result = this->AcquireBackBuffer();
+      }
+    }
+
     this->lastPresent = result;
-    return result;
+  } else {
+    lastReported = D3D_OK;
+    result = D3D_OK;
   }
 
-  if (result == S_PRESENT_MODE_CHANGED) {
-    if (!this->device) {
-      this->lastPresent = invalidDevice;
-      return invalidDevice;
-    }
-
-    result = this->device->ResetEx(&this->presentation, this->presentation.Windowed == 1 ? nullptr : &this->displayMode);
-  } else if (FAILED(result)) {
-    if (lastReported != result) {
-      const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
-      ShowErrorDialog(message.c_str(), 0);
-      lastReported = result;
-    }
-  }
-
-  if (result == D3D_OK) {
-    result = this->AcquireBackBuffer();
-  }
-
-  this->lastPresent = result;
   return result;
 }
 
