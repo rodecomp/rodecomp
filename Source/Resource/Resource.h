@@ -28,7 +28,7 @@ public:
   virtual void Unload();
   virtual void MissingFile(const char* name);
   std::uint32_t Lock();
-  void Unlock();
+  std::uint32_t Unlock();
   const char* GetName();
 
   /* 0004 */ std::uint32_t references;

@@ -59,9 +59,9 @@ std::uint32_t CRes::Lock() {
 
 // OFFSET: 0x00AF0BE0
 // FUNCTION: fn_18194
-void CRes::Unlock() {
+std::uint32_t CRes::Unlock() {
   this->lastUse = timeGetTime();
-  --this->references;
+  return --this->references;
 }
 
 // OFFSET: 0x00AEF380
