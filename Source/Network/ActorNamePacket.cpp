@@ -16,14 +16,14 @@ void CGameMode::ReceiveActorNameAll(const ActorNameAllPacket* packet) {
   this->nameCard.Set(packet->actorId, std::string(packet->name, packet->name + sizeof(packet->name)).c_str(),
     std::string(packet->partyName, packet->partyName + sizeof(packet->partyName)).c_str(),
     std::string(packet->guildName, packet->guildName + sizeof(packet->guildName)).c_str(),
-    std::string(packet->positionName, packet->positionName + sizeof(packet->positionName)).c_str(), std::string(), std::string(), 0);
+    std::string(packet->positionName, packet->positionName + sizeof(packet->positionName)).c_str(), "", "", 0);
 }
 
 // OFFSET: 0x00D1E3D0
 // FUNCTION: fn_21633
 void CGameMode::ReceiveActorNameTitle(const ActorNameTitlePacket* packet) {
-  this->nameCard.Set(packet->actorId, std::string(packet->name, packet->name + sizeof(packet->name)).c_str(), std::string(), std::string(), std::string(),
-    std::string(), packet->title, packet->groupId);
+  this->nameCard.Set(packet->actorId, std::string(packet->name, packet->name + sizeof(packet->name)).c_str(), "", "", "", "",
+    packet->title, packet->groupId);
 
   if (packet->actorId == g_session.petGid) {
     std::sprintf(g_session.petName, packet->name);
