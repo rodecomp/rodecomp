@@ -11,80 +11,65 @@
 // OFFSET: 0x009332D0
 // FUNCTION: fn_12724
 void UIShortCutWnd::OnRBtnDown(int x, int y) {
-  UIWindow& window = *this;
-  ShortcutGrid& grid = this->m_grid;
-  const NormalItemSlot* const* slots = this->m_slots;
-  const NormalItemSlot* const* itemSlots = this->m_itemSlots;
-  const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
 
   if (column == -1) {
     return;
   }
 
-  const int index = 9 * g_session.m_hotkeyPage + column;
-  const int limit = 9 * grid.rows;
+  const int index = column + 9 * g_session.m_hotkeyPage;
 
-  if (limit <= index) {
-    if (!g_session.ItemSlotActive()) {
-      return;
-    }
+  if (index >= 9 * this->m_grid.rows) {
+    if (g_session.ItemSlotActive()) {
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_itemSlots[column]->itemId), 1);
 
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(itemSlots[column]->itemId), 1);
-
-    if (item.identity[1] != 0) {
-      UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-      detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      if (item.identity[1] > 0) {
+        g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      }
     }
 
     return;
   }
 
-  const NormalItemSlot* slot = slots[index];
-
-  if (slot->itemId == 0) {
+  if (this->m_slots[index]->itemId == 0) {
     return;
   }
 
-  if (slot->enabled == 0) {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot->itemId), 1);
+  if (this->m_slots[index]->enabled) {
+    CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
 
-    if (item.identity[1] != 0) {
-      UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-      detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    if (skill.MatchesShortcut(this->m_slots[index])) {
+      UIWindow* detail = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
+
+      if (detail) {
+        if (static_cast<std::uint32_t>(static_cast<UISkillDescribeWnd*>(detail)->m_skillId) == skill.id) {
+          g_windowMgr.CloseWindow(WID_SKILLDESCRIBEWND);
+        } else {
+          detail->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, 0, 0, 0);
+        }
+      }
+
+      int originX = 0;
+      int originY = 0;
+      this->ToScreen(originX, originY);
+      const int targetX = originX + x;
+      int adjustment = 0;
+
+      if (static_cast<unsigned>(g_configuredScreenWidth) - targetX < static_cast<unsigned>(detail->geometry.width)) {
+        adjustment = detail->geometry.width - (static_cast<unsigned>(g_configuredScreenWidth) - targetX);
+      }
+
+      const int rowY = y / 33 * 33;
+      detail->Move(
+        targetX - adjustment,
+        static_cast<float>(originY) > static_cast<unsigned>(g_configuredScreenHeight) * 0.5f ? rowY - detail->geometry.height + originY
+                                                                                              : originY + 33 + rowY);
     }
+  } else {
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_slots[index]->itemId), 1);
 
-    return;
-  }
-
-  CSkillInfo skill = g_session.LookupSkill(slot->itemId);
-
-  if (!skill.MatchesShortcut(slot)) {
-    return;
-  }
-
-  UIWindow* detail = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
-
-  if (detail) {
-    if (static_cast<std::uint32_t>(static_cast<UISkillDescribeWnd*>(detail)->m_skillId) == skill.id) {
-      g_windowMgr.CloseWindow(WID_SKILLDESCRIBEWND);
-    } else {
-      detail->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, 0, 0, 0);
+    if (item.identity[1] > 0) {
+      g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
-
-  int originX = 0;
-  int originY = 0;
-  window.ToScreen(originX, originY);
-  const int targetX = (originX + x);
-  int adjustment = 0;
-
-  if (static_cast<unsigned>(g_configuredScreenWidth) - static_cast<unsigned>(targetX) < static_cast<unsigned>(detail->geometry.width)) {
-    adjustment = targetX + detail->geometry.width - static_cast<int>(static_cast<unsigned>(g_configuredScreenWidth));
-  }
-
-  const int rowY = 33 * (y / 33);
-  const int targetY =
-    static_cast<float>(originY) <= static_cast<float>(static_cast<unsigned>(g_configuredScreenHeight)) * 0.5f ? ((originY + rowY) + 33) : ((originY + rowY) - detail->geometry.height);
-
-  detail->Move(targetX - adjustment, targetY);
 }
