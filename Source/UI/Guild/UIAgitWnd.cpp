@@ -46,9 +46,11 @@ int UIAgitMessageBox::SendMsg(UIWindow*, int message, std::intptr_t a, std::intp
     switch (response) {
     case ID_YES:
       g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MOVE_GUILD_AGIT, this->m_agitId, 0, 0, 0);
-      [[fallthrough]];
+      g_windowMgr.Schedule(this);
+      break;
     case ID_NO:
       g_windowMgr.Schedule(this);
+      break;
     }
   }
 
