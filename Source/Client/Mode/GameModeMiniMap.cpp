@@ -330,34 +330,33 @@ void CGameMode::DrawMiniMapTriangle(float x, float y, float size, std::uint32_t 
 
   vertices[0].x = x;
   vertices[0].y = y - (size + size);
-  const float bottom = y + size;
   vertices[1].x = x - SquareRoot(3.0f) * size;
-  vertices[1].y = bottom;
+  vertices[1].y = y + size;
   vertices[2].x = SquareRoot(3.0f) * size + x;
-  vertices[2].y = bottom;
+  vertices[2].y = y + size;
   vertices[3].x = x - SquareRoot(3.0f) * size;
-  vertices[3].y = bottom;
+  vertices[3].y = y + size;
 
   vertices[0].z = topZ;
   vertices[0].rhw = 0.0999f;
-  vertices[0].diffuse = color;
   vertices[0].u = 0.0f;
   vertices[0].v = 0.0f;
+  vertices[0].diffuse = color;
   vertices[1].z = topZ;
   vertices[1].rhw = 0.0999f;
-  vertices[1].diffuse = color;
   vertices[1].u = 1.0f;
   vertices[1].v = 0.0f;
+  vertices[1].diffuse = color;
   vertices[2].z = bottomZ;
   vertices[2].rhw = 0.0999f;
-  vertices[2].diffuse = color;
   vertices[2].u = 0.0f;
   vertices[2].v = 1.0f;
+  vertices[2].diffuse = color;
   vertices[3].z = bottomZ;
   vertices[3].rhw = 0.0999f;
-  vertices[3].diffuse = color;
   vertices[3].u = 1.0f;
   vertices[3].v = 1.0f;
+  vertices[3].diffuse = color;
 
   g_renderer->queues.Submit(primitive, 0x201, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
