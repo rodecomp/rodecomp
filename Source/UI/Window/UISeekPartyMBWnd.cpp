@@ -23,6 +23,8 @@
 #include <cstdlib>
 #include <cstring>
 
+extern template std::string::basic_string(const std::string&);
+
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_PARTY_BOOKING_REQ_REGISTER {
@@ -378,39 +380,50 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
 // OFFSET: 0x009458B0
 // FUNCTION: fn_12835
 void UISeekPartyMBWnd::LoadRegionMaps() {
+  struct RegionInfo {
+    int id;
+    const char* name;
+  };
+  struct MapInfo {
+    int id;
+    int level;
+    const char* name;
+    int red;
+    int green;
+    int blue;
+  };
+  struct MapOption {
+    std::string name;
+    int color;
+  };
+
   g_session.m_hotkeyScript->HasTable("map_list");
   std::string unused;
 
   int regionCount = 2;
   for (;; ++regionCount) {
-    int regionId = 0;
-    const char* regionName = nullptr;
-    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", regionCount, &regionId, &regionName)) {
-      if (!regionName) {
+    RegionInfo regionInfo = {};
+    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", regionCount, &regionInfo.id, &regionInfo.name)) {
+      if (!regionInfo.name) {
         break;
       }
-      this->m_typeCombo->AddOption(regionName, 0);
+      this->m_typeCombo->AddOption(regionInfo.name, 0);
     }
   }
 
   g_session.m_hotkeyScript->HasTable("map_list");
   for (int region = 2; region < regionCount; ++region) {
+    MapInfo mapInfo = {};
     std::vector<std::pair<std::string, int>> maps;
-    int mapId = 0;
-    int level = 0;
-    const char* mapName = nullptr;
-    int red = 0;
-    int green = 0;
-    int blue = 0;
     for (int index = 1;; ++index) {
-      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapId, &level, &mapName, &red, &green, &blue)) {
-        if (!mapName) {
+      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapInfo.id, &mapInfo.level, &mapInfo.name, &mapInfo.red, &mapInfo.green, &mapInfo.blue)) {
+        if (!mapInfo.name) {
           break;
         }
-        std::string name;
-        name = mapName;
-        const int color = (static_cast<unsigned char>(blue) << 16) | (static_cast<unsigned char>(green) << 8) | static_cast<unsigned char>(red);
-        maps.push_back(std::pair<std::string, int>(name, color));
+        MapOption option;
+        option.name = mapInfo.name;
+        option.color = (static_cast<unsigned char>(mapInfo.blue) << 16) | (static_cast<unsigned char>(mapInfo.green) << 8) | static_cast<unsigned char>(mapInfo.red);
+        maps.push_back(std::pair<std::string, int>(option.name, option.color));
       }
     }
     this->m_subTypes.insert(std::pair<int, std::vector<std::pair<std::string, int>>>(region, maps));
