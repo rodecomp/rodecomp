@@ -127,6 +127,13 @@ static int ClampedRandom(int range) {
 }
 
 // INLINED
+static void CopyVector(vector3d& to, const vector3d& from) {
+  to.x = from.x;
+  to.y = from.y;
+  to.z = from.z;
+}
+
+// INLINED
 static std::list<CRenderObject*>& WorldObjects() {
   return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects;
 }
@@ -11228,50 +11235,50 @@ bool CRagEffect::GlassWall() {
 void CRagEffect::Portal() {
   if (this->state.stateCnt == 0) {
     g_modeMgr.GetGameMode();
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->arcAngle = 36.0f;
-    this->state.currentPrimitive->outerSize = 3.5f;
-    this->state.currentPrimitive->innerSize = 3.5f;
-    this->state.currentPrimitive->longSpeed = 4.0f;
-    this->state.currentPrimitive->heightSize = 40.0f;
-    this->state.currentPrimitive->alpha = 0.0f;
-    this->state.currentPrimitive->maxAlpha = 128.0f;
-    this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 6.0f;
-    this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->arcAngle = 36.0f;
-    this->state.currentPrimitive->outerSize = 4.0f;
-    this->state.currentPrimitive->innerSize = 4.0f;
-    this->state.currentPrimitive->longSpeed = 5.0f;
-    this->state.currentPrimitive->heightSize = 50.0f;
-    this->state.currentPrimitive->alpha = 0.0f;
-    this->state.currentPrimitive->maxAlpha = 128.0f;
-    this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 6.0f;
-    this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.arcAngle = 36.0f;
+    this->state.lastPrim->state.outerSize = 3.5f;
+    this->state.lastPrim->state.innerSize = 3.5f;
+    this->state.lastPrim->state.longSpeed = 4.0f;
+    this->state.lastPrim->state.heightSize = 40.0f;
+    this->state.lastPrim->state.alpha = 0.0f;
+    this->state.lastPrim->state.maxAlpha = 128.0f;
+    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 6.0f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.arcAngle = 36.0f;
+    this->state.lastPrim->state.outerSize = 4.0f;
+    this->state.lastPrim->state.innerSize = 4.0f;
+    this->state.lastPrim->state.longSpeed = 5.0f;
+    this->state.lastPrim->state.heightSize = 50.0f;
+    this->state.lastPrim->state.alpha = 0.0f;
+    this->state.lastPrim->state.maxAlpha = 128.0f;
+    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 6.0f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 
   if (this->state.stateCnt % 14 == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = 30;
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->innerSize = 8.0f;
-    this->state.currentPrimitive->latitude = 90.0f;
-    EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = 30;
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.innerSize = 8.0f;
+    this->state.lastPrim->state.latitude = 90.0f;
+    EffectPrimitiveState& tilt = this->state.lastPrim->state;
     reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-    this->state.currentPrimitive->radiusSpeed = 1.0f;
-    EffectPrimitiveState& ring = *this->state.currentPrimitive;
+    this->state.lastPrim->state.radiusSpeed = 1.0f;
+    EffectPrimitiveState& ring = this->state.lastPrim->state;
     ring.radiusAccel = -(ring.radiusSpeed / static_cast<float>(ring.duration)) * 0.5f;
-    const int duration = this->state.currentPrimitive->duration;
-    this->state.currentPrimitive->fadeOutCnt = duration - duration / 2;
-    Owner(this->state.currentPrimitive).InitSegment();
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+    const int duration = this->state.lastPrim->state.duration;
+    this->state.lastPrim->state.fadeOutCnt = duration - duration / 2;
+    this->state.lastPrim->InitSegment();
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 }
 
@@ -14385,7 +14392,7 @@ void CRagEffect::BlueRingWave() {
 // OFFSET: 0x00C4A650
 // FUNCTION: fn_20170
 void CRagEffect::QuadRingStack(const char* name) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17305,13 +17312,6 @@ void CRagEffect::SuperSlashSpread(char count, char value) {
   }
 }
 
-// INLINED
-static void CopyVector(vector3d& to, const vector3d& from) {
-  to.x = from.x;
-  to.y = from.y;
-  to.z = from.z;
-}
-
 // OFFSET: 0x00C627C0
 // FUNCTION: fn_20251
 void CPlayer::UpdateFootprints(int kind) {
@@ -18857,10 +18857,7 @@ void CRagEffect::WhiteYellowRings() {
 // OFFSET: 0x00C44B70
 // FUNCTION: fn_20145
 void CRagEffect::BlueSpellRings() {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
@@ -18876,10 +18873,7 @@ void CRagEffect::BlueSpellRings() {
 // OFFSET: 0x00C73B40
 // FUNCTION: fn_20329
 void CRagEffect::WhiteSpellRings() {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
@@ -18895,10 +18889,7 @@ void CRagEffect::WhiteSpellRings() {
 // OFFSET: 0x00C4A5A0
 // FUNCTION: fn_20169
 void CRagEffect::TexturedSpellRings(const char* name) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
@@ -18910,10 +18901,7 @@ void CRagEffect::TexturedSpellRings(const char* name) {
 // OFFSET: 0x00C4ACC0
 // FUNCTION: fn_20171
 void CRagEffect::BlackSpellRings(char silent) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     if (silent == 0) {
