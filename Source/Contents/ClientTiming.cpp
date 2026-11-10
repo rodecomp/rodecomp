@@ -24,6 +24,7 @@
 #include <windows.h>
 
 extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 // GLOBAL: gl_24705
 int g_serviceMode;
@@ -490,7 +491,6 @@ const char* CSession::GetMapDisplayName(const char* mapName) {
   return g_mapInfoMgr->GetDisplayName(mapName);
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x00DDE800
 // FUNCTION: fn_23400
 std::uint32_t CSession::GetPartyMemberAid(const char* name) {
@@ -502,7 +502,6 @@ std::uint32_t CSession::GetPartyMemberAid(const char* name) {
 
   return 0;
 }
-#pragma inline_depth()
 
 // OFFSET: 0x00DE0A50
 // FUNCTION: fn_23466
