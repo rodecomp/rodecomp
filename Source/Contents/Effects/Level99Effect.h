@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_LEVEL99EFFECT_H
 
 #include "Contents/Effects/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/EffectPoint.h"
 
 #include <cstddef>
 #include <string>
@@ -23,7 +23,7 @@ public:
 
   void AddRings();
 
-  /* 00CC */ vector3d previousRingPoints[2] = {};
+  /* 00CC */ EffectPoint previousRingPoints[2];
   /* 00E4 */ std::vector<CParticle*> sparkles;
   /* 00F0 */ std::vector<CParticle*> sprites;
 };

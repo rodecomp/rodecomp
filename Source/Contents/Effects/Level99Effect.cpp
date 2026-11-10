@@ -41,7 +41,7 @@ void CLevel99Effect::AddRings() {
   int startAngle = 0;
   int tilt = 55;
   do {
-    for (int segment = 0; segment < 22; ++segment) {
+    for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
       if (!particle) {
         continue;
@@ -63,42 +63,48 @@ void CLevel99Effect::AddRings() {
       InitParticleQuad(particle->vertices);
       this->sprites.push_back(particle);
 
-      const int index = particle->columnIndex;
-      const float radius = g_sinTable[index * 9] * particle->speedParameter;
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
-      const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
-      const int ringTilt = particle->phaseParameter;
-      const float spread = radius * g_cosTable[ringTilt];
-      const float cosine = g_cosTable[angle];
-      const float sine = g_sinTable[angle];
-      const float height = radius * g_sinTable[ringTilt];
+      if (particle) {
+        const int index = particle->columnIndex;
+        const float radius = g_sinTable[index * 9] * particle->speedParameter;
+        const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+        const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
+        const int ringTilt = particle->phaseParameter;
+        const float spread = radius * g_cosTable[ringTilt];
+        const float cosine = g_cosTable[angle];
+        const float sine = g_sinTable[angle];
+        const float height = radius * g_sinTable[ringTilt];
 
-      vector3d points[2] = {};
-      points[0].x = particle->scale * cosine;
-      points[0].y = 0.0f;
-      points[0].z = particle->scale * sine;
-      points[1].x = points[0].x + spread * cosine;
-      points[1].y = 0.0f - height;
-      points[1].z = points[0].z + spread * sine;
+        EffectPoint points[2];
+        points[0].x = particle->scale * cosine;
+        points[0].y = 0.0f;
+        points[0].z = particle->scale * sine;
+        points[1].x = points[0].x + spread * cosine;
+        points[1].y = 0.0f - height;
+        points[1].z = points[0].z + spread * sine;
 
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
+        particle->vertices[3].x = points[0].x;
+        particle->vertices[3].y = points[0].y;
+        particle->vertices[3].z = points[0].z;
+        particle->vertices[1].x = points[1].x;
+        particle->vertices[1].y = points[1].y;
+        particle->vertices[1].z = points[1].z;
 
-      if (index != 0) {
-        particle->vertices[0].x = this->previousRingPoints[1].x;
-        particle->vertices[0].y = this->previousRingPoints[1].y;
-        particle->vertices[0].z = this->previousRingPoints[1].z;
-        particle->vertices[2].x = this->previousRingPoints[0].x;
-        particle->vertices[2].y = this->previousRingPoints[0].y;
-        particle->vertices[2].z = this->previousRingPoints[0].z;
+        if (index != 0) {
+          particle->vertices[0].x = this->previousRingPoints[1].x;
+          particle->vertices[0].y = this->previousRingPoints[1].y;
+          particle->vertices[0].z = this->previousRingPoints[1].z;
+          particle->vertices[2].x = this->previousRingPoints[0].x;
+          particle->vertices[2].y = this->previousRingPoints[0].y;
+          particle->vertices[2].z = this->previousRingPoints[0].z;
+        }
+
+        this->previousRingPoints[0].x = points[0].x;
+        this->previousRingPoints[0].y = points[0].y;
+        this->previousRingPoints[0].z = points[0].z;
+        this->previousRingPoints[1].x = points[1].x;
+        this->previousRingPoints[1].y = points[1].y;
+        this->previousRingPoints[1].z = points[1].z;
       }
-
-      this->previousRingPoints[0] = points[0];
-      this->previousRingPoints[1] = points[1];
     }
 
     ++row;
