@@ -21,22 +21,12 @@ void UIGraffiStrboxWnd::OnCreate(int, int) {
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[2] = {184, 185};
   int positions[2][2] = {{189, 96}, {234, 96}};
-  std::string name;
 
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBitmapButton();
-    name.assign(prefix);
-    name += names[index][0];
-    name += ".bmp";
-    button->SetBitmap(name.c_str(), 0, 0);
-    name.assign(prefix);
-    name += names[index][1];
-    name += ".bmp";
-    button->SetBitmap(name.c_str(), 1, 0);
-    name.assign(prefix);
-    name += names[index][2];
-    name += ".bmp";
-    button->SetBitmap(name.c_str(), 2, 0);
+    for (int state = 0; state < 3; ++state) {
+      button->SetBitmap((prefix + names[index][state] + ".bmp").c_str(), state, 0);
+    }
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(positions[index][0], positions[index][1]);
     button->SetId(ids[index]);
