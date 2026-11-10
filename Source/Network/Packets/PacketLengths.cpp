@@ -55,7 +55,7 @@ namespace {
 
 // OFFSET: 0x00B02260
 // FUNCTION: fn_18387
-void PacketLengths::Initialize() {
+__declspec(noinline) void PacketLengths::Initialize() {
   for (const PacketRegistration& value : registrations) {
     this->Register(value.id, value.length, value.variable, value.record);
   }
