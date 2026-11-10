@@ -15520,17 +15520,14 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   std::memset(body, 0, sizeof(body));
 
   char tag[5] = {};
-  unsigned int size = *reinterpret_cast<const std::uint16_t*>(data + 2) - 4;
-  if (size >= 0x3FF) {
-    size = 0x3FF;
-  }
+  const unsigned int size = std::min<unsigned int>(0x3FF, *reinterpret_cast<const std::uint16_t*>(data + 2) - 4);
   std::memcpy(text, data + 4, size);
   text[size] = '\0';
   const int length = static_cast<int>(std::strlen(text));
 
   std::string message(text);
   std::uint32_t color = 0xFFFF;
-  std::memcpy(tag, text, std::min<std::size_t>(std::strlen(text), 4));
+  std::memcpy(tag, text, std::min<std::size_t>(4, std::strlen(text)));
   tag[4] = '\0';
   _strlwr(tag);
 

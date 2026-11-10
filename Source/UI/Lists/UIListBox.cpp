@@ -202,7 +202,11 @@ void UIChatHisBox::AddText(const char* text, int color, const char* style) {
     this->DropOldestLines();
   }
 
-  this->history.push_back(style ? std::string(style) : std::string());
+  if (style) {
+    this->history.push_back(std::string(style));
+  } else {
+    this->history.push_back(std::string());
+  }
   this->lineColors.push_back(color);
 
   int mode = 4;
