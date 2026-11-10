@@ -17,11 +17,6 @@ std::int64_t CInstantVar::Get(int key) const {
   return entry == this->m_values.end() ? 0 : entry->second;
 }
 
-// INLINED
-void CInstantVar::Clear() {
-  this->m_values.clear();
-}
-
 // OFFSET: 0x00612020
 // FUNCTION: fn_04340
 std::int64_t CRenderObject::GetInstant(int key) const {

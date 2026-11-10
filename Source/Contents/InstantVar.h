@@ -20,6 +20,11 @@ private:
 };
 
 // INLINED
+inline void CInstantVar::Clear() {
+  this->m_values.clear();
+}
+
+// INLINED
 inline std::map<int, std::int64_t>& CInstantVar::Values() {
   return this->m_values;
 }
