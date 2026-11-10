@@ -11,16 +11,15 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
     return false;
   }
 
-  properties.jpegBytes = const_cast<unsigned char*>(static_cast<const unsigned char*>(data));
   properties.jpegSize = bytes;
+  properties.jpegBytes = const_cast<unsigned char*>(static_cast<const unsigned char*>(data));
   unsigned char* source;
 
   if (ijlRead(&properties, 1) == 0) {
     this->width = properties.jpegWidth;
     this->height = properties.jpegHeight;
-    const std::uint32_t count = static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height);
-    source = static_cast<unsigned char*>(std::malloc(count * 3u));
-    this->pixels = static_cast<std::uint32_t*>(std::malloc(count > 0x3FFFFFFFu ? 0xFFFFFFFFu : count * 4u));
+    source = new unsigned char[properties.jpegHeight * properties.jpegWidth * 3];
+    this->pixels = new std::uint32_t[this->height * this->width];
     properties.dibWidth = this->width;
     properties.dibHeight = this->height;
     properties.dibBytes = source;
@@ -29,8 +28,8 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
     properties.dibPadding = 0;
 
     if (ijlRead(&properties, 3) != 0) {
-      std::free(source);
-      std::free(this->pixels);
+      delete[] source;
+      delete[] this->pixels;
       this->pixels = nullptr;
 
       return false;
@@ -42,19 +41,22 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
   ijlFree(&properties);
 
   for (int y = 0; y < this->height; ++y) {
-    const unsigned char* input = source + 3u * (static_cast<std::uint32_t>(y) * this->width);
+    std::uint32_t* out = &this->pixels[this->width * y];
+    const unsigned char* input = &source[3 * this->width * y];
     if (!input) {
       return false;
     }
 
-    for (int x = 0; x < this->width; ++x, input += 3) {
-      const unsigned blue = input[0], green = input[1], red = input[2];
-      this->pixels[static_cast<std::uint32_t>(y) * this->width + x] =
-        red >= 254 && green <= 3 && blue >= 254 ? 0x000A0A0Au : blue | (green << 8) | (red << 16) | 0xFF000000u;
+    for (int x = 0; x < this->width; ++x) {
+      const unsigned red = input[2];
+      const unsigned blue = input[0];
+      const unsigned green = input[1];
+      *out++ = red >= 254 && green <= 3 && blue >= 254 ? 0x000A0A0Au : (((((0xFFu << 8) + red) << 8) + green) << 8) + blue;
+      input += 3;
     }
   }
 
-  std::free(source);
+  delete[] source;
   this->alpha = 0;
   return true;
 }
