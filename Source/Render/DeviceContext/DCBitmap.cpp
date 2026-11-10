@@ -46,10 +46,6 @@ void CDCBitmap::Copy(int x, int y, int width, int height, const std::uint32_t* s
 // OFFSET: 0x005482D0
 // FUNCTION: fn_01853
 void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
-  if (this->m_bitmap.height <= 0) {
-    return;
-  }
-
   for (std::uint32_t y = 0; y < this->m_bitmap.height; ++y) {
     for (std::uint32_t x = 0; x < this->m_bitmap.width; ++x) {
       const std::uint32_t index = y * this->m_bitmap.width + x;
