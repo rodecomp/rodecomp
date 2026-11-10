@@ -46,7 +46,7 @@ CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 // INLINED
 CUnhandledExceptionHandler::CUnhandledExceptionHandler(int (*callback)()) {
   g_unhandledExceptionCallback = callback;
-  GetModuleFileNameA(nullptr, g_filename, sizeof(g_filename));
+  GetModuleFileNameA(nullptr, g_filename, MAX_PATH);
 
   StringFormat(g_moduleBaseName, sizeof(g_moduleBaseName), static_cast<size_t>(-1), "%s", strrchr(g_filename, '\\') ? strrchr(g_filename, '\\') + 1 : g_filename);
 
@@ -66,12 +66,14 @@ CUnhandledExceptionHandler::CUnhandledExceptionHandler(int (*callback)()) {
 // OFFSET: 0x00635AB0
 // FUNCTION: fn_04703
 bool InitUnhandledExceptionHandler(int (*callback)()) {
-  if (g_unhandledExceptionHandler != nullptr) {
-    return false;
+  if (g_unhandledExceptionHandler == nullptr) {
+    g_unhandledExceptionHandler = new CUnhandledExceptionHandler(callback);
+    if (g_unhandledExceptionHandler != nullptr) {
+      return true;
+    }
   }
 
-  g_unhandledExceptionHandler = new CUnhandledExceptionHandler(callback);
-  return g_unhandledExceptionHandler != nullptr;
+  return false;
 }
 
 // OFFSET: 0x00635C10
