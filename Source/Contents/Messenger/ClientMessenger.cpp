@@ -942,9 +942,18 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
           const int key = this->GetValue(2);
           const int level = equipped.refiningLevel;
           if (level > 0) {
-            switch (this->m_info->kind) {
-            case 2:
-            case 3: {
+            if (this->m_info->kind == 1) {
+              const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
+              if (attack != 0) {
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
+              }
+
+              const int resist = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(4, key, level);
+              if (resist != 0) {
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
+              }
+            } else if (this->m_info->kind == 2 || this->m_info->kind == 3) {
               const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(1, key, level);
               if (bonus != 0) {
                 const int rate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 1);
@@ -962,21 +971,6 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
                 this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
               }
-              break;
-            }
-            case 1: {
-              const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
-              if (attack != 0) {
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
-              }
-
-              const int resist = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(4, key, level);
-              if (resist != 0) {
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
-              }
-              break;
-            }
             }
           }
         }
@@ -1334,7 +1328,7 @@ EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentProperti
 
 // OFFSET: 0x006AC440
 // FUNCTION: fn_06176
-EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindEquipmentInfo(const int& key) {
+__declspec(noinline) EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindEquipmentInfo(const int& key) {
   auto found = this->equipmentInfo.find(key);
   if (this->equipmentInfo.end() == found) {
     return nullptr;
@@ -1997,7 +1991,7 @@ int GetNormalThirdJob(int job) {
 
 // OFFSET: 0x006AD500
 // FUNCTION: fn_06184
-EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindRandomOptionDefinition(const int& key) {
+__declspec(noinline) EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindRandomOptionDefinition(const int& key) {
   auto found = this->randomOptionDefinitions.find(key);
   if (this->randomOptionDefinitions.end() == found) {
     return nullptr;
