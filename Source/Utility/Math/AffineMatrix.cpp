@@ -158,7 +158,8 @@ void matrix::MakeInverse(const matrix& source) {
   const float minor = a[4] * a[8] - a[5] * a[7];
   const float inverse = 1.0f / ((minor * a[0] - (a[3] * a[8] - a[6] * a[5]) * a[1]) + (a[3] * a[7] - a[6] * a[4]) * a[2]);
   const float negative = -inverse;
-  output[0] = minor * inverse;
+  const float firstX = minor * inverse;
+  output[0] = firstX;
   const float firstY = (a[1] * a[8] - a[7] * a[2]) * negative;
   output[1] = firstY;
   const float firstZ = (a[1] * a[5] - a[2] * a[4]) * inverse;
@@ -176,7 +177,7 @@ void matrix::MakeInverse(const matrix& source) {
   const float thirdZ = (a[4] * a[0] - a[1] * a[3]) * inverse;
   output[8] = thirdZ;
 
-  output[9] = -((secondX * a[10] + (minor * inverse) * a[9]) + thirdX * a[11]);
+  output[9] = -(firstX * a[9] + secondX * a[10] + thirdX * a[11]);
   output[10] = -((firstY * a[9] + secondY * a[10]) + thirdY * a[11]);
   output[11] = -((secondZ * a[10] + firstZ * a[9]) + thirdZ * a[11]);
 }
