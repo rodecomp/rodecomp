@@ -185,12 +185,8 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   this->m_typeCombo->dropdownHeight = 67;
   this->m_typeCombo->SetSize(width - 212, 18);
   this->m_typeCombo->Move(4, 20);
-  this->m_typeCombo->borderRed = 100;
-  this->m_typeCombo->borderGreen = 100;
-  this->m_typeCombo->borderBlue = 100;
-  this->m_typeCombo->red = 232;
-  this->m_typeCombo->green = 232;
-  this->m_typeCombo->blue = 232;
+  this->m_typeCombo->SetBorderColor(100, 100, 100);
+  this->m_typeCombo->SetColor(232, 232, 232);
   this->AddChild(this->m_typeCombo);
   this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_BODYSTYLE), 0);
   this->m_typeCombo->AddOption(LookupMessage(MSI_MINIMAP_MSG_16), 0);
