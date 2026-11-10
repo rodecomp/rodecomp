@@ -4662,10 +4662,10 @@ void CGaleStorm::SpawnStorm() {
 void CGaleStorm::OnProcess() {
   const int frame = this->frame;
   if (frame <= this->effectLifetime) {
-    if (frame % (100 / this->count) == 0) {
+    if (0 == frame % (100 / this->count)) {
       this->SpawnStorm();
     }
-    if (frame % (30 / this->count) == 0) {
+    if (0 == frame % (30 / this->count)) {
       this->SpawnArrow();
     }
   }
