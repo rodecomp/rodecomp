@@ -1788,9 +1788,11 @@ __declspec(noinline) void CGameMode::ReceiveDebuffRemovalResult(const unsigned c
   case 1:
     g_windowMgr.CloseWindow(WID_DEBUFFREMOVEWND);
     return;
-  case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CASH_FAILED_BUSY)), 0xFF, 0, 0, 0);
+  case 2: {
+    const char* text = LookupMessage(MSI_CASH_FAILED_BUSY);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     return;
+  }
   case 3:
     window->Show(1);
     return;
@@ -7228,8 +7230,8 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
   manager->RemoveExpiredPacks();
   const int expiry = manager->GetEarliestExpiry();
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::int64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
+    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
+    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
     }
@@ -7458,8 +7460,8 @@ void CGameMode::RefreshEmotionSaleSchedule() {
 
   const int expiry = manager->RefreshUnownedPacks().nextTime;
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::int64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
+    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
+    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
     }
