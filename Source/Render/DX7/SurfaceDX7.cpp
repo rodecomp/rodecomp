@@ -158,29 +158,31 @@ void CSurfaceDX7::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
-  const auto transparent = this->m_owner->PackColor(255, 0, 255);
-  auto* output = static_cast<unsigned char*>(description.lpSurface);
+  const std::uint16_t transparent = this->m_owner->PackColor(255, 0, 255);
 
   if (description.ddpfPixelFormat.dwRGBBitCount == 16) {
+    auto* line = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < height; ++row) {
+      auto* output = reinterpret_cast<std::uint16_t*>(line);
       for (int column = 0; column < width; ++column) {
-        const auto value = this->m_owner->PackColor((pixels[column] >> 16) & 255, (pixels[column] >> 8) & 255, pixels[column] & 255);
+        const std::uint16_t value = this->m_owner->PackColor(GetBValue(pixels[column]), GetGValue(pixels[column]), GetRValue(pixels[column]));
         if (value != transparent) {
-          std::memcpy(output + column * sizeof(value), &value, sizeof(value));
+          output[column] = value;
         }
       }
-      output += description.lPitch;
+      line += description.lPitch;
       pixels += stride;
     }
   } else {
+    auto* line = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < height; ++row) {
+      auto* output = reinterpret_cast<std::uint32_t*>(line);
       for (int column = 0; column < width; ++column) {
         if ((pixels[column] & 0xFFFFFF) != 0xFF00FF) {
-          const std::uint32_t value = pixels[column];
-          std::memcpy(output + column * sizeof(value), &value, sizeof(value));
+          output[column] = pixels[column];
         }
       }
-      output += description.lPitch;
+      line += description.lPitch;
       pixels += stride;
     }
   }
