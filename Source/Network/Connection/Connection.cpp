@@ -199,7 +199,11 @@ bool CConnection::Update() {
 // FUNCTION: fn_20400
 void CConnection::UpdateStatus() {
   if (this->m_socket != INVALID_SOCKET) {
-    this->m_status = !this->Receive() || !this->Flush();
+    if (this->Receive() && this->Flush()) {
+      this->m_status = 0;
+    } else {
+      this->m_status = 1;
+    }
   }
 }
 
