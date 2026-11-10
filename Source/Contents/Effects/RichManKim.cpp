@@ -33,8 +33,8 @@ void CRichManKim::Open() {
   particle->angleBits = 0;
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
-  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
   particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
+  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
   particle->SetColor(200, 200, 200);
   InitParticleQuad(particle->vertices);
   this->angleIndex = rand() % 359;
