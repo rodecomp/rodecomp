@@ -198,8 +198,8 @@ int UIFrameWnd::DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* it
   if (color == 0x00ADFF2F) {
     color = 0x00669900;
   }
+  color = (color >> 16 & 0xFF) | ((color & 0xFF) << 16) | (color & 0x0000FF00);
   return this->DrawItemNameSegments(
-    x, y, width, breaks, buffer, highlight, static_cast<std::uint32_t>(highlightColor),
-    (color >> 16 & 0xFF) | ((color & 0xFF) << 16) | (color & 0x0000FF00), family, lineHeight
+    x, y, width, breaks, buffer, highlight, static_cast<std::uint32_t>(highlightColor), color, family, lineHeight
   );
 }
