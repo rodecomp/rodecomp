@@ -49,5 +49,6 @@ private:
 };
 
 extern unsigned g_resourceReuseDelay;
+extern unsigned char g_lowercaseTable[256];
 
 #endif

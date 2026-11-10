@@ -17,10 +17,8 @@ bool ResourceMgr::Exists(std::string name) {
   char normalized[260] = {};
   strncpy_s(normalized, sizeof(normalized), text, _TRUNCATE);
 
-  for (unsigned char* byte = reinterpret_cast<unsigned char*>(normalized); *byte; ++byte) {
-    if (*byte >= 'A' && *byte <= 'Z') {
-      *byte += 'a' - 'A';
-    }
+  for (char* c = normalized; *c; ++c) {
+    *c = g_lowercaseTable[static_cast<unsigned char>(*c)];
   }
 
   const char* dot = ReverseFindChar(normalized, '.');
