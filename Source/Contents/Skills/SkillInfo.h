@@ -110,7 +110,10 @@ public:
   CSkillInfo();
   explicit CSkillInfo(int unused);
   CSkillInfo(const CSkillInfo& other);
-  CSkillInfo& operator=(const CSkillInfo& other);
+  // OFFSET: 0x009149F0
+  // FUNCTION: fn_12543
+  CSkillInfo& operator=(const CSkillInfo& other) = default;
+
   virtual ~CSkillInfo();
   __declspec(noinline) bool IsValid() const;
   bool MatchesShortcut(const NormalItemSlot* slot) const;

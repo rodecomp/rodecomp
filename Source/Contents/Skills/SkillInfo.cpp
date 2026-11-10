@@ -386,28 +386,6 @@ CSkillInfo::CSkillInfo(const CSkillInfo& other)
       entries(other.entries) {
 }
 
-// OFFSET: 0x009149F0
-// FUNCTION: fn_12543
-CSkillInfo& CSkillInfo::operator=(const CSkillInfo& other) {
-  this->available = other.available;
-  this->id = other.id;
-  this->type = other.type;
-  this->level = other.level;
-  this->spCost = other.spCost;
-  this->upgradable = other.upgradable;
-  this->range = other.range;
-  this->name = other.name;
-  this->treePosition = other.treePosition;
-  this->maxLevel = other.maxLevel;
-  this->canPlanLevel = other.canPlanLevel;
-  this->learnedLevel = other.learnedLevel;
-  this->apCost = other.apCost;
-
-  this->entries = other.entries;
-
-  return *this;
-}
-
 // OFFSET: 0x00773500
 // FUNCTION: fn_08312
 CSkillInfo::~CSkillInfo() = default;
