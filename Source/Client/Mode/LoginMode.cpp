@@ -84,6 +84,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
 #include <cstddef>
@@ -356,7 +357,7 @@ static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
+const char* DecryptName(const std::array<char, Length>& source) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
@@ -368,11 +369,11 @@ struct CharacterInfo2SizeErrorFormat {
 // OFFSET: 0x00D8CA50
 // FUNCTION: fn_22261
 EncryptedName<75, 0xED15938D333D2DB9ULL>& CharacterInfo2SizeErrorFormat::operator()() const {
-  const char source[] = {'\xFA', '\x65', '\x7C', '\x61', '\xCC', '\xD0', '\x41', '\xA8', '\xEB', '\x72', '\x74', '\x7D', '\xCB', '\xDC', '\x27', '\xCD',
-                         '\xCA', '\x44', '\x47', '\x56', '\xAD', '\xF6', '\x67', '\x9F', '\xD6', '\x5F', '\x1C', '\x12', '\xAD', '\xF0', '\x7D', '\x8C',
-                         '\xCB', '\x4C', '\x5E', '\x47', '\xE8', '\xE1', '\x35', '\x83', '\xCC', '\x40', '\x1D', '\x09', '\xAD', '\xB6', '\x71', '\xCD',
-                         '\x99', '\x6E', '\x75', '\x72', '\xDF', '\xD2', '\x56', '\xB9', '\xFC', '\x7F', '\x62', '\x7A', '\xC3', '\xD5', '\x5A', '\xDF',
-                         '\x99', '\x5E', '\x54', '\x49', '\xE8', '\xB3', '\x2F', '\xCD', '\x9C', '\x49', '\x3D'};
+  const std::array<char, 75> source = {'\xFA', '\x65', '\x7C', '\x61', '\xCC', '\xD0', '\x41', '\xA8', '\xEB', '\x72', '\x74', '\x7D', '\xCB', '\xDC', '\x27', '\xCD',
+                                       '\xCA', '\x44', '\x47', '\x56', '\xAD', '\xF6', '\x67', '\x9F', '\xD6', '\x5F', '\x1C', '\x12', '\xAD', '\xF0', '\x7D', '\x8C',
+                                       '\xCB', '\x4C', '\x5E', '\x47', '\xE8', '\xE1', '\x35', '\x83', '\xCC', '\x40', '\x1D', '\x09', '\xAD', '\xB6', '\x71', '\xCD',
+                                       '\x99', '\x6E', '\x75', '\x72', '\xDF', '\xD2', '\x56', '\xB9', '\xFC', '\x7F', '\x62', '\x7A', '\xC3', '\xD5', '\x5A', '\xDF',
+                                       '\x99', '\x5E', '\x54', '\x49', '\xE8', '\xB3', '\x2F', '\xCD', '\x9C', '\x49', '\x3D'};
   thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
   return name;
 }
@@ -384,13 +385,13 @@ struct PasswordRetryExceededMessage {
 // OFFSET: 0x00D8CB50
 // FUNCTION: fn_22262
 EncryptedName<103, 0xBF2B4B31397FF5A7ULL>& PasswordRetryExceededMessage::operator()() const {
-  const char source[] = {'\x1D', '\x04', '\xC6', '\xE9', '\x88', '\xB3', '\xE3', '\x1C', '\x1F', '\x53', '\x5F', '\x0A', '\xF9', '\xF3', '\x0B', '\x7F',
-                         '\x78', '\x4D', '\x87', '\xF9', '\xE5', '\xFC', '\xE9', '\x78', '\x68', '\x4A', '\xCB', '\x84', '\xF1', '\xFF', '\xE4', '\x0B',
-                         '\x7E', '\xDB', '\x5F', '\x83', '\xC0', '\xF2', '\xFB', '\x06', '\x5F', '\x3D', '\xDC', '\x81', '\x97', '\x6B', '\xE3', '\x11',
-                         '\x67', '\x3B', '\xB8', '\xE1', '\xF0', '\x9D', '\x97', '\x03', '\x18', '\x11', '\x51', '\x19', '\x11', '\x6B', '\x0B', '\x9F',
-                         '\x87', '\xD5', '\x5F', '\x19', '\x11', '\x6B', '\x0B', '\x9F', '\x87', '\x30', '\xD3', '\x8F', '\xC2', '\x8B', '\xE7', '\x01',
-                         '\x57', '\x33', '\xD1', '\x19', '\x8C', '\x8C', '\xEC', '\x5F', '\x67', '\x4E', '\x5F', '\xF8', '\x8F', '\xFC', '\xCA', '\x78',
-                         '\x72', '\x41', '\xB0', '\x8D', '\xE8', '\x65', '\x2B'};
+  const std::array<char, 103> source = {'\x1D', '\x04', '\xC6', '\xE9', '\x88', '\xB3', '\xE3', '\x1C', '\x1F', '\x53', '\x5F', '\x0A', '\xF9', '\xF3', '\x0B', '\x7F',
+                                        '\x78', '\x4D', '\x87', '\xF9', '\xE5', '\xFC', '\xE9', '\x78', '\x68', '\x4A', '\xCB', '\x84', '\xF1', '\xFF', '\xE4', '\x0B',
+                                        '\x7E', '\xDB', '\x5F', '\x83', '\xC0', '\xF2', '\xFB', '\x06', '\x5F', '\x3D', '\xDC', '\x81', '\x97', '\x6B', '\xE3', '\x11',
+                                        '\x67', '\x3B', '\xB8', '\xE1', '\xF0', '\x9D', '\x97', '\x03', '\x18', '\x11', '\x51', '\x19', '\x11', '\x6B', '\x0B', '\x9F',
+                                        '\x87', '\xD5', '\x5F', '\x19', '\x11', '\x6B', '\x0B', '\x9F', '\x87', '\x30', '\xD3', '\x8F', '\xC2', '\x8B', '\xE7', '\x01',
+                                        '\x57', '\x33', '\xD1', '\x19', '\x8C', '\x8C', '\xEC', '\x5F', '\x67', '\x4E', '\x5F', '\xF8', '\x8F', '\xFC', '\xCA', '\x78',
+                                        '\x72', '\x41', '\xB0', '\x8D', '\xE8', '\x65', '\x2B'};
   thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
   return name;
 }
@@ -598,8 +599,8 @@ std::string GetMacAddress() {
     if (adapter != nullptr) {
       char text[100];
       memset(text, 0, sizeof(text));
-      const char source[] = {'\x32', '\x2B', '\x1F', '\xFB', '\x90', '\xCE', '\x71', '\x3D', '\x4F', '\x36', '\x08', '\x93', '\x8F', '\xB3', '\x6C',
-                             '\x2A', '\x27', '\x29', '\x75', '\x8E', '\x98', '\xDB', '\x73', '\x57', '\x3A', '\x3E', '\x1D', '\x91', '\xE5', '\xEB'};
+      const std::array<char, 30> source = {'\x32', '\x2B', '\x1F', '\xFB', '\x90', '\xCE', '\x71', '\x3D', '\x4F', '\x36', '\x08', '\x93', '\x8F', '\xB3', '\x6C',
+                                           '\x2A', '\x27', '\x29', '\x75', '\x8E', '\x98', '\xDB', '\x73', '\x57', '\x3A', '\x3E', '\x1D', '\x91', '\xE5', '\xEB'};
       _snprintf(text, sizeof(text), DecryptName<0x0F41EBBDA32D1B17ULL>(source), adapter->Address[0], adapter->Address[1], adapter->Address[2],
         adapter->Address[3], adapter->Address[4], adapter->Address[5]);
       delete[] reinterpret_cast<char*>(adapter);
@@ -607,8 +608,8 @@ std::string GetMacAddress() {
     }
   }
 
-  const char source[] = {'\xF0', '\x76', '\xE8', '\x25', '\xD3', '\xB4', '\xE6', '\xC8', '\xEC', '\x73', '\xF1', '\x3A', '\xD4', '\xAC', '\xF8', '\xCD',
-                         '\xF7', '\x47'};
+  const std::array<char, 18> source = {'\xF0', '\x76', '\xE8', '\x25', '\xD3', '\xB4', '\xE6', '\xC8', '\xEC', '\x73', '\xF1', '\x3A', '\xD4', '\xAC', '\xF8', '\xCD',
+                                       '\xF7', '\x47'};
   return DecryptName<0xFBD599E117C547C1ULL>(source);
 }
 
@@ -760,10 +761,10 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
   if ((packet->length - 4) % sizeof(CharacterInfo) != 0) {
     char text[256];
     memset(text, 0, sizeof(text));
-    const char source[] = {'\x4C', '\x07', '\x04', '\xFD', '\xDC', '\x06', '\xCD', '\x46', '\x5D', '\x10', '\x0C', '\xE1', '\xDB', '\x0A', '\xAB', '\x23',
-                           '\x7C', '\x26', '\x3F', '\xCA', '\xBD', '\x20', '\xEB', '\x71', '\x60', '\x3D', '\x64', '\x8E', '\xBD', '\x06', '\xD1', '\x42',
-                           '\x5D', '\x0E', '\x06', '\xFB', '\xD8', '\x17', '\xC6', '\x4A', '\x41', '\x09', '\x0A', '\x9D', '\xBD', '\x36', '\xF0', '\x79',
-                           '\x6A', '\x6F', '\x7F', '\x8F', '\xB8', '\x21', '\x99'};
+    const std::array<char, 55> source = {'\x4C', '\x07', '\x04', '\xFD', '\xDC', '\x06', '\xCD', '\x46', '\x5D', '\x10', '\x0C', '\xE1', '\xDB', '\x0A', '\xAB', '\x23',
+                                         '\x7C', '\x26', '\x3F', '\xCA', '\xBD', '\x20', '\xEB', '\x71', '\x60', '\x3D', '\x64', '\x8E', '\xBD', '\x06', '\xD1', '\x42',
+                                         '\x5D', '\x0E', '\x06', '\xFB', '\xD8', '\x17', '\xC6', '\x4A', '\x41', '\x09', '\x0A', '\x9D', '\xBD', '\x36', '\xF0', '\x79',
+                                         '\x6A', '\x6F', '\x7F', '\x8F', '\xB8', '\x21', '\x99'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x0399459DAF454F0FULL>(source), sizeof(CharacterInfo));
     g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
@@ -773,9 +774,9 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
   if (total > 68) {
     char text[256];
     memset(text, 0, sizeof(text));
-    const char source[] = {'\xE8', '\xE7', '\xCC', '\xDF', '\xF2', '\xCE', '\xF3', '\x90', '\xF9', '\xF0', '\xC4', '\xC3', '\xF5', '\xC2', '\x95', '\xF5',
-                           '\xE8', '\xC1', '\xF9', '\xAD', '\xFC', '\xFB', '\xC2', '\xA7', '\x8B', '\x8A', '\xE9', '\xAD', '\x9C', '\xAD', '\x82', '\xB1',
-                           '\xAB'};
+    const std::array<char, 33> source = {'\xE8', '\xE7', '\xCC', '\xDF', '\xF2', '\xCE', '\xF3', '\x90', '\xF9', '\xF0', '\xC4', '\xC3', '\xF5', '\xC2', '\x95', '\xF5',
+                                         '\xE8', '\xC1', '\xF9', '\xAD', '\xFC', '\xFB', '\xC2', '\xA7', '\x8B', '\x8A', '\xE9', '\xAD', '\x9C', '\xAD', '\x82', '\xB1',
+                                         '\xAB'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xD5A78DB38D8DAFABULL>(source), total, 68);
     g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
@@ -951,9 +952,9 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
 void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
   const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
   if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
-    const char source[] = {'\xD8', '\xE6', '\x32', '\x48', '\x72', '\x89', '\x4C', '\x11', '\x95', '\xC2', '\x20', '\x55', '\x40', '\x89', '\x4E', '\x0D',
-                           '\xD0', '\xAF', '\x32', '\x4C', '\x69', '\x98', '\x07', '\x0A', '\xDC', '\xF5', '\x24', '\x05', '\x2E', '\xDD', '\x0A', '\x1D',
-                           '\x9C', '\x8F'};
+    const std::array<char, 34> source = {'\xD8', '\xE6', '\x32', '\x48', '\x72', '\x89', '\x4C', '\x11', '\x95', '\xC2', '\x20', '\x55', '\x40', '\x89', '\x4E', '\x0D',
+                                         '\xD0', '\xAF', '\x32', '\x4C', '\x69', '\x98', '\x07', '\x0A', '\xDC', '\xF5', '\x24', '\x05', '\x2E', '\xDD', '\x0A', '\x1D',
+                                         '\x9C', '\x8F'};
     char text[256];
     sprintf(text, DecryptName<0x792FFD1325418FB5ULL>(source), sizeof(MapStateInfo));
     g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
@@ -1218,39 +1219,39 @@ void CLoginMode::OpenAccountRegistration() {
   case ServiceKorea:
     if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL_HANGAME);
-      const char source[] = {'\x30', '\x45', '\xCA', '\xFB', '\x9D'};
+      const std::array<char, 5> source = {'\x30', '\x45', '\xCA', '\xFB', '\x9D'};
       ShellExecuteA(hWnd, DecryptName<0xCFF3899D95AF355FULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     } else {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-      const char source[] = {'\x4A', '\x01', '\xCA', '\xA5', '\x0D'};
+      const std::array<char, 5> source = {'\x4A', '\x01', '\xCA', '\xA5', '\x0D'};
       ShellExecuteA(hWnd, DecryptName<0xE52DF30DCBAF7125ULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     }
     break;
   case 1: {
-    const char urlSource[] = {'\x0F', '\xDF', '\xE5', '\xD5', '\xD2', '\x05', '\xCC', '\x3C', '\x0E', '\xD9', '\xFE', '\x8B', '\xD3', '\x5E', '\x84', '\x7D',
-                              '\x06', '\xD9', '\xFE', '\xCE', '\xCE', '\x51', '\x8F', '\x7A', '\x09', '\xCE', '\xBF', '\xC6', '\xCE', '\x52', '\xCC', '\x7E',
-                              '\x02', '\xC6', '\xF3', '\xC0', '\xD3', '\x10', '\x8E', '\x76', '\x0A', '\xC9', '\xF4', '\xD7', '\xCB', '\x50', '\x8A', '\x7D',
-                              '\x56', '\x85', '\xF0', '\xD6', '\xD1', '\x00', '\x8E', '\x5D', '\x12', '\xC6', '\xAC', '\x94', '\xA1'};
+    const std::array<char, 61> urlSource = {'\x0F', '\xDF', '\xE5', '\xD5', '\xD2', '\x05', '\xCC', '\x3C', '\x0E', '\xD9', '\xFE', '\x8B', '\xD3', '\x5E', '\x84', '\x7D',
+                                            '\x06', '\xD9', '\xFE', '\xCE', '\xCE', '\x51', '\x8F', '\x7A', '\x09', '\xCE', '\xBF', '\xC6', '\xCE', '\x52', '\xCC', '\x7E',
+                                            '\x02', '\xC6', '\xF3', '\xC0', '\xD3', '\x10', '\x8E', '\x76', '\x0A', '\xC9', '\xF4', '\xD7', '\xCB', '\x50', '\x8A', '\x7D',
+                                            '\x56', '\x85', '\xF0', '\xD6', '\xD1', '\x00', '\x8E', '\x5D', '\x12', '\xC6', '\xAC', '\x94', '\xA1'};
     const char* file = DecryptName<0x13E33FA1A591AB67ULL>(urlSource);
-    const char source[] = {'\x58', '\x37', '\xC8', '\x57', '\xBF'};
+    const std::array<char, 5> source = {'\x58', '\x37', '\xC8', '\x57', '\xBF'};
     ShellExecuteA(hWnd, DecryptName<0x17A9E5BF39AD4737ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   case ServiceJapan:
     break;
   case ServiceChina: {
-    const char urlSource[] = {'\x2B', '\x5D', '\x27', '\x57', '\xEF', '\x90', '\x66', '\xED', '\x6D', '\x42', '\x26', '\x49', '\xB9', '\xCA', '\x27', '\xB7',
-                              '\x20', '\x46', '\x3E', '\x08', '\xEA', '\xDE', '\x2A', '\xED', '\x7E', '\x5F', '\x3C', '\x52', '\xB6', '\xD7', '\x2C', '\xEB',
-                              '\x6D', '\x44', '\x32', '\x4E', '\xBB', '\x99', '\x2A', '\xF0', '\x27', '\x14', '\x62', '\x17', '\xE5', '\x8F', '\x6F', '\xE9',
-                              '\x2A', '\x4D', '\x6E', '\x11', '\xE4', '\xBF'};
+    const std::array<char, 54> urlSource = {'\x2B', '\x5D', '\x27', '\x57', '\xEF', '\x90', '\x66', '\xED', '\x6D', '\x42', '\x26', '\x49', '\xB9', '\xCA', '\x27', '\xB7',
+                                            '\x20', '\x46', '\x3E', '\x08', '\xEA', '\xDE', '\x2A', '\xED', '\x7E', '\x5F', '\x3C', '\x52', '\xB6', '\xD7', '\x2C', '\xEB',
+                                            '\x6D', '\x44', '\x32', '\x4E', '\xBB', '\x99', '\x2A', '\xF0', '\x27', '\x14', '\x62', '\x17', '\xE5', '\x8F', '\x6F', '\xE9',
+                                            '\x2A', '\x4D', '\x6E', '\x11', '\xE4', '\xBF'};
     const char* file = DecryptName<0x9949BFD527532943ULL>(urlSource);
-    const char source[] = {'\x00', '\x0D', '\x9E', '\x4D', '\x71'};
+    const std::array<char, 5> source = {'\x00', '\x0D', '\x9E', '\x4D', '\x71'};
     ShellExecuteA(hWnd, DecryptName<0xCD8F077123FB7D6FULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   default: {
     const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-    const char source[] = {'\x02', '\xCB', '\xF0', '\x43', '\x93'};
+    const std::array<char, 5> source = {'\x02', '\xCB', '\xF0', '\x43', '\x93'};
     ShellExecuteA(hWnd, DecryptName<0xC517FB932D95BB6DULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
@@ -1275,50 +1276,50 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   memset(text, 0, sizeof(text));
   {
     const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    const char source[] = {'\x40', '\x6A', '\x45'};
+    const std::array<char, 3> source = {'\x40', '\x6A', '\x45'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x891B232D09451965ULL>(source), message);
   }
 
   switch (packet->result) {
   case 1: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER);
-    const char source[] = {'\x9C', '\x76', '\x77'};
+    const std::array<char, 3> source = {'\x9C', '\x76', '\x77'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x758F1D0B4F7705B9ULL>(source), message);
     break;
   }
   case 2: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK);
-    const char source[] = {'\x50', '\xBE', '\xED'};
+    const std::array<char, 3> source = {'\x50', '\xBE', '\xED'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x35E5656B5DEDCD75ULL>(source), message);
     break;
   }
   case 3: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
-    const char source[] = {'\xD8', '\xCA', '\xBB'};
+    const std::array<char, 3> source = {'\xD8', '\xCA', '\xBB'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x4941FD9F21BBB9FDULL>(source), message);
     break;
   }
   case 4: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN);
-    const char source[] = {'\xD8', '\xA4', '\x4D'};
+    const std::array<char, 3> source = {'\xD8', '\xA4', '\x4D'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xE7978FB5A94DD7FDULL>(source), message);
     break;
   }
   case 5: {
     const char* message = LookupMessage(MSI_NAVIGATION_ICONTITEL);
-    const char source[] = {'\x4E', '\xCA', '\xC7'};
+    const std::array<char, 3> source = {'\x4E', '\xCA', '\xC7'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xB7FD8F670FC7B96BULL>(source), message);
     break;
   }
   case 6: {
     const char* message = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\xAA', '\xEA', '\xEB'};
+    const std::array<char, 3> source = {'\xAA', '\xEA', '\xEB'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x39FF7FB50DEB998FULL>(source), message);
     break;
   }
   case 7: {
     const char* message = LookupMessage(MSI_NAVIGATION_V4_HELP02);
-    const char source[] = {'\xB2', '\x82', '\xE1'};
+    const std::array<char, 3> source = {'\xB2', '\x82', '\xE1'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2FE993D1DDE1F197ULL>(source), message);
     break;
   }
@@ -1326,18 +1327,18 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   case 100:
   case 102: {
     const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    const char source[] = {'\xE8', '\x82', '\x99'};
+    const std::array<char, 3> source = {'\xE8', '\x82', '\x99'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xAD075B8DB599F1CDULL>(source), message);
     break;
   }
   case 9: {
     const char* message = LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON);
-    const char source[] = {'\x5A', '\x66', '\x8D'};
+    const std::array<char, 3> source = {'\x5A', '\x66', '\x8D'};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2F8B0F37118D157FULL>(source), message);
     break;
   }
   case 101: {
-    char blockDate[21] = {};
+    char blockDate[21] = {0};
     memcpy_s(blockDate, 20, packet->blockDate, 20);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), blockDate);
     break;
@@ -1348,7 +1349,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
 
   GetRagConnection().Close();
   const int result = packet->result;
-  const char source[] = {'\xBE', '\x24', '\x2B', '\xBC', '\x03', '\x2C', '\x05'};
+  const std::array<char, 7> source = {'\xBE', '\x24', '\x2B', '\xBC', '\x03', '\x2C', '\x05'};
   g_windowMgr.Confirm(FormatString(DecryptName<0x050505679903579BULL>(source), text, result), 0, true, false, 0, "Message", 280, 120, 0);
   g_charServerAccountIdPending = 0;
   this->pendingCursorType = 3;
@@ -1403,13 +1404,13 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     break;
   case 900: {
     ShowErrorDialog(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
-    const char parametersSource[] = {'\x7F', '\x25', '\x95', '\x31', '\x03', '\xEC', '\xAC', '\xF5', '\x78', '\x7F', '\x86',
-                                     '\x2F', '\x53', '\xAC', '\xFA', '\xA9', '\x74', '\x3E', '\x8C', '\x6E', '\x39'};
+    const std::array<char, 21> parametersSource = {'\x7F', '\x25', '\x95', '\x31', '\x03', '\xEC', '\xAC', '\xF5', '\x78', '\x7F', '\x86',
+                                                   '\x2F', '\x53', '\xAC', '\xFA', '\xA9', '\x74', '\x3E', '\x8C', '\x6E', '\x39'};
     const char* parametersText = DecryptName<0x8783C33941E15117ULL>(parametersSource);
-    const char fileSource[] = {'\xE3', '\xE9', '\x03', '\xFD', '\xDB', '\xF2', '\x48', '\x65', '\xE4', '\xB3', '\x10',
-                               '\xE3', '\x8B', '\xB2', '\x1E', '\x39', '\xE8', '\xF2', '\x1A', '\xA2', '\xE1'};
+    const std::array<char, 21> fileSource = {'\xE3', '\xE9', '\x03', '\xFD', '\xDB', '\xF2', '\x48', '\x65', '\xE4', '\xB3', '\x10',
+                                             '\xE3', '\x8B', '\xB2', '\x1E', '\x39', '\xE8', '\xF2', '\x1A', '\xA2', '\xE1'};
     const char* fileText = DecryptName<0x1767DDE18D779D8BULL>(fileSource);
-    const char operationSource[] = {'\xAE', '\xD3', '\x94', '\xA3', '\x11'};
+    const std::array<char, 5> operationSource = {'\xAE', '\xD3', '\x94', '\xA3', '\x11'};
     ShellExecuteA(nullptr, DecryptName<0xC1BB8111EDD183E1ULL>(operationSource), fileText, parametersText, nullptr, SW_SHOW);
     g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     return;
@@ -1424,9 +1425,9 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
 
   if (!message.empty()) {
     const int error = packet->error;
-    const char codeSource[] = {'\xB7', '\xF8', '\xE7', '\x36', '\x77'};
+    const std::array<char, 5> codeSource = {'\xB7', '\xF8', '\xE7', '\x36', '\x77'};
     message += FormatOwnedString(DecryptName<0x271B45771F83DD9FULL>(codeSource), error);
-    const char detailSource[] = {'\xAF', '\x02', '\x44', '\x98', '\xE8', '\x19'};
+    const std::array<char, 6> detailSource = {'\xAF', '\x02', '\x44', '\x98', '\xE8', '\x19'};
     message += FormatOwnedString(DecryptName<0xC70319B5EB61598FULL>(detailSource), packet->detail);
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
     if (this->otpTimedOut != true) {
@@ -1493,11 +1494,11 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     const char* caption;
     bool protect;
     if (error == 800) {
-      const char captionSource[] = {'\x37', '\x63', '\x53', '\x3B', '\xBC', '\x33', '\xAD'};
+      const std::array<char, 7> captionSource = {'\x37', '\x63', '\x53', '\x3B', '\xBC', '\x33', '\xAD'};
       caption = DecryptName<0x75ADC57D87EFBD8FULL>(captionSource);
       protect = true;
     } else {
-      const char codeSource[] = {'\x79', '\xAE', '\xA9', '\x28', '\xBB'};
+      const std::array<char, 5> codeSource = {'\x79', '\xAE', '\xA9', '\x28', '\xBB'};
       message += FormatOwnedString(DecryptName<0xD1413DBB01CD8B51ULL>(codeSource), error);
       caption = "Message";
       protect = false;
@@ -1554,8 +1555,8 @@ int CLoginMode::Run() {
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
       if (!message.empty()) {
-        const char source[] = {'\x83', '\x25', '\x13', '\x4C', '\xC3', '\x86', '\x32', '\x59', '\xCD', '\x32', '\x00', '\x4E',
-                               '\xD2', '\xA4', '\x24', '\x4C', '\x9F', '\x11', '\x61'};
+        const std::array<char, 19> source = {'\x83', '\x25', '\x13', '\x4C', '\xC3', '\x86', '\x32', '\x59', '\xCD', '\x32', '\x00', '\x4E',
+                                             '\xD2', '\xA4', '\x24', '\x4C', '\x9F', '\x11', '\x61'};
         MessageBoxA(hWnd, message.c_str(), DecryptName<0x2D51E3B7236175EDULL>(source), 0);
       }
     }
@@ -1697,21 +1698,21 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     break;
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\xF2', '\xE6', '\x37', '\xBE', '\x35', '\x6C', '\x87'};
+    const std::array<char, 7> source = {'\xF2', '\xE6', '\x37', '\xBE', '\x35', '\x6C', '\x87'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x0B8745519B1F95D7ULL>(source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\xF0', '\x4A', '\x03', '\x6C', '\x83', '\x8E', '\x97'};
+    const std::array<char, 7> source = {'\xF0', '\x4A', '\x03', '\x6C', '\x83', '\x8E', '\x97'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xA597A7E7492B39D5ULL>(source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\x56', '\x9C', '\x93', '\xF4', '\xB1', '\xCA', '\xAB'};
+    const std::array<char, 7> source = {'\x56', '\x9C', '\x93', '\xF4', '\xB1', '\xCA', '\xAB'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xFFABE3D5D1BBEF73ULL>(source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
@@ -1780,21 +1781,21 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     break;
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\x16', '\x10', '\x7D', '\xD4', '\x4D', '\x1C', '\xD3'};
+    const std::array<char, 7> source = {'\x16', '\x10', '\x7D', '\xD4', '\x4D', '\x1C', '\xD3'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x49D33529F1556333ULL>(source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\x14', '\x8A', '\xFB', '\xDC', '\x79', '\x66', '\xCB'};
+    const std::array<char, 7> source = {'\x14', '\x8A', '\xFB', '\xDC', '\x79', '\x66', '\xCB'};
     g_windowMgr.Confirm(FormatString(DecryptName<0x01CB4F1DF9D3F931ULL>(source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    const char source[] = {'\xB2', '\xBA', '\xE1', '\xBE', '\xA9', '\x92', '\xB1'};
+    const std::array<char, 7> source = {'\xB2', '\xBA', '\xE1', '\xBE', '\xA9', '\x92', '\xB1'};
     g_windowMgr.Confirm(FormatString(DecryptName<0xC5B1BBCD9BC9C997ULL>(source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
@@ -1979,7 +1980,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
       }
       url += g_stoveMgr->GetAccessToken();
-      const char source[] = {'\x42', '\x33', '\xC8', '\x47', '\x45'};
+      const std::array<char, 5> source = {'\x42', '\x33', '\xC8', '\x47', '\x45'};
       ShellExecuteA(nullptr, DecryptName<0xD98F5345098D630DULL>(source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
       message = "";
       g_modeMgr.Quit();
@@ -2034,16 +2035,16 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
         if (g_session.m_channelCopId == 1) {
-          const char urlSource[] = {'\x17', '\x67', '\xAB', '\xA1', '\xBF', '\x48', '\x56', '\x9A', '\x08', '\x64', '\xF1', '\xB9',
-                                    '\xE4', '\x09', '\x1E', '\x8C', '\x12', '\x76', '\xF1', '\xB2', '\xEA', '\x0A', '\x79'};
+          const std::array<char, 23> urlSource = {'\x17', '\x67', '\xAB', '\xA1', '\xBF', '\x48', '\x56', '\x9A', '\x08', '\x64', '\xF1', '\xB9',
+                                                  '\xE4', '\x09', '\x1E', '\x8C', '\x12', '\x76', '\xF1', '\xB2', '\xEA', '\x0A', '\x79'};
           const char* file = DecryptName<0xED796785D1DF137FULL>(urlSource);
-          const char source[] = {'\xD2', '\xCD', '\x88', '\x59', '\xBB'};
+          const std::array<char, 5> source = {'\xD2', '\xCD', '\x88', '\x59', '\xBB'};
           ShellExecuteA(hWnd, DecryptName<0x83EFBFBB37EDBDBDULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         } else {
-          const char urlSource[] = {'\xF7', '\xB1', '\x19', '\xDB', '\xED', '\x06', '\xD2', '\xD7', '\xFE', '\xA2', '\x03',
-                                    '\xCA', '\xA5', '\x46', '\x96', '\x8B', '\xFC', '\xAA', '\x43', '\xC0', '\xA5', '\x29'};
+          const std::array<char, 22> urlSource = {'\xF7', '\xB1', '\x19', '\xDB', '\xED', '\x06', '\xD2', '\xD7', '\xFE', '\xA2', '\x03',
+                                                  '\xCA', '\xA5', '\x46', '\x96', '\x8B', '\xFC', '\xAA', '\x43', '\xC0', '\xA5', '\x29'};
           const char* file = DecryptName<0xA5FD29D7AB6DC59FULL>(urlSource);
-          const char source[] = {'\x66', '\x57', '\x4A', '\xD5', '\xBD'};
+          const std::array<char, 5> source = {'\x66', '\x57', '\x4A', '\xD5', '\xBD'};
           ShellExecuteA(hWnd, DecryptName<0xD97D5DBDBB2F2709ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         }
         g_modeMgr.Quit();
@@ -2116,18 +2117,18 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
   case 16:
     if (g_serviceType == 0) {
-      const char textSource[] = {'\x4B', '\x36', '\x80', '\xD9', '\x37', '\xC0', '\xB7', '\x39', '\x52', '\xE7', '\x83', '\xA6', '\xA7', '\x9F', '\x6F', '\x39',
-                                 '\x35', '\xEB', '\x19', '\xBD', '\xCE', '\xC4', '\x8C', '\xD1', '\x30', '\x65', '\x85', '\xDA', '\x37', '\xBE', '\x97', '\x30',
-                                 '\x27', '\x7A', '\xFA', '\xB8', '\xF5', '\x59', '\xF6', '\x28', '\x47', '\x3F', '\x8D', '\xC6', '\xA3', '\xA0', '\x61', '\xF1'};
+      const std::array<char, 48> textSource = {'\x4B', '\x36', '\x80', '\xD9', '\x37', '\xC0', '\xB7', '\x39', '\x52', '\xE7', '\x83', '\xA6', '\xA7', '\x9F', '\x6F', '\x39',
+                                               '\x35', '\xEB', '\x19', '\xBD', '\xCE', '\xC4', '\x8C', '\xD1', '\x30', '\x65', '\x85', '\xDA', '\x37', '\xBE', '\x97', '\x30',
+                                               '\x27', '\x7A', '\xFA', '\xB8', '\xF5', '\x59', '\xF6', '\x28', '\x47', '\x3F', '\x8D', '\xC6', '\xA3', '\xA0', '\x61', '\xF1'};
       message = std::string(DecryptName<0xF14F79170939C7F1ULL>(textSource));
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-        const char urlSource[] = {'\x43', '\x6B', '\x9D', '\xDB', '\xFB', '\xD0', '\x02', '\x08', '\x5C', '\x68', '\xC7', '\xD9', '\xA0', '\x98', '\x43', '\x1E',
-                                  '\x59', '\x70', '\x82', '\x85', '\xA2', '\x90', '\x03', '\x14', '\x59', '\x30', '\x9A', '\xCE', '\xB5', '\xB1', '\x48', '\x08',
-                                  '\x7B', '\x48', '\xC6', '\xDB', '\xA0', '\x8C', '\x5E', '\x08', '\x44', '\x6D', '\x8D', '\xF4', '\xA2', '\x97', '\x4C', '\x11',
-                                  '\x4C', '\x7A', '\xB6', '\xCA', '\xA6', '\x8D', '\x48', '\x1A', '\x46', '\x7A', '\x87', '\xDF', '\xEF', '\x9E', '\x5E', '\x0F',
-                                  '\x2B'};
+        const std::array<char, 65> urlSource = {'\x43', '\x6B', '\x9D', '\xDB', '\xFB', '\xD0', '\x02', '\x08', '\x5C', '\x68', '\xC7', '\xD9', '\xA0', '\x98', '\x43', '\x1E',
+                                                '\x59', '\x70', '\x82', '\x85', '\xA2', '\x90', '\x03', '\x14', '\x59', '\x30', '\x9A', '\xCE', '\xB5', '\xB1', '\x48', '\x08',
+                                                '\x7B', '\x48', '\xC6', '\xDB', '\xA0', '\x8C', '\x5E', '\x08', '\x44', '\x6D', '\x8D', '\xF4', '\xA2', '\x97', '\x4C', '\x11',
+                                                '\x4C', '\x7A', '\xB6', '\xCA', '\xA6', '\x8D', '\x48', '\x1A', '\x46', '\x7A', '\x87', '\xDF', '\xEF', '\x9E', '\x5E', '\x0F',
+                                                '\x2B'};
         const char* file = DecryptName<0x7F2DFFC1ABE91F2BULL>(urlSource);
-        const char source[] = {'\xE2', '\xF1', '\x74', '\x9D', '\xB3'};
+        const std::array<char, 5> source = {'\xE2', '\xF1', '\x74', '\x9D', '\xB3'};
         ShellExecuteA(hWnd, DecryptName<0xFD69A9B3F311818DULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
         g_modeMgr.Quit();
       }
@@ -2185,7 +2186,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 110:
     if (g_windowMgr.Confirm(LookupMessage(MSI_SHOUTDOWN_TIME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
       const char* file = LookupMessage(MSI_PARTIAL_SHOUTDOWN_TIME);
-      const char source[] = {'\xFC', '\x05', '\xBA', '\x81', '\x4D'};
+      const std::array<char, 5> source = {'\xFC', '\x05', '\xBA', '\x81', '\x4D'};
       ShellExecuteA(hWnd, DecryptName<0x9B0F234DEFDF7593ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
       g_modeMgr.Quit();
     }
@@ -2210,7 +2211,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   default: {
     message = LookupMessage(MSI_ACCESS_DENIED);
-    const char source[] = {'\x6B', '\x1C', '\x3F', '\x42', '\x67'};
+    const std::array<char, 5> source = {'\x6B', '\x1C', '\x3F', '\x42', '\x67'};
     message += FormatOwnedString(DecryptName<0xC9712D676B5B3943ULL>(source), code);
     break;
   }
@@ -2398,7 +2399,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
 
   CNProtectGameGuardMgr* gameGuard = g_nProtectGameGuardMgr;
   const std::uint32_t aid = packet->aid;
-  const std::uint8_t source[] = {0x4C, 0x7B, 0x77};
+  const std::array<std::uint8_t, 3> source = {0x4C, 0x7B, 0x77};
   thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> format(source);
   gameGuard->Send(FormatString(format.Text(), aid));
   GetRagConnection().Close();
@@ -2579,8 +2580,8 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_SC_ACK_ENCRYPTION: {
-      const std::uint8_t source[] = {0x17, 0x62, 0xEB, 0xFF, 0x1C, 0x00, 0xFE, 0xD4, 0x2D, 0x2D, 0x8E, 0xC1, 0x1E, 0x11, 0xEC, 0xC1,
-                                     0x2D, 0x64, 0xA4, 0xC1, 0x5D, 0x42, 0xB4, 0x90, 0x59};
+      const std::array<std::uint8_t, 25> source = {0x17, 0x62, 0xEB, 0xFF, 0x1C, 0x00, 0xFE, 0xD4, 0x2D, 0x2D, 0x8E, 0xC1, 0x1E, 0x11, 0xEC, 0xC1,
+                                                   0x2D, 0x64, 0xA4, 0xC1, 0x5D, 0x42, 0xB4, 0x90, 0x59};
       thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> text(source);
       ShowErrorDialog(GetRenderSystemHolder()->system, text.Text(), 0);
       break;
@@ -2889,7 +2890,7 @@ void CLoginMode::PollNetworkStatus() {
       GetRagConnection().Close();
       const int code = packet->result;
       const char* text = LookupMessage(message);
-      const std::uint8_t source[] = {0xC4, 0x08, 0xD1, 0xF2, 0xB1, 0x3A, 0x39};
+      const std::array<std::uint8_t, 7> source = {0xC4, 0x08, 0xD1, 0xF2, 0xB1, 0x3A, 0x39};
       thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> format(source);
       g_windowMgr.Confirm(FormatString(format.Text(), text, code), 0, true, false, 0, "Message", 280, 120, 0);
       g_charServerAccountIdPending = 0;
@@ -3221,19 +3222,19 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       if (argument1 == 1) {
         g_tipOfTheDayEnglish = true;
         g_serverLanguage->alternateLanguage = static_cast<std::uint16_t>(argument1);
-        const std::uint8_t prefixSource[] = {0xBC, 0x94, 0x3A, 0xD7, 0x8F};
+        const std::array<std::uint8_t, 5> prefixSource = {0xBC, 0x94, 0x3A, 0xD7, 0x8F};
         thread_local EncryptedName<sizeof(prefixSource), 0x23BBD58F8B5FF5C9ULL> prefix(prefixSource);
         g_serverLanguage->SetServicePrefix(prefix.Text());
-        const std::uint8_t suffixSource[] = {0xF2, 0x72, 0x0E, 0x23, 0x39};
+        const std::array<std::uint8_t, 5> suffixSource = {0xF2, 0x72, 0x0E, 0x23, 0x39};
         thread_local EncryptedName<sizeof(suffixSource), 0x0B7109397F6B1387ULL> suffixName(suffixSource);
         suffix = suffixName.Text();
       } else {
         g_tipOfTheDayEnglish = false;
         g_serverLanguage->alternateLanguage = 9;
-        const std::uint8_t prefixSource[] = {0xC0, 0xF3, 0x0A, 0x95, 0x0A, 0x54, 0x1F, 0x5F, 0xA5};
+        const std::array<std::uint8_t, 9> prefixSource = {0xC0, 0xF3, 0x0A, 0x95, 0x0A, 0x54, 0x1F, 0x5F, 0xA5};
         thread_local EncryptedName<sizeof(prefixSource), 0x03772763F96D9DA5ULL> prefix(prefixSource);
         g_serverLanguage->SetServicePrefix(prefix.Text());
-        const std::uint8_t suffixSource[] = {0x8A, 0x1F, 0xB8, 0x7F, 0x04, 0x3C, 0xAF, 0xB1, 0xEF};
+        const std::array<std::uint8_t, 9> suffixSource = {0x8A, 0x1F, 0xB8, 0x7F, 0x04, 0x3C, 0xAF, 0xB1, 0xEF};
         thread_local EncryptedName<sizeof(suffixSource), 0xEDC74F6D13DF71EFULL> suffixName(suffixSource);
         suffix = suffixName.Text();
       }
@@ -3280,13 +3281,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_session.m_accountName = servers[argument1].address.name;
     const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
     const std::uint32_t ip = servers[selected].address.ip;
-    const std::uint8_t ipFormatSource[] = {0xB0, 0xEB, 0xCF, 0x28, 0x39, 0x27, 0x44, 0x95, 0xBB, 0xAA, 0x85, 0x0D};
+    const std::array<std::uint8_t, 12> ipFormatSource = {0xB0, 0xEB, 0xCF, 0x28, 0x39, 0x27, 0x44, 0x95, 0xBB, 0xAA, 0x85, 0x0D};
     thread_local EncryptedName<sizeof(ipFormatSource), 0xF161095D0DE18F95ULL> ipFormat(ipFormatSource);
     CharServerEndpoint endpoint;
     wsprintfA(endpoint.ip, ipFormat.Text(), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
     const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
     endpoint.port = servers[selected2].address.port;
-    const std::uint8_t hostFormatSource[] = {0xFC, 0x8A, 0xE1};
+    const std::array<std::uint8_t, 3> hostFormatSource = {0xFC, 0x8A, 0xE1};
     thread_local EncryptedName<sizeof(hostFormatSource), 0x2BAD156DE3E1F9D9ULL> hostFormat(hostFormatSource);
     StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), hostFormat.Text(), servers[selected2].domain);
     g_charServerEndpoint = endpoint;
@@ -3672,19 +3673,19 @@ void CLoginMode::OnChangeState(int value) {
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.clientVersion, "Dev")) {
       const int port = rand() % 3 + 6951;
-      const std::uint8_t hostSource[] = {0x24, 0xD3, 0xA0, 0x18, 0x02, 0xB0, 0x24, 0x17, 0x2C, 0xD8, 0xE1, 0x47, 0x02,
-                                         0xB0, 0x2F, 0x18, 0x3D, 0xCE, 0xA4, 0x1B, 0x00, 0xB8, 0x6F, 0x12, 0x3D, 0xA1};
+      const std::array<std::uint8_t, 26> hostSource = {0x24, 0xD3, 0xA0, 0x18, 0x02, 0xB0, 0x24, 0x17, 0x2C, 0xD8, 0xE1, 0x47, 0x02,
+                                                       0xB0, 0x2F, 0x18, 0x3D, 0xCE, 0xA4, 0x1B, 0x00, 0xB8, 0x6F, 0x12, 0x3D, 0xA1};
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
       const char* hostText = host.Text();
-      const std::uint8_t formatSource[] = {0xC4, 0xEA, 0xBD, 0x6A, 0xE5, 0xC3};
+      const std::array<std::uint8_t, 6> formatSource = {0xC4, 0xEA, 0xBD, 0x6A, 0xE5, 0xC3};
       thread_local EncryptedName<sizeof(formatSource), 0x7321C3814F8799E1ULL> format(formatSource);
       StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText, port);
     } else {
-      const std::uint8_t hostSource[] = {0xA2, 0x61, 0x96, 0x5E, 0x88, 0xB4, 0x38, 0x10, 0xAE, 0x76, 0x97, 0x10, 0x80, 0xF7, 0x67, 0x10, 0xAE,
-                                         0x7D, 0x98, 0x01, 0x96, 0xB2, 0x3B, 0x12, 0xA6, 0x3D, 0x92, 0x01, 0xC3, 0xEF, 0x2C, 0x44, 0xF8, 0x13};
+      const std::array<std::uint8_t, 34> hostSource = {0xA2, 0x61, 0x96, 0x5E, 0x88, 0xB4, 0x38, 0x10, 0xAE, 0x76, 0x97, 0x10, 0x80, 0xF7, 0x67, 0x10, 0xAE,
+                                                       0x7D, 0x98, 0x01, 0x96, 0xB2, 0x3B, 0x12, 0xA6, 0x3D, 0x92, 0x01, 0xC3, 0xEF, 0x2C, 0x44, 0xF8, 0x13};
       thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
       const char* hostText = host.Text();
-      const std::uint8_t formatSource[] = {0x46, 0x86, 0xE1};
+      const std::array<std::uint8_t, 3> formatSource = {0x46, 0x86, 0xE1};
       thread_local EncryptedName<sizeof(formatSource), 0xCB1D253B7FE1F563ULL> format(formatSource);
       StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText);
     }
@@ -3701,18 +3702,18 @@ void CLoginMode::OnChangeState(int value) {
     ZoneLoginPacket packet;
     std::memset(&packet, 0, sizeof(packet));
     packet.id = ID_CT_AUTH;
-    const std::uint8_t codeSource[] = {0x7F, 0x57, 0xDC, 0xB4, 0x09};
+    const std::array<std::uint8_t, 5> codeSource = {0x7F, 0x57, 0xDC, 0xB4, 0x09};
     thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
-    const std::uint8_t nameFormatSource[] = {0x38, 0xB4, 0x4B};
+    const std::array<std::uint8_t, 3> nameFormatSource = {0x38, 0xB4, 0x4B};
     thread_local EncryptedName<sizeof(nameFormatSource), 0x234977DDB54BC71DULL> nameFormat(nameFormatSource);
     StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), nameFormat.Text(), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));
     char password[33] = {};
-    const std::uint8_t passwordFormatSource[] = {0xE0, 0x5E, 0x2B};
+    const std::array<std::uint8_t, 3> passwordFormatSource = {0xE0, 0x5E, 0x2B};
     thread_local EncryptedName<sizeof(passwordFormatSource), 0xEF6D1D893F2B2DC5ULL> passwordFormat(passwordFormatSource);
     StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), passwordFormat.Text(), reinterpret_cast<const char*>(this->loginCredentials));
     DecryptRijndael256(password, packet.password);
-    const std::uint8_t extraFormatSource[] = {0x7E, 0x20, 0x5F};
+    const std::array<std::uint8_t, 3> extraFormatSource = {0x7E, 0x20, 0x5F};
     thread_local EncryptedName<sizeof(extraFormatSource), 0x39A39F87DD5F535BULL> extraFormat(extraFormatSource);
     StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
@@ -3760,7 +3761,7 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
-    const std::uint8_t countNameSource[] = {0x39, 0xC2, 0xCA, 0x4E, 0x66, 0x01, 0xB7, 0x2A, 0x25, 0x97};
+    const std::array<std::uint8_t, 10> countNameSource = {0x39, 0xC2, 0xCA, 0x4E, 0x66, 0x01, 0xB7, 0x2A, 0x25, 0x97};
     thread_local EncryptedName<sizeof(countNameSource), 0x6FE153231D879777ULL> countName(countNameSource);
     window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
 
@@ -3904,19 +3905,19 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!std::strstr(g_session.clientVersion, "Dev")) {
-      const std::uint8_t hostSource[] = {0xBA, 0x29, 0xF8, 0xC8, 0x58, 0xE4, 0x88, 0x1E, 0xFF, 0x29, 0xF6, 0x82, 0x57, 0xE6, 0x99,
-                                         0x40, 0xBA, 0x75, 0xF4, 0x8A, 0x17, 0xEC, 0x99, 0x15, 0xE7, 0x62, 0xA7, 0xD5, 0x39};
+      const std::array<std::uint8_t, 29> hostSource = {0xBA, 0x29, 0xF8, 0xC8, 0x58, 0xE4, 0x88, 0x1E, 0xFF, 0x29, 0xF6, 0x82, 0x57, 0xE6, 0x99,
+                                                       0x40, 0xBA, 0x75, 0xF4, 0x8A, 0x17, 0xEC, 0x99, 0x15, 0xE7, 0x62, 0xA7, 0xD5, 0x39};
       thread_local EncryptedName<sizeof(hostSource), 0x2FEB8739E5975BD1ULL> host(hostSource);
       host.Text();
-      const std::uint8_t formatSource[] = {0xE8, 0x70, 0xCD};
+      const std::array<std::uint8_t, 3> formatSource = {0xE8, 0x70, 0xCD};
       thread_local EncryptedName<sizeof(formatSource), 0x33133B977BCD03CDULL> format(formatSource);
       format.Text();
     } else {
-      const std::uint8_t hostSource[] = {0x44, 0xA5, 0x2A, 0x08, 0x48, 0xC6, 0x00, 0x90, 0x4E, 0xF9, 0x37, 0x44, 0x5E, 0xC5, 0x4C,
-                                         0xD3, 0x40, 0xBC, 0x6B, 0x46, 0x56, 0x85, 0x46, 0xD3, 0x15, 0xE1, 0x7C, 0x15, 0x09, 0xAB};
+      const std::array<std::uint8_t, 30> hostSource = {0x44, 0xA5, 0x2A, 0x08, 0x48, 0xC6, 0x00, 0x90, 0x4E, 0xF9, 0x37, 0x44, 0x5E, 0xC5, 0x4C,
+                                                       0xD3, 0x40, 0xBC, 0x6B, 0x46, 0x56, 0x85, 0x46, 0xD3, 0x15, 0xE1, 0x7C, 0x15, 0x09, 0xAB};
       thread_local EncryptedName<sizeof(hostSource), 0xA12DAB392545D72FULL> host(hostSource);
       host.Text();
-      const std::uint8_t formatSource[] = {0x50, 0x48, 0x03};
+      const std::array<std::uint8_t, 3> formatSource = {0x50, 0x48, 0x03};
       thread_local EncryptedName<sizeof(formatSource), 0x6BA1C1132F033B75ULL> format(formatSource);
       format.Text();
     }
@@ -4074,14 +4075,14 @@ void CLoginMode::OnChangeState(int value) {
     g_packetReassembler->Notify(1);
     char keyName[MAX_PATH];
     std::strcpy(keyName, g_subKey);
-    const std::uint8_t cashKeySource[] = {0xD1, 0xF5, 0xAA, 0x14, 0xD2, 0xC6, 0xEC, 0xDB, 0x8D};
+    const std::array<std::uint8_t, 9> cashKeySource = {0xD1, 0xF5, 0xAA, 0x14, 0xD2, 0xC6, 0xEC, 0xDB, 0x8D};
     thread_local EncryptedName<sizeof(cashKeySource), 0xB39FA7917BCFBB8DULL> cashKey(cashKeySource);
     std::strcat(keyName, cashKey.Text());
     DWORD category = 0;
     DWORD disposition = 0;
     HKEY key;
     if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, keyName, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
-      const std::uint8_t valueNameSource[] = {0xB4, 0x52, 0x78, 0xE7, 0xAE, 0x4C, 0x5C, 0xD9, 0xB2, 0x54, 0x64, 0xFD, 0xA8, 0x0F};
+      const std::array<std::uint8_t, 14> valueNameSource = {0xB4, 0x52, 0x78, 0xE7, 0xAE, 0x4C, 0x5C, 0xD9, 0xB2, 0x54, 0x64, 0xFD, 0xA8, 0x0F};
       thread_local EncryptedName<sizeof(valueNameSource), 0x8D1D0FF1AF2B13F7ULL> valueName(valueNameSource);
       RegSetValueExA(key, valueName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&category), sizeof(category));
       RegCloseKey(key);
@@ -4117,9 +4118,9 @@ void CLoginMode::OnChangeState(int value) {
     const unsigned char flags = g_serviceOptions.Get(0x6C);
     g_session.SetServiceFlags(flags, flags);
     reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
-    const std::uint8_t wallpaperSource[] = {0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5,
-                                            0x23, 0xD8, 0x56, 0x86, 0xAD, 0x5C, 0xB6, 0xF7, 0x3B, 0xD2, 0x43, 0x89, 0xA2, 0x60, 0xBA,
-                                            0xC5, 0x38, 0xD6, 0x43, 0x81, 0xAA, 0x6D, 0xB8, 0xAB, 0x61, 0xD5, 0x5C, 0x9F, 0xC3};
+    const std::array<std::uint8_t, 44> wallpaperSource = {0x77, 0x9E, 0x2F, 0x39, 0xC3, 0x11, 0x5C, 0x82, 0x71, 0xD5, 0x2F, 0x0F, 0xBE, 0x65, 0xC5,
+                                                          0x23, 0xD8, 0x56, 0x86, 0xAD, 0x5C, 0xB6, 0xF7, 0x3B, 0xD2, 0x43, 0x89, 0xA2, 0x60, 0xBA,
+                                                          0xC5, 0x38, 0xD6, 0x43, 0x81, 0xAA, 0x6D, 0xB8, 0xAB, 0x61, 0xD5, 0x5C, 0x9F, 0xC3};
     thread_local EncryptedName<sizeof(wallpaperSource), 0x4F99DF03C3EF31B7ULL> wallpaper(wallpaperSource);
     this->wallpaperName = std::string(wallpaper.Text());
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
@@ -4198,7 +4199,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 30: {
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
-    const std::uint8_t countNameSource[] = {0xB9, 0x9C, 0x2E, 0x33, 0x32, 0xD7, 0x34, 0x91};
+    const std::array<std::uint8_t, 8> countNameSource = {0xB9, 0x9C, 0x2E, 0x33, 0x32, 0xD7, 0x34, 0x91};
     thread_local EncryptedName<sizeof(countNameSource), 0x9171997D6963C9F7ULL> countName(countNameSource);
     window->SendMsg(nullptr, UM_SET_TARGET, 10028, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
     for (unsigned int i = 0; i < this->mapStates.size(); ++i) {
