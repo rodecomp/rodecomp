@@ -12,13 +12,13 @@
 // OFFSET: 0x00ACEF00
 // FUNCTION: fn_17793
 LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled) {
-  const auto options = static_cast<std::uint16_t>(flags);
-
   switch (message) {
-  case WM_INPUTLANGCHANGE:
-    this->language = options;
-    this->codePage = g_inlineCharset ? LanguageCodePage(options) : g_textCodePage;
+  case WM_INPUTLANGCHANGE: {
+    const auto language = static_cast<std::uint16_t>(flags);
+    this->language = language;
+    this->codePage = g_inlineCharset ? LanguageCodePage(language) : g_textCodePage;
     break;
+  }
   case WM_IME_STARTCOMPOSITION:
     this->ResetState();
     this->DeleteSelection();
@@ -27,13 +27,13 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
     this->EndComposition();
     this->candidate.assign("", 0);
     break;
-  case WM_IME_COMPOSITION:
-    if (options & GCS_COMPSTR) {
+  case WM_IME_COMPOSITION: {
+    if (flags & GCS_COMPSTR) {
       this->RefreshComposition();
       this->ResetCandidate();
     }
 
-    if (options & GCS_CURSORPOS) {
+    if (flags & GCS_CURSORPOS) {
       HIMC context = ImmGetContext(hWnd);
       if (context) {
         ImmGetCompositionStringA(context, GCS_CURSORPOS, &this->compositionCursor, sizeof(this->compositionCursor));
@@ -43,17 +43,13 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
       }
     }
 
-    if (options & GCS_RESULTSTR) {
+    if (flags & GCS_RESULTSTR) {
       HIMC context = ImmGetContext(hWnd);
       if (context) {
         WCHAR wide[256];
         char converted[256];
         const auto bytes = static_cast<std::uint32_t>(ImmGetCompositionStringW(context, GCS_RESULTSTR, wide, sizeof(wide)));
         const unsigned size = WideCharToMultiByte(this->codePage, 0, wide, bytes >> 1, converted, sizeof(converted), nullptr, nullptr);
-
-        if (size >= sizeof(converted)) {
-          __fastfail(FAST_FAIL_RANGE_CHECK_FAILURE);
-        }
 
         converted[size] = 0;
         ImmReleaseContext(hWnd, context);
@@ -63,8 +59,11 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
       }
     }
     break;
+  }
   case WM_IME_NOTIFY:
-    if (value == IMN_OPENCANDIDATE || value == IMN_CHANGECANDIDATE) {
+    switch (value) {
+    case IMN_CHANGECANDIDATE:
+    case IMN_OPENCANDIDATE: {
       HIMC context = ImmGetContext(hWnd);
       if (context) {
         const auto bytes = ImmGetCandidateListW(context, 0, nullptr, 0);
@@ -83,8 +82,11 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
       } else {
         this->candidateCount = 0;
       }
-    } else if (value == IMN_CLOSECANDIDATE) {
+      break;
+    }
+    case IMN_CLOSECANDIDATE:
       this->candidateCount = 0;
+      break;
     }
     break;
   default:
