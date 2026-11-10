@@ -57,7 +57,7 @@ void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned c
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
-    window.DrawBitmap(x, y, &bitmap->image, true);
+    window.DrawBitmap(x, y, bitmap, true);
   }
 }
 
