@@ -3545,12 +3545,13 @@ void UISayDialogWnd::Resize(int width, int height) {
 
     int x = this->geometry.width - 4;
     const int y = this->geometry.height - 24;
-    for (UIWindow* other : this->m_buttons) {
+    for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
+      UIWindow* other = *it;
       if (button != other) {
-        x += -4 - other->geometry.width;
+        x += -4 - static_cast<UIBitmapButton*>(other)->BitmapWidth();
       }
     }
-    button->Move(x - button->geometry.width, y);
+    button->Move(x - static_cast<UIBitmapButton*>(button)->BitmapWidth(), y);
   }
 }
 
