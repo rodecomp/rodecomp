@@ -260,11 +260,9 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
   const int lifeTime = this->m_lifeTime;
   if (lifeTime != 0) {
     this->m_counting = true;
-    if (this->m_frame - lifeTime >= 0) {
-      this->life = -1.0f;
-      return false;
-    }
-  } else if (this->m_counting == true && this->m_frame - lifeTime >= 0) {
+  }
+
+  if (this->m_counting == true && this->m_frame - lifeTime >= 0) {
     this->life = -1.0f;
     return false;
   }
@@ -302,16 +300,10 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
       continue;
     }
 
-    bool advance;
-    if (clip->frameCount == 1) {
-      advance = key->frame == this->m_frame;
-    } else if (this->m_cursors[i] + 1 < clip->frameCount) {
-      advance = elapsed != 0 && key[1].frame == this->m_frame;
-    } else {
-      advance = key->frame == this->m_frame;
-    }
-
-    if (advance) {
+    if ((clip->frameCount == 1 && key->frame == this->m_frame)
+        || (clip->frameCount != 1
+            && (this->m_cursors[i] + 1 < clip->frameCount ? elapsed != 0 && key[1].frame == this->m_frame
+                                                           : key->frame == this->m_frame))) {
       const int cursor = this->m_cursors[i] + 1;
       this->m_cursors[i] = cursor;
       if (cursor < clip->frameCount - 1) {
