@@ -10,6 +10,14 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace {
+// INLINED
+__forceinline int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // OFFSET: 0x00709F50
 // FUNCTION: fn_07096
 CRectUpEffect::CRectUpEffect() : CEffect(1088) {
@@ -150,21 +158,21 @@ void CRectUpEffect::Open() {
           continue;
         }
 
-        particle->offsetX = static_cast<float>(x);
         particle->offsetY = 0.0f;
+        particle->offsetX = static_cast<float>(x);
         particle->offsetZ = static_cast<float>(z);
         particle->effectId = this->id;
         particle->columnIndex = index;
         particle->rowIndex = 0;
         particle->groupIndex = 1;
-        particle->angleParameter = std::max(rand() % 360, 0);
+        particle->angleParameter = ClampedRandom(360);
         *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
         particle->animationParameter = 0.0f;
         if (this->id == 1088) {
           particle->speedParameter = 16.0f;
           particle->alpha = 120;
           particle->scale = 3.5f;
-          const int shade = std::max(rand() % 50, 0) + 100;
+          const int shade = ClampedRandom(50) + 100;
           std::memcpy(particle->effectParameters, &shade, sizeof(shade));
           particle->phaseParameter = 0;
         }
