@@ -67,9 +67,18 @@ AnimatedModelNode::~AnimatedModelNode() {
 
 // OFFSET: 0x007550E0
 // FUNCTION: fn_07979
-C3dAnimModelRes::C3dAnimModelRes()
-    : recordCount(0), records(nullptr), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), originX(0.0f), originY(0.0f),
-      originZ(0.0f), alpha(255) {
+C3dAnimModelRes::C3dAnimModelRes() : originX(0.0f) {
+  this->recordCount = 0;
+  this->records = nullptr;
+  this->frameCount = 0;
+  this->animationLength = 0;
+  this->speed = 1.0f;
+  this->shade = 2;
+  this->originX = 0.0f;
+  this->originY = 0.0f;
+  this->originZ = 0.0f;
+  this->unknown_0150 = 0;
+  this->alpha = 255;
 }
 
 // OFFSET: 0x00756480
