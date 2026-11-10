@@ -226,25 +226,18 @@ __declspec(noinline) ITEM_INFO UILapineBoxWnd::ReadMaterial(int x, int y) {
 // OFFSET: 0x00602620
 // FUNCTION: fn_04182
 bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
-  std::vector<UIIngredientInfoWnd*>::iterator entryIt;
-  for (entryIt = this->items.begin(); entryIt != this->items.end(); ++entryIt) {
-    if ((*entryIt)->item.identity[1] == identity) {
-      break;
-    }
-  }
+  const auto entryIt = std::find_if(this->items.begin(), this->items.end(), [identity](UIIngredientInfoWnd* entry) {
+    return identity == entry->item.identity[1];
+  });
   if (entryIt == this->items.end()) {
     return false;
   }
 
   const ITEM_INFO& item = (*entryIt)->item;
-  std::vector<ITEM_INFO>::iterator material;
-  const std::vector<ITEM_INFO>::iterator end = this->materials.end();
-  for (material = this->materials.begin(); material != end; ++material) {
-    ITEM_INFO copy(*material);
-    if (std::atoi(item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
-      break;
-    }
-  }
+  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [&item](ITEM_INFO candidate) {
+    const int itemId = std::atoi(item.itemId.c_str());
+    return itemId == std::atoi(candidate.itemId.c_str());
+  });
   if (material == this->materials.end()) {
     return false;
   }
@@ -266,7 +259,7 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
     this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
   }
 
-  if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+  if (Equipment(item) == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const int* cards = reinterpret_cast<const int*>(item.cards);
     for (int index = 0; index < ItemSlotsCount(item); ++index) {
       if (index < 4 && cards[index] > 0) {
