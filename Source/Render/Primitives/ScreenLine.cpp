@@ -189,7 +189,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   const std::uint32_t* palette = sprite->palette;
 
   const SpriteFrameCell* cell = &frames[0].Cell(0);
-  if (cell->image == -1) {
+  if (!cell || cell->image == -1) {
     return;
   }
 
@@ -202,7 +202,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   const int lift = top <= 0 ? top : 0;
   if (frame > 0) {
     cell = &frames[frame].Cell(0);
-    if (cell->image == -1) {
+    if (!cell || cell->image == -1) {
       return;
     }
 
