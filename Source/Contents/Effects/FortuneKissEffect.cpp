@@ -34,8 +34,9 @@ void CFortuneKiss::Open() {
   particle->angleBits = 0;
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
-  particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
+  const int drift = rand() % 5;
   *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
+  particle->animationParameter = -5.0f - static_cast<float>(drift);
   InitParticleQuad(particle->vertices);
   this->angle = rand() % 359;
   this->particles.push_back(particle);
