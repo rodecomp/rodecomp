@@ -287,6 +287,40 @@ void CWeatherEffect::StopLightning() {
   this->lightning = 0;
 }
 
+// INLINED
+static int ClampedRandom(int range) {
+  if (range == 0) {
+    return 0;
+  }
+
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+
+// INLINED
+static void SetCloudColor(MapSkyCloud* cloud, unsigned char red, unsigned char green, unsigned char blue) {
+  cloud->colorR = red;
+  cloud->colorB = blue;
+  cloud->colorG = green;
+}
+
+// INLINED
+static void SetCloudVelocity(MapSkyCloud* cloud, float x, float y, float z) {
+  cloud->velocityX = x;
+  cloud->velocityY = y;
+  cloud->velocityZ = z;
+}
+
+// INLINED
+static void SetCloudScriptParameters(MapSkyCloud* cloud, int integerA, int integerB, float floatA, int integerC, int integerD, float floatB) {
+  cloud->scriptIntegerParameterA = integerA;
+  cloud->scriptIntegerParameterB = integerB;
+  cloud->scriptIntegerParameterD = integerD;
+  cloud->scriptIntegerParameterC = integerC;
+  cloud->scriptFloatParameterA = floatA;
+  cloud->scriptFloatParameterB = floatB;
+}
+
 // OFFSET: 0x005B90F0
 // FUNCTION: fn_03436
 void CMapSkyMgr::CreateClouds(const std::string& mapName) {
@@ -307,12 +341,12 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
     double velX = 0.0;
     double velY = 0.0;
     double velZ = 0.0;
+    double param2 = 0.0;
+    double param5 = 0.0;
     int param0 = 0;
     int param1 = 0;
-    double param2 = 0.0;
     int param3 = 0;
     int param4 = 0;
-    double param5 = 0.0;
     double posY = 0.0;
     double param7 = 0.0;
     unsigned char flag = 1;
@@ -343,34 +377,13 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
 
     const float spanX = static_cast<float>(mapWidth) / static_cast<float>(count + 1);
     const float spanZ = static_cast<float>(mapHeight) / static_cast<float>(count + 1);
-    if (count <= 0) {
-      continue;
-    }
-
-    const int halfWidth = static_cast<int>(static_cast<float>(mapWidth) * 0.5f);
-    const int halfHeight = static_cast<int>(static_cast<float>(mapHeight) * 0.5f);
-
     for (int index = 0; index < count; ++index) {
-      const int signX = rand() % 2;
-      int offsetX = 0;
-      if (halfWidth != 0) {
-        offsetX = rand() % halfWidth;
-        if (offsetX < 0) {
-          offsetX = 0;
-        }
-      }
-
+      const int signX = ClampedRandom(2);
+      const int offsetX = ClampedRandom(static_cast<int>(static_cast<float>(mapWidth) * 0.5f));
       const float x = static_cast<float>((1 - 2 * signX) * offsetX);
 
-      const int signZ = rand() % 2;
-      int offsetZ = 0;
-      if (halfHeight != 0) {
-        offsetZ = rand() % halfHeight;
-        if (offsetZ < 0) {
-          offsetZ = 0;
-        }
-      }
-
+      const int signZ = ClampedRandom(2);
+      const int offsetZ = ClampedRandom(static_cast<int>(static_cast<float>(mapHeight) * 0.5f));
       const float z = static_cast<float>((1 - 2 * signZ) * offsetZ);
       const float y = static_cast<float>(posY);
 
@@ -381,18 +394,9 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
 
       auto* cloud = static_cast<MapSkyCloud*>(spawned);
       cloud->range = range;
-      cloud->colorR = static_cast<unsigned char>(red);
-      cloud->colorG = static_cast<unsigned char>(green);
-      cloud->colorB = static_cast<unsigned char>(blue);
-      cloud->velocityX = static_cast<float>(velX);
-      cloud->velocityY = static_cast<float>(velY);
-      cloud->velocityZ = static_cast<float>(velZ);
-      cloud->scriptIntegerParameterA = param0;
-      cloud->scriptIntegerParameterB = param1;
-      cloud->scriptIntegerParameterC = param3;
-      cloud->scriptIntegerParameterD = param4;
-      cloud->scriptFloatParameterA = static_cast<float>(param2);
-      cloud->scriptFloatParameterB = static_cast<float>(param5);
+      SetCloudColor(cloud, static_cast<unsigned char>(red), static_cast<unsigned char>(green), static_cast<unsigned char>(blue));
+      SetCloudVelocity(cloud, static_cast<float>(velX), static_cast<float>(velY), static_cast<float>(velZ));
+      SetCloudScriptParameters(cloud, param0, param1, static_cast<float>(param2), param3, param4, static_cast<float>(param5));
       cloud->scriptFloatParameterC = static_cast<float>(param7);
       cloud->spanX = spanX;
       cloud->spanZ = spanZ;
