@@ -1814,7 +1814,7 @@ void CSkillAction_BO_DUST_EXPLOSION::OnSkillEffect(int level, CGameActor* source
 
   const DustExplosionSpawner spawnDustExplosion{};
   for (int delay = 0; delay < 600; delay += 200) {
-    const int quadrant = std::max(std::rand() % 4, 0);
+    const int quadrant = std::ranges::max(std::rand() % 4, 0);
     if (CEffect* effect = spawnDustExplosion(quadrant, target->render.position)) {
       effect->SetDelay(delay);
     }
