@@ -2,6 +2,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "Utility/Cipher/XorBytes.h"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -14,6 +15,14 @@ public:
   // INLINED
   template <typename Byte>
   explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const std::array<Byte, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -70,7 +79,7 @@ void CUISubTab::OnCreate(int width, int height) {
   this->stampImage->Move(58, 0);
   {
     CUIStaticImage* stamp = this->stampImage;
-    const char stampSource[] = {'\x9D', '\x44', '\xB3', '\xB3', '\x5B', '\x87', '\xA4', '\xC2', '\x9B', '\x0F', '\xB3', '\x85', '\x26', '\xF3', '\x3D', '\x4E', '\x39', '\x9D',
+    const std::array<char, 54> stampSource = {'\x9D', '\x44', '\xB3', '\xB3', '\x5B', '\x87', '\xA4', '\xC2', '\x9B', '\x0F', '\xB3', '\x85', '\x26', '\xF3', '\x3D', '\x4E', '\x39', '\x9D',
                                         '\x16', '\x27', '\xEF', '\x3C', '\x13', '\x6A', '\x1A', '\x9E', '\x1A', '\x2D', '\xFE', '\x15', '\x12', '\x7B', '\x3C', '\x86', '\x03', '\x16',
                                         '\xF8', '\x26', '\x0C', '\x7F', '\x31', '\x8E', '\x07', '\x2C', '\xFF', '\x16', '\x12', '\x7A', '\x3F', '\xC5', '\x11', '\x24', '\xEB', '\x49'};
     thread_local EncryptedName<sizeof(stampSource), 0x0F61499B4973EB5DULL> stampName(stampSource);
