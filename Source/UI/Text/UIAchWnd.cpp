@@ -832,19 +832,17 @@ void UIAchTab::UpdateScrollBar() {
   this->scrollBar->Invalidate();
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x007B7FE0
 // FUNCTION: fn_09243
 void UIAchTab::Refresh() {
   int height = static_cast<int>(this->groups.size()) * this->groupHeight;
   for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {
-    height += static_cast<int>(this->groups[it->first].subs.size()) * this->subHeight;
+    height += this->SubCount(it->first) * this->subHeight;
   }
 
   this->Resize(this->tabWidth, height + 1);
   this->Invalidate();
 }
-#pragma inline_depth()
 
 // OFFSET: 0x007B8170
 // FUNCTION: fn_09245
