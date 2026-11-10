@@ -132,17 +132,17 @@ void CSoulCollectEffect::OnProcess() {
     }
 
     matrix rotationMatrix;
-    rotationMatrix.MakeZRotation(3.1415927f);
+    rotationMatrix.MakeZRotation(3.141592f);
     rotationMatrix.AppendXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
     matrix scaling;
     scaling.SetScale(particle->scale, particle->scale, 1.0f);
     matrix result;
     result.Compose(scaling, rotationMatrix);
 
-    particle->alpha = std::min(particle->alpha + 2, maxAlpha);
+    particle->alpha = std::min(maxAlpha, particle->alpha + 2);
     particle->transform = result;
 
-    const int step = 360 / std::min(pairs, 5u);
+    const int step = 360 / std::min(5u, pairs);
     const float angle = (static_cast<float>(step * (index - group * 5)) + rotation) / 180.0f * 3.141592f;
     const float cosine = std::cos(angle) * 10.0f;
     const float sine = std::sin(angle) * 10.0f;
