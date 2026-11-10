@@ -10,13 +10,19 @@ const float g_identityMatrix[12] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0};
 namespace {
   // INLINED
   __forceinline void Rotate(float* values, const float* rotation) {
+    float x[4];
+    float y[4];
+    float z[4];
     for (unsigned row = 0; row < 4; ++row) {
-      const float x = values[row * 3];
-      const float y = values[row * 3 + 1];
-      const float z = values[row * 3 + 2];
-      values[row * 3] = (x * rotation[0] + y * rotation[3]) + z * rotation[6];
-      values[row * 3 + 1] = (x * rotation[1] + y * rotation[4]) + z * rotation[7];
-      values[row * 3 + 2] = (x * rotation[2] + y * rotation[5]) + z * rotation[8];
+      x[row] = values[row * 3];
+      y[row] = values[row * 3 + 1];
+      z[row] = values[row * 3 + 2];
+    }
+
+    for (unsigned row = 0; row < 4; ++row) {
+      values[row * 3] = (x[row] * rotation[0] + y[row] * rotation[3]) + z[row] * rotation[6];
+      values[row * 3 + 1] = (x[row] * rotation[1] + y[row] * rotation[4]) + z[row] * rotation[7];
+      values[row * 3 + 2] = (x[row] * rotation[2] + y[row] * rotation[5]) + z[row] * rotation[8];
     }
 
     values[9] += rotation[9];
