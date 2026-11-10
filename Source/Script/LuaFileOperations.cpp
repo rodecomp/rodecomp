@@ -45,7 +45,11 @@ bool LoadLuaResource(lua_State* state, const std::string& name, unsigned char al
     }
   }
 
-  const bool loaded = luaL_loadbuffer(state, static_cast<const char*>(file.GetData()), file.GetSize(), resolved.c_str()) == 0;
+  if (luaL_loadbuffer(state, static_cast<const char*>(file.GetData()), file.GetSize(), resolved.c_str()) != 0) {
+    file.Close();
+    return false;
+  }
+
   file.Close();
-  return loaded;
+  return true;
 }
