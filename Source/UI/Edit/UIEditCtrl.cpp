@@ -483,7 +483,7 @@ void UIEditCtrl::PaintText() {
 
 // OFFSET: 0x00858D50
 // FUNCTION: fn_10768
-int UIEditCtrl::Length() const {
+__declspec(noinline) int UIEditCtrl::Length() const {
   return static_cast<int>(g_windowMgr.GetHoverWindow() == this ? g_serverLanguage->text.size() : this->text.size());
 }
 
@@ -564,7 +564,7 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
 
 // OFFSET: 0x00868570
 // FUNCTION: fn_10960
-void UIEditCtrl::TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary) {
+__declspec(noinline) void UIEditCtrl::TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary) {
   this->textColor = static_cast<std::uint32_t>(red) | (static_cast<std::uint32_t>(green) << 8) | (static_cast<std::uint32_t>(blue) << 16);
   this->secondColor = secondary;
   this->Invalidate();
@@ -8904,7 +8904,7 @@ void UIItemStoreFindWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
   int slots = rows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 10, y);
   }
 
@@ -8934,9 +8934,9 @@ void UIItemStoreFindWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -8962,7 +8962,7 @@ void UIItemStoreSubWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
   int slots = rows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 10, y);
   }
 
@@ -8992,9 +8992,9 @@ void UIItemStoreSubWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -9017,15 +9017,15 @@ void UIItemPurchaseWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -9039,7 +9039,7 @@ void UIItemPurchaseWnd::Paint() {
   this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
 
   int slots = (height - 58) / 32;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -9084,9 +9084,9 @@ void UIItemPurchaseWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -9143,15 +9143,15 @@ void UIItemSellWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -9163,7 +9163,7 @@ void UIItemSellWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slotRows = (this->geometry.height - 38) / 32;
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -9212,9 +9212,9 @@ void UIItemSellWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -9243,15 +9243,15 @@ void UIItemShopWnd::Paint() {
   }
 
   int rows = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -9266,7 +9266,7 @@ void UIItemShopWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   int slotRows = (this->geometry.height - this->footerHeight - this->bottomPadding - 17) / 32;
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -9320,9 +9320,9 @@ void UIItemShopWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -9387,15 +9387,15 @@ void UIItemStoreWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -9414,8 +9414,8 @@ void UIItemStoreWnd::Paint() {
     DrawRoundedBorder(*this, 55, 131, 187, 139, 0xCE9484);
     DrawFilledRoundedBorder(*this, 56, 132, 185, 137, 0xFFE7DE);
     DrawFilledRoundedBorder(*this, 61, 137, 175, 127, 0xFFFFFF);
-    const auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
-    this->DrawBitmap(116, 151, &poring->image, true);
+    auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
+    this->DrawBitmap(116, 151, poring, true);
     this->DrawCenteredText(20, 210, LookupMessage(MSI_RODEX_BUTTON_ANSWER), 257, 0, 12, 0, 0);
     this->DrawCenteredText(20, 236, LookupMessage(MSI_CLOSE_SETUP), 257, 0, 15, 0xC89482, 1);
     this->DrawCenteredText(20, 272, LookupMessage(MSI_USE_WORLDMAP_WITH_PERIOD_MSG2), 257, 0, 12, 0x6464DC, 1);
@@ -9424,7 +9424,7 @@ void UIItemStoreWnd::Paint() {
 
   this->scrollBar->Show(1);
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -9453,9 +9453,9 @@ void UIItemStoreWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -9465,8 +9465,8 @@ void UIItemStoreWnd::Paint() {
     }
   }
 
-  const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
-  this->DrawBitmap(6, this->geometry.height - 21, &icon->image, true);
+  auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
+  this->DrawBitmap(6, this->geometry.height - 21, icon, true);
   const std::uint32_t color = this->m_itemCount >= this->m_capacity ? 0xFF : 0x232323;
   this->DrawTextAt(22, this->geometry.height - 19, FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, 0, 0);
@@ -9483,15 +9483,15 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -9503,7 +9503,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slotRows = (this->geometry.height - 38) / 32;
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -9534,9 +9534,9 @@ void UIMerchantItemPurchaseWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -10307,15 +10307,15 @@ void UIMerchantItemShopWnd::Paint() {
   unsigned rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
                   (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
   for (int y = 17; rows != 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
          (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
   for (int y = 17; rows != 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -10386,9 +10386,9 @@ void UIMerchantItemShopWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -10660,15 +10660,15 @@ void UIItemSellWnd2::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -10680,7 +10680,7 @@ void UIItemSellWnd2::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slotRows = (this->geometry.height - 38) / 32;
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -10715,9 +10715,9 @@ void UIItemSellWnd2::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -10738,15 +10738,15 @@ void UIItemShopWnd2::Paint() {
   }
 
   int rows = (this->geometry.height - this->bottomBarHeight - 17) / 8 + ((this->geometry.height - this->bottomBarHeight - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - this->bottomBarHeight - 17) / 8 + ((this->geometry.height - this->bottomBarHeight - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -10758,7 +10758,7 @@ void UIItemShopWnd2::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slotRows = (this->geometry.height - this->extraBottomHeight - this->bottomBarHeight - 17) / 32;
   int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
@@ -10793,9 +10793,9 @@ void UIItemShopWnd2::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -10954,16 +10954,16 @@ void UIItemWnd::Paint() {
   int rows;
   if (this->geometry.height > 120) {
     rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-    for (int y = 17; rows > 0; --rows, y += 8) {
-      const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-      this->DrawBitmap(0, y, &left->image, false);
+    for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+      auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+      this->DrawBitmap(0, y, left, false);
     }
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -10977,13 +10977,25 @@ void UIItemWnd::Paint() {
   }
 
   if (this->filterWindow) {
-    this->filterWindow->Show(this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1 ? 1 : 0);
+    if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+      this->filterWindow->Show(1);
+    } else {
+      this->filterWindow->Show(0);
+    }
   }
   if (this->dealLockButton) {
-    this->dealLockButton->Enable(this->categoryFilter == 3);
+    if (this->categoryFilter == 3) {
+      this->dealLockButton->Enable(1);
+    } else {
+      this->dealLockButton->Enable(0);
+    }
   }
   if (this->filterButton) {
-    this->filterButton->Enable(this->categoryFilter == 3);
+    if (this->categoryFilter == 3) {
+      this->filterButton->Enable(1);
+    } else {
+      this->filterButton->Enable(0);
+    }
   }
 
   this->DrawButtonBar(0, 0, 1);
@@ -10992,12 +11004,11 @@ void UIItemWnd::Paint() {
 
   const int slotColumns = (this->geometry.width - 40) / 32;
   int slotRows = (this->geometry.height - 38) / 32;
-  for (int y = 17; slotRows > 0; --slotRows, y += 32) {
-    int count = slotColumns;
-    for (int x = 40; count > 0; --count, x += 32) {
+  for (int i = 0, y = 17; i < slotRows; ++i, y += 32) {
+    for (int j = 0, x = 40; j < slotColumns; ++j, x += 32) {
       if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
-        const auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")));
-        this->DrawBitmap(x, y, &lock->image, false);
+        auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")));
+        this->DrawBitmap(x, y, lock, false);
       } else {
         DrawItemSlotBackground(*this, x, y);
       }
@@ -11019,8 +11030,8 @@ void UIItemWnd::Paint() {
     const int x = visible % this->columns * 32 + 40;
     if (it->flags[1]) {
       if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
-        const auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")));
-        this->DrawBitmap(x, y, &mark->image, false);
+        auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")));
+        this->DrawBitmap(x, y, mark, false);
       } else {
         this->DrawNewItemMark(x, y);
       }
@@ -11050,9 +11061,9 @@ void UIItemWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -11444,7 +11455,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   }
   case UM_REFRESHITEM: {
-    this->items.clear();
+    this->items.erase(this->items.begin(), this->items.end());
     const int count = g_session.GetList11Size();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetItem1768At(i);
@@ -11459,7 +11470,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
       if (index == static_cast<int>(this->items.size())) {
         const PriceColors colors = PriceColor(0);
-        this->priceEdits[index]->TextColor(colors.primary, colors.secondary);
+        this->priceEdits[index]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
         this->priceEdits[index]->SetText("0");
         g_windowMgr.SetFocus(index == 0 ? this->titleEdit : this->priceEdits[index - 1]);
       } else {
@@ -11476,11 +11487,11 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::sprintf(text, "%s ", this->priceEdits[index]->Text());
         g_session.IsNumberWithCommas(text);
         PriceColors colors = PriceColor(_atoi64(text));
-        this->priceEdits[index]->TextColor(colors.primary, colors.secondary);
+        this->priceEdits[index]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
         std::sprintf(text, "%s ", this->priceEdits[index + 1]->Text());
         g_session.IsNumberWithCommas(text);
         colors = PriceColor(_atoi64(text));
-        this->priceEdits[index + 1]->TextColor(colors.primary, colors.secondary);
+        this->priceEdits[index + 1]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
       }
       this->InvalidateChildren();
     }
