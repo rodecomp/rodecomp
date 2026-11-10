@@ -1179,60 +1179,59 @@ int UIWindowMgr::RunEmailAddress() {
   this->inputWindow = nullptr;
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
-  int response = 184;
+  int response;
+  CMode* pump = g_modeMgr.gameMode;
 
-  if (g_modalImmediate == 0) {
-    CMode* pump = g_modeMgr.gameMode;
+  for (;;) {
+    if (g_modalImmediate != 0) {
+      response = 184;
+      break;
+    }
 
-    for (;;) {
-      if (this->activeWindowId != 0) {
-        if (UIWindow* active = this->Top()) {
-          active->Show(0);
-          this->Schedule(active);
-          this->modalWindows.pop_back();
-        }
-
-        response = this->activeWindowId;
-
-        if (this->modalWindows.empty()) {
-          this->activeWindowId = 0;
-        }
-
-        break;
+    if (this->activeWindowId != 0) {
+      if (UIWindow* active = this->Top()) {
+        active->Show(0);
+        this->Schedule(active);
+        this->modalWindows.pop_back();
       }
 
-      if (this->modalResponse != 0) {
-        if (UIWindow* active = this->Top()) {
-          active->Show(0);
-          this->Schedule(active);
-          this->modalWindows.pop_back();
-        }
+      response = this->activeWindowId;
 
-        response = this->modalResponse;
-        this->modalResponse = 0;
-        break;
-      }
-
-      if (pump) {
-        pump->Update();
-        pump = g_modeMgr.gameMode;
-      }
-
-      if (g_session.GetOption(20) > 0) {
+      if (this->modalWindows.empty()) {
         this->activeWindowId = 0;
-        this->modalResponse = 0;
-
-        while (!this->modalWindows.empty()) {
-          this->Schedule(this->modalWindows.back());
-          this->modalWindows.pop_back();
-        }
-
-        break;
       }
 
-      if (g_modalImmediate != 0) {
-        break;
+      break;
+    }
+
+    if (this->modalResponse != 0) {
+      if (UIWindow* active = this->Top()) {
+        active->Show(0);
+        this->Schedule(active);
+        this->modalWindows.pop_back();
       }
+
+      response = this->modalResponse;
+      this->modalResponse = 0;
+      break;
+    }
+
+    if (pump) {
+      pump->Update();
+      pump = g_modeMgr.gameMode;
+    }
+
+    if (g_session.GetOption(20) > 0) {
+      this->activeWindowId = 0;
+      this->modalResponse = 0;
+
+      while (!this->modalWindows.empty()) {
+        this->Schedule(this->modalWindows.back());
+        this->modalWindows.pop_back();
+      }
+
+      response = 184;
+      break;
     }
   }
 
