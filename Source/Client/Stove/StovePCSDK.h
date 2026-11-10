@@ -36,7 +36,7 @@ namespace Stove::PCSDK {
       StovePCShutdown(const StovePCShutdown& other);
       ~StovePCShutdown();
 
-      /* 0000 */ std::uint8_t unknown_0000[12];
+      /* 0000 */ void* unknown_0000[3];
     };
 
     struct __declspec(dllimport) StovePCInitializeParam {
@@ -84,7 +84,7 @@ namespace Stove::PCSDK {
       void SetPageNumber(int pageNumber);
       void SetPageSize(int pageSize);
 
-      /* 0000 */ std::uint8_t unknown_0000[12];
+      /* 0000 */ void* unknown_0000[3];
     };
 
     struct StovePCPurchaseOption : StovePCPaymentOption {

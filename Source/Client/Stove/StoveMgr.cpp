@@ -61,7 +61,11 @@ void CStoveMgr::FetchAllProducts() {
 
   g_session.ClearInventoryCategoryItems(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam categoryParam;
-  categoryParam.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
+  if (this->m_environment == 2) {
+    categoryParam.SetCategoryId(g_stoveCategoryIdA);
+  } else {
+    categoryParam.SetCategoryId(g_stoveCategoryIdB);
+  }
   categoryParam.SetPageNumber(1);
   categoryParam.SetPageSize(0x7FFFFFFF);
   IAP_FetchProducts(&categoryParam, OnStoveCategoryProductsFetched);
