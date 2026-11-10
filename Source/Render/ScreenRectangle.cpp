@@ -15,25 +15,34 @@ void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t col
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = g_texMgr.Default();
-  const float left = static_cast<float>(x);
-  const float top = static_cast<float>(y);
-  const float right = static_cast<float>(x + width);
-  const float bottom = static_cast<float>(y + height);
-  primitive->quad[0].x = left;
-  primitive->quad[0].y = top;
-  primitive->quad[1].x = right;
-  primitive->quad[1].y = top;
-  primitive->quad[2].x = left;
-  primitive->quad[2].y = bottom;
-  primitive->quad[3].x = right;
-  primitive->quad[3].y = bottom;
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.000001f;
-    vertex.diffuse = color;
-    vertex.u = 0.0f;
-    vertex.v = 0.0f;
-  }
+  primitive->quad[0].x = static_cast<float>(x);
+  primitive->quad[0].y = static_cast<float>(y);
+  primitive->quad[0].z = 0.000001f;
+  primitive->quad[0].rhw = 0.000001f;
+  primitive->quad[0].u = 0.0f;
+  primitive->quad[0].v = 0.0f;
+  primitive->quad[0].diffuse = color;
+  primitive->quad[1].x = static_cast<float>(x + width);
+  primitive->quad[1].y = static_cast<float>(y);
+  primitive->quad[1].z = 0.000001f;
+  primitive->quad[1].rhw = 0.000001f;
+  primitive->quad[1].u = 0.0f;
+  primitive->quad[1].v = 0.0f;
+  primitive->quad[1].diffuse = color;
+  primitive->quad[2].x = static_cast<float>(x);
+  primitive->quad[2].y = static_cast<float>(y + height);
+  primitive->quad[2].z = 0.000001f;
+  primitive->quad[2].rhw = 0.000001f;
+  primitive->quad[2].u = 0.0f;
+  primitive->quad[2].v = 0.0f;
+  primitive->quad[2].diffuse = color;
+  primitive->quad[3].x = static_cast<float>(x + width);
+  primitive->quad[3].y = static_cast<float>(y + height);
+  primitive->quad[3].z = 0.000001f;
+  primitive->quad[3].rhw = 0.000001f;
+  primitive->quad[3].u = 0.0f;
+  primitive->quad[3].v = 0.0f;
+  primitive->quad[3].diffuse = color;
   primitive->sourceBlend = 5;
   primitive->destinationBlend = 6;
   g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
@@ -48,31 +57,34 @@ void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t co
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = texture ? texture : g_texMgr.Default();
-  const float left = static_cast<float>(x);
-  const float top = static_cast<float>(y);
-  const float right = static_cast<float>(x + width);
-  const float bottom = static_cast<float>(y + height);
-  primitive->quad[0].x = left;
-  primitive->quad[0].y = top;
+  primitive->quad[0].x = static_cast<float>(x);
+  primitive->quad[0].y = static_cast<float>(y);
+  primitive->quad[0].z = 0.000001f;
+  primitive->quad[0].rhw = 0.999999f;
   primitive->quad[0].u = 0.0f;
   primitive->quad[0].v = 0.0f;
-  primitive->quad[1].x = right;
-  primitive->quad[1].y = top;
+  primitive->quad[0].diffuse = color;
+  primitive->quad[1].x = static_cast<float>(x + width);
+  primitive->quad[1].y = static_cast<float>(y);
+  primitive->quad[1].z = 0.000001f;
+  primitive->quad[1].rhw = 0.999999f;
   primitive->quad[1].u = 1.0f;
   primitive->quad[1].v = 0.0f;
-  primitive->quad[2].x = left;
-  primitive->quad[2].y = bottom;
+  primitive->quad[1].diffuse = color;
+  primitive->quad[2].x = static_cast<float>(x);
+  primitive->quad[2].y = static_cast<float>(y + height);
+  primitive->quad[2].z = 0.000001f;
+  primitive->quad[2].rhw = 0.999999f;
   primitive->quad[2].u = 0.0f;
   primitive->quad[2].v = 1.0f;
-  primitive->quad[3].x = right;
-  primitive->quad[3].y = bottom;
+  primitive->quad[2].diffuse = color;
+  primitive->quad[3].x = static_cast<float>(x + width);
+  primitive->quad[3].y = static_cast<float>(y + height);
+  primitive->quad[3].z = 0.000001f;
+  primitive->quad[3].rhw = 0.999999f;
   primitive->quad[3].u = 1.0f;
   primitive->quad[3].v = 1.0f;
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.diffuse = color;
-  }
+  primitive->quad[3].diffuse = color;
   g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
