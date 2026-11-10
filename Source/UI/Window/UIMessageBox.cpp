@@ -1874,13 +1874,12 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   }
 
   for (int index = 0; index < 5; ++index) {
-    UIStaticBitmap* tab = new UIStaticBitmap();
-    this->tabs[index] = tab;
-    tab->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
-    tab->SetSize(tab->geometry.width, tab->geometry.height);
-    tab->Move(-100, -100);
-    tab->SetId(reinterpret_cast<int>(tooltips[index]));
-    this->AddChild(tab);
+    this->tabs[index] = new UIStaticBitmap();
+    static_cast<UIStaticBitmap*>(this->tabs[index])->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
+    this->tabs[index]->SetSize(this->tabs[index]->geometry.width, this->tabs[index]->geometry.height);
+    this->tabs[index]->Move(-100, -100);
+    this->tabs[index]->SetId(reinterpret_cast<int>(tooltips[index]));
+    this->AddChild(this->tabs[index]);
   }
 
   int textSizes[2][2] = {{50, 12}, {80, 12}};
@@ -1899,13 +1898,12 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
     "Basicinfo", "Equip", "Item", "Skill", "Guild", "Party", "Chatting", "Shortcut", "Status", "ALL", "User Defined File Name", "Repeated File Check",
   };
   for (int index = 0; index < 10; ++index) {
-    UICheckBox* option = new UICheckBox();
-    this->options[index] = option;
-    option->SetSize(70, 12);
-    option->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
-    option->Move(-100, -100);
-    option->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
-    this->AddChild(option);
+    this->options[index] = new UICheckBox();
+    this->options[index]->SetSize(70, 12);
+    static_cast<UICheckBox*>(this->options[index])->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
+    this->options[index]->Move(-100, -100);
+    static_cast<UICheckBox*>(this->options[index])->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
+    this->AddChild(this->options[index]);
   }
 
   for (int index = 0; index < 2; ++index) {
@@ -1924,18 +1922,18 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   this->fileOptions[1]->SetChecked(option119);
   this->replayOption119 = option119;
 
-  UIEditCtrl* edit = new UIEditCtrl();
-  this->filenameEdit = edit;
-  edit->SetSize(151, 18);
-  edit->Move(-100, -100);
-  edit->maximum = 80;
-  edit->Background(232, 232, 232);
-  edit->SetText("");
-  if (const char* tooltip = LookupMessage(MSI_REPLAY_ENTERTHEFILENAME)) {
-    edit->tooltip = tooltip;
+  this->filenameEdit = new UIEditCtrl();
+  this->filenameEdit->SetSize(151, 18);
+  this->filenameEdit->Move(-100, -100);
+  this->filenameEdit->maximum = 80;
+  this->filenameEdit->Background(232, 232, 232);
+  this->filenameEdit->SetText("");
+  std::string& tooltip = this->filenameEdit->tooltip;
+  if (const char* text = LookupMessage(MSI_REPLAY_ENTERTHEFILENAME)) {
+    tooltip = text;
   }
-  this->AddChild(edit);
-  edit->SelectAll();
+  this->AddChild(this->filenameEdit);
+  this->filenameEdit->SelectAll();
   this->ApplyMode();
   this->Invalidate();
 }

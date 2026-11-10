@@ -62,7 +62,7 @@ public:
   /* 0130 */ bool replayPathEnabled;
   /* 0131 */ bool replayOption119;
   /* 0132 */ unsigned char unknown_0132[2];
-  /* 0134 */ UIWindow* filenameEdit;
+  /* 0134 */ UIEditCtrl* filenameEdit;
   /* 0138 */ ReplayRECControlWndInfo* saved;
 };
 
