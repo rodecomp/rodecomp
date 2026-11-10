@@ -109,81 +109,73 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 void UIRoulletteWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
-  auto* startButton = new UIBitmapButton();
-  this->m_startButton = startButton;
-  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 0, 0);
-  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 1, 0);
-  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_b.bmp", 2, 0);
-  startButton->SetSize(startButton->BitmapWidth(), startButton->BitmapHeight());
-  startButton->Move(-100, -100);
-  startButton->SetId(409);
-  this->AddChild(startButton);
+  this->m_startButton = new UIBitmapButton();
+  this->m_startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 0, 0);
+  this->m_startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 1, 0);
+  this->m_startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_b.bmp", 2, 0);
+  this->m_startButton->SetSize(this->m_startButton->BitmapWidth(), this->m_startButton->BitmapHeight());
+  this->m_startButton->Move(-100, -100);
+  this->m_startButton->SetId(409);
+  this->AddChild(this->m_startButton);
 
   if (g_effectDetailLevel == 2) {
-    auto* startSprite = new UISpriteButton();
-    this->m_startSprite = startSprite;
-    startSprite->SetSprite("roullette\\Start.spr");
-    startSprite->SetActName("roullette\\Start.act");
-    startSprite->SetSize(99, 99);
-    startSprite->Move(-100, -100);
-    startSprite->animationIndex = 0;
-    startSprite->frameIndex = 0;
-    startSprite->animate = 1;
-    this->AddChild(startSprite);
+    this->m_startSprite = new UISpriteButton();
+    this->m_startSprite->SetSprite("roullette\\Start.spr");
+    this->m_startSprite->SetActName("roullette\\Start.act");
+    this->m_startSprite->SetSize(99, 99);
+    this->m_startSprite->Move(-100, -100);
+    this->m_startSprite->animationIndex = 0;
+    this->m_startSprite->frameIndex = 0;
+    this->m_startSprite->animate = 1;
+    this->AddChild(this->m_startSprite);
 
-    auto* prizeSprite = new UISpriteButton();
-    this->m_prizeSprite = prizeSprite;
-    prizeSprite->SetSprite("roullette\\GetWinPrize.spr");
-    prizeSprite->SetActName("roullette\\GetWinPrize.act");
-    prizeSprite->SetSize(99, 99);
-    prizeSprite->Move(-100, -100);
-    prizeSprite->animationIndex = 0;
-    prizeSprite->frameIndex = 0;
-    prizeSprite->animate = 1;
-    this->AddChild(prizeSprite);
+    this->m_prizeSprite = new UISpriteButton();
+    this->m_prizeSprite->SetSprite("roullette\\GetWinPrize.spr");
+    this->m_prizeSprite->SetActName("roullette\\GetWinPrize.act");
+    this->m_prizeSprite->SetSize(99, 99);
+    this->m_prizeSprite->Move(-100, -100);
+    this->m_prizeSprite->animationIndex = 0;
+    this->m_prizeSprite->frameIndex = 0;
+    this->m_prizeSprite->animate = 1;
+    this->AddChild(this->m_prizeSprite);
 
-    auto* stageArrow = new UISpriteButton();
-    this->m_stageArrow = stageArrow;
-    stageArrow->SetSprite("roullette\\stageArrow.spr");
-    stageArrow->SetActName("roullette\\stageArrow.act");
-    stageArrow->SetSize(35, 40);
-    stageArrow->Move(-100, -100);
-    stageArrow->animationIndex = 0;
-    stageArrow->frameIndex = 0;
-    stageArrow->animate = 1;
-    this->AddChild(stageArrow);
+    this->m_stageArrow = new UISpriteButton();
+    this->m_stageArrow->SetSprite("roullette\\stageArrow.spr");
+    this->m_stageArrow->SetActName("roullette\\stageArrow.act");
+    this->m_stageArrow->SetSize(35, 40);
+    this->m_stageArrow->Move(-100, -100);
+    this->m_stageArrow->animationIndex = 0;
+    this->m_stageArrow->frameIndex = 0;
+    this->m_stageArrow->animate = 1;
+    this->AddChild(this->m_stageArrow);
   }
 
-  auto* prizeButton = new UIBitmapButton();
-  this->m_prizeButton = prizeButton;
-  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 0, 0);
-  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 1, 0);
-  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_b.bmp", 2, 0);
-  prizeButton->SetSize(prizeButton->BitmapWidth(), prizeButton->BitmapHeight());
-  prizeButton->Move(-100, -100);
-  prizeButton->SetId(410);
-  this->AddChild(prizeButton);
+  this->m_prizeButton = new UIBitmapButton();
+  this->m_prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 0, 0);
+  this->m_prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 1, 0);
+  this->m_prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_b.bmp", 2, 0);
+  this->m_prizeButton->SetSize(this->m_prizeButton->BitmapWidth(), this->m_prizeButton->BitmapHeight());
+  this->m_prizeButton->Move(-100, -100);
+  this->m_prizeButton->SetId(410);
+  this->AddChild(this->m_prizeButton);
 
-  auto* goldText = new UIStaticText();
-  this->m_goldText = goldText;
-  goldText->SetSize(25, 12);
-  goldText->Move(575, 134);
-  goldText->SetColor(0, 0, 0);
-  this->AddChild(goldText);
+  this->m_goldText = new UIStaticText();
+  this->m_goldText->SetSize(25, 12);
+  this->m_goldText->Move(575, 134);
+  this->m_goldText->SetColor(0, 0, 0);
+  this->AddChild(this->m_goldText);
 
-  auto* silverText = new UIStaticText();
-  this->m_silverText = silverText;
-  silverText->SetSize(25, 12);
-  silverText->Move(575, 218);
-  silverText->SetColor(0, 0, 0);
-  this->AddChild(silverText);
+  this->m_silverText = new UIStaticText();
+  this->m_silverText->SetSize(25, 12);
+  this->m_silverText->Move(575, 218);
+  this->m_silverText->SetColor(0, 0, 0);
+  this->AddChild(this->m_silverText);
 
-  auto* bronzeText = new UIStaticText();
-  this->m_bronzeText = bronzeText;
-  bronzeText->SetSize(25, 12);
-  bronzeText->Move(575, 302);
-  bronzeText->SetColor(0, 0, 0);
-  this->AddChild(bronzeText);
+  this->m_bronzeText = new UIStaticText();
+  this->m_bronzeText->SetSize(25, 12);
+  this->m_bronzeText->Move(575, 302);
+  this->m_bronzeText->SetColor(0, 0, 0);
+  this->AddChild(this->m_bronzeText);
 }
 
 // OFFSET: 0x0080C220
