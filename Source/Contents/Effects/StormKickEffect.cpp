@@ -12,6 +12,14 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace {
+// INLINED
+__forceinline int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // OFFSET: 0x00B7B340
 // FUNCTION: fn_19216
 CStormKickEffect::CStormKickEffect() : CEffect(-1) {
@@ -93,7 +101,7 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->alpha = 0;
       particle->angleParameter = 30;
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
-      particle->phaseParameter = std::max(rand() % 21, 0) + 80;
+      particle->phaseParameter = ClampedRandom(21) + 80;
       particle->animationParameter = 1.0f;
 
       if (this->id == EF_STORMKICK8) {
