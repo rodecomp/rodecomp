@@ -99,32 +99,39 @@ bool CCheckAttendanceMgr::Load() {
 bool CCheckAttendanceMgr::LoadLocal(std::string suffix) {
   const std::string path = FormatOwnedString("System/CheckAttendance_%s.lub", suffix.c_str());
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    if (luaL_loadfile(lua.GetState(), path.c_str()) == 0) {
-      this->m_rewards.clear();
-      lua_register(lua.GetState(), "InsertCheckAttendanceConfig", CCheckAttendanceMgr::L_InsertCheckAttendanceConfig);
-      lua_register(lua.GetState(), "InsertCheckAttendanceReward", CCheckAttendanceMgr::L_InsertCheckAttendanceReward);
-      if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
-        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CCheckAttendanceMgr", 0);
-      } else {
-        lua_getglobal(lua.GetState(), "main");
-        if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
-          MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CCheckAttendanceMgr", 0);
-        } else if (!lua_isstring(lua.GetState(), -1)) {
-          MessageBoxA(nullptr, "second return value is not string...", "CCheckAttendanceMgr", 0);
-        } else {
-          if (lua_toboolean(lua.GetState(), -2)) {
-            return true;
-          }
-          const std::string message = FormatOwnedString("error : %s", lua_tostring(lua.GetState(), -1));
-          MessageBoxA(nullptr, message.c_str(), "CCheckAttendanceMgr", 0);
-        }
-      }
-    }
+  if (!lua.IsValid()) {
+    return false;
   }
 
-  return false;
+  luaL_openlibs(lua.GetState());
+  if (luaL_loadfile(lua.GetState(), path.c_str()) != 0) {
+    return false;
+  }
+
+  this->m_rewards.clear();
+  lua_register(lua.GetState(), "InsertCheckAttendanceConfig", CCheckAttendanceMgr::L_InsertCheckAttendanceConfig);
+  lua_register(lua.GetState(), "InsertCheckAttendanceReward", CCheckAttendanceMgr::L_InsertCheckAttendanceReward);
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CCheckAttendanceMgr", 0);
+    return false;
+  }
+
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CCheckAttendanceMgr", 0);
+    return false;
+  }
+  if (!lua_isstring(lua.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CCheckAttendanceMgr", 0);
+    return false;
+  }
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    const std::string message = FormatOwnedString("error : %s", lua_tostring(lua.GetState(), -1));
+    MessageBoxA(nullptr, message.c_str(), "CCheckAttendanceMgr", 0);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00671960
