@@ -599,29 +599,29 @@ struct NavigationRouteRecord {
 
 static_assert(sizeof(NavigationRouteRecord) == 0x36);
 
+// INLINED
+static bool IsSameInstanceMap(std::string player, std::string target) {
+  std::size_t position = player.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    player.erase(position - 4, 3);
+  }
+  position = target.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    target.erase(position - 4, 3);
+  }
+  return player == target;
+}
+
 // OFFSET: 0x00B99030
 // FUNCTION: fn_19611
 bool CNavigationManager::StartNavigation(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id) {
-  if (static_cast<unsigned int>(type) > 4 || name.size() == 0) {
+  if (type < 0 || type > 4 || name.size() == 0) {
     return false;
   }
 
-  if (std::strchr(g_session.m_navigationPlayerMap, '@')) {
-    bool same;
-    {
-      std::string target = name;
-      std::string player = g_session.m_navigationPlayerMap;
-      std::size_t position = player.rfind("@");
-      if (position != std::string::npos && position >= 4) {
-        player.erase(position - 4, 3);
-      }
-      position = target.rfind("@");
-      if (position != std::string::npos && position >= 4) {
-        target.erase(position - 4, 3);
-      }
-      same = player == target;
-    }
-    if (!same) {
+  const char* playerMap = g_session.m_navigationPlayerMap;
+  if (std::strchr(playerMap, '@')) {
+    if (!IsSameInstanceMap(playerMap, name)) {
       this->ShowRouteResult(-90, 1);
       return false;
     }
@@ -638,32 +638,32 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
 
   NavigationTarget target(type, nullptr);
   std::string text = info->GetName();
-  void* object = info;
-  if (type != 1) {
-    if (type == 2) {
-      CNavi_Object* npc = info->FindNpcAt(x, y);
-      if (!npc) {
-        this->ShowRouteResult(-94, 1);
-        return false;
-      }
-      text += ' ';
-      text += npc->GetName();
-      object = npc;
-    } else if (type == 3) {
-      CNavi_Object* mob = info->FindMobByIndex(id);
-      if (!mob) {
-        this->ShowRouteResult(-94, 1);
-        return false;
-      }
-      text += ' ';
-      text += mob->GetName();
-      object = mob;
-    } else if (type != 0) {
+  if (type == 1) {
+    target.object = info;
+  } else if (type == 2) {
+    CNavi_Object* npc = info->FindNpcAt(x, y);
+    if (!npc) {
+      this->ShowRouteResult(-94, 1);
       return false;
     }
+    text.push_back(' ');
+    text += npc->GetName();
+    target.object = npc;
+  } else if (type == 3) {
+    CNavi_Object* mob = info->FindMobByIndex(id);
+    if (!mob) {
+      this->ShowRouteResult(-94, 1);
+      return false;
+    }
+    text.push_back(' ');
+    text += mob->GetName();
+    target.object = mob;
+  } else if (type == 0) {
+    target.object = info;
+  } else {
+    return false;
   }
 
-  target.object = object;
   this->currentTarget = this->savedTarget = target;
   this->searchText = text;
   this->hideWindow = flag;
@@ -691,19 +691,21 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   if (g_windowMgr.navigationWnd) {
     this->hideWindow = false;
   }
-  if (g_windowMgr.navigationWnd) {
-    static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
-  } else if (!this->hideWindow) {
-    g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
+  if (!this->hideWindow) {
+    if (g_windowMgr.navigationWnd) {
+      static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->RefreshLayout();
+    } else {
+      g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
+    }
   }
 
   {
     std::string recordName = name;
     if (Replay::Instance().state == 2) {
-      NavigationRouteRecord record;
+      char packet[400] = {};
+      NavigationRouteRecord record = {};
       record.header = 0x038E08AE;
       record.length = sizeof(record);
-      std::memset(record.mapName, 0, sizeof(record.mapName));
       std::memcpy(record.mapName, recordName.c_str(), recordName.size());
       record.type = type;
       record.mode = mode;
@@ -711,7 +713,9 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
       record.x = x;
       record.y = y;
       record.id = id;
-      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x29, 0);
+      std::memcpy(packet, &record, sizeof(record));
+
+      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
     }
   }
   return true;
@@ -769,6 +773,70 @@ void CNavigationManager::SaveSettings() {
     DWORD viewIcon = this->viewIcon;
     key.Set("ViewIcon", REG_DWORD, reinterpret_cast<const BYTE*>(&viewIcon), sizeof(viewIcon));
   }
+}
+
+namespace {
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+
+// INLINED
+__forceinline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + sizeof(ReplayTaggedRecordHeader), 0);
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
+  if (bytes != 0) {
+    std::memcpy(record.data() + sizeof(ReplayTaggedRecordHeader), data, bytes);
+  }
+  return record;
+}
+
+// INLINED
+__forceinline std::vector<char> WriteLink(CNavi_Link* link) {
+  std::vector<char> buffer;
+  if (link != nullptr) {
+    const int type = link->GetType();
+    const int index = link->GetIndex();
+    NaviCell cell;
+    link->GetCell(&cell);
+    std::string name = link->GetName();
+    std::string title = link->GetTitle();
+    std::string map = link->GetInfo()->GetName();
+    std::string linkedMap = link->GetLinkedName();
+    const NaviCell linkedCell = link->GetLinkedCell();
+
+    buffer.resize(linkedMap.size() + 0x20 + title.size() + name.size() + map.size(), '\0');
+
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->type = type;
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->index = index;
+    std::memcpy(buffer.data() + 8, &cell, sizeof(cell));
+
+    std::int16_t length = static_cast<std::int16_t>(name.size());
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->nameLength = length;
+    std::memcpy(buffer.data() + 0x12, name.c_str(), length);
+    std::size_t offset = length + 0x12;
+    length = static_cast<std::int16_t>(title.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    offset += 2;
+    std::memcpy(buffer.data() + offset, title.c_str(), length);
+    offset += length;
+    length = static_cast<std::int16_t>(map.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    offset += 2;
+    std::memcpy(buffer.data() + offset, map.c_str(), length);
+    offset += length;
+    std::memcpy(buffer.data() + offset, &linkedCell, sizeof(linkedCell));
+    length = static_cast<std::int16_t>(linkedMap.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset + 8) = length;
+    offset += 10;
+    std::memcpy(buffer.data() + offset, linkedMap.c_str(), length);
+  }
+  return buffer;
+}
 }
 
 // OFFSET: 0x00B99CE0
