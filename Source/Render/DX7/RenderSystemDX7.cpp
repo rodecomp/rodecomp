@@ -100,7 +100,7 @@ void CRenderSystemDX7::UpdateOption() {
 // FUNCTION: fn_02328
 CTexture* CRenderSystemDX7::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-    this->m_defaultTexture = std::unique_ptr<CTextureDX7>(new CTextureDX7(*this->m_device));
+    this->m_defaultTexture = std::make_unique<CTextureDX7>(*this->m_device);
   }
 
   return this->m_defaultTexture.get();
