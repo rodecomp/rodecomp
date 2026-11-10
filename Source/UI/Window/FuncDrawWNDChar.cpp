@@ -228,7 +228,7 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
         break;
       case 7:
         if (this->m_robe > 0 && this->m_drawOnTop) {
-          order[g_session.IsTopLayerRobe(this->m_robe) ? 400 : 2] = layer;
+          order[g_session.IsTopLayerRobe(this->m_robe) == true ? 400 : 2] = layer;
         }
         break;
     }
@@ -237,15 +237,16 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
   std::list<int> layers;
   if (this->m_drawOnTop) {
     for (std::map<int, int>::reverse_iterator it = order.rbegin(); it != order.rend(); ++it) {
-      if (it->first < 0) {
-        layers.push_back(it->second);
+      const auto [priority, layer] = *it;
+      if (priority < 0) {
+        layers.push_back(layer);
       } else {
-        layers.push_front(it->second);
+        layers.push_front(layer);
       }
     }
   } else {
-    for (std::map<int, int>::iterator it = order.begin(); it != order.end(); ++it) {
-      layers.push_back(it->second);
+    for (const auto [priority, layer] : order) {
+      layers.push_back(layer);
     }
   }
   return layers;
@@ -257,11 +258,11 @@ bool FuncDrawWNDChar::DrawOnTop() {
   int job = this->m_job;
 
   if (g_session.m_newRobeDrawOnTop == 1) {
-    bool drawOnTop = true;
     if (this->m_flags == 1) {
       job = g_session.GetRidingJob(job);
     }
 
+    bool drawOnTop = true;
     int layer = job;
     if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
       return drawOnTop;
