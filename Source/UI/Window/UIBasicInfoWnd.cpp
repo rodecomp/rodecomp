@@ -443,16 +443,15 @@ void UIBasicInfoWnd::DrawExpanded() {
 // OFFSET: 0x00997C20
 // FUNCTION: fn_13488
 void UIBasicInfoWnd::DrawCollapsed() {
-  const int width = this->geometry.width;
-  const int height = this->geometry.height;
-
-  unsigned red;
-  unsigned green;
-  unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->FillRegion(1, 17, width - 2, height - 18, RGB(red, green, blue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
-  DrawRoundedBorder(*this, 0, 14, width, height - 14, RGB(red, green, blue));
+  {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 18, RGB(red, green, blue));
+    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+    DrawRoundedBorder(*this, 0, 14, this->geometry.width, this->geometry.height - 14, RGB(red, green, blue));
+  }
   this->DrawTitleBar(false, "", 0);
 
   int family = 1;
@@ -478,38 +477,45 @@ void UIBasicInfoWnd::DrawCollapsed() {
     }
   }
 
-  std::string title = FormatOwnedString(
-    "%s %d / %s / %s %d", LookupMessage(MSI_ALL_ON), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1), LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO),
-    g_session.m_jobLevel
+  this->DrawTextAt(
+    8, 20,
+    FormatOwnedString(
+      "%s %d / %s / %s %d", LookupMessage(MSI_ALL_ON), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
+      LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO), g_session.m_jobLevel
+    ).c_str(),
+    0, family, fontHeight, 0, 0, 0
   );
-  this->DrawTextAt(8, 20, title.c_str(), 0, family, fontHeight, 0, 0, 0);
 
+  const int hp = g_session.hp;
+  const int maxHp = g_session.maxHp;
   std::uint32_t hpColor = 0;
-  if (g_session.maxHp > 0) {
-    hpColor = 0.25f > static_cast<float>(g_session.hp) / static_cast<float>(g_session.maxHp) ? 255 : 0;
+  if (maxHp > 0) {
+    hpColor = 0.25f > static_cast<float>(hp) / static_cast<float>(maxHp) ? 255 : 0;
   }
-  std::string hpText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), g_session.hp, g_session.maxHp);
-  this->DrawTextAt(8, 36, hpText.c_str(), 0, family, fontHeight, hpColor, 0, 0);
+  this->DrawTextAt(
+    8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), hp, maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
+  );
 
   std::int64_t current = BaseExpCurrent();
-  std::int64_t maximum = BaseExpMaximum();
   if (current < 0) {
     current = 0;
   }
+  std::int64_t maximum = BaseExpMaximum();
   if (maximum <= 0) {
     maximum = current + 1;
   }
   double percent;
-  if (g_session.m_level >= g_session.GetMaxBaseLevel(g_session.GetDisplayJob())) {
-    percent = 100.0;
-  } else {
+  if (g_session.m_level < g_session.GetMaxBaseLevel(g_session.GetDisplayJob())) {
     percent = static_cast<double>(
                 static_cast<std::int64_t>(static_cast<double>(current) / static_cast<double>(maximum) * 1000.0)
               ) *
               0.1;
+  } else {
+    percent = 100.0;
   }
-  std::string expText = FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent);
-  this->DrawTextAt(136, 36, expText.c_str(), 0, family, fontHeight, 0, 0, 0);
+  this->DrawTextAt(
+    136, 36, FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent).c_str(), 0, family, fontHeight, 0, 0, 0
+  );
 
   const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
   const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
@@ -517,11 +523,16 @@ void UIBasicInfoWnd::DrawCollapsed() {
   if (spMax > 0) {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
   }
-  std::string spText = FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_EXP), sp, spMax);
-  this->DrawTextAt(8, 52, spText.c_str(), 0, family, fontHeight, spColor, 0, 0);
+  this->DrawTextAt(
+    8, 52, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_EXP), sp, spMax).c_str(), 0, family, fontHeight, spColor, 0, 0
+  );
 
-  std::string apText = FormatOwnedString("| %s %d / %d", LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), g_session.GetTraitStat(232), g_session.GetTraitStat(233));
-  this->DrawTextAt(136, 52, apText.c_str(), 0, family, fontHeight, 0, 0, 0);
+  this->DrawTextAt(
+    136, 52,
+    FormatOwnedString("| %s %d / %d", LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), g_session.GetTraitStat(232), g_session.GetTraitStat(233))
+      .c_str(),
+    0, family, fontHeight, 0, 0, 0
+  );
 }
 
 // OFFSET: 0x009983C0
@@ -599,15 +610,17 @@ void UIBasicInfoWnd::Paint() {
   }
 
   if (this->geometry.height == this->collapsedHeight) {
-    unsigned red;
-    unsigned green;
-    unsigned blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
-    DrawRoundedBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
-    this->FillRegion(0, 17, this->geometry.width, 5, RGB(red, green, blue));
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-    this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));
-    this->FillRegion(2, this->geometry.height - 2, this->geometry.width - 4, 1, RGB(red, green, blue));
+    {
+      unsigned red;
+      unsigned green;
+      unsigned blue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+      DrawRoundedBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
+      this->FillRegion(0, 17, this->geometry.width, 5, RGB(red, green, blue));
+      SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+      this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));
+      this->FillRegion(2, this->geometry.height - 2, this->geometry.width - 4, 1, RGB(red, green, blue));
+    }
     this->DrawTitleBar(false, "", 0);
 
     std::int64_t current = BaseExpCurrent();
@@ -686,17 +699,19 @@ void UIBasicInfoWnd::Paint() {
     FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
 
     int offset = 0;
-    if (g_session.maxHp != 0) {
-      const std::uint32_t color = static_cast<float>(g_session.hp) * 100.0f / static_cast<float>(g_session.maxHp) < 25.0f ? 255 : 0;
-      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.hp, g_session.maxHp);
+    const int maxHp = g_session.maxHp;
+    if (maxHp != 0) {
+      const int hp = g_session.hp;
+      const std::uint32_t color = static_cast<float>(hp) * 100.0f / static_cast<float>(maxHp) < 25.0f ? 255 : 0;
+      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", hp, maxHp);
       this->DrawTextAt(x, 36, text, hpLength, 1, 14, color, 0, 0);
       offset = this->TextWidth(text, hpLength, 1, 14, 0, 0);
       length = std::sprintf(text, " | ");
       this->DrawTextAt(offset + x, 36, text, length, 1, 14, 0, 0, 0);
     }
 
-    const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
-    const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+    const int& sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
+    const int& spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
     if (spMax < 0) {
       return;
     }
@@ -719,7 +734,9 @@ void UIBasicInfoWnd::Paint() {
       family = 1;
       fontHeight = 14;
     }
-    this->DrawTextAt(9, 36, g_session.GetJobName(g_session.GetDisplayJob(), -1), 0, family, fontHeight, 0, 0, 0);
+    const int job = g_session.GetDisplayJob();
+    const char* jobName = g_session.GetJobName(job, -1);
+    this->DrawTextAt(9, 36, jobName, 0, family, fontHeight, 0, 0, 0);
 
     std::memset(text, 0, sizeof(text));
     if (g_serviceType == 1) {
@@ -733,8 +750,9 @@ void UIBasicInfoWnd::Paint() {
     this->DrawTextAt(17, 51, "HP", 0, 1, 14, 0, 0, 0);
     this->DrawTextAt(17, 65, "SP", 0, 1, 14, 0, 0, 0);
 
-    if (g_session.maxHp != 0) {
-      std::sprintf(text, "%d%%", g_session.hp * 100 / g_session.maxHp);
+    const int maxHp = g_session.maxHp;
+    if (maxHp != 0) {
+      std::sprintf(text, "%d%%", g_session.hp * 100 / maxHp);
       this->DrawTextAt(173, 51, text, 0, 1, 14, 0, 0, 0);
     }
 
@@ -744,9 +762,17 @@ void UIBasicInfoWnd::Paint() {
       this->DrawTextAt(173, 65, text, 0, 1, 14, 0, 0, 0);
     }
 
-    std::sprintf(text, g_serviceType == 12 ? "Base. %d" : "Base Lv. %d", g_session.m_level);
+    if (g_serviceType == 12) {
+      std::sprintf(text, "Base. %d", g_session.m_level);
+    } else {
+      std::sprintf(text, "Base Lv. %d", g_session.m_level);
+    }
     this->DrawTextAt(17, this->layoutOffset + 71, text, 0, 1, 14, 0, 0, 0);
-    std::sprintf(text, g_serviceType == 12 ? "Classe. %d" : "Job Lv. %d", g_session.m_jobLevel);
+    if (g_serviceType == 12) {
+      std::sprintf(text, "Classe. %d", g_session.m_jobLevel);
+    } else {
+      std::sprintf(text, "Job Lv. %d", g_session.m_jobLevel);
+    }
     this->DrawTextAt(17, this->layoutOffset + 83, text, 0, 1, 14, 0, 0, 0);
 
     std::memset(zenyText, 0, sizeof(zenyText));
@@ -755,8 +781,15 @@ void UIBasicInfoWnd::Paint() {
     const int zenyWidth = this->TextWidth(text, std::strlen(text), 1, 14, 0, 0);
     this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, text, std::strlen(text), 1, 14, 0, 0);
 
-    std::sprintf(text, g_serviceType == 12 ? "Peso : %3d / %3d" : "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
-    const int capacity = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
+    if (g_serviceType == 12) {
+      std::sprintf(text, "Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
+    } else {
+      std::sprintf(text, "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
+    }
+    int capacity = g_session.m_maxWeight;
+    if (capacity < 1) {
+      capacity = 1;
+    }
     const std::uint32_t color = g_session.m_weight * 100 / capacity >= g_unknown173A5BC ? 255 : 0;
     this->DrawRightAlignedText(this->geometry.width - zenyWidth - 10, this->layoutOffset + 103, text, std::strlen(text), 1, 14, color, 0);
   }
