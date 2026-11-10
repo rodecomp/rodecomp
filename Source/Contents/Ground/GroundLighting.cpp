@@ -1,6 +1,7 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/MapSkyMgr.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
@@ -100,6 +101,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
 // FUNCTION: fn_17585
 void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool clip) {
   float ambient[3];
+  EffectPoint corners[4];
   std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
   int row = rectangle[1];
 
