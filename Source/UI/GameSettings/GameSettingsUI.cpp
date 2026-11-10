@@ -1802,10 +1802,12 @@ void CUIGroupFullscreen::Refresh() {
 // OFFSET: 0x00A43700
 // FUNCTION: fn_16036
 void CUIGroupLogInOut::Refresh() {
-  this->m_onButton->checked = g_serviceOptions.Get(0xA5);
-  this->m_onButton->Invalidate();
-  this->m_offButton->checked = !g_serviceOptions.Get(0xA5);
-  this->m_offButton->Invalidate();
+  auto* const onButton = this->m_onButton;
+  onButton->checked = g_serviceOptions.Get(0xA5);
+  onButton->Invalidate();
+  auto* const offButton = this->m_offButton;
+  offButton->checked = !g_serviceOptions.Get(0xA5);
+  offButton->Invalidate();
 }
 
 // OFFSET: 0x00A43760
