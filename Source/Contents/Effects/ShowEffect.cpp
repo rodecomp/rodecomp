@@ -86,23 +86,26 @@ unsigned CShowEffect::Count() const {
   return this->effects.size();
 }
 
+namespace {
+  // INLINED
+  bool HasEffect(const std::map<int, int>& effects, int tag) {
+    return effects.find(tag) != effects.end();
+  }
+}
+
 // OFFSET: 0x00729A90
 // FUNCTION: fn_07449
 void CShowEffect::Remove(int tag) {
-  if (this->effects.find(tag) == this->effects.end() || !g_modeMgr.GetGameMode()) {
+  if (!HasEffect(this->effects, tag)) {
     return;
   }
 
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  if (!world) {
-    return;
-  }
-
-  CRenderObject* target = world->GetGameActorByAID(this->actor);
+  CRenderObject* target = FindActor(this->actor);
   if (!target) {
     return;
   }
 
-  target->SendMsg(target, AM_DELETE_TAGGED_EFFECT, 0, tag, tag >> 31, this->effects[tag], 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  target->SendMsg(target, AM_DELETE_TAGGED_EFFECT, 0, static_cast<int>(static_cast<std::int64_t>(tag)),
+    static_cast<int>(static_cast<std::int64_t>(tag) >> 32), this->effects[tag], 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->effects.erase(tag);
 }
