@@ -189,10 +189,11 @@ vector3d PlayerPosition() {
 // FUNCTION: fn_18994
 void CEffect::CheckRange() {
   const vector3d player = PlayerPosition();
-  const float y = player.y - this->position[1];
   const float x = player.x - this->position[0];
+  const float y = player.y - this->position[1];
   const float z = player.z - this->position[2];
-  this->outsideRange = static_cast<float>(this->range) <= SquareRoot(y * y + x * x + z * z);
+  const float distance = SquareRoot(y * y + x * x + z * z);
+  this->outsideRange = !(distance < static_cast<float>(this->range));
 }
 
 // OFFSET: 0x00B4E630
