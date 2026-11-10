@@ -583,15 +583,27 @@ short* PakCipherBlock_655900::Encode(const short* in, const int* src) {
   return out;
 }
 
-struct PakSpan_655A30 {
-  void* data;
-  unsigned int size;
+struct PakAuxiliaryHeader {
+  /* 0000 */ std::uint8_t version;
+  /* 0001 */ std::uint8_t keySource;
+  /* 0002 */ std::uint8_t padding_0002[2];
+  /* 0004 */ std::uint32_t checksum;
+  /* 0008 */ std::uint8_t payload[96];
+};
+
+static_assert(sizeof(PakAuxiliaryHeader) == 0x68);
+static_assert(offsetof(PakAuxiliaryHeader, checksum) == 4);
+static_assert(offsetof(PakAuxiliaryHeader, payload) == 8);
+
+struct PakAuxiliaryContext {
+  /* 0000 */ std::span<std::uint8_t>* name;
+  /* 0004 */ PakAuxiliaryHeader* header;
 };
 
 struct PakVerifier_655A30 {
-  PakSpan_655A30** span_objs;
-  PakSpan_655A30* span_a;
-  PakSpan_655A30* span_b;
+  PakAuxiliaryContext* context;
+  std::span<std::uint8_t>* span_a;
+  std::span<std::uint8_t>* span_b;
 
   __declspec(noinline) bool Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource);
 };
@@ -600,6 +612,7 @@ struct PakVerifier_655A30 {
 // FUNCTION: fn_05068
 __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
   alignas(16) unsigned char key[16]{};
+  const PakAuxiliaryContext* context = this->context;
 
   switch (keySource) {
   case 0: {
@@ -609,14 +622,14 @@ __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const Pak
     break;
   }
   case 1: {
-    PakSpan_655A30* name = *this->span_objs;
-    alignas(16) XXH128_hash_t hash = XXH3_128bits(name->data, name->size);
+    std::span<std::uint8_t>* name = context->name;
+    alignas(16) XXH128_hash_t hash = XXH3_128bits(name->data(), name->size());
     std::memcpy(key, &hash, 16);
     SecureZeroMemory(&hash, sizeof(hash));
     break;
   }
   case 2: {
-    const void* checksum = reinterpret_cast<char*>(reinterpret_cast<void**>(this->span_objs)[1]) + 4;
+    const void* checksum = &context->header->checksum;
     alignas(16) XXH128_hash_t hash = XXH3_128bits(checksum, 4);
     std::memcpy(key, &hash, 16);
     SecureZeroMemory(&hash, sizeof(hash));
@@ -628,7 +641,7 @@ __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const Pak
   cipher->SetIV(key);
   cipher->SetMode(mode);
 
-  const ULONG res = cipher->Decrypt(static_cast<PUCHAR>(this->span_a->data), this->span_a->size, static_cast<PUCHAR>(this->span_b->data), this->span_b->size, 0);
+  const ULONG res = cipher->Decrypt(this->span_a->data(), static_cast<ULONG>(this->span_a->size()), this->span_b->data(), static_cast<ULONG>(this->span_b->size()), 0);
 
   volatile int check = 0xe5c3c820;
   check ^= 0xf63071d0;
@@ -1085,30 +1098,13 @@ void PakIntrusiveLink::Unlink657820() {
 __declspec(noinline) PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
 }
 
-struct PakAuxiliaryHeader {
-  /* 0000 */ std::uint8_t version;
-  /* 0001 */ std::uint8_t keySource;
-  /* 0002 */ std::uint8_t padding_0002[2];
-  /* 0004 */ std::uint32_t checksum;
-  /* 0008 */ std::uint8_t payload[96];
-};
-
-static_assert(sizeof(PakAuxiliaryHeader) == 0x68);
-static_assert(offsetof(PakAuxiliaryHeader, checksum) == 4);
-static_assert(offsetof(PakAuxiliaryHeader, payload) == 8);
-
-struct PakAuxiliaryContext {
-  /* 0000 */ PakSpan_655A30* name;
-  /* 0004 */ PakAuxiliaryHeader* header;
-};
-
 struct PakAuxiliaryState {
   /* 0000 */ std::unordered_map<std::int16_t, std::function<bool(std::span<const std::uint8_t>, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<const std::uint8_t>, std::span<std::uint8_t>)>> m_handlers;
   /* 0020 */ PakMaskedKey48 m_key;
   /* 0055 */ std::uint8_t padding_0055[107];
   /* 00C0 */ AES* m_cipher;
 
-  bool DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header);
+  bool DecodeHeader(std::span<std::uint8_t> name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -1118,7 +1114,7 @@ static_assert(offsetof(PakAuxiliaryState, m_cipher) == 0xC0);
 
 // OFFSET: 0x00658B90
 // FUNCTION: fn_05112
-bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header) {
+bool PakAuxiliaryState::DecodeHeader(std::span<std::uint8_t> name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header) {
   if (size < sizeof(PakAuxiliaryHeader)) {
     return false;
   }
@@ -1147,19 +1143,15 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
   const std::span<std::uint8_t> decryptedSpan =
       std::span<std::uint8_t, sizeof(PakAuxiliaryHeader)>(reinterpret_cast<std::uint8_t*>(header), sizeof(PakAuxiliaryHeader)).subspan(targetOffset, decryptedCount);
 
-  PakSpan_655A30 encrypted;
-  encrypted.data = encryptedSpan.data();
-  encrypted.size = encryptedSpan.size();
-  PakSpan_655A30 decrypted;
-  decrypted.data = decryptedSpan.data();
-  decrypted.size = decryptedSpan.size();
+  std::span<std::uint8_t> encrypted = encryptedSpan;
+  std::span<std::uint8_t> decrypted = decryptedSpan;
 
   PakAuxiliaryContext context;
   context.name = &name;
   context.header = header;
 
   PakVerifier_655A30 verifier;
-  verifier.span_objs = &context.name;
+  verifier.context = &context;
   verifier.span_a = &encrypted;
   verifier.span_b = &decrypted;
 
@@ -1172,14 +1164,14 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
     }
     break;
   case 2: {
-    XXH128_hash_t hash = XXH3_128bits(name.data, name.size);
+    XXH128_hash_t hash = XXH3_128bits(name.data(), name.size());
     XXH128_hash_t key = hash;
     for (std::size_t i = 0; i < sizeof(hash); ++i) {
       reinterpret_cast<volatile std::uint8_t*>(&hash)[i] = 0;
     }
     this->m_cipher->SetIV({reinterpret_cast<const UCHAR*>(&key), sizeof(key)});
     this->m_cipher->SetMode(AES::CBC);
-    const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
+    const ULONG written = this->m_cipher->Decrypt(encrypted.data(), static_cast<ULONG>(encrypted.size()), decrypted.data(), static_cast<ULONG>(decrypted.size()), 0);
     volatile int expected = 0xe5c3c820;
     expected ^= 0xf63071d0;
     expected ^= 0x13f3b990;
@@ -1196,7 +1188,7 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
     }
     this->m_cipher->SetIV({reinterpret_cast<const UCHAR*>(&key), sizeof(key)});
     this->m_cipher->SetMode(AES::CBC);
-    const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
+    const ULONG written = this->m_cipher->Decrypt(encrypted.data(), static_cast<ULONG>(encrypted.size()), decrypted.data(), static_cast<ULONG>(decrypted.size()), 0);
     volatile int expected = 0xe5c3c820;
     expected ^= 0xf63071d0;
     expected ^= 0x13f3b990;
@@ -1209,7 +1201,7 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
     return false;
   }
 
-  return XxHash32(decrypted.data, decrypted.size, 0) == header->checksum;
+  return XxHash32(decrypted.data(), decrypted.size(), 0) == header->checksum;
 }
 
 // OFFSET: 0x00658E90
