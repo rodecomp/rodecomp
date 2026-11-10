@@ -66,11 +66,9 @@ namespace {
 // FUNCTION: fn_07596
 const char* FormatString(const char* format, ...) {
   static ThreadSafeBuffer s_buffer;
-  char* buffer = s_buffer.GetBuffer();
-
   va_list args;
   va_start(args, format);
-  _vsnprintf(buffer, 2048, format, args);
+  _vsnprintf(s_buffer.GetBuffer(), 2048, format, args);
   va_end(args);
 
   return s_buffer.GetBuffer();
