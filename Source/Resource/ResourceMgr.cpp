@@ -34,7 +34,7 @@ unsigned char g_lowercaseTable[256] = {
   0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
 };
 
-bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* right) const {
+__declspec(noinline) bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* right) const {
   if (left->hash != right->hash) {
     return left->hash < right->hash;
   }
@@ -166,7 +166,7 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
       resource->name.Assign(resolved.c_str());
       resource->type = type;
       resource->lastUse = timeGetTime();
-      this->m_resources[type].emplace(&resource->name, resource);
+      this->m_resources[type].insert({&resource->name, resource});
 
       if (resource->IsTransient() == 1) {
         this->m_transient.push_back(resource);
@@ -205,11 +205,11 @@ CRes* ResourceMgr::Load(std::string name) {
 // FUNCTION: fn_18190
 void ResourceMgr::Remove(CRes* resource) {
   this->EraseTransient(resource);
-  auto& resources = this->m_resources[resource->type];
-  const auto entry = resources.find(&resource->name);
+  const int type = resource->type;
+  const auto entry = this->m_resources[type].find(&resource->name);
   entry->second->Unload();
   delete entry->second;
-  resources.erase(entry);
+  this->m_resources[type].erase(entry);
 }
 
 // INLINED
