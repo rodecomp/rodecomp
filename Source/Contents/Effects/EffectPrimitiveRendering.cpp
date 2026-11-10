@@ -2148,6 +2148,10 @@ void CEffectPrim::RenderRipple(matrix& wtm) {
 // OFFSET: 0x00BDE720
 // FUNCTION: fn_19905
 void CEffectPrim::RenderPeongUp(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2158,10 +2162,10 @@ void CEffectPrim::RenderPeongUp(matrix& wtm) {
     }
 
     const float rx = slot.distance;
-    vector3d vec1{g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx};
-    vector3d vec2{g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx};
-    vector3d vec3{g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx};
-    vector3d vec4{g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx};
+    vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
+    vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
+    vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
+    vec4.Set(g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     const vector3d& base = slot.vecBPre;
@@ -2348,6 +2352,10 @@ void CEffectPrim::RenderSMA3(matrix&) {
 // OFFSET: 0x00BDD0D0
 // FUNCTION: fn_19900
 void CEffectPrim::RenderBeam(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2360,13 +2368,18 @@ void CEffectPrim::RenderBeam(matrix& wtm) {
     const float lift = slot.height[3];
     const float length = slot.distance * g_sinTable[slot.fullDisplayAngle] + slot.distance;
     const float reach = length * g_cosTable[slot.riseAngle];
-    const vector3d tip{reach * g_cosTable[slot.rotStart], length * g_sinTable[slot.riseAngle] - lift, reach * g_sinTable[slot.rotStart]};
+    vec2.Set(reach * g_cosTable[slot.rotStart], length * g_sinTable[slot.riseAngle] - lift, reach * g_sinTable[slot.rotStart]);
+    vec3 = vec2;
     const unsigned char red = static_cast<unsigned char>(static_cast<int>(slot.height[0]));
     const unsigned char green = static_cast<unsigned char>(static_cast<int>(slot.height[1]));
     const unsigned char blue = static_cast<unsigned char>(static_cast<int>(slot.height[2]));
 
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vector3d{0.5f, -lift, 0.0f}, tip, tip, vector3d{-0.5f, -lift, 0.0f}, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vector3d{0.0f, -lift, 0.5f}, tip, tip, vector3d{0.0f, -lift, -0.5f}, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec1.Set(0.5f, -lift, 0.0f);
+    vec4.Set(-0.5f, -lift, 0.0f);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec1.Set(0.0f, -lift, 0.5f);
+    vec4.Set(0.0f, -lift, -0.5f);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
@@ -2606,19 +2619,14 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
       angle = angle + 90 < 360 ? angle + 90 : angle - 270;
     }
 
-    switch (slot.flag1[3]) {
-    case 0:
+    if (slot.flag1[3] == 0) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case 1:
+    } else if (slot.flag1[3] == 1) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 80, 255, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case 2:
+    } else if (slot.flag1[3] == 2) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 1, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case 3:
+    } else if (slot.flag1[3] == 3) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 1, 0, 1, 70, 70, 70, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
     }
   }
 }
@@ -2626,6 +2634,10 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
 // OFFSET: 0x00BD1CB0
 // FUNCTION: fn_19873
 void CEffectPrim::RenderColorPlane(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2636,10 +2648,10 @@ void CEffectPrim::RenderColorPlane(matrix& wtm) {
     }
 
     const float height = -slot.maxHeight;
-    const vector3d vec1{slot.vecBNow.x, 0.0f, slot.vecBNow.z};
-    const vector3d vec2{slot.vecBPre.x, 0.0f, slot.vecBPre.z};
-    const vector3d vec3{slot.vecBPre.x, height, slot.vecBPre.z};
-    const vector3d vec4{slot.vecBNow.x, height, slot.vecBNow.z};
+    vec1.Set(slot.vecBNow.x, 0.0f, slot.vecBNow.z);
+    vec2.Set(slot.vecBPre.x, 0.0f, slot.vecBPre.z);
+    vec3.Set(slot.vecBPre.x, height, slot.vecBPre.z);
+    vec4.Set(slot.vecBNow.x, height, slot.vecBNow.z);
     const float kind = slot.height[0];
 
     if (kind == 1.0f) {
@@ -2722,32 +2734,26 @@ void CEffectPrim::RenderTrailSquares(matrix& wtm) {
     unsigned char green;
     unsigned char blue;
 
-    switch (slot.flag1[0]) {
-    case 0:
+    if (slot.flag1[0] == 0) {
       red = 70;
       green = 70;
       blue = 255;
-      break;
-    case 1:
+    } else if (slot.flag1[0] == 1) {
       red = 255;
       green = 70;
       blue = 70;
-      break;
-    case 2:
+    } else if (slot.flag1[0] == 2) {
       red = 70;
       green = 255;
       blue = 70;
-      break;
-    case 3:
+    } else if (slot.flag1[0] == 3) {
       red = 255;
       green = 255;
       blue = 90;
-      break;
-    default:
+    } else {
       red = 255;
       green = 70;
       blue = 255;
-      break;
     }
 
     if (slot.life != 1 || slot.alphaB <= 0) {
