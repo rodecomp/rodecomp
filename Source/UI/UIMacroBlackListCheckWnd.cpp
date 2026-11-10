@@ -318,8 +318,9 @@ void UIMacroBlackListCheckWnd::SetCode(unsigned char state, const char* code) {
 // OFFSET: 0x007ECE80
 // FUNCTION: fn_09803
 void UIMacroBlackListCheckWnd::Activate(unsigned char state, int duration) {
-  this->startTick = timeGetTime();
-  this->duration = duration;
+  const std::uint32_t now = timeGetTime();
   this->resultState = state;
+  this->startTick = now;
+  this->duration = duration;
   this->Invalidate();
 }
