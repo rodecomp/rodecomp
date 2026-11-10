@@ -4294,10 +4294,10 @@ void UIEditCtrl3::DecodeLinkOptions(std::vector<int>& options, const char* text,
       value += byte;
     } else if (separator != byte && alternate != byte) {
       --position;
-      options.push_back(this->DecodeLinkNumber(std::move(value)));
+      options.push_back(this->DecodeLinkNumber(value));
       break;
     } else {
-      options.push_back(this->DecodeLinkNumber(std::move(value)));
+      options.push_back(this->DecodeLinkNumber(value));
       value.clear();
     }
   }
@@ -4315,11 +4315,11 @@ int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int
       value += byte;
     } else if (separator == byte) {
       ++count;
-      cards.push_back(this->DecodeLinkNumber(std::move(value)));
+      cards.push_back(this->DecodeLinkNumber(value));
       value.clear();
     } else {
       --position;
-      cards.push_back(this->DecodeLinkNumber(std::move(value)));
+      cards.push_back(this->DecodeLinkNumber(value));
       fields[index] = count;
       for (unsigned int i = 0; i < cards.size(); ++i) {
         fields[index + 1 + i] = cards[i];
