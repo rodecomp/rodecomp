@@ -460,8 +460,11 @@ bool CMsgEffect::OnProcess() {
         return true;
       }
       elapsed = MsgEffectElapsedFrames(this);
-      if (static_cast<int>(elapsed) % 34 == 0) {
-        this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      {
+        const int frame = static_cast<int>(elapsed);
+        if (frame % 34 == 0) {
+          this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
       }
       return true;
 
@@ -475,15 +478,14 @@ bool CMsgEffect::OnProcess() {
         }
         this->render.previousAnimation = this->Get8Dir2(this->render.angle, 1) + 8;
         this->render.position.x = this->m_velocity.x + this->render.position.x;
-        const int tick = this->processTick;
-        if (tick > 10 && tick < 25) {
+        if (this->processTick > 10 && this->processTick < 25) {
           this->initialVelocityX = this->m_velocity.x;
           this->render.position.z = this->m_velocity.z + this->render.position.z;
         } else {
           this->initialVelocityX = this->m_velocity.x;
           this->render.position.y = this->m_velocity.y + this->render.position.y;
           this->render.position.z = this->m_velocity.z + this->render.position.z;
-          if (tick >= 25) {
+          if (this->processTick >= 25) {
             this->m_finished = 1;
             this->m_velocity.y = this->m_velocity.y * -1.9f;
           }
