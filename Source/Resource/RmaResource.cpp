@@ -97,9 +97,9 @@ bool CRmaRes::Load(const char* name) {
 // OFFSET: 0x00745190
 // FUNCTION: fn_07755
 void CRmaRes::Unload() {
-  this->actions.clear();
-  this->models.clear();
-  this->actionModels.clear();
+  this->actions.erase(this->actions.begin(), this->actions.end());
+  this->models.erase(this->models.begin(), this->models.end());
+  this->actionModels.erase(this->actionModels.begin(), this->actionModels.end());
 }
 
 // INLINED
