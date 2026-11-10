@@ -43,13 +43,12 @@ void UITransMenuWnd::OnLBtnDown(int x, int y) {
 void UITransMenuWnd::OnMouseMove(int x, int y) {
   const int margin = this->m_margin;
   const int previous = this->m_selected;
-  int selected = -1;
-  if (margin <= y) {
-    const unsigned count = this->m_items.size();
-    if ((this->m_lineHeight + margin / 2) * count + margin >= static_cast<unsigned>(y)) {
-      const int cellHeight = (this->geometry.height - 2 * margin) / count;
-      selected = (y - margin) / cellHeight;
-    }
+  int selected;
+  if (margin <= y && (this->m_lineHeight + margin / 2) * this->m_items.size() + margin >= static_cast<unsigned>(y)) {
+    const int cellHeight = (this->geometry.height - 2 * margin) / this->m_items.size();
+    selected = (y - margin) / cellHeight;
+  } else {
+    selected = -1;
   }
 
   this->m_selected = selected;
