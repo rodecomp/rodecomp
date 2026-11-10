@@ -406,7 +406,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   const SkinPaletteCell cell = {1, 2};
   const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
   this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
-  this->m_contents->TextColor(0x313131, 0xFFFFFFFF);
+  this->m_contents->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
   this->m_contents->disabled = 1;
   this->m_contents->Invalidate();
   reinterpret_cast<unsigned char*>(&this->m_contents->editFlags)[1] = 1;
