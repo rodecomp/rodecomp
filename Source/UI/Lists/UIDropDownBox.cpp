@@ -87,15 +87,3 @@ void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
   popup->Show(1);
 }
 
-// OFFSET: 0x00A8C750
-// FUNCTION: fn_17133
-bool UIWindowMgr::CloseDropDown() {
-  CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->dropDownBoxWnd);
-  if (!popup || popup->geometry.visible == 0) {
-    return false;
-  }
-
-  popup->Detach();
-  popup->Show(0);
-  return true;
-}

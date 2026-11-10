@@ -2153,6 +2153,18 @@ void UIWindowMgr::CloseMiniPartyWindow(int id) {
   RefreshPartyWindows(&g_session);
 }
 
+// OFFSET: 0x00A8C750
+// FUNCTION: fn_17133
+bool UIWindowMgr::CloseDropDown() {
+  if (!this->dropDownBoxWnd || this->dropDownBoxWnd->geometry.visible == 0) {
+    return false;
+  }
+
+  static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->Detach();
+  this->dropDownBoxWnd->Show(0);
+  return true;
+}
+
 // OFFSET: 0x00A8CA20
 // FUNCTION: fn_17139
 bool UIWindowMgr::ProcessEnterKey() {
