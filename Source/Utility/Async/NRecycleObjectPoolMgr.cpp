@@ -19,8 +19,7 @@ std::size_t NRecycleObjectPoolMgr::NameHash::operator()(const std::string& name)
 
 // OFFSET: 0x00736B30
 // FUNCTION: fn_07632
-NRecycleObjectPoolMgr::NRecycleObjectPoolMgr() : m_enabled(false) {
-  this->m_pools.rehash(8);
+NRecycleObjectPoolMgr::NRecycleObjectPoolMgr() {
   this->m_enabled = true;
 }
 
