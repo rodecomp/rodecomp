@@ -42,12 +42,11 @@ void DeviceOwnerDX9Noop() {}
 // FUNCTION: fn_01908
 bool DisplayModeSelectorDX9::Select(D3DSCANLINEORDERING ordering) {
   D3DDISPLAYMODEFILTER filter{sizeof(filter), format, ordering};
-  const UINT count = this->owner->direct3D->GetAdapterModeCountEx(this->adapter, &filter);
   UINT refresh = 0;
+  const UINT count = this->owner->direct3D->GetAdapterModeCountEx(this->adapter, &filter);
 
   for (UINT index = 0; index < count; ++index) {
-    D3DDISPLAYMODEEX mode{};
-    mode.Size = sizeof(mode);
+    D3DDISPLAYMODEEX mode{sizeof(mode)};
 
     if (SUCCEEDED(this->owner->direct3D->EnumAdapterModesEx(this->adapter, &filter, index, &mode)) && mode.Width == this->width &&
         mode.Height == this->height && mode.RefreshRate >= refresh) {
