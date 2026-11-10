@@ -2651,8 +2651,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
 
-  this->animationTime = 0.0f;
   this->lastClock = GrannyGetSystemSeconds();
+  this->animationTime = 0.0f;
   this->actorType = 0;
 
   char* tag = std::strstr(this->modelName, "@hd");
