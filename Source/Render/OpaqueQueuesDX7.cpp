@@ -19,17 +19,7 @@ inline bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
 // OFFSET: 0x0055B0C0
 // FUNCTION: fn_02088
 void CRendererDX7::DrawDepthSortedQueue() {
-  std::sort(this->queues.queue_0180.begin(), this->queues.queue_0180.end(), [](const DepthPrimitive& left, const DepthPrimitive& right) {
-    if (left.depth < right.depth) {
-      return true;
-    }
-
-    if (right.depth < left.depth) {
-      return false;
-    }
-
-    return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-  });
+  std::sort(this->queues.queue_0180.begin(), this->queues.queue_0180.end());
 
   for (auto it = this->queues.queue_0180.begin(); it != this->queues.queue_0180.end(); ++it) {
     RenderCommand* command = it->primitive;
