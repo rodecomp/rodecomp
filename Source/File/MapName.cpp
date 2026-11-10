@@ -13,7 +13,7 @@ const char* ScriptMapName(std::string name) {
   // GLOBAL: gl_24517
   static std::map<std::intptr_t, std::array<char, 16>> buffers;
   auto& output = buffers[reinterpret_cast<std::intptr_t>(GetCurrentThread())];
-  const std::size_t marker = name.rfind('@');
+  const std::size_t marker = name.rfind("@");
 
   if (marker != std::string::npos && marker >= 4) {
     name.erase(marker - 4, 3);
