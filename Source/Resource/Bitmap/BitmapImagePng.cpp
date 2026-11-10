@@ -98,14 +98,14 @@ bool BitmapImage::DecodePng(const void* data, int bytes, const char*) {
   }
 
   png_read_image(png, rows);
-  const std::uint32_t count = static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height);
-  this->pixels = static_cast<std::uint32_t*>(std::malloc(count > 0x3FFFFFFFu ? 0xFFFFFFFFu : count * 4u));
+  this->pixels = new std::uint32_t[this->width * this->height];
 
   for (int y = 0; y < this->height; ++y) {
+    const unsigned char* pixel = rows[y];
+    std::uint32_t* out = &this->pixels[this->width * y];
     for (int x = 0; x < this->width; ++x) {
-      const unsigned char* pixel = rows[y] + 4u * x;
-      this->pixels[static_cast<std::uint32_t>(y) * this->width + x] =
-        pixel[2] | (pixel[1] << 8) | (pixel[0] << 16) | (static_cast<std::uint32_t>(pixel[3]) << 24);
+      *out++ = (((((pixel[3] << 8) + pixel[0]) << 8) + pixel[1]) << 8) + pixel[2];
+      pixel += 4;
     }
   }
 
