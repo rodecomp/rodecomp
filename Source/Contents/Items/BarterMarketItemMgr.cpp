@@ -344,11 +344,11 @@ int CBarterMarketItemMgr::GetAllItemValueById(int id)
 int CBarterMarketItemMgr::GetAllItemValueByName(std::string name)
 {
   int total = 0;
-  for (std::list<BarterMarketItem>::iterator it = this->allItems.begin(); it != this->allItems.end(); ++it) {
-    if (it->name == name) {
-      total += it->value;
+  std::for_each(this->allItems.begin(), this->allItems.end(), [&total, &name](const BarterMarketItem& item) {
+    if (item.name == name) {
+      total += item.value;
     }
-  }
+  });
   return total;
 }
 
