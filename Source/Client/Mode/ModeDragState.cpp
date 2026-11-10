@@ -71,11 +71,7 @@ void ModeDragState::BeginItem(
 void ModeDragState::BeginSkill(
   WindowManagerWindows& windows, ResourceMgr& resources, int sourceValue, std::uint32_t idValue, const char* nameValue, int level, int slotValue
 ) {
-  UIWindow* window = windows.EnsureWindow(WID_ITEMDROPCNTWND);
-  if (window->geometry.visible != 0) {
-    window->Show(0);
-  }
-
+  g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 0);
   this->Clear();
   this->source = sourceValue;
   this->id = idValue;
