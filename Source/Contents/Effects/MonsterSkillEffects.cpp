@@ -3237,9 +3237,9 @@ void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
 
   const int spread = ClampedRandom(15) + 2;
   const int angle = ClampedRandom(360);
-  particle->offsetY = 0.0f;
   particle->offsetZ = static_cast<float>(spread) * g_sinTable[angle];
   particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
+  particle->offsetY = 0.0f;
   particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 0.5f;
   particle->speedParameter = static_cast<float>(ClampedRandom(30)) * 0.01f + 0.05f;
 }
