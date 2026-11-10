@@ -10,6 +10,7 @@
 class UIItemBaseWnd : public UIFrameWnd {
 public:
   UIItemBaseWnd();
+  ~UIItemBaseWnd() override {}
   void DragAndDrop(int x, int y, std::intptr_t value) override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
