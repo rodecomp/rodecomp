@@ -175,7 +175,7 @@ void UIChatHisBox3::AddText(const char* text, int color) {
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->AddItemLinkLine(text, color, mode);
-  } else if (g_navigationLinkParser->HasLink(std::string(text))) {
+  } else if (GetNavigationLinkParser()->HasLink(std::string(text))) {
     this->AddNavigationLinkLine(text, color, mode);
   } else {
     this->UIListBox::AddLine(text);
