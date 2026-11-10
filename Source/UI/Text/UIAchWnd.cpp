@@ -656,7 +656,7 @@ void UICustomGageBar::Paint() {
 void UIToolTipBitmapWnd::Paint() {
   this->bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
   if (this->bitmap) {
-    this->DrawBitmap(0, 0, &this->bitmap->image, false);
+    this->DrawBitmap(0, 0, this->bitmap, false);
   }
 
   const int item = this->itemId;
