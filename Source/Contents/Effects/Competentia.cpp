@@ -50,9 +50,9 @@ void CCompetentia::Close() {
 // OFFSET: 0x00708AD0
 // FUNCTION: fn_07080
 void CCompetentia::Open() {
-  for (int i = 0; i < 10; ++i) {
-    const vector2d point = RandomDiscPoint(this->position[0], this->position[2], 50);
-    vector3d pos;
+  for (__int64 i = 0; i < 10; ++i) {
+    vector3d pos = *reinterpret_cast<const vector3d*>(this->position);
+    const vector2d point = RandomDiscPoint(pos.x, pos.z, 50);
     pos.x = point.x;
     pos.z = point.y;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
