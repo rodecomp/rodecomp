@@ -14,8 +14,9 @@
 // FUNCTION: fn_19420
 __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects) {
   for (std::vector<CNavi_Object*>::const_iterator it = objects.begin(); it != objects.end(); ++it) {
+    const CNavi_Object* object = *it;
     if (name) {
-      if ((*it)->name == std::string(name)) {
+      if (object->name == std::string(name)) {
         return *it;
       }
     }
@@ -215,20 +216,20 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
   int startX = 0;
   int startY = 0;
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (mode == nullptr) {
-    return -95;
+  if (mode != nullptr) {
+    mode->PlayerCell(&startX, &startY);
+    this->UpdateGround();
+    if (!this->BuildRoute(startX, startY, destX, destY, false)) {
+      return -99;
+    }
+    this->data.SetDestination(target, destX, destY);
+    this->drawRoute = true;
+    this->routeFlag = true;
+    this->drawDestination = true;
+    this->viewMode = 2;
+    return 9;
   }
-  mode->PlayerCell(&startX, &startY);
-  this->UpdateGround();
-  if (!this->BuildRoute(startX, startY, destX, destY, false)) {
-    return -99;
-  }
-  this->data.SetDestination(target, destX, destY);
-  this->drawRoute = true;
-  this->routeFlag = true;
-  this->drawDestination = true;
-  this->viewMode = 2;
-  return 9;
+  return -95;
 }
 
 // OFFSET: 0x00B8E350
