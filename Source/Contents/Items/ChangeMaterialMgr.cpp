@@ -83,28 +83,40 @@ void CChangeMaterialMgr::DestroyInstance() {
 // FUNCTION: fn_03818
 bool CChangeMaterialMgr::Load() {
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    lua_register(lua.GetState(), "InsertRecipe", CChangeMaterialMgr::LuaInsertRecipe);
-    if (luaL_loadfile(lua.GetState(), "System\\ChangeMaterial.lub") != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
-      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CChangeMaterialMgr", 0);
-    } else {
-      lua_getglobal(lua.GetState(), "main");
-      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
-        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CChangeMaterialMgr", 0);
-      } else if (!lua_isstring(lua.GetState(), -1)) {
-        MessageBoxA(nullptr, "second return value is not string...", "CChangeMaterialMgr", 0);
-      } else {
-        if (lua_toboolean(lua.GetState(), -2)) {
-          return true;
-        }
-        std::string message = std::string("error found unknown item :") + lua_tostring(lua.GetState(), -1);
-        MessageBoxA(nullptr, message.c_str(), "CChangeMaterialMgr", 0);
-      }
-    }
+  if (!lua.IsValid()) {
+    return false;
   }
 
-  return false;
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "InsertRecipe", CChangeMaterialMgr::LuaInsertRecipe);
+  if (luaL_loadfile(lua.GetState(), "System\\ChangeMaterial.lub") != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CChangeMaterialMgr", 0);
+    return false;
+  }
+
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CChangeMaterialMgr", 0);
+    return false;
+  }
+
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CChangeMaterialMgr", 0);
+    return false;
+  }
+
+  if (!lua_isstring(lua.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CChangeMaterialMgr", 0);
+    return false;
+  }
+
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    std::string message = std::string("error found unknown item :") + lua_tostring(lua.GetState(), -1);
+    MessageBoxA(nullptr, message.c_str(), "CChangeMaterialMgr", 0);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x005DD360
