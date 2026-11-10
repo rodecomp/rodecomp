@@ -14,8 +14,7 @@
 
 #include <map>
 #include <string>
-
-extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdStringCompare.h"
 
 // OFFSET: 0x00AD9530
 // FUNCTION: fn_17878

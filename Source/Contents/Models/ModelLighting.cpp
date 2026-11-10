@@ -10,8 +10,7 @@
 #include "Utility/Math/ScalarConversion.h"
 #include <cmath>
 #include <cstring>
-
-extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdStringCompare.h"
 
 union ModelColor {
   std::uint32_t value;

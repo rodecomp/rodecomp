@@ -30,8 +30,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdStringCompare.h"
 
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
