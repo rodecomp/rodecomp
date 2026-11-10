@@ -1134,18 +1134,17 @@ int CGameActor::IsPlayerClass(int job) {
 // OFFSET: 0x00CAE1B0
 // FUNCTION: fn_21072
 void CGameActor::SetStackedEffect(int effectId, bool on) {
-  if (!on) {
+  if (on) {
+    for (const int id : this->exclusiveEffects) {
+      this->ApplyEffectState(id, false);
+    }
+    this->exclusiveEffects.insert(effectId);
+    for (const int id : this->exclusiveEffects) {
+      this->ApplyEffectState(id, true);
+    }
+  } else {
     this->exclusiveEffects.erase(effectId);
     this->ApplyEffectState(effectId, false);
-    return;
-  }
-
-  for (const int id : this->exclusiveEffects) {
-    this->ApplyEffectState(id, false);
-  }
-  this->exclusiveEffects.insert(effectId);
-  for (const int id : this->exclusiveEffects) {
-    this->ApplyEffectState(id, true);
   }
 }
 
