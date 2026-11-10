@@ -491,40 +491,46 @@ void CAES::DecryptBlock(const char* in, char* result) {
   if (!this->m_bKeyInit) {
     throw std::exception(sm_szErrorMsg1);
   }
-  if (this->m_blockSize == DEFAULT_BLOCK_SIZE) {
+
+  if (DEFAULT_BLOCK_SIZE == this->m_blockSize) {
     this->DefDecryptBlock(in, result);
     return;
   }
 
-  const int columns = this->m_blockSize / 4;
-  const int shiftIndex = columns == 4 ? 0 : (columns == 6 ? 1 : 2);
-  const int shift1 = sm_shifts[shiftIndex][1][1];
-  const int shift2 = sm_shifts[shiftIndex][2][1];
-  const int shift3 = sm_shifts[shiftIndex][3][1];
-  for (int column = 0; column < columns; ++column) {
-    this->t[column] = static_cast<unsigned int>(static_cast<unsigned char>(*in++)) << 24;
-    this->t[column] |= static_cast<unsigned char>(*in++) << 16;
-    this->t[column] |= static_cast<unsigned char>(*in++) << 8;
-    this->t[column] |= static_cast<unsigned char>(*in++);
-    this->t[column] ^= this->m_Kd[0][column];
+  int BC = this->m_blockSize / 4;
+  int SC = BC == 4 ? 0 : (BC == 6 ? 1 : 2);
+  int s1 = sm_shifts[SC][1][1];
+  int s2 = sm_shifts[SC][2][1];
+  int s3 = sm_shifts[SC][3][1];
+  int i;
+  int tt;
+  int* pi = this->t;
+
+  for (i = 0; i < BC; ++i) {
+    *pi = static_cast<unsigned char>(*in++) << 24;
+    *pi |= static_cast<unsigned char>(*in++) << 16;
+    *pi |= static_cast<unsigned char>(*in++) << 8;
+    (*pi++ |= static_cast<unsigned char>(*in++)) ^= this->m_Kd[0][i];
   }
 
-  for (int round = 1; round < this->m_iROUNDS; ++round) {
-    for (int column = 0; column < columns; ++column) {
-      this->a[column] = sm_T5[(this->t[column] >> 24) & 0xFF] ^
-        sm_T6[(this->t[(column + shift1) % columns] >> 16) & 0xFF] ^
-        sm_T7[(this->t[(column + shift2) % columns] >> 8) & 0xFF] ^
-        sm_T8[this->t[(column + shift3) % columns] & 0xFF] ^ this->m_Kd[round][column];
+  for (int r = 1; r < this->m_iROUNDS; ++r) {
+    for (i = 0; i < BC; ++i) {
+      this->a[i] = (sm_T5[(this->t[i] >> 24) & 0xFF] ^ sm_T6[(this->t[(i + s1) % BC] >> 16) & 0xFF] ^
+                    sm_T7[(this->t[(i + s2) % BC] >> 8) & 0xFF] ^ sm_T8[this->t[(i + s3) % BC] & 0xFF]) ^
+                   this->m_Kd[r][i];
     }
-    std::memcpy(this->t, this->a, columns * sizeof(int));
+
+    std::memcpy(this->t, this->a, 4 * BC);
   }
 
-  for (int column = 0; column < columns; ++column) {
-    const int key = this->m_Kd[this->m_iROUNDS][column];
-    *result++ = static_cast<char>(sm_Si[(this->t[column] >> 24) & 0xFF] ^ (key >> 24));
-    *result++ = static_cast<char>(sm_Si[(this->t[(column + shift1) % columns] >> 16) & 0xFF] ^ (key >> 16));
-    *result++ = static_cast<char>(sm_Si[(this->t[(column + shift2) % columns] >> 8) & 0xFF] ^ (key >> 8));
-    *result++ = static_cast<char>(sm_Si[this->t[(column + shift3) % columns] & 0xFF] ^ key);
+  int j;
+
+  for (i = 0, j = 0; i < BC; ++i) {
+    tt = this->m_Kd[this->m_iROUNDS][i];
+    result[j++] = static_cast<char>(sm_Si[(this->t[i] >> 24) & 0xFF] ^ (tt >> 24));
+    result[j++] = static_cast<char>(sm_Si[(this->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16));
+    result[j++] = static_cast<char>(sm_Si[(this->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8));
+    result[j++] = static_cast<char>(sm_Si[this->t[(i + s3) % BC] & 0xFF] ^ tt);
   }
 }
 
@@ -535,63 +541,61 @@ void CAES::DefDecryptBlock(const char* in, char* result) {
     throw std::exception(sm_szErrorMsg1);
   }
 
-  int t0 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[0])) << 24) |
-    (static_cast<unsigned char>(in[1]) << 16) | (static_cast<unsigned char>(in[2]) << 8) |
-    static_cast<unsigned char>(in[3]);
-  t0 ^= this->m_Kd[0][0];
-  int t1 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[4])) << 24) |
-    (static_cast<unsigned char>(in[5]) << 16) | (static_cast<unsigned char>(in[6]) << 8) |
-    static_cast<unsigned char>(in[7]);
-  t1 ^= this->m_Kd[0][1];
-  int t2 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[8])) << 24) |
-    (static_cast<unsigned char>(in[9]) << 16) | (static_cast<unsigned char>(in[10]) << 8) |
-    static_cast<unsigned char>(in[11]);
-  t2 ^= this->m_Kd[0][2];
-  int t3 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[12])) << 24) |
-    (static_cast<unsigned char>(in[13]) << 16) | (static_cast<unsigned char>(in[14]) << 8) |
-    static_cast<unsigned char>(in[15]);
-  t3 ^= this->m_Kd[0][3];
+  int* Ker = this->m_Kd[0];
+  int t0 = static_cast<unsigned char>(*in++) << 24;
+  t0 |= static_cast<unsigned char>(*in++) << 16;
+  t0 |= static_cast<unsigned char>(*in++) << 8;
+  (t0 |= static_cast<unsigned char>(*in++)) ^= Ker[0];
+  int t1 = static_cast<unsigned char>(*in++) << 24;
+  t1 |= static_cast<unsigned char>(*in++) << 16;
+  t1 |= static_cast<unsigned char>(*in++) << 8;
+  (t1 |= static_cast<unsigned char>(*in++)) ^= Ker[1];
+  int t2 = static_cast<unsigned char>(*in++) << 24;
+  t2 |= static_cast<unsigned char>(*in++) << 16;
+  t2 |= static_cast<unsigned char>(*in++) << 8;
+  (t2 |= static_cast<unsigned char>(*in++)) ^= Ker[2];
+  int t3 = static_cast<unsigned char>(*in++) << 24;
+  t3 |= static_cast<unsigned char>(*in++) << 16;
+  t3 |= static_cast<unsigned char>(*in++) << 8;
+  (t3 |= static_cast<unsigned char>(*in++)) ^= Ker[3];
+  int a0;
+  int a1;
+  int a2;
+  int a3;
 
   for (int round = 1; round < this->m_iROUNDS; ++round) {
-    const int a0 = sm_T5[(t0 >> 24) & 0xFF] ^ sm_T6[(t3 >> 16) & 0xFF] ^
-      sm_T7[(t2 >> 8) & 0xFF] ^ sm_T8[t1 & 0xFF] ^ this->m_Kd[round][0];
-    const int a1 = sm_T5[(t1 >> 24) & 0xFF] ^ sm_T6[(t0 >> 16) & 0xFF] ^
-      sm_T7[(t3 >> 8) & 0xFF] ^ sm_T8[t2 & 0xFF] ^ this->m_Kd[round][1];
-    const int a2 = sm_T5[(t2 >> 24) & 0xFF] ^ sm_T6[(t1 >> 16) & 0xFF] ^
-      sm_T7[(t0 >> 8) & 0xFF] ^ sm_T8[t3 & 0xFF] ^ this->m_Kd[round][2];
-    const int a3 = sm_T5[(t3 >> 24) & 0xFF] ^ sm_T6[(t2 >> 16) & 0xFF] ^
-      sm_T7[(t1 >> 8) & 0xFF] ^ sm_T8[t0 & 0xFF] ^ this->m_Kd[round][3];
+    Ker = this->m_Kd[round];
+    a0 = (sm_T5[(t0 >> 24) & 0xFF] ^ sm_T6[(t3 >> 16) & 0xFF] ^ sm_T7[(t2 >> 8) & 0xFF] ^ sm_T8[t1 & 0xFF]) ^ Ker[0];
+    a1 = (sm_T5[(t1 >> 24) & 0xFF] ^ sm_T6[(t0 >> 16) & 0xFF] ^ sm_T7[(t3 >> 8) & 0xFF] ^ sm_T8[t2 & 0xFF]) ^ Ker[1];
+    a2 = (sm_T5[(t2 >> 24) & 0xFF] ^ sm_T6[(t1 >> 16) & 0xFF] ^ sm_T7[(t0 >> 8) & 0xFF] ^ sm_T8[t3 & 0xFF]) ^ Ker[2];
+    a3 = (sm_T5[(t3 >> 24) & 0xFF] ^ sm_T6[(t2 >> 16) & 0xFF] ^ sm_T7[(t1 >> 8) & 0xFF] ^ sm_T8[t0 & 0xFF]) ^ Ker[3];
     t0 = a0;
     t1 = a1;
     t2 = a2;
     t3 = a3;
   }
 
-  int key;
-  key = this->m_Kd[this->m_iROUNDS][0];
-  result[0] = static_cast<char>(sm_Si[(t0 >> 24) & 0xFF] ^ (key >> 24));
-  result[1] = static_cast<char>(sm_Si[(t3 >> 16) & 0xFF] ^ (key >> 16));
-  result[2] = static_cast<char>(sm_Si[(t2 >> 8) & 0xFF] ^ (key >> 8));
-  result[3] = static_cast<char>(sm_Si[t1 & 0xFF] ^ key);
-  key = this->m_Kd[this->m_iROUNDS][1];
-  result[4] = static_cast<char>(sm_Si[(t1 >> 24) & 0xFF] ^ (key >> 24));
-  result[5] = static_cast<char>(sm_Si[(t0 >> 16) & 0xFF] ^ (key >> 16));
-  result[6] = static_cast<char>(sm_Si[(t3 >> 8) & 0xFF] ^ (key >> 8));
-  result[7] = static_cast<char>(sm_Si[t2 & 0xFF] ^ key);
-  key = this->m_Kd[this->m_iROUNDS][2];
-  result[8] = static_cast<char>(sm_Si[(t2 >> 24) & 0xFF] ^ (key >> 24));
-  result[9] = static_cast<char>(sm_Si[(t1 >> 16) & 0xFF] ^ (key >> 16));
-  result[10] = static_cast<char>(sm_Si[(t0 >> 8) & 0xFF] ^ (key >> 8));
-  result[11] = static_cast<char>(sm_Si[t3 & 0xFF] ^ key);
-  key = this->m_Kd[this->m_iROUNDS][3];
-  result[12] = static_cast<char>(sm_Si[(t3 >> 24) & 0xFF] ^ (key >> 24));
-  result[13] = static_cast<char>(sm_Si[(t2 >> 16) & 0xFF] ^ (key >> 16));
-  result[14] = static_cast<char>(sm_Si[(t1 >> 8) & 0xFF] ^ (key >> 8));
-  result[15] = static_cast<char>(sm_Si[t0 & 0xFF] ^ key);
+  Ker = this->m_Kd[this->m_iROUNDS];
+  int tt = Ker[0];
+  result[0] = static_cast<char>(sm_Si[(t0 >> 24) & 0xFF] ^ (tt >> 24));
+  result[1] = static_cast<char>(sm_Si[(t3 >> 16) & 0xFF] ^ (tt >> 16));
+  result[2] = static_cast<char>(sm_Si[(t2 >> 8) & 0xFF] ^ (tt >> 8));
+  result[3] = static_cast<char>(sm_Si[t1 & 0xFF] ^ tt);
+  tt = Ker[1];
+  result[4] = static_cast<char>(sm_Si[(t1 >> 24) & 0xFF] ^ (tt >> 24));
+  result[5] = static_cast<char>(sm_Si[(t0 >> 16) & 0xFF] ^ (tt >> 16));
+  result[6] = static_cast<char>(sm_Si[(t3 >> 8) & 0xFF] ^ (tt >> 8));
+  result[7] = static_cast<char>(sm_Si[t2 & 0xFF] ^ tt);
+  tt = Ker[2];
+  result[8] = static_cast<char>(sm_Si[(t2 >> 24) & 0xFF] ^ (tt >> 24));
+  result[9] = static_cast<char>(sm_Si[(t1 >> 16) & 0xFF] ^ (tt >> 16));
+  result[10] = static_cast<char>(sm_Si[(t0 >> 8) & 0xFF] ^ (tt >> 8));
+  result[11] = static_cast<char>(sm_Si[t3 & 0xFF] ^ tt);
+  tt = Ker[3];
+  result[12] = static_cast<char>(sm_Si[(t3 >> 24) & 0xFF] ^ (tt >> 24));
+  result[13] = static_cast<char>(sm_Si[(t2 >> 16) & 0xFF] ^ (tt >> 16));
+  result[14] = static_cast<char>(sm_Si[(t1 >> 8) & 0xFF] ^ (tt >> 8));
+  result[15] = static_cast<char>(sm_Si[t0 & 0xFF] ^ tt);
 }
 
 // OFFSET: 0x00B0B0E0
@@ -601,63 +605,61 @@ void CAES::DefEncryptBlock(const char* in, char* result) {
     throw std::exception(sm_szErrorMsg1);
   }
 
-  int t0 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[0])) << 24) |
-    (static_cast<unsigned char>(in[1]) << 16) | (static_cast<unsigned char>(in[2]) << 8) |
-    static_cast<unsigned char>(in[3]);
-  t0 ^= this->m_Ke[0][0];
-  int t1 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[4])) << 24) |
-    (static_cast<unsigned char>(in[5]) << 16) | (static_cast<unsigned char>(in[6]) << 8) |
-    static_cast<unsigned char>(in[7]);
-  t1 ^= this->m_Ke[0][1];
-  int t2 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[8])) << 24) |
-    (static_cast<unsigned char>(in[9]) << 16) | (static_cast<unsigned char>(in[10]) << 8) |
-    static_cast<unsigned char>(in[11]);
-  t2 ^= this->m_Ke[0][2];
-  int t3 =
-    (static_cast<unsigned int>(static_cast<unsigned char>(in[12])) << 24) |
-    (static_cast<unsigned char>(in[13]) << 16) | (static_cast<unsigned char>(in[14]) << 8) |
-    static_cast<unsigned char>(in[15]);
-  t3 ^= this->m_Ke[0][3];
+  int* Ker = this->m_Ke[0];
+  int t0 = static_cast<unsigned char>(*in++) << 24;
+  t0 |= static_cast<unsigned char>(*in++) << 16;
+  t0 |= static_cast<unsigned char>(*in++) << 8;
+  (t0 |= static_cast<unsigned char>(*in++)) ^= Ker[0];
+  int t1 = static_cast<unsigned char>(*in++) << 24;
+  t1 |= static_cast<unsigned char>(*in++) << 16;
+  t1 |= static_cast<unsigned char>(*in++) << 8;
+  (t1 |= static_cast<unsigned char>(*in++)) ^= Ker[1];
+  int t2 = static_cast<unsigned char>(*in++) << 24;
+  t2 |= static_cast<unsigned char>(*in++) << 16;
+  t2 |= static_cast<unsigned char>(*in++) << 8;
+  (t2 |= static_cast<unsigned char>(*in++)) ^= Ker[2];
+  int t3 = static_cast<unsigned char>(*in++) << 24;
+  t3 |= static_cast<unsigned char>(*in++) << 16;
+  t3 |= static_cast<unsigned char>(*in++) << 8;
+  (t3 |= static_cast<unsigned char>(*in++)) ^= Ker[3];
+  int a0;
+  int a1;
+  int a2;
+  int a3;
 
   for (int round = 1; round < this->m_iROUNDS; ++round) {
-    const int a0 = sm_T1[(t0 >> 24) & 0xFF] ^ sm_T2[(t1 >> 16) & 0xFF] ^
-      sm_T3[(t2 >> 8) & 0xFF] ^ sm_T4[t3 & 0xFF] ^ this->m_Ke[round][0];
-    const int a1 = sm_T1[(t1 >> 24) & 0xFF] ^ sm_T2[(t2 >> 16) & 0xFF] ^
-      sm_T3[(t3 >> 8) & 0xFF] ^ sm_T4[t0 & 0xFF] ^ this->m_Ke[round][1];
-    const int a2 = sm_T1[(t2 >> 24) & 0xFF] ^ sm_T2[(t3 >> 16) & 0xFF] ^
-      sm_T3[(t0 >> 8) & 0xFF] ^ sm_T4[t1 & 0xFF] ^ this->m_Ke[round][2];
-    const int a3 = sm_T1[(t3 >> 24) & 0xFF] ^ sm_T2[(t0 >> 16) & 0xFF] ^
-      sm_T3[(t1 >> 8) & 0xFF] ^ sm_T4[t2 & 0xFF] ^ this->m_Ke[round][3];
+    Ker = this->m_Ke[round];
+    a0 = (sm_T1[(t0 >> 24) & 0xFF] ^ sm_T2[(t1 >> 16) & 0xFF] ^ sm_T3[(t2 >> 8) & 0xFF] ^ sm_T4[t3 & 0xFF]) ^ Ker[0];
+    a1 = (sm_T1[(t1 >> 24) & 0xFF] ^ sm_T2[(t2 >> 16) & 0xFF] ^ sm_T3[(t3 >> 8) & 0xFF] ^ sm_T4[t0 & 0xFF]) ^ Ker[1];
+    a2 = (sm_T1[(t2 >> 24) & 0xFF] ^ sm_T2[(t3 >> 16) & 0xFF] ^ sm_T3[(t0 >> 8) & 0xFF] ^ sm_T4[t1 & 0xFF]) ^ Ker[2];
+    a3 = (sm_T1[(t3 >> 24) & 0xFF] ^ sm_T2[(t0 >> 16) & 0xFF] ^ sm_T3[(t1 >> 8) & 0xFF] ^ sm_T4[t2 & 0xFF]) ^ Ker[3];
     t0 = a0;
     t1 = a1;
     t2 = a2;
     t3 = a3;
   }
 
-  int key;
-  key = this->m_Ke[this->m_iROUNDS][0];
-  result[0] = static_cast<char>(sm_S[(t0 >> 24) & 0xFF] ^ (key >> 24));
-  result[1] = static_cast<char>(sm_S[(t1 >> 16) & 0xFF] ^ (key >> 16));
-  result[2] = static_cast<char>(sm_S[(t2 >> 8) & 0xFF] ^ (key >> 8));
-  result[3] = static_cast<char>(sm_S[t3 & 0xFF] ^ key);
-  key = this->m_Ke[this->m_iROUNDS][1];
-  result[4] = static_cast<char>(sm_S[(t1 >> 24) & 0xFF] ^ (key >> 24));
-  result[5] = static_cast<char>(sm_S[(t2 >> 16) & 0xFF] ^ (key >> 16));
-  result[6] = static_cast<char>(sm_S[(t3 >> 8) & 0xFF] ^ (key >> 8));
-  result[7] = static_cast<char>(sm_S[t0 & 0xFF] ^ key);
-  key = this->m_Ke[this->m_iROUNDS][2];
-  result[8] = static_cast<char>(sm_S[(t2 >> 24) & 0xFF] ^ (key >> 24));
-  result[9] = static_cast<char>(sm_S[(t3 >> 16) & 0xFF] ^ (key >> 16));
-  result[10] = static_cast<char>(sm_S[(t0 >> 8) & 0xFF] ^ (key >> 8));
-  result[11] = static_cast<char>(sm_S[t1 & 0xFF] ^ key);
-  key = this->m_Ke[this->m_iROUNDS][3];
-  result[12] = static_cast<char>(sm_S[(t3 >> 24) & 0xFF] ^ (key >> 24));
-  result[13] = static_cast<char>(sm_S[(t0 >> 16) & 0xFF] ^ (key >> 16));
-  result[14] = static_cast<char>(sm_S[(t1 >> 8) & 0xFF] ^ (key >> 8));
-  result[15] = static_cast<char>(sm_S[t2 & 0xFF] ^ key);
+  Ker = this->m_Ke[this->m_iROUNDS];
+  int tt = Ker[0];
+  result[0] = static_cast<char>(sm_S[(t0 >> 24) & 0xFF] ^ (tt >> 24));
+  result[1] = static_cast<char>(sm_S[(t1 >> 16) & 0xFF] ^ (tt >> 16));
+  result[2] = static_cast<char>(sm_S[(t2 >> 8) & 0xFF] ^ (tt >> 8));
+  result[3] = static_cast<char>(sm_S[t3 & 0xFF] ^ tt);
+  tt = Ker[1];
+  result[4] = static_cast<char>(sm_S[(t1 >> 24) & 0xFF] ^ (tt >> 24));
+  result[5] = static_cast<char>(sm_S[(t2 >> 16) & 0xFF] ^ (tt >> 16));
+  result[6] = static_cast<char>(sm_S[(t3 >> 8) & 0xFF] ^ (tt >> 8));
+  result[7] = static_cast<char>(sm_S[t0 & 0xFF] ^ tt);
+  tt = Ker[2];
+  result[8] = static_cast<char>(sm_S[(t2 >> 24) & 0xFF] ^ (tt >> 24));
+  result[9] = static_cast<char>(sm_S[(t3 >> 16) & 0xFF] ^ (tt >> 16));
+  result[10] = static_cast<char>(sm_S[(t0 >> 8) & 0xFF] ^ (tt >> 8));
+  result[11] = static_cast<char>(sm_S[t1 & 0xFF] ^ tt);
+  tt = Ker[3];
+  result[12] = static_cast<char>(sm_S[(t3 >> 24) & 0xFF] ^ (tt >> 24));
+  result[13] = static_cast<char>(sm_S[(t0 >> 16) & 0xFF] ^ (tt >> 16));
+  result[14] = static_cast<char>(sm_S[(t1 >> 8) & 0xFF] ^ (tt >> 8));
+  result[15] = static_cast<char>(sm_S[t2 & 0xFF] ^ tt);
 }
 
 // OFFSET: 0x00B0B610
@@ -666,40 +668,46 @@ void CAES::EncryptBlock(const char* in, char* result) {
   if (!this->m_bKeyInit) {
     throw std::exception(sm_szErrorMsg1);
   }
-  if (this->m_blockSize == DEFAULT_BLOCK_SIZE) {
+
+  if (DEFAULT_BLOCK_SIZE == this->m_blockSize) {
     this->DefEncryptBlock(in, result);
     return;
   }
 
-  const int columns = this->m_blockSize / 4;
-  const int shiftIndex = columns == 4 ? 0 : (columns == 6 ? 1 : 2);
-  const int shift1 = sm_shifts[shiftIndex][1][0];
-  const int shift2 = sm_shifts[shiftIndex][2][0];
-  const int shift3 = sm_shifts[shiftIndex][3][0];
-  for (int column = 0; column < columns; ++column) {
-    this->t[column] = static_cast<unsigned int>(static_cast<unsigned char>(*in++)) << 24;
-    this->t[column] |= static_cast<unsigned char>(*in++) << 16;
-    this->t[column] |= static_cast<unsigned char>(*in++) << 8;
-    this->t[column] |= static_cast<unsigned char>(*in++);
-    this->t[column] ^= this->m_Ke[0][column];
+  int BC = this->m_blockSize / 4;
+  int SC = BC == 4 ? 0 : (BC == 6 ? 1 : 2);
+  int s1 = sm_shifts[SC][1][0];
+  int s2 = sm_shifts[SC][2][0];
+  int s3 = sm_shifts[SC][3][0];
+  int i;
+  int tt;
+  int* pi = this->t;
+
+  for (i = 0; i < BC; ++i) {
+    *pi = static_cast<unsigned char>(*in++) << 24;
+    *pi |= static_cast<unsigned char>(*in++) << 16;
+    *pi |= static_cast<unsigned char>(*in++) << 8;
+    (*pi++ |= static_cast<unsigned char>(*in++)) ^= this->m_Ke[0][i];
   }
 
-  for (int round = 1; round < this->m_iROUNDS; ++round) {
-    for (int column = 0; column < columns; ++column) {
-      this->a[column] = sm_T1[(this->t[column] >> 24) & 0xFF] ^
-        sm_T2[(this->t[(column + shift1) % columns] >> 16) & 0xFF] ^
-        sm_T3[(this->t[(column + shift2) % columns] >> 8) & 0xFF] ^
-        sm_T4[this->t[(column + shift3) % columns] & 0xFF] ^ this->m_Ke[round][column];
+  for (int r = 1; r < this->m_iROUNDS; ++r) {
+    for (i = 0; i < BC; ++i) {
+      this->a[i] = (sm_T1[(this->t[i] >> 24) & 0xFF] ^ sm_T2[(this->t[(i + s1) % BC] >> 16) & 0xFF] ^
+                    sm_T3[(this->t[(i + s2) % BC] >> 8) & 0xFF] ^ sm_T4[this->t[(i + s3) % BC] & 0xFF]) ^
+                   this->m_Ke[r][i];
     }
-    std::memcpy(this->t, this->a, columns * sizeof(int));
+
+    std::memcpy(this->t, this->a, 4 * BC);
   }
 
-  for (int column = 0; column < columns; ++column) {
-    const int key = this->m_Ke[this->m_iROUNDS][column];
-    *result++ = static_cast<char>(sm_S[(this->t[column] >> 24) & 0xFF] ^ (key >> 24));
-    *result++ = static_cast<char>(sm_S[(this->t[(column + shift1) % columns] >> 16) & 0xFF] ^ (key >> 16));
-    *result++ = static_cast<char>(sm_S[(this->t[(column + shift2) % columns] >> 8) & 0xFF] ^ (key >> 8));
-    *result++ = static_cast<char>(sm_S[this->t[(column + shift3) % columns] & 0xFF] ^ key);
+  int j;
+
+  for (i = 0, j = 0; i < BC; ++i) {
+    tt = this->m_Ke[this->m_iROUNDS][i];
+    result[j++] = static_cast<char>(sm_S[(this->t[i] >> 24) & 0xFF] ^ (tt >> 24));
+    result[j++] = static_cast<char>(sm_S[(this->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16));
+    result[j++] = static_cast<char>(sm_S[(this->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8));
+    result[j++] = static_cast<char>(sm_S[this->t[(i + s3) % BC] & 0xFF] ^ tt);
   }
 }
 
@@ -711,6 +719,6 @@ void CAES::Xor(unsigned char* destination, const unsigned char* source) {
   }
 
   for (int i = 0; i < this->m_blockSize; ++i) {
-    destination[i] ^= source[i];
+    *destination++ ^= *source++;
   }
 }
