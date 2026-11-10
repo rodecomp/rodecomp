@@ -89,9 +89,15 @@ void LegacyRotationTrack::Sample(int frame, matrix& output) const {
     return;
   }
 
-  const float amount = static_cast<float>((frame - a.frame)) / static_cast<float>((b.frame - a.frame));
   ModelRotationKey result;
-  InterpolateModelRotation(amount, a, b, 0, result);
+
+  if (next == 0) {
+    InterpolateModelRotation(0.0f, keys[0], keys[1], 0, result);
+  } else {
+    const float amount = static_cast<float>((frame - a.frame)) / static_cast<float>((b.frame - a.frame));
+    InterpolateModelRotation(amount, a, b, 0, result);
+  }
+
   QuaternionMatrix(result, output);
 }
 
