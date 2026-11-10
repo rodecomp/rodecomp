@@ -632,7 +632,8 @@ UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd()
 // OFFSET: 0x008A3510
 // FUNCTION: fn_11654
 UIBank_NewWnd::UIBank_NewWnd()
-    : UIFrameWnd(0), m_amountEdit(nullptr), m_status() {
+    : UIFrameWnd(0) {
+  this->m_amountEdit = nullptr;
 }
 
 // OFFSET: 0x008A35A0
