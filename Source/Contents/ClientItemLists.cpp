@@ -39,6 +39,7 @@
 #include <vector>
 
 extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 namespace {
   struct EquipSlotDecoder {
@@ -50,6 +51,10 @@ namespace {
     /* 0000 */ std::int16_t id;
     /* 0002 */ std::int16_t value;
     /* 0004 */ unsigned char param;
+  };
+
+  struct ItemRandomOptions {
+    /* 0000 */ ItemRandomOption values[5];
   };
 
   struct ItemAddPacket {
@@ -74,7 +79,7 @@ namespace {
     /* 000E */ unsigned char damaged;
     /* 000F */ unsigned char refine;
     /* 0010 */ std::uint32_t cards[4];
-    /* 0020 */ ItemRandomOption options[5];
+    /* 0020 */ ItemRandomOptions options;
   };
 
   struct ItemAddGradePacket {
@@ -86,7 +91,7 @@ namespace {
     /* 000D */ unsigned char identified;
     /* 000E */ unsigned char damaged;
     /* 000F */ std::uint32_t cards[4];
-    /* 001F */ ItemRandomOption options[5];
+    /* 001F */ ItemRandomOptions options;
     /* 0038 */ unsigned char refine;
     /* 0039 */ unsigned char grade;
   };
@@ -135,8 +140,12 @@ namespace {
 #pragma pack(pop)
 
   bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
-    if (value.itemId != item.itemId || std::memcmp(value.cards, item.cards, sizeof(value.cards)) != 0 ||
-        value.identified != item.identified || value.refiningLevel != item.refiningLevel || value.grade != item.grade) {
+    const auto* valueCards = reinterpret_cast<const std::uint32_t*>(value.cards);
+    const auto* itemCards = reinterpret_cast<const std::uint32_t*>(item.cards);
+
+    if (value.itemId != item.itemId || valueCards[0] != itemCards[0] || valueCards[1] != itemCards[1] ||
+        valueCards[2] != itemCards[2] || valueCards[3] != itemCards[3] || value.identified != item.identified ||
+        value.refiningLevel != item.refiningLevel || value.grade != item.grade) {
       return false;
     }
 
@@ -252,28 +261,69 @@ static int CountItemOptions(const ItemRandomOption* options) {
   return count;
 }
 
-// OFFSET: 0x00D1F5A0
-// FUNCTION: fn_21640
-void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
-  const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
-  ItemRandomOption options[5] = {};
+// INLINED
+static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int itemId, unsigned char type,
+                                            unsigned char identified, unsigned char damaged, unsigned char refine,
+                                            std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
+                                            std::uint32_t card4, ItemRandomOptions options, int grade) {
   ITEM_INFO item;
-  item.identity[1] = packet.index;
-  item.quantity = packet.amount;
-  item.SetItemId(packet.itemId);
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.identity[0] = packet.type;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.optionCount = CountItemOptions(options);
+  item.identity[1] = index;
+  item.quantity = amount;
+  item.SetItemId(itemId);
+  item.identified = identified;
+  item.damaged = damaged;
+  item.refiningLevel = refine;
+  item.identity[0] = type;
+  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  cards[0] = card1;
+  cards[1] = card2;
+  cards[2] = card3;
+  cards[3] = card4;
+  item.optionCount = CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
   }
-  item.grade = 0;
+  item.grade = static_cast<std::int16_t>(grade);
   g_session.AddCartItem(item, 1);
 }
 
+// INLINED
+static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amount, int itemId, unsigned char type,
+                                                    unsigned char identified, unsigned char damaged,
+                                                    unsigned char refine, std::uint32_t card1, std::uint32_t card2,
+                                                    std::uint32_t card3, std::uint32_t card4,
+                                                    ItemRandomOptions options, int grade) {
+  ITEM_INFO item;
+  item.identity[1] = index;
+  item.quantity = amount;
+  item.SetItemId(itemId);
+  item.identified = identified;
+  item.damaged = damaged;
+  item.refiningLevel = refine;
+  item.identity[0] = type;
+  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  cards[0] = card1;
+  cards[1] = card2;
+  cards[2] = card3;
+  cards[3] = card4;
+  item.optionCount = CountItemOptions(options.values);
+  for (int index = 0; index < item.optionCount; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
+  }
+  item.grade = static_cast<std::int16_t>(grade);
+  g_session.AddMerchantShopItem(item);
+}
+
+// OFFSET: 0x00D1F5A0
+// FUNCTION: fn_21640
+void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemAddPacket*>(data);
+  ItemRandomOptions options = {};
+  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+                    packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3], options, 0);
+}
+
+#pragma pack(push, 1)
   struct ItemAddSlotPacket {
     /* 0000 */ std::int16_t id;
     /* 0002 */ int itemId;
@@ -294,66 +344,61 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
     /* 000C */ unsigned char damaged;
     /* 000D */ unsigned char refine;
     /* 000E */ std::uint32_t cards[4];
-    /* 001E */ ItemRandomOption options[5];
+    /* 001E */ ItemRandomOptions options;
   };
+#pragma pack(pop)
 
-// OFFSET: 0x00D1F770
-// FUNCTION: fn_21641
-void ReceiveItemSlot(const unsigned char* data) {
-  const ItemAddSlotPacket packet = *reinterpret_cast<const ItemAddSlotPacket*>(data);
-  ItemRandomOption options[5] = {};
-  if (packet.slot < 0) {
+// INLINED
+static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, int slot, unsigned char identified,
+                                                unsigned char damaged, unsigned char refine, std::uint32_t card1,
+                                                std::uint32_t card2, std::uint32_t card3, std::uint32_t card4,
+                                                ItemRandomOptions options) {
+  if (slot < 0) {
     g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
-  if (packet.itemId == 0) {
-    g_session.SetOtherExchangeMoney(packet.slot);
+  if (itemId == 0) {
+    g_session.SetOtherExchangeMoney(slot);
     return;
   }
 
   ITEM_INFO item;
-  item.identity[0] = packet.type;
-  item.SetItemId(packet.itemId);
+  item.identity[0] = type;
+  item.SetItemId(itemId);
+  item.damaged = damaged;
+  item.identified = identified;
+  item.refiningLevel = refine;
+  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  cards[0] = card1;
+  cards[1] = card2;
+  cards[2] = card3;
+  cards[3] = card4;
   item.identity[1] = 0xFFFFFFFF;
-  item.quantity = packet.slot;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.optionCount = CountItemOptions(options);
+  item.quantity = slot;
+  item.optionCount = CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
+    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
   }
   g_session.AddItemSlot(item);
+}
+
+// OFFSET: 0x00D1F770
+// FUNCTION: fn_21641
+void ReceiveItemSlot(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
+  ItemRandomOptions options = {};
+  AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
+                        packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
+                        options);
 }
 
 // OFFSET: 0x00D1F970
 // FUNCTION: fn_21642
 void ReceiveItemSlotOptions(const unsigned char* data) {
-  const ItemAddSlotOptionsPacket packet = *reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
-  if (packet.slot < 0) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
-  }
-
-  if (packet.itemId == 0) {
-    g_session.SetOtherExchangeMoney(packet.slot);
-    return;
-  }
-
-  ITEM_INFO item;
-  item.identity[0] = packet.type;
-  item.SetItemId(packet.itemId);
-  item.identity[1] = 0xFFFFFFFF;
-  item.quantity = packet.slot;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.optionCount = CountItemOptions(packet.options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = packet.options[index];
-  }
-  g_session.AddItemSlot(item);
+  const auto* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
+  AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
+                        packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
+                        packet->options);
 }
 
 // OFFSET: 0x00D1FBA0
@@ -414,115 +459,47 @@ void ReceiveFriendAddResult(const unsigned char* data) {
 // OFFSET: 0x00D1FDA0
 // FUNCTION: fn_21644
 void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
-  const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
-  ItemRandomOption options[5] = {};
-  ITEM_INFO item;
-  item.identity[1] = packet.index;
-  item.quantity = packet.amount;
-  item.SetItemId(packet.itemId);
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.identity[0] = packet.type;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.optionCount = CountItemOptions(options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
-  }
-  item.grade = 0;
-  g_session.AddMerchantShopItem(item);
+  const auto* packet = reinterpret_cast<const ItemAddPacket*>(data);
+  ItemRandomOptions options = {};
+  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+                            packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
+                            packet->cards[3], options, 0);
 }
 
 // OFFSET: 0x00D1FF70
 // FUNCTION: fn_21645
 void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddOptionsPacket*>(data);
-  ItemRandomOption options[5];
-  std::memcpy(options, packet->options, sizeof(options));
-  ITEM_INFO item;
-  item.identity[1] = packet->index;
-  item.quantity = packet->amount;
-  item.SetItemId(packet->itemId);
-  item.identified = packet->identified;
-  item.damaged = packet->damaged;
-  item.refiningLevel = packet->refine;
-  item.identity[0] = packet->type;
-  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
-  item.optionCount = CountItemOptions(options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
-  }
-  item.grade = 0;
-  g_session.AddMerchantShopItem(item);
+  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+                            packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
+                            packet->cards[3], packet->options, 0);
 }
 
 // OFFSET: 0x00D20180
 // FUNCTION: fn_21646
 void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
-  const ItemAddGradePacket packet = *reinterpret_cast<const ItemAddGradePacket*>(data);
-  ItemRandomOption options[5];
-  std::memcpy(options, packet.options, sizeof(options));
-  ITEM_INFO item;
-  item.identity[1] = packet.index;
-  item.quantity = packet.amount;
-  item.SetItemId(packet.itemId);
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.identity[0] = packet.type;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.optionCount = CountItemOptions(options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
-  }
-  item.grade = packet.grade;
-  g_session.AddMerchantShopItem(item);
+  const auto* packet = reinterpret_cast<const ItemAddGradePacket*>(data);
+  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+                            packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
+                            packet->cards[3], packet->options, packet->grade);
 }
 
 // OFFSET: 0x00D204B0
 // FUNCTION: fn_21647
 void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddOptionsPacket*>(data);
-  ItemRandomOption options[5];
-  std::memcpy(options, packet->options, sizeof(options));
-  ITEM_INFO item;
-  item.identity[1] = packet->index;
-  item.quantity = packet->amount;
-  item.SetItemId(packet->itemId);
-  item.identified = packet->identified;
-  item.damaged = packet->damaged;
-  item.refiningLevel = packet->refine;
-  item.identity[0] = packet->type;
-  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
-  item.optionCount = CountItemOptions(options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
-  }
-  item.grade = 0;
-  g_session.AddCartItem(item, 1);
+  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+                    packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
+                    packet->options, 0);
 }
 
 // OFFSET: 0x00D206C0
 // FUNCTION: fn_21648
 void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
-  const ItemAddGradePacket packet = *reinterpret_cast<const ItemAddGradePacket*>(data);
-  ItemRandomOption options[5];
-  std::memcpy(options, packet.options, sizeof(options));
-  ITEM_INFO item;
-  item.identity[1] = packet.index;
-  item.quantity = packet.amount;
-  item.SetItemId(packet.itemId);
-  item.identified = packet.identified;
-  item.damaged = packet.damaged;
-  item.refiningLevel = packet.refine;
-  item.identity[0] = packet.type;
-  std::memcpy(item.cards, packet.cards, sizeof(packet.cards));
-  item.optionCount = CountItemOptions(options);
-  for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
-  }
-  item.grade = packet.grade;
-  g_session.AddCartItem(item, 1);
+  const auto* packet = reinterpret_cast<const ItemAddGradePacket*>(data);
+  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+                    packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
+                    packet->options, packet->grade);
 }
 
 namespace {
@@ -921,9 +898,9 @@ void CSession::AppendShopItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DD76D0
 // FUNCTION: fn_23293
 void CSession::MergeItem1718ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->shopItems) {
-    if (value.itemId == item.itemId) {
-      value.quantity = value.quantity == -1 ? -1 : value.quantity + item.quantity;
+  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+    if (it->itemId == item.itemId) {
+      it->quantity = it->quantity == -1 ? -1 : it->quantity + item.quantity;
       return;
     }
   }
@@ -934,9 +911,9 @@ void CSession::MergeItem1718ByName(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7770
 // FUNCTION: fn_23294
 void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->purchaseItems) {
-    if (value.itemId == item.itemId) {
-      value.quantity += item.quantity;
+  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+    if (it->itemId == item.itemId) {
+      it->quantity += item.quantity;
       return;
     }
   }
@@ -947,10 +924,13 @@ void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
 void CSession::MergePurchaseItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->purchaseItems) {
-    const bool same = item.flags[3] ? value.identity[1] == item.identity[1] : value.itemId == item.itemId;
-    if (same) {
-      value.quantity += item.quantity;
+  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+    bool same = it->identity[1] == item.identity[1];
+    if (!item.flags[3]) {
+      same = it->itemId == item.itemId;
+    }
+    if (same == true) {
+      it->quantity += item.quantity;
       return;
     }
   }
