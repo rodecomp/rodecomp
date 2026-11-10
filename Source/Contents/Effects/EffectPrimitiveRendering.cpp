@@ -2424,17 +2424,48 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     const float back = slot.maxHeight;
     const float width = slot.height[0];
     const float length = slot.distance;
-    const float baseX = width * g_cosTable[rot >= 90 ? rot - 90 : rot + 270] + back * g_cosTable[rot >= 90 ? rot - 90 : rot + 270];
-    const float baseZ = width * g_sinTable[rot >= 90 ? rot - 90 : rot + 270] + back * g_sinTable[rot >= 90 ? rot - 90 : rot + 270];
-    const float sideX = back * g_cosTable[rot < 270 ? rot + 90 : rot - 270] + width * g_cosTable[rot >= 90 ? rot - 90 : rot + 270];
-    const float sideZ = back * g_sinTable[rot < 270 ? rot + 90 : rot - 270] + width * g_sinTable[rot >= 90 ? rot - 90 : rot + 270];
 
-    vec3.Set(length * g_cosTable[rot < 0 ? rot + 360 : rot] + baseX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + baseZ);
-    vec2.Set(length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + baseX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + baseZ);
-    vec1.Set(length * g_cosTable[rot < 0 ? rot + 360 : rot] + sideX, 0.0f, length * g_sinTable[rot < 0 ? rot + 360 : rot] + sideZ);
-    vec4.Set(length * g_cosTable[rot >= 180 ? rot - 180 : rot + 180] + sideX, 0.0f, length * g_sinTable[rot >= 180 ? rot - 180 : rot + 180] + sideZ);
+    int angle = rot - 90;
+    if (angle < 0) {
+      angle += 360;
+    }
+    const float widthX = width * g_cosTable[angle];
+    const float widthZ = width * g_sinTable[angle];
+    const float baseX = back * g_cosTable[angle] + widthX;
+    const float baseZ = back * g_sinTable[angle] + widthZ;
 
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec4, vec2, vec3, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    angle = rot;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec4.Set(length * g_cosTable[angle] + baseX, 0.0f, length * g_sinTable[angle] + baseZ);
+
+    angle = rot - 180;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec3.Set(length * g_cosTable[angle] + baseX, 0.0f, length * g_sinTable[angle] + baseZ);
+
+    angle = rot + 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    const float sideX = back * g_cosTable[angle] + widthX;
+    const float sideZ = back * g_sinTable[angle] + widthZ;
+
+    angle = rot;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec1.Set(length * g_cosTable[angle] + sideX, 0.0f, length * g_sinTable[angle] + sideZ);
+
+    angle = rot - 180;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec2.Set(length * g_cosTable[angle] + sideX, 0.0f, length * g_sinTable[angle] + sideZ);
+
+    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
@@ -6434,7 +6465,11 @@ static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, f
 
 // OFFSET: 0x00BD53E0
 // FUNCTION: fn_19882
-__declspec(safebuffers) void CEffectPrim::RenderColorPaper(matrix& wtm) {
+void CEffectPrim::RenderColorPaper(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6446,39 +6481,10 @@ __declspec(safebuffers) void CEffectPrim::RenderColorPaper(matrix& wtm) {
     const float rx = slot.maxHeight;
     const float cs2 = g_cosTable[slot.riseAngle];
     const float sn2 = g_sinTable[slot.riseAngle];
-    vector3d corners[4];
-
-    for (int index = 0; index < 4; ++index) {
-      int angle = slot.rotStart + index * 90;
-      if (angle >= 360) {
-        angle -= 360;
-      }
-      if (angle < 0) {
-        angle += 360;
-      }
-
-      const float ry = rx * g_sinTable[angle];
-      corners[index].x = rx * g_cosTable[angle];
-      corners[index].y = ry * cs2;
-      corners[index].z = ry * sn2;
-    }
-
-    vector3d vec1 = corners[0];
-    vector3d vec2 = corners[1];
-    vector3d vec3 = corners[2];
-    vector3d vec4 = corners[3];
-    vec3.x += slot.vecBNow.x;
-    vec3.y += slot.vecBNow.y;
-    vec3.z += slot.vecBNow.z;
-    vec4.x += slot.vecBNow.x;
-    vec4.y += slot.vecBNow.y;
-    vec4.z += slot.vecBNow.z;
-    vec1.x += slot.vecBNow.x;
-    vec1.y += slot.vecBNow.y;
-    vec1.z += slot.vecBNow.z;
-    vec2.x += slot.vecBNow.x;
-    vec2.y += slot.vecBNow.y;
-    vec2.z += slot.vecBNow.z;
+    SetColorPaperCorner(vec1, slot.rotStart, rx, cs2, sn2, slot.vecBNow);
+    SetColorPaperCorner(vec2, slot.rotStart + 90, rx, cs2, sn2, slot.vecBNow);
+    SetColorPaperCorner(vec3, slot.rotStart + 180, rx, cs2, sn2, slot.vecBNow);
+    SetColorPaperCorner(vec4, slot.rotStart + 270, rx, cs2, sn2, slot.vecBNow);
 
     this->RenderTeiRect(
       &rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(slot.height[0])),
