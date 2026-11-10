@@ -564,41 +564,48 @@ void UISeekPartyListWnd::UpdateScrollBar() {
 // OFFSET: 0x00943F40
 // FUNCTION: fn_12830
 void UISeekPartyListWnd::InitRegionFilter() {
+  struct RegionInfo {
+    int id;
+    const char* name;
+  };
+  struct MapInfo {
+    int x;
+    int y;
+    const char* name;
+    int red;
+    int green;
+    int blue;
+  };
+
   g_session.m_hotkeyScript->HasTable("map_list");
   std::string regionName;
 
   int region = 1;
   for (;; ++region) {
-    int id = 0;
-    const char* name = nullptr;
-    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", region, &id, &name)) {
-      if (!name) {
+    RegionInfo info = {};
+    if (g_session.m_hotkeyScript->Call("queryRegionInfo", "d>ds", region, &info.id, &info.name)) {
+      if (!info.name) {
         break;
       }
 
-      this->m_regionCombo->AddOption(name, 0);
+      this->m_regionCombo->AddOption(info.name, 0);
     }
   }
 
   g_session.m_hotkeyScript->HasTable("map_list");
   for (int current = 1; current < region; ++current) {
+    MapInfo info = {};
     std::vector<SeekPartyMapEntry> maps;
-    int x = 0;
-    int y = 0;
-    const char* name = nullptr;
-    int red = 0;
-    int green = 0;
-    int blue = 0;
     for (int index = 1;; ++index) {
-      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", current, index, &x, &y, &name, &red, &green, &blue)) {
-        if (!name) {
+      if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", current, index, &info.x, &info.y, &info.name, &info.red, &info.green, &info.blue)) {
+        if (!info.name) {
           break;
         }
 
-        std::string mapName(name);
-        const unsigned int color =
-          (static_cast<unsigned char>(blue) << 16) | (static_cast<unsigned char>(green) << 8) | static_cast<unsigned char>(red);
-        maps.push_back(SeekPartyMapEntry{mapName, color});
+        SeekPartyMapEntry entry;
+        entry.name = info.name;
+        entry.color = (static_cast<unsigned char>(info.blue) << 16) | (static_cast<unsigned char>(info.green) << 8) | static_cast<unsigned char>(info.red);
+        maps.push_back(SeekPartyMapEntry(entry));
       }
     }
 
