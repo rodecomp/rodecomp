@@ -111,11 +111,7 @@ void UIGuildWnd::Paint() {
   this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
 
   for (int x = 1, index = 0; x < 397; x += 66, ++index) {
-    if (tab == index) {
-      SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-    } else {
-      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
-    }
+    SkinPaletteChannels(ResourceMgr::Instance(), tab == index ? 2 : 14, tab == index ? 2 : 6, red, green, blue);
     this->FillRegion(x, 18, 64, 23, RGB(red, green, blue));
   }
 
