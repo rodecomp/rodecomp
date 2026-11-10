@@ -168,18 +168,18 @@ void UIRodexContentsWnd::OnCreate(int, int) {
 void UIRodexContentsWnd::Paint() {
   this->ClearSurface(0xFF00FF);
 
-  const auto* background = static_cast<CBitmapRes*>(
+  auto* background = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))
   );
-  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(true, LookupMessage(MSI_RODEX_CHOOSEWND_FAILED), 0);
   this->DrawTextAt(8, 29, this->m_title.c_str(), 0, 0, 12, 0x95330F, 1, 0);
   this->DrawTextAt(9, 52, this->m_sender.c_str(), 0, 0, 12, 0x313131, 0, 0);
 
-  const auto* zenyIcon = static_cast<CBitmapRes*>(
+  auto* zenyIcon = static_cast<CBitmapRes*>(
     ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))
   );
-  this->DrawBitmap(19, 342, &zenyIcon->image, true);
+  this->DrawBitmap(19, 342, zenyIcon, true);
 
   if (this->m_zeny > 0) {
     char amount[260];
@@ -190,24 +190,24 @@ void UIRodexContentsWnd::Paint() {
   }
 
   for (int x = 26; x < 196; x += 34) {
-    const auto* slot = static_cast<CBitmapRes*>(
+    auto* slot = static_cast<CBitmapRes*>(
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp"))
     );
-    this->DrawBitmap(x, 319, &slot->image, true);
+    this->DrawBitmap(x, 319, slot, true);
   }
 
   int x = 30;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
-    const auto* slot = static_cast<CBitmapRes*>(
+    auto* slot = static_cast<CBitmapRes*>(
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))
     );
-    this->DrawBitmap(x - 4, 319, &slot->image, true);
+    this->DrawBitmap(x - 4, 319, slot, true);
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 309, *item, 0, 0);
     if (item->grade > 0) {
       ResourceMgr& resources = ResourceMgr::Instance();
       const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->grade);
-      const auto* grade = static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
-      this->DrawBitmap(x, 321, &grade->image, true);
+      auto* grade = static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
+      this->DrawBitmap(x, 321, grade, true);
     }
     x += 34;
   }
