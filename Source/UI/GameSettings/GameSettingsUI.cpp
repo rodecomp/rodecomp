@@ -4601,8 +4601,9 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   title->SetColor(0);
   title->SetShadow(1, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->m_titleBar->titleText = title;
-  this->m_titleBar->AddChild(title);
+  CUITitleBar* titleBar = this->m_titleBar;
+  titleBar->titleText = title;
+  titleBar->AddChild(title);
 
   CUIImageButton* baseButton = new CUIImageButton();
   baseButton->SetSize(11, 11);
