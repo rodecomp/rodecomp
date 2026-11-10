@@ -79,7 +79,7 @@ void CHitLineEffect::OnProcess() {
       if (particle->elapsedFrames > 35) {
         level -= 5;
       }
-      brightness = std::max<short>(level, 0);
+      brightness = std::max<short>(0, level);
 
       float* turns = &particle->animationParameter;
       unsigned char* halfTurns = &particle->animationState;
@@ -110,7 +110,7 @@ void CHitLineEffect::Render() {
     }
 
     const int segment = particle->columnIndex;
-    vector3d points[2] = {};
+    HitLineVector3d points[2];
     const float radius = particle->speedParameter;
     const float* turns = &particle->animationParameter;
     const unsigned char* halfTurns = &particle->animationState;
@@ -168,7 +168,7 @@ void CHitLineEffect::Render() {
       const float side = size * g_cosTable[degree];
       const float offsetX = side * g_cosTable[heading];
       const float offsetZ = side * g_sinTable[heading];
-      vector3d edge[2] = {};
+      HitLineVector3d edge[2];
       edge[0].x = offsetX + points[0].x;
       edge[0].y = up + points[0].y;
       edge[0].z = offsetZ + points[0].z;
