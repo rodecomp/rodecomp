@@ -7,6 +7,8 @@
 
 class DeviceOwnerDX9;
 
+std::uint16_t PackColorA1R5G5B5(std::uint32_t color);
+
 class CSurfaceDX9 : public CSurface {
 public:
   CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height);

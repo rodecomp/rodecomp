@@ -31,17 +31,17 @@ namespace {
     }
   }
 
-  // OFFSET: 0x00570D70
-  // FUNCTION: fn_02441
-  std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
-    return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
-  }
-
   // INLINED
   UINT AlignDimension(int value) {
     const std::uint32_t dimension = value;
     return dimension + ((0u - dimension) & 3);
   }
+}
+
+// OFFSET: 0x00570D70
+// FUNCTION: fn_02441
+std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
+  return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
 }
 
 // OFFSET: 0x00570720

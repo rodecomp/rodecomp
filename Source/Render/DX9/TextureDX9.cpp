@@ -2,6 +2,7 @@
 #include "Render/TextureQuad.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/D3DX9Runtime.h"
+#include "Render/DX9/SurfaceDX9.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Textures/SpritePixels.h"
@@ -10,6 +11,7 @@
 #include <algorithm>
 #include <cstring>
 #include <memory>
+#include <wrl/client.h>
 
 namespace {
   // OFFSET: 0x00573170
@@ -22,6 +24,22 @@ namespace {
   // FUNCTION: fn_02488
   std::uint16_t Color565(std::uint32_t color) {
     return ((color >> 8) & 0xF800) | ((color >> 5) & 0x7E0) | ((color >> 3) & 0x1F);
+  }
+
+  // INLINED
+  int FormatBitsPerPixel(D3DFORMAT format) {
+    switch (format) {
+    case D3DFMT_R5G6B5:
+    case D3DFMT_X1R5G5B5:
+    case D3DFMT_A1R5G5B5:
+    case D3DFMT_A4R4G4B4:
+      return 16;
+    case D3DFMT_A8R8G8B8:
+    case D3DFMT_X8R8G8B8:
+      return 32;
+    default:
+      return 0;
+    }
   }
 
   // INLINED
@@ -168,13 +186,12 @@ bool CTextureDX9::Create(int width, int height, int format) {
 
   if (!this->m_renderTarget) {
     for (UINT level = 0; level < this->m_texture->GetLevelCount(); ++level) {
-      IDirect3DSurface9* surface = nullptr;
-      if (FAILED(this->m_texture->GetSurfaceLevel(level, &surface))) {
+      Microsoft::WRL::ComPtr<IDirect3DSurface9> surface;
+      if (FAILED(this->m_texture->GetSurfaceLevel(level, surface.GetAddressOf()))) {
         break;
       }
 
-      this->ClearSurface(surface, 0);
-      surface->Release();
+      this->ClearSurface(surface.Get(), 0);
     }
   }
 
@@ -198,21 +215,7 @@ SurfaceLock CTextureDX9::Lock() {
     output.width = this->m_description.Width;
     output.height = this->m_description.Height;
     output.success = true;
-    switch (this->m_description.Format) {
-    case D3DFMT_R5G6B5:
-    case D3DFMT_X1R5G5B5:
-    case D3DFMT_A1R5G5B5:
-    case D3DFMT_A4R4G4B4:
-      output.bitsPerPixel = 16;
-      break;
-    case D3DFMT_A8R8G8B8:
-    case D3DFMT_X8R8G8B8:
-      output.bitsPerPixel = 32;
-      break;
-    default:
-      output.bitsPerPixel = 0;
-      break;
-    }
+    output.bitsPerPixel = FormatBitsPerPixel(this->m_description.Format);
   }
 
   return output;
@@ -275,19 +278,47 @@ void CTextureDX9::ClearSurface(IDirect3DSurface9* surface, std::uint32_t color) 
     return;
   }
 
-  for (UINT y = 0; y < description.Height; ++y) {
-    auto* row = static_cast<unsigned char*>(locked.pBits) + y * locked.Pitch;
-    if (this->m_description.Format == D3DFMT_A8R8G8B8) {
-      for (UINT x = 0; x < description.Width; ++x) {
-        std::memcpy(row + x * sizeof(color), &color, sizeof(color));
-      }
-    } else if (this->m_description.Format == D3DFMT_R5G6B5 || this->m_description.Format == D3DFMT_A1R5G5B5 || this->m_description.Format == D3DFMT_A4R4G4B4) {
-      const std::uint16_t value = Convert16(color, this->m_description.Format);
-
-      for (UINT x = 0; x < description.Width; ++x) {
-        std::memcpy(row + x * sizeof(value), &value, sizeof(value));
+  const UINT width = description.Width;
+  const UINT height = description.Height;
+  switch (this->m_description.Format) {
+  case D3DFMT_A1R5G5B5: {
+    const std::uint16_t value = PackColorA1R5G5B5(color);
+    for (UINT y = 0; y < height; ++y) {
+      auto* row = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + y * locked.Pitch);
+      for (UINT x = 0; x < width; ++x) {
+        row[x] = value;
       }
     }
+    break;
+  }
+  case D3DFMT_A4R4G4B4: {
+    const std::uint16_t value = PackArgb4444(color);
+    for (UINT y = 0; y < height; ++y) {
+      auto* row = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + y * locked.Pitch);
+      for (UINT x = 0; x < width; ++x) {
+        row[x] = value;
+      }
+    }
+    break;
+  }
+  case D3DFMT_R5G6B5: {
+    const std::uint16_t value = Color565(color);
+    for (UINT y = 0; y < height; ++y) {
+      auto* row = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + y * locked.Pitch);
+      for (UINT x = 0; x < width; ++x) {
+        row[x] = value;
+      }
+    }
+    break;
+  }
+  case D3DFMT_A8R8G8B8:
+    for (UINT y = 0; y < height; ++y) {
+      auto* row = reinterpret_cast<std::uint32_t*>(static_cast<unsigned char*>(locked.pBits) + y * locked.Pitch);
+      for (UINT x = 0; x < width; ++x) {
+        row[x] = color;
+      }
+    }
+    break;
   }
 
   surface->UnlockRect();
@@ -296,7 +327,7 @@ void CTextureDX9::ClearSurface(IDirect3DSurface9* surface, std::uint32_t color) 
 // OFFSET: 0x00573240
 // FUNCTION: fn_02490
 bool CTextureDX9::UploadSurface(
-  IDirect3DSurface9* surface, int x, int y, int width, int height, const std::uint32_t* pixels, bool blackTransparent, int sourceWidth
+  IDirect3DSurface9* surface, int x, int y, int width, int height, const std::uint32_t* pixels, std::uint8_t blackTransparent, int sourceWidth
 ) {
   D3DSURFACE_DESC description;
   if (FAILED(surface->GetDesc(&description))) {
@@ -393,53 +424,45 @@ bool CTextureDX9::UploadSurface(
 // FUNCTION: fn_02491
 void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  this->textureFlags = (this->textureFlags & 255) | (static_cast<unsigned char>(option) << 8);
+  std::uint8_t& transparent = reinterpret_cast<std::uint8_t*>(&this->textureFlags)[1];
+  transparent = static_cast<std::uint8_t>(option);
   if (!pixels) {
     return;
   }
 
   IDirect3DDevice9Ex* device = this->m_owner->device;
-  IDirect3DTexture9* temporary = nullptr;
-  IDirect3DSurface9* surface = nullptr;
-  bool ready = true;
+  Microsoft::WRL::ComPtr<IDirect3DTexture9> temporary;
+  Microsoft::WRL::ComPtr<IDirect3DSurface9> surface;
 
   if (this->m_renderTarget) {
-    ready = SUCCEEDED(device->CreateTexture(
-              this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM, &temporary, nullptr
-            )) &&
-            SUCCEEDED(temporary->GetSurfaceLevel(0, &surface));
-    if (ready) {
-      this->ClearSurface(surface, 0);
+    if (FAILED(device->CreateTexture(
+          this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM,
+          temporary.GetAddressOf(), nullptr
+        ))) {
+      return;
     }
+
+    if (FAILED(temporary->GetSurfaceLevel(0, surface.GetAddressOf()))) {
+      return;
+    }
+
+    this->ClearSurface(surface.Get(), 0);
   } else {
     surface = this->m_surface;
-    if (surface) {
-      surface->AddRef();
-    }
-  }
-
-  if (ready) {
-    if (surface) {
-      this->UploadSurface(surface, x, y, width, height, pixels, option != 0, sourceWidth);
-    }
-
-    if (this->m_renderTarget && temporary) {
-      if (temporary->GetLevelCount() > 1) {
-        D3DXFilterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
-      }
-
-      device->UpdateTexture(temporary, this->m_texture);
-    } else {
-      this->Filter();
-    }
   }
 
   if (surface) {
-    surface->Release();
+    this->UploadSurface(surface.Get(), x, y, width, height, pixels, option, sourceWidth);
   }
 
-  if (temporary) {
-    temporary->Release();
+  if (this->m_renderTarget && temporary) {
+    if (temporary->GetLevelCount() > 1) {
+      D3DXFilterTexture(temporary.Get(), nullptr, UINT(-1), DWORD(-1));
+    }
+
+    device->UpdateTexture(temporary.Get(), this->m_texture);
+  } else {
+    this->Filter();
   }
 }
 
@@ -456,11 +479,13 @@ void CTextureDX9::UploadSprite(int x, int y, int width, int height, const Sprite
     return;
   }
 
-  if (this->m_description.Format == D3DFMT_A1R5G5B5 || this->m_description.Format == D3DFMT_A8R8G8B8) {
-    const int bytes = this->m_description.Format == D3DFMT_A1R5G5B5 ? 2 : 4;
-
+  if (this->m_description.Format == D3DFMT_A1R5G5B5) {
     for (int row = 0; row < height; ++row) {
-      std::memset(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch, 0, width * bytes);
+      std::memset(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch, 0, width * sizeof(std::uint16_t));
+    }
+  } else if (this->m_description.Format == D3DFMT_A8R8G8B8) {
+    for (int row = 0; row < height; ++row) {
+      std::memset(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch, 0, width * sizeof(std::uint32_t));
     }
   }
 
