@@ -2693,7 +2693,7 @@ bool CRagEffect::RunStop(short angle) {
 // OFFSET: 0x00C63860
 // FUNCTION: fn_20256
 void CRagEffect::SMA(char flag) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 120, 0.0f, 0.0f, 0.0f, WorldObjects());
@@ -2817,26 +2817,26 @@ void CRagEffect::POISON(char flag) {
 void CRagEffect::Rainbow(const char* name, int unused) {
   if (this->state.stateCnt == 0) {
     const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
-    this->render.position = this->state.parent->render.position;
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 93, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->totalTexture = 1;
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    this->state.currentPrimitive->slots[0].alphaT = static_cast<std::int16_t>(camera->camera.yaw);
-    this->state.currentPrimitive->slots[0].alphaT = static_cast<std::int16_t>(360 - this->state.currentPrimitive->slots[0].alphaT);
-    this->state.currentPrimitive->slots[0].life = 0;
-    this->state.currentPrimitive->slots[1].life = 0;
-    this->state.currentPrimitive->slots[2].life = 0;
-    this->state.currentPrimitive->slots[3].life = 0;
-    this->state.currentPrimitive->slots[0].life = 1;
-    this->state.currentPrimitive->slots[0].process = 0;
-    this->state.currentPrimitive->slots[0].alphaB = 0;
-    this->state.currentPrimitive->slots[0].distance = 50.0f;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 180;
-    this->state.currentPrimitive->slots[0].rotStart = 0;
-    this->state.currentPrimitive->slots[0].riseAngle = this->state.currentPrimitive->slots[0].alphaT;
+    CopyVector(this->render.position, this->state.parent->render.position);
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 93, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.totalTexture = 1;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.slots[0].alphaT = static_cast<std::int16_t>(camera->camera.yaw);
+    this->state.lastPrim->state.slots[0].alphaT = static_cast<std::int16_t>(360 - this->state.lastPrim->state.slots[0].alphaT);
+    this->state.lastPrim->state.slots[0].life = 0;
+    this->state.lastPrim->state.slots[1].life = 0;
+    this->state.lastPrim->state.slots[2].life = 0;
+    this->state.lastPrim->state.slots[3].life = 0;
+    this->state.lastPrim->state.slots[0].life = 1;
+    this->state.lastPrim->state.slots[0].process = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 0;
+    this->state.lastPrim->state.slots[0].distance = 50.0f;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 180;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].riseAngle = this->state.lastPrim->state.slots[0].alphaT;
   }
 }
 
