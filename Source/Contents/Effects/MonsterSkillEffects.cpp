@@ -2456,7 +2456,7 @@ void CPneumaticusProcellaEffect::Open() {
     if (emitter) {
       char name[260] = {};
       StringFormat(name, sizeof(name), static_cast<std::size_t>(-1),
-                   "pneumaticusprocella\\pneumaticusprocella\\pneumaticusprocella_%d.str", std::max(1, rand() % 4));
+                   "pneumaticusprocella\\pneumaticusprocella\\pneumaticusprocella_%d.str", std::max(rand() % 4, 1));
       AsParticle(emitter)->Load(std::string(name));
       AsParticle(emitter)->m_delay = delay;
       emitter->offset.y = -25.0f;
@@ -2914,9 +2914,8 @@ void CServantWeaponNewEffect::AddWeapon() {
     if (particle) {
       particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_cast\\servantweapon_cast.str"));
       particle->m_scale = 0.12f;
-      EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
-      emitter->angle = angle;
-      this->emitters.push_back(emitter);
+      reinterpret_cast<EZ2STREmitter*>(particle)->angle = angle;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
       this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
     }
   }
@@ -3822,22 +3821,22 @@ void CSevereRainStorm::SpawnSevereRain() {
 // OFFSET: 0x00726E30
 // FUNCTION: fn_07419
 void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
-  if (particle) {
-    particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
-    particle->offsetX = 0.2f;
-    particle->offsetY = -13.5f;
-    particle->offsetZ = 0.0f;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  if (emitter) {
+    AsParticle(emitter)->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
+    emitter->offset.x = 0.2f;
+    emitter->offset.y = -13.5f;
+    emitter->offset.z = 0.0f;
+    this->emitters.push_back(emitter);
   }
 
-  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-  if (particle) {
-    particle->Load(FormatOwnedString("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy%02d.str", index));
-    particle->offsetX = 0.2f;
-    particle->offsetY = -13.5f;
-    particle->offsetZ = 0.0f;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (emitter) {
+    AsParticle(emitter)->Load(FormatOwnedString("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy%02d.str", index));
+    emitter->offset.x = 0.2f;
+    emitter->offset.y = -13.5f;
+    emitter->offset.z = 0.0f;
+    this->emitters.push_back(emitter);
   }
 
   this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
