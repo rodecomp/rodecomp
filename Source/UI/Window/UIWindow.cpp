@@ -3293,11 +3293,7 @@ void UIWindow::DrawActionSprite(
   }
 
   if (frames.size() > static_cast<unsigned>(index)) {
-    const ActionFrame& frame = frames[index];
-    const SpriteRleImage* const* images[2] = {sprite->images[0].data(), sprite->images[1].data()};
-    this->geometry.surface->DrawScaledSprite(
-      x, y, width, height, std::span<const SpriteFrameCell>(frame.cells), images, frame.cellCount, offsetX, offsetY, scale, sprite->palette
-    );
+    this->geometry.surface->DrawScaledSprite(x, y, width, height, sprite, &frames[index], offsetX, offsetY, scale, nullptr);
   }
 }
 
@@ -3710,10 +3706,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       if (robeFrames && !robeFrames->empty()) {
         const ActionFrame* robeFrame = &(*robeFrames)[bodyFrame];
         if (robeFrame) {
-          const SpriteRleImage* const* images[2] = {sprites[8]->images[0].data(), sprites[8]->images[1].data()};
-          this->geometry.surface->DrawScaledSprite(
-            x, y, width, height, std::span<const SpriteFrameCell>(robeFrame->cells), images, robeFrame->cellCount, offsetX, offsetY, scale, sprites[8]->palette
-          );
+          this->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[8], robeFrame, offsetX, offsetY, scale, nullptr);
         }
       }
     }
@@ -3730,12 +3723,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 
   const ActionFrame* body = &(*bodyFrames)[bodyFrame];
-  {
-    const SpriteRleImage* const* images[2] = {sprites[0]->images[0].data(), sprites[0]->images[1].data()};
-    this->geometry.surface->DrawScaledSprite(
-      x, y, width, height, std::span<const SpriteFrameCell>(body->cells), images, body->cellCount, offsetX, offsetY, 1.0f, bodyPalette
-    );
-  }
+  this->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[0], body, offsetX, offsetY, 1.0f, bodyPalette);
 
   actions[1] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(look.job, look.sex, &look.head)));
   sprites[1] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(look.job, look.sex, &look.head)));
@@ -3751,11 +3739,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         headPalette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(paletteName.c_str()))->palette;
       }
 
-      const SpriteRleImage* const* images[2] = {sprites[1]->images[0].data(), sprites[1]->images[1].data()};
-      this->geometry.surface->DrawScaledSprite(
-        x + headX, y + headY, width, height, std::span<const SpriteFrameCell>(headFrame->cells), images, headFrame->cellCount, offsetX, offsetY, scale,
-        headPalette
-      );
+      this->geometry.surface->DrawScaledSprite(x + headX, y + headY, width, height, sprites[1], headFrame, offsetX, offsetY, scale, headPalette);
     }
   }
 
@@ -3774,11 +3758,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame0];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        const SpriteRleImage* const* images[2] = {sprites[2]->images[0].data(), sprites[2]->images[1].data()};
-        this->geometry.surface->DrawScaledSprite(
-          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[2]->palette
-        );
+        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[2], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }
@@ -3798,11 +3778,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame1];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        const SpriteRleImage* const* images[2] = {sprites[3]->images[0].data(), sprites[3]->images[1].data()};
-        this->geometry.surface->DrawScaledSprite(
-          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[3]->palette
-        );
+        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[3], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }
@@ -3822,11 +3798,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame2];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        const SpriteRleImage* const* images[2] = {sprites[4]->images[0].data(), sprites[4]->images[1].data()};
-        this->geometry.surface->DrawScaledSprite(
-          x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[4]->palette
-        );
+        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[4], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }

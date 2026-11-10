@@ -766,32 +766,37 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
 // OFFSET: 0x00545C40
 // FUNCTION: fn_01837
 void CDCBitmap::DrawScaledSprite(
-  int x, int y, int drawWidth, int drawHeight, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
-  int offsetY, float scale, const std::uint32_t* palette
+  int x, int y, int drawWidth, int drawHeight, const CSprRes* sprite, const ActionFrame* frame, int offsetX, int offsetY, float scale,
+  const std::uint32_t* palette
 ) {
-  if (!images) {
+  if (!sprite || !frame) {
     return;
   }
 
-  const SpriteFrameCell missing{0, 0, -1, 0, 0xFFFFFFFF, 1, 1, 0, 0};
+  if (!palette) {
+    palette = sprite->palette;
+  }
+
   SpriteAtlasRecord record{};
 
-  for (int index = 0; index < cellCount; ++index) {
-    const SpriteFrameCell& cell = static_cast<unsigned>(index) < cells.size() ? cells[index] : missing;
-    if (cell.image == -1) {
+  for (int index = 0; index < frame->cellCount; ++index) {
+    const SpriteFrameCell* cell = &frame->Cell(index);
+    if (!cell || cell->image == -1) {
       continue;
     }
 
-    const SpriteRleImage* image = images[cell.imageType][cell.image];
+    const SpriteRleImage* image = sprite->images[cell->imageType][cell->image];
     if (!image) {
       continue;
     }
 
-    const float scaleX = scale * cell.scaleX;
-    const float scaleY = scale * cell.scaleY;
+    const float scaleX = scale * cell->scaleX;
+    const float scaleY = scale * cell->scaleY;
+    record.u0 = 0;
+    record.v0 = 0;
     CSurface* surface;
 
-    if (!cell.imageType) {
+    if (!cell->imageType) {
       surface = g_renderer->atlas.Find(image, palette, record);
       if (!surface) {
         surface = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
@@ -804,12 +809,12 @@ void CDCBitmap::DrawScaledSprite(
       continue;
     }
 
-    const std::uint8_t* channels = reinterpret_cast<const std::uint8_t*>(&cell.color);
+    const std::uint8_t* channels = reinterpret_cast<const std::uint8_t*>(&cell->color);
     const std::uint32_t color = PackPixel(channels[3], channels[0], channels[1], channels[2]);
     this->DrawScaledSurface(
-      x, y, drawWidth, drawHeight, surface, image->width, image->height, scaleX, scaleY, color, cell.mirrored != 0,
-      static_cast<int>(static_cast<float>(cell.x) * scaleX + static_cast<float>(offsetX)),
-      static_cast<int>(static_cast<float>(cell.y) * scaleY + static_cast<float>(offsetY)), static_cast<int>(record.u0 * 256), static_cast<int>(record.v0 * 256)
+      x, y, drawWidth, drawHeight, surface, image->width, image->height, scaleX, scaleY, color, cell->mirrored != 0,
+      static_cast<int>(static_cast<float>(cell->x) * scaleX + static_cast<float>(offsetX)),
+      static_cast<int>(static_cast<float>(cell->y) * scaleY + static_cast<float>(offsetY)), static_cast<int>(record.u0 * 256), static_cast<int>(record.v0 * 256)
     );
   }
 }
