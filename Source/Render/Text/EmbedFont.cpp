@@ -40,7 +40,7 @@ void InitEmbedFont() {
 
 // OFFSET: 0x00ADCF60
 // FUNCTION: fn_17940
-int LoadEmbedFont(HANDLE* fontReference, const char* fileName) {
+int LoadEmbedFont(HANDLE* fontReference, const char* fileName, int option) {
   char message[256];
   char path[256];
   GetCurrentDirectoryA(sizeof(path), path);

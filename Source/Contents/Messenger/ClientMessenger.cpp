@@ -6383,15 +6383,15 @@ void CSession::InitClientData() {
   if (g_serviceType == 0) {
     InitEmbedFont();
     SetEmbedFontRootUrl("http://www.ragnarok.co.kr");
-    LoadEmbedFont(&g_embedFontFiles, "RixSquirrel_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixLoveangel_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixNHCgogo_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixDiary_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixMiniHeart_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixFreshman_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixKid_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixMagic_10.eot");
-    LoadEmbedFont(&g_embedFontFiles, "RixJJangu_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixSquirrel_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixLoveangel_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixNHCgogo_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixDiary_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixMiniHeart_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixFreshman_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixKid_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixMagic_10.eot", 0);
+    LoadEmbedFont(&g_embedFontFiles, "RixJJangu_10.eot", 0);
   }
 }
 

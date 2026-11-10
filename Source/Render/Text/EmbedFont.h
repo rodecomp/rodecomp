@@ -39,7 +39,7 @@ extern CEmbedFont* g_embedFont;
 
 void FreeEmbedFont();
 void InitEmbedFont();
-int LoadEmbedFont(HANDLE* fontReference, const char* fileName);
+int LoadEmbedFont(HANDLE* fontReference, const char* fileName, int option);
 void SetEmbedFontRootUrl(const char* url);
 
 #endif
