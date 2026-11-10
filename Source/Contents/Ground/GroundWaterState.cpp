@@ -57,7 +57,11 @@ float GroundGeometry::WaterLevel(int column, int row) const {
   const int z = std::min(row / cellHeight, this->waterRows - 1);
   const unsigned index = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->waterColumns);
 
-  return index < this->waterLevels.size() ? this->waterLevels[index] : 0.0f;
+  if (this->waterLevels.size() > index) {
+    return this->waterLevels[index];
+  }
+
+  return 0.0f;
 }
 
 // OFFSET: 0x00AC1430
@@ -68,7 +72,8 @@ void GroundGeometry::UpdateWater() {
   static constexpr char format[] = "워터\\water%d%02d.jpg";
   char name[32]{};
 
-  for (GroundWaterSurface& surface : this->waterSurfaces) {
+  for (auto it = this->waterSurfaces.begin(); it != this->waterSurfaces.end(); ++it) {
+    GroundWaterSurface& surface = *it;
     ++surface.frame;
     const int end = surface.animation * 32;
 
