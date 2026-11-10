@@ -441,7 +441,7 @@ void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\x31', '\x8F', '\xEA', '\xB3', '\xAE', '\xC5', '\x2A', '\x44', '\x30', '\x8F', '\xD0', '\xAC', '\xA8', '\xDD', '\x13', '\x33'};
+      const std::array<char, 16> bytes = {'\x31', '\x8F', '\xEA', '\xB3', '\xAE', '\xC5', '\x2A', '\x44', '\x30', '\x8F', '\xD0', '\xAC', '\xA8', '\xDD', '\x13', '\x33'};
       thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
