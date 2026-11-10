@@ -53,23 +53,21 @@ void UIEmotionWnd::OnCreate(int, int) {
   char buffer[16];
 
   for (int i = 0; i < 10; ++i) {
-    UIEditCtrl2* edit = new UIEditCtrl2();
-    this->m_edits[i] = edit;
-    edit->SetSize(270, 16);
-    edit->Move(83, y - 3);
-    edit->maximum = 50;
-    edit->Background(232, 232, 232);
-    edit->SetText(emotions->current[i].c_str());
-    this->AddChild(edit);
+    this->m_edits[i] = new UIEditCtrl2();
+    this->m_edits[i]->SetSize(270, 16);
+    this->m_edits[i]->Move(83, y - 3);
+    this->m_edits[i]->maximum = 50;
+    this->m_edits[i]->Background(232, 232, 232);
+    this->m_edits[i]->SetText(emotions->current[i].c_str());
+    this->AddChild(this->m_edits[i]);
 
     std::sprintf(buffer, "Alt + %d", i + 1);
 
-    UIStaticText* label = new UIStaticText();
-    this->m_labels[i] = label;
-    label->SetSize(70, 16);
-    label->Move(20, y);
-    label->SetText(buffer, 0);
-    this->AddChild(label);
+    this->m_labels[i] = new UIStaticText();
+    this->m_labels[i]->SetSize(70, 16);
+    this->m_labels[i]->Move(20, y);
+    this->m_labels[i]->SetText(buffer, 0);
+    this->AddChild(this->m_labels[i]);
 
     y += 21;
   }
@@ -77,15 +75,17 @@ void UIEmotionWnd::OnCreate(int, int) {
   this->m_labels[9]->SetText("Alt + 0", 0);
   this->UIFrameWnd::AddCloseButton("Alt+M", 0);
 
-  std::string path = "유저인터페이스\\";
-  this->viewButton = new UIBitmapButton();
-  this->viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
-  this->viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
-  this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
-  this->viewButton->SetSize(this->viewButton->BitmapWidth(), this->viewButton->BitmapHeight());
-  this->viewButton->Move(this->geometry.width - 50, this->geometry.height - 25);
-  this->viewButton->SetId(283);
-  this->AddChild(this->viewButton);
+  {
+    std::string path = "유저인터페이스\\";
+    this->viewButton = new UIBitmapButton();
+    this->viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
+    this->viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
+    this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
+    this->viewButton->SetSize(this->viewButton->BitmapWidth(), this->viewButton->BitmapHeight());
+    this->viewButton->Move(this->geometry.width - 50, this->geometry.height - 25);
+    this->viewButton->SetId(283);
+    this->AddChild(this->viewButton);
+  }
 
   g_windowMgr.SetFocus(this->m_edits[0]);
   this->m_edits[0]->SetCursor(0xff);
