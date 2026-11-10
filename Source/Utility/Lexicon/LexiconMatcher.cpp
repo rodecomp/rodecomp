@@ -13,7 +13,11 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
   const unsigned char* entry = data;
   int offset = 0;
   unsigned char* offsetBytes = reinterpret_cast<unsigned char*>(&offset);
-  while (text < end && !failed) {
+  while (*text != 0) {
+    if (text >= end || failed) {
+      break;
+    }
+
     if ((*entry & 0x40) != 0) {
       return matched;
     }
@@ -59,10 +63,6 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       if ((*entry & 0x80) != 0) {
         accepted = matched;
       }
-    }
-
-    if (*text == 0) {
-      return accepted;
     }
   }
 
