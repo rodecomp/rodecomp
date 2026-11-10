@@ -30,19 +30,29 @@ ModelMesh::ModelMesh()
 // OFFSET: 0x00551E80
 // FUNCTION: fn_02009
 ModelMesh::~ModelMesh() {
-  delete[] this->vertices;
-  this->vertices = nullptr;
+  if (this->vertices) {
+    delete[] this->vertices;
+    this->vertices = nullptr;
+  }
   this->vertexCount = 0;
-  delete[] this->faces;
-  this->faces = nullptr;
+  if (this->faces) {
+    delete[] this->faces;
+    this->faces = nullptr;
+  }
   this->faceCount = 0;
-  delete[] this->textureVertices;
-  this->textureVertices = nullptr;
+  if (this->textureVertices) {
+    delete[] this->textureVertices;
+    this->textureVertices = nullptr;
+  }
   this->textureVertexCount = 0;
-  delete[] this->faceNormals;
-  this->faceNormals = nullptr;
-  delete[] this->vertexNormals;
-  this->vertexNormals = nullptr;
+  if (this->faceNormals) {
+    delete[] this->faceNormals;
+    this->faceNormals = nullptr;
+  }
+  if (this->vertexNormals) {
+    delete[] this->vertexNormals;
+    this->vertexNormals = nullptr;
+  }
 }
 
 // OFFSET: 0x00551F80
