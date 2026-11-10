@@ -35,29 +35,34 @@ namespace {
 // OFFSET: 0x0061B740
 // FUNCTION: fn_04423
 void SHA3::Add(const unsigned char* data, unsigned int length) {
-  if (this->bufferedBytes != 0 && length != 0) {
-    while (this->bufferedBytes < this->blockSize && length != 0) {
-      this->buffer[this->bufferedBytes++] = *data++;
+  const unsigned char* current = data;
+  if (this->bufferedBytes > 0) {
+    while (length > 0 && this->bufferedBytes < this->blockSize) {
+      this->buffer[this->bufferedBytes++] = *current++;
       --length;
     }
   }
+
   if (this->bufferedBytes == this->blockSize) {
     this->ProcessBlock(this->buffer);
     this->processedBytes += this->blockSize;
     this->bufferedBytes = 0;
   }
 
-  if (length != 0) {
-    while (length >= this->blockSize) {
-      this->ProcessBlock(data);
-      data += this->blockSize;
-      this->processedBytes += this->blockSize;
-      length -= this->blockSize;
-    }
-    while (length != 0) {
-      this->buffer[this->bufferedBytes++] = *data++;
-      --length;
-    }
+  if (length == 0) {
+    return;
+  }
+
+  while (length >= this->blockSize) {
+    this->ProcessBlock(current);
+    current += this->blockSize;
+    this->processedBytes += this->blockSize;
+    length -= this->blockSize;
+  }
+
+  while (length > 0) {
+    this->buffer[this->bufferedBytes++] = *current++;
+    --length;
   }
 }
 
