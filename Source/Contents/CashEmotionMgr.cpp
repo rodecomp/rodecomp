@@ -3000,23 +3000,23 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
 // FUNCTION: fn_09443
 std::string UICashEmotionPack::GetPriceText(int packId) {
   int price = g_cashEmotionMgr->GetPackUnknown18(packId);
-  if (price < 1) {
-    if (price == 0) {
-      const char* text = g_simpleStringMgr->GetString("EMSG_PURCHASE_FREE_PRICE");
-      if (text) {
-        return text;
-      }
+  if (price > 0) {
+    const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
+    if (format) {
+      return std::vformat(format, std::make_format_args(price));
     }
 
-    return std::string();
-  }
-
-  const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
-  if (!format) {
     return std::to_string(price);
   }
 
-  return std::vformat(format, std::make_format_args(price));
+  if (price == 0) {
+    const char* text = g_simpleStringMgr->GetString("EMSG_PURCHASE_FREE_PRICE");
+    if (text) {
+      return text;
+    }
+  }
+
+  return "";
 }
 
 // OFFSET: 0x007CA2C0
