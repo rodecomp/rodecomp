@@ -63,7 +63,7 @@ namespace {
     /* 002A */ std::uint32_t version;
   };
 
-  struct PakHeaderFile64 {
+  struct PakFileHeader {
     /* 0000 */ char signature[16];
     /* 0010 */ std::uint8_t padding_0010[14];
     /* 001E */ std::uint64_t tableOffset;
@@ -112,10 +112,10 @@ namespace {
   static_assert(offsetof(PakHeaderFile, seed) == 34);
   static_assert(offsetof(PakHeaderFile, entryCount) == 38);
   static_assert(offsetof(PakHeaderFile, version) == 42);
-  static_assert(sizeof(PakHeaderFile64) == 46);
-  static_assert(offsetof(PakHeaderFile64, tableOffset) == 30);
-  static_assert(offsetof(PakHeaderFile64, entryCount) == 38);
-  static_assert(offsetof(PakHeaderFile64, version) == 42);
+  static_assert(sizeof(PakFileHeader) == 46);
+  static_assert(offsetof(PakFileHeader, tableOffset) == 30);
+  static_assert(offsetof(PakFileHeader, entryCount) == 38);
+  static_assert(offsetof(PakFileHeader, version) == 42);
   static_assert(sizeof(PakTableFile) == 8);
   static_assert(offsetof(PakTableFile, originalSize) == 4);
   static_assert(sizeof(PakTableFileV3) == 12);
@@ -539,15 +539,15 @@ __declspec(noinline) void FillRandomBytes(char* first, char* last, PakUniformRan
   }
 }
 
-struct PakKeyBlock48 {
+struct PakKeyMaterial {
   /* 0000 */ std::uint8_t bytes[48];
 };
 
-struct PakMaskedKey48 {
+struct PakObfuscatedKey {
   /* 0000 */ std::uint8_t mask[5];
   /* 0005 */ std::uint8_t data[48];
 
-  __declspec(noinline) PakKeyBlock48 Unmask() const;
+  __declspec(noinline) PakKeyMaterial Unmask() const;
 };
 
 struct PakMaskedValue {
@@ -605,18 +605,18 @@ struct PakHeaderDecryptor {
   std::span<std::uint8_t>* span_a;
   std::span<std::uint8_t>* span_b;
 
-  __declspec(noinline) bool Decrypt(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource);
+  __declspec(noinline) bool Decrypt(AES** cipher_ptr, const PakObfuscatedKey* masked_key, int mode, int keySource);
 };
 
 // OFFSET: 0x00655A30
 // FUNCTION: fn_05068
-__declspec(noinline) bool PakHeaderDecryptor::Decrypt(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
+__declspec(noinline) bool PakHeaderDecryptor::Decrypt(AES** cipher_ptr, const PakObfuscatedKey* masked_key, int mode, int keySource) {
   alignas(16) unsigned char key[16]{};
   const PakAuxiliaryContext* context = this->context;
 
   switch (keySource) {
   case 0: {
-    PakKeyBlock48 block = masked_key->Unmask();
+    PakKeyMaterial block = masked_key->Unmask();
     std::memcpy(key, block.bytes + 16, 16);
     SecureZeroMemory(&block, sizeof(block));
     break;
@@ -774,10 +774,10 @@ bool CGPak::Open(CPakFile* file) {
   }();
 
   if (std::memcmp(bytes, eventHorizon.Text(), 14) == 0) {
-    const PakHeaderFile64* header = reinterpret_cast<const PakHeaderFile64*>(bytes);
+    const PakFileHeader* header = reinterpret_cast<const PakFileHeader*>(bytes);
     this->m_version = header->version;
     this->m_entryCount = header->entryCount;
-    this->m_tableOffset = header->tableOffset + sizeof(PakHeaderFile64);
+    this->m_tableOffset = header->tableOffset + sizeof(PakFileHeader);
   } else {
     EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& masterOfMagic = []() -> EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& {
       const char source[] = {'\xF0', '\xDC', '\x9E', '\x43', '\xDE', '\xCD', '\xCF', '\xEC', '\xDB', '\x9D', '\xA0', '\x56', '\xDC', '\xD6', '\x8C', '\x83'};
@@ -1100,7 +1100,7 @@ __declspec(noinline) PakUniformRandom::PakUniformRandom(int minimum, int maximum
 
 struct PakAuxiliaryState {
   /* 0000 */ std::unordered_map<std::int16_t, std::function<bool(std::span<const std::uint8_t>, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<const std::uint8_t>, std::span<std::uint8_t>)>> m_handlers;
-  /* 0020 */ PakMaskedKey48 m_key;
+  /* 0020 */ PakObfuscatedKey m_key;
   /* 0055 */ std::uint8_t padding_0055[107];
   /* 00C0 */ AES* m_cipher;
 
@@ -1206,8 +1206,8 @@ bool PakAuxiliaryState::DecodeHeader(std::span<std::uint8_t> name, std::uint8_t*
 
 // OFFSET: 0x00658E90
 // FUNCTION: fn_05113
-__declspec(noinline) PakKeyBlock48 PakMaskedKey48::Unmask() const {
-  PakKeyBlock48 result;
+__declspec(noinline) PakKeyMaterial PakObfuscatedKey::Unmask() const {
+  PakKeyMaterial result;
   for (std::size_t i = 0; i < sizeof(result.bytes); ++i) {
     result.bytes[i] = this->data[i] ^ this->mask[i & 3] ^ this->mask[(i & 3) + 1];
   }
