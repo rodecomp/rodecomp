@@ -252,11 +252,15 @@ void UIListBox::Clear() {
 // FUNCTION: fn_11512
 void UIListBox::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int overflow = std::max(0, (static_cast<int>(this->lines.size()) - visible));
+  const int overflow = std::ranges::max(static_cast<int>(this->lines.size()) - visible, 0);
 
   this->verticalOverflow = overflow != 0;
   UIScrollBar* bar = this->verticalBar;
-  bar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
+  if (overflow != 0) {
+    bar->maximum = this->bottomMargin + overflow;
+  } else {
+    bar->maximum = 0;
+  }
   bar->total = static_cast<int>(this->lines.size());
   bar->visible = visible;
   bar->Invalidate();
