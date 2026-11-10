@@ -1051,7 +1051,7 @@ void CPc::ApplyLayerEffects(
     }
   }
 
-  if ((this->render.flags & 1) != 0 && layer < 5) {
+  if ((this->render.flags & 1) != 0 && layer <= 4) {
     *blend = 5;
   }
 
@@ -1073,12 +1073,12 @@ void CPc::ApplyLayerEffects(
     hover = static_cast<short>(this->HoverHeight());
   }
 
-  const int hoverOffset = hover;
+  const long long hoverOffset = hover;
   this->render.hoverOffsetLow = static_cast<std::uint32_t>(hoverOffset);
-  this->render.hoverOffsetHigh = static_cast<std::uint32_t>(hoverOffset >> 31);
+  this->render.hoverOffsetHigh = static_cast<std::uint32_t>(hoverOffset >> 32);
 
   SpriteQuad jitter;
-  if ((this->render.flags & 8) != 0 && layer < 5 && (this->render.flags & 0x30000) == 0) {
+  if ((this->render.flags & 8) != 0 && layer <= 4 && (this->render.flags & 0x30000) == 0) {
     if (++this->render.effectPhaseBytes[2] > 180) {
       this->render.effectPhaseBytes[2] = 0;
     }
@@ -1134,7 +1134,7 @@ void CPc::ApplyLayerEffects(
 
   if ((this->render.flags & 0x80800) != 0 && (this->render.flags & 0x20000) == 0) {
     const float scale = this->render.scale;
-    for (int step = 1, depth = 3; depth < 7; ++step, depth += 3) {
+    for (int step = 1, depth = 3; depth <= 6; ++step, depth += 3) {
       const unsigned char alpha = this->render.outlineAlpha;
       const float distanceScale = g_renderer->ScaleDistance(distance);
       const float factor = GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
@@ -1199,13 +1199,13 @@ void CPc::ApplyLayerEffects(
   }
 
   if ((this->render.flags & 0x20000) != 0) {
-    const unsigned char phase = this->render.tintPhase;
+    const int riseUnits = (25 - this->render.tintPhase) * 20;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     short alpha = static_cast<short>((this->render.tintPhase - 10) * 17);
     if (alpha > 255) {
       alpha = 255;
     }
-    const float rise = std::max(0.0f, 400.0f / mode->camera->camera.desiredDistance * static_cast<float>((25 - phase) * 20));
+    const float rise = std::max(400.0f / mode->camera->camera.desiredDistance * static_cast<float>(riseUnits), 0.0f);
     quad->top = static_cast<float>(box[1]) - rise;
     quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
     quad->bottom = static_cast<float>(box[3]) - rise;
@@ -1339,8 +1339,12 @@ void CPc::SetSprWeapon2(int first, int second) {
       case JT_GUILLOTINE_CROSS_H:
       case JT_GUILLOTINE_CROSS_B:
       case JT_SHADOW_CROSS:
-        if (weaponType == W_FIST || weaponType == W_2HAXE || weaponType == W_MACE) {
-          weaponType = W_1HSWORD;
+        switch (weaponType) {
+          case W_FIST:
+          case W_2HAXE:
+          case W_MACE:
+            weaponType = W_1HSWORD;
+            break;
         }
         break;
     }
