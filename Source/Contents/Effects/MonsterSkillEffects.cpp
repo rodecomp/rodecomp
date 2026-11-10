@@ -692,29 +692,31 @@ void CWarningPlaneEffect::OnProcess() {
       CEZ2STRParticle* particle = AsParticle(emitter);
 
       matrix rotation;
-      rotation.Identity();
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeXRotation(1.5707963f);
       rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
 
       matrix scale;
-      scale.Identity();
+      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
       scale.SetScale(particle->scale, particle->scale, 1.0f);
 
       matrix transform;
       transform.Compose(scale, rotation);
       particle->transform = transform;
 
+      int alpha = particle->alpha;
       if (this->fadingIn == 1) {
-        particle->alpha += 2;
-        if (particle->alpha >= 250) {
+        alpha += 2;
+        if (alpha >= 250) {
           this->fadingIn = 0;
         }
       } else {
-        particle->alpha -= 2;
-        if (particle->alpha <= 50) {
+        alpha -= 2;
+        if (alpha <= 50) {
           this->fadingIn = 1;
         }
       }
+      particle->alpha = alpha;
     }
 
     ++emitter->elapsed;
@@ -4578,9 +4580,8 @@ void CGravityControlEffect::Close() {
 
   if (this->id == 0x4B1) {
     CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
-    const float soundX = this->position[0] - player->render.position.x;
-    const float soundZ = this->position[2] - player->render.position.z;
-    g_soundMgr->PlayWave("effect\\t_공격력.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
+    const vector3d playerPosition = player->render.position;
+    g_soundMgr->PlayWave("effect\\t_공격력.wav", this->position[0] - playerPosition.x, 0.0f, this->position[2] - playerPosition.z, 250, 40, 1.0f, 0);
   }
 }
 
