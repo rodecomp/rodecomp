@@ -29,7 +29,6 @@ void CLoginMode::SendKeepalive() {
     KeepalivePacket packet;
     packet.id = ID_PING;
     packet.accountId = g_session.m_aid;
-    CRagConnection& connection = GetRagConnection();
-    connection.Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
