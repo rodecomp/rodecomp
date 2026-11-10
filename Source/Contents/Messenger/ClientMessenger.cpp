@@ -631,10 +631,10 @@ int EquipmentProperties::CEquipment::GetValue(const int& key) {
   }
 
   auto found = this->m_info->values.find(key);
-  if (found == this->m_info->values.end()) {
-    return 0;
+  if (this->m_info->values.end() != found) {
+    return found->second;
   }
-  return found->second;
+  return 0;
 }
 
 // OFFSET: 0x0068C0F0
@@ -1035,8 +1035,8 @@ void EquipmentProperties::CEquipmentWearable::Clear() {
 // OFFSET: 0x0068CF10
 // FUNCTION: fn_05643
 void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bool negative, std::string_view suffix) {
-  for (auto& group : this->m_properties.GetProperties()) {
-    for (auto& entry : group.second) {
+  for (const auto& group : std::as_const(this->m_properties.GetProperties())) {
+    for (const auto& entry : group.second) {
       std::vector<std::string> lines = Split(entry.second->Describe(true, negative), "\n");
       for (std::string& line : lines) {
         ReplaceAll(line, "#", " ");
@@ -1052,17 +1052,19 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
 // OFFSET: 0x00698560
 // FUNCTION: fn_05769
 __declspec(noinline) EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStore& other) {
-  for (auto& group : other.properties) {
-    for (auto& entry : group.second) {
+  for (const auto& group : std::as_const(other.properties)) {
+    for (const auto& entry : group.second) {
       EquipmentPropertyDefinition* definition = entry.second->m_definition;
       if (definition == nullptr) {
         continue;
       }
 
-      if (this->properties[definition->group].find(definition->id) == this->properties[definition->group].end()) {
+      auto found = this->properties[definition->group].find(definition->id);
+      if (this->properties[definition->group].end() == found) {
         this->properties[definition->group][definition->id] = entry.second->Clone();
       } else {
-        this->properties[definition->group][definition->id]->Accumulate(entry.second);
+        EquipmentProperty* property = entry.second;
+        this->properties[definition->group][definition->id]->Accumulate(property);
       }
     }
   }
@@ -1077,7 +1079,8 @@ __declspec(noinline) EquipmentPropertyStore& EquipmentPropertyStore::operator+=(
     return *this;
   }
 
-  if (this->properties[definition->group].find(definition->id) == this->properties[definition->group].end()) {
+  auto found = this->properties[definition->group].find(definition->id);
+  if (this->properties[definition->group].end() == found) {
     this->properties[definition->group][definition->id] = property->Clone();
   } else {
     this->properties[definition->group][definition->id]->Accumulate(property);
@@ -4073,11 +4076,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& gr
   }
 
   lines.clear();
-  for (auto& entry : this->store->GetProperties()) {
+  for (const auto& entry : std::as_const(this->store->GetProperties())) {
     if (group != 0 && entry.first != group) {
       continue;
     }
-    for (auto& property : entry.second) {
+    for (const auto& property : entry.second) {
       std::vector<std::string> parts = Split(property.second->Describe(false, false), "\n");
       for (const std::string& part : parts) {
         lines.push_back(part);
