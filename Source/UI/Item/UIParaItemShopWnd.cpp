@@ -498,8 +498,9 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == 213) {
       if (g_replayAnimationScaling != 0) {
-        this->checkBox->geometry.state = b;
-        this->checkBox->Invalidate();
+        UICheckBox* checkBox = this->checkBox;
+        checkBox->geometry.state = b;
+        checkBox->Invalidate();
       }
 
       g_windowMgr.dragAllItems = b;
@@ -509,8 +510,9 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_DROP:
     if (a == 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const RawItemData& drag = reinterpret_cast<const RawItemData&>(mode->drag);
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(drag);
       CSession* lists = &g_session;
       if (item.flags[3] == 1) {
         lists->RemovePurchaseItem(item);
@@ -538,7 +540,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->title->SetTextAutoWidth(LookupMessage(MSI_SHOPITEMS));
       this->checkBox->m_disabled = 1;
     }
-    return 0;
+    break;
   case UM_RESIZE:
     if (a == 7) {
       int width = b <= 320 ? b : 320;
@@ -572,7 +574,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
