@@ -7764,37 +7764,34 @@ void CRagEffect::TexturedDescendingRings(const char* name, char flag) {
 // OFFSET: 0x00C79CD0
 // FUNCTION: fn_20354
 void CRagEffect::TexturedQuadSpiral(const char* name) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 31, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.currentPrimitive->size = 0.0f;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 31, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim->state.size = 0.0f;
 
   for (long long i = 0; i < 4; ++i) {
-    this->state.currentPrimitive->slots[i].life = 1;
-    this->state.currentPrimitive->slots[i].process = 0;
-    this->state.currentPrimitive->slots[i].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[i].maxHeight = 25.0f;
-    this->state.currentPrimitive->slots[i].riseAngle = 80;
-    this->state.currentPrimitive->slots[i].rotStart = static_cast<std::int16_t>(i * 90);
-    this->state.currentPrimitive->slots[i].alphaB = 0;
-    this->state.currentPrimitive->slots[i].alphaT = 5;
-    this->state.currentPrimitive->slots[i].distance = static_cast<float>(i) + 1.0f;
-    this->state.currentPrimitive->slots[i].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->accel = 99.0f;
+    this->state.lastPrim->state.slots[i].life = 1;
+    this->state.lastPrim->state.slots[i].process = 0;
+    this->state.lastPrim->state.slots[i].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[i].maxHeight = 25.0f;
+    this->state.lastPrim->state.slots[i].riseAngle = 80;
+    this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(i * 90);
+    this->state.lastPrim->state.slots[i].alphaB = 0;
+    this->state.lastPrim->state.slots[i].alphaT = 5;
+    this->state.lastPrim->state.slots[i].distance = static_cast<float>(i) + 1.0f;
+    this->state.lastPrim->state.slots[i].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.accel = 99.0f;
     for (long long j = 0; j < 21; ++j) {
-      this->state.currentPrimitive->slots[i].height[j] = 0.0f;
-      this->state.currentPrimitive->slots[i].flag1[j] = 0;
+      this->state.lastPrim->state.slots[i].height[j] = 0.0f;
+      this->state.lastPrim->state.slots[i].flag1[j] = 0;
     }
   }
 }
@@ -7844,46 +7841,43 @@ void CRagEffect::TexturedRisingPillar(const char* name, char) {
 // OFFSET: 0x00C793A0
 // FUNCTION: fn_20352
 void CRagEffect::CloudBurst() {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt < 2) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 69, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = 0.0f;
-    this->state.currentPrimitive->deltaPos.x = this->state.deltaPos[0];
-    this->state.currentPrimitive->deltaPos.y = this->state.deltaPos[1];
-    this->state.currentPrimitive->deltaPos.z = this->state.deltaPos[2];
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 69, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = 0.0f;
+    this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
+    this->state.lastPrim->state.deltaPos.y = this->state.deltaPos[1];
+    this->state.lastPrim->state.deltaPos.z = this->state.deltaPos[2];
 
     const float targetX = this->state.deltaPos[0];
     const float x = this->render.position.x;
     const float targetZ = this->state.deltaPos[2];
     const float z = this->render.position.z;
     for (int i = 0; i < 4; ++i) {
-      this->state.currentPrimitive->slots[i].life = 1;
-      this->state.currentPrimitive->slots[i].process = -ClampedRandom(20);
-      Get_Angle(targetX - x, targetZ - z, &this->state.currentPrimitive->slots[i].rotStart);
-      this->state.currentPrimitive->slots[i].alphaB = 0;
-      this->state.currentPrimitive->slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.x;
-      this->state.currentPrimitive->slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.z;
-      this->state.currentPrimitive->slots[i].vecBNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].height[1] = static_cast<float>(ClampedRandom(100)) * 0.15f;
-      this->state.currentPrimitive->slots[i].vecBNow.x -=
-        g_cosTable[this->state.currentPrimitive->slots[i].rotStart] * this->state.currentPrimitive->slots[i].height[1];
-      this->state.currentPrimitive->slots[i].vecBNow.z -=
-        g_sinTable[this->state.currentPrimitive->slots[i].rotStart] * this->state.currentPrimitive->slots[i].height[1];
-      this->state.currentPrimitive->slots[i].vecTNow.x = this->state.currentPrimitive->slots[i].vecBNow.x;
-      this->state.currentPrimitive->slots[i].vecTNow.z = this->state.currentPrimitive->slots[i].vecBNow.z;
-      this->state.currentPrimitive->slots[i].vecTNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].maxHeight = 0.25f;
-      this->state.currentPrimitive->slots[i].height[0] = static_cast<float>(ClampedRandom(100)) * 0.04f + 8.0f;
-      this->state.currentPrimitive->slots[i].distance = static_cast<float>(ClampedRandom(100)) * 0.2f + 20.0f;
-      this->state.currentPrimitive->slots[i].height[4] = 4.0f;
+      this->state.lastPrim->state.slots[i].life = 1;
+      this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
+      Get_Angle(targetX - x, targetZ - z, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->state.slots[i].alphaB = 0;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.x;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.z;
+      this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(100)) * 0.15f;
+      this->state.lastPrim->state.slots[i].vecBNow.x -=
+        g_cosTable[this->state.lastPrim->state.slots[i].rotStart] * this->state.lastPrim->state.slots[i].height[1];
+      this->state.lastPrim->state.slots[i].vecBNow.z -=
+        g_sinTable[this->state.lastPrim->state.slots[i].rotStart] * this->state.lastPrim->state.slots[i].height[1];
+      this->state.lastPrim->state.slots[i].vecTNow.x = this->state.lastPrim->state.slots[i].vecBNow.x;
+      this->state.lastPrim->state.slots[i].vecTNow.z = this->state.lastPrim->state.slots[i].vecBNow.z;
+      this->state.lastPrim->state.slots[i].vecTNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].maxHeight = 0.25f;
+      this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(100)) * 0.04f + 8.0f;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(100)) * 0.2f + 20.0f;
+      this->state.lastPrim->state.slots[i].height[4] = 4.0f;
     }
   }
 
@@ -7899,44 +7893,41 @@ void CRagEffect::CloudBurst() {
 // OFFSET: 0x00C79820
 // FUNCTION: fn_20353
 void CRagEffect::CloudSpread() {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt < 2) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 69, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = 0.0f;
-    this->state.currentPrimitive->deltaPos.x = this->state.deltaPos[0];
-    this->state.currentPrimitive->deltaPos.y = this->state.deltaPos[1];
-    this->state.currentPrimitive->deltaPos.z = this->state.deltaPos[2];
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 69, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = 0.0f;
+    this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
+    this->state.lastPrim->state.deltaPos.y = this->state.deltaPos[1];
+    this->state.lastPrim->state.deltaPos.z = this->state.deltaPos[2];
 
     const float dx = this->state.deltaPos[0] - this->render.position.x;
     const float dz = this->state.deltaPos[2] - this->render.position.z;
     for (int i = 0; i < 4; ++i) {
-      this->state.currentPrimitive->slots[i].life = 1;
-      this->state.currentPrimitive->slots[i].process = -ClampedRandom(20);
-      Get_Angle(dx, dz, &this->state.currentPrimitive->slots[i].rotStart);
-      this->state.currentPrimitive->slots[i].alphaB = 0;
-      this->state.currentPrimitive->slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.x;
-      this->state.currentPrimitive->slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.z;
-      this->state.currentPrimitive->slots[i].vecBNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].height[1] = 100.0f;
-      this->state.currentPrimitive->slots[i].vecBNow.x -=
-        g_cosTable[this->state.currentPrimitive->slots[i].rotStart] * this->state.currentPrimitive->slots[i].height[1];
-      this->state.currentPrimitive->slots[i].vecBNow.z -=
-        g_sinTable[this->state.currentPrimitive->slots[i].rotStart] * this->state.currentPrimitive->slots[i].height[1];
-      this->state.currentPrimitive->slots[i].vecTNow.x = this->state.currentPrimitive->slots[i].vecBNow.x;
-      this->state.currentPrimitive->slots[i].vecTNow.z = this->state.currentPrimitive->slots[i].vecBNow.z;
-      this->state.currentPrimitive->slots[i].vecTNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].maxHeight = 0.25f;
-      this->state.currentPrimitive->slots[i].height[0] = static_cast<float>(ClampedRandom(100)) * 0.04f + 8.0f;
-      this->state.currentPrimitive->slots[i].distance = static_cast<float>(ClampedRandom(100)) * 0.5f + 100.0f;
-      this->state.currentPrimitive->slots[i].height[4] = 5.0f;
+      this->state.lastPrim->state.slots[i].life = 1;
+      this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
+      Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->state.slots[i].alphaB = 0;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.x;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.z;
+      this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].height[1] = 100.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.x -=
+        g_cosTable[this->state.lastPrim->state.slots[i].rotStart] * this->state.lastPrim->state.slots[i].height[1];
+      this->state.lastPrim->state.slots[i].vecBNow.z -=
+        g_sinTable[this->state.lastPrim->state.slots[i].rotStart] * this->state.lastPrim->state.slots[i].height[1];
+      this->state.lastPrim->state.slots[i].vecTNow.x = this->state.lastPrim->state.slots[i].vecBNow.x;
+      this->state.lastPrim->state.slots[i].vecTNow.z = this->state.lastPrim->state.slots[i].vecBNow.z;
+      this->state.lastPrim->state.slots[i].vecTNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].maxHeight = 0.25f;
+      this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(100)) * 0.04f + 8.0f;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(100)) * 0.5f + 100.0f;
+      this->state.lastPrim->state.slots[i].height[4] = 5.0f;
     }
   }
 
