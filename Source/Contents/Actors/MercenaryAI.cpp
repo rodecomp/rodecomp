@@ -105,7 +105,7 @@ int ClampTargetAttackRange(std::uint32_t aid, int distance) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(&actor->homunMsg[5]))
     );
     if (target) {
-      return distance < target->GetPkState() ? target->GetPkState() : distance;
+      return distance < target->GetNpcLocationRadius() ? target->GetNpcLocationRadius() : distance;
     }
   }
   return distance;
