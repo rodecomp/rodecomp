@@ -241,7 +241,13 @@ bool CUserHotkeyMgr::HasUserAssignments(LuaScript& script) const {
 // OFFSET: 0x005F80E0
 // FUNCTION: fn_04059
 bool CUserHotkeyMgr::HasChanges(LuaScript& script) const {
-  return static_cast<std::int32_t>(this->m_changes) > 0 || this->m_version2 || this->HasUserAssignments(script);
+  if (static_cast<std::int32_t>(this->m_changes) > 0) {
+    return true;
+  }
+  if (!this->m_version2 && this->HasUserAssignments(script) == true) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x005BD2C0
