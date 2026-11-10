@@ -329,6 +329,23 @@ void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr
 int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c,
                                                   std::intptr_t d) {
   switch (message) {
+  case UM_REFRESHITEM:
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
+      int itemId = std::atoi(material->itemId.c_str());
+      std::vector<int> identities = g_session.FindInventoryIndicesByItemId(itemId, 1);
+      for (auto identity = identities.begin(); identity != identities.end(); ++identity) {
+        this->AddIngredient(static_cast<std::uint32_t>(*identity));
+      }
+    }
+    for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.identity[1]);
+      if (owned.identity[1] <= 0) {
+        (*it)->Show(0);
+      }
+    }
+    this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
+    break;
+
   case UM_COMMAND:
     for (auto it = this->items.begin(); it != this->items.end(); ++it) {
       UILapineUpgradeBox_IngredientInfoWnd* entry = *it;
@@ -340,24 +357,12 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     this->Invalidate();
     break;
 
-  case UM_REFRESHITEM:
-    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
-      std::vector<int> identities = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
-      for (auto identity = identities.begin(); identity != identities.end(); ++identity) {
-        this->AddIngredient(static_cast<std::uint32_t>(*identity));
-      }
-    }
-    for (auto it = this->items.begin(); it != this->items.end(); ++it) {
-      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.identity[1]);
-      if (owned.identity[1] == 0) {
-        (*it)->Show(0);
-      }
-    }
-    this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
-    break;
-
   case UM_ADDITEM:
     this->parent->SendMsg(this, UM_DECITEM, a, 0, 0, 0);
+    break;
+
+  case UM_DECITEM:
+    this->parent->SendMsg(this, UM_ADDITEM, a, 0, 0, 0);
     break;
 
   case UM_SETPOS: {
@@ -377,10 +382,6 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     this->Invalidate();
     break;
   }
-
-  case UM_DECITEM:
-    this->parent->SendMsg(this, UM_ADDITEM, a, 0, 0, 0);
-    break;
   }
 
   return UIScrollWnd::SendMsg(sender, message, a, b, c, d);
