@@ -49,11 +49,9 @@ void CCartCannon::Open() {
   this->speed = 1.0f;
   this->delay = 0;
   this->currentPosition.y -= 10.0f;
-  vector3d target;
-  target.x = this->sourcePosition[0];
-  target.y = this->sourcePosition[1] - 10.0f;
-  target.z = this->sourcePosition[2];
+  vector3d target = *reinterpret_cast<const vector3d*>(this->sourcePosition);
   this->currentStep = 0;
+  target.y -= 10.0f;
 
   this->stepDelta.x = target.x - this->currentPosition.x;
   this->stepDelta.y = target.y - this->currentPosition.y;
@@ -92,8 +90,7 @@ void CCartCannon::Open() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->currentPosition.z), static_cast<double>(target.x - this->currentPosition.x)));
-  const float cameraYaw = mode->camera ? mode->camera->camera.desiredYaw : 0.0f;
-  float yaw = cameraYaw + angle / 3.141592f * 180.0f;
+  float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
   }
