@@ -159,14 +159,15 @@ void CUIEditCtrlEx::Paint() {
 // FUNCTION: fn_14445
 void CUIEditCtrlEx::UpdateScrollBar() {
   const int total = static_cast<int>(this->lines.size());
+  int position = this->scrollPosition;
   this->visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->lineHeight);
   this->scrollMaximum = std::max(0, total - this->visibleLines);
 
-  this->scrollPosition = std::min(this->scrollPosition, this->line);
-  if (this->line >= this->visibleLines + this->scrollPosition) {
-    this->scrollPosition = this->line - this->visibleLines + 1;
+  position = std::min(position, this->line);
+  if (this->line >= this->visibleLines + position) {
+    position = this->line - this->visibleLines + 1;
   }
-  this->scrollPosition = std::clamp(this->scrollPosition, 0, this->scrollMaximum);
+  this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
 
   static_cast<UIScrollBar*>(this->scrollBar)->SetRange(this->scrollMaximum, this->visibleLines, total);
   static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
