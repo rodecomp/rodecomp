@@ -6509,50 +6509,47 @@ void CRagEffect::TexturedFloatingDust(const char* name, int) {
 // OFFSET: 0x00C77D00
 // FUNCTION: fn_20348
 void CRagEffect::Mavka(char flag) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt >= 10) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 152, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = this->state.duration;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 152, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.duration = this->state.duration;
 
   for (int index = 0; index < 4; ++index) {
-    this->state.currentPrimitive->slots[index].process = 0;
-    this->state.currentPrimitive->slots[index].life = 1;
-    this->state.currentPrimitive->size = 0.3f;
-    this->state.currentPrimitive->slots[index].vecBPre.x = 0.0f;
-    this->state.currentPrimitive->slots[index].vecBPre.y = 0.0f;
-    this->state.currentPrimitive->slots[index].vecBNow.x = 0.0f;
-    this->state.currentPrimitive->slots[index].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->slots[index].vecTPre.x = 0.0f;
-    this->state.currentPrimitive->slots[index].vecTPre.y = 0.0f;
-    this->state.currentPrimitive->slots[index].rotStart = 0;
-    this->state.currentPrimitive->slots[index].riseAngle = 0;
-    this->state.currentPrimitive->slots[index].distance = 2.0f;
+    this->state.lastPrim->state.slots[index].process = 0;
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.size = 0.3f;
+    this->state.lastPrim->state.slots[index].vecBPre.x = 0.0f;
+    this->state.lastPrim->state.slots[index].vecBPre.y = 0.0f;
+    this->state.lastPrim->state.slots[index].vecBNow.x = 0.0f;
+    this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[index].vecTPre.x = 0.0f;
+    this->state.lastPrim->state.slots[index].vecTPre.y = 0.0f;
+    this->state.lastPrim->state.slots[index].rotStart = 0;
+    this->state.lastPrim->state.slots[index].riseAngle = 0;
+    this->state.lastPrim->state.slots[index].distance = 2.0f;
 
     for (int height = 0; height < 6; ++height) {
-      this->state.currentPrimitive->slots[index].height[height] = static_cast<float>(rand() % 360);
+      this->state.lastPrim->state.slots[index].height[height] = static_cast<float>(rand() % 360);
     }
 
     for (int height = 6; height < 12; ++height) {
-      this->state.currentPrimitive->slots[index].height[height] = static_cast<float>(rand() % 360);
+      this->state.lastPrim->state.slots[index].height[height] = static_cast<float>(rand() % 360);
     }
 
-    this->state.currentPrimitive->slots[index].flag1[0] = flag;
+    this->state.lastPrim->state.slots[index].flag1[0] = flag;
   }
 
-  this->state.currentPrimitive->alpha = 0.0f;
-  Owner(this->state.currentPrimitive).SetSpriteName("몬스터\\mavka.spr");
-  Owner(this->state.currentPrimitive).SetActionName("몬스터\\mavka.act");
-  this->state.currentPrimitive->animSpeed = 8;
-  this->state.currentPrimitive->renderFlag |= 0x200;
-  Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
-  Owner(this->state.currentPrimitive).InitSegment();
+  this->state.lastPrim->state.alpha = 0.0f;
+  this->state.lastPrim->SetSpriteName("몬스터\\mavka.spr");
+  this->state.lastPrim->SetActionName("몬스터\\mavka.act");
+  this->state.lastPrim->state.animSpeed = 8;
+  this->state.lastPrim->state.renderFlag |= 0x200;
+  this->state.lastPrim->SetAction(0, 16, 1);
+  this->state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C77600
@@ -11602,53 +11599,50 @@ void CRagEffect::WaterBubble(int) {
     return;
   }
 
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 142, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  this->state.currentPrimitive->totalTexture = 117;
-  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
+  CopyVector(this->render.position, this->state.parent->render.position);
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 142, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.totalTexture = 117;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   char name[64];
 
   for (int index = 0; index < 30; ++index) {
     std::sprintf(name, "effect\\W_C_water_%02d.tga", index);
-    this->state.currentPrimitive->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.textures[index] = g_texMgr.Load(name, 0, false, true, false);
   }
 
   for (int index = 0; index < 30; ++index) {
     std::sprintf(name, "effect\\W_B_water_%02d.tga", index);
-    this->state.currentPrimitive->textures[index + 30] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.textures[index + 30] = g_texMgr.Load(name, 0, false, true, false);
   }
 
   for (int index = 0; index < 27; ++index) {
     std::sprintf(name, "effect\\W_bubble%02d.tga", index + 1);
-    this->state.currentPrimitive->textures[index + 60] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.textures[index + 60] = g_texMgr.Load(name, 0, false, true, false);
   }
 
   for (int index = 0; index < 30; ++index) {
     std::sprintf(name, "effect\\W_A_water_%02d.tga", index);
-    this->state.currentPrimitive->textures[index + 87] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.textures[index + 87] = g_texMgr.Load(name, 0, false, true, false);
   }
 
-  this->state.currentPrimitive->slots[0].life = 0;
-  this->state.currentPrimitive->slots[1].life = 0;
-  this->state.currentPrimitive->slots[2].life = 0;
-  this->state.currentPrimitive->slots[3].life = 0;
-  this->state.currentPrimitive->slots[0].life = 1;
-  this->state.currentPrimitive->slots[0].process = 0;
-  this->state.currentPrimitive->slots[0].alphaB = 230;
-  this->state.currentPrimitive->slots[0].vecBNow.z = 0.0f;
+  this->state.lastPrim->state.slots[0].life = 0;
+  this->state.lastPrim->state.slots[1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
+  this->state.lastPrim->state.slots[0].life = 1;
+  this->state.lastPrim->state.slots[0].process = 0;
+  this->state.lastPrim->state.slots[0].alphaB = 230;
+  this->state.lastPrim->state.slots[0].vecBNow.z = 0.0f;
 
   if (this->state.param[0] < 20.0f) {
-    this->state.currentPrimitive->slots[0].distance = 40.0f;
+    this->state.lastPrim->state.slots[0].distance = 40.0f;
   } else {
-    this->state.currentPrimitive->slots[0].distance = this->state.param[0];
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0];
   }
 
-  this->state.currentPrimitive->slots[0].rotStart = static_cast<std::int16_t>(this->state.param[1] >= 360.0f ? 0 : static_cast<int>(this->state.param[1]));
+  this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.param[1] >= 360.0f ? 0 : static_cast<int>(this->state.param[1]));
 }
 
 // OFFSET: 0x00C134B0
