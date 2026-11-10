@@ -1,6 +1,7 @@
 #include "Contents/Effects/RedLineEffect.h"
 
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -93,25 +94,19 @@ void CRedLineEffect::OnProcess() {
 
       float width;
 
-      if (age < 125) {
-        if (age < 100) {
-          width = 0.0f;
-        } else if (age <= 115) {
-          width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
-        } else {
-          width = particle->speedParameter;
-        }
+      if (age >= 125) {
+        particle->alpha = std::max(particle->alpha - 15, 0);
+        particle->speedParameter = std::max(0.0f, particle->speedParameter - 5.0f);
+        width = particle->speedParameter;
+      } else if (age < 100) {
+        width = 0.0f;
+      } else if (age <= 115) {
+        width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
       } else {
-        const float shrunk = particle->speedParameter - 5.0f;
-        const int alpha = particle->alpha - 15;
-        particle->alpha = alpha < 0 ? 0 : alpha;
-        particle->speedParameter = shrunk < 0.0f ? 0.0f : shrunk;
         width = particle->speedParameter;
       }
 
-      if (width < 0.0f) {
-        width = 0.0f;
-      }
+      width = std::max(0.0f, width);
 
       const int segment = particle->columnIndex;
       const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
@@ -119,8 +114,9 @@ void CRedLineEffect::OnProcess() {
       const float flat = width * g_cosTable[particle->phaseParameter];
       const float rise = width * g_sinTable[particle->phaseParameter];
 
-      vector3d points[2]{};
+      EffectPoint points[2];
       points[0].x = particle->scale * g_cosTable[angle];
+      points[0].y = 0.0f;
       points[0].z = particle->scale * g_sinTable[angle];
 
       if (particle->animationParameter == 1.0f) {
@@ -155,8 +151,12 @@ void CRedLineEffect::OnProcess() {
         particle->vertices[2].z = this->previousInner.z;
       }
 
-      this->previousInner = points[0];
-      this->previousOuter = points[1];
+      this->previousInner.x = points[0].x;
+      this->previousInner.y = points[0].y;
+      this->previousInner.z = points[0].z;
+      this->previousOuter.x = points[1].x;
+      this->previousOuter.y = points[1].y;
+      this->previousOuter.z = points[1].z;
     }
 
     ++particle->elapsedFrames;
