@@ -361,41 +361,35 @@ namespace myGPack {
   // OFFSET: 0x00AE9260
   // FUNCTION: fn_18104
   int InitialPermutation(std::uint8_t* block) {
-    std::uint8_t result[8];
-    std::memset(result, 0, sizeof(result));
+    Block64 result;
+    result.words[0] = result.words[1] = 0;
 
-    for (unsigned i = 0; i < 64; ++i) {
+    for (std::uint8_t i = 0; i < 64; ++i) {
       const std::uint8_t bit = s_initialPermutation[i] - 1;
       if (block[bit >> 3] & s_bitMasks[bit & 7]) {
-        result[i >> 3] |= s_bitMasks[i & 7];
+        result.bytes[i >> 3] |= s_bitMasks[i & 7];
       }
     }
 
-    std::memcpy(block, result, 8);
-    int high;
-    std::memcpy(&high, result + 4, sizeof(high));
-
-    return high;
+    std::memcpy(block, &result, sizeof(result));
+    return result.words[1];
   }
 
   // OFFSET: 0x00AE91D0
   // FUNCTION: fn_18103
   int FinalPermutation(std::uint8_t* block) {
-    std::uint8_t result[8];
-    std::memset(result, 0, sizeof(result));
+    Block64 result;
+    result.words[0] = result.words[1] = 0;
 
-    for (unsigned i = 0; i < 64; ++i) {
+    for (std::uint8_t i = 0; i < 64; ++i) {
       const std::uint8_t bit = s_finalPermutation[i] - 1;
       if (block[bit >> 3] & s_bitMasks[bit & 7]) {
-        result[i >> 3] |= s_bitMasks[i & 7];
+        result.bytes[i >> 3] |= s_bitMasks[i & 7];
       }
     }
 
-    std::memcpy(block, result, 8);
-    int high;
-    std::memcpy(&high, result + 4, sizeof(high));
-
-    return high;
+    std::memcpy(block, &result, sizeof(result));
+    return result.words[1];
   }
 
   // OFFSET: 0x00AE9020
