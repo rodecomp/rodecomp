@@ -42,4 +42,9 @@ static_assert(sizeof(CRes) == 272);
 static_assert(offsetof(ResourceName, text) == 0x04);
 #endif
 
+// OFFSET: 0x007467C0
+// FUNCTION: fn_07777
+inline CRes::~CRes() {
+}
+
 #endif
