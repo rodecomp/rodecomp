@@ -23,10 +23,12 @@ C3dActor::C3dActor()
 // OFFSET: 0x00AB6420
 // FUNCTION: fn_17470
 C3dActor::~C3dActor() {
-  for (ModelVolume*& volume : this->volumes) {
-    delete volume;
-    volume = nullptr;
+  for (auto it = this->volumes.begin(); it != this->volumes.end(); ++it) {
+    delete *it;
+    *it = nullptr;
   }
+
+  this->volumes.clear();
 }
 
 // OFFSET: 0x00AB5BB0
@@ -151,8 +153,8 @@ void C3dActorV2::Prepare(const float* direction, const float* diffuse, const flo
     this->UpdateMatrix();
   }
 
-  for (C3dNodeV2* root : this->roots) {
-    root->Prepare(this->transform.values, direction, diffuse, ambient, this->shade);
+  for (auto it = this->roots.begin(); it != this->roots.end(); ++it) {
+    (*it)->Prepare(this->transform.values, direction, diffuse, ambient, this->shade);
   }
 }
 
@@ -173,8 +175,8 @@ void C3dActorV1::Animate(double frame) {
 void C3dActorV2::Animate(double frame) {
   const float selected = static_cast<float>(static_cast<double>(this->framesPerSecond) * frame / 1000.0);
 
-  for (C3dNodeV2* root : this->roots) {
-    root->Animate(static_cast<double>(selected));
+  for (auto it = this->roots.begin(); it != this->roots.end(); ++it) {
+    (*it)->Animate(static_cast<double>(selected));
   }
 
   this->dirty = 1;
@@ -232,13 +234,14 @@ void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
 
 // INLINED
 bool C3dActor::Reversed() const {
-  bool result = this->scale[0] >= 0.0f;
+  bool result = this->scale[0] < 0.0f;
+  result = this->scale[1] < 0.0f ? !result : result;
 
-  if (this->scale[1] >= 0.0f) {
-    result = this->scale[0] < 0.0f;
+  if (this->scale[2] < 0.0f) {
+    result = !result;
   }
 
-  return this->scale[2] < 0.0f ? !result : result;
+  return result;
 }
 
 // INLINED
@@ -249,7 +252,7 @@ void C3dActor::Fade() {
     } else {
       this->occluded = 0;
     }
-  } else if (this->alpha != 255) {
+  } else if (this->alpha < 255) {
     this->alpha = static_cast<unsigned char>(this->alpha + 5);
   }
 }
@@ -272,10 +275,8 @@ void C3dActorV1::Draw(const float* matrix, bool clip) {
   }
 
   const bool reversed = this->Reversed();
-  struct matrix camera;
-  std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
-  combined.Compose(this->transform, camera);
+  combined.Compose(this->transform, *reinterpret_cast<const struct matrix*>(matrix));
   this->root->Draw(combined.values, reversed, clip, this->commandMode);
   if (this->occlusionEnabled == 1) {
     this->root->model->Fade();
@@ -290,10 +291,8 @@ void C3dActorV2::Draw(const float* matrix, bool clip) {
   }
 
   const bool reversed = this->Reversed();
-  struct matrix camera;
-  std::memcpy(camera.values, matrix, sizeof(camera.values));
   struct matrix combined;
-  combined.Compose(this->transform, camera);
+  combined.Compose(this->transform, *reinterpret_cast<const struct matrix*>(matrix));
 
   for (auto it = this->roots.begin(); it != this->roots.end(); ++it) {
     (*it)->Draw(combined.values, reversed, clip, this->commandMode);
