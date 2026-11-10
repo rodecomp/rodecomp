@@ -185,17 +185,18 @@ void UITextViewer::Paint() {
     this->ClearSurface(this->backgroundColor);
   }
 
+  const int first = this->topLine;
   int divisor = (this->lineHeight - this->bottomMargin);
 
   if (divisor == 0) {
     divisor = 1;
   }
 
-  const int limit = (this->geometry.height / divisor + this->topLine);
-  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
   std::uint32_t color = 0;
+  const int limit = (this->geometry.height / divisor + first);
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
 
-  for (int index = 0; index < this->topLine; ++index) {
+  for (int index = 0; index < first; ++index) {
     const char* current = this->lines[index].c_str();
     const char* end = current + this->lines[index].size();
 
@@ -204,12 +205,14 @@ void UITextViewer::Paint() {
     }
   }
 
-  for (int index = this->topLine; index < end; ++index) {
+  const bool plain = (this->unknown_00BC & 255) != 0;
+
+  for (int index = first; index < end; ++index) {
     const auto& line = this->lines[index];
-    const int y = (index - this->topLine) * this->lineHeight + 4;
+    const int y = (index - first) * this->lineHeight + 4;
     const auto bytes = static_cast<unsigned>(line.size());
 
-    if ((this->unknown_00BC & 255) != 0) {
+    if (plain) {
       DrawOutlinedText(*this, 3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
     } else if (this->outline != 0) {
       DrawOutlinedColoredText(*this, 3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
