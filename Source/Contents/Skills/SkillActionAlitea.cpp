@@ -17,6 +17,7 @@
 #include "Utility/Math/Vector3d.h"
 
 #include <algorithm>
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -31,6 +32,14 @@ public:
   // INLINED
   template <typename Byte>
   explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  // INLINED
+  template <typename Byte>
+  explicit EncryptedName(const std::array<Byte, Length>& source) : m_encrypted(true) {
     for (std::uint64_t index = 0; index < Length; ++index) {
       this->m_text[index] = source[index];
     }
@@ -1746,13 +1755,13 @@ void CEfstAction_ZEPHYR_LINK::OnEfstEnd(int efstId, int argument2, int argument3
   if (actor) {
     EffectLists* effects = g_effectMgr;
     effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\xF3', '\x58', '\x1D', '\x8D', '\xDE', '\x73', '\x78', '\x43', '\xE0', '\x53', '\x06', '\xE5'};
+      const std::array<char, 12> bytes = {'\xF3', '\x58', '\x1D', '\x8D', '\xDE', '\x73', '\x78', '\x43', '\xE0', '\x53', '\x06', '\xE5'};
       thread_local EncryptedName<sizeof(bytes), 0x2F2701A7E56D3D89ULL> name(bytes);
       return name.Text();
     }()));
     effects = g_effectMgr;
     effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\x5F', '\xF4', '\x77', '\xCB', '\x98', '\x73', '\x6C', '\x07', '\x4C', '\xFF', '\x6C', '\xFC', '\x83', '\x6E', '\x47', '\x1F',
+      const std::array<char, 19> bytes = {'\x5F', '\xF4', '\x77', '\xCB', '\x98', '\x73', '\x6C', '\x07', '\x4C', '\xFF', '\x6C', '\xFC', '\x83', '\x6E', '\x47', '\x1F',
                                     '\x4A', '\xFC', '\x07'};
       thread_local EncryptedName<sizeof(bytes), 0x6B3301E1A3079125ULL> name(bytes);
       return name.Text();
