@@ -967,11 +967,16 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
   while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2444)) {
     g_effectMgr->Retire(effect, 1);
   }
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-           const std::uint8_t source[] = {0xDC, 0xD5, 0xB0, 0x4F, 0x12, 0x4E, 0xEB, 0x5C, 0xCF, 0xE2, 0xAC, 0x4A, 0x2F, 0x2D};
-           thread_local EncryptedName<sizeof(source), 0x33832D4D3FDFBDBFULL> name(source);
-           return name.Text();
-         }()))) {
+  for (;;) {
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Find(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t source[] = {0xDC, 0xD5, 0xB0, 0x4F, 0x12, 0x4E, 0xEB, 0x5C, 0xCF, 0xE2, 0xAC, 0x4A, 0x2F, 0x2D};
+      thread_local EncryptedName<sizeof(source), 0x33832D4D3FDFBDBFULL> name(source);
+      return name.Text();
+    }()));
+    if (!effect) {
+      break;
+    }
     g_effectMgr->Retire(effect, 1);
   }
 }
