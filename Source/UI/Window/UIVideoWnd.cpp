@@ -82,7 +82,7 @@ void UIVideoWnd::Paint() {
   const BinkHandle* handle = this->m_movie->Handle();
   const int width = this->geometry.width;
   const int height = this->geometry.height;
-  const float scaled = (std::min)(static_cast<float>(static_cast<int>(handle->height)) / static_cast<float>(static_cast<int>(handle->width)) * static_cast<float>(width), static_cast<float>(height));
+  const float scaled = (std::min)(static_cast<float>(height), static_cast<float>(static_cast<int>(handle->height)) / static_cast<float>(static_cast<int>(handle->width)) * static_cast<float>(width));
   const int videoHeight = static_cast<int>(scaled);
   this->DrawStretched(g_renderer->primitives, 0, static_cast<int>((height - videoHeight) * 0.5), this->m_texture, 0xFFFFFFFF, width, videoHeight);
 }
