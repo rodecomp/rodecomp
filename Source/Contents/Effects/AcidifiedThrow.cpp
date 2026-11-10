@@ -112,8 +112,7 @@ void CAcidifiedThrow::OnProcess() {
 
   if (this->projectileEmitter) {
     const vector3d actorPos = actor->render.position;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    const matrix& view = mode->camera->frame.view;
+    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
 
     float actorViewX = actorPos.x * view.values[0] + actorPos.y * view.values[3] + actorPos.z * view.values[6] + view.values[9];
     float actorViewY = actorPos.x * view.values[1] + actorPos.y * view.values[4] + actorPos.z * view.values[7] + view.values[10];
@@ -130,7 +129,7 @@ void CAcidifiedThrow::OnProcess() {
 
     actorViewY -= 10.0f;
 
-    const matrix& inverse = mode->camera->frame.inverse;
+    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
     float worldX = actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9];
     float worldY = actorViewX * inverse.values[1] + actorViewY * inverse.values[4] + actorViewZ * inverse.values[7] + inverse.values[10];
     float worldZ = actorViewX * inverse.values[2] + actorViewY * inverse.values[5] + actorViewZ * inverse.values[8] + inverse.values[11];
@@ -164,20 +163,20 @@ void CAcidifiedThrow::OnProcess() {
     float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
 
     EZ2STREmitter* emitter = this->projectileEmitter;
-    emitter->position.x = term0 * this->impactPosition.x + term1 * p1X + term2 * worldX;
-    emitter->position.y = term0 * this->impactPosition.y + term1 * p1Y + term2 * worldY;
-    emitter->position.z = term0 * this->impactPosition.z + term1 * p1Z + term2 * worldZ;
+    emitter->position.x = term1 * p1X + term2 * worldX + term0 * this->impactPosition.x;
+    emitter->position.y = term1 * p1Y + term2 * worldY + term0 * this->impactPosition.y;
+    emitter->position.z = term1 * p1Z + term2 * worldZ + term0 * this->impactPosition.z;
 
     reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
 
-    if (this->trajectoryTime > 0.0f) {
+    if (!(this->trajectoryTime <= 0.0f)) {
       return;
     }
 
     FreeParticle(reinterpret_cast<CParticle*>(this->projectileEmitter));
     this->projectileEmitter = nullptr;
 
-    CRenderObject* player = reinterpret_cast<CRenderObject*>(mode->scene->player);
+    CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     float soundX = player->render.position.x - this->impactPosition.x;
     float soundZ = player->render.position.z - this->impactPosition.z;
 
