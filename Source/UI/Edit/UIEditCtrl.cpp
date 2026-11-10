@@ -4368,7 +4368,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
     return std::string(line, std::strlen(line));
   }
 
-  std::string remaining(text.c_str(), text.size());
+  std::string remaining(text);
   std::string result;
   std::vector<UIItemTagButton*> buttons;
   int position = 0;
@@ -4398,7 +4398,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
 
     result += chunk;
 
-    if (std::strncmp(link.c_str(), "00000T", 6) == 0) {
+    if (link.substr(0, 6) == "00000T") {
       const int id = ItemLinkMessageId(link);
       if (g_itemTagOwner->maxTipId >= id) {
         std::string name;
@@ -4414,7 +4414,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
             buttons.push_back(button);
             button->line = *lineIndex;
             button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->textY;
-            result += button->label;
+            result += std::string(button->label);
           }
         }
 
