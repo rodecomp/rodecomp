@@ -107,10 +107,20 @@ namespace {
       trail.alphaB = 0;
     }
 
-    trail.vecBNow = previous.vecBNow;
+    trail.vecBNow.x = previous.vecBNow.x;
+    trail.vecBNow.y = previous.vecBNow.y;
+    trail.vecBNow.z = previous.vecBNow.z;
     trail.fullDisplayAngle = previous.fullDisplayAngle;
     trail.flag1[0] = previous.flag1[0];
   }
+}
+
+// INLINED
+static void FollowMaster(CEffectPrim& particle) {
+  const CRagEffect* master = particle.state.master;
+  particle.render.position.x = master->render.position.x;
+  particle.render.position.y = master->render.position.y;
+  particle.render.position.z = master->render.position.z;
 }
 
 // OFFSET: 0x00BB8C50
@@ -1565,7 +1575,7 @@ void CEffectPrim::PrimShieldBoomerang3() {
 void CEffectPrim::PrimShieldBoomerang() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1674,7 +1684,7 @@ void CEffectPrim::PrimShieldBoomerang() {
 // OFFSET: 0x00BBF520
 // FUNCTION: fn_19817
 bool CEffectPrim::PrimKouenka() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1729,7 +1739,7 @@ bool CEffectPrim::PrimKouenka() {
 // OFFSET: 0x00BC27B0
 // FUNCTION: fn_19834
 bool CEffectPrim::PrimSakura() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -2063,7 +2073,7 @@ void CEffectPrim::PrimTanji2() {
 // OFFSET: 0x00BBE350
 // FUNCTION: fn_19811
 bool CEffectPrim::PrimGhost() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -2113,7 +2123,9 @@ bool CEffectPrim::PrimGhost() {
       slot.rotStart -= 360;
     }
 
-    slot.vecBPre = slot.vecBNow;
+    slot.vecBPre.x = slot.vecBNow.x;
+    slot.vecBPre.y = slot.vecBNow.y;
+    slot.vecBPre.z = slot.vecBNow.z;
 
     if (slot.flag1[2] == 2) {
       int angle = slot.rotStart * 2;
@@ -2164,7 +2176,9 @@ bool CEffectPrim::PrimGhost() {
     }
   }
 
-  this->render.position = this->state.deltaPos;
+  this->render.position.x = this->state.deltaPos.x;
+  this->render.position.y = this->state.deltaPos.y;
+  this->render.position.z = this->state.deltaPos.z;
   this->state.ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
@@ -2900,10 +2914,14 @@ void CEffectPrim::ShiftSegment() {
   for (int index = count - 1; index > 0; --index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     const EffectPrimitiveRecord& previous = this->state.records[index - 1];
-    record.position = previous.position;
+    record.position.x = previous.position.x;
+    record.position.y = previous.position.y;
+    record.position.z = previous.position.z;
 
     for (int corner = 0; corner < 4; ++corner) {
-      record.corners[corner] = previous.corners[corner];
+      record.corners[corner].x = previous.corners[corner].x;
+      record.corners[corner].y = previous.corners[corner].y;
+      record.corners[corner].z = previous.corners[corner].z;
     }
 
     record.radius = previous.radius;
@@ -2924,7 +2942,9 @@ void CEffectPrim::ShiftSegment() {
   first.position.z = this->render.position.z;
 
   for (int corner = 0; corner < 4; ++corner) {
-    first.corners[corner] = this->state.segPos[corner];
+    first.corners[corner].x = this->state.segPos[corner].x;
+    first.corners[corner].y = this->state.segPos[corner].y;
+    first.corners[corner].z = this->state.segPos[corner].z;
   }
 
   first.radius = this->state.radius;
@@ -2937,14 +2957,6 @@ void CEffectPrim::ShiftSegment() {
   const std::uint32_t green = static_cast<unsigned char>(this->state.green);
   const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
   first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.alpha)) << 24) | (red << 16) | (green << 8) | blue;
-}
-
-// INLINED
-static void FollowMaster(CEffectPrim& particle) {
-  const CRagEffect* master = particle.state.master;
-  particle.render.position.x = master->render.position.x;
-  particle.render.position.y = master->render.position.y;
-  particle.render.position.z = master->render.position.z;
 }
 
 // INLINED
@@ -3924,7 +3936,9 @@ void CEffectPrim::PrimSTIN4() {
 
     if (slot.process % 3 == 0) {
       for (int trail = 2; trail >= 0; --trail) {
-        slots[trail + 1].vecBNow = slots[trail].vecBNow;
+        slots[trail + 1].vecBNow.x = slots[trail].vecBNow.x;
+        slots[trail + 1].vecBNow.y = slots[trail].vecBNow.y;
+        slots[trail + 1].vecBNow.z = slots[trail].vecBNow.z;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
       }
@@ -4660,7 +4674,7 @@ RenderVertex TransformVert(const matrix& view, const vector3d& position) {
 // OFFSET: 0x00BE8680
 // FUNCTION: fn_19943
 __declspec(noinline) bool CEffectPrim::PrimTextureSpin() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -4687,7 +4701,7 @@ __declspec(noinline) bool CEffectPrim::PrimTextureSpin() {
       slot.height[1] += 1.0f;
     }
 
-    const float frames = static_cast<float>(this->state.totalTexture);
+    const float frames = static_cast<float>(static_cast<int>(this->state.totalTexture));
     if (slot.height[1] >= frames) {
       slot.height[1] -= frames;
     }
@@ -4699,7 +4713,7 @@ __declspec(noinline) bool CEffectPrim::PrimTextureSpin() {
 // OFFSET: 0x00BE9490
 // FUNCTION: fn_19951
 __declspec(noinline) void CEffectPrim::PrimScrollTexture() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -4714,7 +4728,7 @@ __declspec(noinline) void CEffectPrim::PrimScrollTexture() {
     }
 
     slot.height[1] += 1.0f;
-    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+    if (slot.height[1] >= static_cast<int>(this->state.totalTexture)) {
       slot.height[1] = 0.0f;
     }
 
@@ -4762,7 +4776,7 @@ __declspec(noinline) void CEffectPrim::PrimFrameFade() {
 // FUNCTION: fn_19969
 __declspec(noinline) void CEffectPrim::PrimRiseFollow() {
   FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -4844,7 +4858,7 @@ void CEffectPrim::PrimAnimatedFlash() {
 // FUNCTION: fn_19956
 __declspec(noinline) void CEffectPrim::PrimRandomSpin() {
   FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -4969,7 +4983,7 @@ bool CEffectPrim::IsPartyVisible() {
 // OFFSET: 0x00BE7620
 // FUNCTION: fn_19936
 __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   EffectPrimitiveSlot& first = this->state.slots[0];
   first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
@@ -5067,7 +5081,7 @@ __declspec(noinline) bool CEffectPrim::PrimFadeAlpha() {
 // OFFSET: 0x00BE92B0
 // FUNCTION: fn_19950
 __declspec(noinline) void CEffectPrim::PrimFrameScroll() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5077,7 +5091,7 @@ __declspec(noinline) void CEffectPrim::PrimFrameScroll() {
     }
 
     slot.height[1] += 1.0f;
-    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+    if (slot.height[1] >= static_cast<int>(this->state.totalTexture)) {
       slot.height[1] = 0.0f;
     }
 
@@ -5091,7 +5105,7 @@ __declspec(noinline) void CEffectPrim::PrimFrameScroll() {
 // OFFSET: 0x00BEA310
 // FUNCTION: fn_19962
 __declspec(noinline) void CEffectPrim::PrimFramePhase() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5101,7 +5115,7 @@ __declspec(noinline) void CEffectPrim::PrimFramePhase() {
     }
 
     slot.height[1] += 1.0f;
-    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+    if (slot.height[1] >= static_cast<int>(this->state.totalTexture)) {
       slot.height[1] = 0.0f;
     }
 
@@ -5115,7 +5129,7 @@ __declspec(noinline) void CEffectPrim::PrimFramePhase() {
 // OFFSET: 0x00BE9CE0
 // FUNCTION: fn_19958
 void CEffectPrim::PrimTrailShift() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
@@ -5448,7 +5462,7 @@ __declspec(noinline) bool CEffectPrim::PrimOrbitFade() {
 // OFFSET: 0x00BE76E0
 // FUNCTION: fn_19937
 __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
@@ -5536,14 +5550,14 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
 // OFFSET: 0x00BE9170
 // FUNCTION: fn_19949
 __declspec(noinline) void CEffectPrim::PrimTextureFrames() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
     if (slot.life == 1 && ++slot.process > 0) {
       slot.height[1] += 1.0f;
-      if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+      if (slot.height[1] >= static_cast<int>(this->state.totalTexture)) {
         slot.height[1] = 0.0f;
       }
     }
@@ -5553,7 +5567,7 @@ __declspec(noinline) void CEffectPrim::PrimTextureFrames() {
 // OFFSET: 0x00BBDC30
 // FUNCTION: fn_19809
 void CEffectPrim::PrimWaveSpin() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5610,7 +5624,7 @@ void CEffectPrim::PrimWaveSpin() {
 // OFFSET: 0x00BE97D0
 // FUNCTION: fn_19955
 void CEffectPrim::PrimBreathingWave() {
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
@@ -5744,7 +5758,7 @@ bool CEffectPrim::PrimDriftingRings() {
 // FUNCTION: fn_19965
 bool CEffectPrim::PrimSpiralFade() {
   FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  FollowMaster(*this);
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5811,8 +5825,12 @@ bool CEffectPrim::Prim3DSlotParticle() {
   this->state.orgPos = {this->state.deltaPos2.x + anchor.x, anchor.y + this->state.deltaPos2.y, anchor.z + this->state.deltaPos2.z};
 
   if (this->state.stateCnt == this->state.changePoint) {
-    this->state.speed3d = this->state.changeSpeed3d;
-    this->state.deltaPosAccel = this->state.changeAccel3d;
+    this->state.speed3d.x = this->state.changeSpeed3d.x;
+    this->state.speed3d.y = this->state.changeSpeed3d.y;
+    this->state.speed3d.z = this->state.changeSpeed3d.z;
+    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
+    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
+    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
   }
 
   this->state.speed = this->state.accel + this->state.speed;
@@ -7123,7 +7141,9 @@ void CEffectPrim::PrimSTIN3() {
 
     if (slot.process % 3 == 0) {
       for (int trail = 2; trail >= 0; --trail) {
-        slots[trail + 1].vecBNow = slots[trail].vecBNow;
+        slots[trail + 1].vecBNow.x = slots[trail].vecBNow.x;
+        slots[trail + 1].vecBNow.y = slots[trail].vecBNow.y;
+        slots[trail + 1].vecBNow.z = slots[trail].vecBNow.z;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
       }
