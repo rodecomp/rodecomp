@@ -7,10 +7,8 @@
 namespace {
   // INLINED
   __forceinline std::uint32_t FoldDigest(const unsigned char* digest) {
-    return ((digest[0] ^ digest[1] ^ digest[2] ^ digest[3]) << 8)
-      | (digest[4] ^ digest[5] ^ digest[6] ^ digest[7])
-      | ((digest[8] ^ digest[9] ^ digest[10] ^ digest[11]) << 16)
-      | (static_cast<std::uint32_t>(digest[12] ^ digest[13] ^ digest[14] ^ digest[15]) << 24);
+    return MAKELONG(MAKEWORD(digest[4] ^ digest[5] ^ digest[6] ^ digest[7], digest[0] ^ digest[1] ^ digest[2] ^ digest[3]),
+                    MAKEWORD(digest[8] ^ digest[9] ^ digest[10] ^ digest[11], digest[12] ^ digest[13] ^ digest[14] ^ digest[15]));
   }
 
   // INLINED
@@ -232,7 +230,7 @@ __declspec(noinline) unsigned char* MD5::DigestBuffer(const unsigned char* input
 // OFFSET: 0x00402580
 // FUNCTION: fn_00129
 std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) {
-  unsigned char digest[16] = {};
+  unsigned char digest[16] = {0};
   DigestBuffer(input, length, digest);
   return FoldDigest(digest);
 }
@@ -240,12 +238,8 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
 // OFFSET: 0x00402640
 // FUNCTION: fn_00130
 std::uint32_t MD5::HashString(const char* text) {
-  unsigned char digest[16] = {};
-  const char* end = text;
-  do {
-    ++end;
-  } while (end[-1] != '\0');
-  DigestBuffer(reinterpret_cast<const unsigned char*>(text), static_cast<std::uint32_t>(end - text - 1), digest);
+  unsigned char digest[16] = {0};
+  DigestBuffer(reinterpret_cast<const unsigned char*>(text), std::strlen(text), digest);
   return FoldDigest(digest);
 }
 
@@ -285,7 +279,7 @@ __declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
   if (mapping != nullptr) {
     const unsigned char* view = static_cast<const unsigned char*>(MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, size.LowPart));
     if (view != nullptr) {
-      unsigned char digest[16] = {};
+      unsigned char digest[16] = {0};
       DigestBuffer(view, size.LowPart, digest);
       result = FoldDigest(digest);
       UnmapViewOfFile(view);
