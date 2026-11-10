@@ -23,13 +23,11 @@ void GroundGeometry::ImportWater(const CGndRes& resource) {
   if (resource.major == 1 && resource.minor >= 8) {
     this->waterColumns = resource.waterWidth;
     this->waterRows = resource.waterHeight;
-    this->waterLevels = resource.waterHeights;
-    this->waterSurfaces.resize(resource.water.size());
+    this->waterLevels.assign(resource.waterHeights.begin(), resource.waterHeights.end());
 
     static_assert(sizeof(GroundWaterSurface) == sizeof(GroundWater));
-    if (!resource.water.empty()) {
-      std::memcpy(this->waterSurfaces.data(), resource.water.data(), resource.water.size() * sizeof(GroundWater));
-    }
+    const GroundWaterSurface* const surfaces = reinterpret_cast<const GroundWaterSurface*>(resource.water.data());
+    this->waterSurfaces.assign(surfaces, surfaces + resource.water.size());
 
     this->waterAnimation = resource.waterDefault.animation;
     this->waterPitch = static_cast<int>(resource.waterDefault.pitch);
