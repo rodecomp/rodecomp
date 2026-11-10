@@ -28,12 +28,13 @@ C3dAttr* C3dAttr::Create() {
 bool C3dAttr::Load(const char* name) {
   CFile file;
   file.Open(name, 0, true, false);
+  char signature[] = "GRAT";
   char magic[5]{};
   file.Read(magic, 4);
+  magic[4] = 0;
 
-  if (std::strcmp(magic, "GRAT") != 0) {
+  if (std::strcmp(magic, signature) != 0) {
     ShowErrorDialog("Block Attr ", 0);
-    file.Close();
     return false;
   }
 
@@ -48,16 +49,15 @@ bool C3dAttr::Load(const char* name) {
     file.Read(&columns, sizeof(columns));
     file.Read(&rows, sizeof(rows));
     this->Unload();
-    const auto count = static_cast<std::uint32_t>(columns) * static_cast<std::uint32_t>(rows);
-    this->m_cells.resize(count);
+    this->m_cells.resize(static_cast<std::uint32_t>(columns) * static_cast<std::uint32_t>(rows));
     this->width = columns;
     this->height = rows;
-    file.Read(this->m_cells.data(), count * sizeof(TerrainHeightCell));
+    file.Read(this->m_cells.data(), rows * columns * sizeof(TerrainHeightCell));
 
-    if (minor >= 3) {
+    if (major > 1 || (major == 1 && minor >= 3)) {
       for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
-          this->m_cells[static_cast<unsigned>(row) * static_cast<unsigned>(columns) + static_cast<unsigned>(column)].type &= 0x7FFFFFFFu;
+          this->m_cells[row * columns + column].type &= 0x7FFFFFFFu;
         }
       }
     }
@@ -67,7 +67,6 @@ bool C3dAttr::Load(const char* name) {
     ShowErrorDialog("C3dAttr::Unsupported Version", 0);
   }
 
-  file.Close();
   return true;
 }
 
