@@ -11,7 +11,11 @@
 // INLINED
 inline void CRendererDX7::BindTexture(CTextureDX7* texture) {
   if (this->boundTexture != texture) {
-    this->device->SetTexture(0, texture ? texture->NativeSurface() : nullptr);
+    if (texture) {
+      this->device->SetTexture(0, texture->NativeSurface());
+    } else {
+      this->device->SetTexture(0, nullptr);
+    }
     this->boundTexture = texture;
   }
 }
@@ -19,7 +23,11 @@ inline void CRendererDX7::BindTexture(CTextureDX7* texture) {
 // INLINED
 inline void CRendererDX7::BindLightmap(CTextureDX7* lightmap) {
   if (this->boundLightmap != lightmap) {
-    this->device->SetTexture(1, lightmap ? lightmap->NativeSurface() : nullptr);
+    if (lightmap) {
+      this->device->SetTexture(1, lightmap->NativeSurface());
+    } else {
+      this->device->SetTexture(1, nullptr);
+    }
     this->boundLightmap = lightmap;
   }
 }
