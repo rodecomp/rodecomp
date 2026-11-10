@@ -9518,12 +9518,11 @@ void UInCashWnd::Paint() {
 // OFFSET: 0x008F4D50
 // FUNCTION: fn_12295
 void UIExchangeWnd::OnProcess() {
-  UIEditCtrl* edit = this->zenyEdit;
-  if (edit == nullptr) {
+  if (this->zenyEdit == nullptr) {
     return;
   }
 
-  const int length = edit->Length();
+  const int length = this->zenyEdit->Length();
   if (length == this->m_moneyLength) {
     return;
   }
@@ -9533,33 +9532,30 @@ void UIExchangeWnd::OnProcess() {
   }
 
   char text[24];
-  std::sprintf(text, "%s", edit->Text());
+  std::sprintf(text, "%s ", this->zenyEdit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
     g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
-    edit->SetText(this->m_moneyText.c_str());
-    g_windowMgr.SetFocus(edit);
+    this->zenyEdit->SetText(this->m_moneyText.c_str());
+    g_windowMgr.SetFocus(this->zenyEdit);
     return;
   }
 
-  std::int64_t money = _atoi64(text);
+  std::int64_t money = std::max<std::int64_t>(_atoi64(text), 0);
   if (money > 1000000000) {
     g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0);
-    FormatGroupedInteger(1000000000, text, sizeof(text));
-    edit->SetText(text);
+    FormatGroupedInteger(1000000000LL, text, sizeof(text));
+    this->zenyEdit->SetText(text);
     money = 1000000000;
   } else {
-    if (money < 0) {
-      money = 0;
-    }
     FormatGroupedInteger(money, text, sizeof(text));
-    edit->SetText(text);
-    this->m_moneyText = edit->Text();
+    this->zenyEdit->SetText(text);
+    this->m_moneyText = this->zenyEdit->Text();
   }
 
   const PriceColors colors = PriceColor(money);
-  edit->TextColor(RGB(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary)), colors.secondary);
-  this->m_moneyLength = edit->Length();
-  edit->SetCursor(edit->Length());
+  this->zenyEdit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
+  this->m_moneyLength = this->zenyEdit->Length();
+  this->zenyEdit->SetCursor(this->zenyEdit->Length());
 }
 
 // OFFSET: 0x008EE2B0
@@ -11741,185 +11737,164 @@ int UIFrameWnd::BuildItemName(
 
   int& capacity = reinterpret_cast<int&>(*remaining);
 
-  const auto unknownCreator = [&]() {
-    g_windowMgr.RegisterWindow(this);
-    const int error = strncpy_s(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER), _TRUNCATE);
-    if (error == 0 || error == STRUNCATE) {
-      const std::size_t bytes = *cursor ? strnlen(*cursor, *remaining) : 0;
-      *cursor += bytes;
-      *remaining -= bytes;
-    }
-  };
-  const auto isEquipment = [&]() {
-    switch (item->identity[0]) {
-    case TYPE_ARMOR:
-    case TYPE_WEAPON:
-    case TYPE_BOW:
-    case TYPE_BOTHHAND:
-    case TYPE_ARMORTM:
-    case TYPE_ARMORTB:
-    case TYPE_ARMORMB:
-    case TYPE_ARMORTMB:
-    case TYPE_GUN:
-    case 21:
-      return true;
-    default:
-      return false;
-    }
-  };
-
-  if (!item->identified) {
-    *cursor += ItemUnidentifiedName(*item, *cursor, capacity, 1);
-    breaks->push_back(*cursor);
-    return 1;
-  }
-
-  int cards[4];
-  std::memcpy(cards, item->cards, sizeof(cards));
-  if (item->identity[0] == 4 && item->IsApprenticeItem() == true && cards[3] == 1) {
-    *cursor += item->Apprentice(*cursor, capacity, 1);
-    breaks->push_back(*cursor);
-  }
-
-  if (cards[0] == 254 && cards[1] == 0) {
-    if (item->refiningLevel > 0) {
-      *cursor += item->Refine(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-    }
-    if (item->grade > 0) {
-      *cursor += item->Grade(*cursor, capacity, 1);
+  if (item->identified) {
+    const int* cards = reinterpret_cast<const int*>(item->cards);
+    if (item->identity[0] == 4 && item->IsApprenticeItem() == true && cards[3] == 1) {
+      *cursor += item->Apprentice(*cursor, capacity, 1);
       breaks->push_back(*cursor);
     }
 
-    if (g_serviceType == 12 || g_serviceType == 14) {
+    if (cards[0] == 254 && cards[1] == 0) {
+      if (item->refiningLevel > 0) {
+        *cursor += item->Refine(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+      if (0 < item->grade) {
+        *cursor += item->Grade(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+
+      if (g_serviceType != 12 && g_serviceType != 14) {
+        const int bytes = item->Creator(*cursor, capacity, 1);
+        if (bytes) {
+          *creator = *cursor;
+          *cursor += bytes;
+          *creatorColor = 0xE04040;
+        } else {
+          g_windowMgr.RegisterWindow(this);
+          AppendItemNameText(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER));
+          *creatorColor = 0x4040E0;
+        }
+        breaks->push_back(*cursor);
+        *cursor += item->Element(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      } else {
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += item->Element(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        const int bytes = item->Creator(*cursor, capacity, 1);
+        if (bytes) {
+          *creator = *cursor;
+          *cursor += bytes;
+          *creatorColor = 0xE04040;
+        } else {
+          g_windowMgr.RegisterWindow(this);
+          AppendItemNameText(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER));
+          *creatorColor = 0x4040E0;
+        }
+        breaks->push_back(*cursor);
+      }
+    } else if (Equipment(*item)) {
+      if (item->refiningLevel > 0) {
+        *cursor += item->Refine(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+      if (0 < item->grade) {
+        *cursor += item->Grade(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+      }
+
+      if (item->HasCards()) {
+        *cursor += item->Prefixes(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        *cursor += item->Suffixes(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        if (withSlots == 1) {
+          *cursor += item->Slots(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+        }
+      } else if (item->HasSpecialCard()) {
+        if (g_serviceType == 12) {
+          *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *cursor += item->Element(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *cursor += item->Star(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *creator = *cursor;
+          const int bytes = item->Creator(*cursor, capacity, 1);
+          if (bytes) {
+            *creator = *cursor;
+            *cursor += bytes;
+            *creatorColor = 0xE04040;
+          } else {
+            g_windowMgr.RegisterWindow(this);
+            AppendItemNameText(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER));
+            *creatorColor = 0x4040E0;
+          }
+          breaks->push_back(*cursor);
+          if (splitCreator) {
+            breaks->push_back(*cursor);
+          }
+        } else if (g_serviceType == 14) {
+          *cursor += item->Star(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *cursor += item->Element(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *creator = *cursor;
+          const int bytes = item->Creator(*cursor, capacity, 1);
+          if (bytes) {
+            *creator = *cursor;
+            *cursor += bytes;
+            *creatorColor = 0xE04040;
+          } else {
+            g_windowMgr.RegisterWindow(this);
+            AppendItemNameText(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER));
+            *creatorColor = 0x4040E0;
+          }
+          breaks->push_back(*cursor);
+          if (splitCreator) {
+            breaks->push_back(*cursor);
+          }
+        } else {
+          *cursor += item->Star(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *creator = *cursor;
+          const int bytes = item->Creator(*cursor, capacity, 1);
+          if (bytes) {
+            *creator = *cursor;
+            *cursor += bytes;
+            *creatorColor = 0xE04040;
+          } else {
+            g_windowMgr.RegisterWindow(this);
+            AppendItemNameText(*cursor, *remaining, LookupMessage(MSI_NAMELESS_USER));
+          }
+          breaks->push_back(*cursor);
+          if (splitCreator) {
+            breaks->push_back(*cursor);
+          }
+          *cursor += item->Element(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+          *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+        }
+      } else {
+        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
+        if (withSlots == 1) {
+          *cursor += item->Slots(*cursor, capacity, 1);
+          breaks->push_back(*cursor);
+        }
+      }
+    } else {
       *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
       breaks->push_back(*cursor);
-      *cursor += item->Element(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      const int bytes = item->Creator(*cursor, capacity, 1);
-      if (bytes) {
-        *creator = *cursor;
-        *cursor += bytes;
-        *creatorColor = 0xE04040;
-      } else {
-        unknownCreator();
-        *creatorColor = 0x4040E0;
+      if (withSlots == 1) {
+        *cursor += item->Slots(*cursor, capacity, 1);
+        breaks->push_back(*cursor);
       }
-      breaks->push_back(*cursor);
-      return 1;
-    }
-
-    const int bytes = item->Creator(*cursor, capacity, 1);
-    if (bytes) {
-      *creator = *cursor;
-      *cursor += bytes;
-      *creatorColor = 0xE04040;
-    } else {
-      unknownCreator();
-      *creatorColor = 0x4040E0;
     }
   } else {
-    if (!isEquipment()) {
-      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      if (withSlots == 1) {
-        *cursor += item->Slots(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-      }
-      return 1;
-    }
-
-    if (item->refiningLevel > 0) {
-      *cursor += item->Refine(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-    }
-    if (item->grade > 0) {
-      *cursor += item->Grade(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-    }
-
-    if (item->HasCards()) {
-      *cursor += item->Prefixes(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      *cursor += item->Suffixes(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      if (withSlots == 1) {
-        *cursor += item->Slots(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-      }
-      return 1;
-    }
-
-    if (!item->HasSpecialCard()) {
-      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      if (withSlots == 1) {
-        *cursor += item->Slots(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-      }
-      return 1;
-    }
-
-    if (g_serviceType == 12 || g_serviceType == 14) {
-      if (g_serviceType == 12) {
-        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-        *cursor += item->Element(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-        *cursor += item->Star(*cursor, capacity, 1);
-      } else {
-        *cursor += item->Star(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-        *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-        breaks->push_back(*cursor);
-        *cursor += item->Element(*cursor, capacity, 1);
-      }
-      breaks->push_back(*cursor);
-      *creator = *cursor;
-      const int bytes = item->Creator(*cursor, capacity, 1);
-      if (bytes) {
-        *creator = *cursor;
-        *cursor += bytes;
-        *creatorColor = 0xE04040;
-      } else {
-        unknownCreator();
-        *creatorColor = 0x4040E0;
-      }
-      breaks->push_back(*cursor);
-      if (splitCreator) {
-        breaks->push_back(*cursor);
-      }
-      return 1;
-    }
-
-    *cursor += item->Star(*cursor, capacity, 1);
+    *cursor += ItemUnidentifiedName(*item, *cursor, capacity, 1);
     breaks->push_back(*cursor);
-    *creator = *cursor;
-    const int bytes = item->Creator(*cursor, capacity, 1);
-    if (bytes) {
-      *creator = *cursor;
-      *cursor += bytes;
-      *creatorColor = 0xE04040;
-    } else {
-      unknownCreator();
-    }
-    breaks->push_back(*cursor);
-    if (!splitCreator) {
-      *cursor += item->Element(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-      breaks->push_back(*cursor);
-      return 1;
-    }
   }
-
-  breaks->push_back(*cursor);
-  *cursor += item->Element(*cursor, capacity, 1);
-  breaks->push_back(*cursor);
-  *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
-  breaks->push_back(*cursor);
   return 1;
 }
 
