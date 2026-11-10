@@ -299,7 +299,7 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
   } else {
     const char captionSource[] = {'\x7B', '\x1D', '\x68', '\x48', '\x9A', '\x1D', '\x3F'};
     const char* caption = DecryptName<0x8B3FEB5B8BD5C3C3ULL>(captionSource);
-    const char messageSource[] = {'\x25', '\x6A', '\xF3', '\xC3', '\x87', '\xA0', '\x73', '\x4E', '\x3A', '\x34', '\xB0', '\x35', '\xF0', '\xCE', '\xEC', '\x43', '\x58', '\x4F', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xD7', '\xB6', '\xDB', '\x02', '\x43', '\x72', '\x21', '\xE3', '\x1A', '\x55', '\x3B', '\xF1', '\xAB', '\xF2', '\xCC', '\xE4', '\x39', '\xC5', '\x36', '\xE3', '\xD5', '\xF0', '\x21', '\xEA', '\x2E', '\x53', '\x77', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xF7'};
+    const std::array<char, 56> messageSource = {'\x25', '\x6A', '\xF3', '\xC3', '\x87', '\xA0', '\x73', '\x4E', '\x3A', '\x34', '\xB0', '\x35', '\xF0', '\xCE', '\xEC', '\x43', '\x58', '\x4F', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xD7', '\xB6', '\xDB', '\x02', '\x43', '\x72', '\x21', '\xE3', '\x1A', '\x55', '\x3B', '\xF1', '\xAB', '\xF2', '\xCC', '\xE4', '\x39', '\xC5', '\x36', '\xE3', '\xD5', '\xF0', '\x21', '\xEA', '\x2E', '\x53', '\x77', '\xF9', '\xDA', '\x83', '\xD8', '\x7D', '\xF7'};
     const char* message = DecryptName<0xF7530137154D8FE5ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
