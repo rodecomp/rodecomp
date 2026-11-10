@@ -1,5 +1,6 @@
 #include "Archive/PakRegistry.h"
 #include "File/ResourcePath.h"
+#include "Utility/GGHashMgr.h"
 
 // STATIC: 0x016D5688
 // GLOBAL: gl_24380
@@ -52,6 +53,7 @@ void* PakRegistry::ReadArchive(const char* filename, std::uint32_t* size) {
 
       void* buffer = VirtualAlloc(nullptr, entry.originalSize + 8, MEM_COMMIT, PAGE_READWRITE);
       if (archive.second->Extract(&entry, buffer)) {
+        g_ggHashMgr->VerifyBuffer(filename, static_cast<const unsigned char*>(buffer), *size);
         return buffer;
       }
 
