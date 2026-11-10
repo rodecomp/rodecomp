@@ -4401,19 +4401,23 @@ void CCurseOfCubeEffect::OnProcess() {
     if (IsEmitterAlive(emitter)) {
       if (emitter) {
         const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
-        const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const vector3d viewPosition = {
+            position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9],
+            position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10],
+            position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11]};
         const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 
-        const float vx = position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] +
-                         this->viewOffsetX;
-        const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
-                         this->viewOffsetY;
-        const float vz = position.y * view.values[5] + position.x * view.values[2] + position.z * view.values[8] + view.values[11] +
-                         this->viewOffsetZ;
+        const float vx = viewPosition.x + this->viewOffsetX;
+        const float vy = viewPosition.y + this->viewOffsetY;
+        const float vz = viewPosition.z + this->viewOffsetZ;
 
-        emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-        emitter->position.y = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
-        emitter->position.z = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
+        const float worldX = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
+        const float worldY = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
+        const float worldZ = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
+        emitter->position.x = worldX;
+        emitter->position.y = worldY;
+        emitter->position.z = worldZ;
         AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
