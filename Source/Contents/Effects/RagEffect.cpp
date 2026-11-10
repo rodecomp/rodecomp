@@ -5119,10 +5119,7 @@ void CRagEffect::TexturedOrbit(const char* name) {
 // OFFSET: 0x00C612D0
 // FUNCTION: fn_20245
 void CRagEffect::TexturedCross(const char* name, char kind) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6131,33 +6128,33 @@ void CRagEffect::PokBurst() {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 52, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  this->state.currentPrimitive->totalTexture = 3;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
-  this->state.currentPrimitive->textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
-  this->state.currentPrimitive->textures[2] = g_texMgr.Load("effect\\pok2.tga", 0, false, true, false);
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 52, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.totalTexture = 3;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
+  this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
+  this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\pok2.tga", 0, false, true, false);
   this->render.position.x -= 15.0f;
 
   for (int index = 0; index < 4; ++index) {
-    this->state.currentPrimitive->slots[index].life = 1;
-    this->state.currentPrimitive->slots[index].process = -300 - ClampedRandom(50);
-    this->state.currentPrimitive->slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-    this->state.currentPrimitive->slots[index].vecBNow = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.currentPrimitive->slots[index].vecTPre = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.currentPrimitive->slots[index].vecTNow = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.currentPrimitive->slots[index].vecBPre = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.currentPrimitive->slots[index].alphaB = 0;
-    this->state.currentPrimitive->slots[index].maxHeight = 2.0f;
-    this->state.currentPrimitive->slots[index].flag1[0] = static_cast<char>(ClampedRandom(5));
-    this->state.currentPrimitive->slots[index].flag1[1] = 0;
-    this->state.currentPrimitive->slots[index].flag1[3] = 0;
-    this->state.currentPrimitive->slots[index].flag1[2] = static_cast<char>(ClampedRandom(4) * 20);
-    this->state.currentPrimitive->slots[index].distance = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
-    this->state.currentPrimitive->slots[index].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
-    this->state.currentPrimitive->slots[index].riseAngle = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.slots[index].process = -300 - ClampedRandom(50);
+    this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].vecBNow = {this->render.position.x, this->render.position.y, this->render.position.z};
+    this->state.lastPrim->state.slots[index].vecTPre = {this->render.position.x, this->render.position.y, this->render.position.z};
+    this->state.lastPrim->state.slots[index].vecTNow = {this->render.position.x, this->render.position.y, this->render.position.z};
+    this->state.lastPrim->state.slots[index].vecBPre = {this->render.position.x, this->render.position.y, this->render.position.z};
+    this->state.lastPrim->state.slots[index].alphaB = 0;
+    this->state.lastPrim->state.slots[index].maxHeight = 2.0f;
+    this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandom(5));
+    this->state.lastPrim->state.slots[index].flag1[1] = 0;
+    this->state.lastPrim->state.slots[index].flag1[3] = 0;
+    this->state.lastPrim->state.slots[index].flag1[2] = static_cast<char>(ClampedRandom(4) * 20);
+    this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
+    this->state.lastPrim->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(ClampedRandom(360));
   }
 }
 
@@ -16291,23 +16288,23 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
 // OFFSET: 0x00C60EE0
 // FUNCTION: fn_20244
 void CRagEffect::Cloud11Burst(char kind) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 62, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
-  this->state.currentPrimitive->size = kind == 1 ? 8.0f : 5.0f;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 62, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
+  this->state.lastPrim->state.size = kind == 1 ? 8.0f : 5.0f;
 
   for (int i = 0; i < 4; ++i) {
-    this->state.currentPrimitive->slots[i].life = 1;
-    this->state.currentPrimitive->slots[i].process = 0;
-    this->state.currentPrimitive->slots[i].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[i].life = 1;
+    this->state.lastPrim->state.slots[i].process = 0;
+    this->state.lastPrim->state.slots[i].fullDisplayAngle = 30;
 
     float maxHeight;
     if (kind == 1) {
@@ -16320,13 +16317,13 @@ void CRagEffect::Cloud11Burst(char kind) {
       maxHeight = static_cast<float>(i) * 2.0f + 5.0f;
     }
 
-    this->state.currentPrimitive->slots[i].maxHeight = maxHeight;
-    this->state.currentPrimitive->slots[i].rotStart = static_cast<std::int16_t>(i * 90);
-    this->state.currentPrimitive->slots[i].alphaB = 0;
+    this->state.lastPrim->state.slots[i].maxHeight = maxHeight;
+    this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(i * 90);
+    this->state.lastPrim->state.slots[i].alphaB = 0;
 
     float distance;
     if (kind >= 2) {
-      this->state.currentPrimitive->slots[i].alphaT = 2;
+      this->state.lastPrim->state.slots[i].alphaT = 2;
       if (kind == 2) {
         distance = 14.0f - static_cast<float>(i) * 2.0f;
       } else if (kind == 3) {
@@ -16335,7 +16332,7 @@ void CRagEffect::Cloud11Burst(char kind) {
         distance = static_cast<float>(ClampedRandom(101)) * 0.03f + 4.5f;
       }
     } else {
-      this->state.currentPrimitive->slots[i].alphaT = 1;
+      this->state.lastPrim->state.slots[i].alphaT = 1;
       if (kind == 1) {
         distance = static_cast<float>(ClampedRandom(101)) * 0.01f + 2.5f;
       } else {
@@ -16343,12 +16340,12 @@ void CRagEffect::Cloud11Burst(char kind) {
       }
     }
 
-    this->state.currentPrimitive->slots[i].distance = distance;
-    this->state.currentPrimitive->slots[i].riseAngle = static_cast<std::int16_t>(ClampedRandom(21) + 80);
+    this->state.lastPrim->state.slots[i].distance = distance;
+    this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(ClampedRandom(21) + 80);
 
     for (int j = 0; j < 21; ++j) {
-      this->state.currentPrimitive->slots[i].height[j] = 1.0f;
-      this->state.currentPrimitive->slots[i].flag1[j] = 0;
+      this->state.lastPrim->state.slots[i].height[j] = 1.0f;
+      this->state.lastPrim->state.slots[i].flag1[j] = 0;
     }
   }
 }
