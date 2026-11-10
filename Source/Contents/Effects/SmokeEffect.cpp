@@ -58,19 +58,22 @@ void CSmokeEffect::OnProcess() {
       if (particle->elapsedFrames < 50) {
         const float speed = particle->frameDelay;
         const float* values = rotation.values;
-        particle->velocity.x += values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-        particle->velocity.y += values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-        particle->velocity.z += values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+        const float deltaX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
+        const float deltaY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
+        const float deltaZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+        particle->velocity.x += deltaX;
+        particle->velocity.y += deltaY;
+        particle->velocity.z += deltaZ;
         angle += spin;
         if (particle->elapsedFrames > 34) {
-          particle->alpha = std::max(particle->alpha - 15, 0);
+          particle->alpha = std::ranges::max(particle->alpha - 15, 0);
         }
       } else {
         particle->SetSprite("이팩트\\굴뚝연기.spr");
         particle->SetAction("이팩트\\굴뚝연기.act");
         particle->scale = 1.5f;
         spin = 0.75f;
-        particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 3) / 10.0f;
+        particle->frameDelay = static_cast<float>(std::ranges::max(rand() % 3, 0) + 3) / 10.0f;
         particle->elapsedFrames = 0;
         particle->velocity.x = 0.0f;
         particle->velocity.y = 0.0f;
@@ -78,8 +81,8 @@ void CSmokeEffect::OnProcess() {
         particle->flags = 1;
         particle->alpha = 255;
         rotation.IsIdentity();
-        rotation.MakeXRotation(static_cast<float>(std::max(0, rand() % 30) + 75) / 180.0f * 3.141592f);
-        rotation.AppendYRotation(static_cast<float>(std::max(0, rand() % 360)) / 180.0f * 3.141592f);
+        rotation.MakeXRotation(static_cast<float>(std::ranges::max(rand() % 30, 0) + 75) / 180.0f * 3.141592f);
+        rotation.AppendYRotation(static_cast<float>(std::ranges::max(rand() % 360, 0)) / 180.0f * 3.141592f);
         this->visibleCount = static_cast<int>(RandomRange(1.0f, static_cast<float>(this->particles.size())));
       }
 
