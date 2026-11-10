@@ -21,6 +21,7 @@ void CMode::DrawFadeIn() {
 
   const std::uint32_t elapsed = timeGetTime() - g_modeFadeTick;
   if (elapsed < 255) {
-    DrawAlphaRectangle(0, 0, g_renderer->viewport.width, g_renderer->viewport.height, (255 - elapsed) << 24);
+    const int alpha = 255 - elapsed;
+    DrawAlphaRectangle(0, 0, g_renderer->viewport.width, g_renderer->viewport.height, alpha << 24);
   }
 }
