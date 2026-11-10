@@ -146,45 +146,52 @@ void CGameMode::LoadCooldownSnapshot(const void* packet) {
   }
 }
 
+struct CooldownStartPacket {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::uint16_t id;
+  /* 0004 */ std::uint32_t duration;
+};
+
 // OFFSET: 0x00D41990
 // FUNCTION: fn_21826
 void CGameMode::ApplyCooldownStart(const void* packet) {
-  const auto* bytes = static_cast<const unsigned char*>(packet);
-  std::uint16_t id;
-  std::uint32_t duration;
-  std::memcpy(&id, bytes + 2, sizeof(id));
-  std::memcpy(&duration, bytes + 4, sizeof(duration));
-  const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
-  ShortcutCooldownRecord value{id, now + duration, duration, {}, {}};
-  const auto find = [&]() {
-    return std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& record) { return record.id == id; });
-  };
+  const auto* start = static_cast<const CooldownStartPacket*>(packet);
+  ShortcutCooldownRecord value;
+  value.id = start->id;
+  if (g_replayAnimationScaling == 1) {
+    value.end = Replay::Instance().elapsed + start->duration;
+  } else {
+    value.end = timeGetTime() + start->duration;
+  }
+  value.duration = start->duration;
 
-  for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
-    if (icon.id != id) {
+  for (auto icon = g_session.m_mainCooldownIcons.begin(); icon != g_session.m_mainCooldownIcons.end(); ++icon) {
+    if (icon->id != start->id) {
       continue;
     }
 
-    const auto entry = find();
+    const auto entry = std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& record) { return record.id == icon->id; });
     if (entry == g_session.m_requestTimers.end()) {
-      value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
+      value.main.push_back(CooldownState(icon->slot, icon->x, icon->y, start->duration, value.end - start->duration, 0, 0));
       g_session.m_requestTimers.push_back(value);
     } else {
-      const auto slot = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
+      const auto slot = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
       if (slot == entry->main.end()) {
-        entry->main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
+        entry->main.push_back(CooldownState(icon->slot, icon->x, icon->y, start->duration, value.end - start->duration, 0, 0));
       } else {
         g_session.m_requestTimers.erase(entry);
 
-        value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
+        value.main.push_back(CooldownState(icon->slot, icon->x, icon->y, start->duration, value.end - start->duration, 0, 0));
         g_session.m_requestTimers.push_back(value);
       }
     }
   }
 
   for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
-    if (icon.id == id && find() == g_session.m_requestTimers.end()) {
-      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
+    if (icon.id == start->id &&
+        std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& record) { return record.id == icon.id; }) ==
+          g_session.m_requestTimers.end()) {
+      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, start->duration, value.end - start->duration, 0, 0));
       g_session.m_requestTimers.push_back(value);
     }
   }
