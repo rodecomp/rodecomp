@@ -131,7 +131,7 @@ void CTalismanMarkEffect::OnProcess() {
 
     switch (particle->animationState) {
     case 0:
-      if (particle->life == 0.0f || particle->life * 60.0f > particle->elapsedFrames) {
+      if (IsParticleActive(particle)) {
         break;
       }
 
@@ -162,7 +162,7 @@ void CTalismanMarkEffect::OnProcess() {
     case 1:
       break;
     case 2:
-      if (particle->life == 0.0f || particle->life * 60.0f > particle->elapsedFrames) {
+      if (IsParticleActive(particle)) {
         break;
       }
 
