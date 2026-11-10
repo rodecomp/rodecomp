@@ -565,44 +565,42 @@ void UIChangeMaterialWnd_List::Paint() {
       }
     }
 
-    const int rowHeight = this->rowHeight;
-    if (!entry) {
+    if (entry) {
+      const char* bitmap;
+      if (index == this->m_selectedIndex) {
+        bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
+      } else if (index == this->m_hoverIndex) {
+        bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_over.bmp";
+      } else {
+        bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_out.bmp";
+      }
+
+      CRes* background = ResourceMgr::Instance().Load(Resolve(bitmap));
+      this->DrawBitmap(0, this->rowHeight * row, static_cast<CBitmapRes*>(background), true);
+
+      ITEM_INFO item;
+      item.SetItemId(entry->results[0].id);
+      item.quantity = entry->results[0].quantity;
+      item.identified = 1;
+
+      std::string name = item.DisplayName(0);
+      if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
+        name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
+      }
+
+      const int y = this->rowHeight * row;
+      if (entry->state == 1) {
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, y, item, 1, 0);
+        this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
+      } else {
+        DrawItemWithQuantityAuxiliary(*this, 1, 0, y, item, 1, 0);
+        this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
+        this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
+      }
+    } else {
       CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
-      this->DrawBitmap(0, rowHeight * row, static_cast<CBitmapRes*>(disabled), true);
-      continue;
-    }
-
-    const char* bitmap;
-    if (index == this->m_selectedIndex) {
-      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
-    } else if (index == this->m_hoverIndex) {
-      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_over.bmp";
-    } else {
-      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_out.bmp";
-    }
-
-    CRes* background = ResourceMgr::Instance().Load(Resolve(bitmap));
-    this->DrawBitmap(0, rowHeight * row, static_cast<CBitmapRes*>(background), true);
-
-    ITEM_INFO item;
-    item.SetItemId(entry->results[0].id);
-    item.quantity = entry->results[0].quantity;
-    item.identified = 1;
-
-    std::string name = item.DisplayName(0);
-    if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
-      name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
-    }
-
-    const int y = rowHeight * row;
-    if (entry->state == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, y, item, 1, 0);
-      this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
-      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
-    } else {
-      DrawItemWithQuantityAuxiliary(*this, 1, 0, y, item, 1, 0);
-      this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
-      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
+      this->DrawBitmap(0, this->rowHeight * row, static_cast<CBitmapRes*>(disabled), true);
     }
   }
 }
