@@ -3865,7 +3865,7 @@ int UIWindow::DrawWrappedFormattedText(
 // OFFSET: 0x00A7DA40
 // FUNCTION: fn_16958
 std::list<int> UIWindow::WrapText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold) {
-  lines->erase(lines->begin(), lines->end());
+  lines->clear();
   std::list<int> widths;
   int width = 0;
   std::string line;
