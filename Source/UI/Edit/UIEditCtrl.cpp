@@ -2537,16 +2537,16 @@ void UIItemBaseWnd::Paint() {
     return;
   }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, &left->image, false);
+  const int leftTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, left, false);
   }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
-    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  const int rightTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   unsigned red, green, blue;
@@ -2556,8 +2556,8 @@ void UIItemBaseWnd::Paint() {
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
-  int slots = (this->geometry.height - 38) / 32;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  const int rows = (this->geometry.height - 38) / 32;
+  for (int row = 0, y = 17; row < rows; ++row, y += 32) {
     for (int column = 0, x = 40; column < columns; ++column, x += 32) {
       DrawItemSlotBackground(*this, x, y);
     }
@@ -2584,12 +2584,12 @@ void UIItemBaseWnd::Paint() {
       DrawItemIcon(*this, ResourceMgr::Instance(), x, top + 21, *it, 0);
     }
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
