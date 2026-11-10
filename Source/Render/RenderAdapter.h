@@ -17,7 +17,7 @@ struct RenderAdapter {
   }
 
   // INLINED
-  RenderAdapter(int backend, UINT ordinal, const char* description, GUID drawGuid, GUID renderGuid, const GUID& deviceGuid, const char* deviceName)
+  RenderAdapter(int backend, UINT ordinal, const char* description, const GUID& drawGuid, const GUID& renderGuid, const GUID& deviceGuid, const char* deviceName)
       : backend(backend), ordinal(ordinal), description(description), drawGuid(drawGuid), renderGuid(renderGuid), deviceGuid(deviceGuid),
         deviceName(deviceName) {
   }
