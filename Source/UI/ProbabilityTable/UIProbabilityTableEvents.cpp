@@ -57,9 +57,7 @@ void CUIProbabilityTable::SetItem(int itemId) {
   {
     ITEM_INFO item;
     item.SetItemId(itemId);
-    CUIStaticText* label = this->m_itemName;
-    const std::string name = item.DisplayName(0);
-    label->SetText(name.c_str(), name.size());
+    this->m_itemName->SetText(item.DisplayName(0));
   }
 
   this->m_list->ClearData();
