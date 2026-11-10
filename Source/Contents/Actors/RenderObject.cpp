@@ -4065,8 +4065,8 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
   rotation.MakeXRotation(std::strstr(this->name, "90") != nullptr ? 1.570796f : 3.141592f);
   rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
   vector3d position;
-  position.x = this->render.position.x - 2.0f;
   position.y = this->render.position.y;
+  position.x = this->render.position.x - 2.0f;
   position.z = this->render.position.z - 2.0f;
   rotation.AppendTranslate(&position.x);
 
@@ -4115,12 +4115,13 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
     }
 
     RenderCommand* command;
+    const std::uint16_t* index = indices;
     int vertexCount = 0;
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       command = this->commands[mesh];
       for (int corner = 0; corner < 3; ++corner) {
         RenderVertex& output = command->vertices[vertexCount];
-        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        const GrannyPNT332Vertex& vertex = source[index[vertexCount]];
         ++vertexCount;
         position.x = vertex.position[0];
         position.y = vertex.position[1];
@@ -4129,12 +4130,13 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
+        const float clamped = 1.0f < shade ? 1.0f : shade;
         this->brightness = static_cast<unsigned>(
-          std::max(0.0f, std::min(1.0f, shade)) * static_cast<float>(light.intensity) + static_cast<float>(0xFF - light.intensity)
+          (0.0f > clamped ? 0.0f : clamped) * static_cast<float>(light.intensity) + static_cast<float>(0xFF - light.intensity)
         );
         output.diffuse = (((light.green + 0x38 + this->brightness) << 8) & 0xFF00) +
                          (((light.red + 0x38 + this->brightness) << 16) & 0xFF0000) +
-                         static_cast<unsigned char>(light.blue + 0x38 + this->brightness) + (this->alpha << 24);
+                         ((light.blue + 0x38 + this->brightness) & 0xFF) + (this->alpha << 24);
       }
 
       this->litPositions.push_back(position);
