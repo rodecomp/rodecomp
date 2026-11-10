@@ -160,7 +160,7 @@ std::wstring LowercaseWide(const std::string& text) {
 
 // OFFSET: 0x0058D6B0
 // FUNCTION: fn_02795
-int FindSubstring(const char* text, int codePage, const char* pattern) {
-  return static_cast<int>(LowercaseWide(text).find(LowercaseWide(pattern)));
+int FindSubstring(std::string_view text, std::string_view pattern) {
+  return static_cast<int>(LowercaseWide(text.data()).find(LowercaseWide(pattern.data())));
 }
 

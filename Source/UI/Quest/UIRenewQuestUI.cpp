@@ -961,14 +961,7 @@ bool CUIRenewQuestUI::MatchesFilter(const RenewQuestInfo& info) const {
     return false;
   }
 
-  if (!this->searchText.empty()) {
-    if (FindSubstring(info.summary.c_str(), static_cast<int>(info.summary.size()), this->searchText.c_str()) == -1 &&
-        FindSubstring(info.m_title.c_str(), static_cast<int>(info.m_title.size()), this->searchText.c_str()) == -1) {
-      return false;
-    }
-  }
-
-  return true;
+  return this->searchText.empty() || FindSubstring(info.summary, this->searchText) != -1 || FindSubstring(info.m_title, this->searchText) != -1;
 }
 
 // OFFSET: 0x00A660E0

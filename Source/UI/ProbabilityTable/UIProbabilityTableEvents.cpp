@@ -99,7 +99,7 @@ void CUIProbabilityTable::SetItem(int itemId) {
 // FUNCTION: fn_16210
 int HighlightKeyword(std::string& text, std::string_view keyword, std::string_view prefix, std::string_view suffix) {
   int count = 0;
-  if (FindSubstring(text.c_str(), static_cast<int>(text.size()), keyword.data()) == -1) {
+  if (FindSubstring(text, keyword) == -1) {
     return 0;
   }
 

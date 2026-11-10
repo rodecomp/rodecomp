@@ -492,7 +492,7 @@ void CUIProbabilityTable::Search() {
 
   list = this->m_list;
   auto matches = [keyword](const ProbabilityTable::CItemData& data) {
-    return FindSubstring(data.name.c_str(), static_cast<int>(data.name.size()), keyword.data()) != -1;
+    return FindSubstring(data.name, keyword) != -1;
   };
 
   auto start = list->data.begin();
