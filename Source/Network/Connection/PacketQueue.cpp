@@ -51,8 +51,9 @@ void CPacketQueue::InsertData(int bytes, const void* source) {
 // OFFSET: 0x00C7F160
 // FUNCTION: fn_20424
 void CPacketQueue::Prepend(int bytes, const void* source) {
+  const int size = std::max(static_cast<int>(this->m_storage.size()), this->GetSize() + bytes);
   std::vector<char> storage;
-  storage.resize(std::max(static_cast<int>(this->m_storage.size()), this->GetSize() + bytes));
+  storage.resize(size);
   std::memcpy(storage.data(), source, bytes);
   std::memcpy(storage.data() + bytes, this->m_data + this->m_read, this->GetSize());
   this->m_write = this->GetSize() + bytes;
