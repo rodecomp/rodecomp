@@ -16,9 +16,15 @@ float g_textureOffsetY = 0.5f;
 
 // OFFSET: 0x005722E0
 // FUNCTION: fn_02463
-CTexture::CTexture()
-    : m_format(TextureFormat::UnknownTextureFormat), textureFlags(1), m_textureWidth(0), m_textureHeight(0), m_width(0), m_height(0), refCount(0),
-      lastUsedTick(0) {
+CTexture::CTexture() {
+  this->m_format = TextureFormat::UnknownTextureFormat;
+  this->textureFlags = 1;
+  this->m_width = 0;
+  this->m_textureWidth = 0;
+  this->m_height = 0;
+  this->m_textureHeight = 0;
+  this->refCount = 0;
+  this->lastUsedTick = 0;
   this->m_name[0] = '\0';
 }
 
