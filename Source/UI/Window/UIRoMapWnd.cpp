@@ -512,9 +512,10 @@ void UIRoMapWnd::OnMouseMove(int x, int y) {
 
   this->m_mouseX = x;
   this->m_mouseY = y;
+  const int currentWorld = g_worldViewMgr.currentWorld;
   this->hoveredRecord = nullptr;
   for (auto it = this->m_records.begin(); it != this->m_records.end(); ++it) {
-    if (g_worldViewMgr.currentWorld == it->worldIndex && it->left < x && x < it->right && it->top < y && y < it->bottom) {
+    if (currentWorld == it->worldIndex && it->left < x && it->right > x && it->top < y && it->bottom > y) {
       this->hoveredRecord = &*it;
       break;
     }
