@@ -11,7 +11,9 @@ std::vector<RadialGridPoint> GenerateRadialGrid(const RadialGridPoint& center, i
 
   for (int x = -radius; x <= radius; ++x) {
     for (int y = -radius; y <= radius; ++y) {
-      points.push_back({static_cast<float>(x) + center.x, static_cast<float>(y) + center.y});
+      float pointX = static_cast<float>(x) + center.x;
+      float pointY = static_cast<float>(y) + center.y;
+      points.emplace_back(pointX, pointY);
     }
   }
 
