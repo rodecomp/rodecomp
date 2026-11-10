@@ -2701,19 +2701,14 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
     across = g_cosTable[angle] * outer - g_sinTable[angle] * back;
     vec1.Set(across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_cosTable[angle] * back + g_sinTable[angle] * outer, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f);
 
-    switch (slot.flag1[0]) {
-    case 0:
+    if (slot.flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 225, 225, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case 1:
+    } else if (slot.flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case 2:
+    } else if (slot.flag1[0] == 2) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 65, 184, 240, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      break;
-    default:
+    } else {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
     }
   }
 }
