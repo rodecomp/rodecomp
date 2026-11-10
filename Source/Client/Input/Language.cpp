@@ -80,21 +80,19 @@ void CLanguageBase::Select(int anchor, int cursor) {
   this->anchor = anchor;
   this->cursor = cursor;
 
-  if (anchor < 0) {
+  if (this->anchor < 0) {
     this->anchor = 0;
-    anchor = 0;
   }
 
-  if (static_cast<unsigned>(anchor) > this->text.size()) {
+  if (static_cast<unsigned>(this->anchor) > this->text.size()) {
     this->anchor = static_cast<int>(this->text.size());
   }
 
-  if (cursor < 0) {
+  if (this->cursor < 0) {
     this->cursor = 0;
-    return;
+  } else if (static_cast<unsigned>(this->cursor) > this->text.size()) {
+    this->cursor = static_cast<int>(this->text.size());
   }
-
-  this->cursor = static_cast<unsigned>(cursor) > this->text.size() ? static_cast<int>(this->text.size()) : cursor;
 }
 
 // OFFSET: 0x00ACE3C0
@@ -211,8 +209,8 @@ void CLanguageBase::SetPassword(unsigned char value) {
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
 void CLanguageBase::MoveForward() {
-  const unsigned length = static_cast<unsigned>(this->text.size());
   const unsigned position = static_cast<unsigned>(this->cursor);
+  const unsigned length = static_cast<unsigned>(this->text.size());
   if (position == length) {
     return;
   }
@@ -220,19 +218,18 @@ void CLanguageBase::MoveForward() {
     this->cursor = static_cast<int>(length);
     return;
   }
-  this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), this->text.c_str() + position, 0) - this->text.c_str());
+  this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(this->codePage), this->text.c_str() + this->cursor, 0) - this->text.c_str());
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
 void CLanguageBase::AdvanceCursor(int delta) {
-  const unsigned length = static_cast<unsigned>(this->text.size());
-  if (static_cast<unsigned>(this->cursor) == length) {
+  if (static_cast<unsigned>(this->cursor) == this->text.size()) {
     return;
   }
 
-  if (static_cast<unsigned>(this->cursor) > length) {
-    this->cursor = static_cast<int>(length);
-  } else if (static_cast<unsigned>(this->cursor) + delta <= length) {
+  if (static_cast<unsigned>(this->cursor) > this->text.size()) {
+    this->cursor = static_cast<int>(this->text.size());
+  } else if (static_cast<unsigned>(this->cursor) + delta <= this->text.size()) {
     this->cursor += delta;
   }
 
@@ -264,7 +261,7 @@ void CLanguageBase::RetreatCursor(int delta) {
 void CLanguageBase::Character(unsigned value, LPARAM) {
   switch (value) {
   case VK_BACK:
-    if (this->cursor == this->anchor) {
+    if (!std::abs(this->cursor - this->anchor)) {
       this->MoveBack();
     }
 
@@ -442,14 +439,10 @@ CLanguageBase::CLanguageBase()
     : fakeInput(), candidateList(nullptr), candidateCount(0), pageSize(0), selection(0),
       candidateStorage(), text(), cursor(0), anchor(0), composition(), candidate(),
       language(static_cast<std::uint16_t>(reinterpret_cast<std::uintptr_t>(GetKeyboardLayout(0)))), underlineStart(0),
-      underlineEnd(0), servicePrefix() {
+      underlineEnd(0), servicePrefix("") {
   this->codePage = g_inlineCharset ? LanguageCodePage(this->language) : g_textCodePage;
 
   switch (static_cast<std::uint16_t>(GetUserDefaultLangID() & 0x3FF)) {
-  case LANG_GERMAN:
-    this->alternateLanguage = 7;
-    this->servicePrefix = "german\\";
-    break;
   case LANG_ITALIAN:
     this->alternateLanguage = 16;
     this->servicePrefix = "italian\\";
@@ -461,6 +454,10 @@ CLanguageBase::CLanguageBase()
   case LANG_TURKISH:
     this->alternateLanguage = 31;
     this->servicePrefix = "turkish\\";
+    break;
+  case LANG_GERMAN:
+    this->alternateLanguage = 7;
+    this->servicePrefix = "german\\";
     break;
   default:
     this->alternateLanguage = 9;
