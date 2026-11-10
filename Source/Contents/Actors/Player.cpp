@@ -4601,10 +4601,10 @@ void CGrannyPc::Render(int argument) {
     this->RenderModel(view, light, nullptr, 0, nullptr);
     for (int layer = 1; layer < 10; ++layer) {
       if (this->layerModels[layer]) {
-        if (layer == 1) {
-          this->RenderModel(view, light, this->layerModels[1], 1, this->layerModels[1]);
-        } else {
+        if (layer != 1) {
           this->RenderModel(view, light, this->layerModels[layer], layer, nullptr);
+        } else {
+          this->RenderModel(view, light, this->layerModels[1], 1, this->layerModels[1]);
         }
       }
     }
