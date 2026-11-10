@@ -287,11 +287,12 @@ void CPlayerSkillBundle::RecordLevelChange(const CSkillInfo& value) {
     return;
   }
 
+  const int id = static_cast<int>(previous->id);
   lcEXCInfo change;
   change.previous = previous->level;
   change.target = value.level;
-  this->levelChanges[static_cast<int>(previous->id)] = change;
-  this->changed[static_cast<int>(previous->id)] = true;
+  this->levelChanges[id] = change;
+  this->changed[id] = true;
 }
 
 // OFFSET: 0x00771250
