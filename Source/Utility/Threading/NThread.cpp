@@ -28,7 +28,10 @@ namespace {
 
 // OFFSET: 0x00737200
 // FUNCTION: fn_07643
-NThread::NThread(std::string name) : m_threadId(0), unknown_0008(true), m_state(0), m_handle(nullptr), m_name(std::move(name)) {
+NThread::NThread(std::string name) : m_state(0), m_name(name) {
+  this->m_handle = nullptr;
+  this->m_threadId = 0;
+  this->unknown_0008 = true;
 }
 
 // OFFSET: 0x00737290
