@@ -23,23 +23,29 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
 
   const int index = 9 * g_session.m_hotkeyPage + column;
   const int limit = 9 * grid.rows;
-  const NormalItemSlot* slot;
 
   if (limit <= index) {
     if (!g_session.ItemSlotActive()) {
       return;
     }
 
-    slot = itemSlots[column];
-  } else {
-    slot = slots[index];
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(itemSlots[column]->itemId), 1);
 
-    if (slot->itemId == 0) {
-      return;
+    if (item.identity[1] != 0) {
+      UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+      detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
+
+    return;
   }
 
-  if (limit <= index || slot->enabled == 0) {
+  const NormalItemSlot* slot = slots[index];
+
+  if (slot->itemId == 0) {
+    return;
+  }
+
+  if (slot->enabled == 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot->itemId), 1);
 
     if (item.identity[1] != 0) {
