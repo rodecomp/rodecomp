@@ -682,62 +682,11 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
 int UIHotKeyWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  if (message == UM_COMMAND) {
-    switch (argument1) {
-    case ID_OK:
-      ++g_userHotkeyMgr->m_changes;
-      this->SaveHotkeys();
-      g_windowMgr.CloseWindow(WID_HOTKEYWND);
-      return 0;
-    case ID_CANCEL:
-      this->m_selectedRow = -1;
-      for (auto& map : this->hotkeys) {
-        map.clear();
-      }
-      this->Invalidate();
-      return 0;
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_HOTKEYWND);
-      return 0;
-    case ID_CHECK:
-      if (sender != this->m_optionCheckBox) {
-        return 0;
-      }
-
-      g_windowMgr.chatModeChanged = argument2 != 0;
-      if (ChatWindow()) {
-        if (argument2 != 0) {
-          ChatWindow()->Invalidate();
-          return 0;
-        }
-
-        ChatWindow()->ToggleInput();
-      }
-      return 0;
-    case ID_PREV_PAGE:
-      if (this->m_page > 1) {
-        --this->m_page;
-      }
-      this->UpdatePageButtons();
-      return 0;
-    case ID_NEXT_PAGE:
-      if (this->m_page < this->m_pageCount) {
-        ++this->m_page;
-      }
-      this->UpdatePageButtons();
-      return 0;
-    case ID_RESET:
-      this->ReloadHotkeys();
-      return 0;
-    default:
-      return 0;
-    }
-  }
-
-  if (message == UM_TAB) {
-    if (sender == g_windowMgr.LookupWindow(WID_HOTKEYGUIDEWND)) {
+  switch (message) {
+  case UM_TAB: {
+    if (g_windowMgr.LookupWindow(WID_HOTKEYGUIDEWND) == sender) {
       this->m_tabs->SelectTab(static_cast<int>(argument1));
-      return 0;
+      break;
     }
 
     const int tab = g_userHotkeyMgr->TabAt(static_cast<int>(argument1));
@@ -746,28 +695,75 @@ int UIHotKeyWnd::SendMsg(
       this->m_nextButton->Enable(0);
     }
 
-    if (this->m_tab == tab) {
-      return 0;
-    }
+    if (this->m_tab != tab) {
+      this->m_selectedRow = -1;
+      this->m_tab = tab;
+      this->m_paged = 0;
+      this->m_page = 1;
 
-    this->m_selectedRow = -1;
-    this->m_tab = tab;
-    this->m_paged = 0;
-    this->m_page = 1;
-
-    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
-    if (count > 36) {
-      this->m_paged = 1;
-      this->m_pageCount = count / 36;
-      if (count % 36 != 0) {
-        ++this->m_pageCount;
+      const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
+      if (count > 36) {
+        this->m_paged = 1;
+        this->m_pageCount = count / 36;
+        if (count % 36 != 0) {
+          ++this->m_pageCount;
+        }
+        this->m_nextButton->Enable(1);
       }
-      this->m_nextButton->Enable(1);
-    }
 
-    this->Invalidate();
-    return 0;
+      this->Invalidate();
+    }
+    break;
+  }
+  case UM_COMMAND:
+    switch (argument1) {
+    case ID_CANCEL:
+      this->m_selectedRow = -1;
+      for (int tab = 0; tab < 4; ++tab) {
+        this->hotkeys[tab].clear();
+      }
+      this->Invalidate();
+      break;
+    case ID_OK:
+      ++g_userHotkeyMgr->m_changes;
+      this->SaveHotkeys();
+      g_windowMgr.CloseWindow(WID_HOTKEYWND);
+      break;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_HOTKEYWND);
+      break;
+    case ID_RESET:
+      this->ReloadHotkeys();
+      break;
+    case ID_CHECK:
+      if (sender == this->m_optionCheckBox) {
+        g_windowMgr.chatModeChanged = argument2 != 0;
+        if (ChatWindow()) {
+          if (argument2 != 0) {
+            ChatWindow()->Invalidate();
+          } else {
+            ChatWindow()->ToggleInput();
+          }
+        }
+      }
+      break;
+    case ID_PREV_PAGE:
+      if (this->m_page > 1) {
+        --this->m_page;
+      }
+      this->UpdatePageButtons();
+      break;
+    case ID_NEXT_PAGE:
+      if (this->m_page < this->m_pageCount) {
+        ++this->m_page;
+      }
+      this->UpdatePageButtons();
+      break;
+    }
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
