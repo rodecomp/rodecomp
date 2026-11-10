@@ -165,7 +165,7 @@ void UIWaitDBSaveWnd::OnProcess() {
     return;
   }
 
-  if (!this->m_action || this->m_action->Speed(this->m_animation) == 0.0f) {
+  if (!this->m_action || 0.0f == this->m_action->Speed(this->m_animation)) {
     return;
   }
 
