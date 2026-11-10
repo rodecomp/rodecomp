@@ -57,7 +57,11 @@ namespace {
     }
 
     *selected = *candidate;
-    return candidate->dwZBufferBitDepth < 32 ? D3DENUMRET_OK : D3DENUMRET_CANCEL;
+    if (candidate->dwZBufferBitDepth >= 32) {
+      return D3DENUMRET_CANCEL;
+    }
+
+    return D3DENUMRET_OK;
   }
 
   // INLINED
@@ -309,6 +313,7 @@ HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdent
 // OFFSET: 0x0054A7D0
 // FUNCTION: fn_01897
 HRESULT DeviceOwnerDX7::Close() {
+  ULONG drawReferences = 0;
   ULONG deviceReferences = 0;
 
   if (this->device) {
@@ -352,8 +357,6 @@ HRESULT DeviceOwnerDX7::Close() {
     this->captureSurface->Release();
     this->captureSurface = nullptr;
   }
-
-  ULONG drawReferences = 0;
 
   if (this->draw) {
     this->draw->SetCooperativeLevel(this->window, DDSCL_NORMAL);
