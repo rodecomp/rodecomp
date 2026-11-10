@@ -17,15 +17,16 @@
 // OFFSET: 0x00811C10
 // FUNCTION: fn_10109
 __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
-  if (scale == 0.0f || !g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+  if (0.0f == scale || !g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
     return nullptr;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float* origin = reinterpret_cast<const float*>(&this->positionX);
+  const float height = mode->scene->terrain->Height(origin[0], origin[2]);
   float position[3];
   position[0] = origin[0];
-  position[1] = mode->scene->terrain->Height(origin[0], origin[2]);
+  position[1] = height;
   position[2] = origin[2];
   const float depth = position[0] * matrix[2] + position[1] * matrix[5] + position[2] * matrix[8] + matrix[11];
 
@@ -62,8 +63,7 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
     return nullptr;
   }
 
-  quad.color = static_cast<std::uint32_t>(((static_cast<std::uint32_t>(cell.color >> 24) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8) |
-               (cell.color >> 16 & 0xFF);
+  quad.color = (((((((cell.color >> 24) & 0xFF) << 8) + (cell.color & 0xFF)) << 8) + ((cell.color >> 8) & 0xFF)) << 8) + ((cell.color >> 16) & 0xFF);
   quad.bottomRhw = 1.0f / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
   quad.topRhw = 1.0f / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
   quad.angle = static_cast<float>(cell.rotation);
