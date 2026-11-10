@@ -796,18 +796,9 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 ) {
   const RagEffectState& master = this->state.master->state;
   const int blend = pw != 0 ? 6 : 2;
-  int red = r;
-  if (master.colorChannels[0] != -1) {
-    red = static_cast<unsigned char>(master.colorChannels[0]);
-  }
-  int green = g;
-  if (master.colorChannels[1] != -1) {
-    green = static_cast<unsigned char>(master.colorChannels[1]);
-  }
-  int blue = b;
-  if (master.colorChannels[2] != -1) {
-    blue = static_cast<unsigned char>(master.colorChannels[2]);
-  }
+  const int red = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : r;
+  const int green = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : g;
+  const int blue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : b;
   int destBlend = master.colorChannels[3];
   if (destBlend == -1) {
     destBlend = blend;
@@ -836,138 +827,117 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     vec4.z += position.z;
   }
 
-  {
-    RenderTriangle& triangle = this->state.triangles[*rpCnt];
+  alignas(16) RenderVertex vertex;
+  if (pw == 10) {
+    this->state.triangles[*rpCnt].sourceBlend = 2;
+    this->state.triangles[*rpCnt].destinationBlend = 1;
+  } else {
+    this->state.triangles[*rpCnt].sourceBlend = 5;
+    this->state.triangles[*rpCnt].destinationBlend = pw == 99 ? 6 : destBlend;
+  }
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  this->state.triangles[*rpCnt].vertices[0].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[0].u = tx;
+  this->state.triangles[*rpCnt].vertices[0].v = ty2;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec2.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  this->state.triangles[*rpCnt].vertices[1].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[1].u = tx2;
+  this->state.triangles[*rpCnt].vertices[1].v = ty2;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec3.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  this->state.triangles[*rpCnt].vertices[2].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[2].u = tx2;
+  this->state.triangles[*rpCnt].vertices[2].v = ty1;
+  this->state.triangles[*rpCnt].texture = this->state.textures[tn];
 
-    if (pw == 10) {
-      triangle.sourceBlend = 2;
-      triangle.destinationBlend = 1;
-    } else {
-      triangle.sourceBlend = 5;
-      triangle.destinationBlend = pw == 99 ? 6 : destBlend;
+  if (extra == 2) {
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].rhw += 0.000045f;
+      this->state.triangles[*rpCnt].vertices[index].z = RhwToDepth(this->state.triangles[*rpCnt].vertices[index].rhw);
     }
-
-    RenderVertex first{};
-    first.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec1.x, wtm.values, first);
-    triangle.vertices[0] = first;
-    triangle.vertices[0].diffuse = color;
-    triangle.vertices[0].u = tx;
-    triangle.vertices[0].v = ty2;
-    RenderVertex second{};
-    second.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec2.x, wtm.values, second);
-    triangle.vertices[1] = second;
-    triangle.vertices[1].diffuse = color;
-    triangle.vertices[1].u = tx2;
-    triangle.vertices[1].v = ty2;
-    RenderVertex third{};
-    third.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec3.x, wtm.values, third);
-    triangle.vertices[2] = third;
-    triangle.vertices[2].diffuse = color;
-    triangle.vertices[2].u = tx2;
-    triangle.vertices[2].v = ty1;
-    triangle.texture = this->state.textures[tn];
-
-    if (extra == 2) {
-      for (int index = 0; index < 3; ++index) {
-        RenderVertex& vertex = triangle.vertices[index];
-        vertex.rhw += 0.000045f;
-        vertex.z = RhwToDepth(vertex.rhw);
-      }
-    } else if (extra == 1 || extra == 3) {
-      if (extra == 3) {
-        const RenderVertex center = TransformVert(wtm, this->render.position);
-        const float width = std::fabs(triangle.vertices[0].x - triangle.vertices[1].x) * 0.5f;
-        triangle.vertices[0].x = center.x + width;
-        triangle.vertices[1].x = center.x - width;
-        triangle.vertices[2].x = center.x - width;
-
-        for (int index = 0; index < 3; ++index) {
-          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
-        }
-      }
+  } else if (extra == 1 || extra == 3) {
+    if (extra == 3) {
+      const RenderVertex center = TransformVert(wtm, this->render.position);
+      const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+      this->state.triangles[*rpCnt].vertices[0].x = center.x + width;
+      this->state.triangles[*rpCnt].vertices[1].x = center.x - width;
+      this->state.triangles[*rpCnt].vertices[2].x = center.x - width;
 
       for (int index = 0; index < 3; ++index) {
-        triangle.vertices[index].z = 1e-09f;
-        triangle.vertices[index].rhw = 1.0f;
+        this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
       }
     }
 
-    if (triangle.Visible()) {
-      g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-      );
-      ++*rpCnt;
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].z = 1e-09f;
+      this->state.triangles[*rpCnt].vertices[index].rhw = 1.0f;
     }
   }
 
-  {
-    RenderTriangle& triangle = this->state.triangles[*rpCnt];
+  if (this->state.triangles[*rpCnt].Visible()) {
+    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++*rpCnt;
+  }
 
-    if (pw == 10) {
-      triangle.sourceBlend = 2;
-      triangle.destinationBlend = 1;
-    } else {
-      triangle.sourceBlend = 5;
-      triangle.destinationBlend = pw == 99 ? 6 : destBlend;
+  if (pw == 10) {
+    this->state.triangles[*rpCnt].sourceBlend = 2;
+    this->state.triangles[*rpCnt].destinationBlend = 1;
+  } else {
+    this->state.triangles[*rpCnt].sourceBlend = 5;
+    this->state.triangles[*rpCnt].destinationBlend = pw == 99 ? 6 : destBlend;
+  }
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec4.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  this->state.triangles[*rpCnt].vertices[0].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[0].u = tx;
+  this->state.triangles[*rpCnt].vertices[0].v = ty1;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec3.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  this->state.triangles[*rpCnt].vertices[1].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[1].u = tx2;
+  this->state.triangles[*rpCnt].vertices[1].v = ty1;
+  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
+  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  this->state.triangles[*rpCnt].vertices[2].diffuse = color;
+  this->state.triangles[*rpCnt].vertices[2].u = tx;
+  this->state.triangles[*rpCnt].vertices[2].v = ty2;
+  this->state.triangles[*rpCnt].texture = this->state.textures[tn];
+
+  if (extra == 2) {
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].rhw += 0.000045f;
+      this->state.triangles[*rpCnt].vertices[index].z = RhwToDepth(this->state.triangles[*rpCnt].vertices[index].rhw);
     }
-
-    RenderVertex first{};
-    first.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec4.x, wtm.values, first);
-    triangle.vertices[0] = first;
-    triangle.vertices[0].diffuse = color;
-    triangle.vertices[0].u = tx;
-    triangle.vertices[0].v = ty1;
-    RenderVertex second{};
-    second.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec3.x, wtm.values, second);
-    triangle.vertices[1] = second;
-    triangle.vertices[1].diffuse = color;
-    triangle.vertices[1].u = tx2;
-    triangle.vertices[1].v = ty1;
-    RenderVertex third{};
-    third.specular = 0xFF000000;
-    g_renderer->viewport.Project(&vec1.x, wtm.values, third);
-    triangle.vertices[2] = third;
-    triangle.vertices[2].diffuse = color;
-    triangle.vertices[2].u = tx;
-    triangle.vertices[2].v = ty2;
-    triangle.texture = this->state.textures[tn];
-
-    if (extra == 2) {
-      for (int index = 0; index < 3; ++index) {
-        RenderVertex& vertex = triangle.vertices[index];
-        vertex.rhw += 0.000045f;
-        vertex.z = RhwToDepth(vertex.rhw);
-      }
-    } else if (extra == 1 || extra == 3) {
-      if (extra == 3) {
-        const RenderVertex center = TransformVert(wtm, this->render.position);
-        const float width = std::fabs(triangle.vertices[0].x - triangle.vertices[1].x) * 0.5f;
-        triangle.vertices[0].x = center.x + width;
-        triangle.vertices[1].x = center.x - width;
-        triangle.vertices[2].x = center.x + width;
-
-        for (int index = 0; index < 3; ++index) {
-          triangle.vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
-        }
-      }
+  } else if (extra == 1 || extra == 3) {
+    if (extra == 3) {
+      const RenderVertex center = TransformVert(wtm, this->render.position);
+      const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+      this->state.triangles[*rpCnt].vertices[0].x = center.x + width;
+      this->state.triangles[*rpCnt].vertices[1].x = center.x - width;
+      this->state.triangles[*rpCnt].vertices[2].x = center.x + width;
 
       for (int index = 0; index < 3; ++index) {
-        triangle.vertices[index].z = 1e-09f;
-        triangle.vertices[index].rhw = 1.0f;
+        this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
       }
     }
 
-    if (triangle.Visible()) {
-      g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-      );
-      ++*rpCnt;
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].z = 1e-09f;
+      this->state.triangles[*rpCnt].vertices[index].rhw = 1.0f;
     }
+  }
+
+  if (this->state.triangles[*rpCnt].Visible()) {
+    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++*rpCnt;
   }
 }
 
@@ -5301,55 +5271,55 @@ void CEffectPrim::Render2DDiamond() {
 // OFFSET: 0x00BCC960
 // FUNCTION: fn_19863
 void CEffectPrim::RenderRecordQuads(matrix& wtm) {
-  RenderTriangle* triangle = this->state.triangles;
+  int rpCnt = 0;
 
   for (int index = 0; index < this->state.numSegment; ++index) {
     const EffectPrimitiveRecord& record = this->state.records[index];
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
     g_renderer->viewport.Project(&record.corners[0].x, wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    triangle->vertices[0].u = 0.0f;
-    triangle->vertices[0].v = 1.0f;
+    this->state.triangles[rpCnt].vertices[0].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[0].v = 1.0f;
     g_renderer->viewport.Project(&record.corners[1].x, wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    triangle->vertices[1].u = 1.0f;
-    triangle->vertices[1].v = 1.0f;
+    this->state.triangles[rpCnt].vertices[1].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[1].v = 1.0f;
     g_renderer->viewport.Project(&record.corners[2].x, wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = record.color;
-    triangle->vertices[2].u = 0.0f;
-    triangle->vertices[2].v = 0.0f;
-    triangle->texture = this->state.textures[0];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[2].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[2].v = 0.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[0];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     g_renderer->viewport.Project(&record.corners[3].x, wtm.values, projected);
-    triangle->vertices[0] = projected;
-    triangle->vertices[0].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[0] = projected;
+    this->state.triangles[rpCnt].vertices[0].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    triangle->vertices[0].u = 1.0f;
-    triangle->vertices[0].v = 0.0f;
+    this->state.triangles[rpCnt].vertices[0].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[0].v = 0.0f;
     g_renderer->viewport.Project(&record.corners[2].x, wtm.values, projected);
-    triangle->vertices[1] = projected;
-    triangle->vertices[1].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[1] = projected;
+    this->state.triangles[rpCnt].vertices[1].diffuse = record.color;
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    triangle->vertices[1].u = 0.0f;
-    triangle->vertices[1].v = 0.0f;
+    this->state.triangles[rpCnt].vertices[1].u = 0.0f;
+    this->state.triangles[rpCnt].vertices[1].v = 0.0f;
     g_renderer->viewport.Project(&record.corners[1].x, wtm.values, projected);
-    triangle->vertices[2] = projected;
-    triangle->vertices[2].diffuse = record.color;
-    triangle->vertices[2].u = 1.0f;
-    triangle->vertices[2].v = 1.0f;
-    triangle->texture = this->state.textures[0];
-    if (triangle->Visible()) {
-      g_renderer->queues.SubmitTriangle(*triangle++, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    this->state.triangles[rpCnt].vertices[2] = projected;
+    this->state.triangles[rpCnt].vertices[2].diffuse = record.color;
+    this->state.triangles[rpCnt].vertices[2].u = 1.0f;
+    this->state.triangles[rpCnt].vertices[2].v = 1.0f;
+    this->state.triangles[rpCnt].texture = this->state.textures[0];
+    if (this->state.triangles[rpCnt].Visible()) {
+      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
     }
   }
 }
@@ -7153,61 +7123,49 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       const float nextV = v + vStep;
 
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-
-      RenderTriangle& triangle1 = this->state.triangles[rpCnt];
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec1.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = u;
-      projected.v = v;
-      triangle1.vertices[0] = projected;
-
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      this->state.triangles[rpCnt].vertices[0] = projected;
+      this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[0].u = u;
+      this->state.triangles[rpCnt].vertices[0].v = v;
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec2.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = u;
-      projected.v = nextV;
-      triangle1.vertices[1] = projected;
-
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      this->state.triangles[rpCnt].vertices[1] = projected;
+      this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[1].u = u;
+      this->state.triangles[rpCnt].vertices[1].v = nextV;
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec3.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = nextU;
-      projected.v = v;
-      triangle1.vertices[2] = projected;
-
-      triangle1.texture = this->state.textures[0];
-      if (triangle1.Visible()) {
-        ++rpCnt;
-        g_renderer->queues.SubmitTriangle(triangle1, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      this->state.triangles[rpCnt].vertices[2] = projected;
+      this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[2].u = nextU;
+      this->state.triangles[rpCnt].vertices[2].v = v;
+      this->state.triangles[rpCnt].texture = this->state.textures[0];
+      if (this->state.triangles[rpCnt].Visible()) {
+        g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       }
 
-      RenderTriangle& triangle2 = this->state.triangles[rpCnt];
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec4.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = nextU;
-      projected.v = nextV;
-      triangle2.vertices[0] = projected;
-
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      this->state.triangles[rpCnt].vertices[0] = projected;
+      this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[0].u = nextU;
+      this->state.triangles[rpCnt].vertices[0].v = nextV;
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec3.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = nextU;
-      projected.v = v;
-      triangle2.vertices[1] = projected;
-
-      projected = RenderVertex{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      this->state.triangles[rpCnt].vertices[1] = projected;
+      this->state.triangles[rpCnt].vertices[1].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[1].u = nextU;
+      this->state.triangles[rpCnt].vertices[1].v = v;
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(&vec2.x, wtm.values, projected);
-      projected.diffuse = this->state.argb;
-      projected.u = u;
-      projected.v = nextV;
-      triangle2.vertices[2] = projected;
-
-      triangle2.texture = this->state.textures[0];
-      if (triangle2.Visible()) {
-        ++rpCnt;
-        g_renderer->queues.SubmitTriangle(triangle2, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      this->state.triangles[rpCnt].vertices[2] = projected;
+      this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
+      this->state.triangles[rpCnt].vertices[2].u = u;
+      this->state.triangles[rpCnt].vertices[2].v = nextV;
+      this->state.triangles[rpCnt].texture = this->state.textures[0];
+      if (this->state.triangles[rpCnt].Visible()) {
+        g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
       }
 
       u = nextU;
