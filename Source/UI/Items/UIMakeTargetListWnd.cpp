@@ -74,11 +74,11 @@ void UIMakeTargetListWnd::Paint() {
 // OFFSET: 0x009A42E0
 // FUNCTION: fn_13616
 int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  int itemId = static_cast<int>(a);
   ITEM_INFO item;
 
   switch (message) {
   case UM_ADDITEM: {
-    const int itemId = static_cast<int>(a);
     this->itemIds.push_back(itemId);
 
     item.SetItemId(itemId);
@@ -103,8 +103,9 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     switch (response) {
     case ID_OK: {
       if (g_replayAnimationScaling) {
-        this->m_list->selected = static_cast<int>(d);
-        this->m_list->Invalidate();
+        UIListBox* replayList = this->m_list;
+        replayList->selected = static_cast<int>(d);
+        replayList->Invalidate();
       }
 
       UIListBox* list = this->m_list;
@@ -120,8 +121,10 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         case JT_RUNE_KNIGHT_H:
         case JT_RUNE_KNIGHT_B:
         case JT_DRAGON_KNIGHT: {
-          ITEM_INFO materials[3];
-          g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
+          {
+            ITEM_INFO materials[3];
+            g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
+          }
           g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
           return 0;
         }
@@ -149,30 +152,46 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   }
 
   case UM_REPLAY_FRAMED_DATA: {
+#pragma pack(push, 1)
+    struct ReplayTag {
+      /* 0000 */ std::int16_t id;
+      /* 0002 */ std::uint32_t bytes;
+
+      // INLINED
+      ReplayTag() : id(0), bytes(0) {}
+
+      // INLINED
+      ~ReplayTag() {
+        this->bytes = 0;
+        this->id = 0;
+      }
+    };
+#pragma pack(pop)
+
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    std::uint16_t marker;
-    std::memcpy(&marker, bytes, sizeof(marker));
-    unsigned offset = 6;
+    ReplayTag tag;
+    std::memcpy(&tag, bytes, sizeof(tag));
+    unsigned offset = sizeof(tag);
 
-    if (marker == 22050) {
+    if (tag.id == 22050) {
       while (static_cast<unsigned>(b) > offset) {
-        std::int16_t kind;
-        std::uint32_t size;
-        std::memcpy(&kind, bytes + offset, sizeof(kind));
-        std::memcpy(&size, bytes + offset + 2, sizeof(size));
-        offset += 6;
+        std::memcpy(&tag, bytes + offset, sizeof(tag));
+        offset += sizeof(tag);
 
-        if (kind == 22051) {
-          break;
-        }
+        switch (tag.id) {
+        case 22051:
+          return 0;
 
-        if (kind == 22052) {
-          int itemId = 0;
-          std::memcpy(&itemId, bytes + offset, size);
-          offset += size;
+        case 22052:
+          itemId = 0;
+          std::memcpy(&itemId, bytes + offset, tag.bytes);
+          offset += tag.bytes;
           this->SendMsg(nullptr, UM_ADDITEM, itemId, 0, 0, 0);
-        } else {
-          offset += size;
+          break;
+
+        default:
+          offset += tag.bytes;
+          break;
         }
       }
     }
