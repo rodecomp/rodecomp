@@ -3081,8 +3081,7 @@ std::string UINavigationV4Wnd::MobName(CNavi_Object* mob) {
 
   const int level = mob->GetFlag();
   if (level > 0) {
-    std::string text;
-    text.assign(LookupMessage(MSI_BANK_DEPOSIT_NO_MONEY));
+    std::string text(LookupMessage(MSI_BANK_DEPOSIT_NO_MONEY));
     if (level > 99) {
       text.assign(LookupMessage(MSI_NAVIGATION_NUM4));
     } else if (level > 49) {
