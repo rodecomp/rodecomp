@@ -845,58 +845,15 @@ std::vector<unsigned char> CNavigationManager::WriteReplayState() {
   std::vector<unsigned char> output;
   const auto append = [&output](const std::vector<unsigned char>& record) { output.insert(output.end(), record.begin(), record.end()); };
 
-  append(BuildReplayTaggedRecord(8000, nullptr, 0));
-  append(BuildReplayTaggedRecord(8002, &this->allowGates, 1));
-  append(BuildReplayTaggedRecord(8003, &this->includeObjects, 1));
-  append(BuildReplayTaggedRecord(8004, &this->allowWarps, 1));
-  append(BuildReplayTaggedRecord(8005, &this->routeSide, 4));
+  append(MakeReplayTaggedRecord(8000, nullptr, 0));
+  append(MakeReplayTaggedRecord(8002, &this->allowGates, 1));
+  append(MakeReplayTaggedRecord(8003, &this->includeObjects, 1));
+  append(MakeReplayTaggedRecord(8004, &this->allowWarps, 1));
+  append(MakeReplayTaggedRecord(8005, &this->routeSide, 4));
 
   for (std::size_t i = 0; i < this->nodes.size(); ++i) {
-    CNavi_Link* node = this->nodes[i];
-    std::vector<char> buffer;
-    if (node != nullptr) {
-      const int type = node->GetType();
-      const int index = node->GetIndex();
-      NaviCell cell;
-      node->GetCell(&cell);
-      std::string name = node->GetName();
-      std::string title = node->GetTitle();
-      std::string map = node->GetInfo()->GetName();
-      std::string linkedMap = node->GetLinkedName();
-      const NaviCell linkedCell = node->GetLinkedCell();
-
-      buffer.resize(linkedMap.size() + 0x20 + title.size() + name.size() + map.size(), '\0');
-
-      NaviObjectRecord* record = reinterpret_cast<NaviObjectRecord*>(buffer.data());
-      record->type = type;
-      record->index = index;
-      record->cellX = cell.x;
-      record->cellY = cell.y;
-
-      const std::size_t nameLength = static_cast<std::int16_t>(name.size());
-      record->nameLength = static_cast<std::int16_t>(name.size());
-      std::memcpy(buffer.data() + 0x12, name.c_str(), nameLength);
-
-      std::size_t offset = nameLength + 0x12;
-      const std::size_t titleLength = static_cast<std::int16_t>(title.size());
-      *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = static_cast<std::int16_t>(title.size());
-      offset += 2;
-      std::memcpy(buffer.data() + offset, title.c_str(), titleLength);
-      offset += titleLength;
-
-      const std::size_t mapLength = static_cast<std::int16_t>(map.size());
-      *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = static_cast<std::int16_t>(map.size());
-      offset += 2;
-      std::memcpy(buffer.data() + offset, map.c_str(), mapLength);
-      offset += mapLength;
-
-      *reinterpret_cast<int*>(buffer.data() + offset) = linkedCell.x;
-      *reinterpret_cast<int*>(buffer.data() + offset + 4) = linkedCell.y;
-      *reinterpret_cast<std::int16_t*>(buffer.data() + offset + 8) = static_cast<std::int16_t>(linkedMap.size());
-      offset += 10;
-      std::memcpy(buffer.data() + offset, linkedMap.c_str(), static_cast<std::int16_t>(linkedMap.size()));
-    }
-    append(BuildReplayTaggedRecord(8022, buffer.data(), static_cast<std::uint32_t>(buffer.size())));
+    const std::vector<char> buffer = WriteLink(this->nodes[i]);
+    append(MakeReplayTaggedRecord(8022, buffer.data(), static_cast<std::uint32_t>(buffer.size())));
   }
 
   append(BuildReplayTaggedRecord(8009, &this->savedCellX, 4));
@@ -918,26 +875,28 @@ std::vector<unsigned char> CNavigationManager::WriteReplayState() {
   std::vector<char> target;
   for (std::size_t i = 0; i < this->states.size(); ++i) {
     target = this->WriteTarget(this->states[i]);
-    if (!target.empty()) {
-      append(BuildReplayTaggedRecord(8006, target.data(), static_cast<std::uint32_t>(target.size())));
+    if (target.size() != 0) {
+      append(MakeReplayTaggedRecord(8006, target.data(), static_cast<std::uint32_t>(target.size())));
     }
   }
 
   target = this->WriteTarget(this->currentTarget);
-  if (!target.empty()) {
+  if (target.size() != 0) {
     append(BuildReplayTaggedRecord(8007, target.data(), static_cast<std::uint32_t>(target.size())));
   }
 
   target = this->WriteTarget(this->savedTarget);
-  if (!target.empty()) {
+  if (target.size() != 0) {
     append(BuildReplayTaggedRecord(8008, target.data(), static_cast<std::uint32_t>(target.size())));
   }
 
   const int count = static_cast<int>(this->movementRoute.points.size());
   if (count > 1) {
-    const int route[4] = {
-      this->movementRoute.points[0].x, this->movementRoute.points[0].y, this->movementRoute.points[count - 1].x, this->movementRoute.points[count - 1].y
-    };
+    NaviCell route[2];
+    route[0].x = this->movementRoute.points[0].x;
+    route[0].y = this->movementRoute.points[0].y;
+    route[1].x = this->movementRoute.points[count - 1].x;
+    route[1].y = this->movementRoute.points[count - 1].y;
     append(BuildReplayTaggedRecord(8021, route, sizeof(route)));
   }
 
