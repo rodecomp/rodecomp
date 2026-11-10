@@ -54,16 +54,20 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
   const auto& resource = static_cast<const ModelNodeV1&>(base);
   this->name = resource.name;
   this->mesh = resource.mesh.get();
-  this->textures = resource.textures;
+  this->textures.resize(resource.textures.size());
+  for (unsigned int i = 0; i < resource.textures.size(); ++i) {
+    this->textures[i] = resource.textures[i];
+  }
+
   this->alpha = static_cast<float>(resource.alpha) / 255.0f;
 
-  if (this->scaleKeys.empty()) {
+  if (this->scaleKeys.size() == 0) {
     this->scaleKeys.push_back({0, {resource.scale[0], resource.scale[1], resource.scale[2]}, {0, 0, 0, 1}});
   }
 
   this->rotationKeys = resource.rotationKeys;
 
-  if (this->rotationKeys.empty()) {
+  if (this->rotationKeys.size() == 0) {
     const float halfAngle = resource.angle * 0.5f;
     const float sine = ClientSin(halfAngle);
     this->rotationKeys.push_back({0, {sine * resource.axis[0], sine * resource.axis[1], sine * resource.axis[2], ClientCos(halfAngle)}});
@@ -71,7 +75,7 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
 
   this->positionKeys = resource.legacyPositionKeys;
 
-  if (this->positionKeys.empty()) {
+  if (this->positionKeys.size() == 0) {
     this->positionKeys.push_back({0, {resource.position[0], resource.position[1], resource.position[2]}});
   }
 
@@ -95,14 +99,14 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
   this->mesh = resource.mesh.get();
   std::memcpy(this->resourceTransform.values, resource.transform, sizeof(resource.transform));
 
-  if (this->parent) {
+  if (!this->parent) {
+    this->localTransform = this->resourceTransform;
+  } else {
     const matrix world = this->resourceTransform;
     const matrix parentWorld = static_cast<C3dNodeV2*>(this->parent)->resourceTransform;
     matrix inverse;
     inverse.MakeInverse(parentWorld);
     this->localTransform.Compose(world, inverse);
-  } else {
-    this->localTransform = this->resourceTransform;
   }
 
   this->scaleKeys = resource.scaleKeys;
@@ -119,7 +123,10 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
   }
 
   this->alpha = static_cast<float>(resource.alpha) * 0.00390625f;
-  this->textures.insert(this->textures.end(), resource.textures.begin(), resource.textures.end());
+  for (auto it = resource.textures.begin(); it != resource.textures.end(); ++it) {
+    this->textures.push_back(*it);
+  }
+
   this->alpha = static_cast<float>(resource.alpha) / 255.0f;
   this->faceState.resize(this->mesh->faceCount);
   this->faceValues.resize(this->mesh->faceCount * 9u);
