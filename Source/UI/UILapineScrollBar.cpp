@@ -55,7 +55,8 @@ void UILapineScrollBar::Paint() {
     return;
   }
 
-  if (this->vertical == 1) {
+  switch (this->vertical) {
+  case 1: {
     CBitmapRes* top = load("유저인터페이스\\lapine\\scrollbar_bg_top.bmp");
     CBitmapRes* bottom = load("유저인터페이스\\lapine\\scrollbar_bg_btm.bmp");
     CBitmapRes* middle = load("유저인터페이스\\lapine\\scrollbar_bg_mid.bmp");
@@ -72,7 +73,8 @@ void UILapineScrollBar::Paint() {
     const int thumbLength = this->visible * travel / this->total;
     const int thumbOffset = this->position * travel / this->total;
 
-    if (this->state == 0) {
+    switch (this->state) {
+    case 0: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_out_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_out_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_out_mid.bmp");
@@ -83,7 +85,9 @@ void UILapineScrollBar::Paint() {
       }
       this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
       this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
-    } else if (this->state == 3) {
+      break;
+    }
+    case 3: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_over_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_over_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_over_mid.bmp");
@@ -94,7 +98,9 @@ void UILapineScrollBar::Paint() {
       }
       this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
       this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
-    } else if (this->state == 6) {
+      break;
+    }
+    case 6: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_press_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_press_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_press_mid.bmp");
@@ -105,7 +111,11 @@ void UILapineScrollBar::Paint() {
       }
       this->DrawBitmap(0, top->image.height + thumbOffset, capTop, true);
       this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
+      break;
     }
+    }
+    break;
+  }
   }
 
   this->minimumThumb = 0;
