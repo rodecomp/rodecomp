@@ -5709,7 +5709,7 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       } else {
         mail.isKnownSender = 1;
       }
-      mail.title.append(entry->title, entry->titleLength);
+      mail.title.insert(mail.title.end(), entry->title, entry->title + entry->titleLength);
 
       switch (packet->type) {
       case MAIL_INBOX_NORMAL:
