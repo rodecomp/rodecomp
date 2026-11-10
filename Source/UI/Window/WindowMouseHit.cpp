@@ -61,7 +61,7 @@ static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) 
 // FUNCTION: fn_17168
 __declspec(noinline) UIWindow* UIWindowMgr::FindRenderedUid(std::uint32_t uid) {
   for (UIWindow* window : this->rendered) {
-    if (window->m_uid == uid) {
+    if (uid == window->m_uid) {
       return window;
     }
     if (UIWindow* found = window->FindUid(uid)) {
