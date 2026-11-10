@@ -31,9 +31,12 @@ std::vector<unsigned char> UIWeaponRefineWnd::GetReplayData() {
   }
   const int count = static_cast<int>(this->itemIds.size());
   for (int index = 0; index < count; ++index) {
-    int values[2] = {this->itemIds[index], this->indices[index]};
-    const auto record = BuildReplayTaggedRecord(22202, values, sizeof(values));
-    records.insert(records.end(), record.begin(), record.end());
+    const int values[2] = {this->itemIds[index], this->indices[index]};
+    std::vector<unsigned char> record(sizeof(values) + 6, 0);
+    *reinterpret_cast<std::uint16_t*>(record.data()) = 22202;
+    *reinterpret_cast<std::uint32_t*>(record.data() + 2) = sizeof(values);
+    std::memcpy(record.data() + 6, values, sizeof(values));
+    records.insert(records.end(), record.cbegin(), record.cend());
   }
   {
     const auto record = BuildReplayTaggedRecord(22201, nullptr, 0);
