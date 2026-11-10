@@ -64,17 +64,15 @@ void UIResizer::OnMouseMove(int x, int y) {
     return;
   }
 
-  int screenX = x;
-  int screenY = y;
-  this->ToScreen(screenX, screenY);
+  this->ToScreen(x, y);
   if (!this->parent) {
     return;
   }
 
-  const int dx = screenX - this->startX;
+  const int dx = x - this->startX;
   int width = this->parentWidth;
   int height = this->parentHeight;
-  const int dy = screenY - this->startY;
+  const int dy = y - this->startY;
   switch (this->direction) {
   case 0:
     width -= dx;
