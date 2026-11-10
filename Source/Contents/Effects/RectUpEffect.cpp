@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00709F50
 // FUNCTION: fn_07096
-CRectUpEffect::CRectUpEffect() : CEffect(1088), previousEdge{} {
+CRectUpEffect::CRectUpEffect() : CEffect(1088) {
 }
 
 // OFFSET: 0x0070A410
@@ -70,7 +70,7 @@ void CRectUpEffect::Render() {
       const float x = particle->scale * g_cosTable[angle];
       const float z = particle->scale * g_sinTable[angle];
 
-      vector3d edge[2] = {};
+      EffectPoint edge[2];
       edge[0].x = x;
       edge[0].y = 0.0f;
       edge[0].z = z;
@@ -92,8 +92,12 @@ void CRectUpEffect::Render() {
         particle->vertices[2].y = this->previousEdge[0].y;
         particle->vertices[2].z = this->previousEdge[0].z;
       }
-      this->previousEdge[0] = edge[0];
-      this->previousEdge[1] = edge[1];
+      this->previousEdge[0].x = edge[0].x;
+      this->previousEdge[0].y = edge[0].y;
+      this->previousEdge[0].z = edge[0].z;
+      this->previousEdge[1].x = edge[1].x;
+      this->previousEdge[1].y = edge[1].y;
+      this->previousEdge[1].z = edge[1].z;
 
       if (previous) {
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);

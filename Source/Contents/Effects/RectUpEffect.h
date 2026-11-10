@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_RECTUPEFFECT_H
 
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -22,7 +23,7 @@ public:
   virtual void ProcessParticle(CParticle* particle);
   virtual void InitParticle(CParticle* particle);
 
-  /* 00CC */ vector3d previousEdge[2];
+  /* 00CC */ EffectPoint previousEdge[2];
   /* 00E4 */ int particleLifetime;
   /* 00E8 */ std::vector<CParticle*> particles;
 };
