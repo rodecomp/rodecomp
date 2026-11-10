@@ -32,7 +32,10 @@ struct ActorPickBounds {
 class CActorPickNode {
 public:
   // INLINED
-  CActorPickNode() : children{} {
+  CActorPickNode() {
+    for (int index = 0; index < 4; ++index) {
+      this->children[index] = nullptr;
+    }
   }
 
   virtual ~CActorPickNode();
@@ -41,10 +44,7 @@ public:
   ActorPickInfo* Pick(float x, float y);
   void MakeQuardTree(int depth, ActorPickBounds bounds);
 
-  /* 0004 */ int left;
-  /* 0008 */ int top;
-  /* 000C */ int right;
-  /* 0010 */ int bottom;
+  /* 0004 */ ActorPickBounds bounds;
   /* 0014 */ CActorPickNode* children[4];
   /* 0024 */ std::list<ActorPickInfo*> pickInfos;
 };

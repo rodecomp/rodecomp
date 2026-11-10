@@ -69,8 +69,8 @@ void CActorPickNode::AddPickInfo(ActorPickInfo* info) {
   while (node->children[0] != nullptr) {
     const int x = static_cast<int>(info->left);
     const int y = static_cast<int>(info->top);
-    const int centerX = node->right / 2;
-    const int centerY = node->bottom / 2;
+    const int centerX = node->bounds.right / 2;
+    const int centerY = node->bounds.bottom / 2;
     int quadrant;
     if (x > centerX) {
       quadrant = (y > centerY) + 1;
@@ -88,14 +88,16 @@ void CActorPickNode::AddPickInfo(ActorPickInfo* info) {
 // FUNCTION: fn_17909
 void CActorPickNode::Clear() {
   for (auto info = this->pickInfos.begin(); info != this->pickInfos.end(); ++info) {
-    delete *info;
+    if (*info) {
+      delete *info;
+    }
   }
   this->pickInfos.erase(this->pickInfos.begin(), this->pickInfos.end());
 
-  for (CActorPickNode*& child : this->children) {
-    if (child) {
-      delete child;
-      child = nullptr;
+  for (int index = 0; index < 4; ++index) {
+    if (this->children[index]) {
+      delete this->children[index];
+      this->children[index] = nullptr;
     }
   }
 }
@@ -116,10 +118,10 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
   }
 
   int quadrant;
-  if (static_cast<int>(x) > this->right / 2) {
-    quadrant = (static_cast<int>(y) > this->bottom / 2) + 1;
+  if (static_cast<int>(x) > this->bounds.right / 2) {
+    quadrant = (static_cast<int>(y) > this->bounds.bottom / 2) + 1;
   } else {
-    quadrant = static_cast<int>(y) <= this->bottom / 2 ? 0 : 3;
+    quadrant = static_cast<int>(y) <= this->bounds.bottom / 2 ? 0 : 3;
   }
 
   ActorPickInfo* result = this->children[quadrant]->Pick(x, y);
@@ -141,14 +143,12 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
 // FUNCTION: fn_17911
 void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
   this->Clear();
-  this->left = bounds.left;
-  this->top = bounds.top;
-  this->right = bounds.right;
-  this->bottom = bounds.bottom;
+  this->bounds = bounds;
   if (depth != 0) {
     for (int index = 0; index < 4; ++index) {
-      this->children[index] = new CActorPickNode;
-      ActorPickBounds childBounds{this->left, this->top, this->right, this->bottom};
+      CActorPickNode* child = new CActorPickNode;
+      this->children[index] = child;
+      ActorPickBounds childBounds = this->bounds;
       switch (index) {
       case 0:
         childBounds.right /= 2;
@@ -167,7 +167,7 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
         childBounds.top = childBounds.bottom / 2 + 1;
         break;
       }
-      this->children[index]->MakeQuardTree(depth - 1, childBounds);
+      child->MakeQuardTree(depth - 1, childBounds);
     }
   }
 }
