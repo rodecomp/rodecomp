@@ -53,8 +53,8 @@ void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
     return;
   }
 
-  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
   const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
+  this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
   const int divisor = type == D3DPT_TRIANGLELIST ? 3 : 2;
 
   if (primitive->indexCount) {
