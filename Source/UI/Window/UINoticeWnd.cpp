@@ -63,13 +63,13 @@ void UINoticeWnd::LoadNotice() {
     }
   }
 
-  int visible = lineCount - 1;
-  if (visible > 19) {
-    visible = 19;
+  --lineCount;
+  if (lineCount > 19) {
+    lineCount = 19;
   }
 
   for (int i = 0; i < 19; ++i) {
-    if (i < visible) {
+    if (i < lineCount) {
       this->m_texts[i]->SetText(buffer + lineStarts[this->m_scroll + i], 1);
     } else {
       this->m_texts[i]->SetText("", 0);
