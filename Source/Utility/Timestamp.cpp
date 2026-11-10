@@ -87,6 +87,9 @@ __time32_t Timestamp::SetDate(short year, short month, short day, short hour) {
   local.tm_mday = day;
   local.tm_mon = month - 1;
   local.tm_year = year - 1900;
+  local.tm_isdst = 0;
+  local.tm_sec = 0;
+  local.tm_min = 0;
   this->seconds = _mktime32(&local);
   return this->seconds;
 }
