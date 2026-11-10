@@ -14,10 +14,10 @@ int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
     width = this->geometry.width - x;
   }
 
-  const int height = this->geometry.height;
   int leftWidth = 0;
   int rightWidth = 0;
   int barHeight = 0;
+  const int height = this->geometry.height;
 
   CBitmapRes* left =
     this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_left%d.bmp", "유저인터페이스\\basic_interface\\btnbar_left.bmp");
