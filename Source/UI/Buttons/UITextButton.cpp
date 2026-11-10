@@ -743,13 +743,15 @@ void UITabControl::RecalculateWidths() {
     for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
       int width;
 
-      if (this->layout == 0 || this->layout == 2) {
-        width = this->VerticalTextHeight(this->labels[index].c_str(), 0, 0, this->fontSize, 0);
+      if (this->layout != 0 && this->layout != 2) {
+        width = this->TextWidth(this->labels[index].c_str(), 0, 0, this->fontSize, 0, 0) + this->tabPadding;
       } else {
-        width = this->TextWidth(this->labels[index].c_str(), 0, 0, this->fontSize, 0, 0);
+        width = this->VerticalTextHeight(this->labels[index].c_str(), 0, 0, this->fontSize, 0) + this->tabPadding;
       }
 
-      widest = std::max(width + this->tabPadding, widest);
+      if (width > widest) {
+        widest = width;
+      }
     }
 
     for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
@@ -823,17 +825,11 @@ void UITextButton::ResizeToTextClipped(int width, int height) {
 
 // OFFSET: 0x00897A50
 // FUNCTION: fn_11539
-void UITabControl::FitToTabs() {
-  int length = 0;
-
-  for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
-    length += this->widths[index] - 1;
-  }
-
-  if (this->layout == 0 || this->layout == 2) {
-    this->Resize(this->tabHeight + 1, length + 1);
+__declspec(noinline) void UITabControl::FitToTabs() {
+  if (this->layout != 0 && this->layout != 2) {
+    this->Resize(TabOffset(*this, static_cast<int>(this->labels.size())) + 1, this->tabHeight + 1);
   } else {
-    this->Resize(length + 1, this->tabHeight + 1);
+    this->Resize(this->tabHeight + 1, TabOffset(*this, static_cast<int>(this->labels.size())) + 1);
   }
 
   this->Invalidate();
@@ -3323,6 +3319,18 @@ void UITabControl::Paint() {
 }
 
 #include "UI/Text/UITextViewer.h"
+
+namespace {
+  // INLINED
+  std::string StringText(const UIString& string) {
+    return string.text;
+  }
+
+  // INLINED
+  std::string StringImage(const UIString& string) {
+    return string.image;
+  }
+}
 
 // OFFSET: 0x0088F8D0
 // FUNCTION: fn_11393
