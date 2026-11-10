@@ -140,11 +140,15 @@ TownInfo CTownInfoMgr::GetTownInfo(std::string mapName, unsigned int index) {
   }
 
   std::map<std::string, std::vector<TownInfo>>::iterator it = this->m_towns.find(key);
-  if (it != this->m_towns.end() && index < it->second.size()) {
-    return it->second[index];
+  if (it == this->m_towns.end()) {
+    return TownInfo();
   }
 
-  return TownInfo();
+  if (index >= it->second.size()) {
+    return TownInfo();
+  }
+
+  return it->second[index];
 }
 
 // OFFSET: 0x00AE33A0
