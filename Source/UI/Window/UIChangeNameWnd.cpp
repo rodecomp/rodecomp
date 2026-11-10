@@ -75,7 +75,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
   }
 
   g_modeMgr.gameMode->SendMsg(LMM_GET_MAKING_CHAR_NAME, 0, 0, 0, 0);
-  this->m_edit = new UIBitmapEditCtrl();
+  this->m_edit = new UIBitmapEditCtrl;
   this->m_edit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
   this->m_edit->SetSize(this->m_edit->geometry.width, this->m_edit->geometry.height);
   this->m_edit->Move(60, 44);
