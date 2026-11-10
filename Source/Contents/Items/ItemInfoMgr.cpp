@@ -228,10 +228,7 @@ int CItemInfoMgr::LuaAddItemIdentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    {
-      std::string line = lua_tostring(state, -1);
-      g_itemInfoMgr->m_items[static_cast<int>(id)].identifiedDescription.push_back(line);
-    }
+    g_itemInfoMgr->AddIdentifiedDescription(id, lua_tostring(state, -1));
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -287,10 +284,7 @@ int CItemInfoMgr::LuaAddItemUnidentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    {
-      std::string line = lua_tostring(state, -1);
-      g_itemInfoMgr->m_items[static_cast<int>(id)].unidentifiedDescription.push_back(line);
-    }
+    g_itemInfoMgr->AddUnidentifiedDescription(id, lua_tostring(state, -1));
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }

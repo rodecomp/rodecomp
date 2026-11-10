@@ -62,6 +62,14 @@ public:
     this->m_items[id].identifiedResourceName = resourceName;
   }
 
+  // INLINED
+  void AddUnidentifiedDescription(int id, std::string line) {
+    this->m_items[id].unidentifiedDescription.push_back(line);
+  }
+  // INLINED
+  void AddIdentifiedDescription(int id, std::string line) {
+    this->m_items[id].identifiedDescription.push_back(line);
+  }
   bool Load();
   int IsCostume(int id);
   int GetEffectId(int id);
