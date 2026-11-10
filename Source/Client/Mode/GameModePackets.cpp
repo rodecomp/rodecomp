@@ -4580,7 +4580,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case SP_HP:
     if (g_session.maxHp > 0 && (packet->value * 100) / g_session.maxHp < 25 &&
         this->scene->GetGameActorByAID(g_session.petGid) && rand() % 100 < 50 &&
-        g_session.CheckInterval(5000)) {
+        g_session.CheckInterval(5000) == true) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
       this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 2, hungerLevel), 0, 0, 0);
@@ -4625,45 +4625,39 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     this->scene->player->characterLevel = static_cast<std::uint16_t>(g_session.m_level);
     g_soundMgr->PlayWave("levelup.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 
-    const int job = g_session.GetDisplayJob();
     int effectId;
-    if (g_session.IsSuperNoviceClass(job)) {
+    if (g_session.IsSuperNoviceClass(g_session.GetDisplayJob())) {
       effectId = 338;
-    } else if (job < 4303) {
-      if (job == JT_SKY_EMPEROR) {
-        effectId = 582;
-      } else {
-        switch (job) {
-        case JT_TAEKWON:
-        case JT_STAR:
-        case JT_STAR2:
-        case JT_LINKER:
-        case JT_TAEKWON_B:
-        case JT_STAR_B:
-        case JT_LINKER_B:
-        case JT_STAR2_B:
-        case JT_STAR_EMPEROR:
-        case JT_SOUL_REAPER:
-        case JT_STAR_EMPEROR_B:
-        case JT_SOUL_REAPER_B:
-        case JT_STAR2_EMPEROR:
-        case JT_STAR2_EMPEROR_B:
-          effectId = 582;
-          break;
-        case JT_GANGSI:
-        case JT_DEATHKNIGHT:
-        case JT_COLLECTOR:
-          effectId = 338;
-          break;
-        default:
-          effectId = 371;
-          break;
-        }
-      }
-    } else if (job == JT_SOUL_ASCETIC || job == JT_SKY_EMPEROR2) {
-      effectId = 582;
     } else {
-      effectId = 371;
+      switch (g_session.GetDisplayJob()) {
+      case JT_TAEKWON:
+      case JT_STAR:
+      case JT_STAR2:
+      case JT_LINKER:
+      case JT_TAEKWON_B:
+      case JT_STAR_B:
+      case JT_LINKER_B:
+      case JT_STAR2_B:
+      case JT_STAR_EMPEROR:
+      case JT_SOUL_REAPER:
+      case JT_STAR_EMPEROR_B:
+      case JT_SOUL_REAPER_B:
+      case JT_STAR2_EMPEROR:
+      case JT_STAR2_EMPEROR_B:
+      case JT_SKY_EMPEROR:
+      case JT_SOUL_ASCETIC:
+      case JT_SKY_EMPEROR2:
+        effectId = 582;
+        break;
+      case JT_GANGSI:
+      case JT_DEATHKNIGHT:
+      case JT_COLLECTOR:
+        effectId = 338;
+        break;
+      default:
+        effectId = 371;
+        break;
+      }
     }
     this->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
@@ -4690,7 +4684,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case SP_JOBLEVEL:
     g_session.m_jobLevel = packet->value;
     g_session.InvalidateWindowFrames();
-    this->scene->player->LaunchEffect(packet->value < 51 ? 158 : 337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->scene->player->LaunchEffect(packet->value > 50 ? 337 : 158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (g_replayAnimationScaling == 0) {
       g_windowMgr.EnsureWindow(WID_NOTIFYJOBLEVELUPWND);
@@ -4745,10 +4739,9 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (oldPercent < percent) {
       if (percent >= g_overweightThresholdPercent && oldPercent < g_overweightThresholdPercent) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        text = FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_overweightThresholdPercent);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 8, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_overweightThresholdPercent).c_str()), 0xFF, 8, 0, 0);
       }
-      if (percent > 89 && oldPercent < 90) {
+      if (percent >= 90 && oldPercent < 90) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ATTACK_OVERWEIGHT)), 0xFF, 8, 0, 0);
       }
@@ -4761,10 +4754,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
     }
-    if (percent > 89) {
-      break;
-    }
-    if (oldPercent >= 90) {
+    if (percent < 90 && oldPercent >= 90) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ATTACK_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
     }
@@ -4773,24 +4763,21 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case SP_MAXWEIGHT: {
     packet->value = packet->value / 10;
     const int oldMaxWeight = g_session.m_maxWeight;
-    if (g_session.m_maxWeight < 1) {
-      g_session.m_maxWeight = 1;
-    }
-    const int oldPercent = (g_session.m_weight * 100) / g_session.m_maxWeight;
+    const int oldPercent = (g_session.m_weight * 100) / (oldMaxWeight < 1 ? 1 : oldMaxWeight);
     g_session.m_maxWeight = packet->value;
     g_session.RefreshHpSpWindows();
     g_session.InvalidateWindowFrames();
-    if (oldMaxWeight == 0 || g_session.m_maxWeight <= oldMaxWeight) {
+    if (oldMaxWeight == 0 || oldMaxWeight >= g_session.m_maxWeight) {
       break;
     }
 
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
     if (percent < 50) {
-      if (oldPercent > 49) {
+      if (oldPercent >= 50) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
       }
-    } else if (percent > 89) {
+    } else if (percent >= 90) {
       break;
     }
     if (oldPercent >= 90) {
@@ -4855,9 +4842,6 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     derivedStats[9] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
-  case 169:
-    reinterpret_cast<bool&>(g_session.feedOptions[4]) = packet->value != 0;
-    break;
   case SP_POW:
   case SP_STA:
   case SP_WIS:
@@ -4878,6 +4862,9 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       static_cast<UIStatusWnd*>(g_windowMgr.statusWnd)->ValidatePlacement();
     }
     g_session.InvalidateWindowFrames();
+    break;
+  case 169:
+    reinterpret_cast<bool&>(g_session.feedOptions[4]) = packet->value != 0;
     break;
   }
 
