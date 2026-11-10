@@ -628,10 +628,9 @@ const char* CSession::GetBgmFileName(const char* rswName) {
     name.erase(position - 4, 3);
   }
 
-  const char* key = name.c_str();
-  auto found = std::lower_bound(this->m_bgmFileNames.begin(), this->m_bgmFileNames.end(), key,
+  auto found = std::lower_bound(this->m_bgmFileNames.begin(), this->m_bgmFileNames.end(), name.c_str(),
                                 [](const std::pair<const char*, const char*>& entry, const char* value) { return std::strcmp(entry.first, value) < 0; });
-  if (found != this->m_bgmFileNames.end() && std::strcmp(found->first, key) == 0) {
+  if (found != this->m_bgmFileNames.end() && std::strcmp(found->first, name.c_str()) == 0) {
     return found->second;
   }
 
@@ -1767,8 +1766,9 @@ bool CSession::IsIndoorMapName(const char* name) const {
     value.erase(position - 4, 3);
   }
 
-  return std::binary_search(this->m_indoorRswNames.begin(), this->m_indoorRswNames.end(), value.c_str(),
-                            [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
+  auto found = std::lower_bound(this->m_indoorRswNames.begin(), this->m_indoorRswNames.end(), value.c_str(),
+                                [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
+  return found != this->m_indoorRswNames.end() && std::strcmp(*found, value.c_str()) == 0;
 }
 
 // OFFSET: 0x00DDB580
@@ -2374,8 +2374,9 @@ bool CSession::IsKnownName(std::string name) const {
     return true;
   }
 
+  const char* text = name.c_str();
   for (const MessengerMember& member : this->m_friends) {
-    if (member.name == name.c_str()) {
+    if (member.name == text) {
       return true;
     }
   }
@@ -2385,7 +2386,11 @@ bool CSession::IsKnownName(std::string name) const {
     return true;
   }
 
-  return name.find(s_messageEndTag) != std::string::npos;
+  if (name.find(s_messageEndTag) != std::string::npos) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00DFC0B0
