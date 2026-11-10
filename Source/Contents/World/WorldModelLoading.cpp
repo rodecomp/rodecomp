@@ -65,7 +65,7 @@ namespace {
   inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
     resource.RegisterMovies(movies, placement.position);
 
-    if (!resource.FindNode(placement.node) && resource.nodes.empty()) {
+    if (!resource.FindNode(placement.node) && resource.nodes.front() == nullptr) {
       return nullptr;
     }
 
