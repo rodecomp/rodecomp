@@ -267,8 +267,7 @@ void CDCSurface::DrawSurface(int, int, CSurface*, int, int, int, int, bool, int,
 // OFFSET: 0x00549220
 // FUNCTION: fn_01869
 void CDCSurface::DrawScaledSprite(
-  int, int, int, int, std::span<const SpriteFrameCell>, const SpriteRleImage* const* const*, int, int, int, float, const std::uint32_t*, SpriteAtlas&,
-  CRenderSystemBase&, int, std::uint32_t
+  int, int, int, int, std::span<const SpriteFrameCell>, const SpriteRleImage* const* const*, int, int, int, float, const std::uint32_t*
 ) {
 }
 

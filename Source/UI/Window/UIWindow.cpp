@@ -3296,8 +3296,7 @@ void UIWindow::DrawActionSprite(
     const ActionFrame& frame = frames[index];
     const SpriteRleImage* const* images[2] = {sprite->images[0].data(), sprite->images[1].data()};
     this->geometry.surface->DrawScaledSprite(
-      x, y, width, height, std::span<const SpriteFrameCell>(frame.cells), images, frame.cellCount, offsetX, offsetY, scale, sprite->palette,
-      g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+      x, y, width, height, std::span<const SpriteFrameCell>(frame.cells), images, frame.cellCount, offsetX, offsetY, scale, sprite->palette
     );
   }
 }
@@ -3713,8 +3712,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         if (robeFrame) {
           const SpriteRleImage* const* images[2] = {sprites[8]->images[0].data(), sprites[8]->images[1].data()};
           this->geometry.surface->DrawScaledSprite(
-            x, y, width, height, std::span<const SpriteFrameCell>(robeFrame->cells), images, robeFrame->cellCount, offsetX, offsetY, scale, sprites[8]->palette,
-            g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+            x, y, width, height, std::span<const SpriteFrameCell>(robeFrame->cells), images, robeFrame->cellCount, offsetX, offsetY, scale, sprites[8]->palette
           );
         }
       }
@@ -3735,8 +3733,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   {
     const SpriteRleImage* const* images[2] = {sprites[0]->images[0].data(), sprites[0]->images[1].data()};
     this->geometry.surface->DrawScaledSprite(
-      x, y, width, height, std::span<const SpriteFrameCell>(body->cells), images, body->cellCount, offsetX, offsetY, 1.0f, bodyPalette,
-      g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+      x, y, width, height, std::span<const SpriteFrameCell>(body->cells), images, body->cellCount, offsetX, offsetY, 1.0f, bodyPalette
     );
   }
 
@@ -3757,7 +3754,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       const SpriteRleImage* const* images[2] = {sprites[1]->images[0].data(), sprites[1]->images[1].data()};
       this->geometry.surface->DrawScaledSprite(
         x + headX, y + headY, width, height, std::span<const SpriteFrameCell>(headFrame->cells), images, headFrame->cellCount, offsetX, offsetY, scale,
-        headPalette, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+        headPalette
       );
     }
   }
@@ -3780,7 +3777,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[2]->images[0].data(), sprites[2]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[2]->palette, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+          scale, sprites[2]->palette
         );
       }
     }
@@ -3804,7 +3801,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[3]->images[0].data(), sprites[3]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[3]->palette, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+          scale, sprites[3]->palette
         );
       }
     }
@@ -3828,7 +3825,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const SpriteRleImage* const* images[2] = {sprites[4]->images[0].data(), sprites[4]->images[1].data()};
         this->geometry.surface->DrawScaledSprite(
           x + accessoryX, y + accessoryY, width, height, std::span<const SpriteFrameCell>(frame->cells), images, frame->cellCount, offsetX, offsetY,
-          scale, sprites[4]->palette, g_renderer->atlas, *GetRenderSystemHolder()->system, g_serviceType, g_resourceReuseDelay
+          scale, sprites[4]->palette
         );
       }
     }

@@ -1,10 +1,14 @@
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DCBitmap.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/BitmapPixels.h"
 #include "Render/RenderSystemBase.h"
+#include "Render/Renderer.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Surface.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 
@@ -763,7 +767,7 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
 // FUNCTION: fn_01837
 void CDCBitmap::DrawScaledSprite(
   int x, int y, int drawWidth, int drawHeight, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
-  int offsetY, float scale, const std::uint32_t* palette, SpriteAtlas& atlas, CRenderSystemBase& system, int serviceType, std::uint32_t reuseDelay
+  int offsetY, float scale, const std::uint32_t* palette
 ) {
   if (!images) {
     return;
@@ -788,9 +792,9 @@ void CDCBitmap::DrawScaledSprite(
     CSurface* surface;
 
     if (!cell.imageType) {
-      surface = atlas.Find(image, palette, record);
+      surface = g_renderer->atlas.Find(image, palette, record);
       if (!surface) {
-        surface = atlas.Insert(system, image, palette, record, serviceType, reuseDelay);
+        surface = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
       }
     } else {
       surface = static_cast<CSurface*>(const_cast<void*>(image->surface));

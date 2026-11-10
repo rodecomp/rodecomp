@@ -36,7 +36,7 @@ public:
   virtual void Draw(CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color) = 0;
   virtual void DrawScaledSprite(
     int x, int y, int width, int height, std::span<const SpriteFrameCell> cells, const SpriteRleImage* const* const* images, int cellCount, int offsetX,
-    int offsetY, float scale, const std::uint32_t* palette, SpriteAtlas& atlas, CRenderSystemBase& system, int serviceType, std::uint32_t reuseDelay
+    int offsetY, float scale, const std::uint32_t* palette
   ) = 0;
   virtual void DrawScaledSurface(
     int x, int y, int width, int height, CSurface* source, int sourceWidth, int sourceHeight, float scaleX, float scaleY, std::uint32_t color, bool mirrored,
