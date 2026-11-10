@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -79,10 +80,11 @@ bool CSphereWind2Effect::IsAlive() {
 // FUNCTION: fn_19185
 void CSphereWind2Effect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
       if (particle->elapsedFrames > 0) {
         int alpha = particle->alpha;
         if (particle->elapsedFrames <= 25) {
@@ -92,7 +94,7 @@ void CSphereWind2Effect::OnProcess() {
         }
 
         const float scale = particle->scale * 1.01f;
-        particle->alpha = alpha < 0 ? 0 : alpha;
+        particle->alpha = alpha >= 0 ? alpha : 0;
         particle->scale = scale;
 
         const int oldAngle = particle->phaseParameter;
@@ -111,18 +113,27 @@ void CSphereWind2Effect::OnProcess() {
         const int pitch = static_cast<int>(static_cast<float>(step * texPart) + rotation) % 360;
 
         const float radius = particle->speedParameter;
-        const vector3d center = {scale * g_cosTable[angle] * g_cosTable[pitch], scale * g_sinTable[angle] * g_cosTable[pitch], scale * g_sinTable[pitch]};
-        const vector3d side = {-g_sinTable[angle] * radius, radius * g_cosTable[angle], 0.0f};
+        EffectPoint points[4];
+        points[0].x = scale * g_cosTable[angle] * g_cosTable[pitch];
+        points[0].y = scale * g_sinTable[angle] * g_cosTable[pitch];
+        points[0].z = scale * g_sinTable[pitch];
+        points[1].x = -g_sinTable[angle] * radius;
+        points[1].y = radius * g_cosTable[angle];
+        points[1].z = 0.0f;
         const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
-        const vector3d inner = {center.x - side.x + offset.x, center.y - side.y + offset.y, center.z - side.z + offset.z};
-        const vector3d outer = {center.x + side.x + offset.x, center.y + side.y + offset.y, center.z + side.z + offset.z};
+        points[2].x = points[0].x - points[1].x + offset.x;
+        points[2].y = points[0].y - points[1].y + offset.y;
+        points[2].z = points[0].z - points[1].z + offset.z;
+        points[3].x = points[0].x + points[1].x + offset.x;
+        points[3].y = points[0].y + points[1].y + offset.y;
+        points[3].z = points[0].z + points[1].z + offset.z;
 
-        particle->vertices[1].x = inner.x;
-        particle->vertices[1].y = inner.y;
-        particle->vertices[1].z = inner.z;
-        particle->vertices[3].x = outer.x;
-        particle->vertices[3].y = outer.y;
-        particle->vertices[3].z = outer.z;
+        particle->vertices[1].x = points[2].x;
+        particle->vertices[1].y = points[2].y;
+        particle->vertices[1].z = points[2].z;
+        particle->vertices[3].x = points[3].x;
+        particle->vertices[3].y = points[3].y;
+        particle->vertices[3].z = points[3].z;
 
         if (texPart != 0) {
           particle->vertices[0].x = this->lastInner.x;
@@ -133,11 +144,15 @@ void CSphereWind2Effect::OnProcess() {
           particle->vertices[2].z = this->lastOuter.z;
         }
 
-        this->lastInner = inner;
-        this->lastOuter = outer;
+        this->lastInner.x = points[2].x;
+        this->lastInner.y = points[2].y;
+        this->lastInner.z = points[2].z;
+        this->lastOuter.x = points[3].x;
+        this->lastOuter.y = points[3].y;
+        this->lastOuter.z = points[3].z;
       }
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 
