@@ -188,9 +188,10 @@ void CChargingPierceEffect::OnProcess() {
             height = -13.0f - static_cast<float>(actor->MountType() ? 3 : 0);
           }
 
-          const float x = this->position[0];
-          const float y = this->position[1];
-          const float z = this->position[2];
+          const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+          const float x = origin.x;
+          const float y = origin.y;
+          const float z = origin.z;
           const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
           const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
           const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
@@ -226,9 +227,10 @@ void CChargingPierceEffect::OnProcess() {
 // FUNCTION: fn_07031
 void CChargingPierceNewEffect::OnProcess() {
   for (CEZ2STRParticle* particle : this->emitters) {
-    const float x = this->position[0];
-    const float y = this->position[1];
-    const float z = this->position[2];
+    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const float x = origin.x;
+    const float y = origin.y;
+    const float z = origin.z;
 
     const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
     const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
