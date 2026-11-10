@@ -328,38 +328,37 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       break;
     }
     }
-    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    break;
 
   case UM_REFRESH:
     if (argument1 != 0) {
       this->m_statusText = "";
-      if (argument2 == 387) {
+      switch (argument2) {
+      case 387:
         this->m_page = 1;
-      } else if (argument2 < 387) {
-        switch (argument2) {
-        case SSI_FAILED_NOTHING_SEARCH_ITEM:
-          this->m_page = 1;
-          g_session.storeSearchResults.clear();
-          reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = 0;
-          this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_STORE);
-          --g_session.storeSearchCount;
-          break;
-        case SSI_FAILED_OVER_MAXCOUNT:
-          this->m_statusText = LookupMessage(MSI_SSI_FAILED_OVER_MAXCOUNT);
-          break;
-        case SSI_FAILED_SEARCH_CNT:
-          this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_CNT);
-          break;
-        case SSI_FAILED_LIMIT_SEARCH_TIME:
-          g_windowMgr.Confirm(LookupMessage(MSI_SSI_FAILED_LIMIT_SERACH_TIME), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
-        case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
-          g_session.storeSearchX = -1;
-          g_session.storeSearchY = -1;
-          g_session.storeSearchOwnerAid = 0xFFFFFFFF;
-          g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
-        }
+        break;
+      case SSI_FAILED_NOTHING_SEARCH_ITEM:
+        this->m_page = 1;
+        g_session.storeSearchResults.clear();
+        reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = 0;
+        this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_STORE);
+        --g_session.storeSearchCount;
+        break;
+      case SSI_FAILED_OVER_MAXCOUNT:
+        this->m_statusText = LookupMessage(MSI_SSI_FAILED_OVER_MAXCOUNT);
+        break;
+      case SSI_FAILED_SEARCH_CNT:
+        this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_CNT);
+        break;
+      case SSI_FAILED_LIMIT_SEARCH_TIME:
+        g_windowMgr.Confirm(LookupMessage(MSI_SSI_FAILED_LIMIT_SERACH_TIME), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
+        g_session.storeSearchX = -1;
+        g_session.storeSearchY = -1;
+        g_session.storeSearchOwnerAid = 0xFFFFFFFF;
+        g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
       }
       this->m_searchPending = 0;
       this->m_findButton->SetDisabled(0);
@@ -376,14 +375,16 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     return 0;
 
   case UM_TEXT_LBTN_UP:
-    if (argument1 == 316) {
+    switch (argument1) {
+    case 316:
       if (this->m_page > 1) {
         this->m_hoverRow = -1;
         --this->m_page;
         this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
-    } else if (argument1 == 317) {
+      break;
+    case 317: {
       const int page = this->m_page;
       this->m_hoverRow = -1;
       if (static_cast<unsigned int>(page * 10) < g_session.storeSearchResults.size()) {
@@ -398,6 +399,8 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
         return 0;
       }
+      break;
+    }
     }
     return 0;
   }
