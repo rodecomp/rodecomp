@@ -505,18 +505,16 @@ int UIListBoxEx::FindLine(const std::string& text) {
 // OFFSET: 0x00880920
 // FUNCTION: fn_11280
 int UIImgMenu::ItemAt(int x, int y) {
-  const int width = this->geometry.width - 3;
-  const int height = this->geometry.height - 3;
-  if (x < 1 || x >= width || y < 1 || y >= height) {
+  if (x < 1 || x >= this->geometry.width - 3 || y < 1 || y >= this->geometry.height - 3) {
     return -1;
   }
 
   int index;
   if (this->horizontal != 0) {
-    this->itemWidth = width / this->count;
+    this->itemWidth = (this->geometry.width - 3) / this->count;
     index = x / this->itemWidth;
   } else {
-    this->itemHeight = height / this->count;
+    this->itemHeight = (this->geometry.height - 3) / this->count;
     index = y / this->itemHeight;
   }
   return index > this->count - 1 ? this->count - 1 : index;
@@ -657,8 +655,7 @@ int UITabControl::TabAt(int x, int y) {
   } else {
     offset = x;
   }
-  const int count = this->TabCount();
-  for (int index = 0; index < count; ++index) {
+  for (int index = 0; index < this->TabCount(); ++index) {
     offset -= this->widths[index];
     if (offset < 0) {
       return index;
