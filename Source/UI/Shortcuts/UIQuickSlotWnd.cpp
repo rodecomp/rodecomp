@@ -140,15 +140,15 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  const QuickSlotEntry entry = this->m_entries[index];
-  if (entry.skill) {
+  const std::uint32_t id = this->m_entries[index].id;
+  if (this->m_entries[index].skill) {
     WindowManagerWindows& windows = g_windowMgr;
     UIWindow* detail = windows.EnsureWindow(WID_SKILLDESCRIBEWND);
     if (detail) {
-      if (*reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(detail) + 0x104) == entry.id) {
+      if (*reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(detail) + 0x104) == id) {
         windows.CloseWindow(WID_SKILLDESCRIBEWND);
       } else {
-        detail->SendMsg(nullptr, UM_SKILLDESCRIBE, entry.id, 0, 0, 0);
+        detail->SendMsg(nullptr, UM_SKILLDESCRIBE, id, 0, 0, 0);
       }
     }
 
@@ -167,8 +167,8 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     } else {
       detail->Move(originX - adjustment + x, originY + 33 + rowY);
     }
-  } else if (entry.id != 0) {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
+  } else if (id != 0) {
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);
     if (item.identity[1] > 0) {
       UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -203,41 +203,41 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         continue;
       }
 
-      if (source.enabled == 0) {
-        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(source.itemId), 1);
-        if (item.identity[1] != 0 && item.identified != 0) {
-          entry.id = source.itemId;
-        }
-        continue;
-      }
-
-      CSkillInfo skill = g_session.m_skillBundle.Lookup(source.itemId);
-      if (skill.available == 0) {
-        std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
-        const auto record = std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == source.itemId; });
-        if (record != records.end()) {
-          const auto state = std::find_if(record->alternate.begin(), record->alternate.end(), [&](const CooldownState& value) { return value.slot == index; });
-          if (state != record->alternate.end()) {
-            record->alternate.erase(state);
+      if (source.enabled != 0) {
+        CSkillInfo skill = g_session.m_skillBundle.Lookup(source.itemId);
+        if (skill.available == 0) {
+          std::list<ShortcutCooldownRecord>& records = g_session.m_requestTimers;
+          const auto record = std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& value) { return value.id == source.itemId; });
+          if (record != records.end()) {
+            const auto state = std::find_if(record->alternate.begin(), record->alternate.end(), [&](const CooldownState& value) { return value.slot == index; });
+            if (state != record->alternate.end()) {
+              record->alternate.erase(state);
+            }
           }
         }
-
-        skill = g_session.LookupHomunSkill(source.itemId);
+        if (skill.available == 0) {
+          skill = g_session.LookupHomunSkill(source.itemId);
+        }
         if (skill.available == 0) {
           skill = g_session.LookupMercSkill(source.itemId);
         }
         if (skill.available == 0) {
           skill = g_session.LookupAdditionalSkill(source.itemId);
         }
-      }
 
-      if (skill.available != 0 && skill.level != 0) {
-        entry.id = skill.id;
-        entry.skill = 1;
-        if (g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
-          entry.count = static_cast<std::int16_t>(skill.level);
-        } else {
-          entry.count = source.value;
+        if (skill.available != 0 && skill.level != 0) {
+          entry.id = skill.id;
+          entry.skill = 1;
+          if (g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
+            entry.count = static_cast<std::int16_t>(skill.level);
+          } else {
+            entry.count = source.value;
+          }
+        }
+      } else {
+        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(source.itemId), 1);
+        if (item.identity[1] != 0 && item.identified != 0) {
+          entry.id = source.itemId;
         }
       }
     }
