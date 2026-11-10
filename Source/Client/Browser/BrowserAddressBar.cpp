@@ -24,7 +24,7 @@ bool CWebBrowser::CreateAddressBar(int width, int requestedHeight) {
   }
 
   HWND combo = CreateWindowExA(
-    WS_EX_CLIENTEDGE, WC_COMBOBOXA, "addressbar", WS_CHILD | WS_VISIBLE | CBS_DROPDOWN, 10, 10, 160, 22, this->rebar, nullptr, GetModuleHandleA(nullptr),
+    WS_EX_CLIENTEDGE, "COMBOBOX", "addressbar", WS_CHILD | WS_VISIBLE | CBS_DROPDOWN, 10, 10, 160, 22, this->rebar, nullptr, GetModuleHandleA(nullptr),
     nullptr
   );
 
@@ -32,11 +32,11 @@ bool CWebBrowser::CreateAddressBar(int width, int requestedHeight) {
   band.cbSize = sizeof(band);
   band.fMask = RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_BACKGROUND;
   band.fStyle = RBBS_CHILDEDGE | RBBS_FIXEDBMP;
+  band.hbmBack = LoadBitmapA(GetModuleHandleA(nullptr), nullptr);
   band.hwndChild = combo;
   band.cxMinChild = 0;
   band.cyMinChild = requestedHeight;
   band.cx = 160;
-  band.hbmBack = LoadBitmapA(GetModuleHandleA(nullptr), nullptr);
 
   if (!SendMessageA(this->rebar, RB_INSERTBANDA, static_cast<WPARAM>(-1), reinterpret_cast<LPARAM>(&band))) {
     return false;
