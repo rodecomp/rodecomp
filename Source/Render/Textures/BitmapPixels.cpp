@@ -26,18 +26,18 @@ BitmapPixels::~BitmapPixels() {
 
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
-void BitmapPixels::UploadTexture(CTexture*& texture) {
-  const std::int32_t size = 4 * static_cast<int>(this->width) * static_cast<int>(this->height);
-  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->pixels);
+void CDCBitmap::UploadTexture(CTexture*& texture) {
+  const std::int32_t size = 4 * static_cast<int>(this->m_bitmap.width) * static_cast<int>(this->m_bitmap.height);
+  unsigned char* bytes = reinterpret_cast<unsigned char*>(this->m_bitmap.pixels);
 
   for (std::int32_t offset = 0; offset < size; offset += 4) {
     bytes[offset + 3] = 255;
   }
 
   if (!texture) {
-    texture = g_texMgr.Upload(this->width, this->height, this->pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
+    texture = g_texMgr.Upload(this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
   } else {
-    texture->Upload(0, 0, this->width, this->height, this->pixels, 0, 0);
+    texture->Upload(0, 0, this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, 0, 0);
   }
 }
 
@@ -69,7 +69,7 @@ void BitmapPixels::Create(int newWidth, int newHeight) {
 
 // OFFSET: 0x00547A80
 // FUNCTION: fn_01845
-HGDIOBJ CDCBitmap::Create(int width, int height) {
+__declspec(noinline) HGDIOBJ CDCBitmap::Create(int width, int height) {
   this->m_bitmap.width = width;
   this->m_bitmap.dirty = true;
   this->m_bitmap.height = height;
@@ -99,47 +99,47 @@ HGDIOBJ CDCBitmap::Create(int width, int height) {
 
 // OFFSET: 0x00547D40
 // FUNCTION: fn_01850
-void BitmapPixels::Grow(std::uint32_t newWidth, std::uint32_t newHeight) {
-  if (newWidth > this->width || newHeight > this->height) {
-    SelectObject(this->dc, this->previous);
-    DeleteObject(this->bitmap);
+void CDCBitmap::Grow(std::uint32_t newWidth, std::uint32_t newHeight) {
+  if (newWidth > this->m_bitmap.width || newHeight > this->m_bitmap.height) {
+    SelectObject(this->m_bitmap.dc, this->m_bitmap.previous);
+    DeleteObject(this->m_bitmap.bitmap);
     this->Create(newWidth, newHeight);
   }
 }
 
 // OFFSET: 0x00547D10
 // FUNCTION: fn_01848
-bool BitmapPixels::GetDC(HDC* output) {
-  this->dirty = true;
-  *output = this->dc;
+bool CDCBitmap::GetDC(HDC* output) {
+  this->m_bitmap.dirty = true;
+  *output = this->m_bitmap.dc;
   return true;
 }
 
 // OFFSET: 0x00547D30
 // FUNCTION: fn_01849
-void BitmapPixels::ReleaseDC(HDC) {
+void CDCBitmap::ReleaseDC(HDC) {
 }
 
 // OFFSET: 0x00547460
 // FUNCTION: fn_01841
-void BitmapPixels::Fill(const RECT* rectangle, std::uint32_t color) {
-  if (!this->pixels) {
+void CDCBitmap::Fill(const RECT* rectangle, std::uint32_t color) {
+  if (!this->m_bitmap.pixels) {
     return;
   }
 
-  this->dirty = true;
+  this->m_bitmap.dirty = true;
   const std::uint32_t converted = ((color >> 16) & 0xFF) + ((color & 0xFF) << 16) + (color & 0xFF000000) + (color & 0xFF00);
 
   if (rectangle) {
     for (int y = rectangle->top; y < rectangle->bottom; ++y) {
       for (int x = rectangle->left; x < rectangle->right; ++x) {
-        this->pixels[x + y * this->width] = converted;
+        this->m_bitmap.pixels[x + y * this->m_bitmap.width] = converted;
       }
     }
   } else {
-    for (std::uint32_t y = 0; y < this->height; ++y) {
-      for (std::uint32_t x = 0; x < this->width; ++x) {
-        this->pixels[x + y * this->width] = converted;
+    for (std::uint32_t y = 0; y < this->m_bitmap.height; ++y) {
+      for (std::uint32_t x = 0; x < this->m_bitmap.width; ++x) {
+        this->m_bitmap.pixels[x + y * this->m_bitmap.width] = converted;
       }
     }
   }
@@ -147,21 +147,21 @@ void BitmapPixels::Fill(const RECT* rectangle, std::uint32_t color) {
 
 // OFFSET: 0x00548230
 // FUNCTION: fn_01852
-void BitmapPixels::Copy(int x, int y, int copyWidth, int copyHeight, const std::uint32_t* source, bool transparent) {
-  if (!this->pixels || !source) {
+void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uint32_t* source, bool transparent) {
+  if (!this->m_bitmap.pixels || !source) {
     return;
   }
 
-  this->dirty = true;
-  const std::int32_t count = static_cast<std::int32_t>(this->width * this->height);
+  this->m_bitmap.dirty = true;
+  const std::int32_t count = static_cast<std::int32_t>(this->m_bitmap.width * this->m_bitmap.height);
 
   for (int row = 0; row < copyHeight; ++row) {
     for (int column = 0; column < copyWidth; ++column) {
       std::uint32_t value = *source++;
       if (!transparent || value != 0xFFFF00FF) {
-        const std::uint32_t index = static_cast<std::uint32_t>(x) + column + this->width * (static_cast<std::uint32_t>(y) + row);
+        const std::uint32_t index = static_cast<std::uint32_t>(x) + column + this->m_bitmap.width * (static_cast<std::uint32_t>(y) + row);
         if (static_cast<std::int32_t>(index) > -1 && count > static_cast<std::int32_t>(index)) {
-          this->pixels[index] = value;
+          this->m_bitmap.pixels[index] = value;
         }
       }
     }
@@ -170,14 +170,14 @@ void BitmapPixels::Copy(int x, int y, int copyWidth, int copyHeight, const std::
 
 // OFFSET: 0x00547790
 // FUNCTION: fn_01843
-void BitmapPixels::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidth, int copyHeight, const BitmapPixels& source) {
-  if (!this->pixels) {
+void CDCBitmap::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidth, int copyHeight, const CDCBitmap& source) {
+  if (!this->m_bitmap.pixels) {
     return;
   }
 
-  this->dirty = true;
-  std::uint32_t* destination = this->pixels + x + y * this->width;
-  const std::uint32_t* input = source.pixels + sourceX + sourceY * source.width;
+  this->m_bitmap.dirty = true;
+  std::uint32_t* destination = this->m_bitmap.pixels + x + y * this->m_bitmap.width;
+  const std::uint32_t* input = source.m_bitmap.pixels + sourceX + sourceY * source.m_bitmap.width;
 
   for (int row = 0; row < copyHeight; ++row) {
     if (!destination || !input) {
@@ -190,29 +190,29 @@ void BitmapPixels::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidt
       }
     }
 
-    destination += this->width;
-    input += source.width;
+    destination += this->m_bitmap.width;
+    input += source.m_bitmap.width;
   }
 }
 
 // OFFSET: 0x00547840
 // FUNCTION: fn_01844
-void BitmapPixels::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int copyHeight, const BitmapPixels& source, bool alpha) {
-  if (!this->pixels || x >= this->width || y >= this->height) {
+void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int copyHeight, const CDCBitmap& source) {
+  if (!this->m_bitmap.pixels || x >= this->m_bitmap.width || y >= this->m_bitmap.height) {
     return;
   }
 
-  if (x + copyWidth > this->width) {
-    copyWidth = this->width - x;
+  if (x + copyWidth > this->m_bitmap.width) {
+    copyWidth = this->m_bitmap.width - x;
   }
 
-  if (y + copyHeight > this->height) {
-    copyHeight = this->height - y;
+  if (y + copyHeight > this->m_bitmap.height) {
+    copyHeight = this->m_bitmap.height - y;
   }
 
-  this->dirty = true;
-  std::uint32_t* destination = this->pixels + x + y * this->width;
-  const std::uint32_t* input = source.pixels;
+  this->m_bitmap.dirty = true;
+  std::uint32_t* destination = this->m_bitmap.pixels + x + y * this->m_bitmap.width;
+  const std::uint32_t* input = source.m_bitmap.pixels;
 
   for (int row = 0; row < copyHeight; ++row) {
     if (!destination || !input) {
@@ -220,7 +220,7 @@ void BitmapPixels::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, in
     }
 
     for (int column = 0; column < copyWidth; ++column) {
-      if (alpha) {
+      if (source.m_cache.m_alpha) {
         const std::uint32_t target = destination[column];
         const std::uint32_t pixel = input[column];
         const WORD targetAlpha = static_cast<WORD>(target >> 24);
@@ -234,25 +234,25 @@ void BitmapPixels::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, in
       }
     }
 
-    destination += this->width;
-    input += source.width;
+    destination += this->m_bitmap.width;
+    input += source.m_bitmap.width;
   }
 }
 
 // OFFSET: 0x005489F0
 // FUNCTION: fn_01857
-void BitmapPixels::Brighten(int x, int y, int copyWidth, int copyHeight, int amount) {
-  if (x < 0 || y < 0 || this->width < static_cast<unsigned>(x) || this->height < static_cast<unsigned>(y) || copyWidth < 1 || copyHeight < 1) {
+void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount) {
+  if (x < 0 || y < 0 || this->m_bitmap.width < static_cast<unsigned>(x) || this->m_bitmap.height < static_cast<unsigned>(y) || copyWidth < 1 || copyHeight < 1) {
     return;
   }
 
-  this->dirty = true;
-  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->width);
-  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->height);
+  this->m_bitmap.dirty = true;
+  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->m_bitmap.width);
+  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->m_bitmap.height);
 
   for (int row = y; row < bottom; ++row) {
     for (int column = x; column < right; ++column) {
-      std::uint32_t& pixel = this->pixels[column + row * this->width];
+      std::uint32_t& pixel = this->m_bitmap.pixels[column + row * this->m_bitmap.width];
       if (pixel != 0xFFFF00FF) {
         const int red = std::min(std::max(static_cast<int>((pixel >> 16) & 0xFF) + amount, 0), 255);
         const int green = std::min(std::max(static_cast<int>((pixel >> 8) & 0xFF) + amount, 0), 255);
@@ -812,12 +812,12 @@ void CDCBitmap::DrawScaledSprite(
 
 // OFFSET: 0x00547D80
 // FUNCTION: fn_01851
-void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int drawWidth, int drawHeight, const std::uint32_t* source, int) {
-  if (!this->pixels || !source) {
+void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int drawWidth, int drawHeight, const std::uint32_t* source, int) {
+  if (!this->m_bitmap.pixels || !source) {
     return;
   }
 
-  this->dirty = true;
+  this->m_bitmap.dirty = true;
   const float scaleX = static_cast<float>(drawWidth) / static_cast<float>(sourceWidth);
   const float scaleY = static_cast<float>(drawHeight) / static_cast<float>(sourceHeight);
   const int columns = scaleX < 1 ? sourceWidth : drawWidth;
@@ -867,7 +867,7 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
     int output = 0, previous = 0;
 
     for (int column = 0; column < drawWidth; ++column) {
-      if (static_cast<unsigned>(x + column) >= this->width) {
+      if (static_cast<unsigned>(x + column) >= this->m_bitmap.width) {
         continue;
       }
 
@@ -875,9 +875,9 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
 
       for (int row = 0; row < sourceHeight; ++row) {
         const int next = static_cast<int>(static_cast<float>(row) * scaleY);
-        if (output != next && static_cast<unsigned>(y + next) <= this->height) {
+        if (output != next && static_cast<unsigned>(y + next) <= this->m_bitmap.height) {
           previous = row;
-          this->pixels[x + column + (y + output) * this->width] = scratch[sample + column];
+          this->m_bitmap.pixels[x + column + (y + output) * this->m_bitmap.width] = scratch[sample + column];
           output = next;
 
           sample = row * drawWidth;
@@ -888,7 +888,7 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
     int output = 0;
 
     for (int column = 0; column < drawWidth; ++column) {
-      if (static_cast<unsigned>(x + column) >= this->width) {
+      if (static_cast<unsigned>(x + column) >= this->m_bitmap.width) {
         continue;
       }
 
@@ -896,11 +896,11 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
         int next = static_cast<int>(static_cast<float>(row) * scaleY);
 
         for (int index = output; index < next; ++index) {
-          if (static_cast<unsigned>(y + index) >= this->height) {
-            break;
+          if (static_cast<unsigned>(y + index) >= this->m_bitmap.height) {
+            continue;
           }
 
-          this->pixels[x + column + (y + index) * this->width] = scratch[(row - 1) * drawWidth + column];
+          this->m_bitmap.pixels[x + column + (y + index) * this->m_bitmap.width] = scratch[(row - 1) * drawWidth + column];
         }
 
         output = next;

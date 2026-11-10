@@ -18,31 +18,6 @@ CDCBitmap* CreateBitmapDC(int width, int height, bool fill) {
   return bitmap;
 }
 
-// INLINED
-void CDCBitmap::UploadTexture(CTexture*& texture) {
-  this->m_bitmap.UploadTexture(texture);
-}
-
-void CDCBitmap::Grow(std::uint32_t width, std::uint32_t height) {
-  if (width > this->m_bitmap.width || height > this->m_bitmap.height) {
-    this->m_cache.Clear();
-    this->m_bitmap.Grow(width, height);
-  }
-}
-
-bool CDCBitmap::GetDC(HDC* output) {
-  return this->m_bitmap.GetDC(output);
-}
-
-void CDCBitmap::ReleaseDC(HDC dc) {
-  this->m_bitmap.ReleaseDC(dc);
-}
-
-void CDCBitmap::Copy(int x, int y, int width, int height, const std::uint32_t* source, bool transparent) {
-  this->m_bitmap.Copy(x, y, width, height, source, transparent);
-}
-
-
 // OFFSET: 0x005482D0
 // FUNCTION: fn_01853
 void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
@@ -60,9 +35,6 @@ void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
     }
   }
 }
-void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option) {
-  this->m_bitmap.ScaleCopy(x, y, sourceWidth, sourceHeight, width, height, source, option);
-}
 
 void CDCBitmap::CopyRegion(
   int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
@@ -71,24 +43,8 @@ void CDCBitmap::CopyRegion(
   this->m_bitmap.CopyRegion(x, y, sourceLeft, sourceTop, sourceRight, sourceBottom, source, sourceWidth, sourceHeight, transparent, alpha);
 }
 
-void CDCBitmap::CopyFrom(int x, int y, int sourceX, int sourceY, int width, int height, const CDCBitmap& source) {
-  this->m_bitmap.CopyFrom(x, y, sourceX, sourceY, width, height, source.m_bitmap);
-}
-
-void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int width, int height, const CDCBitmap& source) {
-  this->m_bitmap.BlendFrom(x, y, width, height, source.m_bitmap, source.m_cache.m_alpha);
-}
-
-void CDCBitmap::Fill(const RECT* rectangle, std::uint32_t color) {
-  this->m_bitmap.Fill(rectangle, color);
-}
-
 void CDCBitmap::Draw(CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color) {
   this->m_cache.Draw(this->m_bitmap, system, x, y, width, height, color);
-}
-
-void CDCBitmap::Brighten(int x, int y, int width, int height, int amount) {
-  this->m_bitmap.Brighten(x, y, width, height, amount);
 }
 
 void CDCBitmap::Dim(int x, int y, int width, int height, int percent) {

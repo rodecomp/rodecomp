@@ -22,21 +22,11 @@ struct BitmapPixels {
 
   BitmapPixels(int width, int height);
   ~BitmapPixels();
-  void Grow(std::uint32_t width, std::uint32_t height);
-  bool GetDC(HDC* output);
-  void ReleaseDC(HDC dc);
-  void Fill(const RECT* rectangle, std::uint32_t color);
-  void Copy(int x, int y, int width, int height, const std::uint32_t* source, bool transparent);
-  void CopyFrom(int x, int y, int sourceX, int sourceY, int width, int height, const BitmapPixels& source);
-  void BlendFrom(std::uint32_t x, std::uint32_t y, int width, int height, const BitmapPixels& source, bool alpha);
-  void Brighten(int x, int y, int width, int height, int amount);
   void Dim(int x, int y, int width, int height, int percent);
   void CopyRegion(
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
     bool transparent, bool alpha
   );
-  void ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option);
-  void UploadTexture(CTexture*& texture);
 
 private:
   void Create(int width, int height);
