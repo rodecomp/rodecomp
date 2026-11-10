@@ -35,9 +35,8 @@ void UIWindowMgr::SetScreenSize(int width, int height) {
 // FUNCTION: fn_17214
 void UIWindowMgr::ArrangeMiniPartyWindows() {
   for (UIWindow* window : this->snapExcluded) {
-    MiniPartyGridPoint position;
-    reinterpret_cast<MiniPartyGrid*>(CMiniPartyWndAreaMgr::Instance())
-      ->GetCellPosition(&position, *reinterpret_cast<int*>(reinterpret_cast<char*>(window) + 0x104));
+    const MiniPartyGridPoint position = reinterpret_cast<MiniPartyGrid*>(CMiniPartyWndAreaMgr::Instance())
+      ->GetCellPosition(*reinterpret_cast<int*>(reinterpret_cast<char*>(window) + 0x104));
     window->Move(position.x, position.y);
   }
 }
@@ -62,8 +61,7 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
   auto cell = cells.begin();
   auto entry = this->snapExcluded.begin();
   for (; cell != cells.end() && entry != this->snapExcluded.end(); ++cell, ++entry) {
-    MiniPartyGridPoint position;
-    reinterpret_cast<const MiniPartyGrid*>(&area)->GetWindowPosition(&position, *cell);
+    const MiniPartyGridPoint position = reinterpret_cast<const MiniPartyGrid*>(&area)->GetWindowPosition(*cell);
     (*entry)->Move(position.x, position.y);
     static_cast<UIMiniPartyWnd*>(*entry)->m_cell = *cell;
 

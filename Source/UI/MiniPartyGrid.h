@@ -18,8 +18,8 @@ struct MiniPartyGridRectangle {
 };
 
 struct MiniPartyGrid {
-  MiniPartyGridPoint* GetCellPosition(MiniPartyGridPoint* position, int index) const;
-  MiniPartyGridPoint* GetWindowPosition(MiniPartyGridPoint* position, int index) const;
+  MiniPartyGridPoint GetCellPosition(int index) const;
+  MiniPartyGridPoint GetWindowPosition(int index) const;
   int FindCell(int x, int y) const;
   void BuildAvailableCells();
 
