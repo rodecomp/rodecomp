@@ -10,19 +10,23 @@
 #include <cstdlib>
 #include <cstring>
 
+// INLINED
+static __forceinline std::string StoredTitle(const CMCStoreInfoBackup& backup) {
+  return backup.title;
+}
 
 // OFFSET: 0x00970E60
 // FUNCTION: fn_13262
 void UIMerchantShopMakeWnd::Refresh() {
   CMCStoreInfoBackup& backup = g_session.m_storeInfoBackup;
 
-  if (std::string(backup.title).empty()) {
+  if (StoredTitle(backup).empty()) {
     this->actionButton->SetDisabled(0);
     this->actionButton->Invalidate();
     return;
   }
 
-  this->titleEdit->SetText(std::string(backup.title).c_str());
+  this->titleEdit->SetText(StoredTitle(backup).c_str());
   this->titleEdit->Invalidate();
 
   for (int index = 0; index < this->slotCount; ++index) {
@@ -77,9 +81,9 @@ void UIMerchantShopMakeWnd::Refresh() {
       this->quantityEdits[index]->Invalidate();
     } else {
       const PriceColors colors = PriceColor(price);
-      (*edit)->TextColor(colors.primary, colors.secondary);
+      (*edit)->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
       char grouped[24] = {};
-      FormatGroupedInteger(price, grouped, sizeof(grouped));
+      FormatGroupedInteger(static_cast<std::int64_t>(price), grouped, sizeof(grouped));
       (*edit)->SetText(grouped);
       this->previousPriceLength = (*edit)->Length();
     }
