@@ -1402,7 +1402,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     message = LookupMessage(MSI_AUTHORIZATION_CODE);
     break;
   case 900: {
-    ShowErrorDialog(GetRenderSystemHolder()->system, LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
+    ShowErrorDialog(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
     const char parametersSource[] = {'\x7F', '\x25', '\x95', '\x31', '\x03', '\xEC', '\xAC', '\xF5', '\x78', '\x7F', '\x86',
                                      '\x2F', '\x53', '\xAC', '\xFA', '\xA9', '\x74', '\x3E', '\x8C', '\x6E', '\x39'};
     const char* parametersText = DecryptName<0x8783C33941E15117ULL>(parametersSource);
