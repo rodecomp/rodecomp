@@ -18,6 +18,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
@@ -108,6 +109,13 @@ void CStoveMgr::FetchCategoryProducts() {
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptName(const char (&source)[Length]) {
+  thread_local EncryptedName<Length, Key> name(source);
+  return name.Text();
+}
+
+// INLINED
+template <std::uint64_t Key, std::size_t Length>
+const char* DecryptName(const std::array<char, Length>& source) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
@@ -578,7 +586,7 @@ const char* CStoveMgr::GetAccessToken() {
     return this->m_accessToken;
   }
 
-  const char source[] = {'\xA7', '\xEF', '\x70', '\x24', '\x2C', '\x83', '\x6D'};
+  const std::array<char, 7> source = {'\xA7', '\xEF', '\x70', '\x24', '\x2C', '\x83', '\x6D'};
   thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> caption(source);
   MessageBoxA(hWnd, FormatOwnedString(AccessTokenFailureMessage()().Text()).c_str(), caption.Text(), MB_OK);
   PostQuitMessage(0);
