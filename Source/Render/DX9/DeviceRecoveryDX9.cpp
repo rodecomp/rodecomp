@@ -38,13 +38,12 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState() {
     }
 
     result = this->device->ResetEx(&this->presentation, this->presentation.Windowed == 1 ? nullptr : &this->displayMode);
-  } else if (FAILED(result) && lastReported != result) {
-    const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
-    ShowErrorDialog(message.c_str(), 0);
-    lastReported = result;
-    this->lastPresent = result;
-
-    return result;
+  } else if (FAILED(result)) {
+    if (lastReported != result) {
+      const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
+      ShowErrorDialog(message.c_str(), 0);
+      lastReported = result;
+    }
   }
 
   if (result == D3D_OK) {
