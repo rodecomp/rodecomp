@@ -10,6 +10,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Resource/MSGSTRINGID.h"
 #include <cerrno>
+#include <compare>
 #include <cstdint>
 #include <cstring>
 #include <crtdbg.h>
@@ -37,27 +38,26 @@ CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, con
 void CShowRankingScheduler::Process(const std::uint64_t& now) {
   if (*reinterpret_cast<const std::int16_t*>(this->rankingData) != 0) {
     const std::int64_t count = this->delay;
-    if (count > 0) {
-      const std::uint64_t due = static_cast<std::uint64_t>(count) * 10000ull + this->timestamp;
-      if (static_cast<std::int64_t>(due) <= static_cast<std::int64_t>(now)) {
+    if ((count <=> 0) > 0) {
+      const std::int64_t due = static_cast<std::int64_t>(this->timestamp) + count * 10000;
+      if ((due <=> static_cast<std::int64_t>(now)) <= 0) {
         this->Show();
       } else {
         bool complete = true;
         const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
         for (int index = 0; index < 10; ++index) {
-          const std::uint32_t id = ids[index];
-          if (id == 0) {
+          std::string name;
+          if (ids[index] == 0) {
             continue;
           }
-          std::string name;
-          for (std::uint32_t listed : this->rankingList) {
-            if (listed == id) {
+          for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
+            if (this->rankingList[listed] == ids[index]) {
               name = g_namelessName;
               break;
             }
           }
           if (name.find(g_namelessName) == std::string::npos) {
-            name = LookupPlayerName(id);
+            name = LookupPlayerName(ids[index]);
             if (name.empty()) {
               complete = false;
             }
