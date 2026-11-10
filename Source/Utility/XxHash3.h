@@ -43,8 +43,6 @@ static_assert(offsetof(XXH3_state_t, seed) == 0x0220);
 static_assert(offsetof(XXH3_state_t, reserved64) == 0x0228);
 static_assert(offsetof(XXH3_state_t, extSecret) == 0x0230);
 
-extern const unsigned char kSecret[192];
-
 std::uint32_t XXH_versionNumber();
 
 std::uint64_t XXH3_64bits(const void* data, std::size_t length);
