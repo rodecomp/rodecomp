@@ -626,13 +626,13 @@ bool RuneSetData::IsRewardStep(int step) const {
 // FUNCTION: fn_08151
 __declspec(noinline) bool CRuneSystemMgr::HasRequiredItems(int listId) {
   const auto found = this->m_itemLists.find(listId);
-  if (found == this->m_itemLists.end()) {
+  if (this->m_itemLists.end() == found) {
     return false;
   }
 
-  for (const std::pair<int, int>& entry : found->second) {
-    const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, entry.first, 0);
-    if (item.quantity < entry.second) {
+  for (std::vector<std::pair<int, int>>::iterator it = found->second.begin(); it != found->second.end(); ++it) {
+    const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 0);
+    if (it->second > item.quantity) {
       return false;
     }
   }
@@ -1035,10 +1035,10 @@ int AddRuneSetReward(lua_State* state) {
   }
 
   reward->values[0] = 1;
-  for (int index = -7; index < -1; ++index) {
-    const int itemId = static_cast<int>(lua_tonumber(state, index));
-    reward->values[index + 8] = itemId;
-    if (!lua_isnumber(state, index)) {
+  for (int index = 0; index < 7; ++index) {
+    const int itemId = static_cast<int>(lua_tonumber(state, index - 7));
+    reward->values[index + 1] = itemId;
+    if (!lua_isnumber(state, index - 7)) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, std::format("ErrData TagID:{} RuneSetID:{} itemID:{}", tagId, runeSetId, itemId).c_str());
       return 2;
