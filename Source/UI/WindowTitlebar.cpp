@@ -43,7 +43,7 @@ int UIWindow::DrawTitleBar(bool closeButton, const char* title, int width) {
 
   if (closeButton) {
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sys_base_off.bmp")));
-    this->DrawBitmap(3, 3, icon ? &icon->image : nullptr, true);
+    this->DrawBitmap(3, 3, icon, true);
   }
 
   return titleHeight;
