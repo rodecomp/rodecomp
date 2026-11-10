@@ -5377,7 +5377,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->illustWnd = window;
       window->SetSize(4, 4);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
-      this->rendered.insert(this->rendered.end(), window);
+      this->rendered.insert(this->rendered.begin(), window);
       this->illustWnd->renderLayer = 2;
       this->rendered.sort(layerGreater);
     } else {
@@ -5927,7 +5927,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_NOTIFYJOBLEVELUPWND:
     window = this->notifyJobLevelUpWnd;
     if (window == nullptr) {
-      window = new UINotifyJobLevelUpWnd();
+      window = new UINotifyJobLevelUpWnd;
       this->notifyJobLevelUpWnd = window;
       window->SetSize(43, 43);
       window->Move(0, g_renderer->viewport.height - 43);
@@ -6767,7 +6767,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     const int minY = rangeY / 2;
     window = this->secondPasswordEditWnd;
     if (window == nullptr) {
-      window = new UISecondPasswordEditWnd();
+      window = new UISecondPasswordEditWnd;
       this->secondPasswordEditWnd = window;
       window->SetSize(540, 365);
       int x;
