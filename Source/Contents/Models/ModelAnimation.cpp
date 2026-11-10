@@ -234,6 +234,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       if (static_cast<float>(keys[next].frame) > frame) {
         if (next == 0) {
           a = MatrixQuaternion(base);
+          a.frame = 0;
         } else {
           a = keys[next - 1];
         }
@@ -243,14 +244,28 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       }
     }
 
-    const float amount = b.frame != a.frame ? (frame - static_cast<float>(a.frame)) / static_cast<float>((b.frame - a.frame)) : 0.0f;
-    float dot = ((b.rotation[0] * a.rotation[0] + b.rotation[1] * a.rotation[1]) + b.rotation[2] * a.rotation[2]) + b.rotation[3] * a.rotation[3];
+    float amount = 0.0f;
+
+    if (b.frame != a.frame) {
+      amount = (frame - static_cast<float>(a.frame)) / static_cast<float>((b.frame - a.frame));
+    }
+
+    ModelRotationKey result{0, {0, 0, 0, 1}};
+    float ax = a.rotation[0];
+    float ay = a.rotation[1];
+    float az = a.rotation[2];
+    float aw = a.rotation[3];
+    float bx = b.rotation[0];
+    float by = b.rotation[1];
+    float bz = b.rotation[2];
+    float bw = b.rotation[3];
+    float dot = ((bx * ax + by * ay) + bz * az) + bw * aw;
 
     if (dot < 0.0f) {
-      for (float& value : a.rotation) {
-        value = -value;
-      }
-
+      ax = -ax;
+      ay = -ay;
+      az = -az;
+      aw = -aw;
       dot = -dot;
     }
 
@@ -258,29 +273,28 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     float secondWeight;
 
     if (dot > -0.95f) {
-      if (dot <= 0.95f) {
+      if (dot > 0.95f) {
+        firstWeight = 1.0f - amount;
+        secondWeight = amount;
+      } else {
         const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
         const float denominator = ClientSin(angle);
         firstWeight = ClientSin((1.0f - amount) * angle) / denominator;
         secondWeight = ClientSin(angle * amount) / denominator;
-      } else {
-        firstWeight = 1.0f - amount;
-        secondWeight = amount;
       }
     } else {
-      b.rotation[0] = -a.rotation[1];
-      b.rotation[1] = a.rotation[0];
-      b.rotation[2] = -a.rotation[3];
-      b.rotation[3] = a.rotation[2];
+      bx = -ay;
+      by = ax;
+      bz = -aw;
+      bw = az;
       firstWeight = ClientSin((0.5f - amount) * 3.141592f);
       secondWeight = ClientSin(amount * 3.141592f);
     }
 
-    ModelRotationKey result{0, {}};
-    result.rotation[0] = b.rotation[0] * secondWeight + firstWeight * a.rotation[0];
-    result.rotation[1] = b.rotation[1] * secondWeight + firstWeight * a.rotation[1];
-    result.rotation[2] = b.rotation[2] * secondWeight + a.rotation[2] * firstWeight;
-    result.rotation[3] = b.rotation[3] * secondWeight + a.rotation[3] * firstWeight;
+    result.rotation[0] = bx * secondWeight + firstWeight * ax;
+    result.rotation[1] = by * secondWeight + firstWeight * ay;
+    result.rotation[2] = bz * secondWeight + az * firstWeight;
+    result.rotation[3] = bw * secondWeight + aw * firstWeight;
     QuaternionMatrix(result, rotation);
   }
 
