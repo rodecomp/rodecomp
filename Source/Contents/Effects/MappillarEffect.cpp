@@ -1,6 +1,7 @@
 #include "Contents/Effects/MappillarEffect.h"
 
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -35,15 +36,15 @@ void CMappillarEffect::Open() {
       particle->alpha = 70;
       particle->SetColor(100, 100, 255);
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
       particle->angleParameter = 360;
       particle->speedParameter = 120.0f;
       particle->phaseParameter = 89;
-      baseAngle = static_cast<float>(particle->rowIndex * 90);
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(particle->rowIndex * 90);
       particle->scale = static_cast<float>(particle->rowIndex) * 0.5f + 11.0f;
       reinterpret_cast<int*>(&particle->animationParameter)[particle->rowIndex] = 0;
       particle->elapsedFrames = particle->rowIndex * 30;
 
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
       int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
       if (particle->columnIndex == 20) {
         angle = static_cast<int>(baseAngle);
@@ -55,7 +56,7 @@ void CMappillarEffect::Open() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
 
-      vector3d points[2] = {};
+      EffectPoint points[2];
       points[0].x = particle->scale * cosine;
       points[0].y = 0.0f;
       points[0].z = particle->scale * sine;
@@ -78,8 +79,12 @@ void CMappillarEffect::Open() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner = points[0];
-      this->lastOuter = points[1];
+      this->lastInner.x = points[0].x;
+      this->lastInner.y = points[0].y;
+      this->lastInner.z = points[0].z;
+      this->lastOuter.x = points[1].x;
+      this->lastOuter.y = points[1].y;
+      this->lastOuter.z = points[1].z;
       this->particles.push_back(particle);
     }
   }
@@ -95,23 +100,26 @@ bool CMappillarEffect::IsAlive() {
 // FUNCTION: fn_18958
 void CMappillarEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
       if (particle->rowIndex != 3 || particle->columnIndex != 21 || particle->elapsedFrames <= 999) {
         const int frame = particle->elapsedFrames;
         const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits) - static_cast<float>(frame));
         float height;
-        if (frame >= 800) {
+        if (frame < 800) {
+          if (frame < 200) {
+            height = 0.0f;
+          } else if (frame > 290) {
+            height = particle->speedParameter;
+          } else {
+            height = g_sinTable[frame - 200] * particle->speedParameter;
+          }
+        } else {
           particle->speedParameter = std::max(0.0f, particle->speedParameter - 1.0f);
           height = particle->speedParameter;
-        } else if (frame < 200) {
-          height = 0.0f;
-        } else if (frame > 290) {
-          height = particle->speedParameter;
-        } else {
-          height = g_sinTable[frame - 200] * particle->speedParameter;
         }
 
         particle->animationParameter = height;
@@ -130,7 +138,7 @@ void CMappillarEffect::OnProcess() {
         particle->transform = rotation;
       }
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 
