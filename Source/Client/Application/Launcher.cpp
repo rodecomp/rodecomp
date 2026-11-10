@@ -1349,7 +1349,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::pair<bool, std::string>(false, std::string(AdventurerAgencyCreateInstanceName()().Text()));
   }
 
-  if (!UIRequestJoinPartyMgr::Initialize(g_windowMgr)) {
+  if (!UIRequestJoinPartyMgr::Initialize()) {
     return std::pair<bool, std::string>(false, std::string(RequestJoinPartyCreateInstanceName()().Text()));
   }
 

@@ -5,8 +5,6 @@
 #include <cstdint>
 #include <list>
 
-#include "UI/Window/WindowManagerWindows.h"
-
 struct PartyJoinRequest {
   /* 0000 */ char name[24];
   /* 0018 */ std::uint32_t characterId;
@@ -18,9 +16,9 @@ static_assert(sizeof(PartyJoinRequest) == 36);
 
 class UIRequestJoinPartyMgr {
 public:
-  explicit UIRequestJoinPartyMgr(WindowManagerWindows& windows);
+  UIRequestJoinPartyMgr();
   virtual ~UIRequestJoinPartyMgr();
-  static bool Initialize(WindowManagerWindows& windows);
+  static bool Initialize();
   static void Shutdown();
   void Add(std::uint32_t accountId, std::uint32_t characterId, const char* name, std::int16_t job, std::int16_t level);
   void Advance();
@@ -30,7 +28,6 @@ private:
   /* 0004 */ bool m_enabled;
   /* 0008 */ std::list<PartyJoinRequest> m_pending;
   /* 0010 */ std::list<std::uint32_t> m_blocked;
-  WindowManagerWindows* m_windows;
 };
 
 extern UIRequestJoinPartyMgr* g_requestJoinPartyMgr;
@@ -45,7 +42,7 @@ static_assert(offsetof(PartyJoinRequest, characterId) == 0x18);
 static_assert(offsetof(PartyJoinRequest, accountId) == 0x1C);
 static_assert(offsetof(PartyJoinRequest, level) == 0x20);
 static_assert(offsetof(PartyJoinRequest, job) == 0x22);
-static_assert(sizeof(UIRequestJoinPartyMgr) == 28);
+static_assert(sizeof(UIRequestJoinPartyMgr) == 0x18);
 #endif
 
 #endif

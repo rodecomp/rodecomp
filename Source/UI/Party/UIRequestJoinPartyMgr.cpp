@@ -2,7 +2,8 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -14,7 +15,8 @@ UIRequestJoinPartyMgr* g_requestJoinPartyMgr;
 
 // OFFSET: 0x007BAF90
 // FUNCTION: fn_09279
-UIRequestJoinPartyMgr::UIRequestJoinPartyMgr(WindowManagerWindows& windows) : m_enabled(true), m_windows(&windows) {
+UIRequestJoinPartyMgr::UIRequestJoinPartyMgr() {
+  this->m_enabled = true;
 }
 
 // OFFSET: 0x007BB470
@@ -23,12 +25,12 @@ UIRequestJoinPartyMgr::~UIRequestJoinPartyMgr() = default;
 
 // OFFSET: 0x007BBD50
 // FUNCTION: fn_09291
-bool UIRequestJoinPartyMgr::Initialize(WindowManagerWindows& windows) {
+bool UIRequestJoinPartyMgr::Initialize() {
   if (g_requestJoinPartyMgr) {
     return false;
   }
 
-  g_requestJoinPartyMgr = new (std::nothrow) UIRequestJoinPartyMgr(windows);
+  g_requestJoinPartyMgr = new (std::nothrow) UIRequestJoinPartyMgr();
 
   if (!g_requestJoinPartyMgr) {
     return false;
@@ -62,15 +64,15 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
   PartyJoinRequest request;
   request.accountId = accountId;
   request.characterId = characterId;
-  _snprintf_s(request.name, sizeof(request.name), _TRUNCATE, "%s", name);
+  StringFormat(request.name, sizeof(request.name), _TRUNCATE, "%s", name);
   request.job = job;
   request.level = level;
 
-  if (this->m_windows->LookupWindow(WID_REQUESTJOINPARTYWND)) {
-    this->m_pending.push_back(request);
-  } else {
-    UIWindow* window = this->m_windows->EnsureWindow(WID_REQUESTJOINPARTYWND);
+  if (!g_windowMgr.LookupWindow(WID_REQUESTJOINPARTYWND)) {
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_REQUESTJOINPARTYWND);
     window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+  } else {
+    this->m_pending.push_back(request);
   }
 }
 
@@ -78,29 +80,26 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
 // FUNCTION: fn_09297
 void UIRequestJoinPartyMgr::Advance() {
   if (this->m_pending.empty()) {
-    this->m_windows->CloseWindow(WID_REQUESTJOINPARTYWND);
+    g_windowMgr.CloseWindow(WID_REQUESTJOINPARTYWND);
   }
 
-  while (!this->m_pending.empty()) {
-    UIWindow* window = this->m_windows->LookupWindow(WID_REQUESTJOINPARTYWND);
+  const std::list<PartyJoinRequest>::iterator first = this->m_pending.begin();
+  if (first == this->m_pending.end()) {
+    return;
+  }
 
-    if (!window) {
-      return;
-    }
+  UIWindow* window = g_windowMgr.LookupWindow(WID_REQUESTJOINPARTYWND);
+  if (!window) {
+    return;
+  }
 
-    const PartyJoinRequest request = this->m_pending.front();
-    const bool blocked = std::find(this->m_blocked.begin(), this->m_blocked.end(), request.accountId) != this->m_blocked.end();
-
-    if (!blocked) {
-      window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-      this->m_pending.pop_front();
-      return;
-    }
-
+  PartyJoinRequest request = *first;
+  if (std::find(this->m_blocked.begin(), this->m_blocked.end(), request.accountId) != this->m_blocked.end()) {
     this->m_pending.pop_front();
-
-    if (this->m_pending.empty()) {
-      this->m_windows->CloseWindow(WID_REQUESTJOINPARTYWND);
-    }
+    this->Advance();
+    return;
   }
+
+  window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+  this->m_pending.pop_front();
 }
