@@ -1318,25 +1318,25 @@ void CUITitleBar::Resize(int width, int height) {
 // FUNCTION: fn_14698
 void CUITitleBar::Paint() {
   if (this->resizable) {
-    const int end = this->geometry.width - (this->right ? this->right->image.width : 0);
     int x = 0;
+    const int end = this->geometry.width - (this->right ? this->right->image.width : 0);
     if (this->left) {
-      this->DrawBitmap(0, 0, &this->left->image, false);
+      this->DrawBitmap(0, 0, this->left, false);
       x = this->left->image.width;
     }
 
     if (this->middle) {
       while (x < end) {
-        this->DrawBitmap(x, 0, &this->middle->image, false);
+        this->DrawBitmap(x, 0, this->middle, false);
         x += this->middle->image.width;
       }
     }
 
     if (this->right) {
-      this->DrawBitmap(this->geometry.width - this->right->image.width, 0, &this->right->image, false);
+      this->DrawBitmap(this->geometry.width - this->right->image.width, 0, this->right, false);
     }
   } else if (this->middle) {
-    this->DrawBitmap(0, 0, &this->middle->image, false);
+    this->DrawBitmap(0, 0, this->middle, false);
   }
 }
 
@@ -3634,7 +3634,7 @@ void CUIListItem::Paint() {
       break;
     }
   } else {
-    this->DrawBitmap(0, 0, &this->images[this->selected]->image, false);
+    this->DrawBitmap(0, 0, this->images[this->selected], false);
   }
 }
 
