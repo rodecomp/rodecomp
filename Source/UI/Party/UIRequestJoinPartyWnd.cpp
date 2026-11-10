@@ -23,6 +23,12 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 
+// INLINED
+static void SetViewerBackground(UITextViewer* viewer, std::uint32_t color) {
+  viewer->backgroundColor = color;
+  viewer->Invalidate();
+}
+
 // OFFSET: 0x007BB030
 // FUNCTION: fn_09280
 UIRequestJoinPartyWnd::UIRequestJoinPartyWnd()
@@ -37,9 +43,9 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->icon = new UIBitmapButton();
   this->icon->SetSize(25, 25);
 
-  for (int state = 0; state < 3; ++state) {
-    this->icon->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", state, 0);
-  }
+  this->icon->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 0, 0);
+  this->icon->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 1, 0);
+  this->icon->SetBitmap("유저인터페이스\\renewalparty\\icon_jobs_4046.bmp", 2, 0);
 
   this->icon->Move(12, 29);
   this->AddChild(this->icon);
@@ -65,8 +71,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->m_message0 = 541;
   this->details = new UITextViewer();
   this->details->Configure(43, 20, 167, 60, 0);
-  this->details->backgroundColor = 0xFFFFFFFFu;
-  this->details->Invalidate();
+  SetViewerBackground(this->details, 0xFFFFFFFFu);
   this->AddChild(this->details);
 
   this->block = new UICheckBox();
@@ -81,8 +86,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
 
   this->blockText = new UITextViewer();
   this->blockText->Configure(31, 81, 182, 47, 0);
-  this->blockText->backgroundColor = 0xFFD7C6BCu;
-  this->blockText->Invalidate();
+  SetViewerBackground(this->blockText, 0xFFD7C6BCu);
   this->AddChild(this->blockText);
   this->blockText->lineHeight = 15;
   this->blockText->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_OBJALPHA)), 30, 0, 0);
@@ -92,7 +96,8 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
 // OFFSET: 0x007BFC20
 // FUNCTION: fn_09306
 void UIRequestJoinPartyWnd::Paint() {
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_admit.bmp"))), false);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_admit.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_ASSIST), 0);
 }
 
@@ -131,9 +136,9 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     char path[500] = {};
     _snprintf_s(path, sizeof(path), _TRUNCATE, "유저인터페이스\\renewalparty\\icon_jobs_%lu.bmp", this->job);
 
-    for (int state = 0; state < 3; ++state) {
-      this->icon->SetBitmap(path, state, 0);
-    }
+    this->icon->SetBitmap(path, 0, 0);
+    this->icon->SetBitmap(path, 1, 0);
+    this->icon->SetBitmap(path, 2, 0);
 
     const std::string jobName = g_session.GetJobName(this->job, -1);
     this->icon->SetTooltip(jobName.c_str());
@@ -146,7 +151,11 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     char messageText[1024] = {};
     _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(MSI_EXIT), request.name);
     this->details->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
-    this->details->Move(43, this->details->lines.size() == 3 ? 20 : 30);
+    if (this->details->lines.size() == 3) {
+      this->details->Move(43, 20);
+    } else {
+      this->details->Move(43, 30);
+    }
     this->InvalidateChildren();
 
     return 0;
