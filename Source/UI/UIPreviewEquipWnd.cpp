@@ -65,14 +65,13 @@ void UIPreviewEquipWnd::DrawCharacter() {
     static_cast<float>(this->geometry.height) + this->m_render->viewportOffsetY
   );
 
-  FuncDrawWNDChar drawer(
+  FuncDrawWNDChar(
     this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(this->m_render->appearance[0]),
     static_cast<short>(this->m_render->job), this->m_render->headJob, static_cast<short>(this->m_render->bodyCostume),
     static_cast<short>(this->m_render->appearance[1]), static_cast<short>(this->m_render->lowerHeadgear), static_cast<short>(this->m_render->upperHeadgear),
     static_cast<short>(this->m_render->middleHeadgear), this->m_render->robe, this->m_render->riding, this->m_render->madogearType, this->m_render->appearance[2],
     this->m_render->appearance[3], this->m_render->actionIndex, this->m_render->frameIndex, 0
-  );
-  drawer.Draw(1);
+  ).Draw(1);
 }
 
 // OFFSET: 0x007F38A0
