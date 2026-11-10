@@ -26,7 +26,9 @@ struct LexiconSerializer {
   }
   // INLINED
   ~LexiconSerializer() {
-    delete this->buffer;
+    if (this->buffer != nullptr) {
+      delete this->buffer;
+    }
     this->Destroy(this->root);
   }
 
