@@ -371,7 +371,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   if (g_kafraServiceMapList.find(std::string(record->name)) != g_kafraServiceMapList.end()) {
     WorldViewRecord* current = this->selectedRecord;
     if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
-      const MiniMapPosition& offset = g_exceptionMiniMapPosList[current->name];
+      const MiniMapPosition offset = g_exceptionMiniMapPosList[current->name];
       current->left = static_cast<int>(static_cast<float>(current->left) + offset.x);
       current->top = static_cast<int>(static_cast<float>(current->top) + offset.y);
       current->right = static_cast<int>(static_cast<float>(current->right) + offset.x);
@@ -388,11 +388,13 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   record = this->selectedRecord;
   int x = record->right + 10;
+  int y = record->top + 10;
   if (x + 130 > g_renderer->viewport.width) {
     x = record->left - 140;
   }
-
-  const int y = record->top + 140 <= g_renderer->viewport.height ? record->top + 10 : g_renderer->viewport.height - 130;
+  if (y + 130 > g_renderer->viewport.height) {
+    y = g_renderer->viewport.height - 130;
+  }
 
   WorldViewArea* previous = reinterpret_cast<WorldViewArea*>(this->previewArea);
   this->previewArea = reinterpret_cast<int*>(new WorldViewArea{x, y, x + 130, y + 130, 1});
