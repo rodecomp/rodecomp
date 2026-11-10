@@ -92,17 +92,27 @@ void UIWindowMgr::DestroyBackgroundSurface() {
 // OFFSET: 0x00A8FB80
 // FUNCTION: fn_17147
 void UIWindowMgr::SubmitActiveDialog() {
-  UIWindow* window = this->choose3Wnd;
-  if (window || (window = this->sayDialogWnd) != nullptr || (window = this->sayDialogOverlayWnd) != nullptr || (window = this->comboBoxWnd) != nullptr ||
-      (window = this->comboBoxIDWnd) != nullptr || (window = this->chooseWarpWnd) != nullptr || (window = this->makeTargetListWnd) != nullptr ||
-      (window = this->hoverWindow) != nullptr) {
-    window->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return;
-  }
-
-  for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
-    if ((*entry)->IsFrameWnd()) {
-      (*entry)->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  if (this->choose3Wnd) {
+    this->choose3Wnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->sayDialogWnd) {
+    this->sayDialogWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->sayDialogOverlayWnd) {
+    this->sayDialogOverlayWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->comboBoxWnd) {
+    this->comboBoxWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->comboBoxIDWnd) {
+    this->comboBoxIDWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->chooseWarpWnd) {
+    this->chooseWarpWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->makeTargetListWnd) {
+    this->makeTargetListWnd->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else if (this->hoverWindow) {
+    this->hoverWindow->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+  } else {
+    for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
+      if ((*entry)->IsFrameWnd()) {
+        (*entry)->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+      }
     }
   }
 }
