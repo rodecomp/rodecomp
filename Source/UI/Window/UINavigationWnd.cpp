@@ -833,7 +833,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
   case UM_RESIZE:
     if (argument1 == 7) {
-      const int height = (std::min)((std::max)(static_cast<int>(argument3), 0x152), 0x152);
+      const int height = (std::min)(std::ranges::max(static_cast<int>(argument3), 0x152), 0x152);
       this->m_saved->height = height;
       this->ApplyMinimized();
     }
