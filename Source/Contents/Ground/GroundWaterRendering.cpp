@@ -2,7 +2,7 @@
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
-#include "Contents/Effects/EffectPrim.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"

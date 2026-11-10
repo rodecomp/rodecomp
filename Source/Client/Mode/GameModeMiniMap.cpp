@@ -3,7 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Session.h"
-#include "Contents/TownInfoMgr.h"
+#include "Contents/Map/TownInfoMgr.h"
 #include "File/File.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"

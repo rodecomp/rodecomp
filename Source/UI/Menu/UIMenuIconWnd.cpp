@@ -9,9 +9,9 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
-#include "Contents/EntryQueueMgr.h"
-#include "Contents/GuildMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/EntryQueue/EntryQueueMgr.h"
+#include "Contents/Guild/GuildMgr.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
-#include "Contents/GuildInfo.h"
+#include "Contents/Guild/GuildInfo.h"
 
 #include "Resource/MSGSTRINGID.h"
 #pragma pack(push, 1)

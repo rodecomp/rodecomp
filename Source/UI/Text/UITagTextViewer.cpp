@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/CreateLineInfo.h"

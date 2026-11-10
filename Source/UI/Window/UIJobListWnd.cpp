@@ -2,7 +2,7 @@
 #include "UI/Window/UIJobListWnd.h"
 #include "UI/Window/UIEnums.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"

@@ -5,7 +5,7 @@
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/ClientMessenger.h"
-#include "Contents/PetEvolutionMgr.h"
+#include "Contents/Pet/PetEvolutionMgr.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 

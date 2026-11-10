@@ -1,7 +1,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "File/ResourcePath.h"
 #include "Resource/TextureNames.h"

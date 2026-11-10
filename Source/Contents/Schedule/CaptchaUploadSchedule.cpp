@@ -1,6 +1,6 @@
 #include "Contents/Schedule/CaptchaUploadSchedule.h"
 
-#include "Contents/ShowRankingScheduler.h"
+#include "Contents/Events/ShowRankingScheduler.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 

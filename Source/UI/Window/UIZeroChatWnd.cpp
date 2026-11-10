@@ -1,5 +1,5 @@
 #include "UI/Window/UIBalloonOpenBtn.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Guild/UIGuild_Storage_Log.h"

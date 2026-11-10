@@ -3,7 +3,7 @@
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Replay.h"
 #include "UI/Buttons/UIButton.h"

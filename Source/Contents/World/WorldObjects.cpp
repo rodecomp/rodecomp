@@ -12,13 +12,13 @@
 #include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/World/World.h"
-#include "Contents/Effects/ArrowEffect.h"
-#include "Contents/Effects/EffectLists.h"
-#include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/Skills/ArrowEffect.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Actors/ActorStateFlags.h"
-#include "Contents/CashEmotionMgr.h"
-#include "Contents/Effects/MandraAttackEffect.h"
-#include "Contents/Effects/MsgEffect.h"
+#include "Contents/CashEmotion/CashEmotionMgr.h"
+#include "Contents/Effects/Skills/MandraAttackEffect.h"
+#include "Contents/Effects/Core/MsgEffect.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "UI/Window/UIEmblemWnd.h"
@@ -37,13 +37,13 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "File/ShortcutFilename.h"
-#include "Contents/ClanInfo.h"
-#include "Contents/ForbiddenWords.h"
+#include "Contents/Clan/ClanInfo.h"
+#include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Text/UINameBalloonText.h"
 
@@ -55,7 +55,7 @@
 #include <new>
 #include <string>
 #include <vector>
-#include "Contents/GuildInfo.h"
+#include "Contents/Guild/GuildInfo.h"
 
 #include "Resource/MSGSTRINGID.h"
 // GLOBAL: gl_24371

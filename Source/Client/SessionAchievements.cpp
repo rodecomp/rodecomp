@@ -1,11 +1,11 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Session.h"
-#include "Contents/AchievementMgr.h"
+#include "Contents/Achievement/AchievementMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"

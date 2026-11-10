@@ -1,8 +1,8 @@
 #include "Contents/Actors/GameActor.h"
-#include "Contents/EffectResourceSwitcher.h"
-#include "Contents/Effects/Effect.h"
-#include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectResourceSwitcher.h"
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/Vector3d.h"
 

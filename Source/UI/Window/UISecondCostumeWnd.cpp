@@ -8,7 +8,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "UI/Window/FuncDrawWNDChar.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIListBoxNavi.h"

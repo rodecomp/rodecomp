@@ -1,4 +1,4 @@
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"

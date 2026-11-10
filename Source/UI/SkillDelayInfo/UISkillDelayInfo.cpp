@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Script/LuaScript.h"

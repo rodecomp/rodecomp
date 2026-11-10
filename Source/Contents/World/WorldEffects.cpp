@@ -3,8 +3,8 @@
 #include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
-#include "Contents/Effects/EffectLists.h"
-#include "Contents/Effects/EffectMaker.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/EffectMaker.h"
 #include "Contents/Sound/SoundConfiguration.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "Resource/ResourceMgr.h"

@@ -1,6 +1,6 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"

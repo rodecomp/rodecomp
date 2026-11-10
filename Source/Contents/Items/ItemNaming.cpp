@@ -4,8 +4,8 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Utility/Text/FormatString.h"
-#include "Contents/MessageTable.h"
-#include "Contents/PlayerNameDictionary.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Actors/PlayerNameDictionary.h"
 
 #include <cstdlib>
 #include <cstring>

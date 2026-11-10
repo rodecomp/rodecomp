@@ -15,7 +15,7 @@
 #include <cmath>
 #include <cstring>
 #include <functional>
-#include "Contents/GuildInfo.h"
+#include "Contents/Guild/GuildInfo.h"
 
 #pragma pack(push, 1)
 struct PACKET_CZ_APPROXIMATE_ACTOR {

@@ -4,7 +4,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/NavigationManager.h"
+#include "Contents/Navigation/NavigationManager.h"
 #include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Contents/Items/ItemInfo.h"

@@ -1,0 +1,33 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_FRIGGSONGEFFECT_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_FRIGGSONGEFFECT_H
+
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectPoint.h"
+#include "Utility/Math/Vector3d.h"
+
+#include <cstddef>
+#include <vector>
+
+class CParticle;
+
+class CFriggSongEffect : public CEffect {
+public:
+  CFriggSongEffect();
+
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  void Close() override;
+  bool IsAlive() override;
+  void InitEvents() override;
+
+  /* 00CC */ EffectPoint lastInner[2];
+  /* 00E4 */ std::vector<CParticle*> particles;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CFriggSongEffect) == 0xF0);
+static_assert(offsetof(CFriggSongEffect, particles) == 0xE4);
+#endif
+
+#endif

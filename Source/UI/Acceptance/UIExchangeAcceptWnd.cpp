@@ -6,7 +6,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Replay.h"
 #include "Contents/UserData/NormalItemSlots.h"

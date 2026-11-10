@@ -9,7 +9,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Script/LuaScript.h"

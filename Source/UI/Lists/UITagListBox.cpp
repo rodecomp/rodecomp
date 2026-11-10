@@ -5,7 +5,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/NavigationManager.h"
+#include "Contents/Navigation/NavigationManager.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UITagButton.h"
 #include "UI/Lists/UIScrollBar.h"

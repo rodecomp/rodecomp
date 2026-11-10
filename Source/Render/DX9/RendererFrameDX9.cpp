@@ -1,4 +1,4 @@
-#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/Core/EffectLists.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/LightmappedPrimitive.h"

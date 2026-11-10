@@ -2,7 +2,7 @@
 #include "Client/Input/InputCharset.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/Language.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"

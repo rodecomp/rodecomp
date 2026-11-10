@@ -9,7 +9,7 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"

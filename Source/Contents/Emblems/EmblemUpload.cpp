@@ -1,5 +1,5 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"

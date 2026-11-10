@@ -1,0 +1,165 @@
+#include "Contents/Effects/Primitives/EffectPrim.h"
+#include "Contents/Effects/Core/RagEffect.h"
+
+#include <cstring>
+
+// INLINED
+__forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
+  this->textures = nullptr;
+  this->playWaveType = 0;
+  this->playWaveName = 0;
+  this->type = 0;
+  this->count = 0;
+  this->pattern = 0;
+  this->renderFlag = 1;
+  this->changeFlags.x = 0;
+  this->changeFlags.y = 0;
+  this->changeFlags.z = 0;
+  this->chRadiSpeed = 0;
+  this->isDisappear = 0;
+  this->changePointReached = 0;
+  this->master = nullptr;
+  this->chCnt = 0;
+  this->colorCycleIndex = 0;
+  this->stateCnt = 0;
+  this->radius = 0;
+  this->minRadius = 0;
+  this->arcAngle = 36.0f;
+  render.angle = 0;
+  this->validAngle = 180;
+  this->size = 1.0f;
+  this->innerSize = 0;
+  this->outerSize = 0;
+  this->widthSize = 0.0f;
+  this->heightSize = 0.0f;
+  this->maxHeightSize = 100.0f;
+  this->speed = 0.0f;
+  this->sizeSpeed = 0.0f;
+  this->radiusSpeed = 0.0f;
+  this->outerSpeed = 0;
+  this->innerSpeed = 0;
+  this->longSpeed = 0;
+  this->latiSpeed = 0;
+  this->rollSpeed = 0;
+  this->widthSpeed = 0.0f;
+  this->heightSpeed = 0.0f;
+  this->alphaSpeed = 0.0f;
+  this->gravSpeed = 0;
+  this->accel = 0.0f;
+  this->sizeAccel = 0;
+  this->radiusAccel = 0.0f;
+  this->gravAccel = 0;
+  this->longAccel = 0;
+  this->latiAccel = 0;
+  this->rollAccel = 0;
+  this->outerAccel = 0;
+  this->innerAccel = 0;
+  this->widthAccel = 0;
+  this->heightAccel = 0;
+  this->red = 255;
+  this->green = 255;
+  this->blue = 255;
+  this->redSpeed = 0;
+  this->greenSpeed = 0;
+  this->blueSpeed = 0;
+  this->changePoint = -1;
+  this->changeWidthSpeed = 0.0001f;
+  this->changeHeightSpeed = 0.0001f;
+  this->changeSpeed = 0.0001f;
+  this->changeSpeed3d.x = 0;
+  this->changeSpeed3d.y = 0;
+  this->changeSpeed3d.z = 0;
+  this->changeAccel3d.x = 0;
+  this->changeAccel3d.y = 0;
+  this->changeAccel3d.z = 0;
+  this->changeWidthAccel = 0.0001f;
+  this->changeHeightAccel = 0.0001f;
+  this->changeAccel = 0.0001f;
+  this->RGBCycleCnt = 0;
+  this->RGBCycleDelay = 0;
+  this->commonPattern = 0;
+  this->longitude = 0;
+  this->latitude = 0;
+  this->roll = 0.0f;
+  this->duration = 100;
+  this->fadeInCnt = -1;
+  this->fadeOutCnt = -1;
+  this->argb = -1;
+  this->alpha = 254.0f;
+  this->alphaDelta = 1.0f;
+  this->maxAlpha = 254.0f;
+  this->minAlpha = 0;
+  this->repeatAnim = 1;
+  this->numSegment = 1;
+  this->animSpeed = 4;
+  render.previousAnimation = 0;
+  render.curMotion = 0;
+  this->totalTexture = 1;
+  this->v1 = 0;
+  this->u1Bits = 0;
+  this->v2 = 1.0f;
+  this->u2 = 1.0f;
+  this->useRenderFlag[0] = 0;
+  this->spriteLiftLow = 0;
+  this->spriteLiftHigh = 0;
+
+  this->speed3d = {};
+  this->orgPos = {};
+  this->deltaPos = {};
+  this->deltaPos2 = {};
+  this->deltaPos3 = {};
+  this->deltaPosAccel = {};
+
+  for (vector3d& corner : this->segPos) {
+    corner = {};
+  }
+
+  for (EffectPrimitiveRecord& record : this->records) {
+    record.position = {};
+
+    for (vector3d& corner : record.corners) {
+      corner = {};
+    }
+  }
+
+  for (RenderTriangle& triangle : this->triangles) {
+    for (RenderVertex& vertex : triangle.vertices) {
+      vertex = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+    }
+  }
+
+  std::memcpy(this->transform, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(this->rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memset(this->slots, 0, sizeof(this->slots));
+}
+
+// OFFSET: 0x00BAD940
+// FUNCTION: fn_19761
+CEffectPrim::CEffectPrim() : CRenderObject(), state(this->render) {
+}
+
+// OFFSET: 0x00BE6FC0
+// FUNCTION: fn_19930
+void CEffectPrim::HandleMasterMessage(CGameObject*, int message, int a, int, int, int, int, int, int) {
+  if (message == 0x18 && a == 0) {
+    this->state.master = nullptr;
+  }
+}
+
+// OFFSET: 0x00C1DE70
+// FUNCTION: fn_20076
+CEffectPrim* CreateEffectParticle(
+  CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
+  std::list<CRenderObject*>& worldObjects
+) {
+  auto* particle = new CEffectPrim();
+  if (!particle) {
+    return nullptr;
+  }
+
+  particle->Initialize(master, type, x, y, z);
+  master.state.primList.push_back(&particle->state);
+  worldObjects.push_back(particle);
+
+  return particle;
+}

@@ -1,8 +1,8 @@
 #include "UI/Quest/UIRecommendedQuestInfo.h"
 #include "UI/Window/WindowId.h"
 
-#include "Contents/MessageTable.h"
-#include "Contents/RenewQuestMgr.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Quest/RenewQuestMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"

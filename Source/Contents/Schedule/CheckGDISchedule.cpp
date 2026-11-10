@@ -3,8 +3,8 @@
 
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
-#include "Contents/ShowRankingScheduler.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Events/ShowRankingScheduler.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
 #include "UI/Window/UIWindowMgr.h"

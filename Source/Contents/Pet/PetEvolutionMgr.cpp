@@ -1,0 +1,237 @@
+#include "Contents/Pet/PetEvolutionMgr.h"
+#include "Client/Session.h"
+#include "Script/NLuaState.h"
+#include "Utility/Text/FormatString.h"
+
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+}
+
+#include <new>
+#include <string>
+#include <utility>
+#include <vector>
+#include <windows.h>
+
+// GLOBAL: gl_24877
+CPetEvolutionMgr* g_petEvolutionMgr;
+
+// OFFSET: 0x00672C20
+// FUNCTION: fn_05367
+bool CPetEvolutionMgr::Create() {
+  if (g_petEvolutionMgr != nullptr) {
+    return false;
+  }
+
+  g_petEvolutionMgr = new (std::nothrow) CPetEvolutionMgr();
+  if (g_petEvolutionMgr == nullptr) {
+    return false;
+  }
+
+  if (!g_petEvolutionMgr->m_isValid) {
+    delete g_petEvolutionMgr;
+    g_petEvolutionMgr = nullptr;
+    return false;
+  }
+
+  if (!g_petEvolutionMgr->Load()) {
+    if (g_petEvolutionMgr != nullptr) {
+      delete g_petEvolutionMgr;
+    }
+    g_petEvolutionMgr = nullptr;
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00672D70
+// FUNCTION: fn_05368
+void CPetEvolutionMgr::Destroy() {
+  if (g_petEvolutionMgr != nullptr) {
+    delete g_petEvolutionMgr;
+    g_petEvolutionMgr = nullptr;
+  }
+}
+
+// OFFSET: 0x00672D90
+// FUNCTION: fn_05369
+std::pair<bool, std::vector<int>> CPetEvolutionMgr::GetEvolutionTargets(int petEgg) {
+  std::vector<int> targets;
+  const auto found = this->m_recipes.find(petEgg);
+  if (found == this->m_recipes.end()) {
+    return std::make_pair(false, std::vector<int>());
+  }
+
+  for (const PetEvolutionRecipe& recipe : found->second) {
+    targets.push_back(recipe.target);
+  }
+  return std::make_pair(true, targets);
+}
+
+// OFFSET: 0x00672FC0
+// FUNCTION: fn_05370
+std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials(int petEgg, int target) {
+  std::vector<std::pair<int, int>> materials;
+  const auto found = this->m_recipes.find(petEgg);
+  if (found == this->m_recipes.end()) {
+    return std::make_pair(false, std::vector<std::pair<int, int>>());
+  }
+
+  for (const PetEvolutionRecipe& recipe : found->second) {
+    if (recipe.target == target) {
+      for (std::pair<int, int> material : recipe.materials) {
+        materials.push_back(material);
+      }
+      return std::make_pair(true, materials);
+    }
+  }
+
+  return std::make_pair(false, std::vector<std::pair<int, int>>());
+}
+
+// OFFSET: 0x00673260
+// FUNCTION: fn_05371
+bool CPetEvolutionMgr::Load() {
+  NLuaState lua;
+  if (lua.IsValid()) {
+    luaL_openlibs(lua.GetState());
+    lua_register(lua.GetState(), "InsertEvolutionRecipeLGU", CPetEvolutionMgr::L_InsertEvolutionRecipeLGU);
+    lua_register(lua.GetState(), "InsertPetAutoFeeding", CPetEvolutionMgr::L_InsertPetAutoFeeding);
+    if (luaL_loadfile(lua.GetState(), "system\\PetEvolutionCln_true.lub") != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
+    } else {
+      lua_getglobal(lua.GetState(), "main");
+      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
+      } else if (!lua_isstring(lua.GetState(), -1)) {
+        MessageBoxA(nullptr, "second return value is not string...", "CPetEvolutionMgr", 0);
+      } else {
+        if (lua_toboolean(lua.GetState(), -2)) {
+          return true;
+        }
+        MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CPetEvolutionMgr", 0);
+      }
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x006733E0
+// FUNCTION: fn_05372
+std::pair<bool, std::string> CPetEvolutionMgr::InsertPetAutoFeeding(int petEgg) {
+  auto it = std::find(this->m_autoFeeding.begin(), this->m_autoFeeding.end(), petEgg);
+
+  if (it != this->m_autoFeeding.end()) {
+    return std::make_pair(true, "PetEggITID already exist in AutoFeedingPetList");
+  }
+
+  this->m_autoFeeding.push_back(petEgg);
+  return std::make_pair(true, "good");
+}
+
+// OFFSET: 0x006734C0
+// FUNCTION: fn_05373
+std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int target, int material, int count) {
+  std::vector<PetEvolutionRecipe>& recipes = this->m_recipes[petEgg];
+  for (auto it = recipes.begin(); it != recipes.end(); ++it) {
+    if (it->target == target) {
+      for (auto entry = it->materials.begin(); entry != it->materials.end(); ++entry) {
+        if (entry->first == material) {
+          return std::make_pair(false, "duplicate material ITID");
+        }
+      }
+
+      it->materials.push_back(std::make_pair(material, count));
+      return std::make_pair(true, "good");
+    }
+  }
+
+  PetEvolutionRecipe recipe;
+  recipe.target = target;
+  recipe.materials.push_back(std::make_pair(material, count));
+  recipes.push_back(std::move(recipe));
+  return std::make_pair(true, "good");
+}
+
+// OFFSET: 0x006737C0
+// FUNCTION: fn_05374
+bool CPetEvolutionMgr::IsAutoFeeding(int petEgg) {
+  auto it = std::find(this->m_autoFeeding.begin(), this->m_autoFeeding.end(), petEgg);
+  if (it != this->m_autoFeeding.end()) {
+    return true;
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00673C50
+// FUNCTION: fn_05385
+int CPetEvolutionMgr::L_InsertEvolutionRecipeLGU(lua_State* state) {
+  if (!lua_isnumber(state, -4)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1st is must number");
+  } else if (!lua_isnumber(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2nd is must number");
+  } else if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 4th is must number");
+  } else {
+    const int petEgg = static_cast<int>(lua_tonumber(state, -4));
+    const int target = static_cast<int>(lua_tonumber(state, -3));
+    const double material = lua_tonumber(state, -2);
+    const int count = static_cast<int>(lua_tonumber(state, -1));
+    if (!g_session.IsPetEgg(petEgg)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("PetEgg Item %d not found or not petegg", petEgg));
+    } else if (!g_session.IsPetEgg(target)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("Revolutuion PetEgg Item %d not found or not petegg", target));
+    } else if (count <= 0) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("Material Item Cnt %d Error", count));
+    } else {
+      const std::pair<bool, std::string> result = g_petEvolutionMgr->InsertRecipe(petEgg, target, static_cast<int>(material), count);
+      if (!result.first) {
+        lua_pushboolean(state, 0);
+        lua_pushstring(state, FormatString("InsertRecipe : %s", result.second.c_str()));
+      } else {
+        lua_pushboolean(state, 1);
+        lua_pushstring(state, "good");
+      }
+    }
+  }
+  return 2;
+}
+
+// OFFSET: 0x00673E90
+// FUNCTION: fn_05386
+int CPetEvolutionMgr::L_InsertPetAutoFeeding(lua_State* state) {
+  if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1st is must number");
+  } else {
+    const int petEgg = static_cast<int>(lua_tonumber(state, -1));
+    if (!g_session.IsPetEgg(petEgg)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("PetEgg Item %d not found or not petegg", petEgg));
+    } else {
+      const std::pair<bool, std::string> result = g_petEvolutionMgr->InsertPetAutoFeeding(petEgg);
+      if (!result.first) {
+        lua_pushboolean(state, 0);
+        lua_pushstring(state, FormatString("InsertPetAutoFeeding : %s", result.second.c_str()));
+      } else {
+        lua_pushboolean(state, 1);
+        lua_pushstring(state, "good");
+      }
+    }
+  }
+  return 2;
+}

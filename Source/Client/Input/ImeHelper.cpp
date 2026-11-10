@@ -1,7 +1,7 @@
 #include "Client/Input/ImeHelper.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Window/UIWindowMgr.h"
 

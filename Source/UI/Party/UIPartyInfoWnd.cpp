@@ -1,6 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"

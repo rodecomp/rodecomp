@@ -2,7 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "File/File.h"
 
 #include <cstdio>

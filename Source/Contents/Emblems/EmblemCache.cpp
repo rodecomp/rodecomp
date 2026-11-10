@@ -4,7 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "File/FileEnumeration.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"

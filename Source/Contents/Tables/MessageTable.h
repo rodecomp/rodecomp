@@ -1,0 +1,26 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_TABLES_MESSAGETABLE_H
+#define RAGNAROK_SOURCE_CONTENTS_TABLES_MESSAGETABLE_H
+
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <windows.h>
+
+struct MessageIdHash {
+  std::size_t operator()(int id) const {
+    return static_cast<std::size_t>(id);
+  }
+};
+
+extern std::unordered_map<int, std::string, MessageIdHash> g_messageStrings;
+const char* LookupMessage(int id);
+void InsertMessage(int id, const char* text);
+int FindMessageId(const char* name);
+char* DecodeMessageRot(char* str);
+void ImportMessageTable();
+bool IsObfuscatedMessage(int id);
+const char* GetMessageString(int id);
+
+bool ImportMessageCsv(std::string_view bytes);
+
+#endif

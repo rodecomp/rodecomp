@@ -2,7 +2,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"

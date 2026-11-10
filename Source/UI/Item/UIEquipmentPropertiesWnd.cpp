@@ -2,7 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Item/UIEquipmentPropertiesWnd.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"

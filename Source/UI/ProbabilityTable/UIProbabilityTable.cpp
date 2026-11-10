@@ -8,7 +8,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Text/UIStaticTextControl.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"

@@ -3,7 +3,7 @@
 #include "UI/Window/WindowId.h"
 
 #include "Client/Session.h"
-#include "Contents/SpecialPopupMgr.h"
+#include "Contents/Events/SpecialPopupMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/UIWindowMgr.h"

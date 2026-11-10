@@ -4,7 +4,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIBitmapButton.h"

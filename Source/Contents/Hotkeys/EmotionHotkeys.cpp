@@ -1,6 +1,6 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
 #include "File/ShortcutFilename.h"
 #include "Network/TextEncoding.h"

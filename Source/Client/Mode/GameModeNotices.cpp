@@ -20,27 +20,27 @@
 #include "Contents/ClientState.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/Effect.h"
-#include "Contents/Effects/EffectLists.h"
-#include "Contents/Effects/RagEffect.h"
-#include "Contents/Effects/EffectTypes.h"
-#include "Contents/ForbiddenWords.h"
-#include "Contents/GuildInfo.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Tables/ForbiddenWords.h"
+#include "Contents/Guild/GuildInfo.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/MapPropertyMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Map/MapPropertyMgr.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
-#include "Contents/NavigationManager.h"
-#include "Contents/PlayerNameDictionary.h"
-#include "Contents/RenewQuestMgr.h"
-#include "Contents/RodexMailStore.h"
-#include "Contents/RouletteMgr.h"
+#include "Contents/Navigation/NavigationManager.h"
+#include "Contents/Actors/PlayerNameDictionary.h"
+#include "Contents/Quest/RenewQuestMgr.h"
+#include "Contents/Rodex/RodexMailStore.h"
+#include "Contents/Events/RouletteMgr.h"
 #include "Contents/Schedule/CaptchaUploadSchedule.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
@@ -2785,7 +2785,7 @@ void CGameMode::ReceiveExpGainNotice(const unsigned char* data) {
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIBasicInfoWnd.h"
-#include "Contents/Effects/EmitterEffect.h"
+#include "Contents/Effects/Particles/EmitterEffect.h"
 
 #pragma pack(push, 1)
 struct BankDepositAckPacket {
@@ -7481,7 +7481,7 @@ void CGameMode::ReceiveWhisper2(const unsigned char* data) {
   this->ProcessWhisper(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
 }
 
-#include "Contents/ShowRankingScheduler.h"
+#include "Contents/Events/ShowRankingScheduler.h"
 
 // OFFSET: 0x00D06760
 // FUNCTION: fn_21576

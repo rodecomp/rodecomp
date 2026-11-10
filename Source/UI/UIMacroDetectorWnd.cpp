@@ -3,7 +3,7 @@
 #include "Client/Input/InputCharset.h"
 #include "UI/UIMacroDetectorWnd.h"
 #include "Client/Input/Language.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Edit/UIEditCtrl.h"

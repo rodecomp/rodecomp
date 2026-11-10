@@ -10,7 +10,7 @@
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
 #include "Contents/Jobs/JobId.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Resource/Bitmap/BitmapResource.h"

@@ -3,7 +3,7 @@
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"

@@ -11,7 +11,7 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Mode/CLoginMode.h"
-#include "Contents/ForbiddenWords.h"
+#include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Jobs/JobInheritance.h"
 
 #include <mbstring.h>

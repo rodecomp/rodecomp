@@ -11,7 +11,7 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"

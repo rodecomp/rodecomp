@@ -2,7 +2,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Browser/WebBrowser.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/MSGSTRINGID.h"
 #include "UI/Window/UIWindowMgr.h"
 

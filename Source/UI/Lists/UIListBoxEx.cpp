@@ -4,7 +4,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIListBoxEx.h"

@@ -4,7 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIVideoWnd.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Movies/BinkMovie.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Render/Textures/Texture.h"

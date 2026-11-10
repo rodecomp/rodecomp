@@ -5,7 +5,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
-#include "Contents/SpriteRidingOffset.h"
+#include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"

@@ -9,7 +9,7 @@
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemId.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"

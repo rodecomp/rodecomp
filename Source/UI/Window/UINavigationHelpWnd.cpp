@@ -3,7 +3,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UINavigationHelpWnd.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowManagerWindows.h"

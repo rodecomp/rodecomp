@@ -6,7 +6,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/NoticeEnums.h"

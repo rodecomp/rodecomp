@@ -4,11 +4,11 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
-#include "Contents/CashEmotionMgr.h"
+#include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "UI/CashEmotion/UICashEmotionListWnd.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Render/Text/FontCache.h"

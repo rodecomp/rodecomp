@@ -2,8 +2,8 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
-#include "Contents/ShowRankingScheduler.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Events/ShowRankingScheduler.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Timestamp.h"
 

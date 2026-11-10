@@ -3,7 +3,7 @@
 #include "Client/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"

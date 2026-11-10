@@ -17,9 +17,9 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
-#include "Contents/NavigationManager.h"
-#include "Contents/SpriteRidingOffset.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Navigation/NavigationManager.h"
+#include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Network/TextEncoding.h"
@@ -70,8 +70,8 @@
 #include "Utility/Text/StringUtil.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/PrivateAirplaneMgr.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/PrivateAirplaneMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <atlconv.h>

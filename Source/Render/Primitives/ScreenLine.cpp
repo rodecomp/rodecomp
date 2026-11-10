@@ -8,7 +8,7 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/WindowBorder.h"
 
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/Primitives/AlphaRectangle.h"
 #include "Render/Renderer.h"
 #include "Render/ScreenGeometry.h"

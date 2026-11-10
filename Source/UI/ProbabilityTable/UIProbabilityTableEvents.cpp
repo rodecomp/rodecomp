@@ -6,7 +6,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Items/NeoPackageItemMgr.h"
-#include "Contents/PlayerNameDictionary.h"
+#include "Contents/Actors/PlayerNameDictionary.h"
 #include "Network/TextEncoding.h"
 #include "UI/Edit/UIEditBoxEx.h"
 #include "UI/Text/UIStaticTextControl.h"

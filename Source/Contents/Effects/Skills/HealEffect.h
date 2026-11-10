@@ -1,0 +1,52 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_HEALEFFECT_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_HEALEFFECT_H
+
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectPoint.h"
+#include "Utility/Math/Vector3d.h"
+
+#include <cstddef>
+#include <vector>
+
+class CParticle;
+
+class CHealEffect : public CEffect {
+public:
+  CHealEffect();
+
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  void Close() override;
+  bool IsAlive() override;
+  void InitEvents() override;
+
+  void AddSparks(int kind);
+  void AddColumn(int kind);
+  void AddCone(int kind);
+  void SpawnParticles();
+  void UpdateParticleVertices(CParticle* particle);
+  void RotateToCamera(EffectPoint* points);
+
+  /* 00CC */ EffectPoint columnEdge[2];
+  /* 00E4 */ EffectPoint coneEdge[2];
+  /* 00FC */ int columnLifetime;
+  /* 0100 */ int coneLifetime;
+  /* 0104 */ int spawnTick;
+  /* 0108 */ std::vector<CParticle*> columnParticles;
+  /* 0114 */ std::vector<CParticle*> coneParticles;
+  /* 0120 */ std::vector<CParticle*> sparkParticles;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CHealEffect) == 0x12C);
+static_assert(offsetof(CHealEffect, columnEdge) == 0xCC);
+static_assert(offsetof(CHealEffect, coneEdge) == 0xE4);
+static_assert(offsetof(CHealEffect, columnLifetime) == 0xFC);
+static_assert(offsetof(CHealEffect, spawnTick) == 0x104);
+static_assert(offsetof(CHealEffect, columnParticles) == 0x108);
+static_assert(offsetof(CHealEffect, coneParticles) == 0x114);
+static_assert(offsetof(CHealEffect, sparkParticles) == 0x120);
+#endif
+
+#endif

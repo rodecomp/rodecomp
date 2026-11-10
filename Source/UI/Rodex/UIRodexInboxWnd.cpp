@@ -3,7 +3,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Network/Connection/Connection.h"
@@ -22,7 +22,7 @@
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"

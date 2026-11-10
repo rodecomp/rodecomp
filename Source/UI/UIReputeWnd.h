@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_UIREPUTEWND_H
 
 #include "UI/Window/UIFrameWnd.h"
-#include "Contents/ReputeMgr.h"
+#include "Contents/Repute/ReputeMgr.h"
 
 #include <cstdint>
 #include <string>

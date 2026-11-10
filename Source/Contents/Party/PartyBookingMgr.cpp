@@ -3,7 +3,7 @@
 #include "Contents/Party/PartyBookingMgr.h"
 
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "UI/Window/UISeekPartyListWnd.h"
 #include "UI/Window/UIWindowMgr.h"

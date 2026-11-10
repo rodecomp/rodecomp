@@ -1,6 +1,6 @@
 #include "Contents/World/SkyBox.h"
 
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Models/ModelActor.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"

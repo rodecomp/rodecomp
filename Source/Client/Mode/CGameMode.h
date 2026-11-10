@@ -3,7 +3,7 @@
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
-#include "Contents/ActorNameCard.h"
+#include "Contents/Actors/ActorNameCard.h"
 
 #include <cstddef>
 #include <cstdint>

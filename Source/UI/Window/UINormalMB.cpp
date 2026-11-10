@@ -1,7 +1,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UINormalMB.h"
 #include "UI/Window/UIEnums.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"

@@ -14,9 +14,9 @@
 #include "UI/Text/NavigationLink.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/ForbiddenWords.h"
+#include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 

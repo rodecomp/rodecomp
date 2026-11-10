@@ -1,0 +1,28 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_CLIMAXEFFECT_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_CLIMAXEFFECT_H
+
+#include "Contents/Effects/Core/Effect.h"
+
+#include <cstddef>
+
+class CParticle;
+
+class CClimaxEffect : public CEffect {
+public:
+  CClimaxEffect();
+
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  void Close() override;
+  bool IsAlive() override;
+
+  /* 00CC */ CParticle* particles[2];
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CClimaxEffect) == 0xD4);
+static_assert(offsetof(CClimaxEffect, particles) == 0xCC);
+#endif
+
+#endif

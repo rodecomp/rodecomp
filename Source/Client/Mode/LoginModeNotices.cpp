@@ -4,7 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"

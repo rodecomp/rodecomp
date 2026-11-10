@@ -4,8 +4,8 @@
 
 #include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/MessageTable.h"
-#include "Contents/PetEvolutionMgr.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Pet/PetEvolutionMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Resource/Bitmap/BitmapResource.h"

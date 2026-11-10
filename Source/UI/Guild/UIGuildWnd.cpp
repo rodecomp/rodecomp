@@ -9,8 +9,8 @@
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/GuildMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Guild/GuildMgr.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "File/ShortcutFilename.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -35,7 +35,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
-#include "Contents/GuildInfo.h"
+#include "Contents/Guild/GuildInfo.h"
 
 #include "Resource/MSGSTRINGID.h"
 // GLOBAL: gl_24999

@@ -1,8 +1,8 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIROMAPWND_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIROMAPWND_H
 
-#include "Contents/FlyingShipRouteInfo.h"
-#include "Contents/WorldView/WorldViewData.h"
+#include "Contents/Map/FlyingShipRouteInfo.h"
+#include "Contents/World/WorldViewData.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"

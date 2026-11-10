@@ -11,7 +11,7 @@
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"

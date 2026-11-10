@@ -11,10 +11,10 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
-#include "Contents/EntryQueueMgr.h"
+#include "Contents/EntryQueue/EntryQueueMgr.h"
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Contents/RenewQuestMgr.h"
+#include "Contents/Quest/RenewQuestMgr.h"
 #include "Contents/ClientState.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Messenger/MessengerMember.h"

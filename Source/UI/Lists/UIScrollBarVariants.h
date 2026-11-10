@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Lists/UIListBoxID.h"
 

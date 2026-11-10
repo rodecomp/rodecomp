@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/EmblemResource.h"

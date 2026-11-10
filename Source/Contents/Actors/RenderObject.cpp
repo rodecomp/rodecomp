@@ -2,12 +2,12 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorEnums.h"
-#include "Contents/Combat/CombatTypes.h"
+#include "Contents/CombatTypes.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Actors/GrannyGameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "ActorPickNode.h"
-#include "Contents/Effects/MsgEffect.h"
+#include "Contents/Effects/Core/MsgEffect.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -21,14 +21,14 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Effects/Effect.h"
-#include "Contents/Effects/EffectLists.h"
-#include "Contents/Effects/EnergyOrbEffect.h"
-#include "Contents/Effects/RagEffect.h"
-#include "Contents/Effects/TetraBallEffect.h"
-#include "Contents/GuildMgr.h"
-#include "Contents/MapSkyMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Skills/EnergyOrbEffect.h"
+#include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Skills/TetraBallEffect.h"
+#include "Contents/Guild/GuildMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -36,8 +36,8 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
-#include "Contents/Effects/EffectTypes.h"
-#include "Contents/EquipmentResourceMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/World/WorldProximity.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -59,8 +59,8 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
-#include "Contents/ChampionMonsterMgr.h"
-#include "Contents/Effects/EffectPrim.h"
+#include "Contents/Monster/ChampionMonsterMgr.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include <algorithm>
 #include <cstdint>
@@ -71,7 +71,7 @@
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
-#include "Contents/GuildInfo.h"
+#include "Contents/Guild/GuildInfo.h"
 
 
 // GLOBAL: gl_25173

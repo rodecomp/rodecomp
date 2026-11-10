@@ -1,7 +1,7 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIWindowMgr.h"

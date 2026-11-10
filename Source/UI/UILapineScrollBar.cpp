@@ -10,7 +10,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"

@@ -1,7 +1,7 @@
 #include "UI/Window/UISeekPartyWnd.h"
 
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIJobListWnd.h"

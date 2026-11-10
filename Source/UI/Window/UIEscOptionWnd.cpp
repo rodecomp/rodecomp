@@ -4,7 +4,7 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"

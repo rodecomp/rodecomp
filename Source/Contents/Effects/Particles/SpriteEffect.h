@@ -1,0 +1,31 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_PARTICLES_SPRITEEFFECT_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_PARTICLES_SPRITEEFFECT_H
+
+#include "Contents/Effects/Core/Effect.h"
+
+#include <cstddef>
+#include <vector>
+
+class CSpriteParticle;
+
+class CSpriteEffect : public CEffect {
+public:
+  CSpriteEffect();
+
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  void Close() override;
+  bool IsAlive() override;
+
+  void SetupParticle(CSpriteParticle* particle);
+
+  /* 00CC */ std::vector<CSpriteParticle*> particles;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CSpriteEffect, particles) == 0xCC);
+static_assert(sizeof(CSpriteEffect) == 0xD8);
+#endif
+
+#endif

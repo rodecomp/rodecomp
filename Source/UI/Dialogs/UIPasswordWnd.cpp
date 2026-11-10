@@ -1,7 +1,7 @@
 #include "UI/Dialogs/UIPasswordWnd.h"
 
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Security/SecondPwdRandom.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"

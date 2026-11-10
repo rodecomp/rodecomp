@@ -6,8 +6,8 @@
 #include "UI/UIHotkeyGuideWnd.h"
 
 #include "Contents/Hotkeys/HotkeyInfo.h"
-#include "Contents/MapSkyMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Map/MapSkyMgr.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"

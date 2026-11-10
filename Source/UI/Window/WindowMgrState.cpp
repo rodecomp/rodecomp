@@ -12,7 +12,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
-#include "Contents/NavigationManager.h"
+#include "Contents/Navigation/NavigationManager.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Contents/World/World.h"
 #include "Render/DeviceContext/DCSurface.h"

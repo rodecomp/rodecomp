@@ -7,7 +7,7 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/TextMarkup.h"
-#include "Contents/TipBoxTitles.h"
+#include "Contents/Tables/TipBoxTitles.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Edit/UIItemTagCtrl.h"

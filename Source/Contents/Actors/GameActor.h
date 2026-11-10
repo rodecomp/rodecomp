@@ -1,8 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ACTORS_GAMEACTOR_H
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_GAMEACTOR_H
 
-#include "Contents/Effects/EffectActor.h"
-#include "Contents/MovementRouteInterpolation.h"
+#include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Movement/MovementRouteInterpolation.h"
 
 #include <cstddef>
 #include <cstdint>

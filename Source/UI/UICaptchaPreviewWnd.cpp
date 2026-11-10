@@ -6,7 +6,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"

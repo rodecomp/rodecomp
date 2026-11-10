@@ -1,6 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/ActorNamePacket.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIPetInfoWnd.h"

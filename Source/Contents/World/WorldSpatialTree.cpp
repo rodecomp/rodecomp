@@ -1,7 +1,7 @@
 #include "Client/Session.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundGeometry.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/World/World.h"

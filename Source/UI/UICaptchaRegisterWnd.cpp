@@ -5,7 +5,7 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
 #include "File/FileEnumeration.h"
 #include "Network/Connection/Connection.h"

@@ -1,0 +1,31 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_TALISMANMARKEFFECT_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_TALISMANMARKEFFECT_H
+
+#include "Contents/Effects/Core/Effect.h"
+
+#include <cstddef>
+#include <vector>
+
+class CEZ2STRParticle;
+
+class CTalismanMarkEffect : public CEffect {
+public:
+  /* 00CC */ std::vector<CEZ2STRParticle*> particles;
+
+  CTalismanMarkEffect();
+  void Open() override;
+  void OnProcess() override;
+  void Render() override;
+  void Close() override;
+  bool IsAlive() override;
+
+  void PlayEnd();
+  __declspec(noinline) void UpdateParticle(CEZ2STRParticle* particle);
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CTalismanMarkEffect, particles) == 0xCC);
+static_assert(sizeof(CTalismanMarkEffect) == 0xD8);
+#endif
+
+#endif

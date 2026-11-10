@@ -4,7 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/ForbiddenWords.h"
+#include "Contents/Tables/ForbiddenWords.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"

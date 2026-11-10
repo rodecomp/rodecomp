@@ -1,6 +1,6 @@
 #include "UI/Chat/UIChatRoomMakeWnd.h"
 
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 
 #include "Resource/MSGSTRINGID.h"
 // OFFSET: 0x008C7280

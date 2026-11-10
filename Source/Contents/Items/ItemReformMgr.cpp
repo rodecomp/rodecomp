@@ -1,7 +1,7 @@
 #include "Contents/Items/ItemReformMgr.h"
 
 #include "Client/Application/ErrorDialog.h"
-#include "Contents/ItemDBToIDMgr.h"
+#include "Contents/Items/ItemDBToIDMgr.h"
 #include "Utility/Text/FormatString.h"
 
 extern "C" {

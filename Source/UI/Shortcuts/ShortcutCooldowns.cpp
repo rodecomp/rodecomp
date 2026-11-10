@@ -12,7 +12,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "Contents/Skills/ClientSkills.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
@@ -52,7 +52,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Text/ColoredText.h"
 #include "Contents/Items/ItemDescription.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Utility/Text/GroupedInteger.h"
 
 #include "Resource/MSGSTRINGID.h"

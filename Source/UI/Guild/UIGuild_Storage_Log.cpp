@@ -1,7 +1,7 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"

@@ -1,0 +1,51 @@
+#include "Contents/Effects/Core/DummyEffectLauncher.h"
+#include "Contents/Actors/ActorEnums.h"
+
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/RagEffect.h"
+
+#include <windows.h>
+#include <timeapi.h>
+
+// OFFSET: 0x00E4C1C0
+// FUNCTION: fn_24281
+bool CDummyEffectLauncher::OnProcess() {
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
+  const float limit = static_cast<float>(this->lifeFrames);
+  return !(frame > limit);
+}
+
+// OFFSET: 0x00E50A60
+// FUNCTION: fn_24296
+__declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
+  if (message != AM_SETPOS || a != 0) {
+    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  const vector3d* position = reinterpret_cast<const vector3d*>(b);
+  this->render.position.x = position->x;
+  this->render.position.y = position->y;
+  this->render.position.z = position->z;
+  this->render.visible = 0;
+  this->render.motionStartTime = timeGetTime();
+  if (g_effectMgr->Spawn(0, d, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) != nullptr) {
+    return;
+  }
+
+  CRagEffect* effect = this->LaunchEffect(d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if ((f | g) != 0) {
+    this->lifeFrames = f;
+    if (f == 333 && g == 0) {
+      vector3d value;
+      value.y = 0.0f;
+      value.z = 0.0f;
+      value.x = static_cast<float>(static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h));
+      if (effect != nullptr) {
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
+      }
+    }
+  } else {
+    this->lifeFrames = 300;
+  }
+}

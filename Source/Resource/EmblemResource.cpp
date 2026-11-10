@@ -1,6 +1,6 @@
 #include "Resource/EmblemResource.h"
 
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 #include "File/File.h"
 #include "Resource/ResourceMgr.h"
 

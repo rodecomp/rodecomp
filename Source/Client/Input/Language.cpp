@@ -3,7 +3,7 @@
 #include "UI/Window/WindowId.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Input/Language.h"
-#include "Contents/CashEmotionMgr.h"
+#include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Lexicon/LexiconBoundary.h"

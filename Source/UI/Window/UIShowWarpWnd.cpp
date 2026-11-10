@@ -4,7 +4,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/UIWindowMgr.h"
 

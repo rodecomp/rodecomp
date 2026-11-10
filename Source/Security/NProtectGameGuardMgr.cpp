@@ -3,7 +3,7 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Threading/NSyncObject.h"

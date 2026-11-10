@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-#include "Contents/ReputeRecords.h"
+#include "Contents/Repute/ReputeRecords.h"
 
 struct EZ2STREffectRecord;
 

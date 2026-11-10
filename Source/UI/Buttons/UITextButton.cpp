@@ -25,7 +25,7 @@
 #include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/Items/ItemNaming.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/UIBasicCtrl.h"
 #include "Utility/Text/FormatString.h"
@@ -3411,7 +3411,7 @@ UITVTextButton::UITVTextButton() : UIButton() {
 }
 
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/TipOfTheDay.h"
+#include "Contents/Tables/TipOfTheDay.h"
 
 // OFFSET: 0x0086DE10
 // FUNCTION: fn_11060

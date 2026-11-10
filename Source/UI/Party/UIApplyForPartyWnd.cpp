@@ -5,7 +5,7 @@
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"

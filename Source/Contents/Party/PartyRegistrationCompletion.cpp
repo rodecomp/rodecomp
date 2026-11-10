@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Utility/Async/AsyncDiagnostic.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 

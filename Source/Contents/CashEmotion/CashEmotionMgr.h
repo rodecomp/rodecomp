@@ -1,0 +1,235 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_CASHEMOTION_CASHEMOTIONMGR_H
+#define RAGNAROK_SOURCE_CONTENTS_CASHEMOTION_CASHEMOTIONMGR_H
+
+#include "Utility/Timestamp.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+class CCashEmotionMgr;
+class ICashEmotionAction;
+struct lua_State;
+
+struct CashEmotionKeyHash {
+  // INLINED
+  std::size_t operator()(int key) const {
+    return static_cast<std::size_t>(key);
+  }
+};
+
+class CashEmotionCommand {
+public:
+  __declspec(noinline) CashEmotionCommand(const std::string& name, int packId, int emotionId);
+
+  void Add(int packId, int emotionId);
+  std::pair<int, int> Get(int index) const;
+  // INLINED
+  int Count() const {
+    return static_cast<int>(this->entries.size());
+  }
+
+  /* 0000 */ std::string name;
+  /* 0018 */ std::vector<std::pair<int, int>> entries;
+};
+
+struct CashEmotionData {
+  CashEmotionData(int id, int subId, const char* name, int actionIndex, int frameIndex, int actId, int sprId);
+
+  /* 0000 */ int id;
+  /* 0004 */ int subId;
+  /* 0008 */ std::string name;
+  /* 0020 */ int actionIndex;
+  /* 0024 */ int frameIndex;
+  /* 0028 */ int actId;
+  /* 002C */ int sprId;
+};
+
+struct CashEmotionPack {
+  // INLINED
+  CashEmotionPack(const char* name, int price, unsigned int startTime, unsigned int endTime, int period, char saleBadge)
+      : name(name), price(price), startTime(startTime), endTime(endTime), period(period), saleBadge(saleBadge),
+        originalStartTime(startTime), originalEndTime(endTime) {
+  }
+
+  // INLINED
+  bool IsAvailable(unsigned int now) const {
+    if (this->startTime == 0 && this->endTime == 0) {
+      return true;
+    }
+    if (now >= this->startTime && this->endTime == 0) {
+      return true;
+    }
+    if (this->startTime == 0 && now < this->endTime) {
+      return true;
+    }
+    return now >= this->startTime && now < this->endTime;
+  }
+
+  /* 0000 */ std::string name;
+  /* 0018 */ int price;
+  /* 001C */ unsigned int startTime;
+  /* 0020 */ unsigned int endTime;
+  /* 0024 */ int period;
+  /* 0028 */ bool saleBadge;
+  /* 002C */ unsigned int originalStartTime;
+  /* 0030 */ unsigned int originalEndTime;
+};
+
+enum class CashEmotionSpecial : char {
+  ChatProhibit,
+  Yut,
+  Dice,
+  Sweat,
+  Chup,
+};
+
+struct CashEmotionSpecialHash {
+  // INLINED
+  std::size_t operator()(CashEmotionSpecial key) const {
+    return static_cast<std::size_t>(key);
+  }
+};
+
+struct CashEmotionPackRefresh {
+  /* 0000 */ bool changed;
+  /* 0004 */ int nextTime;
+};
+
+using CashEmotionTable = std::unordered_map<int, CashEmotionData, CashEmotionKeyHash>;
+using CashEmotionFileNames = std::unordered_map<int, std::string, CashEmotionKeyHash>;
+
+struct CashEmotionPackOrder {
+  bool operator()(const int& left, const int& right) const;
+
+  /* 0000 */ CCashEmotionMgr* mgr;
+  /* 0004 */ const bool& ascending;
+};
+
+class CCashEmotionMgr {
+  friend class UICashEmotionListWnd;
+
+public:
+  CCashEmotionMgr();
+  virtual ~CCashEmotionMgr();
+
+  static bool Initialize();
+  static void Shutdown();
+  static int InsertEmotionGroup(lua_State* state);
+  static int InsertEmotionMsgListTable(lua_State* state);
+  static int InsertEmotionMsgListTableForCustom(lua_State* state);
+  static int InsertPackInfo(lua_State* state);
+
+  void Reset();
+  void ClearOwnedPacks();
+  void ClearCommands();
+  __declspec(noinline) void HideSuggestions();
+  __declspec(noinline) int FindEmotionId(const char* name);
+  void ProcessChatCommand(const char* command);
+  __declspec(noinline) const char* GetPackName(int packId);
+  std::vector<int> FindBaseEmotions(const char* filter);
+  __declspec(noinline) CashEmotionTable* GetBasePackEmotions();
+  int GetSpecialEmotion(CashEmotionSpecial type);
+  CashEmotionData* GetEmotionData(int packId, int emotionId);
+  const char* GetEmotionName(int packId, int emotionId);
+  __declspec(noinline) std::vector<int> GetPackEmotions(int packId);
+  int GetEarliestExpiry();
+  CashEmotionTable* GetPackEmotionTable(int packId);
+  CashEmotionPack* GetPack(int packId);
+  const char* GetPackTitle(int packId);
+  int GetPackPrice(int packId);
+  __declspec(noinline) Timestamp* FindExpiry(int packId);
+  __declspec(noinline) std::vector<int> SortOwnedPacks(const char* filter);
+  __declspec(noinline) unsigned int GetPackEndTime(int packId);
+  __declspec(noinline) unsigned int GetPackStartTime(int packId);
+  __declspec(noinline) void Search(
+    const char* text, std::vector<std::pair<int, int>>& basePack, std::vector<std::pair<int, int>>& ownedPacks, std::vector<std::pair<int, int>>& otherPacks
+  );
+  void AddSearchResult(std::vector<std::pair<int, int>>& results, const std::pair<int, int>& entry);
+  std::vector<int> SortPacks(const std::vector<int>& packs, const char* filter);
+  __declspec(noinline) const char* GetSprFileName(int sprId);
+  __declspec(noinline) std::vector<int> SortUnownedPacks(const char* filter);
+  __declspec(noinline) int GetPackPeriod(int packId);
+  void SetOwnedPack(int packId, unsigned int expiry);
+  int LookupSpecialEmotion(CashEmotionSpecial type);
+  int LookupSpecialEmotion(CashEmotionSpecial type, const char* name);
+  void AddShortcut(const std::string& name, int packId, int emotionId);
+  bool PlaySearchedEmotion(const std::string& name);
+  bool IsChatProhibitEmotion(int emotionId);
+  bool IsPackAvailable(unsigned int now, int packId);
+  bool IsOwnedPack(int packId);
+  void RemoveOwnedPack(int packId, bool refresh, bool clearExpiry);
+  CashEmotionPackRefresh RefreshUnownedPacks();
+  void SetServerTime(int param);
+  void SetServerTimeZone(short serverBias);
+  bool RemoveExpiredPacks();
+  bool UpdatePurchasedPackExpiry();
+  void ShowErrorMessage(const char* key, int value);
+  void EmptyHandler59D040(int argument1, int argument2);
+  __declspec(noinline) int GetServerTime();
+  // INLINED
+  int BasePackId() const {
+    return this->basePackId;
+  }
+  static int InsertOrderList(lua_State* state);
+  static int InsertEmotionEnum(lua_State* state);
+  static int InsertEmotionListTable(lua_State* state);
+  static int InsertEmotionVarientListTable(lua_State* state);
+
+  void RefreshCommands();
+  int GetActFilePath(const char* name, bool add);
+  int GetSprFilePath(const char* name, bool add);
+  int RegisterFileName(std::unordered_map<std::string, int>& ids, CashEmotionFileNames& names, std::function<int()> nextId, const char* name, bool add);
+  bool AddEmotion(int packId, int emotionId, const char* name, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
+  void LoadScripts();
+  void InsertEmotion(int packId, int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
+  void AcquirePack(int packId, unsigned int expiry);
+
+protected:
+  /* 0004 */ bool m_enabled;
+  /* 0005 */ std::uint8_t padding_0005[3];
+  /* 0008 */ ICashEmotionAction* m_action;
+  /* 000C */ int basePackId;
+  /* 0010 */ std::unordered_map<int, CashEmotionPack, CashEmotionKeyHash> packs;
+  /* 0030 */ std::unordered_map<int, CashEmotionTable, CashEmotionKeyHash> m_emotionsByPack;
+  /* 0050 */ std::unordered_map<int, std::vector<int>, CashEmotionKeyHash> emotionOrder;
+  /* 0070 */ std::unordered_map<std::string, std::pair<int, int>> m_searchIndex;
+  /* 0090 */ CashEmotionFileNames m_packNames;
+  /* 00B0 */ std::unordered_map<std::string, int> actIds;
+  /* 00D0 */ int m_lastActId = 0;
+  /* 00D4 */ CashEmotionFileNames m_sprNames;
+  /* 00F4 */ std::unordered_map<std::string, int> m_sprIds;
+  /* 0114 */ int m_lastSprId = 0;
+  /* 0118 */ std::unordered_map<std::string, int> m_emotionIds;
+  /* 0138 */ std::unordered_map<CashEmotionSpecial, int, CashEmotionSpecialHash> m_specials;
+  /* 0158 */ std::unordered_map<std::string, CashEmotionCommand*> m_shortcuts;
+  /* 0178 */ std::unordered_map<std::string, int> m_commands;
+  /* 0198 */ std::vector<int> packOrder;
+  /* 01A4 */ std::vector<int> m_ownedPacks;
+  /* 01B0 */ std::list<std::pair<int, Timestamp>> m_expiry;
+  /* 01B8 */ std::vector<int> m_unownedPacks;
+  /* 01C4 */ int selectedPackId = -1;
+  /* 01C8 */ int purchaseItemId = 6909;
+  /* 01CC */ int intendedDelay = 0;
+  /* 01D0 */ int serverTimeOffset = 0;
+  /* 01D4 */ int serverTimezoneOffset = 0;
+};
+
+extern CCashEmotionMgr* g_cashEmotionMgr;
+class UICashEmotionListWnd;
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CashEmotionData, name) == 0x08);
+static_assert(sizeof(CashEmotionData) == 0x30);
+static_assert(sizeof(CashEmotionPack) == 0x34);
+static_assert(sizeof(CashEmotionCommand) == 0x24);
+static_assert(sizeof(CashEmotionPackOrder) == 0x08);
+static_assert(sizeof(CCashEmotionMgr) == 472);
+#endif
+
+#endif

@@ -1,0 +1,593 @@
+#include "Contents/Effects/EffectResourceSwitcher.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Camera/Camera.h"
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
+#include "Contents/Effects/Particles/Particle.h"
+#include "Contents/World/World.h"
+#include "File/File.h"
+#include "Network/TextEncoding.h"
+#include "Resource/World/TerrainResource.h"
+#include "Utility/JsonCppLoader.h"
+
+#include <algorithm>
+#include <cctype>
+#include <map>
+#include <new>
+#include <string>
+#include <vector>
+#include "Utility/StdStringCompare.h"
+
+// GLOBAL: gl_24485
+template <>
+CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
+
+// OFFSET: 0x005A1B70
+// FUNCTION: fn_03077
+EffectResourceSwitcher::EffectResourceSwitcher() : CEffect(-1), active(0), effect(nullptr), spawnPosition{0.0f, 0.0f, 0.0f} {
+}
+
+// OFFSET: 0x005A2090
+// FUNCTION: fn_03082
+void EffectResourceSwitcher::RetireEffects() {
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    return;
+  }
+
+  if (!this->sourceName.empty()) {
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName));
+  }
+
+  if (!this->targetName.empty()) {
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->targetName));
+  }
+}
+
+// OFFSET: 0x005A2110
+// FUNCTION: fn_03083
+void CEffect::SetDestinationBlend(int) {
+}
+
+// OFFSET: 0x005A2120
+// FUNCTION: fn_03084
+void CEffect::SetColor(int, int, int) {
+}
+
+// OFFSET: 0x005A2130
+// FUNCTION: fn_03085
+void CEffect::SetParticleTexture(std::string) {
+}
+
+// OFFSET: 0x005A2140
+// FUNCTION: fn_03086
+void CEffect::SetSourceBlend(int) {
+}
+
+// OFFSET: 0x005A2160
+// FUNCTION: fn_03088
+void CEffect::EnableTimeLimit() {
+}
+
+// OFFSET: 0x005A2170
+// FUNCTION: fn_03089
+vector3d CEffect::GetWindowOffset() {
+  return vector3d{0.0f, 0.0f, 0.0f};
+}
+
+// OFFSET: 0x005A2190
+// FUNCTION: fn_03090
+int CEffect::GetFrame() {
+  return 0;
+}
+
+// OFFSET: 0x005A21A0
+// FUNCTION: fn_03091
+void EffectResourceSwitcher::Start() {
+  if (this->effect) {
+    this->active = 1;
+    this->effect->EndLoop(1);
+  }
+}
+
+// OFFSET: 0x005A21C0
+// FUNCTION: fn_03092
+void CEffect::Open() {
+}
+
+// OFFSET: 0x005A21D0
+// FUNCTION: fn_03093
+void EffectResourceSwitcher::SetNames(const std::string& source, const std::string& target) {
+  if (source.empty() || target.empty()) {
+    return;
+  }
+
+  this->sourceName = source;
+  this->targetName = target;
+
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    return;
+  }
+
+  EffectLists* effects = g_effectMgr;
+  this->effect = static_cast<CEZ2STREffectEx*>(
+      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+  this->spawnPosition = actor->render.position;
+}
+
+// OFFSET: 0x005A22E0
+// FUNCTION: fn_03094
+void CEffect::InitEvents() {
+}
+
+// OFFSET: 0x005A22F0
+// FUNCTION: fn_03095
+void CEffect::ResetParticles() {
+}
+
+// OFFSET: 0x005A2300
+// FUNCTION: fn_03096
+bool EffectResourceSwitcher::IsAlive() {
+  if (!this->effect) {
+    return false;
+  }
+
+  if (this->effect->retained) {
+    return true;
+  }
+
+  return !this->effect->IsFinished();
+}
+
+// OFFSET: 0x005A2330
+// FUNCTION: fn_03097
+void EffectResourceSwitcher::OnProcess() {
+  if (!this->effect || !this->active || !this->effect->IsFinished()) {
+    return;
+  }
+
+  CEZ2STREffectEx* previous = this->effect;
+  this->sourceName = this->targetName;
+  this->targetName = "";
+  this->effect = static_cast<CEZ2STREffectEx*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition.x,
+                                                                this->spawnPosition.y, this->spawnPosition.z, 0, -1, 0, 0));
+  this->active = 0;
+  if (previous) {
+    previous->EndLoop(0);
+  }
+}
+
+// OFFSET: 0x005A2430
+// FUNCTION: fn_03098
+void CEffect::Render() {
+}
+
+// OFFSET: 0x005A2440
+// FUNCTION: fn_03099
+void CEffect::SetRenderFunc(int) {
+}
+
+// OFFSET: 0x005A2450
+// FUNCTION: fn_03100
+void CEffect::SetAlpha(float) {
+}
+
+// OFFSET: 0x005A2460
+// FUNCTION: fn_03101
+void CEffect::SetWindowOffset(int, int, int, int, int) {
+}
+
+// OFFSET: 0x005A2470
+// FUNCTION: fn_03102
+void CEffect::SetFlipX(int) {
+}
+
+// OFFSET: 0x005A2480
+// FUNCTION: fn_03103
+void CEffect::SetFlipY(int) {
+}
+
+// OFFSET: 0x005A2490
+// FUNCTION: fn_03104
+void CEffect::SetFlags(int) {
+}
+
+// OFFSET: 0x005A24A0
+// FUNCTION: fn_03105
+void CEffect::EnableGroundRender() {
+}
+
+// OFFSET: 0x005A24B0
+// FUNCTION: fn_03106
+void CEffect::SetRepeat(int) {
+}
+
+// OFFSET: 0x005A24C0
+// FUNCTION: fn_03107
+void CEffect::SetLifeTime(int) {
+}
+
+// OFFSET: 0x005A24D0
+// FUNCTION: fn_03108
+void CEffect::SetAngle(float) {
+}
+
+// OFFSET: 0x005A24E0
+// FUNCTION: fn_03109
+void CEffect::SetPitch(float) {
+}
+
+// OFFSET: 0x005A24F0
+// FUNCTION: fn_03110
+void CEffect::SetYaw(float) {
+}
+
+// OFFSET: 0x005A2500
+// FUNCTION: fn_03111
+void CEffect::SetScale(float) {
+}
+
+// OFFSET: 0x005A2510
+// FUNCTION: fn_03112
+void CEffect::AdvanceFrame(int) {
+}
+
+// OFFSET: 0x005A2520
+// FUNCTION: fn_03113
+void EffectResourceSwitcher::SetDelay(int argument) {
+  if (this->effect) {
+    this->effect->SetDelay(argument);
+  }
+}
+
+// OFFSET: 0x005A2540
+// FUNCTION: fn_03114
+void CEffect::SetResource(int) {
+}
+
+// OFFSET: 0x005A2630
+// FUNCTION: fn_03115
+template <>
+CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CEZ2STREffectMgr;
+  }
+
+  return s_instance;
+}
+
+// OFFSET: 0x006FFA00
+// FUNCTION: fn_06967
+__declspec(noinline) bool CEZ2STREffectEx::IsFinished() {
+  if (!this->emitter) {
+    return false;
+  }
+
+  return this->emitter->currentFrame >= this->emitter->frameCount;
+}
+
+// OFFSET: 0x006FFA20
+// FUNCTION: fn_06968
+void CEZ2STREffectEx::Open() {
+  EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
+  if (!info) {
+    return;
+  }
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (!particle) {
+    return;
+  }
+
+  InitParticleQuad(particle->vertices);
+  particle->m_actorId = this->actor;
+  particle->Load(info->name);
+
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+  emitter->offset.x = info->offsetX;
+  emitter->offset.y = info->offsetY;
+  emitter->offset.z = 0.0f;
+  if (info->flags & 1) {
+    this->retained = 1;
+    emitter->looping = 1;
+  }
+
+  emitter->duration = info->delays[1];
+  this->frameStep = info->delays[1] / 16;
+  if (!info->soundPath.empty()) {
+    this->AddEvent(0, info->soundPath.c_str(), this->frameStep + 1, 0);
+  }
+
+  if (info->delays[0] >= 0) {
+    this->AddEvent(1, nullptr, info->delays[0], 0);
+  }
+
+  if (info->flags & 2) {
+    particle->flags = 0xD;
+  }
+
+  if (info->flags & 4) {
+    particle->flags = 0x205;
+  }
+
+  emitter->repeatFrame = (info->flags >> 3) & 1;
+  emitter->followGround = (info->flags >> 4) & 1;
+  this->emitter = emitter;
+}
+
+// OFFSET: 0x006FFBF0
+// FUNCTION: fn_06969
+bool CEZ2STREffectEx::IsAlive() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (!emitter) {
+    return false;
+  }
+
+  if (this->timed == 1) {
+    return emitter->remainingTime > 0.0f;
+  }
+
+  if (emitter->looping == 1) {
+    return CEffect::IsAlive();
+  }
+
+  if (emitter->lifetime == 0.0f) {
+    return true;
+  }
+
+  return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
+}
+
+// OFFSET: 0x006FFC60
+// FUNCTION: fn_06970
+void CEZ2STREffectEx::OnProcess() {
+  if (!this->emitter) {
+    return;
+  }
+
+  if (this->timed == 1) {
+    this->emitter->remainingTime -= 0.05f;
+  }
+
+  if (this->emitter->followGround) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
+  }
+
+  if (EZ2STREmitter* emitter = this->emitter) {
+    const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+    const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+
+    const float x = this->position[0];
+    const float y = this->position[1];
+    const float z = this->position[2];
+    const float viewX = x * view[0] + y * view[3] + z * view[6] + view[9] + emitter->offset.x;
+    const float viewY = x * view[1] + y * view[4] + z * view[7] + view[10] - emitter->offset.y;
+    const float viewZ = x * view[2] + y * view[5] + z * view[8] + view[11];
+
+    emitter->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
+    emitter->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
+    emitter->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+    reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
+  }
+
+  if (this->emitter->repeatFrame == 1 && this->emitter->playbackState == 1) {
+    this->frame = this->frameStep;
+  }
+
+  ++this->emitter->elapsed;
+}
+
+// OFFSET: 0x006FFEA0
+// FUNCTION: fn_06971
+void CEZ2STREffectEx::Render() {
+  if (!this->emitter) {
+    return;
+  }
+
+  if (this->alternateRender) {
+    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  } else {
+    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
+// OFFSET: 0x006FFEF0
+// FUNCTION: fn_06972
+void CEZ2STREffectEx::SetAlpha(float argument) {
+  if (this->emitter) {
+    this->emitter->remainingTime = argument;
+  }
+}
+
+// OFFSET: 0x006FFF10
+// FUNCTION: fn_06973
+void CEZ2STREffectEx::SetFlipX(int argument) {
+  if (this->emitter) {
+    this->emitter->flipX = static_cast<unsigned char>(argument);
+  }
+}
+
+// OFFSET: 0x006FFF30
+// FUNCTION: fn_06974
+void CEZ2STREffectEx::SetFlipY(int argument) {
+  if (this->emitter) {
+    this->emitter->flipY = static_cast<unsigned char>(argument);
+  }
+}
+
+// OFFSET: 0x006FFF50
+// FUNCTION: fn_06975
+__declspec(noinline) void CEZ2STREffectEx::EndLoop(unsigned char fadeOut) {
+  if (this->emitter) {
+    this->emitter->looping = 0;
+    this->emitter->fadeOut = fadeOut;
+  }
+}
+
+// OFFSET: 0x006FFF80
+// FUNCTION: fn_06976
+void CEZ2STREffectEx::EnableGroundRender() {
+  this->alternateRender = 1;
+}
+
+// OFFSET: 0x006FFF90
+// FUNCTION: fn_06977
+void CEZ2STREffectEx::SetLifeTime(int argument) {
+  if (this->emitter) {
+    this->emitter->lifetimeLimit = argument;
+  }
+}
+
+// OFFSET: 0x006FFFB0
+// FUNCTION: fn_06978
+void CEZ2STREffectEx::SetAngle(float argument) {
+  if (this->emitter) {
+    this->emitter->rotationAngle = argument;
+  }
+}
+
+// OFFSET: 0x006FFFD0
+// FUNCTION: fn_06979
+void CEZ2STREffectEx::SetPitch(float argument) {
+  if (this->emitter) {
+    this->emitter->pitch = argument;
+  }
+}
+
+// OFFSET: 0x006FFFF0
+// FUNCTION: fn_06980
+void CEZ2STREffectEx::SetYaw(float argument) {
+  if (this->emitter) {
+    this->emitter->yaw = argument;
+  }
+}
+
+// OFFSET: 0x00700010
+// FUNCTION: fn_06981
+void CEZ2STREffectEx::SetScale(float argument) {
+  if (this->emitter) {
+    this->emitter->scale = argument;
+  }
+}
+
+// OFFSET: 0x00700030
+// FUNCTION: fn_06982
+void CEZ2STREffectEx::SetDelay(int argument) {
+  if (this->emitter) {
+    this->emitter->duration = argument;
+  }
+
+  this->frameStep = argument / 16;
+  this->SetEventFrame(0, this->frameStep + 1);
+}
+
+// OFFSET: 0x00700070
+// FUNCTION: fn_06983
+void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const {
+  const EZ2STREffectRecord& record = entry.second;
+  if (record.name.empty()) {
+    return;
+  }
+
+  EZ2STREffectInfo info;
+  info.id = static_cast<int>(this->manager->effects.size());
+  info.name = static_cast<const std::string&>(FromUtf8(record.name, g_textCodePage));
+  info.offsetX = static_cast<float>(record.offsetX);
+  if (record.infinite) {
+    info.flags |= 1;
+  }
+  if (record.floor) {
+    info.flags |= 2;
+  }
+  info.offsetY = static_cast<float>(record.offsetY);
+  if (record.aboveUi) {
+    info.flags |= 4;
+  }
+  info.soundPath = static_cast<const std::string&>(FromUtf8(record.soundPath, g_textCodePage));
+  if (record.soundLoop) {
+    info.flags |= 8;
+  }
+  info.delays[0] = record.delays[0];
+  info.delays[1] = record.delays[1];
+  if (record.toGround) {
+    info.flags |= 16;
+  }
+
+  std::string key = FromUtf8(entry.first, g_textCodePage);
+  std::transform(key.begin(), key.end(), key.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  this->manager->effects.insert(std::make_pair(key, info));
+}
+
+// OFFSET: 0x00700A10
+// FUNCTION: fn_06988
+EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
+  auto it = this->effects.begin();
+  const auto end = this->effects.end();
+  while (it != end && id != it->second.id + 10000) {
+    ++it;
+  }
+
+  return it != end ? &it->second : nullptr;
+}
+
+// OFFSET: 0x00700A90
+// FUNCTION: fn_06989
+int CEZ2STREffectMgr::EffectId(const std::string& name) {
+  std::string key = name;
+  std::transform(key.begin(), key.end(), key.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+  const auto found = this->effects.find(key);
+  if (found != this->effects.end()) {
+    return found->second.id + 10000;
+  }
+
+  return -1;
+}
+
+// OFFSET: 0x00700BA0
+// FUNCTION: fn_06990
+std::vector<int> CEZ2STREffectMgr::EffectIds() {
+  std::vector<int> ids;
+  for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
+    ids.push_back(it->second.id + 10000);
+  }
+  return ids;
+}
+
+// OFFSET: 0x00700E30
+// FUNCTION: fn_06991
+bool CEZ2STREffectMgr::Load() {
+  CFile file;
+  if (!file.Open("ContentData\\EffectData\\EZ2STREffect.bson", 0, true, false)) {
+    return false;
+  }
+
+  JsonCppLoader loader;
+  bool failed;
+  {
+    const auto* data = static_cast<const unsigned char*>(file.GetData());
+    std::vector<unsigned char> buffer(data, data + file.GetSize());
+    failed = !loader.Load(buffer, true);
+  }
+  if (failed) {
+    return false;
+  }
+
+  std::map<std::string, EZ2STREffectRecord> records;
+  if (!loader.GetEZ2STREffect(&records)) {
+    return false;
+  }
+
+  this->effects.clear();
+  std::for_each(records.begin(), records.end(), InfoInserter{this});
+  return true;
+}
+

@@ -4,7 +4,7 @@
 #include "Client/Session.h"
 
 #include "Client/Input/InputCharset.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UITextViewer.h"

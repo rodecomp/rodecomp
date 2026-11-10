@@ -1,7 +1,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
-#include "Contents/GuildMgr.h"
+#include "Contents/Guild/GuildMgr.h"
 
 #include <cstdint>
 #include <string>

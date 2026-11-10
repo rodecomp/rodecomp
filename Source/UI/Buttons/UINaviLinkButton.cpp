@@ -1,4 +1,4 @@
-#include "Contents/NavigationManager.h"
+#include "Contents/Navigation/NavigationManager.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 

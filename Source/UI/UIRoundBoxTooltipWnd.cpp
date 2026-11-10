@@ -5,7 +5,7 @@
 #include "Client/Input/Mouse.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UITextButton.h"

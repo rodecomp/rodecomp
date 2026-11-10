@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ACTORS_GNDRISER_H
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_GNDRISER_H
 
-#include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/Core/EffectActor.h"
 
 #include <cstddef>
 

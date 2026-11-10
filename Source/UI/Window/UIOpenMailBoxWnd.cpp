@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 

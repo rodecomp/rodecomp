@@ -10,7 +10,7 @@
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
 #include "UI/Buttons/UITextButton.h"

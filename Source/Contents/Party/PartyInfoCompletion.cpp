@@ -6,7 +6,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"

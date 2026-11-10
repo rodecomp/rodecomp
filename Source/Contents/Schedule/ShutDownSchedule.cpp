@@ -2,7 +2,7 @@
 #include "Contents/Schedule/ShutDownSchedule.h"
 
 #include "Client/Mode/ModeMgr.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include "Resource/MSGSTRINGID.h"

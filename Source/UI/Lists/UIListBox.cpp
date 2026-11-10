@@ -6,7 +6,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Contents/Items/ItemLink.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"

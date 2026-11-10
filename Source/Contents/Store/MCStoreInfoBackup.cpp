@@ -2,7 +2,7 @@
 #include "Contents/UserData/AccountService.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"

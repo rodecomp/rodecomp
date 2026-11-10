@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_TEXT_UIACHWND_H
 #define RAGNAROK_SOURCE_UI_TEXT_UIACHWND_H
 
-#include "Contents/AchievementMgr.h"
+#include "Contents/Achievement/AchievementMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"

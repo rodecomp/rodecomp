@@ -1,6 +1,6 @@
 #include "ActorPickNode.h"
 #include "Contents/Camera/Camera.h"
-#include "Contents/TerrainPathSearch.h"
+#include "Contents/Movement/TerrainPathSearch.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"

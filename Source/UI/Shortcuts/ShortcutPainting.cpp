@@ -9,7 +9,7 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
-#include "Contents/SkinMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 #include "UI/Shortcuts/ShortcutGrid.h"

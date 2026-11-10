@@ -30,8 +30,8 @@
 #include "UI/Buttons/UINaviLinkButton.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/TipOfTheDay.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/TipOfTheDay.h"
+#include "Contents/Tables/MessageTable.h"
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -44,7 +44,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
@@ -1881,8 +1881,8 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
 #include "Contents/Items/ItemNaming.h"
-#include "Contents/PlayerNameDictionary.h"
-#include "Contents/TipBoxTitles.h"
+#include "Contents/Actors/PlayerNameDictionary.h"
+#include "Contents/Tables/TipBoxTitles.h"
 #include "UI/Text/NavigationLink.h"
 
 #include <mbstring.h>

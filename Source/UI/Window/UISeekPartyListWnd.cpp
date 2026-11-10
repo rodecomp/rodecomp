@@ -2,7 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Contents/Party/PartyBookingMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"

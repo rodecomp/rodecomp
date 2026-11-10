@@ -6,7 +6,7 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Registry.h"
 #include "Client/Session.h"
-#include "Contents/MapSkyMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "File/CommonObject.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"

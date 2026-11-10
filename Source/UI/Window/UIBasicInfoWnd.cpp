@@ -19,7 +19,7 @@
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UITabControl.h"

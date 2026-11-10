@@ -1,6 +1,6 @@
 #include "UI/Window/UINoteWnd.h"
 #include "UI/Window/UIEnums.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/UIStaticText_LF.h"

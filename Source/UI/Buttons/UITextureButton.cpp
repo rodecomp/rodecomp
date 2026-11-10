@@ -3,7 +3,7 @@
 #include "Client/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "Contents/MessageTable.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeEvents.h"

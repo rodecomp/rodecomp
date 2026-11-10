@@ -1,5 +1,5 @@
 #include "File/FileCreation.h"
-#include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/EffectResourceSwitcher.h"
 #include "Utility/JsonCppLoader.h"
 #include "Utility/Text/FormatString.h"
 
