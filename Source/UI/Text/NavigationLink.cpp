@@ -434,32 +434,32 @@ bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, con
     text = text.substr(0, closePos);
     std::size_t openPos = text.find(g_itemLinkTag);
 
-    if (closePos != std::string::npos && openPos == std::string::npos) {
+    if (closePos == std::string::npos || openPos != std::string::npos) {
+      closePos = text.find(g_itemLinkCloseTag);
+
+      if (openPos != std::string::npos) {
+        for (;;) {
+          offset += openPos;
+          text = text.substr(openPos + g_itemLinkTag.size());
+          openPos = text.find(g_itemLinkTag);
+          closePos = text.find(g_itemLinkCloseTag);
+
+          if (openPos == std::string::npos) {
+            break;
+          }
+
+          offset += g_itemLinkTag.size();
+        }
+
+        link = text;
+        text = source;
+        text = text.substr(link.size() + offset + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+      }
+    } else {
       offset += g_itemLinkCloseTag.size();
       text = source;
       text = text.substr(offset);
       return true;
-    }
-
-    closePos = text.find(g_itemLinkCloseTag);
-
-    if (openPos != std::string::npos) {
-      for (;;) {
-        offset += openPos;
-        text = text.substr(openPos + g_itemLinkTag.size());
-        openPos = text.find(g_itemLinkTag);
-        closePos = text.find(g_itemLinkCloseTag);
-
-        if (openPos == std::string::npos) {
-          break;
-        }
-
-        offset += g_itemLinkTag.size();
-      }
-
-      link = text;
-      text = source;
-      text = text.substr(link.size() + offset + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
     }
   } while (closePos != std::string::npos);
 
