@@ -16,13 +16,13 @@
 // OFFSET: 0x00727EF0
 // FUNCTION: fn_07430
 void CShadowExceedNew::Close() {
-  for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end(); ++it) {
-    FreeParticle(*it);
+  for (CEZ2STRParticle* emitter : this->frontEmitters) {
+    FreeParticle(emitter);
   }
   this->frontEmitters.clear();
 
-  for (auto it = this->backEmitters.begin(); it != this->backEmitters.end(); ++it) {
-    FreeParticle(*it);
+  for (CEZ2STRParticle* emitter : this->backEmitters) {
+    FreeParticle(emitter);
   }
   this->backEmitters.clear();
 }
@@ -140,13 +140,13 @@ void CShadowExceedNew::OnProcess() {
 // OFFSET: 0x00729280
 // FUNCTION: fn_07438
 void CShadowExceedNew::Render() {
-  if (!this->drawBackEmitters) {
-    for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end(); ++it) {
-      (*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  if (this->drawBackEmitters) {
+    for (CEZ2STRParticle* emitter : this->backEmitters) {
+      emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   } else {
-    for (auto it = this->backEmitters.begin(); it != this->backEmitters.end(); ++it) {
-      (*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    for (CEZ2STRParticle* emitter : this->frontEmitters) {
+      emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }
