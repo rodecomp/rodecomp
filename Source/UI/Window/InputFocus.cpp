@@ -124,10 +124,8 @@ void SetPressedWindowRoot(UIWindow*& pressedRoot, UIWindow* window) {
 // FUNCTION: fn_17261
 void UIWindowMgr::SetPressedWindowRoot(UIWindow* window) {
   UIWindow* root = window;
-  if (root != nullptr) {
-    while (root->parent != nullptr) {
-      root = root->parent;
-    }
+  for (UIWindow* current = window; current != nullptr; current = current->parent) {
+    root = current;
   }
   this->keyboardCommandRootWnd = root;
 }
