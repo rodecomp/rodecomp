@@ -646,10 +646,10 @@ void CWorldViewMgr::Load(LuaScript& script) {
           const char* mapName = nullptr;
           const char* fieldName = nullptr;
           const char* description = nullptr;
-          area.left = -1;
-          area.top = -1;
-          area.right = -1;
           area.bottom = -1;
+          area.right = -1;
+          area.top = -1;
+          area.left = -1;
           if (!script.Call("querymaptable_load", "sd>dsddddss", mapTable, index, &mapId, &mapName,
                            &area.left, &area.top, &area.right, &area.bottom, &fieldName, &description)) {
             char error[260] = {};
@@ -675,10 +675,10 @@ void CWorldViewMgr::Load(LuaScript& script) {
           int mapId = -1;
           const char* mapName = nullptr;
           const char* displayName = nullptr;
-          area.left = -1;
-          area.top = -1;
-          area.right = -1;
           area.bottom = -1;
+          area.right = -1;
+          area.top = -1;
+          area.left = -1;
           if (!script.Call("queryfieldtable_load", "sd>dddddss", fieldTable, index, &mapId,
                            &area.left, &area.top, &area.right, &area.bottom, &mapName, &displayName)) {
             char error[260] = {};
