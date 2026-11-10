@@ -661,27 +661,27 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
     return;
   }
 
-  int anchorX = anchor->geometry.x;
-  int anchorY = anchor->geometry.y;
+  int x = anchor->geometry.x;
+  int y = anchor->geometry.y;
   for (UIWindow* node = anchor->parent; node; node = node->parent) {
-    anchorX += node->geometry.x;
-    anchorY += node->geometry.y;
+    x += node->geometry.x;
+    y += node->geometry.y;
   }
 
-  int x;
-  if (this->geometry.width + anchor->geometry.width + anchorX > g_renderer->viewport.width) {
-    const int rightSpace = g_renderer->viewport.width - anchor->geometry.width - anchorX;
-    if (anchorX >= this->geometry.width) {
-      x = anchorX - this->geometry.width;
-    } else {
-      x = rightSpace >= anchorX ? g_renderer->viewport.width - this->geometry.width : 0;
-    }
+  if (this->geometry.width + anchor->geometry.width + x <= g_renderer->viewport.width) {
+    x += anchor->geometry.width;
   } else {
-    x = anchorX + anchor->geometry.width;
+    const int rightSpace = g_renderer->viewport.width - anchor->geometry.width - x;
+    if (x >= this->geometry.width) {
+      x -= this->geometry.width;
+    } else if (rightSpace >= x) {
+      x = g_renderer->viewport.width - this->geometry.width;
+    } else {
+      x = 0;
+    }
   }
 
-  int y = anchorY;
-  if (this->geometry.height + anchorY > g_renderer->viewport.height) {
+  if (this->geometry.height + y > g_renderer->viewport.height) {
     y = g_renderer->viewport.height - this->geometry.height;
   }
 
@@ -3306,31 +3306,27 @@ void UINavigationV4Wnd::OnLBtnUp(int x, int y) {
 
   if (!g_navigationManager.expandedMap) {
     const int mapY = y - 46;
-    const int mapX = x - 3;
-    if (mapY >= 0 && mapY <= 266 && mapX >= 0 && mapX <= 266 && g_navigationManager.displayMode == 2) {
-      NavigationTarget target = g_navigationManager.GetCurrentTarget();
-      CNaviInfo* info = static_cast<CNaviInfo*>(target.object);
-      const int width = info->GetCellX();
-      const int height = info->GetCellY();
-      const int size = width > height ? width : height;
-      const float scale = static_cast<float>(size) / 265.0f;
-      float positionX = static_cast<float>(mapX) * scale;
-      float positionY = static_cast<float>(size) - static_cast<float>(mapY) * scale;
-      const int difference = width - height;
+    if (mapY >= 0 && mapY <= 266) {
+      const int mapX = x - 3;
+      if (mapX >= 0 && mapX <= 266 && g_navigationManager.displayMode == 2) {
+        NavigationTarget target = g_navigationManager.GetCurrentTarget();
+        CNaviInfo* info = static_cast<CNaviInfo*>(target.object);
+        const int width = info->GetCellX();
+        const int height = info->GetCellY();
+        const int size = width > height ? width : height;
+        const float scale = static_cast<float>(size) / 265.0f;
+        float positionX = static_cast<float>(mapX) * scale;
+        float positionY = static_cast<float>(size) - static_cast<float>(mapY) * scale;
+        const int difference = width - height;
 
-      double offsetX = 0.0;
-      double offsetY = 0.0;
-      if (difference > 0) {
-        offsetY = difference * 0.5;
-      } else {
-        offsetX = difference * 0.5;
-      }
+        const int offsetX = static_cast<int>(std::fabs(difference > 0 ? 0.0 : difference * 0.5));
+        const int offsetY = static_cast<int>(std::fabs(difference > 0 ? difference * 0.5 : 0.0));
+        const int cellX = static_cast<int>(positionX - static_cast<float>(offsetX));
+        const int cellY = static_cast<int>(positionY - static_cast<float>(offsetY));
 
-      const int cellX = static_cast<int>(positionX - static_cast<float>(static_cast<int>(std::fabs(offsetX))));
-      const int cellY = static_cast<int>(positionY - static_cast<float>(static_cast<int>(std::fabs(offsetY))));
-
-      if (cellX >= 0 && cellY >= 0 && width >= cellX && height >= cellY) {
-        this->InsertNavigationLink(info->GetName(), cellX, cellY);
+        if (cellX >= 0 && cellY >= 0 && width >= cellX && height >= cellY) {
+          this->InsertNavigationLink(info->GetName(), cellX, cellY);
+        }
       }
     }
   } else {
