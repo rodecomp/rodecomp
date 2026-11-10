@@ -52,7 +52,7 @@ void CTownInfoMgr::AddTownInfo(std::string mapName, std::string name, int x, int
     TownInfo info(type, name, x, y, icons[type]);
     std::vector<TownInfo> list;
     list.push_back(info);
-    this->m_towns.insert(std::make_pair(mapName, std::move(list)));
+    this->m_towns.insert(std::make_pair(mapName, list));
   } else {
     TownInfo info(type, name, x, y, icons[type]);
     it->second.push_back(info);
