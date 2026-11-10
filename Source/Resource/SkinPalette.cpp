@@ -3,14 +3,10 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 
-// OFFSET: 0x007E0F40
-// FUNCTION: fn_09684
+// INLINED
 std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& cell, bool resolveSkin) {
-  const char* filename = "유저인터페이스\\colorchip.bmp";
-  if (resolveSkin) {
-    filename = Resolve(filename);
-  }
-  auto* bitmap = static_cast<CBitmapRes*>(resources.Load(filename));
+  auto* bitmap = static_cast<CBitmapRes*>(
+      resources.Load(resolveSkin ? Resolve("유저인터페이스\\colorchip.bmp") : "유저인터페이스\\colorchip.bmp"));
   if (bitmap) {
     const std::uint32_t color = bitmap->image.Pixel(4 * cell.column + 2, 4 * cell.row + 2);
     return RGB((color >> 16) & 255, (color >> 8) & 255, color & 255);
@@ -18,7 +14,8 @@ std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& ce
   return 0;
 }
 
-// INLINED
+// OFFSET: 0x007E0F40
+// FUNCTION: fn_09684
 std::uint32_t __stdcall SkinPaletteColor(const SkinPaletteCell& cell, bool resolveSkin) {
   return SkinPaletteColor(ResourceMgr::Instance(), cell, resolveSkin);
 }
