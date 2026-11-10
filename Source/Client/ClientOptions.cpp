@@ -10,6 +10,6 @@ int CSession::GetOption(int id) const {
 // OFFSET: 0x005E7970
 // FUNCTION: fn_03937
 void CSession::SetOption(int id, int value, int extra) {
-  const std::uint64_t bits = static_cast<std::uint32_t>(value) | (static_cast<std::uint64_t>(extra) << 32);
-  this->m_options.Values()[id] = static_cast<std::int64_t>(bits);
+  std::int64_t& option = this->m_options.Values()[id];
+  option = static_cast<std::int64_t>(static_cast<std::uint32_t>(value) | (static_cast<std::uint64_t>(static_cast<std::uint32_t>(extra)) << 32));
 }
