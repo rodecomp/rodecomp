@@ -26,8 +26,7 @@ void UIWindow::AddSpriteCellOverlay(
   float top = static_cast<float>(cell->y) * scale * cell->scaleY;
   float bottom = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
 
-  record.u0 = 0.0f;
-  record.v0 = 0.0f;
+  record.u0 = record.v0 = 0.0f;
   CTexture* texture;
   if (cell->imageType == 0) {
     texture = g_renderer->atlas.Find(image, palette, record);
@@ -41,66 +40,92 @@ void UIWindow::AddSpriteCellOverlay(
   }
   primitive->texture = texture;
 
-  RenderVertex* vertices = primitive->quad;
+  float x0;
+  float y0;
+  float x1;
+  float y1;
+  float x2;
+  float y2;
+  float x3;
+  float y3;
   if (angle != 0.0f) {
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float sine = ClientSine(static_cast<int>(angle));
-    const int farX = (static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x;
-    const float startX = static_cast<float>((cell->mirrored & 1) ? farX : cell->x) * scale + static_cast<float>(x);
-    const float endX = static_cast<float>((cell->mirrored & 1) ? cell->x : farX) * scale + static_cast<float>(x) + 1.0f;
     const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
     const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
+    const int width = image->width;
+    float startX;
+    float endX;
+    if (cell->mirrored & 1) {
+      startX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * width + cell->x) * scale + static_cast<float>(x);
+      endX = static_cast<float>(cell->x) * scale + static_cast<float>(x) + 1.0f;
+    } else {
+      startX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
+      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * width + cell->x) * scale + static_cast<float>(x) + 1.0f;
+    }
     const float halfWidth = (endX - startX) * 0.5f;
     const float halfHeight = (lower - upper) * 0.5f;
     const float centerX = startX + halfWidth;
     const float centerY = upper + halfHeight;
-    const float minX = -halfWidth;
-    const float minY = -halfHeight;
-
-    vertices[0].x = minX * cosine - minY * sine + centerX + 0.5f;
-    vertices[0].y = minY * cosine + minX * sine + centerY + 0.5f;
-    vertices[1].x = halfWidth * cosine - minY * sine + centerX + 0.5f;
-    vertices[1].y = minY * cosine + halfWidth * sine + centerY + 0.5f;
-    vertices[2].x = minX * cosine - halfHeight * sine + centerX + 0.5f;
-    vertices[2].y = halfHeight * cosine + minX * sine + centerY + 0.5f;
-    vertices[3].x = halfWidth * cosine - halfHeight * sine + centerX + 0.5f;
-    vertices[3].y = halfHeight * cosine + halfWidth * sine + centerY + 0.5f;
+    x0 = (-halfWidth) * cosine - (-halfHeight) * sine + centerX;
+    y0 = (-halfWidth) * sine + (-halfHeight) * cosine + centerY;
+    x1 = halfWidth * cosine - (-halfHeight) * sine + centerX;
+    y1 = halfWidth * sine + (-halfHeight) * cosine + centerY;
+    x2 = (-halfWidth) * cosine - halfHeight * sine + centerX;
+    y2 = (-halfWidth) * sine + halfHeight * cosine + centerY;
+    x3 = halfWidth * cosine - halfHeight * sine + centerX;
+    y3 = halfWidth * sine + halfHeight * cosine + centerY;
   } else {
-    if (cell->mirrored & 1) {
-      const float swap = left;
-      left = right;
-      right = swap;
+    if (!(cell->mirrored & 1)) {
+      x0 = left;
+      x1 = right;
+    } else {
+      x0 = right;
+      x1 = left;
     }
-    left += static_cast<float>(x);
-    right += static_cast<float>(x);
-    top += static_cast<float>(y);
-    bottom += static_cast<float>(y);
-
-    vertices[0].x = left + 0.5f;
-    vertices[0].y = top + 0.5f;
-    vertices[1].x = right + 0.5f;
-    vertices[1].y = top + 0.5f;
-    vertices[2].x = left + 0.5f;
-    vertices[2].y = bottom + 0.5f;
-    vertices[3].x = right + 0.5f;
-    vertices[3].y = bottom + 0.5f;
+    x0 += static_cast<float>(x);
+    x1 += static_cast<float>(x);
+    y0 = static_cast<float>(y) + top;
+    y2 = static_cast<float>(y) + bottom;
+    y1 = y0;
+    x2 = x0;
+    x3 = x1;
+    y3 = y2;
   }
 
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.diffuse = color;
-  }
+  RenderVertex* vertices = primitive->quad;
+  vertices[0].x = x0 + 0.5f;
+  vertices[0].y = y0 + 0.5f;
+  vertices[1].x = x1 + 0.5f;
+  vertices[1].y = y1 + 0.5f;
+  vertices[2].x = x2 + 0.5f;
+  vertices[2].y = y2 + 0.5f;
+  vertices[3].x = x3 + 0.5f;
+  vertices[3].y = y3 + 0.5f;
+
+  vertices[0].z = 0.000001f;
+  vertices[0].rhw = 0.999999f;
   vertices[0].u = record.u0;
+  vertices[0].diffuse = color;
   vertices[0].v = record.v0;
+  vertices[1].z = 0.000001f;
+  vertices[1].rhw = 0.999999f;
   vertices[1].u = record.u1;
+  vertices[1].diffuse = color;
   vertices[1].v = record.v0;
+  vertices[2].z = 0.000001f;
+  vertices[2].rhw = 0.999999f;
   vertices[2].u = record.u0;
+  vertices[2].diffuse = color;
   vertices[2].v = record.v1;
+  vertices[3].z = 0.000001f;
+  vertices[3].rhw = 0.999999f;
   vertices[3].u = record.u1;
+  vertices[3].diffuse = color;
   vertices[3].v = record.v1;
 
-  this->m_overlayPrimitives.push_back(primitive);
+  std::vector<RenderPrimitive*>& overlays = this->m_overlayPrimitives;
+  overlays.push_back(primitive);
 }
 
 // OFFSET: 0x00A7A5C0
