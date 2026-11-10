@@ -59,10 +59,12 @@ bool CGndRes::Parse() {
   }
 
   this->m_file.Read(&this->lightmapCount, sizeof(this->lightmapCount));
-  std::uint32_t unused[3];
-  this->m_file.Read(&unused[0], sizeof(unused[0]));
-  this->m_file.Read(&unused[1], sizeof(unused[1]));
-  this->m_file.Read(&unused[2], sizeof(unused[2]));
+  std::uint32_t lightmapWidth;
+  std::uint32_t lightmapHeight;
+  std::uint32_t lightmapCells;
+  this->m_file.Read(&lightmapWidth, sizeof(lightmapWidth));
+  this->m_file.Read(&lightmapHeight, sizeof(lightmapHeight));
+  this->m_file.Read(&lightmapCells, sizeof(lightmapCells));
   if (this->minor >= 7) {
     this->lightmaps = static_cast<const unsigned char*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 8));
   } else {
@@ -85,36 +87,42 @@ bool CGndRes::Parse() {
 // OFFSET: 0x0074E870
 // FUNCTION: fn_07912
 void CGndRes::ReadWater() {
-  GroundWater record;
-  this->m_file.Read(&record.parameters, sizeof(record.parameters));
+  GroundWaterParameters parameters;
+  GroundWater entry;
+  this->m_file.Read(&parameters, sizeof(parameters));
   this->m_file.Read(&this->waterWidth, sizeof(this->waterWidth));
   this->m_file.Read(&this->waterHeight, sizeof(this->waterHeight));
   const float count = static_cast<float>(this->waterWidth * this->waterHeight);
-  const auto reserveCount = count < 0.0f ? static_cast<std::uint32_t>(-1) : static_cast<std::uint32_t>(count);
-  this->waterHeights.reserve(reserveCount);
-  this->water.reserve(reserveCount);
+  this->waterHeights.reserve(static_cast<std::uint32_t>(count));
+  this->water.reserve(static_cast<std::uint32_t>(count));
 
   if (this->major != 1) {
     return;
   }
 
   if (this->minor == 8) {
-    this->waterDefault = record.parameters;
+    this->waterDefault = parameters;
     float level = 0.0f;
 
     for (int index = 0; static_cast<float>(index) < count; ++index) {
       this->m_file.Read(&level, sizeof(level));
       this->waterHeights.push_back(level);
-      record.parameters.level = level;
-      std::memset(record.reserved, 0, sizeof(record.reserved));
-      this->water.push_back(record);
+      parameters.level = level;
+      entry.parameters = parameters;
+      entry.reserved[0] = 0;
+      entry.reserved[1] = 0;
+      entry.reserved[2] = 0;
+      this->water.push_back(entry);
     }
   } else if (this->minor == 9) {
     for (int index = 0; static_cast<float>(index) < count; ++index) {
-      this->m_file.Read(&record.parameters, sizeof(record.parameters));
-      std::memset(record.reserved, 0, sizeof(record.reserved));
-      this->water.push_back(record);
-      this->waterHeights.push_back(record.parameters.level);
+      this->m_file.Read(&parameters, sizeof(parameters));
+      entry.parameters = parameters;
+      entry.reserved[0] = 0;
+      entry.reserved[1] = 0;
+      entry.reserved[2] = 0;
+      this->water.push_back(entry);
+      this->waterHeights.push_back(parameters.level);
     }
   }
 }
