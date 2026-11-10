@@ -53,11 +53,9 @@ void GuildInfo::ClearMembers() {
 // OFFSET: 0x00AE4270
 // FUNCTION: fn_18033
 void GuildInfo::RemoveAgitId(int value) {
-  for (auto it = this->agitIds.begin(); it != this->agitIds.end(); ++it) {
-    if (*it == value) {
-      this->agitIds.erase(it);
-      return;
-    }
+  auto it = std::find(this->agitIds.begin(), this->agitIds.end(), value);
+  if (it != this->agitIds.end()) {
+    this->agitIds.erase(it);
   }
 }
 
@@ -129,15 +127,15 @@ void GuildInfo::Init() {
   this->positionsRequested = 0;
   this->skillsRequested = 0;
   this->bansRequested = 0;
-  this->guildName.clear();
-  this->masterName.clear();
-  this->subject.clear();
-  this->notice.clear();
+  this->guildName = "";
+  this->masterName = "";
+  this->subject = "";
+  this->notice = "";
   this->guildLevel = 0;
   this->memberCount = 0;
   this->maxMemberCount = 0;
   this->memberAverageLevel = 0;
-  this->manageLand.clear();
+  this->manageLand = "";
   this->exp = 0;
   this->nextExp = 0;
   this->emblem = 0;
