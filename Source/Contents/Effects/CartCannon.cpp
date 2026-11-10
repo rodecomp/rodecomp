@@ -122,7 +122,8 @@ void CCartCannon::OnProcess() {
     return;
   }
 
-  if (this->particle) {
+  CEZ2STRParticle* particle = this->particle;
+  if (particle) {
     const float step = static_cast<float>(this->currentStep);
     this->currentPosition.x = step * this->stepDelta.x + this->startPosition.x;
     this->currentPosition.y = step * this->stepDelta.y + this->startPosition.y;
@@ -132,8 +133,10 @@ void CCartCannon::OnProcess() {
     this->position[1] = this->currentPosition.y;
     this->position[2] = this->currentPosition.z;
 
-    this->particle->position = this->currentPosition;
-    this->particle->Process(0.0f, 0.0f, 0.0f);
+    particle->position.x = this->currentPosition.x;
+    particle->position.y = this->currentPosition.y;
+    particle->position.z = this->currentPosition.z;
+    particle->Process(0.0f, 0.0f, 0.0f);
   }
 
   ++this->currentStep;
@@ -142,9 +145,10 @@ void CCartCannon::OnProcess() {
 // OFFSET: 0x006FB080
 // FUNCTION: fn_06900
 void CCartCannon::Render() {
-  if (this->particle) {
+  CEZ2STRParticle* particle = this->particle;
+  if (particle) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    this->particle->DrawScreen(mode->camera->frame.view);
+    particle->DrawScreen(mode->camera->frame.view);
   }
 }
 
