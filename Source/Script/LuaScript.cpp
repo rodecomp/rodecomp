@@ -594,15 +594,20 @@ int SetEZ2STRInfo(lua_State* state) {
     effect->SetResource(reinterpret_cast<int>(name.c_str()));
     break;
   }
-  case MSG_SET_RENDER_FLAG:
-    effect->SetFlags(static_cast<unsigned int>(luaL_checknumber(state, 3)));
+  case MSG_SET_RENDER_FLAG: {
+    const unsigned int flags = static_cast<unsigned int>(luaL_checknumber(state, 3));
+    effect->SetFlags(flags);
     break;
-  case MSG_SET_SCALE_RATIO:
-    effect->SetScale(static_cast<float>(luaL_checknumber(state, 3)));
+  }
+  case MSG_SET_SCALE_RATIO: {
+    const float scale = static_cast<float>(luaL_checknumber(state, 3));
+    effect->SetScale(scale);
     break;
+  }
   case MSG_SET_ALPHA_RATIO: {
-    const float alpha = static_cast<float>(luaL_checknumber(state, 3));
-    effect->SetAlpha(alpha >= 1.0f ? 1.0f : (std::max)(0.0f, alpha));
+    const float value = static_cast<float>(luaL_checknumber(state, 3));
+    const float alpha = value >= 1.0f ? 1.0f : (std::max)(value, 0.0f);
+    effect->SetAlpha(alpha);
     break;
   }
   }
@@ -855,10 +860,15 @@ void LuaScript::Close() {
   }
 }
 
+// INLINED
+static void SetGlobalNumber(lua_State* state, const char* name, double value) {
+  lua_pushnumber(state, value);
+  lua_setglobal(state, name);
+}
+
 // OFFSET: 0x00AFE4B0
 // FUNCTION: fn_45455
 void LuaScript::Register() {
-  lua_State* state = this->m_state;
   lua_register(this->m_state, "TraceValue", TraceValue);
   lua_register(this->m_state, "SetSubChatWndList", SetSubChatWndList);
   lua_register(this->m_state, "SetSubChatWndOption", SetSubChatWndOption);
@@ -882,10 +892,8 @@ void LuaScript::Register() {
   lua_register(this->m_state, "add_cashshop_banner", AddCashshopBanner);
   lua_register(this->m_state, "add_cashshop_banner2", AddCashshopBanner2);
   lua_register(this->m_state, "add_checkAttendance_banner", AddCheckAttendanceBanner);
-  lua_pushnumber(state, 4.0);
-  lua_setglobal(state, "SKFLAG_NOREDUCT");
-  lua_pushnumber(state, 4096.0);
-  lua_setglobal(state, "SKFLAG_DISABLE_FIXEDCASTING_REDUCTION");
+  SetGlobalNumber(this->m_state, "SKFLAG_NOREDUCT", 4.0);
+  SetGlobalNumber(this->m_state, "SKFLAG_DISABLE_FIXEDCASTING_REDUCTION", 4096.0);
 }
 
 // OFFSET: 0x00AFDDD0
@@ -1024,12 +1032,7 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
 
   while (*signature) {
     luaL_checkstack(this->m_state, 1, "too many arguments");
-    char option = *signature++;
-    if (option == '>') {
-      break;
-    }
-
-    switch (option) {
+    switch (*signature++) {
     case 'b':
       lua_pushboolean(this->m_state, static_cast<unsigned char>(va_arg(arguments, int)));
       break;
@@ -1042,13 +1045,16 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
     case 's':
       lua_pushstring(this->m_state, va_arg(arguments, const char*));
       break;
+    case '>':
+      goto endwhile;
     default:
-      this->Error(function.c_str(), "invalid option (%c)", option);
+      this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
       break;
     }
 
     ++inputCount;
   }
+endwhile:
 
   int outputCount = static_cast<int>(std::strlen(signature));
   if (lua_pcall(this->m_state, inputCount, outputCount, 0)) {
@@ -1062,27 +1068,27 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
     return false;
   }
 
-  for (int output = -outputCount; *signature; ++output) {
-    switch (*signature++) {
-    case 'b':
-      *va_arg(arguments, bool*) = lua_toboolean(this->m_state, output) != 0;
-      break;
-    case 'd':
-      *va_arg(arguments, int*) = static_cast<int>(lua_tonumber(this->m_state, output));
-      break;
-    case 'l':
-      *va_arg(arguments, double*) = lua_tonumber(this->m_state, output);
-      break;
-    case 's':
-      *va_arg(arguments, const char**) = lua_tostring(this->m_state, output);
-      break;
-    default:
-      this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
-      break;
-    }
-  }
-
   if (outputCount) {
+    for (int output = -outputCount; *signature; ++output) {
+      switch (*signature++) {
+      case 'b':
+        *va_arg(arguments, bool*) = lua_toboolean(this->m_state, output) != 0;
+        break;
+      case 'd':
+        *va_arg(arguments, int*) = static_cast<int>(lua_tonumber(this->m_state, output));
+        break;
+      case 'l':
+        *va_arg(arguments, double*) = lua_tonumber(this->m_state, output);
+        break;
+      case 's':
+        *va_arg(arguments, const char**) = lua_tostring(this->m_state, output);
+        break;
+      default:
+        this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
+        break;
+      }
+    }
+
     lua_pop(this->m_state, outputCount);
     if (this->m_state) {
       lua_settop(this->m_state, 0);
@@ -1110,13 +1116,7 @@ bool LuaScript::CallTable(std::string table, std::string function, const char* s
 
   while (*signature) {
     luaL_checkstack(this->m_state, 1, "too many arguments");
-
-    char option = *signature++;
-    if (option == '>') {
-      break;
-    }
-
-    switch (option) {
+    switch (*signature++) {
     case 'b':
       lua_pushboolean(this->m_state, static_cast<unsigned char>(va_arg(arguments, int)));
       break;
@@ -1129,13 +1129,16 @@ bool LuaScript::CallTable(std::string table, std::string function, const char* s
     case 's':
       lua_pushstring(this->m_state, va_arg(arguments, const char*));
       break;
+    case '>':
+      goto endwhile;
     default:
-      this->Error(function.c_str(), "invalid option (%c)", option);
+      this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
       break;
     }
 
     ++inputCount;
   }
+endwhile:
 
   int outputCount = static_cast<int>(std::strlen(signature));
   if (lua_pcall(this->m_state, inputCount, outputCount, 0)) {
@@ -1149,27 +1152,27 @@ bool LuaScript::CallTable(std::string table, std::string function, const char* s
     return false;
   }
 
-  for (int output = -outputCount; *signature; ++output) {
-    switch (*signature++) {
-    case 'b':
-      *va_arg(arguments, bool*) = lua_toboolean(this->m_state, output) != 0;
-      break;
-    case 'd':
-      *va_arg(arguments, int*) = static_cast<int>(lua_tonumber(this->m_state, output));
-      break;
-    case 'l':
-      *va_arg(arguments, double*) = lua_tonumber(this->m_state, output);
-      break;
-    case 's':
-      *va_arg(arguments, const char**) = lua_tostring(this->m_state, output);
-      break;
-    default:
-      this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
-      break;
-    }
-  }
-
   if (outputCount) {
+    for (int output = -outputCount; *signature; ++output) {
+      switch (*signature++) {
+      case 'b':
+        *va_arg(arguments, bool*) = lua_toboolean(this->m_state, output) != 0;
+        break;
+      case 'd':
+        *va_arg(arguments, int*) = static_cast<int>(lua_tonumber(this->m_state, output));
+        break;
+      case 'l':
+        *va_arg(arguments, double*) = lua_tonumber(this->m_state, output);
+        break;
+      case 's':
+        *va_arg(arguments, const char**) = lua_tostring(this->m_state, output);
+        break;
+      default:
+        this->Error(function.c_str(), "invalid option (%c)", signature[-1]);
+        break;
+      }
+    }
+
     lua_settop(this->m_state, -1 - outputCount);
     if (this->m_state) {
       lua_settop(this->m_state, 0);
@@ -1201,12 +1204,12 @@ int LuaScript::GlobalInteger(const char* name) {
 // FUNCTION: fn_18330
 std::string LuaScript::GlobalString(const char* name) {
   if (!this->m_state) {
-    return {};
+    return "";
   }
 
   lua_getglobal(this->m_state, name);
   if (!lua_isstring(this->m_state, -1)) {
-    return {};
+    return "";
   }
 
   std::string value = lua_tostring(this->m_state, -1);
@@ -1238,18 +1241,19 @@ std::list<int> LuaScript::TableKeys(std::string_view name) {
 
   lua_getglobal(this->m_state, name.data());
 
-  if (lua_type(this->m_state, -1) == LUA_TTABLE) {
-    lua_pushnil(this->m_state);
-
-    while (lua_next(this->m_state, -2)) {
-      keys.push_back(lua_tointeger(this->m_state, -2));
-      lua_pop(this->m_state, 1);
-    }
-
-    lua_pop(this->m_state, 1);
-    keys.sort();
+  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
+    return keys;
   }
 
+  lua_pushnil(this->m_state);
+
+  while (lua_next(this->m_state, -2)) {
+    keys.push_back(lua_tointeger(this->m_state, -2));
+    lua_pop(this->m_state, 1);
+  }
+
+  lua_pop(this->m_state, 1);
+  keys.sort();
   return keys;
 }
 
