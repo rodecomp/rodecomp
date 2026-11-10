@@ -99,7 +99,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
   std::string name = this->nameCard.Name(actor->render.accountId);
 
   if (actor->render.state == 1) {
-    packet.resize(sizeof(ActorMoveEntryPacket));
+    packet.resize(sizeof(ActorMoveEntryPacket), 0);
     ActorMoveEntryPacket* entry = reinterpret_cast<ActorMoveEntryPacket*>(packet.data());
     entry->hp = actor->GetGaugeCurrent();
     entry->maxHp = actor->GetGaugeMaximum();
@@ -113,24 +113,24 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
 
     int cellX;
     int subX;
-    if (x > 0.0f) {
+    if (x <= 0.0f) {
+      cellX = 0;
+      subX = 0;
+    } else {
       const double position = x + 0.5;
       cellX = static_cast<int>(position);
       subX = static_cast<int>(static_cast<float>(position - cellX) * 16.0f);
-    } else {
-      cellX = 0;
-      subX = 0;
     }
 
     int cellY;
     int subY;
-    if (y > 0.0f) {
+    if (y <= 0.0f) {
+      cellY = 0;
+      subY = 0;
+    } else {
       const double position = y + 0.5;
       cellY = static_cast<int>(position);
       subY = static_cast<int>(static_cast<float>(position - cellY) * 16.0f);
-    } else {
-      cellY = 0;
-      subY = 0;
     }
 
     const int destinationX = actor->movementState[5];
@@ -143,7 +143,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->moveData[5] = static_cast<std::uint8_t>((subX << 4) | (subY & 0x0F));
 
     entry->packetType = packetType;
-    entry->packetLength = static_cast<std::uint16_t>(name.size() + packet.size());
+    entry->packetLength = static_cast<std::uint16_t>(packet.size() + name.size());
     entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
     entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
@@ -177,7 +177,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
       entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
     }
   } else {
-    packet.resize(sizeof(ActorStandEntryPacket));
+    packet.resize(sizeof(ActorStandEntryPacket), 0);
     ActorStandEntryPacket* entry = reinterpret_cast<ActorStandEntryPacket*>(packet.data());
     entry->hp = actor->GetGaugeCurrent();
     entry->maxHp = actor->GetGaugeMaximum();
@@ -197,7 +197,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     }
 
     entry->packetType = packetType;
-    entry->packetLength = static_cast<std::uint16_t>(name.size() + packet.size());
+    entry->packetLength = static_cast<std::uint16_t>(packet.size() + name.size());
     entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
     entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
