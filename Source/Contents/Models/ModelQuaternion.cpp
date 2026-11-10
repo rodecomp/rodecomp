@@ -8,31 +8,31 @@
 // OFFSET: 0x00554B90
 // FUNCTION: fn_02029
 void QuaternionMatrix(const ModelRotationKey& key, matrix& output) {
-  const float x = key.rotation[0];
-  const float y = key.rotation[1];
-  const float z = key.rotation[2];
-  const float w = key.rotation[3];
+  const float x2 = key.rotation[0] + key.rotation[0];
+  const float y2 = key.rotation[1] + key.rotation[1];
+  const float z2 = key.rotation[2] + key.rotation[2];
+  const float wx = key.rotation[3] * x2;
+  const float wy = key.rotation[3] * y2;
+  const float wz = key.rotation[3] * z2;
+  const float xx = key.rotation[0] * x2;
+  const float xy = key.rotation[0] * y2;
+  const float xz = key.rotation[0] * z2;
+  const float yy = key.rotation[1] * y2;
+  const float yz = key.rotation[1] * z2;
+  const float zz = key.rotation[2] * z2;
 
-  const float xx = x * (x + x);
-  const float wx = w * (x + x);
-  const float xy = x * (y + y);
-  const float xz = x * (z + z);
-  const float yy = y * (y + y);
-  const float yz = y * (z + z);
-  const float wy = w * (y + y);
-  const float zz = z * (z + z);
-  const float wz = w * (z + z);
-
-  output.values[9] = output.values[10] = output.values[11] = 0.0f;
-  output.values[0] = 1.0f - (zz + yy);
+  output.values[0] = 1.0f - (yy + zz);
   output.values[1] = xy + wz;
-  output.values[3] = xy - wz;
   output.values[2] = xz - wy;
-  output.values[4] = 1.0f - (zz + xx);
-  output.values[8] = 1.0f - (yy + xx);
+  output.values[3] = xy - wz;
+  output.values[4] = 1.0f - (xx + zz);
   output.values[5] = yz + wx;
-  output.values[7] = yz - wx;
   output.values[6] = xz + wy;
+  output.values[7] = yz - wx;
+  output.values[8] = 1.0f - (xx + yy);
+  output.values[9] = 0.0f;
+  output.values[10] = 0.0f;
+  output.values[11] = 0.0f;
 }
 
 // OFFSET: 0x00541B30
