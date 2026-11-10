@@ -1,6 +1,7 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/Store/MCStoreInfoBackupAsyncWork.h"
 #include "Client/Session.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -115,7 +116,7 @@ bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
   char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   char type[64] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
 
@@ -190,7 +191,7 @@ bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   char type[64] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
 
   CCURLPostHander handler(this->m_url);
   const std::array<std::uint8_t, 4> aid = {0x48, 0xE0, 0x03, 0x5F};

@@ -1,3 +1,4 @@
+#include "Network/Http/CURLMgr.h"
 #include "Network/TextEncoding.h"
 #include "Utility/StackAlloc.h"
 
@@ -17,7 +18,7 @@ UINT g_textCodePage;
 
 // OFFSET: 0x005E8FE0
 // FUNCTION: fn_03951
-std::string ToUtf8(std::string text) {
+std::string CCURLMgr::ToUtf8(std::string text) {
   std::string result;
   int wideLength = MultiByteToWideChar(g_textCodePage, 0, text.c_str(), lstrlenA(text.c_str()), nullptr, 0);
   BSTR wide = SysAllocStringLen(nullptr, wideLength);
@@ -43,7 +44,7 @@ std::string ToUtf8(std::string text) {
 
 // OFFSET: 0x005E9440
 // FUNCTION: fn_03954
-std::string FromUtf8(std::string text) {
+std::string CCURLMgr::FromUtf8(std::string text) {
   std::string result;
   int wideLength = MultiByteToWideChar(CP_UTF8, 0, text.c_str(), lstrlenA(text.c_str()) + 1, nullptr, 0);
   BSTR wide = SysAllocStringLen(nullptr, wideLength);

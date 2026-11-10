@@ -1,5 +1,6 @@
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Contents/UserData/CharacterLinkedUserDataSaveAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -18,6 +19,13 @@ namespace {
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
+  }
+
+  // INLINED
+  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
+    std::string message = text;
+    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
+    target.MoveFrom(diagnostic);
   }
 
   template <std::size_t Length, std::uint64_t Key>
@@ -96,8 +104,8 @@ bool CCharacterLinkedUserDataSaveAsyncWork::Execute() {
   StringFormat(accountId, sizeof(accountId), _TRUNCATE, "%lu", this->m_accountId);
   char characterId[64] = {};
   StringFormat(characterId, sizeof(characterId), _TRUNCATE, "%lu", this->m_characterId);
-  std::string name = ToUtf8(this->m_accountName);
-  std::string data = ToUtf8(this->m_data);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
+  std::string data = CCURLMgr::GetInstance()->ToUtf8(this->m_data);
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xE0, 0x74, 0xDB, 0xD7}), accountId, 4);
   handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF0, 0x4E, 0x13, 0xCD}), characterId, 4);
@@ -106,11 +114,9 @@ bool CCharacterLinkedUserDataSaveAsyncWork::Execute() {
   handler.AddField(DecryptName<0xD98F03A52D35636DULL>({0x09, 0x02, 0x41, 0x4C, 0xA5}), data, 4);
 
   if (handler.Perform() != 0) {
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB7, 0x78, 0xF4, 0xE3, 0x6B}), 98);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, false, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB7, 0x78, 0xF4, 0xE3, 0x6B}), 98);
   } else {
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0xD3755DD95F47A909ULL>({0x6E, 0xC6, 0x28, 0x3B, 0xD9}), 102);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, true, DecryptName<0xD3755DD95F47A909ULL>({0x6E, 0xC6, 0x28, 0x3B, 0xD9}), 102);
   }
 
   return false;

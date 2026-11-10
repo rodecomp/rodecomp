@@ -1,5 +1,6 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Contents/Emblems/EmblemDataUploadAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -13,9 +14,10 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\Emblem\\CEmblemDataUploadAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
+  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
     std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
+    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
+    target.MoveFrom(diagnostic);
   }
 
   template <std::size_t Length, std::uint64_t Key>
@@ -89,18 +91,19 @@ void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, 
 // OFFSET: 0x005EC7C0
 // FUNCTION: fn_03983
 bool CEmblemDataUploadAsyncWork::Execute() {
-  char account[64] = {}, guild[64] = {};
+  char account[64] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  char guild[64] = {};
   StringFormat(guild, sizeof(guild), _TRUNCATE, "%lu", this->m_guildId);
-  std::string name = ToUtf8(this->m_accountName);
-  std::string path = ToUtf8(this->m_path);
+  std::string name = g_curlMgr->ToUtf8(this->m_accountName);
+  std::string path = g_curlMgr->ToUtf8(this->m_path);
   std::string extension = this->m_path.substr(this->m_path.size() - 3, this->m_path.size());
 
   for (char& value : extension) {
     value = static_cast<char>(std::toupper(static_cast<unsigned char>(value)));
   }
 
-  std::string imageType = ToUtf8(extension);
+  std::string imageType = g_curlMgr->ToUtf8(extension);
   CCURLPostHander handler(this->m_url);
   const std::uint8_t aid[] = {0xF6, 0x4E, 0x13, 0xCD};
   handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(aid), account, 4);
@@ -116,14 +119,12 @@ bool CEmblemDataUploadAsyncWork::Execute() {
   handler.AddField(DecryptName<0xD98F03A52D35636DULL>(img), path, 10);
 
   if (handler.Perform() == 0) {
-    this->m_response = FromUtf8(handler.Response());
+    this->m_response = g_curlMgr->FromUtf8(handler.Response());
     const std::uint8_t good[] = {0x0A, 0x8C, 0x2A, 0xC7, 0xED};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>(good), 100);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, true, DecryptName<0x31D7C1EDA345E36DULL>(good), 100);
   } else {
     const std::uint8_t fail[] = {0x6F, 0xC8, 0x2E, 0x33, 0xD9};
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3755DD95F47A909ULL>(fail), 109);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, false, DecryptName<0xD3755DD95F47A909ULL>(fail), 109);
   }
 
   return false;

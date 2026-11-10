@@ -1,5 +1,6 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/ChangePartyMasterAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -16,6 +17,13 @@ namespace {
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
+  }
+
+  // INLINED
+  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
+    std::string message = text;
+    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
+    target.MoveFrom(diagnostic);
   }
 
   template <std::size_t Length, std::uint64_t Key>
@@ -103,9 +111,9 @@ bool CChangePartyMasterAsyncWork::Execute() {
   StringFormat(targetAccount, sizeof(targetAccount), _TRUNCATE, "%lu", this->m_targetAccountId);
   char targetCharacter[64] = {};
   StringFormat(targetCharacter, sizeof(targetCharacter), _TRUNCATE, "%lu", this->m_targetCharacterId);
-  std::string world = ToUtf8(this->m_worldName);
-  std::string name = ToUtf8(this->m_characterName);
-  std::string targetName = ToUtf8(this->m_targetName);
+  std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_worldName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_characterName);
+  std::string targetName = CCURLMgr::GetInstance()->ToUtf8(this->m_targetName);
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x14, 0xB4, 0xF1, 0xDB}), account, 4);
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x58, 0x78, 0x89, 0xE7}), character, 4);
@@ -117,12 +125,10 @@ bool CChangePartyMasterAsyncWork::Execute() {
   handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>({0x90, 0x6C, 0xE9, 0xE7, 0x3F, 0xE4, 0x64, 0x6A, 0xBF, 0x19}), this->m_token, 4);
 
   if (handler.Perform() != 0) {
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x91651D81F559F971ULL>({0x17, 0x98, 0x30, 0x99, 0x81}), 113);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, false, DecryptName<0x91651D81F559F971ULL>({0x17, 0x98, 0x30, 0x99, 0x81}), 113);
   } else {
-    this->m_response = FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x73D1674B61DF7B0BULL>({0x78, 0x0E, 0xBC, 0x02, 0x2E, 0x14, 0xA2, 0x73}), 122);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
+    Report(this->m_diagnostic, true, DecryptName<0x73D1674B61DF7B0BULL>({0x78, 0x0E, 0xBC, 0x02, 0x2E, 0x14, 0xA2, 0x73}), 122);
   }
 
   return false;

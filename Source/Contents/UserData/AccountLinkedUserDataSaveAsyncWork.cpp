@@ -1,5 +1,6 @@
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/UserData/AccountLinkedUserDataSaveAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -18,6 +19,13 @@ namespace {
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
+  }
+
+  // INLINED
+  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
+    std::string message = text;
+    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
+    target.MoveFrom(diagnostic);
   }
 
   template <std::size_t Length, std::uint64_t Key>
@@ -92,7 +100,7 @@ void CAccountLinkedUserDataSaveAsyncWork::Bind(std::uint32_t accountId, std::str
 bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
   char accountId[64] = {};
   StringFormat(accountId, sizeof(accountId), _TRUNCATE, "%lu", this->m_accountId);
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
   const std::uint8_t aid[] = {0x56, 0xB0, 0x0B, 0xB9};
   handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);
@@ -105,12 +113,10 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
 
   if (handler.Perform() != 0) {
     const std::uint8_t error[] = {0x17, 0x98, 0x30, 0x99, 0x81};
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x91651D81F559F971ULL>(error), 102);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, false, DecryptName<0x91651D81F559F971ULL>(error), 102);
   } else {
     const std::uint8_t good[] = {0x6C, 0x14, 0xB0, 0x05, 0x4B};
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x73D1674B61DF7B0BULL>(good), 106);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, true, DecryptName<0x73D1674B61DF7B0BULL>(good), 106);
   }
 
   return false;

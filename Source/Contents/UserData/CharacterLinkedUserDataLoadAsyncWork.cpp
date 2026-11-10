@@ -1,5 +1,6 @@
 #include "Contents/UserData/CharacterLinkedUserDataLoadAsyncWork.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -98,7 +99,7 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
   char characterId[64] = {};
   StringFormat(characterId, sizeof(characterId), _TRUNCATE, "%lu", this->m_characterId);
 
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x5E, 0x78, 0x89, 0xE7}), accountId, 4);
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x12, 0xB4, 0xF1, 0xDB}), characterId, 4);
@@ -106,7 +107,7 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xF6, 0x52, 0xED, 0xBB, 0x07, 0xC1, 0x46, 0x34, 0xC4, 0x3D}), name, 4);
 
   if (handler.Perform() == 0) {
-    this->m_response = FromUtf8(handler.Response());
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x0A, 0x8C, 0x2A, 0xC7, 0xED}), 103);
     this->m_diagnostic.MoveFrom(diagnostic);
   }

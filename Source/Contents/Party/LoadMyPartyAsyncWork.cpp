@@ -1,5 +1,6 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/LoadMyPartyAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -16,6 +17,13 @@ namespace {
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
+  }
+
+  // INLINED
+  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
+    std::string message = text;
+    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
+    target.MoveFrom(diagnostic);
   }
 
   template <std::size_t Length, std::uint64_t Key>
@@ -96,7 +104,7 @@ bool CLoadMyPartyAsyncWork::Execute() {
   char character[64] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
-  const std::string world = ToUtf8(this->m_world);
+  const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x14, 0xB4, 0xF1, 0xDB}), account, 4);
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x58, 0x78, 0x89, 0xE7}), character, 4);
@@ -104,12 +112,10 @@ bool CLoadMyPartyAsyncWork::Execute() {
   handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07}), this->m_token, 4);
 
   if (handler.Perform() != 0) {
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9}), 92);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    Report(this->m_diagnostic, false, DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9}), 92);
   } else {
-    this->m_response = FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31}), 101);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
+    Report(this->m_diagnostic, true, DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31}), 101);
   }
 
   return false;

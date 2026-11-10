@@ -1,5 +1,6 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/LoadPartyListAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -101,7 +102,7 @@ bool CLoadPartyListAsyncWork::Execute() {
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   char page[10] = {};
   StringFormat(page, sizeof(page), _TRUNCATE, "%d", this->m_page);
-  const std::string world = ToUtf8(this->m_world);
+  const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
   const std::uint8_t gid[] = {0xCE, 0x74, 0x29, 0xE5};
   handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>(gid), character, 4);
@@ -160,7 +161,7 @@ bool CLoadPartyListAsyncWork::Execute() {
     }
 
     if (!this->m_filter.memo.empty()) {
-      std::string memo = ToUtf8(this->m_filter.memo);
+      std::string memo = CCURLMgr::GetInstance()->ToUtf8(this->m_filter.memo);
       const std::uint8_t memoName[] = {0xB0, 0x34, 0xD8, 0x36, 0x01};
       handler.AddField(DecryptName<0xBD3F430159B551FDULL>(memoName), memo, 4);
     }
@@ -172,7 +173,7 @@ bool CLoadPartyListAsyncWork::Execute() {
   }
 
   if (handler.Perform() == 0) {
-    this->m_response = FromUtf8(handler.Response());
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     const std::uint8_t success[] = {0xE4, 0x04, 0xC4, 0xDE, 0x04, 0x50, 0xF0, 0x5B};
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x5B832361BDA77197ULL>(success), 138);
     this->m_diagnostic.MoveFrom(diagnostic);

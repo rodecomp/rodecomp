@@ -1,5 +1,6 @@
 #include "Contents/UserData/AccountLinkedUserDataLoadAsyncWork.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -93,7 +94,7 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
   char accountId[64] = {};
   StringFormat(accountId, sizeof(accountId), _TRUNCATE, "%lu", this->m_accountId);
 
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
   const std::uint8_t aid[] = {0x56, 0xB0, 0x0B, 0xB9};
   handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);

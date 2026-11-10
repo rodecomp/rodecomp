@@ -1,6 +1,7 @@
 #include "Client/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/RegisterPartyAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -96,9 +97,9 @@ bool CRegisterPartyAsyncWork::Execute() {
   StringFormat(maximum, sizeof(maximum), _TRUNCATE, "%d", this->m_info.maximumLevel);
   char type[10] = {};
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_info.type);
-  const std::string world = ToUtf8(this->m_world);
-  const std::string name = ToUtf8(std::string(g_session.DecodePlayerName()));
-  const std::string memo = ToUtf8(this->m_info.memo);
+  const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
+  const std::string name = CCURLMgr::GetInstance()->ToUtf8(std::string(g_session.DecodePlayerName()));
+  const std::string memo = CCURLMgr::GetInstance()->ToUtf8(this->m_info.memo);
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>({0xC8, 0x74, 0x29, 0xE5}), account, 4);
   handler.AddField(DecryptName<0x6B3301E1A3079125ULL>({0x62, 0xD8, 0x43, 0xA3}), character, 4);
@@ -130,7 +131,7 @@ bool CRegisterPartyAsyncWork::Execute() {
     AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xEB3D4FAB0FC183DBULL>({0xBD, 0xE2, 0xA8, 0x63, 0xAB})), sourceFile, 118);
     this->m_diagnostic.MoveFrom(diagnostic);
   } else {
-    this->m_response = FromUtf8(handler.Response());
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     AsyncDiagnostic diagnostic(true, std::string(DecryptName<0x8F3F2FA959977F9FULL>({0xEC, 0x0A, 0xF4, 0x3A, 0xCC, 0x5C, 0x4C, 0x8F})), sourceFile, 127);
     this->m_diagnostic.MoveFrom(diagnostic);
   }

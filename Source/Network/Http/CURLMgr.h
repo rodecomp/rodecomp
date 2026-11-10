@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_NETWORK_HTTP_CURLMGR_H
 
 #include <cstddef>
+#include <string>
 #include <windows.h>
 
 struct curl_slist;
@@ -13,6 +14,9 @@ public:
   virtual ~CCURLMgr();
   static bool Initialize();
   static void Shutdown();
+  static CCURLMgr* GetInstance();
+  std::string ToUtf8(std::string text);
+  std::string FromUtf8(std::string text);
 
   /* 0004 */ int(__cdecl* globalInit)(long);
   /* 0008 */ void(__cdecl* globalCleanup)();
@@ -30,6 +34,11 @@ public:
 };
 
 extern CCURLMgr* g_curlMgr;
+
+// INLINED
+inline CCURLMgr* CCURLMgr::GetInstance() {
+  return g_curlMgr;
+}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CCURLMgr) == 56);

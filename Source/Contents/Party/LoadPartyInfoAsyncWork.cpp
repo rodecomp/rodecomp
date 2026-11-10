@@ -1,5 +1,6 @@
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/LoadPartyInfoAsyncWork.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -93,7 +94,7 @@ bool CLoadPartyInfoAsyncWork::Execute() {
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
   char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
-  std::string world = ToUtf8(this->m_world);
+  std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   char query[64] = {};
   StringFormat(query, sizeof(query), _TRUNCATE, "%lu", this->m_queryAccountId);
   CCURLPostHander handler(this->m_url);
@@ -104,7 +105,7 @@ bool CLoadPartyInfoAsyncWork::Execute() {
   handler.AddField(DecryptName<0xD3755DD95F47A909ULL>({0x58, 0xDC, 0x22, 0x2D, 0xA0, 0x1C, 0x3C, 0x97, 0x09}), query, 4);
 
   if (handler.Perform() == 0) {
-    this->m_response = FromUtf8(handler.Response());
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31}), 97);
     this->m_diagnostic.MoveFrom(diagnostic);
   }

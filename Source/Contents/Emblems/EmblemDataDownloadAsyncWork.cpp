@@ -1,5 +1,6 @@
 #include "Contents/Emblems/EmblemDataDownloadAsyncWork.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
+#include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -97,7 +98,7 @@ bool CEmblemDataDownloadAsyncWork::Execute() {
   StringFormat(guild, sizeof(guild), _TRUNCATE, "%lu", this->m_guildId);
   char version[10] = {};
   StringFormat(version, sizeof(version), _TRUNCATE, "%lu", this->m_version);
-  std::string name = ToUtf8(this->m_accountName);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
 
   CCURLPostHander handler(this->m_url);
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xE0, 0x74, 0xDB, 0xD7}), account, 4);
