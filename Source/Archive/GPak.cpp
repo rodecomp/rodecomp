@@ -1263,24 +1263,17 @@ bool CGPak::Open(CPakFile* file) {
     this->m_tableOffset = static_cast<std::uint64_t>(header->tableOffset) + sizeof(PakHeaderFile);
   }
 
-  bool loaded;
-
-  switch (this->m_version & 0xFF00) {
-  case 0x100:
+  bool loaded = false;
+  const std::uint32_t version = this->m_version & 0xFF00;
+  if (version == 0x100) {
     loaded = this->ReadTableV1();
-    break;
-  case 0x200:
+  } else if (version == 0x200) {
     loaded = this->ReadTableV2();
-    break;
-  case 0x300:
+  } else if (version == 0x300) {
     loaded = this->ReadTableV3();
-    break;
-  default:
-    loaded = false;
-    break;
   }
 
-  if (loaded) {
+  if (loaded == true) {
     return true;
   }
 
