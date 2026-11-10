@@ -16,15 +16,13 @@ void UIEditCtrl::Trim() {
     return;
   }
 
-  const auto codePage = static_cast<WORD>(g_textCodePage);
-  const char* start = this->text.c_str();
-  const char* next = CharNextExA(codePage, start, 0);
+  const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
   while (length - std::strlen(next) <= static_cast<unsigned>(this->maximum)) {
-    next = CharNextExA(codePage, next, 0);
+    next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
   }
 
-  const char* previous = CharPrevExA(codePage, start, next, 0);
+  const char* previous = CharPrevExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), next, 0);
   this->text.resize(length - std::strlen(previous));
 
   while (this->text.size() < static_cast<unsigned>(this->maximum)) {
