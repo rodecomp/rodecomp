@@ -21,8 +21,9 @@ struct NamedBinkMovie {
   ~NamedBinkMovie();
   std::string Name() const;
   bool Open(std::string fileName, int loop);
+  void AddPosition(MoviePosition position);
   /* 0000 */ std::string name;
-  /* 0018 */ std::unique_ptr<BinkMovie> decoder;
+  /* 0018 */ BinkMovie* decoder;
   /* 001C */ float radius;
   /* 0020 */ std::list<MoviePosition> positions;
 };
@@ -32,11 +33,10 @@ public:
   BinkMovies();
   ~BinkMovies();
   NamedBinkMovie* Get(std::string name, int loop);
-  void AddPosition(NamedBinkMovie& movie, float x, float y, float z);
   void Update();
 
 private:
-  /* 0000 */ std::list<std::unique_ptr<NamedBinkMovie>> m_movies;
+  /* 0000 */ std::list<NamedBinkMovie*> m_movies;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
