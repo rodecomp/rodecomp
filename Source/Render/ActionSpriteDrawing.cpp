@@ -29,13 +29,14 @@ void DrawActionSprite(
     }
 
     const float scaleX = cell.scaleX;
+    const float scaleY = cell.scaleY;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     const float left = static_cast<float>(cell.x) * scale;
     const float scaledLeft = left * scaleX;
+    const float top = static_cast<float>(cell.y) * scale * scaleY;
     const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x) * scale;
-    const float top = static_cast<float>(cell.y) * scale * cell.scaleY;
     const float scaledRight = right * scaleX;
-    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * scale * cell.scaleY;
+    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * scale * scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
@@ -56,7 +57,21 @@ void DrawActionSprite(
     float y2;
     float x3;
     float y3;
-    if (angle == 0.0f) {
+    if (angle != 0.0f) {
+      const int degrees = static_cast<int>(angle);
+      const float cosine = ClientCosine(degrees);
+      const float sine = ClientSine(degrees);
+      const float originX = static_cast<float>(x);
+      const float originY = static_cast<float>(y);
+      x0 = cosine * scaledLeft - sine * top + originX;
+      y0 = sine * scaledLeft + cosine * top + originY;
+      x1 = cosine * scaledRight - sine * top + originX;
+      y1 = sine * scaledRight + cosine * top + originY;
+      x2 = cosine * scaledRight - sine * bottom + originX;
+      y2 = cosine * bottom + sine * scaledRight + originY;
+      x3 = cosine * scaledLeft - sine * bottom + originX;
+      y3 = cosine * bottom + sine * scaledLeft + originY;
+    } else {
       float first = scaledLeft;
       float second = right;
       if (cell.mirrored & 1) {
@@ -74,20 +89,6 @@ void DrawActionSprite(
       y2 = originY + bottom;
       x3 = scaleX * second + originX;
       y3 = originY + bottom;
-    } else {
-      const int degrees = static_cast<int>(angle);
-      const float cosine = ClientCosine(degrees);
-      const float sine = ClientSine(degrees);
-      const float originX = static_cast<float>(x);
-      const float originY = static_cast<float>(y);
-      x0 = cosine * scaledLeft - sine * top + originX;
-      y0 = sine * scaledLeft + cosine * top + originY;
-      x1 = cosine * scaledRight - sine * top + originX;
-      y1 = sine * scaledRight + cosine * top + originY;
-      x2 = cosine * scaledRight - sine * bottom + originX;
-      y2 = cosine * bottom + sine * scaledRight + originY;
-      x3 = cosine * scaledLeft - sine * bottom + originX;
-      y3 = cosine * bottom + sine * scaledLeft + originY;
     }
 
     RenderVertex* vertices = primitive->quad;
