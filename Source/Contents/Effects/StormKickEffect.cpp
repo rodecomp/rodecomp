@@ -188,18 +188,18 @@ void CStormKickEffect::Open() {
   g_modeMgr.GetGameMode();
 
   switch (this->id) {
+  case EF_STORMKICK6:
+    this->CreateStorms(0);
+    this->CreateStorms(1);
+    this->CreateClouds(0);
+    this->CreateClouds(1);
+    break;
   case EF_STORMKICK:
   case EF_STORMKICK1:
   case EF_STORMKICK2:
   case EF_STORMKICK3:
   case EF_STORMKICK7:
     this->CreateStorms(0);
-    this->CreateClouds(0);
-    this->CreateClouds(1);
-    break;
-  case EF_STORMKICK6:
-    this->CreateStorms(0);
-    this->CreateStorms(1);
     this->CreateClouds(0);
     this->CreateClouds(1);
     break;
