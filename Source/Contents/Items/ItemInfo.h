@@ -17,19 +17,19 @@ struct RawItemData {
   /* 0018 */ std::uint32_t type;
   /* 001C */ std::uint32_t refiningLevel;
   /* 0020 */ unsigned char identified;
-  /* 0021 */ unsigned char unknown_0021[27];
+  /* 0021 */ unsigned char padding_0021[27];
   /* 003C */ std::string itemId;
   /* 0054 */ unsigned char skillNameAndLevel[28];
   /* 0070 */ std::uint32_t cards[4];
-  /* 0080 */ unsigned char unknown_0080[8];
+  /* 0080 */ unsigned char padding_0080[8];
   /* 0088 */ std::int32_t optionCount;
   /* 008C */ unsigned char options[25];
-  /* 00A5 */ unsigned char unknown_00A5[7];
+  /* 00A5 */ unsigned char padding_00A5[7];
   /* 00AC */ std::int16_t grade;
   /* 00AE */ unsigned char hasIndex;
-  /* 00AF */ unsigned char unknown_00AF;
+  /* 00AF */ unsigned char padding_00AF;
   /* 00B0 */ std::uint32_t location;
-  /* 00B4 */ std::uint32_t unknown_00B4;
+  /* 00B4 */ std::uint32_t padding_00B4;
   /* 00B8 */ std::uint32_t sprite;
 };
 

@@ -105,8 +105,8 @@ void CSession::GetPetHungryStateString(int hunger, char* buffer) {
     }
   }
 
-  const char unknown[] = {'\xB8', '\xF4', '\xB6', '\xF3', '\xBF', '\xE4', '.', '\0'};
-  std::memcpy(buffer, unknown, sizeof(unknown));
+  const char unknownStateText[] = {'\xB8', '\xF4', '\xB6', '\xF3', '\xBF', '\xE4', '.', '\0'};
+  std::memcpy(buffer, unknownStateText, sizeof(unknownStateText));
 }
 
 // OFFSET: 0x00E12830

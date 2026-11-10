@@ -10,7 +10,7 @@ class BrowserClientSite;
 class BrowserDocumentUI final : public IDocHostUIHandler {
 public:
   // INLINED
-  explicit BrowserDocumentUI(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
+  explicit BrowserDocumentUI(BrowserClientSite* site) : padding_0004(0), m_site(site) {
   }
   ~BrowserDocumentUI();
 
@@ -35,7 +35,7 @@ public:
   HRESULT STDMETHODCALLTYPE FilterDataObject(IDataObject* data, IDataObject** filtered) override;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int padding_0004;
   /* 0008 */ BrowserClientSite* m_site;
 };
 

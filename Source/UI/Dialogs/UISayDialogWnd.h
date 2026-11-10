@@ -12,7 +12,7 @@ public:
   UISayDialogWnd();
   /* 00B4 */ UIWindow* m_viewer;
   /* 00B8 */ std::list<UIWindow*> m_buttons;
-  /* 00C0 */ std::list<UIWindow*> unknown_00C0;
+  /* 00C0 */ std::list<UIWindow*> padding_00C0;
   /* 00C8 */ int m_responseMessage;
   /* 00CC */ int m_responseId;
   /* 00D0 */ WindowPlacement* m_placement;

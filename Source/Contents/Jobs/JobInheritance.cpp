@@ -1805,9 +1805,9 @@ public:
 class CEquipmentPropertiesMgr {
 public:
   virtual ~CEquipmentPropertiesMgr();
-  /* 0004 */ unsigned char unknown_0004[0x9];
+  /* 0004 */ unsigned char padding_0004[0x9];
   /* 000D */ bool m_dirty;
-  /* 000E */ unsigned char unknown_000E[0x12];
+  /* 000E */ unsigned char padding_000E[0x12];
   /* 0020 */ UIWindow* observerWindow;
   /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
 

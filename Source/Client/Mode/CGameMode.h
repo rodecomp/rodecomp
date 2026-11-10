@@ -108,7 +108,7 @@ public:
   void ReceiveMacroReporterList(int count, const int* aids);
   /* 0058 */ unsigned char areaBounds[0x10];
   /* 0068 */ char mapName[16];
-  /* 0078 */ unsigned char unknown_0078[0xC];
+  /* 0078 */ unsigned char padding_0078[0xC];
   /* 0084 */ std::vector<std::string> mapResources;
   /* 0090 */ unsigned char minimapBmpName[0x3C];
   /* 00CC */ CWorld* scene;
@@ -166,7 +166,7 @@ public:
   /* 02E0 */ int menuTargetAid;
   /* 02E4 */ unsigned char nameBalloonSize[0x08];
   /* 02EC */ std::string menuTargetName;
-  /* 0304 */ unsigned char unknown_0304[0x04];
+  /* 0304 */ unsigned char padding_0304[0x04];
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ std::string chatRoomTitle;
   /* 03E0 */ std::string chatRoomPassword;
@@ -196,12 +196,12 @@ public:
   /* 05B4 */ int yggdrasilUsePending;
   /* 05B8 */ int lastPickItemTime;
   /* 05BC */ int chatLogLines;
-  /* 05C0 */ unsigned char unknown_05C0[0x04];
+  /* 05C0 */ unsigned char padding_05C0[0x04];
   /* 05C4 */ int bossMonsterX;
   /* 05C8 */ int bossMonsterY;
   /* 05CC */ unsigned char bossAlarmAndCopyNameFlags[0x02];
   /* 05CE */ unsigned char inventoryChanged;
-  /* 05CF */ unsigned char unknown_05CF;
+  /* 05CF */ unsigned char padding_05CF;
   /* 05D0 */ UIWindow* statusIconTooltip;
   /* 05D4 */ std::list<unsigned long> periodicTicks;
   /* 05DC */ std::map<int, std::string> miniMapTooltipWindows;
@@ -220,9 +220,9 @@ public:
   /* 0624 */ unsigned char isInitializing[0x4];
   /* 0628 */ std::unordered_set<int> petFriendlyNoticeIds;
   /* 0648 */ unsigned char recordItemPickups;
-  /* 0649 */ unsigned char unknown_0649[0x3];
+  /* 0649 */ unsigned char padding_0649[0x3];
   /* 064C */ std::unordered_map<int, int> itemPickupCounts;
-  /* 066C */ unsigned char unknown_066C[0x4];
+  /* 066C */ unsigned char padding_066C[0x4];
 
   std::string MapName();
   UIBroadcastBalloon* EnsureBroadcastBalloon();
@@ -386,12 +386,12 @@ public:
   void ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor);
   void ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor);
   void ReceiveSkillUpdate(
-    std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t unknown
+    std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t learnedLevel
   );
   void ApplySkillUpdatePacket(const void* packet);
   void ReceiveLearnedSkill(
     std::uint16_t id, std::int16_t level, int type, std::uint8_t upgradable, std::int16_t spCost, std::int16_t range,
-    std::int16_t unknown0030
+    std::int16_t padding_0030
   );
   void ApplyAdditionalSkillPacket(const void* packet);
   std::uint32_t FindChatRoomActorId(std::uint32_t key);
@@ -480,7 +480,7 @@ public:
   void ShowNoticeBalloon(const std::vector<std::string>* lines);
   void UpdateBalloons();
   void ChangeZoneServer(std::string mapName, int x, int y, int ip, int port, std::string host);
-  const char* Unknown04DCText();
+  const char* RecordChat4Text();
   CPlayer* Player();
   MinimapMarker* FindMinimapMarker(std::uint32_t key);
   float CameraDesiredYaw();
@@ -584,13 +584,13 @@ public:
   void ReceiveGuildLeave2(const unsigned char* data);
   void ReceivePartyInfo2(const unsigned char* data);
   void ReceiveWhisper(const unsigned char* data);
-  void RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char unknownValue, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
+  void RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char damaged, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
   void RefreshInventoryOrEquipItem2(const unsigned char* data);
   void ReceiveRankingList(const unsigned char* data);
   void ApplyStatusIcons(int level, unsigned int flags);
   void ReceiveGuildStorageLogItems(const unsigned char* data);
   void ReceiveWhisper2(const unsigned char* data);
-  void ProcessWhisper(int unknown_0004, std::string name, std::string text, bool flag);
+  void ProcessWhisper(int padding_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
   void Zc_Skill_Entry(const unsigned char* record);      
   void ReceiveStatusChangeEntry(const unsigned char* record);
@@ -919,12 +919,12 @@ public:
   void ReceiveActorStateEntryNamedOld(const unsigned char* data);
   void ReceiveActorStateEntryOld(const unsigned char* data);
   void SpawnStandingPc(
-    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
-    short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name
+    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short padding_0024, int padding_0028, int padding_002C,
+    short padding_0030, short padding_004C, short padding_0050, short padding_0054, short padding_0058, short robe, std::string name
   );
   void SpawnStandingPc2(
-    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
-    short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name, short unknown_0078
+    std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short padding_0024, int padding_0028, int padding_002C,
+    short padding_0030, short padding_004C, short padding_0050, short padding_0054, short padding_0058, short robe, std::string name, short padding_0078
   );
   void SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y);
   void ReceiveActorMoveEntryOld(const unsigned char* data);
@@ -1003,7 +1003,7 @@ static_assert(offsetof(CGameMode, statusIconTooltip) == 0x5D0);
 static_assert(offsetof(CGameMode, notificationWindows) == 0x604);
 static_assert(offsetof(CGameMode, petFriendlyNoticeIds) == 0x628);
 static_assert(offsetof(CGameMode, itemPickupCounts) == 0x64C);
-static_assert(offsetof(CGameMode, unknown_066C) == 0x66C);
+static_assert(offsetof(CGameMode, padding_066C) == 0x66C);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 
@@ -1022,10 +1022,10 @@ extern std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 extern char g_pendingWhisperCount;
 void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
-extern int g_unknown173A5BC;
-extern int g_unknown_01738268;
-extern int g_unknown_0173826C;
-extern int g_unknown_01738270;
+extern int g_overweightThresholdPercent;
+extern int g_buyingStoreMode;
+extern int g_buyingStoreDbNumber;
+extern int g_buyingStoreNoPermission;
 extern std::string g_gameModeNamelessTag;
 void __stdcall OpenWordDisplay(CGameActor* actor);
 

@@ -44,7 +44,7 @@ namespace {
   };
 
   struct ReplayShopNameRecord {
-    /* 0000 */ std::int16_t unknown;
+    /* 0000 */ std::int16_t padding_0000;
     /* 0002 */ char name[16];
     /* 0012 */ int shopId;
   };

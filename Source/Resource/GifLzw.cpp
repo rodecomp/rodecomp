@@ -5,7 +5,7 @@
 namespace {
   struct GifLzwEntry {
     /* 0000 */ unsigned char value;
-    /* 0001 */ unsigned char unknown_0001[3];
+    /* 0001 */ unsigned char padding_0001[3];
     /* 0004 */ int prefix;
     /* 0008 */ int length;
   };

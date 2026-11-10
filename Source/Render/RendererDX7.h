@@ -21,7 +21,7 @@ public:
   /* 026C */ CTextureDX7* boundLightmap;
   /* 0270 */ unsigned clearColor;
   /* 0274 */ IDirect3DDevice7* device;
-  /* 0278 */ unsigned char unknown_0278[4];
+  /* 0278 */ unsigned char padding_0278[4];
   /* 027C */ unsigned screenWidth;
   /* 0280 */ unsigned screenHeight;
 

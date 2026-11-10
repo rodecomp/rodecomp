@@ -18,11 +18,11 @@
 #include <new>
 
 struct MapSkyCloud : CEffect {
-  /* 00CC */ unsigned char unknown_00CC[0x28];
+  /* 00CC */ unsigned char padding_00CC[0x28];
   /* 00F4 */ unsigned char colorR;
   /* 00F5 */ unsigned char colorG;
   /* 00F6 */ unsigned char colorB;
-  /* 00F7 */ unsigned char unknown_00F7;
+  /* 00F7 */ unsigned char padding_00F7;
   /* 00F8 */ float velocityX;
   /* 00FC */ float velocityY;
   /* 0100 */ float velocityZ;

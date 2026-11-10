@@ -78,7 +78,7 @@ namespace LineCutter {
     /* 0080 */ int m_fontHeight;
     /* 0084 */ unsigned char m_bold;
     /* 0085 */ unsigned char m_italic;
-    /* 0086 */ unsigned char unknown_0086[2];
+    /* 0086 */ unsigned char padding_0086[2];
     /* 0088 */ unsigned char m_outlined;
     /* 008C */ std::uint32_t m_outlineColor;
     /* 0090 */ unsigned char m_shadowed;
@@ -690,7 +690,7 @@ void UIItemImage::Paint() {
 // FUNCTION: fn_10433
 CCreateLineInfo::CCreateLineInfo(
   UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool outlineEnabled,
-  int outlineColorValue, bool unknown0030, int shadowColorValue, unsigned char align
+  int outlineColorValue, bool shadow, int shadowColorValue, unsigned char align
 )
     : m_align(align), m_newSegment(true), m_height(0) {
   if (parent && (this->m_parent = parent, text)) {
@@ -703,7 +703,7 @@ CCreateLineInfo::CCreateLineInfo(
     this->m_fontHeight = fontHeight;
     this->m_bold = flags.bold;
     this->m_italic = flags.italic;
-    this->shadow = unknown0030;
+    this->shadow = shadow;
     this->shadowColor = shadowColorValue;
     this->outline = outlineEnabled;
     this->outlineColor = outlineColorValue;

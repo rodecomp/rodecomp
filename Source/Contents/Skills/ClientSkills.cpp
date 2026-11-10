@@ -250,7 +250,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
       if (CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(snapshot.id)) && snapshot.level != 0) {
         const int saved = this->UseLevel(static_cast<int>(snapshot.id));
         if (saved <= 0 || saved > snapshot.level) {
-          this->m_skillBundle.SetUnknownValue(static_cast<int>(snapshot.id), snapshot.level);
+          this->m_skillBundle.SetSkillValue(static_cast<int>(snapshot.id), snapshot.level);
         }
       }
     }
@@ -358,7 +358,7 @@ bool CSession::UpdateMercSkill(const CSkillInfo& value, unsigned char notify) {
 
 // OFFSET: 0x00E07410
 // FUNCTION: fn_23743
-void CSession::AddUnknownId(int id) {
+void CSession::AddAchievementId(int id) {
   if (std::find(this->achievementIds.begin(), this->achievementIds.end(), id) == this->achievementIds.end()) {
     this->achievementIds.push_back(id);
   }
@@ -491,7 +491,7 @@ void CSession::ClearHotkeySkillLevels() {
 
 // OFFSET: 0x00E083D0
 // FUNCTION: fn_23760
-void CSession::EraseUnknownKey(std::int64_t key) {
+void CSession::EraseSummonHp(std::int64_t key) {
   auto first = this->summonHp.find(key);
   if (this->summonHp.end() != first) {
     this->summonHp.erase(first);
@@ -948,7 +948,7 @@ namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
   virtual ~CEquipmentPropertiesMgr();
-  unsigned char unknown_0004[0x1F8];
+  unsigned char padding_0004[0x1F8];
 
   CEquipmentPropertiesMgr();
   __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);

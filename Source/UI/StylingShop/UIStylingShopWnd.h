@@ -71,7 +71,7 @@ public:
   /* 00A0 */ unsigned char showPayments;
   /* 00A1 */ unsigned char showPaymentItems;
   /* 00A2 */ unsigned char showDottedLines;
-  /* 00A3 */ unsigned char unknown_00A3;
+  /* 00A3 */ unsigned char padding_00A3;
   /* 00A4 */ int m_checkTop;
   /* 00A8 */ int paymentFontSize;
   /* 00AC */ bool m_buyable;
@@ -96,7 +96,7 @@ public:
   /* 007C */ UIDisplayCharacter* m_display;
   /* 0080 */ UIShowInfoWnd* m_showInfo;
   /* 0084 */ bool primaryTabVisible;
-  /* 0085 */ bool unknown_0085;
+  /* 0085 */ bool padding_0085;
   /* 0086 */ bool accessoryTabVisible;
 
   void OnCreate(int width, int height) override;
@@ -173,7 +173,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 00B0 */ unsigned char unknown_00B0[12];
+  /* 00B0 */ unsigned char padding_00B0[12];
   /* 00BC */ std::vector<UIStaticBitmap*> m_itemFrames;
 };
 

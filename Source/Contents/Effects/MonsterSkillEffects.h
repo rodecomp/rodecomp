@@ -117,7 +117,7 @@ public:
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ unsigned char fadingIn;
-  /* 00D9 */ unsigned char unknown_00D9[3];
+  /* 00D9 */ unsigned char padding_00D9[3];
   /* 00DC */ unsigned int expireTime;
 };
 
@@ -148,7 +148,7 @@ public:
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ std::vector<EZ2STREmitter*> secondStrikeEmitters;
   /* 00E4 */ unsigned char secondStrike;
-  /* 00E5 */ unsigned char unknown_00E5[3];
+  /* 00E5 */ unsigned char padding_00E5[3];
 };
 
 class CEternalSlashAttackEffect : public CEffect {
@@ -218,13 +218,13 @@ public:
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::string leftTexture;
   /* 00EC */ std::string rightTexture;
-  /* 0104 */ int unknown_0104;
+  /* 0104 */ int padding_0104;
   /* 0108 */ double stepDistance;
   /* 0110 */ unsigned char leftFoot;
-  /* 0111 */ unsigned char unknown_0111[3];
+  /* 0111 */ unsigned char padding_0111[3];
   /* 0114 */ vector3d lastPosition;
   /* 0120 */ float lastGroundHeight;
-  /* 0124 */ int unknown_0124;
+  /* 0124 */ int padding_0124;
 };
 
 class CFootprintStrEffect : public CEffect {
@@ -278,7 +278,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ unsigned char unknown_00CC[4];
+  /* 00CC */ unsigned char padding_00CC[4];
   /* 00D0 */ long long maxLevel;
   /* 00D8 */ long long level;
   /* 00E0 */ std::map<long long, AbyssWave> waves;
@@ -297,7 +297,7 @@ public:
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ unsigned char loaded;
-  /* 00D9 */ unsigned char unknown_00D9[3];
+  /* 00D9 */ unsigned char padding_00D9[3];
 };
 
 class CPetitioEffect : public CEffect {
@@ -337,7 +337,7 @@ public:
   }
 
   /* 00CC */ bool active;
-  /* 00CD */ unsigned char unknown_00CD[3];
+  /* 00CD */ unsigned char padding_00CD[3];
   /* 00D0 */ EZ2STREmitter* emitter;
 };
 
@@ -513,7 +513,7 @@ public:
   void InitEvents() override;
   void OpenEmitters();
 
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ int padding_00CC;
   /* 00D0 */ int emitterCount;
   /* 00D4 */ std::vector<EZ2STREmitter*> emitters;
   /* 00E0 */ std::string soundPath;
@@ -534,7 +534,7 @@ public:
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> finishedEmitters;
-  /* 00DC */ int unknown_00DC;
+  /* 00DC */ int padding_00DC;
   union {
     struct {
       /* 00E0 */ int countLow;
@@ -550,7 +550,7 @@ public:
   /* 0100 */ vector3d targetPosition;
   /* 010C */ vector3d originPosition;
   /* 0118 */ vector3d orbitCenter;
-  /* 0124 */ int unknown_0124;
+  /* 0124 */ int padding_0124;
   /* 0128 */ double orbitRadius;
   /* 0130 */ double startAngle;
 };

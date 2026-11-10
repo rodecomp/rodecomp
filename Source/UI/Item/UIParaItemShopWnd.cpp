@@ -342,11 +342,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (item.quantity > 0) {
       std::uint16_t weight;
       if (item.flags[3] == 1) {
-        const std::uint16_t added = g_session.GetItem1718Unknown006COf(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumItem1720Unknown006C();
+        const std::uint16_t added = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
+        weight = added + g_session.SumPurchasePriceFactor();
       } else {
-        const std::uint16_t added = g_session.GetItem1718Unknown006CByItemId(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumItem1720Unknown006CByItemId();
+        const std::uint16_t added = g_session.GetShopItemPriceFactorByItemId(item) * static_cast<std::uint16_t>(item.quantity);
+        weight = added + g_session.SumPurchasePriceFactorByItemId();
       }
 
       if (!affordable) {

@@ -28,7 +28,7 @@ public:
 
   /* 00D4 */ std::vector<UITextButton*> links;
   /* 00E0 */ std::uint32_t backgroundColor;
-  /* 00E4 */ int unknown_00E4;
+  /* 00E4 */ int padding_00E4;
   /* 00E8 */ unsigned char splitTipLinks;
   /* 00E9 */ unsigned char outline;
   /* 00EA */ unsigned char bold;

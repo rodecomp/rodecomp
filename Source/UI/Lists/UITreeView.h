@@ -17,10 +17,10 @@ struct UITreeNode {
   /* 0004 */ int expanded;
   /* 0008 */ int icon;
   /* 000C */ char name[0x100];
-  /* 010C */ unsigned char unknown_010C[0x5E];
+  /* 010C */ unsigned char padding_010C[0x5E];
   /* 016A */ unsigned char draggable;
   /* 016B */ unsigned char container;
-  /* 016C */ unsigned char unknown_016C[0x4];
+  /* 016C */ unsigned char padding_016C[0x4];
   /* 0170 */ UITreeNode* parent;
   /* 0174 */ UITVBitmapButton* expandButton;
   /* 0178 */ UITVBitmapButton* collapseButton;

@@ -275,7 +275,7 @@ struct RouletteInfoSlot {
   /* 0002 */ std::int16_t column;
   /* 0004 */ int itemId;
   /* 0008 */ std::int16_t count;
-  /* 000A */ std::int16_t unknown_000A;
+  /* 000A */ std::int16_t padding_000A;
 };
 
 struct RouletteInfoPacket {
@@ -1835,13 +1835,13 @@ void CGameMode::ReceiveMacroReporterList(int count, const int* aids) {
 }
 
 // GLOBAL: gl_25111
-int g_unknown_01738268;
+int g_buyingStoreMode;
 
 // GLOBAL: gl_25112
-int g_unknown_0173826C;
+int g_buyingStoreDbNumber;
 
 // GLOBAL: gl_25113
-int g_unknown_01738270;
+int g_buyingStoreNoPermission;
 
 
 
@@ -1866,9 +1866,9 @@ void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
   }
 
   g_session.ClearCartItems();
-  g_unknown_01738268 = 0;
-  g_unknown_0173826C = 0;
-  g_unknown_01738270 = 0;
+  g_buyingStoreMode = 0;
+  g_buyingStoreDbNumber = 0;
+  g_buyingStoreNoPermission = 0;
 }
 
 // OFFSET: 0x00D6C460
@@ -2102,12 +2102,12 @@ void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) 
     std::memset(text, 0, 250);
     message = 0x9C1;
   } else if (result == 3) {
-    g_unknown_01738270 = 1;
+    g_buyingStoreNoPermission = 1;
     std::memset(text, 0, 250);
     message = 0x9C2;
   } else if (result == 1) {
-    g_unknown_01738268 = 1;
-    g_unknown_0173826C = packet->value;
+    g_buyingStoreMode = 1;
+    g_buyingStoreDbNumber = packet->value;
     if (packet->value != 0) {
       return;
     }
@@ -5067,12 +5067,12 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
       const auto* hunt = reinterpret_cast<const OngoingQuestHunt*>(cursor);
       cursor += sizeof(OngoingQuestHunt);
       info.m_huntId[i] = hunt->huntId;
-      info.m_huntUnknown01A0[i] = hunt->conditionFlags;
-      info.m_huntUnknown00D4[i] = hunt->mobId;
-      info.m_huntUnknown00E0[i] = hunt->count;
-      info.m_huntUnknown0180[i] = hunt->maxCount;
-      info.m_huntUnknown01AC[i] = hunt->minLevel;
-      info.m_huntUnknown01B2[i] = hunt->maxLevel;
+      info.m_huntConditionFlags[i] = hunt->conditionFlags;
+      info.m_huntMobId[i] = hunt->mobId;
+      info.m_huntKillCount[i] = hunt->count;
+      info.m_huntMaxCount[i] = hunt->maxCount;
+      info.m_huntMinLevel[i] = hunt->minLevel;
+      info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
       if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
         if (mobId == 0x1099) {
@@ -5127,12 +5127,12 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
       const auto* hunt = reinterpret_cast<const OngoingQuestHunt2*>(cursor);
       cursor += sizeof(OngoingQuestHunt2);
       info.m_huntId[i] = hunt->huntId;
-      info.m_huntUnknown01A0[i] = hunt->conditionFlags;
-      info.m_huntUnknown00D4[i] = hunt->mobId;
-      info.m_huntUnknown00E0[i] = hunt->count;
-      info.m_huntUnknown0180[i] = hunt->maxCount;
-      info.m_huntUnknown01AC[i] = hunt->minLevel;
-      info.m_huntUnknown01B2[i] = hunt->maxLevel;
+      info.m_huntConditionFlags[i] = hunt->conditionFlags;
+      info.m_huntMobId[i] = hunt->mobId;
+      info.m_huntKillCount[i] = hunt->count;
+      info.m_huntMaxCount[i] = hunt->maxCount;
+      info.m_huntMinLevel[i] = hunt->minLevel;
+      info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
       if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
         if (mobId == 0x1099) {
@@ -5610,17 +5610,17 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
       }
     }
     if (index < 3) {
-      info.m_huntUnknown00E0[index] = entry.count;
-      info.m_huntUnknown0180[index] = entry.maxCount;
+      info.m_huntKillCount[index] = entry.count;
+      info.m_huntMaxCount[index] = entry.maxCount;
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
-      if (info.m_huntUnknown00D4[index] == 0x7CFF) {
-        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+      if (info.m_huntMobId[index] == 0x7CFF) {
+        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
       }
-      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntKillCount[index], entry.maxCount));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
@@ -5656,17 +5656,17 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
       }
     }
     if (index < 3) {
-      info.m_huntUnknown00E0[index] = entry.count;
-      info.m_huntUnknown0180[index] = entry.maxCount;
+      info.m_huntKillCount[index] = entry.count;
+      info.m_huntMaxCount[index] = entry.maxCount;
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
-      if (info.m_huntUnknown00D4[index] == 0x7CFF) {
-        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index]));
+      if (info.m_huntMobId[index] == 0x7CFF) {
+        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
       }
-      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntUnknown00E0[index], entry.maxCount));
+      name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntKillCount[index], entry.maxCount));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
     }
@@ -7375,7 +7375,7 @@ struct EquipItemUpdatePacket {
 
 // OFFSET: 0x00D6D850
 // FUNCTION: fn_22091
-void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char unknownValue, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
+void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char damaged, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemId);
   int lookup = 0;
   int slot = 0;
@@ -7388,7 +7388,7 @@ void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char 
     }
   }
 
-  item.damaged = unknownValue;
+  item.damaged = damaged;
   item.refiningLevel = refine;
   std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
   item.optionCount = CountItemSlotOptions(options.options);
@@ -7648,7 +7648,7 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
 
 // OFFSET: 0x00D1A520
 // FUNCTION: fn_21618
-void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string text, bool flag) {
+void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string text, bool flag) {
   const std::string sender(name);
   std::vector<char> message(text.begin(), text.end());
   message.push_back('\0');
@@ -7657,7 +7657,7 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
   line.append(" : ");
   line.append(message.data());
 
-  if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(unknown_0004)) != 0) {
+  if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(shortcutId)) != 0) {
     if (g_session.autoReplyState[0] != 0) {
       char notice[24];
       std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
@@ -7704,22 +7704,22 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
   if (g_windowMgr.IsFriend(name.c_str())) {
     prefix = "[ Friend ";
     prefix.append(sender);
-    if (unknown_0004 != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    if (shortcutId != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else if (flag) {
     prefix = "[ ";
     prefix.append(sender);
-    if (unknown_0004 != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    if (shortcutId != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else if (g_session.IsGuildMemberName(name.c_str())) {
     prefix = "[ Member ";
     prefix.append(sender);
-    if (unknown_0004 != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + ")");
+    if (shortcutId != 0) {
+      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else {
@@ -7733,8 +7733,8 @@ void CGameMode::ProcessWhisper(int unknown_0004, std::string name, std::string t
     }
     prefix = "( From ";
     prefix.append(sender);
-    if (unknown_0004 != 0) {
-      prefix.append(" [" + ShortcutFilename(static_cast<std::uint32_t>(unknown_0004)) + "]");
+    if (shortcutId != 0) {
+      prefix.append(" [" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + "]");
     }
     prefix = prefix + " ) : " + message.data();
   }

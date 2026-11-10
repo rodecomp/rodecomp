@@ -46,7 +46,7 @@ public:
   /* 0010 */ HWND browserWindow;
   /* 0014 */ int cursorState;
   /* 0018 */ unsigned char auxiliaryVisible;
-  /* 0019 */ unsigned char unknown_0019[3];
+  /* 0019 */ unsigned char padding_0019[3];
   /* 001C */ int screenWidth;
   /* 0020 */ int screenHeight;
   /* 0024 */ DWORD cookie;
@@ -56,7 +56,7 @@ public:
   /* 0034 */ int width;
   /* 0038 */ int height;
   /* 003C */ unsigned char restoreOption;
-  /* 003D */ unsigned char unknown_003D[3];
+  /* 003D */ unsigned char padding_003D[3];
 };
 
 extern WNDPROC lpPrevWndFunc;
@@ -70,7 +70,7 @@ enum class BrowserCommand : WORD { Navigate = 1000 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CWebBrowser, host) == 0xC);
-static_assert(offsetof(CWebBrowser, unknown_0019) == 0x19);
+static_assert(offsetof(CWebBrowser, padding_0019) == 0x19);
 static_assert(offsetof(CWebBrowser, cookie) == 0x24);
 static_assert(offsetof(CWebBrowser, restoreOption) == 0x3C);
 static_assert(sizeof(CWebBrowser) == 0x40);

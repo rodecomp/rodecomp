@@ -22,14 +22,14 @@ public:
   void AddClouds(int layer);
 
   /* 00CC */ EffectPoint lastPoints[2];
-  /* 00E4 */ EffectPoint unknown_00E4[2];
+  /* 00E4 */ EffectPoint padding_00E4[2];
   /* 00FC */ std::vector<CParticle*> floors;
   /* 0108 */ std::vector<CParticle*> particles;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CMagicFloorEffect, lastPoints) == 0xCC);
-static_assert(offsetof(CMagicFloorEffect, unknown_00E4) == 0xE4);
+static_assert(offsetof(CMagicFloorEffect, padding_00E4) == 0xE4);
 static_assert(offsetof(CMagicFloorEffect, floors) == 0xFC);
 static_assert(offsetof(CMagicFloorEffect, particles) == 0x108);
 static_assert(sizeof(CMagicFloorEffect) == 0x114);

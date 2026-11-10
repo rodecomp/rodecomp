@@ -26,7 +26,7 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
   this->m_frameTick = 0;
   this->expandedHeight = 0;
   this->m_minimized = 0;
-  this->m_elapsed = GetTickCount() - g_session.m_partyBooking.unknown_0034;
+  this->m_elapsed = GetTickCount() - g_session.m_partyBooking.registeredTick;
 }
 
 // OFFSET: 0x009281A0

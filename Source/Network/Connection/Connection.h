@@ -64,7 +64,7 @@ public:
   short GetPacketType(const char* packet);
 
 private:
-  /* 006C */ unsigned char unknown_006C;
+  /* 006C */ unsigned char padding_006C;
 };
 
 CRagConnection& GetRagConnection();

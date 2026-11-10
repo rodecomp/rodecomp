@@ -16,7 +16,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int padding_00B4;
   /* 00B8 */ UIBitmapButton* button;
   /* 00BC */ UIBarGraphPlayer* hpBar;
   /* 00C0 */ UIBarGraphPlayer* spBar;

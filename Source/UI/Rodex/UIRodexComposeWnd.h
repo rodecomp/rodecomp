@@ -63,7 +63,7 @@ public:
   /* 00E4 */ int m_reservedStateB;
   /* 00E8 */ std::list<ITEM_INFO> m_items;
   /* 00F0 */ int m_itemIndex;
-  /* 00F4 */ int unknown_00F4;
+  /* 00F4 */ int padding_00F4;
   /* 00F8 */ std::int64_t m_tax;
   /* 0100 */ UIEditCtrl* m_tagCtrl;
 };

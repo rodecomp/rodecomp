@@ -43,8 +43,8 @@ protected:
   /* 00D0 */ std::vector<SecondCostumeEntry> m_entries[4];
   /* 0100 */ std::uint32_t m_previewStartTime;
   /* 0104 */ int m_page;
-  /* 0108 */ std::string unknown_0108[7];
-  /* 01B0 */ std::string unknown_01B0[7];
+  /* 0108 */ std::string padding_0108[7];
+  /* 01B0 */ std::string padding_01B0[7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

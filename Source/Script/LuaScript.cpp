@@ -57,7 +57,7 @@ class LuaScriptBag {
 public:
   void Add(std::string left, std::string right);
 
-  /* 0000 */ unsigned char unknown_0000[0x7C];
+  /* 0000 */ unsigned char padding_0000[0x7C];
   /* 007C */ std::vector<std::pair<std::string, std::string>> pairs;
 };
 
@@ -68,7 +68,7 @@ void LuaScriptBag::Add(std::string left, std::string right) {
 }
 
 struct CashShopBannerWindow {
-  /* 0000 */ unsigned char unknown_0000[0xBC];
+  /* 0000 */ unsigned char padding_0000[0xBC];
   /* 00BC */ LuaScriptBag* banners;
   /* 00C0 */ LuaScriptBag* banners2;
 };

@@ -36,7 +36,7 @@ void OnStoveAllProductsFetched(Stove::PCSDK::CallbackResult callbackResult, cons
 void OnStoveInitialized(Stove::PCSDK::CallbackResult callbackResult);
 void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown);
 void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult);
-void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3);
+void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int productCount, unsigned int count, int remainingCount, int resultCode);
 
 // STRING: st_01259
 const wchar_t g_stoveCategoryIdA[] = L"44C71118750747D";
@@ -153,7 +153,7 @@ struct CategoryProductsCallback {
 };
 
 struct ConfirmPurchaseCallback {
-  void operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3) const;
+  void operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int productCount, unsigned int count, int remainingCount, int resultCode) const;
 };
 
 // OFFSET: 0x0063A780
@@ -188,8 +188,8 @@ void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::
 
 // OFFSET: 0x0063A9D0
 // FUNCTION: fn_04776
-void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2, int unknown3) {
-  ConfirmPurchaseCallback()(callbackResult, purchased, unknown1, count, unknown2, unknown3);
+void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int productCount, unsigned int count, int remainingCount, int resultCode) {
+  ConfirmPurchaseCallback()(callbackResult, purchased, productCount, count, remainingCount, resultCode);
 }
 
 // OFFSET: 0x0063AA50
@@ -474,8 +474,8 @@ EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()()
 
 // OFFSET: 0x0063D5D0
 // FUNCTION: fn_04791
-void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int unknown1, unsigned int count, int unknown2,
-                                         int unknown3) const {
+void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int productCount, unsigned int count, int remainingCount,
+                                         int resultCode) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
     if (count != 0 && purchased == true) {

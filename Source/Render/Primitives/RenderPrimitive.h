@@ -35,7 +35,7 @@ struct RenderCommand {
   /* 000C */ std::uint16_t* indices;
   /* 0010 */ std::uint32_t indexCount;
   /* 0014 */ std::uint16_t depthFlags;
-  /* 0016 */ std::uint16_t unknown_0016;
+  /* 0016 */ std::uint16_t padding_0016;
   /* 0018 */ std::uint32_t sourceBlend;
   /* 001C */ std::uint32_t destinationBlend;
   /* 0020 */ std::uint32_t textureMode;
@@ -70,7 +70,7 @@ static_assert(offsetof(RenderVertex, u) == 0x0018);
 static_assert(offsetof(RenderVertex, v) == 0x001C);
 static_assert(offsetof(RenderTriangle, texture) == 0x0060);
 static_assert(offsetof(RenderTriangle, destinationBlend) == 0x0068);
-static_assert(offsetof(RenderCommand, unknown_0016) == 0x0016);
+static_assert(offsetof(RenderCommand, padding_0016) == 0x0016);
 static_assert(offsetof(RenderCommand, primitiveType) == 0x0024);
 static_assert(offsetof(RenderPrimitive, quad) == 0x0028);
 #endif

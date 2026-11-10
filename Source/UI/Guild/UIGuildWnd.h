@@ -115,8 +115,8 @@ protected:
   /* 00D4 */ UIBitmapButton* m_disbandButton;
   /* 00D8 */ std::list<std::string> emblemFiles;
   /* 00E0 */ std::vector<MiniPartyInfoEntry> emblemMenuEntries;
-  /* 00EC */ int unknown_00EC;
-  /* 00F0 */ int unknown_00F0;
+  /* 00EC */ int padding_00EC;
+  /* 00F0 */ int padding_00F0;
   /* 00F4 */ std::uint32_t m_guildId;
   /* 00F8 */ int m_allyRow;
   /* 00FC */ int m_hostileRow;
@@ -240,7 +240,7 @@ protected:
   CSkillInfo VisibleSkillAt(int row);
   void UpdateSkillButtons();
 
-  /* 00D0 */ unsigned char unknown_00D0[0x04];
+  /* 00D0 */ unsigned char padding_00D0[0x04];
   /* 00D4 */ UIScrollBar* m_scrollBar;
   /* 00D8 */ UIBitmapButton* m_actionButtons[2];
   /* 00E0 */ UIBitmapButton* m_nextButtons[7];

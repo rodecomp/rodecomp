@@ -24,10 +24,10 @@ struct ReplayCachedPacket {
 
 #pragma pack(push, 1)
 struct ReplayOptions {
-  /* 0000 */ unsigned char unknown_0000[6];
+  /* 0000 */ unsigned char padding_0000[6];
   /* 0006 */ unsigned char recordRestricted;
   /* 0007 */ unsigned char showItemSlots;
-  /* 0008 */ unsigned char unknown_0008[22];
+  /* 0008 */ unsigned char padding_0008[22];
 
   unsigned char Get(ReplayRecordOption option) const {
     return reinterpret_cast<const unsigned char*>(this)[static_cast<std::size_t>(option)];
@@ -150,7 +150,7 @@ public:
   void Rewind();
   bool SetHeaderInfo(
     std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int playerDirection, int service,
-    int serviceType, int unknown0014
+    int serviceType, int padding_0014
   );
   void IncreaseSpeed();
   void DecreaseSpeed();

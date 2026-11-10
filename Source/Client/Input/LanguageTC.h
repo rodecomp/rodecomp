@@ -19,7 +19,7 @@ struct CLanguageTC : CLanguageBase {
   /* 00C0 */ std::array<TraditionalKeyMapping, 256> mappings;
   /* 04C0 */ unsigned char keyStrokeEnabled;
   /* 04C1 */ std::uint8_t keyStroke;
-  /* 04C2 */ unsigned char unknown_04C2[2];
+  /* 04C2 */ unsigned char padding_04C2[2];
 
   CLanguageTC();
   ~CLanguageTC() override;

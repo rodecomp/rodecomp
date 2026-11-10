@@ -28,7 +28,7 @@ public:
 
   /* 0124 */ std::vector<Frame> frames;
   /* 0130 */ std::uint16_t loopCount;
-  /* 0132 */ std::uint16_t unknown_0132;
+  /* 0132 */ std::uint16_t padding_0132;
   /* 0134 */ std::uint16_t currentFrame;
   /* 0138 */ DWORD lastFrameTime;
   /* 013C */ bool animated;

@@ -1853,27 +1853,27 @@ bool CDropItemEffect::IsAlive() {
 // FUNCTION: fn_07310
 void CDropItemEffect::OpenEmitters() {
   switch (this->id) {
-  case EF_UNK_1190:
+  case EF_DROPITEM_PURPLE:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_purple\\dropitem_purple\\dropitem_purple.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_purple\\dropitem_purple_bottom\\dropitem_purple_bottom.str");
     this->soundName = "drop_purple.wav";
     break;
-  case EF_UNK_1189:
+  case EF_DROPITEM_YELLOW:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow\\dropitem_yellow.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow_bottom\\dropitem_yellow_bottom.str");
     this->soundName = "drop_yellow.wav";
     break;
-  case EF_UNK_1869:
+  case EF_DROPITEM_BLUE:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_blue\\dropitem_blue\\dropitem_blue.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_blue\\dropitem_blue_bottom\\dropitem_blue_bottom.str");
     this->soundName = "drop_blue.wav";
     break;
-  case EF_UNK_1870:
+  case EF_DROPITEM_GREEN:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_green\\dropitem_green\\dropitem_green.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_green\\dropitem_green_bottom\\dropitem_green_bottom.str");
     this->soundName = "drop_green.wav";
     break;
-  case EF_UNK_1871:
+  case EF_DROPITEM_RED:
     AsParticle(this->emitters[0])->Open("new_dropitem\\dropitem_red\\dropitem_red\\dropitem_red.str");
     AsParticle(this->emitters[1])->Open("new_dropitem\\dropitem_red\\dropitem_red_bottom\\dropitem_red_bottom.str");
     this->soundName = "drop_red.wav";
@@ -1918,7 +1918,7 @@ CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
 void CJupitelThunderHit::SpawnHit() {
   switch (this->id) {
   case EF_YUFITELHIT:
-  case EF_UNK_1200:
+  case EF_THUNDER_PLAZMA_BLAST:
     this->textures.push_back("effect\\thunder_plazma_blast_a.bmp");
     this->textures.push_back("effect\\thunder_plazma_blast_b.bmp");
     this->textures.push_back("effect\\thunder_ball_d.bmp");
@@ -2625,10 +2625,10 @@ void CRandomOptEffect::Init() {
       case EF_UNK_1188:
         particle->SetColor(0, 100, 150);
         break;
-      case EF_UNK_1189:
+      case EF_DROPITEM_YELLOW:
         particle->SetColor(255, 255, 128);
         break;
-      case EF_UNK_1190:
+      case EF_DROPITEM_PURPLE:
         particle->SetColor(128, 0, 255);
         break;
       case EF_UNK_1191:
@@ -3626,7 +3626,7 @@ void CSevereRainStorm::SpawnParticles() {
       this->SpawnSevereRain();
     }
     break;
-  case EF_UNK_2026:
+  case EF_DIAMOND_STORM:
     if (this->elapsedFrames % 5 == 0) {
       vector3d position = {this->position[0], this->position[1], this->position[2]};
       position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + position.x;
@@ -3638,7 +3638,7 @@ void CSevereRainStorm::SpawnParticles() {
       this->emitters.push_back(emitter);
     }
     break;
-  case EF_UNK_2165:
+  case EF_CROSS_RAIN:
     if (this->elapsedFrames % (9 - this->effectLevel / 3) == 0) {
       const long long ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
       const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 10u) - 1] * 50;
@@ -3904,7 +3904,7 @@ void CSevereRainStorm::Open() {
 bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
   case EF_UNK_1752:
-  case EF_UNK_2165:
+  case EF_CROSS_RAIN:
   case EF_UNK_2462:
     return this->ActorExists();
   case EF_UNK_1276:
@@ -3912,7 +3912,7 @@ bool CSevereRainStorm::IsAlive() {
       return false;
     }
     break;
-  case EF_UNK_2026:
+  case EF_DIAMOND_STORM:
     if (EffectLifetime(2026) < this->elapsedFrames) {
       return false;
     }
@@ -4027,7 +4027,7 @@ void CCrimsonArrowEffect::Open() {
 
   EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(arrow);
   switch (this->id) {
-  case EF_UNK_1756:
+  case EF_CRIMSONARROW:
     arrow->Load("crimsonarrow\\crimsonarrow\\crimsonarrow.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -13.0f;
@@ -4035,7 +4035,7 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle);
     this->AddEvent(0, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
     break;
-  case EF_UNK_2074:
+  case EF_RHYTHMSHOOTING_SHOT:
     arrow->Load("rhythmshooting\\rhythmshooting_shot\\rhythmshooting_shot.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -8.0f;
@@ -4043,7 +4043,7 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
     break;
-  case EF_UNK_2114:
+  case EF_FRENZY_SHOT:
     arrow->Load("frenzy_shot\\frenzy_shot\\frenzy_shot.str");
     emitter->offset.x = 0.0f;
     emitter->offset.y = -4.0f;
@@ -4051,11 +4051,11 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle);
     this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
     break;
-  case EF_UNK_2154:
+  case EF_UNLUCKY_RUSH:
     arrow->Load("unlucky_rush\\unlucky_rush\\unlucky_rush.str");
     arrow->m_angle = static_cast<float>(angle);
     break;
-  case EF_UNK_2195:
+  case EF_JUDGEMENT_CROSS_SHOT:
     arrow->Load("judgement_cross\\judgement_cross_shot\\judgement_cross_shot.str");
     arrow->m_angle = static_cast<float>(angle + 180.0);
     break;

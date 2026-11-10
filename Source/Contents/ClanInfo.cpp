@@ -50,7 +50,7 @@ void CClanInfo::Destroy() {
 void CClanInfo::Clear() {
   this->m_clanName = "";
   this->m_masterName = "";
-  this->unknown_0034 = 0;
+  this->allyClanCount = 0;
   this->m_connectedMembers = 0;
   this->m_totalMembers = 0;
   this->m_mapName = "";

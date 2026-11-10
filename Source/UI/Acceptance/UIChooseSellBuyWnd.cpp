@@ -4427,7 +4427,7 @@ void UInCashWnd::DrawItems() {
 // OFFSET: 0x008E3C80
 // FUNCTION: fn_12183
 void UIMonsterDisplayWnd::OnCreate(int, int) {
-  this->unknown_00E4 = 0;
+  this->padding_00E4 = 0;
   this->titleText = LookupMessage(MSI_ITEM_NAME);
   this->AddCloseButton("", 0);
 }
@@ -7343,7 +7343,7 @@ UISelectCartWnd::UISelectCartWnd()
 // OFFSET: 0x008C9280
 // FUNCTION: fn_11979
 UIStorePasswordInputWnd::UIStorePasswordInputWnd()
-    : UIFrameWnd(0), unknown_00BC(-1), unknown_00C0(2) {
+    : UIFrameWnd(0), padding_00BC(-1), padding_00C0(2) {
   std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
   std::memset(this->newPassword, 0, sizeof(this->newPassword));
   std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
@@ -7369,7 +7369,7 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd()
 // OFFSET: 0x008C8D40
 // FUNCTION: fn_11972
 UISecondPasswordInputWnd::UISecondPasswordInputWnd()
-    : UIStorePasswordInputWnd(), passwordLength(4), inputMode(0), unknown_0120(0), keypadButtons(), instructionText(nullptr) {
+    : UIStorePasswordInputWnd(), passwordLength(4), inputMode(0), padding_0120(0), keypadButtons(), instructionText(nullptr) {
   this->actionButtons[0] = nullptr;
   this->actionButtons[1] = nullptr;
   this->actionButtons[2] = nullptr;

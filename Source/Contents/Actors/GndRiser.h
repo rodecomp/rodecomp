@@ -17,7 +17,7 @@ public:
   /* 0158 */ int lifetime;
   /* 015C */ int screenX;
   /* 0160 */ int screenY;
-  /* 0164 */ int unknown_0164;
+  /* 0164 */ int padding_0164;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

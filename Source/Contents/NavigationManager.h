@@ -139,7 +139,7 @@ public:
   void ClearLinkedLinks();
   int LinkedLinkCount() const;
   CNavi_Link();
-  CNavi_Link(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84);
+  CNavi_Link(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int linkedCellX, int linkedCellY);
 
   ~CNavi_Link() override;
   int GetId() const override;

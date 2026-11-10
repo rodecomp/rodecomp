@@ -1415,7 +1415,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetUnknownValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(skill.id, level);
         this->m_needsRedraw = 1;
         this->Invalidate();
       }

@@ -61,9 +61,9 @@ void GuildInfo::RemoveAgitId(int value) {
 
 // OFFSET: 0x00AE42C0
 // FUNCTION: fn_18034
-void GuildInfo::RemoveRelatedGuild(int unknown_0000, int unknown_0004) {
+void GuildInfo::RemoveRelatedGuild(int guildId, int relation) {
   for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
-    if (it->guildId == unknown_0000 && it->relation == unknown_0004) {
+    if (it->guildId == guildId && it->relation == relation) {
       this->relatedGuilds.erase(it);
       g_windowMgr.RefreshGuildWindows();
       return;
@@ -90,10 +90,10 @@ int GuildInfo::GetAgitId(int index) {
 
 // OFFSET: 0x00AE4690
 // FUNCTION: fn_18037
-int GuildInfo::CountRelatedGuilds(int unknown_0004) {
+int GuildInfo::CountRelatedGuilds(int relation) {
   int count = 0;
   for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
-    if (it->relation == unknown_0004) {
+    if (it->relation == relation) {
       ++count;
     }
   }
@@ -155,9 +155,9 @@ void GuildInfo::Init() {
 
 // OFFSET: 0x00AE49F0
 // FUNCTION: fn_18040
-bool GuildInfo::HasRelatedGuild(int unknown_0000) {
+bool GuildInfo::HasRelatedGuild(int guildId) {
   for (auto it = this->relatedGuilds.begin(); it != this->relatedGuilds.end(); ++it) {
-    if (it->guildId == unknown_0000 && it->relation == 0) {
+    if (it->guildId == guildId && it->relation == 0) {
       return true;
     }
   }
@@ -221,10 +221,10 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
     this->masterName = name;
   }
 
-  std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
+  std::string namelessUserName = LookupMessage(MSI_NAMELESS_USER);
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
     if (it->characterId == characterId) {
-      if (it->name.empty() || it->name == unknownName) {
+      if (it->name.empty() || it->name == namelessUserName) {
         it->name = name;
       }
       break;
@@ -233,7 +233,7 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
 
   for (auto it = this->bannedMembers.begin(); it != this->bannedMembers.end(); ++it) {
     if (it->characterId == characterId) {
-      if (it->name.empty() || it->name == unknownName) {
+      if (it->name.empty() || it->name == namelessUserName) {
         it->name = name;
       }
       break;
@@ -247,12 +247,12 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
 
 // OFFSET: 0x00AE4F50
 // FUNCTION: fn_18045
-void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024) {
+void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short sex, short head, short headPalette) {
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
     if (characterId == it->characterId) {
-      it->sex = unknown_002C;
-      it->head = unknown_0020;
-      it->headPalette = unknown_0024;
+      it->sex = sex;
+      it->head = head;
+      it->headPalette = headPalette;
       it->online = online;
       break;
     }

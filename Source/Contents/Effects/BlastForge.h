@@ -25,7 +25,7 @@ public:
   /* 00D4 */ CEZ2STRParticle* blastParticle;
   /* 00D8 */ CEZ2STRParticle* blastBottomParticle;
   /* 00DC */ unsigned char openToggle;
-  /* 00DD */ unsigned char unknown_00DD[3];
+  /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ std::int64_t startTime;
 };
 

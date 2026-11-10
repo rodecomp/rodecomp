@@ -33,7 +33,7 @@ public:
   void SetWindow(UIWindow* window);
   void GetDescriptions(const int& group, std::list<std::string>& lines);
 
-  /* 0000 */ unsigned char unknown_0000[0x1FC];
+  /* 0000 */ unsigned char padding_0000[0x1FC];
 };
 
 // INLINED
@@ -234,8 +234,8 @@ bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx()
     : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A08680

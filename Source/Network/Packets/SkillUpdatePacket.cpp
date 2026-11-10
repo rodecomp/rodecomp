@@ -52,7 +52,7 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
 // OFFSET: 0x00D06AF0
 // FUNCTION: fn_21577
 void CGameMode::ReceiveLearnedSkill(
-  std::uint16_t id, std::int16_t level, int type, std::uint8_t upgradable, std::int16_t spCost, std::int16_t range, std::int16_t unknown0030
+  std::uint16_t id, std::int16_t level, int type, std::uint8_t upgradable, std::int16_t spCost, std::int16_t range, std::int16_t learnedLevel
 ) {
   CSkillInfo value;
   value.type = type;
@@ -62,7 +62,7 @@ void CGameMode::ReceiveLearnedSkill(
   value.name = value.IdName(*g_session.m_hotkeyScript);
   value.spCost = spCost;
   value.range = range;
-  value.learnedLevel = unknown0030;
+  value.learnedLevel = learnedLevel;
   value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, level);
 
   g_session.m_skillBundle.RecordLevelChange(value);

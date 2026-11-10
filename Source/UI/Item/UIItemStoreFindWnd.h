@@ -29,19 +29,19 @@ public:
   void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0xC];
+  /* 00F0 */ unsigned char padding_00F0[0xC];
   /* 00FC */ UIBitmapButton* closeButton;
-  /* 0100 */ unsigned char unknown_0100[0x14];
+  /* 0100 */ unsigned char padding_0100[0x14];
   /* 0114 */ UIResizer* resizeHandle;
   /* 0118 */ UIStaticText* title;
-  /* 011C */ unsigned char unknown_011C[0x4];
-  /* 0120 */ int unknown_0120;
+  /* 011C */ unsigned char padding_011C[0x4];
+  /* 0120 */ int padding_0120;
   /* 0124 */ std::string statusText;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;
-  /* 0158 */ unsigned char unknown_0158[0x4];
+  /* 0158 */ unsigned char padding_0158[0x4];
   /* 015C */ bool sorted;
-  /* 015D */ unsigned char unknown_015D[0x7];
+  /* 015D */ unsigned char padding_015D[0x7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

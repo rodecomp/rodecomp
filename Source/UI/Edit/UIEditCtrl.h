@@ -262,8 +262,8 @@ public:
 protected:
 
 public:
-  /* 0084 */ int unknown_0084;
-  /* 0088 */ int unknown_0088;
+  /* 0084 */ int padding_0084;
+  /* 0088 */ int padding_0088;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -22,7 +22,7 @@ public:
 
   /* 00B4 */ UIBitmapEditCtrl* m_nameEdit;
   /* 00B8 */ CharacterInfo m_info;
-  /* 0167 */ unsigned char unknown_0167;
+  /* 0167 */ unsigned char padding_0167;
   /* 0168 */ CharSlotInfo m_view;
   /* 02C4 */ UIBitmapButton* m_rotateLeftButton;
   /* 02C8 */ UIBitmapButton* m_rotateRightButton;

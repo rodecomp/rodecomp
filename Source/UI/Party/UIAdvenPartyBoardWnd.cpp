@@ -43,7 +43,7 @@ namespace {
 // OFFSET: 0x007BAC40
 // FUNCTION: fn_09274
 UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd()
-    : UIFrameWnd(0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
+    : UIFrameWnd(0), padding_0104(0), padding_0108(0), page(1), totalPages(1), padding_0114(1), padding_0118(0), selectedType(0) {
 }
 
 UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;

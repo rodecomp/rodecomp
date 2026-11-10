@@ -51,7 +51,7 @@ public:
   /* 00D8 */ std::uint32_t m_listColor;
   /* 00DC */ unsigned char m_secondaryStateStorage[0x4];
   /* 00E0 */ UIWindow* m_inputButtons[3];
-  /* 00EC */ unsigned char unknown_00EC[0x4];
+  /* 00EC */ unsigned char padding_00EC[0x4];
   /* 00F0 */ int m_menuMode;
   /* 00F4 */ std::vector<UIChatHisBox*> m_tabs;
   /* 0100 */ UIWindow* m_headerButtons[2];
@@ -65,7 +65,7 @@ public:
   /* 0124 */ int m_inputAreaHeight;
   /* 0128 */ UIWindow* m_headerButton;
   /* 012C */ UIWindow* m_chatModeButton;
-  /* 0130 */ unsigned char unknown_0130[0x8];
+  /* 0130 */ unsigned char padding_0130[0x8];
   /* 0138 */ UITabControl* m_tabControl;
   /* 013C */ UIWindow* m_suggestions;
 };

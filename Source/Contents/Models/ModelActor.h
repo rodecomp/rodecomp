@@ -31,13 +31,13 @@ public:
   /* 0034 */ matrix transform;
   /* 0064 */ matrix inverseTransform;
   /* 0094 */ unsigned char dirty;
-  /* 0095 */ unsigned char unknown_0095[3];
+  /* 0095 */ unsigned char padding_0095[3];
   /* 0098 */ OrientedBounds oriented;
   /* 00D4 */ float corners[8][3];
   /* 0134 */ float minimum[3];
   /* 0140 */ float maximum[3];
   /* 014C */ unsigned char enabled;
-  /* 014D */ unsigned char unknown_014D[3];
+  /* 014D */ unsigned char padding_014D[3];
   /* 0150 */ unsigned renderFrame;
   /* 0154 */ unsigned char occlusionEnabled;
   /* 0155 */ unsigned char occluded;
@@ -88,7 +88,7 @@ public:
 
   /* 0170 */ std::list<C3dNodeV2*> roots;
   /* 0178 */ float framesPerSecond;
-  /* 017C */ unsigned char unknown_017C[4];
+  /* 017C */ unsigned char padding_017C[4];
   /* 0180 */ double duration;
   /* 0188 */ unsigned startTick;
 };

@@ -265,7 +265,7 @@ bool C3dWorldRes::Load(const char* name) {
     switch (type) {
     case 1: {
       int animation;
-      int unknown;
+      int animationType;
       int modelIndex = -1;
       float speed;
       unsigned char flag;
@@ -274,7 +274,7 @@ bool C3dWorldRes::Load(const char* name) {
         input.Read(lastName, 40);
         input.Read(&animation, sizeof(animation));
         input.Read(&speed, sizeof(speed));
-        input.Read(&unknown, sizeof(unknown));
+        input.Read(&animationType, sizeof(animationType));
 
         if (major > 2 || (major == 2 && minor >= 6 && build >= 186)) {
           input.Read(&flag, 1);
@@ -294,7 +294,7 @@ bool C3dWorldRes::Load(const char* name) {
         }
       } else {
         animation = 0;
-        unknown = 0;
+        animationType = 0;
         speed = 1.0f;
       }
 
@@ -308,7 +308,7 @@ bool C3dWorldRes::Load(const char* name) {
         std::strcpy(record->node, wire.node);
         record->animationSpeed = speed;
         record->animation = animation;
-        record->animationType = unknown;
+        record->animationType = animationType;
         std::memcpy(record->position, wire.position, sizeof(record->position));
         std::memcpy(record->rotation, wire.rotation, sizeof(record->rotation));
         std::memcpy(record->scale, wire.scale, sizeof(record->scale));

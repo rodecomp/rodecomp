@@ -10,9 +10,9 @@ struct BalloonRectangle {
   /* 00A4 */ int y;
   /* 00A8 */ int width;
   /* 00AC */ int height;
-  /* 00B0 */ std::uint32_t unknown_00B0;
+  /* 00B0 */ std::uint32_t padding_00B0;
   /* 00B4 */ std::uint32_t color;
-  /* 00B8 */ std::uint32_t unknown_00B8;
+  /* 00B8 */ std::uint32_t padding_00B8;
 };
 
 class UITransBalloonText : public UIBalloonText {
@@ -68,9 +68,9 @@ static_assert(offsetof(BalloonRectangle, x) + 0xA0 == 0xA0);
 static_assert(offsetof(BalloonRectangle, y) + 0xA0 == 0xA4);
 static_assert(offsetof(BalloonRectangle, width) + 0xA0 == 0xA8);
 static_assert(offsetof(BalloonRectangle, height) + 0xA0 == 0xAC);
-static_assert(offsetof(BalloonRectangle, unknown_00B0) + 0xA0 == 0xB0);
+static_assert(offsetof(BalloonRectangle, padding_00B0) + 0xA0 == 0xB0);
 static_assert(offsetof(BalloonRectangle, color) + 0xA0 == 0xB4);
-static_assert(offsetof(BalloonRectangle, unknown_00B8) + 0xA0 == 0xB8);
+static_assert(offsetof(BalloonRectangle, padding_00B8) + 0xA0 == 0xB8);
 static_assert(sizeof(UITransBalloonText) == 0xCC);
 #endif
 

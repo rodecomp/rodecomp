@@ -12,8 +12,8 @@ public:
   void OnLBtnUp(int x, int y) override;
   void VisitChildren() override;
 
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B4 */ int padding_00B4;
+  /* 00B8 */ int padding_00B8;
 
   /* 00BC */ std::string normalTexture;
   /* 00D4 */ std::string hoverTexture;

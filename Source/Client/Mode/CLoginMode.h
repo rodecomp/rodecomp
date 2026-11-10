@@ -65,11 +65,11 @@ struct CharacterInfo {
 };
 
 struct CharacterSlotExtension {
-  /* 0000 */ unsigned char unknown_0000;
+  /* 0000 */ unsigned char padding_0000;
   /* 0001 */ std::uint32_t code;
   /* 0005 */ std::uint32_t time1;
   /* 0009 */ std::uint32_t time2;
-  /* 000D */ unsigned char unknown_000D[7];
+  /* 000D */ unsigned char padding_000D[7];
 };
 #pragma pack(pop)
 
@@ -113,9 +113,9 @@ public:
   /* 01CC */ int characterCount;
   /* 01D0 */ unsigned char loginExtra[0x8];
   /* 01D8 */ int receivedCharacterCount;
-  /* 01DC */ int unknown_01DC;
+  /* 01DC */ int padding_01DC;
   /* 01E0 */ bool characterDeleted;
-  /* 01E1 */ unsigned char unknown_01E1[0x3];
+  /* 01E1 */ unsigned char padding_01E1[0x3];
   /* 01E4 */ std::uint32_t otpStarted;
   /* 01E8 */ unsigned char serverList[0x3E80];
   /* 4068 */ CharacterInfo characters[68];
@@ -126,10 +126,10 @@ public:
   /* 6F18 */ int passwordRetryCount;
   /* 6F1C */ std::vector<int> noticeCommands;
   /* 6F28 */ int authChallengeId;
-  /* 6F2C */ std::vector<int> unknown_6F2C;
+  /* 6F2C */ std::vector<int> padding_6F2C;
   /* 6F38 */ std::vector<LoginStringRecord> accountInfo;
   /* 6F44 */ unsigned char savedInlineCharset;
-  /* 6F45 */ unsigned char unknown_6F45[0x3];
+  /* 6F45 */ unsigned char padding_6F45[0x3];
   /* 6F48 */ int selectedAccount;
   /* 6F4C */ int selectedSecondaryAccount;
   /* 6F50 */ std::string keycryptErrorInfo;
@@ -137,7 +137,7 @@ public:
   /* 6F74 */ bool loginResponseReceived;
   /* 6F75 */ bool otpPending;
   /* 6F76 */ bool otpTimedOut;
-  /* 6F77 */ unsigned char unknown_6F77[0x1];
+  /* 6F77 */ unsigned char padding_6F77[0x1];
   /* 6F78 */ int remainingLoginSeconds;
 
   int Run() override;

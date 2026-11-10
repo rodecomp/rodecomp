@@ -168,9 +168,9 @@ unsigned char g_fealRotateTable[256];
 
 struct KeyedBoxContext {
   /* 0000 */ int blockSize;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  /* 0004 */ int padding_0004;
+  /* 0008 */ int padding_0008;
+  /* 000C */ int padding_000C;
   /* 0010 */ int startRound;
   /* 0014 */ unsigned char boxes[1][256];
 };

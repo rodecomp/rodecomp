@@ -889,7 +889,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
     this->RaiseTransformPriority((box[3] - box[1]) / 4);
     quad.image = image;
     quad.color = color;
-    if (this->render.unknown_0130[0] == 1) {
+    if (this->render.translucentOther[0] == 1) {
       quad.color = color & 0xFFFFFF | 0x46000000;
     }
 
@@ -2046,7 +2046,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     }
 
     this->RaiseTransformPriority((box[3] - box[1]) / 4);
-    if (this->render.unknown_0130[0] == 1) {
+    if (this->render.translucentOther[0] == 1) {
       quad.color = quad.color & 0xFFFFFF | 0x46000000;
     }
 
@@ -2302,9 +2302,9 @@ void CPc::Render(int argument) {
     }
   }
 
-  this->render.unknown_0130[0] = 0;
+  this->render.translucentOther[0] = 0;
   if (g_serviceOptions.Get(0x109) && this->render.accountId != g_session.m_aid) {
-    this->render.unknown_0130[0] = 1;
+    this->render.translucentOther[0] = 1;
   }
 
   const float* matrix = reinterpret_cast<const float*>(argument);
@@ -2354,9 +2354,9 @@ void CPc::Render(int argument) {
 
 // OFFSET: 0x00DAD8C0
 // FUNCTION: fn_22599
-void CPc::DrawLayers(const float* matrix, int unknown0030, char blendVariant) {
+void CPc::DrawLayers(const float* matrix, int blendMode, char blendVariant) {
   SpriteLayerRenderer renderer(this);
-  renderer.Render(matrix, unknown0030, blendVariant);
+  renderer.Render(matrix, blendMode, blendVariant);
 }
 
 // OFFSET: 0x00DABF50
@@ -3831,7 +3831,7 @@ void CPlayer::ReapplySkillEffects() {
 }
 
 // GLOBAL: gl_25218
-bool g_unknown173AD3F;
+bool g_moveRequestPending;
 
 struct PlayerSkillRequest {
   int skill;
@@ -3913,7 +3913,7 @@ void CPlayer::SendMsg(
     }
     break;
   case AM_REQ_MOVE_PRIMITIVE:
-    g_unknown173AD3F = false;
+    g_moveRequestPending = false;
     if (timeGetTime() > this->standTick + 350) {
       this->standTick = timeGetTime();
       mode->SendMsg(MM_REQUEST_MOVE, b, d, 0, 0);

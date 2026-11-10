@@ -63,7 +63,7 @@ CBitmapRes::CBitmapRes() {
 
 // OFFSET: 0x0074A250
 // FUNCTION: fn_07862
-CGifRes::CGifRes() : loopCount(0), unknown_0132(0), currentFrame(0), lastFrameTime(0), animated(false), frameChanged(false) {
+CGifRes::CGifRes() : loopCount(0), padding_0132(0), currentFrame(0), lastFrameTime(0), animated(false), frameChanged(false) {
 }
 
 // INLINED
@@ -137,7 +137,7 @@ void CGifRes::Unload() {
 
   this->frames.clear();
   this->loopCount = 0;
-  this->unknown_0132 = 0;
+  this->padding_0132 = 0;
   this->currentFrame = 0;
 
   if (this->image.pixels) {

@@ -112,8 +112,8 @@ public:
 
   __declspec(noinline) AdventureGuideResult InsertGuideMenu(int type, int id, std::string_view name, std::string_view text);
   __declspec(noinline) AdventureGuideResult InsertIntroContents(int id, std::string_view title, std::string_view text);
-  __declspec(noinline) AdventureGuideResult InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int unknown, std::string_view text);
-  __declspec(noinline) AdventureGuideResult InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int unknown, bool flag, std::string_view first, std::string_view second);
+  __declspec(noinline) AdventureGuideResult InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int questId, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int questId, bool flag, std::string_view first, std::string_view second);
   __declspec(noinline) AdventureGuideResult InsertEpisodeReward(int id, std::string_view text);
   __declspec(noinline) AdventureGuideResult InsertQuestSubMenu(int id, int minLevel, int maxLevel, std::string_view text);
   __declspec(noinline) AdventureGuideResult InsertQuestContents(int id, int menu, int minLevel, int maxLevel, bool flag, std::string_view first, std::string_view second);

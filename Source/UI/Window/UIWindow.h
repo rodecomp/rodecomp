@@ -226,7 +226,7 @@ protected:
   /* 0050 */ std::list<UIWindow*> m_children;
   /* 0058 */ int m_dirty;
   /* 005C */ std::vector<RenderPrimitive*> m_overlayPrimitives;
-  /* 0068 */ std::vector<RenderPrimitive*> unknown_0068;
+  /* 0068 */ std::vector<RenderPrimitive*> padding_0068;
   /* 0074 */ std::uint32_t m_uid;
   /* 0078 */ unsigned char m_cached;
   /* 0079 */ unsigned char m_clip;

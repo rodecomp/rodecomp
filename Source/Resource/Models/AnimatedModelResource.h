@@ -24,7 +24,7 @@ struct AnimatedModelFrame {
 struct AnimatedModelRecord {
   ~AnimatedModelRecord();
 
-  /* 0000 */ unsigned char unknown_0000[0x84];
+  /* 0000 */ unsigned char padding_0000[0x84];
   /* 0084 */ std::string* names;
 };
 
@@ -73,7 +73,7 @@ public:
   /* 0144 */ int frameCount;
   /* 0148 */ int animationLength;
   /* 014C */ float speed;
-  /* 0150 */ std::uint32_t unknown_0150;
+  /* 0150 */ std::uint32_t padding_0150;
   /* 0154 */ float originX;
   /* 0158 */ float originY;
   /* 015C */ float originZ;

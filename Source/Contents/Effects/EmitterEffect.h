@@ -54,10 +54,10 @@ public:
   /* 0158 */ float particleSpeed;
   /* 015C */ bool depth;
   /* 015D */ bool billboard;
-  /* 015E */ unsigned char unknown_015E[2];
+  /* 015E */ unsigned char padding_015E[2];
   /* 0160 */ float rotation[3];
   /* 016C */ unsigned char fixedAlpha;
-  /* 016D */ unsigned char unknown_016D[3];
+  /* 016D */ unsigned char padding_016D[3];
   /* 0170 */ std::vector<CParticle*> particles;
   /* 017C */ ParticlePool pool;
   /* 0188 */ int duration;

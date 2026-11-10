@@ -50,7 +50,7 @@ public:
   void OnAdvertisement(PARTY_BOOKING_AD_INFO info);
   std::pair<bool, PartyBookingEntry> MakeEntry(PARTY_BOOKING_AD_INFO info);
 
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int seekWindowOpen;
   /* 0004 */ bool m_alarm;
   /* 0005 */ bool m_filterEnabled;
   /* 0008 */ std::vector<std::string> m_regionNames;
@@ -59,7 +59,7 @@ public:
   /* 0024 */ std::map<int, PartyBookingEntry> m_pending;
   /* 002C */ bool m_lastPage;
   /* 0030 */ int m_lastIndex;
-  /* 0034 */ int unknown_0034;
+  /* 0034 */ int registeredTick;
   /* 0038 */ int m_filterLevel;
   /* 003C */ int m_filterMap;
   /* 0040 */ int m_filterJob;

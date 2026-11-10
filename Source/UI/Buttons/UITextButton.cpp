@@ -340,7 +340,7 @@ void UITVTextButton::SetLabel(std::string text) {
 
 // OFFSET: 0x0089CC30
 // FUNCTION: fn_11592
-void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y) {
+void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, bool drawShadow, int x, int y) {
   UIBmpRadioBtnText text;
   text.id = id;
   text.x = x;
@@ -348,7 +348,7 @@ void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, 
   text.height = height;
   text.bold = bold;
   text.color = color;
-  text.drawShadow = unknown;
+  text.drawShadow = drawShadow;
 
   if (x == -1000) {
     const int textWidth =

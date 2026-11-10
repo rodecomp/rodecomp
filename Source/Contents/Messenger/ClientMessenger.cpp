@@ -319,7 +319,7 @@ namespace EquipmentProperties {
     /* 0004 */ CLuaInstance script;
     /* 000C */ bool loadValid;
     /* 000D */ bool m_dirty = false;
-    /* 0010 */ int unknown_0010;
+    /* 0010 */ int padding_0010;
     /* 0014 */ int shopId;
     /* 0018 */ EquipmentPropertyStore* store;
     /* 001C */ int currentEquipment;
@@ -568,7 +568,7 @@ __declspec(noinline) std::map<std::int64_t, EquipmentPropertyDefinition*>& Equip
 // OFFSET: 0x006A1AA0
 // FUNCTION: fn_06013
 EquipmentProperties::CEquipmentPropertiesMgr::CEquipmentPropertiesMgr()
-    : loadValid(1), unknown_0010(-1), shopId(-1), store(new EquipmentPropertyStore), currentEquipment(0), notifyWindow(0) {
+    : loadValid(1), padding_0010(-1), shopId(-1), store(new EquipmentPropertyStore), currentEquipment(0), notifyWindow(0) {
 }
 
 // OFFSET: 0x006ABE90
@@ -5204,7 +5204,7 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
 }
 
 struct ItemNotificationWindow : UIWindow {
-  /* 007C */ unsigned char unknown_007C[0x38];
+  /* 007C */ unsigned char padding_007C[0x38];
   /* 00B4 */ MessengerMember member;
 };
 
@@ -5857,7 +5857,7 @@ struct MessengerLinkNode {
 };
 
 struct MessengerIntrusiveLink {
-  /* 0000 */ unsigned int unknown_0000;
+  /* 0000 */ unsigned int padding_0000;
   /* 0004 */ MessengerLinkNode* m_prev;
   /* 0008 */ MessengerLinkNode* m_next;
 

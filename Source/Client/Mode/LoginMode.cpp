@@ -132,7 +132,7 @@ struct AcceptEnterPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
   /* 0004 */ CharacterSlotExtension extension;
-  /* 0018 */ unsigned char unknown_0018[3];
+  /* 0018 */ unsigned char padding_0018[3];
   /* 001B */ CharacterInfo characters[1];
 };
 
@@ -325,7 +325,7 @@ const char* g_loginWallpaperName = "";
 
 struct SessionAccount {
   /* 0000 */ int sex;
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int padding_0004;
   /* 0008 */ int authCode;
   /* 000C */ int userLevel;
   /* 0010 */ std::uint32_t lastLoginIp;
@@ -665,7 +665,7 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
   SecureZeroMemory(this->characters, sizeof(this->characters));
   g_session.characterSlotState = 0;
   this->receivedCharacterCount = 0;
-  this->unknown_01DC = 0;
+  this->padding_01DC = 0;
 
   this->slotExtension = packet->extension;
   this->slotExtension.code = htonl(this->slotExtension.code);
@@ -2233,7 +2233,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
 // OFFSET: 0x00D8C6A0
 // FUNCTION: fn_22258
-CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), accountInfo(), keycryptErrorInfo(), mapStates() {
+CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), padding_6F2C(), accountInfo(), keycryptErrorInfo(), mapStates() {
   this->fadeInRequested = 1;
   this->nextKeepaliveTime = timeGetTime() + 12000;
   this->savedInlineCharset = g_inlineCharset;
@@ -2243,7 +2243,7 @@ CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), unknown_6F2C(), ac
   this->passwordRetryCount = 0;
   SecureZeroMemory(this->characters, sizeof(this->characters));
   this->receivedCharacterCount = 0;
-  this->unknown_01DC = 0;
+  this->padding_01DC = 0;
   this->characterDeleted = false;
 }
 
@@ -2914,7 +2914,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_ZC_RECOVER_PENALTY_OVERWEIGHT: {
       const int value = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
       if (value > 0) {
-        g_unknown173A5BC = value;
+        g_overweightThresholdPercent = value;
       }
       break;
     }
@@ -3435,7 +3435,7 @@ struct ZoneEnterPacket {
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ std::uint32_t gid;
   /* 000A */ int authCode;
-  /* 000E */ unsigned char unknown_000E[4];
+  /* 000E */ unsigned char padding_000E[4];
   /* 0012 */ std::uint32_t clientTime;
   /* 0016 */ unsigned char sex;
 };
@@ -4189,7 +4189,7 @@ void CLoginMode::OnChangeState(int value) {
     g_session.m_playerY = header.cellY;
     g_session.m_playerDir = header.playerDirection;
     g_windowMgr.ApplyReplayOptions(header.options);
-    g_session.ResetUnknownState();
+    g_session.ResetCharacterSlotState();
     g_session.ReadReplayCharacter(Replay::Instance().ReadSection(3));
     char mapName[56];
     std::sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);

@@ -13,7 +13,7 @@ class UIListBox;
 struct UIItemRepairEntry {
   /* 0000 */ std::int16_t index;
   /* 0002 */ std::int32_t itemId;
-  /* 0006 */ unsigned char unknown_0006[0x12];
+  /* 0006 */ unsigned char padding_0006[0x12];
 };
 #pragma pack(pop)
 

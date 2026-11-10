@@ -54,7 +54,7 @@ private:
   /* 0020 */ std::vector<std::map<const ResourceName*, CRes*, ResourceNameLess>> m_resources;
   /* 002C */ CRITICAL_SECTION m_lock;
   /* 0044 */ std::map<std::string, std::string> m_aliases;
-  /* 004C */ std::uint32_t unknown_004C[17];
+  /* 004C */ std::uint32_t padding_004C[17];
   /* 0090 */ std::vector<CRes*> m_transient;
   void EraseTransient(CRes* resource);
   CRes* LoadNamed(const char* name);

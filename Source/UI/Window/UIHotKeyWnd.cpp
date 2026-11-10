@@ -44,11 +44,11 @@ namespace {
     case HK_MENUICON_HIDE:
     case HK_TWITTERWND:
     case HK_HUNTINGQUEST_INFO_ONOFF:
-    case HK_UNKNOWN_62:
-    case HK_UNKNOWN_64:
-    case HK_UNKNOWN_65:
-    case HK_UNKNOWN_66:
-    case HK_UNKNOWN_67:
+    case HK_HIDDEN_62:
+    case HK_HIDDEN_64:
+    case HK_HIDDEN_65:
+    case HK_HIDDEN_66:
+    case HK_HIDDEN_67:
       return true;
     default:
       return false;

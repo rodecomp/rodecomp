@@ -94,7 +94,7 @@ public:
   /* 0228 */ DWORD maxTextureAspectRatio;
   /* 022C */ bool colorKeySupported;
   /* 022D */ bool largeTextures;
-  /* 022E */ std::uint8_t unknown_022E[26];
+  /* 022E */ std::uint8_t padding_022E[26];
   /* 0248 */ bool surfacesLost;
 };
 

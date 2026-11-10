@@ -57,7 +57,7 @@ public:
   /* 0090 */ int width;
   /* 0094 */ int itemHeight;
   /* 0098 */ int visibleItems;
-  /* 009C */ int unknown_009C;
+  /* 009C */ int padding_009C;
   /* 00A0 */ std::function<void(T*, const D&)> onSelect;
   /* 00C8 */ std::function<void(T*, const D&)> onChange;
 };

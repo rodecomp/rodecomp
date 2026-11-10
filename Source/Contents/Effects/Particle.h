@@ -37,7 +37,7 @@ struct EZeffectData {
   /* 0000 */ int maximumFrame;
   /* 0004 */ int fps;
   /* 0008 */ int clipCount;
-  /* 000C */ int unknown_000C;
+  /* 000C */ int padding_000C;
   /* 0010 */ EZeffectClip clips[60];
 };
 
@@ -71,7 +71,7 @@ public:
   /* 003C */ short red;
   /* 003E */ short green;
   /* 0040 */ short blue;
-  /* 0042 */ unsigned char unknown_0042[2];
+  /* 0042 */ unsigned char padding_0042[2];
   /* 0044 */ int alpha;
   /* 0048 */ unsigned char effectParameters[4];
   /* 004C */ int phaseParameter;
@@ -160,10 +160,10 @@ public:
   /* 3FE0 */ long long m_lift;
   /* 3FE8 */ bool m_flipX;
   /* 3FE9 */ bool m_flipY;
-  /* 3FEA */ short unknown_3FEA = 0;
+  /* 3FEA */ short padding_3FEA = 0;
   /* 3FEC */ float m_screenShiftX = 0;
   /* 3FF0 */ float m_screenShiftY = 0;
-  /* 3FF4 */ int unknown_3FF4;
+  /* 3FF4 */ int padding_3FF4;
 };
 
 void InitParticleQuad(RenderVertex* vertices);

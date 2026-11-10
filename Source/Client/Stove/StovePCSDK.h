@@ -10,7 +10,7 @@ namespace Stove::PCSDK {
 
     bool IsSuccessful() const;
 
-    /* 0000 */ std::uint8_t unknown_0000[12];
+    /* 0000 */ std::uint8_t padding_0000[12];
   };
 
   struct __declspec(dllimport) CallbackResult {
@@ -19,7 +19,7 @@ namespace Stove::PCSDK {
 
     Result GetResult() const;
 
-    /* 0000 */ std::uint8_t unknown_0000[28];
+    /* 0000 */ std::uint8_t padding_0000[28];
   };
 
   namespace Base {
@@ -36,7 +36,7 @@ namespace Stove::PCSDK {
       StovePCShutdown(const StovePCShutdown& other);
       ~StovePCShutdown();
 
-      /* 0000 */ void* unknown_0000[3];
+      /* 0000 */ void* padding_0000[3];
     };
 
     struct __declspec(dllimport) StovePCInitializeParam {
@@ -45,7 +45,7 @@ namespace Stove::PCSDK {
       void SetEnvironment(const wchar_t* environment);
       void SetApplicationKey(const wchar_t* applicationKey);
 
-      /* 0000 */ std::uint8_t unknown_0000[36];
+      /* 0000 */ std::uint8_t padding_0000[36];
     };
 
     struct __declspec(dllimport) StovePCUser {
@@ -55,7 +55,7 @@ namespace Stove::PCSDK {
       std::uint64_t GetMemberNumber() const;
       std::uint64_t GetGameUserId() const;
 
-      /* 0000 */ void* unknown_0000[5];
+      /* 0000 */ void* padding_0000[5];
     };
   }
 
@@ -70,7 +70,7 @@ namespace Stove::PCSDK {
       StovePCPaymentOption(const StovePCPaymentOption& other);
       void SetOperation(StovePCPaymentOperation operation);
 
-      /* 0000 */ void* unknown_0000[6];
+      /* 0000 */ void* padding_0000[6];
     };
 
     struct __declspec(dllimport) StovePCTermsOption : StovePCPaymentOption {
@@ -84,7 +84,7 @@ namespace Stove::PCSDK {
       void SetPageNumber(int pageNumber);
       void SetPageSize(int pageSize);
 
-      /* 0000 */ void* unknown_0000[3];
+      /* 0000 */ void* padding_0000[3];
     };
 
     struct StovePCPurchaseOption : StovePCPaymentOption {
@@ -103,7 +103,7 @@ namespace Stove::PCSDK {
       std::int64_t GetProductId() const;
       void SetProductId(std::int64_t productId);
 
-      /* 0000 */ void* unknown_0000[5];
+      /* 0000 */ void* padding_0000[5];
     };
 
     struct __declspec(dllimport) StovePCStartPurchaseParam {
@@ -113,7 +113,7 @@ namespace Stove::PCSDK {
       void SetOrderProduct(int index, const StovePCOrderProduct* orderProduct);
       void SetPurchaseOption(StovePCPurchaseOption option);
 
-      /* 0000 */ void* unknown_0000[10];
+      /* 0000 */ void* padding_0000[10];
     };
 
     struct __declspec(dllimport) StovePCPurchasedProduct {
@@ -132,14 +132,14 @@ namespace Stove::PCSDK {
       std::int64_t GetSaleBeginDate() const;
       std::int64_t GetSaleEndDate() const;
 
-      /* 0000 */ std::uint8_t unknown_0000[156];
+      /* 0000 */ std::uint8_t padding_0000[156];
     };
 
     struct __declspec(dllimport) StovePCPurchaseResult {
       StovePCPurchaseResult(const StovePCPurchaseResult& other);
       ~StovePCPurchaseResult();
 
-      /* 0000 */ std::uint8_t unknown_0000[48];
+      /* 0000 */ std::uint8_t padding_0000[48];
     };
   }
 }

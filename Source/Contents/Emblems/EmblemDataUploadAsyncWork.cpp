@@ -81,8 +81,8 @@ void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, 
   this->m_accountName = accountName;
   this->m_guildId = guildId;
   this->m_path = path;
-  const std::uint8_t unknown[] = {0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5};
-  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>(unknown)), sourceFile, 54);
+  const std::uint8_t diagnosticSource[] = {0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5};
+  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>(diagnosticSource)), sourceFile, 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
 

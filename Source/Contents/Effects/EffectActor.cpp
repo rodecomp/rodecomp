@@ -3,7 +3,7 @@
 #include "Contents/Effects/RagEffect.h"
 
 // INLINED
-EffectActorState::EffectActorState() : unknown_0138(-1), unknown_013C(0), effectLaunched(0), first(nullptr), second(nullptr) {
+EffectActorState::EffectActorState() : padding_0138(-1), padding_013C(0), effectLaunched(0), first(nullptr), second(nullptr) {
 }
 
 // INLINED
@@ -13,7 +13,7 @@ EffectActorState::~EffectActorState() {
 // OFFSET: 0x00CA82E0
 // FUNCTION: fn_20987
 EffectActor::EffectActor() {
-  this->render.unknown_0130[0] = 0;
+  this->render.translucentOther[0] = 0;
 }
 
 // OFFSET: 0x00CA8C40
@@ -35,10 +35,10 @@ EffectActor::~EffectActor() {
 // OFFSET: 0x00CAF4B0
 // FUNCTION: fn_21083
 void EffectActor::ResetEffectState() {
-  this->state.unknown_0138 = -1;
-  this->state.unknown_013C = 0;
+  this->state.padding_0138 = -1;
+  this->state.padding_013C = 0;
   this->state.effectLaunched = 0;
   this->state.first = nullptr;
   this->state.second = nullptr;
-  this->render.unknown_0130[0] = 0;
+  this->render.translucentOther[0] = 0;
 }

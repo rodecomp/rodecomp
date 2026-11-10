@@ -71,15 +71,15 @@ const char* DecryptName(const char (&source)[Length]) {
 }
 
 struct NaviUnknownBlock {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
+  /* 0000 */ int padding_0000;
+  /* 0004 */ int padding_0004;
+  /* 0008 */ int padding_0008;
+  /* 000C */ int padding_000C;
+  /* 0010 */ int padding_0010;
+  /* 0014 */ int padding_0014;
+  /* 0018 */ int padding_0018;
+  /* 001C */ int padding_001C;
+  /* 0020 */ int padding_0020;
 
   NaviUnknownBlock();
 };
@@ -100,8 +100,8 @@ CNavi_Object::CNavi_Object()
 // OFFSET: 0x00B8C990
 // FUNCTION: fn_19427
 NaviUnknownBlock::NaviUnknownBlock()
-    : unknown_0000(0), unknown_0004(0), unknown_0008(0), unknown_000C(0), unknown_0010(0), unknown_0014(0), unknown_0018(0), unknown_001C(0),
-      unknown_0020(0) {
+    : padding_0000(0), padding_0004(0), padding_0008(0), padding_000C(0), padding_0010(0), padding_0014(0), padding_0018(0), padding_001C(0),
+      padding_0020(0) {
 }
 
 // OFFSET: 0x00B8C710
@@ -136,7 +136,7 @@ CNavi_Link::CNavi_Link() : linkedCellX(0), linkedCellY(0) {
 // OFFSET: 0x00B8C2B0
 // FUNCTION: fn_19422
 CNavi_Link::CNavi_Link(
-  int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84
+  int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int linkedCellX, int linkedCellY
 )
     : linkedCellX(0), linkedCellY(0) {
   this->type = type;
@@ -151,8 +151,8 @@ CNavi_Link::CNavi_Link(
   this->cellY = cellY;
   this->info = info;
   this->linkedInfo = linkedInfo;
-  this->linkedCellX = unknown80;
-  this->linkedCellY = unknown84;
+  this->linkedCellX = linkedCellX;
+  this->linkedCellY = linkedCellY;
   this->depth = 0;
 }
 

@@ -33,7 +33,7 @@ public:
   /* 0100 */ int buyingShop;
   /* 0104 */ UICheckBox* saleAlarm;
   /* 0108 */ unsigned char shopOpen;
-  /* 0109 */ unsigned char unknown_0109[0x03];
+  /* 0109 */ unsigned char padding_0109[0x03];
   /* 010C */ int offlineStoreId;
   /* 0110 */ std::uint32_t startTick;
   /* 0114 */ std::uint32_t duration;

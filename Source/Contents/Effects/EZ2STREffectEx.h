@@ -32,7 +32,7 @@ public:
 
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ unsigned char timed;
-  /* 00D1 */ unsigned char unknown_00D1[3];
+  /* 00D1 */ unsigned char padding_00D1[3];
   /* 00D4 */ int frameStep;
   /* 00D8 */ unsigned char alternateRender;
 };

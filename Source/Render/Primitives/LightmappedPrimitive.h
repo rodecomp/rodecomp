@@ -45,7 +45,7 @@ struct ModelRenderCommand {
   /* 000C */ std::uint16_t* indices;
   /* 0010 */ std::uint32_t indexCount;
   /* 0014 */ std::uint16_t renderEnabled;
-  /* 0016 */ std::uint16_t unknown_0016;
+  /* 0016 */ std::uint16_t padding_0016;
   /* 0018 */ std::uint32_t renderStateA;
   /* 001C */ std::uint32_t renderStateB;
   /* 0020 */ std::uint32_t renderStateC;

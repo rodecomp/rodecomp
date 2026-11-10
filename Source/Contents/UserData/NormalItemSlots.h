@@ -110,9 +110,9 @@ struct AchTracingWndInfo : WindowPlacement {
 
 struct BasicInfoWndInfo : WindowPlacement {
   /* 0010 */ unsigned char mode;
-  /* 0011 */ unsigned char unknown_0011;
+  /* 0011 */ unsigned char padding_0011;
   /* 0012 */ unsigned char expanded;
-  /* 0013 */ unsigned char unknown_0013;
+  /* 0013 */ unsigned char padding_0013;
 
   void Reset();
   int IsValid();

@@ -70,10 +70,10 @@ public:
   /* 0100 */ UIWindow* moveButton;
   /* 0104 */ std::vector<std::string> routeFiles;
   /* 0110 */ NavigationWindowInfo* info;
-  /* 0114 */ int unknown_0114;
+  /* 0114 */ int padding_0114;
   /* 0118 */ int noticeUntil;
   /* 011C */ int animationDuration;
-  /* 0120 */ unsigned char unknown_0120[4];
+  /* 0120 */ unsigned char padding_0120[4];
 };
 
 class UIStaticBitmap;

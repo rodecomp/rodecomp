@@ -6,13 +6,13 @@
 struct LexiconNode {
   /* 0000 */ unsigned char value;
   /* 0001 */ unsigned char terminal;
-  /* 0002 */ unsigned char unknown_0002[2];
+  /* 0002 */ unsigned char padding_0002[2];
   /* 0004 */ LexiconNode* sibling;
   /* 0008 */ LexiconNode* child;
 };
 
 struct LexiconHeader {
-  /* 0000 */ unsigned char unknown_0000[0x104];
+  /* 0000 */ unsigned char padding_0000[0x104];
   /* 0104 */ std::uint32_t wordCount;
   /* 0108 */ std::uint32_t nodeCount;
   /* 010C */ std::uint32_t total;

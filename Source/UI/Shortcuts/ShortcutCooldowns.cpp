@@ -76,7 +76,7 @@ int CSession::IsMercenarySkill(unsigned id) const {
 
 namespace {
   struct SearchStoreEntry {
-    /* 0000 */ unsigned char unknown_0000[8];
+    /* 0000 */ unsigned char padding_0000[8];
     /* 0008 */ char storeName[80];
     /* 0058 */ int price;
     /* 005C */ std::uint16_t quantity;

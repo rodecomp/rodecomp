@@ -1767,7 +1767,7 @@ bool UIGage::CanHitTest() {
 // OFFSET: 0x0087C3F0
 // FUNCTION: fn_11253
 void UITabControl::Configure(
-  int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char unknownA9, unsigned char unknownA8, std::uint32_t activeFillColor,
+  int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char skipTabFill, unsigned char allowTabRename, std::uint32_t activeFillColor,
   std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,
   std::uint32_t inactiveTextColor
 ) {
@@ -1777,8 +1777,8 @@ void UITabControl::Configure(
   this->tabHeight = tabHeight;
   this->tabPadding = tabPadding;
   this->uniformWidths = uniformWidths;
-  this->skipTabFill = unknownA9;
-  this->allowTabRename = unknownA8;
+  this->skipTabFill = skipTabFill;
+  this->allowTabRename = allowTabRename;
   this->activeFillColor = activeFillColor ? activeFillColor : 0xFFFFFF;
   this->inactiveFillColor = inactiveFillColor ? inactiveFillColor : 0xFFFFFF;
   this->activeBorderColor = activeBorderColor ? activeBorderColor : 0xC3C3C3;
@@ -1966,8 +1966,8 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
           button->geometry.height);
 
-      const std::string unknownName = LookupMessage(MSI_NAMELESS_USER);
-      if (label.find(unknownName) != std::string::npos) {
+      const std::string namelessUserName = LookupMessage(MSI_NAMELESS_USER);
+      if (label.find(namelessUserName) != std::string::npos) {
         std::uint32_t creator[2];
         std::memcpy(creator, item.cards + 8, sizeof(creator));
         button->tipId = creator[0] + (creator[1] << 16);

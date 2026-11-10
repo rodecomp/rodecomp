@@ -1109,8 +1109,8 @@ void UIEditCtrl3::ClearLineState() {
 // OFFSET: 0x0086E7D0
 // FUNCTION: fn_11077
 UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl() : UIWindow(0) {
-  this->unknown_0084 = 0;
-  this->unknown_0088 = 0;
+  this->padding_0084 = 0;
+  this->padding_0088 = 0;
 }
 
 #include "UI/Edit/UIItemTagCtrl.h"

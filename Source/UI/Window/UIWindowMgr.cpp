@@ -271,11 +271,11 @@ struct ShortcutRotatePacket {
 
 struct AiCommand {
   /* 0000 */ int type;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
+  /* 0004 */ int padding_0004;
+  /* 0008 */ int padding_0008;
+  /* 000C */ int padding_000C;
+  /* 0010 */ int padding_0010;
+  /* 0014 */ int padding_0014;
 
   AiCommand() {
     std::memset(this, 0, sizeof(*this));
@@ -795,10 +795,10 @@ void UIWindowMgr::ResetWindows() {
   this->partyBookingHelpWnd = 0;
   this->collectionSystemWnd = nullptr;
   this->replayRecordControlWnd = nullptr;
-  this->unknown_01D8 = 0;
+  this->padding_01D8 = 0;
   this->questDisplayWnd = nullptr;
   this->navigationWnd = nullptr;
-  this->unknown_0440 = 0;
+  this->padding_0440 = 0;
   this->clanInfoManageWnd = nullptr;
   this->bankNewWnd = nullptr;
   this->messageBoxes.clear();
@@ -868,7 +868,7 @@ void UIWindowMgr::ResetWindows() {
 // FUNCTION: fn_17086
 UIWindowMgr::UIWindowMgr()
     : activeWindowId(0), retainedPersistentWindow(false), changeNameWnd(nullptr), previousMouseX(-1), previousMouseY(-1), basicInfoExpanded(true),
-      dropDownBoxWnd(nullptr), macroReporterVisible(false), unknown_4F211(false), waitDBSaveWnd(nullptr) {
+      dropDownBoxWnd(nullptr), macroReporterVisible(false), padding_4F211(false), waitDBSaveWnd(nullptr) {
   this->ResetWindows();
   this->backgroundSurface = nullptr;
   this->screenWidth = 0;
@@ -883,8 +883,8 @@ UIWindowMgr::UIWindowMgr()
   this->minimapMarkersVisible = 1;
   this->minimapColor = 0xAAFFFFFFu;
   this->drawCompass = 1;
-  this->unknown_04F8 = 0;
-  this->unknown_04F4 = 0;
+  this->padding_04F8 = 0;
+  this->padding_04F4 = 0;
   this->framesInvalidated = 0;
   this->chatWndStickOn = 1;
   this->battleSubChatEnabled = 0;
@@ -3675,7 +3675,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case WID_SUBCHATHISWND_UNKNOWN_03E4:
+  case WID_SUBCHATHISWND:
     if (this->subChatHistoryWnd) {
       reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->subChatHistoryWnd));
@@ -3683,7 +3683,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case WID_SUBCHATHISWND_UNKNOWN_03E8:
+  case WID_SUBCHATHISWND2:
     if (this->secondSubChatHistoryWnd) {
       reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->StoreInfo();
       this->Schedule(reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd));
@@ -3778,7 +3778,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->seekPartyWnd);
       this->seekPartyWnd = nullptr;
       closed = true;
-      g_session.m_partyBooking.unknown_0000 = 0;
+      g_session.m_partyBooking.seekWindowOpen = 0;
     }
     break;
   case WID_SEEKPARTYMBWND:
@@ -5062,7 +5062,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->seekPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6DC), 0, 0, 0);
     }
     window->Show(1);
-    g_session.m_partyBooking.unknown_0000 = 1;
+    g_session.m_partyBooking.seekWindowOpen = 1;
     break;
   case WID_SEEKPARTYMBWND:
     if (this->seekPartyWnd == nullptr) {
@@ -6489,7 +6489,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     break;
-  case WID_SUBCHATHISWND_UNKNOWN_03E4:
+  case WID_SUBCHATHISWND:
     window = reinterpret_cast<UIWindow*>(this->subChatHistoryWnd);
     if (window == nullptr) {
       window = new UISubChatHisWnd();
@@ -6501,7 +6501,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(0);
     break;
-  case WID_SUBCHATHISWND_UNKNOWN_03E8:
+  case WID_SUBCHATHISWND2:
     window = reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd);
     if (window == nullptr) {
       window = new UISubChatHisWnd();

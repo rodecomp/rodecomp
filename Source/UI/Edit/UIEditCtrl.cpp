@@ -1011,15 +1011,15 @@ void UIItemStoreSubWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13274
 void UIItemStoreWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   char text[250];
-  if (g_unknown_01738268) {
-    if (g_unknown_01738270 == 1) {
+  if (g_buyingStoreMode) {
+    if (g_buyingStoreNoPermission == 1) {
       std::memset(text, 0, 250);
       std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_PERMISSON_WARNING_MSG));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       return;
     }
 
-    if (!g_unknown_0173826C && !g_unknown_01738270) {
+    if (!g_buyingStoreDbNumber && !g_buyingStoreNoPermission) {
       std::memset(text, 0, 250);
       std::sprintf(text, LookupMessage(MSI_BARGAINSALE_TOOLWND_DB_NUMBER));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
@@ -7771,7 +7771,7 @@ UIItemStoreFindWnd::UIItemStoreFindWnd() : UIItemBaseWnd() {
   this->columns = 1;
   this->visibleRows = 3;
   this->scrollOverflow = 0;
-  this->unknown_0120 = 18;
+  this->padding_0120 = 18;
 }
 
 // OFFSET: 0x0096EB70
@@ -7783,7 +7783,7 @@ UIItemStoreSubWnd::UIItemStoreSubWnd() : UIItemBaseWnd() {
   this->columns = 1;
   this->visibleRows = 3;
   this->scrollOverflow = 0;
-  this->unknown_011C = 18;
+  this->padding_011C = 18;
 }
 
 // OFFSET: 0x0096EC60
@@ -7815,7 +7815,7 @@ UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
 void UIItemStoreWnd::OnCreate(int width, int height) {
   this->title = new UIStaticText();
   this->title->SetSize(70, 15);
-  this->title->SetText(LookupMessage(g_unknown_01738268 ? 2500 : 169), 0);
+  this->title->SetText(LookupMessage(g_buyingStoreMode ? 2500 : 169), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
@@ -8099,7 +8099,7 @@ UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem() : UIFrameWnd(
 // OFFSET: 0x0096FB70
 // FUNCTION: fn_13238
 UIItemStoreWnd::~UIItemStoreWnd() {
-  g_unknown_01738268 = 0;
+  g_buyingStoreMode = 0;
 }
 
 // OFFSET: 0x0096FC10
@@ -11705,7 +11705,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           error = 602;
           goto showError;
         }
-        g_session.SetItem1768Unknown0014(i, price);
+        g_session.SetMerchantPurchaseSavedPrice(i, price);
       }
       if (this->mode != 0) {
         for (int i = 0; i < this->slotCount; ++i) {

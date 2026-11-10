@@ -29,7 +29,7 @@ public:
   /* 00D8 */ int contentOffset;
   /* 00DC */ UICheckBox* allowViewCheck;
   /* 00E0 */ UICheckBox* swapModeCheck;
-  /* 00E4 */ unsigned char unknown_00E4[0x08];
+  /* 00E4 */ unsigned char padding_00E4[0x08];
   /* 00EC */ UITabControl* m_tabs;
   /* 00F0 */ int m_page;
   /* 00F4 */ int m_contentTop;
@@ -43,7 +43,7 @@ public:
   /* 0130 */ UIBitmapButton* unequipButton;
   /* 0134 */ UIWindow* m_scrollBar;
   /* 0138 */ UIWindow* damageSkinButtons[6];
-  /* 0150 */ int unknown_0150;
+  /* 0150 */ int padding_0150;
   /* 0154 */ int m_firstSlot;
   /* 0158 */ int m_hoverSlot;
   /* 015C */ int damageSkinMode;

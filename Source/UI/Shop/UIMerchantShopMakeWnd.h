@@ -43,7 +43,7 @@ public:
 
   /* 00B4 */ std::string title;
   /* 00CC */ UIEditCtrl* titleEdit;
-  /* 00D0 */ unsigned char unknown_00D0[0x8];
+  /* 00D0 */ unsigned char padding_00D0[0x8];
   /* 00D8 */ int editIndex;
   /* 00DC */ UIWindow* notice;
   /* 00E0 */ UIEditCtrl* priceEdits[13];

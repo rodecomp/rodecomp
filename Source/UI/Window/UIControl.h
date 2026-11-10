@@ -111,7 +111,7 @@ public:
   void SetOnChange(std::function<void(CUITabButton*)> handler);
 
   /* 0080 */ CUITabButton* current;
-  /* 0084 */ unsigned char unknown_0084[0x04];
+  /* 0084 */ unsigned char padding_0084[0x04];
   /* 0088 */ std::function<void(CUITabButton*)> onChange;
   /* 00B0 */ std::function<bool(CUITabButton*, CUITabButton*)> onChanging;
 };
@@ -133,7 +133,7 @@ public:
 
   /* 0080 */ int state;
   /* 0084 */ unsigned char disabled;
-  /* 0085 */ unsigned char unknown_0085[0x03];
+  /* 0085 */ unsigned char padding_0085[0x03];
   /* 0088 */ std::string tooltip;
   /* 00A0 */ unsigned char clickHandlerStorage[0x24];
   /* 00C4 */ UIWindow* clickWindow;
@@ -173,7 +173,7 @@ public:
   /* 0148 */ int fontIndex;
   /* 014C */ int fontHeight;
   /* 0150 */ unsigned char bold;
-  /* 0151 */ unsigned char unknown_0151[0x03];
+  /* 0151 */ unsigned char padding_0151[0x03];
   /* 0154 */ std::map<int, std::uint32_t> textColors;
   /* 015C */ std::uint32_t disabledTextColor;
   /* 0160 */ unsigned char shadow;
@@ -198,7 +198,7 @@ public:
   /* 0198 */ CResPtr<CBitmapRes> disabledImage;
   /* 019C */ std::map<int, std::string> imageNames;
   /* 01A4 */ std::string disabledName;
-  /* 01BC */ unsigned char unknown_01BC[0x04];
+  /* 01BC */ unsigned char padding_01BC[0x04];
 };
 
 class CUIBasicButton : public CUITextButton {
@@ -245,7 +245,7 @@ public:
   /* 01D4 */ SkinPaletteCell normalCell;
   /* 01DC */ SkinPaletteCell selectedCell;
   /* 01E4 */ SkinPaletteCell borderCell;
-  /* 01EC */ unsigned char unknown_01EC[4];
+  /* 01EC */ unsigned char padding_01EC[4];
 };
 
 class CUIImageButton : public CUIButton {
@@ -288,7 +288,7 @@ class CUITitleBar : public CUIControl {
 public:
   // INLINED
   explicit CUITitleBar()
-      : CUIControl(), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), unknown_00D8(), titleText(nullptr),
+      : CUIControl(), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), padding_00D8(), titleText(nullptr),
         firstButton(nullptr), secondButton(nullptr) {
   }
 
@@ -311,7 +311,7 @@ public:
   /* 0090 */ std::string leftName;
   /* 00A8 */ std::string middleName;
   /* 00C0 */ std::string rightName;
-  /* 00D8 */ unsigned char unknown_00D8[0x04];
+  /* 00D8 */ unsigned char padding_00D8[0x04];
   /* 00DC */ class CUIStaticText* titleText;
   /* 00E0 */ UIWindow* firstButton;
   /* 00E4 */ UIWindow* secondButton;
@@ -387,7 +387,7 @@ public:
   /* 00AC */ int deltaX;
   /* 00B0 */ int deltaY;
   /* 00B4 */ std::string imageName;
-  /* 00CC */ unsigned char unknown_00CC[0x04];
+  /* 00CC */ unsigned char padding_00CC[0x04];
   /* 00D0 */ std::function<void(int, int)> onResize;
 };
 

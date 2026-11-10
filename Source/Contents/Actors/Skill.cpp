@@ -354,9 +354,9 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
   case AM_SKILL: {
     const SkillHitMessage* hit = reinterpret_cast<const SkillHitMessage*>(b);
     const int skillId = hit->skillId;
-    const int unknown_0014 = hit->monsterValue;
-    const int unknown_001C = hit->cellX;
-    const int unknown_0020 = hit->cellY;
+    const int monsterValue = hit->monsterValue;
+    const int cellX = hit->cellX;
+    const int cellY = hit->cellY;
     const int motionSpeed = hit->motionSpeed;
     int hitCount = hit->hitCount;
     if (hitCount == 0) {
@@ -447,11 +447,11 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
       damageMessage.damage = damage;
       damageMessage.time = timeGetTime();
       damageMessage.attackerAid = this->skillAid;
-      damageMessage.cellX = unknown_001C;
-      damageMessage.cellY = unknown_0020;
+      damageMessage.cellX = cellX;
+      damageMessage.cellY = cellY;
       damageMessage.hitEffect = effectId;
       damageMessage.effectId = -1;
-      damageMessage.monsterValue = unknown_0014;
+      damageMessage.monsterValue = monsterValue;
       damageMessage.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
       damageMessage.blueDamage = 0;
       damageMessage.skillId = skillId;

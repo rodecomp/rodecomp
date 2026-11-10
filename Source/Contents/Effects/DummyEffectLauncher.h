@@ -11,7 +11,7 @@ public:
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
   /* 0158 */ int lifeFrames;
-  /* 015C */ int unknown_015C;
+  /* 015C */ int padding_015C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

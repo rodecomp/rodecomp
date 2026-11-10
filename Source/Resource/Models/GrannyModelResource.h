@@ -75,7 +75,7 @@ struct granny_model {
 };
 
 struct granny_file_info {
-  /* 0000 */ unsigned char unknown_0000[0x10];
+  /* 0000 */ unsigned char padding_0000[0x10];
   /* 0010 */ std::int32_t textureCount;
   /* 0014 */ granny_texture** textures;
   /* 0018 */ unsigned char materialTable[8];
@@ -197,7 +197,7 @@ public:
   granny_file* ReadAnimationFile(const char* name, const char* suffix);
 
   /* 0000 */ float animationDuration;
-  /* 0004 */ unsigned char unknown_0004[0x14C];
+  /* 0004 */ unsigned char padding_0004[0x14C];
   /* 0150 */ granny_file* file;
   /* 0154 */ int textureCount;
   /* 0158 */ GrannyTextureEntry* textures;
@@ -207,13 +207,13 @@ public:
   /* 0168 */ granny_local_pose* localPose;
   /* 016C */ int deformBufferSize;
   /* 0170 */ int animationMode;
-  /* 0174 */ unsigned char unknown_0174[8];
+  /* 0174 */ unsigned char padding_0174[8];
   /* 017C */ char fileName[MAX_PATH];
   /* 0280 */ granny_animation* animations[100][20];
 };
 
 struct GrannyHairPivot {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int padding_0000;
   /* 0004 */ int mesh;
   /* 0008 */ matrix transform;
 };
@@ -245,7 +245,7 @@ public:
   granny_world_pose* Animate(float seconds, granny_model_instance* instance);
 
   /* 0110 */ float animationDuration;
-  /* 0114 */ unsigned char unknown_0114[0x14C];
+  /* 0114 */ unsigned char padding_0114[0x14C];
   /* 0260 */ granny_file* file;
   /* 0264 */ int textureCount;
   /* 0268 */ GrannyTextureEntry* textures;
@@ -255,7 +255,7 @@ public:
   /* 0278 */ void* localPose;
   /* 027C */ int deformBufferSize;
   /* 0280 */ int animationMode;
-  /* 0284 */ int unknown_0284;
+  /* 0284 */ int padding_0284;
   /* 0288 */ void* deformBuffer;
   /* 028C */ char fileName[MAX_PATH];
   /* 0390 */ const granny_model* model;

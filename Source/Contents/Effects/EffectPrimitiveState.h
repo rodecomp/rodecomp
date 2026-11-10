@@ -29,17 +29,17 @@ struct EffectPrimitiveRecord {
 struct EffectPrimitiveSlot {
   EffectPrimitiveSlot();
   /* 0000 */ char life;
-  /* 0001 */ unsigned char unknown_0001;
+  /* 0001 */ unsigned char padding_0001;
   /* 0002 */ std::int16_t alphaB;
   /* 0004 */ std::int16_t alphaT;
   /* 0006 */ std::int16_t fullDisplayAngle;
   /* 0008 */ float maxHeight;
   /* 000C */ int process;
   /* 0010 */ std::int16_t rotStart;
-  /* 0012 */ unsigned char unknown_0012[2];
+  /* 0012 */ unsigned char padding_0012[2];
   /* 0014 */ float height[21];
   /* 0068 */ char flag1[21];
-  /* 007D */ unsigned char unknown_007D;
+  /* 007D */ unsigned char padding_007D;
   /* 007E */ std::int16_t riseAngle;
   /* 0080 */ float distance;
   union {
@@ -98,7 +98,7 @@ struct EffectPrimitiveState {
   /* 024C */ int greenSpeed;
   /* 0250 */ int blueSpeed;
   /* 0254 */ unsigned char repeatAnim;
-  /* 0255 */ unsigned char unknown_0255[3];
+  /* 0255 */ unsigned char padding_0255[3];
   /* 0258 */ std::vector<float> chPoint;
   /* 0264 */ std::vector<float> chVal1;
   /* 0270 */ std::vector<float> chVal2;

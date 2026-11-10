@@ -40,7 +40,7 @@ struct EnchantInfo {
   /* 0010 */ uint32_t condition2;
   /* 0014 */ bool approveRandomOption;
   /* 0018 */ std::vector<int> slots;
-  /* 0024 */ uint8_t unknown_0024[0x4];
+  /* 0024 */ uint8_t padding_0024[0x4];
   /* 0028 */ bool resetEnabled;
   /* 0030 */ uint64_t resetRate;
   /* 0038 */ uint64_t resetCost;

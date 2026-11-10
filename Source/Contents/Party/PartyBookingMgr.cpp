@@ -19,7 +19,7 @@ PartyBookingEntry::PartyBookingEntry(const PartyBookingEntry& other) = default;
 
 // OFFSET: 0x00B15C80
 // FUNCTION: fn_18432
-PartyBookingMgr::PartyBookingMgr() : unknown_0000(0) {
+PartyBookingMgr::PartyBookingMgr() : seekWindowOpen(0) {
   this->m_lastPage = true;
   this->m_lastIndex = -1;
   this->m_regionNames.clear();
@@ -231,7 +231,7 @@ void PartyBookingMgr::AddEntries(const PARTY_BOOKING_AD_INFO* infos, int count, 
 void PartyBookingMgr::Reset() {
   this->m_lastPage = true;
   this->m_lastIndex = -1;
-  this->unknown_0000 = 0;
+  this->seekWindowOpen = 0;
   this->m_entries.clear();
   this->m_pending.clear();
 }

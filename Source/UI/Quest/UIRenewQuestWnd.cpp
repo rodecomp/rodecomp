@@ -208,9 +208,9 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
 
   for (int index = 0; index < quest.m_huntCount; ++index) {
     std::string text;
-    if (quest.m_huntUnknown00D4[index] != 31999) {
-      const short minLevel = quest.m_huntUnknown01AC[index];
-      const short maxLevel = quest.m_huntUnknown01B2[index];
+    if (quest.m_huntMobId[index] != 31999) {
+      const short minLevel = quest.m_huntMinLevel[index];
+      const short maxLevel = quest.m_huntMaxLevel[index];
       const char* name = quest.m_huntName[index];
       if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
         if (minLevel == 0) {
@@ -225,12 +225,12 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
       }
     } else {
       text = static_cast<const std::string&>(
-        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]));
+        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntConditionFlags[index], quest.m_huntMinLevel[index], quest.m_huntMaxLevel[index]));
     }
 
-    const short goal = quest.m_huntUnknown0180[index];
+    const short goal = quest.m_huntMaxCount[index];
     if (goal > 0) {
-      const short count = quest.m_huntUnknown00E0[index];
+      const short count = quest.m_huntKillCount[index];
       if (count != goal) {
         text = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", text.c_str(), count, goal));
       } else {
@@ -448,7 +448,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(int width, int height)
-    : UIScrollWnd(width, height, 0), m_questId(0), unknown_00B4(14) {
+    : UIScrollWnd(width, height, 0), m_questId(0), padding_00B4(14) {
   this->OnCreate(width, height);
 }
 

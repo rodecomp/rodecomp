@@ -31,7 +31,7 @@ struct GroundCell {
   /* 0048 */ GroundQuad* side2;
   /* 004C */ std::uint32_t frame;
   /* 0050 */ unsigned char color[3];
-  /* 0053 */ unsigned char unknown_0053;
+  /* 0053 */ unsigned char padding_0053;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

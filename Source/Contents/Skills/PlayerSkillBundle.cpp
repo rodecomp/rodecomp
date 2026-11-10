@@ -359,7 +359,7 @@ void CPlayerSkillBundle::ResetFirstLevelChange() {
 
 // OFFSET: 0x00771FA0
 // FUNCTION: fn_08294
-void CPlayerSkillBundle::SetUnknownValue(int id, int value) {
+void CPlayerSkillBundle::SetSkillValue(int id, int value) {
   if (static_cast<unsigned>(id) - 1u <= 0x1F3D) {
     this->skillValues[id] = value;
   }

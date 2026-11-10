@@ -37,7 +37,7 @@ public:
   /* 00F4 */ CUITextViewer* textViewer;
   /* 00F8 */ uint64_t group;
   /* 0100 */ EnchantInfo* enchantInfo;
-  /* 0104 */ int unknown_0104;
+  /* 0104 */ int padding_0104;
 
   // INLINED
   CUIEnchantUI()

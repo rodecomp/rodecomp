@@ -84,7 +84,7 @@ void UITagListBox::Paint() {
   }
 
   if (first < end) {
-    if ((this->unknown_00BC & 255) == 0) {
+    if ((this->plainTextMode & 255) == 0) {
       for (int index = first; index < end; ++index) {
         const std::string& line = this->lines[index];
         const int y = (index - first) * this->lineHeight + 4;
@@ -391,7 +391,7 @@ void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, 
       this->AddLine(lines[index].c_str());
     }
 
-    this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
+    this->plainTextMode = (this->plainTextMode & ~255) | 1;
   } else {
     if (argument4 != 0) {
       int extra = 0;
@@ -409,7 +409,7 @@ void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, 
       this->AppendTaggedLines(parsed, tags, width == 0 ? 35 : width);
     }
 
-    this->unknown_00BC &= ~255;
+    this->plainTextMode &= ~255;
   }
 
   this->Invalidate();

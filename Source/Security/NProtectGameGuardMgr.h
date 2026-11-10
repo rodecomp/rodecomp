@@ -29,7 +29,7 @@ public:
   virtual ~CNProtectGameGuardMgr();
 
   /* 0004 */ bool m_initialized;
-  /* 0008 */ unsigned int unknown_0008;
+  /* 0008 */ unsigned int padding_0008;
   /* 000C */ void* m_gameLib;
   /* 0010 */ bool m_hasError;
   /* 0014 */ std::string m_errorMessage;

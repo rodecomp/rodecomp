@@ -32,7 +32,7 @@ UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0
   this->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->Invalidate();
 
-  this->unknown_00BC = 0;
+  this->plainTextMode = 0;
 }
 
 UITextViewer::~UITextViewer() = default;
@@ -205,7 +205,7 @@ void UITextViewer::Paint() {
     }
   }
 
-  const bool plain = (this->unknown_00BC & 255) != 0;
+  const bool plain = (this->plainTextMode & 255) != 0;
 
   for (int index = first; index < end; ++index) {
     const auto& line = this->lines[index];

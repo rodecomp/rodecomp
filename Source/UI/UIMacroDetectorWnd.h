@@ -35,7 +35,7 @@ public:
   /* 00C8 */ int m_imageSize;
   /* 00CC */ int m_imageReceived;
   /* 00D0 */ unsigned char remainingAttempts;
-  /* 00D1 */ unsigned char unknown_00D1[3];
+  /* 00D1 */ unsigned char padding_00D1[3];
   /* 00D4 */ std::uint32_t totalDuration;
   /* 00D8 */ std::uint32_t startTick;
   /* 00DC */ std::uint32_t messageDuration;

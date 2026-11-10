@@ -8,12 +8,12 @@ std::mt19937 g_scheduleRandomEngine;
 
 // OFFSET: 0x00BA8930
 // FUNCTION: fn_19725
-CSchedule::CSchedule(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType, int serial, int unknown) {
+CSchedule::CSchedule(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType, int serial, int userValue) {
   this->serial = serial;
   this->timestamp = timestamp;
   this->interval = interval;
   this->scheduleType = scheduleType;
-  this->userValue = unknown;
+  this->userValue = userValue;
   this->active = true;
   this->pending = 0;
   this->processCount = 0;

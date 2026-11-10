@@ -15,7 +15,7 @@ class CItemData {
 public:
   /* 0000 */ std::uint32_t color = 0xFFFFFFFF;
   /* 0004 */ std::string name;
-  /* 001C */ int unknown_001C;
+  /* 001C */ int padding_001C;
   /* 0020 */ double probability = 0.0;
 };
 
@@ -30,7 +30,7 @@ public:
   /* 00E8 */ CUITextViewer* nameText;
   /* 00EC */ CUITextViewer* probabilityText;
   /* 00F0 */ std::uint32_t backgroundColor;
-  /* 00F4 */ unsigned char unknown_00F4[0x04];
+  /* 00F4 */ unsigned char padding_00F4[0x04];
 };
 
 }

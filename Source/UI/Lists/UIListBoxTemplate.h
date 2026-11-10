@@ -302,7 +302,7 @@ public:
   /* 00C4 */ std::list<T*> items;
   /* 00CC */ T* selected;
   /* 00D0 */ unsigned char locked;
-  /* 00D1 */ unsigned char unknown_00D1[0x07];
+  /* 00D1 */ unsigned char padding_00D1[0x07];
   /* 00D8 */ std::function<void(T*)> onSelect;
 };
 
@@ -521,13 +521,13 @@ public:
   /* 00BC */ int itemX;
   /* 00C0 */ int itemY;
   /* 00C4 */ unsigned char layoutFlag;
-  /* 00C5 */ unsigned char unknown_00C5[0x03];
+  /* 00C5 */ unsigned char padding_00C5[0x03];
   /* 00C8 */ std::vector<T*> items;
   /* 00D4 */ std::list<D> data;
   /* 00DC */ unsigned int selected;
   /* 00E0 */ unsigned char selectionFlag;
   /* 00E1 */ unsigned char rebind;
-  /* 00E2 */ unsigned char unknown_00E2[0x06];
+  /* 00E2 */ unsigned char padding_00E2[0x06];
   /* 00E8 */ std::function<void(T*, const D&)> onSelect;
   /* 0110 */ std::function<void(T*, const D&)> binder;
 };

@@ -37,7 +37,7 @@ public:
   /* 00C4 */ UIBitmapButton* memoButtons[20];
   /* 0114 */ int memoCount;
   /* 0118 */ unsigned char dragging;
-  /* 0119 */ unsigned char unknown_0119[0x3];
+  /* 0119 */ unsigned char padding_0119[0x3];
   /* 011C */ UICheckBox* questCheckBox;
   /* 0120 */ UICheckBox* townCheckBox;
   /* 0124 */ UICheckBox* guildCheckBox;

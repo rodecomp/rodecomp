@@ -58,7 +58,7 @@ private:
   /* 00F0 */ int headerHeight;
   /* 00F4 */ int m_index;
   /* 00F8 */ bool m_options[25];
-  /* 0111 */ unsigned char unknown_0111[3];
+  /* 0111 */ unsigned char padding_0111[3];
   /* 0114 */ std::string m_name;
   /* 012C */ UIEditCtrl* m_edit;
 };

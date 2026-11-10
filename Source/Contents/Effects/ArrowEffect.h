@@ -23,7 +23,7 @@ public:
   /* 0160 */ float startFrame;
   /* 0164 */ std::uint32_t targetAid;
   /* 0168 */ int frameCount;
-  /* 016C */ int unknown_016C;
+  /* 016C */ int padding_016C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

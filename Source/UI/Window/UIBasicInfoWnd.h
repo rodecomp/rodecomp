@@ -28,10 +28,10 @@ public:
   /* 00B4 */ int collapsedHeight;
   /* 00B8 */ int expandedHeight;
   /* 00BC */ unsigned char mode;
-  /* 00BD */ unsigned char unknown_00BD[0x3];
+  /* 00BD */ unsigned char padding_00BD[0x3];
   /* 00C0 */ UIStaticText* nameText;
   /* 00C4 */ BasicInfoWndInfo* saved;
-  /* 00C8 */ unsigned char unknown_00C8[0x20];
+  /* 00C8 */ unsigned char padding_00C8[0x20];
   /* 00E8 */ UIWindow* hpBar;
   /* 00EC */ UIWindow* spBar;
   /* 00F0 */ UIWindow* baseExpBar;

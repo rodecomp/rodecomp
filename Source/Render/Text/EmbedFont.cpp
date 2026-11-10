@@ -13,7 +13,7 @@
 CEmbedFont* g_embedFont;
 
 // INLINED
-CEmbedFont::CEmbedFont() : m_module(nullptr), m_unknownC(0) {
+CEmbedFont::CEmbedFont() : m_module(nullptr), padding_000C(0) {
   std::memset(this->m_rootUrl, 0, sizeof(this->m_rootUrl));
 }
 

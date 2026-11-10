@@ -589,7 +589,7 @@ void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximu
 
   static constexpr char permittedName[] = "버튼소리.wav";
 
-  if (this->unknown != 0 && std::strcmp(name, permittedName) != 0) {
+  if (this->tingOnly != 0 && std::strcmp(name, permittedName) != 0) {
     return;
   }
 

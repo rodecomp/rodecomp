@@ -58,7 +58,7 @@ public:
   void SetHighlightedEntry(CUIListItem* const& item);
 
 private:
-  /* 0000 */ void* unknown_0000;
+  /* 0000 */ void* padding_0000;
   /* 0004 */ CUIListBox<CUIListItem>* listBox;
 };
 
@@ -85,7 +85,7 @@ public:
   void Select(CUIListItem* const& item);
 
 private:
-  /* 0000 */ void* unknown_0000;
+  /* 0000 */ void* padding_0000;
   /* 0004 */ CUIListBoxEx<T, D>* listBox;
 };
 

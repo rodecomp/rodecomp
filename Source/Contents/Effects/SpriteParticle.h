@@ -19,7 +19,7 @@ public:
 
   /* 02BC */ unsigned char applyActorExtent;
   /* 02BD */ unsigned char applyActorLift;
-  /* 02BE */ unsigned char unknown_02BE[2];
+  /* 02BE */ unsigned char padding_02BE[2];
   /* 02C0 */ float screenOffsetX;
   /* 02C4 */ float screenOffsetY;
   /* 02C8 */ vector3d velocity;

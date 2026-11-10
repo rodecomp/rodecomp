@@ -9,7 +9,7 @@
 
 struct BmpTextButtonLabel {
   /* 0000 */ std::string text;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ int padding_0018;
   /* 001C */ int x;
   /* 0020 */ int y;
   /* 0024 */ int height;

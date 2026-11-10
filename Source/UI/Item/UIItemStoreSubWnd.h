@@ -40,17 +40,17 @@ public:
   bool FilterByName3(std::string query);
   void OnCreate(int width, int height) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0x20];
+  /* 00F0 */ unsigned char padding_00F0[0x20];
   /* 0110 */ UIResizer* resizeHandle;
   /* 0114 */ UIStaticText* title;
-  /* 0118 */ unsigned char unknown_0118[0x04];
-  /* 011C */ int unknown_011C;
+  /* 0118 */ unsigned char padding_0118[0x04];
+  /* 011C */ int padding_011C;
   /* 0120 */ std::string footerText;
   /* 0138 */ std::string nameFilter;
   /* 0150 */ ItemStoreFindSlotInfo* saved;
   /* 0154 */ int tabIndex;
   /* 0158 */ unsigned char sortEnabled;
-  /* 0159 */ unsigned char unknown_0159[7];
+  /* 0159 */ unsigned char padding_0159[7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

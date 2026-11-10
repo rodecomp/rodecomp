@@ -71,7 +71,7 @@ public:
   void SetQuest(unsigned int questId);
 
   /* 00B0 */ int m_questId;
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int padding_00B4;
 };
 
 class UIRenewDetailQuestInfoWnd : public UIFrameWnd {

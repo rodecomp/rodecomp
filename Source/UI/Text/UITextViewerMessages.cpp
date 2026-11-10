@@ -152,7 +152,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
       this->AddLine(wrapped[index].c_str());
     }
 
-    this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
+    this->plainTextMode = (this->plainTextMode & ~255) | 1;
     return;
   }
 
@@ -202,7 +202,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     }
   }
 
-  this->unknown_00BC &= ~255;
+  this->plainTextMode &= ~255;
 }
 
 // OFFSET: 0x00899E90
@@ -237,7 +237,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       for (const auto& line : wrapped) {
         this->AddLine(line.c_str());
       }
-      this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
+      this->plainTextMode = (this->plainTextMode & ~255) | 1;
       this->Invalidate();
       return 0;
     }
@@ -287,7 +287,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
     }
 
-    this->unknown_00BC &= ~255;
+    this->plainTextMode &= ~255;
     this->Invalidate();
     return 0;
   }

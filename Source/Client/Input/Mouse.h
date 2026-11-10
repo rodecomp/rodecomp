@@ -29,7 +29,7 @@ public:
   /* 0030 */ std::uint32_t pressTicks[2] = {};
   /* 0038 */ std::uint32_t doubleClickTime = 500;
   /* 003C */ std::uint8_t active = 1;
-  /* 003D */ std::uint8_t unknown_003D[3] = {};
+  /* 003D */ std::uint8_t padding_003D[3] = {};
 };
 
 extern CMouse g_mouse;

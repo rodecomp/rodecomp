@@ -15,7 +15,7 @@ public:
   /* 00B4 */ UIWindow* m_buttons[3];
   /* 00C0 */ UIEditCtrl* zenyEdit;
   /* 00C4 */ UIWindow* m_scrollBar;
-  /* 00C8 */ unsigned char unknown_00C8[0x04];
+  /* 00C8 */ unsigned char padding_00C8[0x04];
   /* 00CC */ int isLocalTrader;
   /* 00D0 */ int localConfirmed;
   /* 00D4 */ int remoteConfirmed;
@@ -26,10 +26,10 @@ public:
   /* 00F0 */ std::string partnerName;
   /* 0108 */ int partnerId;
   /* 010C */ short partnerLevel;
-  /* 010E */ unsigned char unknown_010E[0x04];
+  /* 010E */ unsigned char padding_010E[0x04];
   /* 0112 */ short m_rowHeight;
   /* 0114 */ short m_hoverX;
-  /* 0116 */ unsigned char unknown_0116[0x02];
+  /* 0116 */ unsigned char padding_0116[0x02];
   /* 0118 */ UICheckBox* screenshotCheckBox;
   /* 011C */ unsigned char takeScreenshot;
   /* 0120 */ int m_moneyLength;

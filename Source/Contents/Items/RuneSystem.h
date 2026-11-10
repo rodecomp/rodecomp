@@ -61,7 +61,7 @@ class RuneSetData : public RuneData {
 public:
   /* 0050 */ std::vector<RuneData*> m_slots;
   /* 005C */ std::vector<std::string> m_descriptions[6];
-  /* 00A4 */ int unknown_00A4;
+  /* 00A4 */ int padding_00A4;
   /* 00A8 */ int m_gradeList[15];
   /* 00E4 */ int m_grade;
   /* 00E8 */ int m_gradeLevel;

@@ -18,7 +18,7 @@ public:
   void SetupParticle(CParticle* particle);
   void UpdateParticle(CParticle* particle);
 
-  /* 00CC */ unsigned char unknown_00CC[0x34];
+  /* 00CC */ unsigned char padding_00CC[0x34];
   /* 0100 */ std::vector<CParticle*> particles;
 };
 

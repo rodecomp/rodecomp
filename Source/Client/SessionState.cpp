@@ -356,7 +356,7 @@ void CSession::ResolvePendingActorName(std::uint32_t id, const char* name) {
 
 // OFFSET: 0x00E1A5E0
 // FUNCTION: fn_23849
-void CSession::InitUnknownMapTables() {
+void CSession::InitSkillEffectIds() {
   int key;
 
   this->skillEffectIds.clear();

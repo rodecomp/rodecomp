@@ -43,8 +43,8 @@
 
 // OFFSET: 0x007EE980
 // FUNCTION: fn_09831
-MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_001C)
-    : name(name), id(id), reportValue(unknown_001C) {}
+MacroReporterEntry::MacroReporterEntry(std::string name, int id, short reportValue)
+    : name(name), id(id), reportValue(reportValue) {}
 
 // OFFSET: 0x007EEA00
 // FUNCTION: fn_09832
@@ -351,8 +351,8 @@ bool UIMacroReporterWnd::ValidateNames(unsigned char notify) {
 
     name += ".rsw";
     const char* displayName = g_session.GetMapDisplayName(name.c_str());
-    const std::string unknownMap = LookupMessage(MSI_NOWHERE);
-    if (unknownMap.compare(displayName) == 0) {
+    const std::string nowhereMapName = LookupMessage(MSI_NOWHERE);
+    if (nowhereMapName.compare(displayName) == 0) {
       if (notify == 1) {
         g_windowMgr.SendNotice(
           1,

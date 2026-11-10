@@ -49,7 +49,7 @@ CCharacterRender::CCharacterRender(int width, int renderHeight)
     : headJob(0), lowerHeadgear(0), upperHeadgear(0), middleHeadgear(0), lowerHeadgearLocation(0),
       upperHeadgearLocation(0), middleHeadgearLocation(0), madogearType(0), riding(0), bodyCostume(0), viewportOffsetX(0), viewportOffsetY(80.0f), bodyBlend(-1),
       bodyCellX(-1), bodyCellY(-1), viewportWidth(width), viewportHeight(renderHeight), cameraDistance(400.0f), cameraPitch(-45.0f),
-      cameraYaw(0.0f), unknown_007C(0.0f), unknown_0080(0.0f), unknown_0084(0.0f), cameraUpX(0.0f), cameraUpY(1.0f), cameraUpZ(0),
+      cameraYaw(0.0f), padding_007C(0.0f), padding_0080(0.0f), padding_0084(0.0f), cameraUpX(0.0f), cameraUpY(1.0f), cameraUpZ(0),
       screenX(0), screenY(0), robe(0), isHelmRobe(0) {
   this->positionX = 0;
   this->positionY = 0;

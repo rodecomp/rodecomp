@@ -10,7 +10,7 @@ class BrowserClientSite;
 class BrowserCommandTarget final : public IOleCommandTarget {
 public:
   // INLINED
-  explicit BrowserCommandTarget(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
+  explicit BrowserCommandTarget(BrowserClientSite* site) : padding_0004(0), m_site(site) {
   }
   ~BrowserCommandTarget();
 
@@ -21,7 +21,7 @@ public:
   HRESULT STDMETHODCALLTYPE Exec(const GUID* group, DWORD command, DWORD options, VARIANT* input, VARIANT* output) override;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int padding_0004;
   /* 0008 */ BrowserClientSite* m_site;
 };
 

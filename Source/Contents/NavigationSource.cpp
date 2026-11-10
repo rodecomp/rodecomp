@@ -573,8 +573,8 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   std::string map(record + offset, record + offset + length);
   offset += length;
 
-  const int unknown80 = *reinterpret_cast<const int*>(record + offset);
-  const int unknown84 = *reinterpret_cast<const int*>(record + offset + 4);
+  const int linkedCellX = *reinterpret_cast<const int*>(record + offset);
+  const int linkedCellY = *reinterpret_cast<const int*>(record + offset + 4);
   length = *reinterpret_cast<const std::int16_t*>(record + offset + 8);
   offset += 10;
   std::string linkedMap(record + offset, record + offset + length);
@@ -588,7 +588,7 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
     return nullptr;
   }
   return info->FindMatchingLink(
-    CNavi_Link(type, index, name.c_str(), title.c_str(), cellX, cellY, info, linkedInfo, unknown80, unknown84)
+    CNavi_Link(type, index, name.c_str(), title.c_str(), cellX, cellY, info, linkedInfo, linkedCellX, linkedCellY)
   );
 }
 

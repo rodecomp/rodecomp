@@ -21,7 +21,7 @@ enum {
 };
 
 struct ActorHitInfo {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int padding_0000;
   /* 0004 */ int damage;
   /* 0008 */ int extraDamage;
   /* 000C */ int type;
@@ -83,11 +83,11 @@ public:
   /* 018C */ int actorTitleWindow;
   /* 0190 */ unsigned char hitWaveName[0x80];
   /* 0210 */ std::uint16_t characterLevel;
-  /* 0212 */ unsigned char unknown_0212[0x02];
+  /* 0212 */ unsigned char padding_0212[0x02];
   /* 0214 */ vector3d accel;
   /* 0220 */ MovementRouteInterpolation route;
   /* 0238 */ unsigned char isNeverAnimation;
-  /* 0239 */ unsigned char unknown_0239[0x03];
+  /* 0239 */ unsigned char padding_0239[0x03];
   /* 023C */ int pathStartCell;
   /* 0240 */ float dist;
   /* 0244 */ std::uint32_t lastProcessStateTime;
@@ -114,13 +114,13 @@ public:
   /* 02B0 */ int willBeDead;
   /* 02B4 */ int hasLevelAura;
   /* 02B8 */ unsigned char levelAuraType;
-  /* 02B9 */ unsigned char unknown_02B9[0x03];
+  /* 02B9 */ unsigned char padding_02B9[0x03];
   /* 02BC */ int bodyState;
   /* 02C0 */ std::uint32_t stateFlags;
   /* 02C4 */ int effectState;
   /* 02C8 */ int healthState;
   /* 02CC */ unsigned char isRiding;
-  /* 02CD */ unsigned char unknown_02CD[0x03];
+  /* 02CD */ unsigned char padding_02CD[0x03];
   /* 02D0 */ float damageDestX;
   /* 02D4 */ float damageDestZ;
   /* 02D8 */ int effectLaunchCnt;
@@ -136,12 +136,12 @@ public:
   /* 0300 */ int hpGaugeWindow;
   /* 0304 */ unsigned char hpGaugeFlags;
   /* 0305 */ unsigned char hasSp;
-  /* 0306 */ unsigned char unknown_0306[2];
+  /* 0306 */ unsigned char padding_0306[2];
   /* 0308 */ int spGaugeValue;
   /* 030C */ int homunAI;
   /* 0310 */ int merAI;
   /* 0314 */ unsigned char objectType;
-  /* 0315 */ unsigned char unknown_0315[3];
+  /* 0315 */ unsigned char padding_0315[3];
   /* 0318 */ float homunMsg[6];
   /* 0330 */ float homunResMsg[6];
   /* 0348 */ float merMsg[6];
@@ -158,13 +158,13 @@ public:
   /* 03D8 */ int secondFollowerEffect;
   /* 03DC */ int mountedState;
   union { /* 03E0 */ std::uint16_t actorFlags; struct { unsigned char storedActorEntry; /* 03E1 */ bool modelReady; }; };
-  /* 03E2 */ unsigned char unknown_03E2[0x06];
+  /* 03E2 */ unsigned char padding_03E2[0x06];
   /* 03E8 */ std::int64_t maximumValue;
   /* 03F0 */ vector3d positionDelta;
   /* 03FC */ std::set<int> exclusiveEffects;
   /* 0404 */ int shapeShift;
   /* 0408 */ int savedShapeShift;
-  /* 040C */ unsigned char unknown_040C[0x04];
+  /* 040C */ unsigned char padding_040C[0x04];
 
   int Get8Dir(float angle) override;
   void SetRenderInfo(const float* bounds, float x, float y) override;

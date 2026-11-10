@@ -14,7 +14,7 @@ void CCharacterLinkedUserDataMgr::LoadUseSkillLevels(Json::Value& data) {
       if ((*it).isObject()) {
         int id = (*it).get("SKID", 0).asInt();
         int level = (*it).get("SKLv", 0).asInt();
-        g_session.m_skillBundle.SetUnknownValue(id, level);
+        g_session.m_skillBundle.SetSkillValue(id, level);
       }
     }
   }

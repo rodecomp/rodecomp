@@ -28,7 +28,7 @@ public:
 
 struct MacroReporterEntry {
   MacroReporterEntry() = default;
-  MacroReporterEntry(std::string name, int id, short unknown_001C);
+  MacroReporterEntry(std::string name, int id, short padding_001C);
 
   /* 0000 */ std::string name;
   /* 0018 */ int id;
@@ -40,7 +40,7 @@ struct MacroReporterState {
   /* 0004 */ int height;
   /* 0008 */ int x;
   /* 000C */ int y;
-  /* 0010 */ unsigned char unknown_0010;
+  /* 0010 */ unsigned char padding_0010;
   /* 0011 */ bool activeOnly;
   /* 0014 */ std::vector<MacroReporterEntry> entries;
 };

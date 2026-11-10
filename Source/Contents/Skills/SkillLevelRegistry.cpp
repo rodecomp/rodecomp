@@ -49,7 +49,7 @@ void LoadSkillUseLevelRegistry() {
   };
 
   for (int id = 1; id < 7999; ++id) {
-    g_session.m_skillBundle.SetUnknownValue(id, read(id));
+    g_session.m_skillBundle.SetSkillValue(id, read(id));
   }
 
   for (int id = 8000; id < 8061; ++id) {

@@ -35,8 +35,8 @@ public:
   void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
+  /* 0010 */ int padding_0010;
+  /* 0014 */ int padding_0014;
   /* 0018 */ int segmentIndex;
   /* 001C */ float segmentProgress;
   /* 0020 */ float segmentLength;

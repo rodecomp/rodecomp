@@ -18,7 +18,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
-  /* 00B4 */ void* unknown_controls;
+  /* 00B4 */ void* padding_00B4;
   /* 00B8 */ std::string m_text;
   /* 00D0 */ std::vector<UIBasicButton*> m_buttons;
 };

@@ -73,7 +73,7 @@ public:
   /* 002C */ int effectLifetime;
   /* 0030 */ int effectArgument;
   /* 0034 */ unsigned char outsideRange;
-  /* 0035 */ unsigned char unknown_0035[3];
+  /* 0035 */ unsigned char padding_0035[3];
   /* 0038 */ int range;
   /* 003C */ unsigned char areaParameters[12];
   /* 0048 */ int scaleParameter;
@@ -85,10 +85,10 @@ public:
   /* 00C0 */ unsigned char retained;
   /* 00C1 */ unsigned char emissionStopped;
   /* 00C2 */ unsigned char forceRender;
-  /* 00C3 */ unsigned char unknown_00C3;
+  /* 00C3 */ unsigned char padding_00C3;
   /* 00C4 */ int instanceId;
   /* 00C8 */ unsigned char headAttached;
-  /* 00C9 */ unsigned char unknown_00C9[3];
+  /* 00C9 */ unsigned char padding_00C9[3];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

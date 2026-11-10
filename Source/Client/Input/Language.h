@@ -37,14 +37,14 @@ struct CLanguageBase {
   /* 0070 */ std::string candidate;
   /* 0088 */ int compositionCursor;
   /* 008C */ unsigned char password;
-  /* 008D */ unsigned char unknown_008D;
+  /* 008D */ unsigned char padding_008D;
   /* 008E */ std::uint16_t language;
   /* 0090 */ unsigned codePage;
   /* 0094 */ int underlineStart;
   /* 0098 */ int underlineEnd;
   /* 009C */ std::string servicePrefix;
   /* 00B4 */ std::uint16_t alternateLanguage;
-  /* 00B6 */ unsigned char unknown_00B6[2];
+  /* 00B6 */ unsigned char padding_00B6[2];
 
   CLanguageBase();
   const char* Candidate(int index) const;

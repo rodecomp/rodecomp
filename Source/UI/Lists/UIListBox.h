@@ -47,7 +47,7 @@ public:
   /* 00B0 */ UIScrollBar* horizontalBar;
   /* 00B4 */ int transparent;
   /* 00B8 */ int lineHeight;
-  /* 00BC */ int unknown_00BC;
+  /* 00BC */ int plainTextMode;
   /* 00C0 */ std::uint32_t selectionColor;
   /* 00C4 */ unsigned char selectable;
   /* 00C8 */ std::uint32_t textColor;

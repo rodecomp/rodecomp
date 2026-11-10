@@ -26,7 +26,7 @@ public:
   void SetFlag(int index, bool value);
   __declspec(noinline) void HideEdit();
   void Configure(
-    int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char unknownA9, unsigned char unknownA8, std::uint32_t activeFillColor,
+    int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char skipTabFill, unsigned char allowTabRename, std::uint32_t activeFillColor,
     std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,
     std::uint32_t inactiveTextColor
   );
@@ -44,7 +44,7 @@ public:
   /* 0084 */ int tabHeight;
   /* 0088 */ int tabPadding;
   /* 008C */ unsigned char uniformWidths;
-  /* 008D */ unsigned char unknown_008D[0x3];
+  /* 008D */ unsigned char padding_008D[0x3];
   /* 0090 */ std::uint32_t activeFillColor;
   /* 0094 */ std::uint32_t inactiveFillColor;
   /* 0098 */ std::uint32_t activeBorderColor;

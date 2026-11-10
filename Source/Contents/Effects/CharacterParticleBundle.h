@@ -26,7 +26,7 @@ public:
   virtual void ProcessParticle(CEZ2STRParticle* particle);
   virtual void RenderParticle(CEZ2STRParticle* particle);
 
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ int padding_00CC;
   /* 00D0 */ long long startTime;
   /* 00D8 */ int elapsedFrames;
   /* 00DC */ std::vector<CEZ2STRParticle*> particles;

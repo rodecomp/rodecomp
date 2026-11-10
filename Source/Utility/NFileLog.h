@@ -13,7 +13,7 @@ public:
 
   bool Initialize(const char* directoryName, const char* prefix);
 
-  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0004 */ std::uint32_t padding_0004;
   /* 0008 */ CRITICAL_SECTION criticalSection;
   /* 0020 */ char directory[1024];
   /* 0420 */ char prefix[1024];

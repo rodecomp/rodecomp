@@ -37,7 +37,7 @@ public:
   void DrawEquipmentSlots();
 
 protected:
-  /* 00B4 */ std::uint32_t unknown_00B4;
+  /* 00B4 */ std::uint32_t padding_00B4;
   /* 00B8 */ UISwapBitmapButton* m_swapButton;
   /* 00BC */ int equipmentPage;
   /* 00C0 */ std::uint32_t previewTick;

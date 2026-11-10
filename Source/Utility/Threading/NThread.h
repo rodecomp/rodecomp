@@ -18,7 +18,7 @@ public:
 
 protected:
   /* 0004 */ unsigned m_threadId;
-  /* 0008 */ bool unknown_0008;
+  /* 0008 */ bool padding_0008;
   /* 000C */ std::uint32_t m_state;
   /* 0010 */ HANDLE m_handle;
   /* 0014 */ std::string m_name;

@@ -6464,7 +6464,7 @@ void CRagEffect::DigitalSpace(int effectId) {
   }
 
   if (this->state.parent && this->state.currentPrimitive) {
-    this->state.lastPrim->state.alpha = static_cast<float>(this->state.parent->render.unknown_0130[0] ? 70 : 255);
+    this->state.lastPrim->state.alpha = static_cast<float>(this->state.parent->render.translucentOther[0] ? 70 : 255);
   }
 
   if (this->state.stateCnt == this->state.duration - 1) {
@@ -17226,7 +17226,7 @@ void CPlayer::UpdateFootprints(int kind) {
 
   if (kind == 1) {
     mode->LaunchDummyEffect(&this->footprintPosition, (this->footprintCounter != interval) + 326, 333, angle);
-  } else if (kind == 2 && this->render.unknown_00F7 > static_cast<unsigned>(interval)) {
+  } else if (kind == 2 && this->render.runStartTick > static_cast<unsigned>(interval)) {
     if (this->footprintCounter == interval) {
       mode->LaunchDummyEffect(&this->footprintPosition, 447, 333, angle);
     } else {
@@ -22862,7 +22862,7 @@ bool CRagEffect::OnProcess3() {
   case EF_POK_105:
     this->TexturedClassChange(105);
     break;
-  case EF_UNKNOWN_RING_YELLOW:
+  case EF_BEGINSPELL_RING_YELLOW:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
@@ -22870,10 +22870,10 @@ bool CRagEffect::OnProcess3() {
       this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 0);
     }
     break;
-  case EF_UNKNOWN_SPELL:
+  case EF_BEGINSPELL_SWIRL:
     this->BeginSpellSwirl(45, "", 11);
     break;
-  case EF_UNKNOWN_RING_WHITE:
+  case EF_BEGINSPELL_RING_WHITE:
     if (this->state.stateCnt == 0) {
       g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -22936,7 +22936,7 @@ bool CRagEffect::OnProcess3() {
     }
     this->HealRingSparkle("effect\\ring_blue.tga", 2);
     break;
-  case EF_UNK_2439:
+  case EF_CRUEL_BITE_LINE:
     {
       const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_red.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_red.tga";
       const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_black.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_black.tga";
@@ -22948,7 +22948,7 @@ bool CRagEffect::OnProcess3() {
       }
     }
     break;
-  case EF_UNK_2442:
+  case EF_QUILL_SPEAR_LINE:
     {
       const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_color.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_color.tga";
       const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_black.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_black.tga";
@@ -25191,7 +25191,7 @@ bool CRagEffect::OnProcess() {
     case EF_RUN:
       if ((this->state.parent->render.flags & 0x8000) == 0) {
         this->state.parent->render.flags += 0x8000;
-        this->state.parent->render.unknown_00F7 = static_cast<unsigned char>(this->state.stateCnt);
+        this->state.parent->render.runStartTick = static_cast<unsigned char>(this->state.stateCnt);
       }
       break;
     case EF_STOPEFFECT:

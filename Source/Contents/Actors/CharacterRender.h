@@ -66,9 +66,9 @@ public:
   /* 0070 */ float cameraDistance;
   /* 0074 */ float cameraPitch;
   /* 0078 */ float cameraYaw;
-  /* 007C */ float unknown_007C;
-  /* 0080 */ float unknown_0080;
-  /* 0084 */ float unknown_0084;
+  /* 007C */ float padding_007C;
+  /* 0080 */ float padding_0080;
+  /* 0084 */ float padding_0084;
   /* 0088 */ float cameraUpX;
   /* 008C */ float cameraUpY;
   /* 0090 */ int cameraUpZ;

@@ -21,7 +21,7 @@ public:
   /* 00B8 */ UITextViewer* m_viewer;
   /* 00BC */ UIEditCtrl* m_edits[15];
   /* 00F8 */ UIBitmapButton* m_buttons[3];
-  /* 0104 */ std::string unknown_0104;
+  /* 0104 */ std::string padding_0104;
 };
 
 #endif

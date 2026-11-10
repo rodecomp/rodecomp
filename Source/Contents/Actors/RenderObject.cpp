@@ -144,11 +144,11 @@ public:
   /* 0118 */ granny_system_clock clock;
   /* 0128 */ granny_system_clock startClock;
   /* 0138 */ float animationTime;
-  /* 013C */ unsigned char unknown_013C[4];
+  /* 013C */ unsigned char padding_013C[4];
   /* 0140 */ int tick;
   /* 0144 */ float angle;
   /* 0148 */ unsigned char alpha;
-  /* 0149 */ unsigned char unknown_0149[3];
+  /* 0149 */ unsigned char padding_0149[3];
   /* 014C */ unsigned brightness;
   /* 0150 */ char name[0x108];
 };
@@ -2682,11 +2682,11 @@ void CCharacterNpc::Render(int) {
 struct CharacterNpcViewInfo {
   /* 0000 */ int aid;
   /* 0004 */ int job;
-  /* 0008 */ int unknown_0008[10];
+  /* 0008 */ int padding_0008[10];
   /* 0030 */ int standAccessory;
-  /* 0034 */ int unknown_0034;
+  /* 0034 */ int padding_0034;
   /* 0038 */ int moveAccessory;
-  /* 003C */ int unknown_003C[4];
+  /* 003C */ int padding_003C[4];
   /* 004C */ int standAccessory2;
   /* 0050 */ int standAccessory3OrMoveAccessory2;
   /* 0054 */ int standBodyPaletteOrMoveAccessory3;
@@ -2694,7 +2694,7 @@ struct CharacterNpcViewInfo {
   /* 005C */ int moveHeadPalette;
   /* 0060 */ int guildId;
   /* 0064 */ int guildEmblemVersion;
-  /* 0068 */ int unknown_0068[2];
+  /* 0068 */ int padding_0068[2];
   /* 0070 */ int robe;
   /* 0074 */ int robeAlt;
   /* 0078 */ int standBodyStyle;
@@ -3629,8 +3629,8 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
   int damage = info->damage;
   int hitCount = info->hitCount;
   const int extraDamage = info->extraDamage;
-  const int unknown_001C = info->cellX;
-  const int unknown_0020 = info->cellY;
+  const int cellX = info->cellX;
+  const int cellY = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
 
@@ -3762,8 +3762,8 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       message.targetAid = this->hitTargetAid;
       message.time = timeGetTime() + delay;
       message.attackerAid = this->render.accountId;
-      message.cellX = unknown_001C;
-      message.cellY = unknown_0020;
+      message.cellX = cellX;
+      message.cellY = cellY;
       message.hitEffect = flag;
       message.effectId = effectId;
       message.blueDamage = info->blueDamage;
@@ -5311,8 +5311,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   int hitCount = info->hitCount;
   const int skillId = info->skillId;
   int type = info->type;
-  const int unknown_001C = info->cellX;
-  const int unknown_0020 = info->cellY;
+  const int cellX = info->cellX;
+  const int cellY = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
   if (hitCount <= 0 || hitCount > 36) {
@@ -5418,8 +5418,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         message.damage = damage;
         message.time = timeGetTime() + delay;
         message.attackerAid = this->render.accountId;
-        message.cellX = unknown_001C;
-        message.cellY = unknown_0020;
+        message.cellX = cellX;
+        message.cellY = cellY;
         message.hitEffect = effect;
         message.effectId = followEffect;
         message.monsterValue = level;
@@ -5443,8 +5443,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         message.damage = damage;
         message.time = timeGetTime() + delay;
         message.attackerAid = this->render.accountId;
-        message.cellX = unknown_001C;
-        message.cellY = unknown_0020;
+        message.cellX = cellX;
+        message.cellY = cellY;
         message.hitEffect = -1;
         message.effectId = -1;
         message.monsterValue = level;
@@ -5689,8 +5689,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   message.damage = damage;
   message.time = timeGetTime() + delay;
   message.attackerAid = this->render.accountId;
-  message.cellX = unknown_001C;
-  message.cellY = unknown_0020;
+  message.cellX = cellX;
+  message.cellY = cellY;
   message.hitEffect = effect;
   message.effectId = followEffect;
   message.monsterValue = level;

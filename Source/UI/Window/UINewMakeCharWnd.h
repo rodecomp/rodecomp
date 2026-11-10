@@ -51,7 +51,7 @@ protected:
 #pragma pack(push, 1)
 struct MakeCharacterStatus {
   /* 0000 */ std::int64_t exp;
-  /* 0008 */ unsigned char unknown_0008[0x24];
+  /* 0008 */ unsigned char padding_0008[0x24];
   /* 002C */ std::int16_t jobPoint;
   /* 002E */ std::int64_t hp;
   /* 0036 */ std::int64_t maxHp;
@@ -84,7 +84,7 @@ public:
   /* 01FC */ int actionBase;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
-  /* 0208 */ unsigned char unknown_0208[0x8];
+  /* 0208 */ unsigned char padding_0208[0x8];
   /* 0210 */ unsigned char characterData[0x04];
   /* 0214 */ MakeCharacterStatus m_status;
   /* 0264 */ short m_job;
@@ -102,9 +102,9 @@ public:
   /* 027C */ char m_name[24];
   /* 0294 */ unsigned char m_stats[6];
   /* 029A */ unsigned char m_slot;
-  /* 029B */ unsigned char unknown_029B[0x23];
+  /* 029B */ unsigned char padding_029B[0x23];
   /* 02BE */ unsigned char m_sex;
-  /* 02BF */ unsigned char unknown_02BF;
+  /* 02BF */ unsigned char padding_02BF;
   union {
     /* 02C0 */ int nameEditStorage;
     UIEditCtrl2* m_nameEdit;

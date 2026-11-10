@@ -20,7 +20,7 @@ public:
   void FollowOwner();
 
   /* 0158 */ bool m_visible;
-  /* 0159 */ unsigned char unknown_0159[0x03];
+  /* 0159 */ unsigned char padding_0159[0x03];
   /* 015C */ CGameObject* m_owner;
   /* 0160 */ vector3d m_drift;
   /* 016C */ vector3d origin;

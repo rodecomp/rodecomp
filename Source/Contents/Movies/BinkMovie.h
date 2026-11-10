@@ -26,7 +26,7 @@ private:
   /* 0000 */ BinkHandle* m_handle;
   /* 0004 */ int m_state;
   /* 0008 */ int m_loop;
-  /* 000C */ int unknown_000C;
+  /* 000C */ int padding_000C;
   /* 0010 */ CFile* m_file;
 };
 

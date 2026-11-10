@@ -212,12 +212,12 @@ public:
 class CEquipmentPropertiesMgr {
 public:
   virtual ~CEquipmentPropertiesMgr();
-  unsigned char unknown_0004[0x9];
+  unsigned char padding_0004[0x9];
   bool m_dirty;
-  unsigned char unknown_000E[0x12];
+  unsigned char padding_000E[0x12];
   UIWindow* m_window;
   /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
-  /* 0044 */ unsigned char unknown_0044[0x1B8];
+  /* 0044 */ unsigned char padding_0044[0x1B8];
 
   CEquipmentPropertiesMgr();
   CEquipmentWearable* FindProperty1(const int& key);
@@ -878,11 +878,11 @@ bool CSession::Equip(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD75C0
 // FUNCTION: fn_23291
-void CSession::AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
+void CSession::AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t priceFactor) {
   ITEM_INFO value;
   value.AssignBasic(item);
   value.quantity = quantity;
-  value.priceFactor = unknown_006C;
+  value.priceFactor = priceFactor;
   value.refiningLevel = 0;
   value.damaged = 0;
   value.SetItemId(std::atoi(value.itemId.c_str()));

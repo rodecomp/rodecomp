@@ -32,15 +32,15 @@ extern "C" {
 struct RenewQuestOngoingRecord {
   /* 0000 */ unsigned int questId;
   /* 0004 */ unsigned char state;
-  /* 0005 */ unsigned char unknown_0005;
+  /* 0005 */ unsigned char padding_0005;
   /* 0006 */ short huntCount;
   /* 0008 */ short year;
   /* 000A */ short month;
   /* 000C */ short day;
   /* 000E */ short hour;
   /* 0010 */ unsigned short minute;
-  /* 0012 */ unsigned short unknown_0012;
-  /* 0014 */ unsigned int unknown_0014;
+  /* 0012 */ unsigned short padding_0012;
+  /* 0014 */ unsigned int padding_0014;
 };
 
 struct RenewQuestHuntRecord {
@@ -92,9 +92,9 @@ RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), baseExpRewa
   this->m_descriptions.clear();
   this->m_rewards.clear();
   for (int index = 0; index < 3; ++index) {
-    this->m_huntUnknown00D4[index] = 31999;
-    this->m_huntUnknown01AC[index] = -1;
-    this->m_huntUnknown01B2[index] = -1;
+    this->m_huntMobId[index] = 31999;
+    this->m_huntMinLevel[index] = -1;
+    this->m_huntMaxLevel[index] = -1;
   }
 
   for (int index = 0; index < 3; ++index) {
@@ -107,7 +107,7 @@ RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), baseExpRewa
 // OFFSET: 0x006765C0
 // FUNCTION: fn_05420
 RenewQuestInfo::RenewQuestInfo()
-    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), summary(""), unknown_0064(""), npcSprite(""), destinationMap(""),
+    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), summary(""), padding_0064(""), npcSprite(""), destinationMap(""),
       destinationX(0), destinationY(0) {}
 
 // OFFSET: 0x00676770
@@ -347,16 +347,16 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
   }
 
   std::string text;
-  const short minLevel = this->m_huntUnknown01AC[index];
-  const short maxLevel = this->m_huntUnknown01B2[index];
-  if (this->m_huntUnknown00D4[index] == 31999) {
-    text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntUnknown01A0[index], minLevel, maxLevel));
+  const short minLevel = this->m_huntMinLevel[index];
+  const short maxLevel = this->m_huntMaxLevel[index];
+  if (this->m_huntMobId[index] == 31999) {
+    text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntConditionFlags[index], minLevel, maxLevel));
   } else {
     const char* name = this->m_huntName[index];
-    if (this->m_huntUnknown01AC[index] >= 0 && this->m_huntUnknown01B2[index] >= 0 && (minLevel != 0 || this->m_huntUnknown01B2[index] != 0)) {
+    if (this->m_huntMinLevel[index] >= 0 && this->m_huntMaxLevel[index] >= 0 && (minLevel != 0 || this->m_huntMaxLevel[index] != 0)) {
       if (minLevel == 0) {
         text = std::format("{} Lv.{}▼", name, maxLevel);
-      } else if (this->m_huntUnknown01B2[index] != 0) {
+      } else if (this->m_huntMaxLevel[index] != 0) {
         text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
       } else {
         text = std::format("{} Lv.{}▲", name, minLevel);
@@ -366,9 +366,9 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
     }
   }
 
-  const short goal = this->m_huntUnknown0180[index];
+  const short goal = this->m_huntMaxCount[index];
   if (goal > 0) {
-    const short count = this->m_huntUnknown00E0[index];
+    const short count = this->m_huntKillCount[index];
     if (count == goal) {
       text = std::format("{} ( {} )", text, LookupMessage(MSI_COMPLETE_HUNTING_QUEST));
     } else {
@@ -452,12 +452,12 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     for (int index = 0; index < huntCount; ++index) {
       RenewQuestHuntRecord hunt = {};
       hunt.huntId = static_cast<int>(info.m_huntId[index]);
-      hunt.monsterCondition = info.m_huntUnknown01A0[index];
-      hunt.monsterId = info.m_huntUnknown00D4[index];
-      hunt.minLevel = info.m_huntUnknown01AC[index];
-      hunt.maxLevel = info.m_huntUnknown01B2[index];
-      hunt.killCount = info.m_huntUnknown00E0[index];
-      hunt.killGoal = info.m_huntUnknown0180[index];
+      hunt.monsterCondition = info.m_huntConditionFlags[index];
+      hunt.monsterId = info.m_huntMobId[index];
+      hunt.minLevel = info.m_huntMinLevel[index];
+      hunt.maxLevel = info.m_huntMaxLevel[index];
+      hunt.killCount = info.m_huntKillCount[index];
+      hunt.killGoal = info.m_huntMaxCount[index];
       strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
       *reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset) = hunt;
       offset += sizeof(RenewQuestHuntRecord);
@@ -525,8 +525,8 @@ void CRenewQuestMgr::AddNewQuest(unsigned int id) {
 // FUNCTION: fn_05451
 void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& info) {
   int type = 0;
-  int unknown2 = 0;
-  int unknown1 = 0;
+  int destinationY = 0;
+  int destinationX = 0;
   const char* text7 = nullptr;
   const char* text6 = nullptr;
   const char* text5 = nullptr;
@@ -536,7 +536,7 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
   const char* title = nullptr;
   bool simpleView = true;
   if (g_session.m_hotkeyScript->Call("GetOngoingQuestInfoByID", "d>bsssssssddd", id, &simpleView, &title, &icon, &text3, &text4, &text5, &text6,
-                        &text7, &unknown1, &unknown2, &type)) {
+                        &text7, &destinationX, &destinationY, &type)) {
     info.m_title = title ? title : "";
     info.m_icon = icon ? icon : "";
     info.summary = text3 ? text3 : "";
@@ -544,8 +544,8 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
     info.destinationMap = text5 ? text5 : "";
     info.baseExpReward = text6 ? text6 : "";
     info.jobExpReward = text7 ? text7 : "";
-    info.destinationX = unknown1;
-    info.destinationY = unknown2;
+    info.destinationX = destinationX;
+    info.destinationY = destinationY;
     info.m_simpleView = simpleView;
     info.questType = type;
     if (type == 1) {
@@ -752,24 +752,24 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
           RenewQuestHuntRecord huntRecord;
           memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
           info.m_huntId[hunt] = huntRecord.huntId;
-          info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
-          info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
-          info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
-          info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
-          info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
-          info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
+          info.m_huntConditionFlags[hunt] = huntRecord.monsterCondition;
+          info.m_huntMobId[hunt] = huntRecord.monsterId;
+          info.m_huntKillCount[hunt] = huntRecord.killCount;
+          info.m_huntMaxCount[hunt] = huntRecord.killGoal;
+          info.m_huntMinLevel[hunt] = huntRecord.minLevel;
+          info.m_huntMaxLevel[hunt] = huntRecord.maxLevel;
           strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, _TRUNCATE);
           offset += sizeof(RenewQuestHuntRecord);
         } else {
           RenewQuestShortHuntRecord huntRecord;
           memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
           info.m_huntId[hunt] = huntRecord.huntId;
-          info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
-          info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
-          info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
-          info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
-          info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
-          info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
+          info.m_huntConditionFlags[hunt] = huntRecord.monsterCondition;
+          info.m_huntMobId[hunt] = huntRecord.monsterId;
+          info.m_huntKillCount[hunt] = huntRecord.killCount;
+          info.m_huntMaxCount[hunt] = huntRecord.killGoal;
+          info.m_huntMinLevel[hunt] = huntRecord.minLevel;
+          info.m_huntMaxLevel[hunt] = huntRecord.maxLevel;
           strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, sizeof(huntRecord.name));
           offset += sizeof(RenewQuestShortHuntRecord);
         }

@@ -55,7 +55,7 @@ public:
 class EffectResourceSwitcher : public CEffect {
 public:
   /* 00CC */ unsigned char active;
-  /* 00CD */ unsigned char unknown_00CD[3];
+  /* 00CD */ unsigned char padding_00CD[3];
   /* 00D0 */ CEZ2STREffectEx* effect;
   /* 00D4 */ vector3d spawnPosition;
   /* 00E0 */ std::string sourceName;

@@ -7,15 +7,15 @@
 #include <string>
 
 struct UIDescriptRaceText {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
+  /* 0000 */ int padding_0000;
+  /* 0004 */ int padding_0004;
   /* 0008 */ std::string names[5];
   /* 0080 */ std::string descriptions[5];
   /* 00F8 */ std::string title;
-  /* 0110 */ int unknown_0110;
-  /* 0114 */ int unknown_0114;
-  /* 0118 */ std::string unknown_0118;
-  /* 0130 */ std::string unknown_0130;
+  /* 0110 */ int padding_0110;
+  /* 0114 */ int padding_0114;
+  /* 0118 */ std::string padding_0118;
+  /* 0130 */ std::string padding_0130;
 };
 
 // VTABLE: vt_00998
@@ -30,7 +30,7 @@ public:
 
   /* 0120 */ int m_race;
   /* 0124 */ UIDescriptRaceText m_text;
-  /* 026C */ unsigned char unknown_026C[0x14];
+  /* 026C */ unsigned char padding_026C[0x14];
   /* 0280 */ unsigned char m_noRace;
   /* 0284 */ int m_frameIndex;
   /* 0288 */ std::uint32_t m_createTime;

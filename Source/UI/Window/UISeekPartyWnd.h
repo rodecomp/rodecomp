@@ -22,7 +22,7 @@ public:
 
 protected:
   /* 00B4 */ UIStaticText* m_label;
-  /* 00B8 */ unsigned char unknown_00B8[4];
+  /* 00B8 */ unsigned char padding_00B8[4];
   /* 00BC */ UIBitmapButton* m_cancelButton;
   /* 00C0 */ UIBitmapButton* m_rewriteButton;
   /* 00C4 */ int m_level;
@@ -31,10 +31,10 @@ protected:
   /* 00D0 */ std::uint32_t m_elapsed;
   /* 00D4 */ std::uint32_t m_frameElapsed;
   /* 00D8 */ std::uint32_t m_frameTick;
-  /* 00DC */ unsigned char unknown_00DC[0x104];
+  /* 00DC */ unsigned char padding_00DC[0x104];
   /* 01E0 */ int expandedHeight;
   /* 01E4 */ unsigned char m_minimized;
-  /* 01E5 */ unsigned char unknown_01E5[3];
+  /* 01E5 */ unsigned char padding_01E5[3];
   /* 01E8 */ SeekPartyWndInfo* m_saved;
 };
 

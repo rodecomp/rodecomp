@@ -44,7 +44,7 @@ protected:
   /* 00C8 */ UIComboBoxDefWnd* m_typeCombo;
   /* 00CC */ UIComboBoxDefWnd* m_subTypeCombo;
   /* 00D0 */ UIComboBoxDefWnd* m_jobCategoryCombo;
-  /* 00D4 */ unsigned char unknown_00D4[0x30];
+  /* 00D4 */ unsigned char padding_00D4[0x30];
   /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[9];
   /* 014C */ std::map<int, std::vector<std::pair<std::string, int>>> m_subTypes;
   /* 0154 */ UIBitmapButton* cancelButton;
@@ -55,7 +55,7 @@ protected:
   /* 0164 */ int m_restoreHeight;
   /* 0168 */ unsigned char m_minimized;
   /* 0169 */ SeekPartyRegistration m_registration;
-  /* 0179 */ unsigned char unknown_0179[3];
+  /* 0179 */ unsigned char padding_0179[3];
   /* 017C */ SeekPartyMBWndInfo* m_saved;
 };
 

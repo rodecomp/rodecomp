@@ -54,7 +54,7 @@ public:
   void ClearLevelChanges();
   void MarkLevelChanges();
   void ResetFirstLevelChange();
-  void SetUnknownValue(int id, int value);
+  void SetSkillValue(int id, int value);
 
   /* 0004 */ std::list<CSkillInfo> skills;
   /* 000C */ std::unordered_map<std::uint32_t, CSkillInfo*, SkillIdHash> index;

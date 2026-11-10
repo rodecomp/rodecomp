@@ -103,11 +103,11 @@ public:
   void DrawBody(int argument, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth);
   void RenderOverlaySprite(const float* matrix, int);
   void UpdateGaugeWindow();
-  void DrawLayers(const float* matrix, int unknown0030, char blendVariant);
+  void DrawLayers(const float* matrix, int padding_0030, char blendVariant);
 
   float* GetExtent(float* extent) const override;
 
-  /* 0410 */ unsigned char unknown_0410[4];
+  /* 0410 */ unsigned char padding_0410[4];
   /* 0414 */ CMsgEffect* msgEffect;
   /* 0418 */ std::string imfName;
   /* 0430 */ int honor;
@@ -134,7 +134,7 @@ public:
   /* 04A0 */ int blend;
   /* 04A4 */ int layerCellX;
   /* 04A8 */ int layerCellY;
-  /* 04AC */ std::map<int, std::pair<int, int>> unknown_04AC;
+  /* 04AC */ std::map<int, std::pair<int, int>> padding_04AC;
   /* 04B4 */ std::vector<CRes*> equipSprites;
   /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int pkState;
@@ -142,10 +142,10 @@ public:
   /* 04D4 */ int appearanceJob;
   /* 04D8 */ unsigned char alternateDoramAppearance[1];
   /* 04D9 */ bool isHelmRobe;
-  /* 04DA */ unsigned char unknown_04DA[2];
+  /* 04DA */ unsigned char padding_04DA[2];
   /* 04DC */ int madogearType;
   /* 04E0 */ bool arrowEffectSuppressed;
-  /* 04E1 */ unsigned char unknown_04E1[0x03];
+  /* 04E1 */ unsigned char padding_04E1[0x03];
   /* 04E4 */ float extentLeft;
   /* 04E8 */ float extentTop;
   /* 04EC */ float extentRight;
@@ -181,7 +181,7 @@ public:
   void Render(int argument) override;
 
   /* 0510 */ CPc* sourcePc;
-  /* 0514 */ int unknown_0514;
+  /* 0514 */ int padding_0514;
 };
 
 class CHalluPC2 : public CPc {
@@ -195,7 +195,7 @@ public:
   void Render(int argument) override;
 
   /* 0510 */ CPc* sourcePc;
-  /* 0514 */ int unknown_0514;
+  /* 0514 */ int padding_0514;
 };
 
 class CPlayer : public CPc {
@@ -294,14 +294,14 @@ public:
   /* 0430 */ int headDir;
   /* 0434 */ int head;
   /* 0438 */ int headPalette;
-  /* 043C */ unsigned char unknown_043C[4];
+  /* 043C */ unsigned char padding_043C[4];
   /* 0440 */ int weapon;
   /* 0444 */ int secondaryWeapon;
   /* 0448 */ int accessory;
   /* 044C */ int accessory2;
   /* 0450 */ int accessory3;
   /* 0454 */ int shield;
-  /* 0458 */ unsigned char unknown_0458[8];
+  /* 0458 */ unsigned char padding_0458[8];
   /* 0460 */ std::string headPaletteName;
   /* 0478 */ UIWindow* gaugeWindow;
   /* 047C */ int pkRank;
@@ -320,26 +320,26 @@ public:
   /* 0F2C */ int baseAnimation;
   /* 0F30 */ float angle;
   /* 0F34 */ unsigned char alpha;
-  /* 0F35 */ unsigned char unknown_0F35[0x03];
+  /* 0F35 */ unsigned char padding_0F35[0x03];
   /* 0F38 */ unsigned brightness;
   /* 0F3C */ int motion;
   /* 0F40 */ unsigned char currentFrame[4];
   /* 0F44 */ char modelName[0x104];
-  /* 1048 */ unsigned char unknown_1048[8];
+  /* 1048 */ unsigned char padding_1048[8];
   /* 1050 */ granny_control* controls[20];
   /* 10A0 */ unsigned char snapFacing;
-  /* 10A1 */ unsigned char unknown_10A1[3];
+  /* 10A1 */ unsigned char padding_10A1[3];
   /* 10A4 */ int renderFrame;
   /* 10A8 */ CTexture* meshTextures[10][30];
   /* 1558 */ std::uint16_t* meshIndices[10][30];
   /* 1A08 */ int meshTriangleCounts[10][30];
   /* 1EB8 */ matrix meshTransforms[30];
-  /* 2458 */ unsigned char unknown_2458[0xF8];
+  /* 2458 */ unsigned char padding_2458[0xF8];
   /* 2550 */ granny_world_pose* worldPose;
   /* 2554 */ CTexture* shadowTexture;
   /* 2558 */ std::vector<vector3d> attachmentPositions;
   /* 2564 */ int attachLayer;
-  /* 2568 */ int unknown_2568;
+  /* 2568 */ int padding_2568;
   /* 256C */ matrix attachTransform;
 };
 
@@ -392,6 +392,6 @@ static_assert(offsetof(CPc, arrowEffectSuppressed) == 0x4E0);
 #endif
 
 extern unsigned char g_statusRefreshSuppressed;
-extern bool g_unknown173AD3F;
+extern bool g_moveRequestPending;
 
 #endif

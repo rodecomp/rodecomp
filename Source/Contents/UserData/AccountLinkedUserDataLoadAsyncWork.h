@@ -19,7 +19,7 @@ protected:
   /* 0044 */ std::string m_url;
   /* 005C */ std::string m_response;
   /* 0074 */ AsyncDiagnostic m_diagnostic;
-  /* 00AC */ int unknown_00AC;
+  /* 00AC */ int padding_00AC;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

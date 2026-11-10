@@ -20,7 +20,7 @@ public:
   CEquipmentPropertiesMgr();
   void AddExpansion(const int& kind, const int& itemId, bool notify);
 
-  unsigned char unknown_0000[0x1FC];
+  unsigned char padding_0000[0x1FC];
 };
 }
 

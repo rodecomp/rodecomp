@@ -3375,7 +3375,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         this->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
-    case EFST_UNKNOWN_NAME:
+    case EFST_SHOW_HP:
       this->hasHp = (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0;
       break;
     case EFST_HAT_EFFECT:

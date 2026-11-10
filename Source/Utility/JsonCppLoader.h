@@ -54,7 +54,7 @@ public:
   const JsonObject* ObjectRange() const;
 
   /* 0000 */ unsigned char type;
-  /* 0001 */ unsigned char unknown_0001;
+  /* 0001 */ unsigned char padding_0001;
   /* 0002 */ unsigned short smallValue;
   /* 0004 */ void* pointer;
   /* 0008 */ long long integer;

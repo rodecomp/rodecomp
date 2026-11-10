@@ -30,15 +30,15 @@ public:
 
   __declspec(property(get = ItemIdText)) std::string& m_itemIdText;
 
-  /* 00B4 */ unsigned char unknown_00B4[0x4];
+  /* 00B4 */ unsigned char padding_00B4[0x4];
   /* 00B8 */ ITEM_INFO m_item;
   /* 01B0 */ UITextViewer* m_viewer;
   /* 01B4 */ UIBitmapButton* m_viewButton;
   /* 01B8 */ UISpriteButton* m_readButtons[2];
   /* 01C0 */ std::uint32_t m_previewTick;
   /* 01C4 */ std::string m_bitmapName;
-  /* 01DC */ std::string unknown_01DC;
-  /* 01F4 */ unsigned char unknown_01F4[0x4];
+  /* 01DC */ std::string padding_01DC;
+  /* 01F4 */ unsigned char padding_01F4[0x4];
   /* 01F8 */ int m_kind;
   /* 01FC */ int m_optionCount;
   /* 0200 */ WindowPlacement* m_placement;
@@ -56,7 +56,7 @@ public:
   /* 023C */ UIBasicButton* m_withdrawButton;
   /* 0240 */ std::map<int, std::list<std::string>> m_cardTexts;
   /* 0248 */ int m_extraHeight;
-  /* 024C */ unsigned char unknown_024C[0x4];
+  /* 024C */ unsigned char padding_024C[0x4];
 
   void Move(int x, int y) override;
   void OnProcess() override;

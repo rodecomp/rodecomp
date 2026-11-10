@@ -868,7 +868,7 @@ ReplayFileList& ReplayFileList::Instance() {
 // FUNCTION: fn_19339
 bool Replay::SetHeaderInfo(
   std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int playerDirection, int service,
-  int serviceType, int unknown0014
+  int serviceType, int sessionSyncValue
 ) {
   if (!characterName || !mapName) {
     return false;
@@ -877,7 +877,7 @@ bool Replay::SetHeaderInfo(
   std::memcpy(this->header.characterName, characterName, sizeof(this->header.characterName));
   this->header.service = service;
   this->header.serviceType = serviceType;
-  this->header.sessionSyncValue = unknown0014;
+  this->header.sessionSyncValue = sessionSyncValue;
   this->header.key0 = key0;
   this->header.key1 = key1;
   this->header.accountId = accountId;
@@ -1151,7 +1151,7 @@ std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
 namespace {
 #pragma pack(push, 1)
 struct ReplayShopNameRecord {
-  /* 0000 */ std::int16_t unknown;
+  /* 0000 */ std::int16_t padding_0000;
   /* 0002 */ char name[16];
   /* 0012 */ int shopId;
 };
@@ -1297,7 +1297,7 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
   AppendRecord(records, MakeReplayRecord(7500, nullptr, 0));
   for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
     ReplayShopNameRecord value;
-    value.unknown = 0;
+    value.padding_0000 = 0;
     value.shopId = it->second;
     std::memset(value.name, 0, sizeof(value.name));
     std::memcpy(value.name, it->first.c_str(), (std::min)(it->first.size(), sizeof(value.name)));

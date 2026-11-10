@@ -81,13 +81,13 @@ public:
   /* 0270 */ unsigned char m_scrollable;
   /* 0271 */ unsigned char m_needsRedraw;
   /* 0272 */ unsigned char m_locked;
-  /* 0273 */ unsigned char unknown_0273;
+  /* 0273 */ unsigned char padding_0273;
   /* 0274 */ std::uint32_t m_lastTick;
   /* 0278 */ std::list<CSkillInfo> m_lists[4];
   /* 0298 */ std::list<NewSkillListValue> m_values;
   /* 02A0 */ std::list<NewSkillListValue> m_plannedSkillLevels;
   /* 02A8 */ bool m_showDetail;
-  /* 02A9 */ unsigned char unknown_02A9[3];
+  /* 02A9 */ unsigned char padding_02A9[3];
   /* 02AC */ int m_detailId;
 };
 

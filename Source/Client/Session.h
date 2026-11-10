@@ -47,7 +47,7 @@ struct SessionRecord6144 {
   /* 0004 */ std::uint32_t objectives[10] = {};
   /* 002C */ int completedAt = 0;
   /* 0030 */ std::uint8_t rewarded = 0;
-  /* 0031 */ std::uint8_t unknown_0031;
+  /* 0031 */ std::uint8_t padding_0031;
   /* 0032 */ std::int16_t year;
   /* 0034 */ std::int16_t month;
   /* 0036 */ std::int16_t day;
@@ -85,7 +85,7 @@ struct SessionRecord6178Entry {
 };
 
 struct SessionRecord6178 {
-  /* 0000 */ unsigned char unknown_0000 = 0;
+  /* 0000 */ unsigned char padding_0000 = 0;
   /* 0001 */ unsigned char completed = 0;
   /* 0004 */ int id = -1;
   /* 0008 */ std::string title;
@@ -190,7 +190,7 @@ public:
   /* 00B4 */ int m_simplifiedSkillList;
   /* 00B8 */ int m_showSkillDescription;
   /* 00BC */ unsigned char m_hotkeyPage;
-  /* 00BD */ unsigned char unknown_00BD[3];
+  /* 00BD */ unsigned char padding_00BD[3];
   /* 00C0 */ std::string m_hotkeyDescriptions[36];
   /* 0420 */ std::uint32_t hotkeySkillLevels[36];
   /* 04B0 */ NormalItemSlot m_shortcutSlots[36];
@@ -199,7 +199,7 @@ public:
   /* 06AC */ NormalItemSlot m_normalItemSlots[9];
   /* 06EB */ NormalItemSlot quickSlot;
   /* 06F2 */ NormalItemSlot alternateQuickSlot;
-  /* 06F9 */ unsigned char unknown_06F9[0x03];
+  /* 06F9 */ unsigned char padding_06F9[0x03];
   /* 06FC */ int mainShortcutRow;
   /* 0700 */ std::map<int, int> skillFollowEffects;
   /* 0708 */ std::map<int, int> skillEffectIds;
@@ -210,7 +210,7 @@ public:
   /* 073C */ std::map<int, SubChatWndInfo> m_noSubChatWnds;
   /* 0744 */ std::map<int, SubChatWndInfo> m_subChatWnds;
   /* 074C */ bool m_canDragWnd;
-  /* 074D */ unsigned char unknown_074D[0x03];
+  /* 074D */ unsigned char padding_074D[0x03];
   /* 0750 */ std::uint32_t m_prohibitionTarget;
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
   /* 0760 */ std::string m_accountName;
@@ -227,7 +227,7 @@ public:
       /* 07A4 */ std::uint32_t m_timeAttackCountdown;
       /* 07A8 */ std::uint32_t m_timeAttackStart;
       /* 07AC */ int m_timeAttackVisible;
-      /* 07B0 */ unsigned char unknown_07B0[4];
+      /* 07B0 */ unsigned char padding_07B0[4];
     };
   };
   /* 07B4 */ unsigned char m_playerNameKey[0x40];
@@ -243,7 +243,7 @@ public:
   /* 0EF4 */ unsigned char accessoryAppearance[0x0C];
   /* 0F00 */ int m_robe;
   /* 0F04 */ bool m_newRobeDrawOnTop;
-  /* 0F05 */ unsigned char unknown_0F05[0x03];
+  /* 0F05 */ unsigned char padding_0F05[0x03];
   /* 0F08 */ int m_bodyCostume;
   /* 0F0C */ unsigned char statusLevelEffects[0x08];
   /* 0F14 */ std::uint32_t m_jobFlags;
@@ -283,7 +283,7 @@ public:
   /* 0FA8 */ std::vector<const char*> m_jobNameTable;
   /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
-  /* 0FC4 */ std::map<unsigned, const char*> unknown_0FC4;
+  /* 0FC4 */ std::map<unsigned, const char*> padding_0FC4;
   /* 0FCC */ std::vector<const char*> m_sexLabels;
   /* 0FD8 */ std::vector<const char*> m_jobKeyNames;
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
@@ -350,7 +350,7 @@ public:
   /* 1784 */ std::list<ITEM_INFO> inventoryCategories[11];
   /* 17DC */ std::list<MessengerMember> m_partyMembers;
   /* 17E4 */ std::list<MessengerMember> m_friends;
-  /* 17EC */ unsigned char unknown_17EC[0x04];
+  /* 17EC */ unsigned char padding_17EC[0x04];
   /* 17F0 */ ITEM_INFO equippedItems[10];
   /* 21A0 */ ITEM_INFO alternateEquippedItems[10];
   /* 2B50 */ ITEM_INFO costumeItems[10];
@@ -366,8 +366,8 @@ public:
   /* 5248 */ std::vector<char*> m_indoorRswNames;
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char weaponSoundTables[0x24];
-  /* 5280 */ std::list<int> unknown_5280;
-  /* 5288 */ unsigned char unknown_5288[0x0C];
+  /* 5280 */ std::list<int> padding_5280;
+  /* 5288 */ unsigned char padding_5288[0x0C];
   /* 5294 */ const char* const* m_bodyJobNames;
   /* 5298 */ unsigned char m_bodyJobNamesEndAndCapacity[0x08];
   /* 52A0 */ const char* const* m_sexNames;
@@ -439,7 +439,7 @@ public:
   /* 55D0 */ int homunMaxSp;
   /* 55D4 */ int homunFriendly;
   /* 55D8 */ int homunAccessory;
-  /* 55DC */ unsigned char unknown_55DC[4];
+  /* 55DC */ unsigned char padding_55DC[4];
   /* 55E0 */ std::int64_t m_homunExp;
   /* 55E8 */ std::int64_t m_homunMaxExp;
   /* 55F0 */ int homunHunger;
@@ -479,13 +479,13 @@ public:
   /* 56B8 */ unsigned char autoReplyState[0x1C];
   /* 56D4 */ int m_storePasswordMode;
   /* 56D8 */ bool m_passwordInputAlternate;
-  /* 56D9 */ unsigned char unknown_56D9[0x7];
+  /* 56D9 */ unsigned char padding_56D9[0x7];
   /* 56E0 */ int m_passwordWndMode;
   /* 56E4 */ std::uint32_t m_loginAccountId;
   /* 56E8 */ std::int32_t m_passwordWndAccountId;
   /* 56EC */ bool m_launchAccountEnabled;
   /* 56ED */ char m_loginErrorText[500];
-  /* 58E1 */ unsigned char unknown_58E1[0x19];
+  /* 58E1 */ unsigned char padding_58E1[0x19];
   /* 58FA */ char clientVersion[0x18];
   /* 5912 */ unsigned char characterRenameEnabled;
   /* 5913 */ unsigned char characterRenameData[0x25];
@@ -511,9 +511,9 @@ public:
   union {
     /* 59DC */ unsigned char mouseAndChannelOptions[0x19C];
     struct {
-      /* 59DC */ unsigned char unknown_59DC_0000[0x194];
+      /* 59DC */ unsigned char padding_59DC[0x194];
       /* 5B70 */ bool m_lockMouse;
-      /* 5B71 */ unsigned char unknown_5B71[3];
+      /* 5B71 */ unsigned char padding_5B71[3];
       /* 5B74 */ int m_channelCopId;
     };
   };
@@ -574,19 +574,19 @@ public:
       /* 61B3 */ bool m_itemDefaultSort;
       /* 61B4 */ bool m_itemAscendingOrder;
       /* 61B5 */ bool m_itemDescendingOrder;
-      /* 61B6 */ unsigned char unknown_61B6[2];
+      /* 61B6 */ unsigned char padding_61B6[2];
     };
   };
   /* 61B8 */ ITEM_INFO swapCostumeItems[10];
   /* 6B68 */ ITEM_INFO swapEquippedItems[10];
-  /* 7518 */ ITEM_INFO unknown_7518[10];
+  /* 7518 */ ITEM_INFO padding_7518[10];
   /* 7EC8 */ std::uint32_t swapArrowIndex;
   /* 7ECC */ unsigned char swapEquipmentFlag[0x04];
   /* 7ED0 */ int minimumNameLength;
   /* 7ED4 */ std::uint32_t nameValidationTick;
   /* 7ED8 */ int m_swapEquipmentMode = 0;
   /* 7EDC */ bool m_showMenuIcon;
-  /* 7EDD */ unsigned char unknown_7EDD[3];
+  /* 7EDD */ unsigned char padding_7EDD[3];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
   /* 7EE8 */ unsigned char maxBaseLevel[4];
   /* 7EEC */ int m_maxLevel;
@@ -598,7 +598,7 @@ public:
   union {
     /* 7F7D */ unsigned char homunculusFeedOptions[0x0F];
     struct {
-      /* 7F7D */ unsigned char unknown_7F7D_0000[0x0B];
+      /* 7F7D */ unsigned char padding_7F7D[0x0B];
       /* 7F88 */ bool m_loginModeFlag;
     };
   };
@@ -773,7 +773,7 @@ public:
   void FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, int feminine);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
-  void AddUnknownId(int id);
+  void AddAchievementId(int id);
   EquipSlots GetEquipSlots(int location);
   bool EquipInventoryItem(const ITEM_INFO& item, const char* name);
   bool UnequipItem(int location, std::uint32_t identity);
@@ -792,7 +792,7 @@ public:
   void ClearShortcutSlots();
   void ClearSecondaryShortcutSlots();
   void ClearHotkeySkillLevels();
-  void EraseUnknownKey(std::int64_t key);
+  void EraseSummonHp(std::int64_t key);
   std::int64_t FindSummonHp(std::int64_t key) const;
   std::int64_t FindSummonMaxHp(std::int64_t key) const;
   SessionRecord6144 FindAchievementRecord(int key) const;
@@ -886,7 +886,7 @@ public:
   void NotifyMercSkillWindows();
   int GetPetActionNumber(int hungerLevel, int friendlyLevel, int action);
   void InitPetActionTable();
-  void InitUnknownMapTables();
+  void InitSkillEffectIds();
   int GetPetFriendlyState(int friendly);
   void GetPetFriendlyStateString(int friendly, char* buffer);
   int GetPetHungryState(int hunger);
@@ -899,7 +899,7 @@ public:
   bool IsPlayerPerformerJob(int job) const;
   bool IsSpecialMonsterJob(int job) const;
   bool IsRestrictedCharacterSlot(int value) const;
-  bool ResetUnknownState();
+  bool ResetCharacterSlotState();
   __declspec(noinline) bool IsSecondJob(int job);
   void UpdateBodyStyle(int job, int style, int renderJob);
   std::string GetBodyJobName(int job);
@@ -918,7 +918,7 @@ public:
   void LoadExternalSettings();
   void ReloadLanguageTables();
   bool AddInventoryItem(const ITEM_INFO& item, unsigned char refresh);
-  void AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
+  void AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t padding_006C);
   void AddShopItem(const RawItemBasic& item, int mode);
   bool AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh);
   bool AddMerchantShopItem(const ITEM_INFO& item);
@@ -965,7 +965,7 @@ public:
   void ClearCartItems();
   void CopyItems1740To1750();
   void CopyItems1760To1770();
-  std::pair<bool, ITEM_INFO> FindMerchantMyShopItem(const ITEM_INFO& item, unsigned char unknown);
+  std::pair<bool, ITEM_INFO> FindMerchantMyShopItem(const ITEM_INFO& item, unsigned char wholeItem);
   void ClearMiniPartyRecords();
   void ResetStatBonuses();
   void ResetHotkeyDescriptions();
@@ -1132,10 +1132,10 @@ public:
   ITEM_INFO GetAlternateEquippedItemAt(int index) const;
   int GetItem1718QuantityByItemId(const ITEM_INFO& item) const;
   int GetItem1718QuantityOf(const ITEM_INFO& item) const;
-  std::uint16_t GetItem1718Unknown006CByItemId(const ITEM_INFO& item) const;
-  std::uint16_t GetItem1718Unknown006COf(const ITEM_INFO& item) const;
-  std::uint16_t SumItem1720Unknown006CByItemId() const;
-  std::uint16_t SumItem1720Unknown006C() const;
+  std::uint16_t GetShopItemPriceFactorByItemId(const ITEM_INFO& item) const;
+  std::uint16_t GetShopItemPriceFactor(const ITEM_INFO& item) const;
+  std::uint16_t SumPurchasePriceFactorByItemId() const;
+  std::uint16_t SumPurchasePriceFactor() const;
   ITEM_INFO FindItem1720ByItemId(const char* itemId) const;
   ITEM_INFO GetItem1720At(int index) const;
   int GetItem1720QuantityByItemId(const char* itemId) const;
@@ -1213,7 +1213,7 @@ public:
   void SetHomunSkillLevel(int skillId, int level);
   void UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh);
   void SetMercSkillLevel(int skillId, int level);
-  void SetItem1768Unknown0014(int index, std::uint32_t value);
+  void SetMerchantPurchaseSavedPrice(int index, std::uint32_t value);
   void AddMiniPartyRecord(int id, std::uint32_t value);
   void SetExchangeMoney(int value);
   void SetOtherExchangeMoney(int value);

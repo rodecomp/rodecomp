@@ -22,7 +22,7 @@ struct WorldModelRecord {
   /* 00F4 */ float animationSpeed;
   /* 00F8 */ unsigned char legacyPosition[12];
   /* 0104 */ unsigned char flag;
-  /* 0105 */ unsigned char unknown_0105[3];
+  /* 0105 */ unsigned char padding_0105[3];
   /* 0108 */ int index;
 };
 
@@ -81,10 +81,10 @@ public:
   /* 01AC */ float ambient[3];
   /* 01B8 */ unsigned char major;
   /* 01B9 */ unsigned char minor;
-  /* 01BA */ unsigned char unknown_01BA[2];
+  /* 01BA */ unsigned char padding_01BA[2];
   /* 01BC */ int bounds[4];
   /* 01CC */ unsigned char flag;
-  /* 01CD */ unsigned char unknown_01CD[3];
+  /* 01CD */ unsigned char padding_01CD[3];
 };
 
 static_assert(sizeof(WorldModelRecord) == 268);

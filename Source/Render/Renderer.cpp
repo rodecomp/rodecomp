@@ -214,7 +214,7 @@ timer:
 
 // OFFSET: 0x00560A40
 // FUNCTION: fn_02161
-CRenderer::CRenderer() : frame(0), viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0), twoPass(0), unknown_004C(0) {
+CRenderer::CRenderer() : frame(0), viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0), twoPass(0), padding_004C(0) {
   this->atlas.Initialize(50);
   this->fog.enabled = 0;
   this->fog.dirty = 1;

@@ -780,14 +780,14 @@ __declspec(noinline) void LoadItemNameTables() {
     }
   }
 
-  ITEM_DESC& unknown = FindItemDescription(0, g_itemDescriptions);
-  unknown.identifiedName = "Unknown Item";
-  unknown.identifiedResource = "\xbb\xe7\xb0\xfa";
-  unknown.identifiedDescription.push_back("Unknown Item");
-  unknown.unidentifiedName = "Unknown Item";
-  unknown.unidentifiedResource = "\xbb\xe7\xb0\xfa";
-  unknown.unidentifiedDescription.push_back("Unknown Item");
-  FindItemDescription(-1, g_itemDescriptions) = unknown;
+  ITEM_DESC& unknownItemDesc = FindItemDescription(0, g_itemDescriptions);
+  unknownItemDesc.identifiedName = "Unknown Item";
+  unknownItemDesc.identifiedResource = "\xbb\xe7\xb0\xfa";
+  unknownItemDesc.identifiedDescription.push_back("Unknown Item");
+  unknownItemDesc.unidentifiedName = "Unknown Item";
+  unknownItemDesc.unidentifiedResource = "\xbb\xe7\xb0\xfa";
+  unknownItemDesc.unidentifiedDescription.push_back("Unknown Item");
+  FindItemDescription(-1, g_itemDescriptions) = unknownItemDesc;
 
   ItemCardName& sorry = FindItemCardName(0, g_itemCardNames);
   sorry.name = "sorry";

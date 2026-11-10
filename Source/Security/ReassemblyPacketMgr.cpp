@@ -22,9 +22,9 @@ int CReassemblyPacketImpl::IsReady() {
 // OFFSET: 0x00B154E0
 // FUNCTION: fn_18419
 CReassemblyPacketImpl::CReassemblyPacketImpl() {
-  this->unknown_0004 = 0;
-  this->unknown_0008 = 0;
-  this->unknown_000C = 0;
+  this->padding_0004 = 0;
+  this->padding_0008 = 0;
+  this->padding_000C = 0;
   this->m_valid = true;
 }
 

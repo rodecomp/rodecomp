@@ -19,11 +19,11 @@ public:
   void Configure(const char* text, int type, bool defaultAccept, int timeout, const char* caption, int width, int height, int modal, const char* icon);
 
   /* 00B4 */ UITextViewer* viewer;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int padding_00B8;
   /* 00BC */ int counting;
   /* 00C0 */ std::uint32_t started;
   /* 00C4 */ std::uint32_t deadline;
-  /* 00C8 */ int unknown_00C8;
+  /* 00C8 */ int padding_00C8;
   /* 00CC */ std::uint32_t remaining;
   /* 00D0 */ std::string format;
   /* 00E8 */ std::string messageText;

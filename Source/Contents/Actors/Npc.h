@@ -44,7 +44,7 @@ public:
     /* 0438 */ int attachedEffectId;
     /* 0438 */ std::int16_t minimapMarkerCell[2];
   };
-  /* 043C */ int unknown_043C;
+  /* 043C */ int padding_043C;
 };
 
 class CCharacterNpc : public CNpc {
@@ -72,9 +72,9 @@ public:
 
   /* 0440 */ float hallucinationOffset;
   /* 0444 */ int fadeStep;
-  /* 0448 */ int unknown_0448;
-  /* 044C */ int unknown_044C;
-  /* 0450 */ int unknown_0450;
+  /* 0448 */ int padding_0448;
+  /* 044C */ int padding_044C;
+  /* 0450 */ int padding_0450;
   /* 0454 */ int processCount;
 };
 
@@ -89,7 +89,7 @@ public:
   void Render(int argument) override;
 
   /* 0440 */ std::uint32_t processCount;
-  /* 0444 */ int unknown_0444;
+  /* 0444 */ int padding_0444;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -39,7 +39,7 @@ public:
   /* 002C */ float fog[3];
   /* 0038 */ float lightColor[3];
   /* 0044 */ CRagEffect* effect;
-  /* 0048 */ unsigned char unknown_0048[0x10];
+  /* 0048 */ unsigned char padding_0048[0x10];
   /* 0058 */ int counter;
 };
 

@@ -104,7 +104,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 4.0f;
     particle->scale = 1.5f;
     break;
-  case EF_UNK_1130:
+  case EF_BAKURETSU_HADOU:
     particle->SetSprite("이팩트\\bakuretsu_hadou\\bakuretsu_hadou.spr");
     particle->SetAction("이팩트\\bakuretsu_hadou\\bakuretsu_hadou.act");
     particle->renderOptions |= 0x200;
@@ -113,91 +113,91 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;
     break;
-  case EF_UNK_1147:
+  case EF_POPCORN:
     particle->SetSprite("이팩트\\EF_POPCORN\\EF_POPCORN.spr");
     particle->SetAction("이팩트\\EF_POPCORN\\EF_POPCORN.act");
     particle->loopMode = 1;
     particle->depthOffset = 0.0003f;
     particle->frameDelay = 8.0f;
     break;
-  case EF_UNK_1151:
+  case EF_IMMUNE_PROPERTY_NOTHING:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_NOTHING.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_NOTHING.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1152:
+  case EF_IMMUNE_PROPERTY_WATER:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_WATER.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_WATER.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1153:
+  case EF_IMMUNE_PROPERTY_GROUND:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_GROUND.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_GROUND.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1154:
+  case EF_IMMUNE_PROPERTY_FIRE:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_FIRE.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_FIRE.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1155:
+  case EF_IMMUNE_PROPERTY_WIND:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_WIND.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_WIND.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1156:
+  case EF_IMMUNE_PROPERTY_POISON:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_POISON.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_POISON.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1157:
+  case EF_IMMUNE_PROPERTY_SAINT:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_SAINT.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_SAINT.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1158:
+  case EF_IMMUNE_PROPERTY_DARKNESS:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_DARKNESS.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_DARKNESS.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1159:
+  case EF_IMMUNE_PROPERTY_TELEKINESIS:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_TELEKINESIS.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_TELEKINESIS.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1160:
+  case EF_IMMUNE_PROPERTY_UNDEAD:
     particle->SetSprite("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_UNDEAD.spr");
     particle->SetAction("이팩트\\EF_IMMUNE_PROPERTY\\EF_IMMUNE_PROPERTY_UNDEAD.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     break;
-  case EF_UNK_1192:
+  case EF_RANDOM_OPT_YELLOW:
     particle->SetSprite("이팩트\\random_opt_spr\\yellow.spr");
     particle->SetAction("이팩트\\random_opt_spr\\yellow.act");
     particle->loopMode = 0;
     particle->frameDelay = 4.0f;
     break;
   case EF_UNK_1211:
-  case EF_UNK_1212:
-  case EF_UNK_1213:
+  case EF_SUBJECT_AURA_1212:
+  case EF_SUBJECT_AURA_1213:
     particle->SetSprite("이팩트\\subject_aura\\subject_aura.spr");
     particle->SetAction("이팩트\\subject_aura\\subject_aura.act");
     particle->frameDelay = 8.0f;
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
     particle->flags = 0x101;
-    if (this->id == EF_UNK_1212) {
+    if (this->id == EF_SUBJECT_AURA_1212) {
       particle->animation = 0;
-    } else if (this->id == EF_UNK_1213) {
+    } else if (this->id == EF_SUBJECT_AURA_1213) {
       particle->animation = 1;
     } else if (this->id == EF_UNK_1211) {
       particle->animation = 2;
@@ -210,7 +210,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 1;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1232:
+  case EF_BOOK_OF_CREATINGSTAR:
     particle->SetSprite("이팩트\\book_of_creatingstar\\book_of_creatingstar.spr");
     particle->SetAction("이팩트\\book_of_creatingstar\\book_of_creatingstar.act");
     particle->frameDelay = 4.0f;
@@ -231,7 +231,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 1;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1235:
+  case EF_SOUL_SHADOW:
     particle->SetSprite("이팩트\\soul_shadow\\soul_shadow.spr");
     particle->SetAction("이팩트\\soul_shadow\\soul_shadow.act");
     particle->depthOffset = 0.0003f;
@@ -239,7 +239,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 1;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1236:
+  case EF_SOUL_FAIRY:
     particle->SetSprite("이팩트\\soul_fairy\\soul_fairy.spr");
     particle->SetAction("이팩트\\soul_fairy\\soul_fairy.act");
     particle->depthOffset = 0.0003f;
@@ -247,7 +247,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 1;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1237:
+  case EF_SOUL_FALCON:
     particle->SetSprite("이팩트\\soul_falcon\\soul_falcon.spr");
     particle->SetAction("이팩트\\soul_falcon\\soul_falcon.act");
     particle->depthOffset = 0.0003f;
@@ -263,7 +263,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 1;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1377:
+  case EF_VALKYRIE_WING:
     particle->SetSprite("이팩트\\valkyrie_wing\\valkyrie_wing.spr");
     particle->SetAction("이팩트\\valkyrie_wing\\valkyrie_wing.act");
     particle->loopMode = 0;
@@ -271,7 +271,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 6.0f;
     particle->flags = 0x101;
     break;
-  case EF_UNK_1419:
+  case EF_C_AMDARAIS_EFFECT:
     particle->SetSprite("이팩트\\c_amdarais_effect.spr");
     particle->SetAction("이팩트\\c_amdarais_effect.act");
     particle->depthOffset = 0.0001f;
@@ -279,7 +279,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case EF_UNK_1617:
+  case EF_BLACKBUBBLE_SMALL:
     particle->SetSprite("이팩트\\black_bubble\\small\\blackbubble_small.spr");
     particle->SetAction("이팩트\\black_bubble\\small\\blackbubble_small.act");
     particle->depthOffset = 0.0001f;
@@ -287,7 +287,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case EF_UNK_1618:
+  case EF_BLACKBUBBLE_MIDIUM:
     particle->SetSprite("이팩트\\black_bubble\\midium\\blackbubble_midium.spr");
     particle->SetAction("이팩트\\black_bubble\\midium\\blackbubble_midium.act");
     particle->depthOffset = 0.0001f;
@@ -295,7 +295,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case EF_UNK_1619:
+  case EF_BLACKBUBBLE_LARGE:
     particle->SetSprite("이팩트\\black_bubble\\large\\blackbubble_large.spr");
     particle->SetAction("이팩트\\black_bubble\\large\\blackbubble_large.act");
     particle->depthOffset = 0.0001f;
@@ -303,7 +303,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case EF_UNK_2394:
+  case EF_SERPENT_SHADOW:
     particle->SetSprite("이팩트\\Serpent_Shadow\\Serpent_Shadow.spr");
     particle->SetAction("이팩트\\Serpent_Shadow\\Serpent_Shadow.act");
     particle->loopMode = 0;
@@ -311,35 +311,35 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 4.0f;
     particle->flags = 0xD;
     break;
-  case EF_UNK_2420:
+  case EF_VIOLEN_HIT:
     particle->SetSprite("몬스터\\violen_hit.spr");
     particle->SetAction("몬스터\\violen_hit.act");
     particle->loopMode = 1;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
     break;
-  case EF_UNK_2424:
+  case EF_C_AURA_OF_GHOST_S:
     particle->SetSprite("이팩트\\C_Aura_Of_Ghost_S\\C_Aura_Of_Ghost_S.spr");
     particle->SetAction("이팩트\\C_Aura_Of_Ghost_S\\C_Aura_Of_Ghost_S.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
     break;
-  case EF_UNK_2430:
+  case EF_C_GUIDE_OF_DEAD_TEXT:
     particle->SetSprite("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.spr");
     particle->SetAction("이팩트\\C_Guide_Of_Dead_Text\\C_Guide_Of_Dead_Text.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 12.0f;
     break;
-  case EF_UNK_2431:
+  case EF_C_MEDJED_TEXT:
     particle->SetSprite("이팩트\\C_Medjed_Text\\C_Medjed_Text.spr");
     particle->SetAction("이팩트\\C_Medjed_Text\\C_Medjed_Text.act");
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 12.0f;
     break;
-  case EF_UNK_2428:
+  case EF_ATQUE_POENITENTIA:
     particle->SetSprite("이팩트\\Atque_Poenitentia\\Atque_Poenitentia.spr");
     particle->SetAction("이팩트\\Atque_Poenitentia\\Atque_Poenitentia.act");
     particle->loopMode = 0;
@@ -347,7 +347,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 4.0f;
     particle->flags = 0xD;
     break;
-  case EF_UNK_2429:
+  case EF_PERM_FROST_OBLIVION:
     particle->SetSprite("이팩트\\Perm_Frost_Oblivion\\Perm_Frost_Oblivion.spr");
     particle->SetAction("이팩트\\Perm_Frost_Oblivion\\Perm_Frost_Oblivion.act");
     particle->depthOffset = 0.001f;
@@ -355,7 +355,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->flags = 1;
     break;
-  case EF_UNK_2458:
+  case EF_S_BEELZEBUB_WING:
     particle->SetSprite("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.spr");
     particle->SetAction("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.act");
     particle->flags = 1;
@@ -405,7 +405,7 @@ bool CSpriteEffect::IsAlive() {
   switch (this->id) {
   case EF_GROUND_EXPLOSION:
     return !this->IsFinished();
-  case EF_UNK_1192: {
+  case EF_RANDOM_OPT_YELLOW: {
     if (this->actor == 0) {
       return false;
     }
@@ -425,33 +425,33 @@ bool CSpriteEffect::IsAlive() {
 
     return true;
   }
-  case EF_UNK_1130:
-  case EF_UNK_1151:
-  case EF_UNK_1152:
-  case EF_UNK_1153:
-  case EF_UNK_1154:
-  case EF_UNK_1155:
-  case EF_UNK_1156:
-  case EF_UNK_1157:
-  case EF_UNK_1158:
-  case EF_UNK_1159:
-  case EF_UNK_1160:
+  case EF_BAKURETSU_HADOU:
+  case EF_IMMUNE_PROPERTY_NOTHING:
+  case EF_IMMUNE_PROPERTY_WATER:
+  case EF_IMMUNE_PROPERTY_GROUND:
+  case EF_IMMUNE_PROPERTY_FIRE:
+  case EF_IMMUNE_PROPERTY_WIND:
+  case EF_IMMUNE_PROPERTY_POISON:
+  case EF_IMMUNE_PROPERTY_SAINT:
+  case EF_IMMUNE_PROPERTY_DARKNESS:
+  case EF_IMMUNE_PROPERTY_TELEKINESIS:
+  case EF_IMMUNE_PROPERTY_UNDEAD:
   case EF_UNK_1211:
-  case EF_UNK_1212:
-  case EF_UNK_1213:
-  case EF_UNK_1377:
-  case EF_UNK_1419:
-  case EF_UNK_1617:
-  case EF_UNK_1618:
-  case EF_UNK_1619:
-  case EF_UNK_2394:
-  case EF_UNK_2424:
-  case EF_UNK_2428:
-  case EF_UNK_2429:
-  case EF_UNK_2430:
-  case EF_UNK_2431:
+  case EF_SUBJECT_AURA_1212:
+  case EF_SUBJECT_AURA_1213:
+  case EF_VALKYRIE_WING:
+  case EF_C_AMDARAIS_EFFECT:
+  case EF_BLACKBUBBLE_SMALL:
+  case EF_BLACKBUBBLE_MIDIUM:
+  case EF_BLACKBUBBLE_LARGE:
+  case EF_SERPENT_SHADOW:
+  case EF_C_AURA_OF_GHOST_S:
+  case EF_ATQUE_POENITENTIA:
+  case EF_PERM_FROST_OBLIVION:
+  case EF_C_GUIDE_OF_DEAD_TEXT:
+  case EF_C_MEDJED_TEXT:
   case EF_UNK_2443:
-  case EF_UNK_2458:
+  case EF_S_BEELZEBUB_WING:
     return this->ActorExists();
   }
 
@@ -482,7 +482,7 @@ void CSpriteEffect::OnProcess() {
     ++particle->elapsedFrames;
 
     switch (this->id) {
-    case EF_UNK_1130: {
+    case EF_BAKURETSU_HADOU: {
       int height = 8;
       if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
         height = static_cast<int>(actor->GetNameOffset() + 8.0f);
@@ -492,22 +492,22 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_1147:
-    case EF_UNK_1192: {
+    case EF_POPCORN:
+    case EF_RANDOM_OPT_YELLOW: {
       const vector3d offset = {0.0f, -10.0f, 0.0f};
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_1151:
-    case EF_UNK_1152:
-    case EF_UNK_1153:
-    case EF_UNK_1154:
-    case EF_UNK_1155:
-    case EF_UNK_1156:
-    case EF_UNK_1157:
-    case EF_UNK_1158:
-    case EF_UNK_1159:
-    case EF_UNK_1160: {
+    case EF_IMMUNE_PROPERTY_NOTHING:
+    case EF_IMMUNE_PROPERTY_WATER:
+    case EF_IMMUNE_PROPERTY_GROUND:
+    case EF_IMMUNE_PROPERTY_FIRE:
+    case EF_IMMUNE_PROPERTY_WIND:
+    case EF_IMMUNE_PROPERTY_POISON:
+    case EF_IMMUNE_PROPERTY_SAINT:
+    case EF_IMMUNE_PROPERTY_DARKNESS:
+    case EF_IMMUNE_PROPERTY_TELEKINESIS:
+    case EF_IMMUNE_PROPERTY_UNDEAD: {
       int height = 25;
       if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
         height = static_cast<int>(actor->GetNameOffset() + 25.0f);
@@ -518,8 +518,8 @@ void CSpriteEffect::OnProcess() {
       break;
     }
     case EF_UNK_1211:
-    case EF_UNK_1212:
-    case EF_UNK_1213: {
+    case EF_SUBJECT_AURA_1212:
+    case EF_SUBJECT_AURA_1213: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -530,7 +530,7 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_1377: {
+    case EF_VALKYRIE_WING: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -541,8 +541,8 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_2394:
-    case EF_UNK_2424: {
+    case EF_SERPENT_SHADOW:
+    case EF_C_AURA_OF_GHOST_S: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -553,7 +553,7 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_2428: {
+    case EF_ATQUE_POENITENTIA: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -565,7 +565,7 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_2429: {
+    case EF_PERM_FROST_OBLIVION: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -576,8 +576,8 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_2430:
-    case EF_UNK_2431: {
+    case EF_C_GUIDE_OF_DEAD_TEXT:
+    case EF_C_MEDJED_TEXT: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
         break;
@@ -596,7 +596,7 @@ void CSpriteEffect::OnProcess() {
       particle->position.y = this->position[1];
       particle->position.z = this->position[2];
       break;
-    case EF_UNK_2458:
+    case EF_S_BEELZEBUB_WING:
       particle->applyActorExtent = 1;
       particle->applyActorLift = 1;
       particle->screenOffsetY = -105.0f;

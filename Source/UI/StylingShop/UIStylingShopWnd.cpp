@@ -1156,7 +1156,7 @@ void UIMyStyleWnd::SaveLikeList() {
 
     struct LikeStyle {
       int slotNum;
-      int unknown_04;
+      int padding_0004;
       int robe;
       int headStyle;
       int bodyStyle;
@@ -2016,7 +2016,7 @@ void UIMyStyleWnd::LoadLikeList() {
 
     struct LikeStyle {
       int slotNum;
-      int unknown_04;
+      int padding_0004;
       int robe;
       int headStyle;
       int bodyStyle;

@@ -20,7 +20,7 @@ public:
   void AddBolt(int tilt);
 
   /* 00CC */ short angle;
-  /* 00CE */ unsigned char unknown_00CE[2];
+  /* 00CE */ unsigned char padding_00CE[2];
   /* 00D0 */ vector3d path[2];
   /* 00E8 */ vector3d lastEdge[2];
   /* 0100 */ int tick;

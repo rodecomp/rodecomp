@@ -28,7 +28,7 @@ public:
   void AnimateLoading();
 
   /* 00B4 */ int mode;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ int padding_00B8;
   union {
     struct {
       /* 00BC */ UIWindow* recordStartButton;
@@ -51,7 +51,7 @@ public:
   /* 00F0 */ std::uint32_t recordStart;
   /* 00F4 */ UIWindow* options[10];
   /* 011C */ unsigned char recordOptions[10];
-  /* 0126 */ unsigned char unknown_0126[2];
+  /* 0126 */ unsigned char padding_0126[2];
   union {
     struct {
       /* 0128 */ UIWindow* userFilenameCheckBox;
@@ -61,7 +61,7 @@ public:
   };
   /* 0130 */ bool replayPathEnabled;
   /* 0131 */ bool replayOption119;
-  /* 0132 */ unsigned char unknown_0132[2];
+  /* 0132 */ unsigned char padding_0132[2];
   /* 0134 */ UIEditCtrl* filenameEdit;
   /* 0138 */ ReplayRECControlWndInfo* saved;
 };

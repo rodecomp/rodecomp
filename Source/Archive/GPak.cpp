@@ -55,7 +55,7 @@ namespace {
 
   struct PakHeaderFile {
     /* 0000 */ char signature[16];
-    /* 0010 */ std::uint8_t unknown_0010[14];
+    /* 0010 */ std::uint8_t padding_0010[14];
     /* 001E */ std::uint32_t tableOffset;
     /* 0022 */ std::uint32_t seed;
     /* 0026 */ std::uint32_t entryCount;
@@ -64,7 +64,7 @@ namespace {
 
   struct PakHeaderFile64 {
     /* 0000 */ char signature[16];
-    /* 0010 */ std::uint8_t unknown_0010[14];
+    /* 0010 */ std::uint8_t padding_0010[14];
     /* 001E */ std::uint64_t tableOffset;
     /* 0026 */ std::uint32_t entryCount;
     /* 002A */ std::uint32_t version;
@@ -99,9 +99,9 @@ namespace {
 
   struct PakAuxiliaryFile {
     /* 0000 */ std::uint8_t version;
-    /* 0001 */ std::uint8_t unknown_0001[3];
+    /* 0001 */ std::uint8_t padding_0001[3];
     /* 0004 */ std::uint64_t identifier;
-    /* 000C */ std::uint32_t unknown_000C;
+    /* 000C */ std::uint32_t padding_000C;
   };
 
 #pragma pack(pop)
@@ -1530,7 +1530,7 @@ struct PakLinkNode {
 };
 
 struct PakIntrusiveLink {
-  /* 0000 */ unsigned int unknown_0000;
+  /* 0000 */ unsigned int padding_0000;
   /* 0004 */ PakLinkNode* m_prev;
   /* 0008 */ PakLinkNode* m_next;
 
@@ -1568,7 +1568,7 @@ __declspec(noinline) PakUniformRandom::PakUniformRandom(int minimum, int maximum
 struct PakAuxiliaryHeader {
   /* 0000 */ std::uint8_t version;
   /* 0001 */ std::uint8_t keySource;
-  /* 0002 */ std::uint8_t unknown_0002[2];
+  /* 0002 */ std::uint8_t padding_0002[2];
   /* 0004 */ std::uint32_t checksum;
   /* 0008 */ std::uint8_t payload[96];
 };
@@ -1585,7 +1585,7 @@ struct PakAuxiliaryContext {
 struct PakAuxiliaryState {
   /* 0000 */ HashTable_655340 m_handlers;
   /* 0020 */ PakMaskedKey48 m_key;
-  /* 0055 */ std::uint8_t unknown_0055[107];
+  /* 0055 */ std::uint8_t padding_0055[107];
   /* 00C0 */ AES* m_cipher;
 
   bool DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header);

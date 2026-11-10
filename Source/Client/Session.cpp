@@ -253,7 +253,7 @@ __declspec(noinline) int CSession::HasSwapEquipmentItem(std::uint32_t id) const 
 
 // OFFSET: 0x00E3DB20
 // FUNCTION: fn_24194
-bool CSession::ResetUnknownState() {
+bool CSession::ResetCharacterSlotState() {
   this->m_normalSlotCount = 1;
   this->m_premiumSlotCount = 1;
   this->m_billingSlotCount = 1;
@@ -1453,7 +1453,7 @@ int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
 
 // OFFSET: 0x00DDFDE0
 // FUNCTION: fn_23447
-std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) const {
+std::uint16_t CSession::GetShopItemPriceFactorByItemId(const ITEM_INFO& item) const {
   for (std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
       return it->priceFactor;
@@ -1465,7 +1465,7 @@ std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) co
 
 // OFFSET: 0x00DDFE60
 // FUNCTION: fn_23448
-std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
+std::uint16_t CSession::GetShopItemPriceFactor(const ITEM_INFO& item) const {
   for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       return it->priceFactor;
@@ -1477,10 +1477,10 @@ std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
 
 // OFFSET: 0x00DDFE90
 // FUNCTION: fn_23449
-std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
+std::uint16_t CSession::SumPurchasePriceFactorByItemId() const {
   std::uint16_t total = 0;
   for (std::list<ITEM_INFO>::const_iterator it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
-    total += it->quantity * this->GetItem1718Unknown006CByItemId(*it);
+    total += it->quantity * this->GetShopItemPriceFactorByItemId(*it);
   }
 
   return total;
@@ -1488,10 +1488,10 @@ std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
 
 // OFFSET: 0x00DDFF60
 // FUNCTION: fn_23450
-std::uint16_t CSession::SumItem1720Unknown006C() const {
+std::uint16_t CSession::SumPurchasePriceFactor() const {
   std::uint16_t total = 0;
   for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
-    total += it->quantity * this->GetItem1718Unknown006COf(*it);
+    total += it->quantity * this->GetShopItemPriceFactor(*it);
   }
 
   return total;
@@ -2166,7 +2166,7 @@ void CSession::SetMercSkillLevel(int skillId, int level) {
 
 // OFFSET: 0x00DFFC40
 // FUNCTION: fn_23630
-void CSession::SetItem1768Unknown0014(int index, std::uint32_t value) {
+void CSession::SetMerchantPurchaseSavedPrice(int index, std::uint32_t value) {
   int position = 0;
   for (ITEM_INFO& item : this->merchantPurchaseSavedItems) {
     if (position == index) {
@@ -6396,10 +6396,10 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[403] = KarnosBodyPath1().Text();
   shieldJobNames[404] = KarnosBodyPath2().Text();
   shieldJobNames[405] = AliteaBodyPath1().Text();
-  std::vector<const char*>& unknownNames = reinterpret_cast<std::vector<const char*>&>(this->additionalSpriteNames[0x08]);
-  unknownNames.resize(2, "f");
-  unknownNames[0] = "f";
-  unknownNames[1] = "";
+  std::vector<const char*>& femaleSuffixNames = reinterpret_cast<std::vector<const char*>&>(this->additionalSpriteNames[0x08]);
+  femaleSuffixNames.resize(2, "f");
+  femaleSuffixNames[0] = "f";
+  femaleSuffixNames[1] = "";
   std::vector<const char*>& weaponNames = reinterpret_cast<std::vector<const char*>&>(this->m_weaponNamesBegin);
   weaponNames.resize(105, "");
   for (int index = 0; index < 105; ++index) {
@@ -6930,7 +6930,7 @@ void CSession::LoadSessionTables() {
             [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
 
   session->LoadMapViewParameters();
-  session->InitUnknownMapTables();
+  session->InitSkillEffectIds();
   ImportMessageTable();
   g_forbiddenWords.Load("manner.txt");
   session->LoadXmlTables();

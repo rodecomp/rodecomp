@@ -112,7 +112,7 @@ public:
   void RefreshVisibleEntries();
   void UpdateScrollBar();
   void SetSelectedIndex(int index);
-  void OnLBtnUp(int unknown, int position) override;
+  void OnLBtnUp(int x, int position) override;
   void SelectNextItem(int delta);
   void ShiftSelectedIndex(int value);
   void OnCreate(int width, int height) override;
@@ -129,7 +129,7 @@ public:
   /* 00D8 */ UIScrollBar* m_scrollBar;
   /* 00DC */ std::vector<int> m_items;
   /* 00E8 */ std::vector<MaterialListEntry> m_entries;
-  /* 00F4 */ std::uint32_t unknown_00F4;
+  /* 00F4 */ std::uint32_t padding_00F4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

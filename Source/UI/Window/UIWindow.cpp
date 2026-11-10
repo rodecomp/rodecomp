@@ -3159,8 +3159,8 @@ void UINavigationV4Wnd::SelectRoute(int route) {
   std::string text;
   for (int index = 0; index < count; ++index) {
     NavigationTarget target = g_navigationManager.GetState(g_navigationManager.nodePaths[route][index]);
-    const bool unknownCell = target.x == -1000 && target.y == -1000;
-    if (unknownCell) {
+    const bool cellUnset = target.x == -1000 && target.y == -1000;
+    if (cellUnset) {
       text = this->MobName(static_cast<CNavi_Object*>(target.object));
     } else {
       text = this->ObjectLabel(target.type, target.object);

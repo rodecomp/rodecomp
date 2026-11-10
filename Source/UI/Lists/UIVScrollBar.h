@@ -52,7 +52,7 @@ public:
   /* 00A9 */ unsigned char hidden;
   /* 00AA */ unsigned char transparent;
   /* 00AC */ std::string backgroundName;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ int padding_00C4;
   /* 00C8 */ std::function<void(int)> onChange;
 };
 

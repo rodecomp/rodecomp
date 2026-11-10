@@ -31,10 +31,10 @@ public:
   /* 0420 */ CRagEffect* m_effect;
   /* 0424 */ int m_effectId;
   /* 0428 */ bool m_hasEffect;
-  /* 0429 */ unsigned char unknown_0429[0x03];
+  /* 0429 */ unsigned char padding_0429[0x03];
   /* 042C */ int range;
   /* 0430 */ std::vector<std::uint64_t> m_targets;
-  /* 043C */ int unknown_043C;
+  /* 043C */ int padding_043C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

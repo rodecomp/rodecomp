@@ -30,8 +30,8 @@ public:
   int Load(HANDLE* fontReference, const char* familyName, const char* path);
 
   /* 0004 */ HMODULE m_module;
-  /* 0008 */ int m_unknown8;
-  /* 000C */ int m_unknownC;
+  /* 0008 */ int padding_0008;
+  /* 000C */ int padding_000C;
   /* 0010 */ char m_rootUrl[256];
 };
 

@@ -21,7 +21,7 @@ public:
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ unsigned char alive;
   /* 00D1 */ unsigned char returning;
-  /* 00D2 */ unsigned char unknown_00D2[2];
+  /* 00D2 */ unsigned char padding_00D2[2];
   /* 00D4 */ int processCount;
   /* 00D8 */ float trajectoryTime;
   /* 00DC */ vector3d particlePosition;

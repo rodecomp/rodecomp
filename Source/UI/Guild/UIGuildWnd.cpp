@@ -60,7 +60,7 @@ int g_guildTotalInfoRowHeight = 19;
 int g_guildTotalInfoColumnWidths[4] = {151, 82, 70, 70};
 
 struct GuildTotalInfoEntry {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ int padding_0000;
   /* 0004 */ std::string name;
   /* 001C */ int level;
   /* 0020 */ int memberCount;
@@ -269,7 +269,7 @@ UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd()
 // OFFSET: 0x009539C0
 // FUNCTION: fn_12997
 UIGuildInfoManageWnd::UIGuildInfoManageWnd()
-    : UIGuildWnd(), emblemFiles(), emblemMenuEntries(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
+    : UIGuildWnd(), emblemFiles(), emblemMenuEntries(), padding_00EC(0), padding_00F0(0), m_guildId(g_guildInfo.m_guildId) {
 }
 
 // OFFSET: 0x00953B00
@@ -2070,7 +2070,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetUnknownValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(skill.id, level);
         this->Invalidate();
       }
       return 0;
@@ -2091,7 +2091,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetUnknownValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(skill.id, level);
         this->Invalidate();
       }
       return 0;

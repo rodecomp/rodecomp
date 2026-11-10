@@ -32,14 +32,14 @@ struct RoMapMarker {
 
 struct RoMapTooltipBox {
   // INLINED
-  RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), unknown_0010(1) {
+  RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), padding_0010(1) {
   }
 
   /* 0000 */ int x;
   /* 0004 */ int y;
   /* 0008 */ int width;
   /* 000C */ int height;
-  /* 0010 */ int unknown_0010;
+  /* 0010 */ int padding_0010;
 };
 
 void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& marker);
@@ -107,7 +107,7 @@ private:
   /* 00C0 */ WorldViewRecord* selectedRecord;
   /* 00C4 */ RoMapTooltipBox* hoverTooltip;
   /* 00C8 */ int* previewArea;
-  /* 00CC */ unsigned char unknown_00CC;
+  /* 00CC */ unsigned char padding_00CC;
   /* 00D0 */ int previewTexture;
   /* 00D4 */ unsigned char m_showLabels;
   /* 00D8 */ std::uint32_t m_lastTime;

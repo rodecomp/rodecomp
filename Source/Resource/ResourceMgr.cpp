@@ -43,7 +43,7 @@ __declspec(noinline) bool ResourceNameLess::operator()(const ResourceName* left,
 }
 
 // INLINED
-ResourceMgr::ResourceMgr() : unknown_004C{} {
+ResourceMgr::ResourceMgr() : padding_004C{} {
   InitializeCriticalSection(&this->m_lock);
 }
 

@@ -33,7 +33,7 @@ public:
   /* 0108 */ int chatWindowIndex;
   /* 010C */ int allChecked;
   /* 0110 */ unsigned char useMainChatOptions;
-  /* 0111 */ unsigned char unknown_0111[0x3];
+  /* 0111 */ unsigned char padding_0111[0x3];
   /* 0114 */ UICheckBox* m_allCheckBox;
 };
 

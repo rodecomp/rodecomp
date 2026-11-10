@@ -23,12 +23,12 @@ public:
   /* 00B4 */ UITextViewer* details;
   /* 00B8 */ UITextViewer* blockText;
   /* 00BC */ UICheckBox* block;
-  /* 00C0 */ std::uint32_t unknown_00C0;
-  /* 00C4 */ std::uint32_t unknown_00C4;
-  /* 00C8 */ std::uint32_t unknown_00C8;
-  /* 00CC */ std::uint32_t unknown_00CC;
-  /* 00D0 */ std::uint32_t unknown_00D0;
-  /* 00D4 */ std::uint32_t unknown_00D4;
+  /* 00C0 */ std::uint32_t padding_00C0;
+  /* 00C4 */ std::uint32_t padding_00C4;
+  /* 00C8 */ std::uint32_t padding_00C8;
+  /* 00CC */ std::uint32_t padding_00CC;
+  /* 00D0 */ std::uint32_t padding_00D0;
+  /* 00D4 */ std::uint32_t padding_00D4;
   /* 00D8 */ std::uint32_t characterId;
   /* 00DC */ std::uint32_t accountId;
   /* 00E0 */ std::int16_t job;

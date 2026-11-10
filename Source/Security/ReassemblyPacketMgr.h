@@ -16,9 +16,9 @@ public:
   int Notify(int event);
 
   /* 0000 */ bool m_valid;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  /* 0004 */ int padding_0004;
+  /* 0008 */ int padding_0008;
+  /* 000C */ int padding_000C;
 };
 
 class CReassemblyPacketMgr {
@@ -50,7 +50,7 @@ extern CReassemblyPacketMgr* g_reassemblyPacketMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CReassemblyPacketImpl) == 0x10);
-static_assert(offsetof(CReassemblyPacketImpl, unknown_000C) == 0xC);
+static_assert(offsetof(CReassemblyPacketImpl, padding_000C) == 0xC);
 static_assert(sizeof(CReassemblyPacketMgr) == 1);
 #endif
 

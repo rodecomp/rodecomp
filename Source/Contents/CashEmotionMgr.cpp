@@ -478,8 +478,8 @@ __declspec(noinline) std::pair<int, int> CashEmotionCommand::Get(int index) cons
 
 // OFFSET: 0x00592520
 // FUNCTION: fn_02856
-CashEmotionData::CashEmotionData(int id, int subId, const char* name, int unknown20, int unknown24, int actId, int sprId)
-    : id(id), subId(subId), name(name), actionIndex(unknown20), frameIndex(unknown24), actId(actId), sprId(sprId) {
+CashEmotionData::CashEmotionData(int id, int subId, const char* name, int actionIndex, int frameIndex, int actId, int sprId)
+    : id(id), subId(subId), name(name), actionIndex(actionIndex), frameIndex(frameIndex), actId(actId), sprId(sprId) {
 }
 
 // OFFSET: 0x00592820
@@ -502,7 +502,7 @@ bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
 // OFFSET: 0x00596430
 // FUNCTION: fn_02915
 CCashEmotionMgr::CCashEmotionMgr()
-    : m_enabled(true), unknown_0005{}, m_action(nullptr), basePackId(0), packs{}, m_emotionsByPack{}, emotionOrder{}, m_packNames{}, actIds{},
+    : m_enabled(true), padding_0005{}, m_action(nullptr), basePackId(0), packs{}, m_emotionsByPack{}, emotionOrder{}, m_packNames{}, actIds{},
       m_commands{}, packOrder{} {
 }
 
@@ -863,7 +863,7 @@ const char* CCashEmotionMgr::GetPackTitle(int packId) {
 
 // OFFSET: 0x0059A110
 // FUNCTION: fn_02954
-int CCashEmotionMgr::GetPackUnknown18(int packId) {
+int CCashEmotionMgr::GetPackPrice(int packId) {
   auto it = this->packs.find(packId);
   if (this->packs.end() == it) {
     return -1;
@@ -1029,7 +1029,7 @@ std::vector<int> CCashEmotionMgr::SortUnownedPacks(const char* filter) {
 
 // OFFSET: 0x0059AD40
 // FUNCTION: fn_02965
-int CCashEmotionMgr::GetPackUnknown24(int packId) {
+int CCashEmotionMgr::GetPackPeriod(int packId) {
   auto it = this->packs.find(packId);
   if (this->packs.end() == it) {
     return 0;
@@ -1128,18 +1128,18 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
 
 // OFFSET: 0x0059B8F0
 // FUNCTION: fn_02970
-bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, int unknown20, int unknown24, const char* actFile, const char* sprFile) {
+bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, int actionIndex, int frameIndex, const char* actFile, const char* sprFile) {
   const int actId = this->GetActFilePath(actFile, true);
   const int sprId = this->GetSprFilePath(sprFile, true);
 
   bool inserted = false;
   auto it = this->m_emotionsByPack.find(packId);
   if (this->m_emotionsByPack.end() != it) {
-    return it->second.try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second;
+    return it->second.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId).second;
   }
 
   CashEmotionTable table;
-  if (table.try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second == true) {
+  if (table.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId).second == true) {
     inserted = this->m_emotionsByPack.emplace(packId, table).second;
   }
 
@@ -1157,7 +1157,7 @@ static void AddSearchKey(std::unordered_map<std::string, std::pair<int, int>>& i
 
 // OFFSET: 0x0059BC30
 // FUNCTION: fn_02971
-void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int unknown20, int unknown24, const char* actFile, const char* sprFile) {
+void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile) {
   const char* packName = this->GetPackTitle(packId);
   if (!packName) {
     return;
@@ -1169,7 +1169,7 @@ void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int u
   }
 
   std::string name = FormatOwnedString("%s_%s", baseName, packName);
-  this->AddEmotion(packId, emotionId, name.c_str(), unknown20, unknown24, actFile, sprFile);
+  this->AddEmotion(packId, emotionId, name.c_str(), actionIndex, frameIndex, actFile, sprFile);
 
   AddSearchKey(this->m_searchIndex, name.c_str(), packId, emotionId);
 
@@ -1433,7 +1433,7 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
 
 // OFFSET: 0x0059D040
 // FUNCTION: fn_02984
-void CCashEmotionMgr::Unknown59D040(int, int) {
+void CCashEmotionMgr::EmptyHandler59D040(int, int) {
 }
 
 // OFFSET: 0x0059D090
@@ -1511,14 +1511,14 @@ int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
   const int packId = luaL_checkinteger(state, 1);
   const int emotionId = luaL_checkinteger(state, 2);
   const std::string key = FromUtf8(luaL_checkstring(state, 3), g_textCodePage);
-  const int unknown20 = luaL_checkinteger(state, 4);
-  const int unknown24 = luaL_checkinteger(state, 5);
+  const int actionIndex = luaL_checkinteger(state, 4);
+  const int frameIndex = luaL_checkinteger(state, 5);
   const std::string actFile = FromUtf8(luaL_checkstring(state, 6), g_textCodePage);
   const std::string sprFile = FromUtf8(luaL_checkstring(state, 7), g_textCodePage);
 
   const char* result;
   if (key.empty()) {
-    g_cashEmotionMgr->AddEmotion(packId, emotionId, "", unknown20, unknown24, actFile.c_str(), sprFile.c_str());
+    g_cashEmotionMgr->AddEmotion(packId, emotionId, "", actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
     result = nullptr;
   } else {
     const char* name = g_simpleStringMgr->GetString(key.c_str());
@@ -1527,7 +1527,7 @@ int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
     }
 
     result = nullptr;
-    if (g_cashEmotionMgr->AddEmotion(packId, emotionId, name, unknown20, unknown24, actFile.c_str(), sprFile.c_str())) {
+    if (g_cashEmotionMgr->AddEmotion(packId, emotionId, name, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str())) {
       result = name;
     }
   }
@@ -1582,12 +1582,12 @@ int CCashEmotionMgr::InsertEmotionMsgListTableForCustom(lua_State* state) {
 int CCashEmotionMgr::InsertEmotionVarientListTable(lua_State* state) {
   const int packId = luaL_checkinteger(state, 1);
   const int emotionId = luaL_checkinteger(state, 2);
-  const int unknown20 = luaL_checkinteger(state, 3);
-  const int unknown24 = luaL_checkinteger(state, 4);
+  const int actionIndex = luaL_checkinteger(state, 3);
+  const int frameIndex = luaL_checkinteger(state, 4);
   const std::string actFile = FromUtf8(luaL_checkstring(state, 5), g_textCodePage);
   const std::string sprFile = FromUtf8(luaL_checkstring(state, 6), g_textCodePage);
 
-  g_cashEmotionMgr->InsertEmotion(packId, emotionId, unknown20, unknown24, actFile.c_str(), sprFile.c_str());
+  g_cashEmotionMgr->InsertEmotion(packId, emotionId, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
   return 1;
 }
 
@@ -1628,8 +1628,8 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   const char* name = g_simpleStringMgr->GetString(title.c_str());
 
   const int saleType = luaL_checkinteger(state, 3);
-  const int unknown18 = luaL_checkinteger(state, 4);
-  if (!(saleType == 0 && unknown18 == 0) && !(saleType == 1 && unknown18 != 0)) {
+  const int price = luaL_checkinteger(state, 4);
+  if (!(saleType == 0 && price == 0) && !(saleType == 1 && price != 0)) {
     g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_SALE_TYPE", packId);
     return 1;
   }
@@ -1660,14 +1660,14 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   }
 
   const int useType = luaL_checkinteger(state, 8);
-  const int unknown24 = luaL_checkinteger(state, 9);
-  if (!(useType == 0 && unknown24 == 0) && !(useType == 1 && unknown24 != 0)) {
+  const int period = luaL_checkinteger(state, 9);
+  if (!(useType == 0 && period == 0) && !(useType == 1 && period != 0)) {
     g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_USE_TIME", packId);
     return 1;
   }
 
   const char limited = static_cast<char>(luaL_checkinteger(state, 10));
-  if (g_cashEmotionMgr->packs.try_emplace(packId, name, unknown18, startTime, endTime, unknown24, limited).second == true) {
+  if (g_cashEmotionMgr->packs.try_emplace(packId, name, price, startTime, endTime, period, limited).second == true) {
     g_cashEmotionMgr->packOrder.push_back(packId);
   }
 
@@ -1931,7 +1931,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
     } else {
       pack->SetTitle(nullptr);
     }
-    pack->m_limited = g_cashEmotionMgr->GetPackUnknown24(packId) > 0;
+    pack->m_limited = g_cashEmotionMgr->GetPackPeriod(packId) > 0;
     pack->Move(9, y);
     y += height;
     this->AddChild(pack);
@@ -2146,7 +2146,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
     } else {
       pack->SetTitle(nullptr);
     }
-    pack->m_limited = g_cashEmotionMgr->GetPackUnknown24(packId) > 0;
+    pack->m_limited = g_cashEmotionMgr->GetPackPeriod(packId) > 0;
     pack->Move(9, y);
     y += height;
     this->AddChild(pack);
@@ -2409,7 +2409,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
     return 0;
   }
 
-  const int period = g_cashEmotionMgr->GetPackUnknown24(packId);
+  const int period = g_cashEmotionMgr->GetPackPeriod(packId);
   if (period < 1) {
     this->m_period->Show(0);
   } else {
@@ -2519,7 +2519,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
       }
 
-      const int price = g_cashEmotionMgr->GetPackUnknown18(packId);
+      const int price = g_cashEmotionMgr->GetPackPrice(packId);
       if (price < 0) {
         return 0;
       }
@@ -2552,7 +2552,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         packet.id = 0xBEC;
         packet.packId = g_cashEmotionMgr->selectedPackId;
         packet.itemId = g_cashEmotionMgr->purchaseItemId;
-        packet.price = g_cashEmotionMgr->GetPackUnknown18(packet.packId);
+        packet.price = g_cashEmotionMgr->GetPackPrice(packet.packId);
         GetRagConnection().Send(sizeof(packet), &packet);
       }
       return 0;
@@ -2999,7 +2999,7 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
 // OFFSET: 0x007CA100
 // FUNCTION: fn_09443
 std::string UICashEmotionPack::GetPriceText(int packId) {
-  int price = g_cashEmotionMgr->GetPackUnknown18(packId);
+  int price = g_cashEmotionMgr->GetPackPrice(packId);
   if (price > 0) {
     const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
     if (format) {

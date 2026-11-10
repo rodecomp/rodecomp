@@ -16,9 +16,9 @@ public:
   void LoadNotice();
 
   /* 00B4 */ UIStaticText* m_texts[19];
-  /* 0100 */ unsigned char unknown_0100[0x08];
+  /* 0100 */ unsigned char padding_0100[0x08];
   /* 0108 */ int lineCount;
-  /* 010C */ int unknown_010C;
+  /* 010C */ int padding_010C;
   /* 0110 */ const char* m_patchFile;
   /* 0114 */ int m_noticeCount;
   /* 0118 */ int m_index;

@@ -916,7 +916,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->memberRoles[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
     int color = 0;
     if (b != 0) {
-      if (g_serviceOptions.Get(11) && g_soundMgr->unknown != 0) {
+      if (g_serviceOptions.Get(11) && g_soundMgr->tingOnly != 0) {
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
     } else {
@@ -1135,10 +1135,10 @@ UILoginOTPWnd::UILoginOTPWnd()
 UILoginWnd::UILoginWnd() : UIFrameWnd(0), savedAccounts(), loginTypeCombo(0), loginExtra("G000") {
   this->idEdit = nullptr;
   this->passwordEdit = nullptr;
-  this->unknown_00C4 = 0;
+  this->padding_00C4 = 0;
   this->saveId = 0;
-  this->unknown_00CC = 1;
-  this->unknown_00D0 = 0;
-  this->unknown_00D4 = 0;
+  this->padding_00CC = 1;
+  this->padding_00D0 = 0;
+  this->padding_00D4 = 0;
   this->backgroundWindow = nullptr;
 }

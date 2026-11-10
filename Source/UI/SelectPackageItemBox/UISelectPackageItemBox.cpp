@@ -43,8 +43,8 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
     : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A686A0
@@ -52,8 +52,8 @@ CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx()
     : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), unknown_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A68860

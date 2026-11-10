@@ -123,7 +123,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_BITE_SCAR:
     offset += 5;
     break;
-  case EF_UNK_2006:
+  case EF_KVASIRSONATA:
     offset += 5;
     break;
   case EF_D_TAIL:
@@ -235,7 +235,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_ARBITRIUM_HIT:
     offset -= 6;
     break;
-  case EF_UNK_1830:
+  case EF_ABYSS_DAGGER_HIT_1830:
     offset -= 6;
     break;
   case EF_DEEP_BLIND_TRAP:
@@ -253,7 +253,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_HAWK_BOOMERANG_HIT:
     offset -= 6;
     break;
-  case EF_UNK_2050:
+  case EF_ROSEBLOSSOM_SHOT:
     offset -= 6;
     break;
   case EF_TERRA_DRIVE_HIT:
@@ -262,7 +262,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_ABYSS_DAGGER_HIT_3:
     offset -= 6;
     break;
-  case EF_UNK_2160:
+  case EF_OVERSLASH_HIT:
     offset -= 6;
     break;
   case EF_WE_ONEFOREVER:
@@ -313,7 +313,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_SOLID_TRAP_HIT:
     offset -= 4;
     break;
-  case EF_UNK_1898:
+  case EF_IMPACT_CRATER_HIT:
     offset -= 4;
     break;
   case EF_HAWK_RUSH:
@@ -334,7 +334,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_DIAMOND_STORM_BOTTOM:
     offset -= 4;
     break;
-  case EF_UNK_2048:
+  case EF_ROSEBLOSSOM_HIT:
     offset -= 4;
     break;
   case EF_FRENZY_SHOT_HIT:
@@ -396,13 +396,13 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_TETRA_VORTEX_CAST:
     offset -= 2;
     break;
-  case EF_UNK_1863:
+  case EF_NEW_ENCHANTING_SHADOW_BOTTOM:
     offset -= 2;
     break;
   case EF_SWIFT_TRAP_CAST:
     offset -= 2;
     break;
-  case EF_UNK_1953:
+  case EF_SHADOW_STAB:
     offset -= 2;
     break;
   case EF_SPELL_ENCHANTING:
@@ -444,31 +444,31 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_NEW_AROMAOIL_BOTTOM:
   case EF_NEW_BATHFOAM:
   case EF_NEW_BATHFOAM_BOTTOM:
-  case EF_UNK_1670:
-  case EF_UNK_1671:
-  case EF_UNK_1672:
-  case EF_UNK_1673:
-  case EF_UNK_1674:
-  case EF_UNK_1710:
-  case EF_UNK_1711:
-  case EF_UNK_1712:
-  case EF_UNK_1713:
-  case EF_UNK_1714:
-  case EF_UNK_1715:
-  case EF_UNK_1716:
-  case EF_UNK_1717:
-  case EF_UNK_1718:
-  case EF_UNK_1719:
-  case EF_UNK_1720:
-  case EF_UNK_1721:
+  case EF_STORMSLASH_1:
+  case EF_STORMSLASH_2:
+  case EF_STORMSLASH_3:
+  case EF_STORMSLASH_4:
+  case EF_STORMSLASH_5:
+  case EF_SERVANT_SIGN:
+  case EF_SERVANT_SIGN_DOWN:
+  case EF_SERVANT_SIGN_DOWN_BOTTOM:
+  case EF_SERVANT_PHANTOM_DOWN:
+  case EF_SERVANT_PHANTOM_HIT:
+  case EF_SERVANT_PHANTOM_HIT_BOTTOM:
+  case EF_SERVANT_PHANTOM_SUB:
+  case EF_SERVANT_PHANTOM_SUB_BOTTOM:
+  case EF_SERVANT_DEMOLITION_COLLECT:
+  case EF_SERVANT_DEMOLITION_HIT:
+  case EF_SERVANT_DEMOLITION_LEFTDOWN:
+  case EF_SERVANT_DEMOLITION_RIGHTDOWN:
   case EF_DRAGONIC_AURA:
   case EF_DRAGONIC_AURA_BOTTOM:
   case EF_DRAGONIC_AURA_HIT:
   case EF_DRAGONIC_AURA_HIT_BOTTOM:
   case EF_DRAGONIC_AURA_BUFF:
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
-  case EF_UNK_1728:
-  case EF_UNK_1729:
+  case EF_MADNESS_CRUSHER:
+  case EF_MADNESS_CRUSHER_BOTTOM:
   case EF_NEW_AUTOSHADOWSPELL:
   case EF_NEW_AUTOSHADOWSPELL_BOTTOM:
   case EF_DESTRUCTIVE_HURRICANE:
@@ -519,8 +519,8 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_STRATUM_TREMOR_CAST:
   case EF_STRATUM_TREMOR_CAST_BOTTOM:
   case EF_STRATUM_TREMOR_HIT:
-  case EF_UNK_1895:
-  case EF_UNK_1896:
+  case EF_IMPACT_CRATER:
+  case EF_IMPACT_CRATER_BOTTOM:
   case EF_WIND_SIGN:
   case EF_WIND_SIGN_LOOP:
   case EF_HAWK_BOOMERANG_CAST:
@@ -565,12 +565,12 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_SOUND_BLEND_CAST:
   case EF_SOUND_BLEND_CAST_BOTTOM:
   case EF_SOUND_BLEND_RED:
-  case EF_UNK_2065:
-  case EF_UNK_2066:
-  case EF_UNK_2067:
-  case EF_UNK_2068:
-  case EF_UNK_2069:
-  case EF_UNK_2070:
+  case EF_JAWAII_SERENADE:
+  case EF_JAWAII_SERENADE_CAST:
+  case EF_JAWAII_SERENADE_CAST_BOTTOM:
+  case EF_PRONMARCH:
+  case EF_PRONMARCH_CAST:
+  case EF_PRONMARCH_CAST_BOTTOM:
   case EF_NIFLHEIM:
   case EF_NIFLHEIM_CAST:
   case EF_ABYSS_STRIKE_CAST:
@@ -586,16 +586,16 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_TERREMOTUS_CAST_BOTTOM:
   case EF_TERREMOTUS_HIT:
   case EF_TERREMOTUS_PROTECT:
-  case EF_UNK_2116:
-  case EF_UNK_2117:
-  case EF_UNK_2118:
-  case EF_UNK_2119:
-  case EF_UNK_2120:
-  case EF_UNK_2121:
+  case EF_GEF_NOCTURN:
+  case EF_GEF_NOCTURN_CAST:
+  case EF_GEF_NOCTURN_CAST_BOTTOM:
+  case EF_ROKI_CAPRICCIO:
+  case EF_ROKI_CAPRICCIO_CAST:
+  case EF_ROKI_CAPRICCIO_CAST_BOTTOM:
   case EF_MUSICAL_INTERLUDE:
   case EF_MUSICAL_INTERLUDE_CAST:
-  case EF_UNK_2124:
-  case EF_UNK_2125:
+  case EF_AIN_RHAPSODY:
+  case EF_AIN_RHAPSODY_CAST:
   case EF_TERRA_DRIVE:
   case EF_TERRA_DRIVE_BOTTOM:
   case EF_TERRA_DRIVE_CAST:
@@ -616,46 +616,46 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_ELEMENTAL_BUSTER_WIND:
   case EF_ELEMENTAL_BUSTER_WIND_BOTTOM:
   case EF_ELEMENTAL_BUSTER_WIND_HIT:
-  case EF_UNK_2157:
-  case EF_UNK_2158:
-  case EF_UNK_2159:
+  case EF_OVERSLASH:
+  case EF_OVERSLASH_BOTTOM:
+  case EF_OVERSLASH_CAST:
   case EF_ADVANCED_PROTECTION:
   case EF_ADVANCED_PROTECTION_BOTTOM:
   case EF_ADVANCED_PROTECTION_CAST:
   case EF_ADVANCED_PROTECTION_CAST_BOTTOM:
-  case EF_UNK_2166:
-  case EF_UNK_2167:
-  case EF_UNK_2168:
-  case EF_UNK_2169:
-  case EF_UNK_2170:
-  case EF_UNK_2171:
-  case EF_UNK_2172:
-  case EF_UNK_2173:
-  case EF_UNK_2174:
-  case EF_UNK_2175:
-  case EF_UNK_2176:
-  case EF_UNK_2177:
-  case EF_UNK_2178:
-  case EF_UNK_2179:
-  case EF_UNK_2180:
-  case EF_UNK_2181:
-  case EF_UNK_2182:
+  case EF_CROSS_RAIN_BOTTOM:
+  case EF_CROSS_RAIN_CAST:
+  case EF_CROSS_RAIN_CAST_BOTTOM:
+  case EF_GUARD_STANCE:
+  case EF_GUARD_STANCE_CAST:
+  case EF_GUARD_STANCE_CAST_BOTTOM:
+  case EF_ATTACK_STANCE:
+  case EF_ATTACK_STANCE_CAST:
+  case EF_ATTACK_STANCE_CAST_BOTTOM:
+  case EF_GRAND_JUDGEMENT:
+  case EF_GRAND_JUDGEMENT_BOTTOM:
+  case EF_GRAND_JUDGEMENT_BUFF:
+  case EF_GRAND_JUDGEMENT_CAST:
+  case EF_GRAND_JUDGEMENT_CAST_BOTTOM:
+  case EF_HOLY_SHIELD_CAST:
+  case EF_HOLY_SHIELD:
+  case EF_HOLY_SHIELD_LOOP:
   case EF_THE_W_PROTECTION:
   case EF_THE_W_PROTECTION_CAST:
-  case EF_UNK_2188:
-  case EF_UNK_2189:
-  case EF_UNK_2190:
-  case EF_UNK_2191:
-  case EF_UNK_2192:
-  case EF_UNK_2193:
-  case EF_UNK_2194:
-  case EF_UNK_2196:
-  case EF_UNK_2197:
-  case EF_UNK_2198:
-  case EF_UNK_2199:
-  case EF_UNK_2200:
-  case EF_UNK_2201:
-  case EF_UNK_2202:
+  case EF_GUARDIANSHIELD:
+  case EF_GUARDIANSHIELD_BOTTOM:
+  case EF_GUARDIANSHIELD_SUB:
+  case EF_JUDGEMENT_CROSS:
+  case EF_JUDGEMENT_CROSS_BOTTOM:
+  case EF_JUDGEMENT_CROSS_CAST:
+  case EF_JUDGEMENT_CROSS_CAST_BOTTOM:
+  case EF_REBOUND_SHIELD:
+  case EF_REBOUND_SHIELD_BOTTOM:
+  case EF_REBOUND_SHIELD_CAST:
+  case EF_REBOUND_SHIELD_CAST_BOTTOM:
+  case EF_ULTIMATESACRIFICE:
+  case EF_ULTIMATESACRIFICE_BOTTOM:
+  case EF_ULTIMATESACRIFICE_SHINE:
   case EF_HELLTREE_CAST:
   case EF_HELLTREE_CAST_BOTTOM:
   case EF_HELLTREE_DUSTY:
@@ -688,7 +688,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_STATE_FROSTBITE_FINISH:
   case EF_STATE_CRYSTALLIZATION:
   case EF_STATE_DEADLYPOISON:
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
     offset -= 2;
     break;
   case EF_NEW_ARMSCANNON_01_UP:
@@ -702,10 +702,10 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_EFFLIGO_HIT:
   case EF_FLAME_TRAP:
   case EF_FLAME_TRAP_HIT:
-  case EF_UNK_1950:
-  case EF_UNK_1952:
-  case EF_UNK_1954:
-  case EF_UNK_1955:
+  case EF_CRESCIVEBOLT_CAST:
+  case EF_CRESCIVEBOLT_HIT:
+  case EF_ETERNAL_SLASH_HIT:
+  case EF_SHADOW_STAB_HIT2:
   case EF_SERPENS_BOTTOM:
   case EF_SERPENS_CAST_BOTTOM:
   case EF_ETERNAL_SLASH_HIT_3:
@@ -805,9 +805,9 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_COMPETENTIA_LOOP_BOTTOM:
   case EF_SINCERE_FAITH:
   case EF_SINCERE_FAITH_BOTTOM:
-  case EF_UNK_2000:
-  case EF_UNK_2001:
-  case EF_UNK_2002:
+  case EF_MYSTICSYMPHONY:
+  case EF_MYSTICSYMPHONY_CAST:
+  case EF_MYSTICSYMPHONY_NOTE:
   case EF_ABYSS_SQUARE:
   case EF_ABYSS_SQUARE_BOTTOM:
     --offset;
@@ -818,7 +818,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_CRYSTAL_IMPACT_BUFF:
     offset += 4;
     break;
-  case EF_UNK_1862:
+  case EF_NEW_ENCHANTING_SHADOW:
     --offset;
     break;
   case EF_BENEDICTUM:
@@ -987,11 +987,11 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_NEW_UNLIMIT:
   case EF_NEW_UNLIMIT_BOTTOM:
   case EF_NEW_EPICLESIS:
-  case EF_UNK_1670:
-  case EF_UNK_1671:
-  case EF_UNK_1672:
-  case EF_UNK_1673:
-  case EF_UNK_1674:
+  case EF_STORMSLASH_1:
+  case EF_STORMSLASH_2:
+  case EF_STORMSLASH_3:
+  case EF_STORMSLASH_4:
+  case EF_STORMSLASH_5:
   case EF_NEW_POWERSWING_01:
   case EF_NEW_POWERSWING_05:
   case EF_NEW_POWERSWING_07:
@@ -1001,26 +1001,26 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_NEW_VULCANARM_BOTTOM:
   case EF_NEW_VULCANARM_SHOTHOLE:
   case EF_NEW_EARTHDRIVE_TARGET:
-  case EF_UNK_1710:
-  case EF_UNK_1711:
-  case EF_UNK_1712:
-  case EF_UNK_1713:
-  case EF_UNK_1714:
-  case EF_UNK_1715:
-  case EF_UNK_1716:
-  case EF_UNK_1717:
-  case EF_UNK_1718:
-  case EF_UNK_1719:
-  case EF_UNK_1720:
-  case EF_UNK_1721:
+  case EF_SERVANT_SIGN:
+  case EF_SERVANT_SIGN_DOWN:
+  case EF_SERVANT_SIGN_DOWN_BOTTOM:
+  case EF_SERVANT_PHANTOM_DOWN:
+  case EF_SERVANT_PHANTOM_HIT:
+  case EF_SERVANT_PHANTOM_HIT_BOTTOM:
+  case EF_SERVANT_PHANTOM_SUB:
+  case EF_SERVANT_PHANTOM_SUB_BOTTOM:
+  case EF_SERVANT_DEMOLITION_COLLECT:
+  case EF_SERVANT_DEMOLITION_HIT:
+  case EF_SERVANT_DEMOLITION_LEFTDOWN:
+  case EF_SERVANT_DEMOLITION_RIGHTDOWN:
   case EF_DRAGONIC_AURA:
   case EF_DRAGONIC_AURA_BOTTOM:
   case EF_DRAGONIC_AURA_HIT:
   case EF_DRAGONIC_AURA_HIT_BOTTOM:
   case EF_DRAGONIC_AURA_BUFF:
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
-  case EF_UNK_1728:
-  case EF_UNK_1729:
+  case EF_MADNESS_CRUSHER:
+  case EF_MADNESS_CRUSHER_BOTTOM:
   case EF_NEW_AUTOSHADOWSPELL:
   case EF_NEW_AUTOSHADOWSPELL_BOTTOM:
   case EF_DESTRUCTIVE_HURRICANE:
@@ -1041,8 +1041,8 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_ROCKDOWN_CAST:
   case EF_ROCKDOWN_CAST_BOTTOM:
   case EF_ROCKDOWN_HIT:
-  case EF_UNK_1750:
-  case EF_UNK_1751:
+  case EF_VIGOR_CAST:
+  case EF_VIGOR_BUFF:
   case EF_RAIN_OF_CRYSTAL:
   case EF_RAIN_OF_CRYSTAL_BOTTOM:
   case EF_CRIMSON_ARROW_CAST:
@@ -1103,9 +1103,9 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_ARBITRIUM:
   case EF_ARBITRIUM_BOTTOM:
   case EF_ARBITRIUM_HIT:
-  case EF_UNK_1827:
-  case EF_UNK_1828:
-  case EF_UNK_1830:
+  case EF_DANCING_KNIFE_CAST:
+  case EF_DANCING_KNIFE_CAST_BOTTOM:
+  case EF_ABYSS_DAGGER_HIT_1830:
   case EF_NEW_REPARATIO_CAST:
   case EF_NEW_REPARATIO_CAST_BOTTOM:
   case EF_NEW_REPARATIO:
@@ -1131,8 +1131,8 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_CRYSTAL_IMPACT_BUFF:
   case EF_RELIGIO:
   case EF_RELIGIO_CAST:
-  case EF_UNK_1862:
-  case EF_UNK_1863:
+  case EF_NEW_ENCHANTING_SHADOW:
+  case EF_NEW_ENCHANTING_SHADOW_BOTTOM:
   case EF_FATAL_SHADOW_CROW:
   case EF_FATAL_SHADOW_CROW_BOTTOM:
   case EF_FATAL_SHADOW_CROW_HIT:
@@ -1157,9 +1157,9 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_STRATUM_TREMOR_HIT:
   case EF_STRATUM_TREMOR:
   case EF_STRATUM_TREMOR_BOTTOM:
-  case EF_UNK_1895:
-  case EF_UNK_1896:
-  case EF_UNK_1898:
+  case EF_IMPACT_CRATER:
+  case EF_IMPACT_CRATER_BOTTOM:
+  case EF_IMPACT_CRATER_HIT:
   case EF_WIND_SIGN:
   case EF_WIND_SIGN_LOOP:
   case EF_ABR_MOTHER_CAST:
@@ -1199,11 +1199,11 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_NEW_AXE_STOMP_08:
   case EF_NEW_AXE_STOMP_09:
   case EF_NEW_AXE_STOMP_11:
-  case EF_UNK_1950:
-  case EF_UNK_1952:
-  case EF_UNK_1953:
-  case EF_UNK_1954:
-  case EF_UNK_1955:
+  case EF_CRESCIVEBOLT_CAST:
+  case EF_CRESCIVEBOLT_HIT:
+  case EF_SHADOW_STAB:
+  case EF_ETERNAL_SLASH_HIT:
+  case EF_SHADOW_STAB_HIT2:
   case EF_SINCERE_FAITH:
   case EF_SINCERE_FAITH_BOTTOM:
   case EF_ABYSS_DAGGER:
@@ -1236,15 +1236,15 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_EXPLOSION_BLASTER_BOTTOM:
   case EF_EXPLOSION_BLASTER_HIT:
   case EF_FIRM_FAITH:
-  case EF_UNK_2000:
-  case EF_UNK_2001:
-  case EF_UNK_2002:
+  case EF_MYSTICSYMPHONY:
+  case EF_MYSTICSYMPHONY_CAST:
+  case EF_MYSTICSYMPHONY_NOTE:
   case EF_ACTIVITY_BURN:
   case EF_ACTIVITY_BURN_CAST:
   case EF_ACTIVITY_BURN_CAST_BOTTOM:
-  case EF_UNK_2006:
-  case EF_UNK_2007:
-  case EF_UNK_2008:
+  case EF_KVASIRSONATA:
+  case EF_KVASIRSONATA_CAST:
+  case EF_KVASIRSONATA_CAST_BOTTOM:
   case EF_SERPENS_BOTTOM:
   case EF_SERPENS_CAST:
   case EF_SERPENS_CAST_BOTTOM:
@@ -1281,11 +1281,11 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_LIGHTNING_LAND_CAST:
   case EF_LIGHTNING_LAND_CAST_BOTTOM:
   case EF_LIGHTNING_LAND_HIT:
-  case EF_UNK_2046:
-  case EF_UNK_2047:
-  case EF_UNK_2048:
-  case EF_UNK_2049:
-  case EF_UNK_2050:
+  case EF_ROSEBLOSSOM_CAST:
+  case EF_ROSEBLOSSOM_CAST_BOTTOM:
+  case EF_ROSEBLOSSOM_HIT:
+  case EF_ROSEBLOSSOM_ROSE:
+  case EF_ROSEBLOSSOM_SHOT:
   case EF_FIRST_BRAND:
   case EF_FIRST_BRAND_AURA:
   case EF_FIRST_BRAND_HIT:
@@ -1300,15 +1300,15 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_SOUND_BLEND_CAST_BOTTOM:
   case EF_SOUND_BLEND_RED:
   case EF_METALLIC_FURY:
-  case EF_UNK_2065:
-  case EF_UNK_2066:
-  case EF_UNK_2067:
-  case EF_UNK_2068:
-  case EF_UNK_2069:
-  case EF_UNK_2070:
-  case EF_UNK_2071:
-  case EF_UNK_2072:
-  case EF_UNK_2073:
+  case EF_JAWAII_SERENADE:
+  case EF_JAWAII_SERENADE_CAST:
+  case EF_JAWAII_SERENADE_CAST_BOTTOM:
+  case EF_PRONMARCH:
+  case EF_PRONMARCH_CAST:
+  case EF_PRONMARCH_CAST_BOTTOM:
+  case EF_RHYTHMSHOOTING_CAST:
+  case EF_RHYTHMSHOOTING_CAST_BOTTOM:
+  case EF_RHYTHMSHOOTING_HIT:
   case EF_NIFLHEIM:
   case EF_NIFLHEIM_CAST:
   case EF_SECOND_FAITH:
@@ -1345,16 +1345,16 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_THIRD_PUNISH:
   case EF_THIRD_PUNISH_BOTTOM:
   case EF_FRENZY_SHOT_HIT:
-  case EF_UNK_2116:
-  case EF_UNK_2117:
-  case EF_UNK_2118:
-  case EF_UNK_2119:
-  case EF_UNK_2120:
-  case EF_UNK_2121:
+  case EF_GEF_NOCTURN:
+  case EF_GEF_NOCTURN_CAST:
+  case EF_GEF_NOCTURN_CAST_BOTTOM:
+  case EF_ROKI_CAPRICCIO:
+  case EF_ROKI_CAPRICCIO_CAST:
+  case EF_ROKI_CAPRICCIO_CAST_BOTTOM:
   case EF_MUSICAL_INTERLUDE:
   case EF_MUSICAL_INTERLUDE_CAST:
-  case EF_UNK_2124:
-  case EF_UNK_2125:
+  case EF_AIN_RHAPSODY:
+  case EF_AIN_RHAPSODY_CAST:
   case EF_ABYSS_SLAYER:
   case EF_ABYSS_SLAYER_CAST:
   case EF_ABYSS_SLAYER_CAST_BOTTOM:
@@ -1385,49 +1385,49 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_ELEMENTAL_BUSTER_WIND_HIT:
   case EF_UNLUCKY_RUSH_CAST:
   case EF_ABYSS_DAGGER_HIT_3:
-  case EF_UNK_2157:
-  case EF_UNK_2158:
-  case EF_UNK_2159:
-  case EF_UNK_2160:
+  case EF_OVERSLASH:
+  case EF_OVERSLASH_BOTTOM:
+  case EF_OVERSLASH_CAST:
+  case EF_OVERSLASH_HIT:
   case EF_ADVANCED_PROTECTION:
   case EF_ADVANCED_PROTECTION_BOTTOM:
   case EF_ADVANCED_PROTECTION_CAST:
   case EF_ADVANCED_PROTECTION_CAST_BOTTOM:
-  case EF_UNK_2166:
-  case EF_UNK_2167:
-  case EF_UNK_2168:
-  case EF_UNK_2169:
-  case EF_UNK_2170:
-  case EF_UNK_2171:
-  case EF_UNK_2172:
-  case EF_UNK_2173:
-  case EF_UNK_2174:
-  case EF_UNK_2175:
-  case EF_UNK_2176:
-  case EF_UNK_2177:
-  case EF_UNK_2178:
-  case EF_UNK_2179:
-  case EF_UNK_2180:
-  case EF_UNK_2181:
-  case EF_UNK_2182:
+  case EF_CROSS_RAIN_BOTTOM:
+  case EF_CROSS_RAIN_CAST:
+  case EF_CROSS_RAIN_CAST_BOTTOM:
+  case EF_GUARD_STANCE:
+  case EF_GUARD_STANCE_CAST:
+  case EF_GUARD_STANCE_CAST_BOTTOM:
+  case EF_ATTACK_STANCE:
+  case EF_ATTACK_STANCE_CAST:
+  case EF_ATTACK_STANCE_CAST_BOTTOM:
+  case EF_GRAND_JUDGEMENT:
+  case EF_GRAND_JUDGEMENT_BOTTOM:
+  case EF_GRAND_JUDGEMENT_BUFF:
+  case EF_GRAND_JUDGEMENT_CAST:
+  case EF_GRAND_JUDGEMENT_CAST_BOTTOM:
+  case EF_HOLY_SHIELD_CAST:
+  case EF_HOLY_SHIELD:
+  case EF_HOLY_SHIELD_LOOP:
   case EF_SHIELD_SHOOTING_CAST:
   case EF_SHIELD_SHOOTING_HIT:
   case EF_THE_W_PROTECTION:
   case EF_THE_W_PROTECTION_CAST:
-  case EF_UNK_2188:
-  case EF_UNK_2189:
-  case EF_UNK_2190:
-  case EF_UNK_2191:
-  case EF_UNK_2192:
-  case EF_UNK_2193:
-  case EF_UNK_2194:
-  case EF_UNK_2196:
-  case EF_UNK_2197:
-  case EF_UNK_2198:
-  case EF_UNK_2199:
-  case EF_UNK_2200:
-  case EF_UNK_2201:
-  case EF_UNK_2202:
+  case EF_GUARDIANSHIELD:
+  case EF_GUARDIANSHIELD_BOTTOM:
+  case EF_GUARDIANSHIELD_SUB:
+  case EF_JUDGEMENT_CROSS:
+  case EF_JUDGEMENT_CROSS_BOTTOM:
+  case EF_JUDGEMENT_CROSS_CAST:
+  case EF_JUDGEMENT_CROSS_CAST_BOTTOM:
+  case EF_REBOUND_SHIELD:
+  case EF_REBOUND_SHIELD_BOTTOM:
+  case EF_REBOUND_SHIELD_CAST:
+  case EF_REBOUND_SHIELD_CAST_BOTTOM:
+  case EF_ULTIMATESACRIFICE:
+  case EF_ULTIMATESACRIFICE_BOTTOM:
+  case EF_ULTIMATESACRIFICE_SHINE:
   case EF_ACIDIFIED_ZONE_FIRE_CAST:
   case EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM:
   case EF_ACIDIFIED_ZONE_FIRE_HIT:
@@ -1492,7 +1492,7 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_STATE_CRYSTALLIZATION:
   case EF_STATE_DEADLYPOISON:
   case EF_THIRD_CONSECRATION_BOTTOM:
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
   case EF_NPC_KILLING_AURA_HIT:
   case EF_NPC_CANE_OF_EVIL_EYE:
   case EF_TOXIN_OF_MANDARA_BOMB:
@@ -1687,11 +1687,11 @@ bool CEZ2STRScreenEffect::IsAlive() {
   case EF_RED_WAVE_2:
   case EF_RED_WAVE_3:
   case EF_NEW_EPICLESIS:
-  case EF_UNK_1710:
+  case EF_SERVANT_SIGN:
   case EF_DRAGONIC_AURA_BUFF:
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
   case EF_DEADLY_PROJECTION:
-  case EF_UNK_1751:
+  case EF_VIGOR_BUFF:
   case EF_MYSTERY_ILLUSION:
   case EF_MYSTERY_ILLUSION_BOTTOM:
   case EF_TORNADO_STORM:
@@ -1708,14 +1708,14 @@ bool CEZ2STRScreenEffect::IsAlive() {
   case EF_STRATUM_TREMOR_BOTTOM:
   case EF_WIND_SIGN_LOOP:
   case EF_FLAME_TRAP:
-  case EF_UNK_1962:
+  case EF_CALUMITYGALE_LOOP:
   case EF_FIRST_FAITH_POWER:
   case EF_JUDGE:
   case EF_JUDGE_AURA:
   case EF_THIRD_EXOR_FLAME:
   case EF_THIRD_EXOR_FLAME_AURA:
   case EF_OLEUM_SANCTUM_LOOP:
-  case EF_UNK_2002:
+  case EF_MYSTICSYMPHONY_NOTE:
   case EF_VENOM_SWAMP_BOTTOM:
   case EF_LIGHTNING_LAND:
   case EF_LIGHTNING_LAND_BOTTOM:
@@ -1729,9 +1729,9 @@ bool CEZ2STRScreenEffect::IsAlive() {
   case EF_ABYSS_SLAYER:
   case EF_ABYSS_SQUARE:
   case EF_ABYSS_SQUARE_BOTTOM:
-  case EF_UNK_2166:
-  case EF_UNK_2177:
-  case EF_UNK_2182:
+  case EF_CROSS_RAIN_BOTTOM:
+  case EF_GRAND_JUDGEMENT_BUFF:
+  case EF_HOLY_SHIELD_LOOP:
   case EF_ACIDIFIED_ZONE_FIRE_LOOP:
   case EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM:
   case EF_ACIDIFIED_ZONE_WATER_LOOP:
@@ -1744,7 +1744,7 @@ bool CEZ2STRScreenEffect::IsAlive() {
   case EF_STATE_CONFLAGRATION:
   case EF_STATE_FROSTBITE:
   case EF_STATE_CRYSTALLIZATION:
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
   case EF_NPC_KILLING_AURA:
   case EF_NPC_20TH_CRYSTAL_S:
   case EF_NPC_20TH_CRYSTAL_M:
@@ -3386,13 +3386,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
       particle->Open("new_axeboomerang\\new_axeboomerang_hit\\new_axeboomerang_hit.str");
     }
     break;
-  case EF_UNK_1661:
+  case EF_HACKANDSLASH:
     particle->Load("hackandslash\\hackandslash\\hackandslash.str");
     break;
-  case EF_UNK_1662:
+  case EF_HACKANDSLASH_BOTTOM:
     particle->Load("hackandslash\\hackandslash_bottom\\hackandslash_bottom.str");
     break;
-  case EF_UNK_1663:
+  case EF_HACKANDSLASH_HIT:
     particle->Load("hackandslash\\hackandslash_hit\\hackandslash_hit.str");
     break;
   case EF_NEW_SPELLFIST_FIRE:
@@ -3430,19 +3430,19 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
       particle->Open("new_spellfist\\new_spellfist_wind\\new_spellfist_wind.str");
     }
     break;
-  case EF_UNK_1670:
+  case EF_STORMSLASH_1:
     particle->Load("stormslash\\stormslash\\stormslash_1.str");
     break;
-  case EF_UNK_1671:
+  case EF_STORMSLASH_2:
     particle->Load("stormslash\\stormslash\\stormslash_2.str");
     break;
-  case EF_UNK_1672:
+  case EF_STORMSLASH_3:
     particle->Load("stormslash\\stormslash\\stormslash_3.str");
     break;
-  case EF_UNK_1673:
+  case EF_STORMSLASH_4:
     particle->Load("stormslash\\stormslash\\stormslash_4.str");
     break;
-  case EF_UNK_1674:
+  case EF_STORMSLASH_5:
     particle->Load("stormslash\\stormslash\\stormslash_5.str");
     break;
   case EF_NEW_CARTBOOST:
@@ -3560,13 +3560,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
       particle->Open("new_windcutter\\new_windcutter_target\\new_windcutter_target.str");
     }
     break;
-  case EF_UNK_1695:
+  case EF_NEW_SERVANTWEAPON_HIT:
     particle->Load("new_servantweapon\\new_servantweapon_hit\\new_servantweapon_hit.str");
     break;
-  case EF_UNK_1696:
+  case EF_NEW_SERVANTWEAPON_HIT_BOTTOM:
     particle->Load("new_servantweapon\\new_servantweapon_hit_bottom\\new_servantweapon_hit_bottom.str");
     break;
-  case EF_UNK_1697:
+  case EF_NEW_SERVANTWEAPON_SHOOT_BOTTOM:
     particle->Load("new_servantweapon\\new_servantweapon_shoot_bottom\\new_servantweapon_shoot_bottom.str");
     break;
   case EF_NEW_POWERSWING_01:
@@ -3646,43 +3646,43 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
       particle->Open("new_earthdrive\\new_earthdrive_target\\new_earthdrive_target.str");
     }
     break;
-  case EF_UNK_1710:
+  case EF_SERVANT_SIGN:
     particle->Load("servant_sign\\servant_sign\\servant_sign.str");
     break;
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
     particle->Load("servant_sign\\servant_sign_bottom\\servant_sign_bottom.str");
     break;
-  case EF_UNK_1711:
+  case EF_SERVANT_SIGN_DOWN:
     particle->Load("servant_sign\\servant_sign_down\\servant_sign_down.str");
     break;
-  case EF_UNK_1712:
+  case EF_SERVANT_SIGN_DOWN_BOTTOM:
     particle->Load("servant_sign\\servant_sign_down_bottom\\servant_sign_down_bottom.str");
     break;
-  case EF_UNK_1713:
+  case EF_SERVANT_PHANTOM_DOWN:
     particle->Load("servant_phantom\\servant_phantom_down\\servant_phantom_down.str");
     break;
-  case EF_UNK_1714:
+  case EF_SERVANT_PHANTOM_HIT:
     particle->Load("servant_phantom\\servant_phantom_hit\\servant_phantom_hit.str");
     break;
-  case EF_UNK_1715:
+  case EF_SERVANT_PHANTOM_HIT_BOTTOM:
     particle->Load("servant_phantom\\servant_phantom_hit_bottom\\servant_phantom_hit_bottom.str");
     break;
-  case EF_UNK_1716:
+  case EF_SERVANT_PHANTOM_SUB:
     particle->Load("servant_phantom\\servant_phantom_sub\\servant_phantom_sub.str");
     break;
-  case EF_UNK_1717:
+  case EF_SERVANT_PHANTOM_SUB_BOTTOM:
     particle->Load("servant_phantom\\servant_phantom_sub_bottom\\servant_phantom_sub_bottom.str");
     break;
-  case EF_UNK_1718:
+  case EF_SERVANT_DEMOLITION_COLLECT:
     particle->Load("servant_demolition\\servant_demolition_collect\\servant_demolition_collect.str");
     break;
-  case EF_UNK_1719:
+  case EF_SERVANT_DEMOLITION_HIT:
     particle->Load("servant_demolition\\servant_demolition_hit\\servant_demolition_hit.str");
     break;
-  case EF_UNK_1720:
+  case EF_SERVANT_DEMOLITION_LEFTDOWN:
     particle->Load("servant_demolition\\servant_demolition_leftdown\\servant_demolition_leftdown.str");
     break;
-  case EF_UNK_1721:
+  case EF_SERVANT_DEMOLITION_RIGHTDOWN:
     particle->Load("servant_demolition\\servant_demolition_rightdown\\servant_demolition_rightdown.str");
     break;
   case EF_DRAGONIC_AURA:
@@ -3703,16 +3703,16 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
     particle->Load("dragonnic_ora\\dragonnic_ora_buff_bottom\\dragonnic_ora_buff_bottom.str");
     break;
-  case EF_UNK_1728:
+  case EF_MADNESS_CRUSHER:
     particle->Load("madness_crusher\\madness_crusher\\madness_crusher.str");
     break;
-  case EF_UNK_1729:
+  case EF_MADNESS_CRUSHER_BOTTOM:
     particle->Load("madness_crusher\\madness_crusher_bottom\\madness_crusher_bottom.str");
     break;
-  case EF_UNK_1750:
+  case EF_VIGOR_CAST:
     particle->Load("vigor\\vigor_cast\\vigor_cast.str");
     break;
-  case EF_UNK_1751:
+  case EF_VIGOR_BUFF:
     particle->Load("vigor\\vigor_buff\\vigor_buff.str");
     break;
   case EF_NEW_AUTOSHADOWSPELL:
@@ -3810,13 +3810,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_VIOLENT_QUAKE_BOTTOM:
     particle->Load("violentquake\\violentquake_bottom\\violentquake_bottom.str");
     break;
-  case EF_UNK_1765:
+  case EF_NEW_CHARGINGPIERCE_CAST:
     particle->Load("new_chargingpierce\\new_chargingpierce_cast\\new_chargingpierce_cast.str");
     break;
-  case EF_UNK_1766:
+  case EF_NEW_CHARGINGPIERCE_CAST_BOTTOM:
     particle->Load("new_chargingpierce\\new_chargingpierce_cast_bottom\\new_chargingpierce_cast_bottom.str");
     break;
-  case EF_UNK_1767:
+  case EF_NEW_CHARGINGPIERCE_HIT:
     particle->Load("new_chargingpierce\\new_chargingpierce_hit\\new_chargingpierce_hit.str");
     break;
   case EF_ASTRAL_STRIKE_CAST:
@@ -4038,13 +4038,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_ARBITRIUM_HIT:
     particle->Load("arbitrium\\arbitrium_hit\\arbitrium_hit.str");
     break;
-  case EF_UNK_1827:
+  case EF_DANCING_KNIFE_CAST:
     particle->Load("dancing_knife\\dancing_knife_cast\\dancing_knife_cast.str");
     break;
-  case EF_UNK_1828:
+  case EF_DANCING_KNIFE_CAST_BOTTOM:
     particle->Load("dancing_knife\\dancing_knife_cast_bottom\\dancing_knife_cast_bottom.str");
     break;
-  case EF_UNK_1830:
+  case EF_ABYSS_DAGGER_HIT_1830:
     particle->Load("abyss_dagger\\abyss_dagger_hit\\abyss_dagger_hit.str");
     break;
   case EF_ETERNAL_SLASH_HIT_1:
@@ -4134,10 +4134,10 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_CRYSTAL_IMPACT_BUFF:
     particle->Load("crystal_impact\\crystal_impact_buff\\crystal_impact_buff.str");
     break;
-  case EF_UNK_1862:
+  case EF_NEW_ENCHANTING_SHADOW:
     particle->Load("enchanting_shadow\\enchanting_shadow\\new_enchanting_shadow.str");
     break;
-  case EF_UNK_1863:
+  case EF_NEW_ENCHANTING_SHADOW_BOTTOM:
     particle->Load("enchanting_shadow\\enchanting_shadow_bottom\\new_enchanting_shadow_bottom.str");
     break;
   case EF_FLAME_TRAP_HIT:
@@ -4164,7 +4164,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_FATAL_SHADOW_CROW_HIT:
     particle->Load("fatal_shadow_crow\\fatal_shadow_crow_hit\\fatal_shadow_crow_hit.str");
     break;
-  case EF_UNK_1868:
+  case EF_SHADOW_EXCEED_CAST:
     particle->Load("shadow_exceed\\shadow_exceed_cast\\shadow_exceed_cast.str");
     break;
   case EF_DEEP_BLIND_TRAP:
@@ -4176,13 +4176,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_DEEP_BLIND_TRAP_HIT:
     particle->Load("deepblindtrap\\deepblindtrap_hit\\deepblindtrap_hit.str");
     break;
-  case EF_UNK_1960:
+  case EF_CALUMITYGALE:
     particle->Load("4wh_calumitygale\\calumitygale\\calumitygale.str");
     break;
-  case EF_UNK_1961:
+  case EF_CALUMITYGALE_CAST:
     particle->Load("4wh_calumitygale\\calumitygale_cast\\calumitygale_cast.str");
     break;
-  case EF_UNK_1962:
+  case EF_CALUMITYGALE_LOOP:
     particle->Load("4wh_calumitygale\\calumitygale_loop\\calumitygale_loop.str");
     break;
   case EF_SWIFT_TRAP:
@@ -4230,13 +4230,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_STRATUM_TREMOR_BOTTOM:
     particle->Load("strantumtremor\\strantumtremor_bottom\\strantumtremor_bottom.str");
     break;
-  case EF_UNK_1895:
+  case EF_IMPACT_CRATER:
     particle->Load("impact_crater\\impact_crater\\impact_crater.str");
     break;
-  case EF_UNK_1896:
+  case EF_IMPACT_CRATER_BOTTOM:
     particle->Load("impact_crater\\impact_crater_bottom\\impact_crater_bottom.str");
     break;
-  case EF_UNK_1898:
+  case EF_IMPACT_CRATER_HIT:
     particle->Load("impact_crater\\impact_crater_hit\\impact_crater_hit.str");
     break;
   case EF_WIND_SIGN:
@@ -4287,19 +4287,19 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_NEW_POTENT_VENOM:
     particle->Load("new_potent_venom\\new_potent_venom.str");
     break;
-  case EF_UNK_1950:
+  case EF_CRESCIVEBOLT_CAST:
     particle->Load("crescivebolt\\crescivebolt_cast\\crescivebolt_cast.str");
     break;
-  case EF_UNK_1952:
+  case EF_CRESCIVEBOLT_HIT:
     particle->Load("crescivebolt\\crescivebolt_hit\\crescivebolt_hit.str");
     break;
-  case EF_UNK_1953:
+  case EF_SHADOW_STAB:
     particle->Load("shadow_stab\\shadow_stab\\shadow_stab.str");
     break;
-  case EF_UNK_1954:
+  case EF_ETERNAL_SLASH_HIT:
     particle->Load("eternal_slash\\eternal_slash_hit\\eternal_slash_hit.str");
     break;
-  case EF_UNK_1955:
+  case EF_SHADOW_STAB_HIT2:
     particle->Load("shadow_stab\\shadow_stab_hit2\\shadow_stab_hit2.str");
     break;
   case EF_FIRST_FAITH_POWER:
@@ -4452,13 +4452,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_GALE_STORM_HIT:
     particle->Load("galestorm\\galestorm_hit\\galestorm_hit.str");
     break;
-  case EF_UNK_2006:
+  case EF_KVASIRSONATA:
     particle->Load("4tr_kvasirsonata\\kvasirsonata\\kvasirsonata.str");
     break;
-  case EF_UNK_2007:
+  case EF_KVASIRSONATA_CAST:
     particle->Load("4tr_kvasirsonata\\kvasirsonata_cast\\kvasirsonata_cast.str");
     break;
-  case EF_UNK_2008:
+  case EF_KVASIRSONATA_CAST_BOTTOM:
     particle->Load("4tr_kvasirsonata\\kvasirsonata_cast_bottom\\kvasirsonata_cast_bottom.str");
     break;
   case EF_POWERFUL_FAITH:
@@ -4476,13 +4476,13 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_FIRM_FAITH:
     particle->Load("firmfaith\\firmfaith\\firmfaith.str");
     break;
-  case EF_UNK_2000:
+  case EF_MYSTICSYMPHONY:
     particle->Load("mysticsymphony\\mysticsymphony\\mysticsymphony.str");
     break;
-  case EF_UNK_2001:
+  case EF_MYSTICSYMPHONY_CAST:
     particle->Load("mysticsymphony\\mysticsymphony_cast\\mysticsymphony_cast.str");
     break;
-  case EF_UNK_2002:
+  case EF_MYSTICSYMPHONY_NOTE:
     particle->Load("mysticsymphony\\mysticsymphony_note\\mysticsymphony_note.str");
     break;
   case EF_ACTIVITY_BURN:
@@ -4569,19 +4569,19 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_DIAMOND_STORM_HIT:
     particle->Load("diamond_storm\\diamond_storm_hit\\diamond_storm_hit.str");
     break;
-  case EF_UNK_2046:
+  case EF_ROSEBLOSSOM_CAST:
     particle->Load("roseblossom\\roseblossom_cast\\roseblossom_cast.str");
     break;
-  case EF_UNK_2047:
+  case EF_ROSEBLOSSOM_CAST_BOTTOM:
     particle->Load("roseblossom\\roseblossom_cast_bottom\\roseblossom_cast_bottom.str");
     break;
-  case EF_UNK_2048:
+  case EF_ROSEBLOSSOM_HIT:
     particle->Load("roseblossom\\roseblossom_hit\\roseblossom_hit.str");
     break;
-  case EF_UNK_2049:
+  case EF_ROSEBLOSSOM_ROSE:
     particle->Load("roseblossom\\roseblossom_rose\\roseblossom_rose.str");
     break;
-  case EF_UNK_2050:
+  case EF_ROSEBLOSSOM_SHOT:
     particle->Load("roseblossom\\roseblossom_shot\\roseblossom_shot.str");
     break;
   case EF_VENOM_SWAMP_BOTTOM:
@@ -4665,31 +4665,31 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_METALLIC_FURY:
     particle->Load("metalicfury\\metalicfury\\metalicfury.str");
     break;
-  case EF_UNK_2065:
+  case EF_JAWAII_SERENADE:
     particle->Load("jawaii_serenade\\jawaii_serenade\\jawaii_serenade.str");
     break;
-  case EF_UNK_2066:
+  case EF_JAWAII_SERENADE_CAST:
     particle->Load("jawaii_serenade\\jawaii_serenade_cast\\jawaii_serenade_cast.str");
     break;
-  case EF_UNK_2067:
+  case EF_JAWAII_SERENADE_CAST_BOTTOM:
     particle->Load("jawaii_serenade\\jawaii_serenade_cast_bottom\\jawaii_serenade_cast_bottom.str");
     break;
-  case EF_UNK_2068:
+  case EF_PRONMARCH:
     particle->Load("pronmarch\\pronmarch\\pronmarch.str");
     break;
-  case EF_UNK_2069:
+  case EF_PRONMARCH_CAST:
     particle->Load("pronmarch\\pronmarch_cast\\pronmarch_cast.str");
     break;
-  case EF_UNK_2070:
+  case EF_PRONMARCH_CAST_BOTTOM:
     particle->Load("pronmarch\\pronmarch_cast_bottom\\pronmarch_cast_bottom.str");
     break;
-  case EF_UNK_2071:
+  case EF_RHYTHMSHOOTING_CAST:
     particle->Load("rhythmshooting\\rhythmshooting_cast\\rhythmshooting_cast.str");
     break;
-  case EF_UNK_2072:
+  case EF_RHYTHMSHOOTING_CAST_BOTTOM:
     particle->Load("rhythmshooting\\rhythmshooting_cast_bottom\\rhythmshooting_cast_bottom.str");
     break;
-  case EF_UNK_2073:
+  case EF_RHYTHMSHOOTING_HIT:
     particle->Load("rhythmshooting\\rhythmshooting_hit\\rhythmshooting_hit.str");
     break;
   case EF_NIFLHEIM:
@@ -4785,22 +4785,22 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_FRENZY_SHOT_HIT:
     particle->Load("frenzy_shot\\frenzy_shot_hit\\frenzy_shot_hit.str");
     break;
-  case EF_UNK_2116:
+  case EF_GEF_NOCTURN:
     particle->Load("gef_nocturn\\gef_nocturn\\gef_nocturn.str");
     break;
-  case EF_UNK_2117:
+  case EF_GEF_NOCTURN_CAST:
     particle->Load("gef_nocturn\\gef_nocturn_cast\\gef_nocturn_cast.str");
     break;
-  case EF_UNK_2118:
+  case EF_GEF_NOCTURN_CAST_BOTTOM:
     particle->Load("gef_nocturn\\gef_nocturn_cast_bottom\\gef_nocturn_cast_bottom.str");
     break;
-  case EF_UNK_2119:
+  case EF_ROKI_CAPRICCIO:
     particle->Load("roki_capriccio\\roki_capriccio\\roki_capriccio.str");
     break;
-  case EF_UNK_2120:
+  case EF_ROKI_CAPRICCIO_CAST:
     particle->Load("roki_capriccio\\roki_capriccio_cast\\roki_capriccio_cast.str");
     break;
-  case EF_UNK_2121:
+  case EF_ROKI_CAPRICCIO_CAST_BOTTOM:
     particle->Load("roki_capriccio\\roki_capriccio_cast_bottom\\roki_capriccio_cast_bottom.str");
     break;
   case EF_MUSICAL_INTERLUDE:
@@ -4809,10 +4809,10 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_MUSICAL_INTERLUDE_CAST:
     particle->Load("musical_interlude\\musical_interlude_cast\\musical_interlude_cast.str");
     break;
-  case EF_UNK_2124:
+  case EF_AIN_RHAPSODY:
     particle->Load("ain_rhapsody\\ain_rhapsody\\ain_rhapsody.str");
     break;
-  case EF_UNK_2125:
+  case EF_AIN_RHAPSODY_CAST:
     particle->Load("ain_rhapsody\\ain_rhapsody_cast\\ain_rhapsody_cast.str");
     break;
   case EF_TERRA_DRIVE:
@@ -4884,16 +4884,16 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_ABYSS_DAGGER_HIT_3:
     particle->Load("abyss_dagger\\abyss_dagger_hit\\abyss_dagger_hit.str");
     break;
-  case EF_UNK_2157:
+  case EF_OVERSLASH:
     particle->Load("overslash\\overslash\\overslash.str");
     break;
-  case EF_UNK_2158:
+  case EF_OVERSLASH_BOTTOM:
     particle->Load("overslash\\overslash_bottom\\overslash_bottom.str");
     break;
-  case EF_UNK_2159:
+  case EF_OVERSLASH_CAST:
     particle->Load("overslash\\overslash_cast\\overslash_cast.str");
     break;
-  case EF_UNK_2160:
+  case EF_OVERSLASH_HIT:
     particle->Load("overslash\\overslash_hit\\overslash_hit.str");
     break;
   case EF_ADVANCED_PROTECTION:
@@ -4908,55 +4908,55 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_ADVANCED_PROTECTION_CAST_BOTTOM:
     particle->Load("adv_protection\\adv_protection_cast_bottom\\adv_protection_cast_bottom.str");
     break;
-  case EF_UNK_2166:
+  case EF_CROSS_RAIN_BOTTOM:
     particle->Load("crossrain\\cross_rain_bottom\\cross_rain_bottom.str");
     break;
-  case EF_UNK_2167:
+  case EF_CROSS_RAIN_CAST:
     particle->Load("crossrain\\cross_rain_cast\\cross_rain_cast.str");
     break;
-  case EF_UNK_2168:
+  case EF_CROSS_RAIN_CAST_BOTTOM:
     particle->Load("crossrain\\cross_rain_cast_bottom\\cross_rain_cast_bottom.str");
     break;
-  case EF_UNK_2169:
+  case EF_GUARD_STANCE:
     particle->Load("guard_stance\\guard_stance\\guard_stance.str");
     break;
-  case EF_UNK_2170:
+  case EF_GUARD_STANCE_CAST:
     particle->Load("guard_stance\\guard_stance_cast\\guard_stance_cast.str");
     break;
-  case EF_UNK_2171:
+  case EF_GUARD_STANCE_CAST_BOTTOM:
     particle->Load("guard_stance\\guard_stance_cast_bottom\\guard_stance_cast_bottom.str");
     break;
-  case EF_UNK_2172:
+  case EF_ATTACK_STANCE:
     particle->Load("attack_stance\\attack_stance\\attack_stance.str");
     break;
-  case EF_UNK_2173:
+  case EF_ATTACK_STANCE_CAST:
     particle->Load("attack_stance\\attack_stance_cast\\attack_stance_cast.str");
     break;
-  case EF_UNK_2174:
+  case EF_ATTACK_STANCE_CAST_BOTTOM:
     particle->Load("attack_stance\\attack_stance_cast_bottom\\attack_stance_cast_bottom.str");
     break;
-  case EF_UNK_2175:
+  case EF_GRAND_JUDGEMENT:
     particle->Load("grand_judgement\\grand_judgement\\grand_judgement.str");
     break;
-  case EF_UNK_2176:
+  case EF_GRAND_JUDGEMENT_BOTTOM:
     particle->Load("grand_judgement\\grand_judgement_bottom\\grand_judgement_bottom.str");
     break;
-  case EF_UNK_2177:
+  case EF_GRAND_JUDGEMENT_BUFF:
     particle->Load("grand_judgement\\grand_judgement_buff\\grand_judgement_buff.str");
     break;
-  case EF_UNK_2178:
+  case EF_GRAND_JUDGEMENT_CAST:
     particle->Load("grand_judgement\\grand_judgement_cast\\grand_judgement_cast.str");
     break;
-  case EF_UNK_2179:
+  case EF_GRAND_JUDGEMENT_CAST_BOTTOM:
     particle->Load("grand_judgement\\grand_judgement_cast_bottom\\grand_judgement_cast_bottom.str");
     break;
-  case EF_UNK_2181:
+  case EF_HOLY_SHIELD:
     particle->Load("holy_shield\\holy_shield\\holy_shield.str");
     break;
-  case EF_UNK_2180:
+  case EF_HOLY_SHIELD_CAST:
     particle->Load("holy_shield\\holy_shield_cast\\holy_shield_cast.str");
     break;
-  case EF_UNK_2182:
+  case EF_HOLY_SHIELD_LOOP:
     particle->Load("holy_shield\\holy_shield_loop\\holy_shield_loop.str");
     break;
   case EF_SHIELD_SHOOTING_CAST:
@@ -4971,46 +4971,46 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_THE_W_PROTECTION_CAST:
     particle->Load("the_w_protection\\the_w_protection_cast\\the_w_protection_cast.str");
     break;
-  case EF_UNK_2188:
+  case EF_GUARDIANSHIELD:
     particle->Load("guardianshield\\guardianshield\\guardianshield.str");
     break;
-  case EF_UNK_2189:
+  case EF_GUARDIANSHIELD_BOTTOM:
     particle->Load("guardianshield\\guardianshield_bottom\\guardianshield_bottom.str");
     break;
-  case EF_UNK_2190:
+  case EF_GUARDIANSHIELD_SUB:
     particle->Load("guardianshield\\guardianshield_sub\\guardianshield_sub.str");
     break;
-  case EF_UNK_2191:
+  case EF_JUDGEMENT_CROSS:
     particle->Load("judgement_cross\\judgement_cross\\judgement_cross.str");
     break;
-  case EF_UNK_2192:
+  case EF_JUDGEMENT_CROSS_BOTTOM:
     particle->Load("judgement_cross\\judgement_cross_bottom\\judgement_cross_bottom.str");
     break;
-  case EF_UNK_2193:
+  case EF_JUDGEMENT_CROSS_CAST:
     particle->Load("judgement_cross\\judgement_cross_cast\\judgement_cross_cast.str");
     break;
-  case EF_UNK_2194:
+  case EF_JUDGEMENT_CROSS_CAST_BOTTOM:
     particle->Load("judgement_cross\\judgement_cross_cast_bottom\\judgement_cross_cast_bottom.str");
     break;
-  case EF_UNK_2196:
+  case EF_REBOUND_SHIELD:
     particle->Load("rebound_shield\\rebound_shield\\rebound_shield.str");
     break;
-  case EF_UNK_2197:
+  case EF_REBOUND_SHIELD_BOTTOM:
     particle->Load("rebound_shield\\rebound_shield_bottom\\rebound_shield_bottom.str");
     break;
-  case EF_UNK_2198:
+  case EF_REBOUND_SHIELD_CAST:
     particle->Load("rebound_shield\\rebound_shield_cast\\rebound_shield_cast.str");
     break;
-  case EF_UNK_2199:
+  case EF_REBOUND_SHIELD_CAST_BOTTOM:
     particle->Load("rebound_shield\\rebound_shield_cast_bottom\\rebound_shield_cast_bottom.str");
     break;
-  case EF_UNK_2200:
+  case EF_ULTIMATESACRIFICE:
     particle->Load("ultimate_sacrifice\\ultimatesacrifice\\ultimatesacrifice.str");
     break;
-  case EF_UNK_2201:
+  case EF_ULTIMATESACRIFICE_BOTTOM:
     particle->Load("ultimate_sacrifice\\ultimatesacrifice_bottom\\ultimatesacrifice_bottom.str");
     break;
-  case EF_UNK_2202:
+  case EF_ULTIMATESACRIFICE_SHINE:
     particle->Load("ultimate_sacrifice\\ultimatesacrifice_shine\\ultimatesacrifice_shine.str");
     break;
   case EF_ACIDIFIED_ZONE_FIRE_CAST:
@@ -5658,11 +5658,11 @@ void CEZ2STRScreenEffect::Open() {
   case EF_RED_WAVE_2:
   case EF_RED_WAVE_3:
   case EF_NEW_EPICLESIS:
-  case EF_UNK_1710:
+  case EF_SERVANT_SIGN:
   case EF_DRAGONIC_AURA_BUFF:
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
   case EF_DEADLY_PROJECTION:
-  case EF_UNK_1751:
+  case EF_VIGOR_BUFF:
   case EF_MYSTERY_ILLUSION:
   case EF_TORNADO_STORM_BOTTOM:
   case EF_VIOLENT_QUAKE_BOTTOM:
@@ -5680,14 +5680,14 @@ void CEZ2STRScreenEffect::Open() {
   case EF_STRATUM_TREMOR_BOTTOM:
   case EF_WIND_SIGN_LOOP:
   case EF_FLAME_TRAP:
-  case EF_UNK_1962:
+  case EF_CALUMITYGALE_LOOP:
   case EF_FIRST_FAITH_POWER:
   case EF_JUDGE:
   case EF_JUDGE_AURA:
   case EF_THIRD_EXOR_FLAME:
   case EF_THIRD_EXOR_FLAME_AURA:
   case EF_OLEUM_SANCTUM_LOOP:
-  case EF_UNK_2002:
+  case EF_MYSTICSYMPHONY_NOTE:
   case EF_VENOM_SWAMP_BOTTOM:
   case EF_LIGHTNING_LAND:
   case EF_LIGHTNING_LAND_BOTTOM:
@@ -5701,9 +5701,9 @@ void CEZ2STRScreenEffect::Open() {
   case EF_ABYSS_SLAYER:
   case EF_ABYSS_SQUARE:
   case EF_ABYSS_SQUARE_BOTTOM:
-  case EF_UNK_2166:
-  case EF_UNK_2177:
-  case EF_UNK_2182:
+  case EF_CROSS_RAIN_BOTTOM:
+  case EF_GRAND_JUDGEMENT_BUFF:
+  case EF_HOLY_SHIELD_LOOP:
   case EF_ACIDIFIED_ZONE_FIRE_LOOP:
   case EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM:
   case EF_ACIDIFIED_ZONE_WATER_LOOP:
@@ -5716,7 +5716,7 @@ void CEZ2STRScreenEffect::Open() {
   case EF_STATE_CONFLAGRATION:
   case EF_STATE_FROSTBITE:
   case EF_STATE_CRYSTALLIZATION:
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
   case EF_NPC_KILLING_AURA:
   case EF_NPC_20TH_CRYSTAL_S:
   case EF_NPC_20TH_CRYSTAL_M:
@@ -6012,7 +6012,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\EF_GlassWall.wav", 0x1e, 0);
     break;
 
-  case EF_UNK_1662:
+  case EF_HACKANDSLASH_BOTTOM:
     this->particle->flags = 13;
     this->AddEvent(0, "effect\\DK_HACKANDSLASHER.wav", 0, 0);
     break;
@@ -6033,12 +6033,12 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(1, nullptr, 0x14, 0);
     break;
 
-  case EF_UNK_1712:
+  case EF_SERVANT_SIGN_DOWN_BOTTOM:
     this->particle->flags = 13;
     this->AddEvent(0, "effect\\DK_SERVANT_W_SIGN.wav", 0x28, 0);
     break;
 
-  case EF_UNK_1714:
+  case EF_SERVANT_PHANTOM_HIT:
     this->AddEvent(0, "effect\\DK_SERVANT_W_PHANTOM.wav", 0, 0);
     break;
 
@@ -6050,7 +6050,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\DK_DRAGONIC_AURA2.wav", 1, 0);
     break;
 
-  case EF_UNK_1728:
+  case EF_MADNESS_CRUSHER:
     this->AddEvent(0, "effect\\DK_MADNESS_CRUSHER.wav", 1, 0);
     break;
 
@@ -6070,7 +6070,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\AG_ROCK_DOWN.wav", 0, 0);
     break;
 
-  case EF_UNK_1767:
+  case EF_NEW_CHARGINGPIERCE_HIT:
     this->AddEvent(0, "effect\\DK_CHARGINGPIERCE1.wav", 0, 0);
     break;
 
@@ -6078,19 +6078,19 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\AG_FROZEN_SLASH.wav", 0, 0);
     break;
 
-  case EF_UNK_1750:
+  case EF_VIGOR_CAST:
     this->AddEvent(0, "effect\\DK_VIGOR.wav", 0, 0);
     break;
 
-  case EF_UNK_1719:
+  case EF_SERVANT_DEMOLITION_HIT:
     this->AddEvent(0, "effect\\DK_SERVANT_W_DEMOL.wav", 0, 0);
     break;
 
-  case EF_UNK_1670:
-  case EF_UNK_1671:
-  case EF_UNK_1672:
-  case EF_UNK_1673:
-  case EF_UNK_1674:
+  case EF_STORMSLASH_1:
+  case EF_STORMSLASH_2:
+  case EF_STORMSLASH_3:
+  case EF_STORMSLASH_4:
+  case EF_STORMSLASH_5:
     for (int i = 0; i <= this->id - 0x686; ++i) {
       this->AddEvent(0, FormatOwnedString("effect\\DK_STORMSLASH%d.wav", rand() % 4 + 1).c_str(), i * 15, 0);
     }
@@ -6141,7 +6141,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\AG_CRYSTAL_IMPACT.wav", 0, 0);
     break;
 
-  case EF_UNK_1961:
+  case EF_CALUMITYGALE_CAST:
   case EF_INCREASING_ACTIVITY_CAST_BOTTOM:
   case EF_ACTIVITY_BURN_CAST_BOTTOM:
   case EF_SERPENS_CAST_BOTTOM:
@@ -6149,9 +6149,9 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_PROCELLA_CAST_BOTTOM:
   case EF_TERREMOTUS_CAST_BOTTOM:
   case EF_TERRA_DRIVE_CAST_BOTTOM:
-  case EF_UNK_2171:
-  case EF_UNK_2174:
-  case EF_UNK_2179:
+  case EF_GUARD_STANCE_CAST_BOTTOM:
+  case EF_ATTACK_STANCE_CAST_BOTTOM:
+  case EF_GRAND_JUDGEMENT_CAST_BOTTOM:
   case EF_HELLTREE_CAST_BOTTOM:
   case EF_WOODEN_WARRIOR_CAST_BOTTOM:
   case EF_WOODEN_FAIRY_CAST_BOTTOM:
@@ -6175,26 +6175,26 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_ARGUTUS_TELUM_CAST:
   case EF_PRESENS_ACIES_CAST:
   case EF_ARBITRIUM_CAST:
-  case EF_UNK_1827:
+  case EF_DANCING_KNIFE_CAST:
   case EF_RELIGIO_CAST:
-  case EF_UNK_1862:
-  case EF_UNK_1868:
+  case EF_NEW_ENCHANTING_SHADOW:
+  case EF_SHADOW_EXCEED_CAST:
   case EF_SOLID_TRAP_CAST:
   case EF_BENEDICTUM_CAST:
   case EF_NEW_DILECTIO_HEAL_CAST:
-  case EF_UNK_1950:
+  case EF_CRESCIVEBOLT_CAST:
   case EF_PNEUMATICUS_PROCELLA_CAST:
   case EF_HAWK_BOOMERANG_CAST:
   case EF_GALE_STORM_CAST:
   case EF_FIRST_FAITH_POWER_CAST:
   case EF_JUDGE_CAST:
   case EF_THIRD_EXOR_FLAME_CAST:
-  case EF_UNK_2159:
-  case EF_UNK_2167:
-  case EF_UNK_2180:
+  case EF_OVERSLASH_CAST:
+  case EF_CROSS_RAIN_CAST:
+  case EF_HOLY_SHIELD_CAST:
   case EF_SHIELD_SHOOTING_CAST:
-  case EF_UNK_2193:
-  case EF_UNK_2198:
+  case EF_JUDGEMENT_CROSS_CAST:
+  case EF_REBOUND_SHIELD_CAST:
     this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
     break;
 
@@ -6213,7 +6213,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\IQ_THIRD_PUNISH.wav", 0, 0);
     break;
 
-  case EF_UNK_2008:
+  case EF_KVASIRSONATA_CAST_BOTTOM:
     this->particle->flags = 13;
     this->AddEvent(0, "effect\\TR_KVASIR_SONATA.wav", 0, 0);
     break;
@@ -6237,7 +6237,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     }
     break;
 
-  case EF_UNK_1953: {
+  case EF_SHADOW_STAB: {
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
     float fromX;
@@ -6297,23 +6297,23 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
   }
 
-  case EF_UNK_2001:
+  case EF_MYSTICSYMPHONY_CAST:
     this->particle->flags = 13;
     [[fallthrough]];
 
-  case EF_UNK_2007:
+  case EF_KVASIRSONATA_CAST:
   case EF_CHAIN_REACTION_SHOT_CAST:
-  case EF_UNK_2046:
+  case EF_ROSEBLOSSOM_CAST:
   case EF_SOUND_BLEND_CAST:
-  case EF_UNK_2066:
-  case EF_UNK_2069:
-  case EF_UNK_2071:
+  case EF_JAWAII_SERENADE_CAST:
+  case EF_PRONMARCH_CAST:
+  case EF_RHYTHMSHOOTING_CAST:
   case EF_NIFLHEIM_CAST:
   case EF_ABYSS_STRIKE_CAST:
-  case EF_UNK_2117:
-  case EF_UNK_2120:
+  case EF_GEF_NOCTURN_CAST:
+  case EF_ROKI_CAPRICCIO_CAST:
   case EF_MUSICAL_INTERLUDE_CAST:
-  case EF_UNK_2125:
+  case EF_AIN_RHAPSODY_CAST:
   case EF_ABYSS_SLAYER_CAST:
   case EF_UNLUCKY_RUSH_CAST:
   case EF_ADVANCED_PROTECTION_CAST:
@@ -6385,7 +6385,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\EM_LIGHTNING_LAND.wav", 0, 0);
     break;
 
-  case EF_UNK_2050: {
+  case EF_ROSEBLOSSOM_SHOT: {
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
     float fromX;
@@ -6414,7 +6414,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\EM_CONFLAGRATION.wav", 0, 0);
     break;
 
-  case EF_UNK_2065:
+  case EF_JAWAII_SERENADE:
     this->particle->flags = 13;
     this->AddEvent(0, "effect\\TR_JAWAII_SERENADE.wav", 0, 0);
     break;
@@ -6440,7 +6440,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\WH_WIND_SIGN.wav", 0, 0);
     break;
 
-  case EF_UNK_1960:
+  case EF_CALUMITYGALE:
     this->AddEvent(0, "effect\\WH_CALAMITYGALE.wav", 0, 0);
     break;
 
@@ -6471,7 +6471,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\EM_TERRA_DRIVE.wav", 0, 0);
     break;
 
-  case EF_UNK_1954:
+  case EF_ETERNAL_SLASH_HIT:
     this->AddEvent(0, "effect\\SHC_SHADOW_STAB.wav", 0, 0);
     break;
 
@@ -6479,7 +6479,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\SHC_ETERNAL_SLASH.wav", 0, 0);
     break;
 
-  case EF_UNK_1898:
+  case EF_IMPACT_CRATER_HIT:
     this->AddEvent(0, "effect\\SHC_IMPACT_CRATER.wav", 0, 0);
     break;
 
@@ -6509,7 +6509,7 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
     break;
 
-  case EF_UNK_2049:
+  case EF_ROSEBLOSSOM_ROSE:
     this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_ROSE.wav", 0, 0);
     break;
 
@@ -6525,15 +6525,15 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\TR_METALIC_FURY.wav", 0, 0);
     break;
 
-  case EF_UNK_2116:
+  case EF_GEF_NOCTURN:
     this->AddEvent(0, "effect\\TR_GEF_NOCTURN.wav", 0, 0);
     break;
 
-  case EF_UNK_2119:
+  case EF_ROKI_CAPRICCIO:
     this->AddEvent(0, "effect\\TR_ROKI_CAPRICCIO.wav", 0, 0);
     break;
 
-  case EF_UNK_2124:
+  case EF_AIN_RHAPSODY:
     this->AddEvent(0, "effect\\TR_AIN_RHAPSODY.wav", 0, 0);
     break;
 
@@ -6545,11 +6545,11 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\TR_NIPELHEIM_REQUIEM.wav", 0, 0);
     break;
 
-  case EF_UNK_2068:
+  case EF_PRONMARCH:
     this->AddEvent(0, "effect\\TR_PRON_MARCH.wav", 0, 0);
     break;
 
-  case EF_UNK_2000:
+  case EF_MYSTICSYMPHONY:
     this->AddEvent(0, "effect\\TR_MYSTIC_SYMPHONY.wav", 0, 0);
     break;
 
@@ -6674,36 +6674,36 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(1, nullptr, 0, 0);
     break;
 
-  case EF_UNK_2169:
-  case EF_UNK_2172:
+  case EF_GUARD_STANCE:
+  case EF_ATTACK_STANCE:
     this->AddEvent(0, "effect\\IG_GUARD_STANCE.wav", 0, 0);
     break;
 
-  case EF_UNK_2190:
+  case EF_GUARDIANSHIELD_SUB:
     this->AddEvent(0, "effect\\IG_GUARDIAN_SHIELD.wav", 0, 0);
     break;
 
-  case EF_UNK_2196:
+  case EF_REBOUND_SHIELD:
     this->AddEvent(0, "effect\\IG_REBOUND_SHIELD.wav", 0, 0);
     break;
 
-  case EF_UNK_2200:
+  case EF_ULTIMATESACRIFICE:
     this->AddEvent(0, "effect\\IG_ULTIMATE_SACRIFICE.wav", 0, 0);
     break;
 
-  case EF_UNK_2181:
+  case EF_HOLY_SHIELD:
     this->AddEvent(0, "effect\\IG_HOLY_SHIELD1.wav", 0, 0);
     break;
 
-  case EF_UNK_2182:
+  case EF_HOLY_SHIELD_LOOP:
     this->AddEvent(0, "effect\\IG_HOLY_SHIELD2.wav", 0x22, 0);
     break;
 
-  case EF_UNK_2175:
+  case EF_GRAND_JUDGEMENT:
     this->AddEvent(0, "effect\\IG_GRAND_JUDGEMENT.wav", 0, 0);
     break;
 
-  case EF_UNK_2157:
+  case EF_OVERSLASH:
     this->AddEvent(0, "effect\\IG_OVERSLASH.wav", 0, 0);
     break;
 
@@ -6832,20 +6832,20 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_NEW_OVERBRAND_CAST_BOTTOM:
   case EF_NEW_WINDCUTTER_BOTTOM_01:
   case EF_NEW_WINDCUTTER_BOTTOM_05:
-  case EF_UNK_1696:
-  case EF_UNK_1697:
+  case EF_NEW_SERVANTWEAPON_HIT_BOTTOM:
+  case EF_NEW_SERVANTWEAPON_SHOOT_BOTTOM:
   case EF_NEW_VULCANARM_BOTTOM:
   case EF_NEW_EARTHDRIVE_BOTTOM:
-  case EF_UNK_1715:
-  case EF_UNK_1717:
+  case EF_SERVANT_PHANTOM_HIT_BOTTOM:
+  case EF_SERVANT_PHANTOM_SUB_BOTTOM:
   case EF_DRAGONIC_AURA_BOTTOM:
   case EF_DRAGONIC_AURA_HIT_BOTTOM:
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
-  case EF_UNK_1729:
+  case EF_MADNESS_CRUSHER_BOTTOM:
   case EF_NEW_AUTOSHADOWSPELL_BOTTOM:
   case EF_DESTRUCTIVE_HURRICANE_BOTTOM:
   case EF_ROCKDOWN_BOTTOM:
-  case EF_UNK_1766:
+  case EF_NEW_CHARGINGPIERCE_CAST_BOTTOM:
   case EF_MYSTERY_ILLUSION_BOTTOM:
   case EF_TORNADO_STORM_BOTTOM:
   case EF_VIOLENT_QUAKE_BOTTOM:
@@ -6855,8 +6855,8 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_ARBITRIUM_CAST_BOTTOM:
   case EF_COMPETENTIA_LOOP_BOTTOM:
   case EF_CRYSTAL_IMPACT_CAST_BOTTOM:
-  case EF_UNK_1863:
-  case EF_UNK_1896:
+  case EF_NEW_ENCHANTING_SHADOW_BOTTOM:
+  case EF_IMPACT_CRATER_BOTTOM:
   case EF_ABR_INFINITY_BOTTOM:
   case EF_ABR_INFINITY_CAST:
   case EF_NEW_DILECTIO_HEAL_CAST_BOTTOM:
@@ -6871,21 +6871,21 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_DILUVIO_ICE_BOTTOM:
   case EF_ARDOR_BOTTOM:
   case EF_LIGHTNING_LAND_BOTTOM:
-  case EF_UNK_2047:
+  case EF_ROSEBLOSSOM_CAST_BOTTOM:
   case EF_FIRST_BRAND_AURA:
   case EF_CONFLAGRATION_BOTTOM:
   case EF_SOUND_BLEND_CAST_BOTTOM:
-  case EF_UNK_2067:
-  case EF_UNK_2070:
-  case EF_UNK_2072:
+  case EF_JAWAII_SERENADE_CAST_BOTTOM:
+  case EF_PRONMARCH_CAST_BOTTOM:
+  case EF_RHYTHMSHOOTING_CAST_BOTTOM:
   case EF_SECOND_FAITH_AURA:
   case EF_ABYSS_STRIKE_BOTTOM:
   case EF_ABYSS_STRIKE_CAST_BOTTOM:
   case EF_ABYSS_STRIKE_GROUND_BOTTOM:
   case EF_MASSIVE_FLAME_BLASTER_HIT_BOTTOM:
   case EF_PROCELLA_BOTTOM:
-  case EF_UNK_2118:
-  case EF_UNK_2121:
+  case EF_GEF_NOCTURN_CAST_BOTTOM:
+  case EF_ROKI_CAPRICCIO_CAST_BOTTOM:
   case EF_ABYSS_SLAYER_CAST_BOTTOM:
   case EF_ABYSS_SQUARE_BOTTOM:
   case EF_TERRA_DRIVE_BOTTOM:
@@ -6894,18 +6894,18 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_ELEMENTAL_BUSTER_POISON_BOTTOM:
   case EF_ELEMENTAL_BUSTER_WATER_BOTTOM:
   case EF_ELEMENTAL_BUSTER_WIND_BOTTOM:
-  case EF_UNK_2158:
+  case EF_OVERSLASH_BOTTOM:
   case EF_ADVANCED_PROTECTION_BOTTOM:
   case EF_ADVANCED_PROTECTION_CAST_BOTTOM:
-  case EF_UNK_2166:
-  case EF_UNK_2168:
-  case EF_UNK_2176:
-  case EF_UNK_2189:
-  case EF_UNK_2192:
-  case EF_UNK_2194:
-  case EF_UNK_2197:
-  case EF_UNK_2199:
-  case EF_UNK_2201:
+  case EF_CROSS_RAIN_BOTTOM:
+  case EF_CROSS_RAIN_CAST_BOTTOM:
+  case EF_GRAND_JUDGEMENT_BOTTOM:
+  case EF_GUARDIANSHIELD_BOTTOM:
+  case EF_JUDGEMENT_CROSS_BOTTOM:
+  case EF_JUDGEMENT_CROSS_CAST_BOTTOM:
+  case EF_REBOUND_SHIELD_BOTTOM:
+  case EF_REBOUND_SHIELD_CAST_BOTTOM:
+  case EF_ULTIMATESACRIFICE_BOTTOM:
   case EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM:
   case EF_ACIDIFIED_ZONE_FIRE_START_BOTTOM:
   case EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM:
@@ -6925,7 +6925,7 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_PROCELLA_GRACE_BREEZE_BOTTOM:
   case EF_TERREMOTUS_EARTH_CARE_BOTTOM:
   case EF_THIRD_CONSECRATION_BOTTOM:
-  case EF_UNK_2280:
+  case EF_SERVANT_SIGN_BOTTOM:
   case EF_NPC_KILLING_AURA:
   case EF_TOXIN_OF_MANDARA_BOMB_BOTTOM:
   case EF_NEEDLE_STINGER_BOTTOM:

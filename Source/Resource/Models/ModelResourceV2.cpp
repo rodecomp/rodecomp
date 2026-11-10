@@ -14,7 +14,7 @@ struct ModelFaceRecord {
   /* 0000 */ std::uint16_t vertices[3];
   /* 0006 */ std::uint16_t textureVertices[3];
   /* 000C */ std::uint16_t texture;
-  /* 000E */ std::uint16_t unknown_000E;
+  /* 000E */ std::uint16_t padding_000E;
   /* 0010 */ std::uint32_t twoSided;
   /* 0014 */ std::uint32_t smoothing;
 };

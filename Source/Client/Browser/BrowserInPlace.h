@@ -9,7 +9,7 @@ class BrowserClientSite;
 class BrowserInPlaceFrame final : public IOleInPlaceFrame {
 public:
   // INLINED
-  explicit BrowserInPlaceFrame(BrowserClientSite* site) : unknown_0004(0), m_site(site) {
+  explicit BrowserInPlaceFrame(BrowserClientSite* site) : padding_0004(0), m_site(site) {
   }
   ~BrowserInPlaceFrame();
 
@@ -30,14 +30,14 @@ public:
   HRESULT STDMETHODCALLTYPE TranslateAccelerator(MSG* message, WORD id) override;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int padding_0004;
   /* 0008 */ BrowserClientSite* m_site;
 };
 
 class BrowserInPlaceSite final : public IOleInPlaceSite {
 public:
   // INLINED
-  explicit BrowserInPlaceSite(BrowserClientSite* site) : unknown_0004(0), m_frame(new BrowserInPlaceFrame(site)), m_site(site) {
+  explicit BrowserInPlaceSite(BrowserClientSite* site) : padding_0004(0), m_frame(new BrowserInPlaceFrame(site)), m_site(site) {
   }
   // INLINED
   ~BrowserInPlaceSite() {
@@ -62,7 +62,7 @@ public:
   HRESULT STDMETHODCALLTYPE OnPosRectChange(const RECT* position) override;
 
 private:
-  /* 0004 */ int unknown_0004;
+  /* 0004 */ int padding_0004;
   /* 0008 */ BrowserInPlaceFrame* m_frame;
   /* 000C */ BrowserClientSite* m_site;
 };

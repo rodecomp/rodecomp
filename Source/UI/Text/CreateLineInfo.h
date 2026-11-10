@@ -96,7 +96,7 @@ public:
 
   CCreateLineInfo(
     UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool outlineEnabled,
-    int outlineColorValue, bool unknown0030, int shadowColorValue, unsigned char align
+    int outlineColorValue, bool padding_0030, int shadowColorValue, unsigned char align
   );
   virtual ~CCreateLineInfo();
 

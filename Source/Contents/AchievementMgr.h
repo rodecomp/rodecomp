@@ -10,10 +10,10 @@ struct lua_State;
 
 struct AchievementReward {
   // INLINED
-  AchievementReward(std::string text, int unknown0018, int unknown001C) {
+  AchievementReward(std::string text, int targetCount, int conditionId) {
     this->text = text;
-    this->targetCount = unknown0018;
-    this->conditionId = unknown001C;
+    this->targetCount = targetCount;
+    this->conditionId = conditionId;
   }
 
   /* 0000 */ std::string text;
@@ -26,8 +26,8 @@ struct AchievementInfo {
   AchievementInfo() {
   }
   // INLINED
-  AchievementInfo(std::string title, std::string unknown0018, std::string description, int points)
-      : title(title), summaryText(unknown0018), description(description), points(points) {
+  AchievementInfo(std::string title, std::string summaryText, std::string description, int points)
+      : title(title), summaryText(summaryText), description(description), points(points) {
   }
 
   /* 0000 */ std::string title;
@@ -73,8 +73,8 @@ public:
   int GetAchievementCount(int group, int index);
   int GetCompletedCount(int group, int index);
   bool FindTab(int id, int& group, int& index);
-  std::pair<bool, std::string> InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string description, int points);
-  std::pair<bool, std::string> InsertAchieveResource(int id, std::string text, int unknown0018, int unknown001C);
+  std::pair<bool, std::string> InsertAchieveInfo(int id, std::string title, std::string padding_0018, std::string description, int points);
+  std::pair<bool, std::string> InsertAchieveResource(int id, std::string text, int padding_0018, int padding_001C);
   std::pair<bool, std::string> InsertAchieveRewardBuff(int id, int value);
   std::pair<bool, std::string> InsertAchieveRewardItem(int id, int value);
   std::pair<bool, std::string> InsertAchieveRewardTitle(int id, int value);

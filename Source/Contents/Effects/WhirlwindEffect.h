@@ -11,7 +11,7 @@ struct CWhirlwindEffect : CRagEffect {
   }
 
   /* 11CA8 */ int duration;
-  /* 11CAC */ int unknown_11CAC;
+  /* 11CAC */ int padding_11CAC;
   /* 11CB0 */ std::chrono::steady_clock::time_point endTime;
 
   bool OnProcess() override;

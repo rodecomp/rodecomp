@@ -112,7 +112,7 @@ struct RuneRewardStepEntry {
 struct RuneListPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
-  /* 0004 */ unsigned char unknown_0004;
+  /* 0004 */ unsigned char padding_0004;
   /* 0005 */ std::uint16_t tagId;
   /* 0007 */ std::uint16_t count;
 };
@@ -534,7 +534,7 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
   const std::int16_t result = *reinterpret_cast<const std::int16_t*>(packet + 2);
   if (result == 0) {
-    g_session.m_partyBooking.unknown_0034 = GetTickCount();
+    g_session.m_partyBooking.registeredTick = GetTickCount();
     g_windowMgr.EnsureWindow(WID_SEEKPARTYWND);
     UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYWND));
     if (seekWindow) {
@@ -2246,7 +2246,7 @@ void CGameMode::ReceiveAchievementResult(unsigned char result, int id) {
 
   const int index = g_session.AddAchievementJobTitle(id);
   if (index != -1) {
-    g_session.AddUnknownId(index);
+    g_session.AddAchievementId(index);
   }
 }
 
@@ -2870,31 +2870,31 @@ struct Item1718PendingRecord {
   /* 0009 */ std::int32_t itemId;
   /* 000D */ std::uint16_t sprite;
   /* 000F */ std::uint32_t location;
-  /* 0013 */ unsigned char unknown_0013[6];
+  /* 0013 */ unsigned char padding_0013[6];
 };
 #pragma pack(pop)
 
 static_assert(sizeof(Item1718PendingRecord) == 0x19);
 
 struct Unknown015D4818Values {
-  /* 0000 */ std::uint32_t unknown_0000[2];
+  /* 0000 */ std::uint32_t padding_0000[2];
   /* 0008 */ std::uint32_t location;
-  /* 000C */ std::uint32_t unknown_000C[25];
+  /* 000C */ std::uint32_t padding_000C[25];
   /* 0070 */ std::uint32_t sprite;
 };
 
 struct Unknown015D4818Entry {
-  /* 0000 */ std::uint32_t unknown_0000[2];
+  /* 0000 */ std::uint32_t padding_0000[2];
   /* 0008 */ Unknown015D4818Values values;
 };
 
 struct Unknown015D4818 {
-  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0000 */ std::uint32_t padding_0000;
   /* 0004 */ Unknown015D4818Entry* entry;
 };
 
 // GLOBAL: gl_25368
-Unknown015D4818* g_unknown_015D4818;
+Unknown015D4818* g_pendingCashItemList;
 
 // OFFSET: 0x00D3BD40
 // FUNCTION: fn_21790
@@ -2921,8 +2921,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.id = -1;
     item.identified = 1;
     g_session.AddShopItem(item, 0);
-    if (g_unknown_015D4818 && g_unknown_015D4818->entry) {
-      Unknown015D4818Values& values = g_unknown_015D4818->entry->values;
+    if (g_pendingCashItemList && g_pendingCashItemList->entry) {
+      Unknown015D4818Values& values = g_pendingCashItemList->entry->values;
       values.sprite = record->sprite;
       values.location = record->location;
     }

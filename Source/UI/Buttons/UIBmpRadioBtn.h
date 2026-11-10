@@ -40,7 +40,7 @@ public:
   }
 
   bool SetBitmap(const char* name, int state);
-  void AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y);
+  void AddText(int id, int height, std::uint32_t color, bool bold, bool drawShadow, int x, int y);
   // INLINED
   void SetLabel(std::string label) {
     this->m_label = label;
@@ -50,7 +50,7 @@ public:
 protected:
   /* 007C */ std::string m_names[4];
   /* 00DC */ bool m_hovered;
-  /* 00DD */ unsigned char unknown_00DD[3];
+  /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ std::string m_tooltip;
   /* 00F8 */ bool m_disabled;
   /* 00FC */ int m_value;

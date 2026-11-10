@@ -322,7 +322,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void SelectTab();
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int padding_00B4;
   /* 00B8 */ std::int64_t m_nextTick;
   /* 00C0 */ UIRuneSystemTab* m_tab;
   /* 00C4 */ UIEquipRuneSetWnd* m_equipRuneSet;

@@ -94,13 +94,13 @@ void UIQuestDisplay::Paint() {
     } else {
       for (int index = 0; index < info.m_huntCount; ++index) {
         std::string hunt;
-        if (info.m_huntUnknown00D4[index] == 31999) {
+        if (info.m_huntMobId[index] == 31999) {
           hunt = static_cast<const std::string&>(
-            g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index])
+            g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index])
           );
         } else {
-          const short minLevel = info.m_huntUnknown01AC[index];
-          const short maxLevel = info.m_huntUnknown01B2[index];
+          const short minLevel = info.m_huntMinLevel[index];
+          const short maxLevel = info.m_huntMaxLevel[index];
           const char* name = info.m_huntName[index];
           if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
             if (minLevel == 0) {
@@ -129,9 +129,9 @@ void UIQuestDisplay::Paint() {
         description = std::move(huntNavigation);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
-        const short goal = info.m_huntUnknown0180[index];
+        const short goal = info.m_huntMaxCount[index];
         if (goal > 0) {
-          const short count = info.m_huntUnknown00E0[index];
+          const short count = info.m_huntKillCount[index];
           if (count == goal) {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
           } else {

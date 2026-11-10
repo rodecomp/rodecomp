@@ -32,7 +32,7 @@ namespace {
     }
 
     /* 11CA8 */ int duration;
-    /* 11CAC */ int unknown_11CAC;
+    /* 11CAC */ int padding_11CAC;
     /* 11CB0 */ int first;
     /* 11CB4 */ int second;
   };

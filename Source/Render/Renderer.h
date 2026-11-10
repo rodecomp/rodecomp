@@ -60,8 +60,8 @@ public:
   /* 0040 */ int viewDirectionY;
   /* 0044 */ int viewDirectionZ;
   /* 0048 */ unsigned char twoPass;
-  /* 0049 */ unsigned char unknown_0049[3];
-  /* 004C */ int unknown_004C;
+  /* 0049 */ unsigned char padding_0049[3];
+  /* 004C */ int padding_004C;
   /* 0050 */ RenderCommandPool commands;
   /* 0070 */ RenderPrimitivePool primitives;
   /* 0090 */ LightmappedPrimitivePool lightmapped;
@@ -69,7 +69,7 @@ public:
   /* 00C0 */ SpriteAtlas atlas;
   /* 0150 */ RendererFogDX9 fog;
   /* 015C */ RenderQueues queues;
-  /* 024C */ unsigned unknown_024C;
+  /* 024C */ unsigned textureFormat;
   /* 0250 */ RendererBackBuffer backBuffer;
 
   CRenderer(const CRenderer&) = delete;
@@ -82,7 +82,7 @@ int ScaleByScreenHeight(int value);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderer) == 0x25C);
-static_assert(offsetof(CRenderer, unknown_0049) == 0x0049);
+static_assert(offsetof(CRenderer, padding_0049) == 0x0049);
 static_assert(offsetof(CRenderer, commands) == 0x0050);
 static_assert(offsetof(CRenderer, primitives) == 0x0070);
 static_assert(offsetof(CRenderer, lightmapped) == 0x0090);

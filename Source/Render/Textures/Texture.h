@@ -62,7 +62,7 @@ protected:
   friend class TextureCache;
   /* 0004 */ std::int32_t m_format;
   /* 0008 */ std::uint16_t textureFlags;
-  /* 000A */ std::uint8_t unknown_000A[2];
+  /* 000A */ std::uint8_t padding_000A[2];
   /* 000C */ std::uint32_t m_textureWidth;
   /* 0010 */ std::uint32_t m_textureHeight;
   /* 0014 */ std::uint32_t m_width;

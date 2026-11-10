@@ -25,13 +25,13 @@
 
 // OFFSET: 0x0063F500
 // FUNCTION: fn_04807
-void SpriteLayerRenderer::Render(const float* matrix, int unknown0030, char blendVariant) {
+void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendVariant) {
   if (!this->pc) {
     return;
   }
 
   std::memcpy(this->matrix, matrix, sizeof(this->matrix));
-  this->blendMode = unknown0030;
+  this->blendMode = blendMode;
   this->blendVariant = blendVariant;
   this->layerShift = 0;
   this->swingX = 0;
@@ -381,7 +381,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
       this->layerShift, this->layerShift, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
       image, &quad, reinterpret_cast<int*>(&box), &quadColor, 0, 0, !drawOnTop
     );
-    if (this->pc->render.unknown_0130[0] == 1) {
+    if (this->pc->render.translucentOther[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
                    (quad.color & 0xFFFFFF);
     }
@@ -638,7 +638,7 @@ void SpriteLayerRenderer::DrawLayer(
       this->depthBias = ((quad.topRhw + quad.bottomRhw) - (quad.top + quad.bottom) * depthScale) * g_depthAverageHalf;
     }
 
-    if (this->pc->render.unknown_0130[0] == 1) {
+    if (this->pc->render.translucentOther[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
                    (quad.color & 0xFFFFFF);
     }

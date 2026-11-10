@@ -38,7 +38,7 @@ public:
   /* 0140 */ UIWindow* m_searchWindow;
   /* 0144 */ std::string m_capacityText;
   /* 015C */ UIStaticText* title;
-  /* 0160 */ unsigned char unknown_0160[0x04];
+  /* 0160 */ unsigned char padding_0160[0x04];
   /* 0164 */ ItemStoreFindListInfo* saved;
   /* 0168 */ UITab* tabBar;
   /* 016C */ int m_sortOptionA;

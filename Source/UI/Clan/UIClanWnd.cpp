@@ -45,7 +45,7 @@ void UIClanInfoManageWnd::OnCreate(int width, int height) {
   this->allyRow = -1;
   this->hostileRow = -1;
   if (g_clanInfo->m_hasClan) {
-    g_clanInfo->unknown_0034 = 1;
+    g_clanInfo->allyClanCount = 1;
   }
 
   this->LoadEmblem();
@@ -59,7 +59,7 @@ void UIClanInfoManageWnd::Paint() {
   std::memset(text, 0, sizeof(text));
   std::sprintf(text, "%s : %s", LookupMessage(MSI_HOSTILITY_CLAN), g_clanInfo->m_clanName.c_str());
   this->DrawTextAt(8, 49, text, 0, 0, 12, 0, 0, 0);
-  std::sprintf(text, "%s : %d", LookupMessage(MSI_ALLY_CLAN), g_clanInfo->unknown_0034);
+  std::sprintf(text, "%s : %d", LookupMessage(MSI_ALLY_CLAN), g_clanInfo->allyClanCount);
   this->DrawTextAt(8, 65, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%s : %s", LookupMessage(MSI_VIEW_CLAN_MSG), g_clanInfo->m_masterName.c_str());
   this->DrawTextAt(8, 81, text, 0, 0, 12, 0, 0, 0);

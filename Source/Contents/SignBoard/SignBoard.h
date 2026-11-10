@@ -57,9 +57,9 @@ public:
   void SetWindowImage(const std::string& name);
 
   /* 0138 */ int type;
-  /* 013C */ int unknown_013C;
+  /* 013C */ int padding_013C;
   /* 0140 */ UIWindow* window;
-  /* 0144 */ int unknown_0144;
+  /* 0144 */ int padding_0144;
 };
 
 struct SignBoardInfo {

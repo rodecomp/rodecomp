@@ -43,7 +43,7 @@ public:
   explicit SpriteLayerRenderer(CPc* pc) : pc(pc), position(), depthScale(1.0f), depthBias(0.0f) {
   }
 
-  void Render(const float* matrix, int unknown0030, char blendVariant);
+  void Render(const float* matrix, int padding_0030, char blendVariant);
   void QueueQuad(int layer, const SpriteQuad* quad, const std::uint32_t* palette, int blend);
   void DrawLayerOutlines(std::uint32_t color);
   void DrawRobe(bool drawOnTop);

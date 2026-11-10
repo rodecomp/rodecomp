@@ -27,7 +27,7 @@ public:
   void Render(int argument) override;
 
   /* 0138 */ float spriteOffset;
-  /* 013C */ std::uint32_t unknown_013C;
+  /* 013C */ std::uint32_t padding_013C;
 };
 
 class CMasterChaser : public CRenderObject {
@@ -38,7 +38,7 @@ public:
   void ClearChaseState();
 
   /* 0138 */ std::uint32_t chaseState;
-  /* 013C */ std::uint32_t unknown_013C;
+  /* 013C */ std::uint32_t padding_013C;
 };
 
 class CNumEffect : public CRenderObject {

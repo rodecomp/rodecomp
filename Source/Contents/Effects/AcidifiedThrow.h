@@ -21,7 +21,7 @@ public:
   /* 00CC */ EZ2STREmitter* projectileEmitter;
   /* 00D0 */ EZ2STREmitter* impactEmitters[3];
   /* 00DC */ bool active;
-  /* 00DD */ unsigned char unknown_00DD[3];
+  /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ float trajectoryTime;
   /* 00E4 */ vector3d impactPosition;
 };

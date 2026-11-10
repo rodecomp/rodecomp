@@ -13,7 +13,7 @@ struct ModelFace {
   /* 0000 */ std::uint16_t vertices[3];
   /* 0006 */ std::uint16_t textureVertices[3];
   /* 000C */ std::uint16_t texture;
-  /* 000E */ std::uint16_t unknown_000E;
+  /* 000E */ std::uint16_t padding_000E;
   /* 0010 */ std::uint32_t twoSided;
   /* 0014 */ std::vector<std::uint32_t> smoothing;
 };
@@ -42,7 +42,7 @@ struct ModelMesh {
   /* 001C */ std::array<float, 3>* vertexNormals;
   /* 0020 */ unsigned char parentMesh[4];
   /* 0024 */ std::array<std::vector<std::uint32_t>, 32> indices;
-  /* 01A4 */ unsigned char unknown_01A4[48];
+  /* 01A4 */ unsigned char padding_01A4[48];
 
   void CalculateNormals();
 };
@@ -52,7 +52,7 @@ static_assert(sizeof(ModelFace) == 32);
 static_assert(offsetof(ModelFace, vertices) == 0x00);
 static_assert(offsetof(ModelFace, textureVertices) == 0x06);
 static_assert(offsetof(ModelFace, texture) == 0x0C);
-static_assert(offsetof(ModelFace, unknown_000E) == 0x0E);
+static_assert(offsetof(ModelFace, padding_000E) == 0x0E);
 static_assert(offsetof(ModelFace, twoSided) == 0x10);
 static_assert(offsetof(ModelFace, smoothing) == 0x14);
 static_assert(sizeof(ModelMesh) == 0x1D4);
@@ -64,7 +64,7 @@ static_assert(offsetof(ModelMesh, textureVertices) == 0x14);
 static_assert(offsetof(ModelMesh, faceNormals) == 0x18);
 static_assert(offsetof(ModelMesh, vertexNormals) == 0x1C);
 static_assert(offsetof(ModelMesh, indices) == 0x24);
-static_assert(offsetof(ModelMesh, unknown_01A4) == 0x1A4);
+static_assert(offsetof(ModelMesh, padding_01A4) == 0x1A4);
 #endif
 
 #endif

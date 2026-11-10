@@ -27,19 +27,19 @@ namespace {
     if (index == HK_HUNTINGQUEST_INFO_ONOFF) {
       return true;
     }
-    if (index == HK_UNKNOWN_62) {
+    if (index == HK_HIDDEN_62) {
       return true;
     }
-    if (index == HK_UNKNOWN_64) {
+    if (index == HK_HIDDEN_64) {
       return true;
     }
-    if (index == HK_UNKNOWN_66) {
+    if (index == HK_HIDDEN_66) {
       return true;
     }
-    if (index == HK_UNKNOWN_65) {
+    if (index == HK_HIDDEN_65) {
       return true;
     }
-    if (index == HK_UNKNOWN_67) {
+    if (index == HK_HIDDEN_67) {
       return true;
     }
     if (index == HK_BUTTONS_RELOCATE) {

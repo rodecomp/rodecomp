@@ -41,7 +41,7 @@ __declspec(noinline) CWorldViewWorld::CWorldViewWorld(const char* name, const ch
 
 // OFFSET: 0x00613050
 // FUNCTION: fn_04346
-__declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const char* name, const char* unknown2, const char* unknown3) {
+__declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const char* name, const char* fieldName, const char* description) {
   this->left = area.left;
   this->top = area.top;
   this->right = area.right;
@@ -50,11 +50,11 @@ __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const 
   if (name) {
     this->name = name;
   }
-  if (unknown2) {
-    this->fieldName = unknown2;
+  if (fieldName) {
+    this->fieldName = fieldName;
   }
-  if (unknown3) {
-    this->description = unknown3;
+  if (description) {
+    this->description = description;
   }
 }
 

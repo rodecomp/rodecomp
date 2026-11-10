@@ -31,7 +31,7 @@ namespace {
 NThread::NThread(std::string name) : m_state(0), m_name(name) {
   this->m_handle = nullptr;
   this->m_threadId = 0;
-  this->unknown_0008 = true;
+  this->padding_0008 = true;
 }
 
 // OFFSET: 0x00737290

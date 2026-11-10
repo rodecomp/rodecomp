@@ -20,7 +20,7 @@ struct WorldViewArea {
 
 class CWorldViewField {
 public:
-  CWorldViewField(WorldViewArea area, const char* name, const char* unknown2, const char* unknown3);
+  CWorldViewField(WorldViewArea area, const char* name, const char* fieldName, const char* description);
 
   /* 0000 */ int left = 0;
   /* 0004 */ int top = 0;
@@ -83,7 +83,7 @@ struct WorldViewRecord {
   /* 0010 */ int screenTop = 0;
   /* 0014 */ int screenRight = 0;
   /* 0018 */ int screenBottom = 0;
-  /* 001C */ int unknown_001C = 0;
+  /* 001C */ int padding_001C = 0;
   /* 0020 */ std::string name;
   /* 0038 */ int left = 0;
   /* 003C */ int top = 0;

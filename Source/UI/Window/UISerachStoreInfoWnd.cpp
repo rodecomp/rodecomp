@@ -48,7 +48,7 @@ static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 struct SearchStoreResult {
   /* 0000 */ int storeId;
   /* 0004 */ int accountId;
-  /* 0008 */ unsigned char unknown_0008[0x58];
+  /* 0008 */ unsigned char padding_0008[0x58];
   /* 0060 */ ITEM_INFO item;
 };
 

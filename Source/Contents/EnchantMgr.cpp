@@ -523,7 +523,7 @@ int L_SetSuccessRate(lua_State* L) {
 
 // OFFSET: 0x00689250
 // FUNCTION: fn_05583
-void EnchantMgrUnknown689250() {
+void EnchantMgrNullSub() {
 }
 
 // OFFSET: 0x006821B0

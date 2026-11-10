@@ -53,7 +53,7 @@ public:
   /* 010C */ int m_page;
   /* 0110 */ int m_pageCount;
   /* 0114 */ unsigned char m_paged;
-  /* 0115 */ unsigned char unknown_0115[0x3];
+  /* 0115 */ unsigned char padding_0115[0x3];
   /* 0118 */ UIButton* m_prevButton;
   /* 011C */ UIButton* m_nextButton;
 };

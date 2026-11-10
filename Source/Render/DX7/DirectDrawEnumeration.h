@@ -15,7 +15,7 @@ struct DirectDrawDeviceRecord {
   /* 029C */ DDCAPS emulationCaps;
   /* 0418 */ DDSURFACEDESC2 selectedMode;
   /* 0494 */ DWORD primary;
-  /* 0498 */ DWORD unknown_0498;
+  /* 0498 */ DWORD padding_0498;
   /* 049C */ GUID renderIdentity;
   /* 04AC */ GUID drawIdentity;
   /* 04BC */ DDSURFACEDESC2* modes;

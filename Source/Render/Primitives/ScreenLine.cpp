@@ -366,7 +366,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   const int savedTop = record->top;
   const int savedRight = record->right;
   const int savedBottom = record->bottom;
-  const int savedUnknown = record->areaFlags;
+  const int savedAreaFlags = record->areaFlags;
 
   if (g_kafraServiceMapList.find(std::string(record->name)) != g_kafraServiceMapList.end()) {
     WorldViewRecord* current = this->selectedRecord;
@@ -384,7 +384,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   record->top = savedTop;
   record->right = savedRight;
   record->bottom = savedBottom;
-  record->areaFlags = savedUnknown;
+  record->areaFlags = savedAreaFlags;
 
   record = this->selectedRecord;
   int x = record->right + 10;

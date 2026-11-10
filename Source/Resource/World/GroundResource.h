@@ -39,7 +39,7 @@ public:
   /* 0110 */ int loaded;
   /* 0114 */ unsigned char major;
   /* 0115 */ unsigned char minor;
-  /* 0116 */ unsigned char unknown_0116[2];
+  /* 0116 */ unsigned char padding_0116[2];
   /* 0118 */ int width;
   /* 011C */ int height;
   /* 0120 */ float cellSize;

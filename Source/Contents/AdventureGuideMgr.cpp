@@ -170,9 +170,9 @@ int InsertEpisodeSubMenu(lua_State* state) {
   const int id = static_cast<int>(lua_tonumber(state, -5));
   const int minLevel = static_cast<int>(lua_tonumber(state, -4));
   const int maxLevel = static_cast<int>(lua_tonumber(state, -3));
-  const int unknown = static_cast<int>(lua_tonumber(state, -2));
+  const int questId = static_cast<int>(lua_tonumber(state, -2));
   const std::string text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertEpisodeSubMenu(id, minLevel, maxLevel, unknown, text);
+  const AdventureGuideResult result = g_adventureGuideMgr->InsertEpisodeSubMenu(id, minLevel, maxLevel, questId, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
@@ -240,11 +240,11 @@ int InsertEpisodeContents(lua_State* state) {
   const int menu = static_cast<int>(lua_tonumber(state, -7));
   const int minLevel = static_cast<int>(lua_tonumber(state, -6));
   const int maxLevel = static_cast<int>(lua_tonumber(state, -5));
-  const int unknown = static_cast<int>(lua_tonumber(state, -4));
+  const int questId = static_cast<int>(lua_tonumber(state, -4));
   const bool flag = lua_tonumber(state, -3) != 0;
   const std::string first = lua_tostring(state, -2);
   const std::string second = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertEpisodeContents(id, menu, minLevel, maxLevel, unknown, flag, first, second);
+  const AdventureGuideResult result = g_adventureGuideMgr->InsertEpisodeContents(id, menu, minLevel, maxLevel, questId, flag, first, second);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
@@ -1324,11 +1324,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLev
 
 // OFFSET: 0x006654E0
 // FUNCTION: fn_05243
-AdventureGuideResult CAdventureGuideMgr::InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int unknown, bool flag, std::string_view first, std::string_view second) {
+AdventureGuideResult CAdventureGuideMgr::InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int questId, bool flag, std::string_view first, std::string_view second) {
   AdventureGuideContents contents;
   contents.minLevel = minLevel;
   contents.maxLevel = maxLevel;
-  contents.questId = unknown;
+  contents.questId = questId;
   contents.flag = flag;
   contents.first = first;
   contents.second = second;
@@ -1352,11 +1352,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeReward(int id, std::string
 
 // OFFSET: 0x00665940
 // FUNCTION: fn_05245
-AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int unknown, std::string_view text) {
+AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int questId, std::string_view text) {
   AdventureGuideDetail detail;
   detail.minLevel = minLevel;
   detail.maxLevel = maxLevel;
-  detail.questId = unknown;
+  detail.questId = questId;
   detail.text = text;
   for (auto& [key, intro] : m_intros) {
     if (intro.type == 1) {

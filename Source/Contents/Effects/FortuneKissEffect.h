@@ -16,7 +16,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ unsigned char unknown_00CC[0x38];
+  /* 00CC */ unsigned char padding_00CC[0x38];
   /* 0104 */ int angle;
   /* 0108 */ std::vector<CParticle*> particles;
 };

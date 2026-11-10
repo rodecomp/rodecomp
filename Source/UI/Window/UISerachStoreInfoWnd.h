@@ -27,7 +27,7 @@ protected:
   /* 00CC */ UIBitmapButton* m_findButton;
   /* 00D0 */ UITextButton* m_prevButton;
   /* 00D4 */ UITextButton* m_nextButton;
-  /* 00D8 */ UIWindow* unknown_00D8;
+  /* 00D8 */ UIWindow* padding_00D8;
   /* 00DC */ int m_page;
   /* 00E0 */ int m_hoverRow;
   /* 00E4 */ int m_searchType;

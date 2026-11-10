@@ -15,7 +15,7 @@ public:
   void ParseTags(std::string text);
   virtual void SetText(int width, int height, std::string text);
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ int padding_007C;
   /* 0080 */ int enabled;
   /* 0084 */ std::string link;
   /* 009C */ int red;

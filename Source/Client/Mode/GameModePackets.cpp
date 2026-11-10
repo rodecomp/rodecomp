@@ -184,7 +184,7 @@ namespace {
   struct SimulationPacketHeader {
     /* 0000 */ std::uint16_t packetType;
     /* 0002 */ std::uint16_t length;
-    /* 0004 */ std::uint32_t unknown_0004;
+    /* 0004 */ std::uint32_t padding_0004;
     /* 0008 */ int value;
     /* 000C */ unsigned char name[0x18];
   };
@@ -192,9 +192,9 @@ namespace {
   struct EnchantSimulationRecord {
     /* 0000 */ int itemId;
     /* 0004 */ int resultItemId;
-    /* 0008 */ std::uint32_t unknown_0008[2];
+    /* 0008 */ std::uint32_t padding_0008[2];
     /* 0010 */ int rate;
-    /* 0014 */ std::uint32_t unknown_0014;
+    /* 0014 */ std::uint32_t padding_0014;
     /* 0018 */ int count;
   };
 
@@ -217,7 +217,7 @@ namespace {
     /* 0007 */ int second;
     /* 000B */ std::uint16_t current;
     /* 000D */ std::uint16_t total;
-    /* 000F */ unsigned char unknown_000F[4];
+    /* 000F */ unsigned char padding_000F[4];
     /* 0013 */ char name[1];
   };
 
@@ -1357,7 +1357,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
 }
 
 // GLOBAL: gl_24965
-int g_unknown173A5BC;
+int g_overweightThresholdPercent;
 
 // OFFSET: 0x00D50580
 // FUNCTION: fn_21884
@@ -1369,7 +1369,7 @@ void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
 __declspec(noinline) void CGameMode::ReceiveOverweightThreshold(const unsigned char* packet) {
   const int value = *reinterpret_cast<const int*>(packet + 2);
   if (value > 0) {
-    g_unknown173A5BC = value;
+    g_overweightThresholdPercent = value;
   }
 }
 
@@ -4189,7 +4189,7 @@ public:
   void RefreshExpansion(const int& kind, const int& itemId);
   CEquipmentWearable* FindProperty1(const int& key);
   void UnequipWearable(const int& location);
-  unsigned char unknown_0004[0x1F8];
+  unsigned char padding_0004[0x1F8];
 };
 }
 
@@ -4743,9 +4743,9 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
 
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
     if (oldPercent < percent) {
-      if (percent >= g_unknown173A5BC && oldPercent < g_unknown173A5BC) {
+      if (percent >= g_overweightThresholdPercent && oldPercent < g_overweightThresholdPercent) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        text = FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_unknown173A5BC);
+        text = FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_overweightThresholdPercent);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 8, 0, 0);
       }
       if (percent > 89 && oldPercent < 90) {
@@ -4757,7 +4757,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (oldPercent <= percent) {
       break;
     }
-    if (percent < g_unknown173A5BC && g_unknown173A5BC <= oldPercent) {
+    if (percent < g_overweightThresholdPercent && g_overweightThresholdPercent <= oldPercent) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
     }
@@ -7592,11 +7592,11 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
   for (int i = 0; i < packet->huntCount; ++i) {
     const AddQuestHunt64& hunt = hunts[i];
     info.m_huntId[i] = hunt.huntId;
-    info.m_huntUnknown01A0[i] = hunt.condition;
-    info.m_huntUnknown00D4[i] = hunt.mobId;
-    info.m_huntUnknown00E0[i] = hunt.count;
-    info.m_huntUnknown01AC[i] = hunt.minLevel;
-    info.m_huntUnknown01B2[i] = hunt.maxLevel;
+    info.m_huntConditionFlags[i] = hunt.condition;
+    info.m_huntMobId[i] = hunt.mobId;
+    info.m_huntKillCount[i] = hunt.count;
+    info.m_huntMinLevel[i] = hunt.minLevel;
+    info.m_huntMaxLevel[i] = hunt.maxLevel;
     const int mobId = hunt.mobId;
     if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
       if (mobId == 0x1099) {
@@ -7645,11 +7645,11 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
   for (int i = 0; i < packet->huntCount; ++i) {
     const AddQuestHunt& hunt = hunts[i];
     info.m_huntId[i] = hunt.huntId;
-    info.m_huntUnknown01A0[i] = hunt.condition;
-    info.m_huntUnknown00D4[i] = hunt.mobId;
-    info.m_huntUnknown00E0[i] = hunt.count;
-    info.m_huntUnknown01AC[i] = hunt.minLevel;
-    info.m_huntUnknown01B2[i] = hunt.maxLevel;
+    info.m_huntConditionFlags[i] = hunt.condition;
+    info.m_huntMobId[i] = hunt.mobId;
+    info.m_huntKillCount[i] = hunt.count;
+    info.m_huntMinLevel[i] = hunt.minLevel;
+    info.m_huntMaxLevel[i] = hunt.maxLevel;
     const int mobId = hunt.mobId;
     if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
       if (mobId == 0x1099) {
@@ -10361,7 +10361,7 @@ static_assert(sizeof(ActorDisappearPacket) == 7);
 void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
   const ActorDisappearPacket* packet = reinterpret_cast<const ActorDisappearPacket*>(data);
   this->nameCard.Erase(packet->aid);
-  g_session.EraseUnknownKey(packet->aid);
+  g_session.EraseSummonHp(packet->aid);
   if (g_session.elementalGid == packet->aid) {
     g_session.SetElementalGid(-1);
   }
@@ -11886,8 +11886,8 @@ static_assert(sizeof(ActorStandEntry) == 0x7C);
 // OFFSET: 0x00D7AFA0
 // FUNCTION: fn_22199
 void CGameMode::SpawnStandingPc(
-  std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
-  short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name
+  std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short head, int weapon, int shield,
+  short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short robe, std::string name
 ) {
   ActorStandEntry entry;
   entry.aid = aid;
@@ -11896,14 +11896,14 @@ void CGameMode::SpawnStandingPc(
   entry.cellX = cellX;
   entry.cellY = cellY;
   entry.direction = 4;
-  entry.head = unknown_0024;
-  entry.weapon = unknown_0028;
-  entry.shield = unknown_002C;
-  entry.accessory = unknown_0030;
-  entry.accessory2 = unknown_004C;
-  entry.accessory3 = unknown_0050;
-  entry.headPalette = unknown_0054;
-  entry.bodyPalette = unknown_0058;
+  entry.head = head;
+  entry.weapon = weapon;
+  entry.shield = shield;
+  entry.accessory = accessory;
+  entry.accessory2 = accessory2;
+  entry.accessory3 = accessory3;
+  entry.headPalette = headPalette;
+  entry.bodyPalette = bodyPalette;
   entry.robe = robe;
   if (name.size() != 0) {
     this->nameCard.SetName(aid, name);
@@ -11927,8 +11927,8 @@ void CGameMode::SpawnStandingPc(
 // OFFSET: 0x00D7B170
 // FUNCTION: fn_22200
 void CGameMode::SpawnStandingPc2(
-  std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short unknown_0024, int unknown_0028, int unknown_002C,
-  short unknown_0030, short unknown_004C, short unknown_0050, short unknown_0054, short unknown_0058, short robe, std::string name, short unknown_0078
+  std::uint32_t aid, int job, short cellX, short cellY, unsigned char sex, short head, int weapon, int shield,
+  short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short robe, std::string name, short bodyCostume
 ) {
   ActorStandEntry entry;
   entry.aid = aid;
@@ -11937,16 +11937,16 @@ void CGameMode::SpawnStandingPc2(
   entry.cellX = cellX;
   entry.cellY = cellY;
   entry.direction = 4;
-  entry.head = unknown_0024;
-  entry.weapon = unknown_0028;
-  entry.shield = unknown_002C;
-  entry.accessory = unknown_0030;
-  entry.accessory2 = unknown_004C;
-  entry.accessory3 = unknown_0050;
-  entry.headPalette = unknown_0054;
-  entry.bodyPalette = unknown_0058;
+  entry.head = head;
+  entry.weapon = weapon;
+  entry.shield = shield;
+  entry.accessory = accessory;
+  entry.accessory2 = accessory2;
+  entry.accessory3 = accessory3;
+  entry.headPalette = headPalette;
+  entry.bodyPalette = bodyPalette;
   entry.robe = robe;
-  entry.bodyCostume = unknown_0078;
+  entry.bodyCostume = bodyCostume;
   if (name.size() != 0) {
     this->nameCard.SetName(aid, name);
   }
@@ -15103,7 +15103,7 @@ void CGameMode::ReceiveActorStateEntryNamedBody(const unsigned char* data) {
 #pragma pack(push, 1)
 struct RefineBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
-  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0002 */ std::uint16_t padding_0002;
   /* 0004 */ int itemId;
   /* 0008 */ char name[24];
   /* 0020 */ int materialId;
@@ -15113,7 +15113,7 @@ struct RefineBroadcastPacket {
 
 struct TradeBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
-  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0002 */ std::uint16_t padding_0002;
   /* 0004 */ int itemId;
   /* 0008 */ char name[24];
   /* 0020 */ char otherName[24];
@@ -15121,7 +15121,7 @@ struct TradeBroadcastPacket {
 
 struct ItemBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
-  /* 0002 */ std::uint16_t unknown_0002;
+  /* 0002 */ std::uint16_t padding_0002;
   /* 0004 */ int itemId;
   /* 0008 */ char name[24];
 };
@@ -20281,7 +20281,7 @@ struct ItemSlotOptions {
 
 struct ChatRoomMemberUpdateInfo {
   /* 0000 */ std::string title;
-  /* 0018 */ std::string unknown_0018;
+  /* 0018 */ std::string padding_0018;
   /* 0030 */ int type;
   /* 0034 */ int memberCount;
   /* 0038 */ int memberLimit;
@@ -20290,7 +20290,7 @@ struct ChatRoomMemberUpdateInfo {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ChatRoomMemberUpdateInfo) == 0x40);
-static_assert(offsetof(ChatRoomMemberUpdateInfo, unknown_0018) == 0x18);
+static_assert(offsetof(ChatRoomMemberUpdateInfo, padding_0018) == 0x18);
 static_assert(offsetof(ChatRoomMemberUpdateInfo, type) == 0x30);
 #endif
 
@@ -25039,9 +25039,9 @@ void CGameMode::ProcessIncomingPackets() {
 
         RenewQuestOngoingInfo info = quest;
         for (int index = i; index < 3; ++index) {
-          if (*reinterpret_cast<const int *>(entry + 4) == info.m_huntUnknown00D4[index]) {
-            info.m_huntUnknown00E0[index] = *reinterpret_cast<const std::int16_t *>(entry + 0xA);
-            info.m_huntUnknown0180[index] = *reinterpret_cast<const std::int16_t *>(entry + 8);
+          if (*reinterpret_cast<const int *>(entry + 4) == info.m_huntMobId[index]) {
+            info.m_huntKillCount[index] = *reinterpret_cast<const std::int16_t *>(entry + 0xA);
+            info.m_huntMaxCount[index] = *reinterpret_cast<const std::int16_t *>(entry + 8);
             g_renewQuestMgr->SetOngoingQuest(*reinterpret_cast<const unsigned int *>(entry), info);
             break;
           }

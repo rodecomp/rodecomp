@@ -39,10 +39,10 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ unsigned char unknown_00B4[0x8];
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ unsigned char unknown_00C4[0xC];
+  /* 00B4 */ unsigned char padding_00B4[0x8];
+  /* 00BC */ int padding_00BC;
+  /* 00C0 */ int padding_00C0;
+  /* 00C4 */ unsigned char padding_00C4[0xC];
   /* 00D0 */ char currentPassword[9];
   /* 00D9 */ char newPassword[9];
   /* 00E2 */ char confirmPassword[9];
@@ -71,7 +71,7 @@ public:
   /* 010C */ int passwordLength;
   /* 0110 */ unsigned char m_digits[10];
   /* 011C */ int inputMode;
-  /* 0120 */ int unknown_0120;
+  /* 0120 */ int padding_0120;
   /* 0124 */ UIBitmapButton* keypadButtons[11];
   /* 0150 */ UIBitmapButton* actionButtons[5];
   /* 0164 */ UIStaticText* instructionText;

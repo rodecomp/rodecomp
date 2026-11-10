@@ -10,7 +10,7 @@ struct BinkHandle {
   /* 0004 */ std::uint32_t height;
   /* 0008 */ std::uint32_t frames;
   /* 000C */ std::uint32_t frame;
-  /* 0010 */ unsigned char unknown_0010[0xDC];
+  /* 0010 */ unsigned char padding_0010[0xDC];
   /* 00EC */ std::int32_t paused;
 };
 

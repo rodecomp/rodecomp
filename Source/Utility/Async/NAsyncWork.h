@@ -19,7 +19,7 @@ public:
   }
 
 protected:
-  /* 001C */ std::uint32_t unknown_001C;
+  /* 001C */ std::uint32_t padding_001C;
   /* 0020 */ std::uint32_t m_group;
   /* 0024 */ std::uint32_t m_key;
 };

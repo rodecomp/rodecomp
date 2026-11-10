@@ -25,7 +25,7 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
   /* 00C8 */ int m_type;
 
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ int padding_00CC;
 };
 
 class CMCStoreInfoBackupSaveAsyncWork : public NAsyncWork {
@@ -49,7 +49,7 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
   /* 00C8 */ std::string m_response;
   /* 00E0 */ int m_type;
-  /* 00E4 */ unsigned char unknown_00E4[4];
+  /* 00E4 */ unsigned char padding_00E4[4];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
