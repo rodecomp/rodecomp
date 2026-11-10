@@ -17,16 +17,14 @@ namespace {
   __forceinline void StepDrift(int& angle, int& target) {
     int goal = target;
     if (goal > angle) {
-      const int next = std::min(360, angle + 1);
-      angle = next;
-      if (goal < next) {
-        goal = next ? std::max(rand() % next, 0) : 0;
+      angle = std::min(360, angle + 1);
+      if (goal < angle) {
+        goal = angle == 0 ? 0 : std::max(rand() % angle, 0);
       }
     } else {
-      const int next = std::max(0, angle - 1);
-      angle = next;
-      if (goal >= next) {
-        goal = 360 - (next ? std::max(rand() % next, 0) : 0);
+      angle = std::max(0, angle - 1);
+      if (goal >= angle) {
+        goal = 360 - (angle == 0 ? 0 : std::max(rand() % angle, 0));
       }
     }
     target = goal;
