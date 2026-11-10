@@ -128,8 +128,7 @@ void UIMileageWnd::OnProcess() {
 // OFFSET: 0x0094C230
 // FUNCTION: fn_12894
 void UIMileageWnd::OnCreate(int width, int height) {
-  const std::string title = FormatOwnedString(LookupMessage(MSI_RESTRAINT_OF_TRADE_3), 300);
-  this->m_tooltip = title;
+  this->m_tooltip = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RESTRAINT_OF_TRADE_3), 300));
 }
 
 // OFFSET: 0x00950690
