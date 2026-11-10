@@ -4,57 +4,11 @@
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 
-#include "Utility/Cipher/XorBytes.h"
+#include "Utility/EncryptedName.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <new>
-
-namespace {
-template <std::size_t Length>
-class EncryptedSource {
-public:
-  // INLINED
-  constexpr explicit EncryptedSource(const std::uint8_t (&source)[Length]) : data{} {
-    for (std::size_t index = 0; index < Length; ++index) {
-      this->data[index] = static_cast<char>(source[index]);
-    }
-  }
-
-  char data[Length];
-};
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  explicit EncryptedName(const EncryptedSource<Length>& source) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = static_cast<std::uint8_t>(source.data[index]);
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  // INLINED
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-}
 
 // STATIC: 0x013898D4
 // GLOBAL: gl_24355
@@ -104,8 +58,16 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
   const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
 
   if (!base.empty()) {
-    this->m_uploadUrl = base + "/emblem/upload";
-    this->m_downloadUrl = base + "/emblem/download";
+    {
+      const std::uint8_t source[] = {0x08, 0x64, 0x6A, 0x0F, 0x6F, 0xA0, 0x9E, 0x00, 0x52, 0x71, 0x6B, 0x02, 0x62, 0xA1, 0xF3};
+      thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
+      this->m_uploadUrl = base + name.Text();
+    }
+    {
+      const std::uint8_t source[] = {0xEA, 0xA8, 0xEA, 0x97, 0xCD, 0xC6, 0x8A, 0xBC, 0xA1, 0xA2, 0xF0, 0x9B, 0xCD, 0xCC, 0x86, 0xF7, 0xC5};
+      thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
+      this->m_downloadUrl = base + name.Text();
+    }
   }
 }
 
