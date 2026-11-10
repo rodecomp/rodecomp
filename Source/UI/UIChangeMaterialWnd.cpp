@@ -560,14 +560,7 @@ void UIChangeMaterialWnd_List::Paint() {
 
   for (int row = 0; row < this->m_pageSize; ++row) {
     const int index = row + this->m_scrollOffset;
-    const MaterialListEntry* entry = nullptr;
-    if (static_cast<unsigned int>(index) < this->m_items.size()) {
-      const unsigned int entryIndex = static_cast<unsigned int>(this->m_items[index]);
-      if (entryIndex < this->m_entries.size()) {
-        entry = &this->m_entries[entryIndex];
-      }
-    }
-
+    const MaterialListEntry* entry = this->GetEntry(index);
     if (entry) {
       const char* bitmap;
       if (index == this->m_selectedIndex) {
@@ -591,15 +584,14 @@ void UIChangeMaterialWnd_List::Paint() {
         name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
       }
 
-      const int y = this->rowHeight * row;
       if (entry->state == 1) {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, y, item, 1, 0);
-        this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
-        this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, this->rowHeight * row, item, 1, 0);
+        this->DrawTextAt(30, this->rowHeight * row + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawRightAlignedText(163, this->rowHeight * row + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
       } else {
-        DrawItemWithQuantityAuxiliary(*this, 1, 0, y, item, 1, 0);
-        this->DrawTextAt(30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
-        this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
+        DrawItemWithQuantityAuxiliary(*this, 1, 0, this->rowHeight * row, item, 1, 0);
+        this->DrawTextAt(30, this->rowHeight * row + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
+        this->DrawRightAlignedText(163, this->rowHeight * row + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
       }
     } else {
       CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
