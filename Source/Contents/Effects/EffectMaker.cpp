@@ -8,20 +8,17 @@
 #include "Contents/World/World.h"
 #include "Resource/World/WorldResource.h"
 
+#include <algorithm>
 #include <cstdlib>
 
 namespace {
   // INLINED
   inline int RandomBelow(int range) {
-    int value = 0;
-    if (range != 0) {
-      const int remainder = rand() % range;
-      if (remainder >= 0) {
-        value = remainder;
-      }
+    if (range == 0) {
+      return 0;
     }
 
-    return value;
+    return std::ranges::max(rand() % range, 0);
   }
 }
 
@@ -74,14 +71,14 @@ void CEffectMaker::Render(int) {
 // OFFSET: 0x00E50BB0
 // FUNCTION: fn_24297
 void CEffectMaker::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if ((static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) != 14) {
+  if (message != 14 || a != 0) {
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
   const WorldEffectRecord* record = reinterpret_cast<const WorldEffectRecord*>(b);
   this->effectId = record->id;
-  if (record->id != 45) {
+  if (this->effectId != 45) {
     this->spawnInterval = static_cast<unsigned>(record->delay);
     this->elapsedFrames = static_cast<unsigned>(record->delay - static_cast<float>(RandomBelow(24)));
   } else {
