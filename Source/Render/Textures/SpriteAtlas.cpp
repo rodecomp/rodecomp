@@ -8,9 +8,21 @@
 #include <timeapi.h>
 
 namespace {
+  struct CellSize {
+    unsigned width;
+    unsigned height;
+  };
+
   // STATIC: 0x010DD520
   // STATIC: 0x010DD524
-  constexpr unsigned dimensions[5] = {32, 64, 128, 256, 512};
+  // GLOBAL: gl_13421
+  constexpr CellSize cellSizes[25] = {
+    {32, 32}, {32, 64}, {32, 128}, {32, 256}, {32, 512},
+    {64, 32}, {64, 64}, {64, 128}, {64, 256}, {64, 512},
+    {128, 32}, {128, 64}, {128, 128}, {128, 256}, {128, 512},
+    {256, 32}, {256, 64}, {256, 128}, {256, 256}, {256, 512},
+    {512, 32}, {512, 64}, {512, 128}, {512, 256}, {512, 512},
+  };
 
   // INLINED
   unsigned Category(std::int16_t dimension) {
@@ -54,9 +66,7 @@ std::size_t SpriteAtlas::Hash::operator()(const Key& key) const {
 void SpriteAtlas::Initialize(unsigned spareCount) {
   this->Clear();
   this->ClearSpare();
-  if (this->m_spare.capacity() < spareCount) {
-    this->m_spare.reserve(spareCount);
-  }
+  this->m_spare.reserve(spareCount);
 
   for (unsigned i = 0; i < spareCount; ++i) {
     CTexture* texture = CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
@@ -134,14 +144,14 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
   }
 
   page.texture->Fill(nullptr, 0);
-  page.cellWidth = dimensions[category / 5];
-  page.cellHeight = dimensions[category % 5];
-  const unsigned columns = width / page.cellWidth;
-  const unsigned rows = height / page.cellHeight;
+  page.cellWidth = cellSizes[category].width;
+  page.cellHeight = cellSizes[category].height;
+  const int columns = width / page.cellWidth;
+  const int rows = height / page.cellHeight;
   page.records.resize(columns * rows);
 
-  for (unsigned y = 0; y < rows; ++y) {
-    for (unsigned x = 0; x < columns; ++x) {
+  for (int y = 0; y < rows; ++y) {
+    for (int x = 0; x < columns; ++x) {
       SpriteAtlasRecord& record = page.records[x + y * columns];
       record.x = x * page.cellWidth;
       record.y = y * page.cellHeight;
