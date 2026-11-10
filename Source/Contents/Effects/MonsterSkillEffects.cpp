@@ -104,8 +104,13 @@ void CCrimsonArrowEffect::OnProcess() {
   }
 
   EZ2STREmitter* emitter = this->emitter;
-  const vector3d position = {emitter->offset.x + this->position[0], emitter->offset.y + this->position[1], emitter->offset.z + this->position[2]};
-  emitter->position = position;
+  const vector3d base = {this->position[0], this->position[1], this->position[2]};
+  const float x = emitter->offset.x + base.x;
+  const float y = emitter->offset.y + base.y;
+  const float z = emitter->offset.z + base.z;
+  emitter->position.x = x;
+  emitter->position.y = y;
+  emitter->position.z = z;
   AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -899,8 +904,13 @@ void CEternalSlashCountEffect::OnProcess() {
   }
 
   EZ2STREmitter* emitter = this->emitter;
-  const vector3d position = {emitter->offset.x + this->position[0], emitter->offset.y + this->position[1], emitter->offset.z + this->position[2]};
-  emitter->position = position;
+  const vector3d base = {this->position[0], this->position[1], this->position[2]};
+  const float x = emitter->offset.x + base.x;
+  const float y = emitter->offset.y + base.y;
+  const float z = emitter->offset.z + base.z;
+  emitter->position.x = x;
+  emitter->position.y = y;
+  emitter->position.z = z;
   AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -947,18 +957,17 @@ bool CFallenAngelEffect::IsAlive() {
 // OFFSET: 0x007116D0
 // FUNCTION: fn_07225
 void CFallenAngelEffect::OnProcess() {
-  EZ2STREmitter* emitter = this->emitter;
-  const vector3d start = emitter->position;
+  const vector3d start = this->emitter->position;
   const float dx = this->startX - this->position[0];
   const float dz = this->startZ - this->position[2];
   const float speed = 1.0f / SquareRoot(dx * dx + 0.0f + dz * dz);
 
-  emitter->position.x = start.x + dx * speed * 0.09f;
-  emitter->position.y = start.y + speed * 0.0f;
-  emitter->position.z = start.z + dz * speed * 0.09f;
+  this->emitter->position.x = start.x + dx * speed * 0.09f;
+  this->emitter->position.y = start.y + speed * 0.0f;
+  this->emitter->position.z = start.z + dz * speed * 0.09f;
 
-  AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
-  emitter->elapsed++;
+  AsParticle(this->emitter)->Process(0.0f, -80.0f, 0.0f);
+  this->emitter->elapsed++;
 }
 
 // OFFSET: 0x007117F0
@@ -2377,9 +2386,12 @@ void CPetitioEffect::OnProcess() {
     }
 
     CEZ2STRParticle* particle = AsParticle(emitter);
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1] - 12.0f;
-    particle->position.z = this->position[2];
+    const float x = this->position[0] + 0.0f;
+    const float y = this->position[1] - 12.0f;
+    const float z = this->position[2] + 0.0f;
+    particle->position.x = x;
+    particle->position.y = y;
+    particle->position.z = z;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 }
@@ -2853,8 +2865,12 @@ bool CSavageImpactEffect::IsAlive() {
 // FUNCTION: fn_07386
 void CSavageImpactEffect::OnProcess() {
   CEZ2STRParticle* particle = AsParticle(this->emitter);
-  const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
-  particle->position = position;
+  const float x = this->position[0] + 0.0f;
+  const float y = this->position[1] - 12.0f;
+  const float z = this->position[2] + 0.0f;
+  particle->position.x = x;
+  particle->position.y = y;
+  particle->position.z = z;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -3942,35 +3958,34 @@ void CSevereRainStorm::OnProcess() {
   this->SpawnParticles();
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
-    if (emitter->lifetime < 0.0f) {
+    if (emitter->lifetime >= 0.0f) {
+      if (this->id == 2348 && emitter) {
+        const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+
+        const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
+                         emitter->offset.x;
+        const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
+                         emitter->offset.y;
+        const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
+                         emitter->offset.z;
+
+        emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
+        emitter->position.y = vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10];
+        emitter->position.z = vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11];
+        AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+      }
+
+      emitter = *it;
+      if (emitter) {
+        AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+      }
+      ++it;
+    } else {
       FreeParticle(AsParticle(emitter));
       it = this->emitters.erase(it);
-      continue;
     }
-
-    if (this->id == 2348 && emitter) {
-      const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-      const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-      const vector3d position = {this->position[0], this->position[1], this->position[2]};
-
-      const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
-                       emitter->offset.x;
-      const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
-                       emitter->offset.y;
-      const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
-                       emitter->offset.z;
-
-      emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-      emitter->position.y = vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10];
-      emitter->position.z = vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11];
-      AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
-    }
-
-    emitter = *it;
-    if (emitter) {
-      AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
-    }
-    ++it;
   }
   ++this->elapsedFrames;
 }
@@ -4540,15 +4555,17 @@ void CCylinderEffect::OnProcess() {
 void CSpriteMableEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CSpriteParticle* particle = AsSprite(*it);
-    particle->animationParameter += 0.02f;
-    reinterpret_cast<float&>(particle->animationParameters) += 0.05f;
+    const float yaw = particle->animationParameter += 0.02f;
+    const float bob = reinterpret_cast<float&>(particle->animationParameters) += 0.05f;
 
-    particle->position.x = static_cast<float>(std::sin(static_cast<double>(particle->animationParameter))) * 6.0f + this->position[0];
-    particle->position.y =
-        static_cast<float>(std::sin(static_cast<double>(reinterpret_cast<float&>(particle->animationParameters)))) * 3.0f - 6.0f + this->position[1];
-    particle->position.z = static_cast<float>(std::cos(static_cast<double>(particle->animationParameter))) * 6.0f + this->position[2];
+    const float offsetX = ClientSin(yaw) * 6.0f;
+    const float offsetY = ClientSin(bob) * 3.0f - 6.0f;
+    const float offsetZ = ClientCos(yaw) * 6.0f;
+    particle->position.x = offsetX + this->position[0];
+    particle->position.y = offsetY + this->position[1];
+    particle->position.z = offsetZ + this->position[2];
 
-    int angle = static_cast<int>(static_cast<float>(static_cast<int>(particle->animationParameter / 3.141592f * 180.0f) % 360) -
+    int angle = static_cast<int>(static_cast<float>(static_cast<int>(yaw / 3.141592f * 180.0f) % 360) -
                                  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
     if (angle < 0) {
       angle += 360;
@@ -4748,8 +4765,10 @@ void CRichsCoinEffect::OnProcess() {
     if (particle) {
       const float angle = particle->animationParameter + 0.015f;
       particle->animationParameter = angle;
-      particle->position.z = static_cast<float>(std::cos(static_cast<double>(angle))) * 7.0f + this->position[2];
-      particle->position.x = static_cast<float>(std::sin(static_cast<double>(angle))) * 7.0f + this->position[0];
+      const float cosine = ClientCos(angle) * 7.0f;
+      const float sine = ClientSin(angle) * 7.0f;
+      particle->position.z = cosine + this->position[2];
+      particle->position.x = sine + this->position[0];
       particle->position.y = this->position[1] - 10.0f;
 
       float degrees = angle / 3.141592f * 180.0f - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
@@ -4775,9 +4794,11 @@ void CRichsCoinEffect::OnProcess() {
     if (coin) {
       const float angle = coin->animationParameter + 0.015f;
       coin->animationParameter = angle;
-      coin->position.z = static_cast<float>(std::cos(static_cast<double>(angle))) * 7.0f + this->position[2];
+      const float cosine = ClientCos(angle) * 7.0f;
+      const float sine = ClientSin(angle) * 7.0f;
+      coin->position.z = cosine + this->position[2];
       coin->position.y = this->position[1] - 10.0f;
-      coin->position.x = static_cast<float>(std::sin(static_cast<double>(angle))) * 7.0f + this->position[0];
+      coin->position.x = sine + this->position[0];
     }
     ++coin->elapsedFrames;
   }
