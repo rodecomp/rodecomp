@@ -151,7 +151,10 @@ template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  {
+    const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
+    this->scrollBar->onChange = onChange;
+  }
   this->AddChild(this->scrollBar);
 }
 
