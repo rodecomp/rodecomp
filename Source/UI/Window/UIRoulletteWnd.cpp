@@ -195,9 +195,7 @@ void UIRoulletteWnd::Paint() {
   if (g_rouletteMgr->m_spinning != 0 || (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_bonus == 0)) {
     CBitmapRes* arrow =
       static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\roullette\\stageArrow.bmp")));
-    if (arrow != nullptr) {
-      this->DrawBitmap(482, 344 - g_rouletteMgr->m_stage * 40, arrow, true);
-    }
+    this->DrawBitmap(482, 344 - g_rouletteMgr->m_stage * 40, arrow, true);
   }
 
   this->UpdateButtons();
@@ -335,11 +333,11 @@ void UIRoulletteWnd::OnProcess() {
 void UIRoulletteWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
 
-  if (static_cast<unsigned>(y - 143) < 31 && static_cast<unsigned>(x - 186) < 31 && g_rouletteMgr->m_resultShown == 1) {
+  if (y >= 143 && y <= 173 && x >= 186 && x <= 216 && g_rouletteMgr->m_resultShown == 1) {
     item = g_rouletteMgr->m_resultItem;
   }
 
-  if (static_cast<unsigned>(y - 133) < 31 && static_cast<unsigned>(x - 60) < 29) {
+  if (y >= 133 && y <= 163 && x >= 60 && x <= 88) {
     item = g_rouletteMgr->m_additionItem;
   }
 
@@ -351,52 +349,65 @@ void UIRoulletteWnd::OnRBtnDown(int x, int y) {
 // OFFSET: 0x0080CB90
 // FUNCTION: fn_10092
 int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
-    switch (argument1) {
-      case ID_CLOSE:
-        if (g_rouletteMgr->m_spinning == 0) {
-          if (g_windowMgr.roulletteWnd != nullptr) {
-            g_windowMgr.CloseWindow(WID_ROULLETTEWND);
+  switch (message) {
+    case UM_COMMAND:
+      switch (argument1) {
+        case ID_CLOSE:
+          if (g_rouletteMgr->m_spinning == 0) {
+            if (g_windowMgr.roulletteWnd != nullptr) {
+              g_windowMgr.CloseWindow(WID_ROULLETTEWND);
+              return 0;
+            }
+          } else {
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEMS)), 0x6464FF, 0, 0, 0);
+          }
+          break;
+        case ID_ROULETTE_GENERATE:
+          if (this->m_enabled == 1) {
+            RouletteGeneratePacket packet;
+            packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
+            GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            this->m_enabled = 0;
             return 0;
           }
-        } else {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEMS)), 0x6464FF, 0, 0, 0);
-        }
-        break;
-      case ID_ROULETTE_GENERATE:
-        if (this->m_enabled == 1) {
-          RouletteGeneratePacket packet;
-          packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
-          GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-          this->m_enabled = 0;
-          return 0;
-        }
-        break;
-      case ID_ROULETTE_RECEIVE_ITEM:
-        if (g_rouletteMgr->m_resultShown == 1) {
-          RouletteReceiveItemPacket packet;
-          packet.id = ID_CZ_RECV_ROULETTE_ITEM;
-          packet.condition = static_cast<unsigned char>(argument2);
-          GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-          return 0;
-        }
-        break;
-    }
-    return 0;
+          break;
+        case ID_ROULETTE_RECEIVE_ITEM:
+          if (g_rouletteMgr->m_resultShown == 1) {
+            RouletteReceiveItemPacket packet;
+            packet.id = ID_CZ_RECV_ROULETTE_ITEM;
+            packet.condition = static_cast<unsigned char>(argument2);
+            GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            return 0;
+          }
+          break;
+      }
+      return 0;
+    case UM_REFRESH:
+      this->Invalidate();
+      return 0;
+    default:
+      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  if (message == UM_REFRESH) {
-    this->Invalidate();
-    return 0;
-  }
-
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x0080CCE0
 // FUNCTION: fn_10093
 void UIRoulletteWnd::UpdateButtons() {
-  if (g_effectDetailLevel == 2) {
+  if (g_effectDetailLevel != 2) {
+    if (g_rouletteMgr->m_stage != 6 &&
+        (g_rouletteMgr->m_bronzePoint > 0 || g_rouletteMgr->m_silverPoint >= 10 || g_rouletteMgr->m_goldPoint >= 10)) {
+      this->m_startButton->Move(339, 398);
+    }
+    if (g_rouletteMgr->m_spinning != 0) {
+      this->m_startButton->Move(-100, -100);
+    }
+    if (g_rouletteMgr->m_resultShown == 1) {
+      this->m_prizeButton->Move(203, 398);
+    } else {
+      this->m_prizeButton->Move(-100, -100);
+      return;
+    }
+  } else {
     if (g_rouletteMgr->m_stage != 6 &&
         (g_rouletteMgr->m_bronzePoint > 0 || g_rouletteMgr->m_silverPoint >= 10 || g_rouletteMgr->m_goldPoint >= 10)) {
       this->m_startButton->Move(339, 398);
@@ -405,25 +416,13 @@ void UIRoulletteWnd::UpdateButtons() {
       this->m_startButton->Move(-100, -100);
       this->m_stageArrow->Move(-100, -100);
     }
-    if (g_rouletteMgr->m_resultShown != 1) {
+    if (g_rouletteMgr->m_resultShown == 1) {
+      this->m_prizeButton->Move(203, 398);
+    } else {
       this->m_prizeSprite->Move(-100, -100);
       this->m_prizeButton->Move(-100, -100);
       return;
     }
-    this->m_prizeButton->Move(203, 398);
-  } else {
-    if (g_rouletteMgr->m_stage != 6 &&
-        (g_rouletteMgr->m_bronzePoint > 0 || g_rouletteMgr->m_silverPoint >= 10 || g_rouletteMgr->m_goldPoint >= 10)) {
-      this->m_startButton->Move(339, 398);
-    }
-    if (g_rouletteMgr->m_spinning != 0) {
-      this->m_startButton->Move(-100, -100);
-    }
-    if (g_rouletteMgr->m_resultShown != 1) {
-      this->m_prizeButton->Move(-100, -100);
-      return;
-    }
-    this->m_prizeButton->Move(203, 398);
   }
 
   if (g_rouletteMgr->m_stage != 6) {
