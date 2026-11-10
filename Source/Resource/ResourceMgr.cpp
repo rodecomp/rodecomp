@@ -3,7 +3,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
-#include "Utility/Threading/NSyncObject.h"
+#include "Utility/Threading/CSyncObject.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -137,7 +137,7 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
 
   std::string resolved;
   {
-    NSyncObject lock(&this->m_lock);
+    CSyncObject lock(&this->m_lock);
     char normalized[260] = {};
     StringFormat(normalized, sizeof(normalized), _TRUNCATE, "%s", name);
 
