@@ -122,29 +122,27 @@ bool CMapChainEffect::IsAlive() {
 // FUNCTION: fn_18952
 void CMapChainEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
-      float& angle = *reinterpret_cast<float*>(&particle->angleBits);
-      const float speed = *reinterpret_cast<const float*>(particle->animationParameters);
-      angle += speed;
+      float angle = *reinterpret_cast<const float*>(particle->animationParameters) + *reinterpret_cast<float*>(&particle->angleBits);
       if (angle >= 360.0f) {
         angle -= 360.0f;
       }
+      *reinterpret_cast<float*>(&particle->angleBits) = angle;
 
       if (particle->rowIndex > 5) {
         int delta = -3;
         if (particle->elapsedFrames % 600 <= 250) {
           delta = 3;
         }
-        particle->alpha += delta;
-        if (particle->alpha > 255) {
-          particle->alpha = 255;
-        } else if (particle->alpha < 0) {
-          particle->alpha = 0;
+        int alpha = particle->alpha + delta;
+        if (alpha >= 255) {
+          alpha = 255;
         }
+        particle->alpha = alpha > 0 ? alpha : 0;
       }
 
       const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
@@ -154,9 +152,9 @@ void CMapChainEffect::OnProcess() {
       particle->transform = rotation;
 
       const int segment = particle->columnIndex;
-      const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + angle) % 360;
+      const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + *reinterpret_cast<float*>(&particle->angleBits)) % 360;
 
-      vector3d points[4] = {};
+      MapChainPoint points[4];
 
       const int tilt = particle->phaseParameter;
       const float sinIndex = g_sinTable[index];
@@ -164,17 +162,18 @@ void CMapChainEffect::OnProcess() {
       const float sinTilt = g_sinTable[tilt];
       const float cosTilt = g_cosTable[tilt];
 
-      const float termX = (sinTilt * particle->scale) * cosIndex;
-      const float termZ = (particle->scale * cosTilt) * cosIndex;
-      const float widthCos = particle->speedParameter * cosTilt;
-      const float widthSin = particle->speedParameter * sinTilt;
+      const float centerX = (sinTilt * particle->scale) * cosIndex;
+      const float centerY = particle->scale * sinIndex;
+      const float centerZ = (particle->scale * cosTilt) * cosIndex;
+      const float sideX = particle->speedParameter * cosTilt;
+      const float sideZ = -sinTilt * particle->speedParameter;
 
-      const float v1x = (termX - widthCos) + 0.0f;
-      const float v3x = (termX + widthCos) + 0.0f;
-      const float v1y = (particle->scale * sinIndex - 0.0f) + particle->animationParameter;
-      const float v3y = (particle->scale * sinIndex + 0.0f) + particle->animationParameter;
-      const float v1z = (termZ + widthSin) + 0.0f;
-      const float v3z = (termZ - widthSin) + 0.0f;
+      const float v1x = (centerX - sideX) + 0.0f;
+      const float v1y = (centerY - 0.0f) + particle->animationParameter;
+      const float v1z = (centerZ - sideZ) + 0.0f;
+      const float v3x = (sideX + centerX) + 0.0f;
+      const float v3y = (centerY + 0.0f) + particle->animationParameter;
+      const float v3z = (sideZ + centerZ) + 0.0f;
 
       particle->vertices[1].x = v1x;
       particle->vertices[1].y = v1y;
