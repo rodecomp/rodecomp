@@ -116,22 +116,22 @@ bool CJupitelThunderStormEffect::IsAlive() {
 // FUNCTION: fn_07045
 void CJupitelThunderStormEffect::OnProcess() {
   if (CParticle* particle = this->particle) {
-    if (ParticleAlive(particle)) {
+    if (!ParticleAlive(particle)) {
+      FreeParticle(particle);
+      this->particle = nullptr;
+    } else {
       vector3d position;
       if (this->frame < this->duration) {
         position.x = particle->position.x + this->step.x;
         position.y = particle->position.y + this->step.y;
         position.z = particle->position.z + this->step.z;
       } else {
-        position.x = this->sourcePosition[0];
-        position.y = this->sourcePosition[1];
-        position.z = this->sourcePosition[2];
+        position = *reinterpret_cast<const vector3d*>(this->sourcePosition);
       }
-      particle->position = position;
+      particle->position.x = position.x;
+      particle->position.y = position.y;
+      particle->position.z = position.z;
       static_cast<CEZ2STRParticle*>(this->particle)->Process(0.0f, 0.0f, 0.0f);
-    } else {
-      FreeParticle(particle);
-      this->particle = nullptr;
     }
   }
 
