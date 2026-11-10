@@ -11,6 +11,18 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline int RandomSpan(int range) {
+  if (range == 0) {
+    return 0;
+  }
+
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // OFFSET: 0x00708E70
 // FUNCTION: fn_07085
 CPowderingEffect::CPowderingEffect() : CEffect(-1), particleGridSize(0) {
@@ -54,23 +66,12 @@ void CPowderingEffect::Open() {
 
     particle->SetTexture("smoke2.bmp");
 
-    const int span1 = this->particleGridSize * 5;
-    int r1 = 0;
-    if (span1 != 0) {
-      r1 = std::max(rand() % span1, 0);
-    }
-    const int r1Final = r1 - span1 / 2 + 1;
-
-    const int span2 = this->particleGridSize * 5;
-    int r2 = 0;
-    if (span2 != 0) {
-      r2 = std::max(rand() % span2, 0);
-    }
-    const int r2Final = r2 - span2 / 2 + 1;
+    const int offsetX = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
+    const int offsetZ = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
 
     particle->offsetY = 0.0f;
-    particle->offsetX = static_cast<float>(r1Final);
-    particle->offsetZ = static_cast<float>(r2Final);
+    particle->offsetX = static_cast<float>(offsetX);
+    particle->offsetZ = static_cast<float>(offsetZ);
 
     this->InitSmokeParticle(particle);
     InitParticleQuad(particle->vertices);
