@@ -347,8 +347,9 @@ int AiGetActors(lua_State* state) {
 
   int index = 1;
   for (std::list<CRenderObject*>::iterator it = world->actors.begin(); it != world->actors.end(); ++it) {
+    int key = index++;
     int accountId = static_cast<int>((*it)->render.accountId);
-    lua_pushnumber(state, index++);
+    lua_pushnumber(state, key);
     lua_pushnumber(state, accountId);
     lua_settable(state, -3);
   }
@@ -850,6 +851,16 @@ struct MoveToOwnerPacket {
 #pragma pack(pop)
 
 static_assert(sizeof(MoveToOwnerPacket) == 6);
+
+#pragma pack(push, 1)
+struct MoveNpcPacket {
+  /* 0000 */ std::int16_t opcode;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ unsigned char dest[3];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(MoveNpcPacket) == 9);
 
 }
 
