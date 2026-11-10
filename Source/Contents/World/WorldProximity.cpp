@@ -270,8 +270,9 @@ __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t aid, const Ce
       return std::fabs(cell.x - player.x) <= static_cast<float>(range) && std::fabs(cell.z - player.z) <= static_cast<float>(range);
     };
 
-    const CellFloatPos player = {this->player->render.position.x, this->player->render.position.z};
-    this->UpdateGuildMasterApproach(std::bind(isNearby, pos, player, this->nearbyRange));
+    this->UpdateGuildMasterApproach(
+      std::bind(isNearby, pos, CellFloatPos(this->player->render.position.x, this->player->render.position.z), this->nearbyRange)
+    );
   }
 }
 

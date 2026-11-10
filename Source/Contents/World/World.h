@@ -19,6 +19,15 @@ class CRenderObject;
 class GroundGeometry;
 
 struct CellFloatPos {
+  CellFloatPos() {
+  }
+
+  CellFloatPos(float x, float z) : x(x), z(z) {
+  }
+
+  CellFloatPos(const CellFloatPos& other) : x(other.x), z(other.z) {
+  }
+
   float x;
   float z;
 };
