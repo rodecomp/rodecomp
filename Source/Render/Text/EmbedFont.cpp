@@ -48,13 +48,13 @@ int LoadEmbedFont(HANDLE* fontReference, const char* fileName) {
   std::strcat(path, fileName);
   if (std::fopen(path, "r") == nullptr) {
     std::sprintf(message, "%s \xc6\xc4\xc0\xcf \xbe\xf8\xc0\xbd!", path);
-    ShowErrorDialog(nullptr, message, 0);
+    ShowErrorDialog(message, 0);
     std::exit(0);
   }
-  if (g_embedFont == nullptr) {
-    return 0;
+  if (g_embedFont != nullptr) {
+    return g_embedFont->Load(fontReference, fileName, path);
   }
-  return g_embedFont->Load(fontReference, fileName, path);
+  return 0;
 }
 
 // OFFSET: 0x00ADD090
@@ -75,7 +75,7 @@ static unsigned long ReadEmbedFontStream(void* stream, void* buffer, const unsig
 // FUNCTION: fn_17945
 static std::wstring ToWideString(const std::string& text) {
   WORD length = static_cast<WORD>(MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, text.c_str(), -1, nullptr, 0));
-  std::vector<wchar_t> buffer(length);
+  std::vector<wchar_t> buffer(length, L'\0');
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, text.c_str(), -1, buffer.data(), static_cast<int>(buffer.size()));
   return std::wstring(buffer.data(), buffer.size());
 }
