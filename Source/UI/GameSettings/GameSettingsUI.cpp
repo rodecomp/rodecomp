@@ -319,10 +319,13 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   });
   this->AddChild(this->button);
 
-  this->listBox = new CUIListBoxEx<T, D>();
-  this->listBox->itemWidth = this->width;
-  this->listBox->rowHeight = this->itemHeight;
-  this->listBox->SetSize(this->width + 13, this->itemHeight);
+  CUIListBoxEx<T, D>* listBox = new CUIListBoxEx<T, D>();
+  this->listBox = listBox;
+  const int listWidth = this->width;
+  const int listRowHeight = this->itemHeight;
+  listBox->itemWidth = listWidth;
+  listBox->rowHeight = listRowHeight;
+  listBox->SetSize(listWidth + 13, listRowHeight);
   this->listBox->Move(1, 1);
   this->listBox->SetOnSelect([this](T* item, const D& value) {
     g_windowMgr.CloseDropDown();
@@ -338,8 +341,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   this->listBox->scrollBar->Move(this->width, 0);
   this->listBox->scrollBar->step = this->itemHeight;
 
-  CUIVScrollBar* scrollBar = this->listBox->scrollBar;
-  scrollBar->SetButtonImages(std::string([]() {
+  this->listBox->SetScrollBarButtonImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x57, 0x66, 0x09, 0x61, 0x0D, 0x75, 0x74, 0x08, 0x51, 0x2D, 0x09, 0x57, 0x70, 0x01, 0xED,
                                    0xB6, 0xF4, 0xBB, 0xA6, 0xF7, 0xA1, 0x8B, 0xC4, 0xB5, 0xB9, 0xAB, 0xA4, 0xEB, 0xCD};
     constexpr EncryptedSource<29> source(bytes);
@@ -353,7 +355,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
     return name.Text();
   }()));
 
-  scrollBar->SetBackground(std::string([]() {
+  this->listBox->SetScrollBarBackground(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x4B, 0x32, 0xB7, 0x77, 0x21, 0x13, 0xA2, 0xDA, 0x4D, 0x79, 0xB7, 0x41, 0x5C, 0x67, 0x3B,
                                            0x64, 0xE8, 0xEF, 0x18, 0xE1, 0x8D, 0xED, 0x0A, 0x7E, 0xEF, 0xB3, 0x15, 0xE0, 0x91, 0xDD};
     constexpr EncryptedSource<30> source(bytes);
@@ -361,7 +363,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
     return name.Text();
   }()));
 
-  scrollBar->SetThumbImages(std::string([]() {
+  this->listBox->SetScrollBarThumbImages(std::string([]() {
     constexpr std::uint8_t bytes[] = {0x99, 0x2A, 0x47, 0x83, 0x37, 0xE1, 0xFA, 0x2E, 0x9F, 0x61, 0x47, 0xB5, 0x4A, 0x95, 0x63, 0x90, 0x3A,
                                       0xF7, 0xE8, 0x15, 0x9B, 0x1F, 0x5D, 0x82, 0x2B, 0xDA, 0xF2, 0x09, 0xD9, 0x4D, 0x52, 0x93, 0x59};
     constexpr EncryptedSource<33> source(bytes);
