@@ -1,6 +1,7 @@
 #include "Contents/Effects/StarEmperorEffect.h"
 
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -119,40 +120,57 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
     return;
   }
 
-  const int startAngle = particle->phaseParameter * particle->columnIndex;
-  const int endAngle = (particle->columnIndex + 1) * particle->phaseParameter;
+  const int column = particle->columnIndex;
+  const int startAngle = particle->phaseParameter * column;
+  const int endAngle = (column + 1) * particle->phaseParameter;
   int step = particle->elapsedFrames + 1;
   if (this->id == 1203) {
     const int half = this->effectLifetime / 2;
     step = half > particle->elapsedFrames ? half - particle->elapsedFrames : particle->elapsedFrames - half;
   }
 
-  const float outer = -(1.75f / static_cast<float>(this->effectLifetime)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
-                      static_cast<float>(step) * 1.75f;
   float inner = 0.0f;
+  const float acceleration = -(1.75f / static_cast<float>(this->effectLifetime));
+  const float outer = acceleration * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) + static_cast<float>(step) * 1.75f;
   if (outer > 12.0f) {
     inner = outer - 12.0f;
   }
 
-  vector3d corners[4] = {};
-  corners[0].x = g_cosTable[startAngle] * outer;
-  corners[0].y = g_sinTable[startAngle] * outer;
-  corners[0].z = 0.0f;
-  corners[1].x = g_cosTable[endAngle] * outer;
-  corners[1].y = g_sinTable[endAngle] * outer;
-  corners[1].z = 0.0f;
-  corners[2].x = g_cosTable[startAngle] * inner;
-  corners[2].y = g_sinTable[startAngle] * inner;
-  corners[2].z = 0.0f;
-  corners[3].x = g_cosTable[endAngle] * inner;
-  corners[3].y = g_sinTable[endAngle] * inner;
-  corners[3].z = 0.0f;
+  EffectPoint corners[4];
+  const float outerStartX = g_cosTable[startAngle] * outer;
+  const float outerStartY = g_sinTable[startAngle] * outer;
+  const float outerEndX = g_cosTable[endAngle] * outer;
+  const float outerEndY = g_sinTable[endAngle] * outer;
+  const float innerStartX = g_cosTable[startAngle] * inner;
+  const float innerStartY = g_sinTable[startAngle] * inner;
+  const float innerEndX = g_cosTable[endAngle] * inner;
+  const float innerEndY = g_sinTable[endAngle] * inner;
 
-  for (int i = 0; i < 4; ++i) {
-    particle->vertices[i].x = corners[i].x;
-    particle->vertices[i].y = corners[i].y;
-    particle->vertices[i].z = corners[i].z;
-  }
+  particle->vertices[0].x = outerStartX;
+  particle->vertices[0].y = outerStartY;
+  particle->vertices[0].z = 0.0f;
+  particle->vertices[1].x = outerEndX;
+  particle->vertices[1].y = outerEndY;
+  particle->vertices[1].z = 0.0f;
+  particle->vertices[2].x = innerStartX;
+  particle->vertices[2].y = innerStartY;
+  particle->vertices[2].z = 0.0f;
+  particle->vertices[3].x = innerEndX;
+  particle->vertices[3].y = innerEndY;
+  particle->vertices[3].z = 0.0f;
+
+  corners[0].x = outerStartX;
+  corners[0].y = outerStartY;
+  corners[0].z = 0.0f;
+  corners[1].x = outerEndX;
+  corners[1].y = outerEndY;
+  corners[1].z = 0.0f;
+  corners[2].x = innerStartX;
+  corners[2].y = innerStartY;
+  corners[2].z = 0.0f;
+  corners[3].x = innerEndX;
+  corners[3].y = innerEndY;
+  corners[3].z = 0.0f;
 
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
@@ -160,17 +178,17 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
 
   if (this->id == 1203) {
     const int quarter = this->effectLifetime / 4;
-    if (quarter <= step) {
-      step = this->effectLifetime - step;
+    if (quarter > step) {
+      particle->alpha = step * (255 / quarter);
+    } else {
+      particle->alpha = (this->effectLifetime - step) * (255 / quarter);
     }
-    particle->alpha = 255 / quarter * step;
   } else {
     const int half = this->effectLifetime / 2;
-    const int scale = 255 / half;
     if (half > particle->elapsedFrames) {
-      particle->alpha = step * scale;
+      particle->alpha = step * (255 / half);
     } else {
-      particle->alpha = (this->effectLifetime - step) * scale;
+      particle->alpha = (this->effectLifetime - step) * (255 / half);
     }
   }
 
