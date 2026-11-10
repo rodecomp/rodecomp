@@ -212,7 +212,7 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
       const short minLevel = quest.m_huntMinLevel[index];
       const short maxLevel = quest.m_huntMaxLevel[index];
       const char* name = quest.m_huntName[index];
-      if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
+      if (-1 < minLevel && -1 < maxLevel && (0 != minLevel || 0 != maxLevel)) {
         if (minLevel == 0) {
           text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
         } else if (maxLevel == 0) {
