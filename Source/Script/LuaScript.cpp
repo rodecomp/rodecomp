@@ -397,12 +397,6 @@ int SetEvilsPawInfo(lua_State* state) {
   case MSG_SET_INIT:
     effect->ResetParticles();
     break;
-  case MSG_SET_SIZE:
-    effect->size = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
-    break;
-  case MSG_SET_SPEED:
-    effect->frameDelay = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
-    break;
   case MSG_SET_OFFSET_POS: {
     const float x = static_cast<float>(luaL_checknumber(state, 3));
     const float y = static_cast<float>(luaL_checknumber(state, 4));
@@ -412,6 +406,12 @@ int SetEvilsPawInfo(lua_State* state) {
     effect->offset.z = z;
     break;
   }
+  case MSG_SET_SIZE:
+    effect->size = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case MSG_SET_SPEED:
+    effect->frameDelay = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
   }
 
   return 0;
