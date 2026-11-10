@@ -29,19 +29,19 @@ void CCellRangeEffect::SetCellTexture(CParticle* particle) {
   }
 
   const int frame = (particle->elapsedFrames + particle->columnIndex) / 10 % 3 + 1;
-  std::string name;
+  std::string name("");
   switch (this->id) {
   case EF_KO_ZENKAI_WATER:
-    name = FormatOwnedString("effect\\water-%d.bmp", frame);
+    name = static_cast<const std::string&>(FormatOwnedString("effect\\water-%d.bmp", frame));
     break;
   case EF_KO_ZENKAI_LAND:
-    name = FormatOwnedString("effect\\stone-%d.bmp", frame);
+    name = static_cast<const std::string&>(FormatOwnedString("effect\\stone-%d.bmp", frame));
     break;
   case EF_KO_ZENKAI_FIRE:
-    name = FormatOwnedString("effect\\fire-%d.bmp", frame);
+    name = static_cast<const std::string&>(FormatOwnedString("effect\\fire-%d.bmp", frame));
     break;
   case EF_KO_ZENKAI_WIND:
-    name = FormatOwnedString("effect\\lightning-%d.bmp", frame);
+    name = static_cast<const std::string&>(FormatOwnedString("effect\\lightning-%d.bmp", frame));
     break;
   case EF_KO_MAKIBISHI:
     name = "effect\\makibishi.bmp";
