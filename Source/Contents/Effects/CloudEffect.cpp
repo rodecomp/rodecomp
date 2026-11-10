@@ -162,16 +162,17 @@ void CCloud::Drift() {
   StepDrift(this->driftZ, this->driftTargetZ);
 
   CParticle* particle = this->particle;
-  float offsetX = particle->offsetX;
-  const float offsetY = particle->offsetY;
-  float offsetZ = particle->offsetZ;
-  offsetX = g_sinTable[this->driftX] * 0.05f + offsetX;
-  offsetZ = g_sinTable[this->driftZ] * 0.05f + offsetZ;
-  particle->offsetX = offsetX;
-  particle->offsetY = offsetY;
-  particle->offsetZ = offsetZ;
+  vector3d offset = {particle->offsetX, particle->offsetY, particle->offsetZ};
+  offset.x = g_sinTable[this->driftX] * 0.05f + offset.x;
+  offset.z = g_sinTable[this->driftZ] * 0.05f + offset.z;
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
 
-  this->particle->position.x = offsetX + this->position[0];
-  this->particle->position.y = offsetY + this->position[1];
-  this->particle->position.z = offsetZ + this->position[2];
+  const float x = offset.x + this->position[0];
+  const float y = offset.y + this->position[1];
+  const float z = offset.z + this->position[2];
+  this->particle->position.x = x;
+  this->particle->position.y = y;
+  this->particle->position.z = z;
 }
