@@ -4,7 +4,6 @@
 #include "Resource/World/GroundResource.h"
 
 #include "Utility/Math/AffineMatrix.h"
-#include <bit>
 
 namespace {
   struct NormalVector {
@@ -85,8 +84,8 @@ namespace {
 
   // INLINED
   __forceinline void TriangleNormal(float* normal, const float* a, const float* b, const float* c) {
-    const float u[3] = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
     const float v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+    const float u[3] = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
     SetPoint(normal, u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]);
   }
 
@@ -326,7 +325,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       const GroundCell* northwest;
       const CellNormals* northwestNormals;
 
-      if (column > 0 && row > 0) {
+      if (column >= 1 && row >= 1) {
         northwest = &this->cells[(row - 1) * this->width + column - 1];
         northwestNormals = &normals[(row - 1) * this->width + column - 1];
       } else {
@@ -337,7 +336,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       const GroundCell* north;
       const CellNormals* northNormals;
 
-      if (row > 0) {
+      if (row >= 1) {
         north = &this->cells[(row - 1) * this->width + column];
         northNormals = &normals[(row - 1) * this->width + column];
       } else {
@@ -348,7 +347,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       const GroundCell* northeast;
       const CellNormals* northeastNormals;
 
-      if (column < this->width - 1 && row > 0) {
+      if (column < this->width - 1 && row >= 1) {
         northeast = &this->cells[(row - 1) * this->width + column + 1];
         northeastNormals = &normals[(row - 1) * this->width + column + 1];
       } else {
@@ -359,7 +358,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       const GroundCell* west;
       const CellNormals* westNormals;
 
-      if (column > 0) {
+      if (column >= 1) {
         west = &this->cells[row * this->width + column - 1];
         westNormals = &normals[row * this->width + column - 1];
       } else {
@@ -381,7 +380,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       const GroundCell* southwest;
       const CellNormals* southwestNormals;
 
-      if (column > 0 && row < this->height - 1) {
+      if (column >= 1 && row < this->height - 1) {
         southwest = &this->cells[(row + 1) * this->width + column - 1];
         southwestNormals = &normals[(row + 1) * this->width + column - 1];
       } else {
@@ -494,7 +493,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
 
           switch (corner) {
           case 0:
-            source = &cell;
+            color.value = cell.top->color;
             break;
           case 1:
             source = east;
@@ -512,7 +511,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          cell.top->vertices[corner][3] = std::bit_cast<float>(color.value);
+          reinterpret_cast<std::uint32_t&>(cell.top->vertices[corner][3]) = color.value;
         }
       }
 
@@ -544,7 +543,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          cell.side2->vertices[corner][3] = std::bit_cast<float>(color.value);
+          reinterpret_cast<std::uint32_t&>(cell.side2->vertices[corner][3]) = color.value;
         }
       }
 
@@ -576,7 +575,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          cell.side1->vertices[corner][3] = std::bit_cast<float>(color.value);
+          reinterpret_cast<std::uint32_t&>(cell.side1->vertices[corner][3]) = color.value;
         }
       }
     }
