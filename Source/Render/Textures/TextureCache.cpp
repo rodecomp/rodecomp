@@ -61,7 +61,7 @@ CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixel
 
   if (texture) {
     texture->Upload(0, 0, width, height, pixels, option, 0);
-    texture->textureFlags = (texture->textureFlags & 0xFF00u) | fullSize;
+    reinterpret_cast<std::uint8_t*>(&texture->textureFlags)[0] = fullSize;
   }
 
   return texture;
