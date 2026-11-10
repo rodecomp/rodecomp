@@ -2945,11 +2945,12 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
 void CGameMode::ReceiveClanChat(const unsigned char* packet) {
   const int messageLength = *reinterpret_cast<const std::int16_t*>(packet + 2) - 28;
 
-  if (messageLength < 0 || messageLength > 220) {
+  if (static_cast<unsigned int>(messageLength) > 220) {
     return;
   }
 
   char message[220];
+
   std::memset(message, 0, sizeof(message));
   strcpy_s(message, sizeof(message), reinterpret_cast<const char*>(packet + 28));
 
