@@ -2,6 +2,7 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 
+#include <algorithm>
 #include <cstring>
 
 namespace {
@@ -12,7 +13,7 @@ namespace {
 struct DisplayModeSelectorDX9 {
   /* 0000 */ const D3DFORMAT& format;
   /* 0004 */ DeviceOwnerDX9* owner;
-  /* 0008 */ const UINT& adapter;
+  /* 0008 */ const DWORD& adapter;
   /* 000C */ const UINT& width;
   /* 0010 */ const UINT& height;
 
@@ -77,13 +78,8 @@ UINT* DeviceOwnerDX9::AdjustTextureDimensions(UINT* output, UINT width, UINT hei
   UINT adjustedHeight = roundUp(height);
   const DWORD ratio = this->caps.MaxTextureAspectRatio;
 
-  if (this->caps.MaxTextureWidth < adjustedWidth) {
-    adjustedWidth = this->caps.MaxTextureWidth;
-  }
-
-  if (this->caps.MaxTextureHeight < adjustedHeight) {
-    adjustedHeight = this->caps.MaxTextureHeight;
-  }
+  adjustedWidth = std::min<UINT>(adjustedWidth, this->caps.MaxTextureWidth);
+  adjustedHeight = std::min<UINT>(adjustedHeight, this->caps.MaxTextureHeight);
 
   if (ratio != 0) {
     if (adjustedWidth / adjustedHeight > ratio) {
@@ -110,8 +106,8 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter) {
   }
 
   this->adapter = selectedAdapter;
-  UINT width = g_configuredScreenWidth;
-  UINT height = g_configuredScreenHeight;
+  int width = g_configuredScreenWidth;
+  int height = g_configuredScreenHeight;
 
   if (g_configuredFullscreen == 0) {
     RECT rectangle;
@@ -120,7 +116,7 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter) {
     height = rectangle.bottom - rectangle.top;
   }
 
-  this->presentation = {};
+  std::memset(&this->presentation, 0, sizeof(this->presentation));
   this->presentation.BackBufferWidth = width;
   this->presentation.BackBufferHeight = height;
   this->presentation.BackBufferFormat = D3DFMT_X8R8G8B8;
@@ -154,7 +150,7 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter) {
   }
 
   result = this->direct3D->CreateDeviceEx(
-    selectedAdapter, D3DDEVTYPE_HAL, this->window, D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &this->presentation,
+    selectedAdapter, D3DDEVTYPE_HAL, this->window, D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &this->presentation,
     this->presentation.Windowed ? nullptr : &this->displayMode, &this->device
   );
 
@@ -284,7 +280,7 @@ HRESULT DeviceOwnerDX9::Close() {
     this->direct3D = nullptr;
   }
 
-  return references != 0 ? static_cast<HRESULT>(0x8200000Bu) : D3D_OK;
+  return references > 0 ? static_cast<HRESULT>(0x8200000Bu) : D3D_OK;
 }
 
 // OFFSET: 0x0054C020
