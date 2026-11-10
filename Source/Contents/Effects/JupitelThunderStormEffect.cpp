@@ -14,8 +14,11 @@
 #include <string>
 
 // INLINED
-static bool ParticleAlive(const CParticle* particle) {
-  return particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f;
+static __forceinline bool ParticleAlive(const CParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 
 // OFFSET: 0x00705F80
@@ -105,13 +108,8 @@ bool CJupitelThunderStormEffect::IsAlive() {
     return true;
   }
 
-  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it && ParticleAlive(*it)) {
-      return true;
-    }
-  }
-
-  return false;
+  return std::find_if(this->particles.begin(), this->particles.end(),
+                      [](const CParticle* particle) { return particle && ParticleAlive(particle); }) != this->particles.end();
 }
 
 // OFFSET: 0x00706690
