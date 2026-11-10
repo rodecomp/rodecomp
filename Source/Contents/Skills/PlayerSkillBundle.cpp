@@ -29,7 +29,7 @@ CPlayerSkillBundle::lcEXCInfo::~lcEXCInfo() = default;
 
 // OFFSET: 0x0076FB70
 // FUNCTION: fn_08253
-CPlayerSkillBundle::CPlayerSkillBundle() : index(8) {
+CPlayerSkillBundle::CPlayerSkillBundle() {
 }
 
 // OFFSET: 0x00770830
