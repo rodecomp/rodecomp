@@ -69,7 +69,7 @@ void CWhisperBlockMgr::Add(std::string name) {
 // OFFSET: 0x00611370
 // FUNCTION: fn_04328
 bool CWhisperBlockMgr::Contains(std::string name) const {
-  return this->m_names.find(std::string(name.c_str())) != this->m_names.end();
+  return this->m_names.end() != this->m_names.find(std::string(name.c_str()));
 }
 
 // OFFSET: 0x006114D0
