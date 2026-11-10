@@ -12,6 +12,7 @@
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <new>
@@ -67,7 +68,13 @@ bool CMapSkyMgr::LoadData() {
 // OFFSET: 0x00C7B200
 // FUNCTION: fn_20362
 CWeatherEffect::CWeatherEffect()
-    : darken(0), enabled(1), lightning(0), actor(nullptr), targetColor{}, effect(nullptr), counter(0) {
+    : color(), targetColor(), fog(), lightColor() {
+  this->darken = 0;
+  this->enabled = 1;
+  this->lightning = 0;
+  this->effect = nullptr;
+  this->actor = nullptr;
+  this->counter = 0;
   this->color[0] = 1.0f;
   this->color[1] = 1.0f;
   this->color[2] = 1.0f;
@@ -85,7 +92,7 @@ void CWeatherEffect::AddMapWeather(std::string mapName, std::string weather) {
   std::pair<std::string, std::string> entry;
   entry.second = weather;
   entry.first = mapName;
-  this->mapWeathers.push_back(std::move(entry));
+  this->mapWeathers.push_back(entry);
 }
 
 // OFFSET: 0x00C7B6F0
@@ -398,7 +405,7 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
 // OFFSET: 0x005B95F0
 // FUNCTION: fn_03437
 void CMapSkyMgr::Apply(const std::string& mapName) {
-  std::string sky = ScriptMapName(mapName);
+  std::string sky = ScriptMapName(mapName.c_str());
   unsigned char exists = 0;
   this->m_script->Call("IsExistMapSkyData", "s>b", sky.c_str(), &exists);
   if (exists == 0) {
@@ -432,10 +439,10 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
     }
   }
 
-  unsigned char fog = 0;
+  bool fog = false;
   this->m_script->Call("IsBackGroundFog", "s>b", sky.c_str(), &fog);
-  if (fog == 1) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog = true;
+  if (fog == true) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog = fog;
   }
 }
 
@@ -465,15 +472,9 @@ void RegisterLowercaseName(const char* name) {
   }
 
   std::string lowered(name);
-  for (char& character : lowered) {
-    character = static_cast<char>(std::tolower(static_cast<unsigned char>(character)));
-  }
+  std::transform(lowered.begin(), lowered.end(), lowered.begin(), [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
 
-  for (const std::string& entry : g_session.skyMapNames) {
-    if (entry == lowered) {
-      return;
-    }
+  if (std::find(g_session.skyMapNames.begin(), g_session.skyMapNames.end(), lowered.c_str()) == g_session.skyMapNames.end()) {
+    g_session.skyMapNames.push_back(lowered.c_str());
   }
-
-  g_session.skyMapNames.push_back(lowered.c_str());
 }
