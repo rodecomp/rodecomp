@@ -1,5 +1,9 @@
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/UserData/AccountService.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "Script/LuaScript.h"
+#include "Utility/EncryptedName.h"
 
 #include <new>
 
@@ -65,11 +69,19 @@ void CCharacterLinkedUserDataMgr::CompleteSave() {
 
 // OFFSET: 0x005E6BB0
 // FUNCTION: fn_03931
-__declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
-  const std::string base = ResolveAccountServiceBase(script, script, host, port, overrideKey);
+__declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
+  const std::string base =
+    ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
   if (!base.empty()) {
-    this->m_saveUrl = base + "/charconfig/save";
-    this->m_loadUrl = base + "/charconfig/load";
+    const char saveSource[] = {'\xFE', '\x02', '\x99', '\xE8', '\x1D', '\x32', '\x8A', '\xBD', '\xB7',
+                               '\x08', '\x96', '\xA6', '\x1C', '\x30', '\x93', '\xB6', '\xD1'};
+    thread_local EncryptedName<sizeof(saveSource), 0xD3E5516F89F161D1ULL> savePath(saveSource);
+    this->m_saveUrl = base + savePath.Text();
+
+    const char loadSource[] = {'\x78', '\x8C', '\xB9', '\xD4', '\xD9', '\x1C', '\x92', '\x31', '\x31',
+                               '\x86', '\xB6', '\x9A', '\xC7', '\x10', '\x9C', '\x3B', '\x57'};
+    thread_local EncryptedName<sizeof(loadSource), 0x5FFD7FABB5D1EF57ULL> loadPath(loadSource);
+    this->m_loadUrl = base + loadPath.Text();
   }
 }
 
@@ -80,5 +92,5 @@ void CCharacterLinkedUserDataMgr::Reset(LuaScript& script, const char* host, con
   this->m_characterId = 0;
   this->m_accountName = "unknown";
   this->m_loaded = false;
-  this->RefreshUrls(script, host, port, overrideKey);
+  this->RefreshUrls();
 }

@@ -27,7 +27,7 @@ public:
   void LoadNormalItemSlots(Json::Value& data);
   void Save();
   void ExportNormalItemSlots(Json::Value& data);
-  void RefreshUrls(LuaScript& script, const char* host, const char* port, const char* overrideKey);
+  void RefreshUrls();
   void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
 
 protected:
