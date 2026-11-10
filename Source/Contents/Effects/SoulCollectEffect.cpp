@@ -48,9 +48,10 @@ void CSoulCollectEffect::Open() {
           continue;
         }
 
+        const int column = static_cast<int>(this->particles.size() / 2);
         particle->SetTexture("effect\\soul_collect\\soul_collect.bmp");
         particle->effectId = this->id;
-        particle->columnIndex = static_cast<int>(this->particles.size() / 2);
+        particle->columnIndex = column;
         particle->rowIndex = layer;
         particle->groupIndex = 1;
         particle->alpha = 0;
