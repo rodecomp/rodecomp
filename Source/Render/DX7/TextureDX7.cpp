@@ -159,7 +159,7 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
     ShowErrorDialog("GFC ", 0);
   }
 
-  DDSURFACEDESC2 description = {sizeof(description)};
+  DDSURFACEDESC2 description = {sizeof(description), 0};
   description.dwFlags = (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
                         DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
   description.dwWidth = this->m_textureWidth;
@@ -170,15 +170,14 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
   description.dwTextureStage = 0;
   description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwRBitMask | description.ddpfPixelFormat.dwBBitMask;
   description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
-  unsigned count = 1;
   description.dwMipMapCount = 1;
 
-  while (this->m_textureWidth > (1u << count)) {
-    if ((1u << count) >= this->m_textureHeight) {
+  while ((1u << description.dwMipMapCount) < this->m_textureWidth) {
+    if ((1u << description.dwMipMapCount) >= this->m_textureHeight) {
       break;
     }
 
-    description.dwMipMapCount = ++count;
+    ++description.dwMipMapCount;
   }
 
   return SUCCEEDED(this->m_owner->draw->CreateSurface(&description, &this->m_surface, nullptr));
