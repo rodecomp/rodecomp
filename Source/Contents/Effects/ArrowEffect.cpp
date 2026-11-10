@@ -39,7 +39,7 @@ void CArrowEffect::Reset() {
 
 // OFFSET: 0x00E4BE60
 // FUNCTION: fn_24280
-bool CArrowEffect::OnProcess() {
+__declspec(safebuffers) bool CArrowEffect::OnProcess() {
   float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   if (this->startFrame > frame) {
     return true;
