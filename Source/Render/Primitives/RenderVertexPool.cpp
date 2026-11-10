@@ -2,18 +2,6 @@
 
 #include <algorithm>
 
-namespace {
-  // INLINED
-  void Append(std::vector<RenderVertex>& block, unsigned count) {
-    const unsigned first = static_cast<unsigned>(block.size());
-    block.resize(first + count);
-
-    for (unsigned index = first; index < block.size(); ++index) {
-      block[index].specular = 0xFF000000u;
-    }
-  }
-}
-
 // OFFSET: 0x00561690
 // FUNCTION: fn_02162
 RenderVertexPool::~RenderVertexPool() {
@@ -66,21 +54,23 @@ RenderVertex* RenderVertexPool::Acquire(unsigned count) {
     return nullptr;
   }
 
-  for (auto& block : this->m_active) {
-    if (block->size() + count <= block->capacity()) {
-      const unsigned first = static_cast<unsigned>(block->size());
-      Append(*block, count);
-      this->m_used += count;
-
-      return block->data() + first;
+  RenderVertex* vertices = nullptr;
+  for (Block* block : this->m_active) {
+    vertices = block->Append(count);
+    if (vertices) {
+      break;
     }
   }
 
-  Block& block = this->Activate(std::max(this->m_minimum, count));
-  Append(block, count);
-  this->m_used += count;
+  if (!vertices) {
+    vertices = this->Activate(std::max(this->m_minimum, count)).Append(count);
+  }
 
-  return block.data();
+  if (vertices) {
+    this->m_used += count;
+  }
+
+  return vertices;
 }
 
 // OFFSET: 0x00AB77A0

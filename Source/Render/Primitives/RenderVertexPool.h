@@ -19,7 +19,20 @@ public:
   void Rewind();
 
 private:
-  struct Block : std::vector<RenderVertex> {
+  struct Vertex : RenderVertex {
+    Vertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+      this->rhw = 0.0f;
+      this->diffuse = 0;
+      this->specular = 0xFF000000u;
+      this->u = 0.0f;
+      this->v = 0.0f;
+    }
+  };
+
+  struct Block : std::vector<Vertex> {
     RenderVertex* Append(unsigned count);
   };
 
