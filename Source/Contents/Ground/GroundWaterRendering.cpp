@@ -42,6 +42,12 @@ void GroundGeometry::DrawWaterCell(
     last = wave(sum + 1);
   }
 
+  RenderVertex vertices[4];
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    vertices[corner] = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000u, 0.0f, 0.0f};
+  }
+
   bool above = false;
 
   for (unsigned corner = 0; corner < 4; ++corner) {
@@ -59,10 +65,8 @@ void GroundGeometry::DrawWaterCell(
   cell.corners[1][1] = middle;
   cell.corners[2][1] = middle;
   cell.corners[3][1] = last;
-  RenderVertex vertices[4]{};
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner].specular = 0xFF000000u;
     g_renderer->viewport.Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
