@@ -9,6 +9,15 @@
 
 #include <cstring>
 
+struct ZoneVector3d : vector3d {
+  // INLINED
+  ZoneVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+};
+
 // OFFSET: 0x00B6DCB0
 // FUNCTION: fn_19112
 void CMapMagicZoneEffect::AddSpinner(int kind) {
@@ -136,7 +145,7 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.z = this->position[2];
     ++particle->elapsedFrames;
 
-    vector3d corners[4]{};
+    ZoneVector3d corners[4];
     const int angle = particle->columnIndex * 23;
     particle->phaseParameter = (particle->phaseParameter + 3) % 360;
     const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
@@ -189,7 +198,7 @@ void CMapMagicZoneEffect::OnProcess() {
     const float flat = wave * g_cosTable[particle->phaseParameter];
     const float rise = wave * g_sinTable[particle->phaseParameter];
 
-    vector3d points[2]{};
+    ZoneVector3d points[2];
     points[0].x = particle->scale * g_cosTable[angle];
     points[0].z = particle->scale * g_sinTable[angle];
     points[1].x = points[0].x + flat * g_cosTable[angle];
@@ -221,7 +230,7 @@ void CMapMagicZoneEffect::OnProcess() {
 // FUNCTION: fn_19117
 void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
   if (particle) {
-    vector3d corners[4]{};
+    ZoneVector3d corners[4];
     float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
     const int angle = static_cast<int>(spinAngle + 1.0f);
     spinAngle = static_cast<float>(angle % 360);
