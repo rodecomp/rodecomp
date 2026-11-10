@@ -8,6 +8,22 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/World/World.h"
 
+namespace {
+  // INLINED
+  CRenderObject* FindActor(std::uint32_t actorId) {
+    if (!g_modeMgr.GetGameMode()) {
+      return nullptr;
+    }
+
+    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    if (!world) {
+      return nullptr;
+    }
+
+    return world->GetGameActorByAID(actorId);
+  }
+}
+
 // OFFSET: 0x00729400
 // FUNCTION: fn_07441
 CShowEffect::CShowEffect() : CEffect(0x947), effects() {
@@ -51,13 +67,7 @@ void CShowEffect::Close() {
   }
 
   const std::uint32_t actorId = this->actor;
-  CRenderObject* target = nullptr;
-  if (g_modeMgr.GetGameMode()) {
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-    if (world) {
-      target = world->GetGameActorByAID(actorId);
-    }
-  }
+  CRenderObject* target = FindActor(actorId);
 
   for (const auto& entry : this->effects) {
     if (target) {
