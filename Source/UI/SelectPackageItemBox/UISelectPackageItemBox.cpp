@@ -238,7 +238,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem() {
     if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (SelectPackageItemBox::CUIItemInfo*& slot : this->items) {
       SelectPackageItemBox::CUIItemInfo* item = new SelectPackageItemBox::CUIItemInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -281,7 +281,7 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
     if (this->geometry.height % this->rowHeight >= 2) {
       ++count;
     }
-    this->items.resize(count, nullptr);
+    this->items.resize(count);
     for (SelectPackageItemBox::CUITabInfo*& slot : this->items) {
       SelectPackageItemBox::CUITabInfo* item = new SelectPackageItemBox::CUITabInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
