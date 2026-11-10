@@ -310,7 +310,8 @@ void CGameMode::DrawMiniMap() {
       }
     }
     for (auto it = this->compassPosList.begin(); it != this->compassPosList.end(); ++it) {
-      if (static_cast<int>(timeGetTime() - it->second.tick) % 1000 < 500) {
+      const int elapsed = timeGetTime() - it->second.tick;
+      if (elapsed % 1000 < 500) {
         this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
       }
     }
