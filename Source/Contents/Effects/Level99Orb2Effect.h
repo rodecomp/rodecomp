@@ -19,7 +19,7 @@ public:
   bool IsAlive() override;
   ~CLevel99Orb2Effect() override;
 
-  /* 00CC */ EffectPoint offsets[4][4];
+  /* 00CC */ EffectPoint offsets[16];
   /* 018C */ std::vector<CParticle*> particles;
 };
 

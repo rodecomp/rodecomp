@@ -48,15 +48,15 @@ void CLevel99Orb2Effect::Open() {
       particle->scale = 0.55f;
       particle->alpha = 0;
 
-      const float height = static_cast<float>(std::max(rand() % 100, 0));
-      EffectPoint& offset = this->offsets[row][column];
+      const float height = static_cast<float>(std::max(0, rand() % 100));
+      EffectPoint& offset = this->offsets[row * 4 + column];
       offset.x = 0.0f;
       offset.y = height;
       offset.z = 0.0f;
 
-      float* angles = &particle->animationParameter;
+      float* angle = &particle->animationParameter;
       for (int i = 0; i < 4; ++i) {
-        angles[i] = static_cast<float>(std::max(rand() % 360, 0));
+        *angle++ = static_cast<float>(std::max(0, rand() % 360));
       }
 
       this->particles.push_back(particle);
@@ -79,18 +79,18 @@ void CLevel99Orb2Effect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     if (particle) {
+      const int index = particle->columnIndex + particle->rowIndex * 4;
       const float speed = particle->speedParameter;
-      EffectPoint& offset = this->offsets[particle->rowIndex][particle->columnIndex];
-      if (offset.y < 0.0f) {
-        if (offset.y < -30.0f) {
-          const float height = static_cast<float>(std::max(rand() % 100, 0));
-          offset.x = 0.0f;
-          offset.y = height;
-          offset.z = 0.0f;
+      if (this->offsets[index].y < 0.0f) {
+        if (this->offsets[index].y < -30.0f) {
+          const float height = static_cast<float>(std::max(0, rand() % 100));
+          this->offsets[index].x = 0.0f;
+          this->offsets[index].y = height;
+          this->offsets[index].z = 0.0f;
 
-          float* angles = &particle->animationParameter;
+          float* angle = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
-            angles[i] = static_cast<float>(std::max(rand() % 360, 0));
+            *angle++ = static_cast<float>(std::max(0, rand() % 360));
           }
 
           particle->alpha = 0;
@@ -102,16 +102,16 @@ void CLevel99Orb2Effect::OnProcess() {
             angles[i] = static_cast<float>(current + (difference > 0 ? 3 : -2));
             if (std::abs(difference) < 3) {
               if (difference > 0) {
-                angles[i + 2] = static_cast<float>(current ? std::max(rand() % current, 0) : 0);
+                angles[i + 2] = static_cast<float>(current ? std::max(0, rand() % current) : 0);
               } else {
-                angles[i + 2] = static_cast<float>(359 - (current ? std::max(rand() % current, 0) : 0));
+                angles[i + 2] = static_cast<float>(359 - (current ? std::max(0, rand() % current) : 0));
               }
             }
           }
 
-          offset.x += speed * g_sinTable[static_cast<int>(particle->animationParameter)];
-          offset.z += speed * g_sinTable[static_cast<int>(angles[1])];
-          if (offset.y < -20.0f) {
+          this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationParameter)];
+          this->offsets[index].z += speed * g_sinTable[static_cast<int>(angles[1])];
+          if (this->offsets[index].y < -20.0f) {
             particle->alpha = std::max(particle->alpha - 4, 0);
           } else if (particle->alpha != 255) {
             particle->alpha = 255;
@@ -119,7 +119,7 @@ void CLevel99Orb2Effect::OnProcess() {
         }
       }
 
-      offset.y -= speed;
+      this->offsets[index].y -= speed;
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
@@ -128,7 +128,7 @@ void CLevel99Orb2Effect::OnProcess() {
 
       matrix translation;
       std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-      translation.MakeTranslate(offset.x, offset.y, offset.z);
+      translation.MakeTranslate(this->offsets[index].x, this->offsets[index].y, this->offsets[index].z);
 
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
