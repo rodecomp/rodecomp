@@ -2010,7 +2010,7 @@ void UIRuneSet_Info::Paint() {
         g_runeSetSlotX[slot] - 3, g_runeSetSlotY[slot] - 3,
         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge.bmp"))), true
       );
-      path = FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_runeSet->m_slots[slot]->GetResName());
+      path = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_runeSet->m_slots[slot]->GetResName()));
       CTexture* texture = g_texMgr.Load(path.c_str(), 0, false, true, false);
       if (texture) {
         const float scale = 90.0f / static_cast<float>(texture->Width());
@@ -2043,12 +2043,9 @@ void UIRuneSet_Info::Paint() {
     if (1 == this->m_runeSet->m_reward.values[0]) {
       const int rewardX[7] = {0, 417, 505, 559, 559, 505, 417};
       const int rewardY[7] = {0, 116, 141, 216, 309, 384, 410};
-      int count = this->m_runeSet->CountSlots();
+      const int count = std::min(this->m_runeSet->CountSlots(), 6);
       ITEM_INFO item;
       item.identified = 1;
-      if (count > 6) {
-        count = 6;
-      }
       for (int index = 1; index <= count; ++index) {
         const std::int64_t itemId = this->m_runeSet->m_reward.values[index];
         if (0 == itemId) {
@@ -2079,7 +2076,7 @@ void UIRuneSet_Info::Paint() {
       0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
     );
     if (this->m_runeSet->m_grade < 15) {
-      path = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), static_cast<double>(static_cast<float>(g_runeSystemMgr->GetGradeFailValue(this->m_runeSet)) * 0.001f));
+      path = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), static_cast<double>(static_cast<float>(g_runeSystemMgr->GetGradeFailValue(this->m_runeSet)) * 0.001f)));
     } else {
       path = LookupMessage(MSI_RUNESYSTEM_RUNESET_DESC);
     }
