@@ -115,7 +115,13 @@ bool UITransBalloonText::GetTransBoxInfo(void* output) {
 // OFFSET: 0x0085AFB0
 // FUNCTION: fn_10790
 void UITransBalloonText::OnCreate(int, int) {
-  this->m_rectangle = {this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, 0, 1711276032u, 0};
+  this->m_rectangle.x = this->geometry.x;
+  this->m_rectangle.y = this->geometry.y;
+  this->m_rectangle.width = this->geometry.width;
+  this->m_rectangle.height = this->geometry.height;
+  this->m_rectangle.unknown_00B0 = 0;
+  this->m_rectangle.color = 1711276032u;
+  this->m_rectangle.unknown_00B8 = 0;
   this->m_fontMode = 0;
 }
 
