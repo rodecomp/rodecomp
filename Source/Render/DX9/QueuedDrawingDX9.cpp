@@ -44,11 +44,11 @@ void CRendererDX9::DrawAuxiliaryQueue() {
   this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-  for (LightmappedPrimitive* command : queue) {
+  for (LightmappedPrimitive*& command : queue) {
     if (command->vertexCount > 0) {
       this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
       this->device->state.SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
-      this->DrawLightmappedPrimitive(command);
+      this->DrawAuxiliaryPrimitive(command);
     }
   }
 }
