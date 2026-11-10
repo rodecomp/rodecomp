@@ -8211,7 +8211,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (g_session.m_hotkeyScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, static_cast<int>(a), b == 0 && c == 0 && d == 1, &description)) {
       const std::string text = description;
       if (!text.empty()) {
-        if (FindShopId(g_session, std::string()) != -1) {
+        if (g_session.FindShopId("") != -1) {
           const int delay = g_session.GetShopEntry(1, this->m_skillId).first;
           if (delay != 0) {
             const std::string line = FormatOwnedString(LookupMessage(MSI_FAIL_CALLHOMUN_OVER_100LEVEL), static_cast<int>(delay * 0.1), delay % 10);
@@ -9858,7 +9858,7 @@ void UIEquipWnd::DrawEquipSlots() {
   const int rowOffsets[4] = {0, 26, 52, 78};
   int iconX[2] = {6, 251};
   int nameX[2] = {28, 167};
-  int shopId = FindShopId(g_session, std::string());
+  int shopId = g_session.FindShopId("");
   if (g_session.GetShopType(shopId)) {
     shopId = -1;
   }

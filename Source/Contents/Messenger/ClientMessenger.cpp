@@ -778,14 +778,14 @@ __declspec(noinline) SessionShop* CSession::FindShop(const int& shopId) {
 
 // OFFSET: 0x00DE3B10
 // FUNCTION: fn_23485
-int FindShopId(CSession& session, std::string name) {
+int CSession::FindShopId(std::string name) {
   std::string mapName = name;
   if (mapName.empty()) {
-    mapName = session.m_navigationPlayerMap;
+    mapName = this->m_navigationPlayerMap;
   }
 
-  const auto found = session.m_nameToId.find(mapName);
-  if (found == session.m_nameToId.end()) {
+  const auto found = this->m_nameToId.find(mapName);
+  if (found == this->m_nameToId.end()) {
     return -1;
   }
   return found->second;
@@ -795,7 +795,7 @@ int FindShopId(CSession& session, std::string name) {
 // FUNCTION: fn_05621
 bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
   const bool previous = this->m_active;
-  SessionShop* shop = g_session.FindShop(FindShopId(g_session, std::string()));
+  SessionShop* shop = g_session.FindShop(g_session.FindShopId(""));
   if (shop != nullptr && !shop->items.empty()) {
     this->m_active = shop->items[0].find(this->m_id) != shop->items[0].end();
   } else {
@@ -4211,7 +4211,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
 // OFFSET: 0x006B7390
 // FUNCTION: fn_06206
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshShop() {
-  const int shopId = FindShopId(g_session, std::string());
+  const int shopId = g_session.FindShopId("");
   if (this->shopId != shopId) {
     for (auto& entry : this->properties1) {
       const bool previous = entry.second->IsActive();
@@ -6144,7 +6144,7 @@ static_assert(offsetof(ShopItemListPacket, entries) == 5);
 void CGameMode::ReceiveShopItemList(const unsigned char* data) {
   const ShopItemListPacket* packet = reinterpret_cast<const ShopItemListPacket*>(data);
   const int count = (packet->length - 5) / sizeof(ShopItemPacketEntry);
-  const int shopId = FindShopId(g_session, std::string());
+  const int shopId = g_session.FindShopId("");
   if (shopId != -1) {
     g_session.SetShopFlag(shopId, packet->flag != 0);
     for (int i = 0; i < count; ++i) {

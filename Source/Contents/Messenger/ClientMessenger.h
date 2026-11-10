@@ -6,7 +6,6 @@
 #include <list>
 #include <string>
 
-class CSession;
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr;
@@ -14,6 +13,5 @@ class CEquipmentPropertiesMgr;
 
 extern EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
 
-int FindShopId(CSession& session, std::string name);
 
 #endif
