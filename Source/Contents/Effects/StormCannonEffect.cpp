@@ -71,9 +71,12 @@ bool CStormCannonEffect::IsAlive() {
 // FUNCTION: fn_07489
 void CStormCannonEffect::OnProcess() {
   const float speed = static_cast<float>(this->speed);
-  this->position[1] = speed * this->direction.y + this->position[1];
-  this->position[0] = speed * this->direction.x + this->position[0];
-  this->position[2] = speed * this->direction.z + this->position[2];
+  const float x = speed * this->direction.x + this->position[0];
+  const float y = speed * this->direction.y + this->position[1];
+  const float z = speed * this->direction.z + this->position[2];
+  this->position[1] = y;
+  this->position[0] = x;
+  this->position[2] = z;
 
   const float dx = this->position[0] - this->origin.x;
   const float dy = this->position[1] - this->origin.y;
@@ -91,9 +94,12 @@ void CStormCannonEffect::OnProcess() {
     }
 
     emitter->m_alpha = static_cast<float>(this->Alpha() / 255.0);
-    emitter->position.x = this->position[0] - 1.5f;
-    emitter->position.y = this->position[1] - 17.0f;
-    emitter->position.z = this->position[2] + 0.0f;
+    const float emitterX = this->position[0] - 1.5f;
+    const float emitterY = this->position[1] - 17.0f;
+    const float emitterZ = this->position[2] + 0.0f;
+    emitter->position.x = emitterX;
+    emitter->position.y = emitterY;
+    emitter->position.z = emitterZ;
     emitter->Process(0.0f, 0.0f, 0.0f);
   }
 }
