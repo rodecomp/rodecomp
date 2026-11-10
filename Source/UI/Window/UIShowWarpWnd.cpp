@@ -15,8 +15,7 @@
 // OFFSET: 0x0094CA20
 // FUNCTION: fn_12899
 void UIShowWarpWnd::OnCreate(int width, int height) {
-  auto* list = new UIListBox();
-  this->m_list = list;
+  this->m_list = new UIListBox();
   width -= 0x18;
   height -= 0x32;
   if (width < 0x14) {
@@ -25,22 +24,24 @@ void UIShowWarpWnd::OnCreate(int width, int height) {
   if (height < 0x1e) {
     height = 0x1e;
   }
-  list->Configure(0x0c, 0x14, width, height, 0);
-  list->backgroundRed = 0xf0;
-  list->backgroundGreen = 0xf0;
-  list->backgroundBlue = 0xf0;
-  list->selected = -1;
-  list->Invalidate();
-  list->transparent = 0;
-  this->AddChild(list);
+  this->m_list->Configure(0x0c, 0x14, width, height, 0);
+  this->m_list->backgroundRed = 0xf0;
+  this->m_list->backgroundGreen = 0xf0;
+  this->m_list->backgroundBlue = 0xf0;
+  this->m_list->selected = -1;
+  this->m_list->Invalidate();
+  this->m_list->selectable = 0;
+  this->AddChild(this->m_list);
 
   const std::string prefix = "유저인터페이스\\";
+  const int closeX = this->geometry.width - 0x2e;
+  const int closeY = this->geometry.height - 0x18;
   auto* close = new UIBitmapButton();
   close->SetBitmap((prefix + "btn_close" + ".bmp").c_str(), 0, 0);
   close->SetBitmap((prefix + "btn_close_a" + ".bmp").c_str(), 1, 0);
   close->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
   close->SetSize(close->BitmapWidth(), close->BitmapHeight());
-  close->Move(this->geometry.width - 0x2e, this->geometry.height - 0x18);
+  close->Move(closeX, closeY);
   close->SetId(0xc9);
   this->AddChild(close);
   this->m_message0 = 0xb8;
