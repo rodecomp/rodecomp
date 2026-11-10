@@ -23,33 +23,31 @@ bool CRagEffect::PartyEffectVisible() {
     }
 
     if (target->render.isCharacter != 0 && target->render.accountId != g_session.m_aid) {
-      if (!g_session.IsPvpMap() || !g_session.IsPartyMember(target->render.accountId, true)) {
-        if (!target->EffectVisible()) {
-          return false;
-        }
+      if ((!g_session.IsPvpMap() || !g_session.IsPartyMember(target->render.accountId, true)) && !target->EffectVisible()) {
+        return false;
       }
     }
   }
 
   const EffectActor* actor = this->state.parent;
 
-  if (!actor) {
-    return false;
-  }
-
-  if (actor->render.isCharacter == 0) {
-    return true;
-  }
-
-  if (this->state.visibilityFlags == 0) {
-    if (actor->render.accountId == g_session.m_aid) {
+  if (actor) {
+    if (actor->render.isCharacter == 0) {
       return true;
     }
 
-    if (g_session.IsPvpMap() && g_session.IsPartyMember(actor->render.accountId, true)) {
-      return true;
+    if (this->state.visibilityFlags == 0) {
+      if (actor->render.accountId == g_session.m_aid) {
+        return true;
+      }
+
+      if (g_session.IsPvpMap() && g_session.IsPartyMember(actor->render.accountId, true)) {
+        return true;
+      }
     }
+
+    return actor->EffectVisible();
   }
 
-  return actor->EffectVisible();
+  return false;
 }

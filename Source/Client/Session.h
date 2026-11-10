@@ -803,7 +803,7 @@ public:
   void UpdateAchievementRecord(const AchievementRecordPacket& packet);
   void FindLatestCompletedAchievements(int* second, int* first);
   int GetBeginEffectId(int skillId) const;
-  bool IsPartyMember(std::uint32_t aid, bool onlineOnly);
+  int IsPartyMember(std::uint32_t aid, bool onlineOnly);
   bool IsPvpMap();
   ITEM_INFO GetCostumeItemAt(int index) const;
   ITEM_INFO GetAlternateCostumeItemAt(int index) const;

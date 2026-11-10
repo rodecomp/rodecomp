@@ -5,18 +5,18 @@
 
 // OFFSET: 0x00E1DEC0
 // FUNCTION: fn_23884
-bool CSession::IsPartyMember(std::uint32_t aid, bool onlineOnly) {
+int CSession::IsPartyMember(std::uint32_t aid, bool onlineOnly) {
   for (const MessengerMember& member : this->m_partyMembers) {
     if (member.accountId == aid) {
       if (onlineOnly && member.offline != 0) {
-        return false;
+        return 0;
       }
 
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00E3D2D0
