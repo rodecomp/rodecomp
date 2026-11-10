@@ -2151,7 +2151,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         this->m_menuItems.push_back(MiniPartyInfoEntry(text.c_str(), 3));
       }
     }
-    if (!this->m_menuItems.empty()) {
+    if (this->m_menuItems.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       for (std::size_t index = 0; index < this->m_menuItems.size(); ++index) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_menuItems[index].text.c_str()), 0, 0, 0);
@@ -2178,11 +2178,13 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     if (this->m_hoverIndex != -1) {
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
       if (skill.available != 0) {
-        const int command = this->m_menuItems[a1].value;
-        if (command == 3) {
+        switch (this->m_menuItems[a1].value) {
+        case 3:
           g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND)->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, 0, 0, 0);
-        } else if (command == 14) {
+          break;
+        case 14:
           g_windowMgr.EnsureWindow(WID_SKILLNAMECHANGEWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, skill.id, 0, 0, 0);
+          break;
         }
       }
       return 0;
@@ -2192,8 +2194,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      const int level = g_session.UseLevel(skill->id);
-      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, a1, level, 0, 0);
+      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
     }
     break;
   }
