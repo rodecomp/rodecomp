@@ -10,6 +10,8 @@
 #include <new>
 #include <process.h>
 
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
 CSoundMgr* g_soundMgr = nullptr;
@@ -325,16 +327,16 @@ void CSoundMgr::Destroy() {
 void CSoundMgr::EndSamples() {
   MilesRuntime& miles = MilesRuntime::Get();
 
-  for (void* sample : this->samples) {
-    if (sample) {
-      miles.endSample(sample);
+  for (int i = 0; i < 48; ++i) {
+    if (this->samples[i]) {
+      miles.endSample(this->samples[i]);
     }
   }
 
   if (this->provider) {
-    for (void* sample : this->samples3D) {
-      if (sample) {
-        miles.end3DSample(sample);
+    for (int i = 0; i < 48; ++i) {
+      if (this->samples3D[i]) {
+        miles.end3DSample(this->samples3D[i]);
       }
     }
   }
