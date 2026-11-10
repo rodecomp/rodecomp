@@ -225,11 +225,12 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
     for (int i = 0; i < 8; ++i) {
       std::map<unsigned short, UICheckBox*>& checks = this->m_jobChecks[i];
       auto it = checks.begin();
-      if (it == checks.end()) {
+      const auto end = checks.end();
+      if (it == end) {
         return;
       }
 
-      for (; it != checks.end(); ++it) {
+      for (; it != end; ++it) {
         UICheckBox* check = it->second;
         check->SetHidden(true);
         check->m_disabled = 1;
@@ -239,11 +240,12 @@ void UISeekPartyMBWnd::ShowJobCategory(int category) {
 
   std::map<unsigned short, UICheckBox*>& checks = this->m_jobChecks[category];
   auto it = checks.begin();
-  if (it == checks.end()) {
+  const auto end = checks.end();
+  if (it == end) {
     return;
   }
 
-  for (; it != checks.end(); ++it) {
+  for (; it != end; ++it) {
     UICheckBox* check = it->second;
     check->SetHidden(false);
     check->m_disabled = 0;
