@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_HEALEFFECT_H
 
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -25,10 +26,10 @@ public:
   void AddCone(int kind);
   void SpawnParticles();
   void UpdateParticleVertices(CParticle* particle);
-  void RotateToCamera(vector3d* points);
+  void RotateToCamera(EffectPoint* points);
 
-  /* 00CC */ vector3d columnEdge[2];
-  /* 00E4 */ vector3d coneEdge[2];
+  /* 00CC */ EffectPoint columnEdge[2];
+  /* 00E4 */ EffectPoint coneEdge[2];
   /* 00FC */ int columnLifetime;
   /* 0100 */ int coneLifetime;
   /* 0104 */ int spawnTick;

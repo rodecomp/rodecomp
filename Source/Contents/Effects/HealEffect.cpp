@@ -14,7 +14,7 @@
 
 // OFFSET: 0x00B67310
 // FUNCTION: fn_19065
-CHealEffect::CHealEffect() : CEffect(-1), columnEdge{}, coneEdge{} {
+CHealEffect::CHealEffect() : CEffect(-1) {
   this->spawnTick = 0;
 }
 
@@ -254,31 +254,19 @@ void CHealEffect::UpdateParticleVertices(CParticle* particle) {
   }
 
   CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (std::string(gameMode->mapName) == "ecl_fild01.rsw") {
-    if (particle->alpha > 100) {
-      particle->alpha = 100;
-    }
+  if (std::string(gameMode->mapName) == "ecl_fild01.rsw" && particle->alpha > 100) {
+    particle->alpha = 100;
   }
 
   const float scale = particle->scale;
-  vector3d points[4] = {};
+  EffectPoint points[4];
 
   const int angle = particle->angleParameter;
-  points[0].x = scale * g_cosTable[angle % 360];
-  points[0].y = 0.0f;
-  points[0].z = scale * g_sinTable[angle % 360];
-
-  points[1].x = scale * g_cosTable[(angle + 90) % 360];
-  points[1].y = 0.0f;
-  points[1].z = scale * g_sinTable[(angle + 90) % 360];
-
-  points[2].x = scale * g_cosTable[(angle + 180) % 360];
-  points[2].y = 0.0f;
-  points[2].z = scale * g_sinTable[(angle + 180) % 360];
-
-  points[3].x = scale * g_cosTable[(angle + 270) % 360];
-  points[3].y = 0.0f;
-  points[3].z = scale * g_sinTable[(angle + 270) % 360];
+  for (int i = 0; i < 4; ++i) {
+    points[i].x = scale * g_cosTable[(angle + i * 90) % 360];
+    points[i].y = 0.0f;
+    points[i].z = scale * g_sinTable[(angle + i * 90) % 360];
+  }
 
   this->RotateToCamera(points);
 
@@ -635,7 +623,7 @@ void CHealEffect::Render() {
 
 // OFFSET: 0x00B69E30
 // FUNCTION: fn_19078
-void CHealEffect::RotateToCamera(vector3d* points) {
+void CHealEffect::RotateToCamera(EffectPoint* points) {
   const int yaw = 360 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
   const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
 
