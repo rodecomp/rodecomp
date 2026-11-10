@@ -371,7 +371,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 
 // OFFSET: 0x007E5A30
 // FUNCTION: fn_09733
-__declspec(safebuffers) void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
+void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
   for (int layer : layers) {
     std::string sprName;
     std::string actName;
