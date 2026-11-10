@@ -4,12 +4,23 @@
 #include <utility>
 
 namespace {
+  struct ThreadNameInfo {
+    DWORD type;
+    const char* name;
+    DWORD threadId;
+    DWORD flags;
+  };
+
   // OFFSET: 0x00737510
   // FUNCTION: fn_07647
   void SetDebuggerThreadName(unsigned id, const char* name) {
-    ULONG_PTR arguments[4] = {0x1000, reinterpret_cast<ULONG_PTR>(name), id, 0};
+    ThreadNameInfo info;
+    info.type = 0x1000;
+    info.name = name;
+    info.threadId = id;
+    info.flags = 0;
     __try {
-      RaiseException(0x406D1388, 0, 4, arguments);
+      RaiseException(0x406D1388, 0, sizeof(info) / sizeof(ULONG_PTR), reinterpret_cast<ULONG_PTR*>(&info));
     } __except (EXCEPTION_EXECUTE_HANDLER) {
     }
   }
