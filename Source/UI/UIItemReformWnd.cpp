@@ -255,12 +255,13 @@ void UIItemReformWnd_DetailBtn::OnMouseEnter() {
 // FUNCTION: fn_04119
 void UIItemReformWnd_Item::OnMouseHover(int x, int y) {
   if (this->item) {
-    int screenX = x;
     int screenY = y;
+    int screenX = x;
     this->ToScreen(screenX, screenY);
     const int tipX = screenX + 5;
     const int tipY = screenY - 5;
-    g_modeMgr.gameMode->ShowTooltip(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+    CMode* mode = g_modeMgr.gameMode;
+    mode->ShowTooltip(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -331,7 +332,7 @@ void UIItemReformWnd_List::UpdateScrollBar() {
   if (count > this->visibleCount) {
     this->scrollBar->Show(1);
     this->scrollBar->SetRange(count - this->visibleCount, this->visibleCount, count);
-    this->scrollPosition = std::min<unsigned int>(std::max<int>(this->scrollPosition, 0), count - this->visibleCount);
+    this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, std::max<int>(this->scrollPosition, 0));
     this->scrollBar->SetPosition(this->scrollPosition);
   } else {
     this->scrollPosition = 0;
