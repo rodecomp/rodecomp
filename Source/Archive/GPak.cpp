@@ -550,13 +550,13 @@ struct PakMaskedKey48 {
   __declspec(noinline) PakKeyBlock48 Unmask() const;
 };
 
-struct PakCipherBlock_655900 {
+struct PakMaskedValue {
   short* Encode(const short* in, const int* src);
 };
 
 // OFFSET: 0x00655900
 // FUNCTION: fn_05067
-short* PakCipherBlock_655900::Encode(const short* in, const int* src) {
+short* PakMaskedValue::Encode(const short* in, const int* src) {
   short* out = reinterpret_cast<short*>(this);
   *out = *in;
   int* key_ptr = reinterpret_cast<int*>(out + 1);
@@ -600,17 +600,17 @@ struct PakAuxiliaryContext {
   /* 0004 */ PakAuxiliaryHeader* header;
 };
 
-struct PakVerifier_655A30 {
+struct PakHeaderDecryptor {
   PakAuxiliaryContext* context;
   std::span<std::uint8_t>* span_a;
   std::span<std::uint8_t>* span_b;
 
-  __declspec(noinline) bool Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource);
+  __declspec(noinline) bool Decrypt(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource);
 };
 
 // OFFSET: 0x00655A30
 // FUNCTION: fn_05068
-__declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
+__declspec(noinline) bool PakHeaderDecryptor::Decrypt(AES** cipher_ptr, const PakMaskedKey48* masked_key, int mode, int keySource) {
   alignas(16) unsigned char key[16]{};
   const PakAuxiliaryContext* context = this->context;
 
@@ -649,19 +649,19 @@ __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const Pak
   return res == check;
 }
 
-struct SeedGen_657C30 {
+struct RanluxSeedGenerator {
   unsigned int seed;
   __declspec(noinline) unsigned int NextSeed();
 };
 
 // OFFSET: 0x00657C30
 // FUNCTION: fn_05095
-__declspec(noinline) unsigned int SeedGen_657C30::NextSeed() {
+__declspec(noinline) unsigned int RanluxSeedGenerator::NextSeed() {
   this->seed = static_cast<unsigned int>(static_cast<unsigned __int64>(this->seed) * 40014u % 0x7fffffabu);
   return this->seed;
 }
 
-struct RanluxEngine_655F00 {
+struct Ranlux24BaseEngine {
   /* 0000 */ unsigned int index;
   /* 0004 */ unsigned int values[48];
   /* 00C4 */ int carry;
@@ -671,13 +671,13 @@ struct RanluxEngine_655F00 {
 
 // OFFSET: 0x00655F00
 // FUNCTION: fn_05070
-void RanluxEngine_655F00::Seed(const unsigned int* seed_ptr, char flag, int unused) {
+void Ranlux24BaseEngine::Seed(const unsigned int* seed_ptr, char flag, int unused) {
   unsigned int seed = *seed_ptr == 0 ? 0x12dd397 : *seed_ptr;
   seed %= 0x7fffffab;
   if (seed == 0) {
     seed = 1;
   }
-  SeedGen_657C30 gen{seed};
+  RanluxSeedGenerator gen{seed};
 
   typedef std::_Swc_traits<unsigned int, 0x1000000, 24> Traits;
   unsigned int* const values = this->values;
@@ -711,8 +711,8 @@ void FillUint32(unsigned int* first, unsigned int* last, const unsigned int* val
 PakAuxiliary::PakAuxiliary() {
 }
 
-struct PakState_656DF0 {
-  PakState_656DF0();
+struct PakSharedState {
+  PakSharedState();
 
   /* 0000 */ std::uint32_t stateA;
   /* 0004 */ std::uint32_t stateB;
@@ -725,12 +725,12 @@ struct PakState_656DF0 {
   /* 0020 */ std::uint32_t enabled;
 };
 
-static_assert(sizeof(PakState_656DF0) == 0x24);
-static_assert(offsetof(PakState_656DF0, enabled) == 0x20);
+static_assert(sizeof(PakSharedState) == 0x24);
+static_assert(offsetof(PakSharedState, enabled) == 0x20);
 
 // OFFSET: 0x00656DF0
 // FUNCTION: fn_05081
-PakState_656DF0::PakState_656DF0()
+PakSharedState::PakSharedState()
     : stateA(0), stateB(0), stateC(0), stateD(0), stateE(0), stateF(0), stateG(0), stateH(0), enabled(1) {
 }
 
@@ -1150,16 +1150,16 @@ bool PakAuxiliaryState::DecodeHeader(std::span<std::uint8_t> name, std::uint8_t*
   context.name = &name;
   context.header = header;
 
-  PakVerifier_655A30 verifier;
-  verifier.context = &context;
-  verifier.span_a = &encrypted;
-  verifier.span_b = &decrypted;
+  PakHeaderDecryptor decryptor;
+  decryptor.context = &context;
+  decryptor.span_a = &encrypted;
+  decryptor.span_b = &decrypted;
 
   switch (header->keySource) {
   case 0:
     break;
   case 1:
-    if (!verifier.Verify(&this->m_cipher, &this->m_key, AES::CBC, 0)) {
+    if (!decryptor.Decrypt(&this->m_cipher, &this->m_key, AES::CBC, 0)) {
       return false;
     }
     break;
