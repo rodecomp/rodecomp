@@ -103,14 +103,13 @@ const char* CLanguageBase::Candidate(int index) const {
   // GLOBAL: gl_24374
   static char output[256];
 
-  if (index >= this->candidateCount) {
-    return "";
+  if (index < this->candidateCount) {
+    const unsigned char* bytes = this->candidateStorage.data();
+    const WCHAR* text = reinterpret_cast<const WCHAR*>(bytes + this->candidateList->dwOffset[index]);
+    const unsigned size = WideCharToMultiByte(this->codePage, 0, text, -1, output, sizeof(output), nullptr, nullptr);
+    output[std::min<unsigned>(size, 255)] = 0;
+    return output;
   }
 
-  const unsigned char* bytes = this->candidateStorage.data();
-  const WCHAR* text = reinterpret_cast<const WCHAR*>(bytes + this->candidateList->dwOffset[index]);
-  const unsigned size = WideCharToMultiByte(this->codePage, 0, text, -1, output, sizeof(output), nullptr, nullptr);
-  output[std::min<unsigned>(size, 255)] = 0;
-
-  return output;
+  return "";
 }
