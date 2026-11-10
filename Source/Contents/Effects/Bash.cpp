@@ -113,14 +113,18 @@ void CBash::OnProcess() {
       step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
     }
 
-    values[0] = step;
     int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
+    values[0] = step;
     if (alpha < 0.0f) {
       alpha = 0;
     }
 
+    if (alpha > limit) {
+      alpha = limit;
+    }
+
     ++particle->elapsedFrames;
-    particle->alpha = std::min(alpha, limit);
+    particle->alpha = alpha;
   }
 
   for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
@@ -145,8 +149,12 @@ void CBash::OnProcess() {
       alpha = 0;
     }
 
+    if (alpha > limit) {
+      alpha = limit;
+    }
+
     ++particle->elapsedFrames;
-    particle->alpha = std::min(alpha, limit);
+    particle->alpha = alpha;
   }
 }
 
