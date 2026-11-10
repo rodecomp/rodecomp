@@ -25,9 +25,7 @@ GroundCell::GroundCell() {
   this->top = nullptr;
   this->side1 = nullptr;
   this->side2 = nullptr;
-  this->color[0] = 255;
-  this->color[1] = 255;
-  this->color[2] = 255;
+  this->color[0] = this->color[1] = this->color[2] = 255;
 }
 
 // OFFSET: 0x00AC0180
