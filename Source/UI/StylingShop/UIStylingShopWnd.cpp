@@ -946,6 +946,9 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
   case 3:
     table = "BodyPalette";
     break;
+  case 7:
+    table = "BodyStyle";
+    break;
   case 4:
     table = "TopAccessory";
     break;
@@ -954,9 +957,6 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
     break;
   case 6:
     table = "BottomAccessory";
-    break;
-  case 7:
-    table = "BodyStyle";
     break;
   }
 
@@ -967,9 +967,10 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
   case 6:
     return table;
   default:
-    if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
-      table = "Doram" + table;
+    if (!g_session.IsDoramJob(g_session.GetDisplayJob())) {
+      return table;
     }
+    table = "Doram" + table;
     return table;
   }
 }
