@@ -39,19 +39,21 @@ int LoadLibraryFunctions(HMODULE* module, const char* name, int count, ...) {
   std::va_list arguments;
   va_start(arguments, count);
   *module = LoadLibraryA(name);
-  if (*module != nullptr) {
-    for (int index = 0; index < count; ++index) {
-      FARPROC* output = va_arg(arguments, FARPROC*);
-      const char* symbol = va_arg(arguments, const char*);
-      *output = GetProcAddress(*module, symbol);
-      if (*output == nullptr) {
-        goto failure;
-      }
-    }
-
-    va_end(arguments);
-    return 1;
+  if (*module == nullptr) {
+    goto failure;
   }
+
+  for (int index = 0; index < count; ++index) {
+    FARPROC* output = va_arg(arguments, FARPROC*);
+    const char* symbol = va_arg(arguments, const char*);
+    *output = GetProcAddress(*module, symbol);
+    if (*output == nullptr) {
+      goto failure;
+    }
+  }
+
+  va_end(arguments);
+  return 1;
 
 failure:
   va_end(arguments);
