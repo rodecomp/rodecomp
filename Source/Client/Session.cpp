@@ -431,7 +431,8 @@ ITEM_INFO CSession::FindMerchantPurchaseItem(std::uint32_t id) const {
 // OFFSET: 0x00DDED40
 // FUNCTION: fn_23412
 ITEM_INFO CSession::FindItem1758ByItemId(int itemId) const {
-  for (const ITEM_INFO& item : this->merchantPurchaseItems) {
+  for (std::list<ITEM_INFO>::const_iterator it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
+    const ITEM_INFO& item = *it;
     if (std::atoi(item.itemId.c_str()) == itemId) {
       return item;
     }
@@ -859,9 +860,10 @@ ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
 // FUNCTION: fn_23367
 ITEM_INFO CSession::FindCostumeItem(std::uint32_t id, int* index) const {
   for (int i = 0; i < 10; ++i) {
-    if (this->costumeItems[i].identity[1] == id) {
+    const ITEM_INFO& item = this->costumeItems[i];
+    if (item.identity[1] == id) {
       *index = i;
-      return this->costumeItems[i];
+      return item;
     }
   }
 
@@ -872,9 +874,10 @@ ITEM_INFO CSession::FindCostumeItem(std::uint32_t id, int* index) const {
 // FUNCTION: fn_23369
 ITEM_INFO CSession::FindEquippedItem(std::uint32_t id, int* index) const {
   for (int i = 0; i < 10; ++i) {
-    if (this->equippedItems[i].identity[1] == id) {
+    const ITEM_INFO& item = this->equippedItems[i];
+    if (item.identity[1] == id) {
       *index = i;
-      return this->equippedItems[i];
+      return item;
     }
   }
 
@@ -1431,7 +1434,8 @@ ITEM_INFO CSession::GetAlternateEquippedItemAt(int index) const {
 // FUNCTION: fn_23445
 int CSession::GetItem1718QuantityByItemId(const ITEM_INFO& item) const {
   for (std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
-    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+    const int itemId = std::atoi(it->itemId.c_str());
+    if (itemId == std::atoi(item.itemId.c_str())) {
       return it->quantity;
     }
   }
@@ -1455,7 +1459,8 @@ int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
 // FUNCTION: fn_23447
 std::uint16_t CSession::GetShopItemPriceFactorByItemId(const ITEM_INFO& item) const {
   for (std::list<ITEM_INFO>::const_iterator it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
-    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+    const int itemId = std::atoi(it->itemId.c_str());
+    if (itemId == std::atoi(item.itemId.c_str())) {
       return it->priceFactor;
     }
   }
@@ -2318,7 +2323,11 @@ bool CSession::IsBlankString(const char* text) const {
     return true;
   }
 
-  return text[length - 1] == ' ';
+  if (text[length - 1] == ' ') {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00DF9AA0
