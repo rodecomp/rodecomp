@@ -117,6 +117,6 @@ void CSimpleStringMgr::AddString(STR_TYPE type, const char* key, const char* val
     entries.emplace(key, value);
     this->m_tables.emplace(type, std::move(entries));
   } else {
-    table->second.emplace(std::string(key), value);
+    table->second.try_emplace(std::string(key), value);
   }
 }
