@@ -27,7 +27,7 @@ public:
   ULONG Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSize, UCHAR flags);
   bool Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv, int mode);
   bool Initialize(PUCHAR secret, ULONG secretSize, int mode);
-  bool SetIV(const UCHAR* iv, ULONG ivSize);
+  bool SetIV(std::span<const UCHAR> iv);
   bool SetMode(int mode);
 };
 

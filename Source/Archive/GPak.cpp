@@ -1075,7 +1075,7 @@ __declspec(noinline) bool PakVerifier_655A30::Verify(AES** cipher_ptr, const Pak
   }
 
   AES* cipher = *cipher_ptr;
-  cipher->SetIV(key, sizeof(key));
+  cipher->SetIV(key);
   cipher->SetMode(mode);
 
   const ULONG res = cipher->Decrypt(static_cast<PUCHAR>(this->span_a->data), this->span_a->size, static_cast<PUCHAR>(this->span_b->data), this->span_b->size, 0);
@@ -1664,7 +1664,7 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
     for (std::size_t i = 0; i < sizeof(hash); ++i) {
       reinterpret_cast<volatile std::uint8_t*>(&hash)[i] = 0;
     }
-    this->m_cipher->SetIV(reinterpret_cast<const UCHAR*>(&key), sizeof(key));
+    this->m_cipher->SetIV({reinterpret_cast<const UCHAR*>(&key), sizeof(key)});
     this->m_cipher->SetMode(AES::CBC);
     const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
     volatile int expected = 0xe5c3c820;
@@ -1681,7 +1681,7 @@ bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, st
     for (std::size_t i = 0; i < sizeof(hash); ++i) {
       reinterpret_cast<volatile std::uint8_t*>(&hash)[i] = 0;
     }
-    this->m_cipher->SetIV(reinterpret_cast<const UCHAR*>(&key), sizeof(key));
+    this->m_cipher->SetIV({reinterpret_cast<const UCHAR*>(&key), sizeof(key)});
     this->m_cipher->SetMode(AES::CBC);
     const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
     volatile int expected = 0xe5c3c820;

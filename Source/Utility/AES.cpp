@@ -46,7 +46,7 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv,
     m_algorithm = nullptr;
   }
 
-  if (!SetIV(iv.data(), static_cast<ULONG>(iv.size()))) {
+  if (!SetIV(iv)) {
     return false;
   }
   if (BCryptOpenAlgorithmProvider(&m_algorithm, BCRYPT_AES_ALGORITHM, nullptr, 0) < 0) {
@@ -69,17 +69,17 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv,
 // FUNCTION: fn_04420
 bool AES::Initialize(PUCHAR secret, ULONG secretSize, int mode) {
   UCHAR iv[16]{};
-  return Initialize(secret, secretSize, std::span<const UCHAR>(iv), mode);
+  return Initialize(secret, secretSize, iv, mode);
 }
 
 // OFFSET: 0x0061B410
 // FUNCTION: fn_04421
-bool AES::SetIV(const UCHAR* iv, ULONG ivSize) {
-  if (ivSize != 16) {
+bool AES::SetIV(std::span<const UCHAR> iv) {
+  if (iv.size() != 16) {
     return false;
   }
   m_iv.resize(16);
-  std::memcpy(m_iv.data(), iv, 16);
+  std::memcpy(m_iv.data(), iv.data(), 16);
   return true;
 }
 
@@ -94,21 +94,21 @@ bool AES::SetMode(int mode) {
     return false;
   }
 
-  const wchar_t* chainingMode;
+  NTSTATUS status;
   switch (mode) {
     case ECB:
-      chainingMode = BCRYPT_CHAIN_MODE_ECB;
+      status = BCryptSetProperty(m_key, BCRYPT_CHAINING_MODE, reinterpret_cast<PUCHAR>(const_cast<wchar_t*>(BCRYPT_CHAIN_MODE_ECB)), sizeof(BCRYPT_CHAIN_MODE_ECB), 0);
       break;
     case CBC:
-      chainingMode = BCRYPT_CHAIN_MODE_CBC;
+      status = BCryptSetProperty(m_key, BCRYPT_CHAINING_MODE, reinterpret_cast<PUCHAR>(const_cast<wchar_t*>(BCRYPT_CHAIN_MODE_CBC)), sizeof(BCRYPT_CHAIN_MODE_CBC), 0);
       break;
     case CFB:
-      chainingMode = BCRYPT_CHAIN_MODE_CFB;
+      status = BCryptSetProperty(m_key, BCRYPT_CHAINING_MODE, reinterpret_cast<PUCHAR>(const_cast<wchar_t*>(BCRYPT_CHAIN_MODE_CFB)), sizeof(BCRYPT_CHAIN_MODE_CFB), 0);
       break;
     default:
       return false;
   }
-  if (BCryptSetProperty(m_key, BCRYPT_CHAINING_MODE, reinterpret_cast<PUCHAR>(const_cast<wchar_t*>(chainingMode)), 32, 0) < 0) {
+  if (status < 0) {
     return false;
   }
   m_mode = mode;
