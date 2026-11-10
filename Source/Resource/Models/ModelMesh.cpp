@@ -1,4 +1,5 @@
 #include "Resource/Models/ModelMesh.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
 #include <map>
@@ -7,8 +8,7 @@ namespace {
   // INLINED
   void Normalize(float* vector) {
     const float squared = (vector[0] * vector[0] + vector[1] * vector[1]) + vector[2] * vector[2];
-    const float length = std::sqrt(squared);
-    const float inverse = 1.0f / length;
+    const float inverse = 1.0f / SquareRoot(squared);
 
     vector[0] = inverse * vector[0];
     vector[1] = inverse * vector[1];
@@ -72,7 +72,7 @@ void ModelMesh::CalculateNormals() {
     normal[0] = y2 * z1 - z2 * y1;
     normal[1] = z2 * x1 - x2 * z1;
     normal[2] = x2 * y1 - y2 * x1;
-    Normalize(normal.data());
+    Normalize(this->faceNormals[index].data());
   }
 
   std::map<int, std::vector<int>> adjacent;
@@ -91,8 +91,6 @@ void ModelMesh::CalculateNormals() {
     const ModelFace& face = this->faces[index];
 
     for (int corner = 0; corner < 3; ++corner) {
-      auto& normal = this->vertexNormals[index * 3 + corner];
-
       for (int neighbor : adjacent[face.vertices[corner]]) {
         const ModelFace& other = this->faces[neighbor];
 
@@ -107,9 +105,9 @@ void ModelMesh::CalculateNormals() {
           }
 
           if (matches) {
-            normal[0] = normal[0] + this->faceNormals[neighbor][0];
-            normal[1] = this->faceNormals[neighbor][1] + normal[1];
-            normal[2] = this->faceNormals[neighbor][2] + normal[2];
+            this->vertexNormals[index * 3 + corner][0] = this->vertexNormals[index * 3 + corner][0] + this->faceNormals[neighbor][0];
+            this->vertexNormals[index * 3 + corner][1] = this->faceNormals[neighbor][1] + this->vertexNormals[index * 3 + corner][1];
+            this->vertexNormals[index * 3 + corner][2] = this->faceNormals[neighbor][2] + this->vertexNormals[index * 3 + corner][2];
           }
         }
       }
