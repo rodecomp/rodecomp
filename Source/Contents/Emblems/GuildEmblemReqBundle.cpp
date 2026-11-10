@@ -37,9 +37,10 @@ void CGuildEmblemReqBundle::Update() {
 
   while (!this->m_pending.empty()) {
     const auto request = this->m_pending.front();
-    if (std::find_if(this->m_recent.begin(), this->m_recent.end(), [&](const Recent& value) {
-          return value.guildId == request.first && value.version == request.second;
-        }) != this->m_recent.end()) {
+    const auto end = this->m_recent.end();
+    if (std::find_if(this->m_recent.begin(), end, [request](const Recent& value) {
+          return request.first == value.guildId && request.second == value.version;
+        }) != end) {
       this->m_pending.pop_front();
       continue;
     }
