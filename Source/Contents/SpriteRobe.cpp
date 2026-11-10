@@ -41,11 +41,10 @@ void CCharacterRender::RenderRobe(
     CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
     int frame = this->frameIndex;
     if (baseAct) {
-      int baseFrame = frame;
-      if ((this->actionIndex >= 0 && this->actionIndex < 8) || (this->actionIndex >= 16 && this->actionIndex <= 22)) {
-        baseFrame = 0;
-      }
-      g_session.GetSyncedFrame(baseAct, act, this->actionIndex, baseFrame, 0, &frame);
+      int action = this->actionIndex;
+      g_session.GetSyncedFrame(
+        baseAct, act, action, ((action >= 0 && action < 8) || (action >= 16 && action <= 22)) ? 0 : frame, 0, &frame
+      );
     }
 
     const ActionFrame& actionFrame = act->Frame(this->actionIndex, frame);
