@@ -608,8 +608,7 @@ void CUIEditCtrlEx::SetText(const char* value) {
   this->text.assign(value);
 
   if (this == g_windowMgr.GetHoverWindow()) {
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(this->text.c_str());
+    g_serverLanguage->ReplaceInput(this->text.c_str());
     g_serverLanguage->Select(0, static_cast<int>(g_serverLanguage->text.size()));
   }
 
