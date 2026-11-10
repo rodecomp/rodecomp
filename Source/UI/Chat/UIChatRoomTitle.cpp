@@ -41,10 +41,12 @@ void UIChatRoomTitle::OnCreate(int, int) {
 // FUNCTION: fn_10831
 void UIChatRoomTitle::OnLBtnDblClk(int, int) {
   CMode* mode = g_modeMgr.GetGameMode();
-  if (this->roomType == 0) {
+  if (this->roomType != 0) {
+    if (this->roomType != 3) {
+      mode->SendMsg(MM_REQ_ENTER_ROOM, this->roomId, 0, 0, 0);
+    }
+  } else {
     g_windowMgr.EnsureWindow(WID_PASSWORDWND)->SendMsg(nullptr, UM_SETROOMID, this->roomId, 0, 0, 0);
-  } else if (this->roomType != 3) {
-    mode->SendMsg(MM_REQ_ENTER_ROOM, this->roomId, 0, 0, 0);
   }
 }
 
