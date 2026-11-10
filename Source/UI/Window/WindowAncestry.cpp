@@ -84,7 +84,7 @@ void UIWindowMgr::RecordWindowPacket(int argument) {
     packet.header = 0x038D08AE;
     packet.length = 10;
     packet.value = static_cast<std::uint32_t>(argument);
-    Replay::Instance().Record(10, &packet, 42, 0);
+    Replay::Instance().Record(packet.length, &packet, 42, 0);
   }
 }
 
