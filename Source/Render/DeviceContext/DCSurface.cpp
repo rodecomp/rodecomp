@@ -141,15 +141,21 @@ HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
   }
 
   if (backend == 0) {
-    backend = (g_session.DefaultRenderBackend() == 1) ? 1 : 2;
+    backend = 1;
+    if (g_session.DefaultRenderBackend() != 1) {
+      backend = 2;
+    }
   }
 
   CRenderSystemBase* renderSystem;
-  if (backend == 2) {
-    renderSystem = new CRenderSystemDX9();
-  } else if (backend == 1) {
+  switch (backend) {
+  case 1:
     renderSystem = new CRenderSystemDX7();
-  } else {
+    break;
+  case 2:
+    renderSystem = new CRenderSystemDX9();
+    break;
+  default:
     return 0x80070057;
   }
 
