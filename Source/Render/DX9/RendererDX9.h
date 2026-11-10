@@ -37,7 +37,7 @@ public:
   void SetTextureMode(int mode);
   void DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort);
   void DrawOpaqueQueues(RenderQueues& queues);
-  void DrawGroundQueues(RenderQueues& queues);
+  void DrawGroundQueues();
   void DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass);
   void DrawAuxiliaryQueue();
   void DrawBaseQueue();

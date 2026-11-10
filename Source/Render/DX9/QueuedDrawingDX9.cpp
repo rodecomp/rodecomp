@@ -66,7 +66,7 @@ void CRendererDX9::DrawQueues(
   this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
 
   this->DrawOpaqueQueues(queues);
-  this->DrawGroundQueues(queues);
+  this->DrawGroundQueues();
 
   this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
   this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);

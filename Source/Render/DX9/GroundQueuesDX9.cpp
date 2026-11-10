@@ -10,18 +10,13 @@
 #include <bit>
 #include <cstdint>
 
-namespace {
-  // INLINED
-  bool TextureBefore(const RenderCommand* left, const RenderCommand* right) {
-    return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
-  }
-}
-
 // OFFSET: 0x00566D60
 // FUNCTION: fn_02227
 void CRendererDX9::DrawBaseQueue() {
   ScopedDeviceStateDX9 restore(this->device->state);
-  std::sort(this->queues.queue_0168.begin(), this->queues.queue_0168.end(), TextureBefore);
+  std::sort(this->queues.queue_0168.begin(), this->queues.queue_0168.end(), [](const RenderCommand* left, const RenderCommand* right) {
+    return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
+  });
 
   for (RenderCommand* command : this->queues.queue_0168) {
     this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
@@ -31,7 +26,7 @@ void CRendererDX9::DrawBaseQueue() {
 
 // OFFSET: 0x005668B0
 // FUNCTION: fn_02226
-void CRendererDX9::DrawGroundQueues(RenderQueues& queues) {
+void CRendererDX9::DrawGroundQueues() {
   ScopedDeviceStateDX9 restore(this->device->state);
   this->device->state.SetRenderState(D3DRS_AMBIENT, 0xFFFFFFFFu);
   this->device->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
@@ -40,7 +35,7 @@ void CRendererDX9::DrawGroundQueues(RenderQueues& queues) {
     if (g_multitexture == 1) {
       ScopedDeviceStateDX9 restoreDual(this->device->state);
       this->device->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);
-      auto& queue = queues.lightmapped.first;
+      auto& queue = this->queues.lightmapped.first;
       std::sort(queue.begin(), queue.end(), [](const LightmappedPrimitive* left, const LightmappedPrimitive* right) {
         const auto first = reinterpret_cast<std::uintptr_t>(left->texture);
         const auto second = reinterpret_cast<std::uintptr_t>(right->texture);
@@ -70,9 +65,11 @@ void CRendererDX9::DrawGroundQueues(RenderQueues& queues) {
       this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
       this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
       this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
-      std::sort(queues.queue_0174.begin(), queues.queue_0174.end(), TextureBefore);
+      std::sort(this->queues.queue_0174.begin(), this->queues.queue_0174.end(), [](const RenderCommand* left, const RenderCommand* right) {
+        return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
+      });
 
-      for (RenderCommand* command : queues.queue_0174) {
+      for (RenderCommand* command : this->queues.queue_0174) {
         this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
         this->DrawPrimitive(command);
       }
