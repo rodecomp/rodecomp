@@ -860,12 +860,11 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     this->hiddenButtons[10] = 0;
     int disabledIndices[2] = {0, 2};
 
-    int x = 5;
-    for (int index = 0; index < 11; ++index) {
+    int index = 0;
+    for (int x = 5; x < 291; x += 26, ++index) {
       char number[8];
       _itoa(index + 1, number, 10);
-      UIBitmapButton* button = new UIBitmapButton();
-      this->buttons[index] = button;
+      this->buttons[index] = new UIBitmapButton();
 
       bool useDisabledImage = false;
       for (int entry = 0; entry < 2; ++entry) {
@@ -876,23 +875,25 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       }
 
       if (useDisabledImage == true) {
-        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 0, 0);
-        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 1, 0);
-        button->SetBitmap((prefix + number + "_disable.bmp").c_str(), 2, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 0, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 1, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 2, 0);
       } else {
-        button->SetBitmap((prefix + number + ".bmp").c_str(), 0, 0);
-        button->SetBitmap((prefix + number + "_a.bmp").c_str(), 1, 0);
-        button->SetBitmap((prefix + number + "_b.bmp").c_str(), 2, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + ".bmp").c_str(), 0, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_a.bmp").c_str(), 1, 0);
+        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_b.bmp").c_str(), 2, 0);
       }
 
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(x, this->geometry.height - 40);
-      button->SetId(ids[index]);
-      button->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
-      button->SetDisabled(disabled[index]);
-      button->Invalidate();
+      this->buttons[index]->SetSize(
+        static_cast<UIBitmapButton*>(this->buttons[index])->BitmapWidth(),
+        static_cast<UIBitmapButton*>(this->buttons[index])->BitmapHeight()
+      );
+      this->buttons[index]->Move(x, this->geometry.height - 40);
+      this->buttons[index]->SetId(ids[index]);
+      static_cast<UIBitmapButton*>(this->buttons[index])->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
+      static_cast<UIBitmapButton*>(this->buttons[index])->SetDisabled(disabled[index]);
+      this->buttons[index]->Invalidate();
       this->AddChild(this->buttons[index]);
-      x += 26;
     }
   }
 
