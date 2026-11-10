@@ -580,34 +580,40 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
   }
 }
 
+namespace {
+struct TagPositionLess {
+  // INLINED
+  bool operator()(const STagString& left, const STagString& right) const {
+    return static_cast<int>(left.position) < static_cast<int>(right.position);
+  }
+};
+}
+
 // OFFSET: 0x009B8AA0
 // FUNCTION: fn_13874
 std::string UITagListBox::ParseTaggedText(std::string text, std::vector<STagInfoV2>& tags) {
   std::vector<STagString> extracted = ExtractTextTags(text);
   if (extracted.empty()) {
-    return text;
+    return std::string(text);
   }
 
   tags.clear();
-  std::sort(extracted.begin(), extracted.end(), [](const STagString& left, const STagString& right) {
-    return static_cast<int>(left.position) < static_cast<int>(right.position);
-  });
+  std::sort(extracted.begin(), extracted.end(), TagPositionLess{});
 
   std::string result;
   std::size_t position = 0;
   for (std::size_t index = 0; index < extracted.size(); ++index) {
-    const STagString& source = extracted[index];
     STagInfoV2 tag;
-    result += text.substr(position, source.position - position);
+    result += text.substr(position, extracted[index].position - position);
     tag.startOffset = static_cast<int>(result.size());
-    const std::pair<std::string, std::string> parsed = this->ParseTag(source.text, source.tag);
+    const std::pair<std::string, std::string> parsed = this->ParseTag(extracted[index].text, extracted[index].tag);
     result += parsed.first;
     tag.endOffset = static_cast<int>(result.size());
     tag.label = parsed.first;
     tag.data = parsed.second;
-    tag.type = g_textTagRegistry[source.tag].type;
+    tag.type = g_textTagRegistry[extracted[index].tag].type;
     tags.push_back(tag);
-    position = source.position + source.text.size();
+    position = extracted[index].position + extracted[index].text.size();
   }
 
   if (position < text.size() - 1) {
