@@ -86,11 +86,11 @@ void CMagnumBreak::OnProcess() {
     float& spin = *reinterpret_cast<float*>(&ring->effectParameters[0x14]);
     const float angle = spin;
     float speed = growth + ring->speedParameter;
-    speed = speed > 0.0f ? speed : 0.0f;
+    speed = 0.0f > speed ? 0.0f : speed;
     float scale = speed + ring->scale;
-    scale = scale < maximum ? scale : maximum;
+    scale = maximum < scale ? maximum : scale;
     matrix rotation;
-    rotation.MakeXRotation(1.5707964f);
+    rotation.MakeXRotation(1.570796f);
     ring->scale = scale;
     ring->speedParameter = speed;
     spin = angle + speed;
@@ -118,12 +118,11 @@ void CMagnumBreak::OnProcess() {
     step = this->fadeStep;
   }
 
-  const int value = static_cast<int>(static_cast<float>(this->alpha) + step);
-  this->alpha = value;
-  if (static_cast<float>(value) < 0.0f) {
+  this->alpha = static_cast<int>(static_cast<float>(this->alpha) + step);
+  if (static_cast<float>(this->alpha) < 0.0f) {
     this->alpha = 0;
-  } else {
-    this->alpha = value > 255 ? 255 : value;
+  } else if (this->alpha > 255) {
+    this->alpha = 255;
   }
 }
 
