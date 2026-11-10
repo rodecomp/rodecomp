@@ -35,15 +35,15 @@ static __forceinline void SetClipCorners(RenderVertex* vertices, const EZeffectT
     vertices[1].x = transform.ax[0];
     vertices[2].x = transform.ax[2];
     vertices[3].x = transform.ax[1];
-    vertices[1].u = vertices[0].u = transform.u;
-    vertices[3].u = vertices[2].u = transform.us + transform.u;
+    vertices[0].u = vertices[1].u = transform.u;
+    vertices[2].u = vertices[3].u = transform.us + transform.u;
   } else {
     vertices[0].x = transform.ax[2];
     vertices[1].x = transform.ax[1];
     vertices[2].x = transform.ax[3];
     vertices[3].x = transform.ax[0];
-    vertices[1].u = vertices[0].u = transform.us + transform.u;
-    vertices[3].u = vertices[2].u = transform.u;
+    vertices[0].u = vertices[1].u = transform.us + transform.u;
+    vertices[2].u = vertices[3].u = transform.u;
   }
 
   if (transform.ay[2] > transform.ay[1]) {
@@ -51,32 +51,32 @@ static __forceinline void SetClipCorners(RenderVertex* vertices, const EZeffectT
     vertices[1].y = transform.ay[0];
     vertices[2].y = transform.ay[2];
     vertices[3].y = transform.ay[1];
-    vertices[3].v = vertices[1].v = transform.v;
-    vertices[2].v = vertices[0].v = transform.vs + transform.v;
+    vertices[1].v = vertices[3].v = transform.v;
+    vertices[0].v = vertices[2].v = transform.vs + transform.v;
   } else {
     vertices[0].y = transform.ay[0];
     vertices[1].y = transform.ay[3];
     vertices[2].y = transform.ay[1];
     vertices[3].y = transform.ay[2];
-    vertices[2].v = vertices[0].v = transform.v;
-    vertices[3].v = vertices[1].v = transform.vs + transform.v;
+    vertices[0].v = vertices[2].v = transform.v;
+    vertices[1].v = vertices[3].v = transform.vs + transform.v;
   }
 }
 
 // INLINED
 static __forceinline std::uint32_t ClipColor(const EZeffectTransform& transform, float alpha) {
-  return ((((static_cast<int>(transform.crA * alpha) << 8) + static_cast<unsigned char>(transform.crR)) << 8) + static_cast<unsigned char>(transform.crG)) << 8 |
+  return (((((static_cast<int>(transform.crA * alpha) << 8) + static_cast<unsigned char>(transform.crR)) << 8) + static_cast<unsigned char>(transform.crG)) << 8) +
          static_cast<unsigned char>(transform.crB);
 }
 
 // INLINED
-static __forceinline CTexture* ClipTexture(EZeffectClip* clip, const EZeffectTransform& transform, const std::string& prefix) {
+static __forceinline CTexture* ClipTexture(EZeffectClip* clip, const EZeffectTransform& transform, const CEZ2STRParticle& particle) {
   const int frame = static_cast<int>(transform.aniframe);
-  if (prefix.size() == 0) {
+  if (particle.m_texturePrefix.size() == 0) {
     return clip->Texture(frame < 0 ? 0 : frame);
   }
 
-  return clip->Texture(frame < 0 ? 0 : frame, prefix.c_str());
+  return clip->Texture(frame < 0 ? 0 : frame, particle.m_texturePrefix);
 }
 
 // OFFSET: 0x00B3C440
@@ -468,7 +468,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
-  CTexture* texture = ClipTexture(clip, *transform, this->m_texturePrefix);
+  CTexture* texture = ClipTexture(clip, *transform, *this);
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
 
@@ -600,7 +600,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
     vertices[i].y -= this->m_screenShiftY;
   }
 
-  CTexture* texture = ClipTexture(clip, *transform, this->m_texturePrefix);
+  CTexture* texture = ClipTexture(clip, *transform, *this);
   const float depth = static_cast<float>(index) * 1e-05f;
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
@@ -628,7 +628,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
-  CTexture* texture = ClipTexture(clip, *transform, this->m_texturePrefix);
+  CTexture* texture = ClipTexture(clip, *transform, *this);
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
 

@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
 class CTexture;
 
@@ -45,7 +46,7 @@ struct EZeffectClip {
   EZeffectClip();
   ~EZeffectClip();
   CTexture* Texture(int index);
-  CTexture* Texture(int index, const char* prefix);
+  CTexture* Texture(int index, const std::string& prefix);
 
   /* 0000 */ int textureCount;
   /* 0004 */ int textureState;
