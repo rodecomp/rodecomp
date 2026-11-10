@@ -782,22 +782,22 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.Schedule(this);
       }
     }
-
-    return 0;
+    break;
   case UM_TEXT_LBTN_UP:
     if (a == 426) {
       ShellExecuteA(hWnd, "open", LookupMessage(MSI_FRIEND_ALREADY_FRIEND), nullptr, nullptr, SW_SHOWNORMAL);
     }
-
-    return 0;
+    break;
   case UM_SET_MESSAGE_PROTECTED:
     this->protectedMessage = a > 0;
-    return 0;
+    break;
   case UM_IS_MESSAGE_PROTECTED:
     return this->protectedMessage == 1;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008BFB70
@@ -2090,9 +2090,10 @@ void UIMessageBoxAutoreturn::OnProcess() {
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.data()), 38, 0, 0);
   }
 
+  UIBarGraph2* gauge = this->gauge;
   const unsigned duration = this->seconds * 1000;
   const unsigned progress = (timeGetTime() + (duration - this->deadline)) * 100 / duration;
-  this->gauge->SetValue(static_cast<float>(progress));
+  gauge->SetValue(static_cast<float>(progress));
 }
 
 // OFFSET: 0x008AA9D0
@@ -2264,9 +2265,11 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
     return;
   }
 
-  const int seconds = static_cast<int>(timeGetTime() - Replay::Instance().started) / 1000;
-  const int minutes = seconds / 60;
-  const int hours = minutes / 60;
+  const int elapsed = static_cast<int>(timeGetTime() - Replay::Instance().started) / 1000;
+  const int totalMinutes = elapsed / 60;
+  const int seconds = elapsed % 60;
+  const int hours = totalMinutes / 60;
+  const int minutes = totalMinutes % 60;
   if (hours == 100) {
     this->recordTimeText->Move(124, 47);
   } else if (hours == 1000) {
@@ -2274,7 +2277,7 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
   }
 
   char text[100] = {};
-  std::sprintf(text, "%03d:%02d:%02d", hours, minutes % 60, seconds % 60);
+  std::sprintf(text, "%03d:%02d:%02d", hours, minutes, seconds);
   this->recordTimeText->SetTextFitted(text);
   this->Invalidate();
   this->InvalidateChildren();
