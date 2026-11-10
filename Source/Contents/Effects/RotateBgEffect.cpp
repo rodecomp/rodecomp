@@ -1,6 +1,7 @@
 #include "Contents/Effects/RotateBgEffect.h"
 
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -85,10 +86,10 @@ bool CRotateBgEffect::IsAlive() {
 // FUNCTION: fn_19144
 void CRotateBgEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
       int alpha = particle->alpha;
       if (this->frame > 60) {
@@ -143,10 +144,10 @@ void CRotateBgEffect::OnProcess() {
   }
 
   for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
       if (particle->columnIndex == 0) {
         this->segmentAngle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
@@ -193,20 +194,22 @@ void CRotateBgEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
       const int tilt = particle->phaseParameter;
-      const float tiltCosine = g_cosTable[tilt];
+      const float tiltX = g_cosTable[tilt] * cosine;
+      const float tiltZ = g_cosTable[tilt] * sine;
+      EffectPoint edge[2];
       const float scale = particle->scale;
-      const float innerX = scale * cosine;
-      const float innerY = -particle->animationParameter;
-      const float innerZ = scale * sine;
-      const float outerX = innerX + tiltCosine * cosine;
-      const float outerY = innerY - g_sinTable[tilt];
-      const float outerZ = innerZ + tiltCosine * sine;
-      particle->vertices[3].x = innerX;
-      particle->vertices[3].y = innerY;
-      particle->vertices[1].z = outerZ;
-      particle->vertices[1].x = outerX;
-      particle->vertices[1].y = outerY;
-      particle->vertices[3].z = innerZ;
+      edge[0].x = scale * cosine;
+      edge[0].y = -particle->animationParameter;
+      edge[0].z = scale * sine;
+      edge[1].x = edge[0].x + tiltX;
+      edge[1].y = edge[0].y - g_sinTable[tilt];
+      edge[1].z = edge[0].z + tiltZ;
+      particle->vertices[3].x = edge[0].x;
+      particle->vertices[3].y = edge[0].y;
+      particle->vertices[1].z = edge[1].z;
+      particle->vertices[1].x = edge[1].x;
+      particle->vertices[1].y = edge[1].y;
+      particle->vertices[3].z = edge[0].z;
       if (index != 0) {
         particle->vertices[0].x = this->lastOuter.x;
         particle->vertices[0].y = this->lastOuter.y;
@@ -216,12 +219,12 @@ void CRotateBgEffect::OnProcess() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner.x = innerX;
-      this->lastInner.y = innerY;
-      this->lastInner.z = innerZ;
-      this->lastOuter.x = outerX;
-      this->lastOuter.y = outerY;
-      this->lastOuter.z = outerZ;
+      this->lastInner.x = edge[0].x;
+      this->lastInner.y = edge[0].y;
+      this->lastInner.z = edge[0].z;
+      this->lastOuter.x = edge[1].x;
+      this->lastOuter.y = edge[1].y;
+      this->lastOuter.z = edge[1].z;
     }
 
     ++particle->elapsedFrames;
