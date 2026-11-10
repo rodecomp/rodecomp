@@ -337,9 +337,9 @@ void CLevel150SubEffect::SetColor(int red, int green, int blue) {
 // OFFSET: 0x00B47850
 // FUNCTION: fn_18921
 void CLevel150SubEffect::Init() {
-  const int blue[4][3] = {{105, 105, 255}, {5, 5, 255}, {55, 55, 255}, {155, 155, 255}};
-  const int yellow[4][3] = {{255, 255, 105}, {255, 255, 5}, {255, 255, 55}, {255, 255, 155}};
   const int red[4][3] = {{255, 105, 105}, {255, 5, 5}, {255, 55, 55}, {255, 155, 155}};
+  const int yellow[4][3] = {{255, 255, 105}, {255, 255, 5}, {255, 255, 55}, {255, 255, 155}};
+  const int blue[4][3] = {{105, 105, 255}, {5, 5, 255}, {55, 55, 255}, {155, 155, 255}};
   const int effectId = this->id;
   for (int ring = 0; ring < 4; ++ring) {
     for (int index = 0; index < 2; ++index) {
@@ -349,7 +349,7 @@ void CLevel150SubEffect::Init() {
       }
 
       particle->SetTexture("effect\\emp shock.tga");
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(rand() % 360, 0));
       particle->alpha = 200;
       particle->animationParameter = 10.0f;
       *reinterpret_cast<float*>(particle->animationParameters) = 10.0f;
@@ -410,7 +410,7 @@ void CLevel150SubEffect::OnProcess() {
         int alpha = particle->alpha - 3;
         if (alpha <= 0) {
           size = 10.0f;
-          *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
+          *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(rand() % 360, 0));
           alpha = 200;
         }
         particle->alpha = alpha;
