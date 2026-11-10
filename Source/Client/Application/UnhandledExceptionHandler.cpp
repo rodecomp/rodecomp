@@ -257,18 +257,21 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
       sprintf(&g_crashString[strlen(g_crashString)], "%08X : ", static_cast<unsigned int>(reinterpret_cast<uintptr_t>(stack)));
 
       for (int j = 0; j < 16; ++j) {
-        sprintf(&g_crashString[strlen(g_crashString)], "%02X ", *stack++);
+        sprintf(&g_crashString[strlen(g_crashString)], "%02X ", *stack);
+        ++stack;
       }
 
       sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     }
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\nLaunch Info \r\n");
+
     int launchIndex = 0;
 
     for (int k = 0; k < 4; ++k) {
       for (int m = 0; m < 8; ++m) {
-        sprintf(&g_crashString[strlen(g_crashString)], "%04X ", g_launchInfo[launchIndex++]);
+        sprintf(&g_crashString[strlen(g_crashString)], "%04X ", g_launchInfo[launchIndex]);
+        ++launchIndex;
       }
 
       sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
@@ -276,23 +279,22 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\nJob : %s\r\n", g_session.GetJobName(g_session.GetDisplayJob(), -1));
 
-    if (CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", std::string(gameMode->mapName).c_str(), g_session.m_playerX, g_session.m_playerY);
-    }
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    gameMode != nullptr && sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", std::string(gameMode->mapName).c_str(), g_session.m_playerX, g_session.m_playerY);
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_session.m_startTimeTicks / 10000000LL, g_session.m_loginTimeTicks / 10000000LL);
 
     int64_t reportTime = _Xtime_get_ticks() / 10000000LL;
-    PROCESS_MEMORY_COUNTERS memCounters;
+    PROCESS_MEMORY_COUNTERS_EX memCounters;
     double workingSet = 0.0;
-    double pagefile = 0.0;
+    double privateUsage = 0.0;
 
-    if (K32GetProcessMemoryInfo(GetCurrentProcess(), &memCounters, sizeof(memCounters))) {
+    if (K32GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&memCounters), sizeof(memCounters))) {
       workingSet = static_cast<double>(static_cast<uint32_t>(memCounters.WorkingSetSize >> 10));
-      pagefile = static_cast<double>(static_cast<uint32_t>(memCounters.PagefileUsage >> 10));
+      privateUsage = static_cast<double>(static_cast<uint32_t>(memCounters.PrivateUsage >> 10));
     }
 
-    sprintf(&g_crashString[strlen(g_crashString)], "\r\nReport Time: %I64d(%.0lf/%.0lf)\r\n", reportTime, workingSet, pagefile);
+    sprintf(&g_crashString[strlen(g_crashString)], "\r\nReport Time: %I64d(%.0lf/%.0lf)\r\n", reportTime, workingSet, privateUsage);
     FreeLibrary(dbgHelp);
   } else {
     sprintf(&g_crashString[strlen(g_crashString)], "Can't find DbgHelp.DLL !!!");
