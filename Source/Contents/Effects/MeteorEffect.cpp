@@ -45,24 +45,20 @@ void CMeteorEffect::Open() {
   switch (this->id) {
     case 1099:
     case 1111: {
-      const long long counts[6] = {0, 3, 3, 5, 5, 7};
+      const long long counts[5] = {3, 3, 5, 5, 7};
       unsigned int level = this->effectLevel;
       if (level > 5) {
         level = 5;
       }
 
-      const long long count = counts[level];
-      const int span = static_cast<int>(count * 5);
-      const float halfSpan = static_cast<float>(span) * g_depthAverageHalf;
-      const int spanPlus1 = span + 1;
+      const long long count = counts[level - 1];
+      const float halfSpan = static_cast<float>(count * 5) * g_depthAverageHalf;
+      const int range = static_cast<int>(count) * 5 + 1;
 
       for (long long i = 0; i < count; ++i) {
-        vector3d pos;
-        const int r1 = spanPlus1 != 0 ? std::ranges::max(rand() % spanPlus1, 0) : 0;
-        pos.x = static_cast<float>(r1) - halfSpan + this->position[0];
-        pos.y = this->position[1];
-        const int r2 = spanPlus1 != 0 ? std::ranges::max(rand() % spanPlus1, 0) : 0;
-        pos.z = static_cast<float>(r2) - halfSpan + this->position[2];
+        vector3d pos = *reinterpret_cast<const vector3d*>(this->position);
+        pos.x = static_cast<float>(RandomIndex(range)) - halfSpan + pos.x;
+        pos.z = static_cast<float>(RandomIndex(range)) - halfSpan + pos.z;
 
         CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&pos, 1));
         if (!particle) {
