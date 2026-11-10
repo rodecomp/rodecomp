@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -151,7 +152,7 @@ void CFlowerCastingEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
 
-      vector3d points[2] = {};
+      EffectPoint points[2];
       points[0].x = particle->scale * cosine;
       points[0].y = 0.0f;
       points[0].z = particle->scale * sine;
@@ -175,8 +176,12 @@ void CFlowerCastingEffect::OnProcess() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner = points[0];
-      this->lastOuter = points[1];
+      this->lastInner.x = points[0].x;
+      this->lastInner.y = points[0].y;
+      this->lastInner.z = points[0].z;
+      this->lastOuter.x = points[1].x;
+      this->lastOuter.y = points[1].y;
+      this->lastOuter.z = points[1].z;
     }
 
     ++(*it)->elapsedFrames;
