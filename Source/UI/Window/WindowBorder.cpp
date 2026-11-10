@@ -121,19 +121,19 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
   }
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-  if (!middle) {
-    return 0;
-  }
+  if (middle) {
+    width = width - rightWidth - leftWidth;
+    const int middleWidth = middle->image.width;
+    const int count = width / middleWidth + (width % middleWidth != 0);
 
-  width = width - rightWidth - leftWidth;
-  const int middleWidth = middle->image.width;
-  const int count = width / middleWidth + (width % middleWidth != 0);
-
-  for (int row = 1; row <= rows; ++row) {
-    for (int column = 0; column < count; ++column) {
-      this->DrawBitmap(leftWidth + column * middleWidth, this->geometry.height - row * barHeight, middle, false);
+    for (int row = 1; row <= rows; ++row) {
+      for (int column = 0; column < count; ++column) {
+        this->DrawBitmap(leftWidth + column * middleWidth, this->geometry.height - row * barHeight, middle, false);
+      }
     }
+
+    return middle->image.height;
   }
 
-  return middle->image.height;
+  return 0;
 }
