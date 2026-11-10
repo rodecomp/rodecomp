@@ -11,6 +11,24 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline int RandomIndex(int range) {
+  if (range == 0) {
+    return 0;
+  }
+  return std::ranges::max(rand() % range, 0);
+}
+
+// INLINED
+__forceinline bool IsParticleAlive(const CParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x007077D0
 // FUNCTION: fn_07055
 void CMeteorEffect::Close() {
@@ -113,7 +131,7 @@ bool CMeteorEffect::IsAlive() {
 void CMeteorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ) {
     CParticle* particle = *it;
-    if (particle->life == 0.0f || static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f) {
+    if (IsParticleAlive(particle) == true) {
       if (particle) {
         CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
         spriteParticle->UpdateFrame();
@@ -135,7 +153,7 @@ void CMeteorEffect::OnProcess() {
 void CMeteorEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if ((particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->elapsedFrames)) && particle) {
+    if (IsParticleAlive(particle) == true && particle) {
       static_cast<CSpriteParticle*>(particle)->Draw(0);
     }
   }
