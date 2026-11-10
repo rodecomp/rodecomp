@@ -543,12 +543,10 @@ EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
 // FUNCTION: fn_06989
 int CEZ2STREffectMgr::EffectId(const std::string& name) {
   std::string key = name;
-  for (char& c : key) {
-    c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-  }
+  std::transform(key.begin(), key.end(), key.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
-  const auto found = this->effects.lower_bound(key);
-  if (found != this->effects.end() && key.compare(found->first) >= 0) {
+  const auto found = this->effects.find(key);
+  if (found != this->effects.end()) {
     return found->second.id + 10000;
   }
 
