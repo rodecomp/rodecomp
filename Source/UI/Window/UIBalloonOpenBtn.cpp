@@ -51,28 +51,26 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->m_balloon = new UITransBalloonText();
       this->m_balloon->SetSize(8, 8);
       g_windowMgr.AddRenderedFront(this->m_balloon);
-      if (this->m_balloon == nullptr) {
-        return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    }
+
+    if (this->m_balloon != nullptr) {
+      PopupData* popup = g_specialPopupMgr->GetPopup(this->m_balloonId);
+      if (popup == nullptr) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("balloon No GetPopupData : %d ", this->m_balloonId).c_str()), 0xFFFF0000, 0, 0, 0);
+        return 0;
       }
-    }
 
-    PopupData* popup = g_specialPopupMgr->GetPopup(this->m_balloonId);
-    if (popup == nullptr) {
-      const std::string text = FormatOwnedString("balloon No GetPopupData : %d ", this->m_balloonId);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF0000, 0, 0, 0);
-      return 0;
-    }
+      this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.chatFont[0]);
+      this->m_balloon->m_richText = 1;
+      this->m_balloon->SetLine("", popup->m_color);
+      for (auto it = popup->m_descriptions.begin(); it != popup->m_descriptions.end(); ++it) {
+        this->m_balloon->AddLine(it->c_str(), popup->m_color);
+      }
 
-    this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.chatFont[0]);
-    this->m_balloon->m_richText = 1;
-    this->m_balloon->SetLine("", popup->m_color);
-    for (auto it = popup->m_descriptions.begin(); it != popup->m_descriptions.end(); ++it) {
-      this->m_balloon->AddLine(it->c_str(), popup->m_color);
+      this->m_balloon->Move(g_renderer->viewport.centerX + 40, g_renderer->viewport.centerY);
+      this->Show(0);
+      this->m_openTime = timeGetTime();
     }
-
-    this->m_balloon->Move(g_renderer->viewport.centerX + 40, g_renderer->viewport.centerY);
-    this->Show(0);
-    this->m_openTime = timeGetTime();
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
