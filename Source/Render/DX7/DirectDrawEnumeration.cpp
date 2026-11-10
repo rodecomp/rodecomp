@@ -68,16 +68,23 @@ int __cdecl DirectDrawEnumeration::CompareModes(const void* left, const void* ri
   const auto& a = *static_cast<const DDSURFACEDESC2*>(left);
   const auto& b = *static_cast<const DDSURFACEDESC2*>(right);
 
-  if (a.dwWidth != b.dwWidth) {
-    return a.dwWidth < b.dwWidth ? -1 : 1;
+  if (a.dwWidth < b.dwWidth) {
+    return -1;
   }
-
-  if (a.dwHeight != b.dwHeight) {
-    return a.dwHeight < b.dwHeight ? -1 : 1;
+  if (a.dwWidth > b.dwWidth) {
+    return 1;
   }
-
-  if (a.ddpfPixelFormat.dwRGBBitCount != b.ddpfPixelFormat.dwRGBBitCount) {
-    return a.ddpfPixelFormat.dwRGBBitCount < b.ddpfPixelFormat.dwRGBBitCount ? -1 : 1;
+  if (a.dwHeight < b.dwHeight) {
+    return -1;
+  }
+  if (a.dwHeight > b.dwHeight) {
+    return 1;
+  }
+  if (a.ddpfPixelFormat.dwRGBBitCount < b.ddpfPixelFormat.dwRGBBitCount) {
+    return -1;
+  }
+  if (a.ddpfPixelFormat.dwRGBBitCount > b.ddpfPixelFormat.dwRGBBitCount) {
+    return 1;
   }
 
   return 0;
@@ -165,20 +172,20 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
 // FUNCTION: fn_09779
 BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*, void*, HMONITOR monitor) {
 
-  if (guid && monitor && std::memcmp(guid, g_guidDriver, sizeof(GUID)) == 0) {
+  if (guid && monitor && std::memcmp(g_guidDriver, guid, sizeof(GUID)) == 0) {
     MONITORINFOEXA information;
     information.cbSize = sizeof(information);
     GetMonitorInfoA(monitor, &information);
     g_monitorRectangleDX7 = information.rcMonitor;
   }
 
-  IDirectDraw7* draw = nullptr;
+  IDirectDraw7* draw;
 
   if (FAILED(DirectDrawCreateEx(guid, reinterpret_cast<void**>(&draw), IID_IDirectDraw7, nullptr))) {
     return TRUE;
   }
 
-  IDirect3D7* render = nullptr;
+  IDirect3D7* render;
 
   if (FAILED(draw->QueryInterface(IID_IDirect3D7, reinterpret_cast<void**>(&render)))) {
     draw->Release();
