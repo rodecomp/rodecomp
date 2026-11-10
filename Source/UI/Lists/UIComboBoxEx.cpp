@@ -56,11 +56,13 @@ void UIComboBoxEx::OnCreate(int width, int height) {
 void UIComboBoxEx::Resize(int width, int height) {
   this->UIListBoxEx::Resize(width, height);
   this->topLine = 0;
-  this->verticalBar->position = 0;
-  this->verticalBar->Move((width - 13), 0);
+  this->verticalBar->position = this->topLine;
 
   if (this->verticalOverflow != 0) {
+    this->verticalBar->Move((width - 13), 0);
     this->verticalBar->Invalidate();
+  } else {
+    this->verticalBar->Move((width - 13), 0);
   }
 }
 
@@ -108,24 +110,27 @@ void UIComboBoxEx::Refresh() {
   const int overflow = std::max((count - visible), 0);
   this->verticalOverflow = overflow != 0;
   auto* bar = this->verticalBar;
-  bar->visible = visible;
-  bar->total = count;
-  bar->maximum = overflow != 0 ? (overflow + this->bottomMargin) : 0;
-  bar->Invalidate();
-
-  if (bar->position > bar->maximum) {
-    bar->position = bar->maximum;
-  }
 
   if (overflow != 0) {
+    bar->SetRange((this->bottomMargin + overflow), visible, count);
+
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
     } else if ((this->topLine + visible) <= this->selected) {
       this->topLine = ((this->selected - visible) + 1);
     }
 
-    this->topLine = std::clamp(this->topLine, 0, overflow);
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+
+    if (this->topLine > overflow) {
+      this->topLine = overflow;
+    }
+
     this->verticalBar->position = this->topLine;
+  } else {
+    bar->SetRange(0, visible, count);
   }
 
   this->verticalBar->Invalidate();
