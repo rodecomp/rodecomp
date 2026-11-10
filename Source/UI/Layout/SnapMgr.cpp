@@ -4,6 +4,8 @@
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <cstdlib>
+
 // STATIC: 0x01334698
 // GLOBAL: gl_21916
 const int g_snapOppositeSide[4] = {2, 3, 0, 1};
@@ -15,13 +17,6 @@ bool g_snapEnabled = true;
 int g_snapDirection = 1;
 // GLOBAL: gl_24655
 CSnapMgr g_snapMgr;
-
-namespace {
-  // INLINED
-  int Magnitude(int value) {
-    return value < 0 ? (0 - value) : value;
-  }
-}
 
 // OFFSET: 0x007E2DB0
 // FUNCTION: fn_09714
@@ -63,8 +58,8 @@ SnapObject* CSnapMgr::Find(const UIWindow* window) const {
 
 // INLINED
 void CSnapMgr::ResetVisited() {
-  for (SnapObject* object : this->objects) {
-    object->visited = 0;
+  for (auto object = this->objects.begin(); object != this->objects.end(); ++object) {
+    (*object)->visited = 0;
   }
 }
 
@@ -210,11 +205,11 @@ void CSnapMgr::ConstrainGroup(UIWindow* window, int& dx, int& dy) {
       g_windowMgr.ConstrainSnap(member, x, y, 1);
 
       member->geometry.x = savedY;
-      if (Magnitude(resultX) < Magnitude(x)) {
+      if (std::abs(resultX) < std::abs(x)) {
         resultX = x;
       }
 
-      if (Magnitude(resultY) < Magnitude(y)) {
+      if (std::abs(resultY) < std::abs(y)) {
         resultY = y;
       }
     }
