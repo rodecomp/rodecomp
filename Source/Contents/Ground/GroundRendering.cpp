@@ -3,6 +3,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Render/TextureQuad.h"
 
 #include <bit>
@@ -26,9 +27,10 @@ namespace {
     }
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      vertices[corner].diffuse = (std::bit_cast<std::uint32_t>(quad.vertices[corner][3]) & 0x00FFFFFFu) | 0x80000000u;
       vertices[corner].u = quad.vertices[corner][4];
       vertices[corner].v = quad.vertices[corner][5];
+      vertices[corner].diffuse = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
+      reinterpret_cast<SpriteColor&>(vertices[corner].diffuse).alpha = 0x80;
     }
 
     RenderPrimitive* primitive = g_renderer->primitives.Acquire();
