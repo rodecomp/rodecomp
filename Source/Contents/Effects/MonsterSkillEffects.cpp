@@ -4684,7 +4684,8 @@ void CGaleStorm::OnProcess() {
 // OFFSET: 0x007181D0
 // FUNCTION: fn_07290
 void CGravityControlEffect::Open() {
-  if (this->id == 0x4B1) {
+  switch (this->id) {
+  case 0x4B1: {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (particle) {
       particle->m_loop = true;
@@ -4692,8 +4693,11 @@ void CGravityControlEffect::Open() {
       InitParticleQuad(particle->vertices);
       this->target = reinterpret_cast<int>(particle);
     }
-  } else if (this->id == 0x960) {
+    break;
+  }
+  case 0x960:
     this->retained = 1;
+    break;
   }
 }
 
