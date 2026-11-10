@@ -27,25 +27,26 @@ NAsyncWorkRequestQueue::~NAsyncWorkRequestQueue() {
 // FUNCTION: fn_07569
 NAsyncWorkPtr NAsyncWorkRequestQueue::Pop() {
   NSyncObject held(&this->m_criticalSection);
-  if (!this->m_pending.empty()) {
-    unsigned examined = 1;
+  if (this->m_pending.empty()) {
+    return NAsyncWorkPtr(nullptr, "");
+  }
 
-    for (auto work = this->m_pending.begin(); work != this->m_pending.end(); ++work) {
-      if (examined > 40) {
-        break;
-      }
-
-      auto key = work->Get()->GroupKey();
-      if (std::find(this->m_active.begin(), this->m_active.end(), key) == this->m_active.end()) {
-        this->m_active.push_back(key);
-        NAsyncWorkPtr result(*work);
-        this->m_pending.erase(work);
-
-        return result;
-      }
-
-      ++examined;
+  unsigned examined = 1;
+  for (auto work = this->m_pending.begin(); work != this->m_pending.end(); ++work) {
+    if (examined > 40) {
+      break;
     }
+
+    auto key = work->Get()->GroupKey();
+    if (std::find(this->m_active.begin(), this->m_active.end(), key) == this->m_active.end()) {
+      this->m_active.push_back(key);
+      NAsyncWorkPtr result(*work);
+      this->m_pending.erase(work);
+
+      return result;
+    }
+
+    ++examined;
   }
 
   ++this->m_waiting;
@@ -110,7 +111,8 @@ void NAsyncWorkResponseQueue::Push(NAsyncWorkPtr& work) {
 NAsyncWorkResponse NAsyncWorkResponseQueue::Pop() {
   NSyncObject held(&this->m_criticalSection);
   if (this->m_pending.empty()) {
-    return {false, NAsyncWorkPtr(nullptr, "")};
+    NAsyncWorkPtr empty(nullptr, "");
+    return {false, empty};
   }
 
   NAsyncWorkPtr work(this->m_pending.front());
