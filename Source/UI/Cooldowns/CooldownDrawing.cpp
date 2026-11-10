@@ -8,8 +8,8 @@
 namespace {
   // INLINED
   __forceinline void Submit(std::vector<RenderCommand*>& commands) {
-    for (RenderCommand* command : commands) {
-      static_cast<CRendererDX9*>(g_renderer)->Submit(command, 0x201);
+    for (auto it = commands.begin(); it != commands.end(); ++it) {
+      static_cast<CRendererDX9*>(g_renderer)->Submit(*it, 0x201);
     }
 
     commands.clear();
