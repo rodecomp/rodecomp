@@ -8,22 +8,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// INLINED
-RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
-  this->Reset();
-}
-
-// INLINED
-RenderObjectState::~RenderObjectState() {
-  if (this->sprite) {
-    this->sprite->Unlock();
-  }
-
-  if (this->action) {
-    this->action->Unlock();
-  }
-}
-
 // OFFSET: 0x00CAF990
 // FUNCTION: fn_21086
 void RenderObjectState::Reset() {

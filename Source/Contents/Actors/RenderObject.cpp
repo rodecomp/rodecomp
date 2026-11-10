@@ -176,6 +176,22 @@ static_assert(offsetof(CGrannyCorpse3d, startClock) == 0x128);
 static_assert(sizeof(CGrannyCorpse3d) == 0x258);
 #endif
 
+// INLINED
+RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
+  this->Reset();
+}
+
+// INLINED
+RenderObjectState::~RenderObjectState() {
+  if (this->sprite) {
+    this->sprite->Unlock();
+  }
+
+  if (this->action) {
+    this->action->Unlock();
+  }
+}
+
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
 CRenderObject::CRenderObject() {
@@ -4234,7 +4250,8 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = light.y * vertex.normal[1] + light.x * vertex.normal[0] + light.z * vertex.normal[2];
-        this->brightness = static_cast<unsigned>(std::max(0.0f, std::min(1.0f, shade)) * 100.0f + 155.0f);
+        const float limited = 1.0f < shade ? 1.0f : shade;
+        this->brightness = static_cast<unsigned>((0.0f > limited ? 0.0f : limited) * 100.0f + 155.0f);
         output.diffuse = static_cast<unsigned char>(this->brightness) * 0x10101 + (this->alpha << 24);
       }
     }
