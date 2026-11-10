@@ -7,15 +7,15 @@
 // OFFSET: 0x0056BDD0
 // FUNCTION: fn_02331
 std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
-  std::vector<DisplayMode> result;
-
   if (DirectDrawEnumeration::DevicesSeen() == 0 && FAILED(DirectDrawEnumeration::Enumerate(AcceptAnyDirectDrawDevice))) {
-    return result;
+    return {};
   }
 
   if (deviceIndex >= DirectDrawEnumeration::DeviceCount()) {
-    return result;
+    return {};
   }
+
+  std::vector<DisplayMode> result;
 
   const auto& record = DirectDrawEnumeration::Devices()[deviceIndex];
 
@@ -31,7 +31,7 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
 
     if (IsWindows8OrGreater()) {
       if (bits == 32) {
-        result.push_back({width, height, bits, std::format("{} x {}", width, height)});
+        result.push_back({width, height, 32, std::format("{} x {}", width, height)});
       }
     } else if (bits == 16 || bits == 32) {
       result.push_back({width, height, bits, std::format("{} x {} x {}", width, height, bits)});
