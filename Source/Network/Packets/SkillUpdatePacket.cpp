@@ -22,23 +22,17 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
-  const auto opcode = Read<std::uint16_t>(bytes);
-  const auto id = Read<std::uint16_t>(bytes + 2);
   CSkillInfo value;
 
-  switch (opcode) {
-  case ID_ZC_SKILLINFO_UPDATE:
-    value = g_session.m_skillBundle.Lookup(id);
-    break;
-  case ID_ZC_HOSKILLINFO_UPDATE:
-    value = g_session.LookupHomunSkill(id);
-    break;
-  case ID_ZC_MER_SKILLINFO_UPDATE:
-    value = g_session.LookupMercSkill(id);
-    break;
+  if (Read<std::uint16_t>(bytes) == ID_ZC_SKILLINFO_UPDATE) {
+    value = g_session.m_skillBundle.Lookup(Read<std::uint16_t>(bytes + 2));
+  } else if (Read<std::uint16_t>(bytes) == ID_ZC_HOSKILLINFO_UPDATE) {
+    value = g_session.LookupHomunSkill(Read<std::uint16_t>(bytes + 2));
+  } else if (Read<std::uint16_t>(bytes) == ID_ZC_MER_SKILLINFO_UPDATE) {
+    value = g_session.LookupMercSkill(Read<std::uint16_t>(bytes + 2));
   }
 
-  value.id = id;
+  value.id = Read<std::uint16_t>(bytes + 2);
   value.level = Read<std::int16_t>(bytes + 4);
   value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
   value.upgradable = bytes[10];
@@ -46,16 +40,12 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
   g_session.m_skillBundle.ApplyLevelChange(value);
 
-  switch (opcode) {
-  case ID_ZC_SKILLINFO_UPDATE:
+  if (Read<std::uint16_t>(bytes) == ID_ZC_SKILLINFO_UPDATE) {
     g_session.UpdateSkill(value, 1, 0);
-    break;
-  case ID_ZC_HOSKILLINFO_UPDATE:
+  } else if (Read<std::uint16_t>(bytes) == ID_ZC_HOSKILLINFO_UPDATE) {
     g_session.UpdateHomunSkill(value, 1);
-    break;
-  case ID_ZC_MER_SKILLINFO_UPDATE:
+  } else if (Read<std::uint16_t>(bytes) == ID_ZC_MER_SKILLINFO_UPDATE) {
     g_session.UpdateMercSkill(value, 1);
-    break;
   }
 }
 
