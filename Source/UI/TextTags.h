@@ -25,7 +25,7 @@ struct STagString {
 
   virtual ~STagString();
 
-  STagString(int tag, std::size_t position, std::string text);
+  STagString();
 };
 
 // INLINED
@@ -41,7 +41,7 @@ inline STagString::~STagString() {
 }
 
 // INLINED
-inline STagString::STagString(int tag, std::size_t position, std::string text) : tag(tag), position(position), text(std::move(text)) {
+inline STagString::STagString() {
 }
 
 extern std::string navigationTagOpening;

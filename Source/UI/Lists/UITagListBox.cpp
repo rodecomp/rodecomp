@@ -434,15 +434,18 @@ std::vector<STagString> ExtractTextTags(std::string text) {
       std::size_t end = remaining.find(prototype->closing);
       std::size_t advance;
 
-      if (end == std::string::npos) {
-        advance = prototype->opening.size();
-        remaining.erase(0, advance);
-      } else {
+      if (end != std::string::npos) {
         end += prototype->closing.size();
-        STagString tag(index, offset + begin, remaining.substr(begin, end - begin));
+        STagString tag;
+        tag.tag = index;
+        tag.position = offset + begin;
+        tag.text = remaining.substr(begin, end - begin);
         tags.push_back(tag);
         remaining.erase(0, end);
         advance = end;
+      } else {
+        advance = prototype->opening.size();
+        remaining.erase(0, advance);
       }
 
       offset += advance;
