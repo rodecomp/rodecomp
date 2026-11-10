@@ -5,10 +5,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 
@@ -246,11 +248,10 @@ void CLightSphereEffect::OnProcess() {
       particle->alpha = alpha;
 
       const int previous = particle->angleParameter;
-      const int roll = std::rand() % 2;
-      const int phase = (previous + 1 + (roll < 0 ? 0 : roll)) % 360;
+      const int phase = (previous + 1 + std::ranges::max(std::rand() % 2, 0)) % 360;
       particle->angleParameter = phase;
 
-      vector3d points[3]{};
+      EffectPoint points[3];
       const float radius = particle->scale * g_sinTable[phase] + particle->scale;
       const int pitch = particle->phaseParameter;
       const int yaw = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
