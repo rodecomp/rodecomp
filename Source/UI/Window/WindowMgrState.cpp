@@ -597,8 +597,8 @@ void UIWindowMgr::SaveVisibleWindowIds() {
   }
 
   this->savedWindowIds.clear();
-  for (UIWindow* window : this->rendered) {
-    int id = window->geometry.id;
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    int id = (*it)->geometry.id;
     if (id == 8) {
       if (this->itemWndVisible) {
         this->savedWindowIds.push_back(id);
