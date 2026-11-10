@@ -8,14 +8,22 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // OFFSET: 0x00B71770
 // FUNCTION: fn_19134
 void CRedLineEffect::CreateLines(int layer) {
   int row = 0;
   for (int angle = 0; angle < 360; angle += 90) {
-    const int life = std::max(rand() % 40, 0) + 60;
-    const float scale = static_cast<float>(std::max(rand() % 11, 0)) * 0.015f + 0.15f;
-    const short direction = static_cast<short>(std::max(rand() % 360, 0));
+    const int life = ClampedRandom(40) + 60;
+    const float scale = static_cast<float>(ClampedRandom(11)) * 0.015f + 0.15f;
+    const short direction = static_cast<short>(ClampedRandom(360));
     const float directionX = g_cosTable[direction] * 5.0f;
     const float directionZ = g_sinTable[direction] * 5.0f;
 
