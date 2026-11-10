@@ -127,7 +127,7 @@ CTexture* EZeffectClip::Texture(int index, const char* prefix) {
   }
 
   if (!this->textures[index]) {
-    std::string path = std::string("effect\\") + prefix + this->names[index];
+    std::string path = std::format("effect\\{}{}", prefix, this->names[index]);
 
     if (path.find_last_of('.') == std::string::npos) {
       path.append(".bmp", 4);
