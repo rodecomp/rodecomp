@@ -131,9 +131,12 @@ bool CConnection::Receive() {
     fd_set readable;
     FD_ZERO(&readable);
     FD_SET(this->m_socket, &readable);
-    timeval timeout{};
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    const int ready = select(0, &readable, nullptr, nullptr, &timeout);
 
-    if (select(0, &readable, nullptr, nullptr, &timeout) <= 0) {
+    if (ready == SOCKET_ERROR || ready <= 0) {
       return true;
     }
 
@@ -165,7 +168,9 @@ bool CConnection::Flush() {
     fd_set writable;
     FD_ZERO(&writable);
     FD_SET(this->m_socket, &writable);
-    timeval timeout{};
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
     const int ready = select(0, nullptr, &writable, nullptr, &timeout);
 
     if (ready != SOCKET_ERROR) {
