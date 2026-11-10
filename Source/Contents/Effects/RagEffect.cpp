@@ -8443,10 +8443,7 @@ void CRagEffect::TexturedTwinkleRing(const char* name, char level) {
 // OFFSET: 0x00C71460
 // FUNCTION: fn_20319
 void CRagEffect::TetraVortexPillar(char kind) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   switch (this->state.stateCnt) {
@@ -8475,68 +8472,68 @@ void CRagEffect::TetraVortexPillar(char kind) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 140, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 140, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
   if (kind == 4) {
-    this->state.currentPrimitive->totalTexture = 8;
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\tv-1.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[1] = g_texMgr.Load("effect\\tv-2.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[2] = g_texMgr.Load("effect\\tv-3.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[3] = g_texMgr.Load("effect\\tv-4.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[4] = g_texMgr.Load("effect\\tv-5.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[5] = g_texMgr.Load("effect\\tv-6.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[6] = g_texMgr.Load("effect\\tv-7.bmp", 0, false, true, false);
-    this->state.currentPrimitive->textures[7] = g_texMgr.Load("effect\\tv-8.bmp", 0, false, true, false);
+    this->state.lastPrim->state.totalTexture = 8;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\tv-1.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\tv-2.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\tv-3.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\tv-4.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[4] = g_texMgr.Load("effect\\tv-5.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[5] = g_texMgr.Load("effect\\tv-6.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[6] = g_texMgr.Load("effect\\tv-7.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[7] = g_texMgr.Load("effect\\tv-8.bmp", 0, false, true, false);
   }
 
-  this->state.currentPrimitive->size = 0.0f;
-  this->state.currentPrimitive->slots[0].life = 0;
-  this->state.currentPrimitive->slots[1].life = 0;
-  this->state.currentPrimitive->slots[2].life = 0;
-  this->state.currentPrimitive->slots[3].life = 0;
-  this->state.currentPrimitive->slots[0].process = 0;
-  this->state.currentPrimitive->slots[0].life = 1;
+  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.slots[0].life = 0;
+  this->state.lastPrim->state.slots[1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
+  this->state.lastPrim->state.slots[0].process = 0;
+  this->state.lastPrim->state.slots[0].life = 1;
   if (this->state.param[0] > 0.0f) {
-    this->state.currentPrimitive->slots[0].distance = this->state.param[0];
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0];
   } else {
-    this->state.currentPrimitive->slots[0].distance = 30.0f;
+    this->state.lastPrim->state.slots[0].distance = 30.0f;
   }
 
-  this->state.currentPrimitive->slots[0].vecBPre.y = this->render.position.y - 10.0f;
+  this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
   if (kind == 4) {
     switch (this->state.type) {
     case EF_TETRA_FIRE:
-      this->state.currentPrimitive->slots[0].flag1[2] = 20;
+      this->state.lastPrim->state.slots[0].flag1[2] = 20;
       break;
     case EF_TETRA_WATER:
-      this->state.currentPrimitive->slots[0].flag1[2] = 18;
+      this->state.lastPrim->state.slots[0].flag1[2] = 18;
       break;
     case EF_TETRA_WIND:
-      this->state.currentPrimitive->slots[0].flag1[2] = 17;
+      this->state.lastPrim->state.slots[0].flag1[2] = 17;
       break;
     case EF_TETRA_GROUND:
-      this->state.currentPrimitive->slots[0].flag1[2] = 19;
+      this->state.lastPrim->state.slots[0].flag1[2] = 19;
       break;
     }
 
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 120;
-    this->state.currentPrimitive->slots[0].height[10] = 1.0f;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 120;
+    this->state.lastPrim->state.slots[0].height[10] = 1.0f;
   } else {
-    this->state.currentPrimitive->slots[0].flag1[2] = 17;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 135;
-    this->state.currentPrimitive->slots[0].height[10] = 0.0f;
+    this->state.lastPrim->state.slots[0].flag1[2] = 17;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
+    this->state.lastPrim->state.slots[0].height[10] = 0.0f;
   }
 
-  this->state.currentPrimitive->slots[0].height[8] = 0.0f;
-  this->state.currentPrimitive->slots[0].alphaB = 200;
-  this->state.currentPrimitive->slots[0].vecBNow.x = this->state.deltaPos[0];
-  this->state.currentPrimitive->slots[0].vecBNow.z = this->state.deltaPos[2];
-  this->state.currentPrimitive->slots[0].vecBNow.y = this->state.deltaPos[1] - 35.0f;
-  this->state.currentPrimitive->slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  this->state.currentPrimitive->slots[0].flag1[0] = 0;
-  this->state.currentPrimitive->slots[0].flag1[4] = kind;
+  this->state.lastPrim->state.slots[0].height[8] = 0.0f;
+  this->state.lastPrim->state.slots[0].alphaB = 200;
+  this->state.lastPrim->state.slots[0].vecBNow.x = this->state.deltaPos[0];
+  this->state.lastPrim->state.slots[0].vecBNow.z = this->state.deltaPos[2];
+  this->state.lastPrim->state.slots[0].vecBNow.y = this->state.deltaPos[1] - 35.0f;
+  this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+  this->state.lastPrim->state.slots[0].flag1[0] = 0;
+  this->state.lastPrim->state.slots[0].flag1[4] = kind;
 }
 
 // INLINED
