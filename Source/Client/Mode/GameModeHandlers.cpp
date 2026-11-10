@@ -2994,15 +2994,9 @@ struct SearchStoreItemPacket {
 
 struct SearchStoreItemPacketOld {
   SearchStoreItemPacketOld() {
-    for (int i = 0; i < 80; ++i) {
-      this->storeName[i] = 0;
-    }
-    for (int i = 0; i < 16; ++i) {
-      this->cards[i] = 0;
-    }
-    for (int i = 0; i < 25; ++i) {
-      this->options[i] = 0;
-    }
+    SecureZeroMemory(this->storeName, sizeof(this->storeName));
+    SecureZeroMemory(this->cards, sizeof(this->cards));
+    SecureZeroMemory(this->options, sizeof(this->options));
   }
 
   /* 0000 */ unsigned char storeIdentity[8];
@@ -3079,12 +3073,12 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
     }
     g_session.storeSearchResults.clear();
   }
+  const int count = (header->length - 7) / sizeof(SearchStoreItemPacketOld);
   reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = header->hasNext;
   g_session.storeSearchCount = header->count;
-  const int count = (header->length - 7) / sizeof(SearchStoreItemPacketOld);
-  for (int i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i, ++next) {
     SearchStoreItemPacketOld record;
-    record = *next++;
+    std::memcpy(&record, next, sizeof(record));
     SessionEntry5BD4 entry;
     std::memcpy(entry.storeIdentity, record.storeIdentity, sizeof(entry.storeIdentity));
     std::memcpy(entry.storeName, record.storeName, sizeof(entry.storeName));
@@ -3097,12 +3091,12 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
     const SearchStoreOption* options = reinterpret_cast<const SearchStoreOption*>(record.options);
     int optionCount = 0;
     for (int j = 0; j < 5; ++j) {
-      if (options[j].id != 0) {
+      if (0 != options[j].id) {
         ++optionCount;
       }
     }
     entry.item.optionCount = optionCount;
-    for (int j = 0; j < optionCount; ++j) {
+    for (int j = 0; j < entry.item.optionCount; ++j) {
       reinterpret_cast<SearchStoreOption*>(entry.item.options)[j] = options[j];
     }
     std::memcpy(entry.item.cards, record.cards, sizeof(record.cards));
