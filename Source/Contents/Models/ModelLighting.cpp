@@ -11,6 +11,8 @@
 #include <cmath>
 #include <cstring>
 
+extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 union ModelColor {
   std::uint32_t value;
   struct {
@@ -62,12 +64,26 @@ namespace {
     color.b = Scale(factor, light[2], color.b);
     return color;
   }
+
+  // INLINED
+  __forceinline void GroundColor(const C3dNode* node, const GroundGeometry& ground, const float* matrix, const std::array<float, 3>& vertex, std::uint32_t* output) {
+    const float x = (((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9]) + node->model->position[0];
+    const float y = (((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10]) + node->model->position[1];
+    const float z = (((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]) + node->model->position[2];
+    ground.WorldColor(x, y, z, output);
+  }
+
+  // INLINED
+  int AddChannel(std::uint32_t sampled, std::uint32_t channel) {
+    const int value = static_cast<int>(sampled) + channel;
+    return value > 255 ? 255 : value;
+  }
 }
 
 // OFFSET: 0x00AB78B0
 // FUNCTION: fn_17491
 C3dNode* C3dNode::Find(const char* selected) {
-  if (this->name == selected) {
+  if (this->name.compare(selected) == 0) {
     return this;
   }
 
