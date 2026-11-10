@@ -15,12 +15,11 @@ void UIEditCtrl::Synchronize() {
   g_serverLanguage->CopyDisplayText(this->text);
   g_serverLanguage->Selection(this->anchor, this->cursor);
   this->Trim();
-  const auto length = static_cast<std::uint32_t>(this->text.size());
   bool clamped = false;
 
-  if (static_cast<std::uint32_t>(this->cursor) > length || static_cast<std::uint32_t>(this->anchor) > length) {
-    this->anchor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->anchor), length));
-    this->cursor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->cursor), length));
+  if (static_cast<std::uint32_t>(this->cursor) > this->text.size() || static_cast<std::uint32_t>(this->anchor) > this->text.size()) {
+    this->anchor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->anchor), this->text.size()));
+    this->cursor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->cursor), this->text.size()));
     g_serverLanguage->Select(this->anchor, this->cursor);
     clamped = true;
   }
@@ -33,31 +32,33 @@ void UIEditCtrl::Synchronize() {
   std::string visibleText;
   const auto selection = static_cast<std::uint32_t>(std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor));
 
-  if (selection >= length) {
+  if (selection >= this->text.size()) {
     this->firstVisible = 0;
   }
 
   const auto measure = [&](const char* text, unsigned bytes) { return this->TextWidth(text, bytes, 0, 12, 0, 0); };
-  const int available = this->geometry.width - 7;
 
   if (this->cursor > previousCursor || clamped) {
-    const int before = this->firstVisible == 0 ? 0 : measure(this->text.c_str(), static_cast<unsigned>(this->firstVisible));
+    int before = 0;
+    if (this->firstVisible != 0) {
+      before = measure(this->text.c_str(), static_cast<unsigned>(this->firstVisible));
+    }
     const int position = measure(this->text.c_str(), static_cast<unsigned>(this->cursor)) + 3 - before;
 
-    if (position > available) {
+    if (position > this->geometry.width - 7) {
       const char* end = this->text.c_str() + this->text.size();
       const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
-      while (measure(next, 0) + 3 > available && next < end) {
+      while (measure(next, 0) + 3 > this->geometry.width - 7 && next < end) {
         next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
       }
 
       const auto tail = static_cast<std::uint32_t>(std::strlen(next));
       const int candidate = this->firstVisible + this->cursor - previousCursor;
-      this->firstVisible = static_cast<int>(std::min(static_cast<std::uint32_t>(this->cursor) - tail, static_cast<std::uint32_t>(candidate)));
+      this->firstVisible = static_cast<int>(std::min(static_cast<std::uint32_t>(candidate), static_cast<std::uint32_t>(this->cursor) - tail));
     }
   } else if (this->cursor < previousCursor) {
-    if (measure(this->text.c_str(), static_cast<unsigned>(this->cursor)) + 3 < available && this->firstVisible > this->cursor) {
+    if (measure(this->text.c_str(), static_cast<unsigned>(this->cursor)) + 3 < this->geometry.width - 7 && this->firstVisible > this->cursor) {
       this->firstVisible += this->cursor - previousCursor;
     }
 
