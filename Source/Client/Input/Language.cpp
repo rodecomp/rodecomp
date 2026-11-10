@@ -103,7 +103,7 @@ void CLanguageBase::CopyDisplayText(std::string& output) const {
   }
 
   if (!this->candidate.empty()) {
-    output.insert(static_cast<std::size_t>(this->cursor), this->candidate.c_str(), std::strlen(this->candidate.c_str()));
+    output.insert(static_cast<std::size_t>(this->cursor), this->candidate.c_str());
   }
 }
 
