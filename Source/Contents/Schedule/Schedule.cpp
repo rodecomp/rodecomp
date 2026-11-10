@@ -26,38 +26,11 @@ CSchedulerIDAlocator::~CSchedulerIDAlocator() = default;
 // OFFSET: 0x00BA8990
 // FUNCTION: fn_19727
 bool CSchedule::CheckTime(const std::uint64_t& now) {
-  const std::uint32_t intervalLow = static_cast<std::uint32_t>(this->interval);
-  const std::int32_t intervalHigh = static_cast<std::int32_t>(this->interval >> 32);
-
-  if ((intervalLow == 0 && intervalHigh == 0) || intervalHigh < 0 || (intervalHigh == 0 && intervalLow == 0)) {
+  if (this->interval == 0 || this->interval <= 0) {
     return false;
   }
-
-  const std::uint32_t nowLow = *reinterpret_cast<const std::uint32_t*>(&now);
-  const std::int32_t nowHigh = *(reinterpret_cast<const std::int32_t*>(&now) + 1);
-
-  const std::uint64_t target = this->timestamp + static_cast<std::uint64_t>(this->interval) * 10000;
-  const std::uint32_t targetLow = static_cast<std::uint32_t>(target);
-  const std::int32_t targetHigh = static_cast<std::int32_t>(target >> 32);
-
-  if (nowLow == targetLow && nowHigh == targetHigh) {
-    signed char c = 0;
-    return c > 0;
-  }
-  if (nowHigh > targetHigh) {
-    signed char c = 1;
-    return c > 0;
-  }
-  if (nowHigh < targetHigh) {
-    signed char c = -1;
-    return c > 0;
-  }
-  if (nowLow >= targetLow) {
-    signed char c = 1;
-    return c > 0;
-  }
-  signed char c = -1;
-  return c > 0;
+  const std::int64_t target = this->timestamp + static_cast<std::uint64_t>(this->interval) * 10000;
+  return (static_cast<std::int64_t>(now) <=> target) > 0;
 }
 
 // OFFSET: 0x00BA8A20
