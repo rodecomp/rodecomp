@@ -355,12 +355,12 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
 void CTextureDX7::Fill(const RECT* rectangle, std::uint32_t color) {
   if (this->m_surface) {
     const auto& owner = *this->m_owner;
-    const auto channel = [](unsigned value, const DeviceOwnerDX7::Channel& mask) { return (value >> (mask.expansion & 31)) << (mask.shift & 31); };
+    const auto channel = [](int value, const DeviceOwnerDX7::Channel& mask) { return (value >> mask.expansion) << mask.shift; };
     DDBLTFX effects;
 
     effects.dwSize = sizeof(effects);
     effects.dwFillColor =
-      static_cast<std::uint16_t>(channel(color & 255, owner.red) + channel((color >> 8) & 255, owner.green) + channel((color >> 16) & 255, owner.blue));
+      static_cast<std::uint16_t>(channel((color >> 16) & 255, owner.blue) + channel((color >> 8) & 255, owner.green) + channel(color & 255, owner.red));
     this->m_surface->Blt(const_cast<RECT*>(rectangle), nullptr, nullptr, DDBLT_COLORFILL | DDBLT_WAIT, &effects);
   }
 }
