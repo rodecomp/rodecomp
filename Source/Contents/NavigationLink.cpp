@@ -5,7 +5,7 @@
 CNavi_Link::~CNavi_Link() {
   this->type = 200;
   this->linkedInfo = nullptr;
-  this->linkedLinks.clear();
+  this->linkedLinks.erase(this->linkedLinks.begin(), this->linkedLinks.end());
 }
 
 // OFFSET: 0x00B8E5F0
