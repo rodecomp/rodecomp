@@ -1,12 +1,25 @@
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
+
+#pragma pack(push, 1)
+struct PACKET_CZ_REQNAME_BYGID2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t gid;
+};
+#pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(PACKET_CZ_REQNAME_BYGID2) == 6);
+#endif
 
 // INLINED
 CPlayerNameDictionary::CPlayerNameDictionary() {
@@ -77,11 +90,10 @@ void CPlayerNameDictionary::Update() {
         this->m_pending.pop_front();
 
         if (id != 0) {
-          unsigned char packet[6];
-          const std::uint16_t header = 873;
-          std::memcpy(packet, &header, sizeof(header));
-          std::memcpy(packet + 2, &id, sizeof(id));
-          GetRagConnection().Send(sizeof(packet), packet);
+          PACKET_CZ_REQNAME_BYGID2 packet;
+          packet.packetType = ID_CZ_REQNAME_BYGID2;
+          packet.gid = id;
+          GetRagConnection().Send(sizeof(packet), &packet);
           this->m_requests.push_back({id, timeGetTime()});
         }
 
@@ -134,6 +146,6 @@ std::string LookupPlayerName(std::uint32_t id) {
 
 // OFFSET: 0x0060B650
 // FUNCTION: fn_04266
-bool CPlayerNameDictionary::Entry::IsExpired() const {
+__declspec(noinline) bool CPlayerNameDictionary::Entry::IsExpired() const {
   return this->tick + 600000u < timeGetTime();
 }
