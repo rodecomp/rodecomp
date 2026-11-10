@@ -98,35 +98,47 @@ int CSession::IsCompanionJob(unsigned id) const {
   return id - 6001u <= 51;
 }
 
+#pragma pack(push, 1)
+struct CooldownSnapshotEntry {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t duration;
+  /* 0006 */ std::uint32_t remaining;
+};
+
+struct CooldownSnapshotPacket {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::int16_t size;
+  /* 0004 */ CooldownSnapshotEntry entries[1];
+};
+#pragma pack(pop)
+
 // OFFSET: 0x00D42070
 // FUNCTION: fn_21827
 void CGameMode::LoadCooldownSnapshot(const void* packet) {
   g_session.m_requestTimers.clear();
-  const auto* bytes = static_cast<const unsigned char*>(packet);
-  std::int16_t size;
-  std::memcpy(&size, bytes + 2, sizeof(size));
-  const int count = (size - 2) / 10;
+  const auto* snapshot = static_cast<const CooldownSnapshotPacket*>(packet);
+  const CooldownSnapshotEntry* entry = snapshot->entries;
+  const int count = (snapshot->size - 2) / 10;
 
-  for (int index = 0; index < count; ++index) {
-    const unsigned char* source = bytes + 4 + index * 10;
-    std::uint16_t id;
-    std::uint32_t duration;
-    std::uint32_t remaining;
-    std::memcpy(&id, source, sizeof(id));
-    std::memcpy(&duration, source + 2, sizeof(duration));
-    std::memcpy(&remaining, source + 6, sizeof(remaining));
-    const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
-    ShortcutCooldownRecord value{id, now + remaining, duration, {}, {}};
+  for (int index = 0; index < count; ++index, ++entry) {
+    ShortcutCooldownRecord value;
+    value.id = entry->id;
+    if (g_replayAnimationScaling == 1) {
+      value.end = Replay::Instance().elapsed + entry->remaining;
+    } else {
+      value.end = timeGetTime() + entry->remaining;
+    }
+    value.duration = entry->duration;
 
-    for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
-      if (icon.id == id) {
-        value.main.emplace_back(icon.slot, icon.x, icon.y, duration, now, duration - remaining, 0);
+    for (auto icon = g_session.m_mainCooldownIcons.begin(); icon != g_session.m_mainCooldownIcons.end(); ++icon) {
+      if (icon->id == entry->id) {
+        value.main.push_back(CooldownState(icon->slot, icon->x, icon->y, value.duration, value.end - entry->remaining, value.duration - entry->remaining, 0));
       }
     }
 
-    for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
-      if (icon.id == id) {
-        value.alternate.emplace_back(icon.slot, icon.x, icon.y, duration, now, duration - remaining, 0);
+    for (auto icon = g_session.m_alternateCooldownIcons.begin(); icon != g_session.m_alternateCooldownIcons.end(); ++icon) {
+      if (icon->id == entry->id) {
+        value.alternate.push_back(CooldownState(icon->slot, icon->x, icon->y, value.duration, value.end - entry->remaining, value.duration - entry->remaining, 0));
       }
     }
 
@@ -242,28 +254,33 @@ __forceinline void PaintCooldowns(
   const std::uint32_t now = CooldownNow();
 
   for (auto entry = records.begin(); entry != records.end();) {
-    if (entry->end <= now) {
-      entry = records.erase(entry);
-      continue;
-    }
+    if (entry->end > now) {
+      std::list<CooldownState>& states = (*entry).*values;
 
-    std::list<CooldownState>& states = (*entry).*values;
+      for (auto icon = icons.begin(); icon != icons.end(); ++icon) {
+        if (entry->id == icon->id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon->id))) {
+          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == states.end()) {
+            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          }
+        }
 
-    for (const ShortcutCooldownIcon& icon : icons) {
-      if (entry->id == icon.id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon.id)) ||
-          ((g_session.IsHomunculusSkill(icon.id) || g_session.IsMercenarySkill(icon.id)) && entry->id == 9999)) {
-        const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
-        if (previous == states.end()) {
-          states.push_back(CooldownState(icon.slot, icon.x, icon.y, entry->duration, entry->end - entry->duration, 0, 0));
+        if ((g_session.IsHomunculusSkill(icon->id) || g_session.IsMercenarySkill(icon->id)) && entry->id == 9999) {
+          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == states.end()) {
+            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          }
         }
       }
-    }
 
-    for (CooldownState& state : states) {
-      drawing.Draw(0, 0, 12, 12, state, limit, x, y);
-    }
+      for (auto state = states.begin(); state != states.end(); ++state) {
+        drawing.Draw(0, 0, 12, 12, *state, limit, x, y);
+      }
 
-    ++entry;
+      ++entry;
+    } else {
+      entry = records.erase(entry);
+    }
   }
 }
 
@@ -404,49 +421,50 @@ void UISeekPartyWnd::Paint() {
 void UIQuickSlotWnd::Paint() {
   this->DrawPanelBackground(0, 0, "유저인터페이스\\basic_interface\\quickslot.bmp");
   if (this->m_selected != -1) {
+    const int selectedX = this->m_selected * 29 + 5;
     const SkinPaletteCell cell = {2, 2};
-    this->FillRegion(this->m_selected * 29 + 5, 5, 24, 24, SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()));
+    this->FillRegion(selectedX, 5, 24, 24, SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()));
   }
 
   g_session.m_alternateCooldownIcons.clear();
 
-  for (int index = 0; index < 2; ++index) {
-    const QuickSlotEntry& entry = this->m_entries[index];
-    if (entry.id == 0) {
+  const QuickSlotEntry* entry = this->m_entries;
+  for (int index = 0; index < 2; ++index, ++entry) {
+    if (entry->id == 0) {
       continue;
     }
 
     const int x = index * 29 + 5;
-    if (entry.skill) {
-      CSkillInfo skill = g_session.LookupSkill(entry.id);
-      if (!skill.available) {
-        continue;
-      }
-
-      char text[1024];
-      g_session.ItemBitmapPath(skill.name, text);
-      auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
-      g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
-      this->DrawBitmap(x, 5, image, true);
-      if (entry.count != 0) {
-        std::sprintf(text, "%d", entry.count);
-        this->DrawTextAt(x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x + 14, 19, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x + 14, 20, text, 0, 0, 11, 0, 0, 0);
+    if (entry->skill) {
+      CSkillInfo skill = g_session.LookupSkill(entry->id);
+      if (skill.available) {
+        char text[1024];
+        g_session.ItemBitmapPath(skill.name, text);
+        auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+        g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
+        this->DrawBitmap(x, 5, image, true);
+        if (entry->count != 0) {
+          std::sprintf(text, "%d", entry->count);
+          this->DrawTextAt(x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(x + 14, 19, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(x + 14, 20, text, 0, 0, 11, 0, 0, 0);
+        }
       }
     } else {
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
-      if (item.identity[1] == 0) {
-        continue;
-      }
-
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 5, item, item.identified, 1);
-      if (item.grade > 0) {
-        const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
-        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-        this->DrawBitmap(x, 17, grade, true);
+      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry->id), 1);
+      if (item.identity[1] > 0) {
+        DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 5, item, item.identified, 1);
+        if (0 < item.grade) {
+          this->DrawBitmap(
+            x, 17,
+            static_cast<CBitmapRes*>(
+              ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
+            ),
+            true
+          );
+        }
       }
     }
   }
