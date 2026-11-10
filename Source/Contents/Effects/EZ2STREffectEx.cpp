@@ -45,9 +45,9 @@ float ScreenAngle(const float* from, const float* to, const float* matrix) {
     return 0.0f;
   }
 
-  const float angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
+  float angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
   if (fromY > toY) {
-    return 360.0f - angle;
+    angle = 360.0f - angle;
   }
 
   return angle;
