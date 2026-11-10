@@ -129,15 +129,14 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
   const std::vector<GuildStorageLogEntry>& logs = g_guildStorageLogs[index];
   char number[256];
   std::memset(number, 0, 255);
-  for (auto it = logs.begin(); it != logs.end(); ++it) {
+  for (auto it = logs.begin(); it != logs.end(); ++this->m_state, ++it, ++this->m_offset) {
     if (static_cast<unsigned>(this->m_state) > 10 || this->m_offset >= this->m_categoryCounts[index]) {
       break;
     }
 
     std::string date;
     date = logs[this->m_offset].itemName;
-    std::uint32_t flag = logs[this->m_offset].operation;
-    reinterpret_cast<std::vector<std::uint32_t>*>(&this->m_rowFlagsBegin)->push_back(flag);
+    reinterpret_cast<std::vector<std::uint32_t>*>(&this->m_rowFlagsBegin)->push_back(logs[this->m_offset].operation);
     _itoa(logs[this->m_offset].quantity, number, 10);
 
     if (logs[this->m_offset].category == 1) {
@@ -157,8 +156,6 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
     this->m_itemTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].characterName);
     this->m_countTexts[this->m_state - 1]->SetTextFitted(logs[this->m_offset].timestamp);
     this->m_logTextHeight += 15;
-    ++this->m_state;
-    ++this->m_offset;
   }
 }
 
