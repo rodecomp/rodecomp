@@ -123,7 +123,8 @@ void CChopChopClawMarks::SpawnParticle() {
 // OFFSET: 0x005A3820
 // FUNCTION: fn_03132
 void CChopChopClawMarks::EmitParticles() {
-  const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
+  const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+  const std::chrono::nanoseconds elapsed = now.time_since_epoch() - std::chrono::nanoseconds(this->startTime);
   const std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   if (milliseconds >= std::chrono::milliseconds(this->lastSpawnTime + 30)) {
     this->SpawnParticle();
@@ -195,9 +196,10 @@ void CharacterParticleBundle::Open() {
 // FUNCTION: fn_03138
 bool CChopChopClawMarks::IsAlive() {
   if (this->ActorExists()) {
+    const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
     const std::chrono::milliseconds limit = std::chrono::seconds(this->effectLifetime);
-    const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
-    if (std::chrono::duration_cast<std::chrono::milliseconds>(elapsed) <= limit) {
+    const std::chrono::nanoseconds elapsed = now.time_since_epoch() - std::chrono::nanoseconds(this->startTime);
+    if (limit >= std::chrono::duration_cast<std::chrono::milliseconds>(elapsed)) {
       return true;
     }
   }
