@@ -58,29 +58,61 @@ bool CPathFinder::FindPath(
       return true;
     }
 
-    if (this->CanMove(current->x, current->y, current->x + 1, current->y - 1, flag) && !this->AddNeighbor(current, 14, current->x + 1, current->y - 1, 5)) {
-      return false;
+    {
+      const int nextX = current->x + 1;
+      const int nextY = current->y - 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 5)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x + 1, current->y, flag) && !this->AddNeighbor(current, 10, current->x + 1, current->y, 6)) {
-      return false;
+    {
+      const int nextX = current->x + 1;
+      const int nextY = current->y;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 6)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x + 1, current->y + 1, flag) && !this->AddNeighbor(current, 14, current->x + 1, current->y + 1, 7)) {
-      return false;
+    {
+      const int nextX = current->x + 1;
+      const int nextY = current->y + 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 7)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x, current->y + 1, flag) && !this->AddNeighbor(current, 10, current->x, current->y + 1, 0)) {
-      return false;
+    {
+      const int nextX = current->x;
+      const int nextY = current->y + 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 0)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x - 1, current->y + 1, flag) && !this->AddNeighbor(current, 14, current->x - 1, current->y + 1, 1)) {
-      return false;
+    {
+      const int nextX = current->x - 1;
+      const int nextY = current->y + 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 1)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x - 1, current->y, flag) && !this->AddNeighbor(current, 10, current->x - 1, current->y, 2)) {
-      return false;
+    {
+      const int nextX = current->x - 1;
+      const int nextY = current->y;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 2)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x - 1, current->y - 1, flag) && !this->AddNeighbor(current, 14, current->x - 1, current->y - 1, 3)) {
-      return false;
+    {
+      const int nextX = current->x - 1;
+      const int nextY = current->y - 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 3)) {
+        return false;
+      }
     }
-    if (this->CanMove(current->x, current->y, current->x, current->y - 1, flag) && !this->AddNeighbor(current, 10, current->x, current->y - 1, 4)) {
-      return false;
+    {
+      const int nextX = current->x;
+      const int nextY = current->y - 1;
+      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 4)) {
+        return false;
+      }
     }
 
     current->state = 2;
