@@ -11,21 +11,24 @@
 namespace {
   // OFFSET: 0x00556E50
   // FUNCTION: fn_02039
-  __declspec(noinline) float Sine(float angle) {
-    return sinf(angle);
+  __declspec(noinline) float Sine(volatile float angle) {
+    angle = sinf(angle);
+    return angle;
   }
 
   // OFFSET: 0x00556E40
   // FUNCTION: fn_02038
-  __declspec(noinline) float Cosine(float angle) {
-    return cosf(angle);
+  __declspec(noinline) float Cosine(volatile float angle) {
+    angle = cosf(angle);
+    return angle;
   }
 }
 
 // OFFSET: 0x00556E60
 // FUNCTION: fn_02040
-float SquareRoot(float value) {
-  return sqrtf(value);
+float SquareRoot(volatile float value) {
+  value = sqrtf(value);
+  return value;
 }
 
 // OFFSET: 0x00548C30
@@ -44,12 +47,8 @@ HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float n
     return E_INVALIDARG;
   }
 
-  const float cosineX = Cosine(half);
-  const float sineX = Sine(half);
-  const float scaleX = static_cast<float>((static_cast<double>(cosineX) / sineX) * aspect);
-  const float cosineY = Cosine(half);
-  const float sineY = Sine(half);
-  const float scaleY = static_cast<float>(static_cast<double>(cosineY) / sineY);
+  const float scaleX = Cosine(half) / Sine(half) * aspect;
+  const float scaleY = Cosine(half) / Sine(half);
   const float depth = farPlane / difference;
 
   matrix._12 = matrix._13 = matrix._14 = 0;
