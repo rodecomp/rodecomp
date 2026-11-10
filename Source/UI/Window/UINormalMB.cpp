@@ -30,18 +30,17 @@ void UINormalMB::Paint() {
 int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND: {
-    const int id = static_cast<int>(a);
-    const auto action = this->m_actions.find(id);
+    const auto action = this->m_actions.find(a);
 
     if (action != this->m_actions.end()) {
       action->second();
     } else {
       if (this->m_owner) {
-        this->m_owner->SendMsg(this, UM_COMMAND, 488, id, 0, 0);
+        this->m_owner->SendMsg(this, UM_COMMAND, 488, a, 0, 0);
       }
 
       if (this->m_keepOpen) {
-        g_windowMgr.modalResponse = id;
+        g_windowMgr.modalResponse = a;
         return 0;
       }
     }
