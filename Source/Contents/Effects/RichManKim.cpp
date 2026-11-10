@@ -65,8 +65,8 @@ void CRichManKim::OnProcess() {
 
       float& width = *reinterpret_cast<float*>(particle->animationParameters);
       const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
-      particle->animationParameter = height;
       const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
+      particle->animationParameter = height;
       width = stretch;
 
       matrix rotation;
