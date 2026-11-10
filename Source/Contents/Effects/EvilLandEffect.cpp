@@ -35,10 +35,12 @@ void CEvilLandEffect::Open() {
 
   for (int row = 0; row < this->effectLevel; ++row) {
     for (int column = 0; column < this->effectLevel; ++column) {
-      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(CreateMultiTexParticle(reinterpret_cast<const vector3d*>(this->position), -1));
-      if (!particle) {
+      CParticle* created = CreateMultiTexParticle(reinterpret_cast<const vector3d*>(this->position), -1);
+      if (!created) {
         continue;
       }
+
+      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(created);
 
       particle->effectId = this->id;
       particle->rowIndex = row;
@@ -49,24 +51,26 @@ void CEvilLandEffect::Open() {
 
       particle->uv1[0][0] = static_cast<float>(column) * textureStepU;
       particle->uv1[0][1] = static_cast<float>(row) * textureStepV;
-      particle->uv1[1][0] = static_cast<float>(column + 1) * textureStepU;
-      particle->uv1[1][1] = static_cast<float>(row) * textureStepV;
-      particle->uv1[2][0] = static_cast<float>(column) * textureStepU;
-      particle->uv1[2][1] = static_cast<float>(row + 1) * textureStepV;
-      particle->uv1[3][0] = static_cast<float>(column + 1) * textureStepU;
-      particle->uv1[3][1] = static_cast<float>(row + 1) * textureStepV;
-
       particle->uv2[0][0] = static_cast<float>(column) * alphaStepU;
       particle->uv2[0][1] = static_cast<float>(row) * alphaStepV;
+
+      particle->uv1[1][0] = static_cast<float>(column + 1) * textureStepU;
+      particle->uv1[1][1] = static_cast<float>(row) * textureStepV;
       particle->uv2[1][0] = static_cast<float>(column + 1) * alphaStepU;
       particle->uv2[1][1] = static_cast<float>(row) * alphaStepV;
+
+      particle->uv1[2][0] = static_cast<float>(column) * textureStepU;
+      particle->uv1[2][1] = static_cast<float>(row + 1) * textureStepV;
       particle->uv2[2][0] = static_cast<float>(column) * alphaStepU;
       particle->uv2[2][1] = static_cast<float>(row + 1) * alphaStepV;
+
+      particle->uv1[3][0] = static_cast<float>(column + 1) * textureStepU;
+      particle->uv1[3][1] = static_cast<float>(row + 1) * textureStepV;
       particle->uv2[3][0] = static_cast<float>(column + 1) * alphaStepU;
       particle->uv2[3][1] = static_cast<float>(row + 1) * alphaStepV;
 
       particle->AllocateVertices(4);
-      this->particles.push_back(particle);
+      this->particles.push_back(created);
     }
   }
 }
