@@ -609,18 +609,18 @@ bool CRenewQuestMgr::IsInFilter(int filter, std::string_view icon) {
 // OFFSET: 0x0067B030
 // FUNCTION: fn_05455
 int CRenewQuestMgr::L_AddQuestFilterInfo(lua_State* state) {
-  const int id = static_cast<int>(lua_tonumber(state, -3));
+  const lua_Number id = lua_tonumber(state, -3);
   const std::string name = lua_tostring(state, -2);
   std::list<std::string> icons;
   if (lua_type(state, -1) != LUA_TNIL) {
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
-      icons.push_back(lua_tostring(state, -1));
+      icons.emplace_back(lua_tostring(state, -1));
       lua_pop(state, 1);
     }
   }
 
-  g_renewQuestMgr->m_filters.try_emplace(id, RenewQuestFilter{name, std::move(icons)});
+  g_renewQuestMgr->m_filters.try_emplace(static_cast<int>(id), RenewQuestFilter{std::string(name.c_str(), name.size()), std::move(icons)});
   return 0;
 }
 
