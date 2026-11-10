@@ -199,7 +199,7 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
     }
   }
 
-  sexName = g_session.GetSexName(male);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(male));
   result = this->GetBodyRacePrefix(job) +
            FormatOwnedString("\\머리통\\%s\\%s_%s.%s", sexName.c_str(), headName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]);
   return result;
