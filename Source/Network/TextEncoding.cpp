@@ -145,7 +145,7 @@ std::string EncodeText(UINT codePage, const std::wstring& text) {
     delete[] converted;
     return "";
   }
-  std::string result(converted, std::strlen(converted));
+  std::string result(converted);
   delete[] converted;
   return result;
 }
