@@ -45,10 +45,10 @@ bool NFileLog::Initialize(const char* directoryName, const char* filePrefix) {
     char candidate[1024]{};
     char base[1024]{};
     StringFormat(base, sizeof(base), static_cast<std::size_t>(-1), "%s\\%s(%04d%02d%02d)", this->directory, this->prefix, this->year, this->month, this->day);
-    if (nextIndex != 0) {
-      StringFormat(candidate, sizeof(candidate), static_cast<std::size_t>(-1), "%s-%04d.txt", base, nextIndex);
-    } else {
+    if (nextIndex == 0) {
       StringFormat(candidate, sizeof(candidate), static_cast<std::size_t>(-1), "%s.txt", base);
+    } else {
+      StringFormat(candidate, sizeof(candidate), static_cast<std::size_t>(-1), "%s-%04d.txt", base, nextIndex);
     }
     if (_access(candidate, 0) != 0) {
       break;
@@ -61,10 +61,10 @@ bool NFileLog::Initialize(const char* directoryName, const char* filePrefix) {
     std::memset(filename, 0, sizeof(filename));
     char base[1024]{};
     StringFormat(base, sizeof(base), static_cast<std::size_t>(-1), "%s\\%s(%04d%02d%02d)", this->directory, this->prefix, this->year, this->month, this->day);
-    if (lastExisting != 0) {
-      StringFormat(filename, sizeof(filename), static_cast<std::size_t>(-1), "%s-%04d.txt", base, lastExisting);
-    } else {
+    if (lastExisting == 0) {
       StringFormat(filename, sizeof(filename), static_cast<std::size_t>(-1), "%s.txt", base);
+    } else {
+      StringFormat(filename, sizeof(filename), static_cast<std::size_t>(-1), "%s-%04d.txt", base, lastExisting);
     }
     FILE* file = nullptr;
     if (fopen_s(&file, filename, "r") == 0 && file != nullptr) {
