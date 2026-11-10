@@ -50,14 +50,18 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[3].y = static_cast<float>(bottom);
     primitive->quad[3].u = (static_cast<float>(texture->Width()) + g_textureOffsetX) / static_cast<float>(texture->TextureWidth());
     primitive->quad[3].v = (static_cast<float>(texture->Height()) + g_textureOffsetX) / static_cast<float>(texture->TextureHeight());
-    for (RenderVertex& vertex : primitive->quad) {
-      vertex.diffuse = color;
-    }
-
-    for (RenderVertex& vertex : primitive->quad) {
-      vertex.z = 0.000001f;
-      vertex.rhw = 0.999999f;
-    }
+    primitive->quad[0].z = 0.000001f;
+    primitive->quad[0].rhw = 0.999999f;
+    primitive->quad[0].diffuse = color;
+    primitive->quad[1].z = 0.000001f;
+    primitive->quad[1].rhw = 0.999999f;
+    primitive->quad[1].diffuse = color;
+    primitive->quad[2].z = 0.000001f;
+    primitive->quad[2].rhw = 0.999999f;
+    primitive->quad[2].diffuse = color;
+    primitive->quad[3].z = 0.000001f;
+    primitive->quad[3].rhw = 0.999999f;
+    primitive->quad[3].diffuse = color;
   } else {
     primitive = g_renderer->primitives.Acquire();
     primitive->texture = texture;
@@ -71,8 +75,8 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
       height = texture->Height();
     }
 
-    const float textureWidth = static_cast<float>(texture->TextureWidth());
-    const float textureHeight = static_cast<float>(texture->TextureHeight());
+    const int textureWidth = texture->TextureWidth();
+    const int textureHeight = texture->TextureHeight();
     const int right = x + width;
     const float bottom = static_cast<float>(y + height);
     primitive->quad[0].x = static_cast<float>(x);
@@ -93,14 +97,18 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[3].u = (static_cast<float>(width <= imageWidth ? width : imageWidth) + g_textureOffsetX) / textureWidth;
     primitive->quad[3].v =
       (height <= imageHeight ? static_cast<float>(height) + g_textureOffsetX : static_cast<float>(imageHeight) + g_textureOffsetY) / textureHeight;
-    for (RenderVertex& vertex : primitive->quad) {
-      vertex.diffuse = color;
-    }
-
-    for (RenderVertex& vertex : primitive->quad) {
-      vertex.z = 0.000001f;
-      vertex.rhw = 0.999999f;
-    }
+    primitive->quad[0].z = 0.000001f;
+    primitive->quad[0].rhw = 0.999999f;
+    primitive->quad[0].diffuse = color;
+    primitive->quad[1].z = 0.000001f;
+    primitive->quad[1].rhw = 0.999999f;
+    primitive->quad[1].diffuse = color;
+    primitive->quad[2].z = 0.000001f;
+    primitive->quad[2].rhw = 0.999999f;
+    primitive->quad[2].diffuse = color;
+    primitive->quad[3].z = 0.000001f;
+    primitive->quad[3].rhw = 0.999999f;
+    primitive->quad[3].diffuse = color;
   }
 
   this->m_primitives.push_back(primitive);
