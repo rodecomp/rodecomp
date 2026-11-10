@@ -67,9 +67,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   std::uint8_t handled = 0;
   const LRESULT result = g_serverLanguage->Message(window, message, wParam, lParam, handled);
   if (handled) {
-    if (g_serverLanguage->candidateCount == 0) {
-      g_windowMgr.CloseWindow(WID_CANDIDATEWND);
-    } else {
+    if (g_serverLanguage->candidateCount != 0) {
       std::string candidates[9];
       int info[4];
       info[0] = g_serverLanguage->selection % 9;
@@ -86,6 +84,8 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
         candidates[i] = g_serverLanguage->Candidate(first + i);
       }
       g_windowMgr.EnsureWindow(WID_CANDIDATEWND)->SendMsg(nullptr, UM_IME_SET_CANDIDATE, reinterpret_cast<std::intptr_t>(candidates), reinterpret_cast<std::intptr_t>(info), 0, 0);
+    } else {
+      g_windowMgr.CloseWindow(WID_CANDIDATEWND);
     }
 
     if (g_serverLanguage->DisplayLength()) {
@@ -105,16 +105,17 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   switch (message) {
   case WM_CREATE:
     return 0;
-  case WM_DESTROY:
-    if (std::strlen(g_homepageUrl) != 0) {
-      ShellExecuteA(hWnd, "open", g_homepageUrl, nullptr, nullptr, SW_SHOWNORMAL);
-    }
-    return 0;
   case WM_MOVE:
     if (g_isAppActive != 1 && !GetRenderSystemHolder()->IsWindowed()) {
       GetRenderSystemHolder()->Present(true);
     }
     return 0;
+  case WM_NCACTIVATE:
+    SetApplicationActive(LOWORD(wParam));
+    if (wParam) {
+      ResetTimer();
+    }
+    break;
   case WM_ACTIVATE: {
     const short state = static_cast<short>(wParam);
     if (state == WA_INACTIVE) {
@@ -148,8 +149,15 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
   }
   case WM_ERASEBKGND:
     return 1;
-  case WM_PAINT:
-    ValidateRect(window, nullptr);
+  case WM_GETMINMAXINFO:
+    if (hWnd) {
+      MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
+      const RECT bounds = Rect;
+      info->ptMinTrackSize.x = bounds.right - bounds.left;
+      info->ptMaxTrackSize.x = bounds.right - bounds.left;
+      info->ptMinTrackSize.y = bounds.bottom - bounds.top;
+      info->ptMaxTrackSize.y = bounds.bottom - bounds.top;
+    }
     return 0;
   case WM_CLOSE:
     g_modalImmediate = 1;
@@ -175,22 +183,14 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       }
     }
     return 0;
-  case WM_GETMINMAXINFO:
-    if (hWnd) {
-      MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-      const RECT bounds = Rect;
-      info->ptMinTrackSize.x = bounds.right - bounds.left;
-      info->ptMaxTrackSize.x = bounds.right - bounds.left;
-      info->ptMinTrackSize.y = bounds.bottom - bounds.top;
-      info->ptMaxTrackSize.y = bounds.bottom - bounds.top;
+  case WM_PAINT:
+    ValidateRect(window, nullptr);
+    return 0;
+  case WM_DESTROY:
+    if (std::strlen(g_homepageUrl) != 0) {
+      ShellExecuteA(hWnd, "open", g_homepageUrl, nullptr, nullptr, SW_SHOWNORMAL);
     }
     return 0;
-  case WM_NCACTIVATE:
-    SetApplicationActive(LOWORD(wParam));
-    if (wParam) {
-      ResetTimer();
-    }
-    break;
   case WM_KEYDOWN:
     if (UIWindow* target = g_windowMgr.LookupWindow(WID_VIDEOWND)) {
       target->SendMsg(nullptr, UM_DEFPUSH, wParam, 0, 0, 0);
@@ -211,20 +211,6 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     }
     if (g_session.quitBlocked && !g_session.quitAllowed) {
       g_windowMgr.RefreshWindow01C8Edits();
-    }
-    return 0;
-  case WM_KEYUP:
-    g_session.m_automaticSkills.DisableAll();
-    if (wParam == VK_SNAPSHOT) {
-      g_windowMgr.ProcessKeyDown(VK_SNAPSHOT, lParam, 1);
-    }
-    return 0;
-  case WM_CHAR:
-    if (!g_windowMgr.LookupWindow(WID_VIDEOWND) && g_windowMgr.imeInputActive) {
-      if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_CHAR, wParam, lParam, 0, 0) == 3) {
-        return 0;
-      }
-      g_serverLanguage->Character(wParam, lParam);
     }
     return 0;
   case WM_SYSKEYDOWN:
@@ -263,16 +249,20 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       return 0;
     }
     break;
-  case WM_MOUSEMOVE:
-  case WM_LBUTTONDOWN:
-  case WM_LBUTTONUP:
-  case WM_LBUTTONDBLCLK:
-  case WM_RBUTTONDOWN:
-  case WM_RBUTTONUP:
-  case WM_RBUTTONDBLCLK:
-  case WM_MOUSEWHEEL:
-    g_mouse.Message(window, message, wParam, lParam);
-    break;
+  case WM_CHAR:
+    if (!g_windowMgr.LookupWindow(WID_VIDEOWND) && g_windowMgr.imeInputActive) {
+      if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_CHAR, wParam, lParam, 0, 0) == 3) {
+        return 0;
+      }
+      g_serverLanguage->Character(wParam, lParam);
+    }
+    return 0;
+  case WM_KEYUP:
+    g_session.m_automaticSkills.DisableAll();
+    if (wParam == VK_SNAPSHOT) {
+      g_windowMgr.ProcessKeyDown(VK_SNAPSHOT, lParam, 1);
+    }
+    return 0;
   case WM_ENTERMENULOOP:
   case WM_ENTERSIZEMOVE:
     g_isAppActive = 0;
@@ -287,6 +277,16 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     } else {
       SetApplicationActive(0);
     }
+    break;
+  case WM_MOUSEMOVE:
+  case WM_LBUTTONDOWN:
+  case WM_LBUTTONUP:
+  case WM_LBUTTONDBLCLK:
+  case WM_RBUTTONDOWN:
+  case WM_RBUTTONUP:
+  case WM_RBUTTONDBLCLK:
+  case WM_MOUSEWHEEL:
+    g_mouse.Message(window, message, wParam, lParam);
     break;
   case WM_IME_SETCONTEXT:
     wParam = 1;
