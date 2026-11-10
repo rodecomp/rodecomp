@@ -586,35 +586,31 @@ void CSession::RefreshTrackedAchievement(int id) {
     return;
   }
 
-  auto record = g_session.achievements.find(id);
-  SessionRecord6144 progress = record != g_session.achievements.end() ? record->second : SessionRecord6144();
+  SessionRecord6144 progress = g_session.FindAchievementRecord(id);
 
   AchievementInfo info;
   g_achievementMgr->GetAchievement(info, id);
   found->completed = reinterpret_cast<const unsigned char*>(&progress.completionFlags)[1];
 
   for (unsigned int i = 0; i < info.rewards.size(); ++i) {
-    const AchievementReward& reward = info.rewards[i];
-    SessionRecord6178Entry& entry = found->objectives[i];
-
     if (info.progressMode == 0) {
-      if (reward.text.size() > 40) {
-        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
+      if (info.rewards[i].text.size() > 40) {
+        found->objectives[i].text = static_cast<const std::string&>(FormatOwnedString("- %s...", info.rewards[i].text.substr(0, 40).c_str()));
       } else {
-        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
+        found->objectives[i].text = static_cast<const std::string&>(FormatOwnedString("- %s", info.rewards[i].text.c_str()));
       }
 
-      entry.completed = static_cast<int>(progress.objectives[i]) > 0;
+      found->objectives[i].completed = static_cast<int>(progress.objectives[i]) > 0;
     } else if (info.progressMode == 1) {
       int value = progress.objectives[i];
-      std::string count = FormatOwnedString("(%d/%d)", value, reward.targetCount);
-      if (reward.text.size() + count.size() > 40) {
-        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
+      std::string count = FormatOwnedString("(%d/%d)", value, info.rewards[i].targetCount);
+      if (info.rewards[i].text.size() + count.size() > 40) {
+        found->objectives[i].text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", info.rewards[i].text.substr(0, 40 - count.size()).c_str(), count.c_str()));
       } else {
-        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
+        found->objectives[i].text = static_cast<const std::string&>(FormatOwnedString("- %s %s", info.rewards[i].text.c_str(), count.c_str()));
       }
 
-      entry.completed = value == reward.targetCount;
+      found->objectives[i].completed = value == info.rewards[i].targetCount;
     }
   }
 }
