@@ -208,38 +208,33 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
 
   for (int index = 0; index < quest.m_huntCount; ++index) {
     std::string text;
-    if (quest.m_huntUnknown00D4[index] == 31999) {
-      const std::string condition =
-        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]);
-      text = condition;
-    } else {
+    if (quest.m_huntUnknown00D4[index] != 31999) {
       const short minLevel = quest.m_huntUnknown01AC[index];
       const short maxLevel = quest.m_huntUnknown01B2[index];
       const char* name = quest.m_huntName[index];
-      if (minLevel < 0 || maxLevel < 0 || (minLevel == 0 && maxLevel == 0)) {
-        const std::string formatted = FormatOwnedString("%s", name);
-        text = formatted;
-      } else if (minLevel == 0) {
-        const std::string formatted = FormatOwnedString("%s Lv.%d▼", name, maxLevel);
-        text = formatted;
-      } else if (maxLevel == 0) {
-        const std::string formatted = FormatOwnedString("%s Lv.%d▲", name, minLevel);
-        text = formatted;
+      if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
+        if (minLevel == 0) {
+          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
+        } else if (maxLevel == 0) {
+          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+        } else {
+          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+        }
       } else {
-        const std::string formatted = FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel);
-        text = formatted;
+        text = static_cast<const std::string&>(FormatOwnedString("%s", name));
       }
+    } else {
+      text = static_cast<const std::string&>(
+        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]));
     }
 
     const short goal = quest.m_huntUnknown0180[index];
     if (goal > 0) {
       const short count = quest.m_huntUnknown00E0[index];
-      if (count == goal) {
-        const std::string formatted = FormatOwnedString("%s ( %s )", text.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST));
-        text = formatted;
+      if (count != goal) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", text.c_str(), count, goal));
       } else {
-        const std::string formatted = FormatOwnedString("%s ( %d / %d )", text.c_str(), count, goal);
-        text = formatted;
+        text = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", text.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
       }
     }
 
