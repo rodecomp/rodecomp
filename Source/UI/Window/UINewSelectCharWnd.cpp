@@ -596,18 +596,80 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       CharacterInfo* info =
         reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      if (info == nullptr) {
+      if (info != nullptr) {
+        if (info->deleteDate > 0) {
+          break;
+        }
+
+        g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
+        if (info->sex == 'c') {
+          g_session.SetFlag(static_cast<char>(g_session.m_sex));
+        } else {
+          g_session.SetFlag(static_cast<char>(info->sex));
+        }
+        this->m_navigationBlocked = true;
+        const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
+        for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
+          if (info->gid == blocked[index].gid) {
+            char text[260];
+            std::memset(text, 0, sizeof(text));
+            std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
+            g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+            this->m_navigationBlocked = false;
+            return 0;
+          }
+        }
+
+        g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+        g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2712, 0, 0, 0);
+        this->m_gameStartPending = true;
+        if (this->m_windowFC != nullptr) {
+          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
+          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 1, 0);
+          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 2, 0);
+        }
+      } else {
         this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
+      }
+      break;
+    }
+    case ID_MAKE:
+      if (this->m_pageSlot != argument2) {
+        this->m_pageSlot = argument2;
+        this->SendMsg(this->m_slotButtons2[argument2], UM_COMMAND, ID_SLOT, 0, 0, 0);
+      }
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_session.m_producibleSlotCount &&
+          g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND) != nullptr) {
+        g_windowMgr.CloseWindow(WID_NEWSELECTCHARWND);
+      }
+      break;
+    case 0x197: {
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
         break;
       }
 
-      if (info->deleteDate > 0) {
+      const CharacterInfo* info =
+        reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      CharacterGidPacket packet;
+      packet.id = ID_CH_DELETE_CHAR3_RESERVED;
+      packet.gid = info->gid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case 0x198: {
+      CharacterGidPacket packet;
+      packet.id = ID_CH_DELETE_CHAR3_CANCEL;
+      packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case ID_DELETE: {
+      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
         break;
       }
 
-      g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
-      g_session.SetFlag(info->sex == 'c' ? static_cast<char>(g_session.m_sex) : static_cast<char>(info->sex));
-      this->m_navigationBlocked = true;
+      const CharacterInfo* info =
+        reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
       const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
       for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
@@ -615,19 +677,17 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
           g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
-          this->m_navigationBlocked = false;
           return 0;
         }
       }
 
-      g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2712, 0, 0, 0);
-      this->m_gameStartPending = true;
-      if (this->m_windowFC != nullptr) {
-        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_windowFC);
-        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
-        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 1, 0);
-        button->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 2, 0);
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        this->m_navigationBlocked = true;
+        if (g_windowMgr.RunEmailAddress() == 0xB8) {
+          g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x271A, 0, 0, 0);
+          g_windowMgr.Schedule(this);
+        }
+        this->m_navigationBlocked = false;
       }
       break;
     }
@@ -640,16 +700,6 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       } else if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
-      }
-      break;
-    case ID_MAKE:
-      if (this->m_pageSlot != argument2) {
-        this->m_pageSlot = argument2;
-        this->SendMsg(this->m_slotButtons2[argument2], UM_COMMAND, ID_SLOT, 0, 0, 0);
-      }
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_session.m_producibleSlotCount &&
-          g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND) != nullptr) {
-        g_windowMgr.CloseWindow(WID_NEWSELECTCHARWND);
       }
       break;
     case ID_SLOT: {
@@ -665,7 +715,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
 
         this->m_pageSlot = index;
-        g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + index);
+        g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + index);
         this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
             static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->m_displayMode == 0) {
@@ -702,40 +752,86 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->Invalidate();
       break;
     }
-    case ID_DELETE: {
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
-        break;
-      }
-
-      const CharacterInfo* info =
-        reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
-      for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
-        if (info->gid == blocked[index].gid) {
-          char text[260];
-          std::memset(text, 0, sizeof(text));
-          std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
-          g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
-          return 0;
-        }
-      }
-
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        this->m_navigationBlocked = true;
-        if (g_windowMgr.RunEmailAddress() == 0xB8) {
-          g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x271A, 0, 0, 0);
-          g_windowMgr.Schedule(this);
-        }
-        this->m_navigationBlocked = false;
-      }
-      break;
-    }
     case ID_CHARGE:
     case ID_NOTICE: {
       char text[260];
       std::memset(text, 0, sizeof(text));
       g_modeMgr.gameMode->SendMsg(LMM_GET_BILLING_INFO, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
       g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      break;
+    }
+    case ID_CHANGE_NAME: {
+      if (g_windowMgr.changeNameWnd != nullptr) {
+        g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
+      }
+      const std::intptr_t info = g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_CHANGENAMEWND);
+      if (window != nullptr) {
+        window->SendMsg(nullptr, UM_SETINFO, info, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_CHANGE_NAME_SUCCESS: {
+      CharacterInfo* info =
+        reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+      if (info->gid != g_renameGid) {
+        break;
+      }
+
+      std::memcpy(info->name, g_renameName, sizeof(info->name));
+      const int column = static_cast<unsigned char>(g_selectedSlotIndex) - this->m_slotsPerPage * this->m_page;
+      this->m_characterWindows[column]->SetTextFitted(info->name);
+      UIStaticText* name = this->m_characterWindows[column];
+      name->Move(
+        (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
+        (column / 5) * 0xC3 + 0xBD
+      );
+      break;
+    }
+    case 0x1A0:
+      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
+      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
+      break;
+    case 0x1A1:
+      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
+      break;
+    case 0x1A2: {
+      CharacterGidPacket packet;
+      packet.id = ID_CH_AVAILABLE_SECOND_PASSWD;
+      packet.gid = g_session.m_aid;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      break;
+    }
+    case 0x1B2:
+      this->m_slotButtons2[0]->OnLBtnDown(0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      break;
+    case 0x1B3:
+      this->m_slotButtons2[1]->OnLBtnDown(0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      break;
+    case 0x1B4:
+      this->m_slotButtons2[2]->OnLBtnDown(0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      break;
+    case 0x1B0:
+      this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
+      break;
+    case 0x1B1: {
+      const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
+      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
+        if (info != nullptr) {
+          CharacterMovePacket packet;
+          packet.id = ID_CH_REQ_CHANGE_CHARACTER_SLOT;
+          packet.from = static_cast<std::int16_t>(this->m_slotMoveSource);
+          packet.to = selected;
+          packet.count = static_cast<std::int16_t>(info->slotChangeCount);
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        }
+      }
+      this->m_slotMoveSource = -1;
       break;
     }
     case ID_PREV_PAGE: {
@@ -870,159 +966,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->UpdateCharacterInfo();
       break;
     }
-    case ID_CHANGE_NAME: {
-      if (g_windowMgr.changeNameWnd != nullptr) {
-        g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
-      }
-      const std::intptr_t info = g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
-      UIWindow* window = g_windowMgr.EnsureWindow(WID_CHANGENAMEWND);
-      if (window != nullptr) {
-        window->SendMsg(nullptr, UM_SETINFO, info, 0, 0, 0);
-      }
-      break;
     }
-    case ID_CHANGE_NAME_SUCCESS: {
-      CharacterInfo* info =
-        reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      if (info->gid != g_renameGid) {
-        break;
-      }
-
-      std::memcpy(info->name, g_renameName, sizeof(info->name));
-      const int column = static_cast<unsigned char>(g_selectedSlotIndex) - this->m_slotsPerPage * this->m_page;
-      this->m_characterWindows[column]->SetTextFitted(info->name);
-      UIStaticText* name = this->m_characterWindows[column];
-      name->Move(
-        (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
-        (column / 5) * 0xC3 + 0xBD
-      );
-      break;
-    }
-    case 0x197: {
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
-        break;
-      }
-
-      const CharacterInfo* info =
-        reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      CharacterGidPacket packet;
-      packet.id = ID_CH_DELETE_CHAR3_RESERVED;
-      packet.gid = info->gid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      break;
-    }
-    case 0x198: {
-      CharacterGidPacket packet;
-      packet.id = ID_CH_DELETE_CHAR3_CANCEL;
-      packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      break;
-    }
-    case 0x1A0:
-      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
-      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
-      g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
-      break;
-    case 0x1A1:
-      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
-      break;
-    case 0x1A2: {
-      CharacterGidPacket packet;
-      packet.id = ID_CH_AVAILABLE_SECOND_PASSWD;
-      packet.gid = g_session.m_aid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      break;
-    }
-    case 0x1B0:
-      this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
-      break;
-    case 0x1B1: {
-      const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
-      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-        const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
-        if (info != nullptr) {
-          CharacterMovePacket packet;
-          packet.id = ID_CH_REQ_CHANGE_CHARACTER_SLOT;
-          packet.from = static_cast<std::int16_t>(this->m_slotMoveSource);
-          packet.to = selected;
-          packet.count = static_cast<std::int16_t>(info->slotChangeCount);
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-        }
-      }
-      this->m_slotMoveSource = -1;
-      break;
-    }
-    case 0x1B2:
-      this->m_slotButtons2[0]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
-      break;
-    case 0x1B3:
-      this->m_slotButtons2[1]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
-      break;
-    case 0x1B4:
-      this->m_slotButtons2[2]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
-      break;
-    }
+    break;
+  case UM_DELETE:
+    this->SendMsg(nullptr, UM_COMMAND, ID_DELETE, 0, 0, 0);
     break;
   case UM_SETSTATE:
     if (!this->m_gameStartPending) {
       this->m_pageSlot = argument1;
-    }
-    break;
-  case UM_UPPUSH:
-    if (this->m_gameStartPending) {
-      break;
-    }
-    if (g_windowMgr.menuWnd != nullptr) {
-      g_windowMgr.CloseWindow(WID_MENUWND);
-    }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
-      const int previous = this->m_pageSlot;
-      this->m_pageSlot -= 5;
-      if (this->m_pageSlot < 0) {
-        if (this->m_page <= 0) {
-          this->m_pageSlot = previous;
-          break;
-        }
-        this->SendMsg(nullptr, UM_COMMAND, ID_PREV_PAGE, 0, 0, 0);
-        this->m_pageSlot += this->m_slotsPerPage;
-      }
-      for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
-      }
-      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->UpdateCharacterInfo();
-      this->SaveCurrentSlot();
-    }
-    break;
-  case UM_DOWNPUSH:
-    if (this->m_gameStartPending) {
-      break;
-    }
-    if (g_windowMgr.menuWnd != nullptr) {
-      g_windowMgr.CloseWindow(WID_MENUWND);
-    }
-    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
-      const int previous = this->m_pageSlot;
-      this->m_pageSlot = previous + 5;
-      if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
-        this->m_pageSlot = previous;
-        break;
-      }
-      if (this->m_pageSlot >= this->m_slotsPerPage) {
-        if (this->m_page < this->m_pageCount - 1) {
-          this->SendMsg(nullptr, UM_COMMAND, ID_NEXT_PAGE, 0, 0, 0);
-        }
-        this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
-      }
-      for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
-      }
-      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
-      this->UpdateCharacterInfo();
-      this->SaveCurrentSlot();
     }
     break;
   case UM_LEFTPUSH:
@@ -1044,7 +995,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
         this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
       }
-      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
@@ -1072,13 +1023,64 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
         this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
       }
-      g_selectedSlotIndex = static_cast<char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
     break;
-  case UM_DELETE:
-    this->SendMsg(nullptr, UM_COMMAND, ID_DELETE, 0, 0, 0);
+  case UM_UPPUSH:
+    if (this->m_gameStartPending) {
+      break;
+    }
+    if (g_windowMgr.menuWnd != nullptr) {
+      g_windowMgr.CloseWindow(WID_MENUWND);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
+      const int previous = this->m_pageSlot;
+      this->m_pageSlot -= 5;
+      if (this->m_pageSlot < 0) {
+        if (this->m_page <= 0) {
+          this->m_pageSlot = previous;
+          break;
+        }
+        this->SendMsg(nullptr, UM_COMMAND, ID_PREV_PAGE, 0, 0, 0);
+        this->m_pageSlot += this->m_slotsPerPage;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->UpdateCharacterInfo();
+      this->SaveCurrentSlot();
+    }
+    break;
+  case UM_DOWNPUSH:
+    if (this->m_gameStartPending) {
+      break;
+    }
+    if (g_windowMgr.menuWnd != nullptr) {
+      g_windowMgr.CloseWindow(WID_MENUWND);
+    }
+    if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
+      const int previous = this->m_pageSlot;
+      this->m_pageSlot = previous + 5;
+      if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
+        this->m_pageSlot = previous;
+        break;
+      }
+      if (this->m_pageSlot >= this->m_slotsPerPage) {
+        if (this->m_page < this->m_pageCount - 1) {
+          this->SendMsg(nullptr, UM_COMMAND, ID_NEXT_PAGE, 0, 0, 0);
+        }
+        this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
+      }
+      for (int index = 0; index < this->m_slotsPerPage; ++index) {
+        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+      }
+      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      this->UpdateCharacterInfo();
+      this->SaveCurrentSlot();
+    }
     break;
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
