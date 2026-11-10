@@ -8,11 +8,9 @@ template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_
 // FUNCTION: fn_04055
 void ClearUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
-  path += ".lua";
+  path = path + ".lua";
   if (!path.empty()) {
-    if (g_session.m_hotkeyScript != nullptr) {
-      g_session.m_hotkeyScript->Call("ClearUserHotKeys", "s", path.c_str());
-    }
+    g_session.m_hotkeyScript->Call("ClearUserHotKeys", "s", path.c_str());
   }
 }
 
@@ -20,11 +18,9 @@ void ClearUserHotkeys() {
 // FUNCTION: fn_04063
 void SaveUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
-  path += ".lua";
+  path = path + ".lua";
   if (!path.empty()) {
-    if (g_session.m_hotkeyScript != nullptr) {
-      g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
-    }
+    g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
   }
 }
 
