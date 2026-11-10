@@ -2572,10 +2572,7 @@ void UIItemIdentifyWnd::OnWheel(int delta) {
     return;
   }
 
-  int step = this->m_rows - 1;
-  if (step > 3) {
-    step = 3;
-  }
+  const int step = (std::min)(this->m_rows - 1, 3);
   this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
 }
 
