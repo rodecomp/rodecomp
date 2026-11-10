@@ -14,33 +14,60 @@ namespace {
     };
   }
 
-  // OFFSET: 0x00570C70
-  // FUNCTION: fn_02437
-  int BitsPerPixel(D3DFORMAT format) {
-    switch (format) {
-    case D3DFMT_R5G6B5:
-    case D3DFMT_X1R5G5B5:
-    case D3DFMT_A1R5G5B5:
-    case D3DFMT_A4R4G4B4:
-      return 16;
-    case D3DFMT_A8R8G8B8:
-    case D3DFMT_X8R8G8B8:
-      return 32;
-    default:
-      return 0;
-    }
-  }
-
   // INLINED
   UINT AlignDimension(int value) {
     const std::uint32_t dimension = value;
     return dimension + ((0u - dimension) & 3);
   }
+
+  // INLINED
+  std::uint16_t PackColorA4R4G4B4(std::uint32_t color) {
+    return ((color >> 16) & 0xF000) | ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00);
+  }
+
+  // INLINED
+  std::uint16_t PackColorR5G6B5(std::uint32_t color) {
+    return ((color & 255) >> 3) | ((color >> 5) & 0x7E0) | ((color >> 8) & 0xF800);
+  }
+
+  // INLINED
+  std::uint32_t ConvertColor(D3DFORMAT format, std::uint32_t color) {
+    switch (format) {
+    case D3DFMT_X1R5G5B5:
+    case D3DFMT_A1R5G5B5:
+      return PackColorA1R5G5B5(color);
+    case D3DFMT_A4R4G4B4:
+      return PackColorA4R4G4B4(color);
+    case D3DFMT_R5G6B5:
+      return PackColorR5G6B5(color);
+    case D3DFMT_A8R8G8B8:
+      return color;
+    default:
+      return 0;
+    }
+  }
+}
+
+// OFFSET: 0x00570C70
+// FUNCTION: fn_02437
+int BitsPerPixel(D3DFORMAT format) {
+  switch (format) {
+  case D3DFMT_R5G6B5:
+  case D3DFMT_X1R5G5B5:
+  case D3DFMT_A1R5G5B5:
+  case D3DFMT_A4R4G4B4:
+    return 16;
+  case D3DFMT_A8R8G8B8:
+  case D3DFMT_X8R8G8B8:
+    return 32;
+  default:
+    return 0;
+  }
 }
 
 // OFFSET: 0x00570D70
 // FUNCTION: fn_02441
-std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
+__declspec(noinline) std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
   return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
 }
 
@@ -151,6 +178,7 @@ void CSurfaceDX9::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
+  const int stride = sourceWidth ? sourceWidth : width;
   D3DSURFACE_DESC description;
   if (FAILED(this->m_surface->GetDesc(&description))) {
     return;
@@ -162,42 +190,27 @@ void CSurfaceDX9::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
-  const int stride = sourceWidth ? sourceWidth : width;
   if (BitsPerPixel(description.Format) == 16) {
     for (int row = 0; row < height; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      auto* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      const std::uint32_t* source = pixels + row * stride;
 
       for (int column = 0; column < width; ++column) {
-        const std::uint32_t color = pixels[row * stride + column];
-        std::uint16_t value = 0;
-        if ((color & 0xFFFFFF) != 0xFF00FF) {
-          switch (description.Format) {
-          case D3DFMT_R5G6B5:
-            value = ((color & 255) >> 3) | ((color >> 5) & 0x7E0) | ((color >> 8) & 0xF800);
-            break;
-          case D3DFMT_X1R5G5B5:
-          case D3DFMT_A1R5G5B5:
-            value = PackColorA1R5G5B5(color);
-            break;
-          case D3DFMT_A4R4G4B4:
-            value = ((color >> 16) & 0xF000) | ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00);
-            break;
-          default:
-            break;
-          }
-        }
-
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
+        const std::uint32_t color = source[column];
+        output[column] = (color & 0xFFFFFF) == 0xFF00FF ? 0 : static_cast<std::uint16_t>(ConvertColor(description.Format, color));
       }
     }
   } else if (description.Format == D3DFMT_A8R8G8B8 || description.Format == D3DFMT_X8R8G8B8) {
     for (int row = 0; row < height; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+      auto* output = reinterpret_cast<std::uint32_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      const std::uint32_t* source = pixels + row * stride;
 
       for (int column = 0; column < width; ++column) {
-        const std::uint32_t color = pixels[row * stride + column];
-        const std::uint32_t value = (color & 0xFFFFFF) == 0xFF00FF ? 0 : color;
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
+        if ((source[column] & 0xFFFFFF) == 0xFF00FF) {
+          output[column] = 0;
+        } else {
+          output[column] = source[column];
+        }
       }
     }
   }
