@@ -387,3 +387,22 @@ bool IsIndexedSkill(int id) {
     return false;
   }
 }
+
+// OFFSET: 0x007719D0
+
+// OFFSET: 0x00771A50
+// FUNCTION: fn_45559
+void CPlayerSkillBundle::TakePreviousLevel(int& level, int id, int key) {
+  if (this->levelChanges.find(key) == this->levelChanges.end()) {
+    return;
+  }
+
+  if (key == id) {
+    if (this->changed[id]) {
+      level = this->levelChanges[id].previous;
+      this->changed[id] = false;
+    }
+  } else {
+    level = this->levelChanges[key].previous;
+  }
+}

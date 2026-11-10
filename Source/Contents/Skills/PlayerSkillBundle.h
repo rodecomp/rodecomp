@@ -49,6 +49,8 @@ public:
   void RecordLevelChange(const CSkillInfo& value);
   std::pair<bool, int> PreviousLevel(int id) const;
   void ApplyLevelChange(CSkillInfo& value);
+  void RevertLevelChange(const CSkillInfo& current, CSkillInfo& value);
+  void TakePreviousLevel(int& level, int id, int key);
   void ClearLevelChanges();
   void MarkLevelChanges();
   void ResetFirstLevelChange();
