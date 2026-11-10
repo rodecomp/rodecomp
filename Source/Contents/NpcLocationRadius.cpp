@@ -5,21 +5,22 @@
 // OFFSET: 0x00DE0A70
 // FUNCTION: fn_23467
 float CSession::GetNpcLocationRadius(int job, bool riding) {
+  int key = job;
   if (riding == true) {
-    job = this->GetRidingJob(job);
+    key = this->GetRidingJob(job);
   }
 
   int radius = 0;
-  g_session.m_hotkeyScript->Call("GetNpcLocationRadius", "d>d", job, &radius);
-  if (radius != 0) {
-    return static_cast<float>(radius * 2 + 1);
+  g_session.m_hotkeyScript->Call("GetNpcLocationRadius", "d>d", key, &radius);
+  if (radius == 0) {
+    if (this->m_npcLocationRadius.find(key) == this->m_npcLocationRadius.end()) {
+      return 1.0f;
+    }
+
+    return this->m_npcLocationRadius[key];
   }
 
-  if (this->m_npcLocationRadius.find(job) == this->m_npcLocationRadius.end()) {
-    return 1.0f;
-  }
-
-  return this->m_npcLocationRadius[job];
+  return static_cast<float>(radius * 2 + 1);
 }
 
 // OFFSET: 0x00E130A0
@@ -444,7 +445,7 @@ void CSession::InitNpcLocationRadius() {
   for (int job = 0; job < 32003; ++job) {
     double factor = 0.0;
     if (this->m_hotkeyScript->Call("ReqshadowFactor", "d>l", job, &factor) && factor >= 0.0) {
-      this->m_npcLocationRadius.try_emplace(job, static_cast<float>(factor));
+      this->m_npcLocationRadius.insert(std::pair<const int, float>(job, static_cast<float>(factor)));
     }
   }
 }
