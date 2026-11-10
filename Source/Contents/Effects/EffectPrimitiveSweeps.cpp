@@ -394,17 +394,24 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
   }
 }
 
+// INLINED
+static __forceinline vector3d ZeroVector() {
+  return vector3d();
+}
+
+// INLINED
+static __forceinline vector3d& operator+=(vector3d& target, const vector3d& offset) {
+  target.x += offset.x;
+  target.y += offset.y;
+  target.z += offset.z;
+  return target;
+}
+
 // OFFSET: 0x00BF4110
 // FUNCTION: fn_19994
 void CEffectPrim::RenderArcWalls(matrix& wtm) {
-  vector3d prevB;
-  prevB.x = 0.0f;
-  prevB.y = 0.0f;
-  prevB.z = 0.0f;
-  vector3d prevT;
-  prevT.x = 0.0f;
-  prevT.y = 0.0f;
-  prevT.z = 0.0f;
+  vector3d prevB = ZeroVector();
+  vector3d prevT = ZeroVector();
   vector3d curB;
   curB.x = 0.0f;
   curB.y = 0.0f;
@@ -423,7 +430,8 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 4;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + offset;
+      angle %= 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 4) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -432,12 +440,16 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
       const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
       const float rise = this->state.slots[ec].height[i];
       const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      curB.x = baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
-      curB.y = this->state.slots[ec].vecBNow.y + 0.0f + this->state.slots[ec].vecTPre.y;
-      curB.z = baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
-      curT.y = this->state.slots[ec].vecBNow.y - rise * g_sinTable[this->state.slots[ec].riseAngle] + this->state.slots[ec].vecTPre.y;
-      curT.x = riseX * g_cosTable[angle] + baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
-      curT.z = riseX * g_sinTable[angle] + baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
+      curB.x = baseX;
+      curB.y = 0.0f;
+      curB.z = baseZ;
+      curT.x = riseX * g_cosTable[angle] + baseX;
+      curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
+      curT.z = riseX * g_sinTable[angle] + baseZ;
+      curB += this->state.slots[ec].vecBNow;
+      curB += this->state.slots[ec].vecTPre;
+      curT += this->state.slots[ec].vecBNow;
+      curT += this->state.slots[ec].vecTPre;
 
       if (i > 0) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 5, prevB, curB, prevT, curT, wtm, 1, 0, 0, 255, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -453,7 +465,8 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
 
     i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + 45 + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + 45 + offset;
+      angle %= 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 4) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -462,12 +475,16 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
       const float baseZ = this->state.slots[ec].distance * g_sinTable[angle] * 1.5f;
       const float rise = this->state.slots[ec].height[i];
       const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      curB.x = baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
-      curB.y = this->state.slots[ec].vecBNow.y + 0.0f + this->state.slots[ec].vecTPre.y;
-      curB.z = baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
-      curT.y = this->state.slots[ec].vecBNow.y - rise * g_sinTable[this->state.slots[ec].riseAngle] + this->state.slots[ec].vecTPre.y;
-      curT.x = riseX * g_cosTable[angle] + baseX + this->state.slots[ec].vecBNow.x + this->state.slots[ec].vecTPre.x;
-      curT.z = riseX * g_sinTable[angle] + baseZ + this->state.slots[ec].vecBNow.z + this->state.slots[ec].vecTPre.z;
+      curB.x = baseX;
+      curB.y = 0.0f;
+      curB.z = baseZ;
+      curT.x = riseX * g_cosTable[angle] + baseX;
+      curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
+      curT.z = riseX * g_sinTable[angle] + baseZ;
+      curB += this->state.slots[ec].vecBNow;
+      curB += this->state.slots[ec].vecTPre;
+      curT += this->state.slots[ec].vecBNow;
+      curT += this->state.slots[ec].vecTPre;
 
       if (i > 0) {
         this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, prevB, curB, curT, prevT, wtm, 0);
