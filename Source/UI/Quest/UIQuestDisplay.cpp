@@ -248,7 +248,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     break;
   }
   case UM_MAKEMENU: {
-    this->m_menuItems.clear();
+    this->m_menuItems.erase(this->m_menuItems.begin(), this->m_menuItems.end());
     if (g_windowMgr.menuWnd != 0) {
       this->Show(0);
     }
