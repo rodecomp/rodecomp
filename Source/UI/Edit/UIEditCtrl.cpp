@@ -418,7 +418,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
 
   button->Configure(display.c_str(), 0x009E68F0, 0, 12, 0, 0);
   button->SetId(438);
-  button->link = g_navigationLinkParser->ExtractNavigationLink(value);
+  button->link = GetNavigationLinkParser()->ExtractNavigationLink(value);
   this->AddChild(button);
   this->links.push_back(button);
 }

@@ -139,7 +139,7 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
   std::vector<std::string> lines;
   const int width = this->verticalBar ? (this->geometry.width - 16) : this->geometry.width;
 
-  if (g_navigationLinkParser->HasLink(std::string(text))) {
+  if (GetNavigationLinkParser()->HasLink(std::string(text))) {
     this->AddText(text, color, style);
     return;
   }

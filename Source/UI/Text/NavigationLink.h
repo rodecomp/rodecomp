@@ -20,6 +20,11 @@ struct NavigationLinkParser {
 };
 
 extern NavigationLinkParser* g_navigationLinkParser;
+
+// INLINED
+inline NavigationLinkParser* GetNavigationLinkParser() {
+  return g_navigationLinkParser;
+}
 extern std::string g_naviLinkTagBegin;
 extern std::string g_naviLinkTagEnd;
 

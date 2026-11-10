@@ -5387,7 +5387,7 @@ void CGameMode::SendNpcInputText(std::uint32_t npcId, const char* text, const ch
   char buffer[0x16A];
   std::memset(buffer, 0, sizeof(buffer));
   StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "%s", replacement != nullptr ? replacement : text);
-  if (g_navigationLinkParser->HasUnownedItemLink(buffer) == true) {
+  if (GetNavigationLinkParser()->HasUnownedItemLink(buffer) == true) {
     return;
   }
 
