@@ -101,7 +101,7 @@ void CSimpleStringMgr::Init() {
 // FUNCTION: fn_09081
 void CSimpleStringMgr::LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
                               std::function<void(std::vector<const char*>&, std::any)> insert, std::any context) {
-  g_simpleStringObject.LoadCsv(name, transform, insert, context);
+  g_simpleStringObject.LoadCsv(name, transform, insert, std::move(context));
 }
 
 // OFFSET: 0x007AA4A0
