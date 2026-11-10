@@ -47,5 +47,5 @@ void NMessageQueue::Push(std::uint32_t argumentLow, std::uint32_t argumentHigh, 
 // OFFSET: 0x00736650
 // FUNCTION: fn_07623
 void NMessageQueue::Clear() {
-  std::deque<Record>().swap(this->m_messages);
+  this->m_messages.clear();
 }
