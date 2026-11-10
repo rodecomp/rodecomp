@@ -10,6 +10,14 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+}
+
 // OFFSET: 0x00B6F400
 // FUNCTION: fn_19120
 void CPokJukEffect::SpawnParticles() {
@@ -22,18 +30,18 @@ void CPokJukEffect::SpawnParticles() {
         particle->columnIndex = column;
         particle->rowIndex = row;
         particle->groupIndex = 1;
-        particle->elapsedFrames = -300 - std::max(rand() % 50, 0);
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(rand() % 360, 0));
+        particle->elapsedFrames = -300 - ClampedRandom(50);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
         particle->alpha = 0;
         particle->speedParameter = 2.0f;
-        particle->scale = static_cast<float>(std::max(rand() % 100, 0)) * 0.004f + 0.4f;
-        particle->angleParameter = std::max(rand() % 360, 0);
-        particle->phaseParameter = std::max(rand() % 360, 0);
+        particle->scale = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
+        particle->angleParameter = ClampedRandom(360);
+        particle->phaseParameter = ClampedRandom(360);
         InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
         const int index = column + rowStart;
-        switch (std::max(rand() % 5, 0)) {
+        switch (ClampedRandom(5)) {
         case 0:
           particle->SetColor(70, 70, 255);
           break;
@@ -53,7 +61,7 @@ void CPokJukEffect::SpawnParticles() {
 
         this->states[index] = 0;
         this->beats[index] = 0;
-        this->delays[index] = std::max(rand() % 4, 0) * 20;
+        this->delays[index] = ClampedRandom(4) * 20;
         for (int corner = 0; corner < 4; ++corner) {
           this->trails[index][corner].x = -15.0f;
           this->trails[index][corner].y = 0.0f;
@@ -106,14 +114,20 @@ void CPokJukEffect::OnProcess() {
         vector3d* trail = this->trails[index];
 
         if (age % 3 == 0) {
-          trail[3] = trail[2];
-          trail[2] = trail[1];
-          trail[1] = trail[0];
+          trail[3].x = trail[2].x;
+          trail[3].y = trail[2].y;
+          trail[3].z = trail[2].z;
+          trail[2].x = trail[1].x;
+          trail[2].y = trail[1].y;
+          trail[2].z = trail[1].z;
+          trail[1].x = trail[0].x;
+          trail[1].y = trail[0].y;
+          trail[1].z = trail[0].z;
         }
 
         const int delay = this->delays[index];
 
-        if (age >= delay + 160 && age <= delay + 180) {
+        if (delay + 160 <= age && age <= delay + 180) {
           const char beat = static_cast<char>(age % 20);
 
           if (beat == 15 || beat == 19) {
@@ -146,9 +160,7 @@ void CPokJukEffect::OnProcess() {
           particle->scale = speed * 0.98f;
 
           const int alpha = particle->alpha;
-          const int coin = std::rand() % 2;
-
-          if ((coin < 0 ? 0 : coin) == 0) {
+          if (ClampedRandom(2) == 0) {
             const int faded = alpha - 2;
             particle->alpha = faded < 0 ? 0 : faded;
           } else {
@@ -159,10 +171,8 @@ void CPokJukEffect::OnProcess() {
 
         if (age > 2000) {
           particle->elapsedFrames = 0;
-          const int heading = std::rand() % 360;
-          particle->phaseParameter = heading < 0 ? 0 : heading;
-          const int spread = std::rand() % 100;
-          particle->scale = static_cast<float>(spread < 0 ? 0 : spread) * 0.004f + 0.4f;
+          particle->phaseParameter = ClampedRandom(360);
+          particle->scale = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
           trail[0].x = -15.0f;
           trail[0].y = 0.0f;
           trail[0].z = 0.0f;
