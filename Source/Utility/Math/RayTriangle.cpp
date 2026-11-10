@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00554060
 // FUNCTION: fn_02020
-bool IntersectRayTriangle(const float* ray, const float* first, const float* second, const float* third, float& u, float& v, float& distance) {
+int IntersectRayTriangle(const float* ray, const float* first, const float* second, const float* third, float& u, float& v, float& distance) {
   const float edgeX = second[0] - first[0];
   const float edgeY = second[1] - first[1];
   const float edgeZ = second[2] - first[2];
