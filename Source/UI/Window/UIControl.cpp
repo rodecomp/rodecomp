@@ -1230,7 +1230,7 @@ void CUIStaticImage::Paint() {
   }
 
   const bool transparent = this->transparent != 0;
-  if (this->scale != 100) {
+  if (100 != this->scale) {
     const float factor = static_cast<float>(this->scale) / 100.0f;
     const int height = static_cast<int>(static_cast<float>(res->image.height) * factor);
     const int width = static_cast<int>(static_cast<float>(res->image.width) * factor);
@@ -1242,7 +1242,7 @@ void CUIStaticImage::Paint() {
   } else if (transparent) {
     this->DrawAuxiliary(1, 0, 0, &res->image, true, false);
   } else {
-    this->DrawBitmap(0, 0, &res->image, false);
+    this->DrawBitmap(0, 0, res, false);
   }
 }
 
@@ -1448,14 +1448,14 @@ void CUIImageButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   CBitmapRes* image;
-  if (!this->disabled) {
+  if (this->disabled) {
+    image = this->disabledImage;
+  } else {
     const auto found = this->images.find(this->state);
     if (found == this->images.end()) {
       return;
     }
     image = found->second;
-  } else {
-    image = this->disabledImage;
   }
 
   if (image) {

@@ -160,7 +160,7 @@ public:
     std::uint32_t color, int unused, int lineHeight
   );
   void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);
-  void DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom);
+  void DrawBitmapRegion(int x, int y, CBitmapRes* bitmap, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild);
   void DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool transparent, bool rebuild);
   void DrawAmount(int amount, std::string text, int x, int y);

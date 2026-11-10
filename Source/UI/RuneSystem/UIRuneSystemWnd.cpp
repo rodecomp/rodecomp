@@ -1125,7 +1125,7 @@ void UIGage_Circle::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_fullBitmap.c_str()))), false);
   CBitmapRes* empty = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_emptyBitmap.c_str())));
   this->DrawBitmapRegion(
-    0, 0, &empty->image, true, false, 0, 0, empty->image.width,
+    0, 0, empty, true, false, 0, 0, empty->image.width,
     static_cast<int>((1.0f - static_cast<float>(this->m_value) * 0.00001f) * static_cast<float>(empty->image.height))
   );
 

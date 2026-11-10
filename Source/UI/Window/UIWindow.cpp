@@ -1184,16 +1184,16 @@ void UIWindow::DrawBitmapScaled(int x, int y, int width, int height, const Bitma
 
 // OFFSET: 0x00A7BBB0
 // FUNCTION: fn_16936
-void UIWindow::DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom) {
-  if (!this->geometry.surface || !image) {
+void UIWindow::DrawBitmapRegion(int x, int y, CBitmapRes* bitmap, bool transparent, bool whole, int left, int top, int right, int bottom) {
+  if (!this->geometry.surface || !bitmap) {
     return;
   }
 
-  static_cast<CDCBitmap*>(this->geometry.surface)->SetAlpha(image->alpha != 0);
+  static_cast<CDCBitmap*>(this->geometry.surface)->SetAlpha(bitmap->image.alpha != 0);
   if (whole) {
-    this->geometry.surface->CopyRegion(x, y, 0, 0, image->width, image->height, image->pixels, image->width, image->height, transparent, false);
+    this->geometry.surface->CopyRegion(x, y, 0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, bitmap->image.width, bitmap->image.height, transparent, false);
   } else {
-    this->geometry.surface->CopyRegion(x, y, left, top, right, bottom, image->pixels, image->width, image->height, transparent, false);
+    this->geometry.surface->CopyRegion(x, y, left, top, right, bottom, bitmap->image.pixels, bitmap->image.width, bitmap->image.height, transparent, false);
   }
 }
 

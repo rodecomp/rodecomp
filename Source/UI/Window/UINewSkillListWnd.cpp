@@ -1608,7 +1608,9 @@ void UINewSkillListWnd::DrawSkillTree() {
     this->DrawBitmap(slot % this->m_columns * 68 + 76, slot / this->m_columns * 56 + 44, emptySlot, true);
   }
 
-  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+  std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
+  for (auto it = skills.begin(); it != skills.end(); ++it) {
+    const CSkillInfo& skill = *it;
     const int position = static_cast<int>(skill.treePosition);
     if (position == -1) {
       continue;
@@ -1729,7 +1731,7 @@ void UINewSkillListWnd::DrawSkillTree() {
 
     if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {
       this->DrawBitmap(
-        x + 8, y + 58, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp")))->image, true
+        x + 8, y + 58, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp"))), true
       );
     }
   }
