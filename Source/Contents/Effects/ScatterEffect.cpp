@@ -70,10 +70,7 @@ void CScatterEffect::OnProcess() {
     (*it)->position.y = this->position[1];
     (*it)->position.z = this->position[2];
     if (CSpriteParticle* particle = *it) {
-      particle->alpha -= 3;
-      if (particle->alpha < 0) {
-        particle->alpha = 0;
-      }
+      particle->alpha = std::ranges::max(particle->alpha - 3, 0);
 
       const int angle = particle->phaseParameter;
       particle->velocity.y += particle->frameDelay;
