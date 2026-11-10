@@ -589,19 +589,19 @@ bool CRenewQuestMgr::IsInFilter(int filter, std::string_view icon) {
   case 1:
     for (const auto& entry : this->m_filters) {
       const std::list<std::string>& icons = entry.second.m_icons;
-      if (std::find(icons.begin(), icons.end(), icon) != icons.end()) {
+      if (icons.end() != std::find(icons.begin(), icons.end(), icon)) {
         return false;
       }
     }
     return true;
   default: {
     const auto found = this->m_filters.find(filter);
-    if (found == this->m_filters.end()) {
+    if (this->m_filters.end() == found) {
       return false;
     }
 
     const std::list<std::string>& icons = found->second.m_icons;
-    return std::find(icons.begin(), icons.end(), icon) != icons.end();
+    return icons.end() != std::find(icons.begin(), icons.end(), icon);
   }
   }
 }
@@ -698,7 +698,7 @@ void CRenewQuestMgr::SendQuestStatusRequest() {
 // FUNCTION: fn_05462
 bool CRenewQuestMgr::SetOngoingQuestState(unsigned int id, unsigned char state) {
   const auto found = this->m_ongoingQuests.find(id);
-  if (found != this->m_ongoingQuests.end()) {
+  if (this->m_ongoingQuests.end() != found) {
     found->second.m_state = state;
     return true;
   }
@@ -738,47 +738,45 @@ void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
   for (unsigned int index = 0; index < count; ++index) {
     const RenewQuestOngoingRecord record = *reinterpret_cast<const RenewQuestOngoingRecord*>(buffer + offset);
     offset += sizeof(RenewQuestOngoingRecord);
-    if (this->SetOngoingQuestState(record.questId, static_cast<unsigned char>(record.state))) {
-      continue;
-    }
-
-    RenewQuestOngoingInfo info;
-    info.m_state = static_cast<unsigned char>(record.state);
-    info.m_year = record.year;
-    info.m_month = record.month;
-    info.m_day = record.day;
-    info.m_hour = record.hour;
-    info.m_minute = static_cast<unsigned short>(record.minute);
-    info.m_huntCount = static_cast<char>(record.huntCount);
-    for (int hunt = 0; hunt < record.huntCount; ++hunt) {
-      if (this->m_parameter == 0x33) {
-        RenewQuestHuntRecord huntRecord;
-        memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
-        info.m_huntId[hunt] = huntRecord.huntId;
-        info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
-        info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
-        info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
-        info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
-        info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
-        info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
-        strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, _TRUNCATE);
-        offset += sizeof(RenewQuestHuntRecord);
-      } else {
-        RenewQuestShortHuntRecord huntRecord;
-        memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
-        info.m_huntId[hunt] = huntRecord.huntId;
-        info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
-        info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
-        info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
-        info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
-        info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
-        info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
-        strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, sizeof(huntRecord.name));
-        offset += sizeof(RenewQuestShortHuntRecord);
+    if (!this->SetOngoingQuestState(record.questId, static_cast<unsigned char>(record.state))) {
+      RenewQuestOngoingInfo info;
+      info.m_state = static_cast<unsigned char>(record.state);
+      info.m_year = record.year;
+      info.m_month = record.month;
+      info.m_day = record.day;
+      info.m_hour = record.hour;
+      info.m_minute = static_cast<unsigned short>(record.minute);
+      info.m_huntCount = static_cast<char>(record.huntCount);
+      for (int hunt = 0; hunt < record.huntCount; ++hunt) {
+        if (this->m_parameter == 0x33) {
+          RenewQuestHuntRecord huntRecord;
+          memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
+          info.m_huntId[hunt] = huntRecord.huntId;
+          info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
+          info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
+          info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
+          info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
+          info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
+          info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
+          strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, _TRUNCATE);
+          offset += sizeof(RenewQuestHuntRecord);
+        } else {
+          RenewQuestShortHuntRecord huntRecord;
+          memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
+          info.m_huntId[hunt] = huntRecord.huntId;
+          info.m_huntUnknown01A0[hunt] = huntRecord.monsterCondition;
+          info.m_huntUnknown00D4[hunt] = huntRecord.monsterId;
+          info.m_huntUnknown00E0[hunt] = huntRecord.killCount;
+          info.m_huntUnknown0180[hunt] = huntRecord.killGoal;
+          info.m_huntUnknown01AC[hunt] = huntRecord.minLevel;
+          info.m_huntUnknown01B2[hunt] = huntRecord.maxLevel;
+          strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, sizeof(huntRecord.name));
+          offset += sizeof(RenewQuestShortHuntRecord);
+        }
       }
-    }
 
-    this->AddOngoingQuest(record.questId, info);
+      this->AddOngoingQuest(record.questId, info);
+    }
   }
 
   if (g_windowMgr.questDisplayWnd != nullptr) {
