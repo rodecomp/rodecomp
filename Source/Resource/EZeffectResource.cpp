@@ -98,25 +98,25 @@ void CEZeffectRes::Unload() {
 // OFFSET: 0x0074D850
 // FUNCTION: fn_07897
 CTexture* EZeffectClip::Texture(int index) {
-  if (index >= this->textureCount) {
-    return g_texMgr.Default();
-  }
+  if (index < this->textureCount) {
+    if (!this->textures[index]) {
+      std::string path = std::format("effect\\{}", this->names[index]);
 
-  if (!this->textures[index]) {
-    std::string path = std::format("effect\\{}", this->names[index]);
+      if (path.find_last_of('.') == std::string::npos) {
+        path.append(".bmp", 4);
+      }
 
-    if (path.find_last_of('.') == std::string::npos) {
-      path.append(".bmp", 4);
+      this->textures[index] = g_texMgr.Load(path.c_str(), 1, false, true, false);
+
+      if (this->textures[index]) {
+        this->textures[index]->Retain();
+      }
     }
 
-    this->textures[index] = g_texMgr.Load(path.c_str(), 1, false, true, false);
-
-    if (this->textures[index]) {
-      this->textures[index]->Retain();
-    }
+    return this->textures[index];
   }
 
-  return this->textures[index];
+  return g_texMgr.Default();
 }
 
 // OFFSET: 0x0074D9A0
