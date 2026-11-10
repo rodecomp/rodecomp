@@ -15,6 +15,18 @@
 #include <cstdint>
 #include <cstring>
 
+namespace {
+  // INLINED
+  __declspec(noinline) float Sine(float angle) {
+    return sinf(angle);
+  }
+
+  // INLINED
+  __declspec(noinline) float Cosine(float angle) {
+    return cosf(angle);
+  }
+}
+
 // INLINED
 CGraffiSkill::~CGraffiSkill() {
   delete this->m_canvas;
@@ -137,7 +149,7 @@ void CGraffiSkill::Render(int argument) {
 // OFFSET: 0x00E50D10
 // FUNCTION: fn_24298
 void CGraffiSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int, int, int, int, int, int) {
-  const std::int64_t id = static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message);
+  const std::uint64_t id = static_cast<std::uint64_t>(static_cast<std::uint32_t>(a)) << 32 | static_cast<std::uint32_t>(message);
   if (id == 22) {
     this->skillAid = b;
     return;
