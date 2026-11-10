@@ -69,22 +69,22 @@ std::string EquipmentResourceMgr::GetAccessoryResourceName(int type, int job, in
     headName = g_session.m_humanFemaleHeadNames[head];
   }
 
-  sexName = g_session.GetSexName(sex);
-  accessoryName = g_session.GetAccessoryName(accessory);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  accessoryName = static_cast<const std::string&>(g_session.GetAccessoryName(accessory));
 
   if (accessoryName.size() == 0) {
     return "";
   }
 
   if (g_session.IsDoramJob(job) == true) {
-    path = FormatOwnedString("악세사리\\%s_doram\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]);
+    path = static_cast<const std::string&>(FormatOwnedString("악세사리\\%s_doram\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
 
     if (ResourceMgr::Instance().Exists(path.c_str()) == true) {
       return path;
     }
   }
 
-  path = FormatOwnedString("악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]);
+  path = static_cast<const std::string&>(FormatOwnedString("악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
   return path;
 }
 
@@ -94,7 +94,7 @@ std::string EquipmentResourceMgr::GetNamedAccessoryResourceName(int type, int se
   std::string path = "";
   std::string sexName = "";
 
-  sexName = g_session.GetSexName(sex);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
   path = static_cast<const std::string&>(FormatOwnedString("sprite\\악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
   return path;
 }
@@ -112,7 +112,7 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
   std::string result = "";
   std::string sexName = "";
 
-  sexName = g_session.GetSexName(sex);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
 
   if (g_session.IsDoramJob(job) == true) {
     if (secondJob == true) {
@@ -147,21 +147,21 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
 // OFFSET: 0x00BAA670
 // FUNCTION: fn_19749
 std::string EquipmentResourceMgr::GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob) {
-  std::string result;
-  std::string sexName;
-  std::string jobName;
+  std::string result = "";
+  std::string sexName = "";
+  std::string jobName = "";
 
-  sexName = g_session.GetSexName(sex);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
   const bool secondJob = g_session.IsSecondJob(costumeJob);
-  jobName = g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true));
+  jobName = static_cast<const std::string&>(g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true)));
 
   if (secondJob == true) {
-    result = this->GetBodyRacePrefix(raceJob) +
-             FormatOwnedString("\\몸통\\%s\\costume_%d\\%s_%s_%d.%s", sexName.c_str(), 1, jobName.c_str(), sexName.c_str(), 1,
-                               g_equipmentResourceExtensions[type]);
+    result = static_cast<const std::string&>(this->GetBodyRacePrefix(raceJob)) +
+             static_cast<const std::string&>(FormatOwnedString("\\몸통\\%s\\costume_%d\\%s_%s_%d.%s", sexName.c_str(), 1, jobName.c_str(), sexName.c_str(), 1,
+                               g_equipmentResourceExtensions[type]));
   } else {
-    result = this->GetBodyRacePrefix(raceJob) +
-             FormatOwnedString("\\몸통\\%s\\%s_%s.%s", sexName.c_str(), jobName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]);
+    result = static_cast<const std::string&>(this->GetBodyRacePrefix(raceJob)) +
+             static_cast<const std::string&>(FormatOwnedString("\\몸통\\%s\\%s_%s.%s", sexName.c_str(), jobName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]));
   }
 
   return result;
