@@ -357,7 +357,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
   display += ">";
   std::string before;
   bool removed = false;
-  std::size_t position = std::string::npos;
+  std::size_t position = 0;
   std::size_t oldBytes = 0;
 
   for (auto entry = this->links.begin(); entry != this->links.end();) {
@@ -365,8 +365,8 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
 
     if (window->geometry.id == 438) {
       removed = true;
-      const auto* button = static_cast<const UINaviLinkButton*>(window);
-      const std::string linkName = FormatNavigationLink(button->link, false);
+      UINaviLinkButton* button = static_cast<UINaviLinkButton*>(window);
+      const std::string linkName = FormatNavigationLink(button->Link(), false);
       FitText(*this->geometry.surface, linkName, this->geometry.width / 2);
       std::string old = "<";
       old += linkName;
@@ -4522,7 +4522,7 @@ void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
 
     if (pieces.size() > 1) {
       for (std::size_t piece = 0; piece < pieces.size(); ++piece) {
-        if (piece == 0 && &lines[index] != &pieces[0]) {
+        if (piece == 0) {
           lines[index] = pieces[0];
         }
 
@@ -4532,17 +4532,17 @@ void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
           std::vector<std::string> merged;
           for (std::size_t line = 0; line < lines.size(); ++line) {
             if (lines[line].size() != 0) {
-              merged.emplace_back(lines[line].c_str(), lines[line].size());
+              merged.push_back(lines[line]);
             }
           }
 
           if (pieces[piece].size() != 0) {
-            merged.emplace_back(pieces[piece].c_str(), pieces[piece].size());
+            merged.push_back(pieces[piece]);
           }
 
           for (std::size_t line = index + 1; line < lines.size(); ++line) {
             if (lines[line].size() != 0) {
-              merged.emplace_back(lines[line].c_str(), lines[line].size());
+              merged.push_back(lines[line]);
             }
           }
 
@@ -4557,39 +4557,35 @@ void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
       }
     }
 
-    if (index >= lines.size()) {
-      continue;
-    }
+    if (index < lines.size()) {
+      remaining = lines[index];
+      std::size_t position = 0;
+      std::size_t found = remaining.find(close);
+      while (found != std::string::npos) {
+        ++found;
+        position += found;
+        remaining = remaining.substr(found);
+        found = remaining.find(close);
+      }
 
-    remaining = lines[index];
-    std::size_t position = 0;
-    std::size_t found = remaining.find(close);
-    while (found != std::string::npos) {
-      ++found;
-      position += found;
-      remaining = remaining.substr(found);
-      found = remaining.find(close);
-    }
+      found = remaining.find(open);
+      if (found != std::string::npos) {
+        position += found;
+        remaining = remaining.substr(found);
+        std::string tail = remaining.substr(1);
+        found = tail.find(open);
+        while (found != std::string::npos) {
+          position += found;
+          remaining = tail;
+          tail = remaining.substr(1);
+          found = tail.find(open);
+        }
 
-    found = remaining.find(open);
-    if (found == std::string::npos) {
-      continue;
-    }
-
-    position += found;
-    remaining = remaining.substr(found);
-    std::string tail = remaining.substr(1);
-    found = tail.find(open);
-    while (found != std::string::npos) {
-      position += found;
-      remaining = tail;
-      tail = remaining.substr(1);
-      found = tail.find(open);
-    }
-
-    if (index + 1 < lines.size() && lines[index + 1].find(close) != std::string::npos) {
-      lines[index + 1].swap(remaining.append(lines[index + 1]));
-      lines[index] = lines[index].substr(0, position);
+        if (index + 1 < lines.size() && lines[index + 1].find(close) != std::string::npos) {
+          lines[index + 1].swap(remaining.append(lines[index + 1]));
+          lines[index] = lines[index].substr(0, position);
+        }
+      }
     }
   }
 }
