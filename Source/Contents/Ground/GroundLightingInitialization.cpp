@@ -9,12 +9,11 @@ void GroundGeometry::InitializeLighting() {
   }
 
   // STATIC: 0x01348128
-  constexpr int offsets[5][2] = {{0, 0}, {0, -1}, {0, 1}, {1, 0}, {-1, 0}};
-  const int columns = 2 * this->width;
-  const int rows = 2 * this->height;
+  // GLOBAL: gl_25590
+  static constexpr int offsets[5][2] = {{0, 0}, {0, -1}, {0, 1}, {1, 0}, {-1, 0}};
 
-  for (int row = 0; row < rows; ++row) {
-    for (int column = 0; column < columns; ++column) {
+  for (int row = 0; row < 2 * this->height; ++row) {
+    for (int column = 0; column < 2 * this->width; ++column) {
       float average = 0.0f;
       const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
@@ -30,7 +29,10 @@ void GroundGeometry::InitializeLighting() {
       float blue = 1.0f;
 
       if (average >= minimum - 2.5f) {
-        unsigned sums[4]{};
+        int alphaSum = 0;
+        int redSum = 0;
+        int greenSum = 0;
+        int blueSum = 0;
 
         for (const auto& offset : offsets) {
           unsigned char alpha;
@@ -38,16 +40,16 @@ void GroundGeometry::InitializeLighting() {
           unsigned char sampleGreen;
           unsigned char sampleBlue;
           this->LightmapSample(column + offset[0], row + offset[1], alpha, sampleRed, sampleGreen, sampleBlue);
-          sums[0] += alpha;
-          sums[1] += sampleRed;
-          sums[2] += sampleGreen;
-          sums[3] += sampleBlue;
+          alphaSum += alpha;
+          redSum += sampleRed;
+          greenSum += sampleGreen;
+          blueSum += sampleBlue;
         }
 
-        const float alpha = (static_cast<float>(sums[0]) / 5.0f) / 255.0f;
-        red = ((static_cast<float>(sums[1]) / 5.0f) * 0.0078125f) + alpha;
-        green = ((static_cast<float>(sums[2]) / 5.0f) * 0.0078125f) + alpha;
-        blue = ((static_cast<float>(sums[3]) / 5.0f) * 0.0078125f) + alpha;
+        const float alpha = (static_cast<float>(alphaSum) / 5.0f) / 255.0f;
+        red = ((static_cast<float>(redSum) / 5.0f) * 0.0078125f) + alpha;
+        green = ((static_cast<float>(greenSum) / 5.0f) * 0.0078125f) + alpha;
+        blue = ((static_cast<float>(blueSum) / 5.0f) * 0.0078125f) + alpha;
         const float first = green > red ? green : red;
         const float largest = blue > first ? blue : first;
 
