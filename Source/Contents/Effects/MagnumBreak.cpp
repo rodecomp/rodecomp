@@ -139,40 +139,47 @@ void CMagnumBreak::Render() {
     const float sin0 = g_sinTable[angle];
     const float cos1 = g_cosTable[angle + 36];
     const float sin1 = g_sinTable[angle + 36];
-    ring->vertices[0].z = 0.0f;
-    ring->vertices[1].z = 0.0f;
-    ring->vertices[0].x = cos0 * inner;
-    ring->vertices[2].z = 0.0f;
-    ring->vertices[0].y = sin0 * inner;
-    ring->vertices[3].z = 0.0f;
-    ring->vertices[1].x = cos1 * inner;
-    ring->vertices[1].y = sin1 * inner;
-    ring->vertices[2].x = cos0 * outer;
-    ring->vertices[2].y = sin0 * outer;
-    ring->vertices[3].x = cos1 * outer;
-    ring->vertices[3].y = sin1 * outer;
+    const vector3d innerStart = {cos0 * inner, sin0 * inner, 0.0f};
+    ring->vertices[0].x = innerStart.x;
+    ring->vertices[0].y = innerStart.y;
+    ring->vertices[0].z = innerStart.z;
+    const vector3d innerEnd = {cos1 * inner, sin1 * inner, 0.0f};
+    ring->vertices[1].x = innerEnd.x;
+    ring->vertices[1].y = innerEnd.y;
+    ring->vertices[1].z = innerEnd.z;
+    const vector3d outerStart = {cos0 * outer, sin0 * outer, 0.0f};
+    ring->vertices[2].x = outerStart.x;
+    ring->vertices[2].y = outerStart.y;
+    ring->vertices[2].z = outerStart.z;
+    const vector3d outerEnd = {cos1 * outer, sin1 * outer, 0.0f};
+    ring->vertices[3].x = outerEnd.x;
+    ring->vertices[3].y = outerEnd.y;
+    ring->vertices[3].z = outerEnd.z;
+    const float column = static_cast<float>(ring->columnIndex % 4);
     ParticleQuad quad;
     quad.billboard = false;
-    quad.top = 1.0f;
-    quad.bottom = 0.0f;
-    quad.left = static_cast<float>(ring->columnIndex % 4) * 0.25f;
-    quad.right = quad.left + 0.25f;
     quad.unused = false;
     quad.depth = true;
+    quad.top = 1.0f;
+    quad.bottom = 0.0f;
+    quad.left = column * 0.25f;
+    quad.right = quad.left + 0.25f;
     ring->Render(quad);
   }
 
   for (std::vector<CParticle*>::iterator it = this->waves.begin(); it != this->waves.end(); ++it) {
     CParticle* wave = *it;
     CMagnumBreak::UpdateWave(wave);
+    const float column = static_cast<float>(wave->columnIndex / 36);
+    const float row = static_cast<float>(static_cast<int>((static_cast<float>(wave->rowIndex) + 90.0f) / 36.0f));
     ParticleQuad quad;
     quad.billboard = false;
-    quad.left = static_cast<float>(wave->columnIndex / 36) * 0.1f;
-    quad.top = static_cast<float>(static_cast<int>((static_cast<float>(wave->rowIndex) + 90.0f) / 36.0f)) * 0.2f;
-    quad.right = quad.left + 0.1f;
-    quad.bottom = quad.top + 0.2f;
     quad.unused = false;
     quad.depth = true;
+    quad.left = column * 0.1f;
+    quad.top = row * 0.2f;
+    quad.right = quad.left + 0.1f;
+    quad.bottom = quad.top + 0.2f;
     wave->Render(quad);
   }
 }
