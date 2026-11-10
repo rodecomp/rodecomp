@@ -23,16 +23,16 @@ CSteal::~CSteal() {
 void CSteal::SpawnParticles() {
   for (int i = 0; i < 10; ++i) {
     const int life = this->effectLifetime;
-    const int yaw = std::max(rand() % 360, 0);
-    const int pitch = std::max(rand() % 100, 0) - 50;
+    const int yaw = std::max(0, rand() % 360);
+    const int pitch = std::max(0, rand() % 100) - 50;
 
-    const float frameDelay = static_cast<float>(std::max(rand() % 50, 0) + 50) / 100.0f;
+    const float frameDelay = static_cast<float>(std::max(0, rand() % 50) + 50) / 100.0f;
     const float shrink = -(frameDelay / static_cast<float>(life)) * g_depthAverageHalf;
 
-    const float lift = -static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    const float lift = -static_cast<float>(std::max(0, rand() % 90) + 60) / 100.0f;
     const float liftStep = -(lift / static_cast<float>(life)) * 2.0f;
 
-    const float scale = static_cast<float>(std::max(rand() % 100, 0) + 100) / 100.0f;
+    const float scale = static_cast<float>(std::max(0, rand() % 100) + 100) / 100.0f;
     const float scaleStep = -(scale / static_cast<float>(life));
     const int fadeStart = life - life / 3;
 
@@ -40,7 +40,7 @@ void CSteal::SpawnParticles() {
     rotation.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(yaw))));
     rotation.AppendXRotation(GetRadian(static_cast<int>(static_cast<float>(pitch))));
 
-    const float distance = static_cast<float>(std::max(rand() % 4, 0) + 4);
+    const float distance = static_cast<float>(std::max(0, rand() % 4) + 4);
 
     vector3d& offset = this->offsets[i];
     offset.x = 0.0f;
@@ -111,7 +111,9 @@ void CSteal::OnProcess() {
     float* params = &particle->animationParameter;
     const float scaleStep = params[5];
     const int index = particle->columnIndex;
-    const vector3d velocity = particle->velocity;
+    const float velocityX = particle->velocity.x;
+    const float velocityY = particle->velocity.y;
+    const float velocityZ = particle->velocity.z;
     float lift = params[3] + params[4];
     const float distance = std::max(0.0f, params[0] + particle->frameDelay);
 
@@ -119,13 +121,13 @@ void CSteal::OnProcess() {
     rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
 
     vector3d& offset = this->offsets[index];
-    offset.y = lift + offset.y;
     offset.x = 0.0f * rotation.values[3] + 0.0f * rotation.values[0] + distance * rotation.values[6] + rotation.values[9] + offset.x;
+    offset.y = lift + offset.y;
     offset.z = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + offset.z;
 
-    const float x = velocity.x + origin.x + offset.x;
-    const float y = velocity.y + origin.y + offset.y;
-    const float z = velocity.z + origin.z + offset.z;
+    const float x = velocityX + origin.x + offset.x;
+    const float y = velocityY + origin.y + offset.y;
+    const float z = velocityZ + origin.z + offset.z;
     const float newScale = scaleStep + scale;
 
     if (lift > 0.0f) {
