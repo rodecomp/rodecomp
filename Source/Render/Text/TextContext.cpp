@@ -14,7 +14,7 @@
 namespace {
   // STATIC: 0x01311F30
   // GLOBAL: gl_21912
-  constexpr unsigned charsets[20] = {HANGUL_CHARSET,  ANSI_CHARSET, SHIFTJIS_CHARSET, GB2312_CHARSET,  CHINESEBIG5_CHARSET, THAI_CHARSET,
+  unsigned charsets[20] = {HANGUL_CHARSET,  ANSI_CHARSET, SHIFTJIS_CHARSET, GB2312_CHARSET,  CHINESEBIG5_CHARSET, THAI_CHARSET,
                                      TURKISH_CHARSET, ANSI_CHARSET, ANSI_CHARSET,     RUSSIAN_CHARSET, VIETNAMESE_CHARSET,  ARABIC_CHARSET};
 
   // GLOBAL: gl_24682
@@ -62,8 +62,9 @@ TextContext::~TextContext() {
 // OFFSET: 0x0054FFE0
 // FUNCTION: fn_01966
 void TextContext::SetFont(int family, int height, unsigned char bold, unsigned char italic) {
+  const signed char language = g_language;
   if (family == 0) {
-    switch (g_language) {
+    switch (language) {
     case 1:
       if (g_serviceType == 6) {
         family = 8;
@@ -120,7 +121,7 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
 
   this->m_family = family;
   this->m_height = height;
-  this->m_charset = g_language == 0 && family >= 20 ? charsets[0] : charsets[family];
+  this->m_charset = language == 0 && family >= 20 ? charsets[0] : charsets[family];
   this->m_bold = bold;
   this->m_italic = italic;
 }
@@ -313,37 +314,36 @@ void TextContext::DrawPair(int x, int y, const char* text, int bytes) {
 // OFFSET: 0x00550220
 // FUNCTION: fn_01971
 void TextContext::Draw(int x, int y, const char* text, int bytes) {
-  if (!g_inlineCharset) {
+  if (g_inlineCharset) {
+    const char* current = text;
+    int scanned = 0, remaining = bytes;
+
+    while (scanned < bytes) {
+      scanned = (scanned + Marker(text + scanned, remaining));
+      if (scanned >= bytes) {
+        this->DrawPair(x, y, current, scanned);
+        return;
+      }
+
+      if (remaining <= 3) {
+        return;
+      }
+
+      const int segment = (Marker(text + scanned + 3, remaining - 3) + 3);
+      this->DrawPair(x, y, current, segment);
+      const int first = Marker(current, segment);
+      int width = this->MeasurePart(current, first, this->m_charset).cx;
+
+      if (first < segment) {
+        width = (width + this->MeasurePart(current + first + 3, segment - first - 3, InlineCharset(current + first)).cx);
+      }
+
+      current += segment;
+      scanned = (scanned + segment);
+      x = (x + width);
+      remaining -= segment;
+    }
+  } else {
     this->DrawPair(x, y, text, bytes);
-    return;
-  }
-
-  const char* current = text;
-  int scanned = 0, remaining = bytes;
-
-  while (scanned < bytes) {
-    scanned = (scanned + Marker(text + scanned, remaining));
-    if (scanned >= bytes) {
-      this->DrawPair(x, y, current, scanned);
-      return;
-    }
-
-    if (remaining <= 3) {
-      return;
-    }
-
-    const int segment = (Marker(text + scanned + 3, remaining - 3) + 3);
-    this->DrawPair(x, y, current, segment);
-    const int first = Marker(current, segment);
-    int width = this->MeasurePart(current, first, this->m_charset).cx;
-
-    if (first < segment) {
-      width = (width + this->MeasurePart(current + first + 3, segment - first - 3, InlineCharset(current + first)).cx);
-    }
-
-    current += segment;
-    scanned = (scanned + segment);
-    x = (x + width);
-    remaining -= segment;
   }
 }
