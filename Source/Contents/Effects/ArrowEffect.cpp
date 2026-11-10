@@ -109,86 +109,89 @@ __declspec(safebuffers) bool CArrowEffect::OnProcess() {
 // OFFSET: 0x00E50500
 // FUNCTION: fn_24295
 void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  const std::int64_t id = static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message);
-  if (id == 14) {
+  if (message == 14 && a == 0) {
     const char* sprite;
     const char* action;
-    switch (static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h)) {
+    switch (static_cast<std::int64_t>(static_cast<std::uint64_t>(static_cast<std::uint32_t>(i)) << 32 | static_cast<std::uint32_t>(h))) {
+      case JT_PARASITE:
+      case JT_G_PARASITE:
+        action = "몬스터\\PARASITE_BULLET.act";
+        sprite = "몬스터\\PARASITE_BULLET.spr";
+        break;
+
       case JT_LIVE_PEACH_TREE:
       case JT_G_LIVE_PEACH_TREE:
-        sprite = "몬스터\\PEACH_TREE_BULLET.spr";
         action = "몬스터\\PEACH_TREE_BULLET.act";
+        sprite = "몬스터\\PEACH_TREE_BULLET.spr";
         break;
 
       case JT_EVIL_CLOUD_HERMIT:
       case JT_G_EVIL_CLOUD_HERMIT:
-        sprite = "몬스터\\GINSENG_BULLET.spr";
         action = "몬스터\\GINSENG_BULLET.act";
+        sprite = "몬스터\\GINSENG_BULLET.spr";
         break;
 
       case JT_STONE_SHOOTER:
       case JT_ILL_STONE_SHOOTER:
-        sprite = "몬스터\\STONE_SHOOTER_BULLET.spr";
         action = "몬스터\\STONE_SHOOTER_BULLET.act";
+        sprite = "몬스터\\STONE_SHOOTER_BULLET.spr";
         break;
 
       case JT_WOOTAN_SHOOTER:
       case JT_ILL_WOOTAN_SHOOTER:
       case JT_G_ILL_WOOTAN_SHOOTER:
-        sprite = "몬스터\\WOOTAN_SHOOTER_BULLET.spr";
         action = "몬스터\\WOOTAN_SHOOTER_BULLET.act";
-        break;
-
-      case JT_PARASITE:
-      case JT_G_PARASITE:
-        sprite = "몬스터\\PARASITE_BULLET.spr";
-        action = "몬스터\\PARASITE_BULLET.act";
+        sprite = "몬스터\\WOOTAN_SHOOTER_BULLET.spr";
         break;
 
       case JT_POTON_CANON:
-        sprite = "몬스터\\CANON_BULLET.spr";
         action = "몬스터\\CANON_BULLET.act";
+        sprite = "몬스터\\CANON_BULLET.spr";
         break;
 
       case JT_POTON_CANON_1:
-        sprite = "몬스터\\CANON_BULLET_1.spr";
         action = "몬스터\\CANON_BULLET_1.act";
+        sprite = "몬스터\\CANON_BULLET_1.spr";
         break;
 
       case JT_POTON_CANON_2:
-        sprite = "몬스터\\CANON_BULLET_2.spr";
         action = "몬스터\\CANON_BULLET_2.act";
+        sprite = "몬스터\\CANON_BULLET_2.spr";
         break;
 
       case JT_POTON_CANON_3:
-        sprite = "몬스터\\CANON_BULLET_3.spr";
         action = "몬스터\\CANON_BULLET_3.act";
+        sprite = "몬스터\\CANON_BULLET_3.spr";
         break;
 
       case JT_LADY_TANEE:
-      case JT_PHYLLA:
-        sprite = "몬스터\\LADY_TANEE_BULLET.spr";
         action = "몬스터\\LADY_TANEE_BULLET.act";
+        sprite = "몬스터\\LADY_TANEE_BULLET.spr";
         break;
 
       case JT_RAGGED_ZOMBIE:
-        sprite = "몬스터\\RAGGED_ZOMBIE_BULLET.spr";
         action = "몬스터\\RAGGED_ZOMBIE_BULLET.act";
+        sprite = "몬스터\\RAGGED_ZOMBIE_BULLET.spr";
+        break;
+
+      case JT_PHYLLA:
+        action = "몬스터\\LADY_TANEE_BULLET.act";
+        sprite = "몬스터\\LADY_TANEE_BULLET.spr";
         break;
 
       case JT_PETAL:
-        sprite = "몬스터\\PETAL_BULLET.spr";
         action = "몬스터\\PETAL_BULLET.act";
+        sprite = "몬스터\\PETAL_BULLET.spr";
         break;
 
       case JT_MG_CORRUPTION_ROOT:
-        sprite = "몬스터\\MG_CORRUPTION_ROOT_BULLET.spr";
         action = "몬스터\\MG_CORRUPTION_ROOT_BULLET.act";
+        sprite = "몬스터\\MG_CORRUPTION_ROOT_BULLET.spr";
         break;
 
       case JT_E_MD_NYAILO:
-        sprite = "몬스터\\e_nyailo_ammo.spr";
         action = "몬스터\\e_nyailo_ammo.act";
+        sprite = "몬스터\\e_nyailo_ammo.spr";
         break;
 
       case JT_TRIBE_DORAM:
@@ -198,51 +201,58 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
       case JT_DO_CART_SUMMONER_B:
       case JT_SPIRIT_HANDLER:
       case JT_SPIRIT_HANDLER_RIDING:
-        sprite = "몬스터\\su_soulattack.spr";
         action = "몬스터\\su_soulattack.act";
+        sprite = "몬스터\\su_soulattack.spr";
         break;
 
       case JT_MD_C_CORRUPTION_ROOT:
-        sprite = "몬스터\\mg_corruption_root_bullet.spr";
         action = "몬스터\\mg_corruption_root_bullet.act";
+        sprite = "몬스터\\mg_corruption_root_bullet.spr";
         break;
 
       case JT_SUMMON_HELLTREE:
-        sprite = "몬스터\\SUMMON_HELLTREE_FRUIT.spr";
         action = "몬스터\\SUMMON_HELLTREE_FRUIT.act";
+        sprite = "몬스터\\SUMMON_HELLTREE_FRUIT.spr";
         break;
 
       case JT_EP19_LIMACINA:
       case JT_G_EP19_LIMACINA:
-        sprite = "몬스터\\EP19_LIMACINA_BULLET.spr";
         action = "몬스터\\EP19_LIMACINA_BULLET.act";
+        sprite = "몬스터\\EP19_LIMACINA_BULLET.spr";
         break;
 
       case JT_EP20_MELIBE_ICESLUG:
-        sprite = "몬스터\\phylla_bullet.spr";
         action = "몬스터\\phylla_bullet.act";
+        sprite = "몬스터\\phylla_bullet.spr";
         break;
 
       case JT_EP20_RGAN_WARLOCK:
       case JT_G_EP20_RGAN_WARLOCK:
-        sprite = "몬스터\\canon_bullet_3.spr";
         action = "몬스터\\canon_bullet_3.act";
+        sprite = "몬스터\\canon_bullet_3.spr";
         break;
 
       case JT_MD_PRI_RIGEL_AC:
       case JT_MD_PRI_RIGEL_ACS:
-        sprite = "몬스터\\RIGEL_BULLET.spr";
         action = "몬스터\\RIGEL_BULLET.act";
+        sprite = "몬스터\\RIGEL_BULLET.spr";
+        break;
+
+      case JT_RAYDRIC_ARCHER_H:
+      case JT_MD_C_RAYDRIC_ARCHER:
+      case JT_MD_C_RAY_ARCHER_G:
+        action = "몬스터\\skel_archer_arrow.act";
+        sprite = "몬스터\\skel_archer_arrow.spr";
         break;
 
       default:
-        sprite = "몬스터\\skel_archer_arrow.spr";
         action = "몬스터\\skel_archer_arrow.act";
+        sprite = "몬스터\\skel_archer_arrow.spr";
         break;
     }
 
-    this->SetSpriteName(ResourceMgr::Instance(), sprite);
-    this->SetActionName(ResourceMgr::Instance(), action);
+    this->SetSpriteName(sprite);
+    this->SetActionName(action);
     this->speedScale = 1.0f;
     this->render.position = *reinterpret_cast<const vector3d*>(b);
     this->render.position.y -= 10.0f;
@@ -250,9 +260,10 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     this->targetAid = d;
     this->render.visible = 0;
     this->GetTargetPos(d, this->targetPos);
-  } else if (id == 64) {
-    this->SetSpriteName(ResourceMgr::Instance(), "몬스터\\skel_archer_arrow.spr");
-    this->SetActionName(ResourceMgr::Instance(), "몬스터\\skel_archer_arrow.act");
+    this->render.motionStartTime = timeGetTime();
+  } else if (message == 64 && a == 0) {
+    this->SetSpriteName("몬스터\\skel_archer_arrow.spr");
+    this->SetActionName("몬스터\\skel_archer_arrow.act");
     this->speedScale = 1.0f;
     this->render.position = *reinterpret_cast<const vector3d*>(b);
     this->render.position.y -= 10.0f;
@@ -261,13 +272,13 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     this->targetPos.y -= 10.0f;
     this->render.visible = 0;
     this->targetAid = 0;
+    this->render.motionStartTime = timeGetTime();
   } else {
     this->CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
-  this->render.motionStartTime = timeGetTime();
-  if ((static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f)) != 0) {
+  if ((f | g) != 0) {
     this->startFrame = *reinterpret_cast<const float*>(f);
   }
 }
