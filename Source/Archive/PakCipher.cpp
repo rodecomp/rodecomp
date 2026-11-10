@@ -75,6 +75,11 @@ namespace myGPack {
       2,  11, 1,  4,  14, 1,  7,  9,  4,  12, 10, 14, 8,  2,  13, 0,  15, 6,  12, 10, 9,  13, 0,  15, 3,  3,  5,  5,  6,  8,  11,
     };
 
+    union Block64 {
+      std::uint8_t bytes[8];
+      std::uint32_t words[2];
+    };
+
     // INLINED
     std::uint8_t SubstituteLastByte(std::uint8_t value) {
       switch (value) {
@@ -204,53 +209,51 @@ namespace myGPack {
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
 
-    std::uint32_t right;
-    std::memcpy(&right, output + 4, sizeof(right));
-
     for (std::uint8_t round = 0; round < rounds; ++round) {
-      std::uint8_t key[8];
-      std::memcpy(key, roundKeys[15 - round], sizeof(key));
+      Block64 key;
+      std::memcpy(&key, roundKeys[15 - round], sizeof(key));
 
-      std::uint8_t expanded[8] = {};
+      Block64 permuted;
+      permuted.words[0] = permuted.words[1] = 0;
 
-      for (unsigned i = 0; i < 48; ++i) {
+      for (std::uint8_t i = 0; i < 48; ++i) {
         const std::uint8_t bit = s_expansion[i] + 31;
         if (output[bit >> 3] & s_bitMasks[bit & 7]) {
-          expanded[i / 6] |= s_bitMasks[i % 6];
+          permuted.bytes[i / 6] |= s_bitMasks[i % 6];
         }
       }
 
-      for (unsigned i = 0; i < 8; ++i) {
-        expanded[i] ^= key[i];
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        permuted.bytes[i] ^= key.bytes[i];
       }
 
-      std::uint8_t substituted[8] = {};
+      Block64 substituted;
+      substituted.words[0] = substituted.words[1] = 0;
 
-      for (unsigned i = 0; i < 8; ++i) {
-        const std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
-        if (i & 1) {
-          substituted[i >> 1] += value;
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        if (i % 2 == 0) {
+          substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
         } else {
-          substituted[i >> 1] = static_cast<std::uint8_t>(value << 4);
+          substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
         }
       }
 
-      std::uint8_t transformed[8] = {};
+      permuted.words[0] = permuted.words[1] = 0;
 
-      for (unsigned i = 0; i < 32; ++i) {
+      for (std::uint8_t i = 0; i < 32; ++i) {
         const std::uint8_t bit = s_roundPermutation[i] - 1;
-        if (substituted[bit >> 3] & s_bitMasks[bit & 7]) {
-          transformed[i >> 3] |= s_bitMasks[i & 7];
+        if (substituted.bytes[bit >> 3] & s_bitMasks[bit & 7]) {
+          permuted.bytes[i >> 3] |= s_bitMasks[i & 7];
         }
       }
 
       std::uint32_t left;
-      std::uint32_t transformedWord;
+      std::uint32_t right;
       std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&transformedWord, transformed, sizeof(transformedWord));
+      std::memcpy(&right, output + 4, sizeof(right));
       std::memcpy(output, &right, sizeof(right));
-      right = left ^ transformedWord;
-      std::memcpy(output + 4, &right, sizeof(right));
+      left ^= permuted.words[0];
+      std::memcpy(output + 4, &left, sizeof(left));
     }
 
     std::uint32_t low;
@@ -332,14 +335,12 @@ namespace myGPack {
   int PakCipher::DecodePrefix(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength) const {
     *outputLength = length;
     std::memcpy(output, input, static_cast<std::uint32_t>(length));
-    int offset = 0;
-    int block = 0;
 
-    do {
+    for (int block = 0; block < 20; ++block) {
       std::uint8_t blockInput[8];
       std::uint8_t decoded[8];
       for (int i = 0; i < 8; ++i) {
-        blockInput[i] = input[offset + i];
+        blockInput[i] = input[8 * block + i];
       }
       std::uint32_t low;
       std::uint32_t high;
@@ -347,11 +348,12 @@ namespace myGPack {
       std::memcpy(&high, blockInput + 4, sizeof(high));
       this->DecodeBlock(1, this->m_roundKeys, low, high, decoded);
       for (int i = 0; i < 8; ++i) {
-        output[offset + i] = decoded[i];
+        output[8 * block + i] = decoded[i];
       }
-      offset += 8;
-      ++block;
-    } while (offset < length && block < 20);
+      if (8 * (block + 1) >= length) {
+        break;
+      }
+    }
 
     return 1;
   }
@@ -403,61 +405,59 @@ namespace myGPack {
     std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
     InitialPermutation(output);
 
-    std::uint32_t right;
-    std::memcpy(&right, output + 4, sizeof(right));
-
     for (std::uint8_t round = 0; round < rounds; ++round) {
-      std::uint8_t key[8];
-      std::memcpy(key, roundKeys[round], sizeof(key));
+      Block64 key;
+      std::memcpy(&key, roundKeys[round], sizeof(key));
 
-      std::uint8_t expanded[8] = {};
+      Block64 permuted;
+      permuted.words[0] = permuted.words[1] = 0;
 
-      for (unsigned i = 0; i < 48; ++i) {
+      for (std::uint8_t i = 0; i < 48; ++i) {
         const std::uint8_t bit = s_expansion[i] + 31;
         if (output[bit >> 3] & s_bitMasks[bit & 7]) {
-          expanded[i / 6] |= s_bitMasks[i % 6];
+          permuted.bytes[i / 6] |= s_bitMasks[i % 6];
         }
       }
 
-      for (unsigned i = 0; i < 8; ++i) {
-        expanded[i] ^= key[i];
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        permuted.bytes[i] ^= key.bytes[i];
       }
 
-      std::uint8_t substituted[8] = {};
+      Block64 substituted;
+      substituted.words[0] = substituted.words[1] = 0;
 
-      for (unsigned i = 0; i < 8; ++i) {
-        const std::uint8_t value = s_substitution[64 * i + (expanded[i] >> 2)];
-        if (i & 1) {
-          substituted[i >> 1] += value;
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        if (i % 2 == 0) {
+          substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
         } else {
-          substituted[i >> 1] = static_cast<std::uint8_t>(value << 4);
+          substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
         }
       }
 
-      std::uint8_t transformed[8] = {};
+      permuted.words[0] = permuted.words[1] = 0;
 
-      for (unsigned i = 0; i < 32; ++i) {
+      for (std::uint8_t i = 0; i < 32; ++i) {
         const std::uint8_t bit = s_roundPermutation[i] - 1;
-        if (substituted[bit >> 3] & s_bitMasks[bit & 7]) {
-          transformed[i >> 3] |= s_bitMasks[i & 7];
+        if (substituted.bytes[bit >> 3] & s_bitMasks[bit & 7]) {
+          permuted.bytes[i >> 3] |= s_bitMasks[i & 7];
         }
       }
 
       std::uint32_t left;
-      std::uint32_t transformedWord;
+      std::uint32_t right;
       std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&transformedWord, transformed, sizeof(transformedWord));
+      std::memcpy(&right, output + 4, sizeof(right));
       std::memcpy(output, &right, sizeof(right));
-      right = left ^ transformedWord;
-      std::memcpy(output + 4, &right, sizeof(right));
+      left ^= permuted.words[0];
+      std::memcpy(output + 4, &left, sizeof(left));
     }
 
     std::uint32_t low;
     std::uint32_t high;
     std::memcpy(&low, output, sizeof(low));
     std::memcpy(&high, output + 4, sizeof(high));
-    std::memcpy(output + 4, &low, sizeof(low));
     std::memcpy(output, &high, sizeof(high));
+    std::memcpy(output + 4, &low, sizeof(low));
 
     FinalPermutation(output);
     return 1;
