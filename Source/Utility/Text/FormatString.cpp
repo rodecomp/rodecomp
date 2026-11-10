@@ -98,7 +98,7 @@ std::string IntToString(int value, unsigned int digits) {
   std::sprintf(s_numberBuffer, "%.10d", value);
   std::string text(s_numberBuffer);
   if (text.size() > digits) {
-    text.erase(0, text.size() - digits);
+    text.erase(text.begin(), text.end() - digits);
   }
 
   return text;
