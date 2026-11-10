@@ -61,7 +61,7 @@ public:
   /* 0098 */ int m_margin;
   /* 009C */ int m_topMargin;
   /* 00A0 */ TagTextViewer::TextFont m_font;
-  /* 00AC */ unsigned char m_outlined;
+  /* 00AC */ bool m_outlined;
   /* 00B0 */ std::uint32_t m_outlineColor;
   /* 00B4 */ unsigned char m_horizontalAlign;
   /* 00B5 */ unsigned char m_verticalAlign;

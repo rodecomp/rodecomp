@@ -11,7 +11,7 @@
 // OFFSET: 0x0083E1B0
 // FUNCTION: fn_10515
 UITagTextViewer::UITagTextViewer()
-    : UIScroll(), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(0),
+    : UIScroll(), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(false),
       m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0) {
   m_offsetY = m_topMargin;
 }
@@ -252,7 +252,7 @@ void UITagTextViewer::AddText(const std::string& text) {
 
   const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
   CCreateLineInfo info(
-    this, text.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined != 0, this->m_outlineColor,
+    this, text.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined, this->m_outlineColor,
     false, 0xFFFFFF, this->m_horizontalAlign
   );
   this->m_cursorY += info.m_height;
@@ -302,7 +302,7 @@ void UITagTextViewer::Layout() {
 
   const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
   CCreateLineInfo info(
-    this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined != 0, this->m_outlineColor,
+    this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined, this->m_outlineColor,
     false, 0xFFFFFF, this->m_horizontalAlign
   );
   const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
