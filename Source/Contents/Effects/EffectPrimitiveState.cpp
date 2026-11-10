@@ -72,7 +72,9 @@ void CEffectPrim::Initialize(CRagEffect& master, int type, float x, float y, flo
   this->state.deltaPos.x = x + this->state.deltaPos.x;
   this->state.deltaPos.y = y + this->state.deltaPos.y;
   this->state.deltaPos.z = z + this->state.deltaPos.z;
-  this->state.orgPos = {master.render.position.x, master.render.position.y, master.render.position.z};
+  this->state.orgPos.x = master.render.position.x;
+  this->state.orgPos.y = master.render.position.y;
+  this->state.orgPos.z = master.render.position.z;
   this->render.position.x = this->state.orgPos.x;
   this->render.position.y = this->state.orgPos.y;
   this->render.position.z = this->state.orgPos.z;
