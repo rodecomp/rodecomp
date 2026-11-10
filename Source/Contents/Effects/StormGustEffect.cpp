@@ -39,22 +39,21 @@ void CStormGustEffect::Open() {
     particle->SetTexture("effect\\ice.tga");
     particle->alpha = 250;
 
-    const int speed = std::max(rand() % 25, 0) + 3;
-    const float angle = static_cast<float>(std::max(rand() % 360, 0));
-    const float cosine = ClientCosine(static_cast<int>(angle));
-    const float velocityZ = cosine * -static_cast<float>(speed);
+    const float speed = static_cast<float>(std::max(0, rand() % 25) + 3);
+    const float angle = static_cast<float>(std::max(0, rand() % 360));
+    const float velocityZ = ClientCosine(static_cast<int>(angle)) * -speed;
     const float velocityX = ClientSine(static_cast<int>(angle)) * speed;
     particle->offsetX = velocityX;
     particle->offsetY = 20.0f;
     particle->offsetZ = velocityZ;
 
     particle->speedParameter = 1.5f;
-    particle->scale = static_cast<float>(std::max(rand() % 100, 0) + 400) / 100.0f;
+    particle->scale = static_cast<float>(std::max(0, rand() % 100) + 400) / 100.0f;
 
     matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
     rotation.IsIdentity();
     rotation.MakeXRotation(100.0f / 180.0f * 3.141592f);
-    rotation.AppendYRotation(static_cast<float>(std::max(rand() % 360, 0)) / 180.0f * 3.141592f);
+    rotation.AppendYRotation(static_cast<float>(std::max(0, rand() % 360)) / 180.0f * 3.141592f);
     this->particles.push_back(particle);
   }
 }
@@ -69,10 +68,10 @@ bool CStormGustEffect::IsAlive() {
 // FUNCTION: fn_19214
 void CStormGustEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
       if (particle->elapsedFrames == 3) {
         particle->speedParameter = 0.0f;
@@ -81,9 +80,12 @@ void CStormGustEffect::OnProcess() {
       const float speed = particle->speedParameter;
       const matrix& rotation = *reinterpret_cast<const matrix*>(particle->rotationStorage);
       const float* values = rotation.values;
-      particle->offsetX += values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-      particle->offsetY += values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-      particle->offsetZ += values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+      const float moveX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
+      const float moveY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
+      const float moveZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+      particle->offsetX += moveX;
+      particle->offsetY += moveY;
+      particle->offsetZ += moveZ;
 
       matrix translation;
       std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
