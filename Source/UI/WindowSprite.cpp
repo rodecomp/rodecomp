@@ -22,10 +22,12 @@ void UIWindow::AddSpriteCellOverlay(
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
 
   float left = static_cast<float>(cell->x) * scale * cell->scaleX;
-  float right = static_cast<float>((image->doubleWidth + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;
+  float right = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;
   float top = static_cast<float>(cell->y) * scale * cell->scaleY;
-  float bottom = static_cast<float>((image->doubleHeight + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
+  float bottom = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
 
+  record.u0 = 0.0f;
+  record.v0 = 0.0f;
   CTexture* texture;
   if (cell->imageType == 0) {
     texture = g_renderer->atlas.Find(image, palette, record);
@@ -43,11 +45,11 @@ void UIWindow::AddSpriteCellOverlay(
   if (angle != 0.0f) {
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float sine = ClientSine(static_cast<int>(angle));
-    const int farX = (image->doubleWidth + 1) * image->width + cell->x;
+    const int farX = (static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x;
     const float startX = static_cast<float>((cell->mirrored & 1) ? farX : cell->x) * scale + static_cast<float>(x);
     const float endX = static_cast<float>((cell->mirrored & 1) ? cell->x : farX) * scale + static_cast<float>(x) + 1.0f;
     const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
-    const float lower = static_cast<float>((image->doubleHeight + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
+    const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
     const float halfWidth = (endX - startX) * 0.5f;
     const float halfHeight = (lower - upper) * 0.5f;
     const float centerX = startX + halfWidth;
