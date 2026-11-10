@@ -49,24 +49,24 @@ int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 
   switch (argument1) {
-  case ID_CANCEL:
+  case ID_REBIRTH:
+    mode->SendMsg(MM_REBIRTH, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
   case ID_RESTART:
     mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
-  case ID_QUIT:
-    g_windowMgr.CloseWindow(WID_REBIRTHWND);
-    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
-    break;
   case ID_TO_CHARACTER_SELECT:
     mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_REBIRTHWND);
     g_windowMgr.CloseWindow(WID_ROULLETTEWND);
     break;
-  case ID_REBIRTH:
-    mode->SendMsg(MM_REBIRTH, 0, 0, 0, 0);
+  case ID_QUIT:
+    g_windowMgr.CloseWindow(WID_REBIRTHWND);
+    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
+    break;
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(WID_REBIRTHWND);
     break;
   }
