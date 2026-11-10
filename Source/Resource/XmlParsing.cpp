@@ -35,10 +35,14 @@ const std::string& XmlNode::Text() {
         continue;
       }
 
-      if (value == '&' && std::strcmp(this->name, "registrationweb") != 0) {
-        this->text += this->DecodeEntity(cursor + 1, end);
-        while (cursor != end && *cursor != ';') {
-          ++cursor;
+      if (value == '&') {
+        if (std::strcmp(this->name, "registrationweb") != 0) {
+          this->text += this->DecodeEntity(cursor + 1, end);
+          while (cursor != end && *cursor != ';') {
+            ++cursor;
+          }
+        } else {
+          this->text.append(1, '&');
         }
       } else {
         this->text.append(1, value);
@@ -102,7 +106,16 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
         continue;
       }
 
-      if (cursor[1] == '?' || cursor[1] == '!') {
+      if (cursor[1] == '?') {
+        while (cursor != last && *cursor != '>') {
+          ++cursor;
+        }
+
+        ++cursor;
+        continue;
+      }
+
+      if (cursor[1] == '!') {
         while (cursor != last && *cursor != '>') {
           ++cursor;
         }
@@ -150,19 +163,14 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
 bool XmlDocument::Parse(const char* begin, const char* end) {
   if (this->child != nullptr) {
     this->Reset();
-    if (this->buffer != nullptr) {
-      delete[] static_cast<char*>(this->buffer);
-      this->buffer = nullptr;
-    }
   }
 
   const int length = static_cast<int>(end - begin);
-  char* buffer = new char[length + 1];
-  this->buffer = buffer;
-  std::memcpy(buffer, begin, length);
-  buffer[length] = '\0';
-  this->sourceBegin = buffer;
-  this->sourceEnd = buffer + length;
-  this->ParseElements(this, buffer, buffer + length);
+  this->buffer = new char[length + 1];
+  std::memcpy(this->buffer, begin, length);
+  static_cast<char*>(this->buffer)[length] = '\0';
+  this->sourceBegin = static_cast<char*>(this->buffer);
+  this->sourceEnd = this->sourceBegin + length;
+  this->ParseElements(this, this->sourceBegin, this->sourceEnd);
   return this->child != nullptr;
 }
