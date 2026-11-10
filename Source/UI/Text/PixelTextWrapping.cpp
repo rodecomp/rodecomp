@@ -133,12 +133,14 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
 // OFFSET: 0x008932D0
 // FUNCTION: fn_11504
 void UIWindow::WrapLinkText(int* kind, std::vector<std::string>* lines, const std::string& text) {
-  const char* characters = text.c_str();
+  int width = this->geometry.width;
   if (*kind != 3) {
-    this->WrapPixelText(characters, *lines, this->geometry.width - 16);
+    width -= 16;
+    this->WrapPixelText(text.c_str(), *lines, width);
     return;
   }
 
+  width -= 24;
   std::vector<bool> wrapped;
-  this->WrapTextWithBreaks(characters, lines, &wrapped, this->geometry.width - 24);
+  this->WrapTextWithBreaks(text.c_str(), lines, &wrapped, width);
 }
