@@ -2520,81 +2520,104 @@ void CUIItem::OnCreate(int width, int height) {
   this->itemList->SetOnSelect([this](CUIItemInfo* item, const CItemData& data) { this->OnSelectItem(item, data); });
   this->itemList->SetBinder([this](CUIItemInfo* item, const CItemData& data) { this->BindItem(item, data); });
   {
-    const char listDisabledSource[] = {
-        '\xD1', '\x4C', '\x93', '\x63', '\x71', '\x93', '\xB0', '\x86', '\xD7', '\x07', '\x93', '\x55', '\x0C', '\xE7', '\x29', '\x0A', '\x75', '\x95', '\x36',
-        '\xF7', '\xC5', '\x28', '\x07', '\x2E', '\x56', '\x96', '\x3A', '\xFD', '\xD4', '\x01', '\x19', '\x22', '\x62', '\x97', '\x0C', '\xAA', '\xEE', '\x33',
-        '\x1A', '\x39', '\x7C', '\x82', '\x3F', '\xB7', '\xD3', '\x30', '\x05', '\x4B'};
-    thread_local EncryptedName<sizeof(listDisabledSource), 0x4B755DB19953E311ULL> listDisabledName(listDisabledSource);
-    const std::string listDisabled(listDisabledName.Text());
-    const char listOverSource[] = {
-        '\xFB', '\x48', '\xC1', '\xE1', '\x01', '\x6F', '\xEE', '\x70', '\xFD', '\x03', '\xC1', '\xD7', '\x7C', '\x1B', '\x77', '\xFC', '\x5F', '\x91', '\x64',
-        '\x75', '\xB5', '\xD4', '\x59', '\xD8', '\x7C', '\x92', '\x68', '\x7F', '\xA4', '\xFD', '\x47', '\xD4', '\x48', '\x93', '\x5E', '\x28', '\x9E', '\xCE',
-        '\x5D', '\xD8', '\x49', '\xC9', '\x63', '\x76', '\xB1', '\xA1'};
-    thread_local EncryptedName<sizeof(listOverSource), 0xBD2BA1C11B01E73BULL> listOverName(listOverSource);
-    const std::string listOver(listOverName.Text());
-    const char listPressSource[] = {
-        '\x79', '\x82', '\xFD', '\xC9', '\x4D', '\x5D', '\xD0', '\x20', '\x7F', '\xC9', '\xFD', '\xFF', '\x30', '\x29', '\x49', '\xAC', '\xDD', '\x5B', '\x58',
-        '\x5D', '\xF9', '\xE6', '\x67', '\x88', '\xFE', '\x58', '\x54', '\x57', '\xE8', '\xCF', '\x79', '\x84', '\xCA', '\x59', '\x62', '\x00', '\xD2', '\xE3',
-        '\x67', '\x88', '\xCA', '\x5E', '\x13', '\x51', '\xE0', '\xE3', '\x15'};
-    thread_local EncryptedName<sizeof(listPressSource), 0xED15938D333D2DB9ULL> listPressName(listPressSource);
-    const std::string listPress(listPressName.Text());
-    const char listNormalSource[] = {
-        '\x83', '\x96', '\x9B', '\x91', '\xA7', '\xE3', '\xB4', '\x04', '\x85', '\xDD', '\x9B', '\xA7', '\xDA', '\x97', '\x2D', '\x88', '\x27', '\x4F', '\x3E',
-        '\x05', '\x13', '\x58', '\x03', '\xAC', '\x04', '\x4C', '\x32', '\x0F', '\x02', '\x71', '\x1D', '\xA0', '\x30', '\x4D', '\x04', '\x58', '\x38', '\x43',
-        '\x1E', '\xBB', '\x2E', '\x58', '\x37', '\x45', '\x05', '\x40', '\x01', '\xC9'};
-    thread_local EncryptedName<sizeof(listNormalSource), 0xC9712D676B5B3943ULL> listNormalName(listNormalSource);
-    const std::string listNormal(listNormalName.Text());
-    this->itemList->SetImages(listNormal, listPress, listOver, listDisabled);
+    this->itemList->SetImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x83', '\x96', '\x9B', '\x91', '\xA7', '\xE3', '\xB4', '\x04', '\x85', '\xDD', '\x9B', '\xA7', '\xDA', '\x97', '\x2D', '\x88', '\x27', '\x4F', '\x3E',
+          '\x05', '\x13', '\x58', '\x03', '\xAC', '\x04', '\x4C', '\x32', '\x0F', '\x02', '\x71', '\x1D', '\xA0', '\x30', '\x4D', '\x04', '\x58', '\x38', '\x43',
+          '\x1E', '\xBB', '\x2E', '\x58', '\x37', '\x45', '\x05', '\x40', '\x01', '\xC9'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0xC9712D676B5B3943ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x79', '\x82', '\xFD', '\xC9', '\x4D', '\x5D', '\xD0', '\x20', '\x7F', '\xC9', '\xFD', '\xFF', '\x30', '\x29', '\x49', '\xAC', '\xDD', '\x5B', '\x58',
+          '\x5D', '\xF9', '\xE6', '\x67', '\x88', '\xFE', '\x58', '\x54', '\x57', '\xE8', '\xCF', '\x79', '\x84', '\xCA', '\x59', '\x62', '\x00', '\xD2', '\xE3',
+          '\x67', '\x88', '\xCA', '\x5E', '\x13', '\x51', '\xE0', '\xE3', '\x15'};
+      constexpr EncryptedSource<47> source(bytes);
+      thread_local EncryptedName<47, 0xED15938D333D2DB9ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xFB', '\x48', '\xC1', '\xE1', '\x01', '\x6F', '\xEE', '\x70', '\xFD', '\x03', '\xC1', '\xD7', '\x7C', '\x1B', '\x77', '\xFC', '\x5F', '\x91', '\x64',
+          '\x75', '\xB5', '\xD4', '\x59', '\xD8', '\x7C', '\x92', '\x68', '\x7F', '\xA4', '\xFD', '\x47', '\xD4', '\x48', '\x93', '\x5E', '\x28', '\x9E', '\xCE',
+          '\x5D', '\xD8', '\x49', '\xC9', '\x63', '\x76', '\xB1', '\xA1'};
+      constexpr EncryptedSource<46> source(bytes);
+      thread_local EncryptedName<46, 0xBD2BA1C11B01E73BULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xD1', '\x4C', '\x93', '\x63', '\x71', '\x93', '\xB0', '\x86', '\xD7', '\x07', '\x93', '\x55', '\x0C', '\xE7', '\x29', '\x0A', '\x75', '\x95', '\x36',
+          '\xF7', '\xC5', '\x28', '\x07', '\x2E', '\x56', '\x96', '\x3A', '\xFD', '\xD4', '\x01', '\x19', '\x22', '\x62', '\x97', '\x0C', '\xAA', '\xEE', '\x33',
+          '\x1A', '\x39', '\x7C', '\x82', '\x3F', '\xB7', '\xD3', '\x30', '\x05', '\x4B'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x4B755DB19953E311ULL> name(source);
+      return name.Text();
+    }()));
   }
-  this->itemList->itemX = 0;
-  this->itemList->itemY = 0;
+  {
+    CUIListBoxEx<CUIItemInfo, CItemData>* itemList = this->itemList;
+    itemList->itemX = 0;
+    itemList->itemY = 0;
+  }
   this->itemList->scrollBar->SetSize(8, 355);
   this->itemList->scrollBar->Move(619, 0);
   this->itemList->scrollBar->step = 20;
   {
-    const char downSource[] = {
-        '\xB3', '\x88', '\x8D', '\xB7', '\x39', '\xA1', '\xC0', '\x1C', '\xB5', '\xC3', '\x8D', '\x81', '\x44', '\xD5', '\x59', '\x90', '\x17', '\x51', '\x28',
-        '\x23', '\x8D', '\x1A', '\x77', '\xB4', '\x34', '\x52', '\x24', '\x29', '\x9C', '\x33', '\x76', '\xB2', '\x01', '\x48', '\x21', '\x21', '\xA6', '\x0E',
-        '\x77', '\xA3', '\x1C', '\x50', '\x12', '\x29', '\x96', '\x18', '\x6B', '\xFF', '\x11', '\x4A', '\x3D', '\x4D'};
-    thread_local EncryptedName<sizeof(downSource), 0xD1056FF94D4D2773ULL> downName(downSource);
-    const std::string down(downName.Text());
-    const char upSource[] = {
-        '\x2B', '\xF0', '\xC9', '\xC9', '\xBF', '\x6F', '\xF4', '\x8E', '\x2D', '\xBB', '\xC9', '\xFF', '\xC2', '\x1B', '\x6D', '\x02', '\x8F', '\x29', '\x6C',
-        '\x5D', '\x0B', '\xD4', '\x43', '\x26', '\xAC', '\x2A', '\x60', '\x57', '\x1A', '\xFD', '\x42', '\x20', '\x99', '\x30', '\x65', '\x5F', '\x20', '\xC0',
-        '\x43', '\x31', '\x84', '\x28', '\x56', '\x46', '\x0F', '\x8F', '\x53', '\x2E', '\x9B', '\x5F'};
-    thread_local EncryptedName<sizeof(upSource), 0x4331A17F33095FEBULL> upName(upSource);
-    const std::string up(upName.Text());
-    this->itemList->scrollBar->SetButtonImages(up, down);
+    this->itemList->SetScrollBarButtonImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x2B', '\xF0', '\xC9', '\xC9', '\xBF', '\x6F', '\xF4', '\x8E', '\x2D', '\xBB', '\xC9', '\xFF', '\xC2', '\x1B', '\x6D', '\x02', '\x8F', '\x29', '\x6C',
+          '\x5D', '\x0B', '\xD4', '\x43', '\x26', '\xAC', '\x2A', '\x60', '\x57', '\x1A', '\xFD', '\x42', '\x20', '\x99', '\x30', '\x65', '\x5F', '\x20', '\xC0',
+          '\x43', '\x31', '\x84', '\x28', '\x56', '\x46', '\x0F', '\x8F', '\x53', '\x2E', '\x9B', '\x5F'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x4331A17F33095FEBULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xB3', '\x88', '\x8D', '\xB7', '\x39', '\xA1', '\xC0', '\x1C', '\xB5', '\xC3', '\x8D', '\x81', '\x44', '\xD5', '\x59', '\x90', '\x17', '\x51', '\x28',
+          '\x23', '\x8D', '\x1A', '\x77', '\xB4', '\x34', '\x52', '\x24', '\x29', '\x9C', '\x33', '\x76', '\xB2', '\x01', '\x48', '\x21', '\x21', '\xA6', '\x0E',
+          '\x77', '\xA3', '\x1C', '\x50', '\x12', '\x29', '\x96', '\x18', '\x6B', '\xFF', '\x11', '\x4A', '\x3D', '\x4D'};
+      constexpr EncryptedSource<52> source(bytes);
+      thread_local EncryptedName<52, 0xD1056FF94D4D2773ULL> name(source);
+      return name.Text();
+    }()));
   }
   {
-    const char backgroundSource[] = {
-        '\xD7', '\x76', '\xF3', '\x53', '\xB9', '\x29', '\x52', '\xC2', '\xD1', '\x3D', '\xF3', '\x65', '\xC4', '\x5D', '\xCB', '\x4E', '\x73', '\xAF', '\x56',
-        '\xC7', '\x0D', '\x92', '\xE5', '\x6A', '\x50', '\xAC', '\x5A', '\xCD', '\x1C', '\xBB', '\xE4', '\x6C', '\x65', '\xB6', '\x5F', '\xC5', '\x26', '\x85',
-        '\xF0', '\x50', '\x7A', '\xB0', '\x57', '\x87', '\x1B', '\x8A', '\xE7', '\x0F'};
-    thread_local EncryptedName<sizeof(backgroundSource), 0x0F97E779A933D917ULL> backgroundName(backgroundSource);
-    const std::string background(backgroundName.Text());
-    this->itemList->scrollBar->SetBackground(background);
+    this->itemList->SetScrollBarBackground(std::string([]() {
+      constexpr char bytes[] = {
+          '\xD7', '\x76', '\xF3', '\x53', '\xB9', '\x29', '\x52', '\xC2', '\xD1', '\x3D', '\xF3', '\x65', '\xC4', '\x5D', '\xCB', '\x4E', '\x73', '\xAF', '\x56',
+          '\xC7', '\x0D', '\x92', '\xE5', '\x6A', '\x50', '\xAC', '\x5A', '\xCD', '\x1C', '\xBB', '\xE4', '\x6C', '\x65', '\xB6', '\x5F', '\xC5', '\x26', '\x85',
+          '\xF0', '\x50', '\x7A', '\xB0', '\x57', '\x87', '\x1B', '\x8A', '\xE7', '\x0F'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x0F97E779A933D917ULL> name(source);
+      return name.Text();
+    }()));
   }
   {
-    const char thumbBottomSource[] = {
-        '\xB5', '\x90', '\xA1', '\x51', '\xEF', '\xBF', '\x22', '\x90', '\xB3', '\xDB', '\xA1', '\x67', '\x92', '\xCB', '\xBB', '\x1C', '\x11', '\x49', '\x04',
-        '\xC5', '\x5B', '\x04', '\x95', '\x38', '\x32', '\x4A', '\x08', '\xCF', '\x4A', '\x2D', '\x94', '\x3E', '\x07', '\x50', '\x0D', '\xC7', '\x70', '\x05',
-        '\x8F', '\x28', '\x18', '\x5D', '\x3E', '\xCF', '\x40', '\x06', '\x89', '\x73', '\x17', '\x52', '\x11', '\xAB'};
-    thread_local EncryptedName<sizeof(thumbBottomSource), 0x5DE7712FAB613F75ULL> thumbBottomName(thumbBottomSource);
-    const std::string thumbBottom(thumbBottomName.Text());
-    const char thumbMiddleSource[] = {
-        '\x51', '\xC4', '\xAB', '\xE5', '\x43', '\x05', '\x0A', '\x8C', '\x57', '\x8F', '\xAB', '\xD3', '\x3E', '\x71', '\x93', '\x00', '\xF5', '\x1D', '\x0E',
-        '\x71', '\xF7', '\xBE', '\xBD', '\x24', '\xD6', '\x1E', '\x02', '\x7B', '\xE6', '\x97', '\xBC', '\x22', '\xE3', '\x04', '\x07', '\x73', '\xDC', '\xBF',
-        '\xA7', '\x34', '\xFC', '\x09', '\x34', '\x72', '\xEA', '\xAF', '\xE1', '\x23', '\xFC', '\x1B', '\x6B'};
-    thread_local EncryptedName<sizeof(thumbMiddleSource), 0x41CFCB831F6B6B91ULL> thumbMiddleName(thumbMiddleSource);
-    const std::string thumbMiddle(thumbMiddleName.Text());
-    const char thumbTopSource[] = {
-        '\x81', '\x7E', '\x21', '\x19', '\xAB', '\x87', '\x4C', '\xFA', '\x87', '\x35', '\x21', '\x2F', '\xD6', '\xF3', '\xD5', '\x76', '\x25', '\xA7', '\x84',
-        '\x8D', '\x1F', '\x3C', '\xFB', '\x52', '\x06', '\xA4', '\x88', '\x87', '\x0E', '\x15', '\xFA', '\x54', '\x33', '\xBE', '\x8D', '\x8F', '\x34', '\x3D',
-        '\xE1', '\x42', '\x2C', '\xB3', '\xBE', '\x96', '\x1B', '\x67', '\xEB', '\x5A', '\x31', '\xD1'};
-    thread_local EncryptedName<sizeof(thumbTopSource), 0x3789496BE3E1D141ULL> thumbTopName(thumbTopSource);
-    const std::string thumbTop(thumbTopName.Text());
-    this->itemList->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
+    this->itemList->SetScrollBarThumbImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x81', '\x7E', '\x21', '\x19', '\xAB', '\x87', '\x4C', '\xFA', '\x87', '\x35', '\x21', '\x2F', '\xD6', '\xF3', '\xD5', '\x76', '\x25', '\xA7', '\x84',
+          '\x8D', '\x1F', '\x3C', '\xFB', '\x52', '\x06', '\xA4', '\x88', '\x87', '\x0E', '\x15', '\xFA', '\x54', '\x33', '\xBE', '\x8D', '\x8F', '\x34', '\x3D',
+          '\xE1', '\x42', '\x2C', '\xB3', '\xBE', '\x96', '\x1B', '\x67', '\xEB', '\x5A', '\x31', '\xD1'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x3789496BE3E1D141ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x51', '\xC4', '\xAB', '\xE5', '\x43', '\x05', '\x0A', '\x8C', '\x57', '\x8F', '\xAB', '\xD3', '\x3E', '\x71', '\x93', '\x00', '\xF5', '\x1D', '\x0E',
+          '\x71', '\xF7', '\xBE', '\xBD', '\x24', '\xD6', '\x1E', '\x02', '\x7B', '\xE6', '\x97', '\xBC', '\x22', '\xE3', '\x04', '\x07', '\x73', '\xDC', '\xBF',
+          '\xA7', '\x34', '\xFC', '\x09', '\x34', '\x72', '\xEA', '\xAF', '\xE1', '\x23', '\xFC', '\x1B', '\x6B'};
+      constexpr EncryptedSource<51> source(bytes);
+      thread_local EncryptedName<51, 0x41CFCB831F6B6B91ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xB5', '\x90', '\xA1', '\x51', '\xEF', '\xBF', '\x22', '\x90', '\xB3', '\xDB', '\xA1', '\x67', '\x92', '\xCB', '\xBB', '\x1C', '\x11', '\x49', '\x04',
+          '\xC5', '\x5B', '\x04', '\x95', '\x38', '\x32', '\x4A', '\x08', '\xCF', '\x4A', '\x2D', '\x94', '\x3E', '\x07', '\x50', '\x0D', '\xC7', '\x70', '\x05',
+          '\x8F', '\x28', '\x18', '\x5D', '\x3E', '\xCF', '\x40', '\x06', '\x89', '\x73', '\x17', '\x52', '\x11', '\xAB'};
+      constexpr EncryptedSource<52> source(bytes);
+      thread_local EncryptedName<52, 0x5DE7712FAB613F75ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->itemList->AddNewItem();
   this->AddChild(this->itemList);
@@ -2603,34 +2626,45 @@ void CUIItem::OnCreate(int width, int height) {
   this->findButton->SetSize(62, 20);
   this->findButton->Move(471, 363);
   this->findButton->SetOnClick([this]() { this->RequestNavigation(); });
-  this->findButton->disabled = 0;
-  this->findButton->Invalidate();
   {
-    const char findDisableSource[] = {
-        '\xE7', '\x0A', '\x53', '\x65', '\xC1', '\x9D', '\xA4', '\x60', '\xE1', '\x41', '\x53', '\x53', '\xBC', '\xE9', '\x3D', '\xEC', '\x43', '\xD3', '\xF6',
-        '\xF1', '\x75', '\x26', '\x13', '\xC8', '\x60', '\xD0', '\xFA', '\xFB', '\x64', '\x0F', '\x03', '\xD9', '\x49', '\xFA', '\xF5', '\xF6', '\x6F', '\x37',
-        '\x3E', '\xC9', '\x4E', '\xD6', '\xF2', '\xFD', '\x6D', '\x36', '\x4F', '\xCF', '\x4A', '\xD5', '\x93'};
-    thread_local EncryptedName<sizeof(findDisableSource), 0xAD6153019F93A527ULL> findDisableName(findDisableSource);
-    const std::string findDisable(findDisableName.Text());
-    const char findOverSource[] = {
-        '\xBF', '\xF4', '\xB5', '\x5F', '\x67', '\x3B', '\x24', '\x48', '\xB9', '\xBF', '\xB5', '\x69', '\x1A', '\x4F', '\xBD', '\xC4', '\x1B', '\x2D', '\x10',
-        '\xCB', '\xD3', '\x80', '\x93', '\xE0', '\x38', '\x2E', '\x1C', '\xC1', '\xC2', '\xA9', '\x83', '\xF1', '\x11', '\x04', '\x13', '\xCC', '\xC9', '\x91',
-        '\xBE', '\xEA', '\x09', '\x3E', '\x07', '\x8B', '\xC5', '\x98', '\x91', '\x85'};
-    thread_local EncryptedName<sizeof(findOverSource), 0x85E1F5A7A5755B7FULL> findOverName(findOverSource);
-    const std::string findOver(findOverName.Text());
-    const char findPressSource[] = {
-        '\x0B', '\x42', '\x73', '\xD1', '\x47', '\xFF', '\x88', '\x88', '\x0D', '\x09', '\x73', '\xE7', '\x3A', '\x8B', '\x11', '\x04', '\xAF', '\x9B', '\xD6',
-        '\x45', '\xF3', '\x44', '\x3F', '\x20', '\x8C', '\x98', '\xDA', '\x4F', '\xE2', '\x6D', '\x2F', '\x31', '\xA5', '\xB2', '\xD5', '\x42', '\xE9', '\x55',
-        '\x12', '\x35', '\xB9', '\x88', '\xC0', '\x58', '\xA9', '\x53', '\x20', '\x35', '\xCB'};
-    thread_local EncryptedName<sizeof(findPressSource), 0x454D31872BB3EDCBULL> findPressName(findPressSource);
-    const std::string findPress(findPressName.Text());
-    const char findNormalSource[] = {
-        '\xC1', '\xA2', '\x87', '\xA7', '\x2D', '\x43', '\x30', '\x4C', '\xC7', '\xE9', '\x87', '\x91', '\x50', '\x37', '\xA9', '\xC0', '\x65', '\x7B', '\x22',
-        '\x33', '\x99', '\xF8', '\x87', '\xE4', '\x46', '\x78', '\x2E', '\x39', '\x88', '\xD1', '\x97', '\xF5', '\x6F', '\x52', '\x21', '\x34', '\x83', '\xE9',
-        '\xAA', '\xEF', '\x6E', '\x7F', '\x2A', '\x3C', '\x81', '\xA3', '\x97', '\xEC', '\x71', '\x0D'};
-    thread_local EncryptedName<sizeof(findNormalSource), 0x81F58DED5D470D01ULL> findNormalName(findNormalSource);
-    const std::string findNormal(findNormalName.Text());
-    this->findButton->SetImages(findNormal, findPress, findOver, findDisable);
+    CUIImageButton* button = this->findButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
+  {
+    this->findButton->SetImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\xC1', '\xA2', '\x87', '\xA7', '\x2D', '\x43', '\x30', '\x4C', '\xC7', '\xE9', '\x87', '\x91', '\x50', '\x37', '\xA9', '\xC0', '\x65', '\x7B', '\x22',
+          '\x33', '\x99', '\xF8', '\x87', '\xE4', '\x46', '\x78', '\x2E', '\x39', '\x88', '\xD1', '\x97', '\xF5', '\x6F', '\x52', '\x21', '\x34', '\x83', '\xE9',
+          '\xAA', '\xEF', '\x6E', '\x7F', '\x2A', '\x3C', '\x81', '\xA3', '\x97', '\xEC', '\x71', '\x0D'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x81F58DED5D470D01ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x0B', '\x42', '\x73', '\xD1', '\x47', '\xFF', '\x88', '\x88', '\x0D', '\x09', '\x73', '\xE7', '\x3A', '\x8B', '\x11', '\x04', '\xAF', '\x9B', '\xD6',
+          '\x45', '\xF3', '\x44', '\x3F', '\x20', '\x8C', '\x98', '\xDA', '\x4F', '\xE2', '\x6D', '\x2F', '\x31', '\xA5', '\xB2', '\xD5', '\x42', '\xE9', '\x55',
+          '\x12', '\x35', '\xB9', '\x88', '\xC0', '\x58', '\xA9', '\x53', '\x20', '\x35', '\xCB'};
+      constexpr EncryptedSource<49> source(bytes);
+      thread_local EncryptedName<49, 0x454D31872BB3EDCBULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xBF', '\xF4', '\xB5', '\x5F', '\x67', '\x3B', '\x24', '\x48', '\xB9', '\xBF', '\xB5', '\x69', '\x1A', '\x4F', '\xBD', '\xC4', '\x1B', '\x2D', '\x10',
+          '\xCB', '\xD3', '\x80', '\x93', '\xE0', '\x38', '\x2E', '\x1C', '\xC1', '\xC2', '\xA9', '\x83', '\xF1', '\x11', '\x04', '\x13', '\xCC', '\xC9', '\x91',
+          '\xBE', '\xEA', '\x09', '\x3E', '\x07', '\x8B', '\xC5', '\x98', '\x91', '\x85'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x85E1F5A7A5755B7FULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xE7', '\x0A', '\x53', '\x65', '\xC1', '\x9D', '\xA4', '\x60', '\xE1', '\x41', '\x53', '\x53', '\xBC', '\xE9', '\x3D', '\xEC', '\x43', '\xD3', '\xF6',
+          '\xF1', '\x75', '\x26', '\x13', '\xC8', '\x60', '\xD0', '\xFA', '\xFB', '\x64', '\x0F', '\x03', '\xD9', '\x49', '\xFA', '\xF5', '\xF6', '\x6F', '\x37',
+          '\x3E', '\xC9', '\x4E', '\xD6', '\xF2', '\xFD', '\x6D', '\x36', '\x4F', '\xCF', '\x4A', '\xD5', '\x93'};
+      constexpr EncryptedSource<51> source(bytes);
+      thread_local EncryptedName<51, 0xAD6153019F93A527ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->AddChild(this->findButton);
 
@@ -2638,8 +2672,11 @@ void CUIItem::OnCreate(int width, int height) {
   this->navigationButton->SetSize(62, 20);
   this->navigationButton->Move(540, 363);
   this->navigationButton->SetOnClick([this]() { this->SearchNavigation(); });
-  this->navigationButton->disabled = 0;
-  this->navigationButton->Invalidate();
+  {
+    CUIImageButton* button = this->navigationButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     const char moveDisableSource[] = {
         '\x09', '\xAE', '\x2D', '\x15', '\x27', '\xA7', '\xDA', '\x6E', '\x0F', '\xE5', '\x2D', '\x23', '\x5A', '\xD3', '\x43', '\xE2', '\xAD', '\x77', '\x88',
@@ -2683,81 +2720,104 @@ void CUIQuest::OnCreate(int width, int height) {
   this->questList->SetOnSelect([this](CUIQuestInfo* item, const CQuestInfo& data) { this->OnSelectQuest(item, data); });
   this->questList->SetBinder([this](CUIQuestInfo* item, const CQuestInfo& data) { BindQuestInfo(item, data); });
   {
-    const char listDisabledSource[] = {
-        '\xD7', '\xB4', '\xED', '\x59', '\x7D', '\x25', '\x84', '\xC2', '\xD1', '\xFF', '\xED', '\x6F', '\x00', '\x51', '\x1D', '\x4E', '\x73', '\x6D', '\x48',
-        '\xCD', '\xC9', '\x9E', '\x33', '\x6A', '\x50', '\x6E', '\x44', '\xC7', '\xD8', '\xB7', '\x2D', '\x66', '\x64', '\x6F', '\x72', '\x91', '\xE2', '\x85',
-        '\x2E', '\x7D', '\x7A', '\x7A', '\x41', '\x8D', '\xDF', '\x86', '\x31', '\x0F'};
-    thread_local EncryptedName<sizeof(listDisabledSource), 0x0F41EBBDA32D1B17ULL> listDisabledName(listDisabledSource);
-    const std::string listDisabled(listDisabledName.Text());
-    const char listOverSource[] = {
-        '\x01', '\xE8', '\x05', '\xED', '\x21', '\x57', '\x10', '\x36', '\x07', '\xA3', '\x05', '\xDB', '\x5C', '\x23', '\x89', '\xBA', '\xA5', '\x31', '\xA0',
-        '\x79', '\x95', '\xEC', '\xA7', '\x9E', '\x86', '\x32', '\xAC', '\x73', '\x84', '\xC5', '\xB9', '\x92', '\xB2', '\x33', '\x9A', '\x25', '\xBE', '\xF6',
-        '\xA3', '\x9E', '\xB3', '\x69', '\xA7', '\x7A', '\x91', '\x99'};
-    thread_local EncryptedName<sizeof(listOverSource), 0xFBD599E117C547C1ULL> listOverName(listOverSource);
-    const std::string listOver(listOverName.Text());
-    const char listPressSource[] = {
-        '\xA5', '\x5C', '\x17', '\xA7', '\x4D', '\xDD', '\xAA', '\xDA', '\xA3', '\x17', '\x17', '\x91', '\x30', '\xA9', '\x33', '\x56', '\x01', '\x85', '\xB2',
-        '\x33', '\xF9', '\x66', '\x1D', '\x72', '\x22', '\x86', '\xBE', '\x39', '\xE8', '\x4F', '\x03', '\x7E', '\x16', '\x87', '\x88', '\x6F', '\xD2', '\x63',
-        '\x1D', '\x72', '\x16', '\x80', '\xF9', '\x3F', '\xE0', '\x63', '\x6F'};
-    thread_local EncryptedName<sizeof(listPressSource), 0x176F138D5DD7F365ULL> listPressName(listPressSource);
-    const std::string listPress(listPressName.Text());
-    const char listNormalSource[] = {
-        '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x38', '\x2B', '\x11', '\x88',
-        '\xEB', '\x7D', '\x42', '\x4D', '\x1C', '\x08', '\x12', '\x84', '\xE1', '\x6C', '\x6B', '\x53', '\x10', '\x3C', '\x13', '\xB2', '\xB7', '\x56', '\x59',
-        '\x50', '\x0B', '\x22', '\x06', '\x81', '\xAB', '\x6B', '\x5A', '\x4F', '\x79'};
-    thread_local EncryptedName<sizeof(listNormalSource), 0x793F370985ED674FULL> listNormalName(listNormalSource);
-    const std::string listNormal(listNormalName.Text());
-    this->questList->SetImages(listNormal, listPress, listOver, listDisabled);
+    this->questList->SetImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x38', '\x2B', '\x11', '\x88',
+          '\xEB', '\x7D', '\x42', '\x4D', '\x1C', '\x08', '\x12', '\x84', '\xE1', '\x6C', '\x6B', '\x53', '\x10', '\x3C', '\x13', '\xB2', '\xB7', '\x56', '\x59',
+          '\x50', '\x0B', '\x22', '\x06', '\x81', '\xAB', '\x6B', '\x5A', '\x4F', '\x79'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x793F370985ED674FULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xA5', '\x5C', '\x17', '\xA7', '\x4D', '\xDD', '\xAA', '\xDA', '\xA3', '\x17', '\x17', '\x91', '\x30', '\xA9', '\x33', '\x56', '\x01', '\x85', '\xB2',
+          '\x33', '\xF9', '\x66', '\x1D', '\x72', '\x22', '\x86', '\xBE', '\x39', '\xE8', '\x4F', '\x03', '\x7E', '\x16', '\x87', '\x88', '\x6F', '\xD2', '\x63',
+          '\x1D', '\x72', '\x16', '\x80', '\xF9', '\x3F', '\xE0', '\x63', '\x6F'};
+      constexpr EncryptedSource<47> source(bytes);
+      thread_local EncryptedName<47, 0x176F138D5DD7F365ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x01', '\xE8', '\x05', '\xED', '\x21', '\x57', '\x10', '\x36', '\x07', '\xA3', '\x05', '\xDB', '\x5C', '\x23', '\x89', '\xBA', '\xA5', '\x31', '\xA0',
+          '\x79', '\x95', '\xEC', '\xA7', '\x9E', '\x86', '\x32', '\xAC', '\x73', '\x84', '\xC5', '\xB9', '\x92', '\xB2', '\x33', '\x9A', '\x25', '\xBE', '\xF6',
+          '\xA3', '\x9E', '\xB3', '\x69', '\xA7', '\x7A', '\x91', '\x99'};
+      constexpr EncryptedSource<46> source(bytes);
+      thread_local EncryptedName<46, 0xFBD599E117C547C1ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xD7', '\xB4', '\xED', '\x59', '\x7D', '\x25', '\x84', '\xC2', '\xD1', '\xFF', '\xED', '\x6F', '\x00', '\x51', '\x1D', '\x4E', '\x73', '\x6D', '\x48',
+          '\xCD', '\xC9', '\x9E', '\x33', '\x6A', '\x50', '\x6E', '\x44', '\xC7', '\xD8', '\xB7', '\x2D', '\x66', '\x64', '\x6F', '\x72', '\x91', '\xE2', '\x85',
+          '\x2E', '\x7D', '\x7A', '\x7A', '\x41', '\x8D', '\xDF', '\x86', '\x31', '\x0F'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x0F41EBBDA32D1B17ULL> name(source);
+      return name.Text();
+    }()));
   }
-  this->questList->itemX = 0;
-  this->questList->itemY = 0;
+  {
+    CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList = this->questList;
+    questList->itemX = 0;
+    questList->itemY = 0;
+  }
   this->questList->scrollBar->SetSize(8, 355);
   this->questList->scrollBar->Move(619, 0);
   this->questList->scrollBar->step = 20;
   {
-    const char downSource[] = {
-        '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\xB2', '\x09', '\x6D', '\xC2',
-        '\x7F', '\x03', '\x1A', '\xB9', '\x96', '\x2A', '\x6E', '\xCE', '\x75', '\x12', '\x33', '\xB8', '\x90', '\x1F', '\x74', '\xCB', '\x7D', '\x28', '\x0E',
-        '\xB9', '\x81', '\x02', '\x6C', '\xF8', '\x75', '\x18', '\x18', '\xA5', '\xDD', '\x0F', '\x76', '\xD7', '\x11'};
-    thread_local EncryptedName<sizeof(downSource), 0xF3CB6F7711A71B6DULL> downName(downSource);
-    const std::string down(downName.Text());
-    const char upSource[] = {
-        '\x2D', '\xDA', '\xA1', '\xD9', '\x77', '\x2D', '\x94', '\xE0', '\x2B', '\x91', '\xA1', '\xEF', '\x0A', '\x59', '\x0D', '\x6C', '\x89', '\x03', '\x04',
-        '\x4D', '\xC3', '\x96', '\x23', '\x48', '\xAA', '\x00', '\x08', '\x47', '\xD2', '\xBF', '\x22', '\x4E', '\x9F', '\x1A', '\x0D', '\x4F', '\xE8', '\x82',
-        '\x23', '\x5F', '\x82', '\x02', '\x3E', '\x56', '\xC7', '\xCD', '\x33', '\x40', '\x9D', '\x75'};
-    thread_local EncryptedName<sizeof(upSource), 0x2D51E3B7236175EDULL> upName(upSource);
-    const std::string up(upName.Text());
-    this->questList->scrollBar->SetButtonImages(up, down);
+    this->questList->SetScrollBarButtonImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x2D', '\xDA', '\xA1', '\xD9', '\x77', '\x2D', '\x94', '\xE0', '\x2B', '\x91', '\xA1', '\xEF', '\x0A', '\x59', '\x0D', '\x6C', '\x89', '\x03', '\x04',
+          '\x4D', '\xC3', '\x96', '\x23', '\x48', '\xAA', '\x00', '\x08', '\x47', '\xD2', '\xBF', '\x22', '\x4E', '\x9F', '\x1A', '\x0D', '\x4F', '\xE8', '\x82',
+          '\x23', '\x5F', '\x82', '\x02', '\x3E', '\x56', '\xC7', '\xCD', '\x33', '\x40', '\x9D', '\x75'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x2D51E3B7236175EDULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\xB2', '\x09', '\x6D', '\xC2',
+          '\x7F', '\x03', '\x1A', '\xB9', '\x96', '\x2A', '\x6E', '\xCE', '\x75', '\x12', '\x33', '\xB8', '\x90', '\x1F', '\x74', '\xCB', '\x7D', '\x28', '\x0E',
+          '\xB9', '\x81', '\x02', '\x6C', '\xF8', '\x75', '\x18', '\x18', '\xA5', '\xDD', '\x0F', '\x76', '\xD7', '\x11'};
+      constexpr EncryptedSource<52> source(bytes);
+      thread_local EncryptedName<52, 0xF3CB6F7711A71B6DULL> name(source);
+      return name.Text();
+    }()));
   }
   {
-    const char backgroundSource[] = {
-        '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xC2', '\xD7', '\x11', '\x3C',
-        '\xE1', '\xAB', '\x52', '\xE9', '\xE6', '\xF4', '\x12', '\x30', '\xEB', '\xBA', '\x7B', '\xE8', '\xE0', '\xC1', '\x08', '\x35', '\xE3', '\x80', '\x45',
-        '\xFC', '\xDC', '\xDE', '\x0E', '\x3D', '\xA1', '\xBD', '\x4A', '\xEB', '\x83'};
-    thread_local EncryptedName<sizeof(backgroundSource), 0x839B27DF8F5967B3ULL> backgroundName(backgroundSource);
-    const std::string background(backgroundName.Text());
-    this->questList->scrollBar->SetBackground(background);
+    this->questList->SetScrollBarBackground(std::string([]() {
+      constexpr char bytes[] = {
+          '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xC2', '\xD7', '\x11', '\x3C',
+          '\xE1', '\xAB', '\x52', '\xE9', '\xE6', '\xF4', '\x12', '\x30', '\xEB', '\xBA', '\x7B', '\xE8', '\xE0', '\xC1', '\x08', '\x35', '\xE3', '\x80', '\x45',
+          '\xFC', '\xDC', '\xDE', '\x0E', '\x3D', '\xA1', '\xBD', '\x4A', '\xEB', '\x83'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x839B27DF8F5967B3ULL> name(source);
+      return name.Text();
+    }()));
   }
   {
-    const char thumbBottomSource[] = {
-        '\x99', '\x18', '\xC7', '\xE9', '\x05', '\xB3', '\xA6', '\x82', '\x9F', '\x53', '\xC7', '\xDF', '\x78', '\xC7', '\x3F', '\x0E', '\x3D', '\xC1', '\x62',
-        '\x7D', '\xB1', '\x08', '\x11', '\x2A', '\x1E', '\xC2', '\x6E', '\x77', '\xA0', '\x21', '\x10', '\x2C', '\x2B', '\xD8', '\x6B', '\x7F', '\x9A', '\x09',
-        '\x0B', '\x3A', '\x34', '\xD5', '\x58', '\x77', '\xAA', '\x0A', '\x0D', '\x61', '\x3B', '\xDA', '\x77', '\x13'};
-    thread_local EncryptedName<sizeof(thumbBottomSource), 0x4F637DC51307B759ULL> thumbBottomName(thumbBottomSource);
-    const std::string thumbBottom(thumbBottomName.Text());
-    const char thumbMiddleSource[] = {
-        '\xA5', '\xFA', '\x09', '\x85', '\xCD', '\x21', '\xEA', '\x88', '\xA3', '\xB1', '\x09', '\xB3', '\xB0', '\x55', '\x73', '\x04', '\x01', '\x23', '\xAC',
-        '\x11', '\x79', '\x9A', '\x5D', '\x20', '\x22', '\x20', '\xA0', '\x1B', '\x68', '\xB3', '\x5C', '\x26', '\x17', '\x3A', '\xA5', '\x13', '\x52', '\x9B',
-        '\x47', '\x30', '\x08', '\x37', '\x96', '\x12', '\x64', '\x8B', '\x01', '\x27', '\x08', '\x25', '\xC9'};
-    thread_local EncryptedName<sizeof(thumbMiddleSource), 0x452FEF0D7FC95565ULL> thumbMiddleName(thumbMiddleSource);
-    const std::string thumbMiddle(thumbMiddleName.Text());
-    const char thumbTopSource[] = {
-        '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xDE', '\x39', '\x7B', '\x2C',
-        '\xE7', '\xD5', '\x08', '\x9F', '\xFA', '\x1A', '\x78', '\x20', '\xED', '\xC4', '\x21', '\x9E', '\xFC', '\x2F', '\x62', '\x25', '\xE5', '\xFE', '\x09',
-        '\x85', '\xEA', '\x30', '\x6F', '\x16', '\xFC', '\xD1', '\x53', '\x8F', '\xF2', '\x2D', '\x0D'};
-    thread_local EncryptedName<sizeof(thumbTopSource), 0x9FED7DA189490D5DULL> thumbTopName(thumbTopSource);
-    const std::string thumbTop(thumbTopName.Text());
-    this->questList->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
+    this->questList->SetScrollBarThumbImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xDE', '\x39', '\x7B', '\x2C',
+          '\xE7', '\xD5', '\x08', '\x9F', '\xFA', '\x1A', '\x78', '\x20', '\xED', '\xC4', '\x21', '\x9E', '\xFC', '\x2F', '\x62', '\x25', '\xE5', '\xFE', '\x09',
+          '\x85', '\xEA', '\x30', '\x6F', '\x16', '\xFC', '\xD1', '\x53', '\x8F', '\xF2', '\x2D', '\x0D'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x9FED7DA189490D5DULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\xA5', '\xFA', '\x09', '\x85', '\xCD', '\x21', '\xEA', '\x88', '\xA3', '\xB1', '\x09', '\xB3', '\xB0', '\x55', '\x73', '\x04', '\x01', '\x23', '\xAC',
+          '\x11', '\x79', '\x9A', '\x5D', '\x20', '\x22', '\x20', '\xA0', '\x1B', '\x68', '\xB3', '\x5C', '\x26', '\x17', '\x3A', '\xA5', '\x13', '\x52', '\x9B',
+          '\x47', '\x30', '\x08', '\x37', '\x96', '\x12', '\x64', '\x8B', '\x01', '\x27', '\x08', '\x25', '\xC9'};
+      constexpr EncryptedSource<51> source(bytes);
+      thread_local EncryptedName<51, 0x452FEF0D7FC95565ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x99', '\x18', '\xC7', '\xE9', '\x05', '\xB3', '\xA6', '\x82', '\x9F', '\x53', '\xC7', '\xDF', '\x78', '\xC7', '\x3F', '\x0E', '\x3D', '\xC1', '\x62',
+          '\x7D', '\xB1', '\x08', '\x11', '\x2A', '\x1E', '\xC2', '\x6E', '\x77', '\xA0', '\x21', '\x10', '\x2C', '\x2B', '\xD8', '\x6B', '\x7F', '\x9A', '\x09',
+          '\x0B', '\x3A', '\x34', '\xD5', '\x58', '\x77', '\xAA', '\x0A', '\x0D', '\x61', '\x3B', '\xDA', '\x77', '\x13'};
+      constexpr EncryptedSource<52> source(bytes);
+      thread_local EncryptedName<52, 0x4F637DC51307B759ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->questList->AddNewItem();
   this->AddChild(this->questList);
@@ -2766,34 +2826,45 @@ void CUIQuest::OnCreate(int width, int height) {
   this->findButton->SetSize(62, 20);
   this->findButton->Move(471, 363);
   this->findButton->SetOnClick([this]() { this->RequestNavigation(); });
-  this->findButton->disabled = 0;
-  this->findButton->Invalidate();
   {
-    const char findDisableSource[] = {
-        '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x0E', '\xD3', '\x47', '\x8A',
-        '\xAD', '\x77', '\xAA', '\xEB', '\x2A', '\xF0', '\x44', '\x86', '\xA7', '\x66', '\x83', '\xFB', '\x3B', '\xD9', '\x6E', '\x89', '\xAA', '\x6D', '\xBB',
-        '\xC6', '\x2B', '\xDE', '\x42', '\x8E', '\xA1', '\x6F', '\xBA', '\xB7', '\x2D', '\xDA', '\x41', '\xEF'};
-    thread_local EncryptedName<sizeof(findDisableSource), 0x4F99DF03C3EF31B7ULL> findDisableName(findDisableSource);
-    const std::string findDisable(findDisableName.Text());
-    const char findOverSource[] = {
-        '\x37', '\xBC', '\xEB', '\x55', '\x31', '\xC1', '\xD8', '\x40', '\x31', '\xF7', '\xEB', '\x63', '\x4C', '\xB5', '\x41', '\xCC', '\x93', '\x65', '\x4E',
-        '\xC1', '\x85', '\x7A', '\x6F', '\xE8', '\xB0', '\x66', '\x42', '\xCB', '\x94', '\x53', '\x7F', '\xF9', '\x99', '\x4C', '\x4D', '\xC6', '\x9F', '\x6B',
-        '\x42', '\xE2', '\x81', '\x76', '\x59', '\x81', '\x93', '\x62', '\x6D', '\x8D'};
-    thread_local EncryptedName<sizeof(findOverSource), 0x8D1D0FF1AF2B13F7ULL> findOverName(findOverSource);
-    const std::string findOver(findOverName.Text());
-    const char findPressSource[] = {
-        '\x4D', '\x14', '\x0F', '\x81', '\x51', '\x69', '\x5A', '\x7E', '\x4B', '\x5F', '\x0F', '\xB7', '\x2C', '\x1D', '\xC3', '\xF2', '\xE9', '\xCD', '\xAA',
-        '\x15', '\xE5', '\xD2', '\xED', '\xD6', '\xCA', '\xCE', '\xA6', '\x1F', '\xF4', '\xFB', '\xFD', '\xC7', '\xE3', '\xE4', '\xA9', '\x12', '\xFF', '\xC3',
-        '\xC0', '\xC3', '\xFF', '\xDE', '\xBC', '\x08', '\xBF', '\xC5', '\xF2', '\xC3', '\x8D'};
-    thread_local EncryptedName<sizeof(findPressSource), 0xB39FA7917BCFBB8DULL> findPressName(findPressSource);
-    const std::string findPress(findPressName.Text());
-    const char findNormalSource[] = {
-        '\x6B', '\x6E', '\x8D', '\xC3', '\xA7', '\xBB', '\x0E', '\xE0', '\x6D', '\x25', '\x8D', '\xF5', '\xDA', '\xCF', '\x97', '\x6C', '\xCF', '\xB7', '\x28',
-        '\x57', '\x13', '\x00', '\xB9', '\x48', '\xEC', '\xB4', '\x24', '\x5D', '\x02', '\x29', '\xA9', '\x59', '\xC5', '\x9E', '\x2B', '\x50', '\x09', '\x11',
-        '\x94', '\x43', '\xC4', '\xB3', '\x20', '\x58', '\x0B', '\x5B', '\xA9', '\x40', '\xDB', '\xC1'};
-    thread_local EncryptedName<sizeof(findNormalSource), 0x2DCB7567394DC1ABULL> findNormalName(findNormalSource);
-    const std::string findNormal(findNormalName.Text());
-    this->findButton->SetImages(findNormal, findPress, findOver, findDisable);
+    CUIImageButton* button = this->findButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
+  {
+    this->findButton->SetImages(std::string([]() {
+      constexpr char bytes[] = {
+          '\x6B', '\x6E', '\x8D', '\xC3', '\xA7', '\xBB', '\x0E', '\xE0', '\x6D', '\x25', '\x8D', '\xF5', '\xDA', '\xCF', '\x97', '\x6C', '\xCF', '\xB7', '\x28',
+          '\x57', '\x13', '\x00', '\xB9', '\x48', '\xEC', '\xB4', '\x24', '\x5D', '\x02', '\x29', '\xA9', '\x59', '\xC5', '\x9E', '\x2B', '\x50', '\x09', '\x11',
+          '\x94', '\x43', '\xC4', '\xB3', '\x20', '\x58', '\x0B', '\x5B', '\xA9', '\x40', '\xDB', '\xC1'};
+      constexpr EncryptedSource<50> source(bytes);
+      thread_local EncryptedName<50, 0x2DCB7567394DC1ABULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x4D', '\x14', '\x0F', '\x81', '\x51', '\x69', '\x5A', '\x7E', '\x4B', '\x5F', '\x0F', '\xB7', '\x2C', '\x1D', '\xC3', '\xF2', '\xE9', '\xCD', '\xAA',
+          '\x15', '\xE5', '\xD2', '\xED', '\xD6', '\xCA', '\xCE', '\xA6', '\x1F', '\xF4', '\xFB', '\xFD', '\xC7', '\xE3', '\xE4', '\xA9', '\x12', '\xFF', '\xC3',
+          '\xC0', '\xC3', '\xFF', '\xDE', '\xBC', '\x08', '\xBF', '\xC5', '\xF2', '\xC3', '\x8D'};
+      constexpr EncryptedSource<49> source(bytes);
+      thread_local EncryptedName<49, 0xB39FA7917BCFBB8DULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x37', '\xBC', '\xEB', '\x55', '\x31', '\xC1', '\xD8', '\x40', '\x31', '\xF7', '\xEB', '\x63', '\x4C', '\xB5', '\x41', '\xCC', '\x93', '\x65', '\x4E',
+          '\xC1', '\x85', '\x7A', '\x6F', '\xE8', '\xB0', '\x66', '\x42', '\xCB', '\x94', '\x53', '\x7F', '\xF9', '\x99', '\x4C', '\x4D', '\xC6', '\x9F', '\x6B',
+          '\x42', '\xE2', '\x81', '\x76', '\x59', '\x81', '\x93', '\x62', '\x6D', '\x8D'};
+      constexpr EncryptedSource<48> source(bytes);
+      thread_local EncryptedName<48, 0x8D1D0FF1AF2B13F7ULL> name(source);
+      return name.Text();
+    }()), std::string([]() {
+      constexpr char bytes[] = {
+          '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x0E', '\xD3', '\x47', '\x8A',
+          '\xAD', '\x77', '\xAA', '\xEB', '\x2A', '\xF0', '\x44', '\x86', '\xA7', '\x66', '\x83', '\xFB', '\x3B', '\xD9', '\x6E', '\x89', '\xAA', '\x6D', '\xBB',
+          '\xC6', '\x2B', '\xDE', '\x42', '\x8E', '\xA1', '\x6F', '\xBA', '\xB7', '\x2D', '\xDA', '\x41', '\xEF'};
+      constexpr EncryptedSource<51> source(bytes);
+      thread_local EncryptedName<51, 0x4F99DF03C3EF31B7ULL> name(source);
+      return name.Text();
+    }()));
   }
   this->AddChild(this->findButton);
 
@@ -2801,8 +2872,11 @@ void CUIQuest::OnCreate(int width, int height) {
   this->navigationButton->SetSize(62, 20);
   this->navigationButton->Move(540, 363);
   this->navigationButton->SetOnClick([this]() { this->SearchNavigation(); });
-  this->navigationButton->disabled = 0;
-  this->navigationButton->Invalidate();
+  {
+    CUIImageButton* button = this->navigationButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     const char moveDisableSource[] = {
         '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x62', '\x79', '\xB1', '\x2E',
