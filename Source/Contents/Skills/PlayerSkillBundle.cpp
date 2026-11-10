@@ -390,6 +390,16 @@ bool IsIndexedSkill(int id) {
 }
 
 // OFFSET: 0x007719D0
+// FUNCTION: fn_45558
+void CPlayerSkillBundle::RevertLevelChange(const CSkillInfo& current, CSkillInfo& value) {
+  const auto entry = this->levelChanges.find(value.id);
+  if (entry != this->levelChanges.end()) {
+    value.level = entry->second.previous;
+    if (current.level == entry->second.target) {
+      this->removals.push_back(current.id);
+    }
+  }
+}
 
 // OFFSET: 0x00771A50
 // FUNCTION: fn_45559
