@@ -831,7 +831,8 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
       display = RemoveTextColors(display.c_str());
     }
 
-    const std::vector<std::string> parts = SplitString(std::get<2>(info), ",");
+    const std::string linkData = std::get<2>(info);
+    const std::vector<std::string> parts = SplitString(linkData.c_str(), ",");
     const int width = MeasureText(this->m_parent, display, style).cx;
     if (width > this->m_width) {
       const std::vector<std::string> lines = SplitLines(this->m_parent, display, style, this->m_width);
