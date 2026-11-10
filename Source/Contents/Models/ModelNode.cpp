@@ -14,6 +14,11 @@ C3dNode::~C3dNode() {
   for (C3dNode* child : this->children) {
     delete child;
   }
+
+  this->children.clear();
+  this->textures.clear();
+  this->faceState.clear();
+  this->faceValues.clear();
 }
 
 // OFFSET: 0x00AB5DE0
