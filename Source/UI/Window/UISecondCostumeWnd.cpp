@@ -128,34 +128,41 @@ void UISecondCostumeWnd::LoadLists() {
 // OFFSET: 0x0094A2D0
 // FUNCTION: fn_12886
 void UISecondCostumeWnd::SelectSavedEntries() {
-  unsigned int index;
-  for (index = 0; index < this->m_entries[0].size(); ++index) {
+  unsigned int selected = 0;
+  for (unsigned int index = 0; index < this->m_entries[0].size(); ++index) {
     if (this->m_entries[0][index].value == g_session.m_headPalette) {
+      selected = index;
       break;
     }
   }
-  this->m_selected[0] = index < this->m_entries[0].size() ? index : 0;
+  this->m_selected[0] = selected;
 
-  for (index = 0; index < this->m_entries[1].size(); ++index) {
+  selected = 0;
+  for (unsigned int index = 0; index < this->m_entries[1].size(); ++index) {
     if (this->m_entries[1][index].value == g_session.m_head) {
+      selected = index;
       break;
     }
   }
-  this->m_selected[1] = index < this->m_entries[1].size() ? index : 0;
+  this->m_selected[1] = selected;
 
-  for (index = 0; index < this->m_entries[2].size(); ++index) {
+  selected = 0;
+  for (unsigned int index = 0; index < this->m_entries[2].size(); ++index) {
     if (this->m_entries[2][index].value == g_session.m_bodyStyle) {
+      selected = index;
       break;
     }
   }
-  this->m_selected[2] = index < this->m_entries[2].size() ? index : 0;
+  this->m_selected[2] = selected;
 
-  for (index = 0; index < this->m_entries[3].size(); ++index) {
+  selected = 0;
+  for (unsigned int index = 0; index < this->m_entries[3].size(); ++index) {
     if (this->m_entries[3][index].value == g_session.m_bodyCostume) {
+      selected = index;
       break;
     }
   }
-  this->m_selected[3] = index < this->m_entries[3].size() ? index : 0;
+  this->m_selected[3] = selected;
 }
 
 // OFFSET: 0x0094C5B0

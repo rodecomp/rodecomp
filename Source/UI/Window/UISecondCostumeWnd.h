@@ -12,6 +12,13 @@ class UIComboBoxDefWnd;
 class UIListBox;
 
 struct SecondCostumeEntry {
+  SecondCostumeEntry() : name(""), value(0) {
+  }
+  ~SecondCostumeEntry() {
+    this->name.clear();
+    this->value = 0;
+  }
+
   /* 0000 */ std::string name;
   /* 0018 */ int value;
 };
