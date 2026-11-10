@@ -13,6 +13,16 @@
 #include <cstdlib>
 #include <string>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x0072F4E0
 // FUNCTION: fn_07529
 CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
@@ -79,8 +89,7 @@ void CViolentQuakeEffect::Open() {
 // FUNCTION: fn_07534
 bool CViolentQuakeEffect::IsAlive() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CEZ2STRParticle* emitter = *it;
-    if (emitter->life == 0.0f || (emitter->life * 60.0f > static_cast<float>(emitter->elapsedFrames)) == true) {
+    if (IsParticleActive(*it) == true) {
       return true;
     }
   }
