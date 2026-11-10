@@ -36,7 +36,7 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 
       LexiconNode* current = node;
       unsigned char lastTerminal;
-      for (int remaining = chain; remaining != 0; --remaining) {
+      for (unsigned char index = 0; index < chain; ++index) {
         this->buffer[next++] = current->value;
         lastTerminal = current->terminal;
         if (lastTerminal == 1) {
