@@ -37,29 +37,27 @@ void CSunStanceEffect::Open() {
       continue;
     }
 
-    const char* texture;
     switch (this->id) {
     case 1214:
     default:
-      texture = "effect\\sun_stance\\sun_stance.tga";
+      particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       break;
     case 1215:
-      texture = "effect\\sun_stance\\lunar_stance.tga";
+      particle->SetTexture("effect\\sun_stance\\lunar_stance.tga");
       break;
     case 1216:
-      texture = "effect\\sun_stance\\star_stance.tga";
+      particle->SetTexture("effect\\sun_stance\\star_stance.tga");
       break;
     case 1217:
       if (index == 0) {
-        texture = "effect\\sun_stance\\sun_stance.tga";
+        particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       } else if (index == 1) {
-        texture = "effect\\sun_stance\\lunar_stance.tga";
+        particle->SetTexture("effect\\sun_stance\\lunar_stance.tga");
       } else {
-        texture = "effect\\sun_stance\\star_stance.tga";
+        particle->SetTexture("effect\\sun_stance\\star_stance.tga");
       }
       break;
     }
-    particle->SetTexture(texture);
 
     particle->effectId = this->id;
     particle->columnIndex = 1;
