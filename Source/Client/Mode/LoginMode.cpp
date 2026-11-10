@@ -1265,7 +1265,7 @@ bool sub_D92B70() {
 
 // OFFSET: 0x00D92D90
 // FUNCTION: fn_22294
-void nullsub_486(int) {
+void __stdcall nullsub_486(int) {
 }
 
 // OFFSET: 0x00D92DA0
@@ -1356,7 +1356,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
 
 // OFFSET: 0x00D93B10
 // FUNCTION: fn_22296
-void nullsub_487(int) {
+void __stdcall nullsub_487(int) {
 }
 
 // OFFSET: 0x00D92B60
