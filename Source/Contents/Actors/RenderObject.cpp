@@ -1097,8 +1097,8 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case HT_DETECTING:
     mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
     if (this->statusEffects[0] != 0) {
-      const int address = reinterpret_cast<int>(&position);
-      reinterpret_cast<CGameObject*>(this->statusEffects[0])->SendMsg(nullptr, AM_REQ_ATTACK, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const std::int64_t address = reinterpret_cast<int>(&position);
+      reinterpret_cast<CGameObject*>(this->statusEffects[0])->SendMsg(nullptr, AM_REQ_ATTACK, 0, static_cast<int>(address), static_cast<int>(address >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     break;
   case AS_VENOMDUST:
