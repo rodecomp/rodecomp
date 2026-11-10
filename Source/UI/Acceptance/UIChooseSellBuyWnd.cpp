@@ -4545,7 +4545,7 @@ int UIWindow::DrawItemNameSegments(
       const char* end = *it;
       int bytes = static_cast<int>(end - text);
       if (bytes) {
-        this->DrawShadowedText(offset + x, y, text, bytes, text == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
+        this->DrawShadowedText(offset + x, y, text, bytes, text != highlight ? color : highlightColor, 0xE0E0E0, 0, 12, 0);
         offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
         text = end;
       }
@@ -4557,20 +4557,20 @@ int UIWindow::DrawItemNameSegments(
   y -= lineHeight / 2;
   for (; it != breaks.end(); ++it) {
     const char* segment = text;
+    const char* start = text;
     const char* end = *it;
-    const char* cursor = text;
-    while (cursor < end) {
-      const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), cursor, 0);
-      if (g_inlineCharset && !TextContext::Marker(cursor, static_cast<unsigned>(std::strlen(cursor)))) {
-        cursor += 3;
+    while (text < end) {
+      const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
+      if (g_inlineCharset && !TextContext::Marker(text, static_cast<unsigned>(std::strlen(text)))) {
+        text += 3;
         continue;
       }
 
-      int bytes = static_cast<int>(next - cursor);
+      int bytes = static_cast<int>(next - text);
       int nextWidth = this->TextWidth(next, static_cast<unsigned>(std::strlen(next)), 0, 12, 0, 0);
-      int reach = this->TextWidth(cursor, bytes, 0, 12, 0, 0) + offset;
+      int reach = this->TextWidth(text, bytes, 0, 12, 0, 0) + offset;
       if (line == 2 && reach >= width - 15 && reach + nextWidth > width) {
-        if (segment == highlight) {
+        if (start == highlight) {
           this->DrawShadowedText(bytes + offset + x, y, "...", 3, highlightColor, 0xE0E0E0, 0, 12, 0);
         } else {
           this->DrawShadowedText(bytes + offset + x, y - 1, "...", 3, color, 0xE0E0E0, 0, 12, 0);
@@ -4578,16 +4578,15 @@ int UIWindow::DrawItemNameSegments(
         break;
       }
 
-      this->DrawShadowedText(x + offset, y, cursor, bytes, segment == highlight ? highlightColor : color, 0xE0E0E0, 0, 12, 0);
-      offset += this->TextWidth(cursor, bytes, 0, 12, 0, 0);
+      this->DrawShadowedText(x + offset, y, text, bytes, segment != highlight ? color : highlightColor, 0xE0E0E0, 0, 12, 0);
+      offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
       if (offset > width) {
         offset = 0;
         y += lineHeight + 1;
         ++line;
       }
-      cursor = next;
+      text = next;
     }
-    text = cursor;
   }
   return x;
 }
@@ -11717,6 +11716,16 @@ void UITipboxWnd::PaintAnimations() {
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
       this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap, true);
     }
+  }
+}
+
+// INLINED
+static __forceinline void AppendItemNameText(char*& cursor, std::size_t& remaining, const char* text) {
+  const int error = strncpy_s(cursor, remaining, text, _TRUNCATE);
+  if (error == 0 || error == STRUNCATE) {
+    const std::size_t bytes = strnlen_s(cursor, remaining);
+    cursor += bytes;
+    remaining -= bytes;
   }
 }
 
