@@ -49,27 +49,27 @@ bool CGPak::Extract(const myGPack::PakEntry* entry, void* buffer) {
   const std::uint8_t* source;
   if (entry->flags & 2) {
     const std::uint32_t size = entry->compressedSize;
-    int cycle;
+    int magnitude;
     if (size >= 1000000000u) {
-      cycle = 10;
+      magnitude = 9;
     } else if (size >= 100000000u) {
-      cycle = 9;
+      magnitude = 8;
     } else if (size >= 10000000u) {
-      cycle = 8;
+      magnitude = 7;
     } else if (size >= 1000000u) {
-      cycle = 7;
+      magnitude = 6;
     } else if (size >= 100000u) {
-      cycle = 6;
+      magnitude = 5;
     } else if (size >= 10000u) {
-      cycle = 5;
+      magnitude = 4;
     } else if (size >= 1000u) {
-      cycle = 4;
+      magnitude = 3;
     } else if (size >= 100u) {
-      cycle = 3;
+      magnitude = 2;
     } else {
-      cycle = size >= 10u ? 2 : 1;
+      magnitude = size >= 10u ? 1 : 0;
     }
-    cipher.Decode(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength, cycle);
+    cipher.Decode(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength, magnitude + 1);
     source = this->m_scratch.empty() ? nullptr : this->m_scratch.data();
   } else if (entry->flags & 4) {
     cipher.DecodePrefix(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength);
