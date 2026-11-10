@@ -13,7 +13,7 @@
 
 // OFFSET: 0x00B439D0
 // FUNCTION: fn_18882
-CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013), offsets() {
+CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013) {
 }
 
 // OFFSET: 0x00B43B50
@@ -42,7 +42,11 @@ void CCherryBlossomEffect::Open() {
         particle->scale = 0.55f;
         particle->alpha = 0;
 
-        this->offsets[row * 4 + column] = vector3d{0.0f, static_cast<float>(std::max(rand() % 100, 0)), 0.0f};
+        const float height = static_cast<float>(std::max(rand() % 100, 0));
+        EffectPoint& offset = this->offsets[row * 4 + column];
+        offset.x = 0.0f;
+        offset.y = height;
+        offset.z = 0.0f;
 
         float* angles = &particle->animationParameter;
         for (int i = 0; i < 4; ++i) {
@@ -59,17 +63,19 @@ void CCherryBlossomEffect::Open() {
 // FUNCTION: fn_18887
 void CCherryBlossomEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
     if (particle) {
       const int index = particle->columnIndex + particle->rowIndex * 4;
       const float speed = particle->speedParameter;
-      vector3d& offset = this->offsets[index];
+      EffectPoint& offset = this->offsets[index];
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
-          offset = vector3d{0.0f, static_cast<float>(std::max(rand() % 100, 0)), 0.0f};
+          offset.x = 0.0f;
+          offset.y = static_cast<float>(std::max(rand() % 100, 0));
+          offset.z = 0.0f;
 
           float* angles = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
