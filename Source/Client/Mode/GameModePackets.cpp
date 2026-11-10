@@ -11314,7 +11314,7 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
     return;
   }
 
-  const bool partyMember = g_session.IsPartyMember(target->render.accountId, true) && g_session.m_aid != target->render.accountId;
+  const int partyMember = g_session.IsPartyMember(target->render.accountId, true) && g_session.m_aid != target->render.accountId;
   if (g_session.m_aid != target->render.accountId && !partyMember) {
     return;
   }
