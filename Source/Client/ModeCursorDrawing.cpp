@@ -67,15 +67,15 @@ void CMode::DrawCursor() {
   }
   case 2:
   case 9:
-    if (g_mouse.buttons[0] == 0) {
-      this->cursorTick = timeGetTime();
-      this->cursorActionFrame = 0;
-    } else {
+    if (g_mouse.buttons[0] != 0) {
       const unsigned frame = ticks / divisor;
       this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
       if (frame / action->FrameCount(this->cursorAction) >= 1) {
         this->cursorActionFrame = action->FrameCount(this->cursorAction) - 1;
       }
+    } else {
+      this->cursorTick = timeGetTime();
+      this->cursorActionFrame = 0;
     }
     break;
   default:
@@ -138,19 +138,26 @@ void CMode::DrawCursor() {
     quad[2].y = y1;
     quad[3].x = x1;
     quad[3].y = y1;
-    for (RenderVertex& vertex : primitive->quad) {
-      vertex.z = 0.000001f;
-      vertex.rhw = 0.999999f;
-      vertex.diffuse = 0xFAFFFFFF;
-    }
+    quad[0].z = 0.000001f;
+    quad[0].rhw = 0.999999f;
     quad[0].u = record.u0;
     quad[0].v = record.v0;
+    quad[0].diffuse = 0xFAFFFFFF;
+    quad[1].z = 0.000001f;
+    quad[1].rhw = 0.999999f;
     quad[1].u = record.u1;
     quad[1].v = record.v0;
+    quad[1].diffuse = 0xFAFFFFFF;
+    quad[2].z = 0.000001f;
+    quad[2].rhw = 0.999999f;
     quad[2].u = record.u0;
     quad[2].v = record.v1;
+    quad[2].diffuse = 0xFAFFFFFF;
+    quad[3].z = 0.000001f;
+    quad[3].rhw = 0.999999f;
     quad[3].u = record.u1;
     quad[3].v = record.v1;
+    quad[3].diffuse = 0xFAFFFFFF;
 
     g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
