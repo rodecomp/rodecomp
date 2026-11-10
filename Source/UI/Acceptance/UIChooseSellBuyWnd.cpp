@@ -4366,13 +4366,8 @@ void UInCashWnd::DrawItems() {
       continue;
     }
 
-    int x = 71;
-    int column = row;
-    if (column > 3) {
-      x = 257;
-      column -= 4;
-    }
-    const int y = column * this->m_rowHeight + this->m_listTop;
+    const int x = row >= 4 ? 257 : 71;
+    const int y = (row >= 4 ? row - 4 : row) * this->m_rowHeight + this->m_listTop;
     const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
     if (!path.empty()) {
       this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
@@ -4675,7 +4670,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   }
   case UM_MENU_SELECTED:
-    if (this->m_log[a].commandId == 11) {
+    if (this->m_log[a].value == 11) {
       this->SaveChatLog();
     }
     return 0;
@@ -4685,9 +4680,9 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
 
-    this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)), 11});
+    this->m_log.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)).c_str(), 11));
     if (!g_windowMgr.IsFriend(this->m_target.c_str()) && g_serviceMode != 3) {
-      this->m_log.push_back(WhisperLogLine{std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 21});
+      this->m_log.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
     }
 
     g_modeMgr.gameMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
@@ -9364,7 +9359,7 @@ void UIWhisperWnd::OnCreate(int, int) {
   this->m_edit->Move(3, this->geometry.height - 18);
   this->m_edit->maximum = 70;
   this->m_edit->Background(255, 0, 255);
-  this->m_edit->TextColor(RGB(255, 255, 255), 0xFFFFFFFF);
+  this->m_edit->TextColor(255, 255, 255, 0xFFFFFFFF);
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SetId(490);

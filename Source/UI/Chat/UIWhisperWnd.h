@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_CHAT_UIWHISPERWND_H
 #define RAGNAROK_SOURCE_UI_CHAT_UIWHISPERWND_H
 
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
@@ -12,11 +13,6 @@ class UIChatEditCtrl;
 class UIChatHisBox;
 class UIResizer;
 
-struct WhisperLogLine {
-  /* 0000 */ std::string text;
-  /* 0018 */ std::uint32_t commandId;
-};
-
 class UIWhisperWnd : public UIFrameWnd {
 public:
   UIWhisperWnd();
@@ -27,7 +23,7 @@ public:
   /* 00E8 */ UIChatEditCtrl* m_edit;
   /* 00EC */ UIChatHisBox* m_chatHistory;
   /* 00F0 */ UIBitmapButton* m_closeButton;
-  /* 00F4 */ std::vector<WhisperLogLine> m_log;
+  /* 00F4 */ std::vector<MiniPartyInfoEntry> m_log;
   /* 0100 */ WindowPlacement* placement;
   /* 0104 */ std::string m_code;
 
