@@ -9111,12 +9111,18 @@ struct ReplayTaggedRecordHeader {
 // INLINED
 inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
   std::vector<unsigned char> record(bytes + 6u, 0);
-  const ReplayTaggedRecordHeader header{id, bytes};
-  std::memcpy(record.data(), &header, sizeof(header));
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
   if (bytes != 0) {
-    std::memcpy(record.data() + sizeof(header), data, bytes);
+    std::memcpy(record.data() + sizeof(ReplayTaggedRecordHeader), data, bytes);
   }
   return record;
+}
+
+// INLINED
+template <class Record> inline void AppendReplayRecord(std::vector<unsigned char>& records, const Record& record) {
+  records.insert(records.end(), record.begin(), record.end());
 }
 }
 
@@ -9125,14 +9131,8 @@ inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const
 // FUNCTION: fn_12104
 std::vector<unsigned char> UIBabyAcceptWnd2::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(21550, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(21551, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21550, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21551, nullptr, 0));
   return records;
 }
 
@@ -9140,89 +9140,73 @@ std::vector<unsigned char> UIBabyAcceptWnd2::GetReplayData() {
 // FUNCTION: fn_12106
 std::vector<unsigned char> UIChooseSellBuyWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(20850, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20851, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20850, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20851, nullptr, 0));
   return records;
 }
 
 // INLINED
-static __forceinline std::vector<unsigned char> BuildAcceptanceReplayRecords(UITextViewer* viewer, std::uint16_t id, int message) {
-  std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(id, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+template <class Window> static __forceinline void AppendAcceptanceReplayRecords(std::vector<unsigned char>& records, Window* window, std::uint16_t id, int message) {
+  AppendReplayRecord(records, MakeReplayTaggedRecord(id, nullptr, 0));
 
   char text[260];
   std::memset(text, 0, sizeof(text));
-  viewer->CopyText(text, 0);
-  const char parentheses[] = {'(', ')', '\0'};
-  std::string decoration(parentheses);
+  window->viewer->CopyText(text, 0);
+  const char parentheses[] = {'(', ')'};
+  std::string decoration(parentheses, sizeof(parentheses));
   decoration.append(LookupMessage(message));
-  {
-    const auto record = MakeReplayTaggedRecord(id + 2, text + 1, viewer->TextLength() - decoration.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(id + 2, text + 1, window->viewer->TextLength() - decoration.size()));
 
-  {
-    const auto record = MakeReplayTaggedRecord(id + 1, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  return records;
+  AppendReplayRecord(records, MakeReplayTaggedRecord(id + 1, nullptr, 0));
 }
 
 // OFFSET: 0x008D4A40
 // FUNCTION: fn_12109
 std::vector<unsigned char> UIExchangeAcceptWnd::GetReplayData() {
-  return BuildAcceptanceReplayRecords(this->viewer, 21650, 93);
+  std::vector<unsigned char> records;
+  AppendAcceptanceReplayRecords(records, this, 21650, 93);
+  return records;
 }
 
 // OFFSET: 0x008D3CD0
 // FUNCTION: fn_12105
 std::vector<unsigned char> UIBabyAcceptWnd::GetReplayData() {
-  return BuildAcceptanceReplayRecords(this->viewer, 21500, 794);
+  std::vector<unsigned char> records;
+  AppendAcceptanceReplayRecords(records, this, 21500, 794);
+  return records;
 }
 
 // OFFSET: 0x008D5C80
 // FUNCTION: fn_12113
 std::vector<unsigned char> UIJoinFriendAcceptWnd::GetReplayData() {
-  return BuildAcceptanceReplayRecords(this->viewer, 21600, 818);
+  std::vector<unsigned char> records;
+  AppendAcceptanceReplayRecords(records, this, 21600, 818);
+  return records;
 }
 
 // OFFSET: 0x008D60B0
 // FUNCTION: fn_12114
 std::vector<unsigned char> UIJoinGuildAcceptWnd::GetReplayData() {
-  return BuildAcceptanceReplayRecords(this->viewer, 21800, 377);
+  std::vector<unsigned char> records;
+  AppendAcceptanceReplayRecords(records, this, 21800, 377);
+  return records;
 }
 
 // OFFSET: 0x008D64E0
 // FUNCTION: fn_12115
 std::vector<unsigned char> UIJoinPartyAcceptWnd::GetReplayData() {
-  return BuildAcceptanceReplayRecords(this->viewer, 21750, 94);
+  std::vector<unsigned char> records;
+  AppendAcceptanceReplayRecords(records, this, 21750, 94);
+  return records;
 }
 
 // OFFSET: 0x008D7110
 // FUNCTION: fn_12118
 std::vector<unsigned char> UIStarPlaceAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(21700, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(21701, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21700, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21701, nullptr, 0));
   return records;
 }
 
@@ -9230,32 +9214,21 @@ std::vector<unsigned char> UIStarPlaceAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12108
 std::vector<unsigned char> UIChooseWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(21900, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21900, nullptr, 0));
 
   const int count = static_cast<int>(this->m_list->lines.size());
   for (int index = 0; index < count; ++index) {
     const std::string line = this->m_list->lines[index];
-    const auto record = MakeReplayTaggedRecord(21903, line.c_str(), line.size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(21903, line.c_str(), line.size()));
   }
 
-  {
-    const auto record = MakeReplayTaggedRecord(21901, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21901, nullptr, 0));
   return records;
 }
 
 // INLINED
-static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const std::list<ITEM_INFO>& items, std::uint16_t id, std::int16_t packetId) {
-  std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(id, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+static __forceinline void AppendItemListReplayRecords(std::vector<unsigned char>& records, const std::list<ITEM_INFO>& items, std::uint16_t id, std::int16_t packetId) {
+  AppendReplayRecord(records, MakeReplayTaggedRecord(id, nullptr, 0));
 
   std::vector<unsigned char> packet(items.size() * 2 + 4, 0);
   std::int16_t* fields = reinterpret_cast<std::int16_t*>(packet.data());
@@ -9265,53 +9238,40 @@ static __forceinline std::vector<unsigned char> BuildItemListReplayRecords(const
   for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != items.end(); ++item) {
     *index++ = static_cast<std::int16_t>(item->identity[1]);
   }
-  {
-    const auto message = MakeReplayTaggedRecord(id + 3, packet.data(), packet.size());
-    records.insert(records.end(), message.begin(), message.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(id + 3, packet.data(), packet.size()));
 
-  {
-    const auto record = MakeReplayTaggedRecord(id + 1, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  return records;
+  AppendReplayRecord(records, MakeReplayTaggedRecord(id + 1, nullptr, 0));
 }
 
 // OFFSET: 0x008D59B0
 // FUNCTION: fn_12112
 std::vector<unsigned char> UIItemIdentifyWnd::GetReplayData() {
-  return BuildItemListReplayRecords(this->m_items, 22300, 0x177);
+  std::vector<unsigned char> records;
+  AppendItemListReplayRecords(records, this->m_items, 22300, 0x177);
+  return records;
 }
 
 // OFFSET: 0x008D56E0
 // FUNCTION: fn_12111
 std::vector<unsigned char> UIItemCompositionWnd::GetReplayData() {
-  return BuildItemListReplayRecords(this->m_items, 22350, 0x17B);
+  std::vector<unsigned char> records;
+  AppendItemListReplayRecords(records, this->m_items, 22350, 0x17B);
+  return records;
 }
 
 // OFFSET: 0x008D6910
 // FUNCTION: fn_12116
 std::vector<unsigned char> UIMakingArrowListWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(22100, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22100, nullptr, 0));
 
   for (std::list<ITEM_INFO>::iterator item = this->m_items.begin(); item != this->m_items.end(); ++item) {
     const int itemId = std::atoi(item->itemId.c_str());
-    const auto record = MakeReplayTaggedRecord(22103, &itemId, sizeof(itemId));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(22103, &itemId, sizeof(itemId)));
   }
 
-  {
-    const auto record = MakeReplayTaggedRecord(22102, &this->listType, sizeof(this->listType));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(22101, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22102, &this->listType, sizeof(this->listType)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22101, nullptr, 0));
   return records;
 }
 
@@ -9803,18 +9763,11 @@ UIMakingArrowListWnd::UIMakingArrowListWnd()
 // FUNCTION: fn_12107
 std::vector<unsigned char> UIChooseWarpWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(21950, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21950, nullptr, 0));
   for (auto choice = this->m_choices.begin(); choice < this->m_choices.end(); ++choice) {
-    const auto record = MakeReplayTaggedRecord(21953, choice->c_str(), choice->size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(21953, choice->c_str(), choice->size()));
   }
-  {
-    const auto record = MakeReplayTaggedRecord(21951, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(21951, nullptr, 0));
   return records;
 }
 
@@ -9822,46 +9775,16 @@ std::vector<unsigned char> UIChooseWarpWnd::GetReplayData() {
 // FUNCTION: fn_12110
 std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(20600, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20603, &this->partnerId, sizeof(this->partnerId));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20604, &this->partnerLevel, sizeof(this->partnerLevel));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20602, this->partnerName.c_str(), this->partnerName.size());
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20605, &this->isLocalTrader, sizeof(this->isLocalTrader));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20606, &this->localConfirmed, sizeof(this->localConfirmed));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20607, &this->remoteConfirmed, sizeof(this->remoteConfirmed));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20608, &this->localAccepted, sizeof(this->localAccepted));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20609, &this->remoteAccepted, sizeof(this->remoteAccepted));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(20601, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20600, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20603, &this->partnerId, sizeof(this->partnerId)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20604, &this->partnerLevel, sizeof(this->partnerLevel)));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(20602, this->partnerName.c_str(), this->partnerName.size()));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20605, &this->isLocalTrader, sizeof(this->isLocalTrader)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20606, &this->localConfirmed, sizeof(this->localConfirmed)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20607, &this->remoteConfirmed, sizeof(this->remoteConfirmed)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20608, &this->localAccepted, sizeof(this->localAccepted)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20609, &this->remoteAccepted, sizeof(this->remoteAccepted)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(20601, nullptr, 0));
   return records;
 }
 
@@ -9869,23 +9792,13 @@ std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
 // FUNCTION: fn_12117
 std::vector<unsigned char> UISayDialogWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = MakeReplayTaggedRecord(22500, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22500, nullptr, 0));
   const UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
   for (auto text = viewer->m_texts.begin(); text != viewer->m_texts.end(); ++text) {
-    const auto record = MakeReplayTaggedRecord(22503, text->c_str(), text->size());
-    records.insert(records.end(), record.begin(), record.end());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(22503, text->c_str(), text->size()));
   }
-  {
-    const auto record = MakeReplayTaggedRecord(22504, &this->m_responsePending, sizeof(this->m_responsePending));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = MakeReplayTaggedRecord(22501, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22504, &this->m_responsePending, sizeof(this->m_responsePending)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(22501, nullptr, 0));
   return records;
 }
 
