@@ -62,13 +62,13 @@ std::pair<bool, std::vector<int>> CPetEvolutionMgr::GetEvolutionTargets(int petE
   std::vector<int> targets;
   const auto found = this->m_recipes.find(petEgg);
   if (found == this->m_recipes.end()) {
-    return std::pair<bool, std::vector<int>>(false, std::vector<int>());
+    return std::make_pair(false, std::vector<int>());
   }
 
-  for (auto it = found->second.begin(); it != found->second.end(); ++it) {
-    targets.push_back(it->target);
+  for (const PetEvolutionRecipe& recipe : found->second) {
+    targets.push_back(recipe.target);
   }
-  return std::pair<bool, std::vector<int>>(true, targets);
+  return std::make_pair(true, targets);
 }
 
 // OFFSET: 0x00672FC0
@@ -77,19 +77,19 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
   std::vector<std::pair<int, int>> materials;
   const auto found = this->m_recipes.find(petEgg);
   if (found == this->m_recipes.end()) {
-    return std::pair<bool, std::vector<std::pair<int, int>>>(false, std::vector<std::pair<int, int>>());
+    return std::make_pair(false, std::vector<std::pair<int, int>>());
   }
 
-  for (auto it = found->second.begin(); it != found->second.end(); ++it) {
-    if (it->target == target) {
-      for (auto material = it->materials.begin(); material != it->materials.end(); ++material) {
-        materials.push_back(*material);
+  for (const PetEvolutionRecipe& recipe : found->second) {
+    if (recipe.target == target) {
+      for (std::pair<int, int> material : recipe.materials) {
+        materials.push_back(material);
       }
-      return std::pair<bool, std::vector<std::pair<int, int>>>(true, materials);
+      return std::make_pair(true, materials);
     }
   }
 
-  return std::pair<bool, std::vector<std::pair<int, int>>>(false, std::vector<std::pair<int, int>>());
+  return std::make_pair(false, std::vector<std::pair<int, int>>());
 }
 
 // OFFSET: 0x00673260
