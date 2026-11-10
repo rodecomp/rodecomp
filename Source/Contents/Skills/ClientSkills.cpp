@@ -506,6 +506,7 @@ void CSession::EraseUnknownKey(std::int64_t key) {
 // OFFSET: 0x00E08D50
 // FUNCTION: fn_23772
 int CSession::CountProhibitionLog(std::uint32_t aid) {
+  int matches = 0;
   const int count = static_cast<int>(this->m_prohibitionLog.size());
   const CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
   if (!actor) {
@@ -514,7 +515,6 @@ int CSession::CountProhibitionLog(std::uint32_t aid) {
 
   const std::uint32_t accountId = actor->render.accountId;
   this->m_prohibitionTarget = accountId;
-  int matches = 0;
   for (int index = 0; index < count; ++index) {
     const ProhibitionLogEntry& entry = this->m_prohibitionLog[index];
     if (std::strcmp(entry.ownerName, this->m_serverName.c_str()) == 0 && entry.accountId == accountId) {
