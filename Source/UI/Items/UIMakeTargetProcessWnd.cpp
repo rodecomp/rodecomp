@@ -44,7 +44,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     bool hasElementalStone = false;
     int emptySlot = 3;
     for (int index = 0; index < 3; ++index) {
-      if (this->materials[index].identity[1] != 0) {
+      if (this->materials[index].identity[1] > 0) {
         hasElementalStone |= this->materials[index].IsElementalStone();
       } else if (emptySlot == 3) {
         emptySlot = index;
@@ -53,7 +53,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
     if (emptySlot < 3) {
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
-      if (item.identity[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
+      if (item.identity[1] > 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
         this->materials[emptySlot] = item;
         this->materials[emptySlot].quantity = 1;
         g_session.RemoveInventoryItem(item.identity[1], 1);
