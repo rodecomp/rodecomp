@@ -203,13 +203,15 @@ CEffect* EffectLists::Find(int actor, int instance, int id) const {
 // OFFSET: 0x00B253A0
 // FUNCTION: fn_18779
 void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
-  if (effect) {
-    this->retired.push_back(effect);
+  CEffect* target = effect;
+  if (target) {
+    this->retired.push_back(target);
 
     if (removeActive == 1) {
-      const int owner = effect->actor;
-      if (this->active.find(owner) != this->active.end()) {
-        this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
+      const int owner = target->actor;
+      auto found = this->active.find(owner);
+      if (found != this->active.end()) {
+        this->active[owner].remove_if([target](CEffect* other) { return other == target; });
       }
     }
   }
@@ -232,14 +234,7 @@ void EffectLists::Retire(int actor, int id) {
 // FUNCTION: fn_18778
 void EffectLists::Retire(int actor, int instance, int id) {
   if (actor > 0 && instance > 0) {
-    if (CEffect* effect = this->Find(actor, instance, id)) {
-      this->retired.push_back(effect);
-
-      const int owner = effect->actor;
-      if (this->active.find(owner) != this->active.end()) {
-        this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
-      }
-    }
+    this->Retire(this->Find(actor, instance, id), 1);
   }
 }
 
