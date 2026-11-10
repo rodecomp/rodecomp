@@ -2116,8 +2116,12 @@ void UIPrivateAirplaneWnd::Paint() {
   std::list<std::string> lines;
   this->WrapText(this->m_text, &lines, 0xa4, 0, 12, 0);
 
+  std::list<std::string>::iterator it = lines.begin();
+  if (it == lines.end()) {
+    return;
+  }
   int offset = 0;
-  for (auto it = lines.begin(); it != lines.end(); ++it, offset += 12) {
+  for (; it != lines.end(); ++it, offset += 12) {
     this->DrawTextAt(
       26, static_cast<int>(static_cast<unsigned>(32 - lines.size() * 12) * 0.5 + 78.0 + offset), it->c_str(), 0, 0, 12, 0x3512b5, 0, 0
     );
