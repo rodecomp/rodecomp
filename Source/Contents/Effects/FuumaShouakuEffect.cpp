@@ -43,20 +43,22 @@ void CFuumaShouakuEffect::Open() {
 
   particle->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku\\fuumashouaku.str"));
 
-  const float dy = this->sourcePosition[1] - this->position[1];
-  const float dx = this->sourcePosition[0] - this->position[0];
-  const float dz = this->sourcePosition[2] - this->position[2];
+  const float* target = this->sourcePosition;
+  const float* origin = this->position;
+  const float dy = target[1] - origin[1];
+  const float dx = target[0] - origin[0];
+  const float dz = target[2] - origin[2];
   this->travelFrames = static_cast<int>(SquareRoot(dy * dy + dx * dx + dz * dz) * g_depthAverageHalf);
 
-  this->velocityX = this->sourcePosition[0] - this->position[0];
-  this->velocityY = this->sourcePosition[1] - this->position[1];
-  this->velocityZ = this->sourcePosition[2] - this->position[2];
+  this->velocityX = target[0] - origin[0];
+  this->velocityY = target[1] - origin[1];
+  this->velocityZ = target[2] - origin[2];
   const float scale = 1.0f / SquareRoot(this->velocityX * this->velocityX + this->velocityY * this->velocityY + this->velocityZ * this->velocityZ);
   this->velocityX = scale * this->velocityX * 2.0f;
   this->velocityY = scale * this->velocityY * 2.0f;
   this->velocityZ = scale * this->velocityZ * 2.0f;
 
-  this->first->m_angle = ScreenAngle(this->position, this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  this->first->m_angle = ScreenAngle(origin, target, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
 }
 
 // OFFSET: 0x00702CC0
@@ -68,26 +70,25 @@ bool CFuumaShouakuEffect::IsAlive() {
 // OFFSET: 0x00702CD0
 // FUNCTION: fn_07012
 void CFuumaShouakuEffect::OnProcess() {
-  if (this->frame < this->travelFrames) {
-    if (this->first) {
-      this->first->position.x += this->velocityX;
-      this->first->position.y += this->velocityY;
-      this->first->position.z += this->velocityZ;
-    }
-  } else if (!this->second) {
-    if (this->first) {
-      FreeParticle(this->first);
-      this->first = nullptr;
-    }
+  if (this->frame >= this->travelFrames) {
+    if (!this->second) {
+      if (this->first) {
+        FreeParticle(this->first);
+        this->first = nullptr;
+      }
 
-    this->second = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->sourcePosition), 5));
-    if (this->second) {
-      this->second->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku_00\\fuumashouaku_00.str"));
-      this->second->m_loop = true;
-      this->AddEvent(0, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->travelFrames + 1, 0);
+      this->second = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->sourcePosition), 5));
+      if (this->second) {
+        this->second->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku_00\\fuumashouaku_00.str"));
+        this->second->m_loop = true;
+        this->AddEvent(0, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->travelFrames + 1, 0);
+      }
+    } else if (this->second->m_frame == 1) {
+      this->frame = this->travelFrames;
     }
-  } else if (this->second->m_frame == 1) {
-    this->frame = this->travelFrames;
+  } else if (this->first) {
+    CEZ2STRParticle* particle = this->first;
+    particle->position = {particle->position.x + this->velocityX, particle->position.y + this->velocityY, particle->position.z + this->velocityZ};
   }
 
   if (this->first) {
