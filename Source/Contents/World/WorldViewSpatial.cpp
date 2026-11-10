@@ -75,21 +75,26 @@ int WorldViewSpatial::ClassifyAxisAligned(const WorldSpatialTree& bounds) const 
 // FUNCTION: fn_17923
 void WorldViewSpatial::CollectNode(WorldSpatialTree& node, int depth, bool fullyInside) {
   if (depth == 5) {
-    (fullyInside ? this->inside : this->clipped).push_back(&node);
+    if (fullyInside) {
+      this->inside.push_back(&node);
+    } else {
+      this->clipped.push_back(&node);
+    }
     return;
   }
 
   for (int index = 0; index < 4; ++index) {
     WorldSpatialTree* child = node.children[index];
     if (fullyInside) {
-      this->CollectNode(*child, depth + 1, true);
-      continue;
-    }
+      this->CollectNode(*child, depth + 1, fullyInside);
+    } else {
+      const int visibility = this->ClassifyAxisAligned(*child);
 
-    const int visibility = this->ClassifyAxisAligned(*child);
-
-    if (visibility != 0) {
-      this->CollectNode(*child, depth + 1, visibility == 1);
+      if (visibility == 2) {
+        this->CollectNode(*child, depth + 1, false);
+      } else if (visibility == 1) {
+        this->CollectNode(*child, depth + 1, true);
+      }
     }
   }
 }
