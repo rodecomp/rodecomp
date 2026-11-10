@@ -35,8 +35,8 @@ void CEnergyOrbEffect::Close() {
 // FUNCTION: fn_19025
 void CEnergyOrbEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
-    const int angle = std::max(rand() % 360, 0);
-    const int phase = std::max(rand() % 3, 0);
+    const int angle = std::max(0, rand() % 360);
+    const int phase = std::max(0, rand() % 3);
 
     for (int j = 0; j < this->mode; ++j) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
@@ -63,7 +63,7 @@ void CEnergyOrbEffect::Open() {
 
       switch (this->id) {
       case EF_CHOOKGI:
-        particle->SetColor(particle->columnIndex != 0 ? -1 : 0, particle->columnIndex != 0 ? -1 : 0, particle->columnIndex != 0 ? 0 : 255);
+        particle->SetColor(particle->columnIndex != 0 ? 255 : 0, particle->columnIndex != 0 ? 255 : 0, particle->columnIndex != 0 ? 0 : 255);
         break;
       case EF_CHOOKGI_FIRE:
         particle->SetTexture("effect\\FireOrb.bmp");
