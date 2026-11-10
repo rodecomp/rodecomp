@@ -320,7 +320,7 @@ void PurchaseResultCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
   } else {
     const char captionSource[] = {'\x71', '\x69', '\x98', '\x54', '\x7A', '\xC5', '\x83'};
     const char* caption = DecryptName<0x078333BB9725B7C9ULL>(captionSource);
-    const char messageSource[] = {'\x67', '\x56', '\xBB', '\x1F', '\x15', '\xC2', '\xCB', '\xB2', '\x78', '\x08', '\xF8', '\xE9', '\x62', '\xAC', '\x54', '\xBF', '\x1A', '\x73', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x2B', '\xF4', '\xE7', '\x4A', '\x9F', '\xE0', '\x43', '\x5B', '\xE6', '\x17', '\x07', '\xB9', '\x77', '\x60', '\xAE', '\x5C', '\xC5', '\x87', '\x0A', '\xAB', '\x09', '\x62', '\x43', '\x52', '\xD2', '\x11', '\x4B', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x0B'};
+    const std::array<char, 56> messageSource = {'\x67', '\x56', '\xBB', '\x1F', '\x15', '\xC2', '\xCB', '\xB2', '\x78', '\x08', '\xF8', '\xE9', '\x62', '\xAC', '\x54', '\xBF', '\x1A', '\x73', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x2B', '\xF4', '\xE7', '\x4A', '\x9F', '\xE0', '\x43', '\x5B', '\xE6', '\x17', '\x07', '\xB9', '\x77', '\x60', '\xAE', '\x5C', '\xC5', '\x87', '\x0A', '\xAB', '\x09', '\x62', '\x43', '\x52', '\xD2', '\x11', '\x4B', '\xB1', '\x06', '\x11', '\xBA', '\xC5', '\x0B'};
     const char* message = DecryptName<0x0BEB63A5C905B3A7ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
@@ -359,7 +359,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else {
           const char captionSource[] = {'\xAF', '\x27', '\xF2', '\x7A', '\x3A', '\x43', '\x2F'};
           const char* caption = DecryptName<0xC52FB5FBB94FF917ULL>(captionSource);
-          const char messageSource[] = {'\x06', '\x89', '\x74', '\x9C', '\x4C', '\x5C', '\xF4', '\xE1', '\x93', '\xD9', '\x09', '\x93', '\x43', '\xBB', '\xF1', '\xBC', '\x76', '\xB0', '\x73', '\xBE', '\x41', '\x35', '\xF5', '\xC3', '\x07', '\xA8', '\x77', '\x8A', '\xD9', '\xB3', '\x10', '\x64', '\x9A', '\x67'};
+          const std::array<char, 34> messageSource = {'\x06', '\x89', '\x74', '\x9C', '\x4C', '\x5C', '\xF4', '\xE1', '\x93', '\xD9', '\x09', '\x93', '\x43', '\xBB', '\xF1', '\xBC', '\x76', '\xB0', '\x73', '\xBE', '\x41', '\x35', '\xF5', '\xC3', '\x07', '\xA8', '\x77', '\x8A', '\xD9', '\xB3', '\x10', '\x64', '\x9A', '\x67'};
           const char* message = DecryptName<0x17359BF953C367B3ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
@@ -386,7 +386,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else {
           const char captionSource[] = {'\x79', '\x11', '\x6E', '\xF0', '\x56', '\xEB', '\xFD'};
           const char* caption = DecryptName<0x69FD1D9733D3CFC1ULL>(captionSource);
-          const char messageSource[] = {'\x70', '\x23', '\x30', '\x3A', '\x14', '\x64', '\x26', '\x65', '\xE5', '\x73', '\x4D', '\x35', '\x1B', '\x83', '\x23', '\x38', '\x00', '\x1A', '\x37', '\x18', '\x19', '\x0D', '\x27', '\x47', '\x71', '\x02', '\x33', '\x2C', '\x81', '\x8B', '\xC2', '\xE0', '\xEC', '\xCD'};
+          const std::array<char, 34> messageSource = {'\x70', '\x23', '\x30', '\x3A', '\x14', '\x64', '\x26', '\x65', '\xE5', '\x73', '\x4D', '\x35', '\x1B', '\x83', '\x23', '\x38', '\x00', '\x1A', '\x37', '\x18', '\x19', '\x0D', '\x27', '\x47', '\x71', '\x02', '\x33', '\x2C', '\x81', '\x8B', '\xC2', '\xE0', '\xEC', '\xCD'};
           const char* message = DecryptName<0x93E7A3A1F587CDC5ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
@@ -428,7 +428,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
   } else {
     const char captionSource[] = {'\x89', '\x87', '\x96', '\xC2', '\xA0', '\x3B', '\x65'};
     const char* caption = DecryptName<0x8B65CD61012B5931ULL>(captionSource);
-    const char messageSource[] = {'\x07', '\x28', '\x5B', '\xEB', '\xAF', '\xDC', '\x45', '\x4C', '\x18', '\x76', '\x18', '\x1D', '\xD8', '\xB2', '\xDA', '\x41', '\x7A', '\x0D', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xD5', '\x94', '\x99', '\xAA', '\x6B', '\x5A', '\x5D', '\xD5', '\x18', '\x77', '\x79', '\x59', '\x83', '\xDA', '\xB0', '\xD2', '\x3B', '\xE7', '\x74', '\x4B', '\xFD', '\xD8', '\x5D', '\xDC', '\x2C', '\x71', '\x35', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xF5'};
+    const std::array<char, 56> messageSource = {'\x07', '\x28', '\x5B', '\xEB', '\xAF', '\xDC', '\x45', '\x4C', '\x18', '\x76', '\x18', '\x1D', '\xD8', '\xB2', '\xDA', '\x41', '\x7A', '\x0D', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xD5', '\x94', '\x99', '\xAA', '\x6B', '\x5A', '\x5D', '\xD5', '\x18', '\x77', '\x79', '\x59', '\x83', '\xDA', '\xB0', '\xD2', '\x3B', '\xE7', '\x74', '\x4B', '\xFD', '\xD8', '\x5D', '\xDC', '\x2C', '\x71', '\x35', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xF5'};
     const char* message = DecryptName<0xF5657D1F3DE5CDC7ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
@@ -550,7 +550,7 @@ bool CStoveMgr::Initialize() {
   if (std::strstr(g_commandLine, skipRestart) == nullptr && Base_RestartAppIfNecessary(&param) == true) {
     const char captionSource[] = {'\x69', '\xC7', '\x20', '\x4C', '\xAA', '\x7D', '\x0F'};
     const char* caption = DecryptName<0x0F0F8B6B8F9D19D1ULL>(captionSource);
-    const char messageSource[] = {'\x3E', '\x17', '\x5A', '\x5B', '\xC0', '\x23', '\x4A', '\x75', '\xDB', '\x90', '\xF5', '\xE1', '\x1B', '\xF3', '\x49', '\x77', '\xD5', '\xC5', '\x15', '\xE8', '\x4E', '\xC4', '\x57', '\xF9', '\xD0', '\xA4', '\xF2', '\xCD', '\x62', '\xDB', '\xAF', '\x18', '\xBB', '\xDF', '\x89', '\x92', '\x41', '\x03'};
+    const std::array<char, 38> messageSource = {'\x3E', '\x17', '\x5A', '\x5B', '\xC0', '\x23', '\x4A', '\x75', '\xDB', '\x90', '\xF5', '\xE1', '\x1B', '\xF3', '\x49', '\x77', '\xD5', '\xC5', '\x15', '\xE8', '\x4E', '\xC4', '\x57', '\xF9', '\xD0', '\xA4', '\xF2', '\xCD', '\x62', '\xDB', '\xAF', '\x18', '\xBB', '\xDF', '\x89', '\x92', '\x41', '\x03'};
     const char* message = DecryptName<0xD98F03A52D35636DULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
     return false;
@@ -568,7 +568,7 @@ bool CStoveMgr::Initialize() {
 
   const char captionSource[] = {'\x0F', '\xD9', '\xEA', '\x0E', '\xEA', '\x11', '\x2B'};
   const char* caption = DecryptName<0x812BE72BCD5707B7ULL>(captionSource);
-  const char messageSource[] = {'\x66', '\xF7', '\x23', '\x21', '\x43', '\x34', '\xC0', '\x99', '\x5D', '\x1D', '\x5F', '\x0C', '\xDD', '\x78', '\xE7', '\x95', '\x81', '\x80', '\x58', '\x11', '\xB3', '\x48', '\xE8', '\xE6', '\x08', '\x1D', '\x2F', '\x03', '\xA3', '\x5C', '\xE7', '\xE2', '\x81', '\xFC', '\x21', '\x60', '\x82', '\x48', '\xF2', '\xED', '\x6E', '\x89', '\x46', '\xF9', '\x63'};
+  const std::array<char, 45> messageSource = {'\x66', '\xF7', '\x23', '\x21', '\x43', '\x34', '\xC0', '\x99', '\x5D', '\x1D', '\x5F', '\x0C', '\xDD', '\x78', '\xE7', '\x95', '\x81', '\x80', '\x58', '\x11', '\xB3', '\x48', '\xE8', '\xE6', '\x08', '\x1D', '\x2F', '\x03', '\xA3', '\x5C', '\xE7', '\xE2', '\x81', '\xFC', '\x21', '\x60', '\x82', '\x48', '\xF2', '\xED', '\x6E', '\x89', '\x46', '\xF9', '\x63'};
   const char* message = DecryptName<0x59278F63D79F3DA1ULL>(messageSource);
   MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   return false;
