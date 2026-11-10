@@ -26,15 +26,12 @@ void CUIEditCtrlEx::RefreshPlaceholder() {
     return;
   }
 
-  std::uint32_t color;
   if (this->text.size() == 0) {
     this->SetText(this->placeholder.c_str());
-    color = this->placeholderColor;
+    this->TextColor(GetRValue(this->placeholderColor), GetGValue(this->placeholderColor), GetBValue(this->placeholderColor), 0xFFFFFFFF);
   } else {
-    color = this->normalColor;
+    this->TextColor(GetRValue(this->normalColor), GetGValue(this->normalColor), GetBValue(this->normalColor), 0xFFFFFFFF);
   }
-
-  this->TextColor(color & 0xFFFFFF, 0xFFFFFFFF);
 }
 
 // OFFSET: 0x009E43D0
