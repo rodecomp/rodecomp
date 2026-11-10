@@ -7,6 +7,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectPoint.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -320,7 +321,7 @@ void CThrowItemEffect::OnProcess() {
       if (target->columnIndex == 0) {
         rotation = static_cast<float>(static_cast<int>(rotation + 45.0f) % 360);
       } else {
-        this->trailAlpha -= target->columnIndex == 1 ? 150 : 25;
+        this->trailAlpha -= target->columnIndex != 1 ? 25 : 150;
         target->alpha = this->trailAlpha;
         offsetX = this->trailX;
         offsetY = this->trailY;
@@ -332,8 +333,7 @@ void CThrowItemEffect::OnProcess() {
       float height = 0.0f;
 
       if (progress > 1.05f) {
-        const int alpha = target->alpha - 20;
-        target->alpha = alpha > 0 ? alpha : 0;
+        target->alpha = std::ranges::max(target->alpha - 20, 0);
       } else {
         const int index = *reinterpret_cast<const int*>(&target->effectParameters[4]);
         const float radius = angle / *reinterpret_cast<const float*>(&target->effectParameters[0xC]);
@@ -577,11 +577,9 @@ void CVolcanoEffect::OnProcess() {
 
       int tilt = particle->phaseParameter - 1;
       if (this->id == EF_GUMGANG2) {
-        if (tilt < 30) {
-          tilt = 30;
-        }
-      } else if (tilt < 40) {
-        tilt = 40;
+        tilt = tilt < 30 ? 30 : tilt;
+      } else {
+        tilt = tilt < 40 ? 40 : tilt;
       }
       particle->phaseParameter = tilt;
 
@@ -632,7 +630,7 @@ void CVolcanoEffect::OnProcess() {
       const float sine = g_sinTable[angle];
       const float height = radius * g_sinTable[tilt];
 
-      vector3d corners[2] = {};
+      EffectPoint corners[2];
       corners[0].x = particle->scale * cosine;
       corners[0].y = 0.0f;
       corners[0].z = particle->scale * sine;
@@ -656,8 +654,12 @@ void CVolcanoEffect::OnProcess() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner = corners[0];
-      this->lastOuter = corners[1];
+      this->lastInner.x = corners[0].x;
+      this->lastInner.y = corners[0].y;
+      this->lastInner.z = corners[0].z;
+      this->lastOuter.x = corners[1].x;
+      this->lastOuter.y = corners[1].y;
+      this->lastOuter.z = corners[1].z;
     }
 
     ++particle->elapsedFrames;
