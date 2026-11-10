@@ -50,17 +50,18 @@ void UIEscOptionWnd::LayoutButtons() {
     this->m_buttons[i]->Move(-100, -100);
   }
 
+  int titleHeight = this->m_titleHeight;
   if (this->m_mode == 0) {
-    this->Resize(this->geometry.width, this->m_titleHeight + 122);
+    this->Resize(this->geometry.width, titleHeight + 122);
     for (int i = 0; i < 5; ++i) {
       this->m_buttons[i]->Move(29, this->m_titleHeight + 5 + i * 23);
     }
   } else if (this->m_mode == 1) {
-    this->Resize(this->geometry.width, this->m_titleHeight + 53);
+    this->Resize(this->geometry.width, titleHeight + 53);
     this->m_buttons[6]->Move(29, this->m_titleHeight + 5);
     this->m_buttons[4]->Move(29, this->m_titleHeight + 28);
   } else if (this->m_mode == 2) {
-    this->Resize(this->geometry.width, this->m_titleHeight + 76);
+    this->Resize(this->geometry.width, titleHeight + 76);
     this->m_buttons[5]->Move(29, this->m_titleHeight + 5);
     this->m_buttons[6]->Move(29, this->m_titleHeight + 28);
     this->m_buttons[4]->Move(29, this->m_titleHeight + 51);
