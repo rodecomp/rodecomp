@@ -120,12 +120,12 @@ bool CNeoPackageItemMgr::LoadScript() {
 // FUNCTION: fn_06526
 __declspec(noinline) bool CNeoPackageItemMgr::HasPackage(int itemId) {
   const auto end = this->m_packages.end();
-  const int packageId = g_itemInfoMgr->GetPackageId(itemId);
-  if (packageId != 0) {
-    itemId = packageId;
+  int packageId = g_itemInfoMgr->GetPackageId(itemId);
+  if (packageId == 0) {
+    packageId = itemId;
   }
 
-  return this->m_packages.find(itemId) != end;
+  return end != this->m_packages.find(packageId);
 }
 
 // OFFSET: 0x006D2990
