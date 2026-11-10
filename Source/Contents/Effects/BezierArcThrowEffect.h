@@ -10,7 +10,8 @@
 
 class CBezierArcThrowEffect : public CEffect {
 public:
-  explicit CBezierArcThrowEffect(const std::string& name) : CEffect(-1), m_name(name), m_target() {}
+  // INLINED
+  __forceinline explicit CBezierArcThrowEffect(const std::string& name) : CEffect(-1), m_name(name), m_target() {}
 
   /* 00CC */ bool m_active;
   /* 00D0 */ float m_progress;
