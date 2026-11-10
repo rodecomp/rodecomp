@@ -4094,14 +4094,14 @@ void CTunaPartyEffect::OnProcess() {
     CSpriteParticle* particle = AsSprite(*it);
     const float phase = particle->animationParameter + 0.05f;
     particle->animationParameter = phase;
-    const float cosine = std::cos(phase) * 10.0f;
-    const float sine = std::sin(phase) * 10.0f;
+    const float cosine = ClientCos(phase) * 10.0f;
+    const float sine = ClientSin(phase) * 10.0f;
     particle->position.y = this->position[1] - 10.0f;
     particle->position.x = this->position[0] + sine;
     particle->position.z = this->position[2] + cosine;
     float angle = phase / 3.141592f * 180.0f;
     if (angle > 360.0f) {
-      angle = std::fmod(angle, 360.0f);
+      angle -= static_cast<float>(static_cast<int>(angle / 360.0f) * 360);
     }
     angle -= static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
     if (angle < 0.0f) {
@@ -4470,26 +4470,22 @@ struct CylinderSlice {
 // OFFSET: 0x0070F800
 // FUNCTION: fn_07190
 __declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
-  const float radians = static_cast<float>(angle);
-  const double radiansAsDouble = static_cast<double>(radians);
-  const float sine = static_cast<float>(std::sin(radiansAsDouble));
-  const float cosine = static_cast<float>(std::cos(radiansAsDouble));
-  const float sineForHeight = static_cast<float>(std::sin(radiansAsDouble));
-  const float pitch = static_cast<float>(this->pitch);
-  const double pitchAsDouble = static_cast<double>(pitch);
-  const float cosinePitchForZ = static_cast<float>(std::cos(pitchAsDouble));
-  const double heightAlongZ = static_cast<double>(cosinePitchForZ) * this->height;
-  const float sinePitch = static_cast<float>(std::sin(pitchAsDouble));
-  const float cosinePitchForX = static_cast<float>(std::cos(pitchAsDouble));
-  const double heightAlongX = static_cast<double>(cosinePitchForX) * this->height;
-  const float cosineForHeight = static_cast<float>(std::cos(radiansAsDouble));
-
-  points[0].x = static_cast<float>(static_cast<double>(cosine) * this->radius);
-  points[0].y = 0.0f;
-  points[0].z = static_cast<float>(static_cast<double>(sine) * this->radius);
-  points[1].x = static_cast<float>(static_cast<double>(cosineForHeight) * heightAlongX) + points[0].x;
-  points[1].y = static_cast<float>(-static_cast<double>(sinePitch) * this->height) + 0.0f;
-  points[1].z = static_cast<float>(static_cast<double>(sineForHeight) * heightAlongZ) + points[0].z;
+  const float baseZ = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->radius);
+  const float baseX = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->radius);
+  vector3d result[2];
+  result[0].x = baseX;
+  result[0].y = 0.0f;
+  result[0].z = baseZ;
+  const float offsetZ =
+      static_cast<float>(ClientSin(static_cast<float>(angle)) * (this->height * ClientCos(static_cast<float>(this->pitch))));
+  const float offsetY = static_cast<float>(this->height * -ClientSin(static_cast<float>(this->pitch)));
+  const float offsetX =
+      static_cast<float>(ClientCos(static_cast<float>(this->pitch)) * this->height * ClientCos(static_cast<float>(angle)));
+  result[1].x = offsetX + baseX;
+  result[1].y = offsetY + 0.0f;
+  result[1].z = offsetZ + baseZ;
+  points[0] = result[0];
+  points[1] = result[1];
   return points;
 }
 
