@@ -2665,7 +2665,7 @@ bool CRagEffect::JobLvUp50_2(short angle) {
 // OFFSET: 0x00C629D0
 // FUNCTION: fn_20252
 bool CRagEffect::RunStop(short angle) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 75, 0.0f, 0.0f, 0.0f, WorldObjects());
@@ -3494,42 +3494,39 @@ void CRagEffect::PurpleSlash(std::int16_t angle) {
 // OFFSET: 0x00C647D0
 // FUNCTION: fn_20262
 void CRagEffect::TexturedPair(const char* name) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 76, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  this->state.currentPrimitive->totalTexture = 1;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.currentPrimitive->size = 4.0f;
-  this->state.currentPrimitive->slots[3].life = 0;
-  this->state.currentPrimitive->slots[2].life = 0;
-  this->state.currentPrimitive->slots[0].life = 1;
-  this->state.currentPrimitive->slots[0].process = 0;
-  this->state.currentPrimitive->slots[0].maxHeight = 10.0f;
-  this->state.currentPrimitive->slots[0].distance = 2.0f;
-  this->state.currentPrimitive->slots[0].height[0] = -8.0f;
-  this->state.currentPrimitive->slots[0].rotStart = 0;
-  this->state.currentPrimitive->slots[0].fullDisplayAngle = 0;
-  this->state.currentPrimitive->slots[0].alphaB = 200;
-  this->state.currentPrimitive->slots[0].riseAngle = 0;
-  this->state.currentPrimitive->slots[1].life = 1;
-  this->state.currentPrimitive->slots[1].process = 0;
-  this->state.currentPrimitive->slots[1].maxHeight = 10.0f;
-  this->state.currentPrimitive->slots[1].distance = 2.0f;
-  this->state.currentPrimitive->slots[1].height[0] = -8.0f;
-  this->state.currentPrimitive->slots[1].rotStart = 0;
-  this->state.currentPrimitive->slots[1].fullDisplayAngle = 0;
-  this->state.currentPrimitive->slots[1].alphaB = 200;
-  this->state.currentPrimitive->slots[1].riseAngle = 0;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 76, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.totalTexture = 1;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.slots[3].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[0].life = 1;
+  this->state.lastPrim->state.slots[0].process = 0;
+  this->state.lastPrim->state.slots[0].maxHeight = 10.0f;
+  this->state.lastPrim->state.slots[0].distance = 2.0f;
+  this->state.lastPrim->state.slots[0].height[0] = -8.0f;
+  this->state.lastPrim->state.slots[0].rotStart = 0;
+  this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
+  this->state.lastPrim->state.slots[0].alphaB = 200;
+  this->state.lastPrim->state.slots[0].riseAngle = 0;
+  this->state.lastPrim->state.slots[1].life = 1;
+  this->state.lastPrim->state.slots[1].process = 0;
+  this->state.lastPrim->state.slots[1].maxHeight = 10.0f;
+  this->state.lastPrim->state.slots[1].distance = 2.0f;
+  this->state.lastPrim->state.slots[1].height[0] = -8.0f;
+  this->state.lastPrim->state.slots[1].rotStart = 0;
+  this->state.lastPrim->state.slots[1].fullDisplayAngle = 0;
+  this->state.lastPrim->state.slots[1].alphaB = 200;
+  this->state.lastPrim->state.slots[1].riseAngle = 0;
 }
 
 // OFFSET: 0x00C549C0
@@ -5015,10 +5012,7 @@ void CRagEffect::TexturedHalo(const char* name, char kind) {
 // OFFSET: 0x00C642E0
 // FUNCTION: fn_20260
 void CRagEffect::TexturedSlashCross(const char* name) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt >= 5) {
     return;
@@ -14273,7 +14267,7 @@ void CRagEffect::WhiteSparkStreak(char kind) {
 // FUNCTION: fn_20249
 void CRagEffect::BlueRingWave() {
   if (this->state.stateCnt % 14 == 0) {
-    this->render.position = this->state.parent->render.position;
+    CopyVector(this->render.position, this->state.parent->render.position);
     PlayEffectWave(*this, "effect\\EF_ReadyPortal.wav");
   }
 
