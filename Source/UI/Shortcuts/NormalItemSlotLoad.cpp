@@ -12,10 +12,11 @@
 // OFFSET: 0x005E65E0
 // FUNCTION: fn_03929
 void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
+  const Json::Value& root = data;
   NormalItemSlotWindow& saved = g_windowMgr.m_normalItemSlotWindow;
   bool& itemSlotActive = g_session.ItemSlotActive();
 
-  Json::Value& values = data["NormalItemSlot"];
+  const Json::Value& values = root["NormalItemSlot"];
 
   if (values.isNull()) {
     return;
@@ -24,7 +25,7 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
   g_session.ClearNormalItemSlots();
 
   for (auto entry = values.begin(); entry != values.end(); ++entry) {
-    Json::Value& value = *entry;
+    const Json::Value& value = *entry;
 
     if (!value.isObject()) {
       continue;
@@ -35,10 +36,12 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     g_session.m_normalItemSlots[index].itemId = static_cast<std::uint32_t>(item);
   }
 
-  Json::Value& info = data["SlotInfo"];
+  const Json::Value& info = root["SlotInfo"];
 
   if (info.empty()) {
-    saved.Reset();
+    NormalItemSlotWindow defaults;
+    defaults.Reset();
+    saved = defaults;
   } else {
     const int x = info.get("SlotX", 0).asInt();
     const int y = info.get("SlotY", 0).asInt();
@@ -53,7 +56,7 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     saved.show = show;
   }
 
-  Json::Value& active = data["ItemSlotActive"];
+  const Json::Value& active = root["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_SHORTCUTWND);
