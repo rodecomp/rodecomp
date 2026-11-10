@@ -87,13 +87,19 @@ int CSession::IsLocalPlayerAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DDF0
 // FUNCTION: fn_23881
 bool CSession::IsHomunAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]);
+  if (aid == 0xFFFFFFFF) {
+    return false;
+  }
+  return aid == *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]);
 }
 
 // OFFSET: 0x00E1DE10
 // FUNCTION: fn_23882
 bool CSession::IsMercenaryAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
+  if (aid == 0xFFFFFFFF) {
+    return false;
+  }
+  return aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
 }
 
 // OFFSET: 0x00E1DE30
@@ -117,5 +123,8 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DF00
 // FUNCTION: fn_23885
 bool CSession::IsPetAid(std::uint32_t aid) const {
-  return aid != 0xFFFFFFFF && aid == this->petGid;
+  if (aid == 0xFFFFFFFF) {
+    return false;
+  }
+  return aid == this->petGid;
 }
