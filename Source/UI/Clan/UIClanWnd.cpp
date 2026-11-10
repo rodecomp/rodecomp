@@ -1,4 +1,5 @@
 #include "UI/Clan/UIClanWnd.h"
+#include "Client/Session.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -74,9 +75,9 @@ void UIClanInfoManageWnd::Paint() {
   {
     std::string map = g_clanInfo->m_mapName;
     if (map.size() > 4) {
-      map.replace(map.find(".gat"), 4, ".rsw");
+      map.replace(map.find(".gat"), 4, std::string(".rsw"));
     }
-    map = g_mapInfoMgr->GetDisplayName(std::string(map.c_str()));
+    map = g_session.GetMapDisplayName(map.c_str());
     std::sprintf(text, "%s : %s", LookupMessage(MSI_TWWEB_URL), map.c_str());
     this->DrawTextAt(8, 113, text, 0, 0, 12, 0, 0, 0);
   }
@@ -101,7 +102,7 @@ void UIClanInfoManageWnd::Paint() {
   SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
   this->FillRegion(279, 64, 26, 26, RGB(red, green, blue));
   if (g_clanInfo->m_clanId != 0) {
-    this->DrawBitmap(280, 65, this->m_emblem ? &this->m_emblem->image : nullptr, true);
+    this->DrawBitmap(280, 65, this->m_emblem, true);
   }
   std::sprintf(text, "%s", LookupMessage(MSI_CLAN_MASTER_NAME));
   this->DrawTextAt(200, 139, text, 0, 0, 12, 0, 0, 0);
