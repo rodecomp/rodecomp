@@ -2,6 +2,7 @@
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/PlayerSkillBundle.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
@@ -79,7 +80,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       text = shortcut;
     } else {
       int level = slot.value;
-      if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
+      if (IsIndexedSkill(static_cast<int>(skill.id)) && skill.level < level) {
         level = skill.level;
       }
 
