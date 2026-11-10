@@ -477,7 +477,8 @@ void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
   AutomaticSkills& automatic = g_session.m_automaticSkills;
   const QuickSlotEntry& entry = this->m_entries[slot];
   if (entry.skill && automatic.Contains(static_cast<std::uint16_t>(entry.id))) {
-    g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(entry.id)), 1, 0);
+    const int option = automatic.CancelOption(static_cast<std::uint16_t>(entry.id));
+    g_session.SetOption(option, 1, 0);
   } else {
     automatic.DisableAll();
   }

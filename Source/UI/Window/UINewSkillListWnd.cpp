@@ -974,7 +974,7 @@ void UINewSkillListWnd::OnLBtnDblClk(int x, int y) {
   if (skill.available != 0 && skill.level != 0) {
     AutomaticSkills& automatic = g_session.m_automaticSkills;
     if (automatic.Contains(skill.id)) {
-      g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(skill.id)), 1, 0);
+      g_session.SetOption(automatic.CancelOption(skill.id), 1, 0);
     } else {
       automatic.DisableAll();
     }

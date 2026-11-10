@@ -7513,7 +7513,7 @@ void CGameMode::ProcessRightButtonDrag() {
 
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (shortcuts->m_slots[4]->enabled && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[4]->itemId))) {
-      g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[4]->itemId)), 1, 0);
+      g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[4]->itemId), 1, 0);
     } else {
       automatic->DisableAll();
     }
@@ -7683,7 +7683,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       }
 
       if (shortcuts->m_slots[3]->enabled && automatic->Contains(shortcuts->m_slots[3]->itemId)) {
-        g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[3]->itemId)), 1, 0);
+        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[3]->itemId), 1, 0);
       } else {
         automatic->DisableAll();
       }
@@ -7695,7 +7695,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       }
 
       if (shortcuts->m_slots[2]->enabled && automatic->Contains(shortcuts->m_slots[2]->itemId)) {
-        g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(shortcuts->m_slots[2]->itemId)), 1, 0);
+        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[2]->itemId), 1, 0);
       } else {
         automatic->DisableAll();
       }

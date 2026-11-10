@@ -7,7 +7,7 @@
 
 namespace {
   // INLINED
-  int ActiveOption(std::int16_t id) {
+  int ActiveOption(std::uint16_t id) {
     switch (id) {
     case GC_ROLLINGCUTTER:
       return 2;
@@ -49,8 +49,8 @@ bool AutomaticSkills::Contains(int id) const {
 
 // OFFSET: 0x007AF400
 // FUNCTION: fn_09151
-int AutomaticSkills::CancelOption(std::int16_t id) {
-  switch (id) {
+int AutomaticSkills::CancelOption(int id) const {
+  switch (static_cast<std::uint16_t>(id)) {
   case GC_ROLLINGCUTTER:
     return 4;
   case KR_CHOP_CHOP:
@@ -87,7 +87,7 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
   std::memcpy(packet + 4, &level, 2);
   std::memcpy(packet + 6, &target, 4);
   GetRagConnection().Send(sizeof(packet), packet);
-  const int cancel = AutomaticSkills::CancelOption(id);
+  const int cancel = this->CancelOption(id);
 
   if (g_session.GetOption(cancel) != 0) {
     Cancel(id);
@@ -103,6 +103,6 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
 void AutomaticSkills::Complete(int id) {
   const std::uint16_t skill = static_cast<std::uint16_t>(id);
   if (g_session.m_automaticSkills.Contains(skill)) {
-    g_session.m_options.Values()[AutomaticSkills::CancelOption(static_cast<std::int16_t>(skill))] = 0;
+    g_session.m_options.Values()[g_session.m_automaticSkills.CancelOption(skill)] = 0;
   }
 }

@@ -9,7 +9,7 @@ public:
   AutomaticSkills();
   ~AutomaticSkills();
   __declspec(noinline) bool Contains(int id) const;
-  static int CancelOption(std::int16_t id);
+  int CancelOption(int id) const;
   void DisableAll();
   void Use(std::int16_t id, std::int16_t level, std::uint32_t target);
   void Complete(int id);
