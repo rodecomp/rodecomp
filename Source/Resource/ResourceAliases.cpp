@@ -1,4 +1,5 @@
 #include "Resource/ResourceAliases.h"
+#include "Resource/ResourceMgr.h"
 #include "File/File.h"
 
 #include <cstdlib>
@@ -6,9 +7,9 @@
 
 // OFFSET: 0x00AEF500
 // FUNCTION: fn_18180
-const char* ResourceAliases::Resolve(const char* name) const {
-  auto entry = this->names.find(name);
-  if (entry != this->names.end()) {
+const char* ResourceMgr::Resolve(const char* name) const {
+  auto entry = this->m_aliases.find(name);
+  if (entry != this->m_aliases.end()) {
     return entry->second.c_str();
   }
 
@@ -16,8 +17,8 @@ const char* ResourceAliases::Resolve(const char* name) const {
   const std::size_t marker = key.rfind('@');
   if (marker != std::string::npos && marker >= 4) {
     key.erase(marker - 4, 3);
-    entry = this->names.find(key);
-    if (entry != this->names.end()) {
+    entry = this->m_aliases.find(key);
+    if (entry != this->m_aliases.end()) {
       return entry->second.c_str();
     }
   }
@@ -37,7 +38,7 @@ std::string AddResourcePrefix(const char* name, const char* prefix) {
 
 // OFFSET: 0x00AEF3A0
 // FUNCTION: fn_18179
-std::string ResourceAliases::ResolveMapName(const char* name) const {
+std::string ResourceMgr::ResolveMapName(const char* name) const {
   std::string filename(name);
   filename += ".gat";
   const char* resolved = this->Resolve(filename.c_str());
@@ -47,8 +48,8 @@ std::string ResourceAliases::ResolveMapName(const char* name) const {
 
 // OFFSET: 0x00AEFE50
 // FUNCTION: fn_18187
-void ResourceAliases::Load(int) {
-  this->names.clear();
+void ResourceMgr::LoadAliases(int) {
+  this->m_aliases.clear();
   CFile file;
   if (!file.Open("ResNameTable.txt", 0, true, false)) {
     return;
@@ -73,7 +74,7 @@ void ResourceAliases::Load(int) {
         name = token;
       } else {
         replacement = token;
-        this->names.insert(std::make_pair(name, replacement));
+        this->m_aliases.insert(std::make_pair(name, replacement));
         name.clear();
         replacement.clear();
       }

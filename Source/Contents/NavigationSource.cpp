@@ -90,7 +90,7 @@ bool CNavigationManager::IsCurrentTarget(const char* name) const {
     return true;
   }
 
-  const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(name);
+  const std::string resolved = ResourceMgr::Instance().ResolveMapName(name);
   return std::strcmp(info->GetName(), resolved.c_str()) == 0;
 }
 
@@ -619,7 +619,7 @@ void CNavigationManager::ClearCurrentObject() {
 int CNavigationManager::RouteFromPlayer() {
   CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
       this->drawRoute = false;

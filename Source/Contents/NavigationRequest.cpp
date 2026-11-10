@@ -173,7 +173,7 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
   this->selectedNode = -1;
   CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
       return -93;

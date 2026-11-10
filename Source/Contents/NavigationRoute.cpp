@@ -213,7 +213,7 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
 
   CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
       return found;
@@ -288,7 +288,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
 NaviCell* CNavigationManager::MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size) {
   CNaviInfo* info = this->FindObject(mapName);
   if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(mapName);
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(mapName);
     info = this->FindObject(resolved.c_str());
   }
 
@@ -629,7 +629,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
 
   CNaviInfo* info = this->FindObject(name.c_str());
   if (!info) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(name.c_str());
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(name.c_str());
     info = this->FindObject(resolved.c_str());
     if (!info) {
       return false;
@@ -1633,7 +1633,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
       x = cellX;
       y = cellY;
       std::string name(info->GetName());
-      name = ResourceMgr::Instance().aliases.ResolveMapName(name.c_str());
+      name = ResourceMgr::Instance().ResolveMapName(name.c_str());
       if (!this->pathFinder.LoadAttr(name) || !this->pathFinder.Walkable(cellX, cellY)) {
         return false;
       }
@@ -1722,7 +1722,7 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
 
     bool sameMap = std::strcmp(info->GetName(), g_session.m_navigationPlayerMap) == 0;
     if (!sameMap) {
-      const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+      const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
       sameMap = std::strcmp(info->GetName(), resolved.c_str()) == 0;
     }
 

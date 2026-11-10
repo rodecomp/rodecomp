@@ -1655,7 +1655,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   const std::array resourceNamesSource = {'\x8F', '\xA4', '\x00', '\x0D', '\x46', '\x3C', '\x78', '\x4B', '\x9C', '\xA3', '\x1F', '\x26', '\x09', '\x25', '\x65', '\x6B',
                                               '\xFD'};
   thread_local EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL> resourceNames(resourceNamesSource);
-  resources.aliases.Load(reinterpret_cast<int>(resourceNames.Text()));
+  resources.LoadAliases(reinterpret_cast<int>(resourceNames.Text()));
 
   if (!InitApp(instance, showCommand)) {
     return 1;

@@ -15,7 +15,7 @@
 bool CNavigationManager::CollectStartLinks() {
   CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
       g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_RS_FAILSTARTDATA), 0, true, false, 0, "Message", 280, 120, 0);

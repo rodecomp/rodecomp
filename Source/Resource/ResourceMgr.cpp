@@ -80,13 +80,13 @@ int ResourceMgr::FindType(const char* extension) const {
   }
 
   const auto entry = this->m_extensions.find(extension);
-  if (entry != this->m_extensions.end()) {
-    return entry->second;
+  if (entry == this->m_extensions.end()) {
+    char text[256];
+    std::sprintf(text, "ResourceError : %s is Undefined Ext \n", extension);
+    return -1;
   }
 
-  char text[256];
-  std::sprintf(text, "ResourceError : %s is Undefined Ext \n", extension);
-  return -1;
+  return entry->second;
 }
 
 // OFFSET: 0x00AEE6B0
@@ -151,7 +151,7 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
       return nullptr;
     }
 
-    resolved = AddResourcePrefix(this->aliases.Resolve(normalized), this->m_prefixes[type]);
+    resolved = AddResourcePrefix(this->Resolve(normalized), this->m_prefixes[type]);
     if (CRes* existing = this->Find(type, resolved.c_str())) {
       existing->lastUse = timeGetTime();
       return existing;
@@ -213,7 +213,7 @@ void ResourceMgr::Remove(CRes* resource) {
 }
 
 // INLINED
-void ResourceMgr::EraseTransient(CRes* resource) {
+__forceinline void ResourceMgr::EraseTransient(CRes* resource) {
   auto entry = std::find(this->m_transient.begin(), this->m_transient.end(), resource);
   if (entry != this->m_transient.end()) {
     this->m_transient.erase(entry);
