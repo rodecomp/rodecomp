@@ -49,9 +49,7 @@ void CStormCannonEffect::Open() {
   this->direction.y = scale * this->direction.y;
   this->direction.z = scale * this->direction.z;
 
-  this->origin.x = this->position[0];
-  this->origin.y = this->position[1];
-  this->origin.z = this->position[2];
+  this->origin = *reinterpret_cast<const vector3d*>(this->position);
   this->speed = 1.7;
 
   const float dx = this->sourcePosition[0] - this->position[0];
