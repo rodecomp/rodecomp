@@ -16,7 +16,7 @@ GroundLightmapSet::~GroundLightmapSet() {
 void GroundLightmapSet::Clear() {
   this->lightmaps.clear();
 
-  while (!this->lightmapTextures.empty()) {
+  while (this->lightmapTextures.size() != 0) {
     delete this->lightmapTextures.back();
     this->lightmapTextures.pop_back();
   }
