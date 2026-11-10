@@ -87,19 +87,22 @@ void UIMerchantItemLogWnd::Paint() {
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  int y = 17;
+  for (int i = 0; i < rows; ++i, y += 8) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, y, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  y = 17;
+  for (int i = 0; i < rows; ++i, y += 8) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
 
   int slots = (this->geometry.height - 38) / 32;
-  for (int y = 17; slots > 0; --slots, y += 32) {
+  y = 17;
+  for (int i = 0; i < slots; ++i, y += 32) {
     DrawItemSlotBackground(*this, 40, y);
   }
 
