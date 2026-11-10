@@ -95,7 +95,8 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // OFFSET: 0x00A694F0
 // FUNCTION: fn_16661
 void CUISelectPackageItemBox::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->Resize(387, 283);
   this->Move(0, 0);
   this->OnCreate(this->geometry.width, this->geometry.height);

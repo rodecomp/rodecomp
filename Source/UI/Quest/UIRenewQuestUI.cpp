@@ -914,7 +914,8 @@ void RenewQuestUI::CUIQuestList::OnInit() {
 // OFFSET: 0x00A5C200
 // FUNCTION: fn_16432
 void CUIRenewQuestUI::Initialize() {
-  this->ownedSkinColors = 1;
+  this->m_ownsBackgroundColor = true;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(381, 466);
   this->Move(

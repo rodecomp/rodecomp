@@ -1923,7 +1923,8 @@ CUIGameSettingsUI::CUIGameSettingsUI()
 // OFFSET: 0x00A1EE20
 // FUNCTION: fn_15383
 void CUIGameSettingsUI::Initialize() {
-  this->ownedSkinColors = 1;
+  this->m_ownsBackgroundColor = true;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(400, 350);
   this->Move(0, 0);

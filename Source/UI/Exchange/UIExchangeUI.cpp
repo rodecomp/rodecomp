@@ -108,7 +108,8 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearItems() {
 // OFFSET: 0x00A10140
 // FUNCTION: fn_15189
 void CUIExchangeUI::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(560, 377);
   this->Move(0, 0);

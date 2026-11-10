@@ -139,7 +139,8 @@ void CUIMacroReport::OnReportTypeSelect(CUIRadioButton* button) {
 // OFFSET: 0x00A441F0
 // FUNCTION: fn_16052
 void CUIMacroReport::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = false;
   this->Resize(0xE7, 0xBD);
   this->Move(0, 0);

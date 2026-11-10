@@ -1528,7 +1528,8 @@ void CUIMainPage::OnInit() {
 // OFFSET: 0x009F3160
 // FUNCTION: fn_14752
 void CUIEnchantUI::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(690, 470);
   this->Move(0, 0);

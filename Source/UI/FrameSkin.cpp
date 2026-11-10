@@ -14,7 +14,7 @@ CUIRegisterMgr* Singleton<CUIRegisterMgr>::s_instance = nullptr;
 // OFFSET: 0x009E69D0
 // FUNCTION: fn_14469
 CUIFrameWnd::~CUIFrameWnd() {
-  if (static_cast<unsigned char>(this->ownedSkinColors) != 0) {
+  if (this->m_ownsBackgroundColor) {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
@@ -27,7 +27,7 @@ CUIFrameWnd::~CUIFrameWnd() {
     position->second.second = this->geometry.y;
   }
 
-  if (static_cast<unsigned char>(this->ownedSkinColors >> 8) != 0) {
+  if (this->m_ownsBorderColor) {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }

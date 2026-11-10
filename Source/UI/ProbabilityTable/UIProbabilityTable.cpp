@@ -203,7 +203,8 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Clear
 // OFFSET: 0x00A487D0
 // FUNCTION: fn_16116
 void CUIProbabilityTable::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->Resize(345, 455);
   this->Move(0, 0);
   this->OnCreate(this->geometry.width, this->geometry.height);

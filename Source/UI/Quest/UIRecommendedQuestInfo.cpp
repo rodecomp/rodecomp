@@ -17,7 +17,8 @@
 // OFFSET: 0x00A568E0
 // FUNCTION: fn_16321
 void CUIRecommendedQuestInfo::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);

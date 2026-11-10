@@ -92,7 +92,8 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // OFFSET: 0x00A4FE70
 // FUNCTION: fn_16224
 void CUIOngoingQuestInfo::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(342, 412);
   this->Move(0, 0);

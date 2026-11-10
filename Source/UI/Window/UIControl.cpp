@@ -3473,7 +3473,7 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
   window->SetId(key);
   window->Initialize();
 
-  if (static_cast<unsigned char>(window->ownedSkinColors) != 0) {
+  if (window->m_ownsBackgroundColor) {
     auto position = this->windowPositions.find(key);
     if (position != this->windowPositions.end()) {
       RECT bounds{0, 0, g_renderer->viewport.width - window->geometry.width, g_renderer->viewport.height - window->geometry.height};
@@ -3484,7 +3484,7 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
     }
   }
 
-  if (static_cast<unsigned char>(window->ownedSkinColors >> 8) != 0) {
+  if (window->m_ownsBorderColor) {
     auto size = this->windowSizes.find(key);
     if (size != this->windowSizes.end()) {
       window->Grow(size->second.first - window->geometry.width, size->second.second - window->geometry.height);

@@ -516,7 +516,8 @@ void CUIAdventureGuide::OnClose() {
 // OFFSET: 0x009C14F0
 // FUNCTION: fn_13991
 void CUIAdventureGuide::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->Resize(750, 468);
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
   this->OnCreate(this->geometry.width, this->geometry.height);

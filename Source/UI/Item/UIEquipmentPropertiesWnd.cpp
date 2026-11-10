@@ -247,7 +247,8 @@ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string
 // OFFSET: 0x00A08E70
 // FUNCTION: fn_15033
 void CUIEquipmentPropertiesWnd::Initialize() {
-  this->ownedSkinColors = 0x101;
+  this->m_ownsBackgroundColor = true;
+  this->m_ownsBorderColor = true;
   this->m_resolveSkin = true;
   this->Resize(300, 308);
   this->Move(0, 0);

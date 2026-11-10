@@ -12,7 +12,7 @@ class CUIFrameWnd : public UIFrameWnd {
 public:
   // INLINED
   CUIFrameWnd()
-      : UIFrameWnd(0), ownedSkinColors(0), m_hasSkinColors(false),
+      : UIFrameWnd(0), m_ownsBackgroundColor(false), m_ownsBorderColor(false), m_hasSkinColors(false),
         m_backgroundColor(0xFFFFFF), m_borderColor(0xCECECE), m_backgroundCell{0, 0}, m_borderCell{3, 1}, m_buttonBarStyle(0), m_resolveSkin(true) {
   }
 
@@ -23,7 +23,8 @@ public:
   void SetSkinColors(int backgroundColumn, int backgroundRow, int borderColumn, int borderRow);
 
 protected:
-  /* 00B4 */ std::uint16_t ownedSkinColors;
+  /* 00B4 */ bool m_ownsBackgroundColor;
+  /* 00B5 */ bool m_ownsBorderColor;
   /* 00B6 */ bool m_hasSkinColors;
   /* 00B8 */ std::uint32_t m_backgroundColor;
   /* 00BC */ std::uint32_t m_borderColor;

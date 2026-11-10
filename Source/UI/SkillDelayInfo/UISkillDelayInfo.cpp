@@ -135,7 +135,8 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 // OFFSET: 0x00A719E0
 // FUNCTION: fn_16807
 void CUISkillDelayInfo::Initialize() {
-  this->ownedSkinColors = 0;
+  this->m_ownsBackgroundColor = false;
+  this->m_ownsBorderColor = false;
   this->m_resolveSkin = true;
   this->Resize(345, 379);
   this->Move(0, 0);
