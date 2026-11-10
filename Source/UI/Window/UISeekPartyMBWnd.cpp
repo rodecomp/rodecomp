@@ -161,7 +161,7 @@ void UISeekPartyMBWnd::CreateJobChecks() {
   int message = 0;
   int starts[8] = {1, 5, 11, 24, 30, 37, 43, 56};
 
-  for (int i = 0; i < counts[0]; ++i) {
+  for (int i = 0; i < 4; ++i) {
     UICheckBox* check = new UICheckBox();
     check->SetSize(110, 12);
     const int job = i + 1;
