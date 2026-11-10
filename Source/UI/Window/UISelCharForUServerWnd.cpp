@@ -88,48 +88,47 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->m_checkBoxes[index]->Move(index % this->m_columns * 81 + 63, index / this->m_columns * 149 + 77);
 
     const int slotIndex = info->slot;
-    CharSlotInfo& slot = this->m_slots[slotIndex];
-    slot.job = info->job;
-    slot.robe = info->robe;
+    this->m_slots[slotIndex].job = info->job;
+    this->m_slots[slotIndex].robe = info->robe;
     this->m_slotEnabled[slotIndex] = 0;
-    slot.x = slotIndex % this->m_columns * 81 + 68;
-    slot.y = slotIndex / this->m_columns * 149 + 191;
-    slot.actionBase = 0;
-    slot.action = 0;
-    slot.frame = 0;
+    this->m_slots[slotIndex].x = slotIndex % this->m_columns * 81 + 68;
+    this->m_slots[slotIndex].y = slotIndex / this->m_columns * 149 + 191;
+    this->m_slots[slotIndex].actionBase = 0;
+    this->m_slots[slotIndex].action = 0;
+    this->m_slots[slotIndex].frame = 0;
 
-    slot.actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
-    slot.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
+    this->m_slots[slotIndex].actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
+    this->m_slots[slotIndex].spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
 
     int head = info->head;
-    slot.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(info->job, g_session.GetCurrentSex(), &head));
-    slot.spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(info->job, g_session.GetCurrentSex(), &head));
-    slot.actionNames[2] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory3));
-    slot.spriteNames[2] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory3));
+    this->m_slots[slotIndex].actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(info->job, g_session.GetCurrentSex(), &head));
+    this->m_slots[slotIndex].spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(info->job, g_session.GetCurrentSex(), &head));
+    this->m_slots[slotIndex].actionNames[2] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory3));
+    this->m_slots[slotIndex].spriteNames[2] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory3));
     info->head = static_cast<std::int16_t>(head);
-    slot.actionNames[3] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory2));
-    slot.spriteNames[3] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory2));
+    this->m_slots[slotIndex].actionNames[3] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory2));
+    this->m_slots[slotIndex].spriteNames[3] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory2));
     this->accessory2[slotIndex] = info->accessory2;
-    slot.actionNames[4] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory));
-    slot.spriteNames[4] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory));
+    this->m_slots[slotIndex].actionNames[4] = static_cast<const std::string&>(g_session.GetAccessoryActName(info->job, g_session.GetCurrentSex(), head, info->accessory));
+    this->m_slots[slotIndex].spriteNames[4] = static_cast<const std::string&>(g_session.GetAccessorySprName(info->job, g_session.GetCurrentSex(), head, info->accessory));
 
     int bodyPalette = info->bodyStyle;
-    if (info->bodyCostume < 1) {
+    if (info->bodyCostume <= 0) {
       bodyPalette = g_session.GetBodyStyle(info->job, bodyPalette, info->bodyCostume);
     }
 
-    slot.bodyPalette = bodyPalette;
+    this->m_slots[slotIndex].bodyPalette = bodyPalette;
     if (bodyPalette != 0) {
-      slot.bodyPaletteName = static_cast<const std::string&>(
+      this->m_slots[slotIndex].bodyPaletteName = static_cast<const std::string&>(
         g_session.GetBodyPalName(info->job, g_session.GetCurrentSex(), bodyPalette, info->bodyCostume, 0, 0));
     }
 
-    slot.headPalette = info->headPalette;
-    if (slot.headPalette != 0) {
-      slot.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.GetCurrentSex(), slot.headPalette));
+    this->m_slots[slotIndex].headPalette = info->headPalette;
+    if (this->m_slots[slotIndex].headPalette != 0) {
+      this->m_slots[slotIndex].headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.GetCurrentSex(), this->m_slots[slotIndex].headPalette));
     }
 
-    slot.imfName = GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
+    this->m_slots[slotIndex].imfName = GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
   }
 }
 
