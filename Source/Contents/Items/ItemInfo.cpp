@@ -599,26 +599,23 @@ bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
 
   const unsigned int size = file.GetSize();
   char* buffer = new char[size + 1];
-  if (values.capacity() < size) {
-    values.reserve(size);
-  }
+  values.reserve(size);
   file.Read(buffer, size);
   buffer[size] = '\0';
   file.Close();
 
   char* token = buffer;
   for (int index = 0; index < static_cast<int>(size); ++index) {
-    char value = buffer[index];
-    if (value == '/' && buffer[index + 1] == '/') {
+    if (buffer[index] == '/' && buffer[index + 1] == '/') {
       do {
-        if (value == '\r' || index >= static_cast<int>(size)) {
+        if (buffer[index] == '\r' || index >= static_cast<int>(size)) {
           break;
         }
-        value = buffer[++index];
-      } while (value != '\n');
+        ++index;
+      } while (buffer[index] != '\n');
       token = buffer + index + 1;
     }
-    switch (value) {
+    switch (buffer[index]) {
     case '\t':
     case ' ':
       buffer[index] = '\0';
@@ -631,7 +628,9 @@ bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
       break;
     }
   }
-  delete[] buffer;
+  if (buffer != nullptr) {
+    delete[] buffer;
+  }
   std::vector<int>(values).swap(values);
   return true;
 }
