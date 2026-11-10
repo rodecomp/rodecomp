@@ -74,11 +74,12 @@ static_assert(sizeof(ReplayRecordHeader) == 10);
 // OFFSET: 0x006DA340
 // FUNCTION: fn_06623
 std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
-  std::vector<unsigned char> record(bytes + 6u, 0);
-  const ReplayTaggedRecordHeader header{id, bytes};
-  std::memcpy(record.data(), &header, sizeof(header));
+  std::vector<unsigned char> record(bytes + sizeof(ReplayTaggedRecordHeader));
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
   if (bytes != 0) {
-    std::memcpy(record.data() + sizeof(header), data, bytes);
+    std::memcpy(record.data() + sizeof(ReplayTaggedRecordHeader), data, bytes);
   }
   return record;
 }
@@ -199,11 +200,11 @@ bool Replay::WriteSection(int id, std::vector<unsigned char>& bytes, int event) 
     this->fileOffset += size;
   }
 
-  const ReplaySection& section = this->sections[id];
-  if (section.bytes != 0) {
+  const std::uint32_t sectionBytes = this->sections[id].bytes;
+  if (sectionBytes != 0) {
     auto* words = reinterpret_cast<std::uint32_t*>(data);
     this->cipherBase = this->header.key0 >> 5;
-    const int count = section.bytes / 4;
+    const int count = sectionBytes / 4;
     this->cipherIndex = 0;
     this->cipherKey = this->header.key1 >> 3;
 
@@ -213,8 +214,8 @@ bool Replay::WriteSection(int id, std::vector<unsigned char>& bytes, int event) 
     }
   }
 
-  std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
-  return std::fwrite(data, section.bytes, 1, this->file) != 0;
+  std::fseek(this->file, static_cast<long>(this->sections[id].fileOffset), SEEK_SET);
+  return std::fwrite(data, this->sections[id].bytes, 1, this->file) != 0;
 }
 
 // OFFSET: 0x00B857E0
