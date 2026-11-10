@@ -309,12 +309,13 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
   if (gridHeight < minHeight) {
     gridHeight = minHeight;
   }
-  if (maxHeight < gridHeight) {
+  if (gridHeight > maxHeight) {
     gridHeight = maxHeight;
   }
 
-  if (gridWidth + this->m_gridLeft != this->geometry.width || gridHeight != this->geometry.height) {
-    this->Resize(this->m_marginRight + gridWidth + this->m_gridLeft, this->m_marginBottom + gridHeight);
+  const int right = gridWidth + this->m_gridLeft;
+  if (right != this->geometry.width || gridHeight != this->geometry.height) {
+    this->Resize(this->m_marginRight + right, this->m_marginBottom + gridHeight);
     const int visibleColumns = (this->geometry.width - this->m_marginRight - this->m_gridLeft) / this->m_cellSize;
     const int visibleRows = (this->geometry.height - this->m_marginBottom - this->m_gridTop) / this->m_cellSize;
     this->m_columns = visibleColumns;
@@ -405,7 +406,8 @@ bool CMergeItemWnd::RequestMerge() {
   MergeItemPacketHeader header{0x096E, 0};
   packet.insert(packet.end(), reinterpret_cast<const char*>(&header), reinterpret_cast<const char*>(&header + 1));
   packet.insert(packet.end(), reinterpret_cast<const char*>(ids.data()), reinterpret_cast<const char*>(ids.data() + ids.size()));
-  reinterpret_cast<MergeItemPacketHeader*>(packet.data())->length = static_cast<std::uint16_t>(packet.size());
-  GetRagConnection().Send(static_cast<int>(packet.size()), packet.data());
+  MergeItemPacketHeader* packetHeader = reinterpret_cast<MergeItemPacketHeader*>(packet.data());
+  packetHeader->length = static_cast<std::uint16_t>(packet.size());
+  GetRagConnection().Send(static_cast<int>(packet.size()), packetHeader);
   return true;
 }
