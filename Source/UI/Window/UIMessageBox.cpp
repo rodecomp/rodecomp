@@ -613,7 +613,7 @@ __forceinline void UIMessageBox::FormatCountdown() {
 // OFFSET: 0x008A7350
 // FUNCTION: fn_11713
 void UIMessageBox::Configure(
-  const char* text, int type, bool defaultAccept, int timeout, const char* title, int width, int height, int modalValue, const char* icon
+  const char* text, int type, int defaultAccept, int timeout, const char* title, int width, int height, int modalValue, const char* icon
 ) {
   this->caption = title;
   this->messageText = text;
@@ -1424,7 +1424,7 @@ void UINoticeWnd::OnWheel(int delta) {
 // OFFSET: 0x008A8AD0
 // FUNCTION: fn_11715
 void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
-  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, true, 0, LookupMessage(MSI_TITLE_QUEST_BOARD_INFO), 0xDC, 0x85, 1, nullptr);
+  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, 187, 0, LookupMessage(MSI_TITLE_QUEST_BOARD_INFO), 0xDC, 0x85, 1, nullptr);
 
   this->viewer->Resize(0xA5, 0x50);
   this->viewer->Move(7, 0x17);

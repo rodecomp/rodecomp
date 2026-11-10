@@ -147,7 +147,7 @@ void UIWindowMgr::RestoreInput() {
 // OFFSET: 0x00A901E0
 // FUNCTION: fn_17153
 int UIWindowMgr::Confirm(
-  const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
+  const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
   CMode* gameMode = g_modeMgr.GetGameMode();
   if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing[0] == 1) {
@@ -183,6 +183,12 @@ int UIWindowMgr::Confirm(
   }
 
   this->hoverWindow = nullptr;
+
+  if (box == nullptr) {
+    this->RestoreInput();
+    return 185;
+  }
+
   this->modalResponse = 0;
   this->modalWindows.push_back(box);
   int response = 184;
@@ -249,7 +255,7 @@ int UIWindowMgr::Confirm(
 // OFFSET: 0x00AA20F0
 // FUNCTION: fn_17211
 void UIWindowMgr::AddMessageBox(
-  const char* text, int type, bool defaultAccept, int, int timeout, const char* caption, int width, int height, const char* icon, bool track
+  const char* text, int type, int defaultAccept, int, int timeout, const char* caption, int width, int height, const char* icon, bool track
 ) {
   if (this->messageBoxes.size() > 5) {
     MessageBoxA(hWnd, "Max MessageBox Count", "ERROR", 0);
