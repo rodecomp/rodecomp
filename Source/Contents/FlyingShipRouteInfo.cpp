@@ -33,19 +33,19 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     const FlyingShipRouteEntry& entry = this->entries[i + 1];
     targets.insert(std::pair<std::string, FlyingShipRouteEntry>(entry.name, entry));
 
-    CTexture* texture = g_texMgr.Load(this->lineTextureName.c_str(), 0, true, true, false);
     DrawScreenLine(
-      g_renderer->primitives, g_renderer->queues, from.screenPosition[0], from.screenPosition[1], entry.screenPosition[0], entry.screenPosition[1], 2, texture,
-      static_cast<std::uint32_t>(this->lineColor), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+      g_renderer->primitives, g_renderer->queues, from.screenPosition[0], from.screenPosition[1], entry.screenPosition[0], entry.screenPosition[1], 2,
+      g_texMgr.Load(this->lineTextureName.c_str(), 0, true, true, false), static_cast<std::uint32_t>(this->lineColor), g_renderer->fog.supported != 0,
+      g_depthStart, g_depthEnd
     );
   }
 
   const FlyingShipRouteEntry& from = this->entries[this->segmentIndex];
   const FlyingShipRouteEntry& to = this->entries[this->segmentIndex + 1];
-  CTexture* head = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_airplen32.bmp", 0, true, true, false);
-  CTexture* body = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf.bmp", 0, true, true, false);
   wnd->DrawDashedArrow(
-    from.screenPosition[0], from.screenPosition[1], to.screenPosition[0], to.screenPosition[1], 0x10, 0x10, body, 0x14, head, this->segmentProgress, 0xFFFFFFFF, 6
+    from.screenPosition[0], from.screenPosition[1], to.screenPosition[0], to.screenPosition[1], 0x10, 0x10,
+    g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf.bmp", 0, true, true, false), 0x14,
+    g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_airplen32.bmp", 0, true, true, false), this->segmentProgress, 0xFFFFFFFF, 6
   );
 
   for (std::map<std::string, FlyingShipRouteEntry>::iterator it = targets.begin(); it != targets.end(); ++it) {
