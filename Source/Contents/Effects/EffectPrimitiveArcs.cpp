@@ -18,6 +18,15 @@ static __forceinline void ZeroVector(vector3d& v) {
   v.z = 0.0f;
 }
 
+// INLINED
+static __forceinline vector3d operator+(const vector3d& a, const vector3d& b) {
+  vector3d result;
+  result.x = a.x + b.x;
+  result.y = a.y + b.y;
+  result.z = a.z + b.z;
+  return result;
+}
+
 // OFFSET: 0x00BEBC80
 // FUNCTION: fn_19972
 void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
@@ -40,7 +49,8 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + offset;
+      angle -= angle / 360 * 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -140,7 +150,8 @@ void CEffectPrim::RenderGroundArc(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + offset;
+      angle -= angle / 360 * 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -192,7 +203,8 @@ void CEffectPrim::RenderGroundArc2(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + offset;
+      angle -= angle / 360 * 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -244,7 +256,8 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = this->state.slots[ec].rotStart + offset;
+      angle -= angle / 360 * 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
@@ -719,32 +732,36 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
 
     const int angle = this->state.slots[ec].riseAngle;
     const float size = this->state.slots[ec].maxHeight;
-    const float base = this->state.slots[ec].height[0];
-    const int low = angle - 20;
-    const int high = angle + 20;
-    const int leftAngle = low < 0 ? low + 360 : low;
-    const int rightAngle = high < 360 ? high : high - 360;
-    const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
-    const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
+    int side[2];
+    side[0] = angle - 20;
+    side[1] = angle + 20;
+    const int leftAngle = side[0] < 0 ? side[0] + 360 : side[0];
+    const int rightAngle = side[1] >= 360 ? side[1] - 360 : side[1];
+    const int backRightAngle = side[1] - 180 < 0 ? side[1] - 180 + 360 : side[1] - 180;
+    const int backLeftAngle = side[0] + 180 >= 360 ? side[0] + 180 - 360 : side[0] + 180;
+
     const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
     const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
-
     vector3d left;
-    left.x = size * g_cosTable[leftAngle] * rotCos;
-    left.y = size * g_cosTable[leftAngle] * rotSin + base;
+    const float leftX = size * g_cosTable[leftAngle];
     left.z = size * g_sinTable[leftAngle];
+    left.x = leftX * rotCos;
+    left.y = leftX * rotSin + this->state.slots[ec].height[0];
     vector3d right;
-    right.x = size * g_cosTable[rightAngle] * rotCos;
-    right.y = size * g_cosTable[rightAngle] * rotSin + base;
+    const float rightX = size * g_cosTable[rightAngle];
     right.z = size * g_sinTable[rightAngle];
+    right.x = rightX * rotCos;
+    right.y = rightX * rotSin + this->state.slots[ec].height[0];
     vector3d backRight;
-    backRight.x = size * g_cosTable[backRightAngle] * rotCos;
-    backRight.y = size * g_cosTable[backRightAngle] * rotSin + base;
+    const float backRightX = size * g_cosTable[backRightAngle];
     backRight.z = size * g_sinTable[backRightAngle];
+    backRight.x = backRightX * rotCos;
+    backRight.y = backRightX * rotSin + this->state.slots[ec].height[0];
     vector3d backLeft;
-    backLeft.x = size * g_cosTable[backLeftAngle] * rotCos;
-    backLeft.y = size * g_cosTable[backLeftAngle] * rotSin + base;
+    const float backLeftX = size * g_cosTable[backLeftAngle];
     backLeft.z = size * g_sinTable[backLeftAngle];
+    backLeft.x = backLeftX * rotCos;
+    backLeft.y = backLeftX * rotSin + this->state.slots[ec].height[0];
 
     const float dirCos = g_cosTable[angle];
     const float dirSin = g_sinTable[angle];
@@ -760,25 +777,9 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
       }
 
       if (dist > 0.0f) {
-        vector3d vec1;
-        vec1.x = backRight.x + offset.x;
-        vec1.y = backRight.y + offset.y;
-        vec1.z = backRight.z + offset.z;
-        vector3d vec2;
-        vec2.x = left.x + offset.x;
-        vec2.y = left.y + offset.y;
-        vec2.z = left.z + offset.z;
-        vector3d vec3;
-        vec3.x = right.x + offset.x;
-        vec3.y = right.y + offset.y;
-        vec3.z = right.z + offset.z;
-        vector3d vec4;
-        vec4.x = backLeft.x + offset.x;
-        vec4.y = backLeft.y + offset.y;
-        vec4.z = backLeft.z + offset.z;
         this->RenderTeiRect(
-          &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), 0,
-          105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+          &rpCnt, this->state.slots[ec].alphaB, backRight + offset, left + offset, right + offset, backLeft + offset, wtm, 0,
+          static_cast<unsigned char>(this->state.slots[ec].height[1]), 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
         );
       }
     }
