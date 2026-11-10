@@ -40,8 +40,8 @@ std::uint16_t DeviceOwnerDX7::PackColor(int red, int green, int blue) {
 CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, int width, int height)
     : m_owner(&owner), m_surface(nullptr), m_width(AlignDimension(width)), m_height(AlignDimension(height)) {
   DDSURFACEDESC2 description{};
-  Describe(description, owner, this->m_width, this->m_height);
-  owner.draw->CreateSurface(&description, &this->m_surface, nullptr);
+  Describe(description, *this->m_owner, this->m_width, this->m_height);
+  this->m_owner->draw->CreateSurface(&description, &this->m_surface, nullptr);
 }
 
 // OFFSET: 0x00542C80
@@ -128,7 +128,11 @@ void CSurfaceDX7::Unlock() {
 // OFFSET: 0x005432A0
 // FUNCTION: fn_01791
 bool CSurfaceDX7::GetDC(HDC* output) {
-  return this->m_surface && SUCCEEDED(this->m_surface->GetDC(output));
+  if (!this->m_surface) {
+    return false;
+  }
+
+  return SUCCEEDED(this->m_surface->GetDC(output));
 }
 
 // OFFSET: 0x00543400
