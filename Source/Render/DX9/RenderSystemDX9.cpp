@@ -56,7 +56,7 @@ std::uint32_t CRenderSystemDX9::Height() {
 CRenderer* CRenderSystemDX9::CreateRenderer() {
   auto* renderer = new CRendererDX9(*this->m_device);
   renderer->viewport.SetSize(
-    std::bit_cast<std::int32_t>(this->Width()), std::bit_cast<std::int32_t>(this->Height())
+    std::bit_cast<std::int32_t>(this->CRenderSystemDX9::Width()), std::bit_cast<std::int32_t>(this->CRenderSystemDX9::Height())
   );
 
   return renderer;
