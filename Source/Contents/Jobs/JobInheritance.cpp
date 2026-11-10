@@ -373,7 +373,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_GRENADE:
       return true;
     }
-    return false;
+    break;
   case JT_NINJA:
   case JT_NINJA_B:
     return weaponType == W_HUUMA;
@@ -409,7 +409,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_NOVICE:
   case JT_SUPERNOVICE:
   case JT_NOVICE_H:
@@ -427,7 +427,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_SWORDMAN:
   case JT_SWORDMAN_H:
   case JT_SWORDMAN_B:
@@ -443,7 +443,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HMACE:
       return true;
     }
-    return false;
+    break;
   case JT_ACOLYTE:
   case JT_ACOLYTE_H:
   case JT_ACOLYTE_B:
@@ -453,7 +453,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_MERCHANT:
   case JT_MERCHANT_H:
   case JT_MERCHANT_B:
@@ -465,7 +465,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_MACE:
       return true;
     }
-    return false;
+    break;
   case JT_THIEF:
   case JT_ROGUE:
   case JT_THIEF_H:
@@ -481,7 +481,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_BOW:
       return true;
     }
-    return false;
+    break;
   case JT_KNIGHT:
   case JT_CHICKEN:
   case JT_KNIGHT_H:
@@ -516,7 +516,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HMACE:
       return true;
     }
-    return false;
+    break;
   case JT_PRIEST:
   case JT_PRIEST_H:
   case JT_PRIEST_B:
@@ -531,7 +531,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_BLACKSMITH:
   case JT_BLACKSMITH_H:
   case JT_BLACKSMITH_B:
@@ -551,7 +551,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_MACE:
       return true;
     }
-    return false;
+    break;
   case JT_ARCHER:
   case JT_HUNTER:
   case JT_ARCHER_H:
@@ -570,7 +570,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_BOW:
       return true;
     }
-    return false;
+    break;
   case JT_ASSASSIN:
   case JT_ASSASSIN_H:
   case JT_ASSASSIN_B:
@@ -591,7 +591,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_DOUBLE_SA:
       return true;
     }
-    return false;
+    break;
   case JT_CRUSADER:
   case JT_CHICKEN2:
   case JT_CRUSADER_H:
@@ -617,7 +617,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_MACE:
       return true;
     }
-    return false;
+    break;
   case JT_BARD:
   case JT_BARD_H:
   case JT_BARD_B:
@@ -631,7 +631,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_MUSICAL:
       return true;
     }
-    return false;
+    break;
   case JT_ALCHEMIST:
   case JT_ALCHEMIST_H:
   case JT_ALCHEMIST_B:
@@ -649,7 +649,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_MONK:
   case JT_MONK_H:
   case JT_MONK_B:
@@ -664,7 +664,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
     case W_2HSTAFF:
       return true;
     }
-    return false;
+    break;
   case JT_SAGE:
   case JT_SAGE_H:
   case JT_SAGE_B:
@@ -692,16 +692,21 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
       case W_WHIP:
         return true;
       }
-      return false;
+      break;
     }
-    return false;
+    break;
   case JT_GANGSI:
   case JT_DEATHKNIGHT:
   case JT_COLLECTOR:
     return true;
+  default:
+    if (weaponType == W_DAGGER) {
+      return true;
+    }
+    break;
   }
 
-  return weaponType == W_DAGGER;
+  return false;
 }
 
 // OFFSET: 0x00DFBCE0
