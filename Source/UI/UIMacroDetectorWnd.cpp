@@ -10,6 +10,7 @@
 #include "UI/UICaptchaPreviewWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/StdStringCompare.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
@@ -67,8 +68,7 @@ void UIMacroDetectorWnd::ClearImageData() {
 void UIMacroDetectorWnd::SetCountdown(unsigned char count, std::uint32_t duration) {
   DWORD now = timeGetTime();
   if (this->lastCountdownTick > 0) {
-    std::string text = FormatOwnedString(LookupMessage(MSI_MACRO_REGISTER_DATA), count);
-    this->message = text;
+    this->message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MACRO_REGISTER_DATA), count));
   }
 
   this->remainingAttempts = count;
@@ -106,19 +106,27 @@ int UICaptchaPreviewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 // OFFSET: 0x007EDD40
 // FUNCTION: fn_09821
 int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == UM_DEFPUSH) {
+  switch (message) {
+  case UM_DEFPUSH:
     this->SendMsg(this, UM_COMMAND, ID_SEND, 0, 0, 0);
-  } else if (message == UM_COMMAND) {
-    if (a == 201) {
+    break;
+  case UM_COMMAND:
+    switch (a) {
+    case 201:
       g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
-    } else if (a == 345 && this->m_editCtrl->Length() != 0 && this->m_lastAnswer != this->m_editCtrl->Text()) {
-      CaptchaAnswerPacket packet;
-      packet.id = ID_CZ_ACK_ANSWER_MACRO_DETECTOR;
-      memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-      this->m_lastAnswer = this->m_editCtrl->Text();
-      g_serverLanguage->ResetInput();
+      break;
+    case 345:
+      if (this->m_editCtrl->Length() != 0 && this->m_lastAnswer.compare(this->m_editCtrl->Text()) != 0) {
+        CaptchaAnswerPacket packet;
+        packet.id = ID_CZ_ACK_ANSWER_MACRO_DETECTOR;
+        memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
+        GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        this->m_lastAnswer = this->m_editCtrl->Text();
+        g_serverLanguage->ResetInput();
+      }
+      break;
     }
+    break;
   }
   return UIWindow::SendMsg(sender, message, a, b, c, d);
 }
