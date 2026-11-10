@@ -42,6 +42,12 @@ public:
     this->m_popups[id].m_descriptions.push_back(description);
   }
 
+  // INLINED
+  void SetMessage(int id, int messageId, unsigned int color) {
+    this->m_popups[id].m_messageId = messageId;
+    this->m_popups[id].m_color = ((((color >> 8) & 0xFF) | ((color & 0xFF) << 8)) << 8) | ((color >> 16) & 0xFF);
+  }
+
   /* 0004 */ bool m_initialized;
   /* 0008 */ std::map<int, PopupData> m_popups;
 };

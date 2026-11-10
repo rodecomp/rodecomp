@@ -96,7 +96,8 @@ bool CSpecialPopupMgr::Init() {
     return true;
   }
 
-  MessageBoxA(NULL, (std::string("error found :") + lua_tostring(luaState.GetState(), -1)).c_str(), "CSpecialPopupMgr", 0);
+  std::string message = std::string("error found :") + lua_tostring(luaState.GetState(), -1);
+  MessageBoxA(NULL, message.c_str(), "CSpecialPopupMgr", 0);
   return false;
 }
 
