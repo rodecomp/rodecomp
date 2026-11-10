@@ -49,7 +49,7 @@ std::string CreateUniqueFileName(const std::string& filename) {
   while (_access(result.c_str(), 0) == 0) {
     result = static_cast<const std::string&>(FormatOwnedString("%s%s%s(%d)%s", drive, directory, name, ++index, extension));
   }
-  std::ofstream output(result.c_str(), std::ios::out, _SH_DENYNO);
+  std::ofstream output(result);
   output.close();
   return result;
 }
