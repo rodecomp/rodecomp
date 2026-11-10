@@ -235,7 +235,7 @@ void CDCSurface::Fill(const RECT* rectangle, std::uint32_t color) {
 
 // OFFSET: 0x00549290
 // FUNCTION: fn_01876
-void CDCSurface::Draw(CRenderSystemBase&, int x, int y, int width, int height, std::uint32_t color) {
+void CDCSurface::Draw(int x, int y, int width, int height, std::uint32_t color) {
   this->m_surface->Draw(x, y, width, height, color);
 }
 

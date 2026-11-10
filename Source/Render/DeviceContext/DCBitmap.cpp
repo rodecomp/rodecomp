@@ -43,10 +43,6 @@ void CDCBitmap::CopyRegion(
   this->m_bitmap.CopyRegion(x, y, sourceLeft, sourceTop, sourceRight, sourceBottom, source, sourceWidth, sourceHeight, transparent, alpha);
 }
 
-void CDCBitmap::Draw(CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color) {
-  this->m_cache.Draw(this->m_bitmap, system, x, y, width, height, color);
-}
-
 void CDCBitmap::Dim(int x, int y, int width, int height, int percent) {
   this->m_bitmap.Dim(x, y, width, height, percent);
 }

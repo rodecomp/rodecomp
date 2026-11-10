@@ -326,7 +326,7 @@ void UIWindowMgr::DrawWindows() {
     CDC* surface = overlay->second->geometry.surface;
     const std::uint32_t color = overlay->second->Color();
     surface->Draw(
-      *GetRenderSystemHolder()->system, overlay->second->geometry.x, overlay->second->geometry.y, overlay->second->geometry.width,
+      overlay->second->geometry.x, overlay->second->geometry.y, overlay->second->geometry.width,
       overlay->second->geometry.height, color
     );
   }
@@ -372,7 +372,7 @@ void UIWindowMgr::DrawWindows() {
         CDC* surface = window->geometry.surface;
         const std::uint32_t color = window->Color();
         surface->Draw(
-          *GetRenderSystemHolder()->system, window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color
+          window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color
         );
         g_renderDiagnosticLine = 3850;
       }

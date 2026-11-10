@@ -14,8 +14,7 @@ public:
   BitmapTextureCache();
   ~BitmapTextureCache();
   void Clear();
-  void Update(BitmapPixels& bitmap, CRenderSystemBase& system);
-  void Draw(BitmapPixels& bitmap, CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color);
+  void Update(BitmapPixels& bitmap);
 
 protected:
   friend class CDCBitmap;

@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Textures/BitmapPixels.h"
 #include "Render/Textures/BitmapTextureCache.h"
 #include "Render/RenderSystemBase.h"
@@ -17,7 +18,7 @@ BitmapTextureCache::~BitmapTextureCache() {
 
 // OFFSET: 0x00548380
 // FUNCTION: fn_01854
-void BitmapTextureCache::Update(BitmapPixels& bitmap, CRenderSystemBase& system) {
+void BitmapTextureCache::Update(BitmapPixels& bitmap) {
   if (!bitmap.dirty) {
     return;
   }
@@ -64,22 +65,22 @@ void BitmapTextureCache::Update(BitmapPixels& bitmap, CRenderSystemBase& system)
 
 // OFFSET: 0x00547B80
 // FUNCTION: fn_01846
-void BitmapTextureCache::Draw(BitmapPixels& bitmap, CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color) {
-  if (!bitmap.pixels) {
+void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
+  if (!this->m_bitmap.pixels) {
     return;
   }
 
-  this->Update(bitmap, system);
-  if (this->m_textures.empty()) {
+  this->m_cache.Update(this->m_bitmap);
+  if (this->m_cache.m_textures.empty()) {
     return;
   }
 
-  if (this->m_alpha) {
-    for (CTexture* texture : this->m_textures) {
+  if (this->m_cache.m_alpha) {
+    for (CTexture* texture : this->m_cache.m_textures) {
       texture->Draw(x, y, width, height, color);
     }
   } else {
-    auto texture = this->m_textures.begin();
+    auto texture = this->m_cache.m_textures.begin();
     int remainingHeight = height;
 
     for (int row = 0; row < height; row += 256, remainingHeight -= 256) {

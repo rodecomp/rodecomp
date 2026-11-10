@@ -27,7 +27,7 @@ public:
     int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int format
   ) override;
   void Fill(const RECT* rectangle, std::uint32_t color) override;
-  void Draw(CRenderSystemBase& system, int x, int y, int width, int height, std::uint32_t color) override;
+  void Draw(int x, int y, int width, int height, std::uint32_t color) override;
   void DrawScaledSprite(
     int x, int y, int width, int height, const CSprRes* sprite, const ActionFrame* frame, int offsetX, int offsetY, float scale,
     const std::uint32_t* palette

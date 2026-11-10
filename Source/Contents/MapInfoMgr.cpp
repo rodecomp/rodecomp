@@ -242,7 +242,7 @@ void CMapInfoMgr::DrawMapName(CRenderSystemBase& system) {
     static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), width, display->m_height, color, g_renderer->fog.supported != 0,
     g_depthStart, g_depthEnd
   );
-  display->m_dc->Draw(system, 0, static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), display->m_width, display->m_height, color);
+  display->m_dc->Draw(0, static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), display->m_width, display->m_height, color);
 }
 
 // OFFSET: 0x006CF600
