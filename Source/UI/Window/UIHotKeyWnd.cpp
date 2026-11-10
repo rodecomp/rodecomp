@@ -260,9 +260,7 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
   const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
 
   if (this->m_selectedRow + (this->m_page * 9 - 9) * 4 < count) {
-    if (this->m_selectedRow < 0) {
-      this->m_balloon->Show(0);
-    } else {
+    if (this->m_selectedRow > -1) {
       int screenX = 0;
       int screenY = 0;
       this->ToScreen(screenX, screenY);
@@ -276,6 +274,8 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
       );
       this->m_balloon->Show(1);
       g_windowMgr.Promote(this->m_balloon);
+    } else {
+      this->m_balloon->Show(0);
     }
 
     if (previous == this->m_selectedRow) {
