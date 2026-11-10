@@ -171,7 +171,7 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
   if (this->pool.IsActive(particle) == true) {
     const int age = particle->elapsedFrames;
 
-    if (particle->life != 0.0f && !(particle->life * 60.0f > static_cast<float>(age)) && (!this->fixedAlpha || this->emissionStopped)) {
+    if (IsParticleAlive(particle) != true && (!this->fixedAlpha || this->emissionStopped)) {
       this->pool.Release(particle);
     } else {
       particle->SetColor(static_cast<short>(this->red), static_cast<short>(this->green), static_cast<short>(this->blue));
