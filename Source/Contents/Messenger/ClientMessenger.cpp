@@ -7101,10 +7101,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
 
           int count = 0;
           if (hasType) {
-            unsigned int hash = 5381;
-            for (const char* character = itemType.c_str(); *character != '\0'; ++character) {
-              hash = hash * 33 + *character;
-            }
+            unsigned int hash = HashName(itemType.c_str());
             switch (hash) {
             case 0x0F1AAAA6:
               info.kind = 1;
@@ -7136,10 +7133,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             break;
           }
 
-          unsigned int hash = 5381;
-          for (const char* character = itemType.c_str(); *character != '\0'; ++character) {
-            hash = hash * 33 + *character;
-          }
+          unsigned int hash = HashName(itemType.c_str());
           switch (hash) {
           case 0x0F1AAAA6:
             for (int index = 0; index < count; ++index) {
