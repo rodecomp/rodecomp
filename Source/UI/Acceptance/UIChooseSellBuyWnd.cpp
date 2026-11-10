@@ -654,27 +654,28 @@ void UIGraffiStrboxWnd::Paint() {
   this->DrawTextAt(16, 22, LookupMessage(MSI_TALKBOX_WINDOW_MSG), 0, 0, 12, 0, 0, 0);
 }
 
+// INLINED
+static __forceinline void DrawParamChangeArrow(UIWindow& window, int x, int before, int after) {
+  if (before < after) {
+    FillTriangle(window, x + 4, 11, x, 19, x + 8, 19, 0xFF);
+  } else if (before == after) {
+    FillTriangle(window, x, 13, x + 8, 13, x, 17, 0x505050);
+    FillTriangle(window, x + 8, 13, x, 17, x + 8, 17, 0x505050);
+  } else {
+    FillTriangle(window, x, 11, x + 8, 11, x + 4, 19, 0xFF0000);
+  }
+}
+
 // OFFSET: 0x008EE9D0
 // FUNCTION: fn_12227
 void UIItemParamChangeDisplayWnd::Paint() {
   char text[128];
-  const auto drawArrow = [this](int x, int before, int after) {
-    if (before < after) {
-      FillTriangle(*this, x + 4, 11, x, 19, x + 8, 19, 0xFF);
-    } else if (before == after) {
-      FillTriangle(*this, x, 13, x + 8, 13, x, 17, 0x505050);
-      FillTriangle(*this, x + 8, 13, x, 17, x + 8, 17, 0x505050);
-    } else {
-      FillTriangle(*this, x, 11, x + 8, 11, x + 4, 19, 0xFF0000);
-    }
-  };
-
   this->DrawBorder(0, 0, 0, 0);
   std::sprintf(text, LookupMessage(MSI_ATK));
   this->DrawTextAt(20, 10, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%d", this->m_before);
   this->DrawTextAt(70, 10, text, 0, 0, 12, 0, 0, 0);
-  drawArrow(90, this->m_before, this->m_after);
+  DrawParamChangeArrow(*this, 90, this->m_before, this->m_after);
   std::sprintf(text, "%d", this->m_after);
   this->DrawTextAt(110, 10, text, 0, 0, 12, 0, 0, 0);
 
@@ -682,7 +683,7 @@ void UIItemParamChangeDisplayWnd::Paint() {
   this->DrawTextAt(152, 10, text, 0, 0, 12, 0, 0, 0);
   std::sprintf(text, "%d", this->m_beforeSecond);
   this->DrawTextAt(202, 10, text, 0, 0, 12, 0, 0, 0);
-  drawArrow(222, this->m_beforeSecond, this->m_afterSecond);
+  DrawParamChangeArrow(*this, 222, this->m_beforeSecond, this->m_afterSecond);
   std::sprintf(text, "%d", this->m_afterSecond);
   this->DrawTextAt(242, 10, text, 0, 0, 12, 0, 0, 0);
 }
