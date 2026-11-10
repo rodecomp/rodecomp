@@ -49,7 +49,13 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       int count = 0;
       for (int category = 0; category < 8; ++category) {
         std::map<unsigned short, UICheckBox*>& checks = this->m_jobChecks[category];
-        for (auto it = checks.begin(); it != checks.end(); ++it) {
+        auto it = checks.begin();
+        auto end = checks.end();
+        if (it == end) {
+          break;
+        }
+
+        for (; it != end; ++it) {
           if (it->second->geometry.state) {
             if (count < 6) {
               this->m_registration.detail.job[count] = it->first;
