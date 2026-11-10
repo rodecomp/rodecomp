@@ -13,8 +13,7 @@ int CImfRes::GetLayer(int priority, int action, int motion) {
     return -1;
   }
 
-  int numLayer = this->m_imfData.size();
-  for (int layer = 0; layer < numLayer; ++layer) {
+  for (int layer = 0; layer < (int)this->m_imfData.size(); ++layer) {
     if (this->m_imfData[layer][action].priority[motion] == priority) {
       return layer;
     }
