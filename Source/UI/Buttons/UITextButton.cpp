@@ -3347,20 +3347,21 @@ void UITextViewEX::Paint() {
   const int top = this->topLine;
   int y = 7;
   int line = 0;
-  for (auto it = this->lineLinks.begin(); it != this->lineLinks.end(); ++it, ++line) {
+  for (auto it = this->lineLinks.begin(), end = this->lineLinks.end(); it != end; ++it, ++line) {
     std::vector<UITextButton*> buttons = *it;
     if (line >= top) {
       int x = 0;
       for (UITextButton* button : buttons) {
         UIString* text = reinterpret_cast<UIString*>(button);
-        if (text->text != "\n") {
+        if (StringText(*text) != "\n") {
           text->Show(1);
           x = text->enabled == 0 ? x : x - 5;
           if (x < 0) {
             x = 0;
           }
-          text->Move(x, !text->image.empty() ? y - 7 : y);
-          x = text->geometry.width + x + 5;
+          const bool hasImage = !StringImage(*text).empty();
+          text->Move(x, hasImage ? y - 7 : y);
+          x = x + 5 + text->geometry.width;
         }
       }
       y += 21;
