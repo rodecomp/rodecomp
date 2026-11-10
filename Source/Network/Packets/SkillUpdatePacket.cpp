@@ -82,10 +82,10 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
   const auto* bytes = static_cast<const unsigned char*>(packet);
 
   const auto length = static_cast<std::uint32_t>(static_cast<int>(Read<std::int16_t>(bytes + 2)) - 6);
-  const std::uint32_t count = length / 37;
+  const int count = static_cast<int>(length / 37);
   const unsigned char* record = bytes + 6;
 
-  for (std::uint32_t index = 0; index < count; ++index, record += 37) {
+  for (int index = 0; index < count; ++index, record += 37) {
     CSkillInfo value;
     value.level = Read<std::int16_t>(record + 6);
     value.id = Read<std::uint16_t>(record);
@@ -93,7 +93,7 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
     value.type = Read<std::uint32_t>(record + 2);
     value.upgradable = record[36];
     value.name = value.IdName(*g_session.m_hotkeyScript);
-    value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
+    value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, Read<std::int16_t>(record + 6));
 
     if (value.id - 10000u <= 19u) {
       g_session.UpdateAdditionalSkill(value, 1);
