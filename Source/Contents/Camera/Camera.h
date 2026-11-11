@@ -36,6 +36,8 @@ public:
   void Apply();
   void Start(int enabled, unsigned duration, float horizontal, float distance, float pitch);
   void SetAmplitudes(float horizontal, float distance, float pitch);
+  void AddDistance(float delta);
+  void AddPitch(float delta);
 
   /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;

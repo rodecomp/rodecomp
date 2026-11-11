@@ -23,8 +23,6 @@ struct CameraState {
       this->target[axis] = this->desiredTarget[axis] = 0;
     }
   }
-  void AddDistance(float delta);
-  void AddPitch(float delta);
   void AddYaw(float delta);
   void Smooth();
 };

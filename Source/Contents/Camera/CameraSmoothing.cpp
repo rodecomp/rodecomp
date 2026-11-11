@@ -9,14 +9,14 @@
 
 // OFFSET: 0x00ADB070
 // FUNCTION: fn_17916
-void CameraState::AddDistance(float delta) {
-  this->desiredDistance = delta + this->desiredDistance;
+void CView::AddDistance(float delta) {
+  this->camera.desiredDistance = delta + this->camera.desiredDistance;
 }
 
 // OFFSET: 0x00ADB090
 // FUNCTION: fn_17917
-void CameraState::AddPitch(float delta) {
-  this->desiredPitch = delta + this->desiredPitch;
+void CView::AddPitch(float delta) {
+  this->camera.desiredPitch = delta + this->camera.desiredPitch;
 }
 
 // OFFSET: 0x00ADB0B0

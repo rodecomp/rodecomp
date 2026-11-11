@@ -379,9 +379,9 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
   }
 
   if (this->m_diceEmotion == emotionId) {
-    emotionId = std::max(0, rand() % 6) + this->m_diceEmotion;
+    emotionId = std::ranges::max(rand() % 6, 0) + this->m_diceEmotion;
   } else if (this->m_yutEmotion == emotionId) {
-    emotionId = std::max(0, rand() % 7) + this->m_yutEmotion;
+    emotionId = std::ranges::max(rand() % 7, 0) + this->m_yutEmotion;
   }
 
   mode->SendMsg(MM_REQ_EMOTION, emotionId, packId, 0, 0);
@@ -402,13 +402,12 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
 
   if (auto* emotionWnd = reinterpret_cast<UIEmotionWnd*>(g_windowMgr.emotionWnd)) {
     emotionWnd->SetMacroText(name, -1);
-    return true;
-  }
-
-  UINewChatWnd* suggestions = ChatWindow();
-  if (suggestions && suggestions->m_chatEdit) {
-    suggestions->m_chatEdit->SetText(name);
-    suggestions->m_chatEdit->Invalidate();
+  } else {
+    UINewChatWnd* suggestions = ChatWindow();
+    if (suggestions && suggestions->m_chatEdit) {
+      suggestions->m_chatEdit->SetText(name);
+      suggestions->m_chatEdit->Invalidate();
+    }
   }
 
   return true;

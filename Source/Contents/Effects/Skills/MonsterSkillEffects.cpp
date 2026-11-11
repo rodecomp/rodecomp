@@ -698,7 +698,7 @@ void CWarningPlaneEffect::OnProcess() {
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(1.5707963f);
+      rotation.MakeXRotation(1.570796f);
       rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
 
       matrix scale;
