@@ -114,10 +114,10 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
   }
 
   int quadrant;
-  if (static_cast<int>(x) > this->bounds.right / 2) {
-    quadrant = (static_cast<int>(y) > this->bounds.bottom / 2) + 1;
-  } else {
+  if (static_cast<int>(x) <= this->bounds.right / 2) {
     quadrant = static_cast<int>(y) <= this->bounds.bottom / 2 ? 0 : 3;
+  } else {
+    quadrant = (static_cast<int>(y) > this->bounds.bottom / 2) + 1;
   }
 
   ActorPickInfo* result = this->children[quadrant]->Pick(x, y);
@@ -125,7 +125,7 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     return result;
   }
   for (int index = 0; index < 4; ++index) {
-    if (index != quadrant) {
+    if (quadrant != index) {
       result = this->children[index]->Pick(x, y);
       if (result) {
         return result;
