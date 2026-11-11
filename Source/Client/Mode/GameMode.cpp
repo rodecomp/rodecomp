@@ -161,6 +161,10 @@ protected:
 };
 
 #pragma pack(push, 1)
+struct GameModePacketHeader {
+  /* 0000 */ std::uint16_t packetId;
+};
+
 struct GameModePacketByte {
   /* 0000 */ std::uint16_t packetId;
   /* 0002 */ std::uint8_t argument;
@@ -5546,7 +5550,8 @@ void CPingLiveSchedule::Process(const std::uint64_t& now) {
   }
 
   if (g_session.m_lastSendTick + 10000 < tick) {
-    std::uint16_t packet = 0xB1C;
+    GameModePacketHeader packet;
+    packet.packetId = ID_CZ_PING_LIVE;
     GetRagConnection().Send(sizeof(packet), &packet);
   }
 }
