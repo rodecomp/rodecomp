@@ -6333,18 +6333,18 @@ void UInCashWnd::OnCreate(int width, int height) {
     this->m_buttons[index] = button;
     if (index < 15) {
       button->SetBitmap((interfacePrefix + names[index][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
-      button->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 3, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 3, 0);
     } else {
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 3, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 3, 0);
     }
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(positions[index][0], positions[index][1]);
-    button->SetId(ids[index]);
+    this->m_buttons[index]->SetSize(static_cast<UIBitmapButton*>(this->m_buttons[index])->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_buttons[index])->BitmapHeight());
+    this->m_buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->m_buttons[index]->SetId(ids[index]);
 
     switch (index) {
     case 0:
