@@ -7156,7 +7156,7 @@ void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
     std::memcpy(name, position.name, sizeof(position.name));
     name[24] = '\0';
     if (g_forbiddenWords.Contains(name)) {
-      std::string masked;
+      std::string masked("");
       g_forbiddenWords.Mask(name, &masked);
     }
 
@@ -7327,7 +7327,7 @@ void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
   sprintf_s(message, sizeof(message), LookupMessage(MSI_REASON_LEAVE_GUILD), reason);
   if (g_forbiddenWords.Contains(message) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(message, &masked);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
