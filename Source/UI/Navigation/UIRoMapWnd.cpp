@@ -36,6 +36,8 @@
 #include <new>
 #include <vector>
 
+extern template void std::string::resize(size_type, char);
+
 // GLOBAL: gl_24799
 CWorldViewMgr g_worldViewMgr;
 
@@ -291,7 +293,11 @@ void UIRoMapWnd::DrawRecordBorders() {
 
     const int width = it->right - it->left;
     const int height = it->bottom - it->top;
-    DrawRoundedBorder(*this, it->left, it->top, width, height, mapName == it->name ? 0x23AEE8 : 0x7EE2F7);
+    if (mapName == it->name) {
+      DrawRoundedBorder(*this, it->left, it->top, width, height, 0x23AEE8);
+    } else {
+      DrawRoundedBorder(*this, it->left, it->top, width, height, 0x7EE2F7);
+    }
   }
 }
 
@@ -719,12 +725,14 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_ROMAPWND);
       return 0;
-    case ID_STATUS:
+    case ID_STATUS: {
+      UICheckBox* labelCheck = this->m_labelCheck;
       this->m_showLabels = !this->m_showLabels;
-      this->m_labelCheck->geometry.state = this->m_showLabels;
-      this->m_labelCheck->Invalidate();
+      labelCheck->geometry.state = this->m_showLabels;
+      labelCheck->Invalidate();
       this->Invalidate();
       return 0;
+    }
     case ID_BASE:
       g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
       if (g_windowMgr.navigationWnd) {
@@ -775,7 +783,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_DEFPUSH:
-    if (sender == this->m_searchEdit) {
+    if (this->m_searchEdit == sender) {
       if (this->m_searchEdit->Length() > 0) {
         this->SendMsg(this->m_searchEdit, UM_COMMAND, ID_SEARCH, 0, 0, 0);
         return 0;
