@@ -32,6 +32,9 @@
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "Resource/MSGSTRINGID.h"
 #include <timeapi.h>
+
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
@@ -266,10 +269,7 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 // OFFSET: 0x00885250
 // FUNCTION: fn_11318
 void UIComboBoxDef2Wnd::OnCreate(int width, int) {
-  std::string path = "유저인터페이스\\UIadventurerAgency\\";
-  if (this->skin == 1) {
-    path = "유저인터페이스\\login_interface\\";
-  }
+  std::string path = this->skin == 1 ? "유저인터페이스\\login_interface\\" : "유저인터페이스\\UIadventurerAgency\\";
   this->button = new UIBitmapButton();
   this->button->SetBitmap((path + "btn_dropdown_out" + ".bmp").c_str(), 0, 0);
   this->button->SetBitmap((path + "btn_dropdown_over" + ".bmp").c_str(), 1, 0);

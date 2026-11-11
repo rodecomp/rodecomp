@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <new>
 
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {

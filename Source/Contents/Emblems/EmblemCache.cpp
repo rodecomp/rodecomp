@@ -21,6 +21,8 @@
 #include <windows.h>
 #include <zlib.h>
 
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 namespace {
   // INLINED
   __forceinline std::string Basename(const std::string& path) {
