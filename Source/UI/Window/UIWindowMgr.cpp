@@ -4175,23 +4175,28 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
     int companion = -1;
     if (window->geometry.id == 12) {
       companion = 234;
-    } else if (window->geometry.id == 82) {
+    }
+    if (window->geometry.id == 82) {
       companion = 250;
     }
 
     if (companion != -1) {
-      const auto entry = std::find_if(this->rendered.begin(), this->rendered.end(), [&](const UIWindow* value) { return value->geometry.id == companion; });
-      if (entry != this->rendered.end()) {
-        UIWindow* value = *entry;
-        this->rendered.erase(entry);
-        this->rendered.push_back(value);
+      for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+        if ((*it)->geometry.id == companion) {
+          UIWindow* value = *it;
+          this->rendered.erase(it);
+          this->rendered.push_back(value);
+          break;
+        }
       }
     }
 
-    const auto entry = std::find(this->rendered.begin(), this->rendered.end(), window);
-    if (entry != this->rendered.end()) {
-      this->rendered.erase(entry);
-      this->rendered.push_back(window);
+    for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if (*it == window) {
+        this->rendered.erase(it);
+        this->rendered.push_back(window);
+        break;
+      }
     }
   }
 
