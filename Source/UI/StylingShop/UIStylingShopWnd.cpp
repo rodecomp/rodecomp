@@ -632,11 +632,13 @@ bool UIStylingShopWnd::AddToMyStyle() {
     if (it->first->geometry.id == 496) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       int index = 0;
-      while (myStyle->m_slots[index]) {
-        ++index;
-        if (index >= 2) {
-          return false;
+      for (; index < 2; ++index) {
+        if (myStyle->m_slots[index] == nullptr) {
+          break;
         }
+      }
+      if (index >= 2) {
+        return false;
       }
 
       UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd();
