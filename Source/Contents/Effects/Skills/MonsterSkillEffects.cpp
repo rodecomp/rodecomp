@@ -2387,8 +2387,8 @@ void CPetitioEffect::OnProcess() {
 
     CEZ2STRParticle* particle = AsParticle(emitter);
     const float x = this->position[0] + 0.0f;
-    const float y = this->position[1] - 12.0f;
     const float z = this->position[2] + 0.0f;
+    const float y = this->position[1] - 12.0f;
     particle->position.x = x;
     particle->position.y = y;
     particle->position.z = z;
@@ -2528,29 +2528,36 @@ void CRandomHitEffect::Open() {
   this->emitter =
       reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (this->emitter) {
-    if (this->id == 2080) {
+    switch (this->id) {
+    case 2080: {
       AsParticle(this->emitter)->Load(std::string("4ig_secondfalth\\secondfalth_hit\\secondfalth_hit.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
-      this->emitter->offset.x = static_cast<float>(offsetsX[index]);
-      this->emitter->offset.y = static_cast<float>(offsetsY[index]);
-      this->emitter->offset.z = 0.0f;
+      vector3d& offset = this->emitter->offset;
+      offset.x = static_cast<float>(offsetsX[index]);
+      offset.y = static_cast<float>(offsetsY[index]);
+      offset.z = 0.0f;
       AsParticle(this->emitter)->m_delay = index * 200;
-    } else if (this->id == 2082) {
+      break;
+    }
+    case 2082: {
       AsParticle(this->emitter)->Load(std::string("4iq_secondjudgement\\secondjudgement\\secondjudgement.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
-      this->emitter->offset.x = static_cast<float>(offsetsX[index]);
-      this->emitter->offset.y = static_cast<float>(offsetsY[index]);
-      this->emitter->offset.z = 0.0f;
+      vector3d& offset = this->emitter->offset;
+      offset.x = static_cast<float>(offsetsX[index]);
+      offset.y = static_cast<float>(offsetsY[index]);
+      offset.z = 0.0f;
       AsParticle(this->emitter)->m_delay = index * 200;
+      break;
+    }
     }
   }
 
-  if (s_randomHitIndex < 2) {
-    ++s_randomHitIndex;
-  } else {
+  if (s_randomHitIndex >= 2) {
     s_randomHitIndex = 0;
+  } else {
+    ++s_randomHitIndex;
   }
 }
 
@@ -4190,19 +4197,24 @@ void CSvgSpiritEffect::Open() {
 // FUNCTION: fn_07172
 void CCurseOfCubeEffect::SpawnShock() {
   CEZ2STRParticle* particle;
-  if (this->id == 0x901) {
+  switch (this->id) {
+  case 0x901: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
     }
     particle->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_shock\\npc_cur_r_shock.str");
-  } else if (this->id == 0x902) {
+    break;
+  }
+  case 0x902: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
     }
     particle->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_shock\\npc_cur_b_shock.str");
-  } else {
+    break;
+  }
+  default:
     return;
   }
 
@@ -4380,7 +4392,8 @@ void CCurseOfCubeEffect::SpawnLoop() {
 // OFFSET: 0x0070E770
 // FUNCTION: fn_07174
 void CCurseOfCubeEffect::SpawnStart() {
-  if (this->id == 0x901) {
+  switch (this->id) {
+  case 0x901: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
@@ -4393,7 +4406,9 @@ void CCurseOfCubeEffect::SpawnStart() {
       cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_start.str");
       this->emitters.push_back(cubeEmitter);
     }
-  } else if (this->id == 0x902) {
+    break;
+  }
+  case 0x902: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
@@ -4406,6 +4421,8 @@ void CCurseOfCubeEffect::SpawnStart() {
       cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_start.str");
       this->emitters.push_back(cubeEmitter);
     }
+    break;
+  }
   }
 }
 
@@ -4633,7 +4650,7 @@ void CGravityControlEffect::OnProcess() {
 // OFFSET: 0x00717850
 // FUNCTION: fn_07282
 void CGaleStorm::SpawnArrow() {
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   const int spanX = static_cast<int>(this->count) * 5 + 1;
   const int offsetX = spanX == 0 ? 0 : ClampedRandom(spanX);
   position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
