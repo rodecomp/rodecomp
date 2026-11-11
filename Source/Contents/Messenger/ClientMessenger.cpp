@@ -2266,10 +2266,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
           }
         }
         if (values.size() > 1) {
-          unsigned int hash = 5381;
-          for (const char* character = key.c_str(); *character != '\0'; ++character) {
-            hash = hash * 33 + *character;
-          }
+          unsigned int hash = HashName(key.c_str());
           int variable;
           switch (hash) {
           case 0x617FECDF:
