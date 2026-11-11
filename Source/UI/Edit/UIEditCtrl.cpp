@@ -1558,18 +1558,20 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 21001 || header.type == 21051) {
+        switch (header.type) {
+        case 21001:
+        case 21051:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-          break;
-        }
-
-        if (header.type == 21052) {
+          return 0;
+        case 21052:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
           this->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, this->buyingZeny, 0, 0, 0);
-        } else {
+          break;
+        default:
           offset += header.size;
+          break;
         }
       }
     }
