@@ -123,7 +123,11 @@ void UIButton::OnMouseMove(int x, int y) {
 
   UIWindow* parent = this->parent;
   if (parent == g_windowMgr.basicInfoWnd) {
-    parent->SendMsg(this, UM_COMMAND, ID_APPLY, this->geometry.state != 0, 0, 0);
+    if (this->geometry.state == 0) {
+      parent->SendMsg(this, UM_COMMAND, ID_APPLY, 0, 0, 0);
+    } else {
+      parent->SendMsg(this, UM_COMMAND, ID_APPLY, 1, 0, 0);
+    }
   }
 }
 
