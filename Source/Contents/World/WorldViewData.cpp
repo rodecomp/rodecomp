@@ -303,18 +303,17 @@ static void ScaleArea(int* area, int textureWidth, int textureHeight) {
 // FUNCTION: fn_04374
 bool CWorldViewMgr::ScaleToScreen() {
   for (std::vector<CWorldViewWorld*>::iterator it = this->worlds.begin(); it != this->worlds.end(); ++it) {
-    CWorldViewWorld* world = *it;
-    if (!world->texture) {
+    if (!(*it)->texture) {
       continue;
     }
 
-    const int textureWidth = world->texture->Width();
-    const int textureHeight = world->texture->Height();
-    for (std::vector<CWorldViewMap*>::iterator map = world->maps.begin(); map != world->maps.end(); ++map) {
-      ScaleArea(&(*map)->left, textureWidth, textureHeight);
-      for (std::vector<CWorldViewField*>::iterator field = (*map)->fields.begin(); field != (*map)->fields.end(); ++field) {
-        if (*field) {
-          ScaleArea(&(*field)->left, textureWidth, textureHeight);
+    const int textureWidth = (*it)->texture->Width();
+    const int textureHeight = (*it)->texture->Height();
+    for (CWorldViewMap* map : (*it)->maps) {
+      ScaleArea(&map->left, textureWidth, textureHeight);
+      for (CWorldViewField* field : map->fields) {
+        if (field) {
+          ScaleArea(&field->left, textureWidth, textureHeight);
         }
       }
     }
