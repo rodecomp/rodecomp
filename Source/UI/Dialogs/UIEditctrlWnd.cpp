@@ -299,8 +299,7 @@ void UIMiniMapWnd::UpdatePlayerHead() {
   this->m_playerHead->SetSprite(sprite.c_str());
   CSprRes* resource = dynamic_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite.c_str()));
   if (resource) {
-    const SpriteRleImage* image = resource->images[0][0];
-    this->m_playerHead->SetSize(image->width, image->height);
+    this->m_playerHead->SetSize(resource->images[0][0]->width, resource->images[0][0]->height);
   } else {
     this->m_playerHead->SetSize(2, 2);
     this->m_playerHead->Move(-100, -100);
