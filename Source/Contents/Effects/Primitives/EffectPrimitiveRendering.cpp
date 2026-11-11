@@ -4637,6 +4637,10 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
 // OFFSET: 0x00BDF440
 // FUNCTION: fn_19909
 void CEffectPrim::RenderRectUp2(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 2; ++ec) {
@@ -4646,23 +4650,30 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const unsigned char r = slot.height[4] < 10.0f ? 200 : 100;
-    const unsigned char g = slot.height[4] < 10.0f ? 250 : 100;
     const unsigned char b = slot.height[4] < 10.0f ? 200 : 250;
+    const unsigned char g = slot.height[4] < 10.0f ? 250 : 100;
+    const unsigned char r = slot.height[4] < 10.0f ? 200 : 100;
 
-    slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
-    slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
-    slot.vecTNow = {-slot.height[0], -1.0f, -slot.height[1]};
-    slot.vecTPre = {-slot.height[0], -1.0f, slot.height[1]};
+    slot.vecBPre.x = slot.height[0];
+    slot.vecBPre.y = -1.0f;
+    slot.vecBPre.z = slot.height[1];
+    slot.vecBNow.x = slot.height[0];
+    slot.vecBNow.y = -1.0f;
+    slot.vecBNow.z = -slot.height[1];
+    slot.vecTNow.x = -slot.height[0];
+    slot.vecTNow.y = -1.0f;
+    slot.vecTNow.z = -slot.height[1];
+    slot.vecTPre.x = -slot.height[0];
+    slot.vecTPre.y = -1.0f;
+    slot.vecTPre.z = slot.height[1];
 
     const float y = -1.0f - slot.height[2];
-    const vector3d vec1{slot.vecBPre.x, y, slot.vecBPre.z};
-    const vector3d vec2{slot.vecBNow.x, y, slot.vecBNow.z};
-    const vector3d vec3{slot.vecTPre.x, y, slot.vecTPre.z};
-    const vector3d vec4{slot.vecTNow.x, y, slot.vecTNow.z};
-
+    vec1.Set(slot.vecBPre.x, y, slot.vecBPre.z);
+    vec2.Set(slot.vecBNow.x, y, slot.vecBNow.z);
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
@@ -4675,20 +4686,19 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const unsigned char r = slot.height[4] < 10.0f ? 150 : 50;
-    const unsigned char g = slot.height[4] < 10.0f ? 250 : 50;
     const unsigned char b = slot.height[4] < 10.0f ? 150 : 250;
+    const unsigned char g = slot.height[4] < 10.0f ? 250 : 50;
+    const unsigned char r = slot.height[4] < 10.0f ? 150 : 50;
     const float w = slot.height[0];
     const float h = slot.height[1];
-    const float dist = slot.distance;
 
     slot.vecBPre = {w, -1.0f, h};
     slot.vecBNow = {w, -1.0f, -h};
     slot.vecTNow = {-w, -1.0f, -h};
     slot.vecTPre = {-w, -1.0f, h};
 
-    if (dist < w * 2.0f) {
-      slot.vecBPre.z = h - dist;
+    if (slot.distance < w * 2.0f) {
+      slot.vecBPre.z = h - slot.distance;
       slot.vecBNow.z = slot.vecBPre.z - slot.height[3];
 
       if (slot.vecBNow.z < -h) {
@@ -4696,8 +4706,8 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
         slot.vecBNow.z = -h;
         slot.vecTNow.x = slot.vecBNow.x - left;
       }
-    } else if (dist < w * 4.0f) {
-      slot.vecBNow.x = w - (dist - w * 2.0f);
+    } else if (slot.distance < w * 4.0f) {
+      slot.vecBNow.x = w - (slot.distance - w * 2.0f);
       slot.vecTNow.x = slot.vecBNow.x - slot.height[3];
 
       if (slot.vecTNow.x < -w) {
@@ -4705,8 +4715,8 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
         slot.vecTNow.x = -w;
         slot.vecTPre.z = slot.vecTNow.z + left;
       }
-    } else if (dist < w * 6.0f) {
-      slot.vecTNow.z = dist - w * 4.0f - h;
+    } else if (slot.distance < w * 6.0f) {
+      slot.vecTNow.z = slot.distance - w * 4.0f - h;
       slot.vecTPre.z = slot.vecTNow.z + slot.height[3];
 
       if (slot.vecTPre.z > h) {
@@ -4715,7 +4725,7 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
         slot.vecBPre.x = slot.vecTPre.x + left;
       }
     } else {
-      slot.vecTPre.x = dist - w * 6.0f - w;
+      slot.vecTPre.x = slot.distance - w * 6.0f - w;
       slot.vecBPre.x = slot.vecTPre.x + slot.height[3];
 
       if (slot.vecBPre.x > w) {
@@ -4726,24 +4736,24 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
     }
 
     const float y = -1.0f - slot.height[2];
-    const vector3d vec1{slot.vecBPre.x, y, slot.vecBPre.z};
-    const vector3d vec2{slot.vecBNow.x, y, slot.vecBNow.z};
-    const vector3d vec3{slot.vecTPre.x, y, slot.vecTPre.z};
-    const vector3d vec4{slot.vecTNow.x, y, slot.vecTNow.z};
+    vec1.Set(slot.vecBPre.x, y, slot.vecBPre.z);
+    vec2.Set(slot.vecBNow.x, y, slot.vecBNow.z);
+    vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
+    vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
 
-    if (dist < w * 2.0f) {
+    if (slot.distance < w * 2.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
         this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (dist < w * 4.0f) {
+    } else if (slot.distance < w * 4.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
         this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (dist < w * 6.0f) {
+    } else if (slot.distance < w * 6.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
