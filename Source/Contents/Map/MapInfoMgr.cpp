@@ -158,19 +158,19 @@ const char* CMapInfoMgr::GetDisplayName(std::string map) {
 // FUNCTION: fn_06490
 MapInfo* CMapInfoMgr::FindMapInfo(std::string map) {
   std::string name = map;
-  const std::size_t at = name.rfind('@');
-  if (at != std::string::npos && at > 3) {
+  const std::size_t at = name.rfind("@");
+  if (at != std::string::npos && at >= 4) {
     name.erase(at - 4, 3);
   }
 
   const auto found = std::find_if(this->m_maps.begin(), this->m_maps.end(), [name](std::pair<std::string, MapInfo> entry) {
     return entry.first.compare(name) == 0;
   });
-  if (found == this->m_maps.end()) {
-    return nullptr;
+  if (found != this->m_maps.end()) {
+    return &found->second;
   }
 
-  return &found->second;
+  return nullptr;
 }
 
 // OFFSET: 0x006CEF60
