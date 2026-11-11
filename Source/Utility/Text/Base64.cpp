@@ -103,10 +103,11 @@ std::string EncodeBase64(const std::string& input, bool urlSafe) {
 // OFFSET: 0x00619E10
 // FUNCTION: fn_04414
 std::string EncodeBase64(const unsigned char* input, unsigned int length, bool urlSafe) {
+  const unsigned int encodedLength = 4 * ((length + 2) / 3);
   const char padding = urlSafe ? '.' : '=';
   const char* alphabet = alphabets[urlSafe];
   std::string encoded;
-  encoded.reserve(4 * ((length + 2) / 3));
+  encoded.reserve(encodedLength);
 
   for (unsigned int index = 0; index < length; index += 3) {
     encoded.push_back(alphabet[input[index] >> 2]);
