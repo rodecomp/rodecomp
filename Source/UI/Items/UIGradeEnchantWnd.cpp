@@ -178,8 +178,11 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   start->Resize(start->BitmapWidth(), start->BitmapHeight());
   this->startButton->Move(0x23, 0x123);
   this->startButton->SetId(0xB8);
-  this->startButton->SetDisabled(0);
-  this->startButton->Invalidate();
+  {
+    UIGradeEnchant_BtnStart* button = this->startButton;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
   this->AddChild(this->startButton);
 
   UIGradeEnchant_BtnEnhancedUp* enhancedUp = new UIGradeEnchant_BtnEnhancedUp();
@@ -190,8 +193,11 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   enhancedUp->Resize(enhancedUp->BitmapWidth(), enhancedUp->BitmapHeight());
   this->enhancedUpButton->Move(0x9E, 0xE1);
   this->enhancedUpButton->SetId(0x117);
-  this->enhancedUpButton->SetDisabled(0);
-  this->enhancedUpButton->Invalidate();
+  {
+    UIGradeEnchant_BtnEnhancedUp* button = this->enhancedUpButton;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
   this->AddChild(this->enhancedUpButton);
 
   UIGradeEnchant_BtnEnhancedDown* enhancedDown = new UIGradeEnchant_BtnEnhancedDown();
@@ -202,8 +208,11 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   enhancedDown->Resize(enhancedDown->BitmapWidth(), enhancedDown->BitmapHeight());
   this->enhancedDownButton->Move(0x9E, 0xF0);
   this->enhancedDownButton->SetId(0x118);
-  this->enhancedDownButton->SetDisabled(0);
-  this->enhancedDownButton->Invalidate();
+  {
+    UIGradeEnchant_BtnEnhancedDown* button = this->enhancedDownButton;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
   this->AddChild(this->enhancedDownButton);
 
   auto* help = new UIBitmapButton();
