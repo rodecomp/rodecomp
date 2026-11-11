@@ -1847,29 +1847,24 @@ __declspec(noinline) void CGameMode::ReceiveRouletteSetResult(const unsigned cha
 // FUNCTION: fn_21977
 __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
   char text[0x400];
-  const char* message;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
-  case DYNAMICNPC_RESULT_UNKNOWN:
-    std::memset(text, 0, sizeof(text));
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "dynamic npc create error found(unknown) ");
-    message = text;
+  case DYNAMICNPC_RESULT_DUPLICATE:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_GENERATE_ROULLETTE)), 0x64FFFF, 0, 0, 0);
     break;
   case DYNAMICNPC_RESULT_UNKNOWNNPC:
     std::memset(text, 0, sizeof(text));
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "dynamic npc not found ");
-    message = text;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     break;
-  case DYNAMICNPC_RESULT_DUPLICATE:
-    message = LookupMessage(MSI_FAILED_GENERATE_ROULLETTE);
+  case DYNAMICNPC_RESULT_UNKNOWN:
+    std::memset(text, 0, sizeof(text));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "dynamic npc create error found(unknown) ");
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     break;
   case DYNAMICNPC_RESULT_OUTOFTIME:
-    message = LookupMessage(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE)), 0x64FFFF, 0, 0, 0);
     break;
-  default:
-    return;
   }
-
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D079A0
@@ -2217,7 +2212,7 @@ __declspec(noinline) void CGameMode::ReceiveActorMessage7(const unsigned char* p
   }
 
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 4);
-  CRenderObject* actor = aid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(aid);
+  CRenderObject* actor = g_session.m_aid == aid ? this->scene->player : this->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }
@@ -6498,11 +6493,11 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
   g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
   const Window107Entry* entry = reinterpret_cast<const Window107Entry*>(packet + 4);
-  if (count != 0 && window != nullptr) {
-    for (int i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
+    if (window) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
-      ++entry;
     }
+    ++entry;
   }
 }
 
