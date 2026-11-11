@@ -20,6 +20,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Login/UILoginWnd.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -118,53 +119,17 @@ const int s_monsterJobIds[48] = {
   9100786, 9100787, 9100788, 9100789, 9100790, 9100791, 9100792, 9100793
 };
 
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedText {
-public:
-  explicit EncryptedText(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  // INLINED
-  explicit EncryptedText(const char (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedText() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptText(const std::uint8_t (&source)[Length]) {
-  thread_local EncryptedText<Length, Key> text(source);
+  thread_local EncryptedName<Length, Key> text(source);
   return text.Text();
 }
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptString(const char (&source)[Length]) {
-  thread_local EncryptedText<Length, Key> text(source);
+  thread_local EncryptedName<Length, Key> text(source);
   return text.Text();
 }
 

@@ -4,45 +4,15 @@
 #include "UI/Dialogs/UITipOfTheDayWnd.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include <cstddef>
 #include <cstdint>
 
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedText {
-public:
-  // INLINED
-  template <typename Byte>
-  explicit EncryptedText(const Byte (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedText() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-
 // INLINED
 template <std::uint64_t Key, typename Byte, std::size_t Length>
 const char* DecryptText(const Byte (&source)[Length]) {
-  thread_local EncryptedText<Length, Key> text(source);
+  thread_local EncryptedName<Length, Key> text(source);
   return text.Text();
 }
 

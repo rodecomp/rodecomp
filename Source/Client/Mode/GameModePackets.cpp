@@ -146,6 +146,7 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Ground/TerrainHeight.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 #include <new>
 
 // OFFSET: 0x00D7AF70
@@ -177,7 +178,6 @@ void __fastcall RefreshPartyWindows(CSession* session);
 
 // GLOBAL: gl_24992
 char g_pendingWhisperCount;
-
 
 namespace {
 #pragma pack(push, 1)
@@ -4537,7 +4537,6 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   int* derivedStats = reinterpret_cast<int*>(g_session.combatStats);
   g_modeMgr.GetGameMode();
   std::string text;
-
 
   switch (packet->type) {
   case SP_SPEED:
@@ -15610,37 +15609,6 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   }
 }
 
-namespace {
-  template <std::size_t Length, std::uint64_t Key>
-  class EncryptedText {
-  public:
-    explicit EncryptedText(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
-      for (std::uint64_t index = 0; index < Length; ++index) {
-        this->m_text[index] = source[index];
-      }
-    }
-
-    ~EncryptedText() {
-      for (std::uint64_t index = 0; index < Length; ++index) {
-        this->m_text[index] = 0;
-      }
-    }
-
-    const char* Text() {
-      if (this->m_encrypted) {
-        utility::XorBytes(this->m_text, Length, Key);
-        this->m_encrypted = false;
-      }
-
-      return reinterpret_cast<const char*>(this->m_text);
-    }
-
-  private:
-    std::uint8_t m_text[Length];
-    bool m_encrypted;
-  };
-}
-
 // OFFSET: 0x00D231F0
 // FUNCTION: fn_21661
 void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, unsigned char refine, unsigned char grade, bool success) {
@@ -15652,10 +15620,10 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
 
   int job = 0;
   const std::uint8_t signatureSource[] = {0x1B, 0x2D, 0xBB, 0xD1};
-  thread_local EncryptedText<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
+  thread_local EncryptedName<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
   const char* signatureText = signature.Text();
   const std::uint8_t functionSource[] = {0xB6, 0xA2, 0x4D, 0x4C, 0x66, 0x0C, 0x26, 0x81, 0xBB, 0xA8, 0x5B, 0x09};
-  thread_local EncryptedText<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
+  thread_local EncryptedName<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
   g_session.m_hotkeyScript->Call(function.Text(), signatureText, itemId, &job);
   if (job != 0) {
     item.identity[0] = 0x15;
