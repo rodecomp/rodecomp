@@ -5957,7 +5957,7 @@ bool CEffectPrim::PrimFieldFireflies() {
       }
 
       if (slot.height[7] == 0.0f) {
-        if (slot.process < 80 && this->render.position.y <= slot.height[6] && slot.height[6] != this->render.position.y) {
+        if (slot.process < 80 && this->render.position.y < slot.height[6]) {
           slot.alphaB += 2;
         }
       } else if (slot.height[7] == 2.0f) {
