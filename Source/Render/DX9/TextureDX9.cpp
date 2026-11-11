@@ -367,7 +367,9 @@ bool CTextureDX9::UploadSurface(
       for (int column = 0; column < w; ++column) {
         std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
         const std::uint16_t rgb = converted & 0x7FFF;
-        if (rgb == 0x7C1F || (blackTransparent && !rgb)) {
+        if (rgb == 0x7C1F) {
+          converted = 0;
+        } else if (blackTransparent && !rgb) {
           converted = 0;
         }
 
@@ -383,7 +385,9 @@ bool CTextureDX9::UploadSurface(
       for (int column = 0; column < w; ++column) {
         std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
         const std::uint16_t rgb = converted & 0x0FFF;
-        if (rgb == 0xF0F || (blackTransparent && !rgb)) {
+        if (rgb == 0xF0F) {
+          converted = 0;
+        } else if (blackTransparent && !rgb) {
           converted = 0;
         }
 

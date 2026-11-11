@@ -18,6 +18,14 @@ static vector3d s_chargingPierceNewOffsets[10] = {
   {-7.5f, -20.0f, 0.0f},  {-3.75f, -20.0f, 0.0f},  {0.0f, -20.0f, 0.0f},  {3.75f, -20.0f, 0.0f},  {7.5f, -20.0f, 0.0f},
 };
 
+// INLINED
+static __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+
 // OFFSET: 0x00703060
 // FUNCTION: fn_07017
 CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1) {
@@ -181,7 +189,7 @@ void CChargingPierceEffect::OnProcess() {
     }
 
     if (CEZ2STRParticle* emitter = this->emitters[index]) {
-      if (emitter->life == 0.0f || static_cast<float>(emitter->elapsedFrames) < emitter->life * 60.0f) {
+      if (IsParticleActive(emitter) == true) {
         if (g_modeMgr.GetGameMode()) {
           float height = -13.0f;
           if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
