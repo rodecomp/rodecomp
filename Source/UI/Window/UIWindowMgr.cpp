@@ -1243,7 +1243,7 @@ void UIWindowMgr::AddWhisperName(const char* name) {
   names.push_back(std::string(name));
   const unsigned count = static_cast<unsigned>(names.size());
   UIWhisperEditCtrl* whisper = static_cast<UIWhisperEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit);
-  if (count - 1 <= static_cast<unsigned>(whisper->historyIndex)) {
+  if (static_cast<unsigned>(whisper->historyIndex) >= count - 1) {
     whisper->historyIndex = count;
   }
 }
@@ -1436,7 +1436,7 @@ static_assert(sizeof(ReplaySettingHeader) == 6);
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t tag) {
-  std::vector<unsigned char> chunk(6);
+  std::vector<unsigned char> chunk(6, 0);
   unsigned char* bytes = chunk.data();
   *reinterpret_cast<std::int16_t*>(bytes) = tag;
   *reinterpret_cast<int*>(bytes + 2) = 0;
@@ -1445,7 +1445,7 @@ static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t ta
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag, const int& value) {
-  std::vector<unsigned char> chunk(10);
+  std::vector<unsigned char> chunk(10, 0);
   unsigned char* bytes = chunk.data();
   *reinterpret_cast<std::int16_t*>(bytes) = tag;
   *reinterpret_cast<int*>(bytes + 2) = sizeof(value);
@@ -1456,10 +1456,10 @@ static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
   std::vector<unsigned char> chunk(state.size() + 6, 0);
-  *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
-  *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size());
+  *reinterpret_cast<std::int16_t*>(chunk.data()) = static_cast<std::int16_t>(tag);
+  *reinterpret_cast<int*>(chunk.data() + 2) = static_cast<int>(state.size());
   if (state.size()) {
-    std::memcpy(&chunk[6], state.data(), state.size());
+    std::memcpy(chunk.data() + 6, state.data(), state.size());
   }
   return chunk;
 }
