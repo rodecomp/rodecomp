@@ -4267,7 +4267,7 @@ int UIEditCtrl3::DecodeLinkNumber(std::string text) {
   const int length = size - 1;
   for (int position = 0; position < length; ++position) {
     for (int digit = 0; digit < 62; ++digit) {
-      if (characters[position] != digits[digit]) {
+      if (digits[digit] != characters[position]) {
         continue;
       }
 
@@ -6068,9 +6068,9 @@ int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
 
       const int rowsHeight = (height - 38) / 32 * 32;
+      const int newHeight = rowsHeight + 38;
       const int columnsWidth = (width - 280) / 32 * 32;
       const int newWidth = columnsWidth + 280;
-      const int newHeight = rowsHeight + 38;
       if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
         this->Resize(newWidth, newHeight);
         this->columns = (newWidth - 40) / 32;
