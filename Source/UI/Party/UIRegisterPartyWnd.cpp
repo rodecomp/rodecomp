@@ -279,7 +279,11 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       break;
     case 564:
     case 565:
-      if (g_session.partyLeader != 0) {
+      if (g_session.partyLeader == 0) {
+        char text[256] = {};
+        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_EXPAND_SIGHT_OPTIONWND));
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      } else {
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
           StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_STOP_RECRUITING_PARTY));
@@ -305,10 +309,6 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         info.memo = this->memo->Text();
         info.characterName = g_session.DecodePlayerName();
         g_adventurerAgencyMgr->RequestRegistration(info);
-      } else {
-        char text[256] = {};
-        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_EXPAND_SIGHT_OPTIONWND));
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       break;
     default:
