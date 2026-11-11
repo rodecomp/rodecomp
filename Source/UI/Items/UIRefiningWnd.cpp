@@ -93,12 +93,13 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   this->AddChild(basic);
   this->cancelButton = basic;
 
-  this->refiningButton = new UIRefining_BtnRefining();
-  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
-  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
-  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
-  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
-  this->refiningButton->Resize(this->refiningButton->BitmapWidth(), this->refiningButton->BitmapHeight());
+  UIRefining_BtnRefining* refining = new UIRefining_BtnRefining();
+  this->refiningButton = refining;
+  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
+  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
+  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
+  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
+  refining->Resize(refining->BitmapWidth(), refining->BitmapHeight());
   this->refiningButton->Move(84, 262);
   this->refiningButton->SetId(184);
   this->refiningButton->SetDisabled(1);
@@ -607,7 +608,7 @@ void UIRefiningWnd::OnProcess() {
   }
 
   const int frameCounts[7] = {4, 3, 14, 17, 20, 20, 20};
-  if (this->frame >= frameCounts[this->state]) {
+  if (frameCounts[this->state] <= this->frame) {
     return;
   }
   if (timeGetTime() <= this->stateTick + this->frameInterval) {
@@ -624,7 +625,7 @@ void UIRefiningWnd::OnProcess() {
     }
   }
 
-  if (this->frame >= frameCounts[this->state]) {
+  if (frameCounts[this->state] <= this->frame) {
     switch (this->state) {
     case 0:
       this->frame = 0;
@@ -639,17 +640,18 @@ void UIRefiningWnd::OnProcess() {
       break;
     default:
       this->frame = frameCounts[this->state] - 1;
-      if (this->state == 2) {
-        if (this->result == 3) {
-          g_soundMgr->PlayWave("effect\\refine\\bs_refine_success.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-        } else if (this->result == 4 || this->result == 5 || this->result == 6) {
-          g_soundMgr->PlayWave("effect\\refine\\bs_refine_failed.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-        }
-        this->ApplyResult();
-        this->SetState(this->result, 7);
-        return;
-      }
       break;
+    }
+
+    if (this->state == 2) {
+      if (this->result == 3) {
+        g_soundMgr->PlayWave("effect\\refine\\bs_refine_success.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      } else if (this->result == 4 || this->result == 5 || this->result == 6) {
+        g_soundMgr->PlayWave("effect\\refine\\bs_refine_failed.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      }
+      this->ApplyResult();
+      this->SetState(this->result, 7);
+      return;
     }
   }
 
@@ -977,9 +979,9 @@ void UIRefiningWnd::SetState(int state, int result) {
   this->result = result;
   this->stateTick = timeGetTime();
   this->frame = 0;
-  if (this->cancelButton) {
-    this->cancelButton->SetDisabled(0);
-    this->cancelButton->Invalidate();
+  if (UIButton* button = this->cancelButton) {
+    button->SetDisabled(0);
+    button->Invalidate();
   }
 
   switch (state) {
@@ -999,9 +1001,9 @@ void UIRefiningWnd::SetState(int state, int result) {
     this->refiningButton->Invalidate();
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
-    if (this->cancelButton) {
-      this->cancelButton->SetDisabled(1);
-      this->cancelButton->Invalidate();
+    if (UIButton* button = this->cancelButton) {
+      button->SetDisabled(1);
+      button->Invalidate();
     }
     break;
   case 3:
