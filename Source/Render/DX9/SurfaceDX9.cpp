@@ -82,15 +82,15 @@ CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height)
 // FUNCTION: fn_02428
 CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, IDirect3DSurface9* surface) : m_owner(&owner) {
   D3DSURFACE_DESC description;
-  if (FAILED(surface->GetDesc(&description))) {
-    this->m_width = 0;
-    this->m_height = 0;
-    this->m_surface = nullptr;
-  } else {
+  if (SUCCEEDED(surface->GetDesc(&description))) {
     this->m_width = description.Width;
     this->m_height = description.Height;
     this->m_surface = surface;
     surface->AddRef();
+  } else {
+    this->m_width = 0;
+    this->m_height = 0;
+    this->m_surface = nullptr;
   }
 }
 

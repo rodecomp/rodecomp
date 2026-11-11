@@ -747,7 +747,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
 
 // OFFSET: 0x00B3F630
 // FUNCTION: fn_18830
-CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position) {
+CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position), motionVelocity({0.0f, 0.0f, 0.0f}) {
   for (RenderVertex& vertex : this->vertices) {
     vertex.x = 0;
     vertex.y = 0;
