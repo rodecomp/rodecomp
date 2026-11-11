@@ -4653,7 +4653,7 @@ void CGameMode::RequestAdminStatus() {
   packet.accountId = static_cast<std::uint32_t>(g_session.m_aid);
   packet.requestType = 2;
   packet.requestValue = 0xA;
-  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(ID_CZ_REQ_GIVE_MANNER_POINT), &packet);
 }
 
 // OFFSET: 0x00D06BD0
