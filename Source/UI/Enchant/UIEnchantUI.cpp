@@ -18,6 +18,9 @@
 #include <format>
 #include <iterator>
 #include <new>
+#include <vector>
+
+extern template std::vector<int>::~vector();
 
 // GLOBAL: gl_24882
 template <>
