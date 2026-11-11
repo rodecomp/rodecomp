@@ -115,12 +115,24 @@ bool CSnapMgr::Contains(const UIWindow* window) const {
 // FUNCTION: fn_09709
 bool CSnapMgr::Connected(UIWindow* from, UIWindow* to) {
   this->ResetVisited();
-  SnapObject* first = this->Find(from);
+  SnapObject* first = nullptr;
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    if ((*entry)->window == from) {
+      first = *entry;
+      break;
+    }
+  }
   if (!first) {
     return false;
   }
 
-  SnapObject* second = this->Find(to);
+  SnapObject* second = nullptr;
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    if ((*entry)->window == to) {
+      second = *entry;
+      break;
+    }
+  }
   if (!second) {
     return false;
   }
