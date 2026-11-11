@@ -6666,16 +6666,17 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 21101) {
+        switch (header.type) {
+        case 21101:
           this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
+          [[fallthrough]];
+        case 21151:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+          return 0;
+        default:
+          offset += header.size;
           break;
         }
-        if (header.type == 21151) {
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
-        }
-        offset += header.size;
       }
     }
     return 0;
