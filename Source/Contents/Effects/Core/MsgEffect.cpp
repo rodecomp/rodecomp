@@ -1377,13 +1377,12 @@ void CMsgEffect::FollowOwner() {
           direction.x = this->render.position.x - owner->render.position.x;
           direction.y = this->render.position.z - owner->render.position.z;
           direction.Normalize();
-          if (dist - 0.7f <= 15.0f) {
-            this->render.position.x = direction.x * 14.9f + owner->render.position.x;
-            this->render.position.z = direction.y * 14.9f + owner->render.position.z;
-          } else {
-            this->render.position.x = (dist - 0.7f) * direction.x + owner->render.position.x;
-            this->render.position.z = (dist - 0.7f) * direction.y + owner->render.position.z;
+          float radius = dist - 0.7f;
+          if (radius <= 15.0f) {
+            radius = 14.9f;
           }
+          this->render.position.x = direction.x * radius + owner->render.position.x;
+          this->render.position.z = direction.y * radius + owner->render.position.z;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
           this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
