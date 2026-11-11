@@ -1362,23 +1362,23 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case MER_MAGNIFICAT:
     effectId = 12;
     return;
-  case AL_HEAL:
-  case AL_BLESSING:
-  case AS_SONICBLOW:
-  case AL_HOLYLIGHT:
-  case MG_ENERGYCOAT:
-  case WE_MALE:
-  case WE_FEMALE:
-  case WE_BABY:
-  case CG_LONGINGFREEDOM:
-  case CG_TAROTCARD:
-  case CASH_BLESSING:
-  case AB_HIGHNESSHEAL:
-  case WE_CALLALLFAMILY:
-  case WE_ONEFOREVER:
-  case WE_CHEERUP:
+  case AC_CONCENTRATION:
+    effectId = 43;
+    return;
+  case KN_BRANDISHSPEAR:
+    effectId = 144;
+    motion = 2;
+    return;
+  case NPC_UNDEADATTACK:
+    effectId = 454;
+    return;
+  case BA_DISSONANCE:
+  case BA_WHISTLE:
+  case BA_ASSASSINCROSS:
+  case BA_POEMBRAGI:
+  case BA_APPLEIDUN:
     effectId = -1;
-    motion = 7;
+    motion = 17;
     return;
   case AL_INCAGI:
   case TF_PICKSTONE:
@@ -1387,83 +1387,274 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     effectId = -1;
     motion = 0;
     return;
-  case AC_CONCENTRATION:
-    effectId = 43;
+  case CR_PROVIDENCE:
+  case MO_CALLSPIRITS:
+  case MO_BLADESTOP:
+  case PA_GOSPEL:
+  case CH_SOULCOLLECT:
+  case NPC_SR_CURSEDCIRCLE:
+  case MO_KITRANSLATION:
+  case SR_CURSEDCIRCLE:
+    motion = 0;
     return;
-  case AC_SHOWER:
-  case RG_BACKSTAP:
-  case RG_RAID:
-  case RG_INTIMIDATE:
-  case CR_HOLYCROSS:
-  case MO_INVESTIGATE:
-  case MO_FINGEROFFENSIVE:
-  case NPC_DARKCROSS:
-  case PA_PRESSURE:
-  case PA_SACRIFICE:
-  case ASC_BREAKER:
-  case SN_SHARPSHOOTING:
-  case ASC_METEORASSAULT:
-  case GS_TRIPLEACTION:
-  case GS_BULLSEYE:
-  case GS_TRACKING:
-  case GS_DISARM:
-  case GS_PIERCINGSHOT:
-  case GS_RAPIDSHOWER:
-  case GS_DUST:
-  case GS_FULLBUSTER:
-  case GS_SPREADATTACK:
-  case NPC_PULSESTRIKE:
-  case NPC_EXPULSION:
-  case NPC_PULSESTRIKE2:
-  case NPC_ARROWSTORM:
-  case NPC_FATALMENACE:
-  case NPC_IGNITIONBREAK:
-  case KN_CHARGEATK:
-  case RG_CLOSECONFINE:
-  case RK_HUNDREDSPEAR:
-  case RK_WINDCUTTER:
-  case RK_IGNITIONBREAK:
-  case RK_STORMBLAST:
-  case GC_DARKILLUSION:
-  case GC_WEAPONCRUSH:
-  case GC_VENOMPRESSURE:
-  case GC_ROLLINGCUTTER:
-  case GC_CROSSRIPPERSLASHER:
-  case RA_ARROWSTORM:
-  case RA_AIMEDBOLT:
-  case NC_FLAMELAUNCHER:
-  case NC_ARMSCANNON:
-  case NC_AXETORNADO:
-  case SC_FATALMENACE:
-  case SC_TRIANGLESHOT:
-  case SC_STRIPACCESSARY:
-  case LG_RAGEBURST:
-  case LG_OVERBRAND:
-  case LG_MOONSLASHER:
-  case LG_HESPERUSLIT:
-  case SR_CRESCENTELBOW_AUTOSPELL:
-  case GN_CART_TORNADO:
-  case IQ_FIRST_BRAND:
-  case IQ_SECOND_FLAME:
-  case IQ_SECOND_FAITH:
-  case IQ_SECOND_JUDGEMENT:
-  case CD_EFFLIGO:
-  case CD_PETITIO:
-  case SHC_SAVAGE_IMPACT:
-  case SHC_ETERNAL_SLASH:
-  case SHC_FATAL_SHADOW_CROW:
-  case MT_AXE_STOMP:
-  case MT_RUSH_QUAKE:
-  case BO_WOODENWARRIOR:
-  case BO_WOODEN_FAIRY:
-  case BO_CREEPER:
-  case BO_HELLTREE:
-  case ABR_BATTLE_BUSTER:
-  case ABR_DUAL_CANNON_FIRE:
-  case ABR_NET_REPAIR:
-  case ABR_NET_SUPPORT:
-  case ABR_INFINITY_BUSTER:
+  case HW_SOULDRAIN:
+    motion = 1;
+    effectId = -1;
+    return;
+  case BD_LULLABY:
+  case BD_RICHMANKIM:
+  case BD_ETERNALCHAOS:
+  case BD_DRUMBATTLEFIELD:
+  case BD_RINGNIBELUNGEN:
+  case BD_ROKISWEIL:
+  case BD_INTOABYSS:
+  case BD_SIEGFRIED:
+  case DC_UGLYDANCE:
+  case DC_HUMMING:
+  case DC_DONTFORGETME:
+  case DC_FORTUNEKISS:
+  case DC_SERVICEFORYOU:
+  case CG_MOONLIT:
+  case CG_MARIONETTE:
+  case CG_HERMODE:
+    effectId = -1;
+    motion = 16;
+    return;
+  case SG_SUN_WARM:
+  case SG_MOON_WARM:
+  case SG_STAR_WARM:
+    motion = 34;
+    effectId = -1;
+    return;
+  case SG_SUN_COMFORT:
+  case SG_MOON_COMFORT:
+  case SG_STAR_COMFORT:
+    motion = 33;
+    effectId = -1;
+    return;
+  case TK_COUNTER:
+    motion = 26;
+    effectId = -1;
+    return;
+  case NJ_TATAMIGAESHI:
+  case NJ_KASUMIKIRI:
+  case NJ_SHADOWJUMP:
+  case NJ_BUNSINJYUTSU:
+  case NJ_KAENSIN:
+  case NJ_BAKUENRYU:
+  case NJ_HYOUSENSOU:
+  case NJ_SUITON:
+    motion = 35;
+    effectId = -1;
+    return;
+  case GS_FLING:
+  case GS_MADNESSCANCEL:
+  case GS_ADJUSTMENT:
+  case GS_INCREASING:
+  case GS_DESPERADO:
+  case GS_GATLINGFEVER:
+    motion = 38;
+    effectId = -1;
+    return;
+  case GS_CRACKER:
+  case GS_GROUNDDRIFT:
+    motion = 40;
+    effectId = -1;
+    return;
+  case NPC_HELLBURNING:
+    effectId = 49;
+    return;
+  case DC_WINKCHARM:
+    motion = 16;
+    effectId = -1;
+    return;
+  case KN_SPEARBOOMERANG:
+  case TF_SPRINKLESAND:
+  case TF_THROWSTONE:
+  case AS_VENOMKNIFE:
+    effectId = -1;
+    motion = 12;
+    return;
+  case BS_GREED:
+    motion = 5;
+    effectId = -1;
+    return;
+  case NPC_MILLENNIUMSHIELD:
+  case RK_DEATHBOUND:
+  case RK_MILLENNIUMSHIELD:
+    motion = 11;
+    return;
+  case GC_POISONSMOKE:
+    motion = 7;
+    effectId = 771;
+    return;
+  case GC_POISONINGWEAPON:
+    motion = 7;
+    effectId = 768;
+    return;
+  case GC_COUNTERSLASH:
     motion = 2;
+    effectId = 768;
+    return;
+  case GC_WEAPONBLOCKING:
+    motion = -1;
+    return;
+  case TK_READYSTORM:
+  case RK_STONEHARDSKIN:
+  case SC_REPRODUCE:
+    motion = 21;
+    effectId = -1;
+    return;
+  case SR_SKYNETBLOW:
+  case SR_TIGERCANNON:
+    motion = 18;
+    effectId = -1;
+    return;
+  case TK_STORMKICK:
+  case SR_WINDMILL:
+  case SJ_FULLMOONKICK:
+    motion = 30;
+    effectId = -1;
+    return;
+  case TK_DOWNKICK:
+  case LG_FORCEOFVANGUARD:
+    motion = 31;
+    effectId = -1;
+    return;
+  case TK_TURNKICK:
+  case LG_REFLECTDAMAGE:
+  case SR_GENTLETOUCH_QUIET:
+  case SR_GENTLETOUCH_CURE:
+  case SR_GENTLETOUCH_ENERGYGAIN:
+  case SR_GENTLETOUCH_CHANGE:
+  case SR_GENTLETOUCH_REVITALIZE:
+  case SJ_PROMINENCEKICK:
+    motion = 32;
+    effectId = -1;
+    return;
+  case TK_READYCOUNTER:
+  case RK_FIGHTINGSPIRIT:
+  case SR_GATEOFHELL:
+    motion = 24;
+    effectId = -1;
+    return;
+  case TK_JUMPKICK:
+  case SR_KNUCKLEARROW:
+    motion = 27;
+    effectId = -1;
+    return;
+  case LG_OVERBRAND_PLUSATK:
+    motion = -1;
+    effectId = 548;
+    return;
+  case TK_DODGE:
+  case LG_EARTHDRIVE:
+    motion = 25;
+    effectId = -1;
+    return;
+  case TK_READYTURN:
+  case SL_ALCHEMIST:
+  case SL_MONK:
+  case SL_STAR:
+  case SL_SAGE:
+  case SL_CRUSADER:
+  case SL_SUPERNOVICE:
+  case SL_KNIGHT:
+  case SL_WIZARD:
+  case SL_PRIEST:
+  case SL_BARDDANCER:
+  case SL_ROGUE:
+  case SL_ASSASIN:
+  case SL_BLACKSMITH:
+  case SL_HUNTER:
+  case SL_SOULLINKER:
+  case SL_HIGH:
+  case SL_DEATHKNIGHT:
+  case SL_COLLECTOR:
+  case SL_NINJA:
+  case SL_GUNNER:
+  case SR_CRESCENTELBOW:
+  case SR_ASSIMILATEPOWER:
+  case SP_SOULGOLEM:
+  case SP_SOULSHADOW:
+  case SP_SOULFALCON:
+  case SP_SOULFAIRY:
+    motion = 23;
+    effectId = -1;
+    return;
+  case NC_AXEBOOMERANG:
+    motion = 12;
+    effectId = 12;
+    return;
+  case NC_POWERSWING:
+    motion = 2;
+    effectId = 12;
+    return;
+  case GS_GLITTERING:
+  case NC_BOOSTKNUCKLE:
+  case NC_COLDSLOWER:
+  case NC_ANALYZE:
+  case NC_MAGNETICFIELD:
+    motion = 39;
+    effectId = -1;
+    return;
+  case NC_PILEBUNKER:
+  case SO_SPELLFIST:
+    motion = 39;
+    effectId = 441;
+    return;
+  case TK_READYDOWN:
+  case GN_CARTBOOST:
+    motion = 22;
+    effectId = -1;
+    return;
+  case NC_HOVERING:
+  case NC_F_SIDESLIDE:
+  case NC_B_SIDESLIDE:
+    motion = -1;
+    effectId = 441;
+    return;
+  case NC_SELFDESTRUCTION:
+    motion = 5;
+    effectId = 441;
+    return;
+  case NC_SHAPESHIFT:
+  case NC_NEUTRALBARRIER:
+  case NC_STEALTHFIELD:
+    motion = 43;
+    effectId = 441;
+    return;
+  case NC_EMERGENCYCOOL:
+    motion = 25;
+    effectId = 441;
+    return;
+  case NC_INFRAREDSCAN:
+    motion = 44;
+    effectId = 548;
+    return;
+  case NC_REPAIR:
+    motion = 43;
+    effectId = 58;
+    return;
+  case SJ_FLASHKICK:
+    motion = 51;
+    effectId = -1;
+    return;
+  case NJ_SYURIKEN:
+  case NJ_KUNAI:
+  case NJ_HUUMA:
+  case NJ_ZENYNAGE:
+  case NJ_UTSUSEMI:
+  case NJ_KOUENKA:
+  case NJ_HYOUSYOURAKU:
+  case NJ_HUUJIN:
+  case NJ_RAIGEKISAI:
+  case NJ_KAMAITACHI:
+  case NJ_NEN:
+  case KO_BAKURETSU:
+  case KO_HAPPOKUNAI:
+  case KO_MUCHANAGE:
+    motion = 36;
     effectId = -1;
     return;
   case TF_HIDING:
@@ -1655,40 +1846,102 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case EM_EL_DEADLY_POISON:
     effectId = -1;
     return;
-  case KN_PIERCE:
-  case KN_SPEARSTAB:
-  case KN_AUTOCOUNTER:
-  case KN_BOWLINGBASH:
-  case BS_SKINTEMPER:
-  case MO_TRIPLEATTACK:
-  case CH_PALMSTRIKE:
-  case CH_CHAINCRUSH:
-  case LK_SPIRALPIERCE:
-  case LK_HEADCRUSH:
-  case LK_JOINTBEAT:
-  case HW_GRAVITATION:
-  case MO_BALKYOUNG:
-  case RK_SONICWAVE:
-  case GC_CROSSIMPACT:
-  case ABC_ABYSS_DAGGER:
-  case ABC_UNLUCKY_RUSH:
-  case ABC_CHAIN_REACTION_SHOT:
-  case ABC_DEFT_STAB:
-  case ABC_FRENZY_SHOT:
-  case ABC_CHAIN_REACTION_SHOT_ATK:
+  case AL_HEAL:
+  case AL_BLESSING:
+  case AS_SONICBLOW:
+  case AL_HOLYLIGHT:
+  case MG_ENERGYCOAT:
+  case WE_MALE:
+  case WE_FEMALE:
+  case WE_BABY:
+  case CG_LONGINGFREEDOM:
+  case CG_TAROTCARD:
+  case CASH_BLESSING:
+  case AB_HIGHNESSHEAL:
+  case WE_CALLALLFAMILY:
+  case WE_ONEFOREVER:
+  case WE_CHEERUP:
     effectId = -1;
-    motion = 2;
+    motion = 7;
     return;
-  case KN_BRANDISHSPEAR:
-    effectId = 144;
-    motion = 2;
+  case LK_CONCENTRATION:
+  case LK_BERSERK:
+  case LK_FURY:
+  case HP_ASSUMPTIO:
+  case HP_BASILICA:
+  case PF_SPIDERWEB:
+  case PF_DOUBLECASTING:
+  case CASH_ASSUMPTIO:
+  case MS_BERSERK:
+  case EL_HEATER:
+  case EL_TROPIC:
+  case EL_AQUAPLAY:
+  case EL_COOLER:
+  case EL_CHILLY_AIR:
+  case EL_GUST:
+  case EL_BLAST:
+  case EL_WILD_STORM:
+  case EL_PETROLOGY:
+  case EL_CURSED_SOIL:
+  case EL_UPHEAVAL:
+    motion = 7;
     return;
-  case KN_SPEARBOOMERANG:
-  case TF_SPRINKLESAND:
-  case TF_THROWSTONE:
-  case AS_VENOMKNIFE:
+  case TK_HIGHJUMP:
+  case SJ_STAREMPEROR:
+  case SU_LOPE:
+    motion = 20;
     effectId = -1;
+    return;
+  case SU_SCRATCH:
+    motion = 49;
+    effectId = -1;
+    return;
+  case AM_DEMONSTRATION:
+  case AM_ACIDTERROR:
+  case AM_POTIONPITCHER:
+  case AM_CANNIBALIZE:
+  case CR_SHIELDCHARGE:
+  case CR_SHIELDBOOMERANG:
+  case PA_SHIELDCHAIN:
+  case GN_BLOOD_SUCKER:
+  case GN_SLINGITEM:
+  case BO_ACIDIFIED_ZONE_WATER:
+  case BO_ACIDIFIED_ZONE_GROUND:
+  case BO_ACIDIFIED_ZONE_WIND:
+  case BO_ACIDIFIED_ZONE_FIRE:
     motion = 12;
+    effectId = -1;
+    return;
+  case AM_BERSERKPITCHER:
+  case CR_SLIMPITCHER:
+  case CR_ACIDDEMONSTRATION:
+  case WL_CHAINLIGHTNING_ATK:
+  case WL_TETRAVORTEX_FIRE:
+  case WL_TETRAVORTEX_WATER:
+  case WL_TETRAVORTEX_WIND:
+  case WL_TETRAVORTEX_GROUND:
+  case RA_WUGMASTERY:
+  case RA_WUGRIDER:
+  case RA_WUGDASH:
+  case WM_REVERBERATION_MELEE:
+  case WM_REVERBERATION_MAGIC:
+  case GN_SPORE_EXPLOSION:
+  case GN_WALLOFTHORN:
+  case GN_CRAZYWEED_ATK:
+  case GN_DEMONIC_FIRE:
+  case GN_FIRE_EXPANSION:
+  case GN_HELLS_PLANT:
+  case WM_SEVERE_RAINSTORM_MELEE:
+  case AG_VIOLENT_QUAKE_ATK:
+  case AG_ALL_BLOOM_ATK:
+  case AG_ALL_BLOOM_ATK2:
+  case AG_CRYSTAL_IMPACT_ATK:
+  case AG_ASTRAL_STRIKE_ATK:
+  case AG_CRIMSON_ARROW_ATK:
+  case IQ_MASSIVE_F_BLASTER:
+  case IQ_EXPOSION_BLASTER:
+    motion = -1;
+    effectId = -1;
     return;
   case HT_SKIDTRAP:
   case HT_LANDMINE:
@@ -1713,6 +1966,42 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case WH_FLAMETRAP:
     motion = 5;
     return;
+  case BA_MUSICALSTRIKE:
+  case DC_THROWARROW:
+  case CG_ARROWVULCAN:
+  case NJ_KIRIKAGE:
+  case NC_VULCANARM:
+  case LG_CANNONSPEAR:
+  case LG_BANISHINGPOINT:
+  case LG_PINPOINTATTACK:
+  case WH_GALESTORM:
+    motion = 9;
+    effectId = -1;
+    return;
+  case KN_PIERCE:
+  case KN_SPEARSTAB:
+  case KN_AUTOCOUNTER:
+  case KN_BOWLINGBASH:
+  case BS_SKINTEMPER:
+  case MO_TRIPLEATTACK:
+  case CH_PALMSTRIKE:
+  case CH_CHAINCRUSH:
+  case LK_SPIRALPIERCE:
+  case LK_HEADCRUSH:
+  case LK_JOINTBEAT:
+  case HW_GRAVITATION:
+  case MO_BALKYOUNG:
+  case RK_SONICWAVE:
+  case GC_CROSSIMPACT:
+  case ABC_ABYSS_DAGGER:
+  case ABC_UNLUCKY_RUSH:
+  case ABC_CHAIN_REACTION_SHOT:
+  case ABC_DEFT_STAB:
+  case ABC_FRENZY_SHOT:
+  case ABC_CHAIN_REACTION_SHOT_ATK:
+    effectId = -1;
+    motion = 2;
+    return;
   case NPC_SUMMONSLAVE:
   case NPC_SUMMONMONSTER:
   case CR_AUTOGUARD:
@@ -1733,21 +2022,25 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     motion = 0;
     effectId = -1;
     return;
-  case AM_DEMONSTRATION:
-  case AM_ACIDTERROR:
-  case AM_POTIONPITCHER:
-  case AM_CANNIBALIZE:
-  case CR_SHIELDCHARGE:
-  case CR_SHIELDBOOMERANG:
-  case PA_SHIELDCHAIN:
-  case GN_BLOOD_SUCKER:
-  case GN_SLINGITEM:
-  case BO_ACIDIFIED_ZONE_WATER:
-  case BO_ACIDIFIED_ZONE_GROUND:
-  case BO_ACIDIFIED_ZONE_WIND:
-  case BO_ACIDIFIED_ZONE_FIRE:
-    motion = 12;
-    effectId = -1;
+  case GC_PHANTOMMENACE:
+  case NC_ACCELERATION:
+  case EL_WATER_SCREEN:
+  case EL_WATER_BARRIER:
+    motion = 7;
+    effectId = 441;
+    return;
+  case GN_CHANGEMATERIAL:
+  case GN_MIX_COOKING:
+  case GN_MAKEBOMB:
+  case GN_S_PHARMACY:
+  case EL_WIND_STEP:
+  case EL_ZEPHYR:
+    motion = 7;
+    effectId = 911;
+    return;
+  case EL_SOLID_SKIN:
+    motion = 7;
+    effectId = 56;
     return;
   case AM_CALLHOMUN:
   case AM_REST:
@@ -1883,374 +2176,81 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     motion = 7;
     effectId = -1;
     return;
-  case CR_PROVIDENCE:
-  case MO_CALLSPIRITS:
-  case MO_BLADESTOP:
-  case PA_GOSPEL:
-  case CH_SOULCOLLECT:
-  case NPC_SR_CURSEDCIRCLE:
-  case MO_KITRANSLATION:
-  case SR_CURSEDCIRCLE:
-    motion = 0;
-    return;
-  case BD_LULLABY:
-  case BD_RICHMANKIM:
-  case BD_ETERNALCHAOS:
-  case BD_DRUMBATTLEFIELD:
-  case BD_RINGNIBELUNGEN:
-  case BD_ROKISWEIL:
-  case BD_INTOABYSS:
-  case BD_SIEGFRIED:
-  case DC_UGLYDANCE:
-  case DC_HUMMING:
-  case DC_DONTFORGETME:
-  case DC_FORTUNEKISS:
-  case DC_SERVICEFORYOU:
-  case CG_MOONLIT:
-  case CG_MARIONETTE:
-  case CG_HERMODE:
-    effectId = -1;
-    motion = 16;
-    return;
-  case BA_MUSICALSTRIKE:
-  case DC_THROWARROW:
-  case CG_ARROWVULCAN:
-  case NJ_KIRIKAGE:
-  case NC_VULCANARM:
-  case LG_CANNONSPEAR:
-  case LG_BANISHINGPOINT:
-  case LG_PINPOINTATTACK:
-  case WH_GALESTORM:
-    motion = 9;
-    effectId = -1;
-    return;
-  case BA_DISSONANCE:
-  case BA_WHISTLE:
-  case BA_ASSASSINCROSS:
-  case BA_POEMBRAGI:
-  case BA_APPLEIDUN:
-    effectId = -1;
-    motion = 17;
-    return;
-  case NPC_UNDEADATTACK:
-    effectId = 454;
-    return;
-  case LK_CONCENTRATION:
-  case LK_BERSERK:
-  case LK_FURY:
-  case HP_ASSUMPTIO:
-  case HP_BASILICA:
-  case PF_SPIDERWEB:
-  case PF_DOUBLECASTING:
-  case CASH_ASSUMPTIO:
-  case MS_BERSERK:
-  case EL_HEATER:
-  case EL_TROPIC:
-  case EL_AQUAPLAY:
-  case EL_COOLER:
-  case EL_CHILLY_AIR:
-  case EL_GUST:
-  case EL_BLAST:
-  case EL_WILD_STORM:
-  case EL_PETROLOGY:
-  case EL_CURSED_SOIL:
-  case EL_UPHEAVAL:
-    motion = 7;
-    return;
-  case HW_SOULDRAIN:
-    motion = 1;
-    effectId = -1;
-    return;
-  case TK_READYSTORM:
-  case RK_STONEHARDSKIN:
-  case SC_REPRODUCE:
-    motion = 21;
-    effectId = -1;
-    return;
-  case TK_STORMKICK:
-  case SR_WINDMILL:
-  case SJ_FULLMOONKICK:
-    motion = 30;
-    effectId = -1;
-    return;
-  case TK_READYDOWN:
-  case GN_CARTBOOST:
-    motion = 22;
-    effectId = -1;
-    return;
-  case TK_DOWNKICK:
-  case LG_FORCEOFVANGUARD:
-    motion = 31;
-    effectId = -1;
-    return;
-  case TK_READYTURN:
-  case SL_ALCHEMIST:
-  case SL_MONK:
-  case SL_STAR:
-  case SL_SAGE:
-  case SL_CRUSADER:
-  case SL_SUPERNOVICE:
-  case SL_KNIGHT:
-  case SL_WIZARD:
-  case SL_PRIEST:
-  case SL_BARDDANCER:
-  case SL_ROGUE:
-  case SL_ASSASIN:
-  case SL_BLACKSMITH:
-  case SL_HUNTER:
-  case SL_SOULLINKER:
-  case SL_HIGH:
-  case SL_DEATHKNIGHT:
-  case SL_COLLECTOR:
-  case SL_NINJA:
-  case SL_GUNNER:
-  case SR_CRESCENTELBOW:
-  case SR_ASSIMILATEPOWER:
-  case SP_SOULGOLEM:
-  case SP_SOULSHADOW:
-  case SP_SOULFALCON:
-  case SP_SOULFAIRY:
-    motion = 23;
-    effectId = -1;
-    return;
-  case TK_TURNKICK:
-  case LG_REFLECTDAMAGE:
-  case SR_GENTLETOUCH_QUIET:
-  case SR_GENTLETOUCH_CURE:
-  case SR_GENTLETOUCH_ENERGYGAIN:
-  case SR_GENTLETOUCH_CHANGE:
-  case SR_GENTLETOUCH_REVITALIZE:
-  case SJ_PROMINENCEKICK:
-    motion = 32;
-    effectId = -1;
-    return;
-  case TK_READYCOUNTER:
-  case RK_FIGHTINGSPIRIT:
-  case SR_GATEOFHELL:
-    motion = 24;
-    effectId = -1;
-    return;
-  case TK_COUNTER:
-    motion = 26;
-    effectId = -1;
-    return;
-  case TK_DODGE:
-  case LG_EARTHDRIVE:
-    motion = 25;
-    effectId = -1;
-    return;
-  case TK_JUMPKICK:
-  case SR_KNUCKLEARROW:
-    motion = 27;
-    effectId = -1;
-    return;
-  case TK_HIGHJUMP:
-  case SJ_STAREMPEROR:
-  case SU_LOPE:
-    motion = 20;
-    effectId = -1;
-    return;
-  case SG_SUN_WARM:
-  case SG_MOON_WARM:
-  case SG_STAR_WARM:
-    motion = 34;
-    effectId = -1;
-    return;
-  case SG_SUN_COMFORT:
-  case SG_MOON_COMFORT:
-  case SG_STAR_COMFORT:
-    motion = 33;
-    effectId = -1;
-    return;
-  case AM_BERSERKPITCHER:
-  case CR_SLIMPITCHER:
-  case CR_ACIDDEMONSTRATION:
-  case WL_CHAINLIGHTNING_ATK:
-  case WL_TETRAVORTEX_FIRE:
-  case WL_TETRAVORTEX_WATER:
-  case WL_TETRAVORTEX_WIND:
-  case WL_TETRAVORTEX_GROUND:
-  case RA_WUGMASTERY:
-  case RA_WUGRIDER:
-  case RA_WUGDASH:
-  case WM_REVERBERATION_MELEE:
-  case WM_REVERBERATION_MAGIC:
-  case GN_SPORE_EXPLOSION:
-  case GN_WALLOFTHORN:
-  case GN_CRAZYWEED_ATK:
-  case GN_DEMONIC_FIRE:
-  case GN_FIRE_EXPANSION:
-  case GN_HELLS_PLANT:
-  case WM_SEVERE_RAINSTORM_MELEE:
-  case AG_VIOLENT_QUAKE_ATK:
-  case AG_ALL_BLOOM_ATK:
-  case AG_ALL_BLOOM_ATK2:
-  case AG_CRYSTAL_IMPACT_ATK:
-  case AG_ASTRAL_STRIKE_ATK:
-  case AG_CRIMSON_ARROW_ATK:
-  case IQ_MASSIVE_F_BLASTER:
-  case IQ_EXPOSION_BLASTER:
-    motion = -1;
-    effectId = -1;
-    return;
-  case GS_GLITTERING:
-  case NC_BOOSTKNUCKLE:
-  case NC_COLDSLOWER:
-  case NC_ANALYZE:
-  case NC_MAGNETICFIELD:
-    motion = 39;
-    effectId = -1;
-    return;
-  case GS_FLING:
-  case GS_MADNESSCANCEL:
-  case GS_ADJUSTMENT:
-  case GS_INCREASING:
-  case GS_DESPERADO:
-  case GS_GATLINGFEVER:
-    motion = 38;
-    effectId = -1;
-    return;
-  case GS_CRACKER:
-  case GS_GROUNDDRIFT:
-    motion = 40;
-    effectId = -1;
-    return;
-  case NJ_SYURIKEN:
-  case NJ_KUNAI:
-  case NJ_HUUMA:
-  case NJ_ZENYNAGE:
-  case NJ_UTSUSEMI:
-  case NJ_KOUENKA:
-  case NJ_HYOUSYOURAKU:
-  case NJ_HUUJIN:
-  case NJ_RAIGEKISAI:
-  case NJ_KAMAITACHI:
-  case NJ_NEN:
-  case KO_BAKURETSU:
-  case KO_HAPPOKUNAI:
-  case KO_MUCHANAGE:
-    motion = 36;
-    effectId = -1;
-    return;
-  case NJ_TATAMIGAESHI:
-  case NJ_KASUMIKIRI:
-  case NJ_SHADOWJUMP:
-  case NJ_BUNSINJYUTSU:
-  case NJ_KAENSIN:
-  case NJ_BAKUENRYU:
-  case NJ_HYOUSENSOU:
-  case NJ_SUITON:
-    motion = 35;
-    effectId = -1;
-    return;
-  case NPC_MILLENNIUMSHIELD:
-  case RK_DEATHBOUND:
-  case RK_MILLENNIUMSHIELD:
-    motion = 11;
-    return;
-  case NPC_HELLBURNING:
-    effectId = 49;
-    return;
-  case DC_WINKCHARM:
-    motion = 16;
-    effectId = -1;
-    return;
-  case BS_GREED:
-    motion = 5;
-    effectId = -1;
-    return;
-  case GC_POISONINGWEAPON:
-    motion = 7;
-    effectId = 768;
-    return;
-  case GC_WEAPONBLOCKING:
-    motion = -1;
-    return;
-  case GC_COUNTERSLASH:
+  case AC_SHOWER:
+  case RG_BACKSTAP:
+  case RG_RAID:
+  case RG_INTIMIDATE:
+  case CR_HOLYCROSS:
+  case MO_INVESTIGATE:
+  case MO_FINGEROFFENSIVE:
+  case NPC_DARKCROSS:
+  case PA_PRESSURE:
+  case PA_SACRIFICE:
+  case ASC_BREAKER:
+  case SN_SHARPSHOOTING:
+  case ASC_METEORASSAULT:
+  case GS_TRIPLEACTION:
+  case GS_BULLSEYE:
+  case GS_TRACKING:
+  case GS_DISARM:
+  case GS_PIERCINGSHOT:
+  case GS_RAPIDSHOWER:
+  case GS_DUST:
+  case GS_FULLBUSTER:
+  case GS_SPREADATTACK:
+  case NPC_PULSESTRIKE:
+  case NPC_EXPULSION:
+  case NPC_PULSESTRIKE2:
+  case NPC_ARROWSTORM:
+  case NPC_FATALMENACE:
+  case NPC_IGNITIONBREAK:
+  case KN_CHARGEATK:
+  case RG_CLOSECONFINE:
+  case RK_HUNDREDSPEAR:
+  case RK_WINDCUTTER:
+  case RK_IGNITIONBREAK:
+  case RK_STORMBLAST:
+  case GC_DARKILLUSION:
+  case GC_WEAPONCRUSH:
+  case GC_VENOMPRESSURE:
+  case GC_ROLLINGCUTTER:
+  case GC_CROSSRIPPERSLASHER:
+  case RA_ARROWSTORM:
+  case RA_AIMEDBOLT:
+  case NC_FLAMELAUNCHER:
+  case NC_ARMSCANNON:
+  case NC_AXETORNADO:
+  case SC_FATALMENACE:
+  case SC_TRIANGLESHOT:
+  case SC_STRIPACCESSARY:
+  case LG_RAGEBURST:
+  case LG_OVERBRAND:
+  case LG_MOONSLASHER:
+  case LG_HESPERUSLIT:
+  case SR_CRESCENTELBOW_AUTOSPELL:
+  case GN_CART_TORNADO:
+  case IQ_FIRST_BRAND:
+  case IQ_SECOND_FLAME:
+  case IQ_SECOND_FAITH:
+  case IQ_SECOND_JUDGEMENT:
+  case CD_EFFLIGO:
+  case CD_PETITIO:
+  case SHC_SAVAGE_IMPACT:
+  case SHC_ETERNAL_SLASH:
+  case SHC_FATAL_SHADOW_CROW:
+  case MT_AXE_STOMP:
+  case MT_RUSH_QUAKE:
+  case BO_WOODENWARRIOR:
+  case BO_WOODEN_FAIRY:
+  case BO_CREEPER:
+  case BO_HELLTREE:
+  case ABR_BATTLE_BUSTER:
+  case ABR_DUAL_CANNON_FIRE:
+  case ABR_NET_REPAIR:
+  case ABR_NET_SUPPORT:
+  case ABR_INFINITY_BUSTER:
     motion = 2;
-    effectId = 768;
-    return;
-  case GC_POISONSMOKE:
-    motion = 7;
-    effectId = 771;
-    return;
-  case GC_PHANTOMMENACE:
-  case NC_ACCELERATION:
-  case EL_WATER_SCREEN:
-  case EL_WATER_BARRIER:
-    motion = 7;
-    effectId = 441;
-    return;
-  case NC_PILEBUNKER:
-  case SO_SPELLFIST:
-    motion = 39;
-    effectId = 441;
-    return;
-  case NC_HOVERING:
-  case NC_F_SIDESLIDE:
-  case NC_B_SIDESLIDE:
-    motion = -1;
-    effectId = 441;
-    return;
-  case NC_SELFDESTRUCTION:
-    motion = 5;
-    effectId = 441;
-    return;
-  case NC_SHAPESHIFT:
-  case NC_NEUTRALBARRIER:
-  case NC_STEALTHFIELD:
-    motion = 43;
-    effectId = 441;
-    return;
-  case NC_EMERGENCYCOOL:
-    motion = 25;
-    effectId = 441;
-    return;
-  case NC_INFRAREDSCAN:
-    motion = 44;
-    effectId = 548;
-    return;
-  case NC_REPAIR:
-    motion = 43;
-    effectId = 58;
-    return;
-  case NC_AXEBOOMERANG:
-    motion = 12;
-    effectId = 12;
-    return;
-  case NC_POWERSWING:
-    motion = 2;
-    effectId = 12;
-    return;
-  case SR_SKYNETBLOW:
-  case SR_TIGERCANNON:
-    motion = 18;
     effectId = -1;
-    return;
-  case GN_CHANGEMATERIAL:
-  case GN_MIX_COOKING:
-  case GN_MAKEBOMB:
-  case GN_S_PHARMACY:
-  case EL_WIND_STEP:
-  case EL_ZEPHYR:
-    motion = 7;
-    effectId = 911;
-    return;
-  case LG_OVERBRAND_PLUSATK:
-    motion = -1;
-    effectId = 548;
-    return;
-  case SJ_FLASHKICK:
-    motion = 51;
-    effectId = -1;
-    return;
-  case SU_SCRATCH:
-    motion = 49;
-    effectId = -1;
-    return;
-  case EL_SOLID_SKIN:
-    motion = 7;
-    effectId = 56;
     return;
   }
 
