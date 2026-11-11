@@ -402,14 +402,14 @@ std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::strin
   std::string text = value;
   const std::size_t position = text.find(g_parserLineBreakTag);
 
-  if (position == std::string::npos) {
-    return std::pair<bool, std::string>(false, value);
+  if (position != std::string::npos) {
+    std::string head = text.substr(0, position);
+    const std::string tail = text.substr(position + std::strlen(g_parserLineBreakTag.c_str()));
+    head.append(tail.c_str(), tail.size());
+    return std::make_pair(true, head);
   }
 
-  std::string head = text.substr(0, position);
-  const std::string tail = text.substr(position + std::strlen(g_parserLineBreakTag.c_str()));
-  head.append(tail.c_str(), tail.size());
-  return std::pair<bool, std::string>(true, head);
+  return std::make_pair(false, value);
 }
 
 // OFFSET: 0x00833550
@@ -1025,14 +1025,14 @@ std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::stri
 
   while (position < length) {
     const std::string rest = text.substr(position, length - position);
-    if (MeasureText(window, rest, style).cx + 1 <= width) {
+    if (MeasureText(window, rest, style).cx + 1 > width) {
+      const std::string line = FitText(window, rest, style, width);
+      lines.push_back(line);
+      position += static_cast<int>(line.size());
+    } else {
       lines.push_back(text.substr(position, length - position));
       break;
     }
-
-    const std::string line = FitText(window, rest, style, width);
-    lines.push_back(line);
-    position += static_cast<int>(line.size());
   }
 
   return lines;
@@ -1066,22 +1066,22 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
   switch (type) {
   case LINE_SEGMENT_URL:
     return std::make_pair(g_urlTag, g_urlCloseTag);
-  case LINE_SEGMENT_NAVI:
-    return std::make_pair(g_naviTag, g_naviCloseTag);
   case LINE_SEGMENT_ITEM:
     return std::make_pair(g_itemTag, g_itemCloseTag);
   case LINE_SEGMENT_ITEM_LINK:
     return std::make_pair(g_itemLinkTag, g_itemLinkCloseTag);
-  case LINE_SEGMENT_TIPBOX:
-    return std::make_pair(g_tipBoxTag, g_tipBoxCloseTag);
-  case LINE_SEGMENT_QUEST:
-    return std::make_pair(g_questTag, g_questCloseTag);
+  case LINE_SEGMENT_NAVI:
+    return std::make_pair(g_naviTag, g_naviCloseTag);
   case LINE_SEGMENT_NAVI_LINK:
     return std::make_pair(g_naviLinkTag, g_naviLinkCloseTag);
   case LINE_SEGMENT_MESSAGE:
     return std::make_pair(g_messageTag, g_messageCloseTag);
+  case LINE_SEGMENT_QUEST:
+    return std::make_pair(g_questTag, g_questCloseTag);
+  case LINE_SEGMENT_TIPBOX:
+    return std::make_pair(g_tipBoxTag, g_tipBoxCloseTag);
   default:
-    return std::pair<std::string, std::string>("", "");
+    return std::make_pair("", "");
   }
 }
 
@@ -1204,11 +1204,8 @@ void CCreateLineInfo::ParseText() {
   int index = 0;
 
   while (index < length) {
-    int next = this->ParseTag(index);
-    if (index == next) {
-      next = this->ParseChar(index);
-    }
-    index = next;
+    const int next = this->ParseTag(index);
+    index = index == next ? this->ParseChar(index) : next;
   }
 }
 
@@ -1499,6 +1496,27 @@ std::string CCreateLineInfo::NextCharacter(std::string text) {
   return std::string(begin, end);
 }
 
+// INLINED
+static int ParseColorCode(CCreateLineInfo& info, int index) {
+  const std::string code = info.m_text.substr(index + 1, 6);
+  const char* digits = code.c_str();
+  if (!digits) {
+    return index;
+  }
+
+  char* end = nullptr;
+  const unsigned long value = std::strtol(digits, &end, 16);
+  if (end <= digits || end - digits != 6) {
+    return index;
+  }
+
+  const std::uint32_t color = RGB((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+  info.m_newSegment = true;
+  info.m_defaultColor = color;
+  info.m_color = color;
+  return index + 7;
+}
+
 // OFFSET: 0x0083D090
 // FUNCTION: fn_10495
 int CCreateLineInfo::ParseTag(int index) {
@@ -1581,11 +1599,11 @@ void CCreateLineInfo::ArrangeLines() {
       break;
     }
     case 2: {
-      int width = 0;
+      int x = 0;
       for (UIWindow* window : line) {
-        width += window->geometry.width;
+        x += window->geometry.width;
       }
-      int x = static_cast<unsigned>(this->m_width - width) / 2;
+      x = static_cast<unsigned>(this->m_width - x) / 2;
       for (auto it = line.begin(); it != line.end(); ++it) {
         UIWindow* window = *it;
         if (window) {

@@ -29,6 +29,10 @@ enum LineSegmentType {
 };
 
 struct LineTextStyle {
+  // INLINED
+  LineTextStyle(std::uint32_t color, int fontHeight, bool bold, bool italic) : color(color), fontHeight(fontHeight), bold(bold), italic(italic) {
+  }
+
   /* 0000 */ std::uint32_t color;
   /* 0004 */ int fontHeight;
   /* 0008 */ bool bold;
