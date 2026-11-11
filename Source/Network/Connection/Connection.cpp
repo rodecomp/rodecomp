@@ -78,22 +78,22 @@ bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
   }
 
   u_long nonblocking = 1;
-  if (ioctlsocket(this->m_socket, FIONBIO, &nonblocking) == SOCKET_ERROR) {
-    ShowErrorDialog("Failed to setup select mode", 0);
+  if (ioctlsocket(this->m_socket, FIONBIO, &nonblocking) != SOCKET_ERROR) {
+    SecureZeroMemory(&this->m_address, sizeof(this->m_address));
+    this->m_address.sin_addr.s_addr = ResolveConnectionAddress(endpoint.overrideAddress, endpoint.address);
+    this->m_address.sin_family = AF_INET;
+    this->m_address.sin_port = ResolveConnectionPort(endpoint.overrideAddress, endpoint.port);
+    if (connect(this->m_socket, reinterpret_cast<const sockaddr*>(&this->m_address), sizeof(this->m_address)) != SOCKET_ERROR ||
+        WSAGetLastError() == WSAEWOULDBLOCK) {
+      this->m_status = 0;
+      return true;
+    }
+
+    this->Close();
     return false;
   }
 
-  std::memset(&this->m_address, 0, sizeof(this->m_address));
-  this->m_address.sin_addr.s_addr = ResolveConnectionAddress(endpoint.overrideAddress, endpoint.address);
-  this->m_address.sin_family = AF_INET;
-  this->m_address.sin_port = ResolveConnectionPort(endpoint.overrideAddress, endpoint.port);
-  if (connect(this->m_socket, reinterpret_cast<const sockaddr*>(&this->m_address), sizeof(this->m_address)) != SOCKET_ERROR ||
-      WSAGetLastError() == WSAEWOULDBLOCK) {
-    this->m_status = 0;
-    return true;
-  }
-
-  this->Close();
+  ShowErrorDialog("Failed to setup select mode", 0);
   return false;
 }
 
