@@ -347,8 +347,8 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
           memcpy_s(pixels, 4 * pixelCount, this->frames.back().second, 4 * pixelCount);
         }
 
-        for (std::uint16_t y = 0; y < descriptor.height; ++y) {
-          for (std::uint16_t x = 0; x < descriptor.width; ++x) {
+        for (int y = 0; y < descriptor.height; ++y) {
+          for (int x = 0; x < descriptor.width; ++x) {
             const std::uint32_t color = palette[std::min<std::uint16_t>(indices[y * descriptor.width + x], paletteCount)];
             if (this->frames.empty() || transparent != 1 || color != palette[std::min<std::uint16_t>(transparentIndex, paletteCount)]) {
               const unsigned int position = (descriptor.top + y) * screenWidth + x + descriptor.left;
