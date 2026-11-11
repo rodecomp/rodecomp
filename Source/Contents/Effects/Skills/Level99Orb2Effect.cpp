@@ -60,7 +60,7 @@ void CLevel99Orb2Effect::Open() {
       particle->scale = 0.55f;
       particle->alpha = 0;
 
-      const float height = static_cast<float>(std::max(0, rand() % 100));
+      const float height = static_cast<float>(Random(100));
       EffectPoint& offset = this->offsets[row * 4 + column];
       offset.x = 0.0f;
       offset.y = height;
@@ -68,7 +68,7 @@ void CLevel99Orb2Effect::Open() {
 
       float* angle = &particle->animationParameter;
       for (int i = 0; i < 4; ++i) {
-        *angle++ = static_cast<float>(std::max(0, rand() % 360));
+        *angle++ = static_cast<float>(Random(360));
       }
 
       this->particles.push_back(particle);
@@ -95,14 +95,14 @@ void CLevel99Orb2Effect::OnProcess() {
       const float speed = particle->speedParameter;
       if (this->offsets[index].y < 0.0f) {
         if (this->offsets[index].y < -30.0f) {
-          const float height = static_cast<float>(std::max(0, rand() % 100));
+          const float height = static_cast<float>(Random(100));
           this->offsets[index].x = 0.0f;
           this->offsets[index].y = height;
           this->offsets[index].z = 0.0f;
 
           float* angle = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
-            *angle++ = static_cast<float>(std::max(0, rand() % 360));
+            *angle++ = static_cast<float>(Random(360));
           }
 
           particle->alpha = 0;
@@ -114,9 +114,9 @@ void CLevel99Orb2Effect::OnProcess() {
             angles[i] = static_cast<float>(current + (difference > 0 ? 3 : -2));
             if (std::abs(difference) < 3) {
               if (difference > 0) {
-                angles[i + 2] = static_cast<float>(current ? std::max(0, rand() % current) : 0);
+                angles[i + 2] = static_cast<float>(Random(current));
               } else {
-                angles[i + 2] = static_cast<float>(359 - (current ? std::max(0, rand() % current) : 0));
+                angles[i + 2] = static_cast<float>(359 - Random(current));
               }
             }
           }

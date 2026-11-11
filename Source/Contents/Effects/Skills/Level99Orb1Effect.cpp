@@ -55,7 +55,7 @@ void CLevel99Orb1Effect::Open() {
         particle->SetColor(80, 80, 255);
         particle->alpha = 0;
 
-        const float height = static_cast<float>(std::max(rand() % 100, 0));
+        const float height = static_cast<float>(Random(100));
         EffectPoint& offset = this->offsets[row * 4 + column];
         offset.x = 0.0f;
         offset.y = height;
@@ -63,7 +63,7 @@ void CLevel99Orb1Effect::Open() {
 
         float* angles = &particle->animationParameter;
         for (int i = 0; i < 4; ++i) {
-          angles[i] = static_cast<float>(std::max(rand() % 360, 0));
+          angles[i] = static_cast<float>(Random(360));
         }
 
         this->particles.push_back(particle);
@@ -93,12 +93,12 @@ void CLevel99Orb1Effect::OnProcess() {
       if (offset.y < 0.0f) {
         if (offset.y < -30.0f) {
           offset.x = 0.0f;
-          offset.y = static_cast<float>(std::max(rand() % 100, 0));
+          offset.y = static_cast<float>(Random(100));
           offset.z = 0.0f;
 
           float* angles = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
-            angles[i] = static_cast<float>(std::max(rand() % 360, 0));
+            angles[i] = static_cast<float>(Random(360));
           }
 
           particle->alpha = 0;
@@ -111,9 +111,9 @@ void CLevel99Orb1Effect::OnProcess() {
             if (std::abs(delta) < 3) {
               int target;
               if (delta > 0) {
-                target = current ? std::max(rand() % current, 0) : 0;
+                target = Random(current);
               } else {
-                target = 359 - (current ? std::max(rand() % current, 0) : 0);
+                target = 359 - Random(current);
               }
 
               angles[i + 2] = static_cast<float>(target);
