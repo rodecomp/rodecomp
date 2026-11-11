@@ -145,23 +145,17 @@ int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   int width = 0;
   for (int i = 0; i < this->m_count; ++i) {
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
-    if (g_language == 2) {
-      int textWidth = this->TextWidth(text, 0, 0, 12, 0, 0) + 8;
-      if (textWidth < width) {
-        textWidth = width;
-      }
-      width = textWidth;
-    } else {
+    if (g_language != 2) {
       width += 8 + this->TextWidth(text, 0, 0, 12, 0, 0);
+    } else {
+      width = std::max(this->TextWidth(text, 0, 0, 12, 0, 0) + 8, width);
     }
   }
-  int height;
-  if (g_language == 2) {
-    height = this->m_count * 20 + 14;
+  if (g_language != 2) {
+    this->Resize(width + 22, this->geometry.height);
   } else {
-    height = this->geometry.height;
+    this->Resize(width + 22, this->m_count * 20 + 14);
   }
-  this->Resize(width + 22, height);
   this->Invalidate();
   return 0;
 }
