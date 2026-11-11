@@ -1,5 +1,6 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/RagEffectState.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -705,9 +706,9 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
 
       auto* resource = static_cast<CEZeffectRes*>(this->state.resource);
       this->state.resourceData = &resource->maximumFrame;
-      this->state.endLayer = resource->clipCount;
+      this->state.endLayer = static_cast<EZeffectData*>(this->state.resourceData)->clipCount;
 
-      if (resource->clips[0].frameCount == 0) {
+      if (static_cast<EZeffectData*>(this->state.resourceData)->clips[0].frameCount == 0) {
         --this->state.endLayer;
       }
     }
