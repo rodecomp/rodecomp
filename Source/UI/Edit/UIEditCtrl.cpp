@@ -6439,16 +6439,17 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 20801) {
-          break;
-        }
-
-        if (header.type == 20802) {
+        switch (header.type) {
+        case 20801:
+          return 0;
+        case 20802:
           std::memcpy(&this->shopId, bytes + offset, header.size);
           offset += header.size;
           window->SendMsg(nullptr, UM_REFRESHITEM, this->shopId, 0, 0, 0);
-        } else {
+          break;
+        default:
           offset += header.size;
+          break;
         }
       }
     }
