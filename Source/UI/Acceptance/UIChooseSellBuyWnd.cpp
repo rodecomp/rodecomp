@@ -1137,7 +1137,8 @@ int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == ID_OK) {
+  switch (argument1) {
+  case ID_OK: {
     std::string name;
     name = this->m_edit->Text();
     this->m_edit->SelectAll();
@@ -1146,8 +1147,11 @@ int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     } else {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_PUT_CHARACTER_NAME_IN)), 0xFF, 0, 0, 0);
     }
-  } else if (argument1 == ID_CANCEL) {
+    break;
+  }
+  case ID_CANCEL:
     g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
+    break;
   }
 
   return 0;
@@ -3585,9 +3589,9 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (header.type == 0x542E) {
+    if (0x542E == header.type) {
       bool scanning = true;
-      while (scanning && offset < static_cast<unsigned>(b)) {
+      while (static_cast<unsigned>(b) > offset && scanning) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
         if (header.type != 0x542F) {
@@ -3856,12 +3860,12 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_CHOOSESELLBUYWND);
         break;
-      case ID_SELL:
-        g_modeMgr.gameMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
-        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
-        break;
       case ID_BUY:
         g_modeMgr.gameMode->SendMsg(MM_ACK_BUY, this->identity, 0, 0, 0);
+        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
+        break;
+      case ID_SELL:
+        g_modeMgr.gameMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
         g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
         break;
       default:
@@ -3883,7 +3887,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
 
-    if (header.type == 20850) {
+    if (20850 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += 6;
@@ -7768,17 +7772,19 @@ void UINpcEditDialogWnd::OnCreate(int, int) {
   g_windowMgr.SetFocus(this->edit);
   this->edit->SelectAll();
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->npcId = -1;
   this->m_message0 = 184;
 }
@@ -8285,17 +8291,20 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // FUNCTION: fn_12382
 int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_COMMAND: {
+  case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == ID_OK) {
+    switch (a) {
+    case ID_OK: {
       CMode* mode = g_modeMgr.GetGameMode();
       g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
       mode->SendMsg(MM_STARPLACE_ACCEPT, this->m_place, 0, 0, 0);
-    } else if (a == ID_CANCEL) {
+      break;
+    }
+    case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
+      break;
     }
     return 0;
-  }
   case UM_SET_BABY_MSG: {
     this->m_place = static_cast<char>(a);
     std::string text;
@@ -8308,36 +8317,34 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
     return 0;
   }
-  }
-
-  if (message != UM_REPLAY_FRAMED_DATA) {
-    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
-  }
-
-  const auto* packet = reinterpret_cast<const unsigned char*>(a);
-  const unsigned length = static_cast<unsigned>(b);
-  std::int16_t tag;
-  std::memcpy(&tag, packet, sizeof(tag));
-  if (tag == 0x54C4) {
+  case UM_REPLAY_FRAMED_DATA: {
+    const auto* packet = reinterpret_cast<const unsigned char*>(a);
+    FramedMessageHeader header;
+    std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    while (offset < length) {
-      std::uint32_t size;
-      std::memcpy(&tag, packet + offset, sizeof(tag));
-      std::memcpy(&size, packet + offset + 2, sizeof(size));
-      offset += 6;
-      if (tag == 0x54C5) {
-        break;
-      }
-      if (tag == 0x54C6) {
-        std::memcpy(&this->m_place, packet + offset, size);
-        offset += size;
-        this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
-      } else {
-        offset += size;
+    if (0x54C4 == header.type) {
+      while (static_cast<unsigned>(b) > offset) {
+        std::memcpy(&header, packet + offset, sizeof(header));
+        offset += 6;
+        switch (header.type) {
+        case 0x54C5:
+          return 0;
+        case 0x54C6:
+          std::memcpy(&this->m_place, packet + offset, header.length);
+          offset += header.length;
+          this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
+          break;
+        default:
+          offset += header.length;
+          break;
+        }
       }
     }
+    return 0;
   }
-  return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x00908080
