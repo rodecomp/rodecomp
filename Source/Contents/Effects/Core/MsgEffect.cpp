@@ -154,8 +154,8 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
 
       matrix rotation;
       rotation.MakeYRotation(yaw / 180.0f * 3.141592f);
-      const float x = effect->m_drift.x;
       const float y = effect->m_drift.y;
+      const float x = effect->m_drift.x;
       const float z = effect->m_drift.z;
       dirX = rotation.values[0] * x + rotation.values[3] * y + rotation.values[6] * z + rotation.values[9];
       effect->m_drift.x = dirX;
@@ -164,8 +164,9 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
   }
 
   const float step = elapsed / 3.0f;
+  const float dirZ = effect->m_drift.z;
   effect->render.position.x = dirX * step + effect->m_velocity.x + dirX * 3.0f;
-  effect->render.position.z = effect->m_drift.z * step + effect->m_velocity.z + effect->m_drift.z * 3.0f;
+  effect->render.position.z = dirZ * step + effect->m_velocity.z + dirZ * 3.0f;
   float height = effect->m_baseY + 8.0f - (2.0f - elapsed / 30.0f) * elapsed + effect->m_drift.y;
   effect->render.position.y = height;
   if (height > 0.0f) {
@@ -414,16 +415,16 @@ bool CMsgEffect::OnProcess() {
         this->SetColor(255, 250, 80, 80);
         return true;
       }
-      if (motion / static_cast<float>(frames) < 1.0f) {
-        return true;
-      }
-      if (this->m_type != 1) {
+      if (motion / static_cast<float>(frames) >= 1.0f) {
+        if (this->m_type != 1) {
+          return false;
+        }
+        if (this->m_value == static_cast<int>(g_session.m_aid)) {
+          g_modeMgr.GetGameMode()->SendMsg(MM_PLAYER_EMOTION_END, 0, 0, 0, 0);
+        }
         return false;
       }
-      if (this->m_value == static_cast<int>(g_session.m_aid)) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_PLAYER_EMOTION_END, 0, 0, 0, 0);
-      }
-      return false;
+      return true;
     }
 
     case MET_ICEBREAKEFFECT: {
@@ -432,10 +433,10 @@ bool CMsgEffect::OnProcess() {
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
       const float motion = elapsed * 1.2f;
       this->render.curMotion = static_cast<int>(motion) % frames;
-      if (motion / static_cast<float>(frames) < 1.0f) {
-        return true;
+      if (motion / static_cast<float>(frames) >= 1.0f) {
+        return false;
       }
-      return false;
+      return true;
     }
 
     case MET_PKEFFECT:
