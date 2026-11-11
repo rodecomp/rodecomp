@@ -8389,24 +8389,24 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
 
 // INLINED
 static __forceinline void LaunchTwinkleRing(CRagEffect& effect, const char* name, char level) {
-  effect.state.currentPrimitive = &CreateEffectParticle(effect, effect.render, 132, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  effect.state.currentPrimitive->renderFlag = 0;
-  effect.state.currentPrimitive->renderFlag |= 1u;
-  effect.state.currentPrimitive->renderFlag |= 5u;
-  effect.state.currentPrimitive->duration = effect.state.duration;
-  AllocateTextures(*effect.state.currentPrimitive);
-  effect.state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  effect.state.currentPrimitive->size = 1.0f;
+  effect.state.lastPrim = CreateEffectParticle(effect, effect.render, 132, 0.0f, 0.0f, 0.0f, WorldObjects());
+  effect.state.lastPrim->state.renderFlag = 0;
+  effect.state.lastPrim->state.renderFlag |= 1u;
+  effect.state.lastPrim->state.renderFlag |= 5u;
+  effect.state.lastPrim->state.duration = effect.state.duration;
+  effect.state.lastPrim->state.textures = new CTexture*[effect.state.lastPrim->state.totalTexture];
+  effect.state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  effect.state.lastPrim->state.size = 1.0f;
   for (int i = 0; i < 4; ++i) {
-    effect.state.currentPrimitive->slots[i].life = 1;
-    effect.state.currentPrimitive->slots[i].process = i * -20;
-    effect.state.currentPrimitive->slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
-    effect.state.currentPrimitive->slots[i].maxHeight = 10.0f;
-    effect.state.currentPrimitive->slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-    effect.state.currentPrimitive->slots[i].alphaB = 100;
-    effect.state.currentPrimitive->slots[i].height[4] = 10.0f;
-    effect.state.currentPrimitive->slots[i].height[3] = static_cast<float>(i);
-    effect.state.currentPrimitive->slots[i].height[5] = static_cast<float>(level);
+    effect.state.lastPrim->state.slots[i].life = 1;
+    effect.state.lastPrim->state.slots[i].process = i * -20;
+    effect.state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
+    effect.state.lastPrim->state.slots[i].maxHeight = 10.0f;
+    effect.state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    effect.state.lastPrim->state.slots[i].alphaB = 100;
+    effect.state.lastPrim->state.slots[i].height[4] = 10.0f;
+    effect.state.lastPrim->state.slots[i].height[3] = static_cast<float>(i);
+    effect.state.lastPrim->state.slots[i].height[5] = static_cast<float>(level);
   }
 }
 
@@ -8526,43 +8526,40 @@ void CRagEffect::TetraVortexPillar(char kind) {
 // INLINED
 static __forceinline void LaunchFireballVolley(CRagEffect& effect, float turn, int shade, int fade) {
   CEffectPrim* particle = CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
-  effect.state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(particle);
-  auto stored = [&]() -> CEffectPrim* {
-    return reinterpret_cast<CEffectPrim*>(effect.state.currentPrimitive);
-  };
-  stored()->state.renderFlag = 5;
-  stored()->state.duration = 20;
-  stored()->state.pattern |= 0x120u;
-  stored()->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
+  effect.state.lastPrim = particle;
+  effect.state.lastPrim->state.renderFlag = 5;
+  effect.state.lastPrim->state.duration = 20;
+  effect.state.lastPrim->state.pattern |= 0x120u;
+  effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
   particle->Face(effect.state.deltaPos[0], effect.state.deltaPos[2]);
   if (turn != 0.0f) {
-    stored()->render.angle = stored()->render.angle + turn;
-    if (stored()->render.angle < 0.0f) {
-      stored()->render.angle = stored()->render.angle + 360.0f;
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + turn;
+    if (effect.state.lastPrim->render.angle < 0.0f) {
+      effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
     }
 
-    if (stored()->render.angle >= 360.0f) {
-      stored()->render.angle = stored()->render.angle - 360.0f;
+    if (effect.state.lastPrim->render.angle >= 360.0f) {
+      effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle - 360.0f;
     }
   }
 
-  stored()->state.longitude = -stored()->render.angle;
-  stored()->render.angle = 180.0f - stored()->render.angle;
-  if (stored()->render.angle < 0.0f) {
-    stored()->render.angle = stored()->render.angle + 360.0f;
+  effect.state.lastPrim->state.longitude = -effect.state.lastPrim->render.angle;
+  effect.state.lastPrim->render.angle = 180.0f - effect.state.lastPrim->render.angle;
+  if (effect.state.lastPrim->render.angle < 0.0f) {
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
   }
 
-  stored()->state.speed = -(stored()->CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / stored()->state.duration);
-  reinterpret_cast<matrix*>(stored()->state.transform)->MakeYRotation(GetRadian(static_cast<int>(stored()->state.longitude)));
-  stored()->state.size = 1.0f;
-  stored()->state.animSpeed = 1;
-  stored()->state.red = shade;
-  stored()->state.green = shade;
-  stored()->state.blue = 255;
-  stored()->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
-  stored()->SetSpriteName("이팩트\\fireball.spr");
-  stored()->SetActionName("이팩트\\fireball.act");
-  stored()->InitSegment();
+  effect.state.lastPrim->state.speed = -(effect.state.lastPrim->CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / effect.state.lastPrim->state.duration);
+  reinterpret_cast<matrix*>(effect.state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(effect.state.lastPrim->state.longitude)));
+  effect.state.lastPrim->state.size = 1.0f;
+  effect.state.lastPrim->state.animSpeed = 1;
+  effect.state.lastPrim->state.red = shade;
+  effect.state.lastPrim->state.green = shade;
+  effect.state.lastPrim->state.blue = 255;
+  effect.state.lastPrim->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
+  effect.state.lastPrim->SetSpriteName("이팩트\\fireball.spr");
+  effect.state.lastPrim->SetActionName("이팩트\\fireball.act");
+  effect.state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C721A0
@@ -9452,12 +9449,19 @@ bool CRagEffect::ProcessEZ2STRAtTarget() {
   parent.position.x = this->state.deltaPos[0];
   parent.position.y = this->state.deltaPos[1];
   parent.position.z = this->state.deltaPos[2];
-  const bool running = this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    RenderObjectState& restored = this->state.parent->render;
+    restored.position.x = this->state.deltaPos2[0];
+    restored.position.y = this->state.deltaPos2[1];
+    restored.position.z = this->state.deltaPos2[2];
+    return false;
+  }
+
   RenderObjectState& restored = this->state.parent->render;
   restored.position.x = this->state.deltaPos2[0];
   restored.position.y = this->state.deltaPos2[1];
   restored.position.z = this->state.deltaPos2[2];
-  return running ? true : false;
+  return true;
 }
 
 // OFFSET: 0x00C3DF90
@@ -13280,42 +13284,39 @@ void CRagEffect::StoneWall() {
 // INLINED
 static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, float turn, int red, int green, int blue, int fade) {
   CEffectPrim* particle = CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
-  effect.state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(particle);
-  auto stored = [&]() -> CEffectPrim* {
-    return reinterpret_cast<CEffectPrim*>(effect.state.currentPrimitive);
-  };
-  stored()->state.duration = 20;
-  stored()->state.pattern |= 0x120u;
-  stored()->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
+  effect.state.lastPrim = particle;
+  effect.state.lastPrim->state.duration = 20;
+  effect.state.lastPrim->state.pattern |= 0x120u;
+  effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
   particle->Face(effect.state.deltaPos[0], effect.state.deltaPos[2]);
   if (turn != 0.0f) {
-    stored()->render.angle = stored()->render.angle + turn;
-    if (stored()->render.angle < 0.0f) {
-      stored()->render.angle = stored()->render.angle + 360.0f;
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + turn;
+    if (effect.state.lastPrim->render.angle < 0.0f) {
+      effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
     }
 
-    if (stored()->render.angle >= 360.0f) {
-      stored()->render.angle = stored()->render.angle - 360.0f;
+    if (effect.state.lastPrim->render.angle >= 360.0f) {
+      effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle - 360.0f;
     }
   }
 
-  stored()->state.longitude = -stored()->render.angle;
-  stored()->render.angle = 180.0f - stored()->render.angle;
-  if (stored()->render.angle < 0.0f) {
-    stored()->render.angle = stored()->render.angle + 360.0f;
+  effect.state.lastPrim->state.longitude = -effect.state.lastPrim->render.angle;
+  effect.state.lastPrim->render.angle = 180.0f - effect.state.lastPrim->render.angle;
+  if (effect.state.lastPrim->render.angle < 0.0f) {
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
   }
 
-  stored()->state.speed = -(stored()->CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / stored()->state.duration);
-  reinterpret_cast<matrix*>(stored()->state.transform)->MakeYRotation(GetRadian(static_cast<int>(stored()->state.longitude)));
-  stored()->state.size = 1.0f;
-  stored()->state.animSpeed = 1;
-  stored()->state.red = red;
-  stored()->state.green = green;
-  stored()->state.blue = blue;
-  stored()->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
-  stored()->SetSpriteName("\uc774\ud329\ud2b8\\fireball.spr");
-  stored()->SetActionName("\uc774\ud329\ud2b8\\fireball.act");
-  stored()->InitSegment();
+  effect.state.lastPrim->state.speed = -(effect.state.lastPrim->CalcDist(effect.state.deltaPos[0], effect.state.deltaPos[2]) / effect.state.lastPrim->state.duration);
+  reinterpret_cast<matrix*>(effect.state.lastPrim->state.transform)->MakeYRotation(GetRadian(static_cast<int>(effect.state.lastPrim->state.longitude)));
+  effect.state.lastPrim->state.size = 1.0f;
+  effect.state.lastPrim->state.animSpeed = 1;
+  effect.state.lastPrim->state.red = red;
+  effect.state.lastPrim->state.green = green;
+  effect.state.lastPrim->state.blue = blue;
+  effect.state.lastPrim->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
+  effect.state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\fireball.spr");
+  effect.state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\fireball.act");
+  effect.state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C13D80
