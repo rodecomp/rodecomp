@@ -26,6 +26,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -1028,8 +1029,8 @@ void UINewSkillListWnd::OnMouseHover(int x, int y) {
       int tooltipX = -10;
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
-      const char* name = (*skill)->DisplayName(*g_session.m_hotkeyScript);
-      g_modeMgr.gameMode->ShowTooltip(name, tooltipX + x, tooltipY + y, -1, 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip((*skill)->DisplayName(*g_session.m_hotkeyScript), tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
 
@@ -1272,7 +1273,6 @@ void UINewSkillListWnd::LayoutButtons() {
 // FUNCTION: fn_13825
 int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   int& gate = g_session.m_simplifiedSkillList;
-  CMode* gameMode = g_modeMgr.gameMode;
 
   switch (message) {
   case UM_SETINFO:
@@ -1320,7 +1320,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->ApplySkillPoints();
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {
-          g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
+          g_windowMgr.SetFocus(ChatWindow()->m_inputEdit);
           return 0;
         }
       }
@@ -1451,6 +1451,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
+      CMode* gameMode = g_modeMgr.gameMode;
       gameMode->SendMsg(MM_USING_SKILL, a, g_session.UseLevel(skill->id), 0, 0);
       return 0;
     }
