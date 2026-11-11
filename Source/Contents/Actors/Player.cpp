@@ -4510,7 +4510,7 @@ void CPc::SetState(int state, int resetPosition) {
     case JT_STAR2_EMPEROR_B:
     case JT_SKY_EMPEROR:
     case JT_SKY_EMPEROR2:
-      if (std::max(rand() % 10, 0) < 7) {
+      if (std::ranges::max(rand() % 10, 0) < 7) {
         weaponAllowed = true;
         attackState = 9;
       } else {
