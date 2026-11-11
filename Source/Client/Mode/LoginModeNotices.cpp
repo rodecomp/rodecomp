@@ -110,9 +110,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   } else if (remainingTime != 0) {
     const std::uint32_t freeTime = packet->remainingFreeTime;
     if (freeTime != 0) {
-      sprintf(
-        text, LookupMessage(MSI_BILLING_BOTH), remainingTime / 60 / 24, remainingTime / 60 % 24, remainingTime % 60, freeTime / 60, freeTime % 60
-      );
+      const char* message = LookupMessage(MSI_BILLING_BOTH);
+      sprintf(text, message, remainingTime / (60 * 24), remainingTime / 60 % 24, remainingTime % 60, freeTime / 60, freeTime % 60);
     } else {
       const char* message = LookupMessage(MSI_BILLING_100);
       const char* format = [] {
@@ -123,7 +122,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
       }();
       sprintf(text, format, message);
       const std::uint32_t time = packet->remainingTime;
-      sprintf(text + strlen(text), LookupMessage(MSI_BILLING_DAY_HOUR_MINUTES), time / 60 / 24, time / 60 % 24, time % 60);
+      const char* dayFormat = LookupMessage(MSI_BILLING_DAY_HOUR_MINUTES);
+      sprintf(text + strlen(text), dayFormat, time / (60 * 24), time / 60 % 24, time % 60);
     }
   } else {
     if (packet->remainingFreeTime > 0) {
@@ -136,7 +136,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
       }();
       sprintf(text, format, message);
       const std::uint32_t freeTime = packet->remainingFreeTime;
-      sprintf(text + strlen(text), LookupMessage(MSI_BILLING_HOUR_MINUTES), freeTime / 60, freeTime % 60);
+      const char* hourFormat = LookupMessage(MSI_BILLING_HOUR_MINUTES);
+      sprintf(text + strlen(text), hourFormat, freeTime / 60, freeTime % 60);
     } else {
       const char* format = [] {
         const std::uint8_t source[] = {0x67, 0xBF};
