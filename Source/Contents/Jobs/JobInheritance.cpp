@@ -1203,11 +1203,11 @@ bool __stdcall IsVisibleJob(int job) {
 std::string GetJobTitleString(int job) {
   const char* title = nullptr;
 
-  if (!g_session.m_hotkeyScript->Call("GetTitleString", "d>s", job, &title)) {
-    return "";
+  if (g_session.m_hotkeyScript->Call("GetTitleString", "d>s", job, &title)) {
+    return title ? title : "";
   }
 
-  return title ? title : "";
+  return "";
 }
 
 // OFFSET: 0x00E19530
