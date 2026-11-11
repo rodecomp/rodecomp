@@ -2414,8 +2414,11 @@ void UILoginWnd::OnProcess() {
   if (g_windowMgr.GetHoverWindow() == this->idEdit) {
     this->idEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
     if (this->idPlaceholder == true) {
-      const char source[] = CRYPT_CHARS(3, "ID", 0x2D51E3B7236175EDULL);
-      thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> placeholder(source);
+      EncryptedName<3, 0x2D51E3B7236175EDULL>& placeholder = []() -> EncryptedName<3, 0x2D51E3B7236175EDULL>& {
+        const char source[] = CRYPT_CHARS(3, "ID", 0x2D51E3B7236175EDULL);
+        thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
+        return name;
+      }();
       if (std::strcmp(placeholder.Text(), this->idEdit->Text()) == 0) {
         this->idEdit->SetText("");
         goto password;
@@ -2427,9 +2430,11 @@ void UILoginWnd::OnProcess() {
       this->idEdit->TextColor(156, 156, 156, 0xFFFFFFFF);
       UIEditCtrl_Custom* edit = this->idEdit;
       this->idPlaceholder = true;
-      const char source[] = CRYPT_CHARS(3, "ID", 0x0F41EBBDA32D1B17ULL);
-      thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> placeholder(source);
-      edit->SetText(placeholder.Text());
+      edit->SetText([]() -> EncryptedName<3, 0x0F41EBBDA32D1B17ULL>& {
+        const char source[] = CRYPT_CHARS(3, "ID", 0x0F41EBBDA32D1B17ULL);
+        thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
+        return name;
+      }().Text());
     }
     if (this->idPlaceholder == false) {
       this->idEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
@@ -2447,8 +2452,11 @@ password:
     ImmReleaseContext(hWnd, context);
     this->passwordEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
     if (this->passwordPlaceholder == true) {
-      const char source[] = CRYPT_CHARS(9, "PASSWORD", 0x7115D9F973F913C9ULL);
-      thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> placeholder(source);
+      EncryptedName<9, 0x7115D9F973F913C9ULL>& placeholder = []() -> EncryptedName<9, 0x7115D9F973F913C9ULL>& {
+        const char source[] = CRYPT_CHARS(9, "PASSWORD", 0x7115D9F973F913C9ULL);
+        thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
+        return name;
+      }();
       if (std::strcmp(placeholder.Text(), this->passwordEdit->Text()) == 0) {
         this->passwordEdit->SetText("");
         this->passwordEdit->mask = 0;
@@ -2461,9 +2469,11 @@ password:
       this->passwordPlaceholder = true;
       this->passwordEdit->TextColor(156, 156, 156, 0xFFFFFFFF);
       auto* edit = this->passwordEdit;
-      const char source[] = CRYPT_CHARS(9, "PASSWORD", 0xCB1D253B7FE1F563ULL);
-      thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> placeholder(source);
-      edit->SetText(placeholder.Text());
+      edit->SetText([]() -> EncryptedName<9, 0xCB1D253B7FE1F563ULL>& {
+        const char source[] = CRYPT_CHARS(9, "PASSWORD", 0xCB1D253B7FE1F563ULL);
+        thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
+        return name;
+      }().Text());
       this->passwordEdit->mask = 0;
     }
     if (this->passwordPlaceholder != false) {
