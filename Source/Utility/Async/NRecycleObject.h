@@ -52,7 +52,7 @@ public:
 
   // INLINED
   ~NRecycleObjectPool() override {
-    for (T* object : this->m_objects) {
+    for (NRecycleObject* object : this->m_objects) {
       delete object;
     }
     DeleteCriticalSection(&this->m_criticalSection);
@@ -144,7 +144,7 @@ public:
 protected:
   /* 0004 */ bool m_enabled;
   /* 0008 */ std::deque<NRecycleObject*> m_free;
-  /* 001C */ std::list<T*> m_objects;
+  /* 001C */ std::list<NRecycleObject*> m_objects;
   /* 0024 */ std::uint32_t m_minimumFree;
   /* 0028 */ CRITICAL_SECTION m_criticalSection;
 };
