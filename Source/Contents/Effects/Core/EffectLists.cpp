@@ -191,8 +191,9 @@ __declspec(noinline) std::string EffectFunctionName(std::string name) {
 CEffect* EffectLists::Find(int actor, int instance, int id) const {
   const auto found = this->active.find(actor);
 
-  if (found != this->active.end()) {
-    for (CEffect* effect : found->second) {
+  if (this->active.end() != found) {
+    for (auto it = found->second.begin(); found->second.end() != it; ++it) {
+      CEffect* effect = *it;
       if (effect->id == id && effect->instanceId == instance) {
         return effect;
       }

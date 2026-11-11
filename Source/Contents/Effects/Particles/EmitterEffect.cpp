@@ -24,7 +24,7 @@ CEmitterEffect::CEmitterEffect()
     : CEffect(974), velocityMin{-2.0f, 2.0f, -2.0f}, velocityMax{2.0f, -1.0f, 2.0f}, acceleration{0.7f, -2.0f, 1.0f}, spread{-1.0f, 2.0f, -1.0f},
       emitCarry(0.0f), timeScale(1.0f / 60.0f), scaleMin(3.0f), scaleMax(8.0f), lifeMin(5.0f), lifeMax(10.0f), rateMin(20.0f), rateMax(100.0f),
       width(1.0f), height(1.0f), red(255), green(255), blue(255), alpha(255), texture("smoke2.bmp"), sourceBlend(5), destinationBlend(2), count(40),
-      particleSpeed(1.0f), depth(1), billboard(0), rotation{}, fixedAlpha(0), particles(), pool(), duration(-1) {
+      particleSpeed(1.0f), depth(1), billboard(0), rotation{0.0f, 0.0f, 0.0f}, fixedAlpha(0), particles(), pool(), duration(-1) {
 }
 
 // OFFSET: 0x00B4FD90

@@ -39,7 +39,7 @@ static __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
 // OFFSET: 0x00B40B60
 // FUNCTION: fn_18861
 CSpriteParticle::CSpriteParticle(vector3d position, int flags)
-  : CParticle(position, flags), applyActorExtent(0), applyActorLift(0), velocity(), sprite(nullptr), action(nullptr) {
+  : CParticle(position, flags), applyActorExtent(0), applyActorLift(0), velocity({0.0f, 0.0f, 0.0f}), sprite(nullptr), action(nullptr) {
   this->Reset();
 }
 
