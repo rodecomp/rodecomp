@@ -22,14 +22,14 @@ namespace {
   }
 }
 
+// INLINED
+CActRes::~CActRes() = default;
+
 // OFFSET: 0x00745FB0
 // FUNCTION: fn_07767
 CActRes::CActRes() {
   this->maximumCells = 0;
 }
-
-// INLINED
-CActRes::~CActRes() = default;
 
 // OFFSET: 0x007436B0
 // FUNCTION: fn_07749
