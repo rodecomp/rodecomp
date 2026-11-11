@@ -2634,10 +2634,10 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
 // OFFSET: 0x00BD1CB0
 // FUNCTION: fn_19873
 void CEffectPrim::RenderColorPlane(matrix& wtm) {
+  ZeroVector3d vec4;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
-  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5666,14 +5666,8 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
 // FUNCTION: fn_19862
 void CEffectPrim::RenderPyramid(matrix& wtm) {
   float uInc = 0.0f;
-  vector3d table[12];
-  for (vector3d& entry : table) {
-    entry = {0.0f, 0.0f, 0.0f};
-  }
-  vector3d corners[12];
-  for (vector3d& entry : corners) {
-    entry = {0.0f, 0.0f, 0.0f};
-  }
+  ZeroVector3d table[12];
+  ZeroVector3d corners[12];
   const float size = this->state.size;
   const float height = this->state.heightSize;
   const float negative = -size;
@@ -5698,13 +5692,8 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
 
   int count = 0;
   for (int face = 0; face < 4; ++face) {
-    const float* tm = this->state.rotTransform;
     for (int corner = 0; corner < 3; ++corner) {
-      const vector3d& local = table[face * 3 + corner];
-      corners[face * 3 + corner] = {
-        local.y * tm[3] + local.x * tm[0] + local.z * tm[6] + tm[9], local.y * tm[4] + local.x * tm[1] + local.z * tm[7] + tm[10],
-        local.y * tm[5] + local.x * tm[2] + local.z * tm[8] + tm[11]
-      };
+      TransformPrimitiveVertex(this->state.rotTransform, table[face * 3 + corner], corners[face * 3 + corner]);
     }
 
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5767,11 +5756,7 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
 
   for (int plane = 0; plane < 2; ++plane) {
     for (int corner = 0; corner < 4; ++corner) {
-      const vector3d& local = vert[plane * 4 + corner];
-      tvert[corner] = {
-        local.y * this->state.transform[3] + local.x * this->state.transform[0] + local.z * this->state.transform[6] + this->state.transform[9], local.y * this->state.transform[4] + local.x * this->state.transform[1] + local.z * this->state.transform[7] + this->state.transform[10],
-        local.y * this->state.transform[5] + local.x * this->state.transform[2] + local.z * this->state.transform[8] + this->state.transform[11]
-      };
+      TransformPrimitiveVertex(this->state.transform, vert[plane * 4 + corner], tvert[corner]);
     }
 
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
