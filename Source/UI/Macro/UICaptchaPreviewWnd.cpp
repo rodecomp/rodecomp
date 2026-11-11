@@ -104,15 +104,14 @@ void UIMacroDetectorWnd::OnCreate(int, int) {
 
   g_windowMgr.SetFocus(this->m_editCtrl);
 
-  UIBitmapButton* button = new UIBitmapButton();
-  this->m_button = button;
-  button->SetBitmap("유저인터페이스\\btn_get.bmp", 0, 0);
-  button->SetBitmap("유저인터페이스\\btn_get_a.bmp", 1, 0);
-  button->SetBitmap("유저인터페이스\\btn_get_b.bmp", 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(253, 261);
-  button->SetId(345);
-  this->AddChild(button);
+  this->m_button = new UIBitmapButton();
+  this->m_button->SetBitmap("유저인터페이스\\btn_get.bmp", 0, 0);
+  this->m_button->SetBitmap("유저인터페이스\\btn_get_a.bmp", 1, 0);
+  this->m_button->SetBitmap("유저인터페이스\\btn_get_b.bmp", 2, 0);
+  this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
+  this->m_button->Move(253, 261);
+  this->m_button->SetId(345);
+  this->AddChild(this->m_button);
 }
 
 // OFFSET: 0x007ED950
