@@ -133,14 +133,14 @@ bool UIScrollWnd::UpdateCached(int redraw) {
   if (redraw == 1 || changed == 1) {
     std::list<RenderPrimitive*> primitives(this->m_primitives);
     for (UIWindow* child : this->m_children) {
-      if (child != this->horizontalBar && child != this->scrollBar) {
-        primitives.push_back(child->DrawPrimitive());
-      } else {
+      if (this->horizontalBar == child || this->scrollBar == child) {
         static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(child->m_texture);
         primitives.push_back(this->BuildPrimitive(
           child->geometry.x + this->horizontalScrollPosition, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
           child->m_texture, child->Color()
         ));
+      } else {
+        primitives.push_back(child->DrawPrimitive());
       }
     }
     g_renderer->RenderToTexture(
