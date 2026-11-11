@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <windows.h>
 
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 // OFFSET: 0x00AF45E0
 // FUNCTION: fn_18245
 void RemoveDirectoryTree(const char* path) {
@@ -37,11 +39,11 @@ void RemoveDirectoryTree(const char* path) {
     std::strcpy(filename, path);
     std::strcat(filename, "\\");
     for (const std::string& file : files) {
-      _chmod((std::string(filename) + file).c_str(), _S_IWRITE);
-      _unlink((std::string(filename) + file).c_str());
+      _chmod((filename + file).c_str(), _S_IWRITE);
+      _unlink((filename + file).c_str());
     }
     for (const std::string& directory : directories) {
-      RemoveDirectoryTree((std::string(filename) + directory).c_str());
+      RemoveDirectoryTree((filename + directory).c_str());
     }
   }
   _rmdir(path);
