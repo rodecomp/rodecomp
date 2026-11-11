@@ -28,7 +28,7 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 
-extern template std::string& std::string::operator=(std::string&&) noexcept;
+#include "Utility/StdStringMoveAssign.h"
 
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275

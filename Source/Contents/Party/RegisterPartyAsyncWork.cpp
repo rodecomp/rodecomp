@@ -12,7 +12,7 @@
 #include <windows.h>
 #include <timeapi.h>
 
-extern template std::string& std::string::operator=(std::string&&) noexcept;
+#include "Utility/StdStringMoveAssign.h"
 
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CRegisterPartyAsyncWork.cpp";

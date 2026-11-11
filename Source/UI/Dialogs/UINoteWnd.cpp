@@ -9,7 +9,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895

@@ -14,7 +14,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Text/UIStaticText.h"
 
-extern template std::string& std::string::operator=(std::string&&) noexcept;
+#include "Utility/StdStringMoveAssign.h"
 
 // OFFSET: 0x0085ACE0
 // FUNCTION: fn_10788

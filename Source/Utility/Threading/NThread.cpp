@@ -3,7 +3,7 @@
 #include <process.h>
 #include <utility>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 namespace {
   struct ThreadNameInfo {

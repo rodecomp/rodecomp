@@ -13,7 +13,7 @@
 #include <json/value.h>
 #include <json/writer.h>
 
-extern template std::vector<std::string>::~vector();
+#include "Utility/StdStringVectorDestroy.h"
 
 // OFFSET: 0x00605BF0
 // FUNCTION: fn_04226

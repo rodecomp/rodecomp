@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <string>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x00D1DFB0
 // FUNCTION: fn_21632

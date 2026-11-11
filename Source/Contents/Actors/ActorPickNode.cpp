@@ -16,7 +16,7 @@
 #include <string>
 #include "Utility/StdStringCompare.h"
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x00AD9530
 // FUNCTION: fn_17878

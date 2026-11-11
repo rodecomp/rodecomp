@@ -39,7 +39,7 @@
 #include <new>
 #include <string>
 
-extern template std::string& std::string::operator=(std::string&&) noexcept;
+#include "Utility/StdStringMoveAssign.h"
 
 // GLOBAL: gl_24874
 unsigned long g_swapEquipmentTick;

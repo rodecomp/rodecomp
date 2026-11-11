@@ -9,7 +9,7 @@
 #include <t2embapi.h>
 #include <vector>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // GLOBAL: gl_24812
 CEmbedFont* g_embedFont;

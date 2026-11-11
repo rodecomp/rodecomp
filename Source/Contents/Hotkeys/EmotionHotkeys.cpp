@@ -11,7 +11,7 @@
 #include <json/value.h>
 #include <io.h>
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdTraitsEqual.h"
 
 // OFFSET: 0x005BC230
 // FUNCTION: fn_03463

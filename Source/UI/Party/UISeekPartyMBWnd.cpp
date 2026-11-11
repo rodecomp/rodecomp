@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <cstring>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 namespace {
 #pragma pack(push, 1)

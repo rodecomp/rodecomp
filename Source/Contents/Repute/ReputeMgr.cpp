@@ -15,7 +15,7 @@
 #include <cstring>
 #include <utility>
 
-extern template std::vector<int>::vector(const std::vector<int>&);
+#include "Utility/StdIntVectorCopy.h"
 extern template std::vector<int>::~vector();
 
 extern "C" void JsonDestroy();

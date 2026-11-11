@@ -23,7 +23,7 @@
 #include <cstring>
 #include <regex>
 
-extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+#include "Utility/StdStringConcat.h"
 
 // INLINED
 static __forceinline float ToRadians(float degrees) {

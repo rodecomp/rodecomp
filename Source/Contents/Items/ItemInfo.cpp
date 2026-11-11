@@ -15,8 +15,8 @@
 #include <vector>
 #include "Utility/StdStringCompare.h"
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-extern template std::vector<int>::vector(const std::vector<int>&);
+#include "Utility/StdTraitsEqual.h"
+#include "Utility/StdIntVectorCopy.h"
 
 namespace {
 #pragma pack(push, 1)

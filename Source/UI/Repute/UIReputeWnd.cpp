@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-extern template std::vector<std::string>::~vector();
+#include "Utility/StdStringVectorDestroy.h"
 
 // GLOBAL: gl_25000
 template <>

@@ -256,7 +256,7 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
   return entry.font;
 }
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdTraitsEqual.h"
 
 // OFFSET: 0x0054F830
 // FUNCTION: fn_01959

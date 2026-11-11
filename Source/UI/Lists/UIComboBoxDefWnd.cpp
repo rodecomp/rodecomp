@@ -33,9 +33,9 @@
 #include "Resource/MSGSTRINGID.h"
 #include <timeapi.h>
 
-extern template std::size_t std::_Traits_find<std::char_traits<char>>(const char* const, const std::size_t, const std::size_t, const char* const, const std::size_t) noexcept;
+#include "Utility/StdTraitsFind.h"
 
-extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+#include "Utility/StdStringConcat.h"
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";

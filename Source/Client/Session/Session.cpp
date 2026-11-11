@@ -100,7 +100,7 @@ ActorIdTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
 
 extern template void std::vector<std::string>::resize(size_type, const std::string&);
 extern template void std::vector<unsigned char>::_Tidy() noexcept;
-extern template std::string& std::string::operator=(std::string&&) noexcept;
+#include "Utility/StdStringMoveAssign.h"
 
 using PendingActorNameTree = std::_Tree<std::_Tset_traits<
   std::uint32_t, std::less<std::uint32_t>, std::allocator<std::uint32_t>, false>>;

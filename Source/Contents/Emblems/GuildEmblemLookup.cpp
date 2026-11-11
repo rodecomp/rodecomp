@@ -3,7 +3,7 @@
 #include "Contents/Guild/GuildMgr.h"
 #include "Resource/ResourceMgr.h"
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x0065E450
 // FUNCTION: fn_05174

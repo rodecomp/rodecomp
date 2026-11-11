@@ -6,7 +6,7 @@
 
 #include <string>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x00BAC050
 // FUNCTION: fn_19755

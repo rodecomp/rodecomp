@@ -17,7 +17,7 @@
 #include <new>
 #include <string>
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // GLOBAL: gl_24848
 CNProtectGameGuardMgr* g_nProtectGameGuardMgr;

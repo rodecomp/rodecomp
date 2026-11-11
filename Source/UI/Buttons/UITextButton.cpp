@@ -63,7 +63,7 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 
-extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+#include "Utility/StdWindowListEmplace.h"
 
 using IntIntTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
@@ -3562,7 +3562,7 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
-extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+#include "Utility/StdStringConcat.h"
 
 
 // OFFSET: 0x0088EBC0

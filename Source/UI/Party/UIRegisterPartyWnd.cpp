@@ -31,7 +31,7 @@
 #include <vector>
 #include <string>
 
-extern template std::vector<std::string>::~vector();
+#include "Utility/StdStringVectorDestroy.h"
 
 namespace {
   // OFFSET: 0x007BBFC0

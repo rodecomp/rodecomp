@@ -39,7 +39,7 @@ extern "C" {
 #include <vector>
 #include <windows.h>
 
-extern template std::string& std::string::insert(std::string::size_type, const char*, std::string::size_type);
+#include "Utility/StdStringInsert.h"
 
 struct MiniMapPosition {
   MiniMapPosition() {

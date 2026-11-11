@@ -13,7 +13,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdTraitsEqual.h"
 
 // GLOBAL: gl_24886
 extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};

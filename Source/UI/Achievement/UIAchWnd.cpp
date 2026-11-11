@@ -26,7 +26,7 @@
 #include <cstring>
 #include <new>
 
-extern template std::string& std::string::insert(std::string::size_type, const char*, std::string::size_type);
+#include "Utility/StdStringInsert.h"
 
 // GLOBAL: gl_25003
 std::vector<AchTracingEntry> g_achievementTracking;

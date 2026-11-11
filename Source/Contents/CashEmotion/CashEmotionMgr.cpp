@@ -69,7 +69,7 @@ extern "C" {
 #include <new>
 #include <windows.h>
 
-extern template std::vector<int>::vector(const std::vector<int>&);
+#include "Utility/StdIntVectorCopy.h"
 
 // STATIC: 0x013896C4
 // GLOBAL: gl_24350

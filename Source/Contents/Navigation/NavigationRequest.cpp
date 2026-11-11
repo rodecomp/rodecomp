@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+#include "Utility/StdTraitsEqual.h"
 
 // OFFSET: 0x00B8C0B0
 // FUNCTION: fn_19420

@@ -5,7 +5,7 @@
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextFitting.h"
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x00861AB0
 // FUNCTION: fn_10902

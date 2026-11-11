@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <string>
 
-extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+#include "Utility/StdStringConcat.h"
 
 // OFFSET: 0x0086D530
 // FUNCTION: fn_11047

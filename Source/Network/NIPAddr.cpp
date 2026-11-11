@@ -2,7 +2,7 @@
 
 #include "Network/NIPAddr.h"
 
-extern template std::string::basic_string(const std::string&);
+#include "Utility/StdStringCopy.h"
 
 // INLINED
 inline void NIPAddr::SetAddress(std::string text) {

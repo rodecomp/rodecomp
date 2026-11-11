@@ -17,8 +17,8 @@
 #include <cstddef>
 #include <new>
 
-extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-extern template std::vector<std::string>::~vector();
+#include "Utility/StdTraitsEqual.h"
+#include "Utility/StdStringVectorDestroy.h"
 
 namespace {
   // INLINED
