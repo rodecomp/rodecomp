@@ -1523,16 +1523,16 @@ void UISlotOfMyStyleWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter(true);
 
   CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
-  this->m_display->SetSize(this->geometry.width - line->image.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.73f)));
+  this->m_display->SetSize(this->geometry.width - line->image.width, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.73f)));
   this->m_display->Move(0, 0);
   this->m_display->LoadCostumes();
   this->AddChild(this->m_display);
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
-  this->m_showInfo->SetSize(this->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.36f)));
+  this->m_showInfo->SetSize(this->geometry.width, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.36f)));
   const int layout = 496;
   this->m_showInfo->ArrangeCheckBoxes(layout);
-  this->m_showInfo->Move(0, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)) - 10);
+  this->m_showInfo->Move(0, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)) - 10);
   this->m_showInfo->m_display = this->m_display;
   this->AddChild(this->m_showInfo);
 }
@@ -2129,7 +2129,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->deleteStyleButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_over.bmp", 1, 0);
     this->deleteStyleButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_press.bmp", 2, 0);
     this->deleteStyleButtons[i]->SetSize(this->deleteStyleButtons[i]->BitmapWidth(), this->deleteStyleButtons[i]->BitmapHeight());
-    this->deleteStyleButtons[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.5f)) * i + 7, 4);
+    this->deleteStyleButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.5f)) * i + 7, 4);
     this->deleteStyleButtons[i]->SetId(201);
     if (this->m_slots[i] == nullptr) {
       this->deleteStyleButtons[i]->Enable(0);
@@ -2144,7 +2144,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateLeftButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_press.bmp", 2, 0);
     this->rotateLeftButtons[i]->SetSize(this->rotateLeftButtons[i]->BitmapWidth(), this->rotateLeftButtons[i]->BitmapHeight());
     float ratio = static_cast<float>(i) * 0.5f + 0.25f;
-    this->rotateLeftButtons[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * ratio)) - this->rotateLeftButtons[i]->BitmapWidth(), 213);
+    this->rotateLeftButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)) - this->rotateLeftButtons[i]->BitmapWidth(), 213);
     this->rotateLeftButtons[i]->SetId(227);
     if (this->m_slots[i] == nullptr) {
       this->rotateLeftButtons[i]->Enable(0);
@@ -2156,7 +2156,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateRightButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_over.bmp", 1, 0);
     this->rotateRightButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
     this->rotateRightButtons[i]->SetSize(this->rotateRightButtons[i]->BitmapWidth(), this->rotateRightButtons[i]->BitmapHeight());
-    this->rotateRightButtons[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * ratio)), 213);
+    this->rotateRightButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)), 213);
     this->rotateRightButtons[i]->SetId(226);
     if (this->m_slots[i] == nullptr) {
       this->rotateRightButtons[i]->Enable(0);
@@ -2363,8 +2363,8 @@ void UI2ndCostumeWnd::OnCreate(int, int) {
 // FUNCTION: fn_10334
 void UIBasicStylingWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
-  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
-                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->SetSize(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
