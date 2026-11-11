@@ -3676,7 +3676,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
 
 // OFFSET: 0x00D73A10
 // FUNCTION: fn_22142
-void ReceiveNavigation(const unsigned char* packet) {
+void CGameMode::ReceiveNavigation(const unsigned char* packet) {
   int group = packet[3] >= 100 ? 1 : 0;
   int code = packet[3] >= 100 ? packet[3] - 100 : packet[3];
   if (code >= 10) {
