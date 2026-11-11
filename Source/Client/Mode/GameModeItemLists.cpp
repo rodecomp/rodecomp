@@ -47,7 +47,9 @@ namespace {
     /* 0026 */ std::uint16_t sprite;
     /* 0028 */ unsigned char optionCount;
     /* 0029 */ EquipListOption options[5];
-    /* 0042 */ unsigned char flags;
+    /* 0042 */ unsigned char identified : 1;
+    /* 0042 */ unsigned char damaged : 1;
+    /* 0042 */ unsigned char etcTab : 1;
   };
 
   struct InventoryStartHeader {
@@ -62,7 +64,7 @@ namespace {
   __forceinline int CountEquipListOptions(const EquipListOption* options) {
     int count = 0;
     for (int index = 0; index < 5; ++index) {
-      if (options[index].id != 0) {
+      if (0 != options[index].id) {
         ++count;
       }
     }
@@ -78,13 +80,13 @@ namespace {
     item.quantity = 1;
     std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.SetItemId(record.itemId);
-    item.identified = record.flags & 1;
-    item.damaged = (record.flags >> 1) & 1;
+    item.identified = record.identified;
+    item.damaged = record.damaged;
     item.refiningLevel = record.refine;
     item.expireTime = record.expireTime;
     item.bindOnEquip = record.bindOnEquip;
     item.sprite = record.sprite;
-    item.flags[0] = (record.flags >> 2) & 1;
+    item.flags[0] = record.etcTab;
     item.optionCount = CountEquipListOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
