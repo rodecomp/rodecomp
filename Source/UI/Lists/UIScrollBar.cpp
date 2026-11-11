@@ -2030,27 +2030,25 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
     }
 
     UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton();
-    if (button) {
-      button->link = link;
-      button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
-      if (label.size() - 2 < name.size()) {
-        button->SetTooltip(name.c_str());
-      }
-      button->m_hoverColor = 0x82F2E1;
-      button->SetId(438);
-      const int height = button->geometry.height;
-      button->ResizeToTextClipped(
-          this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1, height);
-      this->AddChild(button);
-      buttons.push_back(button);
-      button->line = static_cast<int>(this->lines.size());
-      button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-
-      result += label;
-      result += tail;
-      source = source.substr(tail.size() + label.size());
-      remaining = source;
+    button->link = link;
+    button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
+    if (label.size() - 2 < name.size()) {
+      button->SetTooltip(name.c_str());
     }
+    button->m_hoverColor = 0x82F2E1;
+    button->SetId(438);
+    const int height = button->geometry.height;
+    button->ResizeToTextClipped(
+        this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1, height);
+    this->AddChild(button);
+    buttons.push_back(button);
+    button->line = static_cast<int>(this->lines.size());
+    button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+
+    result += label;
+    result += tail;
+    source = source.substr(tail.size() + label.size());
+    remaining = source;
   }
 
   if (!buttons.empty()) {
