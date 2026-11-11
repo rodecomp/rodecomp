@@ -986,7 +986,7 @@ void CSession::SetPetAutoFeed(bool enabled) {
 
 // OFFSET: 0x00E489C0
 // FUNCTION: fn_24224
-void __stdcall SetPetInfoAlert(bool enabled) {
+void CSession::SetPetInfoAlert(bool enabled) {
   std::string notice = LookupMessage(enabled ? 4357 : 4379);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
   g_serviceOptions.Set(0x128, enabled);

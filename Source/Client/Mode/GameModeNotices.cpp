@@ -978,7 +978,7 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
 // OFFSET: 0x00D6E930
 // FUNCTION: fn_22107
 void CGameMode::ReceiveToggle128(int enabled) {
-  SetPetInfoAlert(enabled != 0);
+  g_session.SetPetInfoAlert(enabled != 0);
 }
 
 // OFFSET: 0x00D6E950

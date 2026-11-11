@@ -6780,7 +6780,7 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
     *reinterpret_cast<int*>(g_session.feedOptions) = *reinterpret_cast<const int*>(packet + 6);
     break;
   case 6:
-    SetPetInfoAlert(*reinterpret_cast<const int*>(packet + 6) != 0);
+    g_session.SetPetInfoAlert(*reinterpret_cast<const int*>(packet + 6) != 0);
     break;
   }
 }

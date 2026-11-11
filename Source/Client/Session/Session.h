@@ -1034,6 +1034,7 @@ public:
   std::vector<unsigned char> BuildSkillListReplayPacket(short id);
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);
+  void SetPetInfoAlert(bool enabled);
   void SendClientOption(unsigned char value);
   void SendHomunculusAutoFeedOption(unsigned char enabled);
   void SendPetAutoFeedOption(unsigned char enabled);
