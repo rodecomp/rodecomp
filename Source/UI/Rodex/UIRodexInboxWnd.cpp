@@ -512,14 +512,14 @@ void UIRodexInboxWnd::SetButtonsDisabled(unsigned char disabled) {
 void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name, std::string subject, unsigned char read, unsigned char returned, int noAttachment) {
   std::string nameText = name;
   std::string subjectText = subject;
-  const std::pair<bool, std::string> stripped = g_navigationLinkParser->RemoveLineBreakTag(subjectText);
+  const std::pair<bool, std::string> stripped = GetNavigationLinkParser()->RemoveLineBreakTag(subjectText);
   subjectText = stripped.second;
   if (stripped.first == true) {
     this->senderButtons[row]->SetTooltip("");
   }
 
-  nameText = g_navigationLinkParser->ExpandMessages(nameText);
-  subjectText = g_navigationLinkParser->ExpandMessages(subjectText);
+  nameText = GetNavigationLinkParser()->ExpandMessages(nameText);
+  subjectText = GetNavigationLinkParser()->ExpandMessages(subjectText);
 
   this->checks[row]->Show(1);
   this->checks[row]->m_message = static_cast<int>(mailId);
