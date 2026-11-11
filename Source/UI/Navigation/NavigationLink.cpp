@@ -805,7 +805,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
 
   if (id >= 0) {
     int loops = 0;
-    if (match[2].matched) {
+    if (match[2].matched == true) {
       const std::string tail = match[2].str();
       std::cmatch loopMatch;
       if (std::regex_search(tail.c_str(), tail.c_str() + tail.size(), loopMatch, std::regex("^\\[(\\d)\\]"))) {
@@ -897,14 +897,11 @@ int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
   {
     const std::string itemId = match[1].str();
     image = new (std::nothrow) UIItemImage();
-    if (image) {
-      image->SetSize(25, 25);
-      image->SetItemId(itemId);
+    if (!image) {
+      return x;
     }
-  }
-
-  if (!image) {
-    return x;
+    image->SetSize(25, 25);
+    image->SetItemId(itemId);
   }
 
   if (image->geometry.width + x > this->m_width) {
