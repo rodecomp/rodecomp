@@ -66,14 +66,7 @@ namespace {
 // OFFSET: 0x00C7C4D0
 // FUNCTION: fn_20389
 bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
-  this->m_deferred = 0;
-
-  while (this->m_pending.GetSize() != 0) {
-    const int bytes = this->m_pending.GetSize();
-    this->m_output.InsertData(bytes, this->m_pending.Data());
-    this->m_pending.RemoveData(bytes);
-    this->Flush();
-  }
+  this->SetBlock(0);
 
   this->m_input.Init(0xA000);
   this->m_output.Init(0xA000);
