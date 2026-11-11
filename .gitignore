@@ -5,3 +5,4 @@ logs/
 tmp/
 scripts/data
 scripts/exe/__pycache__/
+scripts/exe/patches/__pycache__/

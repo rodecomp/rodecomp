@@ -1,4 +1,4 @@
-"""Build every unit in data/compile.json and link them into Ragexe.exe (+ .pdb).
+"""Build every unit in data/compile.json, link them into Ragexe.exe (+ .pdb, .map) and post-process it.
 
 Optional and local: clank checks and merges never run this, and it does not
 need td. It compiles with the exact compiler flags of data/compile.json using
@@ -21,9 +21,17 @@ not match the real DLL export fails at link time.
 Compiles are incremental: a unit is rebuilt only when its flags, its source or
 one of the headers it included (recorded with /showIncludes) changed.
 
-    python scripts/exe/build_exe.py                     # compile + link, fail on any error
+Pipeline, in this order:
+  1. compile   every unit of data/compile.json (+ EXE_ONLY_UNITS)
+  2. link      Ragexe.exe, Ragexe.pdb, Ragexe.map
+  3. patch     scripts/exe/postprocess.py applies scripts/exe/patches/NNNN_*.py in order: byte edits the
+               shipped exe received after it was compiled, which no C++ source reproduces. Skipped with
+               --no-postprocess (gives the exe exactly as the source compiles).
+
+    python scripts/exe/build_exe.py                     # compile + link + patch, fail on any error
     python scripts/exe/build_exe.py --force-multiple    # accept duplicate definitions
-    python scripts/exe/build_exe.py --link-only         # relink objects from a previous run
+    python scripts/exe/build_exe.py --link-only         # relink objects from a previous run (+ patch)
+    python scripts/exe/build_exe.py --no-postprocess    # leave the linked exe unpatched
     python scripts/exe/build_exe.py --toolchain DIR     # use this toolchain directory
 """
 
@@ -36,6 +44,9 @@ import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import postprocess  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 EXE_DIR = Path(__file__).resolve().parent
@@ -396,11 +407,12 @@ def link(tc, objects, out_dir, extra_args):
     rsp = out_dir / "link.rsp"
     rsp.write_text("\n".join([*(f'"{tc.path(o)}"' for o in objects), *extra_args]), encoding="utf-8")
     exe = out_dir / "Ragexe.exe"
-    outputs = (exe, exe.with_suffix(".pdb"))
+    outputs = (exe, exe.with_suffix(".pdb"), exe.with_suffix(".map"))
     for stale in outputs:
         stale.unlink(missing_ok=True)
     args = ["/nologo", "/MACHINE:X86", "/SUBSYSTEM:WINDOWS", "/LARGEADDRESSAWARE",
-            "/DEBUG:FULL", f"/PDB:{tc.path(exe.with_suffix('.pdb'))}", "/INCREMENTAL:NO", "/OPT:REF", "/OPT:ICF",
+            "/DEBUG:FULL", f"/PDB:{tc.path(exe.with_suffix('.pdb'))}", f"/MAP:{tc.path(exe.with_suffix('.map'))}",
+            "/INCREMENTAL:NO", "/OPT:REF", "/OPT:ICF",
             "/ERRORLIMIT:0", f"/OUT:{tc.path(exe)}", f"@{tc.path(rsp)}", *SYSTEM_LIBS]
     result = tc.run("link.exe", args)
     if result.returncode != 0:
@@ -432,6 +444,8 @@ def main():
     parser.add_argument("--link-only", action="store_true", help="reuse the objects from a previous run")
     parser.add_argument("--toolchain", help="toolchain directory (td layout); default: RODECOMP_TOOLCHAIN, "
                                             ".td/config.json, then a Visual Studio install")
+    parser.add_argument("--no-postprocess", action="store_true",
+                        help="skip scripts/exe/postprocess.py (binary patches of the shipped exe)")
     args = parser.parse_args()
 
     out_dir = Path(args.out)
@@ -456,6 +470,12 @@ def main():
     summarize(log, out_dir)
     if code == 0:
         print(f"built {exe}")
+        if not args.no_postprocess:
+            try:
+                postprocess.run(exe)
+            except postprocess.PatchError as error:
+                exe.unlink(missing_ok=True)
+                sys.exit(f"postprocess failed, removed {exe}: {error}")
     sys.exit(1 if code != 0 or compile_failures else 0)
 
 
