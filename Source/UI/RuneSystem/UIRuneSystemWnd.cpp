@@ -220,9 +220,9 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
   }
 
   if (slot != -1 && runeSet->m_slots.size() > static_cast<unsigned int>(slot) && runeSet->m_slots[slot]) {
-    if (g_runeSystemMgr->GetSelectTag() != runeSet->GetTagId()) {
-      g_runeSystemMgr->SetSelectTag(this->m_runeSet->GetTagId());
-      g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
+    if (CRuneSystemMgr::GetInstance()->GetSelectTag() != runeSet->GetTagId()) {
+      CRuneSystemMgr::GetInstance()->SetSelectTag(this->m_runeSet->GetTagId());
+      CRuneSystemMgr::GetInstance()->SendRequest(0xBCB, nullptr, -1);
     }
     this->parent->SendMsg(this, 0xA9, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
   }
@@ -587,14 +587,13 @@ int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argum
   case UM_COMMAND:
     switch (argument1) {
     case ID_PREV_PAGE:
-      --this->m_firstTag;
-      this->m_firstTag = this->m_firstTag < 0 ? 0 : this->m_firstTag;
+      this->m_firstTag = --this->m_firstTag < 0 ? 0 : this->m_firstTag;
       this->Invalidate();
       break;
     case ID_NEXT_PAGE: {
       ++this->m_firstTag;
       const int first = this->m_firstTag;
-      if (g_runeSystemMgr->GetTagCount() < first + 10) {
+      if (CRuneSystemMgr::GetInstance()->GetTagCount() < first + 10) {
         this->m_firstTag = first - 1;
       }
       this->Invalidate();
