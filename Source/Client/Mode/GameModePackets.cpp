@@ -4296,7 +4296,7 @@ __declspec(noinline) void CGameMode::ReceiveSwapEquipmentList(const unsigned cha
     const SwapEquipmentRecord* record = &records[i];
     ITEM_INFO item = g_session.FindItemByIdentity(record->index, record->location);
     item.identity[3] = record->location;
-    if (item.identity[1] == 0) {
+    if (item.identity[1] <= 0) {
       break;
     }
 
@@ -6913,14 +6913,16 @@ __declspec(noinline) void CGameMode::ReceivePartyLeaderChange(const unsigned cha
 // FUNCTION: fn_21723
 __declspec(noinline) void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
-  const int price = *reinterpret_cast<const int*>(packet + 6);
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
-  g_windowMgr.SendNotice(
-    UIM_PUSHINTOCHATHISTORY,
-    reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_SELLCOMPLETE), item.DisplayName(0).c_str(), count, price * count).c_str()),
-    0xFFFF64, 0, 0, 0
-  );
+  {
+    const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
+    const int total = *reinterpret_cast<const int*>(packet + 6) * count;
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
+    g_windowMgr.SendNotice(
+      UIM_PUSHINTOCHATHISTORY,
+      reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_SELLCOMPLETE), item.DisplayName(0).c_str(), count, total).c_str()),
+      0xFFFF64, 0, 0, 0
+    );
+  }
   g_session.RemoveInventoryItem(
     *reinterpret_cast<const std::int16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 4)
   );
