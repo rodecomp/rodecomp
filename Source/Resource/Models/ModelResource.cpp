@@ -309,7 +309,7 @@ bool C3dModelResV1::Load(const char* name) {
 
   if (std::strcmp(magic, "GRSM") != 0) {
     constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
-    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    ShowErrorDialog(message, 0);
     return false;
   }
 
@@ -321,7 +321,7 @@ bool C3dModelResV1::Load(const char* name) {
 
   if (major != 1 || minor > 5) {
     constexpr char message[] = "지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다";
-    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    ShowErrorDialog(message, 0);
     return false;
   }
 
