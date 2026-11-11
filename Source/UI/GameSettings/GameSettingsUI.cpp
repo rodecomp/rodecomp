@@ -1577,9 +1577,9 @@ std::string CUIListPage::GetHotkeyText(int tab, int index) {
   }
 
   if (IsNullOrEmpty(keyText)) {
-    return std::string();
+    return "";
   }
-  return std::string(keyText);
+  return keyText;
 }
 
 // OFFSET: 0x00A40C30
@@ -2210,7 +2210,7 @@ __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
       }
     }
   }
-  this->m_currentPage->Refresh();
+  this->m_currentPage->CUIPage::Refresh();
 }
 
 // OFFSET: 0x00A41120
