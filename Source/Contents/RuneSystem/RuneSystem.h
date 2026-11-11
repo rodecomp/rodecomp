@@ -118,11 +118,16 @@ public:
   RuneData* FindRune(int type, std::int64_t id, unsigned int* index);
 };
 
+class CRuneSystemMgr;
+extern CRuneSystemMgr* g_runeSystemMgr;
+
 // VTABLE: vt_00503
 class CRuneSystemMgr {
 public:
   static bool Create();
   static void Destroy();
+  // INLINED
+  static CRuneSystemMgr* GetInstance() { return g_runeSystemMgr; }
 
   /* 0004 */ std::pair<int, int> m_emptyItem;
   /* 000C */ bool m_initialized;
@@ -176,8 +181,6 @@ public:
   int SetRuneGrade(int tagId, int type, std::int64_t id, int grade, int gradeLevel);
   bool SetRewardStep(int tagId, std::int64_t id, int step);
 };
-
-extern CRuneSystemMgr* g_runeSystemMgr;
 
 int AddGradeType(lua_State* state);
 int AddGradeTypeFail(lua_State* state);
