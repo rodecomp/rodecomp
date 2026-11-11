@@ -1,5 +1,5 @@
 #include "Render/DX7/DirectDrawEnumeration.h"
-#include "Render/DeviceSelection.h"
+#include "Render/Device/DeviceSelection.h"
 
 #include <cstdlib>
 #include <cstring>

@@ -1,6 +1,6 @@
 #include "Contents/Items/SelectPackageItemMgr.h"
 #include "UI/Window/WindowId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Network/TextEncoding.h"
 #include "Script/LuaInstance.h"
 #include "UI/SelectPackageItemBox/SelectPackageItemBox.h"

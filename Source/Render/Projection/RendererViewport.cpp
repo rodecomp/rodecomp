@@ -1,4 +1,4 @@
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Projection/RendererViewport.h"
 
 #include <bit>

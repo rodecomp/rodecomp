@@ -13,7 +13,7 @@
 #include "UI/Quest/UIOngoingQuestInfo.h"
 #include "UI/Quest/UIRenewQuestUI.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 
 #include "Resource/MSGSTRINGID.h"
 extern "C" {

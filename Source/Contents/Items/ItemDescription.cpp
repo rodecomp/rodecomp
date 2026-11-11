@@ -1,7 +1,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 
 #include <cstdio>
 #include <cstdlib>

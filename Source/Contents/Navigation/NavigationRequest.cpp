@@ -2,7 +2,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/World/World.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Resource/ResourceMgr.h"
 
 #include <cstdio>

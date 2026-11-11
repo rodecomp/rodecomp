@@ -3,9 +3,9 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
-#include "UI/Window/UIMessageBox.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Session/Session.h"
+#include "UI/Dialogs/UIMessageBox.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 

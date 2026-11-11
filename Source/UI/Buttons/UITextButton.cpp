@@ -6,39 +6,39 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Render/Renderer.h"
-#include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Replay.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "Client/Replay/Replay.h"
 #include "UI/Window/WindowPolicy.h"
 #include "Render/Text/FontCache.h"
 #include "Render/DeviceContext/DeviceContext.h"
-#include "UI/UIBarGraph.h"
+#include "UI/Gauges/UIBarGraph.h"
 #include "UI/Buttons/UIBmpRadioBtn.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIItemTagButton.h"
-#include "UI/Buttons/UIItemMoveInfo.h"
+#include "UI/Items/UIItemMoveInfo.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Lists/UITreeView.h"
-#include "UI/UIStaticItem.h"
-#include "Client/Session.h"
+#include "UI/Buttons/UIStaticItem.h"
+#include "Client/Session/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
-#include "UI/UIBasicCtrl.h"
+#include "UI/Window/UIBasicCtrl.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIMemberListBox.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include "UI/Buttons/UISlotBmpButton.h"
-#include "UI/UIStaticBitmap.h"
+#include "UI/Buttons/UIStaticBitmap.h"
 #include "UI/Buttons/UITVBitmapButton.h"
 #include "UI/Buttons/UITVTextButton.h"
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxV2Wnd.h"
-#include "UI/Lists/UIItemStoreComboBox.h"
-#include "UI/Lists/UIPackageBoxNameList.h"
+#include "UI/Items/UIItemStoreComboBox.h"
+#include "UI/SelectPackageItemBox/UIPackageBoxNameList.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBarVariants.h"
@@ -52,12 +52,12 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "UI/Lists/UIListBoxNavi.h"
+#include "UI/Navigation/UIListBoxNavi.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/WindowBorder.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -2674,7 +2674,7 @@ int UITextButton::GetLinesCount() const {
 void __stdcall Nullsub275(int, int, int, int) {
 }
 
-#include "UI/Buttons/UIDescriptRace.h"
+#include "UI/Login/UIDescriptRace.h"
 #include "UI/Window/InputFocus.h"
 
 // OFFSET: 0x008901E0
@@ -2807,7 +2807,7 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
@@ -3375,7 +3375,7 @@ void UITextViewEX::Paint() {
   this->Refresh();
 }
 
-#include "UI/Window/UIRPImageWnd.h"
+#include "UI/Dialogs/UIRPImageWnd.h"
 
 // OFFSET: 0x0088D560
 // FUNCTION: fn_11376

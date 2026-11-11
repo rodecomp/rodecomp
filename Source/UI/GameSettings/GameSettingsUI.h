@@ -1,10 +1,10 @@
 #ifndef RAGNAROK_SOURCE_UI_GAMESETTINGS_GAMESETTINGSUI_H
 #define RAGNAROK_SOURCE_UI_GAMESETTINGS_GAMESETTINGSUI_H
 
-#include "Render/DisplayMode.h"
-#include "Render/RenderAdapter.h"
-#include "Render/RenderBackends.h"
-#include "UI/FrameSkin.h"
+#include "Render/Device/DisplayMode.h"
+#include "Render/Device/RenderAdapter.h"
+#include "Render/Device/RenderBackends.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"

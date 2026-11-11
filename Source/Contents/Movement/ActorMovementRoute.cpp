@@ -1,5 +1,5 @@
-#include "Client/Replay.h"
-#include "Client/Session.h"
+#include "Client/Replay/Replay.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Movement/TerrainPathSearch.h"
 

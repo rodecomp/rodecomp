@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Skills/SkillId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 

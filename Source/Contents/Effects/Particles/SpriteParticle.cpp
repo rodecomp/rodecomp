@@ -10,7 +10,7 @@
 #include "Contents/World/World.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/ResourceMgr.h"

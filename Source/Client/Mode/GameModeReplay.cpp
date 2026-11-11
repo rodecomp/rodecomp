@@ -1,5 +1,5 @@
 #include "Client/Mode/CGameMode.h"
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 
 #include <windows.h>
 #include <timeapi.h>

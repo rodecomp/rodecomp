@@ -1,6 +1,6 @@
 #include "Contents/Items/BarterMarketItemMgr.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"

@@ -6,8 +6,8 @@
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Replay.h"
-#include "Client/Session.h"
+#include "Client/Replay/Replay.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Items/ItemDescription.h"

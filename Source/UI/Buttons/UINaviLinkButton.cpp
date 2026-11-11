@@ -1,5 +1,5 @@
 #include "Contents/Navigation/NavigationManager.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 
 // OFFSET: 0x0086DF60

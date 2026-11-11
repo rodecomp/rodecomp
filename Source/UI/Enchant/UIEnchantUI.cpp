@@ -1,6 +1,6 @@
 #include "UI/Enchant/EnchantUI.h"
 #include "UI/Window/WindowId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/EnchantMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Buttons/UIRadioButton.h"

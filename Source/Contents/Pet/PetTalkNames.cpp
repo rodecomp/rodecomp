@@ -1,5 +1,5 @@
 #include "Contents/Jobs/JobId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>

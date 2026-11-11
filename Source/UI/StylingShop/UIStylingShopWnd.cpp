@@ -1,21 +1,21 @@
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowPolicy.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/StylingShop/UIStylingShopWnd.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
 #include <cstring>
@@ -1327,7 +1327,7 @@ UIStylingShopWnd::UIStylingShopWnd()
 }
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/UIStaticBitmap.h"
+#include "UI/Buttons/UIStaticBitmap.h"
 
 // OFFSET: 0x0082CDA0
 // FUNCTION: fn_10368
@@ -1495,7 +1495,7 @@ struct StyleChangePacket {
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "UI/Text/UIStaticText.h"
-#include "UI/Window/FuncDrawWNDChar.h"
+#include "UI/Login/FuncDrawWNDChar.h"
 #include "Utility/Text/GroupedInteger.h"
 #include <new>
 #include <string>

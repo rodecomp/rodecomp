@@ -4,12 +4,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -18,7 +18,7 @@
 #include "UI/Party/UIRequestJoinPartyWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITextViewer.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>

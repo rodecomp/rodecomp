@@ -1,6 +1,6 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.inl"

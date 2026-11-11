@@ -1,6 +1,6 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
-#include "Render/Direct3DErrors.h"
+#include "Render/Device/Direct3DErrors.h"
 
 #include <format>
 

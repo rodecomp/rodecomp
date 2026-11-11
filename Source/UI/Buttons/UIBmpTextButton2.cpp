@@ -1,6 +1,6 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBmpTextButton2.h"
 
 // OFFSET: 0x0084ECB0

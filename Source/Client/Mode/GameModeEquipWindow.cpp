@@ -1,7 +1,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/EquipWindowLook.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindowMgr.h"
 

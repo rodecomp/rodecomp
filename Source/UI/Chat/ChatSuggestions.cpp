@@ -5,7 +5,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UITabControl.h"
 

@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"

@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWMGR_INL
 #define RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWMGR_INL
 
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"

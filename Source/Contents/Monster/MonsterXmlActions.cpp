@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 
 #include <algorithm>

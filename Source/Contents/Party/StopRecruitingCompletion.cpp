@@ -1,6 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Contents/Tables/MessageTable.h"

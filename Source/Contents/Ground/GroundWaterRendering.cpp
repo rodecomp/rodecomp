@@ -4,7 +4,7 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 

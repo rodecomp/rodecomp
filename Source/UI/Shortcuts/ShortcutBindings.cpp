@@ -1,7 +1,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skills/SkillInfo.h"
 
 #include <windows.h>

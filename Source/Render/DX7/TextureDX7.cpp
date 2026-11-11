@@ -5,7 +5,7 @@
 #include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 
 #include <climits>
 #include <cstring>

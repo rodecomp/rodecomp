@@ -8,8 +8,8 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
-#include "Render/SpriteGeometry.h"
-#include "Render/TextureQuad.h"
+#include "Render/Drawing/SpriteGeometry.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Resource/World/WorldResource.h"
 
 #include "Utility/Math/ScalarConversion.h"

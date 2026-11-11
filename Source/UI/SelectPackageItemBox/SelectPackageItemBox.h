@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_SELECTPACKAGEITEMBOX_SELECTPACKAGEITEMBOX_H
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 
 #include <cstddef>

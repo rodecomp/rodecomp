@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_ITEMS_UIITEMCOLLECTIONWND_H
 #define RAGNAROK_SOURCE_UI_ITEMS_UIITEMCOLLECTIONWND_H
 
-#include "UI/Buttons/UIItemMoveInfo.h"
+#include "UI/Items/UIItemMoveInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIResizer.h"
 

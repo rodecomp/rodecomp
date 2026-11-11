@@ -3,7 +3,7 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/SpriteParticle.h"

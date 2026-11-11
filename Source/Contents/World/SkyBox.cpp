@@ -3,7 +3,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Models/ModelActor.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/TextureCache.h"
 #include "Utility/Math/AffineMatrix.h"
 

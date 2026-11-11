@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_PARTICLES_PARTICLE_H
 
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Resource/EZeffectResource.h"
+#include "Resource/Effects/EZeffectResource.h"
 #include "UI/Window/UIControl.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"

@@ -7,7 +7,7 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/ActorNameCard.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GroundScope.h"

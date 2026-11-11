@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_RENDER_DX7_QUEUEDDRAWINGDX7_H
 
 #include "Render/DX7/TextureDX7.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 #include "Render/Primitives/RenderQueues.h"
 
 #include <cstddef>

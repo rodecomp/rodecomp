@@ -1,6 +1,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 
 #include <cstdint>
 #include <cstdio>

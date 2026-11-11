@@ -1,5 +1,5 @@
 #include "UI/Window/UIEnums.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"

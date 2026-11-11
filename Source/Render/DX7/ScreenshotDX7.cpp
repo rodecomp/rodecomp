@@ -1,12 +1,12 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/RendererBackBuffer.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Bitmap/IJL15Runtime.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 
 #include <array>
 #include <cstdio>

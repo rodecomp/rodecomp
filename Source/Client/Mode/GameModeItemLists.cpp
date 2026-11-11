@@ -1,12 +1,12 @@
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Items/InventoryType.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Pet/PetEvolutionMgr.h"
-#include "UI/Item/UIItemStoreWnd.h"
+#include "UI/Items/UIItemStoreWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>

@@ -2,10 +2,10 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Party/PartyBookingMgr.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
-#include "UI/Window/UISeekPartyListWnd.h"
+#include "UI/Party/UISeekPartyListWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include "Resource/MSGSTRINGID.h"

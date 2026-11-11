@@ -1,5 +1,5 @@
 #include "Contents/Jobs/JobNames.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Jobs/JobId.h"
 #include "Script/LuaScript.h"
 

@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_LISTS_UICOMBOBOXEX_H
 #define RAGNAROK_SOURCE_UI_LISTS_UICOMBOBOXEX_H
 
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Lists/UIListBoxEx.h"
 
 class UIComboBoxEx : public UIListBoxEx {

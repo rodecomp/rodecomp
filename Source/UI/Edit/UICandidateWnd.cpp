@@ -3,7 +3,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"

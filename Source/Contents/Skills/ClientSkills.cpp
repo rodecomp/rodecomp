@@ -4,7 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Application/ErrorDialog.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/ClientState.h"
@@ -19,7 +19,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "Utility/Tokenizer.h"
+#include "Utility/Text/Tokenizer.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include <algorithm>
 #include <cstdlib>

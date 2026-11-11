@@ -1,12 +1,12 @@
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "UI/Window/UINewSelectCharWnd.h"
-#include "Client/Replay.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "Client/Replay/Replay.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UICheckBox.h"
 
 // OFFSET: 0x0084F010

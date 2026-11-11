@@ -1,5 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
 #include "Network/Packets/PacketLengths.h"

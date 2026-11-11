@@ -1,0 +1,51 @@
+#ifndef RAGNAROK_SOURCE_UI_TEXT_UIBROADCASTBALLOON_H
+#define RAGNAROK_SOURCE_UI_TEXT_UIBROADCASTBALLOON_H
+
+#include "UI/Window/UIWindow.h"
+
+#include <__msvc_chrono.hpp>
+#include <cstddef>
+#include <cstdint>
+#include <list>
+#include <map>
+#include <string>
+
+struct BroadcastBalloonLine {
+  /* 0000 */ std::string text;
+  /* 0018 */ std::uint32_t color;
+  /* 001C */ std::uint32_t outlineColor;
+};
+
+struct BroadcastBalloonMessage {
+  /* 0000 */ std::list<BroadcastBalloonLine> lines;
+  /* 0008 */ std::chrono::system_clock::time_point start;
+  /* 0010 */ std::chrono::seconds duration;
+  /* 0018 */ int fontHeight;
+  /* 001C */ std::uint32_t backgroundColor;
+  /* 0020 */ int width;
+  /* 0024 */ int height;
+};
+
+class UIBroadcastBalloon : public UIWindow {
+public:
+  UIBroadcastBalloon();
+  void Paint() override;
+  bool CanHitTest() override;
+  void OnProcess() override;
+  bool GetCustomTransBoxInfo(void* output) override;
+  void DrawTransBox() override;
+
+  void AddMessage(int category, const BroadcastBalloonMessage& message);
+
+protected:
+  /* 007C */ std::map<int, std::list<BroadcastBalloonMessage>> m_messages;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(BroadcastBalloonLine) == 0x20);
+static_assert(offsetof(BroadcastBalloonMessage, start) == 0x08);
+static_assert(offsetof(BroadcastBalloonMessage, height) == 0x24);
+static_assert(sizeof(BroadcastBalloonMessage) == 0x28);
+#endif
+
+#endif

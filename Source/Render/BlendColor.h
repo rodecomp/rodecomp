@@ -1,6 +1,0 @@
-#ifndef RAGNAROK_SOURCE_RENDER_BLENDCOLOR_H
-#define RAGNAROK_SOURCE_RENDER_BLENDCOLOR_H
-
-#include "Render/Renderer.h"
-
-#endif

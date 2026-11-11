@@ -2,7 +2,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
 #include "Network/TextEncoding.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 
 #include <cstring>

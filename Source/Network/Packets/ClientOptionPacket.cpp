@@ -1,0 +1,48 @@
+#include "Network/Packets/ClientOptionPacket.h"
+#include "Client/Session/Session.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
+
+#include <cstdint>
+
+namespace {
+#pragma pack(push, 1)
+  struct ClientOptionPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int option;
+    /* 0006 */ int value;
+  };
+#pragma pack(pop)
+  static_assert(sizeof(ClientOptionPacket) == 10);
+}
+
+// OFFSET: 0x00E48400
+// FUNCTION: fn_24219
+void CSession::SendClientOption(unsigned char value) {
+  ClientOptionPacket packet;
+  packet.id = ID_CZ_CONFIG;
+  packet.option = 6;
+  packet.value = value;
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00E48BA0
+// FUNCTION: fn_24227
+void CSession::SendHomunculusAutoFeedOption(unsigned char enabled) {
+  ClientOptionPacket packet;
+  packet.id = ID_CZ_CONFIG;
+  packet.option = 3;
+  packet.value = enabled;
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00E49380
+// FUNCTION: fn_24234
+void CSession::SendPetAutoFeedOption(unsigned char enabled) {
+  ClientOptionPacket packet;
+  packet.id = ID_CZ_CONFIG;
+  packet.option = 2;
+  packet.value = enabled;
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+}

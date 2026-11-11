@@ -1,5 +1,5 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
 #include "File/ShortcutFilename.h"

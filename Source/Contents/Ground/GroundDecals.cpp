@@ -3,7 +3,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/World/TerrainResource.h"

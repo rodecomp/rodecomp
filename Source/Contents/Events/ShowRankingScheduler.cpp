@@ -1,6 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Events/ShowRankingScheduler.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 

@@ -3,7 +3,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 

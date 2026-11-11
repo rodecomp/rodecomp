@@ -1,5 +1,5 @@
 #include "Render/DX7/RenderSystemDX7.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 #include "Render/DX7/TextureDX7.h"
 
 // OFFSET: 0x0055F7D0

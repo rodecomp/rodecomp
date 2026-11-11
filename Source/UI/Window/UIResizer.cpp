@@ -3,8 +3,8 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 

@@ -12,7 +12,7 @@
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"

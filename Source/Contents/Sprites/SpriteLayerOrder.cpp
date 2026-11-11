@@ -1,5 +1,5 @@
 #include "Contents/Sprites/SpriteLayerOrder.h"
-#include "Resource/ImfResource.h"
+#include "Resource/Sprites/ImfResource.h"
 
 // OFFSET: 0x00DAAB00
 // FUNCTION: fn_22575

@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -9,7 +9,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "UI/Party/UIAdvenPartyBoardWnd.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include "Resource/MSGSTRINGID.h"

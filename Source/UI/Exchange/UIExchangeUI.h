@@ -3,7 +3,7 @@
 
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Edit/UIEditBoxEx.h"
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 

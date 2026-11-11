@@ -3,7 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Utility/Text/FormatString.h"
 
 #include <windows.h>

@@ -5,7 +5,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Hash/XxHash32.h"
 #include "Utility/Random/RandomBytes.h"
-#include "Utility/XxHash3.h"
+#include "Utility/Hash/XxHash3.h"
 
 #include <algorithm>
 #include <atomic>

@@ -1,5 +1,5 @@
 #include "Contents/Effects/Core/EffectTypes.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Script/LuaScript.h"
 
 #include <cstring>

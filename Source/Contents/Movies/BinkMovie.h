@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_MOVIES_BINKMOVIE_H
 #define RAGNAROK_SOURCE_CONTENTS_MOVIES_BINKMOVIE_H
 
-#include "Resource/BinkRuntime.h"
+#include "Resource/Audio/BinkRuntime.h"
 
 class CFile;
 class CTexture;

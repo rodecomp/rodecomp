@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_QUEST_UIRECOMMENDEDQUESTINFO_H
 #define RAGNAROK_SOURCE_UI_QUEST_UIRECOMMENDEDQUESTINFO_H
 
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/UIControl.h"
 

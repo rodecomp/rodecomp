@@ -2,7 +2,7 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "File/FileEnumeration.h"

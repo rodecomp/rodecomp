@@ -4,9 +4,9 @@
 
 #include "Contents/Tables/MessageTable.h"
 #include "Utility/Text/FormatString.h"
-#include "Client/Registry.h"
-#include "Client/Replay.h"
-#include "Client/Session.h"
+#include "Client/Application/Registry.h"
+#include "Client/Replay/Replay.h"
+#include "Client/Session/Session.h"
 #include "Resource/ResourceMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -16,10 +16,10 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
-#include "UI/Window/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "UI/Window/UIPayConfirmWnd.h"
-#include "Utility/RegistryKey.h"
+#include "UI/CashShop/UIPayConfirmWnd.h"
+#include "Client/Application/RegistryKey.h"
 
 #include <cstdint>
 #include <algorithm>
@@ -34,7 +34,7 @@
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"

@@ -11,7 +11,7 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundWaterState.h"

@@ -1,0 +1,10 @@
+#ifndef RAGNAROK_SOURCE_UTILITY_TEXT_GUIDPARSE_H
+#define RAGNAROK_SOURCE_UTILITY_TEXT_GUIDPARSE_H
+
+#include <cstddef>
+#include <windows.h>
+
+int ParseGuid(const char* text, std::size_t bytes, GUID& output, bool braced);
+int FormatGuid(char* text, std::size_t bytes, const GUID& value, bool braced);
+
+#endif

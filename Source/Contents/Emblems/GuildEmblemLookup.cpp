@@ -1,4 +1,4 @@
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "Contents/Emblems/GuildEmblemReqBundle.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Resource/ResourceMgr.h"

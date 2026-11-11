@@ -6,7 +6,7 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/World/World.h"
-#include "Render/AuxiliarySubmission.h"
+#include "Render/Primitives/AuxiliarySubmission.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 

@@ -3,7 +3,7 @@
 
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIEditCtrl.h"
-#include "UI/TextTags.h"
+#include "UI/Text/TextTags.h"
 
 #include <list>
 #include <string>

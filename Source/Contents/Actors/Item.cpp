@@ -1,10 +1,10 @@
 #include "Contents/Actors/Item.h"
 
-#include "ActorPickNode.h"
+#include "Contents/Actors/ActorPickNode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"

@@ -4,7 +4,7 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX9/RenderSystemDX9.h"
 #include "Render/Text/TextContext.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Script/LuaScript.h"
 
 #include <algorithm>

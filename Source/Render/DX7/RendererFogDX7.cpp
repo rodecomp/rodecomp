@@ -1,9 +1,9 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/DX7/RendererFogDX7.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DeviceContext/DCSurface.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 
 #include <bit>
 #include <cmath>

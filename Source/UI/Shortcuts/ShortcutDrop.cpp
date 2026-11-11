@@ -5,11 +5,11 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindow.h"
 #include <algorithm>
 #include <cstdlib>

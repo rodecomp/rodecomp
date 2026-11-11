@@ -1,7 +1,7 @@
-#include "UI/UIBarGraph.h"
+#include "UI/Gauges/UIBarGraph.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 
 // OFFSET: 0x0089B4D0
 // FUNCTION: fn_11564

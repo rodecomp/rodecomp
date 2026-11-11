@@ -3,7 +3,7 @@
 
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
-#include "UI/UIScrollWnd.h"
+#include "UI/Lists/UIScrollWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindow.h"
 

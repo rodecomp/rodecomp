@@ -1,6 +1,6 @@
 #include "Contents/Skills/SkillInfo.h"
-#include "Client/Registry.h"
-#include "Client/Session.h"
+#include "Client/Application/Registry.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skills/SkillLevelRegistry.h"
 #include "Script/LuaScript.h"
 

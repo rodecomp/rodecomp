@@ -12,7 +12,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Skills/SkillInfo.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/EffectTypes.h"

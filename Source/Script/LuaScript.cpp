@@ -2,7 +2,7 @@
 #include "Contents/Effects/Core/EffectMessageId.h"
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/GameSettingsMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EntryQueue/EntryQueueMgr.h"
@@ -19,9 +19,9 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/UICheckAttendanceWnd.h"
-#include "UI/UILapineScrollBar.h"
-#include "UI/UILapineUpgradeBoxWnd.h"
+#include "UI/Events/UICheckAttendanceWnd.h"
+#include "UI/Items/UILapineScrollBar.h"
+#include "UI/Items/UILapineUpgradeBoxWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 extern "C" {

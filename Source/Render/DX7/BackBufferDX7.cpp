@@ -1,5 +1,5 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 
 // OFFSET: 0x00549570
 // FUNCTION: fn_45504

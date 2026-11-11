@@ -6,7 +6,7 @@
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Party/UIMiniPartyWnd.h"
 #include <algorithm>
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"

@@ -7,10 +7,10 @@
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Resource/World/WorldResource.h"
 #include "Render/Textures/Texture.h"
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Client/Mode/ModeMgr.h"
 
 #include <algorithm>

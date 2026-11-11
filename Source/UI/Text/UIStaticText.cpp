@@ -1,4 +1,4 @@
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"

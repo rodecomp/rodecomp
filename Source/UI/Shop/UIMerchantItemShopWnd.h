@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTITEMSHOPWND_H
 
 #include "Contents/UserData/NormalItemSlots.h"
-#include "UI/Item/UIItemBaseWnd.h"
+#include "UI/Items/UIItemBaseWnd.h"
 
 #include <cstddef>
 #include <cstdint>

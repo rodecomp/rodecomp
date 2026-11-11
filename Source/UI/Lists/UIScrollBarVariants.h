@@ -7,7 +7,7 @@
 #include <string>
 
 #include "Contents/Skin/SkinMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Lists/UIListBoxID.h"
 
 class CBitmapRes;

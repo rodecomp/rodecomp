@@ -8,7 +8,7 @@
 #include "Contents/Effects/Particles/Particle.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>

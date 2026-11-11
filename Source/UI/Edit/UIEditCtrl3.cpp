@@ -2,7 +2,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UINaviLinkButton.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextFitting.h"
 
 // OFFSET: 0x00861AB0

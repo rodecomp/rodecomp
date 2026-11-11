@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_CORE_RAGEFFECTSTATE_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_CORE_RAGEFFECTSTATE_H
 
-#include "Resource/EZeffectResource.h"
+#include "Resource/Effects/EZeffectResource.h"
 
 #include <cstddef>
 #include <list>

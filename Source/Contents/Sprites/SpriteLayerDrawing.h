@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_SPRITES_SPRITELAYERDRAWING_H
 
 #include "Contents/Actors/RenderObject.h"
-#include "Render/SpriteQuad.h"
+#include "Render/Primitives/SpriteQuad.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>

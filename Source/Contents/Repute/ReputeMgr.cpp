@@ -8,7 +8,7 @@
 #include "Network/TextEncoding.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-#include "Utility/JsonCppLoader.h"
+#include "Resource/Json/JsonCppLoader.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>

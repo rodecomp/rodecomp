@@ -4,7 +4,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/World/World.h"
 
 // OFFSET: 0x00C734B0

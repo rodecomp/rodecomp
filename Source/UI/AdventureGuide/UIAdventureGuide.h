@@ -1,11 +1,11 @@
 #ifndef RAGNAROK_SOURCE_UI_ADVENTUREGUIDE_UIADVENTUREGUIDE_H
 #define RAGNAROK_SOURCE_UI_ADVENTUREGUIDE_UIADVENTUREGUIDE_H
 
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIControl.h"
-#include "UI/Window/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationWnd.h"
 
 #include <string>
 

@@ -5,7 +5,7 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Contents/Items/ItemLink.h"
 #include "UI/Text/ColoredText.h"
@@ -15,9 +15,9 @@
 #include "UI/Lists/UIMemberListBox.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/PixelTextWrapping.h"
-#include "UI/TextTags.h"
+#include "UI/Text/TextTags.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>

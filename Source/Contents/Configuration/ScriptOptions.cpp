@@ -1,6 +1,6 @@
 #include "Script/LuaScript.h"
-#include "Utility/GuidParse.h"
-#include "Client/Session.h"
+#include "Utility/Text/GuidParse.h"
+#include "Client/Session/Session.h"
 #include <cstring>
 
 // OFFSET: 0x00E0A890

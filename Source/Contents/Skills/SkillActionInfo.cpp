@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"

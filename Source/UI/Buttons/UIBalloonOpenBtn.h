@@ -1,0 +1,30 @@
+#ifndef RAGNAROK_SOURCE_UI_BUTTONS_UIBALLOONOPENBTN_H
+#define RAGNAROK_SOURCE_UI_BUTTONS_UIBALLOONOPENBTN_H
+
+#include "UI/Window/UIFrameWnd.h"
+
+#include <cstdint>
+
+class UIBitmapButton;
+class UITransBalloonText;
+
+class UIBalloonOpenBtn : public UIFrameWnd {
+public:
+  UIBalloonOpenBtn();
+  void Paint() override;
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+protected:
+  /* 00B4 */ std::uint32_t padding_00B4;
+  /* 00B8 */ std::int64_t m_openTime;
+  /* 00C0 */ std::int64_t m_openDelay;
+  /* 00C8 */ int m_balloonId;
+  /* 00CC */ UITransBalloonText* m_balloon;
+  /* 00D0 */ UIBitmapButton* m_button;
+};
+
+extern std::int8_t g_balloonFontMode;
+
+#endif

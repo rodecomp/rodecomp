@@ -1,5 +1,5 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Client/Mode/CGameMode.h"
@@ -8,7 +8,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 
 #include <memory>
 

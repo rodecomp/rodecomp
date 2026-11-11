@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Pet/PetEnums.h"
 #include "Contents/Tables/MessageTable.h"
 

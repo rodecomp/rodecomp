@@ -4,8 +4,8 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Application/ErrorDialog.h"
-#include "Client/Registry.h"
-#include "Client/Session.h"
+#include "Client/Application/Registry.h"
+#include "Client/Session/Session.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "File/CommonObject.h"
 #include "File/File.h"
@@ -14,12 +14,12 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/XmlNode.h"
+#include "Resource/Xml/XmlNode.h"
 #include "UI/Text/UIBalloonText.h"
 #include "Utility/Text/TextTokens.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
-#include "UI/Window/UILoginWnd.h"
+#include "UI/Login/UILoginWnd.h"
 
 #include <cstddef>
 #include <cstdint>

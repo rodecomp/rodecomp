@@ -1,6 +1,6 @@
 #include "Archive/PakRegistry.h"
 #include "File/ResourcePath.h"
-#include "Utility/GGHashMgr.h"
+#include "Utility/Hash/GGHashMgr.h"
 #include <cstring>
 #include <shlwapi.h>
 

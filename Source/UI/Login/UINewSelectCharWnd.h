@@ -1,0 +1,93 @@
+#ifndef RAGNAROK_SOURCE_UI_LOGIN_UINEWSELECTCHARWND_H
+#define RAGNAROK_SOURCE_UI_LOGIN_UINEWSELECTCHARWND_H
+
+#include "UI/Window/UIFrameWnd.h"
+#include <windows.h>
+#include <map>
+#include <string>
+#include <vector>
+
+class UIBitmapButton;
+class UIBmpTextButton;
+class UIStaticText;
+class CUIControl;
+
+extern char g_selectedSlotIndex;
+
+struct CharSlotInfo {
+  CharSlotInfo();
+  ~CharSlotInfo();
+
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ std::string actionNames[5];
+  /* 0080 */ std::string spriteNames[5];
+  /* 00F8 */ std::string imfName;
+  /* 0110 */ int headPalette;
+  /* 0114 */ int bodyPalette;
+  /* 0118 */ std::string headPaletteName;
+  /* 0130 */ std::string bodyPaletteName;
+  /* 0148 */ int actionBase;
+  /* 014C */ int action;
+  /* 0150 */ int frame;
+  /* 0154 */ int job;
+  /* 0158 */ int robe;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CharSlotInfo) == 348);
+#endif
+
+class UINewSelectCharWnd : public UIFrameWnd {
+public:
+  UINewSelectCharWnd();
+  ~UINewSelectCharWnd() override;
+  void DisableButtonById(int id);
+  void EnableButtonById(int id);
+  void SaveCurrentSlot();
+
+  void OnCreate(int width, int height) override;
+  void OnProcess() override;
+  void Paint() override;
+  // INLINED
+  void OnLBtnDown(int, int) override {}
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  void UpdateDeleteButtons();
+  void UpdateSlotButtons();
+  void UpdateCharacterInfo();
+
+protected:
+  /* 00B4 */ UIBmpTextButton* m_textButton;
+  /* 00B8 */ UIBitmapButton* m_button416;
+  /* 00BC */ UIBitmapButton* m_button417;
+  /* 00C0 */ UIWindow* m_windowC0;
+  /* 00C4 */ UIWindow* m_windowC4;
+  /* 00C8 */ std::map<int, int> m_slotMap;
+  /* 00D0 */ std::vector<UIWindow*> m_slotButtons;
+  /* 00DC */ std::vector<UIStaticText*> m_characterWindows;
+  /* 00E8 */ std::vector<UIWindow*> m_slotButtons2;
+  /* 00F4 */ UIBitmapButton* m_prevPageButton;
+  /* 00F8 */ UIBitmapButton* m_nextPageButton;
+  /* 00FC */ UIWindow* m_windowFC;
+  /* 0100 */ UIWindow* m_window100;
+  /* 0104 */ UIStaticText* m_pageText;
+  /* 0108 */ CharSlotInfo* m_charSlotInfos;
+  /* 010C */ char* m_slotStatus;
+  /* 0110 */ short* m_slotShorts;
+  /* 0114 */ DWORD m_lastTick;
+  /* 0118 */ bool m_navigationBlocked;
+  /* 011C */ int m_page;
+  /* 0120 */ int m_pageSlot;
+  /* 0124 */ int m_pageCount;
+  /* 0128 */ int m_slotsPerPage;
+  /* 012C */ int m_totalSlots;
+  /* 0130 */ int m_totalCharacters;
+  /* 0134 */ int m_maxCharacters;
+  /* 0138 */ int m_slotMoveSource;
+
+public:
+  /* 013C */ bool m_gameStartPending;
+};
+
+#endif

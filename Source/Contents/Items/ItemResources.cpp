@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemResources.h"
 #include "Resource/ResourceMgr.h"

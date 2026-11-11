@@ -3,13 +3,13 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Script/LuaScript.h"
-#include "UI/Window/UIRoMapWnd.h"
+#include "UI/Navigation/UIRoMapWnd.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>

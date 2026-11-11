@@ -16,7 +16,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
@@ -29,7 +29,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/World/WorldResource.h"
 #include "Render/Renderer.h"
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 #include <cmath>

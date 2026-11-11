@@ -1,6 +1,6 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "File/File.h"
-#include "Utility/GuidParse.h"
+#include "Utility/Text/GuidParse.h"
 #include "Utility/Text/StringUtil.h"
 
 #include <cstdio>

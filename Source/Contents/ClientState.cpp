@@ -5,7 +5,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/EntryQueue/EntryQueueMgr.h"
 #include "Contents/Tables/MessageTable.h"

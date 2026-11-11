@@ -3,7 +3,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "UI/CashEmotion/UICashEmotionListWnd.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"

@@ -1,6 +1,6 @@
 #include "Contents/Sound/SoundConfiguration.h"
-#include "Client/Registry.h"
-#include "Render/DeviceSelection.h"
+#include "Client/Application/Registry.h"
+#include "Render/Device/DeviceSelection.h"
 #include "UI/Dialogs/UITipOfTheDayWnd.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Utility/Cipher/XorBytes.h"

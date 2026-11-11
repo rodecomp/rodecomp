@@ -1,7 +1,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Effects/Core/Effect.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Core/EffectActor.h"

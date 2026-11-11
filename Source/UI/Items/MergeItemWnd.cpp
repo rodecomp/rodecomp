@@ -6,7 +6,7 @@
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -16,7 +16,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Lists/UIScrollBar.h"

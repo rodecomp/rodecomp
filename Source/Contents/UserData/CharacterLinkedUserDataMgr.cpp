@@ -1,9 +1,9 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/UserData/AccountService.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Script/LuaScript.h"
-#include "Utility/EncryptedName.h"
+#include "Utility/Cipher/EncryptedName.h"
 
 #include <new>
 

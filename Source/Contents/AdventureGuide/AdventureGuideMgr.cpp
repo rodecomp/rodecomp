@@ -1,6 +1,6 @@
 #include "Contents/AdventureGuide/AdventureGuideMgr.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/JobCodeForItem.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"

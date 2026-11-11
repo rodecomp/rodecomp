@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_RODEX_UIRODEXINBOXWND_H
 
 #include "Contents/Rodex/RodexMailStore.h"
-#include "UI/Item/UIItemWnd.h"
+#include "UI/Items/UIItemWnd.h"
 
 #include <cstddef>
 #include <cstdint>

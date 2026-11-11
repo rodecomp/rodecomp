@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_QUEST_UIRENEWQUESTUI_H
 #define RAGNAROK_SOURCE_UI_QUEST_UIRENEWQUESTUI_H
 
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"

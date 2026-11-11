@@ -1,7 +1,7 @@
 #include "Render/Primitives/DepthAlpha.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 
 __declspec(noinline) std::uint32_t DepthAlpha(float reciprocalDepth);
 

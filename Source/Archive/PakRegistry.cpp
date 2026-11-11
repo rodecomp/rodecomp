@@ -1,6 +1,6 @@
 #include "Archive/PakRegistry.h"
 #include "File/ResourcePath.h"
-#include "Utility/GGHashMgr.h"
+#include "Utility/Hash/GGHashMgr.h"
 
 // STATIC: 0x016D5688
 // GLOBAL: gl_24380

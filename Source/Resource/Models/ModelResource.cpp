@@ -1,5 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Render/DeviceContext/DCSurface.h"

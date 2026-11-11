@@ -1,7 +1,7 @@
 #include "Client/Application/ApplicationActivation.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CLoginMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/GameSettings/GameSettingsUI.h"

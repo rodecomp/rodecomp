@@ -3,7 +3,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/SpriteResource.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "Script/NLuaState.h"
 #include "Utility/Cipher/XorBytes.h"
 

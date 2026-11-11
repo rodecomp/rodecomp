@@ -1,7 +1,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Achievement/AchievementMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Map/MapInfoMgr.h"

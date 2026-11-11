@@ -1,7 +1,7 @@
 #include "Contents/Actors/CharacterRender.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Camera/Camera.h"
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Script/LuaScript.h"
 
 constexpr float robeTopLayerThreshold = 320.0f;

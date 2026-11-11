@@ -1,7 +1,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/RendererBackBuffer.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 #include "Render/Text/TextContext.h"
 #include <cstdio>
 #include <cstring>

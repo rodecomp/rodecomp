@@ -2,7 +2,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"

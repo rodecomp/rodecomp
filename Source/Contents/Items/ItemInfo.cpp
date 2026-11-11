@@ -1,7 +1,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Input/InputCharset.h"
 #include "File/File.h"
 #include "Contents/Items/ItemDescription.h"

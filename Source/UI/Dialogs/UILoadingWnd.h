@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_DIALOGS_UILOADINGWND_H
 #define RAGNAROK_SOURCE_UI_DIALOGS_UILOADINGWND_H
 
-#include "UI/UIBarGraph.h"
+#include "UI/Gauges/UIBarGraph.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>

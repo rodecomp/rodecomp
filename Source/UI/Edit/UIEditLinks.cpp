@@ -3,7 +3,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "UI/Window/InputFocus.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextFitting.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"

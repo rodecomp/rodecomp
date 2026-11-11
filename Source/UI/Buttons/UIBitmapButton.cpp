@@ -1,6 +1,6 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 // OFFSET: 0x0084EAB0
 // FUNCTION: fn_10650

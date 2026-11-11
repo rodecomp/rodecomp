@@ -1,7 +1,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Network/Packets/PacketId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 

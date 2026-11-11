@@ -3,12 +3,12 @@
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
 
-#include "ActorPickNode.h"
+#include "Contents/Actors/ActorPickNode.h"
 #include "Contents/Skills/GraffiSkill.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Effects/Skills/CaneOfEvilEyeEffect.h"
 #include "Contents/Effects/Particles/EZ2STREffect.h"
@@ -24,7 +24,7 @@
 #include "Resource/Models/ModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Render/Renderer.h"
-#include "Render/SpriteGeometry.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/UIWindowMgr.h"

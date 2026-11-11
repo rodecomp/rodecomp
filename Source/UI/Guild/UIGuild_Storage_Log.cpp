@@ -4,7 +4,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowManagerWindows.h"

@@ -1,6 +1,6 @@
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/Store/MCStoreInfoBackupAsyncWork.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Network/Http/CURLMgr.h"
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"

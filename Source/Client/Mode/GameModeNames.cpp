@@ -1,6 +1,6 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "File/File.h"

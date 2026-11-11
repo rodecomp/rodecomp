@@ -1,6 +1,6 @@
 #include "UI/Window/UIEnums.h"
-#include "Client/Replay.h"
-#include "Client/ReplayRecordOption.h"
+#include "Client/Replay/Replay.h"
+#include "Client/Replay/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 

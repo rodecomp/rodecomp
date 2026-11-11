@@ -4,11 +4,11 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Lists/UIComboBoxEx.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/Lists/UIScrollBarNavi.h"
+#include "UI/Navigation/UIScrollBarNavi.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>

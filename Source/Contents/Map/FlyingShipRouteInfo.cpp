@@ -1,10 +1,10 @@
 #include "Contents/Map/FlyingShipRouteInfo.h"
 #include "Render/Renderer.h"
-#include "Render/ScreenGeometry.h"
-#include "Render/TextureQuad.h"
+#include "Render/Projection/ScreenGeometry.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
-#include "UI/Window/UIRoMapWnd.h"
+#include "UI/Navigation/UIRoMapWnd.h"
 
 #include <cstring>
 #include <map>

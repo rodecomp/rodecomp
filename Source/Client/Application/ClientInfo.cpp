@@ -1,9 +1,9 @@
 #include "Client/Application/ClientInfo.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "File/File.h"
-#include "Resource/XmlNode.h"
+#include "Resource/Xml/XmlNode.h"
 
 #include <cstring>
 #include <string>

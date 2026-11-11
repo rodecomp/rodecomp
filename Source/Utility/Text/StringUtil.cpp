@@ -2,7 +2,7 @@
 #include "Archive/GPak.h"
 #include "Archive/PakCipher.h"
 #include "Utility/Threading/NSyncObject.h"
-#include "Utility/Compression/Zlib.h"
+#include "Utility/Zlib.h"
 
 #include <algorithm>
 #include <cctype>

@@ -1,5 +1,5 @@
 #include "Client/Mode/CMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Buttons/UITextButton.h"
@@ -9,8 +9,8 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIPadding.h"
 #include "UI/Text/UIStaticTextControl.h"
@@ -28,7 +28,7 @@
 #include "Utility/Threading/NSyncObject.h"
 #include "Render/Renderer.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Text/CreateLineInfo.h"
 
 #include <algorithm>

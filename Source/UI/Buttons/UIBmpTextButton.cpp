@@ -1,7 +1,7 @@
 #include "Render/Text/FontCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 
 #include <cstring>

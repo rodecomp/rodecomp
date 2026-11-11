@@ -5,11 +5,11 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Client/Mode/ModeEvents.h"
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Text/UITextViewer.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include "Resource/MSGSTRINGID.h"

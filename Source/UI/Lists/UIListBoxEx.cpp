@@ -3,7 +3,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIListBox.h"

@@ -1,5 +1,5 @@
 #include "Render/DX7/DirectDrawEnumeration.h"
-#include "Render/RenderAdapter.h"
+#include "Render/Device/RenderAdapter.h"
 #include "Render/DX7/RenderSystemDX7.h"
 
 // OFFSET: 0x0056B8C0

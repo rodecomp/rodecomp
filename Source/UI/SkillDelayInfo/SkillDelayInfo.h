@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_SKILLDELAYINFO_SKILLDELAYINFO_H
 #define RAGNAROK_SOURCE_UI_SKILLDELAYINFO_SKILLDELAYINFO_H
 
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "Utility/Cipher/XorBytes.h"

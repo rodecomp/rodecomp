@@ -1,7 +1,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIEnums.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Window/UITab.h"
 
 #include <cstdio>

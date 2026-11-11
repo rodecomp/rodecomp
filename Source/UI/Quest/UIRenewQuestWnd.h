@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_QUEST_UIRENEWQUESTWND_H
 
 #include "UI/Lists/UIScrollBar.h"
-#include "UI/UIScrollWnd.h"
+#include "UI/Lists/UIScrollWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>

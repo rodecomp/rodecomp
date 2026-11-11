@@ -1,9 +1,9 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Events/RouletteMgr.h"
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/TextureCache.h"
-#include "UI/Window/UIRoulletteWnd.h"
+#include "UI/Events/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>

@@ -3,7 +3,7 @@
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/RagEffectState.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Resource/EZeffectResource.h"
+#include "Resource/Effects/EZeffectResource.h"
 #include "Resource/ResourceMgr.h"
 
 #include <algorithm>

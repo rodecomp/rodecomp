@@ -1,5 +1,5 @@
 #include "Render/DX7/DirectDrawEnumeration.h"
-#include "Render/DisplayMode.h"
+#include "Render/Device/DisplayMode.h"
 
 #include <VersionHelpers.h>
 #include <format>

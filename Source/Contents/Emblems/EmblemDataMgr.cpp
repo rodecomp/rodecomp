@@ -1,10 +1,10 @@
 #include "Contents/UserData/AccountService.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
 
-#include "Utility/EncryptedName.h"
+#include "Utility/Cipher/EncryptedName.h"
 
 #include <cstddef>
 #include <cstdint>

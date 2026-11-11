@@ -1,4 +1,4 @@
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "Contents/Items/ItemType.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -380,7 +380,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
 }
 
 #include "Client/Input/InputCharset.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "File/CommonObject.h"

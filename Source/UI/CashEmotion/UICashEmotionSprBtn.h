@@ -1,0 +1,20 @@
+#ifndef RAGNAROK_SOURCE_UI_CASHEMOTION_UICASHEMOTIONSPRBTN_H
+#define RAGNAROK_SOURCE_UI_CASHEMOTION_UICASHEMOTIONSPRBTN_H
+
+#include "UI/Buttons/UISpriteButton.h"
+
+class UICashEmotionSprBtn : public UISpriteButton2 {
+  friend class UICashEmotionPiece;
+
+public:
+  UICashEmotionSprBtn(UIWindow* target);
+  void Paint() override;
+  void OnMouseHover(int x, int y) override;
+
+  void SetSelected(bool selected);
+
+protected:
+  /* 0118 */ bool m_selected;
+};
+
+#endif

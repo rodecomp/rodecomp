@@ -1,7 +1,7 @@
 #include "Client/Input/InputCharset.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "File/File.h"
-#include "Resource/XmlNode.h"
+#include "Resource/Xml/XmlNode.h"
 
 // OFFSET: 0x00E1A2B0
 // FUNCTION: fn_23848

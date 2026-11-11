@@ -1,9 +1,9 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Window/UIWindow.h"
 

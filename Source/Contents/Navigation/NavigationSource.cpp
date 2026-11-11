@@ -1,11 +1,11 @@
 #include "Contents/Navigation/NavigationManager.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/World/World.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
-#include "UI/Window/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationWnd.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>

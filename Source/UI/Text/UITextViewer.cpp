@@ -3,7 +3,7 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Text/TextMarkup.h"
@@ -15,7 +15,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
-#include "UI/Text/UIAchWnd.h"
+#include "UI/Achievement/UIAchWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>

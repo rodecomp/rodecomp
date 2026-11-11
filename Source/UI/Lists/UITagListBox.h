@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_LISTS_UITAGLISTBOX_H
 
 #include "UI/Lists/UIListBox.h"
-#include "UI/TextTags.h"
+#include "UI/Text/TextTags.h"
 
 #include <string>
 #include <utility>

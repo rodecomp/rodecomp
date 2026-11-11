@@ -13,7 +13,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Text/ColoredText.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Text/UITextViewer.h"
 #include "Utility/Text/FormatString.h"

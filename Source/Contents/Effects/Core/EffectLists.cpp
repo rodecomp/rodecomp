@@ -68,7 +68,7 @@
 #include "Contents/Effects/Skills/WindEffect.h"
 
 #include "Client/Mode/CGameMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"

@@ -1,0 +1,246 @@
+#ifndef RAGNAROK_SOURCE_CLIENT_REPLAY_REPLAY_H
+#define RAGNAROK_SOURCE_CLIENT_REPLAY_REPLAY_H
+#include "Client/Replay/ReplayRecordOption.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <list>
+#include <vector>
+
+struct ITEM_INFO;
+
+std::vector<unsigned char> BuildEntryQueueReplayRecords();
+std::vector<unsigned char> BuildRenewQuestReplayRecords();
+
+struct ReplayCachedPacket {
+  /* 0000 */ bool enabled;
+  /* 0004 */ std::vector<unsigned char> bytes;
+
+  ReplayCachedPacket() = default;
+  ReplayCachedPacket(const ReplayCachedPacket& other);
+};
+
+#pragma pack(push, 1)
+struct ReplayOptions {
+  /* 0000 */ unsigned char padding_0000[6];
+  /* 0006 */ unsigned char recordRestricted;
+  /* 0007 */ unsigned char showItemSlots;
+  /* 0008 */ unsigned char padding_0008[22];
+
+  unsigned char Get(ReplayRecordOption option) const {
+    return reinterpret_cast<const unsigned char*>(this)[static_cast<std::size_t>(option)];
+  }
+
+  void Set(ReplayRecordOption option, unsigned char value) {
+    reinterpret_cast<unsigned char*>(this)[static_cast<std::size_t>(option)] = value;
+  }
+};
+
+struct ReplayHeader {
+  /* 0000 */ std::uint32_t signature;
+  /* 0004 */ std::uint32_t key0;
+  /* 0008 */ std::uint32_t key1;
+  /* 000C */ int service;
+  /* 0010 */ int serviceType;
+  /* 0014 */ int sessionSyncValue;
+  /* 0018 */ char characterName[64];
+  /* 0058 */ char mapName[20];
+  /* 006C */ int accountId;
+  /* 0070 */ int cellX;
+  /* 0074 */ int cellY;
+  /* 0078 */ int playerDirection;
+  /* 007C */ std::uint32_t duration;
+  /* 0080 */ std::uint32_t records;
+  /* 0084 */ std::uint32_t fileOffset;
+  /* 0088 */ ReplayOptions options;
+  /* 00A6 */ std::uint32_t closingSignature;
+
+  // INLINED
+  void Reset() {
+    const ReplayOptions savedOptions = this->options;
+    std::memset(&this->key0, 0, offsetof(ReplayHeader, options) - offsetof(ReplayHeader, key0));
+    this->signature = 0x52414705;
+    this->closingSignature = 0x52414705;
+    this->options = savedOptions;
+  }
+};
+
+struct ReplaySection {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t bytes;
+  /* 0006 */ std::uint32_t fileOffset;
+
+  ReplaySection();
+  ~ReplaySection();
+};
+#pragma pack(pop)
+
+struct ReplayTime {
+  /* 0000 */ std::uint16_t hours;
+  /* 0002 */ char minutes;
+  /* 0003 */ char seconds;
+};
+
+class Replay {
+public:
+  static Replay& Instance();
+
+  /* 0000 */ std::vector<ReplayCachedPacket> cachedPackets;
+  /* 000C */ int state;
+  /* 0010 */ std::uint32_t baseFrame;
+  /* 0014 */ std::uint32_t started;
+  /* 0018 */ std::uint32_t previousTick;
+  /* 001C */ std::uint32_t frame;
+  /* 0020 */ std::uint32_t elapsed;
+  /* 0024 */ float speed;
+  /* 0028 */ ReplayHeader header;
+  /* 00D2 */ ReplaySection sections[26];
+  /* 01D8 */ int fileMode;
+  /* 01DC */ std::FILE* file;
+  /* 01E0 */ std::uint32_t fileOffset;
+  /* 01E4 */ std::uint32_t records;
+  /* 01E8 */ std::uint32_t cipherIndex;
+  /* 01EC */ std::uint32_t cipherBase;
+  /* 01F0 */ std::uint32_t cipherKey;
+  /* 01F4 */ int recordingState;
+  /* 01F8 */ int playbackState;
+
+  Replay();
+
+  // INLINED
+  ~Replay() {
+    if (this->file) {
+      if (this->fileMode == 31) {
+        this->WriteHeader(13);
+      }
+      std::fclose(this->file);
+      this->file = nullptr;
+    }
+  }
+
+  bool Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay);
+  bool WriteSection(int id, std::vector<unsigned char>& bytes, int event);
+  int WriteHeader(int event);
+  std::vector<unsigned char> BuildMetadata();
+  std::uint32_t ParseMetadata(const std::vector<unsigned char>& data);
+  float AnimationScale() const;
+  __declspec(noinline) float DelayScale() const;
+  bool SetState(int state);
+  bool SetBaseFrame(std::uint32_t baseFrame);
+  void UpdateDuration();
+  bool WriteFinalSection();
+  bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
+  void RecordCachedPackets();
+  bool MatchesService(int mode) const;
+  int AdvanceFrame();
+  void ResetPlayback();
+  bool Cipher(std::uint32_t bytes, void* data);
+  void CloseFile();
+  ReplayTime Duration() const;
+  int FindSection(int id) const;
+  int SpeedLevel() const;
+  void ResetFile();
+  bool SetOptions(const void* data, int bytes);
+  std::vector<unsigned char> ReadSection(int id);
+  void CachePacket(std::uint16_t id, std::uint16_t size, const unsigned char* data);
+  bool ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force);
+  bool AllowsEvent(int event) const;
+  void Rewind();
+  bool SetHeaderInfo(
+    std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int playerDirection, int service,
+    int serviceType, int padding_0014
+  );
+  void IncreaseSpeed();
+  void DecreaseSpeed();
+  void RestartClock();
+};
+
+struct ReplayFileEntry {
+  /* 0000 */ int index;
+  /* 0004 */ char name[0x104];
+
+  // INLINED
+  ReplayFileEntry() {
+    this->index = 0;
+    std::memset(this->name, 0, sizeof(this->name));
+  }
+
+  // INLINED
+  ~ReplayFileEntry() {
+    this->index = 0;
+    std::memset(this->name, 0, sizeof(this->name));
+  }
+};
+
+class ReplayFileList {
+public:
+  static ReplayFileList& Instance();
+
+  /* 0000 */ int selected;
+  /* 0004 */ std::vector<ReplayFileEntry> files;
+  /* 0010 */ Replay* replay;
+  /* 0014 */ char path[0x104];
+  /* 0118 */ bool pathEnabled;
+  /* 0119 */ bool rejectExistingName;
+  /* 011C */ int selectionState;
+  /* 0120 */ int dialogState;
+  /* 0124 */ int fileState;
+  /* 0128 */ unsigned char buffer[0x3E80];
+
+  // INLINED
+  __forceinline ReplayFileList()
+      : replay(nullptr),
+        path(),
+        pathEnabled(true),
+        rejectExistingName(true) {
+    this->selected = -1;
+    this->files.clear();
+    this->fileState = 0;
+    for (std::size_t index = 0; index < sizeof(this->buffer); ++index) {
+      this->buffer[index] = 0;
+    }
+    this->selectionState = 0;
+    this->dialogState = 0;
+  }
+
+  void Clear();
+  void Refresh();
+  const char* FileName(int index) const;
+  char* SetPath(const char* value);
+  bool Select(int index);
+  int Open(int mode, int argument1, int argument2);
+};
+
+std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes);
+std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vector<unsigned char>& body);
+std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items);
+
+extern int g_replayAnimationScaling;
+
+static_assert(sizeof(ReplayCachedPacket) == 0x10);
+static_assert(offsetof(ReplayCachedPacket, bytes) == 0x4);
+static_assert(sizeof(ReplayOptions) == 0x1E);
+static_assert(sizeof(ReplayHeader) == 0xAA);
+static_assert(offsetof(ReplayHeader, options) == 0x88);
+static_assert(offsetof(ReplayHeader, closingSignature) == 0xA6);
+static_assert(sizeof(ReplaySection) == 0xA);
+static_assert(sizeof(ReplayTime) == 0x4);
+static_assert(sizeof(ReplayFileEntry) == 0x108);
+static_assert(offsetof(ReplayFileList, path) == 0x14);
+static_assert(offsetof(ReplayFileList, pathEnabled) == 0x118);
+static_assert(offsetof(ReplaySection, bytes) == 0x2);
+static_assert(offsetof(ReplaySection, fileOffset) == 0x6);
+static_assert(sizeof(Replay) == 0x1FC);
+static_assert(offsetof(Replay, state) == 0xC);
+static_assert(offsetof(Replay, header) == 0x28);
+static_assert(offsetof(Replay, header) + offsetof(ReplayHeader, options) + offsetof(ReplayOptions, recordRestricted) == 0xB6);
+static_assert(offsetof(Replay, header) + offsetof(ReplayHeader, options) + offsetof(ReplayOptions, showItemSlots) == 0xB7);
+static_assert(offsetof(Replay, sections) == 0xD2);
+static_assert(offsetof(Replay, fileMode) == 0x1D8);
+static_assert(offsetof(Replay, file) == 0x1DC);
+static_assert(offsetof(Replay, cipherIndex) == 0x1E8);
+static_assert(offsetof(Replay, playbackState) == 0x1F8);
+
+#endif

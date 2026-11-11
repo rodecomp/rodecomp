@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Network/Packets/PacketId.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Items/ItemDBToIDMgr.h"
 #include "Contents/Items/ItemInfo.h"

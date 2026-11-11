@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 
 #include "Network/TextEncoding.h"
 #include "Render/Text/FontCache.h"

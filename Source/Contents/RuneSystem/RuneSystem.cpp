@@ -1,6 +1,6 @@
 #include "Contents/RuneSystem/RuneSystem.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"

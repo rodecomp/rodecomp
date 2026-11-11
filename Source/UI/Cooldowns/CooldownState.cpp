@@ -1,5 +1,5 @@
 #include "UI/Cooldowns/CooldownState.h"
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 
 #include <cmath>
 #include <cstring>

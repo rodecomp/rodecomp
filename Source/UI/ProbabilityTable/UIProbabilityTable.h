@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_PROBABILITYTABLE_UIPROBABILITYTABLE_H
 #define RAGNAROK_SOURCE_UI_PROBABILITYTABLE_UIPROBABILITYTABLE_H
 
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Text/UITextViewerControl.h"
 

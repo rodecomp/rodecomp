@@ -2,7 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIRadioBtn.h"
 

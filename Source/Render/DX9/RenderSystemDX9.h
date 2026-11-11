@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_RENDER_DX9_RENDERSYSTEMDX9_H
 
 #include "Render/DX9/DeviceOwnerDX9.h"
-#include "Render/RenderAdapter.h"
+#include "Render/Device/RenderAdapter.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/DX9/RendererDX9.h"
 

@@ -4,8 +4,8 @@
 #include "Render/DX7/SurfaceDX7.h"
 #include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/DX7/TextureDX7.h"
-#include "Render/DeviceSelection.h"
-#include "Render/RenderAdapter.h"
+#include "Render/Device/DeviceSelection.h"
+#include "Render/Device/RenderAdapter.h"
 
 #include <new>
 

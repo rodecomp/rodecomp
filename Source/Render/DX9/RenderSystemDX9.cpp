@@ -1,6 +1,6 @@
 #include "Render/DX9/RenderSystemDX9.h"
 #include "UI/GameSettings/GameSettingsUI.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 
 #include <bit>
 #include <new>

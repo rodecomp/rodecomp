@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UICONTROL_H
 
 #include "Resource/Bitmap/BitmapResource.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Window/UIWindow.h"
 
 #include <cstddef>

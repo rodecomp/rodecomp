@@ -2,7 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Network/Packets/NoticeEnums.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"

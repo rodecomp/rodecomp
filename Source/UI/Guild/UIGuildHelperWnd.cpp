@@ -15,7 +15,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "Contents/Guild/GuildTip.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Text/UITextViewer.h"
 
 #include "Resource/MSGSTRINGID.h"

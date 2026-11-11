@@ -1,4 +1,4 @@
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Hotkeys/UserHotkeyScript.h"
 #include "Network/TextEncoding.h"
 

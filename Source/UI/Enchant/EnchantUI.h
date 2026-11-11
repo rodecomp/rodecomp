@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_ENCHANT_ENCHANTUI_H
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/FrameSkin.h"
+#include "UI/Window/FrameSkin.h"
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIWindowMgr.h"

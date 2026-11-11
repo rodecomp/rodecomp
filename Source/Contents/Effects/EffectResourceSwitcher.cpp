@@ -12,7 +12,7 @@
 #include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Resource/World/TerrainResource.h"
-#include "Utility/JsonCppLoader.h"
+#include "Resource/Json/JsonCppLoader.h"
 
 #include <algorithm>
 #include <cctype>

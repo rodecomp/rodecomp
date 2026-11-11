@@ -1,5 +1,5 @@
 #include "Client/Mode/CMode.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 
 // OFFSET: 0x00AD5290

@@ -3,7 +3,7 @@
 #include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Window/UIEnums.h"
 
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
@@ -13,7 +13,7 @@
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
-#include "Resource/SkinPalette.h"
+#include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Shop/PriceColor.h"

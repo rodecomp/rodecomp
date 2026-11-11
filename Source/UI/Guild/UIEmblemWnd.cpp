@@ -1,0 +1,96 @@
+#include "Client/Session/Session.h"
+#include "UI/Window/UIEnums.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Guild/GuildMgr.h"
+#include "Render/Renderer.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/Bitmap/EmblemResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Guild/UIEmblemWnd.h"
+
+#include <string>
+
+// OFFSET: 0x0085ACD0
+// FUNCTION: fn_10787
+void UIEmblemWnd::OnCreate(int, int) {
+}
+
+// OFFSET: 0x0085CE40
+// FUNCTION: fn_10809
+void UIEmblemWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  const bool framed = g_serviceOptions.Get(243) != 0;
+  if (framed && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
+    CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
+    if (frame) {
+      this->DrawBitmap(0, 0, frame, true);
+    }
+  }
+
+  const std::string name = g_guildMgr->GetEmblemFilename(this->guildId);
+  CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+  if (emblem && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
+    this->DrawBitmap(framed ? 2 : 0, framed ? 2 : 0, &emblem->gif, true);
+  }
+}
+
+// OFFSET: 0x0085FAF0
+// FUNCTION: fn_10883
+void UIEmblemWnd::OnProcess() {
+  if (g_serviceOptions.Get(243)) {
+    if (this->geometry.width == 24) {
+      this->Resize(28, 28);
+    }
+  } else if (this->geometry.width == 28) {
+    this->Resize(24, 24);
+  }
+
+  CRenderObject* actor = g_session.FindGameActor(this->aid);
+  if (actor) {
+    const int screenX = actor->render.screenX;
+    const int screenY = actor->render.screenY;
+    if (this->screenX != screenX || this->screenX != screenY) {
+      this->screenY = screenY;
+      this->screenX = screenX;
+      const float scale = actor->render.distanceScale;
+      const int x = static_cast<int>(screenX - static_cast<float>(g_renderer->viewport.width * 10 / 640) * scale);
+      const int y = static_cast<int>(screenY - static_cast<float>(g_renderer->viewport.height * 100 / 480) * scale);
+      this->Move(x, y);
+    }
+  } else {
+    this->Move(-100, -100);
+  }
+
+  const std::string name = g_guildMgr->GetEmblemFilename(this->guildId);
+  CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+  if (emblem && emblem->gif.frameChanged == 1) {
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x00864D60
+// FUNCTION: fn_10917
+int UIEmblemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case UM_SETINFO:
+    this->aid = argument1;
+    this->guildId = argument2;
+    break;
+  case UM_REFRESH:
+    if (this->guildId == static_cast<std::uint32_t>(argument1)) {
+      this->Invalidate();
+    }
+    break;
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0084FD80
+// FUNCTION: fn_10665
+UIEmblemWnd::UIEmblemWnd() : UIWindow(0), aid(0), guildId(0) {
+  this->SetSize(24, 24);
+}

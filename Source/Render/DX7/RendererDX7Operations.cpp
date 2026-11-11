@@ -3,13 +3,13 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/World/World.h"
-#include "Render/BlendColor.h"
+#include "Render/Drawing/BlendColor.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/QueuedDrawingDX7.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
-#include "Render/RendererDX7.h"
-#include "Render/TextureQuad.h"
+#include "Render/DX7/RendererDX7.h"
+#include "Render/Primitives/TextureQuad.h"
 
 #include <algorithm>
 #include <bit>

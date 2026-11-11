@@ -9,8 +9,8 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
-#include "Client/Session.h"
-#include "Client/Replay.h"
+#include "Client/Session/Session.h"
+#include "Client/Replay/Replay.h"
 #include "Contents/Achievement/AchievementMgr.h"
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/Clan/ClanInfo.h"
@@ -45,10 +45,10 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "UI/Rodex/UIRodexInboxWnd.h"
 #include "UI/Text/UITransBalloonText.h"
-#include "UI/UIBarGraph.h"
-#include "UI/UIGradeEnchantWnd.h"
-#include "UI/Window/UIHomunInfoWnd.h"
-#include "UI/Window/UISeekPartyWnd.h"
+#include "UI/Gauges/UIBarGraph.h"
+#include "UI/Items/UIGradeEnchantWnd.h"
+#include "UI/Status/UIHomunInfoWnd.h"
+#include "UI/Party/UISeekPartyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/Vector3d.h"
@@ -2481,7 +2481,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   output.close();
 }
 
-#include "UI/UIBroadcastBalloon.h"
+#include "UI/Text/UIBroadcastBalloon.h"
 
 #include <chrono>
 

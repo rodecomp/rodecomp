@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_SHOP_UINCASH_CALLWND_H
 
 #include "Contents/Items/ItemInfo.h"
-#include "UI/Item/UIItemBaseWnd.h"
+#include "UI/Items/UIItemBaseWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <list>

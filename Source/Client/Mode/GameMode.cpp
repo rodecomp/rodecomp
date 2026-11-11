@@ -11,9 +11,9 @@
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Replay.h"
+#include "Client/Replay/Replay.h"
 #include "Client/Input/InputCharset.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
@@ -42,7 +42,7 @@
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
-#include "UI/UIBroadcastBalloon.h"
+#include "UI/Text/UIBroadcastBalloon.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -51,7 +51,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
 #include "Client/Application/Launcher.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "Contents/Quest/RenewQuestMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
@@ -61,10 +61,10 @@
 #include "File/File.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Contents/Events/ShowRankingScheduler.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "Utility/Text/HexString.h"
-#include "Client/Timer.h"
+#include "Client/Application/Timer.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/Tables/ForbiddenWords.h"
@@ -72,12 +72,12 @@
 #include "Client/Input/Language.h"
 #include "UI/Chat/UIChatRoomMakeWnd.h"
 #include "UI/Gauges/UIPcGage.h"
-#include "Render/ScreenGeometry.h"
+#include "Render/Projection/ScreenGeometry.h"
 #include "UI/Shop/UIMerchantShopMakeWnd.h"
-#include "UI/UIRefiningWnd.h"
-#include "UI/UIGradeEnchantWnd.h"
+#include "UI/Items/UIRefiningWnd.h"
+#include "UI/Items/UIGradeEnchantWnd.h"
 #include "UI/Items/UISwapEquipmentWnd.h"
-#include "UI/Window/UIMonsterInfoWnd.h"
+#include "UI/Monster/UIMonsterInfoWnd.h"
 #include "Contents/Clan/ClanInfo.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Items/SelectPackageItemMgr.h"
@@ -87,15 +87,15 @@
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/Tables/SimpleStringMgr.h"
 #include "File/ShortcutFilename.h"
-#include "UI/Window/UICntWnd.h"
-#include "UI/Window/UINormalMB.h"
+#include "UI/Dialogs/UICntWnd.h"
+#include "UI/Dialogs/UINormalMB.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <mbstring.h>
 #include <new>
 #include "Client/Application/ApplicationWindow.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "Network/TextEncoding.h"
 #include "Resource/MSGSTRINGID.h"
 
@@ -5507,8 +5507,8 @@ void CGameMode::InitializeCamera() {
 #include "UI/Text/UINameBalloonText.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "Contents/Messenger/ClientMessenger.h"
-#include "ActorPickNode.h"
-#include "Client/Registry.h"
+#include "Contents/Actors/ActorPickNode.h"
+#include "Client/Application/Registry.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Render/Textures/TextureCache.h"
@@ -5516,7 +5516,7 @@ void CGameMode::InitializeCamera() {
 #include "UI/Dialogs/UIWaitWnd.h"
 #include <chrono>
 #include <winsock2.h>
-#include "UI/Window/UIWordDisplayWnd.h"
+#include "UI/Dialogs/UIWordDisplayWnd.h"
 
 class CPingLiveSchedule : public CSchedule {
 public:
@@ -5551,7 +5551,7 @@ void CPingLiveSchedule::Process(const std::uint64_t& now) {
   }
 }
 
-#include "Client/ModeFadeOut.h"
+#include "Client/Mode/ModeFadeOut.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Resource/ResourceMgr.h"
@@ -6082,7 +6082,7 @@ static_assert(sizeof(GameModeStoredItemEntry) == 0x19);
 
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
-#include "UI/Window/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationWnd.h"
 #include "Contents/Effects/Core/EffectActor.h"
 
 #pragma pack(push, 1)
@@ -7197,11 +7197,11 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include "Contents/Sound/SoundMaker.h"
 #include "Contents/Movement/TerrainPathSearch.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
-#include "Network/GameTickPacket.h"
+#include "Network/Packets/GameTickPacket.h"
 #include "UI/Buttons/UITextButton.h"
-#include "UI/UIMacroUserInfoWnd.h"
+#include "UI/Macro/UIMacroUserInfoWnd.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Window/UIMileageWnd.h"
+#include "UI/CashShop/UIMileageWnd.h"
 #include "UI/Window/UIWindowFactory.h"
 #include <list>
 #include <windows.h>
@@ -8731,13 +8731,13 @@ int CGameMode::ProcessGroundClick(int result) {
 
 
 #include "Client/Application/ApplicationMessages.h"
-#include "Client/ModeFade.h"
+#include "Client/Mode/ModeFade.h"
 #include "Contents/Actors/ActorNameCard.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Client/Stove/StovePCSDK.h"
-#include "Render/ActionSpriteDrawing.h"
-#include "Utility/GGHashMgr.h"
+#include "Render/Drawing/ActionSpriteDrawing.h"
+#include "Utility/Hash/GGHashMgr.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Resource/Sprites/ActionResource.h"

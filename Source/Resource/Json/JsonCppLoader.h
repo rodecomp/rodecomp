@@ -1,0 +1,277 @@
+#ifndef RAGNAROK_SOURCE_RESOURCE_JSON_JSONCPPLOADER_H
+#define RAGNAROK_SOURCE_RESOURCE_JSON_JSONCPPLOADER_H
+
+#include <cstdlib>
+#include <cstring>
+#include <cstddef>
+#include <map>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "Contents/Repute/ReputeRecords.h"
+
+struct EZ2STREffectRecord;
+
+class JsonValue;
+
+typedef std::pair<std::string, JsonValue> JsonMember;
+typedef std::vector<JsonMember> JsonObject;
+typedef std::vector<JsonValue> JsonArray;
+
+template <class Elements>
+struct JsonStorage {
+  /* 0000 */ std::allocator<char> allocator;
+  /* 0004 */ Elements elements;
+};
+static_assert(offsetof(JsonStorage<JsonObject>, elements) == 0x04);
+
+class JsonValue {
+public:
+  enum ValueType {
+    NULL_VALUE = 0,
+    BOOL_VALUE = 1,
+    INT64_VALUE = 2,
+    HALF_VALUE = 4,
+    DOUBLE_VALUE = 5,
+    STRING_VALUE = 6,
+    BYTE_STRING_VALUE = 7,
+    ARRAY_VALUE = 8,
+    OBJECT_VALUE = 9,
+  };
+
+  int GetType() const;
+  bool IsNull() const;
+  bool IsObject() const;
+  bool AsBool() const;
+  int AsInt() const;
+  double AsDouble() const;
+  std::string AsString() const;
+  const JsonObject& GetObject() const;
+  const JsonArray& GetArray() const;
+  const JsonArray& ArrayRange() const;
+  const JsonObject* ObjectRange() const;
+
+  /* 0000 */ unsigned char type;
+  /* 0001 */ unsigned char padding_0001;
+  /* 0002 */ unsigned short smallValue;
+  /* 0004 */ void* pointer;
+  /* 0008 */ long long integer;
+
+private:
+  const JsonValue* Dereference() const;
+};
+
+inline const JsonValue* JsonValue::Dereference() const {
+  const JsonValue* value = this;
+  while ((value->type & 0x0f) == 0x0c) {
+    value = static_cast<const JsonValue*>(value->pointer);
+  }
+
+  return value;
+}
+
+inline int JsonValue::GetType() const {
+  const JsonValue* value = this->Dereference();
+  switch (value->type & 0x0f) {
+    case 0:
+      return NULL_VALUE;
+    case 1:
+      return BOOL_VALUE;
+    case 2:
+    case 3:
+      return INT64_VALUE;
+    case 4:
+      return HALF_VALUE;
+    case 5:
+      return DOUBLE_VALUE;
+    case 6:
+    case 7:
+      return STRING_VALUE;
+    case 8:
+      return BYTE_STRING_VALUE;
+    case 9:
+      return ARRAY_VALUE;
+    case 10:
+    case 11:
+      return OBJECT_VALUE;
+    default:
+      return NULL_VALUE;
+  }
+}
+
+inline bool JsonValue::IsNull() const {
+  return (this->Dereference()->type & 0x0f) == 0;
+}
+
+inline bool JsonValue::IsObject() const {
+  unsigned char tag = this->Dereference()->type & 0x0f;
+  return tag == 10 || tag == 11;
+}
+
+inline bool JsonValue::AsBool() const {
+  const JsonValue* value = this->Dereference();
+  switch (value->type & 0x0f) {
+    case 1:
+      return value->smallValue != 0;
+    case 2:
+    case 3:
+      return value->integer != 0;
+    default:
+      throw std::domain_error("Not a bool");
+  }
+}
+
+inline std::string JsonValue::AsString() const {
+  const JsonValue* value = this->Dereference();
+  switch (value->type & 0x0f) {
+    case 6:
+      return std::string(reinterpret_cast<const char*>(value) + 2, value->type >> 4);
+    case 7: {
+      const unsigned int* view = static_cast<const unsigned int*>(value->pointer);
+      return std::string(reinterpret_cast<const char*>(view[1]), view[2]);
+    }
+    default:
+      throw std::domain_error("Not a string");
+  }
+}
+
+inline int JsonValue::AsInt() const {
+  const JsonValue* value = this->Dereference();
+  double real = 0.0;
+  switch (value->type & 0x0f) {
+    case 1:
+      return value->smallValue != 0;
+    case 2:
+    case 3:
+      return static_cast<int>(value->integer);
+    case 4:
+      return value->smallValue;
+    case 5:
+      std::memcpy(&real, &value->integer, sizeof(real));
+      return static_cast<int>(real);
+    case 6:
+    case 7:
+      return std::atoi(this->AsString().c_str());
+    default:
+      throw std::domain_error("Not an integer");
+  }
+}
+
+inline double JsonValue::AsDouble() const {
+  const JsonValue* value = this->Dereference();
+  double real = 0.0;
+  switch (value->type & 0x0f) {
+    case 2:
+      return static_cast<double>(value->integer);
+    case 3:
+      return static_cast<double>(static_cast<unsigned long long>(value->integer));
+    case 5:
+      std::memcpy(&real, &value->integer, sizeof(real));
+      return real;
+    default:
+      throw std::domain_error("Not a double");
+  }
+}
+
+inline const JsonObject& JsonValue::GetObject() const {
+  return static_cast<const JsonStorage<JsonObject>*>(this->Dereference()->pointer)->elements;
+}
+
+inline const JsonArray& JsonValue::GetArray() const {
+  return static_cast<const JsonStorage<JsonArray>*>(this->Dereference()->pointer)->elements;
+}
+
+inline const JsonArray& JsonValue::ArrayRange() const {
+  if ((this->type & 0x0f) != 9) {
+    throw std::domain_error("Not an array");
+  }
+
+  return static_cast<const JsonStorage<JsonArray>*>(this->pointer)->elements;
+}
+
+inline const JsonObject* JsonValue::ObjectRange() const {
+  switch (this->type & 0x0f) {
+    case 10:
+      return nullptr;
+    case 11:
+      return &static_cast<const JsonStorage<JsonObject>*>(this->pointer)->elements;
+    default:
+      throw std::domain_error("Not an object");
+  }
+}
+
+class JsonCppLoader {
+public:
+  JsonCppLoader();
+  virtual ~JsonCppLoader();
+
+  JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
+  void Fail(const char* format, ...);
+  bool LoadBson(const std::string& path);
+
+  bool GetIntValue(const JsonValue& node, const std::string& key, int* out);
+  bool GetStringValue(const JsonValue& node, const std::string& key, std::string* out);
+  bool GetMapStringIntValue(const JsonValue& node, const std::string& key, std::map<std::string, int>* out);
+  bool GetMapStringStringValue(const JsonValue& node, const std::string& key, std::map<std::string, std::string>* out);
+  bool GetMapStringIntVectorValue(const JsonValue& node, const std::string& key, std::map<std::string, std::vector<int> >* out);
+  bool GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out);
+  bool GetIntVectorValue(const JsonValue& node, const std::string& key, std::vector<int>* out);
+  bool GetBoolValue(const JsonValue& node, const std::string& key, bool* out);
+  bool Load(std::vector<unsigned char>& buffer, bool bson);
+  bool LoadBson(std::vector<unsigned char>& buffer);
+  bool LoadJson(const std::string& path);
+  bool LoadJson(std::vector<unsigned char>& buffer);
+  bool GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* out);
+  bool GetReputeGroupData(std::map<int, ReputeGroupRecord>* out);
+  bool GetReputeInfoData(std::map<int, ReputeInfoRecord>* out);
+
+private:
+  JsonCppLoader(const JsonCppLoader&) = delete;
+
+public:
+  /* 0008 */ JsonValue document;
+  /* 0018 */ std::string error;
+  /* 0030 */ bool loaded;
+  /* 0031 */ bool succeeded;
+};
+
+extern "C" {
+void JsonCopyConstruct();
+void* __cdecl JsonNull();
+}
+
+inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType) {
+  const JsonValue* source = static_cast<const JsonValue*>(JsonNull());
+  if (!node.IsNull() && node.IsObject()) {
+    const JsonObject& members = node.GetObject();
+    JsonObject::const_iterator member = members.begin();
+    for (; member != members.end(); ++member) {
+      if (member->first == key) {
+        break;
+      }
+    }
+
+    if (member != members.end() && member->second.GetType() == expectedType) {
+      source = &member->second;
+    }
+  }
+
+  reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&out, source);
+  return out;
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(JsonValue) == 0x10);
+static_assert(offsetof(JsonValue, smallValue) == 0x02);
+static_assert(offsetof(JsonValue, pointer) == 0x04);
+static_assert(offsetof(JsonValue, integer) == 0x08);
+static_assert(offsetof(JsonCppLoader, document) == 0x08);
+static_assert(offsetof(JsonCppLoader, error) == 0x18);
+static_assert(offsetof(JsonCppLoader, loaded) == 0x30);
+static_assert(offsetof(JsonCppLoader, succeeded) == 0x31);
+static_assert(sizeof(JsonCppLoader) == 0x38);
+#endif
+
+#endif

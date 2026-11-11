@@ -5,7 +5,7 @@
 #include "Client/Application/LaunchInfo.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Actors/Pc.h"

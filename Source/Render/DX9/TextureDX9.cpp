@@ -1,5 +1,5 @@
 #include "Render/Renderer.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/D3DX9Runtime.h"
 #include "Render/DX9/SurfaceDX9.h"

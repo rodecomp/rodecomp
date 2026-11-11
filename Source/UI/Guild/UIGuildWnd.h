@@ -17,7 +17,7 @@
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Render/Textures/Texture.h"
-#include "Resource/PaletteResource.h"
+#include "Resource/Bitmap/PaletteResource.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Party/UIMiniPartyWnd.h"

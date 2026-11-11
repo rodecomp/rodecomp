@@ -4,7 +4,7 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Render/DX9/TextureDX9.h"
-#include "Render/TextureQuad.h"
+#include "Render/Primitives/TextureQuad.h"
 
 #include <algorithm>
 #include <bit>

@@ -2,7 +2,7 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/DeviceContext/DCSurface.h"
-#include "Render/RendererDX7.h"
+#include "Render/DX7/RendererDX7.h"
 #include "Render/Textures/Texture.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 

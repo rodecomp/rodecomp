@@ -1,5 +1,5 @@
 #include "Contents/Jobs/JobNames.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Jobs/JobId.h"
 
 // OFFSET: 0x00E2FE80

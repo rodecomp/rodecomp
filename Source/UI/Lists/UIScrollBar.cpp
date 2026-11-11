@@ -11,9 +11,9 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarVariants.h"
 #include "Contents/Items/ItemDescription.h"
-#include "Resource/TextureNames.h"
+#include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
-#include "UI/UIBasicCtrl.h"
+#include "UI/Window/UIBasicCtrl.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIImgMenu.h"
@@ -38,10 +38,10 @@
 #include "UI/Gauges/UIPcGage.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
-#include "Client/Session.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
-#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Contents/Map/MapSkyMgr.h"
@@ -1883,7 +1883,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Actors/PlayerNameDictionary.h"
 #include "Contents/Tables/TipBoxTitles.h"
-#include "UI/Text/NavigationLink.h"
+#include "UI/Navigation/NavigationLink.h"
 
 #include <mbstring.h>
 
