@@ -3107,7 +3107,6 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
 // FUNCTION: fn_21625
 void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeRequestAckPacket*>(data);
-  const std::string& exchangeName = this->exchangeName;
   switch (packet->result) {
   case TRADE_ACK_ACCEPT: {
     this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
@@ -3117,7 +3116,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
     g_windowMgr.CloseWindow(WID_EXCHANGEUI);
     UIWindow* window = g_windowMgr.EnsureWindow(WID_EXCHANGEUI);
     if (window) {
-      window->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(exchangeName.c_str()), packet->charId, packet->level, 0);
+      window->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(this->exchangeName.c_str()), packet->charId, packet->level, 0);
     }
     break;
   }
@@ -3138,7 +3137,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARACTER_IS_DEALING)), 0xFF, 0, 0, 0);
     break;
   case TRADE_ACK_BUSY: {
-    std::string text = FormatOwnedString(LookupMessage(MSI_CHARACTER_IS_BUSY), exchangeName.c_str());
+    std::string text = FormatOwnedString(LookupMessage(MSI_CHARACTER_IS_BUSY), this->exchangeName.c_str());
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
     break;
@@ -5653,8 +5652,8 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
 // FUNCTION: fn_21852
 void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const QuestHuntUpdatePacket2*>(data);
-  std::vector<std::string> notices;
   const int count = (packet->length - 6) / sizeof(QuestHuntUpdateEntry2);
+  std::vector<std::string> notices;
   for (int i = 0; i < count; ++i) {
     const QuestHuntUpdateEntry2& entry = packet->entries[i];
     const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(entry.questId);
@@ -5663,26 +5662,25 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
     }
 
     RenewQuestOngoingInfo info = quest;
-    int index = 0;
-    for (; index < 3; ++index) {
-      if (info.m_huntId[index] == entry.huntId) {
-        break;
+    for (int index = 0; index < 3; ++index) {
+      if (entry.huntId != info.m_huntId[index]) {
+        continue;
       }
-    }
-    if (index < 3) {
+
       info.m_huntKillCount[index] = entry.count;
       info.m_huntMaxCount[index] = entry.maxCount;
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
       if (info.m_huntMobId[index] == 0x7CFF) {
-        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
+        name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
       }
       name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntKillCount[index], entry.maxCount));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
+      break;
     }
   }
 
@@ -7114,7 +7112,7 @@ void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
   std::memset(message, 0, sizeof(message));
   sprintf_s(message, sizeof(message), LookupMessage(MSI_REASON_BAN_GUILD), reason);
   if (g_forbiddenWords.Contains(message) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(message, &masked);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
@@ -7208,7 +7206,7 @@ void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
   sprintf_s(message, sizeof(message), LookupMessage(MSI_REASON_LEAVE_GUILD), reason);
   if (g_forbiddenWords.Contains(message) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(message, &masked);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
@@ -7279,7 +7277,7 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
   std::memset(message, 0, sizeof(message));
   sprintf_s(message, sizeof(message), LookupMessage(MSI_REASON_BAN_GUILD), reason);
   if (g_forbiddenWords.Contains(message) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(message, &masked);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 4, 0, 0);
@@ -7485,10 +7483,9 @@ void CGameMode::ReceiveWhisper2(const unsigned char* data) {
   std::memset(nameBuffer, 0, sizeof(nameBuffer));
   StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 8);
 
-  const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 0x21;
-  std::string text(reinterpret_cast<const char*>(data) + 0x21, length > 0 ? static_cast<std::size_t>(length) : 0);
+  std::string text(reinterpret_cast<const char*>(data) + 0x21, reinterpret_cast<const char*>(data) + *reinterpret_cast<const std::uint16_t*>(data + 2));
 
-  this->ProcessWhisper(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, data[0x20] != 0);
+  this->ProcessWhisper(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, *reinterpret_cast<const bool*>(data + 0x20));
 }
 
 #include "Contents/Events/ShowRankingScheduler.h"
