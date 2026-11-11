@@ -433,10 +433,12 @@ bool CEffectPrim::Prim3DCasting5() {
 // OFFSET: 0x00BB6820
 // FUNCTION: fn_19777
 bool CEffectPrim::Prim3DCylinder() {
-  this->state.orgPos = {
-    this->state.master->render.position.x + this->state.deltaPos2.x, this->state.master->render.position.y + this->state.deltaPos2.y,
-    this->state.master->render.position.z + this->state.deltaPos2.z
-  };
+  const float masterX = this->state.master->render.position.x;
+  const float masterY = this->state.master->render.position.y;
+  const float masterZ = this->state.master->render.position.z;
+  this->state.orgPos.x = masterX + this->state.deltaPos2.x;
+  this->state.orgPos.y = masterY + this->state.deltaPos2.y;
+  this->state.orgPos.z = masterZ + this->state.deltaPos2.z;
 
   this->state.speed = this->state.accel + this->state.speed;
   this->state.latiSpeed = this->state.latiAccel + this->state.latiSpeed;
