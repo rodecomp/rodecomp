@@ -1269,7 +1269,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
     if (accessory) {
       char number[32] = {};
       std::sprintf(number, "%d", id);
-      g_session.IconPath(path, number, 1);
+      g_session.IconPath(number, path, 1);
     } else {
       strcpy_s(path, sizeof(path), "유저인터페이스\\styleshop\\icon_zeny.bmp");
     }
@@ -1288,7 +1288,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
     memset(path, 0, sizeof(path));
     char number[32] = {};
     std::sprintf(number, "%d", id);
-    g_session.IconPath(path, number, 1);
+    g_session.IconPath(number, path, 1);
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   }
 
@@ -1417,7 +1417,8 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         if (it->second->geometry.visible == 1) {
           if (it->first->geometry.id != 496) {
-            static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND))->m_preview->CopyStyle(it->second->m_display);
+            UIStylingShopWnd* window = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
+            window->m_preview->CopyStyle(it->second->m_display);
           }
           break;
         }
@@ -1913,21 +1914,18 @@ bool UIShowInfoWnd::SendStyleChange() {
 // OFFSET: 0x00825CA0
 // FUNCTION: fn_10321
 void UIAccessoryShowCase::LoadAccessories(int, int) {
+  int count = 0;
   int loaded = 0;
   int skipped = 0;
-  int count = 0;
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
-  int slot = 0;
-  this->AddAccessories(loaded, skipped, "TopAccessory", count, slot);
+  this->AddAccessories(loaded, skipped, "TopAccessory", count, 0);
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "MidAccessory", &count);
-  slot = 1;
-  this->AddAccessories(loaded, skipped, "MidAccessory", count, slot);
+  this->AddAccessories(loaded, skipped, "MidAccessory", count, 1);
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "BottomAccessory", &count);
-  slot = 2;
-  this->AddAccessories(loaded, skipped, "BottomAccessory", count, slot);
+  this->AddAccessories(loaded, skipped, "BottomAccessory", count, 2);
 }
 
 // OFFSET: 0x008267E0
