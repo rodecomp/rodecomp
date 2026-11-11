@@ -155,8 +155,7 @@ namespace {
 
 // INLINED
 bool IsAchievementCompleted(int id) {
-  const SessionRecord6144 record = g_session.FindAchievementRecord(id);
-  return static_cast<unsigned char>(record.completionFlags >> 8) == 1;
+  return static_cast<unsigned char>(g_session.FindAchievementRecord(id).completionFlags >> 8) == 1;
 }
 
 }
