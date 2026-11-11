@@ -1239,6 +1239,8 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
 }
 
+extern template std::uint32_t& std::map<std::uint32_t, std::uint32_t>::operator[](const std::uint32_t&);
+
 struct ActorMessage32 {
   /* 0000 */ std::string text;
   /* 0018 */ std::string extra;
@@ -1922,6 +1924,11 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
     window->SendMsg(window, UM_REFRESH, 0, 0, 0, 0);
   }
 }
+using RodexMailTree = std::_Tree<std::_Tmap_traits<
+  std::int64_t, RodexMail, std::greater<std::int64_t>, std::allocator<std::pair<const std::int64_t, RodexMail>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::int64_t, RodexMail>, void*>*>
+RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
+
 // OFFSET: 0x00D66B10
 // FUNCTION: fn_22021
 void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
@@ -2564,8 +2571,9 @@ void CGameMode::ReceiveWindow95Data(const unsigned char* packet) {
     return;
   }
 
+  const unsigned char* const source = packet + 8;
   std::vector<unsigned char> data;
-  data.insert(data.end(), packet + 8, packet + 8 + size);
+  data.insert(data.end(), source, source + size);
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_SELECTCARTWND)) {
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(data.data()), size, *reinterpret_cast<const int*>(packet + 4), 0);
   }
