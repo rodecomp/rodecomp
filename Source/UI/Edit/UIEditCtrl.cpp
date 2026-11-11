@@ -6779,15 +6779,17 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 21200 || header.type == 21250) {
-          break;
-        }
-
-        if (header.type == 21253) {
+        switch (header.type) {
+        case 21200:
+        case 21250:
+          return 0;
+        case 21253:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
-        } else {
+          break;
+        default:
           offset += header.size;
+          break;
         }
       }
     }
