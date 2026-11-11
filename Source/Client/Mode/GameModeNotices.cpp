@@ -7165,11 +7165,11 @@ void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
     GuildInfo::Unknown00D4Entry entry;
     entry.positionId = position.positionId;
     entry.name = guildInfo->m_positions[position.positionId];
+    entry.ranking = position.ranking;
+    entry.tax = position.payRate;
     entry.canInvite = position.mode & 1;
     entry.canExpel = (position.mode >> 4) & 1;
-    entry.tax = position.payRate;
     entry.canStorage = (position.mode >> 8) & 1;
-    entry.ranking = position.ranking;
     guildInfo->UpdatePosition(entry);
   }
 
