@@ -108,6 +108,19 @@ void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {
   this->queues.Submit(command, flags, this->fog.supported != 0, g_depthStart, g_depthEnd);
 }
 
+// OFFSET: 0x00559BE0
+// FUNCTION: fn_02071
 void CRendererDX9::Submit(LightmappedPrimitive* command, int queue) {
-  this->queues.lightmapped.Submit(command, queue, this->fog.supported != 0, g_depthStart, g_depthEnd);
+  if (this->fog.supported) {
+    command->ApplyDepthAlpha();
+  }
+
+  switch (queue) {
+  case 0:
+    this->queues.lightmapped.first.push_back(command);
+    break;
+  case 1:
+    this->queues.lightmapped.second.push_back(command);
+    break;
+  }
 }

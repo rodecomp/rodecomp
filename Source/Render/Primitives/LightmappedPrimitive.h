@@ -93,7 +93,6 @@ struct LightmappedQueues {
   // INLINED
   __forceinline ~LightmappedQueues() = default;
 
-  void Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd);
   void Clear();
 };
 

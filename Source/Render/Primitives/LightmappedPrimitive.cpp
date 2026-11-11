@@ -73,17 +73,3 @@ void LightmappedPrimitive::DrawLightmapped(int unused) {
 void LightmappedPrimitive::DrawAuxiliary(int unused) {
   g_renderer->DrawAuxiliaryPrimitive(this);
 }
-
-// OFFSET: 0x00559BE0
-// FUNCTION: fn_02071
-void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool depthAlpha, float depthStart, float depthEnd) {
-  if (depthAlpha) {
-    primitive->ApplyDepthAlpha();
-  }
-
-  if (queue == 0) {
-    this->first.push_back(primitive);
-  } else if (queue == 1) {
-    this->second.push_back(primitive);
-  }
-}

@@ -4,6 +4,7 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Map/MapSkyMgr.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -73,7 +74,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
 
     primitive->texture = quad.texture;
     primitive->lightmap = quad.lightmapTexture;
-    g_renderer->queues.lightmapped.Submit(primitive, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 0);
 
     return;
   }
