@@ -72,7 +72,7 @@ void CRenderer::DrawBattleFieldIcon(CRenderSystemBase& system) {
   int score = g_session.m_score1 < 0 ? 0 : g_session.m_score1;
   int count = (score > 9) + 1;
   digits[0] = score % 10;
-  digits[1] = score / 10 % 10;
+  digits[1] = (score /= 10) % 10;
   if (width < 2) {
     int x = this->viewport.width - 207;
     for (int i = 0; i < count; ++i) {
@@ -92,7 +92,7 @@ void CRenderer::DrawBattleFieldIcon(CRenderSystemBase& system) {
   score = g_session.m_score2 < 0 ? 0 : g_session.m_score2;
   count = (score > 9) + 1;
   digits[0] = score % 10;
-  digits[1] = score / 10 % 10;
+  digits[1] = (score /= 10) % 10;
   if (width > 1) {
     int x = this->viewport.width - 175;
     for (int i = 0; i < count; ++i) {
