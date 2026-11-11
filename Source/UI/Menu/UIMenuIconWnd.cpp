@@ -217,14 +217,14 @@ void UIMenuIconWnd::Paint() {
   for (auto it = this->menuButtons.begin(); it != this->menuButtons.end(); ++it) {
     if (!g_session.m_showMenuIcon) {
       it->second->Enable(0);
-      if (this->notificationButtons.find(it->first) != this->notificationButtons.end()) {
+      if (this->notificationButtons.end() != this->notificationButtons.find(it->first)) {
         this->notificationButtons[it->first]->Enable(0);
       }
     } else {
       this->DrawNamed(g_renderer->primitives, 0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
       const bool pinned = std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), it->first) != this->notifiedCommands.end();
       it->second->Enable(!pinned);
-      if (this->notificationButtons.find(it->first) != this->notificationButtons.end()) {
+      if (this->notificationButtons.end() != this->notificationButtons.find(it->first)) {
         this->notificationButtons[it->first]->Enable(pinned);
       }
     }
@@ -419,10 +419,10 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(155);
         break;
       case 399:
-        if (Replay::Instance().state == 1) {
-          this->ToggleWindow(198);
-        } else {
+        if (Replay::Instance().state != 1) {
           g_windowMgr.Confirm("REC End please", 0, true, false, 0, "Message", 280, 120, 0);
+        } else {
+          this->ToggleWindow(198);
         }
         break;
       case 370:
