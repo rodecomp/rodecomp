@@ -317,7 +317,7 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
   const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(chip.c_str()));
   const auto& image = bitmap->image;
   const std::uint32_t pixel = image.width > 2 && image.height > 2 ? image.pixels[2 + 2 * image.width] : 0x00FF0000u;
-  this->viewer->textColor = 0xFF000000u | ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
+  this->viewer->backgroundColor = 0xFF000000u | ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
 }
@@ -353,7 +353,7 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELECT_DEAL_TYPE)), 38, 0, 0);
@@ -7707,7 +7707,7 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DO_YOU_AGREE)), 38, 0, 0);
