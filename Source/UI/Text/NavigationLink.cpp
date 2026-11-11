@@ -361,7 +361,7 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
   std::string name;
   int x = 0;
   int y = 0;
-  g_navigationLinkParser->ParseNavigationLink(std::move(value), name, x, y);
+  GetNavigationLinkParser()->ParseNavigationLink(std::move(value), name, x, y);
   char text[128] = {};
 
   if (brackets) {
@@ -946,7 +946,7 @@ void CCreateLineInfo::BuildWindows() {
       x = this->LayoutLink(x, text, segment->type, segment->style);
       break;
     case LINE_SEGMENT_MESSAGE:
-      x = this->LayoutText(x, g_navigationLinkParser->ExpandMessages(text), segment->style);
+      x = this->LayoutText(x, GetNavigationLinkParser()->ExpandMessages(text), segment->style);
       break;
     case LINE_SEGMENT_EMOTION:
       x = this->LayoutEmotion(x, text);

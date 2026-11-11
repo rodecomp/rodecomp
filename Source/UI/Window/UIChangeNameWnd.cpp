@@ -102,7 +102,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      if (g_navigationLinkParser->HasLink(this->m_edit->Text()) == true) {
+      if (GetNavigationLinkParser()->HasLink(this->m_edit->Text()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;

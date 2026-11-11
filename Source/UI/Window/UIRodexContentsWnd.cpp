@@ -388,13 +388,13 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_sender = sender;
   std::string text = body;
 
-  std::pair<bool, std::string> lineBreak = g_navigationLinkParser->RemoveLineBreakTag(this->m_sender);
+  std::pair<bool, std::string> lineBreak = GetNavigationLinkParser()->RemoveLineBreakTag(this->m_sender);
   this->m_hasLineBreak = lineBreak.first;
   this->m_sender = lineBreak.second;
 
-  this->m_title = g_navigationLinkParser->ExpandMessages(this->m_title);
-  this->m_sender = g_navigationLinkParser->ExpandMessages(this->m_sender);
-  text = g_navigationLinkParser->ExpandMessages(text);
+  this->m_title = GetNavigationLinkParser()->ExpandMessages(this->m_title);
+  this->m_sender = GetNavigationLinkParser()->ExpandMessages(this->m_sender);
+  text = GetNavigationLinkParser()->ExpandMessages(text);
 
   this->m_contents = new UIRodexEditCtrl3();
   this->m_contents->SetSize(267, 192);
