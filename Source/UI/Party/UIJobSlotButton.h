@@ -8,11 +8,11 @@ public:
   UIJobSlotButton();
   ~UIJobSlotButton() override;
   void OnLBtnUp(int x, int y) override;
-  __declspec(noinline) void SetSelected(unsigned char value);
+  __declspec(noinline) void SetSelected(bool value);
 
   /* 0120 */ std::string selectedImage;
   /* 0138 */ std::string unselectedImage;
-  /* 0150 */ unsigned char selected;
+  /* 0150 */ bool selected;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

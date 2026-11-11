@@ -16,7 +16,7 @@ void UIJobSlotButton::OnLBtnUp(int x, int y) {
 
 // OFFSET: 0x007C1C50
 // FUNCTION: fn_09318
-void UIJobSlotButton::SetSelected(unsigned char value) {
+void UIJobSlotButton::SetSelected(bool value) {
   this->selected = value;
   this->SetState(0);
 

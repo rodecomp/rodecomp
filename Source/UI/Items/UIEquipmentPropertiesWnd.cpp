@@ -235,8 +235,8 @@ bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx()
     : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), items(), data(),
+      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), onSelect(), binder() {
 }
 
 // OFFSET: 0x00A08680
@@ -265,7 +265,8 @@ template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
+  this->scrollBar->onChange = onChange;
   this->AddChild(this->scrollBar);
 }
 
