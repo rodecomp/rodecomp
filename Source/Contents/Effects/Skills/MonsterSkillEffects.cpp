@@ -168,8 +168,7 @@ void CSprArrowEffect::OnProcess() {
     return;
   }
 
-  CSpriteParticle* particle = reinterpret_cast<CSpriteParticle*>(this->spriteParticle);
-  if (!particle || !particle->action) {
+  if (!this->spriteParticle || !reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->action) {
     return;
   }
 
@@ -177,9 +176,9 @@ void CSprArrowEffect::OnProcess() {
     this->launched = 1;
     this->SetSourceActor(this->sourceActor);
 
-    const float dx = this->sourcePosition[0] - particle->position.x;
-    const float dy = this->sourcePosition[1] - particle->position.y;
-    const float dz = this->sourcePosition[2] - particle->position.z;
+    const float dx = this->sourcePosition[0] - reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.x;
+    const float dy = this->sourcePosition[1] - reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.y;
+    const float dz = this->sourcePosition[2] - reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.z;
     this->velocityX = dx * 0.125f;
     this->velocityY = dy * 0.125f;
     this->velocityZ = dz * 0.125f;
@@ -203,23 +202,23 @@ void CSprArrowEffect::OnProcess() {
     this->heading = angle;
 
     const float inverse = 1.0f / SquareRoot(lengthSquared);
-    particle->position.x += inverse * dx * 2.5f;
-    particle->position.y += inverse * dy * 2.5f;
-    particle->position.z += inverse * dz * 2.5f;
+    reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.x += inverse * dx * 2.5f;
+    reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.y += inverse * dy * 2.5f;
+    reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.z += inverse * dz * 2.5f;
   }
 
-  ++particle->elapsedFrames;
+  ++reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->elapsedFrames;
   const float time = ticks - this->delayFrames;
   if (this->frame > 8) {
-    const int last = static_cast<int>(particle->action->FrameCount(0)) - 1;
+    const int last = static_cast<int>(reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->action->FrameCount(0)) - 1;
     this->spriteFrame = std::min(this->spriteFrame + 1, last);
   }
 
-  reinterpret_cast<float&>(particle->angleBits) =
+  reinterpret_cast<float&>(reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->angleBits) =
       this->heading - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
-  particle->position.x = time * this->velocityX + this->startX + particle->velocity.x;
-  particle->position.y = this->velocityY * time + this->startY + particle->velocity.y;
-  particle->position.z = this->velocityZ * time + this->startZ + particle->velocity.z;
+  reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.x = time * this->velocityX + this->startX + reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->velocity.x;
+  reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.y = this->velocityY * time + this->startY + reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->velocity.y;
+  reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->position.z = this->velocityZ * time + this->startZ + reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->velocity.z;
   if (time > 8.0f / this->travelSpeedScale) {
     this->alive = false;
   }
