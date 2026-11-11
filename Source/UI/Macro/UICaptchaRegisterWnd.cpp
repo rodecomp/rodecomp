@@ -86,7 +86,7 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->m_editCtrl->Background(255, 255, 255);
   this->m_editCtrl->flat = 0;
   this->m_editCtrl->Border(0, 0, 0);
-  this->m_editCtrl->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+  this->m_editCtrl->TextColor(0, 0, 0, 0xFFFFFFFF);
   this->m_editCtrl->preserveInput = 1;
   this->AddChild(this->m_editCtrl);
 
