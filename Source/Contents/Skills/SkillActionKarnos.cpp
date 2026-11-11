@@ -270,10 +270,12 @@ void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x005B0CD0
 // FUNCTION: fn_03347
 void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  constexpr std::array<std::uint8_t, 10> effectSourceArray = CRYPT_NAME("claw_wave", 0x17359BF953C367B3ULL);
-  const std::uint8_t (&effectSource)[10] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<std::uint8_t, 10> effectSourceArray = CRYPT_NAME("claw_wave", 0x17359BF953C367B3ULL);
+    const std::uint8_t (&effectSource)[10] = effectSourceArray._Elems;
+    thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B0EA0
@@ -315,13 +317,19 @@ int CSkillAction_KR_EARTH_STAMP::GetSkillAttackMotion() {
 // OFFSET: 0x005B1250
 // FUNCTION: fn_03351
 void CSkillAction_KR_EARTH_STAMP::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  const auto effectSource = CRYPT_NAME("earth_stamp", 0x3FAF85D995034FD7ULL);
-  thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource.data);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const auto effectSource = CRYPT_NAME("earth_stamp", 0x3FAF85D995034FD7ULL);
+    thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource.data);
+    return effectName.Text();
+  }()), position, 0, -1, 0, 0);
 
-  const char bottomSource[] = CRYPT_CHARS(19, "earth_stamp_bottom", 0x490FFB43A12F0DB9ULL);
-  thread_local EncryptedName<sizeof(bottomSource), 0x490FFB43A12F0DB9ULL> bottomName(bottomSource);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const char bottomSource[] = CRYPT_CHARS(19, "earth_stamp_bottom", 0x490FFB43A12F0DB9ULL);
+    thread_local EncryptedName<sizeof(bottomSource), 0x490FFB43A12F0DB9ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }()), position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B1590
@@ -484,15 +492,19 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_g", 0x2D394DBD0F332733ULL);
-  thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_g", 0x2D394DBD0F332733ULL);
+    thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_g_bottom", 0x151F77EBEBBB2147ULL);
-  thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_g_bottom", 0x151F77EBEBBB2147ULL);
+    thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }()), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 }
@@ -509,15 +521,19 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_y", 0x69FD1D9733D3CFC1ULL);
-  thread_local EncryptedName<sizeof(effectSource), 0x69FD1D9733D3CFC1ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_y", 0x69FD1D9733D3CFC1ULL);
+    thread_local EncryptedName<sizeof(effectSource), 0x69FD1D9733D3CFC1ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_y_bottom", 0xF5657D1F3DE5CDC7ULL);
-  thread_local EncryptedName<sizeof(bottomSource), 0xF5657D1F3DE5CDC7ULL> bottomName(bottomSource);
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_y_bottom", 0xF5657D1F3DE5CDC7ULL);
+    thread_local EncryptedName<sizeof(bottomSource), 0xF5657D1F3DE5CDC7ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }()), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 }
@@ -529,10 +545,12 @@ void CSkillAction_KR_ICE_SPLASH::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  constexpr std::array<std::uint8_t, 11> effectSourceArray = CRYPT_NAME("ice_splash", 0x8B65CD61012B5931ULL);
-  const std::uint8_t (&effectSource)[11] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x8B65CD61012B5931ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<std::uint8_t, 11> effectSourceArray = CRYPT_NAME("ice_splash", 0x8B65CD61012B5931ULL);
+    const std::uint8_t (&effectSource)[11] = effectSourceArray._Elems;
+    thread_local EncryptedName<sizeof(effectSource), 0x8B65CD61012B5931ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B3470
@@ -1093,7 +1111,8 @@ void CSkillAction_KR_IRON_HOWLING::OnSkillEffect(int level, CGameActor* source, 
   constexpr std::array<std::uint8_t, 13> effectSourceArray = CRYPT_NAME("iron_howling", 0x91E147EBBD47C39FULL);
   const std::uint8_t (&effectSource)[13] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B6040
