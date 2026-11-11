@@ -1444,7 +1444,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertIntroContents(int id, std::string
   AdventureGuideText entry;
   entry.first = title;
   entry.second = text;
-  introTexts.try_emplace(id, std::as_const(entry));
+  introPage.texts.try_emplace(id, std::as_const(entry));
   return AdventureGuideResult(true, "good");
 }
 

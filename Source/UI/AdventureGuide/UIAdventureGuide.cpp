@@ -619,18 +619,17 @@ void CUIQuest::Paint() {
 // OFFSET: 0x009DCFF0
 // FUNCTION: fn_14331
 void CUIIntro::OnInit() {
-  const std::string& title = g_adventureGuideMgr->introTitle;
-  const std::map<int, AdventureGuideText>& texts = g_adventureGuideMgr->introTexts;
-  if (texts.empty()) {
+  const AdventureGuideIntroPage& intro = g_adventureGuideMgr->introPage;
+  if (intro.texts.empty()) {
     return;
   }
 
-  for (const auto& [id, text] : texts) {
+  for (const auto& [id, text] : intro.texts) {
     this->contents->data.emplace_back(text.first, text.second);
   }
 
   this->contents->UpdateScrollBar();
-  this->image->SetImage(title);
+  this->image->SetImage(intro.title);
   this->contents->scrollBar->SetHidden(1);
 }
 

@@ -31,6 +31,11 @@ struct AdventureGuideText {
   /* 0018 */ std::string second;
 };
 
+struct AdventureGuideIntroPage {
+  /* 0000 */ std::string title;
+  /* 0018 */ std::map<int, AdventureGuideText> texts;
+};
+
 struct AdventureGuideEpisodeSource {
   /* 0000 */ const char* name;
   /* 0004 */ int order;
@@ -85,8 +90,7 @@ public:
 
   /* 0004 */ CLuaInstance m_lua;
   /* 000C */ std::map<int, AdventureGuideIntro> m_intros;
-  /* 0014 */ std::string introTitle;
-  /* 002C */ std::map<int, AdventureGuideText> introTexts;
+  /* 0014 */ AdventureGuideIntroPage introPage;
   /* 0034 */ std::list<AdventureGuideEpisode> m_episodes;
   /* 003C */ std::map<int, std::map<int, AdventureGuideContents>> episodeContents;
   /* 0044 */ std::map<int, std::map<int, AdventureGuideContents>> questContents;
@@ -106,7 +110,7 @@ public:
   void GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id);
 
   AdventureGuideResult SetIntroTitle(std::string_view title) {
-    introTitle = title;
+    introPage.title = title;
     return AdventureGuideResult(true, "good");
   }
 
@@ -147,8 +151,7 @@ static_assert(offsetof(AdventureGuideEntry, text) == 0xC);
 static_assert(offsetof(AdventureGuideEntry, values) == 0x24);
 static_assert(offsetof(CAdventureGuideMgr, m_lua) == 0x4);
 static_assert(offsetof(CAdventureGuideMgr, m_intros) == 0xC);
-static_assert(offsetof(CAdventureGuideMgr, introTitle) == 0x14);
-static_assert(offsetof(CAdventureGuideMgr, introTexts) == 0x2C);
+static_assert(offsetof(CAdventureGuideMgr, introPage) == 0x14);
 static_assert(offsetof(CAdventureGuideMgr, m_episodes) == 0x34);
 static_assert(offsetof(CAdventureGuideMgr, episodeContents) == 0x3C);
 static_assert(offsetof(CAdventureGuideMgr, itemEntries) == 0x54);
