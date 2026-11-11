@@ -442,7 +442,7 @@ const char* CSkillInfo::DisplayName(LuaScript&, int skillId) {
   }
 
   const char* result = nullptr;
-  return g_session.m_hotkeyScript->Call("GetSkillName", "d>s", skillId, &result) ? result : "Unknown-Skill";
+  return g_session.m_hotkeyScript->Call("GetSkillName", "d>s", skillId, &result) == true ? result : "Unknown-Skill";
 }
 
 // OFFSET: 0x007739F0
@@ -1813,12 +1813,13 @@ void CSkillAction_BO_DUST_EXPLOSION::OnSkillEffect(int level, CGameActor* source
   }
 
   const DustExplosionSpawner spawnDustExplosion{};
+  const vector3d& position = target->render.position;
   for (int delay = 0; delay < 600; delay += 200) {
     const int quadrant = std::ranges::max(std::rand() % 4, 0);
-    if (CEffect* effect = spawnDustExplosion(quadrant, target->render.position)) {
+    if (CEffect* effect = spawnDustExplosion(quadrant, position)) {
       effect->SetDelay(delay);
     }
-    if (CEffect* effect = spawnDustExplosion((quadrant + 2) % 4, target->render.position)) {
+    if (CEffect* effect = spawnDustExplosion((quadrant + 2) % 4, position)) {
       effect->SetDelay(delay);
     }
   }
