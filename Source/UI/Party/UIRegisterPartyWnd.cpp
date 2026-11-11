@@ -83,7 +83,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->AddChild(levelLabel);
   const int level = g_session.m_level;
 
-  this->minimum = new UIEditCtrl();
+  this->minimum = new UIEditCtrl2();
   this->minimum->SetSize(25, 16);
   this->minimum->Move(60, 47);
   this->minimum->invalidatesParent = 1;
@@ -94,7 +94,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->minimum->SetText(number);
   this->AddChild(this->minimum);
 
-  this->maximum = new UIEditCtrl();
+  this->maximum = new UIEditCtrl2();
   this->maximum->SetSize(25, 16);
   this->maximum->Move(96, 47);
   this->maximum->invalidatesParent = 1;
@@ -141,7 +141,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   memoLabel->SetText(LookupMessage(MSI_ADVEN_DUNJUN), 0);
   memoLabel->SetColor(0, 0, 0);
   this->AddChild(memoLabel);
-  this->memo = new UIEditCtrl();
+  this->memo = new UIEditCtrl2();
   this->memo->SetSize(139, 14);
   this->memo->maximum = 24;
   this->memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
