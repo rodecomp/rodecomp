@@ -1615,13 +1615,10 @@ std::string CUIListPage::GetHotkeyText(int tab, int index) {
     g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
   }
 
-  std::string text;
   if (IsNullOrEmpty(keyText)) {
-    text = "";
-  } else {
-    text = keyText;
+    return "";
   }
-  return text;
+  return keyText;
 }
 
 // OFFSET: 0x00A40C30
