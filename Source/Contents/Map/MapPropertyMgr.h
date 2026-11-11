@@ -18,7 +18,8 @@ public:
 class CMapPropertyMgr {
 public:
   // INLINED
-  CMapPropertyMgr() : m_valid(true) {
+  CMapPropertyMgr() {
+    this->m_valid = true;
   }
 
   // INLINED
