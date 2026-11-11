@@ -34,7 +34,6 @@ public:
 
 class CSkillAction_Direction {
 public:
-  void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
   int GetDirection(float angle);
   bool IsValidDirection(unsigned int direction);
 };
@@ -44,6 +43,7 @@ public:
   void SpawnAttack00Effect(int sourceActor, CGameActor* target);
   __declspec(noinline) void SpawnAttack01Effect(int level, CGameActor* source);
   __declspec(noinline) void SpawnAttack02Effect(int level, CGameActor* source);
+  void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
@@ -451,7 +451,7 @@ void CSkillAction_ThunderingExpand::PlayThunderEffect(CGameActor* source) {
 
 // OFFSET: 0x005A5AC0
 // FUNCTION: fn_03160
-void CSkillAction_Direction::SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name) {
+void CSkillAction_DamageWereRaptorForm::SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name) {
   const float angle = ScreenAngle(
     &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
   );
