@@ -1167,7 +1167,9 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
     item.identity[1] = packet->itemId;
     item.identity[3] = 0;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      reinterpret_cast<std::uint32_t*>(item.cards)[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
