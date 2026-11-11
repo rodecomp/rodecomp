@@ -75,18 +75,18 @@ void CCloud::Open() {
 // OFFSET: 0x006FBC30
 // FUNCTION: fn_06918
 void CCloud::ResetParticles() {
-  this->driftX = std::max(0, rand() % 360);
-  this->driftTargetX = std::max(0, rand() % 360);
-  this->driftZ = std::max(0, rand() % 360);
-  this->driftTargetZ = std::max(0, rand() % 360);
-  this->phase = std::max(0, rand() % 360);
+  this->driftX = Random(360);
+  this->driftTargetX = Random(360);
+  this->driftZ = Random(360);
+  this->driftTargetZ = Random(360);
+  this->phase = Random(360);
 
   const int scaleRange = static_cast<int>(this->scaleRange);
-  const int scaleOffset = scaleRange ? std::max(0, rand() % scaleRange) : 0;
+  const int scaleOffset = Random(scaleRange);
   this->alpha = 0.0f;
   this->baseScale = static_cast<float>(scaleOffset) + this->scaleBase;
-  this->fadeInEnd = this->fadeInBase + (this->fadeInRange ? std::max(0, rand() % this->fadeInRange) : 0);
-  this->fadeOutStart = this->fadeOutBase + (this->fadeOutRange ? std::max(0, rand() % this->fadeOutRange) : 0);
+  this->fadeInEnd = this->fadeInBase + Random(this->fadeInRange);
+  this->fadeOutStart = this->fadeOutBase + Random(this->fadeOutRange);
 
   if (!this->particle) {
     return;
@@ -95,11 +95,11 @@ void CCloud::ResetParticles() {
   this->particle->elapsedFrames = 0;
   CParticle* particle = this->particle;
   const int rangeZ = static_cast<int>(this->offsetRangeZ);
-  const int offsetZ = rangeZ ? std::max(0, rand() % rangeZ) : 0;
+  const int offsetZ = Random(rangeZ);
   const int rangeY = static_cast<int>(this->offsetRangeY);
-  const int offsetY = rangeY ? std::max(0, rand() % rangeY) : 0;
+  const int offsetY = Random(rangeY);
   const int rangeX = static_cast<int>(this->offsetRangeX);
-  const int offsetX = rangeX ? std::max(0, rand() % rangeX) : 0;
+  const int offsetX = Random(rangeX);
   particle->offsetX = static_cast<float>(offsetX);
   particle->offsetY = static_cast<float>(offsetY);
   particle->offsetZ = static_cast<float>(offsetZ);
@@ -107,7 +107,7 @@ void CCloud::ResetParticles() {
   this->particle->SetColor(this->red, this->green, this->blue);
   this->particle->alpha = 0;
   this->particle->scale = this->baseScale;
-  this->particle->SetTexture(FormatOwnedString("effect\\cloud%d.tga", std::max(0, rand() % 4) + 1).c_str());
+  this->particle->SetTexture(FormatOwnedString("effect\\cloud%d.tga", Random(4) + 1).c_str());
   this->particle->SetRenderFlag(this->renderFlag);
 }
 
