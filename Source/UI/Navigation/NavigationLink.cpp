@@ -1424,7 +1424,7 @@ int CCreateLineInfo::ParseItemImage(int index) {
     this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
     this->AppendText(match[0].str());
     this->m_newSegment = true;
-    index += static_cast<int>(match[0].length());
+    return index + static_cast<int>(match[0].length());
   }
 
   return index;
