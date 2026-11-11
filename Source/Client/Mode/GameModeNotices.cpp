@@ -4447,7 +4447,7 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
       if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
         ++g_rodexMailStore->unreadCount;
       }
-      mails->insert(std::pair<const std::int64_t, RodexMail>(entry->mailId, mail));
+      mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
     }
 
     offset += entry->titleLength + 0x29;
@@ -5719,17 +5719,17 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       switch (packet->type) {
       case MAIL_INBOX_NORMAL:
         if (g_rodexMailStore->m_mails0.find(entry->mailId) == g_rodexMailStore->m_mails0.end()) {
-          g_rodexMailStore->m_mails0.insert(std::make_pair(entry->mailId, mail));
+          g_rodexMailStore->m_mails0.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
         }
         break;
       case MAIL_INBOX_ACCOUNT:
         if (g_rodexMailStore->m_mails1.find(entry->mailId) == g_rodexMailStore->m_mails1.end()) {
-          g_rodexMailStore->m_mails1.insert(std::make_pair(entry->mailId, mail));
+          g_rodexMailStore->m_mails1.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
         }
         break;
       case MAIL_INBOX_RETURNED:
         if (g_rodexMailStore->m_mails2.find(entry->mailId) == g_rodexMailStore->m_mails2.end()) {
-          g_rodexMailStore->m_mails2.insert(std::make_pair(entry->mailId, mail));
+          g_rodexMailStore->m_mails2.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
         }
         break;
       }
