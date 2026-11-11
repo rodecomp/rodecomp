@@ -478,9 +478,7 @@ void CUIProbabilityTable::Search() {
     found = std::find_if(list->data.begin(), list->data.end(), matches);
   }
 
-  if (found == list->data.end()) {
-    g_windowMgr.Confirm(LookupMessage(MSI_REFINING_BLACKSMITH_BLESSING_MSG3), 0, true, false, 0, "Message", 280, 120, 0);
-  } else {
+  if (found != list->data.end()) {
     HighlightKeyword(found->name, keyword, g_probabilityHighlightBegin, g_probabilityHighlightEnd);
 
     CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* current = this->m_list;
@@ -493,6 +491,8 @@ void CUIProbabilityTable::Search() {
       }
     }
     this->m_list->RebindIndex(this->m_list->selected);
+  } else {
+    g_windowMgr.Confirm(LookupMessage(MSI_REFINING_BLACKSMITH_BLESSING_MSG3), 0, true, false, 0, "Message", 280, 120, 0);
   }
 
   this->m_lastSearch = keyword;
