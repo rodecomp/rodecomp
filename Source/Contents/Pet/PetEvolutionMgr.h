@@ -17,7 +17,8 @@ struct PetEvolutionRecipe {
 class CPetEvolutionMgr {
 public:
   // INLINED
-  CPetEvolutionMgr() : m_isValid(true) {
+  CPetEvolutionMgr() {
+    this->m_isValid = true;
   }
   // INLINED
   virtual ~CPetEvolutionMgr() {
