@@ -178,10 +178,10 @@ void GuildInfo::UpdateMemberExpRatios() {
   }
 
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
-    if (total == 0.0) {
-      it->expRatio = 0.0f;
-    } else {
+    if (total != 0.0) {
       it->expRatio = static_cast<float>(it->exp) * 100.0f / static_cast<float>(total);
+    } else {
+      it->expRatio = 0.0f;
     }
     it->positionName = this->m_positions[it->positionId];
   }

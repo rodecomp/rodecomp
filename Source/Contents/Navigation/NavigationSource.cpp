@@ -125,7 +125,11 @@ NaviDataEntry::NaviDataEntry() : previous(-1), link(nullptr), cost(0) {
 
 // OFFSET: 0x00B880D0
 // FUNCTION: fn_19364
-CNaviData::CNaviData() : info(nullptr), cellX(0), cellY(0), range(50000) {
+CNaviData::CNaviData() {
+  this->info = nullptr;
+  this->cellX = 0;
+  this->cellY = 0;
+  this->range = 50000;
 }
 
 // OFFSET: 0x00B88510
