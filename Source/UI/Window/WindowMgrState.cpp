@@ -40,6 +40,10 @@
 #include <new>
 #include <windows.h>
 
+extern template std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>::operator++() noexcept;
+extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+
 // GLOBAL: gl_24986
 const char* g_uiRectInfoKeySuffix = "\\UIRectInfo";
 
@@ -569,19 +573,33 @@ int UIWindowMgr::CenterOnViewportY(int y) {
 // OFFSET: 0x00AAAE60
 // FUNCTION: fn_17275
 void UIWindowMgr::ConfirmActiveDialog() {
-  UIWindow* window = this->choose3Wnd;
-  if (window || (window = this->sayDialogWnd) != nullptr || (window = this->sayDialogOverlayWnd) != nullptr || (window = this->comboBoxWnd) != nullptr ||
-      (window = this->comboBoxIDWnd) != nullptr || (window = this->chooseWarpWnd) != nullptr || (window = this->makeTargetListWnd) != nullptr ||
-      (window = this->hoverWindow) != nullptr) {
-    window->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
+  UIWindow* window;
+  if (this->choose3Wnd) {
+    window = this->choose3Wnd;
+  } else if (this->sayDialogWnd) {
+    window = this->sayDialogWnd;
+  } else if (this->sayDialogOverlayWnd) {
+    window = this->sayDialogOverlayWnd;
+  } else if (this->comboBoxWnd) {
+    window = this->comboBoxWnd;
+  } else if (this->comboBoxIDWnd) {
+    window = this->comboBoxIDWnd;
+  } else if (this->chooseWarpWnd) {
+    window = this->chooseWarpWnd;
+  } else if (this->makeTargetListWnd) {
+    window = this->makeTargetListWnd;
+  } else if (this->hoverWindow) {
+    window = this->hoverWindow;
+  } else {
+    for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
+      if ((*entry)->IsFrameWnd()) {
+        (*entry)->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
+      }
+    }
     return;
   }
 
-  for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
-    if ((*entry)->IsFrameWnd()) {
-      (*entry)->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    }
-  }
+  window->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00AAAD90
@@ -1135,7 +1153,7 @@ void __stdcall Nullsub369(int, int, int, int) {
 // FUNCTION: fn_17173
 void UIWindowMgr::RestoreHiddenWindows() {
   for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), *it) != this->hiddenWindows.end()) {
+    if (this->hiddenWindows.end() != std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), *it)) {
       (*it)->Show(1);
     }
   }
