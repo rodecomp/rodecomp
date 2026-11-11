@@ -84,7 +84,7 @@ static std::uint32_t g_groundShadowPixels[35 * 35];
 
 // OFFSET: 0x00DA7700
 // FUNCTION: fn_22558
-CPc::CPc() : footprintPosition() {
+CPc::CPc() : footprintPosition({0.0f, 0.0f, 0.0f}) {
   this->outlineColor = 0;
   this->equipSprites.resize(9, nullptr);
   this->equipActions.resize(9, nullptr);
