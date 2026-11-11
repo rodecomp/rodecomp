@@ -492,10 +492,10 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       ITEM_INFO item = g_session.GetExchangeItem(index);
       ExchangeUI::CItemListBox* list = this->firstList;
       const int quantity = item.quantity;
-      if (quantity > 0) {
-        list->AddData(ExchangeUI::CItemData(item, quantity), false);
-      } else {
+      if (quantity <= 0) {
         list->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+      } else {
+        list->AddData(ExchangeUI::CItemData(item, quantity), false);
       }
     }
     this->firstList->UpdateScrollBar();
@@ -505,10 +505,10 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       ITEM_INFO item = g_session.GetItemSlot(index);
       ExchangeUI::CItemListBox* list = this->secondList;
       const int quantity = item.quantity;
-      if (quantity > 0) {
-        list->AddData(ExchangeUI::CItemData(item, quantity), false);
-      } else {
+      if (quantity <= 0) {
         list->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
+      } else {
+        list->AddData(ExchangeUI::CItemData(item, quantity), false);
       }
     }
     this->secondList->UpdateScrollBar();
