@@ -51,16 +51,16 @@ namespace {
 #pragma pack(pop)
 
   struct ReplayShopItemRecord {
-    /* 0000 */ int shopId;
-    /* 0004 */ unsigned int index;
-    /* 0008 */ int itemId;
-    /* 000C */ int first;
-    /* 0010 */ int second;
+    /* 0000 */ int shopId = 0;
+    /* 0004 */ unsigned int index = 0;
+    /* 0008 */ int itemId = 0;
+    /* 000C */ int first = 0;
+    /* 0010 */ int second = 0;
   };
 
   struct ReplayShopFlagRecord {
-    /* 0000 */ int shopId;
-    /* 0004 */ char flag;
+    /* 0000 */ int shopId = 0;
+    /* 0004 */ char flag = 0;
   };
 }
 
@@ -75,9 +75,9 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (2000 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -212,7 +212,11 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       if (player) {
         player->SetMadogearType(this->madogearType);
-        player->SendMsg(nullptr, this->madogearType ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        if (this->madogearType) {
+          player->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else {
+          player->SendMsg(nullptr, 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
       }
       break;
     }
@@ -392,9 +396,9 @@ std::uint32_t CSession::ReadReplayShops(const std::vector<unsigned char>& data) 
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (7500 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -414,14 +418,14 @@ std::uint32_t CSession::ReadReplayShops(const std::vector<unsigned char>& data) 
       break;
     }
     case 7504: {
-      ReplayShopItemRecord record{};
+      ReplayShopItemRecord record;
       std::memcpy(&record, data.data() + offset, header.bytes);
       offset += header.bytes;
       g_session.SetShopItem(record.shopId, record.index, record.itemId, record.first, record.second);
       break;
     }
     case 7505: {
-      ReplayShopFlagRecord record{};
+      ReplayShopFlagRecord record;
       std::memcpy(&record, data.data() + offset, header.bytes);
       offset += header.bytes;
       g_session.SetShopFlag(record.shopId, record.flag);
@@ -528,9 +532,9 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (5000 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -1037,9 +1041,9 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
 
   int waiting;
   int ranking;
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (6500 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -1129,9 +1133,9 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ReplayBlockHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (1000 != header.id) {
     return 0xFFFFFFFF;
   }
