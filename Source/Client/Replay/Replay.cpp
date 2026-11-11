@@ -182,13 +182,13 @@ Replay::Replay() : cipherIndex(0), cipherBase(0), cipherKey(0), recordingState(0
 
 // OFFSET: 0x00B855B0
 // FUNCTION: fn_19326
-bool Replay::WriteSection(int id, std::vector<unsigned char>& bytes, int event) {
+bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int event) {
   if (bytes.empty()) {
     return false;
   }
 
   const std::uint32_t size = static_cast<std::uint32_t>(bytes.size());
-  unsigned char* data = bytes.data();
+  unsigned char* data = const_cast<unsigned char*>(bytes.data());
   if (id <= 0 || id >= 26 || size == 0 || data == nullptr) {
     return false;
   }
@@ -220,19 +220,14 @@ bool Replay::WriteSection(int id, std::vector<unsigned char>& bytes, int event) 
 
 // OFFSET: 0x00B857E0
 // FUNCTION: fn_19327
-int Replay::WriteHeader(int event) {
+__declspec(noinline) int Replay::WriteHeader(int event) {
   this->header.records = this->records;
   this->header.fileOffset = this->fileOffset;
   this->header.closingSignature = 0x52414705;
   this->header.signature = 0x52414705;
   if (event == 11) {
     this->sections[25].id = 111;
-    bool written;
-    {
-      std::vector<unsigned char> metadata = this->BuildMetadata();
-      written = this->WriteSection(2, metadata, 14);
-    }
-    if (!written) {
+    if (!this->WriteSection(2, this->BuildMetadata(), 14)) {
       return 0;
     }
     char text[100] = {};
@@ -246,12 +241,7 @@ int Replay::WriteHeader(int event) {
     if (++g_replayFlushCounter == 1200) {
       this->header.closingSignature = 0x51404605;
       this->header.signature = 0x51404605;
-      bool written;
-      {
-        std::vector<unsigned char> metadata = this->BuildMetadata();
-        written = this->WriteSection(2, metadata, 15);
-      }
-      if (!written) {
+      if (!this->WriteSection(2, this->BuildMetadata(), 15)) {
         return 0;
       }
       std::fseek(this->file, 112, SEEK_SET);
@@ -260,12 +250,7 @@ int Replay::WriteHeader(int event) {
     }
     return 1;
   } else if (event == 13) {
-    bool written;
-    {
-      std::vector<unsigned char> metadata = this->BuildMetadata();
-      written = this->WriteSection(2, metadata, 15);
-    }
-    if (!written) {
+    if (!this->WriteSection(2, this->BuildMetadata(), 15)) {
       return 0;
     }
     std::fseek(this->file, 112, SEEK_SET);
@@ -489,10 +474,10 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
   std::uint32_t offset = 6;
   tag.Read(&data[0]);
 
-  if (tag.id != 0x3B6) {
+  if (0x3B6 != tag.id) {
     offset = 0xFFFFFFFF;
   } else {
-    while (offset < data.size()) {
+    while (data.size() > offset) {
       tag.Read(&data[offset]);
       offset += 6;
 
