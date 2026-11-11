@@ -9570,7 +9570,7 @@ void UIItemCollectionWnd::Paint() {
     this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), true);
   }
 
-  if (this->m_bitmapName.size() != 0) {
+  if (this->m_bitmapName.size() > 0) {
     this->DrawBitmap(10, 11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapName.c_str()))), true);
   }
   this->DrawFittedItemName(90, 10, &this->m_item, this->m_item.identified ? 0 : 0x808080, 0, 12, 0);
