@@ -796,11 +796,12 @@ void UIRenewQuestWnd::Paint() {
       break;
     }
 
+    const unsigned int questId = ids[row];
     const RenewQuestInfo* quest;
     if (this->m_tab == 1) {
-      quest = g_renewQuestMgr->FindRecommendedQuest(ids[row]);
+      quest = g_renewQuestMgr->FindRecommendedQuest(questId);
     } else {
-      quest = g_renewQuestMgr->FindOngoingQuest(ids[row]);
+      quest = g_renewQuestMgr->FindOngoingQuest(questId);
     }
     if (!quest) {
       break;
