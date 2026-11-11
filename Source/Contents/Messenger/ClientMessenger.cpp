@@ -4982,8 +4982,7 @@ int C_Logger(lua_State* state) {
     return 2;
   }
 
-  const std::string text = lua_tostring(state, -1);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FromUtf8(text, g_textCodePage).c_str()), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FromUtf8(lua_tostring(state, -1), g_textCodePage).c_str()), 0xFFFF, 0, 0, 0);
   return 0;
 }
 
