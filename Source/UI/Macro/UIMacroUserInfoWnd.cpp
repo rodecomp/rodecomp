@@ -388,12 +388,12 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
   }
 
   const int value = std::atoi(text.c_str());
-  char digits[16] = {};
+  char buffer[16] = {};
   if (text.size() != 0) {
-    std::memset(digits, '0', text.size());
+    std::memset(buffer, '0', text.size());
   }
 
-  if (value == 0 && text.compare(digits) != 0) {
+  if (value == 0 && text.compare(buffer) != 0) {
     if (notify == 1) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)).c_str()), 0xFF, 0, 0, 0);
     }
@@ -401,14 +401,14 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
   }
 
   text = "1" + this->m_target;
-  char number[16] = {};
+  std::memset(buffer, 0, sizeof(buffer));
   int scale = 1;
   for (std::size_t index = 1; index < text.size(); ++index) {
     scale *= 10;
   }
-  _itoa(scale + value, number, 10);
+  _itoa(scale + value, buffer, 10);
 
-  if (text.compare(number) != 0) {
+  if (text.compare(buffer) != 0) {
     if (notify == 1) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)).c_str()), 0xFF, 0, 0, 0);
     }

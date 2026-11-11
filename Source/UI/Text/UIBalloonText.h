@@ -36,7 +36,7 @@ protected:
   /* 0084 */ std::vector<std::string> m_lines;
   /* 0090 */ std::uint32_t m_textColor;
   /* 0094 */ std::uint32_t m_outlineColor;
-  /* 0098 */ std::uint16_t textFlags;
+  /* 0098 */ unsigned char textFlags;
   /* 009A */ std::uint16_t m_fontMode;
   /* 009C */ unsigned char m_richText;
 };
