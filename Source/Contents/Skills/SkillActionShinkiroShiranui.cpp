@@ -282,7 +282,8 @@ void CSkillAction_SS_HITOUAKUMU::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("hitouakumu"), source->render.position, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("hitouakumu"), source->render.position, 0, -1, 0, 0);
 
   ShuffledSequence shuffle;
   for (int ring = 0; ring < 3; ++ring) {
@@ -290,7 +291,8 @@ void CSkillAction_SS_HITOUAKUMU::OnSkillEffect(int level, CGameActor* source, CG
     const float step = 360.0f / count;
     const std::vector<int> order = shuffle(count);
     for (int index = 0; index < count; ++index) {
-      CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hitouakumu_%02d", ring)), source->render.position, 0, -1, 0, 0);
+      effects = g_effectMgr;
+      CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hitouakumu_%02d", ring)), source->render.position, 0, -1, 0, 0);
       if (effect) {
         const int spread = static_cast<int>(step);
         effect->SetAngle(index * step + (spread ? std::max(0, std::rand() % spread) : 0));
@@ -876,7 +878,8 @@ void CSkillAction_SS_SEKIENHOU::OnSkillEffect(int level, CGameActor* source, CGa
   if (target) {
     g_effectMgr->Spawn(0, 1270, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     const vector3d position = target->render.position;
-    if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_sekienhou"), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_sekienhou"), position.x, position.y, position.z, 0, -1, 0, 0)) {
       effect->SetAngle(270.0f);
     }
   }
