@@ -39,7 +39,7 @@ void CSelectPackageItemMgr::AddTab(int packageId, int tabIndex, const std::strin
 // OFFSET: 0x0061EF60
 // FUNCTION: fn_04446
 std::optional<std::vector<ITEM_INFO>*> CSelectPackageItemMgr::FindItems(int packageId, int tabIndex) {
-  std::map<int, std::map<int, SelectPackageTab>>::iterator package = this->m_packages.find(packageId);
+  std::map<int, std::map<int, SelectPackageTab>>::iterator package = this->m_packages.find(static_cast<int>(packageId));
   if (package != this->m_packages.end()) {
     std::map<int, SelectPackageTab>::iterator tab = package->second.find(tabIndex);
     if (tab != package->second.end()) {
