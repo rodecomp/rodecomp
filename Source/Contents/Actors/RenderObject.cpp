@@ -73,6 +73,8 @@
 #include <timeapi.h>
 #include "Contents/Guild/GuildInfo.h"
 
+extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
+
 
 // GLOBAL: gl_25173
 int g_playerPoisoned;
