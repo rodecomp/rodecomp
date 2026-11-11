@@ -340,19 +340,19 @@ void CSnapMgr::Remove(UIWindow* window) {
     this->root = nullptr;
   }
 
+  SnapObject* removed = nullptr;
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
-    SnapObject* object = *entry;
-    if (object->window != window) {
-      continue;
+    if ((*entry)->window == window) {
+      removed = *entry;
+      delete removed;
+      this->objects.erase(entry);
+      break;
     }
+  }
 
-    delete object;
-    this->objects.erase(entry);
-
+  if (removed) {
     for (auto remaining = this->objects.begin(); remaining != this->objects.end(); ++remaining) {
-      (*remaining)->Remove(object);
+      (*remaining)->Remove(removed);
     }
-
-    return;
   }
 }
