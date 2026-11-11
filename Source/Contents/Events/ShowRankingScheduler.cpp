@@ -36,9 +36,9 @@ CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, con
 // OFFSET: 0x00637C60
 // FUNCTION: fn_04739
 void CShowRankingScheduler::Process(const std::uint64_t& now) {
-  if (*reinterpret_cast<const std::int16_t*>(this->rankingData) != 0) {
+  if (0 != *reinterpret_cast<const std::int16_t*>(this->rankingData)) {
     const std::int64_t count = this->delay;
-    if ((count <=> 0) > 0) {
+    if (count != 0 && count > 0) {
       const std::int64_t due = static_cast<std::int64_t>(this->timestamp) + count * 10000;
       if ((due <=> static_cast<std::int64_t>(now)) <= 0) {
         this->Show();
