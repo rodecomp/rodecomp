@@ -57,7 +57,8 @@ std::string __stdcall StripColorTokens(const char* text, std::uint32_t length) {
     } else if (IsPipeColorToken(current)) {
       current += 3;
     } else {
-      result.push_back(*current++);
+      result.push_back(*current);
+      ++current;
     }
   }
 
