@@ -310,10 +310,7 @@ void CSkill::ShowModel(const char* modelName) {
   this->m_model->CopyVolumes(resource->volumes);
   this->m_model->SetSpeed(1.0f);
   const vector3d position = this->render.position;
-  this->m_model->position[0] = position.x;
-  this->m_model->position[1] = position.y;
-  this->m_model->position[2] = position.z;
-  this->m_model->dirty = 1;
+  this->m_model->SetPosition(position);
   this->m_model->Assign(*resource);
   this->m_model->Animate(3.0);
   this->m_model->occlusionEnabled = 0;

@@ -3,6 +3,7 @@
 
 #include "Contents/Models/ModelNode.h"
 #include "Contents/Models/ModelSpatial.h"
+#include "Utility/Math/Vector3d.h"
 
 class C3dActor {
 public:
@@ -23,6 +24,14 @@ public:
   virtual void SetSpeed(float speed);
   void CopyVolumes(const std::list<ModelVolume*>& source);
   void Fade();
+
+  // INLINED
+  void SetPosition(const vector3d& value) {
+    this->position[0] = value.x;
+    this->position[1] = value.y;
+    this->position[2] = value.z;
+    this->dirty = 1;
+  }
 
   /* 0004 */ float position[3];
   /* 0010 */ float rotation[3];
