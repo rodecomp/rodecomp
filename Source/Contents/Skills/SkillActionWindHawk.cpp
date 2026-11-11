@@ -215,9 +215,11 @@ void CSkillAction_WH_WILD_WALK::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x007A6D20
 // FUNCTION: fn_09041
-void CSkillAction_WH_WILD_WALK::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
+void CSkillAction_WH_WILD_WALK::OnSkillDamage(int sourceActor, CGameActor* target, CGameActor* argument3) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
-    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
     }
   }
