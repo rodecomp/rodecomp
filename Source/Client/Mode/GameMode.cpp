@@ -763,7 +763,7 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (header.type == 17000) {
+  if (17000 == header.type) {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
@@ -5070,7 +5070,7 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (header.type == 15000) {
+  if (15000 == header.type) {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
@@ -5108,7 +5108,7 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (header.type == 10000) {
+  if (10000 == header.type) {
     std::vector<unsigned char> record;
     while (offset < data.size()) {
       header = {};
@@ -5761,7 +5761,7 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
   unsigned offset = 6;
   std::uint32_t guildId = 0;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (header.type == 13000) {
+  if (13000 == header.type) {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
