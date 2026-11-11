@@ -393,15 +393,11 @@ void Replay::CloseFile() {
 
 // OFFSET: 0x00B84340
 // FUNCTION: fn_19314
-ReplayTime Replay::Duration() const {
+std::uint32_t Replay::Duration() const {
   const unsigned seconds = static_cast<int>(this->header.duration) / 1000;
   const unsigned minutes = seconds / 60;
   const unsigned hours = minutes / 60;
-  ReplayTime time;
-  time.hours = static_cast<std::uint16_t>(hours);
-  time.minutes = static_cast<char>(minutes % 60);
-  time.seconds = static_cast<char>(seconds % 60);
-  return time;
+  return MAKELONG(hours, MAKEWORD(minutes % 60, seconds % 60));
 }
 
 // OFFSET: 0x00B843A0

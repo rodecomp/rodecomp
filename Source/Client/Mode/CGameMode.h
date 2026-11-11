@@ -700,7 +700,7 @@ public:
   void RemovePendingItemPickup(int value);
   bool RecordReplayMessage(int message, int value, int first, int second);
   void UpdateReplayActionSpeeds();
-  __declspec(noinline) static struct ReplayTime StopReplayRecording();
+  __declspec(noinline) static std::uint32_t StopReplayRecording();
   std::vector<unsigned char> WriteReplaySkillState();
   bool PickScreenTerrain(int& column, int& row);
   void ReceivePlayerRouteClear(const unsigned char* packet);

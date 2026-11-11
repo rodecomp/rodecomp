@@ -5013,16 +5013,16 @@ int ConfirmGameModeAction96() {
 
 // OFFSET: 0x00CF1060
 // FUNCTION: fn_21425
-ReplayTime CGameMode::StopReplayRecording() {
+std::uint32_t CGameMode::StopReplayRecording() {
   if (Replay::Instance().state == 2) {
     Replay::Instance().SetState(1);
     Replay::Instance().UpdateDuration();
-    const ReplayTime duration = Replay::Instance().Duration();
+    const std::uint32_t duration = Replay::Instance().Duration();
     Replay::Instance().CloseFile();
     return duration;
   }
 
-  return ReplayTime();
+  return 0;
 }
 
 #pragma pack(push, 1)

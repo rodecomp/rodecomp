@@ -2812,10 +2812,13 @@ bool UIReplayControlWnd::RefreshInfo() {
   const int seconds = elapsed % 60;
   const int hours = totalMinutes / 60;
   const int minutes = totalMinutes % 60;
-  const ReplayTime duration = Replay::Instance().Duration();
+  const std::uint32_t duration = Replay::Instance().Duration();
+  const int durationHours = duration & 0xFFFF;
+  const int durationMinutes = static_cast<char>(duration >> 16);
+  const int durationSeconds = static_cast<char>(duration >> 24);
   char text[100];
   std::memset(text, 0, sizeof(text));
-  std::sprintf(text, LookupMessage(MSI_REPLAY_ELAPSEDTIME), hours, minutes, seconds, duration.hours, duration.minutes, duration.seconds);
+  std::sprintf(text, LookupMessage(MSI_REPLAY_ELAPSEDTIME), hours, minutes, seconds, durationHours, durationMinutes, durationSeconds);
   this->m_texts[0]->SetTextFitted(text);
 
   std::memset(text, 0, sizeof(text));
@@ -2919,80 +2922,86 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x008C2460
 // FUNCTION: fn_11820
 bool UISelectReplayDataWnd::UpdateInfo() {
-  if (!ReplayFileList::Instance().Select(this->m_list->selected)) {
+  if (ReplayFileList::Instance().Select(this->m_list->selected)) {
+    if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
+      Replay::Instance().CloseFile();
+      char buffer[100];
+      std::memset(buffer, 0, sizeof(buffer));
+      std::string service;
+      switch (Replay::Instance().header.serviceType) {
+      case 0:
+        service = "Primary";
+        break;
+      case 1:
+        service = "Sakray";
+        break;
+      case 2:
+        service = "Local";
+        break;
+      case 3:
+        service = "InstantEvent";
+        break;
+      case 4:
+        service = "PVP";
+        break;
+      case 5:
+        service = "PK";
+        break;
+      default:
+        service = "Data Error";
+        this->m_texts[0]->SetTextFitted("");
+        this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
+        this->m_texts[2]->SetTextFitted("");
+        this->m_texts[3]->SetTextFitted("");
+        this->m_texts[4]->SetTextFitted("");
+        return false;
+      }
+
+      std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHRVICEINFO), service.c_str());
+      this->m_texts[0]->SetTextFitted(buffer);
+      std::memset(buffer, 0, sizeof(buffer));
+
+      char name[64];
+      std::memcpy(name, Replay::Instance().header.characterName, sizeof(name));
+      std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHARACTERNAME), name);
+      this->m_texts[1]->SetTextFitted(buffer);
+
+      std::sprintf(buffer, LookupMessage(MSI_REPLAY_MAPNAME), Replay::Instance().header.mapName);
+      this->m_texts[2]->SetTextFitted(buffer);
+
+      const std::uint32_t date = Replay::Instance().header.key0;
+      const std::uint32_t time = Replay::Instance().header.key1;
+      const int second = static_cast<char>(time >> 24);
+      const int minute = static_cast<char>(time >> 16);
+      const int hour = static_cast<char>(time >> 8);
+      const int day = static_cast<char>(date >> 24);
+      const int month = static_cast<char>(date >> 16);
+      const int year = date & 0xFFFF;
+      const char* recordTimeFormat = LookupMessage(MSI_REPLAY_RECORDTIME);
+      std::sprintf(buffer, recordTimeFormat, year, month, day, hour, minute, second);
+      this->m_texts[3]->SetTextFitted(buffer);
+
+      const std::uint32_t duration = Replay::Instance().Duration();
+      const int seconds = static_cast<char>(duration >> 24);
+      const int minutes = static_cast<char>(duration >> 16);
+      const int hours = duration & 0xFFFF;
+      const char* playTimeFormat = LookupMessage(MSI_REPLAY_PLAYTIME);
+      std::sprintf(buffer, playTimeFormat, hours, minutes, seconds);
+      this->m_texts[4]->SetTextFitted(buffer);
+    } else {
+      this->m_texts[0]->SetTextFitted("");
+      this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
+      this->m_texts[2]->SetTextFitted("");
+      this->m_texts[3]->SetTextFitted("");
+      this->m_texts[4]->SetTextFitted("");
+    }
+  } else {
     this->m_texts[0]->SetTextFitted("");
     this->m_texts[1]->SetTextFitted("");
     this->m_texts[2]->SetTextFitted("");
     this->m_texts[3]->SetTextFitted("");
     this->m_texts[4]->SetTextFitted("");
-    return true;
   }
-
-  if (ReplayFileList::Instance().Open(32, 0, 0) != 1) {
-    this->m_texts[0]->SetTextFitted("");
-    this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
-    this->m_texts[2]->SetTextFitted("");
-    this->m_texts[3]->SetTextFitted("");
-    this->m_texts[4]->SetTextFitted("");
-    return true;
-  }
-
-  Replay::Instance().CloseFile();
-  char buffer[100];
-  std::memset(buffer, 0, sizeof(buffer));
-  std::string service;
-  switch (Replay::Instance().header.serviceType) {
-  case 0:
-    service = "Primary";
-    break;
-  case 1:
-    service = "Sakray";
-    break;
-  case 2:
-    service = "Local";
-    break;
-  case 3:
-    service = "InstantEvent";
-    break;
-  case 4:
-    service = "PVP";
-    break;
-  case 5:
-    service = "PK";
-    break;
-  default:
-    service = "Data Error";
-    this->m_texts[0]->SetTextFitted("");
-    this->m_texts[1]->SetTextFitted(LookupMessage(MSI_REPLAY_NOREPLAYFILE));
-    this->m_texts[2]->SetTextFitted("");
-    this->m_texts[3]->SetTextFitted("");
-    this->m_texts[4]->SetTextFitted("");
-    return false;
-  }
-
-  std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHRVICEINFO), service.c_str());
-  this->m_texts[0]->SetTextFitted(buffer);
-  std::memset(buffer, 0, sizeof(buffer));
-
-  char name[64];
-  std::memcpy(name, Replay::Instance().header.characterName, sizeof(name));
-  std::sprintf(buffer, LookupMessage(MSI_REPLAY_CHARACTERNAME), name);
-  this->m_texts[1]->SetTextFitted(buffer);
-
-  std::sprintf(buffer, LookupMessage(MSI_REPLAY_MAPNAME), Replay::Instance().header.mapName);
-  this->m_texts[2]->SetTextFitted(buffer);
-
-  const std::uint32_t date = Replay::Instance().header.key0;
-  const std::uint32_t time = Replay::Instance().header.key1;
-  std::sprintf(
-    buffer, LookupMessage(MSI_REPLAY_RECORDTIME), date & 0xFFFF, static_cast<char>(date >> 16), static_cast<char>(date >> 24), static_cast<char>(time >> 8),
-    static_cast<char>(time >> 16), static_cast<char>(time >> 24)
-  );
-  this->m_texts[3]->SetTextFitted(buffer);
-
-  const ReplayTime duration = Replay::Instance().Duration();
-  std::sprintf(buffer, LookupMessage(MSI_REPLAY_PLAYTIME), duration.hours, duration.minutes, duration.seconds);
-  this->m_texts[4]->SetTextFitted(buffer);
   return true;
 }
 

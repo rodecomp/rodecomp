@@ -77,12 +77,6 @@ struct ReplaySection {
 };
 #pragma pack(pop)
 
-struct ReplayTime {
-  /* 0000 */ std::uint16_t hours;
-  /* 0002 */ char minutes;
-  /* 0003 */ char seconds;
-};
-
 class Replay {
 public:
   static Replay& Instance();
@@ -138,7 +132,7 @@ public:
   void ResetPlayback();
   bool Cipher(std::uint32_t bytes, void* data);
   void CloseFile();
-  ReplayTime Duration() const;
+  std::uint32_t Duration() const;
   int FindSection(int id) const;
   int SpeedLevel() const;
   void ResetFile();
@@ -226,7 +220,6 @@ static_assert(sizeof(ReplayHeader) == 0xAA);
 static_assert(offsetof(ReplayHeader, options) == 0x88);
 static_assert(offsetof(ReplayHeader, closingSignature) == 0xA6);
 static_assert(sizeof(ReplaySection) == 0xA);
-static_assert(sizeof(ReplayTime) == 0x4);
 static_assert(sizeof(ReplayFileEntry) == 0x108);
 static_assert(offsetof(ReplayFileList, path) == 0x14);
 static_assert(offsetof(ReplayFileList, pathEnabled) == 0x118);
