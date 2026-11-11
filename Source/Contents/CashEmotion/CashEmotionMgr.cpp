@@ -953,7 +953,7 @@ void CCashEmotionMgr::Search(
       continue;
     }
 
-    if (entry.second.first == this->basePackId) {
+    if (this->basePackId == entry.second.first) {
       this->AddSearchResult(basePack, entry.second);
     } else if (this->IsOwnedPack(entry.second.first)) {
       this->AddSearchResult(ownedPacks, entry.second);
