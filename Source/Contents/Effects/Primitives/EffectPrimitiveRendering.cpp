@@ -2574,7 +2574,7 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
     const float dist = slot.distance;
     const vector3d& center = slot.vecBNow;
     const float y = center.y + 0.0f;
-    int angle = slot.riseAngle + 45;
+    int angle = slot.rotStart + 45;
     if (angle >= 360) {
       angle -= 360;
     }
