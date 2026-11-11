@@ -30,21 +30,8 @@
 #include <cstring>
 #include <format>
 
-using RenewQuestOngoingTree = std::_Tree<std::_Tmap_traits<
-  unsigned int, RenewQuestOngoingInfo, std::less<unsigned int>, std::allocator<std::pair<const unsigned int, RenewQuestOngoingInfo>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestOngoingInfo>, void*>*>
-RenewQuestOngoingTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
-
-using RenewQuestRecommendedTree = std::_Tree<std::_Tmap_traits<
-  unsigned int, RenewQuestRecommendedInfo, std::less<unsigned int>, std::allocator<std::pair<const unsigned int, RenewQuestRecommendedInfo>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestRecommendedInfo>, void*>*>
-RenewQuestRecommendedTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
-
-extern template std::function<void()>& std::function<void()>::operator=(const std::function<void()>&);
-
 // GLOBAL: gl_25249
 static bool s_recommendedTabFirstSelect = true;
-
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>

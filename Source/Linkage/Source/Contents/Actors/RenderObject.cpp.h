@@ -1,0 +1,84 @@
+#pragma once
+
+#include "Contents/Actors/Npc.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "Contents/CombatTypes.h"
+#include "Contents/Skills/SkillId.h"
+#include "Contents/Actors/GrannyGameActor.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Actors/ActorPickNode.h"
+#include "Contents/Effects/Core/MsgEffect.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Session/Session.h"
+#include "Client/Replay/Replay.h"
+#include "Contents/Camera/Camera.h"
+#include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/CharacterRender.h"
+#include "Render/DX9/RendererDX9.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Actors/EffectActors.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Skills/EnergyOrbEffect.h"
+#include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Skills/TetraBallEffect.h"
+#include "Contents/Guild/GuildMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Jobs/JobId.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/World/World.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Actors/Resources/EquipmentResourceMgr.h"
+#include "Contents/World/WorldProximity.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Render/Primitives/LightmappedPrimitive.h"
+#include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Renderer.h"
+#include "Render/Primitives/SpriteQuad.h"
+#include "Render/Primitives/TextureQuad.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/Models/GrannyModelResource.h"
+#include "Resource/Bitmap/EmblemResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/World/TerrainResource.h"
+#include "Script/LuaScript.h"
+#include "Utility/Math/AffineMatrix.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Utility/Math/ScalarConversion.h"
+#include "Contents/Monster/ChampionMonsterMgr.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <list>
+#include <string>
+#include <vector>
+#include <windows.h>
+#include <timeapi.h>
+#include "Contents/Guild/GuildInfo.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
+
+using InstantValueTree = std::_Tree<std::_Tmap_traits<
+  int, std::int64_t, std::less<int>, std::allocator<std::pair<const int, std::int64_t>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::int64_t>, void*>*>
+InstantValueTree::_Find_lower_bound<int>(const int&) const;
+extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);

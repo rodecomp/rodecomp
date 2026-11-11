@@ -38,8 +38,6 @@
 #include <utility>
 #include <vector>
 
-extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
-extern template void std::_List_node<MessengerMember, void*>::_Free_non_head(std::allocator<std::_List_node<MessengerMember, void*>>&, std::_List_node<MessengerMember, void*>*) noexcept;
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 namespace {
@@ -189,7 +187,6 @@ static_assert(sizeof(ItemAddOptionsPacket) == 0x39);
 static_assert(sizeof(ItemAddGradePacket) == 0x3A);
 static_assert(sizeof(ItemListRecord) == 0x22);
 #endif
-
 
 int GetEquipLocationIndex(const int& mask);
 

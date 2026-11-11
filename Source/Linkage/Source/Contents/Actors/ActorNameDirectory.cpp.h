@@ -1,0 +1,11 @@
+#pragma once
+
+#include "Contents/Actors/ActorNameCard.h"
+#include <algorithm>
+
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+using ActorNameCardTree = std::_Tree<std::_Tmap_traits<
+  std::uint32_t, CActorNameCard, std::less<std::uint32_t>,
+  std::allocator<std::pair<const std::uint32_t, CActorNameCard>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::uint32_t, CActorNameCard>, void*>*>
+ActorNameCardTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;

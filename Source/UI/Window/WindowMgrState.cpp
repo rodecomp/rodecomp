@@ -40,16 +40,11 @@
 #include <new>
 #include <windows.h>
 
-extern template std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>&
-std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>::operator++() noexcept;
-#include "Utility/StdWindowListEmplace.h"
-
 // GLOBAL: gl_24986
 const char* g_uiRectInfoKeySuffix = "\\UIRectInfo";
 
 // GLOBAL: gl_24987
 const char* g_shortcutItemKeySuffix = "\\ShortcutItem";
-
 
 // OFFSET: 0x00A911E0
 // FUNCTION: fn_17156

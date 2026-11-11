@@ -8,8 +8,6 @@
 
 #include <new>
 
-extern template std::pair<std::map<HWND, CWebBrowser*>::iterator, bool> std::map<HWND, CWebBrowser*>::insert<std::pair<HWND, CWebBrowser*>>(std::pair<HWND, CWebBrowser*>&&);
-
 namespace {
   constexpr unsigned maximumBrowserCount = 5;
 }

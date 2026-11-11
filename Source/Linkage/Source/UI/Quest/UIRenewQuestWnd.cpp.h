@@ -1,0 +1,47 @@
+#pragma once
+
+#include "UI/Window/UIEnums.h"
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "UI/Quest/UIRenewQuestWnd.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Replay/Replay.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Contents/Navigation/NavigationManager.h"
+#include "Contents/Quest/RenewQuestMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Text/TextContext.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/Text/UITagTextViewer.h"
+#include "UI/Buttons/UIStaticBitmap.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "UI/Window/UITab.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+#include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
+#include <cstddef>
+#include <cstring>
+
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+extern template std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>::operator++() noexcept;

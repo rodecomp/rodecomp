@@ -74,38 +74,8 @@
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
-#include "Utility/StdStringCompare.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/CryptName.h"
-
-using SessionShopTree = std::_Tree<std::_Tmap_traits<
-  int, SessionShop, std::less<int>, std::allocator<std::pair<const int, SessionShop>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, SessionShop>, void*>*>
-SessionShopTree::_Find_lower_bound<int>(const int&) const;
-
-using NameToIdTree = std::_Tree<std::_Tmap_traits<
-  std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
-NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
-
-using ShopEntryTree = std::_Tree<std::_Tmap_traits<
-  int, std::pair<int, int>, std::less<int>, std::allocator<std::pair<const int, std::pair<int, int>>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::pair<int, int>>, void*>*>
-ShopEntryTree::_Find_lower_bound<int>(const int&) const;
-
-using ActorIdTree = std::_Tree<std::_Tset_traits<
-  std::uint32_t, std::less<std::uint32_t>, std::allocator<std::uint32_t>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
-ActorIdTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
-
-extern template void std::vector<std::string>::resize(size_type, const std::string&);
-extern template void std::vector<unsigned char>::_Tidy() noexcept;
-#include "Utility/StdStringMoveAssign.h"
-
-using PendingActorNameTree = std::_Tree<std::_Tset_traits<
-  std::uint32_t, std::less<std::uint32_t>, std::allocator<std::uint32_t>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
-PendingActorNameTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -129,7 +99,6 @@ public:
 
 // GLOBAL: gl_25445
 int g_sessionTableLoadCount;
-
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {

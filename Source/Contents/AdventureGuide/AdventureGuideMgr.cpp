@@ -11,8 +11,6 @@
 #include <optional>
 #include <windows.h>
 
-extern template bool std::string_view::_Equal(std::string_view) const noexcept;
-
 // GLOBAL: gl_24502
 CAdventureGuideMgr* g_adventureGuideMgr;
 
@@ -478,7 +476,6 @@ int InsertQuestSubMenu(lua_State* state) {
   return 2;
 }
 
-
 // OFFSET: 0x0066AF10
 // FUNCTION: fn_05284
 int InsertQuestContents(lua_State* state) {
@@ -573,7 +570,6 @@ int InsertQuestReward(lua_State* state) {
   lua_pushstring(state, "good");
   return 2;
 }
-
 
 // OFFSET: 0x00668EA0
 // FUNCTION: fn_05270
@@ -834,7 +830,6 @@ int InsertWeaponSubMenu(lua_State* state) {
   return 2;
 }
 
-
 // OFFSET: 0x0066B810
 // FUNCTION: fn_05288
 int InsertWeaponContents(lua_State* state) {
@@ -907,7 +902,6 @@ int InsertWeaponContents(lua_State* state) {
   return 2;
 }
 
-
 // OFFSET: 0x0066BB10
 // FUNCTION: fn_05289
 int InsertWeaponObtainGuide(lua_State* state) {
@@ -937,7 +931,6 @@ int InsertWeaponObtainGuide(lua_State* state) {
   lua_pushstring(state, "good");
   return 2;
 }
-
 
 // OFFSET: 0x00668550
 // FUNCTION: fn_05266

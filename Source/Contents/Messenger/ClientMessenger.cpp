@@ -61,20 +61,8 @@
 extern "C" {
 #include <lualib.h>
 }
-#include "Utility/StdStringCompare.h"
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
-
-using SessionShopTree = std::_Tree<std::_Tmap_traits<
-  int, SessionShop, std::less<int>, std::allocator<std::pair<const int, SessionShop>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, SessionShop>, void*>*>
-SessionShopTree::_Find_lower_bound<int>(const int&) const;
-extern template void std::list<CSkillInfo>::clear() noexcept;
-
-using NameToIdTree = std::_Tree<std::_Tmap_traits<
-  std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
-NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
 
 namespace EquipmentProperties {
   class CEquipmentProperties;

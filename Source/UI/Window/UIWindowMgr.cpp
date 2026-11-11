@@ -52,7 +52,6 @@
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Events/UIRoulletteWnd.h"
 #include "Render/DeviceContext/DCSurface.h"
-#include "Utility/StdStringCompare.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -252,11 +251,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 
-using SnapRectangleTree = std::_Tree<std::_Tmap_traits<UIWindow*, SnapRectangle, std::less<UIWindow*>, std::allocator<std::pair<UIWindow* const, SnapRectangle>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<UIWindow* const, SnapRectangle>, void*>*>
-SnapRectangleTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
-extern template void std::vector<std::string>::push_back(std::string&&);
-extern template std::string std::operator+(const std::string&, const char* const);
 using BrowserTree = std::_Tree<std::_Tmap_traits<HWND, CWebBrowser*, std::less<HWND>, std::allocator<std::pair<HWND const, CWebBrowser*>>, false>>;
 template std::_Tree_find_result<std::_Tree_node<std::pair<HWND const, CWebBrowser*>, void*>*>
 BrowserTree::_Find_lower_bound<HWND>(HWND const&) const;
@@ -301,7 +295,6 @@ static_assert(sizeof(AddFriendPacket) == 26);
 static_assert(offsetof(AddFriendPacket, name) == 2);
 }
 
-
 // GLOBAL: gl_24525
 CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 
@@ -310,8 +303,6 @@ UIWindowMgr g_windowMgr;
 
 // GLOBAL: gl_25159
 bool g_windowToggleFlag;
-
-
 
 // GLOBAL: gl_24683
 int g_windowCloseValue;
@@ -654,7 +645,6 @@ UIWindow* UIWindowMgr::LookupWindow(int id) {
   }
   }
 }
-
 
 // OFFSET: 0x00AA1800
 // FUNCTION: fn_17209
@@ -4206,7 +4196,6 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
 
   this->waitDBSaveWnd->Show(1);
 }
-
 
 // OFFSET: 0x00AA35F0
 // FUNCTION: fn_17221
