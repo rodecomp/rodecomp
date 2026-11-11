@@ -243,11 +243,13 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   }
 
   if (strlen(text) != 0) {
-    constexpr std::array<std::uint8_t, 7> source = CRYPT_NAME("%s(%d)", 0xBD2BA1C11B01E73BULL);
-    // GLOBAL: gl_25060
-    thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
     char message[256];
-    sprintf(message, format.Text(), text, errorCode);
+    sprintf(message, []() -> EncryptedName<7, 0xBD2BA1C11B01E73BULL>& {
+      constexpr std::array<std::uint8_t, 7> source = CRYPT_NAME("%s(%d)", 0xBD2BA1C11B01E73BULL);
+      // GLOBAL: gl_25060
+      thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
+      return format;
+    }().Text(), text, packet->errorCode);
     g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
