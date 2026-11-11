@@ -218,7 +218,8 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
   }
 
   if (slot != -1 && runeSet->m_slots.size() > static_cast<unsigned int>(slot) && runeSet->m_slots[slot]) {
-    if (CRuneSystemMgr::GetInstance()->GetSelectTag() != runeSet->GetTagId()) {
+    const int tagId = runeSet->GetTagId();
+    if (tagId != CRuneSystemMgr::GetInstance()->GetSelectTag()) {
       CRuneSystemMgr::GetInstance()->SetSelectTag(this->m_runeSet->GetTagId());
       CRuneSystemMgr::GetInstance()->SendRequest(0xBCB, nullptr, -1);
     }
@@ -670,8 +671,8 @@ void UIRuneSetinfoList::ClearLines() {
 void UIRuneSetinfoList::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc.bmp"))), true);
   for (int row = 0; row < this->visible; ++row) {
-    const int y = this->m_itemHeight * row + 30;
     const int index = this->position + row;
+    const int y = this->m_itemHeight * row + 30;
     if (index >= 0 && this->m_lines.size() > static_cast<unsigned int>(index)) {
       const RuneSetInfoLine& line = this->m_lines[index];
       this->DrawTextAt(line.x, y, line.text.c_str(), 0, 0, 12, line.color, line.bold, 0
