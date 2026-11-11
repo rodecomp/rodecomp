@@ -187,7 +187,7 @@ bool RunWindowAction(bool primary, bool secondary, int value, int limit, std::fu
     return false;
   }
 
-  (primary && (!secondary || value <= limit) ? primaryAction : secondaryAction)();
+  (primary ? (secondary && value > limit ? secondaryAction : primaryAction) : secondaryAction)();
   return true;
 }
 
