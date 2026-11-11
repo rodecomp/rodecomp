@@ -421,8 +421,8 @@ void CStemSpearEffect::Open() {
     emitter->velocity.z = 0.0f;
     this->effectLifetime = 16;
 
-    const float dx = this->sourcePosition[0] - this->position[0];
     const float dz = this->sourcePosition[2] - this->position[2];
+    const float dx = this->sourcePosition[0] - this->position[0];
     float angle =
         static_cast<float>(std::atan2(static_cast<double>(dx), static_cast<double>(-dz))) / 3.141592f * 180.0f;
     if (angle < 0.0f) {
@@ -1346,8 +1346,8 @@ void CFootprintStrEffect::SpawnFootprint() {
 // OFFSET: 0x00713E00
 // FUNCTION: fn_07252
 void CFootprintStrEffect::OnProcess() {
-  const float dx = this->position[0] - this->lastPosition.x;
   const float dy = this->position[1] - this->lastPosition.y;
+  const float dx = this->position[0] - this->lastPosition.x;
   const float dz = this->position[2] - this->lastPosition.z;
   if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->stepDistance) {
     this->SpawnFootprint();
@@ -4454,7 +4454,8 @@ void CCurseOfCubeEffect::OnProcess() {
 // OFFSET: 0x0070C750
 // FUNCTION: fn_07136
 void CSprArrowEffect::Open() {
-  this->spriteParticle = reinterpret_cast<int>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  const vector3d* position = reinterpret_cast<const vector3d*>(this->position);
+  this->spriteParticle = reinterpret_cast<int>(CreateSpriteParticle(position, 0x101));
   if (!this->spriteParticle) {
     return;
   }
@@ -4466,13 +4467,13 @@ void CSprArrowEffect::Open() {
   particle->groupIndex = 1;
   reinterpret_cast<CSpriteParticle*>(this->spriteParticle)->velocity = {0.0f, -10.0f, 0.0f};
   particle = reinterpret_cast<CSpriteParticle*>(this->spriteParticle);
-  particle->position.x = this->position[0];
-  particle->position.y = this->position[1];
-  particle->position.z = this->position[2];
+  particle->position.x = position->x;
+  particle->position.y = position->y;
+  particle->position.z = position->z;
   this->startTick = static_cast<int>(timeGetTime());
-  this->startX = this->position[0];
-  this->startY = this->position[1];
-  this->startZ = this->position[2];
+  this->startX = position->x;
+  this->startY = position->y;
+  this->startZ = position->z;
 }
 
 struct CylinderSlice {
