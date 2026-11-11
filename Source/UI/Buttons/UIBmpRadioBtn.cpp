@@ -3,7 +3,7 @@
 
 // OFFSET: 0x0086C590
 // FUNCTION: fn_11028
-UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0) {
+UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0), m_names{std::string(), std::string(), std::string(), std::string()} {
   this->geometry.state = 0;
   this->geometry.id = 215;
   this->m_hovered = false;
