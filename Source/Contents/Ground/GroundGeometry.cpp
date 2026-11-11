@@ -22,8 +22,7 @@ namespace {
 
   // INLINED
   float InverseLength(float squared) {
-    const float length = SquareRoot(squared);
-    return 1.0f / length;
+    return 1.0f / SquareRoot(squared);
   }
 
   // INLINED
