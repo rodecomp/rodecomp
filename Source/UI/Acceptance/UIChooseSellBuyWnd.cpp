@@ -710,19 +710,20 @@ void UIMenuWnd::Paint() {
   for (int index = 0; index < count; ++index) {
     const std::string& item = this->m_items[index];
     const bool separator = item == g_menuSeparator;
-    const bool afterSeparator = index != 0 && this->m_items[index - 1] == item;
-    if (separator) {
+    int unique = 1;
+    if (index != 0 && this->m_items[index - 1] == item) {
+      unique = 0;
+    }
+    if (!separator) {
+      if (index == this->m_selected) {
+        this->FillRegion(3, this->m_itemHeight / 2 * (unique ? index : index - 1) + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+      }
+      this->DrawTextAt(3, this->m_itemHeight * (unique ? index : index - 1) / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+    } else {
       unsigned lineRed, lineGreen, lineBlue;
       SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, lineRed, lineGreen, lineBlue);
       this->FillRegion(0, this->m_itemHeight * index / 2 + 2, this->geometry.width, 1, RGB(lineRed, lineGreen, lineBlue));
-      continue;
     }
-
-    const int row = afterSeparator ? index - 1 : index;
-    if (index == this->m_selected) {
-      this->FillRegion(3, this->m_itemHeight / 2 * row + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
-    }
-    this->DrawTextAt(3, this->m_itemHeight * row / 2 + 1, item.c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
   }
 }
 
@@ -3994,7 +3995,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
   this->m_resizer->SetDirection(7);
-  this->m_resizer->SetBitmapName(this->m_kind == 234 ? "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp" : "유저인터페이스\\btn_resize.bmp");
+  this->m_resizer->SetBitmapName(this->m_kind != 234 ? "유저인터페이스\\btn_resize.bmp" : "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp");
   this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->m_resizer->Move(width - 17, height - 17);
   this->AddChild(this->m_resizer);
@@ -11571,10 +11572,7 @@ char* UIBookWnd::StripColorCodes(const char* text) {
   while (text < end) {
     const char* const start = ParseColorCode(text, color);
     text = SegmentEnd(start, end);
-    std::string segment;
-    if (start != text) {
-      segment.assign(start, text - start);
-    }
+    std::string segment(start, text);
     if (marker != nullptr && *marker != '\0') {
       segment.insert(0, marker, 3);
     }
@@ -12363,13 +12361,15 @@ void UIExchangeWnd::Paint() {
   this->DrawTextAt(13, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(12, 3, title, 0, 0, 12, 0, 0, 0);
   char partner[128];
-  if (this->partnerId < 1) {
-    std::sprintf(partner, "%s", this->partnerName.c_str());
-  } else if (g_serviceType == 6) {
-    std::sprintf(partner, "%s  Lv%d", this->partnerName.c_str(), this->partnerLevel);
+  if (this->partnerId > 0) {
+    if (g_serviceType == 6) {
+      std::sprintf(partner, "%s  Lv%d", this->partnerName.c_str(), this->partnerLevel);
+    } else {
+      const std::string identifier = ShortcutFilename(this->partnerId);
+      std::sprintf(partner, "%s  Lv%d (%s)", this->partnerName.c_str(), this->partnerLevel, identifier.c_str());
+    }
   } else {
-    const std::string identifier = ShortcutFilename(this->partnerId);
-    std::sprintf(partner, "%s  Lv%d (%s)", this->partnerName.c_str(), this->partnerLevel, identifier.c_str());
+    std::sprintf(partner, "%s", this->partnerName.c_str());
   }
   this->DrawTextAt(63, 4, partner, 0, 0, 12, 0xB4B4B4, 0, 0);
   this->DrawTextAt(62, 3, partner, 0, 0, 12, 0, 0, 0);
@@ -12405,10 +12405,8 @@ void UIExchangeWnd::Paint() {
     const int y = this->m_rowHeight * row;
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), 16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
-    if (item.grade > 0) {
-      const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-      this->DrawBitmap(16, y + 33, bitmap, true);
+    if (0 < item.grade) {
+      this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
     }
     if (row == 9) {
       break;
@@ -12423,10 +12421,8 @@ void UIExchangeWnd::Paint() {
     const int y = this->m_rowHeight * row;
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), 295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
-    if (item.grade > 0) {
-      const std::string path = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-      this->DrawBitmap(295, y + 33, bitmap, true);
+    if (0 < item.grade) {
+      this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
     }
     if (row == 9) {
       break;
