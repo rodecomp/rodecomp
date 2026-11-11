@@ -96,7 +96,7 @@ public:
       }
       this->m_objects.push_back(object);
     } else {
-      object = this->m_free.front();
+      object = static_cast<T*>(this->m_free.front());
       this->m_free.pop_front();
     }
     object->Reset();
@@ -136,14 +136,14 @@ public:
     if (object) {
       auto owned = std::find(this->m_objects.begin(), this->m_objects.end(), object);
       if (owned != this->m_objects.end()) {
-        this->m_free.push_back(static_cast<T*>(object));
+        this->m_free.push_back(object);
       }
     }
   }
 
 protected:
   /* 0004 */ bool m_enabled;
-  /* 0008 */ std::deque<T*> m_free;
+  /* 0008 */ std::deque<NRecycleObject*> m_free;
   /* 001C */ std::list<T*> m_objects;
   /* 0024 */ std::uint32_t m_minimumFree;
   /* 0028 */ CRITICAL_SECTION m_criticalSection;
