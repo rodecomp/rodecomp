@@ -229,16 +229,12 @@ void CPokJukEffect::Render() {
         particle->vertices[3].y = corners[1].y;
         particle->vertices[3].z = corners[1].z;
 
-        switch (this->beats[index]) {
-        case 0:
+        if (this->beats[index] == 0) {
           particle->SetTexture("effect\\pok1.tga");
-          break;
-        case 1:
+        } else if (this->beats[index] == 1) {
           particle->SetTexture("effect\\pok3.tga");
-          break;
-        case 2:
+        } else if (this->beats[index] == 2) {
           particle->SetTexture("effect\\pok2.tga");
-          break;
         }
 
         const int alpha = particle->alpha;

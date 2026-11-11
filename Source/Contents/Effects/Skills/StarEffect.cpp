@@ -75,22 +75,22 @@ void CStarEffect::SetupParticle(CParticle* particle) {
   particle->elapsedFrames = 0;
   particle->alpha = 0;
   for (int index = 0; index < 4; ++index) {
-    state.angles[index] = static_cast<float>(std::max(0, rand() % 360));
+    state.angles[index] = static_cast<float>(Random(360));
   }
 
-  state.lifetime = static_cast<float>(std::max(0, rand() % 200) + 300);
+  state.lifetime = static_cast<float>(Random(200) + 300);
   state.texture = 1.0f;
-  state.baseScale = static_cast<float>(std::max(0, rand() % 20)) + 20.0f;
-  state.phase = static_cast<float>(std::max(0, rand() % 360));
+  state.baseScale = static_cast<float>(Random(20)) + 20.0f;
+  state.phase = static_cast<float>(Random(360));
   particle->SetTexture("effect\\star01.bmp");
 
-  float speedZ = static_cast<float>(std::max(0, rand() % 200) + 25);
-  const float speedY = static_cast<float>(std::max(0, rand() % 10)) + 80.0f;
-  float speedX = static_cast<float>(std::max(0, rand() % 200) + 25);
-  if (std::max(0, rand() % 2) == 0) {
+  float speedZ = static_cast<float>(Random(200) + 25);
+  const float speedY = static_cast<float>(Random(10)) + 80.0f;
+  float speedX = static_cast<float>(Random(200) + 25);
+  if (Random(2) == 0) {
     speedX *= -1.0f;
   }
-  if (std::max(0, rand() % 2) == 0) {
+  if (Random(2) == 0) {
     speedZ *= -1.0f;
   }
 
@@ -154,12 +154,12 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     if (target > current) {
       current = std::min(current + 1, 359);
       if (target < current) {
-        target = current ? std::max(0, rand() % current) : 0;
+        target = Random(current);
       }
     } else {
       current = std::max(0, current - 1);
       if (target >= current) {
-        target = 359 - (current ? std::max(0, rand() % current) : 0);
+        target = 359 - Random(current);
       }
     }
     state.angles[pair * 2 + 1] = static_cast<float>(target);
