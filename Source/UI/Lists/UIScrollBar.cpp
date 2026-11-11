@@ -1005,14 +1005,12 @@ void UITabControl::DrawVerticalTab(int index) {
   }
 
   const int textX = (this->geometry.width - 12) / 2;
-  int x = textX + 1;
+  const int x = textX + 1;
   const int textY = (width - textHeight) / 2 + (width - textHeight) % 2 + y;
-  std::uint32_t color;
   if (this->activeTabIndex == index) {
     this->FillTab(index, 0, y, this->geometry.width, width, this->activeFillColor);
     this->DrawTabBorder(0, y, this->geometry.width, width, this->activeBorderColor);
-    color = this->activeTextColor;
-    x = textX;
+    this->DrawVerticalText(textX, textY, this->labels[index].c_str(), 0, 0, this->fontSize, this->activeTextColor, 0);
   } else {
     if (this->layout == 0) {
       this->FillTab(index, 1, y, this->geometry.width, width, this->inactiveFillColor);
@@ -1023,10 +1021,8 @@ void UITabControl::DrawVerticalTab(int index) {
       this->DrawTabBorder(0, y, this->geometry.width - 1, width, this->inactiveBorderColor);
       this->FillRegion(0, y, 1, width, this->activeBorderColor);
     }
-    color = this->inactiveTextColor;
+    this->DrawVerticalText(x, textY, this->labels[index].c_str(), 0, 0, this->fontSize, this->inactiveTextColor, 0);
   }
-
-  this->DrawVerticalText(x, textY, this->labels[index].c_str(), 0, 0, this->fontSize, color, 0);
 }
 
 // OFFSET: 0x0087F1D0
@@ -1072,13 +1068,11 @@ void UITabControl::DrawHorizontalTab(int index) {
 
   const int textX = (width - textWidth) / 2 + (width - textWidth) % 2 + x;
   const int textY = (this->geometry.height - 12) / 2;
-  int y = textY + 1;
-  std::uint32_t color;
+  const int y = textY + 1;
   if (this->activeTabIndex == index) {
     this->FillTab(index, x, 0, width, this->geometry.height, this->activeFillColor);
     this->DrawTabBorder(x, 0, width, this->geometry.height, this->activeBorderColor);
-    color = this->activeTextColor;
-    y = textY;
+    this->DrawTextAt(textX, textY, this->labels[index].c_str(), 0, 0, this->fontSize, this->activeTextColor, 0, 0);
   } else {
     if (this->layout == 1) {
       this->FillTab(index, x, 1, width, this->geometry.height, this->inactiveFillColor);
@@ -1089,12 +1083,8 @@ void UITabControl::DrawHorizontalTab(int index) {
       this->DrawTabBorder(x, 0, width, this->geometry.height - 1, this->inactiveBorderColor);
       this->FillRegion(x, 0, width, 1, this->activeBorderColor);
     }
-    color = this->inactiveTextColor;
+    this->DrawTextAt(textX, y, this->labels[index].c_str(), 0, 0, this->fontSize, this->inactiveTextColor, 0, 0);
   }
-
-  this->DrawTextAt(textX, y, this->labels[index].c_str(), 0, 0,
-    this->fontSize, color, 0, 0
-  );
 }
 
 // OFFSET: 0x008810C0
@@ -1128,8 +1118,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     }
 
-    const int width = this->TextWidth(text.c_str(), 0, 0, this->fontSize, 0, 0);
-    if ((this->tabPadding + width) * this->TabCount() >= this->parent->geometry.width - 90) {
+    if ((this->tabPadding + this->TextWidth(text.c_str(), 0, 0, this->fontSize, 0, 0)) * this->TabCount() >= this->parent->geometry.width - 90) {
       g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 280, 120, 0);
     } else {
       this->labels[this->activeTabIndex] = text;
@@ -1188,14 +1177,13 @@ void UIChatHisBox::ShiftNaviLinks() {
       }
     }
 
-    if (!removed) {
+    if (removed) {
+      std::vector<UINaviLinkButton*> buttons;
+      buttons.swap(*row);
+      row = this->naviLinks.erase(row);
+    } else {
       ++row;
-      continue;
     }
-
-    std::vector<UINaviLinkButton*> buttons;
-    buttons.swap(*row);
-    row = this->naviLinks.erase(row);
   }
 }
 
@@ -1263,14 +1251,13 @@ void UIChatHisBox::ShiftItemTags() {
       }
     }
 
-    if (!removed) {
+    if (removed) {
+      std::vector<UIItemTagButton*> buttons;
+      buttons.swap(*row);
+      row = this->itemTags.erase(row);
+    } else {
       ++row;
-      continue;
     }
-
-    std::vector<UIItemTagButton*> buttons;
-    buttons.swap(*row);
-    row = this->itemTags.erase(row);
   }
 }
 
