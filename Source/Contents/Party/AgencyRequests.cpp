@@ -3,6 +3,8 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
+extern template std::string& std::string::assign(const char*, std::string::size_type);
+
 // OFFSET: 0x005CB3B0
 // FUNCTION: fn_03657
 void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, std::uint32_t targetCharacterId, std::string targetName) {
@@ -30,9 +32,10 @@ void CAdventurerAgencyMgr::RequestMyParty() {
 // OFFSET: 0x005CBEE0
 // FUNCTION: fn_03661
 void CAdventurerAgencyMgr::RequestList(int page) {
-  const std::uint32_t account = g_session.m_aid;
+  CAsyncWorkMgr* manager = g_asyncWorkMgr;
   const std::uint32_t character = g_session.m_gid;
-  g_asyncWorkMgr->LoadPartyList(
+  const std::uint32_t account = g_session.m_aid;
+  manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(1),
     std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 0, CAdvenPartyInfo(), page, g_windowMgr
   );
@@ -54,9 +57,10 @@ void CAdventurerAgencyMgr::RequestInfo(std::uint32_t queryAccountId) {
 // OFFSET: 0x005CCC00
 // FUNCTION: fn_03665
 void CAdventurerAgencyMgr::RequestRegistration(const CAdvenPartyInfo& info) {
-  const std::uint32_t account = g_session.m_aid;
+  CAsyncWorkMgr* manager = g_asyncWorkMgr;
   const std::uint32_t character = g_session.m_gid;
-  g_asyncWorkMgr->RegisterParty(
+  const std::uint32_t account = g_session.m_aid;
+  manager->RegisterParty(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(0),
     std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), info
   );
@@ -66,9 +70,10 @@ void CAdventurerAgencyMgr::RequestRegistration(const CAdvenPartyInfo& info) {
 // OFFSET: 0x005CCF80
 // FUNCTION: fn_03667
 void CAdventurerAgencyMgr::RequestSearch(const CAdvenPartyInfo& filter, int page) {
-  const std::uint32_t account = g_session.m_aid;
+  CAsyncWorkMgr* manager = g_asyncWorkMgr;
   const std::uint32_t character = g_session.m_gid;
-  g_asyncWorkMgr->LoadPartyList(
+  const std::uint32_t account = g_session.m_aid;
+  manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(3),
     std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 1, filter, page, g_windowMgr
   );
@@ -79,8 +84,9 @@ void CAdventurerAgencyMgr::RequestSearch(const CAdvenPartyInfo& filter, int page
 // FUNCTION: fn_03669
 void CAdventurerAgencyMgr::RequestStop(std::uint32_t masterAccountId) {
   this->masterAccountId = masterAccountId;
+  CAsyncWorkMgr* manager = g_asyncWorkMgr;
   const std::uint32_t account = g_session.m_aid;
-  g_asyncWorkMgr->StopRecruiting(
+  manager->StopRecruiting(
     account, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
     std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), masterAccountId
   );
@@ -96,7 +102,8 @@ void CAdventurerAgencyMgr::RequestStop() {
 
   this->masterAccountId = g_session.m_aid;
   const std::uint32_t account = g_session.m_aid;
-  g_asyncWorkMgr->StopRecruiting(
+  CAsyncWorkMgr* manager = g_asyncWorkMgr;
+  manager->StopRecruiting(
     account, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
     std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), account
   );
