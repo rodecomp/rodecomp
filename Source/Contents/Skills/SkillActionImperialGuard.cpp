@@ -315,7 +315,8 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillHit(int level, CGameActor* source, 
 // FUNCTION: fn_08607
 void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -423,7 +424,8 @@ void CSkillAction_IG_ULTIMATE_SACRIFICE::OnSkillEffect(int level, CGameActor* so
 // FUNCTION: fn_08618
 void CEfstAction_IG_ULTIMATE_SACRIFICE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -752,7 +754,8 @@ int CSkillAction_IG_CROSS_RAIN::GetSkillScopeType() {
 // FUNCTION: fn_08581
 void CSkillObjectAction_IG_CROSS_RAIN::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object && source) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(object->render.accountId, 2462, object->render.position, 0, argument, 0, 0);
   }
 }
