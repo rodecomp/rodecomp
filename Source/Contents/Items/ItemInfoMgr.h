@@ -35,7 +35,8 @@ public:
   };
 
   // INLINED
-  CItemInfoMgr() : m_isValid(true) {
+  CItemInfoMgr() {
+    this->m_isValid = true;
   }
   // INLINED
   virtual ~CItemInfoMgr() {
