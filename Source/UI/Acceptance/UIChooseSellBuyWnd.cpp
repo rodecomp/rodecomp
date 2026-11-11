@@ -2937,12 +2937,12 @@ int UIDisconnectedServerMsgWnd::SendMsg(UIWindow* sender, int message, std::intp
 namespace {
 #pragma pack(push, 1)
   struct ChangeTitlePacket {
-    /* 0000 */ std::uint16_t packetType;
+    /* 0000 */ std::int16_t packetType;
     /* 0002 */ std::int32_t titleId;
   };
 
   struct TakeoffEquipAllPacket {
-    /* 0000 */ std::uint16_t packetType;
+    /* 0000 */ std::int16_t packetType;
     /* 0002 */ std::uint32_t location;
   };
 #pragma pack(pop)
@@ -6258,7 +6258,7 @@ int UINotifyQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 namespace {
 #pragma pack(push, 1)
 struct NCashClosePacket {
-  /* 0000 */ std::uint16_t packetType;
+  /* 0000 */ std::int16_t packetType;
 };
 
 struct NCashBuyHeader {
@@ -6275,7 +6275,7 @@ struct NCashBuyItem {
 };
 
 struct NCashRentalPacket {
-  /* 0000 */ std::uint16_t packetType;
+  /* 0000 */ std::int16_t packetType;
   /* 0002 */ std::uint32_t accountId;
   /* 0006 */ std::int32_t itemId;
 };
@@ -10682,13 +10682,13 @@ void UISecondPasswordInputWnd::ShuffleKeypad()
 namespace {
 #pragma pack(push, 1)
 struct SecondPasswordPacket {
-  /* 0000 */ std::uint16_t packetType;
+  /* 0000 */ std::int16_t packetType;
   /* 0002 */ std::int32_t accountId;
   /* 0006 */ char password[4];
 };
 
 struct SecondPasswordChangePacket {
-  /* 0000 */ std::uint16_t packetType;
+  /* 0000 */ std::int16_t packetType;
   /* 0002 */ std::int32_t accountId;
   /* 0006 */ char password[4];
   /* 000A */ char newPassword[4];
