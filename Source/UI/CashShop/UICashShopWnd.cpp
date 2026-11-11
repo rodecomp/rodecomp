@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Utility/Cipher/EncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -105,10 +106,7 @@ UICashShopWnd::~UICashShopWnd() {
 // OFFSET: 0x007CE110
 // FUNCTION: fn_09523
 EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("구입 리스트에는 한 종류의 아이템만 담을 수 있습니다. [%s] 상품으로 교체하시겠습니까?", 0x3B915119EFD523EFULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x3B915119EFD523EFULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("구입 리스트에는 한 종류의 아이템만 담을 수 있습니다. [%s] 상품으로 교체하시겠습니까?", 0x3B915119EFD523EFULL);
 }
 
 // OFFSET: 0x007CE570

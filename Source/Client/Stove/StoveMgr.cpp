@@ -17,6 +17,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <algorithm>
 #include <array>
@@ -442,28 +443,19 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
 // OFFSET: 0x0063CF60
 // FUNCTION: fn_04786
 EncryptedName<100, 0x3375B1C7DBB5FD55ULL>& AccessTokenFailureMessage::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x3375B1C7DBB5FD55ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x3375B1C7DBB5FD55ULL);
 }
 
 // OFFSET: 0x0063D060
 // FUNCTION: fn_04787
 EncryptedName<100, 0x151F77EBEBBB2147ULL>& UserFailureMessage::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x151F77EBEBBB2147ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x151F77EBEBBB2147ULL);
 }
 
 // OFFSET: 0x0063D160
 // FUNCTION: fn_04788
 EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x4F1791FB1503C713ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("장애가 발생 하였습니다. 게임을 재실행 해주세요. 문제가 지속될 경우, STOVE 고객센터로 문의 바랍니다.", 0x4F1791FB1503C713ULL);
 }
 
 // OFFSET: 0x0063D260
@@ -483,10 +475,7 @@ void InitializeCallback::operator()(Stove::PCSDK::CallbackResult callbackResult)
 // OFFSET: 0x0063D490
 // FUNCTION: fn_04790
 EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("\xBE\xC6\xC0\xCC\xC5\xDB \xB1\xB8\xB8\xC5 \xC8\xAE\xC0\xCE \xC1\xDF\xC0\xD4\xB4\xCF\xB4\xD9....\x0A\x0A\x0A^ff0000\xC1\xD6\xC0\xC7! Stove \xC6\xE4\xC0\xCC\xC1\xF6\xBF\xA1\xBC\xAD \xB1\xB8\xB8\xC5 \xBF\xCF\xB7\xE1 \xC8\xC4 [\xC8\xAE\xC0\xCE] \xB9\xF6\xC6\xB0\xC0\xBB \xB4\xAD\xB7\xAF\xBE\xDF \xBE\xC6\xC0\xCC\xC5\xDB\xC0\xCC \xC1\xA4\xBB\xF3 \xC1\xF6\xB1\xDE\xB5\xCB\xB4\xCF\xB4\xD9.^000000", 0x2D3B15774149D5DDULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("\xBE\xC6\xC0\xCC\xC5\xDB \xB1\xB8\xB8\xC5 \xC8\xAE\xC0\xCE \xC1\xDF\xC0\xD4\xB4\xCF\xB4\xD9....\x0A\x0A\x0A^ff0000\xC1\xD6\xC0\xC7! Stove \xC6\xE4\xC0\xCC\xC1\xF6\xBF\xA1\xBC\xAD \xB1\xB8\xB8\xC5 \xBF\xCF\xB7\xE1 \xC8\xC4 [\xC8\xAE\xC0\xCE] \xB9\xF6\xC6\xB0\xC0\xBB \xB4\xAD\xB7\xAF\xBE\xDF \xBE\xC6\xC0\xCC\xC5\xDB\xC0\xCC \xC1\xA4\xBB\xF3 \xC1\xF6\xB1\xDE\xB5\xCB\xB4\xCF\xB4\xD9.^000000", 0x2D3B15774149D5DDULL);
 }
 
 // OFFSET: 0x0063D5D0

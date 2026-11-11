@@ -19,6 +19,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/Obfuscate.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -707,15 +708,8 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(200, 34);
   this->image->Move(0, 0);
-  this->image->SetImage(std::string([]() {
-    constexpr char bytes[] = {'\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21',
-                                      '\xAA', '\x6C', '\x4B', '\x4A', '\xD8', '\xC9', '\x2D', '\x1C', '\xBA', '\x62', '\x46', '\x48', '\xDE', '\xE1', '\x34',
-                                      '\x09', '\xBC', '\x64', '\x78', '\x43', '\xD2', '\xCE', '\x29', '\x53', '\xBB', '\x64', '\x57', '\x2F'};
-    constexpr EncryptedSource<43> source(bytes);
-    // GLOBAL: gl_25124
-    thread_local EncryptedName<43, 0xD97D5DBDBB2F2709ULL> name(source);
-    return name.Text();
-  }()));
+  // GLOBAL: gl_25124
+  this->image->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list.bmp", 0xD97D5DBDBB2F2709ULL)));
   this->AddChild(this->image);
 
   this->gameItem = new CUIGameItem();
@@ -732,13 +726,8 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->nameText->SetText("");
   this->nameText->SetFitText(1);
   this->nameText->SetAlign(0, 6);
-  this->nameText->SetFont(std::string([]() {
-    constexpr std::uint8_t bytes[] = {0xBA, 0xA2, 0x21, 0xC0, 0xD8, 0x8F};
-    constexpr EncryptedSource<6> source(bytes);
-    // GLOBAL: gl_25123
-    thread_local EncryptedName<6, 0xE7978FB5A94DD7FDULL> name(source);
-    return name.Text();
-  }()));
+  // GLOBAL: gl_25123
+  this->nameText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xE7978FB5A94DD7FDULL)));
   this->nameText->SetFontHeight(12);
   this->nameText->SetBold(0);
   this->nameText->SetColor(0);
@@ -1197,13 +1186,8 @@ void SelectPackageItemBox::CUITabInfo::OnCreate(int width, int height) {
   this->nameText->SetText("");
   this->nameText->SetFitText(0);
   this->nameText->SetAlign(0, 6);
-  this->nameText->SetFont(std::string([]() {
-    constexpr std::uint8_t bytes[] = {0xBA, 0xA2, 0x21, 0xC0, 0xD8, 0x8F};
-    constexpr EncryptedSource<6> source(bytes);
-    // GLOBAL: gl_25123
-    thread_local EncryptedName<6, 0xE7978FB5A94DD7FDULL> name(source);
-    return name.Text();
-  }()));
+  // GLOBAL: gl_25123
+  this->nameText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xE7978FB5A94DD7FDULL)));
   this->nameText->SetFontHeight(12);
   this->nameText->SetBold(0);
   this->nameText->SetColor(0);
@@ -1215,44 +1199,15 @@ void SelectPackageItemBox::CUITabInfo::OnCreate(int width, int height) {
 // OFFSET: 0x00A6FE20
 // FUNCTION: fn_16783
 void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, const ITEM_INFO& data) {
-  std::string image([]() {
-    constexpr std::uint8_t bytes[] = {0x6F, 0xE0, 0xEB, 0x19, 0x1F, 0xDB, 0x96, 0xF2, 0x69, 0xAB, 0xEB, 0x2F, 0x62, 0xAF, 0x0F,
-                                     0x4C, 0xCA, 0x23, 0x4E, 0x80, 0xAB, 0x65, 0x32, 0x5C, 0xC4, 0x2E, 0x4C, 0x86, 0x83, 0x7C,
-                                     0x27, 0x5A, 0xC2, 0x10, 0x47, 0x8A, 0xAC, 0x61, 0x7D, 0x5D, 0xC2, 0x3F, 0x2B};
-    constexpr EncryptedSource<43> source(bytes);
-    thread_local EncryptedName<43, 0x3F5315DFE32B4FAFULL> name(source);
-    return name.Text();
-  }());
+  std::string image(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list.bmp", 0x3F5315DFE32B4FAFULL));
   if (data.expireTime > 0) {
     if (data.optionCount > 0) {
-      image = std::string([]() {
-        constexpr std::uint8_t bytes[] = {0x55, 0x52, 0xD1, 0x49, 0x91, 0xAB, 0x50, 0xFC, 0x53, 0x19, 0xD1, 0x7F, 0xEC,
-                                               0xDF, 0xC9, 0x42, 0xF0, 0x91, 0x74, 0xD0, 0x25, 0x15, 0xF4, 0x52, 0xFE, 0x9C,
-                                               0x76, 0xD6, 0x0D, 0x0C, 0xE1, 0x54, 0xF8, 0xA2, 0x7D, 0xDA, 0x22, 0x11, 0xCA,
-                                               0x45, 0xFC, 0x90, 0x74, 0xC1, 0x30, 0x0B, 0xBB, 0x53, 0xF8, 0x8D, 0x11};
-        constexpr EncryptedSource<51> source(bytes);
-        thread_local EncryptedName<51, 0x31956551B311FD95ULL> name(source);
-        return name.Text();
-      }());
+      image = std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list_timeran.bmp", 0x31956551B311FD95ULL));
     } else {
-      image = std::string([]() {
-        constexpr std::uint8_t bytes[] = {0x51, 0x6C, 0x7D, 0x9B, 0xA5, 0x5F, 0xF8, 0xF4, 0x57, 0x27, 0x7D, 0xAD, 0xD8, 0x2B, 0x61, 0x4A,
-                                         0xF4, 0xAF, 0xD8, 0x02, 0x11, 0xE1, 0x5C, 0x5A, 0xFA, 0xA2, 0xDA, 0x04, 0x39, 0xF8, 0x49, 0x5C,
-                                         0xFC, 0x9C, 0xD1, 0x08, 0x16, 0xE5, 0x62, 0x4D, 0xF8, 0xAE, 0xD8, 0x4F, 0x07, 0xFC, 0x4D, 0x39};
-        constexpr EncryptedSource<48> source(bytes);
-        thread_local EncryptedName<48, 0x393D916561BDC391ULL> name(source);
-        return name.Text();
-      }());
+      image = std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list_time.bmp", 0x393D916561BDC391ULL));
     }
   } else if (data.optionCount > 0) {
-    image = std::string([]() {
-      constexpr std::uint8_t bytes[] = {0xD5, 0x3C, 0x73, 0x3B, 0x27, 0x8D, 0x94, 0x20, 0xD3, 0x77, 0x73, 0x0D, 0x5A, 0xF9, 0x0D, 0x9E, 0x70,
-                                         0xFF, 0xD6, 0xA2, 0x93, 0x33, 0x30, 0x8E, 0x7E, 0xF2, 0xD4, 0xA4, 0xBB, 0x2A, 0x25, 0x88, 0x78, 0xCC,
-                                         0xDF, 0xA8, 0x94, 0x37, 0x0E, 0x9F, 0x74, 0xFD, 0xDC, 0xB1, 0xC9, 0x21, 0x3C, 0x9D, 0x15};
-      constexpr EncryptedSource<49> source(bytes);
-      thread_local EncryptedName<49, 0xED5143E7C1B39315ULL> name(source);
-      return name.Text();
-    }());
+    image = std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list_ranop.bmp", 0xED5143E7C1B39315ULL));
   }
 
   item->image->SetImage(image);

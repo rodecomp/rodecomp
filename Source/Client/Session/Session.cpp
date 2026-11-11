@@ -76,6 +76,7 @@
 #include <timeapi.h>
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -5333,56 +5334,16 @@ void CSession::InitResourceNameTables() {
   bodyJobNames[364] = "HYPER_NOVICE_RIDING";
   bodyJobNames[358] = "SPIRIT_HANDLER";
   bodyJobNames[365] = "SPIRIT_HANDLER_RIDING";
-  bodyJobNames[401] = []() -> EncryptedName<6, 0xB39FA7917BCFBB8DULL>& {
-    constexpr std::array<char, 6> source = CRYPT_NAME("DRUID", 0xB39FA7917BCFBB8DULL);
-    thread_local EncryptedName<sizeof(source), 0xB39FA7917BCFBB8DULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[402] = []() -> EncryptedName<6, 0x8D1D0FF1AF2B13F7ULL>& {
-    constexpr std::array<char, 6> source = CRYPT_NAME("DRUID", 0x8D1D0FF1AF2B13F7ULL);
-    thread_local EncryptedName<sizeof(source), 0x8D1D0FF1AF2B13F7ULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[403] = []() -> EncryptedName<7, 0x4F637DC51307B759ULL>& {
-    constexpr std::array<char, 7> source = CRYPT_NAME("KARNOS", 0x4F637DC51307B759ULL);
-    thread_local EncryptedName<sizeof(source), 0x4F637DC51307B759ULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[404] = []() -> EncryptedName<7, 0x2DCB7567394DC1ABULL>& {
-    constexpr std::array<char, 7> source = CRYPT_NAME("KARNOS", 0x2DCB7567394DC1ABULL);
-    thread_local EncryptedName<sizeof(source), 0x2DCB7567394DC1ABULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[405] = []() -> EncryptedName<7, 0x6BA1C1132F033B75ULL>& {
-    constexpr std::array<char, 7> source = CRYPT_NAME("ALITEA", 0x6BA1C1132F033B75ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[406] = []() -> EncryptedName<9, 0xA12DAB392545D72FULL>& {
-    constexpr std::array<char, 9> source = CRYPT_NAME("WEREWOLF", 0xA12DAB392545D72FULL);
-    thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[407] = []() -> EncryptedName<11, 0x33133B977BCD03CDULL>& {
-    constexpr std::array<char, 11> source = CRYPT_NAME("WERERAPTOR", 0x33133B977BCD03CDULL);
-    thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[408] = []() -> EncryptedName<13, 0x2FEB8739E5975BD1ULL>& {
-    constexpr std::array<char, 13> source = CRYPT_NAME("DRUID_RIDING", 0x2FEB8739E5975BD1ULL);
-    thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[409] = []() -> EncryptedName<14, 0x39A39F87DD5F535BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("KARNOS_RIDING", 0x39A39F87DD5F535BULL);
-    thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
-    return name;
-  }().Text();
-  bodyJobNames[410] = []() -> EncryptedName<14, 0x6FE153231D879777ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("ALITEA_RIDING", 0x6FE153231D879777ULL);
-    thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
-    return name;
-  }().Text();
+  bodyJobNames[401] = OBFUSCATE_ARRAY("DRUID", 0xB39FA7917BCFBB8DULL, char).Text();
+  bodyJobNames[402] = OBFUSCATE_ARRAY("DRUID", 0x8D1D0FF1AF2B13F7ULL, char).Text();
+  bodyJobNames[403] = OBFUSCATE_ARRAY("KARNOS", 0x4F637DC51307B759ULL, char).Text();
+  bodyJobNames[404] = OBFUSCATE_ARRAY("KARNOS", 0x2DCB7567394DC1ABULL, char).Text();
+  bodyJobNames[405] = OBFUSCATE_ARRAY("ALITEA", 0x6BA1C1132F033B75ULL, char).Text();
+  bodyJobNames[406] = OBFUSCATE_ARRAY("WEREWOLF", 0xA12DAB392545D72FULL, char).Text();
+  bodyJobNames[407] = OBFUSCATE_ARRAY("WERERAPTOR", 0x33133B977BCD03CDULL, char).Text();
+  bodyJobNames[408] = OBFUSCATE_ARRAY("DRUID_RIDING", 0x2FEB8739E5975BD1ULL, char).Text();
+  bodyJobNames[409] = OBFUSCATE_ARRAY("KARNOS_RIDING", 0x39A39F87DD5F535BULL, char).Text();
+  bodyJobNames[410] = OBFUSCATE_ARRAY("ALITEA_RIDING", 0x6FE153231D879777ULL, char).Text();
   std::vector<const char*>& imfNames = reinterpret_cast<std::vector<const char*>&>(this->m_imfNames);
   imfNames.resize(28053, "초보자");
   imfNames[1] = "검사";
@@ -5851,461 +5812,97 @@ void CSession::InitResourceNameTables() {
     }
   }
   std::vector<const char*>& shieldJobNames = reinterpret_cast<std::vector<const char*>&>(this->m_shieldJobNames);
-  shieldJobNames.resize(28053, []() -> EncryptedName<14, 0x234977DDB54BC71DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x234977DDB54BC71DULL);
-    thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
-    return name;
-  }().Text());
-  shieldJobNames[0] = []() -> EncryptedName<14, 0xEF6D1D893F2B2DC5ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xEF6D1D893F2B2DC5ULL);
-    thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[1] = []() -> EncryptedName<10, 0xE55723712993051DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xE55723712993051DULL);
-    thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[2] = []() -> EncryptedName<14, 0x793F370985ED674FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x793F370985ED674FULL);
-    thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[3] = []() -> EncryptedName<10, 0xCB1D253B7FE1F563ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0xCB1D253B7FE1F563ULL);
-    thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[4] = []() -> EncryptedName<14, 0x7115D9F973F913C9ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x7115D9F973F913C9ULL);
-    thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[5] = []() -> EncryptedName<10, 0x7321C3814F8799E1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0x7321C3814F8799E1ULL);
-    thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[6] = []() -> EncryptedName<10, 0x7941D76335CFA14FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0x7941D76335CFA14FULL);
-    thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[7] = []() -> EncryptedName<10, 0x0F15B16B5BAFD57FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("기사\\기사", 0x0F15B16B5BAFD57FULL);
-    thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[8] = []() -> EncryptedName<18, 0x7DE349D717D7F123ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x7DE349D717D7F123ULL);
-    thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[9] = []() -> EncryptedName<14, 0x9FED7DA189490D5DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x9FED7DA189490D5DULL);
-    thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[10] = []() -> EncryptedName<14, 0x452FEF0D7FC95565ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0x452FEF0D7FC95565ULL);
-    thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[11] = []() -> EncryptedName<10, 0xF3CB6F7711A71B6DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xF3CB6F7711A71B6DULL);
-    thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[12] = []() -> EncryptedName<14, 0x839B27DF8F5967B3ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x839B27DF8F5967B3ULL);
-    thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[13] = []() -> EncryptedName<28, 0x0F41EBBDA32D1B17ULL>& {
-    constexpr std::array<char, 28> source = CRYPT_NAME("페코페코_기사\\페코페코_기사", 0x0F41EBBDA32D1B17ULL);
-    thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[14] = []() -> EncryptedName<22, 0x2D51E3B7236175EDULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("크루세이더\\크루세이더", 0x2D51E3B7236175EDULL);
-    thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[15] = []() -> EncryptedName<10, 0x176F138D5DD7F365ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x176F138D5DD7F365ULL);
-    thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[16] = []() -> EncryptedName<14, 0xFBD599E117C547C1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0xFBD599E117C547C1ULL);
-    thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[17] = []() -> EncryptedName<10, 0x192D654D29337BE5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x192D654D29337BE5ULL);
-    thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[18] = []() -> EncryptedName<18, 0xB3E307A5F753D5E3ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0xB3E307A5F753D5E3ULL);
-    thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[19] = []() -> EncryptedName<10, 0x79E915E9AF6F55DDULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x79E915E9AF6F55DDULL);
-    thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[20] = []() -> EncryptedName<10, 0xB7AFBD2FD9FD7501ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0xB7AFBD2FD9FD7501ULL);
-    thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[21] = []() -> EncryptedName<34, 0x6BDF334F2BFDAD51ULL>& {
-    constexpr std::array<char, 34> source = CRYPT_NAME("신페코크루세이더\\신페코크루세이더", 0x6BDF334F2BFDAD51ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[23] = []() -> EncryptedName<14, 0x674D9F3975573D41ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x674D9F3975573D41ULL);
-    thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[22] = []() -> EncryptedName<10, 0x0B23D10F2F49D72BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x0B23D10F2F49D72BULL);
-    thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[26] = []() -> EncryptedName<10, 0x136F2F9915D1DBCFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x136F2F9915D1DBCFULL);
-    thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[27] = []() -> EncryptedName<10, 0x114901C7E37F6D49ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x114901C7E37F6D49ULL);
-    thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[28] = []() -> EncryptedName<10, 0x7D5D0F110B6B8371ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x7D5D0F110B6B8371ULL);
-    thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[29] = []() -> EncryptedName<10, 0xADC51BF9C98B413DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0xADC51BF9C98B413DULL);
-    thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[30] = []() -> EncryptedName<10, 0xDF8117FF49CFF551ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0xDF8117FF49CFF551ULL);
-    thread_local EncryptedName<sizeof(source), 0xDF8117FF49CFF551ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[24] = []() -> EncryptedName<10, 0x87E3D1C50D572DEFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0x87E3D1C50D572DEFULL);
-    thread_local EncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[25] = []() -> EncryptedName<10, 0x51BB39B763BBBD8DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("닌자\\닌자", 0x51BB39B763BBBD8DULL);
-    thread_local EncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[164] = []() -> EncryptedName<10, 0xDB27CB557D038759ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("닌자\\닌자", 0xDB27CB557D038759ULL);
-    thread_local EncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[167] = []() -> EncryptedName<14, 0x3FA3AFA7035DE3FFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x3FA3AFA7035DE3FFULL);
-    thread_local EncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[165] = []() -> EncryptedName<10, 0x0399459DAF454F0FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0x0399459DAF454F0FULL);
-    thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[166] = []() -> EncryptedName<10, 0xD5A78DB38D8DAFABULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xD5A78DB38D8DAFABULL);
-    thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[168] = []() -> EncryptedName<14, 0xA597A7E7492B39D5ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0xA597A7E7492B39D5ULL);
-    thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[169] = []() -> EncryptedName<10, 0xFFABE3D5D1BBEF73ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0xFFABE3D5D1BBEF73ULL);
-    thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[170] = []() -> EncryptedName<18, 0xC70319B5EB61598FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0xC70319B5EB61598FULL);
-    thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[171] = []() -> EncryptedName<18, 0x0B8745519B1F95D7ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x0B8745519B1F95D7ULL);
-    thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[172] = []() -> EncryptedName<10, 0x8783C33941E15117ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x8783C33941E15117ULL);
-    thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[173] = []() -> EncryptedName<18, 0x271B45771F83DD9FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("태권소년\\태권소년", 0x271B45771F83DD9FULL);
-    thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[174] = []() -> EncryptedName<14, 0xC1BB8111EDD183E1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xC1BB8111EDD183E1ULL);
-    thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[175] = []() -> EncryptedName<10, 0x1767DDE18D779D8BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x1767DDE18D779D8BULL);
-    thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[176] = []() -> EncryptedName<14, 0x01CB4F1DF9D3F931ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x01CB4F1DF9D3F931ULL);
-    thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[177] = []() -> EncryptedName<10, 0xC5B1BBCD9BC9C997ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0xC5B1BBCD9BC9C997ULL);
-    thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[178] = []() -> EncryptedName<14, 0x792FFD1325418FB5ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x792FFD1325418FB5ULL);
-    thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[179] = []() -> EncryptedName<18, 0x49D33529F1556333ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x49D33529F1556333ULL);
-    thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[180] = []() -> EncryptedName<14, 0xE33F2FF779878559ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0xE33F2FF779878559ULL);
-    thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[181] = []() -> EncryptedName<14, 0xF15F8785CDE369BFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0xF15F8785CDE369BFULL);
-    thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[182] = []() -> EncryptedName<14, 0x81F58DED5D470D01ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x81F58DED5D470D01ULL);
-    thread_local EncryptedName<sizeof(source), 0x81F58DED5D470D01ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[183] = []() -> EncryptedName<14, 0x454D31872BB3EDCBULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x454D31872BB3EDCBULL);
-    thread_local EncryptedName<sizeof(source), 0x454D31872BB3EDCBULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[184] = []() -> EncryptedName<14, 0x41CFCB831F6B6B91ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x41CFCB831F6B6B91ULL);
-    thread_local EncryptedName<sizeof(source), 0x41CFCB831F6B6B91ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[185] = []() -> EncryptedName<14, 0x5DE7712FAB613F75ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x5DE7712FAB613F75ULL);
-    thread_local EncryptedName<sizeof(source), 0x5DE7712FAB613F75ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[186] = []() -> EncryptedName<14, 0x0F97E779A933D917ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x0F97E779A933D917ULL);
-    thread_local EncryptedName<sizeof(source), 0x0F97E779A933D917ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[187] = []() -> EncryptedName<18, 0x3789496BE3E1D141ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x3789496BE3E1D141ULL);
-    thread_local EncryptedName<sizeof(source), 0x3789496BE3E1D141ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[188] = []() -> EncryptedName<14, 0x4331A17F33095FEBULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0x4331A17F33095FEBULL);
-    thread_local EncryptedName<sizeof(source), 0x4331A17F33095FEBULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[189] = []() -> EncryptedName<10, 0xD1056FF94D4D2773ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0xD1056FF94D4D2773ULL);
-    thread_local EncryptedName<sizeof(source), 0xD1056FF94D4D2773ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[190] = []() -> EncryptedName<14, 0xB127A19D775BF751ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xB127A19D775BF751ULL);
-    thread_local EncryptedName<sizeof(source), 0xB127A19D775BF751ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[191] = []() -> EncryptedName<10, 0x0F61499B4973EB5DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0x0F61499B4973EB5DULL);
-    thread_local EncryptedName<sizeof(source), 0x0F61499B4973EB5DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[192] = []() -> EncryptedName<10, 0xB7A96F8701BB4B6BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xB7A96F8701BB4B6BULL);
-    thread_local EncryptedName<sizeof(source), 0xB7A96F8701BB4B6BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[193] = []() -> EncryptedName<10, 0xA31F69E7EFED01C9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xA31F69E7EFED01C9ULL);
-    thread_local EncryptedName<sizeof(source), 0xA31F69E7EFED01C9ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[194] = []() -> EncryptedName<10, 0xBFF5C517A1A77F59ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xBFF5C517A1A77F59ULL);
-    thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[195] = []() -> EncryptedName<14, 0x659975C121557D3DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x659975C121557D3DULL);
-    thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[196] = []() -> EncryptedName<14, 0x85E1F5A7A5755B7FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x85E1F5A7A5755B7FULL);
-    thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[197] = []() -> EncryptedName<10, 0xAD6153019F93A527ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0xAD6153019F93A527ULL);
-    thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[198] = []() -> EncryptedName<10, 0xADADEB4DF7813B55ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0xADADEB4DF7813B55ULL);
-    thread_local EncryptedName<sizeof(source), 0xADADEB4DF7813B55ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[199] = []() -> EncryptedName<10, 0xD9452D81E5CD99C1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0xD9452D81E5CD99C1ULL);
-    thread_local EncryptedName<sizeof(source), 0xD9452D81E5CD99C1ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[200] = []() -> EncryptedName<10, 0xD7A749EB27D5BF6DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xD7A749EB27D5BF6DULL);
-    thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[201] = []() -> EncryptedName<10, 0xB195637DAFCB0D59ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0xB195637DAFCB0D59ULL);
-    thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[202] = []() -> EncryptedName<10, 0xB19D1FA9116F39D3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0xB19D1FA9116F39D3ULL);
-    thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[203] = []() -> EncryptedName<10, 0x9569C9C7E70909AFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x9569C9C7E70909AFULL);
-    thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[204] = []() -> EncryptedName<10, 0xF715514F5961B75BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xF715514F5961B75BULL);
-    thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[205] = []() -> EncryptedName<18, 0x4191BB5531FD3999ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("태권소년\\태권소년", 0x4191BB5531FD3999ULL);
-    thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[206] = []() -> EncryptedName<18, 0xBD2BA1C11B01E73BULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0xBD2BA1C11B01E73BULL);
-    thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[207] = []() -> EncryptedName<18, 0x4B755DB19953E311ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x4B755DB19953E311ULL);
-    thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[208] = []() -> EncryptedName<14, 0xC9712D676B5B3943ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xC9712D676B5B3943ULL);
-    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[209] = []() -> EncryptedName<10, 0xED15938D333D2DB9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xED15938D333D2DB9ULL);
-    thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[210] = []() -> EncryptedName<14, 0xD98F5345098D630DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0xD98F5345098D630DULL);
-    thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[211] = []() -> EncryptedName<10, 0x9B0F234DEFDF7593ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x9B0F234DEFDF7593ULL);
-    thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[212] = []() -> EncryptedName<14, 0xFD69A9B3F311818DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0xFD69A9B3F311818DULL);
-    thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[213] = []() -> EncryptedName<10, 0x7F2DFFC1ABE91F2BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0x7F2DFFC1ABE91F2BULL);
-    thread_local EncryptedName<sizeof(source), 0x7F2DFFC1ABE91F2BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[214] = []() -> EncryptedName<10, 0x1F1D51274373C1FDULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0x1F1D51274373C1FDULL);
-    thread_local EncryptedName<sizeof(source), 0x1F1D51274373C1FDULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[215] = []() -> EncryptedName<14, 0x5DAD2D25D9259B93ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x5DAD2D25D9259B93ULL);
-    thread_local EncryptedName<sizeof(source), 0x5DAD2D25D9259B93ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[216] = []() -> EncryptedName<10, 0x6BF729E30729CF29ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x6BF729E30729CF29ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BF729E30729CF29ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[217] = []() -> EncryptedName<14, 0x3D371F5B0F7F9327ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x3D371F5B0F7F9327ULL);
-    thread_local EncryptedName<sizeof(source), 0x3D371F5B0F7F9327ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[218] = []() -> EncryptedName<10, 0x610F7DD1EFC1C91BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x610F7DD1EFC1C91BULL);
-    thread_local EncryptedName<sizeof(source), 0x610F7DD1EFC1C91BULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[219] = []() -> EncryptedName<18, 0xC5995F4B9FE96B89ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0xC5995F4B9FE96B89ULL);
-    thread_local EncryptedName<sizeof(source), 0xC5995F4B9FE96B89ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[220] = []() -> EncryptedName<10, 0x097389157345A787ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x097389157345A787ULL);
-    thread_local EncryptedName<sizeof(source), 0x097389157345A787ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[221] = []() -> EncryptedName<10, 0x5F93A1C3A7AD7537ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x5F93A1C3A7AD7537ULL);
-    thread_local EncryptedName<sizeof(source), 0x5F93A1C3A7AD7537ULL> name(source);
-    return name;
-  }().Text();
-  shieldJobNames[222] = []() -> EncryptedName<14, 0x875FCDF1E7A1795FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x875FCDF1E7A1795FULL);
-    thread_local EncryptedName<sizeof(source), 0x875FCDF1E7A1795FULL> name(source);
-    return name;
-  }().Text();
+  shieldJobNames.resize(28053, OBFUSCATE_ARRAY("초보자\\초보자", 0x234977DDB54BC71DULL, char).Text());
+  shieldJobNames[0] = OBFUSCATE_ARRAY("초보자\\초보자", 0xEF6D1D893F2B2DC5ULL, char).Text();
+  shieldJobNames[1] = OBFUSCATE_ARRAY("검사\\검사", 0xE55723712993051DULL, char).Text();
+  shieldJobNames[2] = OBFUSCATE_ARRAY("마법사\\마법사", 0x793F370985ED674FULL, char).Text();
+  shieldJobNames[3] = OBFUSCATE_ARRAY("궁수\\궁수", 0xCB1D253B7FE1F563ULL, char).Text();
+  shieldJobNames[4] = OBFUSCATE_ARRAY("성직자\\성직자", 0x7115D9F973F913C9ULL, char).Text();
+  shieldJobNames[5] = OBFUSCATE_ARRAY("상인\\상인", 0x7321C3814F8799E1ULL, char).Text();
+  shieldJobNames[6] = OBFUSCATE_ARRAY("도둑\\도둑", 0x7941D76335CFA14FULL, char).Text();
+  shieldJobNames[7] = OBFUSCATE_ARRAY("기사\\기사", 0x0F15B16B5BAFD57FULL, char).Text();
+  shieldJobNames[8] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x7DE349D717D7F123ULL, char).Text();
+  shieldJobNames[9] = OBFUSCATE_ARRAY("위저드\\위저드", 0x9FED7DA189490D5DULL, char).Text();
+  shieldJobNames[10] = OBFUSCATE_ARRAY("제철공\\제철공", 0x452FEF0D7FC95565ULL, char).Text();
+  shieldJobNames[11] = OBFUSCATE_ARRAY("헌터\\헌터", 0xF3CB6F7711A71B6DULL, char).Text();
+  shieldJobNames[12] = OBFUSCATE_ARRAY("어세신\\어세신", 0x839B27DF8F5967B3ULL, char).Text();
+  shieldJobNames[13] = OBFUSCATE_ARRAY("페코페코_기사\\페코페코_기사", 0x0F41EBBDA32D1B17ULL, char).Text();
+  shieldJobNames[14] = OBFUSCATE_ARRAY("크루세이더\\크루세이더", 0x2D51E3B7236175EDULL, char).Text();
+  shieldJobNames[15] = OBFUSCATE_ARRAY("몽크\\몽크", 0x176F138D5DD7F365ULL, char).Text();
+  shieldJobNames[16] = OBFUSCATE_ARRAY("세이지\\세이지", 0xFBD599E117C547C1ULL, char).Text();
+  shieldJobNames[17] = OBFUSCATE_ARRAY("로그\\로그", 0x192D654D29337BE5ULL, char).Text();
+  shieldJobNames[18] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0xB3E307A5F753D5E3ULL, char).Text();
+  shieldJobNames[19] = OBFUSCATE_ARRAY("바드\\바드", 0x79E915E9AF6F55DDULL, char).Text();
+  shieldJobNames[20] = OBFUSCATE_ARRAY("무희\\무희", 0xB7AFBD2FD9FD7501ULL, char).Text();
+  shieldJobNames[21] = OBFUSCATE_ARRAY("신페코크루세이더\\신페코크루세이더", 0x6BDF334F2BFDAD51ULL, char).Text();
+  shieldJobNames[23] = OBFUSCATE_ARRAY("초보자\\초보자", 0x674D9F3975573D41ULL, char).Text();
+  shieldJobNames[22] = OBFUSCATE_ARRAY("결혼\\결혼", 0x0B23D10F2F49D72BULL, char).Text();
+  shieldJobNames[26] = OBFUSCATE_ARRAY("결혼\\결혼", 0x136F2F9915D1DBCFULL, char).Text();
+  shieldJobNames[27] = OBFUSCATE_ARRAY("결혼\\결혼", 0x114901C7E37F6D49ULL, char).Text();
+  shieldJobNames[28] = OBFUSCATE_ARRAY("결혼\\결혼", 0x7D5D0F110B6B8371ULL, char).Text();
+  shieldJobNames[29] = OBFUSCATE_ARRAY("결혼\\결혼", 0xADC51BF9C98B413DULL, char).Text();
+  shieldJobNames[30] = OBFUSCATE_ARRAY("결혼\\결혼", 0xDF8117FF49CFF551ULL, char).Text();
+  shieldJobNames[24] = OBFUSCATE_ARRAY("건너\\건너", 0x87E3D1C50D572DEFULL, char).Text();
+  shieldJobNames[25] = OBFUSCATE_ARRAY("닌자\\닌자", 0x51BB39B763BBBD8DULL, char).Text();
+  shieldJobNames[164] = OBFUSCATE_ARRAY("닌자\\닌자", 0xDB27CB557D038759ULL, char).Text();
+  shieldJobNames[167] = OBFUSCATE_ARRAY("위저드\\위저드", 0x3FA3AFA7035DE3FFULL, char).Text();
+  shieldJobNames[165] = OBFUSCATE_ARRAY("건너\\건너", 0x0399459DAF454F0FULL, char).Text();
+  shieldJobNames[166] = OBFUSCATE_ARRAY("검사\\검사", 0xD5A78DB38D8DAFABULL, char).Text();
+  shieldJobNames[168] = OBFUSCATE_ARRAY("제철공\\제철공", 0xA597A7E7492B39D5ULL, char).Text();
+  shieldJobNames[169] = OBFUSCATE_ARRAY("상인\\상인", 0xFFABE3D5D1BBEF73ULL, char).Text();
+  shieldJobNames[170] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0xC70319B5EB61598FULL, char).Text();
+  shieldJobNames[171] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x0B8745519B1F95D7ULL, char).Text();
+  shieldJobNames[172] = OBFUSCATE_ARRAY("궁수\\궁수", 0x8783C33941E15117ULL, char).Text();
+  shieldJobNames[173] = OBFUSCATE_ARRAY("태권소년\\태권소년", 0x271B45771F83DD9FULL, char).Text();
+  shieldJobNames[174] = OBFUSCATE_ARRAY("초보자\\초보자", 0xC1BB8111EDD183E1ULL, char).Text();
+  shieldJobNames[175] = OBFUSCATE_ARRAY("몽크\\몽크", 0x1767DDE18D779D8BULL, char).Text();
+  shieldJobNames[176] = OBFUSCATE_ARRAY("성직자\\성직자", 0x01CB4F1DF9D3F931ULL, char).Text();
+  shieldJobNames[177] = OBFUSCATE_ARRAY("몽크\\몽크", 0xC5B1BBCD9BC9C997ULL, char).Text();
+  shieldJobNames[178] = OBFUSCATE_ARRAY("초보자\\초보자", 0x792FFD1325418FB5ULL, char).Text();
+  shieldJobNames[179] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x49D33529F1556333ULL, char).Text();
+  shieldJobNames[180] = OBFUSCATE_ARRAY("마법사\\마법사", 0xE33F2FF779878559ULL, char).Text();
+  shieldJobNames[181] = OBFUSCATE_ARRAY("세이지\\세이지", 0xF15F8785CDE369BFULL, char).Text();
+  shieldJobNames[182] = OBFUSCATE_ARRAY("세이지\\세이지", 0x81F58DED5D470D01ULL, char).Text();
+  shieldJobNames[183] = OBFUSCATE_ARRAY("위저드\\위저드", 0x454D31872BB3EDCBULL, char).Text();
+  shieldJobNames[184] = OBFUSCATE_ARRAY("위저드\\위저드", 0x41CFCB831F6B6B91ULL, char).Text();
+  shieldJobNames[185] = OBFUSCATE_ARRAY("세이지\\세이지", 0x5DE7712FAB613F75ULL, char).Text();
+  shieldJobNames[186] = OBFUSCATE_ARRAY("위저드\\위저드", 0x0F97E779A933D917ULL, char).Text();
+  shieldJobNames[187] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x3789496BE3E1D141ULL, char).Text();
+  shieldJobNames[188] = OBFUSCATE_ARRAY("제철공\\제철공", 0x4331A17F33095FEBULL, char).Text();
+  shieldJobNames[189] = OBFUSCATE_ARRAY("몽크\\몽크", 0xD1056FF94D4D2773ULL, char).Text();
+  shieldJobNames[190] = OBFUSCATE_ARRAY("어세신\\어세신", 0xB127A19D775BF751ULL, char).Text();
+  shieldJobNames[191] = OBFUSCATE_ARRAY("도둑\\도둑", 0x0F61499B4973EB5DULL, char).Text();
+  shieldJobNames[192] = OBFUSCATE_ARRAY("로그\\로그", 0xB7A96F8701BB4B6BULL, char).Text();
+  shieldJobNames[193] = OBFUSCATE_ARRAY("로그\\로그", 0xA31F69E7EFED01C9ULL, char).Text();
+  shieldJobNames[194] = OBFUSCATE_ARRAY("로그\\로그", 0xBFF5C517A1A77F59ULL, char).Text();
+  shieldJobNames[195] = OBFUSCATE_ARRAY("어세신\\어세신", 0x659975C121557D3DULL, char).Text();
+  shieldJobNames[196] = OBFUSCATE_ARRAY("어세신\\어세신", 0x85E1F5A7A5755B7FULL, char).Text();
+  shieldJobNames[197] = OBFUSCATE_ARRAY("무희\\무희", 0xAD6153019F93A527ULL, char).Text();
+  shieldJobNames[198] = OBFUSCATE_ARRAY("바드\\바드", 0xADADEB4DF7813B55ULL, char).Text();
+  shieldJobNames[199] = OBFUSCATE_ARRAY("바드\\바드", 0xD9452D81E5CD99C1ULL, char).Text();
+  shieldJobNames[200] = OBFUSCATE_ARRAY("헌터\\헌터", 0xD7A749EB27D5BF6DULL, char).Text();
+  shieldJobNames[201] = OBFUSCATE_ARRAY("무희\\무희", 0xB195637DAFCB0D59ULL, char).Text();
+  shieldJobNames[202] = OBFUSCATE_ARRAY("무희\\무희", 0xB19D1FA9116F39D3ULL, char).Text();
+  shieldJobNames[203] = OBFUSCATE_ARRAY("바드\\바드", 0x9569C9C7E70909AFULL, char).Text();
+  shieldJobNames[204] = OBFUSCATE_ARRAY("헌터\\헌터", 0xF715514F5961B75BULL, char).Text();
+  shieldJobNames[205] = OBFUSCATE_ARRAY("태권소년\\태권소년", 0x4191BB5531FD3999ULL, char).Text();
+  shieldJobNames[206] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0xBD2BA1C11B01E73BULL, char).Text();
+  shieldJobNames[207] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x4B755DB19953E311ULL, char).Text();
+  shieldJobNames[208] = OBFUSCATE_ARRAY("초보자\\초보자", 0xC9712D676B5B3943ULL, char).Text();
+  shieldJobNames[209] = OBFUSCATE_ARRAY("검사\\검사", 0xED15938D333D2DB9ULL, char).Text();
+  shieldJobNames[210] = OBFUSCATE_ARRAY("마법사\\마법사", 0xD98F5345098D630DULL, char).Text();
+  shieldJobNames[211] = OBFUSCATE_ARRAY("궁수\\궁수", 0x9B0F234DEFDF7593ULL, char).Text();
+  shieldJobNames[212] = OBFUSCATE_ARRAY("성직자\\성직자", 0xFD69A9B3F311818DULL, char).Text();
+  shieldJobNames[213] = OBFUSCATE_ARRAY("상인\\상인", 0x7F2DFFC1ABE91F2BULL, char).Text();
+  shieldJobNames[214] = OBFUSCATE_ARRAY("헌터\\헌터", 0x1F1D51274373C1FDULL, char).Text();
+  shieldJobNames[215] = OBFUSCATE_ARRAY("어세신\\어세신", 0x5DAD2D25D9259B93ULL, char).Text();
+  shieldJobNames[216] = OBFUSCATE_ARRAY("몽크\\몽크", 0x6BF729E30729CF29ULL, char).Text();
+  shieldJobNames[217] = OBFUSCATE_ARRAY("세이지\\세이지", 0x3D371F5B0F7F9327ULL, char).Text();
+  shieldJobNames[218] = OBFUSCATE_ARRAY("로그\\로그", 0x610F7DD1EFC1C91BULL, char).Text();
+  shieldJobNames[219] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0xC5995F4B9FE96B89ULL, char).Text();
+  shieldJobNames[220] = OBFUSCATE_ARRAY("바드\\바드", 0x097389157345A787ULL, char).Text();
+  shieldJobNames[221] = OBFUSCATE_ARRAY("무희\\무희", 0x5F93A1C3A7AD7537ULL, char).Text();
+  shieldJobNames[222] = OBFUSCATE_ARRAY("초보자\\초보자", 0x875FCDF1E7A1795FULL, char).Text();
   shieldJobNames[223] = WizardBodyPath1().Text();
   shieldJobNames[224] = PriestBodyPath1().Text();
   shieldJobNames[225] = AssassinBodyPath1().Text();
@@ -6349,11 +5946,7 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[74] = SwordmanBodyPath3().Text();
   shieldJobNames[75] = MagicianBodyPath3().Text();
   shieldJobNames[76] = ArcherBodyPath3().Text();
-  shieldJobNames[77] = []() -> EncryptedName<14, 0x5FFD7FABB5D1EF57ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x5FFD7FABB5D1EF57ULL);
-    thread_local EncryptedName<sizeof(source), 0x5FFD7FABB5D1EF57ULL> name(source);
-    return name;
-  }().Text();
+  shieldJobNames[77] = OBFUSCATE_ARRAY("성직자\\성직자", 0x5FFD7FABB5D1EF57ULL, char).Text();
   shieldJobNames[78] = MerchantBodyPath3().Text();
   shieldJobNames[79] = ThiefBodyPath4().Text();
   shieldJobNames[80] = KnightBodyPath2().Text();
@@ -7376,1106 +6969,226 @@ EncryptedName<14, 0x85FB93CF2F494179ULL>& AliteaBodyPath2();
 // FUNCTION: fn_24178
 void CSession::InitJobSpriteNames() {
   std::vector<const char*>& jobSpriteNames = reinterpret_cast<std::vector<const char*>&>(this->m_jobSpriteNames);
-  jobSpriteNames.resize(28053, []() -> EncryptedName<14, 0x114901C7E37F6D49ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x114901C7E37F6D49ULL);
-    thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
-    return name;
-  }().Text());
-  jobSpriteNames[0] = []() -> EncryptedName<14, 0xDF8117FF49CFF551ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xDF8117FF49CFF551ULL);
-    thread_local EncryptedName<sizeof(source), 0xDF8117FF49CFF551ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[1] = []() -> EncryptedName<10, 0xADC51BF9C98B413DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xADC51BF9C98B413DULL);
-    thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[2] = []() -> EncryptedName<14, 0x51BB39B763BBBD8DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x51BB39B763BBBD8DULL);
-    thread_local EncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[3] = []() -> EncryptedName<10, 0x87E3D1C50D572DEFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x87E3D1C50D572DEFULL);
-    thread_local EncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[4] = []() -> EncryptedName<14, 0x3FA3AFA7035DE3FFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x3FA3AFA7035DE3FFULL);
-    thread_local EncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[5] = []() -> EncryptedName<10, 0xDB27CB557D038759ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0xDB27CB557D038759ULL);
-    thread_local EncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[6] = []() -> EncryptedName<10, 0xB3E307A5F753D5E3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0xB3E307A5F753D5E3ULL);
-    thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[7] = []() -> EncryptedName<10, 0x192D654D29337BE5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("기사\\기사", 0x192D654D29337BE5ULL);
-    thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[8] = []() -> EncryptedName<18, 0xB7AFBD2FD9FD7501ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0xB7AFBD2FD9FD7501ULL);
-    thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[9] = []() -> EncryptedName<14, 0x79E915E9AF6F55DDULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x79E915E9AF6F55DDULL);
-    thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[10] = []() -> EncryptedName<14, 0x674D9F3975573D41ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0x674D9F3975573D41ULL);
-    thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[11] = []() -> EncryptedName<10, 0x6BDF334F2BFDAD51ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0x6BDF334F2BFDAD51ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[12] = []() -> EncryptedName<14, 0x136F2F9915D1DBCFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x136F2F9915D1DBCFULL);
-    thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[13] = []() -> EncryptedName<28, 0x0B23D10F2F49D72BULL>& {
-    constexpr std::array<char, 28> source = CRYPT_NAME("페코페코_기사\\페코페코_기사", 0x0B23D10F2F49D72BULL);
-    thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[14] = []() -> EncryptedName<22, 0x1767DDE18D779D8BULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("크루세이더\\크루세이더", 0x1767DDE18D779D8BULL);
-    thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[15] = []() -> EncryptedName<10, 0xC1BB8111EDD183E1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0xC1BB8111EDD183E1ULL);
-    thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[16] = []() -> EncryptedName<14, 0xC5B1BBCD9BC9C997ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0xC5B1BBCD9BC9C997ULL);
-    thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[17] = []() -> EncryptedName<10, 0x01CB4F1DF9D3F931ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x01CB4F1DF9D3F931ULL);
-    thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[18] = []() -> EncryptedName<18, 0x49D33529F1556333ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x49D33529F1556333ULL);
-    thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[19] = []() -> EncryptedName<10, 0x792FFD1325418FB5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x792FFD1325418FB5ULL);
-    thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[20] = []() -> EncryptedName<10, 0xF15F8785CDE369BFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0xF15F8785CDE369BFULL);
-    thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[21] = []() -> EncryptedName<34, 0xE33F2FF779878559ULL>& {
-    constexpr std::array<char, 34> source = CRYPT_NAME("신페코크루세이더\\신페코크루세이더", 0xE33F2FF779878559ULL);
-    thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[23] = []() -> EncryptedName<14, 0xD5A78DB38D8DAFABULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xD5A78DB38D8DAFABULL);
-    thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[22] = []() -> EncryptedName<10, 0x0399459DAF454F0FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x0399459DAF454F0FULL);
-    thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[26] = []() -> EncryptedName<10, 0xFFABE3D5D1BBEF73ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0xFFABE3D5D1BBEF73ULL);
-    thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[27] = []() -> EncryptedName<10, 0xA597A7E7492B39D5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0xA597A7E7492B39D5ULL);
-    thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[28] = []() -> EncryptedName<10, 0x0B8745519B1F95D7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x0B8745519B1F95D7ULL);
-    thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[29] = []() -> EncryptedName<10, 0xC70319B5EB61598FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0xC70319B5EB61598FULL);
-    thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[30] = []() -> EncryptedName<10, 0x271B45771F83DD9FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("결혼\\결혼", 0x271B45771F83DD9FULL);
-    thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[24] = []() -> EncryptedName<10, 0x8783C33941E15117ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0x8783C33941E15117ULL);
-    thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[25] = []() -> EncryptedName<10, 0x0F61499B4973EB5DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("닌자\\닌자", 0x0F61499B4973EB5DULL);
-    thread_local EncryptedName<sizeof(source), 0x0F61499B4973EB5DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[164] = []() -> EncryptedName<10, 0xB127A19D775BF751ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("닌자\\닌자", 0xB127A19D775BF751ULL);
-    thread_local EncryptedName<sizeof(source), 0xB127A19D775BF751ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[167] = []() -> EncryptedName<18, 0xA31F69E7EFED01C9ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울링커\\소울링커", 0xA31F69E7EFED01C9ULL);
-    thread_local EncryptedName<sizeof(source), 0xA31F69E7EFED01C9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[165] = []() -> EncryptedName<10, 0xB7A96F8701BB4B6BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0xB7A96F8701BB4B6BULL);
-    thread_local EncryptedName<sizeof(source), 0xB7A96F8701BB4B6BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[166] = []() -> EncryptedName<10, 0x659975C121557D3DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0x659975C121557D3DULL);
-    thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[168] = []() -> EncryptedName<14, 0xBFF5C517A1A77F59ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0xBFF5C517A1A77F59ULL);
-    thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[169] = []() -> EncryptedName<10, 0xAD6153019F93A527ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0xAD6153019F93A527ULL);
-    thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[170] = []() -> EncryptedName<14, 0x85E1F5A7A5755B7FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제네릭\\제네릭", 0x85E1F5A7A5755B7FULL);
-    thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[171] = []() -> EncryptedName<18, 0x454D31872BB3EDCBULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x454D31872BB3EDCBULL);
-    thread_local EncryptedName<sizeof(source), 0x454D31872BB3EDCBULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[172] = []() -> EncryptedName<10, 0x81F58DED5D470D01ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x81F58DED5D470D01ULL);
-    thread_local EncryptedName<sizeof(source), 0x81F58DED5D470D01ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[173] = []() -> EncryptedName<10, 0x5DE7712FAB613F75ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("권성\\권성", 0x5DE7712FAB613F75ULL);
-    thread_local EncryptedName<sizeof(source), 0x5DE7712FAB613F75ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[174] = []() -> EncryptedName<14, 0x41CFCB831F6B6B91ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x41CFCB831F6B6B91ULL);
-    thread_local EncryptedName<sizeof(source), 0x41CFCB831F6B6B91ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[175] = []() -> EncryptedName<10, 0x3789496BE3E1D141ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x3789496BE3E1D141ULL);
-    thread_local EncryptedName<sizeof(source), 0x3789496BE3E1D141ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[176] = []() -> EncryptedName<14, 0x0F97E779A933D917ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x0F97E779A933D917ULL);
-    thread_local EncryptedName<sizeof(source), 0x0F97E779A933D917ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[177] = []() -> EncryptedName<10, 0xD1056FF94D4D2773ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("슈라\\슈라", 0xD1056FF94D4D2773ULL);
-    thread_local EncryptedName<sizeof(source), 0xD1056FF94D4D2773ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[178] = []() -> EncryptedName<14, 0x4331A17F33095FEBULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x4331A17F33095FEBULL);
-    thread_local EncryptedName<sizeof(source), 0x4331A17F33095FEBULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[179] = []() -> EncryptedName<18, 0x4B755DB19953E311ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("아크비숍\\아크비숍", 0x4B755DB19953E311ULL);
-    thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[180] = []() -> EncryptedName<14, 0xBD2BA1C11B01E73BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0xBD2BA1C11B01E73BULL);
-    thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[181] = []() -> EncryptedName<14, 0xED15938D333D2DB9ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0xED15938D333D2DB9ULL);
-    thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[182] = []() -> EncryptedName<14, 0xC9712D676B5B3943ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("소서러\\소서러", 0xC9712D676B5B3943ULL);
-    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[183] = []() -> EncryptedName<10, 0x9B0F234DEFDF7593ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("워록\\워록", 0x9B0F234DEFDF7593ULL);
-    thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[184] = []() -> EncryptedName<14, 0xD98F5345098D630DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0xD98F5345098D630DULL);
-    thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[185] = []() -> EncryptedName<14, 0x7F2DFFC1ABE91F2BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x7F2DFFC1ABE91F2BULL);
-    thread_local EncryptedName<sizeof(source), 0x7F2DFFC1ABE91F2BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[186] = []() -> EncryptedName<14, 0xFD69A9B3F311818DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0xFD69A9B3F311818DULL);
-    thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[187] = []() -> EncryptedName<18, 0xD9452D81E5CD99C1ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0xD9452D81E5CD99C1ULL);
-    thread_local EncryptedName<sizeof(source), 0xD9452D81E5CD99C1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[188] = []() -> EncryptedName<14, 0xADADEB4DF7813B55ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0xADADEB4DF7813B55ULL);
-    thread_local EncryptedName<sizeof(source), 0xADADEB4DF7813B55ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[189] = []() -> EncryptedName<10, 0xB195637DAFCB0D59ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0xB195637DAFCB0D59ULL);
-    thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[190] = []() -> EncryptedName<14, 0xD7A749EB27D5BF6DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xD7A749EB27D5BF6DULL);
-    thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[191] = []() -> EncryptedName<10, 0x9569C9C7E70909AFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0x9569C9C7E70909AFULL);
-    thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[192] = []() -> EncryptedName<10, 0xB19D1FA9116F39D3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xB19D1FA9116F39D3ULL);
-    thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[193] = []() -> EncryptedName<10, 0x4191BB5531FD3999ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x4191BB5531FD3999ULL);
-    thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[194] = []() -> EncryptedName<10, 0xF715514F5961B75BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xF715514F5961B75BULL);
-    thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[195] = []() -> EncryptedName<14, 0x2F8B0F37118D157FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x2F8B0F37118D157FULL);
-    thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[196] = []() -> EncryptedName<14, 0xAD075B8DB599F1CDULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xAD075B8DB599F1CDULL);
-    thread_local EncryptedName<sizeof(source), 0xAD075B8DB599F1CDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[197] = []() -> EncryptedName<10, 0x2FE993D1DDE1F197ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x2FE993D1DDE1F197ULL);
-    thread_local EncryptedName<sizeof(source), 0x2FE993D1DDE1F197ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[198] = []() -> EncryptedName<18, 0x39FF7FB50DEB998FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("민스트럴\\민스트럴", 0x39FF7FB50DEB998FULL);
-    thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[199] = []() -> EncryptedName<10, 0xB7FD8F670FC7B96BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0xB7FD8F670FC7B96BULL);
-    thread_local EncryptedName<sizeof(source), 0xB7FD8F670FC7B96BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[200] = []() -> EncryptedName<10, 0xE7978FB5A94DD7FDULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xE7978FB5A94DD7FDULL);
-    thread_local EncryptedName<sizeof(source), 0xE7978FB5A94DD7FDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[201] = []() -> EncryptedName<10, 0x4941FD9F21BBB9FDULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x4941FD9F21BBB9FDULL);
-    thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[202] = []() -> EncryptedName<10, 0x35E5656B5DEDCD75ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x35E5656B5DEDCD75ULL);
-    thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[203] = []() -> EncryptedName<10, 0xF14F79170939C7F1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0xF14F79170939C7F1ULL);
-    thread_local EncryptedName<sizeof(source), 0xF14F79170939C7F1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[204] = []() -> EncryptedName<10, 0xA5FD29D7AB6DC59FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xA5FD29D7AB6DC59FULL);
-    thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[205] = []() -> EncryptedName<18, 0xD97D5DBDBB2F2709ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("태권소년\\태권소년", 0xD97D5DBDBB2F2709ULL);
-    thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[206] = []() -> EncryptedName<18, 0xED796785D1DF137FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0xED796785D1DF137FULL);
-    thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[207] = []() -> EncryptedName<18, 0x83EFBFBB37EDBDBDULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x83EFBFBB37EDBDBDULL);
-    thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[208] = []() -> EncryptedName<14, 0xBF2B4B31397FF5A7ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xBF2B4B31397FF5A7ULL);
-    thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[209] = []() -> EncryptedName<10, 0xDD3913D5D7F97BE1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xDD3913D5D7F97BE1ULL);
-    thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[210] = []() -> EncryptedName<14, 0x050505679903579BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x050505679903579BULL);
-    thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[211] = []() -> EncryptedName<10, 0x03772763F96D9DA5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x03772763F96D9DA5ULL);
-    thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[212] = []() -> EncryptedName<14, 0x0B7109397F6B1387ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x0B7109397F6B1387ULL);
-    thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[213] = []() -> EncryptedName<10, 0x23BBD58F8B5FF5C9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0x23BBD58F8B5FF5C9ULL);
-    thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[214] = []() -> EncryptedName<10, 0xC517FB932D95BB6DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xC517FB932D95BB6DULL);
-    thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[215] = []() -> EncryptedName<14, 0x9949BFD527532943ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0x9949BFD527532943ULL);
-    thread_local EncryptedName<sizeof(source), 0x9949BFD527532943ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[216] = []() -> EncryptedName<10, 0xCD8F077123FB7D6FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0xCD8F077123FB7D6FULL);
-    thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[217] = []() -> EncryptedName<14, 0x13E33FA1A591AB67ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x13E33FA1A591AB67ULL);
-    thread_local EncryptedName<sizeof(source), 0x13E33FA1A591AB67ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[218] = []() -> EncryptedName<10, 0x17A9E5BF39AD4737ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x17A9E5BF39AD4737ULL);
-    thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[219] = []() -> EncryptedName<18, 0x758F1D0B4F7705B9ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x758F1D0B4F7705B9ULL);
-    thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[220] = []() -> EncryptedName<10, 0x891B232D09451965ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x891B232D09451965ULL);
-    thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[221] = []() -> EncryptedName<10, 0x637B959D55771F69ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x637B959D55771F69ULL);
-    thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[222] = []() -> EncryptedName<14, 0xD1413DBB01CD8B51ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xD1413DBB01CD8B51ULL);
-    thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[223] = []() -> EncryptedName<10, 0x75ADC57D87EFBD8FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("워록\\워록", 0x75ADC57D87EFBD8FULL);
-    thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[224] = []() -> EncryptedName<18, 0x2BAD156DE3E1F9D9ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("아크비숍\\아크비숍", 0x2BAD156DE3E1F9D9ULL);
-    thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[225] = []() -> EncryptedName<14, 0xF161095D0DE18F95ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xF161095D0DE18F95ULL);
-    thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[226] = []() -> EncryptedName<14, 0xEDC74F6D13DF71EFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("소서러\\소서러", 0xEDC74F6D13DF71EFULL);
-    thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[227] = []() -> EncryptedName<18, 0xA12DAB392545D72FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("민스트럴\\민스트럴", 0xA12DAB392545D72FULL);
-    thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[228] = []() -> EncryptedName<10, 0x6BA1C1132F033B75ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x6BA1C1132F033B75ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[229] = []() -> EncryptedName<10, 0x2FEB8739E5975BD1ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("슈라\\슈라", 0x2FEB8739E5975BD1ULL);
-    thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[230] = []() -> EncryptedName<14, 0x33133B977BCD03CDULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제네릭\\제네릭", 0x33133B977BCD03CDULL);
-    thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[232] = []() -> EncryptedName<10, 0x6FE153231D879777ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x6FE153231D879777ULL);
-    thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[233] = []() -> EncryptedName<14, 0x39A39F87DD5F535BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x39A39F87DD5F535BULL);
-    thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[234] = []() -> EncryptedName<10, 0xEF6D1D893F2B2DC5ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xEF6D1D893F2B2DC5ULL);
-    thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[235] = []() -> EncryptedName<14, 0x234977DDB54BC71DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x234977DDB54BC71DULL);
-    thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[236] = []() -> EncryptedName<10, 0xE52DF30DCBAF7125ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0xE52DF30DCBAF7125ULL);
-    thread_local EncryptedName<sizeof(source), 0xE52DF30DCBAF7125ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[237] = []() -> EncryptedName<14, 0xCFF3899D95AF355FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0xCFF3899D95AF355FULL);
-    thread_local EncryptedName<sizeof(source), 0xCFF3899D95AF355FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[238] = []() -> EncryptedName<10, 0x9171997D6963C9F7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0x9171997D6963C9F7ULL);
-    thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[239] = []() -> EncryptedName<10, 0x4F99DF03C3EF31B7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0x4F99DF03C3EF31B7ULL);
-    thread_local EncryptedName<sizeof(source), 0x4F99DF03C3EF31B7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[231] = []() -> EncryptedName<10, 0x8D1D0FF1AF2B13F7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0x8D1D0FF1AF2B13F7ULL);
-    thread_local EncryptedName<sizeof(source), 0x8D1D0FF1AF2B13F7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[51] = []() -> EncryptedName<14, 0xB39FA7917BCFBB8DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xB39FA7917BCFBB8DULL);
-    thread_local EncryptedName<sizeof(source), 0xB39FA7917BCFBB8DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[52] = []() -> EncryptedName<10, 0x2DCB7567394DC1ABULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0x2DCB7567394DC1ABULL);
-    thread_local EncryptedName<sizeof(source), 0x2DCB7567394DC1ABULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[53] = []() -> EncryptedName<14, 0x4F637DC51307B759ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x4F637DC51307B759ULL);
-    thread_local EncryptedName<sizeof(source), 0x4F637DC51307B759ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[54] = []() -> EncryptedName<10, 0x452FEF0D7FC95565ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x452FEF0D7FC95565ULL);
-    thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[55] = []() -> EncryptedName<14, 0x9FED7DA189490D5DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x9FED7DA189490D5DULL);
-    thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[56] = []() -> EncryptedName<10, 0x839B27DF8F5967B3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0x839B27DF8F5967B3ULL);
-    thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[57] = []() -> EncryptedName<10, 0xF3CB6F7711A71B6DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0xF3CB6F7711A71B6DULL);
-    thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[58] = []() -> EncryptedName<10, 0x2D51E3B7236175EDULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("기사\\기사", 0x2D51E3B7236175EDULL);
-    thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[59] = []() -> EncryptedName<18, 0x0F41EBBDA32D1B17ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x0F41EBBDA32D1B17ULL);
-    thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[60] = []() -> EncryptedName<14, 0xFBD599E117C547C1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0xFBD599E117C547C1ULL);
-    thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[61] = []() -> EncryptedName<14, 0x176F138D5DD7F365ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0x176F138D5DD7F365ULL);
-    thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[62] = []() -> EncryptedName<10, 0x793F370985ED674FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0x793F370985ED674FULL);
-    thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[63] = []() -> EncryptedName<14, 0xE55723712993051DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xE55723712993051DULL);
-    thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[64] = []() -> EncryptedName<28, 0x7115D9F973F913C9ULL>& {
-    constexpr std::array<char, 28> source = CRYPT_NAME("페코페코_기사\\페코페코_기사", 0x7115D9F973F913C9ULL);
-    thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[65] = []() -> EncryptedName<22, 0xCB1D253B7FE1F563ULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("크루세이더\\크루세이더", 0xCB1D253B7FE1F563ULL);
-    thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[66] = []() -> EncryptedName<10, 0x7941D76335CFA14FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x7941D76335CFA14FULL);
-    thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[67] = []() -> EncryptedName<14, 0x7321C3814F8799E1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x7321C3814F8799E1ULL);
-    thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[68] = []() -> EncryptedName<10, 0x7DE349D717D7F123ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x7DE349D717D7F123ULL);
-    thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[69] = []() -> EncryptedName<18, 0x0F15B16B5BAFD57FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x0F15B16B5BAFD57FULL);
-    thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[70] = []() -> EncryptedName<10, 0x9B5B959B954D9333ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x9B5B959B954D9333ULL);
-    thread_local EncryptedName<sizeof(source), 0x9B5B959B954D9333ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[71] = []() -> EncryptedName<10, 0x17FFC98B398FAF61ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x17FFC98B398FAF61ULL);
-    thread_local EncryptedName<sizeof(source), 0x17FFC98B398FAF61ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[72] = []() -> EncryptedName<34, 0x078143534999254DULL>& {
-    constexpr std::array<char, 34> source = CRYPT_NAME("신페코크루세이더\\신페코크루세이더", 0x078143534999254DULL);
-    thread_local EncryptedName<sizeof(source), 0x078143534999254DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[73] = []() -> EncryptedName<14, 0xAFA5617F178B6185ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xAFA5617F178B6185ULL);
-    thread_local EncryptedName<sizeof(source), 0xAFA5617F178B6185ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[74] = []() -> EncryptedName<10, 0xE50B2935073DD3E9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("검사\\검사", 0xE50B2935073DD3E9ULL);
-    thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[75] = []() -> EncryptedName<14, 0x3F5315DFE32B4FAFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("마법사\\마법사", 0x3F5315DFE32B4FAFULL);
-    thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[76] = []() -> EncryptedName<10, 0x33832D4D3FDFBDBFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("궁수\\궁수", 0x33832D4D3FDFBDBFULL);
-    thread_local EncryptedName<sizeof(source), 0x33832D4D3FDFBDBFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[77] = []() -> EncryptedName<14, 0x7D750DADBDE9C3F1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0x7D750DADBDE9C3F1ULL);
-    thread_local EncryptedName<sizeof(source), 0x7D750DADBDE9C3F1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[78] = []() -> EncryptedName<10, 0xED5143E7C1B39315ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("상인\\상인", 0xED5143E7C1B39315ULL);
-    thread_local EncryptedName<sizeof(source), 0xED5143E7C1B39315ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[79] = []() -> EncryptedName<10, 0xFF7D83CB791339D9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("도둑\\도둑", 0xFF7D83CB791339D9ULL);
-    thread_local EncryptedName<sizeof(source), 0xFF7D83CB791339D9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[80] = []() -> EncryptedName<10, 0x31956551B311FD95ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("기사\\기사", 0x31956551B311FD95ULL);
-    thread_local EncryptedName<sizeof(source), 0x31956551B311FD95ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[81] = []() -> EncryptedName<18, 0x393D916561BDC391ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("프리스트\\프리스트", 0x393D916561BDC391ULL);
-    thread_local EncryptedName<sizeof(source), 0x393D916561BDC391ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[82] = []() -> EncryptedName<14, 0x955D4DF94DE9BB07ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("위저드\\위저드", 0x955D4DF94DE9BB07ULL);
-    thread_local EncryptedName<sizeof(source), 0x955D4DF94DE9BB07ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[83] = []() -> EncryptedName<14, 0x8741152D8FB34B4FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제철공\\제철공", 0x8741152D8FB34B4FULL);
-    thread_local EncryptedName<sizeof(source), 0x8741152D8FB34B4FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[84] = []() -> EncryptedName<10, 0xB739073FE921AD6FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("헌터\\헌터", 0xB739073FE921AD6FULL);
-    thread_local EncryptedName<sizeof(source), 0xB739073FE921AD6FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[85] = []() -> EncryptedName<14, 0xC399B7091589B50BULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("어세신\\어세신", 0xC399B7091589B50BULL);
-    thread_local EncryptedName<sizeof(source), 0xC399B7091589B50BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[86] = []() -> EncryptedName<28, 0x7FC1015DFFCF6D19ULL>& {
-    constexpr std::array<char, 28> source = CRYPT_NAME("페코페코_기사\\페코페코_기사", 0x7FC1015DFFCF6D19ULL);
-    thread_local EncryptedName<sizeof(source), 0x7FC1015DFFCF6D19ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[87] = []() -> EncryptedName<22, 0x0753A7E1EFA9E139ULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("크루세이더\\크루세이더", 0x0753A7E1EFA9E139ULL);
-    thread_local EncryptedName<sizeof(source), 0x0753A7E1EFA9E139ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[88] = []() -> EncryptedName<10, 0x7FCD77F9C7CBD14DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("몽크\\몽크", 0x7FCD77F9C7CBD14DULL);
-    thread_local EncryptedName<sizeof(source), 0x7FCD77F9C7CBD14DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[89] = []() -> EncryptedName<14, 0xCB3FBD4183DB8323ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0xCB3FBD4183DB8323ULL);
-    thread_local EncryptedName<sizeof(source), 0xCB3FBD4183DB8323ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[90] = []() -> EncryptedName<10, 0x3B915119EFD523EFULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x3B915119EFD523EFULL);
-    thread_local EncryptedName<sizeof(source), 0x3B915119EFD523EFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[91] = []() -> EncryptedName<18, 0x5B8F49AF09390D1BULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("연금술사\\연금술사", 0x5B8F49AF09390D1BULL);
-    thread_local EncryptedName<sizeof(source), 0x5B8F49AF09390D1BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[92] = []() -> EncryptedName<10, 0x3F557BE333F95F6DULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("바드\\바드", 0x3F557BE333F95F6DULL);
-    thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[93] = []() -> EncryptedName<10, 0x474DC581D5E98357ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("무희\\무희", 0x474DC581D5E98357ULL);
-    thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[94] = []() -> EncryptedName<34, 0x01FF9313695DD9DFULL>& {
-    constexpr std::array<char, 34> source = CRYPT_NAME("구페코크루세이더\\구페코크루세이더", 0x01FF9313695DD9DFULL);
-    thread_local EncryptedName<sizeof(source), 0x01FF9313695DD9DFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[95] = []() -> EncryptedName<14, 0x1BF915E1F37DFDFDULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x1BF915E1F37DFDFDULL);
-    thread_local EncryptedName<sizeof(source), 0x1BF915E1F37DFDFDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[96] = []() -> EncryptedName<18, 0x49C3759B77DBD3C1ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("태권소년\\태권소년", 0x49C3759B77DBD3C1ULL);
-    thread_local EncryptedName<sizeof(source), 0x49C3759B77DBD3C1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[97] = []() -> EncryptedName<10, 0x6DED3DD1CF75AD9BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("권성\\권성", 0x6DED3DD1CF75AD9BULL);
-    thread_local EncryptedName<sizeof(source), 0x6DED3DD1CF75AD9BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[98] = []() -> EncryptedName<10, 0x91E147EBBD47C39FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("권성\\권성", 0x91E147EBBD47C39FULL);
-    thread_local EncryptedName<sizeof(source), 0x91E147EBBD47C39FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[99] = []() -> EncryptedName<18, 0xD1538513DF975701ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울링커\\소울링커", 0xD1538513DF975701ULL);
-    thread_local EncryptedName<sizeof(source), 0xD1538513DF975701ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[100] = []() -> EncryptedName<14, 0xA1A55B4D1597EDD3ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("성직자\\성직자", 0xA1A55B4D1597EDD3ULL);
-    thread_local EncryptedName<sizeof(source), 0xA1A55B4D1597EDD3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[101] = []() -> EncryptedName<10, 0x4F1791FB1503C713ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("기사\\기사", 0x4F1791FB1503C713ULL);
-    thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[102] = []() -> EncryptedName<14, 0x7D993F650D2785FFULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("세이지\\세이지", 0x7D993F650D2785FFULL);
-    thread_local EncryptedName<sizeof(source), 0x7D993F650D2785FFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[104] = []() -> EncryptedName<18, 0x61FF87ED7BF39BE1ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("룬나이트\\룬나이트", 0x61FF87ED7BF39BE1ULL);
-    thread_local EncryptedName<sizeof(source), 0x61FF87ED7BF39BE1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[110] = []() -> EncryptedName<18, 0x151F77EBEBBB2147ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("룬나이트\\룬나이트", 0x151F77EBEBBB2147ULL);
-    thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[130] = []() -> EncryptedName<36, 0x2D394DBD0F332733ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x2D394DBD0F332733ULL);
-    thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[131] = []() -> EncryptedName<36, 0x69D345DB950F336DULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x69D345DB950F336DULL);
-    thread_local EncryptedName<sizeof(source), 0x69D345DB950F336DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[159] = []() -> EncryptedName<36, 0xC7912587FFF31B71ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0xC7912587FFF31B71ULL);
-    thread_local EncryptedName<sizeof(source), 0xC7912587FFF31B71ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[138] = []() -> EncryptedName<36, 0x2D3B15774149D5DDULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x2D3B15774149D5DDULL);
-    thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[139] = []() -> EncryptedName<36, 0x9B17C9EFDBB39F2FULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x9B17C9EFDBB39F2FULL);
-    thread_local EncryptedName<sizeof(source), 0x9B17C9EFDBB39F2FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[140] = []() -> EncryptedName<36, 0x0BEB63A5C905B3A7ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x0BEB63A5C905B3A7ULL);
-    thread_local EncryptedName<sizeof(source), 0x0BEB63A5C905B3A7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[141] = []() -> EncryptedName<36, 0x8B3FEB5B8BD5C3C3ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x8B3FEB5B8BD5C3C3ULL);
-    thread_local EncryptedName<sizeof(source), 0x8B3FEB5B8BD5C3C3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[142] = []() -> EncryptedName<36, 0x8F1B5BFD5F6175B5ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x8F1B5BFD5F6175B5ULL);
-    thread_local EncryptedName<sizeof(source), 0x8F1B5BFD5F6175B5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[143] = []() -> EncryptedName<36, 0x078333BB9725B7C9ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x078333BB9725B7C9ULL);
-    thread_local EncryptedName<sizeof(source), 0x078333BB9725B7C9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[144] = []() -> EncryptedName<36, 0xF5657D1F3DE5CDC7ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0xF5657D1F3DE5CDC7ULL);
-    thread_local EncryptedName<sizeof(source), 0xF5657D1F3DE5CDC7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[145] = []() -> EncryptedName<36, 0x69FD1D9733D3CFC1ULL>& {
-    constexpr std::array<char, 36> source = CRYPT_NAME("페코페코_룬나이트\\페코페코_룬나이트", 0x69FD1D9733D3CFC1ULL);
-    thread_local EncryptedName<sizeof(source), 0x69FD1D9733D3CFC1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[107] = []() -> EncryptedName<18, 0xF7530137154D8FE5ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("아크비숍\\아크비숍", 0xF7530137154D8FE5ULL);
-    thread_local EncryptedName<sizeof(source), 0xF7530137154D8FE5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[113] = []() -> EncryptedName<18, 0x8B65CD61012B5931ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("아크비숍\\아크비숍", 0x8B65CD61012B5931ULL);
-    thread_local EncryptedName<sizeof(source), 0x8B65CD61012B5931ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[105] = []() -> EncryptedName<10, 0x17359BF953C367B3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("워록\\워록", 0x17359BF953C367B3ULL);
-    thread_local EncryptedName<sizeof(source), 0x17359BF953C367B3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[111] = []() -> EncryptedName<10, 0x2FF3C5036D070127ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("워록\\워록", 0x2FF3C5036D070127ULL);
-    thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[108] = []() -> EncryptedName<14, 0x93E7A3A1F587CDC5ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("미케닉\\미케닉", 0x93E7A3A1F587CDC5ULL);
-    thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[114] = []() -> EncryptedName<14, 0xC52FB5FBB94FF917ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("미케닉\\미케닉", 0xC52FB5FBB94FF917ULL);
-    thread_local EncryptedName<sizeof(source), 0xC52FB5FBB94FF917ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[136] = []() -> EncryptedName<18, 0x812BE72BCD5707B7ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("마도기어\\마도기어", 0x812BE72BCD5707B7ULL);
-    thread_local EncryptedName<sizeof(source), 0x812BE72BCD5707B7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[137] = []() -> EncryptedName<18, 0x59278F63D79F3DA1ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("마도기어\\마도기어", 0x59278F63D79F3DA1ULL);
-    thread_local EncryptedName<sizeof(source), 0x59278F63D79F3DA1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[162] = []() -> EncryptedName<18, 0x1D6D75EDE7CD311FULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("마도기어\\마도기어", 0x1D6D75EDE7CD311FULL);
-    thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[106] = []() -> EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("레인져\\레인져", 0x3375B1C7DBB5FD55ULL);
-    thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[112] = []() -> EncryptedName<14, 0x0F0F8B6B8F9D19D1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("레인져\\레인져", 0x0F0F8B6B8F9D19D1ULL);
-    thread_local EncryptedName<sizeof(source), 0x0F0F8B6B8F9D19D1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[134] = []() -> EncryptedName<22, 0xD98F03A52D35636DULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("레인져늑대\\레인져늑대", 0xD98F03A52D35636DULL);
-    thread_local EncryptedName<sizeof(source), 0xD98F03A52D35636DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[135] = []() -> EncryptedName<22, 0x31D7C1EDA345E36DULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("레인져늑대\\레인져늑대", 0x31D7C1EDA345E36DULL);
-    thread_local EncryptedName<sizeof(source), 0x31D7C1EDA345E36DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[161] = []() -> EncryptedName<22, 0xD3755DD95F47A909ULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("레인져늑대\\레인져늑대", 0xD3755DD95F47A909ULL);
-    thread_local EncryptedName<sizeof(source), 0xD3755DD95F47A909ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[109] = []() -> EncryptedName<26, 0x490FFB43A12F0DB9ULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("길로틴크로스\\길로틴크로스", 0x490FFB43A12F0DB9ULL);
-    thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[115] = []() -> EncryptedName<26, 0x3FAF85D995034FD7ULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("길로틴크로스\\길로틴크로스", 0x3FAF85D995034FD7ULL);
-    thread_local EncryptedName<sizeof(source), 0x3FAF85D995034FD7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[116] = []() -> EncryptedName<18, 0x73D1674B61DF7B0BULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("로얄가드\\로얄가드", 0x73D1674B61DF7B0BULL);
-    thread_local EncryptedName<sizeof(source), 0x73D1674B61DF7B0BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[123] = []() -> EncryptedName<18, 0x91651D81F559F971ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("로얄가드\\로얄가드", 0x91651D81F559F971ULL);
-    thread_local EncryptedName<sizeof(source), 0x91651D81F559F971ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[132] = []() -> EncryptedName<30, 0x072D2D872D259D5BULL>& {
-    constexpr std::array<char, 30> source = CRYPT_NAME("신페코로얄가드\\신페코로얄가드", 0x072D2D872D259D5BULL);
-    thread_local EncryptedName<sizeof(source), 0x072D2D872D259D5BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[133] = []() -> EncryptedName<30, 0x875FCDF1E7A1795FULL>& {
-    constexpr std::array<char, 30> source = CRYPT_NAME("신페코로얄가드\\신페코로얄가드", 0x875FCDF1E7A1795FULL);
-    thread_local EncryptedName<sizeof(source), 0x875FCDF1E7A1795FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[160] = []() -> EncryptedName<30, 0xB96B77B7255F8569ULL>& {
-    constexpr std::array<char, 30> source = CRYPT_NAME("신페코로얄가드\\신페코로얄가드", 0xB96B77B7255F8569ULL);
-    thread_local EncryptedName<sizeof(source), 0xB96B77B7255F8569ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[120] = []() -> EncryptedName<10, 0x9BE3EF737387AD79ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("슈라\\슈라", 0x9BE3EF737387AD79ULL);
-    thread_local EncryptedName<sizeof(source), 0x9BE3EF737387AD79ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[127] = []() -> EncryptedName<10, 0x4755C1355575FD37ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("슈라\\슈라", 0x4755C1355575FD37ULL);
-    thread_local EncryptedName<sizeof(source), 0x4755C1355575FD37ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[117] = []() -> EncryptedName<14, 0x11CB35636377DD07ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("소서러\\소서러", 0x11CB35636377DD07ULL);
-    thread_local EncryptedName<sizeof(source), 0x11CB35636377DD07ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[124] = []() -> EncryptedName<14, 0x79DF094DD9616575ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("소서러\\소서러", 0x79DF094DD9616575ULL);
-    thread_local EncryptedName<sizeof(source), 0x79DF094DD9616575ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[122] = []() -> EncryptedName<10, 0x9D8F2D37BFFD61B7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x9D8F2D37BFFD61B7ULL);
-    thread_local EncryptedName<sizeof(source), 0x9D8F2D37BFFD61B7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[129] = []() -> EncryptedName<10, 0x5DAD2D25D9259B93ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0x5DAD2D25D9259B93ULL);
-    thread_local EncryptedName<sizeof(source), 0x5DAD2D25D9259B93ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[121] = []() -> EncryptedName<14, 0x1F1D51274373C1FDULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제네릭\\제네릭", 0x1F1D51274373C1FDULL);
-    thread_local EncryptedName<sizeof(source), 0x1F1D51274373C1FDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[128] = []() -> EncryptedName<14, 0x3D371F5B0F7F9327ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제네릭\\제네릭", 0x3D371F5B0F7F9327ULL);
-    thread_local EncryptedName<sizeof(source), 0x3D371F5B0F7F9327ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[119] = []() -> EncryptedName<14, 0x6BF729E30729CF29ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("원더러\\원더러", 0x6BF729E30729CF29ULL);
-    thread_local EncryptedName<sizeof(source), 0x6BF729E30729CF29ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[126] = []() -> EncryptedName<14, 0xC5995F4B9FE96B89ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("원더러\\원더러", 0xC5995F4B9FE96B89ULL);
-    thread_local EncryptedName<sizeof(source), 0xC5995F4B9FE96B89ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[118] = []() -> EncryptedName<18, 0x610F7DD1EFC1C91BULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("민스트럴\\민스트럴", 0x610F7DD1EFC1C91BULL);
-    thread_local EncryptedName<sizeof(source), 0x610F7DD1EFC1C91BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[125] = []() -> EncryptedName<18, 0x5F93A1C3A7AD7537ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("민스트럴\\민스트럴", 0x5F93A1C3A7AD7537ULL);
-    thread_local EncryptedName<sizeof(source), 0x5F93A1C3A7AD7537ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[146] = []() -> EncryptedName<18, 0x097389157345A787ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("룬나이트\\룬나이트", 0x097389157345A787ULL);
-    thread_local EncryptedName<sizeof(source), 0x097389157345A787ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[147] = []() -> EncryptedName<10, 0x732B390D63FD47D7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("워록\\워록", 0x732B390D63FD47D7ULL);
-    thread_local EncryptedName<sizeof(source), 0x732B390D63FD47D7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[148] = []() -> EncryptedName<14, 0xB7A76BF9CD41F99FULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("레인져\\레인져", 0xB7A76BF9CD41F99FULL);
-    thread_local EncryptedName<sizeof(source), 0xB7A76BF9CD41F99FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[149] = []() -> EncryptedName<18, 0xE3FB23537D2785BFULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("아크비숍\\아크비숍", 0xE3FB23537D2785BFULL);
-    thread_local EncryptedName<sizeof(source), 0xE3FB23537D2785BFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[150] = []() -> EncryptedName<14, 0x1FDB81175D1557E3ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("미케닉\\미케닉", 0x1FDB81175D1557E3ULL);
-    thread_local EncryptedName<sizeof(source), 0x1FDB81175D1557E3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[151] = []() -> EncryptedName<26, 0xB3CF9BEB7963DB89ULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("길로틴크로스\\길로틴크로스", 0xB3CF9BEB7963DB89ULL);
-    thread_local EncryptedName<sizeof(source), 0xB3CF9BEB7963DB89ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[152] = []() -> EncryptedName<18, 0x8BBF792B47E72173ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("로얄가드\\로얄가드", 0x8BBF792B47E72173ULL);
-    thread_local EncryptedName<sizeof(source), 0x8BBF792B47E72173ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[153] = []() -> EncryptedName<14, 0xDD69EDFFA18F537DULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("소서러\\소서러", 0xDD69EDFFA18F537DULL);
-    thread_local EncryptedName<sizeof(source), 0xDD69EDFFA18F537DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[154] = []() -> EncryptedName<18, 0x71A509DB43792991ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("민스트럴\\민스트럴", 0x71A509DB43792991ULL);
-    thread_local EncryptedName<sizeof(source), 0x71A509DB43792991ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[155] = []() -> EncryptedName<14, 0xFB2BC75769E777D3ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("원더러\\원더러", 0xFB2BC75769E777D3ULL);
-    thread_local EncryptedName<sizeof(source), 0xFB2BC75769E777D3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[156] = []() -> EncryptedName<10, 0x038535BB092533B7ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("슈라\\슈라", 0x038535BB092533B7ULL);
-    thread_local EncryptedName<sizeof(source), 0x038535BB092533B7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[157] = []() -> EncryptedName<14, 0x9B9D51AD3515F779ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("제네릭\\제네릭", 0x9B9D51AD3515F779ULL);
-    thread_local EncryptedName<sizeof(source), 0x9B9D51AD3515F779ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[158] = []() -> EncryptedName<10, 0xB5D7B5AF4FEDFF57ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("로그\\로그", 0xB5D7B5AF4FEDFF57ULL);
-    thread_local EncryptedName<sizeof(source), 0xB5D7B5AF4FEDFF57ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[240] = []() -> EncryptedName<14, 0x67DD5BAB1919D9D1ULL>& {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0x67DD5BAB1919D9D1ULL);
-    thread_local EncryptedName<sizeof(source), 0x67DD5BAB1919D9D1ULL> name(source);
-    return name;
-  }().Text();
+  jobSpriteNames.resize(28053, OBFUSCATE_ARRAY("초보자\\초보자", 0x114901C7E37F6D49ULL, char).Text());
+  jobSpriteNames[0] = OBFUSCATE_ARRAY("초보자\\초보자", 0xDF8117FF49CFF551ULL, char).Text();
+  jobSpriteNames[1] = OBFUSCATE_ARRAY("검사\\검사", 0xADC51BF9C98B413DULL, char).Text();
+  jobSpriteNames[2] = OBFUSCATE_ARRAY("마법사\\마법사", 0x51BB39B763BBBD8DULL, char).Text();
+  jobSpriteNames[3] = OBFUSCATE_ARRAY("궁수\\궁수", 0x87E3D1C50D572DEFULL, char).Text();
+  jobSpriteNames[4] = OBFUSCATE_ARRAY("성직자\\성직자", 0x3FA3AFA7035DE3FFULL, char).Text();
+  jobSpriteNames[5] = OBFUSCATE_ARRAY("상인\\상인", 0xDB27CB557D038759ULL, char).Text();
+  jobSpriteNames[6] = OBFUSCATE_ARRAY("도둑\\도둑", 0xB3E307A5F753D5E3ULL, char).Text();
+  jobSpriteNames[7] = OBFUSCATE_ARRAY("기사\\기사", 0x192D654D29337BE5ULL, char).Text();
+  jobSpriteNames[8] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0xB7AFBD2FD9FD7501ULL, char).Text();
+  jobSpriteNames[9] = OBFUSCATE_ARRAY("위저드\\위저드", 0x79E915E9AF6F55DDULL, char).Text();
+  jobSpriteNames[10] = OBFUSCATE_ARRAY("제철공\\제철공", 0x674D9F3975573D41ULL, char).Text();
+  jobSpriteNames[11] = OBFUSCATE_ARRAY("헌터\\헌터", 0x6BDF334F2BFDAD51ULL, char).Text();
+  jobSpriteNames[12] = OBFUSCATE_ARRAY("어세신\\어세신", 0x136F2F9915D1DBCFULL, char).Text();
+  jobSpriteNames[13] = OBFUSCATE_ARRAY("페코페코_기사\\페코페코_기사", 0x0B23D10F2F49D72BULL, char).Text();
+  jobSpriteNames[14] = OBFUSCATE_ARRAY("크루세이더\\크루세이더", 0x1767DDE18D779D8BULL, char).Text();
+  jobSpriteNames[15] = OBFUSCATE_ARRAY("몽크\\몽크", 0xC1BB8111EDD183E1ULL, char).Text();
+  jobSpriteNames[16] = OBFUSCATE_ARRAY("세이지\\세이지", 0xC5B1BBCD9BC9C997ULL, char).Text();
+  jobSpriteNames[17] = OBFUSCATE_ARRAY("로그\\로그", 0x01CB4F1DF9D3F931ULL, char).Text();
+  jobSpriteNames[18] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x49D33529F1556333ULL, char).Text();
+  jobSpriteNames[19] = OBFUSCATE_ARRAY("바드\\바드", 0x792FFD1325418FB5ULL, char).Text();
+  jobSpriteNames[20] = OBFUSCATE_ARRAY("무희\\무희", 0xF15F8785CDE369BFULL, char).Text();
+  jobSpriteNames[21] = OBFUSCATE_ARRAY("신페코크루세이더\\신페코크루세이더", 0xE33F2FF779878559ULL, char).Text();
+  jobSpriteNames[23] = OBFUSCATE_ARRAY("초보자\\초보자", 0xD5A78DB38D8DAFABULL, char).Text();
+  jobSpriteNames[22] = OBFUSCATE_ARRAY("결혼\\결혼", 0x0399459DAF454F0FULL, char).Text();
+  jobSpriteNames[26] = OBFUSCATE_ARRAY("결혼\\결혼", 0xFFABE3D5D1BBEF73ULL, char).Text();
+  jobSpriteNames[27] = OBFUSCATE_ARRAY("결혼\\결혼", 0xA597A7E7492B39D5ULL, char).Text();
+  jobSpriteNames[28] = OBFUSCATE_ARRAY("결혼\\결혼", 0x0B8745519B1F95D7ULL, char).Text();
+  jobSpriteNames[29] = OBFUSCATE_ARRAY("결혼\\결혼", 0xC70319B5EB61598FULL, char).Text();
+  jobSpriteNames[30] = OBFUSCATE_ARRAY("결혼\\결혼", 0x271B45771F83DD9FULL, char).Text();
+  jobSpriteNames[24] = OBFUSCATE_ARRAY("건너\\건너", 0x8783C33941E15117ULL, char).Text();
+  jobSpriteNames[25] = OBFUSCATE_ARRAY("닌자\\닌자", 0x0F61499B4973EB5DULL, char).Text();
+  jobSpriteNames[164] = OBFUSCATE_ARRAY("닌자\\닌자", 0xB127A19D775BF751ULL, char).Text();
+  jobSpriteNames[167] = OBFUSCATE_ARRAY("소울링커\\소울링커", 0xA31F69E7EFED01C9ULL, char).Text();
+  jobSpriteNames[165] = OBFUSCATE_ARRAY("건너\\건너", 0xB7A96F8701BB4B6BULL, char).Text();
+  jobSpriteNames[166] = OBFUSCATE_ARRAY("검사\\검사", 0x659975C121557D3DULL, char).Text();
+  jobSpriteNames[168] = OBFUSCATE_ARRAY("제철공\\제철공", 0xBFF5C517A1A77F59ULL, char).Text();
+  jobSpriteNames[169] = OBFUSCATE_ARRAY("상인\\상인", 0xAD6153019F93A527ULL, char).Text();
+  jobSpriteNames[170] = OBFUSCATE_ARRAY("제네릭\\제네릭", 0x85E1F5A7A5755B7FULL, char).Text();
+  jobSpriteNames[171] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x454D31872BB3EDCBULL, char).Text();
+  jobSpriteNames[172] = OBFUSCATE_ARRAY("궁수\\궁수", 0x81F58DED5D470D01ULL, char).Text();
+  jobSpriteNames[173] = OBFUSCATE_ARRAY("권성\\권성", 0x5DE7712FAB613F75ULL, char).Text();
+  jobSpriteNames[174] = OBFUSCATE_ARRAY("초보자\\초보자", 0x41CFCB831F6B6B91ULL, char).Text();
+  jobSpriteNames[175] = OBFUSCATE_ARRAY("몽크\\몽크", 0x3789496BE3E1D141ULL, char).Text();
+  jobSpriteNames[176] = OBFUSCATE_ARRAY("성직자\\성직자", 0x0F97E779A933D917ULL, char).Text();
+  jobSpriteNames[177] = OBFUSCATE_ARRAY("슈라\\슈라", 0xD1056FF94D4D2773ULL, char).Text();
+  jobSpriteNames[178] = OBFUSCATE_ARRAY("초보자\\초보자", 0x4331A17F33095FEBULL, char).Text();
+  jobSpriteNames[179] = OBFUSCATE_ARRAY("아크비숍\\아크비숍", 0x4B755DB19953E311ULL, char).Text();
+  jobSpriteNames[180] = OBFUSCATE_ARRAY("마법사\\마법사", 0xBD2BA1C11B01E73BULL, char).Text();
+  jobSpriteNames[181] = OBFUSCATE_ARRAY("세이지\\세이지", 0xED15938D333D2DB9ULL, char).Text();
+  jobSpriteNames[182] = OBFUSCATE_ARRAY("소서러\\소서러", 0xC9712D676B5B3943ULL, char).Text();
+  jobSpriteNames[183] = OBFUSCATE_ARRAY("워록\\워록", 0x9B0F234DEFDF7593ULL, char).Text();
+  jobSpriteNames[184] = OBFUSCATE_ARRAY("위저드\\위저드", 0xD98F5345098D630DULL, char).Text();
+  jobSpriteNames[185] = OBFUSCATE_ARRAY("세이지\\세이지", 0x7F2DFFC1ABE91F2BULL, char).Text();
+  jobSpriteNames[186] = OBFUSCATE_ARRAY("위저드\\위저드", 0xFD69A9B3F311818DULL, char).Text();
+  jobSpriteNames[187] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0xD9452D81E5CD99C1ULL, char).Text();
+  jobSpriteNames[188] = OBFUSCATE_ARRAY("제철공\\제철공", 0xADADEB4DF7813B55ULL, char).Text();
+  jobSpriteNames[189] = OBFUSCATE_ARRAY("몽크\\몽크", 0xB195637DAFCB0D59ULL, char).Text();
+  jobSpriteNames[190] = OBFUSCATE_ARRAY("어세신\\어세신", 0xD7A749EB27D5BF6DULL, char).Text();
+  jobSpriteNames[191] = OBFUSCATE_ARRAY("도둑\\도둑", 0x9569C9C7E70909AFULL, char).Text();
+  jobSpriteNames[192] = OBFUSCATE_ARRAY("로그\\로그", 0xB19D1FA9116F39D3ULL, char).Text();
+  jobSpriteNames[193] = OBFUSCATE_ARRAY("로그\\로그", 0x4191BB5531FD3999ULL, char).Text();
+  jobSpriteNames[194] = OBFUSCATE_ARRAY("로그\\로그", 0xF715514F5961B75BULL, char).Text();
+  jobSpriteNames[195] = OBFUSCATE_ARRAY("어세신\\어세신", 0x2F8B0F37118D157FULL, char).Text();
+  jobSpriteNames[196] = OBFUSCATE_ARRAY("어세신\\어세신", 0xAD075B8DB599F1CDULL, char).Text();
+  jobSpriteNames[197] = OBFUSCATE_ARRAY("무희\\무희", 0x2FE993D1DDE1F197ULL, char).Text();
+  jobSpriteNames[198] = OBFUSCATE_ARRAY("민스트럴\\민스트럴", 0x39FF7FB50DEB998FULL, char).Text();
+  jobSpriteNames[199] = OBFUSCATE_ARRAY("바드\\바드", 0xB7FD8F670FC7B96BULL, char).Text();
+  jobSpriteNames[200] = OBFUSCATE_ARRAY("헌터\\헌터", 0xE7978FB5A94DD7FDULL, char).Text();
+  jobSpriteNames[201] = OBFUSCATE_ARRAY("무희\\무희", 0x4941FD9F21BBB9FDULL, char).Text();
+  jobSpriteNames[202] = OBFUSCATE_ARRAY("무희\\무희", 0x35E5656B5DEDCD75ULL, char).Text();
+  jobSpriteNames[203] = OBFUSCATE_ARRAY("바드\\바드", 0xF14F79170939C7F1ULL, char).Text();
+  jobSpriteNames[204] = OBFUSCATE_ARRAY("헌터\\헌터", 0xA5FD29D7AB6DC59FULL, char).Text();
+  jobSpriteNames[205] = OBFUSCATE_ARRAY("태권소년\\태권소년", 0xD97D5DBDBB2F2709ULL, char).Text();
+  jobSpriteNames[206] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0xED796785D1DF137FULL, char).Text();
+  jobSpriteNames[207] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x83EFBFBB37EDBDBDULL, char).Text();
+  jobSpriteNames[208] = OBFUSCATE_ARRAY("초보자\\초보자", 0xBF2B4B31397FF5A7ULL, char).Text();
+  jobSpriteNames[209] = OBFUSCATE_ARRAY("검사\\검사", 0xDD3913D5D7F97BE1ULL, char).Text();
+  jobSpriteNames[210] = OBFUSCATE_ARRAY("마법사\\마법사", 0x050505679903579BULL, char).Text();
+  jobSpriteNames[211] = OBFUSCATE_ARRAY("궁수\\궁수", 0x03772763F96D9DA5ULL, char).Text();
+  jobSpriteNames[212] = OBFUSCATE_ARRAY("성직자\\성직자", 0x0B7109397F6B1387ULL, char).Text();
+  jobSpriteNames[213] = OBFUSCATE_ARRAY("상인\\상인", 0x23BBD58F8B5FF5C9ULL, char).Text();
+  jobSpriteNames[214] = OBFUSCATE_ARRAY("헌터\\헌터", 0xC517FB932D95BB6DULL, char).Text();
+  jobSpriteNames[215] = OBFUSCATE_ARRAY("어세신\\어세신", 0x9949BFD527532943ULL, char).Text();
+  jobSpriteNames[216] = OBFUSCATE_ARRAY("몽크\\몽크", 0xCD8F077123FB7D6FULL, char).Text();
+  jobSpriteNames[217] = OBFUSCATE_ARRAY("세이지\\세이지", 0x13E33FA1A591AB67ULL, char).Text();
+  jobSpriteNames[218] = OBFUSCATE_ARRAY("로그\\로그", 0x17A9E5BF39AD4737ULL, char).Text();
+  jobSpriteNames[219] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x758F1D0B4F7705B9ULL, char).Text();
+  jobSpriteNames[220] = OBFUSCATE_ARRAY("바드\\바드", 0x891B232D09451965ULL, char).Text();
+  jobSpriteNames[221] = OBFUSCATE_ARRAY("무희\\무희", 0x637B959D55771F69ULL, char).Text();
+  jobSpriteNames[222] = OBFUSCATE_ARRAY("초보자\\초보자", 0xD1413DBB01CD8B51ULL, char).Text();
+  jobSpriteNames[223] = OBFUSCATE_ARRAY("워록\\워록", 0x75ADC57D87EFBD8FULL, char).Text();
+  jobSpriteNames[224] = OBFUSCATE_ARRAY("아크비숍\\아크비숍", 0x2BAD156DE3E1F9D9ULL, char).Text();
+  jobSpriteNames[225] = OBFUSCATE_ARRAY("어세신\\어세신", 0xF161095D0DE18F95ULL, char).Text();
+  jobSpriteNames[226] = OBFUSCATE_ARRAY("소서러\\소서러", 0xEDC74F6D13DF71EFULL, char).Text();
+  jobSpriteNames[227] = OBFUSCATE_ARRAY("민스트럴\\민스트럴", 0xA12DAB392545D72FULL, char).Text();
+  jobSpriteNames[228] = OBFUSCATE_ARRAY("무희\\무희", 0x6BA1C1132F033B75ULL, char).Text();
+  jobSpriteNames[229] = OBFUSCATE_ARRAY("슈라\\슈라", 0x2FEB8739E5975BD1ULL, char).Text();
+  jobSpriteNames[230] = OBFUSCATE_ARRAY("제네릭\\제네릭", 0x33133B977BCD03CDULL, char).Text();
+  jobSpriteNames[232] = OBFUSCATE_ARRAY("로그\\로그", 0x6FE153231D879777ULL, char).Text();
+  jobSpriteNames[233] = OBFUSCATE_ARRAY("초보자\\초보자", 0x39A39F87DD5F535BULL, char).Text();
+  jobSpriteNames[234] = OBFUSCATE_ARRAY("검사\\검사", 0xEF6D1D893F2B2DC5ULL, char).Text();
+  jobSpriteNames[235] = OBFUSCATE_ARRAY("마법사\\마법사", 0x234977DDB54BC71DULL, char).Text();
+  jobSpriteNames[236] = OBFUSCATE_ARRAY("궁수\\궁수", 0xE52DF30DCBAF7125ULL, char).Text();
+  jobSpriteNames[237] = OBFUSCATE_ARRAY("성직자\\성직자", 0xCFF3899D95AF355FULL, char).Text();
+  jobSpriteNames[238] = OBFUSCATE_ARRAY("상인\\상인", 0x9171997D6963C9F7ULL, char).Text();
+  jobSpriteNames[239] = OBFUSCATE_ARRAY("도둑\\도둑", 0x4F99DF03C3EF31B7ULL, char).Text();
+  jobSpriteNames[231] = OBFUSCATE_ARRAY("도둑\\도둑", 0x8D1D0FF1AF2B13F7ULL, char).Text();
+  jobSpriteNames[51] = OBFUSCATE_ARRAY("초보자\\초보자", 0xB39FA7917BCFBB8DULL, char).Text();
+  jobSpriteNames[52] = OBFUSCATE_ARRAY("검사\\검사", 0x2DCB7567394DC1ABULL, char).Text();
+  jobSpriteNames[53] = OBFUSCATE_ARRAY("마법사\\마법사", 0x4F637DC51307B759ULL, char).Text();
+  jobSpriteNames[54] = OBFUSCATE_ARRAY("궁수\\궁수", 0x452FEF0D7FC95565ULL, char).Text();
+  jobSpriteNames[55] = OBFUSCATE_ARRAY("성직자\\성직자", 0x9FED7DA189490D5DULL, char).Text();
+  jobSpriteNames[56] = OBFUSCATE_ARRAY("상인\\상인", 0x839B27DF8F5967B3ULL, char).Text();
+  jobSpriteNames[57] = OBFUSCATE_ARRAY("도둑\\도둑", 0xF3CB6F7711A71B6DULL, char).Text();
+  jobSpriteNames[58] = OBFUSCATE_ARRAY("기사\\기사", 0x2D51E3B7236175EDULL, char).Text();
+  jobSpriteNames[59] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x0F41EBBDA32D1B17ULL, char).Text();
+  jobSpriteNames[60] = OBFUSCATE_ARRAY("위저드\\위저드", 0xFBD599E117C547C1ULL, char).Text();
+  jobSpriteNames[61] = OBFUSCATE_ARRAY("제철공\\제철공", 0x176F138D5DD7F365ULL, char).Text();
+  jobSpriteNames[62] = OBFUSCATE_ARRAY("헌터\\헌터", 0x793F370985ED674FULL, char).Text();
+  jobSpriteNames[63] = OBFUSCATE_ARRAY("어세신\\어세신", 0xE55723712993051DULL, char).Text();
+  jobSpriteNames[64] = OBFUSCATE_ARRAY("페코페코_기사\\페코페코_기사", 0x7115D9F973F913C9ULL, char).Text();
+  jobSpriteNames[65] = OBFUSCATE_ARRAY("크루세이더\\크루세이더", 0xCB1D253B7FE1F563ULL, char).Text();
+  jobSpriteNames[66] = OBFUSCATE_ARRAY("몽크\\몽크", 0x7941D76335CFA14FULL, char).Text();
+  jobSpriteNames[67] = OBFUSCATE_ARRAY("세이지\\세이지", 0x7321C3814F8799E1ULL, char).Text();
+  jobSpriteNames[68] = OBFUSCATE_ARRAY("로그\\로그", 0x7DE349D717D7F123ULL, char).Text();
+  jobSpriteNames[69] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x0F15B16B5BAFD57FULL, char).Text();
+  jobSpriteNames[70] = OBFUSCATE_ARRAY("바드\\바드", 0x9B5B959B954D9333ULL, char).Text();
+  jobSpriteNames[71] = OBFUSCATE_ARRAY("무희\\무희", 0x17FFC98B398FAF61ULL, char).Text();
+  jobSpriteNames[72] = OBFUSCATE_ARRAY("신페코크루세이더\\신페코크루세이더", 0x078143534999254DULL, char).Text();
+  jobSpriteNames[73] = OBFUSCATE_ARRAY("초보자\\초보자", 0xAFA5617F178B6185ULL, char).Text();
+  jobSpriteNames[74] = OBFUSCATE_ARRAY("검사\\검사", 0xE50B2935073DD3E9ULL, char).Text();
+  jobSpriteNames[75] = OBFUSCATE_ARRAY("마법사\\마법사", 0x3F5315DFE32B4FAFULL, char).Text();
+  jobSpriteNames[76] = OBFUSCATE_ARRAY("궁수\\궁수", 0x33832D4D3FDFBDBFULL, char).Text();
+  jobSpriteNames[77] = OBFUSCATE_ARRAY("성직자\\성직자", 0x7D750DADBDE9C3F1ULL, char).Text();
+  jobSpriteNames[78] = OBFUSCATE_ARRAY("상인\\상인", 0xED5143E7C1B39315ULL, char).Text();
+  jobSpriteNames[79] = OBFUSCATE_ARRAY("도둑\\도둑", 0xFF7D83CB791339D9ULL, char).Text();
+  jobSpriteNames[80] = OBFUSCATE_ARRAY("기사\\기사", 0x31956551B311FD95ULL, char).Text();
+  jobSpriteNames[81] = OBFUSCATE_ARRAY("프리스트\\프리스트", 0x393D916561BDC391ULL, char).Text();
+  jobSpriteNames[82] = OBFUSCATE_ARRAY("위저드\\위저드", 0x955D4DF94DE9BB07ULL, char).Text();
+  jobSpriteNames[83] = OBFUSCATE_ARRAY("제철공\\제철공", 0x8741152D8FB34B4FULL, char).Text();
+  jobSpriteNames[84] = OBFUSCATE_ARRAY("헌터\\헌터", 0xB739073FE921AD6FULL, char).Text();
+  jobSpriteNames[85] = OBFUSCATE_ARRAY("어세신\\어세신", 0xC399B7091589B50BULL, char).Text();
+  jobSpriteNames[86] = OBFUSCATE_ARRAY("페코페코_기사\\페코페코_기사", 0x7FC1015DFFCF6D19ULL, char).Text();
+  jobSpriteNames[87] = OBFUSCATE_ARRAY("크루세이더\\크루세이더", 0x0753A7E1EFA9E139ULL, char).Text();
+  jobSpriteNames[88] = OBFUSCATE_ARRAY("몽크\\몽크", 0x7FCD77F9C7CBD14DULL, char).Text();
+  jobSpriteNames[89] = OBFUSCATE_ARRAY("세이지\\세이지", 0xCB3FBD4183DB8323ULL, char).Text();
+  jobSpriteNames[90] = OBFUSCATE_ARRAY("로그\\로그", 0x3B915119EFD523EFULL, char).Text();
+  jobSpriteNames[91] = OBFUSCATE_ARRAY("연금술사\\연금술사", 0x5B8F49AF09390D1BULL, char).Text();
+  jobSpriteNames[92] = OBFUSCATE_ARRAY("바드\\바드", 0x3F557BE333F95F6DULL, char).Text();
+  jobSpriteNames[93] = OBFUSCATE_ARRAY("무희\\무희", 0x474DC581D5E98357ULL, char).Text();
+  jobSpriteNames[94] = OBFUSCATE_ARRAY("구페코크루세이더\\구페코크루세이더", 0x01FF9313695DD9DFULL, char).Text();
+  jobSpriteNames[95] = OBFUSCATE_ARRAY("초보자\\초보자", 0x1BF915E1F37DFDFDULL, char).Text();
+  jobSpriteNames[96] = OBFUSCATE_ARRAY("태권소년\\태권소년", 0x49C3759B77DBD3C1ULL, char).Text();
+  jobSpriteNames[97] = OBFUSCATE_ARRAY("권성\\권성", 0x6DED3DD1CF75AD9BULL, char).Text();
+  jobSpriteNames[98] = OBFUSCATE_ARRAY("권성\\권성", 0x91E147EBBD47C39FULL, char).Text();
+  jobSpriteNames[99] = OBFUSCATE_ARRAY("소울링커\\소울링커", 0xD1538513DF975701ULL, char).Text();
+  jobSpriteNames[100] = OBFUSCATE_ARRAY("성직자\\성직자", 0xA1A55B4D1597EDD3ULL, char).Text();
+  jobSpriteNames[101] = OBFUSCATE_ARRAY("기사\\기사", 0x4F1791FB1503C713ULL, char).Text();
+  jobSpriteNames[102] = OBFUSCATE_ARRAY("세이지\\세이지", 0x7D993F650D2785FFULL, char).Text();
+  jobSpriteNames[104] = OBFUSCATE_ARRAY("룬나이트\\룬나이트", 0x61FF87ED7BF39BE1ULL, char).Text();
+  jobSpriteNames[110] = OBFUSCATE_ARRAY("룬나이트\\룬나이트", 0x151F77EBEBBB2147ULL, char).Text();
+  jobSpriteNames[130] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x2D394DBD0F332733ULL, char).Text();
+  jobSpriteNames[131] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x69D345DB950F336DULL, char).Text();
+  jobSpriteNames[159] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0xC7912587FFF31B71ULL, char).Text();
+  jobSpriteNames[138] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x2D3B15774149D5DDULL, char).Text();
+  jobSpriteNames[139] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x9B17C9EFDBB39F2FULL, char).Text();
+  jobSpriteNames[140] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x0BEB63A5C905B3A7ULL, char).Text();
+  jobSpriteNames[141] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x8B3FEB5B8BD5C3C3ULL, char).Text();
+  jobSpriteNames[142] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x8F1B5BFD5F6175B5ULL, char).Text();
+  jobSpriteNames[143] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x078333BB9725B7C9ULL, char).Text();
+  jobSpriteNames[144] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0xF5657D1F3DE5CDC7ULL, char).Text();
+  jobSpriteNames[145] = OBFUSCATE_ARRAY("페코페코_룬나이트\\페코페코_룬나이트", 0x69FD1D9733D3CFC1ULL, char).Text();
+  jobSpriteNames[107] = OBFUSCATE_ARRAY("아크비숍\\아크비숍", 0xF7530137154D8FE5ULL, char).Text();
+  jobSpriteNames[113] = OBFUSCATE_ARRAY("아크비숍\\아크비숍", 0x8B65CD61012B5931ULL, char).Text();
+  jobSpriteNames[105] = OBFUSCATE_ARRAY("워록\\워록", 0x17359BF953C367B3ULL, char).Text();
+  jobSpriteNames[111] = OBFUSCATE_ARRAY("워록\\워록", 0x2FF3C5036D070127ULL, char).Text();
+  jobSpriteNames[108] = OBFUSCATE_ARRAY("미케닉\\미케닉", 0x93E7A3A1F587CDC5ULL, char).Text();
+  jobSpriteNames[114] = OBFUSCATE_ARRAY("미케닉\\미케닉", 0xC52FB5FBB94FF917ULL, char).Text();
+  jobSpriteNames[136] = OBFUSCATE_ARRAY("마도기어\\마도기어", 0x812BE72BCD5707B7ULL, char).Text();
+  jobSpriteNames[137] = OBFUSCATE_ARRAY("마도기어\\마도기어", 0x59278F63D79F3DA1ULL, char).Text();
+  jobSpriteNames[162] = OBFUSCATE_ARRAY("마도기어\\마도기어", 0x1D6D75EDE7CD311FULL, char).Text();
+  jobSpriteNames[106] = OBFUSCATE_ARRAY("레인져\\레인져", 0x3375B1C7DBB5FD55ULL, char).Text();
+  jobSpriteNames[112] = OBFUSCATE_ARRAY("레인져\\레인져", 0x0F0F8B6B8F9D19D1ULL, char).Text();
+  jobSpriteNames[134] = OBFUSCATE_ARRAY("레인져늑대\\레인져늑대", 0xD98F03A52D35636DULL, char).Text();
+  jobSpriteNames[135] = OBFUSCATE_ARRAY("레인져늑대\\레인져늑대", 0x31D7C1EDA345E36DULL, char).Text();
+  jobSpriteNames[161] = OBFUSCATE_ARRAY("레인져늑대\\레인져늑대", 0xD3755DD95F47A909ULL, char).Text();
+  jobSpriteNames[109] = OBFUSCATE_ARRAY("길로틴크로스\\길로틴크로스", 0x490FFB43A12F0DB9ULL, char).Text();
+  jobSpriteNames[115] = OBFUSCATE_ARRAY("길로틴크로스\\길로틴크로스", 0x3FAF85D995034FD7ULL, char).Text();
+  jobSpriteNames[116] = OBFUSCATE_ARRAY("로얄가드\\로얄가드", 0x73D1674B61DF7B0BULL, char).Text();
+  jobSpriteNames[123] = OBFUSCATE_ARRAY("로얄가드\\로얄가드", 0x91651D81F559F971ULL, char).Text();
+  jobSpriteNames[132] = OBFUSCATE_ARRAY("신페코로얄가드\\신페코로얄가드", 0x072D2D872D259D5BULL, char).Text();
+  jobSpriteNames[133] = OBFUSCATE_ARRAY("신페코로얄가드\\신페코로얄가드", 0x875FCDF1E7A1795FULL, char).Text();
+  jobSpriteNames[160] = OBFUSCATE_ARRAY("신페코로얄가드\\신페코로얄가드", 0xB96B77B7255F8569ULL, char).Text();
+  jobSpriteNames[120] = OBFUSCATE_ARRAY("슈라\\슈라", 0x9BE3EF737387AD79ULL, char).Text();
+  jobSpriteNames[127] = OBFUSCATE_ARRAY("슈라\\슈라", 0x4755C1355575FD37ULL, char).Text();
+  jobSpriteNames[117] = OBFUSCATE_ARRAY("소서러\\소서러", 0x11CB35636377DD07ULL, char).Text();
+  jobSpriteNames[124] = OBFUSCATE_ARRAY("소서러\\소서러", 0x79DF094DD9616575ULL, char).Text();
+  jobSpriteNames[122] = OBFUSCATE_ARRAY("로그\\로그", 0x9D8F2D37BFFD61B7ULL, char).Text();
+  jobSpriteNames[129] = OBFUSCATE_ARRAY("로그\\로그", 0x5DAD2D25D9259B93ULL, char).Text();
+  jobSpriteNames[121] = OBFUSCATE_ARRAY("제네릭\\제네릭", 0x1F1D51274373C1FDULL, char).Text();
+  jobSpriteNames[128] = OBFUSCATE_ARRAY("제네릭\\제네릭", 0x3D371F5B0F7F9327ULL, char).Text();
+  jobSpriteNames[119] = OBFUSCATE_ARRAY("원더러\\원더러", 0x6BF729E30729CF29ULL, char).Text();
+  jobSpriteNames[126] = OBFUSCATE_ARRAY("원더러\\원더러", 0xC5995F4B9FE96B89ULL, char).Text();
+  jobSpriteNames[118] = OBFUSCATE_ARRAY("민스트럴\\민스트럴", 0x610F7DD1EFC1C91BULL, char).Text();
+  jobSpriteNames[125] = OBFUSCATE_ARRAY("민스트럴\\민스트럴", 0x5F93A1C3A7AD7537ULL, char).Text();
+  jobSpriteNames[146] = OBFUSCATE_ARRAY("룬나이트\\룬나이트", 0x097389157345A787ULL, char).Text();
+  jobSpriteNames[147] = OBFUSCATE_ARRAY("워록\\워록", 0x732B390D63FD47D7ULL, char).Text();
+  jobSpriteNames[148] = OBFUSCATE_ARRAY("레인져\\레인져", 0xB7A76BF9CD41F99FULL, char).Text();
+  jobSpriteNames[149] = OBFUSCATE_ARRAY("아크비숍\\아크비숍", 0xE3FB23537D2785BFULL, char).Text();
+  jobSpriteNames[150] = OBFUSCATE_ARRAY("미케닉\\미케닉", 0x1FDB81175D1557E3ULL, char).Text();
+  jobSpriteNames[151] = OBFUSCATE_ARRAY("길로틴크로스\\길로틴크로스", 0xB3CF9BEB7963DB89ULL, char).Text();
+  jobSpriteNames[152] = OBFUSCATE_ARRAY("로얄가드\\로얄가드", 0x8BBF792B47E72173ULL, char).Text();
+  jobSpriteNames[153] = OBFUSCATE_ARRAY("소서러\\소서러", 0xDD69EDFFA18F537DULL, char).Text();
+  jobSpriteNames[154] = OBFUSCATE_ARRAY("민스트럴\\민스트럴", 0x71A509DB43792991ULL, char).Text();
+  jobSpriteNames[155] = OBFUSCATE_ARRAY("원더러\\원더러", 0xFB2BC75769E777D3ULL, char).Text();
+  jobSpriteNames[156] = OBFUSCATE_ARRAY("슈라\\슈라", 0x038535BB092533B7ULL, char).Text();
+  jobSpriteNames[157] = OBFUSCATE_ARRAY("제네릭\\제네릭", 0x9B9D51AD3515F779ULL, char).Text();
+  jobSpriteNames[158] = OBFUSCATE_ARRAY("로그\\로그", 0xB5D7B5AF4FEDFF57ULL, char).Text();
+  jobSpriteNames[240] = OBFUSCATE_ARRAY("초보자\\초보자", 0x67DD5BAB1919D9D1ULL, char).Text();
   {
     constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xB5F3F779237315F3ULL);
     thread_local EncryptedName<sizeof(source), 0xB5F3F779237315F3ULL> name(source);
@@ -8522,271 +7235,59 @@ void CSession::InitJobSpriteNames() {
   jobSpriteNames[284] = PoringStarGladiatorBabySpriteName().Text();
   jobSpriteNames[277] = SoulLinkerBabySpriteName().Text();
   jobSpriteNames[285] = FrogSoulLinkerBabySpriteName().Text();
-  jobSpriteNames[278] = []() -> EncryptedName<10, 0x0789EBC9F5C1C59FULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0x0789EBC9F5C1C59FULL);
-    thread_local EncryptedName<sizeof(source), 0x0789EBC9F5C1C59FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[286] = []() -> EncryptedName<10, 0x451FD72783630709ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("건너\\건너", 0x451FD72783630709ULL);
-    thread_local EncryptedName<sizeof(source), 0x451FD72783630709ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[279] = []() -> EncryptedName<20, 0x3B6D9BFD27A7C7F7ULL>& {
-    constexpr std::array<char, 20> source = CRYPT_NAME("rebellion\\rebellion", 0x3B6D9BFD27A7C7F7ULL);
-    thread_local EncryptedName<sizeof(source), 0x3B6D9BFD27A7C7F7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[287] = []() -> EncryptedName<20, 0xA15B555BE9CD2B81ULL>& {
-    constexpr std::array<char, 20> source = CRYPT_NAME("rebellion\\rebellion", 0xA15B555BE9CD2B81ULL);
-    thread_local EncryptedName<sizeof(source), 0xA15B555BE9CD2B81ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[289] = []() -> EncryptedName<10, 0x73C32959FDFFA51BULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0x73C32959FDFFA51BULL);
-    thread_local EncryptedName<sizeof(source), 0x73C32959FDFFA51BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[290] = []() -> EncryptedName<18, 0xB3F1A10745C1F105ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울리퍼\\소울리퍼", 0xB3F1A10745C1F105ULL);
-    thread_local EncryptedName<sizeof(source), 0xB3F1A10745C1F105ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[291] = []() -> EncryptedName<10, 0xD9115915B1919533ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0xD9115915B1919533ULL);
-    thread_local EncryptedName<sizeof(source), 0xD9115915B1919533ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[292] = []() -> EncryptedName<18, 0x7959FFBF652D07BFULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울리퍼\\소울리퍼", 0x7959FFBF652D07BFULL);
-    thread_local EncryptedName<sizeof(source), 0x7959FFBF652D07BFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[293] = []() -> EncryptedName<10, 0x99157F159BB99BD9ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0x99157F159BB99BD9ULL);
-    thread_local EncryptedName<sizeof(source), 0x99157F159BB99BD9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[294] = []() -> EncryptedName<10, 0x31E3CF9D358D8705ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0x31E3CF9D358D8705ULL);
-    thread_local EncryptedName<sizeof(source), 0x31E3CF9D358D8705ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[295] = []() -> EncryptedName<10, 0xA55B7BEF3D7377E3ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0xA55B7BEF3D7377E3ULL);
-    thread_local EncryptedName<sizeof(source), 0xA55B7BEF3D7377E3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[296] = []() -> EncryptedName<18, 0xF5496753BDE7C5BDULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울리퍼\\소울리퍼", 0xF5496753BDE7C5BDULL);
-    thread_local EncryptedName<sizeof(source), 0xF5496753BDE7C5BDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[297] = []() -> EncryptedName<10, 0x79A58B0F2173CF49ULL>& {
-    constexpr std::array<char, 10> source = CRYPT_NAME("성제\\성제", 0x79A58B0F2173CF49ULL);
-    thread_local EncryptedName<sizeof(source), 0x79A58B0F2173CF49ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[298] = []() -> EncryptedName<18, 0x6B3917C939150B9BULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("소울리퍼\\소울리퍼", 0x6B3917C939150B9BULL);
-    thread_local EncryptedName<sizeof(source), 0x6B3917C939150B9BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[307] = []() -> EncryptedName<18, 0x795787B7779D19DBULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("WINDHAWK\\WINDHAWK", 0x795787B7779D19DBULL);
-    thread_local EncryptedName<sizeof(source), 0x795787B7779D19DBULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[328] = []() -> EncryptedName<23, 0xF9B1EF9F7961EFF5ULL>& {
-    constexpr std::array<char, 23> source = CRYPT_NAME("WINDHAWK\\WOLF_WINDHAWK", 0xF9B1EF9F7961EFF5ULL);
-    thread_local EncryptedName<sizeof(source), 0xF9B1EF9F7961EFF5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[320] = []() -> EncryptedName<25, 0x29AB0B59651BDFD5ULL>& {
-    constexpr std::array<char, 25> source = CRYPT_NAME("WINDHAWK\\WINDHAWK_RIDING", 0x29AB0B59651BDFD5ULL);
-    thread_local EncryptedName<sizeof(source), 0x29AB0B59651BDFD5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[313] = []() -> EncryptedName<22, 0xD97DC927AFE911F1ULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("TROUBADOUR\\TROUBADOUR", 0xD97DC927AFE911F1ULL);
-    thread_local EncryptedName<sizeof(source), 0xD97DC927AFE911F1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[326] = []() -> EncryptedName<29, 0x07A7D947CF7323BFULL>& {
-    constexpr std::array<char, 29> source = CRYPT_NAME("TROUBADOUR\\TROUBADOUR_RIDING", 0x07A7D947CF7323BFULL);
-    thread_local EncryptedName<sizeof(source), 0x07A7D947CF7323BFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[314] = []() -> EncryptedName<18, 0x47B7BF55EB471557ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("TROUVERE\\TROUVERE", 0x47B7BF55EB471557ULL);
-    thread_local EncryptedName<sizeof(source), 0x47B7BF55EB471557ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[327] = []() -> EncryptedName<25, 0x8BA52B970DD531ADULL>& {
-    constexpr std::array<char, 25> source = CRYPT_NAME("TROUVERE\\TROUVERE_RIDING", 0x8BA52B970DD531ADULL);
-    thread_local EncryptedName<sizeof(source), 0x8BA52B970DD531ADULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[305] = []() -> EncryptedName<20, 0x2F2103792383718BULL>& {
-    constexpr std::array<char, 20> source = CRYPT_NAME("ARCH_MAGE\\ARCH_MAGE", 0x2F2103792383718BULL);
-    thread_local EncryptedName<sizeof(source), 0x2F2103792383718BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[318] = []() -> EncryptedName<27, 0xCFB9671DEF4BD9E7ULL>& {
-    constexpr std::array<char, 27> source = CRYPT_NAME("ARCH_MAGE\\ARCH_MAGE_RIDING", 0xCFB9671DEF4BD9E7ULL);
-    thread_local EncryptedName<sizeof(source), 0xCFB9671DEF4BD9E7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[311] = []() -> EncryptedName<32, 0x4349ADE96FEB27E5ULL>& {
-    constexpr std::array<char, 32> source = CRYPT_NAME("ELEMETAL_MASTER\\ELEMETAL_MASTER", 0x4349ADE96FEB27E5ULL);
-    thread_local EncryptedName<sizeof(source), 0x4349ADE96FEB27E5ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[324] = []() -> EncryptedName<39, 0x999F5191852D2F6BULL>& {
-    constexpr std::array<char, 39> source = CRYPT_NAME("ELEMETAL_MASTER\\ELEMETAL_MASTER_RIDING", 0x999F5191852D2F6BULL);
-    thread_local EncryptedName<sizeof(source), 0x999F5191852D2F6BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[306] = []() -> EncryptedName<18, 0x35F59F6F3DD1C965ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("CARDINAL\\CARDINAL", 0x35F59F6F3DD1C965ULL);
-    thread_local EncryptedName<sizeof(source), 0x35F59F6F3DD1C965ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[319] = []() -> EncryptedName<25, 0xC1FD95811D1F4FA1ULL>& {
-    constexpr std::array<char, 25> source = CRYPT_NAME("CARDINAL\\CARDINAL_RIDING", 0xC1FD95811D1F4FA1ULL);
-    thread_local EncryptedName<sizeof(source), 0xC1FD95811D1F4FA1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[312] = []() -> EncryptedName<22, 0xBF0F412941076FADULL>& {
-    constexpr std::array<char, 22> source = CRYPT_NAME("INQUISITOR\\INQUISITOR", 0xBF0F412941076FADULL);
-    thread_local EncryptedName<sizeof(source), 0xBF0F412941076FADULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[325] = []() -> EncryptedName<29, 0xD7BBEB2DDB295D11ULL>& {
-    constexpr std::array<char, 29> source = CRYPT_NAME("INQUISITOR\\INQUISITOR_RIDING", 0xD7BBEB2DDB295D11ULL);
-    thread_local EncryptedName<sizeof(source), 0xD7BBEB2DDB295D11ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[309] = []() -> EncryptedName<12, 0xB59BADC5B365617DULL>& {
-    constexpr std::array<char, 12> source = CRYPT_NAME("BIOLO\\BIOLO", 0xB59BADC5B365617DULL);
-    thread_local EncryptedName<sizeof(source), 0xB59BADC5B365617DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[322] = []() -> EncryptedName<26, 0x8DFF0B4B67D9FDE1ULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("BIOLO_RIDING\\BIOLO_RIDING", 0x8DFF0B4B67D9FDE1ULL);
-    thread_local EncryptedName<sizeof(source), 0x8DFF0B4B67D9FDE1ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[303] = []() -> EncryptedName<16, 0x91E7A7DFA58F9B6BULL>& {
-    constexpr std::array<char, 16> source = CRYPT_NAME("MEISTER\\MEISTER", 0x91E7A7DFA58F9B6BULL);
-    thread_local EncryptedName<sizeof(source), 0x91E7A7DFA58F9B6BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[316] = []() -> EncryptedName<30, 0x77D925073D6F19B9ULL>& {
-    constexpr std::array<char, 30> source = CRYPT_NAME("MEISTER_RIDING\\MEISTER_RIDING", 0x77D925073D6F19B9ULL);
-    thread_local EncryptedName<sizeof(source), 0x77D925073D6F19B9ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[329] = []() -> EncryptedName<35, 0xAFF9332FD397533FULL>& {
-    constexpr std::array<char, 35> source = CRYPT_NAME("MEISTER_MADOGEAR\\MEISTER_MADOGEAR1", 0xAFF9332FD397533FULL);
-    thread_local EncryptedName<sizeof(source), 0xAFF9332FD397533FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[304] = []() -> EncryptedName<26, 0xA1DFCDAD555BB16DULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("SHADOW_CROSS\\SHADOW_CROSS", 0xA1DFCDAD555BB16DULL);
-    thread_local EncryptedName<sizeof(source), 0xA1DFCDAD555BB16DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[317] = []() -> EncryptedName<33, 0x7DC10333F96DE3E7ULL>& {
-    constexpr std::array<char, 33> source = CRYPT_NAME("SHADOW_CROSS\\SHADOW_CROSS_RIDING", 0x7DC10333F96DE3E7ULL);
-    thread_local EncryptedName<sizeof(source), 0x7DC10333F96DE3E7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[310] = []() -> EncryptedName<26, 0x194F8339AF753FADULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("ABYSS_CHASER\\ABYSS_CHASER", 0x194F8339AF753FADULL);
-    thread_local EncryptedName<sizeof(source), 0x194F8339AF753FADULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[323] = []() -> EncryptedName<33, 0x51372B6F4BA14B23ULL>& {
-    constexpr std::array<char, 33> source = CRYPT_NAME("ABYSS_CHASER\\ABYSS_CHASER_RIDING", 0x51372B6F4BA14B23ULL);
-    thread_local EncryptedName<sizeof(source), 0x51372B6F4BA14B23ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[302] = []() -> EncryptedName<28, 0xE9FBAB53D5A1BB17ULL>& {
-    constexpr std::array<char, 28> source = CRYPT_NAME("DRAGON_KNIGHT\\DRAGON_KNIGHT", 0xE9FBAB53D5A1BB17ULL);
-    thread_local EncryptedName<sizeof(source), 0xE9FBAB53D5A1BB17ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[315] = []() -> EncryptedName<42, 0x1F79132B518FD389ULL>& {
-    constexpr std::array<char, 42> source = CRYPT_NAME("DRAGON_KNIGHT_RIDING\\DRAGON_KNIGHT_RIDING", 0x1F79132B518FD389ULL);
-    thread_local EncryptedName<sizeof(source), 0x1F79132B518FD389ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[330] = []() -> EncryptedName<44, 0xB70319D3A78D39CDULL>& {
-    constexpr std::array<char, 44> source = CRYPT_NAME("DRAGON_KNIGHT_CHICKEN\\DRAGON_KNIGHT_CHICKEN", 0xB70319D3A78D39CDULL);
-    thread_local EncryptedName<sizeof(source), 0xB70319D3A78D39CDULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[308] = []() -> EncryptedName<30, 0xA5C5D1A3B9457B53ULL>& {
-    constexpr std::array<char, 30> source = CRYPT_NAME("IMPERIAL_GUARD\\IMPERIAL_GUARD", 0xA5C5D1A3B9457B53ULL);
-    thread_local EncryptedName<sizeof(source), 0xA5C5D1A3B9457B53ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[321] = []() -> EncryptedName<44, 0x8F61434F0F79DDD7ULL>& {
-    constexpr std::array<char, 44> source = CRYPT_NAME("IMPERIAL_GUARD_RIDING\\IMPERIAL_GUARD_RIDING", 0x8F61434F0F79DDD7ULL);
-    thread_local EncryptedName<sizeof(source), 0x8F61434F0F79DDD7ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[331] = []() -> EncryptedName<46, 0x4B670715D543C1C3ULL>& {
-    constexpr std::array<char, 46> source = CRYPT_NAME("IMPERIAL_GUARD_CHICKEN\\IMPERIAL_GUARD_CHICKEN", 0x4B670715D543C1C3ULL);
-    thread_local EncryptedName<sizeof(source), 0x4B670715D543C1C3ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[352] = []() -> EncryptedName<24, 0x61F59D5D41E76519ULL>& {
-    constexpr std::array<char, 24> source = CRYPT_NAME("SKY_EMPEROR\\SKY_EMPEROR", 0x61F59D5D41E76519ULL);
-    thread_local EncryptedName<sizeof(source), 0x61F59D5D41E76519ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[366] = []() -> EncryptedName<24, 0x4B1D078937DB892BULL>& {
-    constexpr std::array<char, 24> source = CRYPT_NAME("SKY_EMPEROR\\SKY_EMPEROR", 0x4B1D078937DB892BULL);
-    thread_local EncryptedName<sizeof(source), 0x4B1D078937DB892BULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[359] = []() -> EncryptedName<31, 0x7155E5EF0DFB0D03ULL>& {
-    constexpr std::array<char, 31> source = CRYPT_NAME("SKY_EMPEROR\\SKY_EMPEROR_RIDING", 0x7155E5EF0DFB0D03ULL);
-    thread_local EncryptedName<sizeof(source), 0x7155E5EF0DFB0D03ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[353] = []() -> EncryptedName<26, 0xD51953E763B94747ULL>& {
-    constexpr std::array<char, 26> source = CRYPT_NAME("SOUL_ASCETIC\\SOUL_ASCETIC", 0xD51953E763B94747ULL);
-    thread_local EncryptedName<sizeof(source), 0xD51953E763B94747ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[360] = []() -> EncryptedName<33, 0x17FB0F6BFF3BE93FULL>& {
-    constexpr std::array<char, 33> source = CRYPT_NAME("SOUL_ASCETIC\\SOUL_ASCETIC_RIDING", 0x17FB0F6BFF3BE93FULL);
-    thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[354] = []() -> EncryptedName<18, 0x91DF1F5D3B014D45ULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("SHINKIRO\\SHINKIRO", 0x91DF1F5D3B014D45ULL);
-    thread_local EncryptedName<sizeof(source), 0x91DF1F5D3B014D45ULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[361] = []() -> EncryptedName<25, 0x2529F16B0375530DULL>& {
-    constexpr std::array<char, 25> source = CRYPT_NAME("SHINKIRO\\SHINKIRO_RIDING", 0x2529F16B0375530DULL);
-    thread_local EncryptedName<sizeof(source), 0x2529F16B0375530DULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[355] = []() -> EncryptedName<18, 0x2F371DDDADDD53CFULL>& {
-    constexpr std::array<char, 18> source = CRYPT_NAME("SHIRANUI\\SHIRANUI", 0x2F371DDDADDD53CFULL);
-    thread_local EncryptedName<sizeof(source), 0x2F371DDDADDD53CFULL> name(source);
-    return name;
-  }().Text();
-  jobSpriteNames[362] = []() -> EncryptedName<25, 0x0D7FA94DD32361A9ULL>& {
-    constexpr std::array<char, 25> source = CRYPT_NAME("SHIRANUI\\SHIRANUI_RIDING", 0x0D7FA94DD32361A9ULL);
-    thread_local EncryptedName<sizeof(source), 0x0D7FA94DD32361A9ULL> name(source);
-    return name;
-  }().Text();
+  jobSpriteNames[278] = OBFUSCATE_ARRAY("건너\\건너", 0x0789EBC9F5C1C59FULL, char).Text();
+  jobSpriteNames[286] = OBFUSCATE_ARRAY("건너\\건너", 0x451FD72783630709ULL, char).Text();
+  jobSpriteNames[279] = OBFUSCATE_ARRAY("rebellion\\rebellion", 0x3B6D9BFD27A7C7F7ULL, char).Text();
+  jobSpriteNames[287] = OBFUSCATE_ARRAY("rebellion\\rebellion", 0xA15B555BE9CD2B81ULL, char).Text();
+  jobSpriteNames[289] = OBFUSCATE_ARRAY("성제\\성제", 0x73C32959FDFFA51BULL, char).Text();
+  jobSpriteNames[290] = OBFUSCATE_ARRAY("소울리퍼\\소울리퍼", 0xB3F1A10745C1F105ULL, char).Text();
+  jobSpriteNames[291] = OBFUSCATE_ARRAY("성제\\성제", 0xD9115915B1919533ULL, char).Text();
+  jobSpriteNames[292] = OBFUSCATE_ARRAY("소울리퍼\\소울리퍼", 0x7959FFBF652D07BFULL, char).Text();
+  jobSpriteNames[293] = OBFUSCATE_ARRAY("성제\\성제", 0x99157F159BB99BD9ULL, char).Text();
+  jobSpriteNames[294] = OBFUSCATE_ARRAY("성제\\성제", 0x31E3CF9D358D8705ULL, char).Text();
+  jobSpriteNames[295] = OBFUSCATE_ARRAY("성제\\성제", 0xA55B7BEF3D7377E3ULL, char).Text();
+  jobSpriteNames[296] = OBFUSCATE_ARRAY("소울리퍼\\소울리퍼", 0xF5496753BDE7C5BDULL, char).Text();
+  jobSpriteNames[297] = OBFUSCATE_ARRAY("성제\\성제", 0x79A58B0F2173CF49ULL, char).Text();
+  jobSpriteNames[298] = OBFUSCATE_ARRAY("소울리퍼\\소울리퍼", 0x6B3917C939150B9BULL, char).Text();
+  jobSpriteNames[307] = OBFUSCATE_ARRAY("WINDHAWK\\WINDHAWK", 0x795787B7779D19DBULL, char).Text();
+  jobSpriteNames[328] = OBFUSCATE_ARRAY("WINDHAWK\\WOLF_WINDHAWK", 0xF9B1EF9F7961EFF5ULL, char).Text();
+  jobSpriteNames[320] = OBFUSCATE_ARRAY("WINDHAWK\\WINDHAWK_RIDING", 0x29AB0B59651BDFD5ULL, char).Text();
+  jobSpriteNames[313] = OBFUSCATE_ARRAY("TROUBADOUR\\TROUBADOUR", 0xD97DC927AFE911F1ULL, char).Text();
+  jobSpriteNames[326] = OBFUSCATE_ARRAY("TROUBADOUR\\TROUBADOUR_RIDING", 0x07A7D947CF7323BFULL, char).Text();
+  jobSpriteNames[314] = OBFUSCATE_ARRAY("TROUVERE\\TROUVERE", 0x47B7BF55EB471557ULL, char).Text();
+  jobSpriteNames[327] = OBFUSCATE_ARRAY("TROUVERE\\TROUVERE_RIDING", 0x8BA52B970DD531ADULL, char).Text();
+  jobSpriteNames[305] = OBFUSCATE_ARRAY("ARCH_MAGE\\ARCH_MAGE", 0x2F2103792383718BULL, char).Text();
+  jobSpriteNames[318] = OBFUSCATE_ARRAY("ARCH_MAGE\\ARCH_MAGE_RIDING", 0xCFB9671DEF4BD9E7ULL, char).Text();
+  jobSpriteNames[311] = OBFUSCATE_ARRAY("ELEMETAL_MASTER\\ELEMETAL_MASTER", 0x4349ADE96FEB27E5ULL, char).Text();
+  jobSpriteNames[324] = OBFUSCATE_ARRAY("ELEMETAL_MASTER\\ELEMETAL_MASTER_RIDING", 0x999F5191852D2F6BULL, char).Text();
+  jobSpriteNames[306] = OBFUSCATE_ARRAY("CARDINAL\\CARDINAL", 0x35F59F6F3DD1C965ULL, char).Text();
+  jobSpriteNames[319] = OBFUSCATE_ARRAY("CARDINAL\\CARDINAL_RIDING", 0xC1FD95811D1F4FA1ULL, char).Text();
+  jobSpriteNames[312] = OBFUSCATE_ARRAY("INQUISITOR\\INQUISITOR", 0xBF0F412941076FADULL, char).Text();
+  jobSpriteNames[325] = OBFUSCATE_ARRAY("INQUISITOR\\INQUISITOR_RIDING", 0xD7BBEB2DDB295D11ULL, char).Text();
+  jobSpriteNames[309] = OBFUSCATE_ARRAY("BIOLO\\BIOLO", 0xB59BADC5B365617DULL, char).Text();
+  jobSpriteNames[322] = OBFUSCATE_ARRAY("BIOLO_RIDING\\BIOLO_RIDING", 0x8DFF0B4B67D9FDE1ULL, char).Text();
+  jobSpriteNames[303] = OBFUSCATE_ARRAY("MEISTER\\MEISTER", 0x91E7A7DFA58F9B6BULL, char).Text();
+  jobSpriteNames[316] = OBFUSCATE_ARRAY("MEISTER_RIDING\\MEISTER_RIDING", 0x77D925073D6F19B9ULL, char).Text();
+  jobSpriteNames[329] = OBFUSCATE_ARRAY("MEISTER_MADOGEAR\\MEISTER_MADOGEAR1", 0xAFF9332FD397533FULL, char).Text();
+  jobSpriteNames[304] = OBFUSCATE_ARRAY("SHADOW_CROSS\\SHADOW_CROSS", 0xA1DFCDAD555BB16DULL, char).Text();
+  jobSpriteNames[317] = OBFUSCATE_ARRAY("SHADOW_CROSS\\SHADOW_CROSS_RIDING", 0x7DC10333F96DE3E7ULL, char).Text();
+  jobSpriteNames[310] = OBFUSCATE_ARRAY("ABYSS_CHASER\\ABYSS_CHASER", 0x194F8339AF753FADULL, char).Text();
+  jobSpriteNames[323] = OBFUSCATE_ARRAY("ABYSS_CHASER\\ABYSS_CHASER_RIDING", 0x51372B6F4BA14B23ULL, char).Text();
+  jobSpriteNames[302] = OBFUSCATE_ARRAY("DRAGON_KNIGHT\\DRAGON_KNIGHT", 0xE9FBAB53D5A1BB17ULL, char).Text();
+  jobSpriteNames[315] = OBFUSCATE_ARRAY("DRAGON_KNIGHT_RIDING\\DRAGON_KNIGHT_RIDING", 0x1F79132B518FD389ULL, char).Text();
+  jobSpriteNames[330] = OBFUSCATE_ARRAY("DRAGON_KNIGHT_CHICKEN\\DRAGON_KNIGHT_CHICKEN", 0xB70319D3A78D39CDULL, char).Text();
+  jobSpriteNames[308] = OBFUSCATE_ARRAY("IMPERIAL_GUARD\\IMPERIAL_GUARD", 0xA5C5D1A3B9457B53ULL, char).Text();
+  jobSpriteNames[321] = OBFUSCATE_ARRAY("IMPERIAL_GUARD_RIDING\\IMPERIAL_GUARD_RIDING", 0x8F61434F0F79DDD7ULL, char).Text();
+  jobSpriteNames[331] = OBFUSCATE_ARRAY("IMPERIAL_GUARD_CHICKEN\\IMPERIAL_GUARD_CHICKEN", 0x4B670715D543C1C3ULL, char).Text();
+  jobSpriteNames[352] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR", 0x61F59D5D41E76519ULL, char).Text();
+  jobSpriteNames[366] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR", 0x4B1D078937DB892BULL, char).Text();
+  jobSpriteNames[359] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR_RIDING", 0x7155E5EF0DFB0D03ULL, char).Text();
+  jobSpriteNames[353] = OBFUSCATE_ARRAY("SOUL_ASCETIC\\SOUL_ASCETIC", 0xD51953E763B94747ULL, char).Text();
+  jobSpriteNames[360] = OBFUSCATE_ARRAY("SOUL_ASCETIC\\SOUL_ASCETIC_RIDING", 0x17FB0F6BFF3BE93FULL, char).Text();
+  jobSpriteNames[354] = OBFUSCATE_ARRAY("SHINKIRO\\SHINKIRO", 0x91DF1F5D3B014D45ULL, char).Text();
+  jobSpriteNames[361] = OBFUSCATE_ARRAY("SHINKIRO\\SHINKIRO_RIDING", 0x2529F16B0375530DULL, char).Text();
+  jobSpriteNames[355] = OBFUSCATE_ARRAY("SHIRANUI\\SHIRANUI", 0x2F371DDDADDD53CFULL, char).Text();
+  jobSpriteNames[362] = OBFUSCATE_ARRAY("SHIRANUI\\SHIRANUI_RIDING", 0x0D7FA94DD32361A9ULL, char).Text();
   jobSpriteNames[356] = NightWatchBodyPath2().Text();
   jobSpriteNames[363] = NightWatchRidingBodyPath2().Text();
   jobSpriteNames[357] = HyperNoviceBodyPath2().Text();

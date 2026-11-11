@@ -100,6 +100,7 @@
 #include <utility>
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 // GLOBAL: gl_24398
 RECT Rect;
@@ -468,191 +469,139 @@ const char* EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>::Text() {
 // OFFSET: 0x00E55EC0
 // FUNCTION: fn_24331
 EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("ADTESTEXE.EXE", 0xD98F03A52D35636DULL);
-  thread_local EncryptedName<sizeof(source), 0xD98F03A52D35636DULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("ADTESTEXE.EXE", 0xD98F03A52D35636DULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E55F90
 // FUNCTION: fn_24332
 EncryptedName<13, 0x73D1674B61DF7B0BULL>& RagexeMProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXE_M.EXE", 0x73D1674B61DF7B0BULL);
-  thread_local EncryptedName<sizeof(source), 0x73D1674B61DF7B0BULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGEXE_M.EXE", 0x73D1674B61DF7B0BULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56060
 // FUNCTION: fn_24333
 EncryptedName<13, 0x91651D81F559F971ULL>& SakexeMProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("SAKEXE_M.EXE", 0x91651D81F559F971ULL);
-  thread_local EncryptedName<sizeof(source), 0x91651D81F559F971ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("SAKEXE_M.EXE", 0x91651D81F559F971ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56130
 // FUNCTION: fn_24334
 EncryptedName<13, 0x17359BF953C367B3ULL>& Kernel32LibraryName::operator()() const {
-  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("kernel32.dll", 0x17359BF953C367B3ULL);
-  thread_local EncryptedName<sizeof(source), 0x17359BF953C367B3ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("kernel32.dll", 0x17359BF953C367B3ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56200
 // FUNCTION: fn_24335
 EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
-  constexpr std::array<std::uint8_t, 10> source = CRYPT_NAME("psapi.dll", 0x490FFB43A12F0DB9ULL);
-  thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("psapi.dll", 0x490FFB43A12F0DB9ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E562D0
 // FUNCTION: fn_24336
 EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("CreateToolhelp32Snapshot", 0x2FF3C5036D070127ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("CreateToolhelp32Snapshot", 0x2FF3C5036D070127ULL);
 }
 
 // OFFSET: 0x00E563B0
 // FUNCTION: fn_24337
 EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const {
-  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("EnumProcesses", 0x3FAF85D995034FD7ULL);
-  thread_local EncryptedName<sizeof(source), 0x3FAF85D995034FD7ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("EnumProcesses", 0x3FAF85D995034FD7ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56480
 // FUNCTION: fn_24338
 EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("CAdventurerAgencyMgr::CreateInstance()", 0x6961FF056999A303ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x6961FF056999A303ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("CAdventurerAgencyMgr::CreateInstance()", 0x6961FF056999A303ULL);
 }
 
 // OFFSET: 0x00E56560
 // FUNCTION: fn_24339
 EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("UIRequestJoinPartyMgr::CreateInstance()", 0x9DEFC105A1EB2F71ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x9DEFC105A1EB2F71ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("UIRequestJoinPartyMgr::CreateInstance()", 0x9DEFC105A1EB2F71ULL);
 }
 
 // OFFSET: 0x00E56640
 // FUNCTION: fn_24340
 EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("CAdventureGuideMgr::CreateInstance()", 0x0DF5B33D9F21EB79ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("CAdventureGuideMgr::CreateInstance()", 0x0DF5B33D9F21EB79ULL);
 }
 
 // OFFSET: 0x00E56720
 // FUNCTION: fn_24341
 EncryptedName<5, 0x01E7898D9D235DDFULL>& GoodResultName::operator()() const {
-  constexpr std::array<std::uint8_t, 5> source = CRYPT_NAME("good", 0x01E7898D9D235DDFULL);
-  thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("good", 0x01E7898D9D235DDFULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E567E0
 // FUNCTION: fn_24342
 EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const {
-  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("Process32First", 0x1D6D75EDE7CD311FULL);
-  thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Process32First", 0x1D6D75EDE7CD311FULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E568C0
 // FUNCTION: fn_24343
 EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("EnumProcessModules", 0x151F77EBEBBB2147ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("EnumProcessModules", 0x151F77EBEBBB2147ULL);
 }
 
 // OFFSET: 0x00E56990
 // FUNCTION: fn_24344
 EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const {
-  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("Process32Next", 0x3375B1C7DBB5FD55ULL);
-  thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Process32Next", 0x3375B1C7DBB5FD55ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56A60
 // FUNCTION: fn_24345
 EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("GetModuleBaseNameA", 0x2D394DBD0F332733ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("GetModuleBaseNameA", 0x2D394DBD0F332733ULL);
 }
 
 // OFFSET: 0x00E56B30
 // FUNCTION: fn_24346
 EncryptedName<11, 0x7D993F650D2785FFULL>& RagexeModuleName::operator()() const {
-  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("RAGEXE.EXE", 0x7D993F650D2785FFULL);
-  thread_local EncryptedName<sizeof(source), 0x7D993F650D2785FFULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGEXE.EXE", 0x7D993F650D2785FFULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56C00
 // FUNCTION: fn_24347
 EncryptedName<11, 0x812BE72BCD5707B7ULL>& RagexeProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("RAGEXE.EXE", 0x812BE72BCD5707B7ULL);
-  thread_local EncryptedName<sizeof(source), 0x812BE72BCD5707B7ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGEXE.EXE", 0x812BE72BCD5707B7ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56CD0
 // FUNCTION: fn_24348
 EncryptedName<11, 0x61FF87ED7BF39BE1ULL>& SakexeModuleName::operator()() const {
-  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("SAKEXE.EXE", 0x61FF87ED7BF39BE1ULL);
-  thread_local EncryptedName<sizeof(source), 0x61FF87ED7BF39BE1ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("SAKEXE.EXE", 0x61FF87ED7BF39BE1ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56DA0
 // FUNCTION: fn_24349
 EncryptedName<11, 0x59278F63D79F3DA1ULL>& SakexeProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("SAKEXE.EXE", 0x59278F63D79F3DA1ULL);
-  thread_local EncryptedName<sizeof(source), 0x59278F63D79F3DA1ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("SAKEXE.EXE", 0x59278F63D79F3DA1ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56E70
 // FUNCTION: fn_24350
 EncryptedName<13, 0x2D3B15774149D5DDULL>& RagexereModuleName::operator()() const {
-  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXERE.EXE", 0x2D3B15774149D5DDULL);
-  thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGEXERE.EXE", 0x2D3B15774149D5DDULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E56F40
 // FUNCTION: fn_24351
 EncryptedName<13, 0x31D7C1EDA345E36DULL>& RagexereProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXERE.EXE", 0x31D7C1EDA345E36DULL);
-  thread_local EncryptedName<sizeof(source), 0x31D7C1EDA345E36DULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGEXERE.EXE", 0x31D7C1EDA345E36DULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E57010
 // FUNCTION: fn_24352
 EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("RAGTESTEXE.EXE", 0xD3755DD95F47A909ULL);
-  thread_local EncryptedName<sizeof(source), 0xD3755DD95F47A909ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("RAGTESTEXE.EXE", 0xD3755DD95F47A909ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E570F0
 // FUNCTION: fn_24353
 EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() const {
-  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("SAKTESTEXE.EXE", 0x0F0F8B6B8F9D19D1ULL);
-  thread_local EncryptedName<sizeof(source), 0x0F0F8B6B8F9D19D1ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("SAKTESTEXE.EXE", 0x0F0F8B6B8F9D19D1ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00E57B50

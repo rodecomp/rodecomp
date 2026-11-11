@@ -82,6 +82,7 @@
 #include "Utility/Cipher/AES.h"
 #include "Utility/Cipher/Rijndael.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
@@ -370,9 +371,7 @@ struct CharacterInfo2SizeErrorFormat {
 // OFFSET: 0x00D8CA50
 // FUNCTION: fn_22261
 EncryptedName<75, 0xED15938D333D2DB9ULL>& CharacterInfo2SizeErrorFormat::operator()() const {
-  constexpr std::array<char, 75> source = CRYPT_NAME("CHARACTER_INFO2 size error!! character num : %d  CHARACTER_INFO2 size : %d", 0xED15938D333D2DB9ULL);
-  thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("CHARACTER_INFO2 size error!! character num : %d  CHARACTER_INFO2 size : %d", 0xED15938D333D2DB9ULL, char);
 }
 
 struct PasswordRetryExceededMessage {
@@ -382,9 +381,7 @@ struct PasswordRetryExceededMessage {
 // OFFSET: 0x00D8CB50
 // FUNCTION: fn_22262
 EncryptedName<103, 0xBF2B4B31397FF5A7ULL>& PasswordRetryExceededMessage::operator()() const {
-  constexpr std::array<char, 103> source = CRYPT_NAME("비밀번호를 3회 잘못입력하였습니다. 비밀번호를 확인해주세요.              클라이언트 실행을 종료합니다.", 0xBF2B4B31397FF5A7ULL);
-  thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("비밀번호를 3회 잘못입력하였습니다. 비밀번호를 확인해주세요.              클라이언트 실행을 종료합니다.", 0xBF2B4B31397FF5A7ULL, char);
 }
 
 // OFFSET: 0x00D8D4F0
