@@ -4049,8 +4049,7 @@ void UIItemCollection_ComparisonWnd::OnCreate(int width, int height) {
   this->m_kind = 234;
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 30, 6, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
 }
 
 // OFFSET: 0x008DBD00
@@ -4140,14 +4139,12 @@ void UISkillDescribeWnd::OnCreate(int width, int height) {
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   const std::uint32_t color = 0xFF000000u | RGB(red, green, blue);
-  this->m_viewer->backgroundColor = color;
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(color);
   this->AddChild(this->m_viewer);
   this->m_closeButton = this->AddCloseButton("ESC", 0);
 
   this->m_text = new UITextViewer();
-  this->m_text->backgroundColor = color;
-  this->m_text->Invalidate();
+  this->m_text->SetBackgroundColor(color);
   this->m_text->Configure(3, 3, width - 31, height - 6, 0);
   this->AddChild(this->m_text);
 
@@ -6817,25 +6814,7 @@ __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slot
 
   int left = 0;
   int slots = ItemSlotsCount(this->m_item);
-  bool equipment;
-  switch (this->m_item.identity[0]) {
-  case TYPE_ARMOR:
-  case TYPE_WEAPON:
-  case TYPE_BOW:
-  case TYPE_BOTHHAND:
-  case TYPE_ARMORTM:
-  case TYPE_ARMORTB:
-  case TYPE_ARMORMB:
-  case TYPE_ARMORTMB:
-  case TYPE_GUN:
-  case 21:
-    equipment = true;
-    break;
-  default:
-    equipment = false;
-    break;
-  }
-  if (equipment && !this->m_item.IsApprenticeItem() && !this->m_item.HasSpecialCard()) {
+  if (Equipment(this->m_item) && !this->m_item.IsApprenticeItem() && !this->m_item.HasSpecialCard()) {
     slots = 4;
   } else if (slots <= 0) {
     return -1;
@@ -8446,9 +8425,6 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_TIPOFTHEDAYWND);
-      break;
     case ID_CHECK: {
       this->m_showTipsAtStartup = static_cast<int>(b);
       g_window315Enabled = static_cast<int>(b);
@@ -8460,22 +8436,29 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case ID_NEXT:
+    case ID_PREV: {
+      if (g_tipOfTheDay.Size() != 0) {
+        if (--this->m_tipIndex < 0) {
+          this->m_tipIndex = g_tipOfTheDay.Size() - 1;
+        }
+        const StringList& tip = g_tipOfTheDay.GetTip(this->m_tipIndex);
+        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&tip), 0, 0, 0);
+      }
+      break;
+    }
+    case ID_NEXT: {
       if (g_tipOfTheDay.Size() != 0) {
         ++this->m_tipIndex;
         if (this->m_tipIndex >= g_tipOfTheDay.Size()) {
           this->m_tipIndex = 0;
         }
-        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
+        const StringList& tip = g_tipOfTheDay.GetTip(this->m_tipIndex);
+        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&tip), 0, 0, 0);
       }
       break;
-    case ID_PREV:
-      if (g_tipOfTheDay.Size() != 0) {
-        if (--this->m_tipIndex < 0) {
-          this->m_tipIndex = g_tipOfTheDay.Size() - 1;
-        }
-        this->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(&g_tipOfTheDay.GetTip(this->m_tipIndex)), 0, 0, 0);
-      }
+    }
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_TIPOFTHEDAYWND);
       break;
     }
     return 0;
@@ -10421,8 +10404,7 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_textViewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_textViewer->Invalidate();
+  this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
 
   this->m_showTipsAtStartup = g_window315Enabled;
