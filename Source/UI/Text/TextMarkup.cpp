@@ -209,8 +209,7 @@ const std::string RemoveTextLinkInfo(const std::string& source) {
     }
   } while (position != -1);
 
-  result += text;
-  return result;
+  return result + text;
 }
 
 // OFFSET: 0x00A7CAB0
