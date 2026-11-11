@@ -37,6 +37,11 @@ extern template std::string::basic_string(std::_String_constructor_concat_tag, c
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
+
+  // INLINED
+  __forceinline const char* LineText(UIListBoxEx* list, int index) {
+    return list->lines[index].text.c_str();
+  }
 }
 
 // OFFSET: 0x0086CC20
@@ -99,11 +104,13 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
 
-  char text[12] = {};
-  std::sprintf(text, "(NO SELECT)");
-  this->label = new UIStaticText();
-  this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
-  this->label->SetText(text, 0);
+  {
+    char text[12] = {};
+    std::sprintf(text, "(NO SELECT)");
+    this->label = new UIStaticText();
+    this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
+    this->label->SetText(text, 0);
+  }
   this->label->Move(2, 3);
   this->label->shadow = 1;
   this->AddChild(this->label);
@@ -151,7 +158,7 @@ void UIComboBoxDefWnd::AddOption(std::string text, std::uint32_t color) {
 // FUNCTION: fn_11642
 void UIComboBoxDefWnd::Select(int index) {
   this->list->SendMsg(nullptr, UM_SETCURITEM, index, 0, 0, 0);
-  this->label->SetText(this->list->lines[index].text.c_str(), 0);
+  this->label->SetText(LineText(this->list, index), 0);
 }
 
 // OFFSET: 0x008A28B0
@@ -248,7 +255,7 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
 
-    this->label->SetText(this->list->lines[value].text.c_str(), 0);
+    this->label->SetText(LineText(this->list, value), 0);
     this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
     this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
