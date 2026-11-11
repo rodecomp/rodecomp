@@ -322,14 +322,14 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, i
 // FUNCTION: fn_05328
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveUIType(int id, int type, std::string text) {
   const auto found = this->achievements.find(id);
-  if (found == this->achievements.end()) {
+  if (found != this->achievements.end()) {
+    found->second.progressMode = type;
+    found->second.iconName = text;
+    return std::make_pair(true, "good");
+  } else {
     const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
     return std::make_pair(false, message);
   }
-
-  found->second.progressMode = type;
-  found->second.iconName = text;
-  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F900
