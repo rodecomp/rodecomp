@@ -1353,7 +1353,10 @@ void UIWindowMgr::DestroyPersistentWindows() {
 // FUNCTION: fn_17140
 void UIWindowMgr::RemoveSnapRectangle(UIWindow* window) {
   if (g_serviceOptions.Get(141)) {
-    this->snapRectangles.erase(window);
+    const auto entry = this->snapRectangles.find(window);
+    if (entry != this->snapRectangles.end()) {
+      this->snapRectangles.erase(entry);
+    }
   }
 }
 
