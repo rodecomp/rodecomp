@@ -7641,9 +7641,15 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
   static const std::map<int, int> statusLevelEffects = BuildStatusLevelEffects();
 
   const std::uint32_t aid = g_session.m_aid;
-  for (const auto& effect : statusFlagEffects) {
-    if (effect.second != 0x377 && effect.second != 0x378 && effect.second != 0x379) {
-      this->ApplyStatusChange(aid, (effect.first & flags) != 0, effect.second, 9999, 0, 0, 0, 0, 9999);
+  for (auto effect = statusFlagEffects.begin(); effect != statusFlagEffects.end(); ++effect) {
+    switch (effect->second) {
+    case 0x377:
+    case 0x378:
+    case 0x379:
+      break;
+    default:
+      this->ApplyStatusChange(aid, (effect->first & flags) != 0, effect->second, 9999, 0, 0, 0, 0, 9999);
+      break;
     }
   }
 

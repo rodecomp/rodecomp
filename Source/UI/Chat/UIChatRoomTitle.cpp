@@ -80,7 +80,7 @@ void UIChatRoomTitle::Paint() {
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysbox_arr_l.bmp")));
   this->DrawBitmap(this->geometry.width / 2 - bitmap->image.width / 2, this->geometry.height - bitmap->image.height, bitmap, false);
 
-  const char* icon = this->roomType != 0 ? "유저인터페이스\\chat_open.bmp" : "유저인터페이스\\chat_close.bmp";
+  const char* icon = this->roomType == 0 ? "유저인터페이스\\chat_close.bmp" : "유저인터페이스\\chat_open.bmp";
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon)));
   this->DrawBitmap(3, 3, bitmap, true);
 }

@@ -69,7 +69,11 @@ static inline int MaterialRowAt(int x, int y) {
     return -1;
   }
 
-  return row >= 3 ? -1 : row;
+  if (row >= 3) {
+    return -1;
+  }
+
+  return row;
 }
 
 // OFFSET: 0x007E68F0

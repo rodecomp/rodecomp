@@ -4321,7 +4321,8 @@ void GameSettingsUI::CUIListPage::RefreshHotkeyLabels() {
       }
       const std::optional<GameSettingsOption*> option = Singleton<CGameSettingsMgr>::s_instance->FindOption(item->m_optionId);
       if (option.has_value()) {
-        item->m_label->tooltipText = (*option)->tooltip;
+        std::string& tooltip = item->m_label->tooltipText;
+        tooltip = (*option)->tooltip;
       }
     } else {
       item->m_label->tooltipText = text;
@@ -4360,7 +4361,8 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
         }
         const std::optional<GameSettingsOption*> option = Singleton<CGameSettingsMgr>::s_instance->FindOption(item->m_optionId);
         if (option.has_value()) {
-          item->m_label->tooltipText = (*option)->tooltip;
+          std::string& tooltip = item->m_label->tooltipText;
+          tooltip = (*option)->tooltip;
         }
       } else {
         item->m_label->tooltipText = text;

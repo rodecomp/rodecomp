@@ -2276,7 +2276,8 @@ void UIBasicItemCtrl::Paint() {
   this->ClearSurface(0xFFFF00FF);
   const char* name = std::atoi(this->m_item.itemId.c_str()) <= 0 || this->m_item.identity[1] > 0 ? "유저인터페이스\\basic_interface\\itemwin_mid.bmp"
                                                                                                 : "유저인터페이스\\ExMacro\\no_item.bmp";
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name))), false);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  this->DrawBitmap(0, 0, bitmap, false);
   this->DrawItemIcon(4, 0, 0, false);
 }
 
@@ -3461,9 +3462,8 @@ void UIChatHisBox3::Paint() {
   const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned>(this->lines.size()));
 
   FontCache& fonts = g_fontCache;
-  for (int row = 0; top + row < static_cast<int>(end); ++row) {
-    const int index = top + row;
-    this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->fontHeight, this->lineColors[index], 0, 0);
+  for (int index = top; index < static_cast<int>(end); ++index) {
+    this->DrawTextAt(2, this->lineHeight * (index - top) + 3, this->lines[index].c_str(), 0, 0, this->fontHeight, this->lineColors[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }

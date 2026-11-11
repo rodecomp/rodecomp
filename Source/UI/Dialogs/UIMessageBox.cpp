@@ -514,8 +514,8 @@ void UIBank_NewWnd::Paint() {
   this->DrawTextAt(x, 46, text, 0, 0, 11, 0, 0, 0);
   if (!this->m_status.empty()) {
     const int textWidth = this->VerticalTextHeight(this->m_status.c_str(), 0, 0, 12, 0);
-    const int statusX = static_cast<int>(this->geometry.width * 0.5f - textWidth * 0.5f);
-    this->DrawTextAt(statusX, 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
+    const float statusX = this->geometry.width * 0.5f - textWidth * 0.5f;
+    this->DrawTextAt(static_cast<int>(statusX), 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
   }
 }
 

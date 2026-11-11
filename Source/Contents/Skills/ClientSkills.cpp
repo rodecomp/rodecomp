@@ -101,14 +101,14 @@ void InitMapTypeInfoTable() {
 
 // OFFSET: 0x00E1DF20
 // FUNCTION: fn_23886
-bool CSession::HasSkillEffect(std::uint32_t id) const {
+int CSession::HasSkillEffect(std::uint32_t id) const {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
     if (effect.id == id) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00E096F0

@@ -871,7 +871,7 @@ public:
   int IsAdminSubMode(int subMode);
   void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType);
   const char* DecodePlayerName() const;
-  bool HasSkillEffect(std::uint32_t id) const;
+  int HasSkillEffect(std::uint32_t id) const;
   CSkillInfo LookupHomunSkill(std::uint32_t id) const;
   CSkillInfo LookupMercSkill(std::uint32_t id) const;
   CSkillInfo LookupAdditionalSkill(std::uint32_t id) const;
