@@ -775,13 +775,10 @@ void UIAchListWnd::UpdateScroll() {
     this->scrollBar->SetRange(overflow, rows, info->count);
     if (this->firstRow < 0) {
       this->firstRow = 0;
-      this->scrollBar->SetPosition(0);
-    } else {
-      if (this->firstRow > overflow) {
-        this->firstRow = overflow;
-      }
-      this->scrollBar->SetPosition(this->firstRow);
+    } else if (this->firstRow > overflow) {
+      this->firstRow = overflow;
     }
+    this->scrollBar->SetPosition(this->firstRow);
   } else {
     this->firstRow = 0;
     this->scrollBar->SetRange(0, rows, info->count);
