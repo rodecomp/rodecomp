@@ -101,6 +101,8 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 
 #include "Resource/MSGSTRINGID.h"
+
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 
@@ -355,43 +357,48 @@ void UIMerInfoWnd::Paint() {
   this->DrawTextAt(100, 135, LookupMessage(MSI_MER_FRIENDLY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 159, LookupMessage(MSI_MER_CALLCOUNT), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(230, 133, LookupMessage(MSI_MER_KILL), 0, 0, 12, 0, 0, 0);
-  char number[24] = {};
-  int bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[0]);
-  this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[1]);
-  this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[2]);
-  this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[3]);
-  this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[4]);
-  this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[5]);
-  this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[6]);
-  this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", (2000 - g_session.m_mercenaryStats[7]) / 10);
-  this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
+  {
+    char number[24] = {};
+    int bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[0]);
+    this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[1]);
+    this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[2]);
+    this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[3]);
+    this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[4]);
+    this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[5]);
+    this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", g_session.m_mercenaryStats[6]);
+    this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(number, "%d", (2000 - g_session.m_mercenaryStats[7]) / 10);
+    this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
+  }
   this->DrawTextAt(136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
   this->DrawTextAt(135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
-  char level[12] = {};
-  _itoa(g_session.m_mercenaryLevel, level, 10);
-  this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
-  if (g_session.m_mercenaryClass != -1) {
-    char text[32] = {};
-    bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
-    this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
-    bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
-    this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
-    std::strftime(text, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(&g_session.m_mercenaryExpiration));
-    this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
-    bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
-    this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
-    bytes = std::sprintf(text, "%d", g_session.m_mercenarySummons);
-    this->DrawTextAt(170, 157, text, bytes, 1, 14, 0, 0, 0);
-    bytes = std::sprintf(text, "%d", g_session.m_mercenaryKills);
-    this->DrawTextAt(245, 157, text, bytes, 1, 14, 0, 0, 0);
+  {
+    char level[12] = {};
+    _itoa(g_session.m_mercenaryLevel, level, 10);
+    this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   }
+  if (g_session.m_mercenaryClass == -1) {
+    return;
+  }
+  char text[32] = {};
+  int bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
+  this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
+  bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
+  this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
+  std::strftime(text, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(&g_session.m_mercenaryExpiration));
+  this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
+  bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
+  this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
+  bytes = std::sprintf(text, "%d", g_session.m_mercenarySummons);
+  this->DrawTextAt(170, 157, text, bytes, 1, 14, 0, 0, 0);
+  bytes = std::sprintf(text, "%d", g_session.m_mercenaryKills);
+  this->DrawTextAt(245, 157, text, bytes, 1, 14, 0, 0, 0);
 }
 
 // OFFSET: 0x008A6E20
@@ -1554,7 +1561,7 @@ void UIMakeCharWnd::InitHairControls() {
   if (this->m_hairStyle < 0) {
     this->m_hairStyle = 0;
   }
-  this->m_hairColor = this->m_view.headPalette < 0 ? 0 : this->m_view.headPalette;
+  this->m_hairColor = this->m_view.headPalette >= 0 ? this->m_view.headPalette : 0;
 
   this->m_hairStyleBar = new UIScrollBar();
   this->m_hairStyleBar->Configure(10, 190, 0, 130);
@@ -2707,17 +2714,19 @@ void UICntWnd::OnCreate(int, int) {
   this->m_text->Move(15, 6);
   this->AddChild(this->m_text);
 
-  const std::string prefix("유저인터페이스\\");
-  const int width = this->geometry.width;
-  const int height = this->geometry.height;
-  UIBitmapButton* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(width - 55, height - 32);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    UIBitmapButton* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->m_message0 = 184;
 }
 
