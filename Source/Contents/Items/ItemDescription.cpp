@@ -90,8 +90,13 @@ void CSession::IconPath(char* output, const char* id, int identified) {
 // OFFSET: 0x006D5730
 // FUNCTION: fn_06576
 const std::vector<const char*>& ITEM_INFO::Description() const {
-  return this->identified == 1 ? FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).identifiedDescription
-                               : FindItemDescription(std::atoi(this->itemId.c_str()), g_itemDescriptions).unidentifiedDescription;
+  if (this->identified == 1) {
+    const int id = std::atoi(this->itemId.c_str());
+    return FindItemDescription(id, g_itemDescriptions).identifiedDescription;
+  }
+
+  const int id = std::atoi(this->itemId.c_str());
+  return FindItemDescription(id, g_itemDescriptions).unidentifiedDescription;
 }
 
 // OFFSET: 0x006D5810
