@@ -1004,7 +1004,7 @@ void CFloralFlareRoad::Open() {
   bottom->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
 
   for (int delay = 0; delay < 4500; delay += 300) {
-    vector3d position = {this->position[0], this->position[1], this->position[2]};
+    vector3d position = *reinterpret_cast<const vector3d*>(this->position);
     const int distanceX = ClampedRandom(20);
     const int angleX = ClampedRandom(360);
     position.x = ClientSine(angleX) * static_cast<float>(distanceX) + position.x;
@@ -2874,8 +2874,8 @@ bool CSavageImpactEffect::IsAlive() {
 void CSavageImpactEffect::OnProcess() {
   CEZ2STRParticle* particle = AsParticle(this->emitter);
   const float x = this->position[0] + 0.0f;
-  const float y = this->position[1] - 12.0f;
   const float z = this->position[2] + 0.0f;
+  const float y = this->position[1] - 12.0f;
   particle->position.x = x;
   particle->position.y = y;
   particle->position.z = z;
@@ -3716,7 +3716,7 @@ void CSevereRainStorm::SpawnParticles() {
 void CSevereRainStorm::SpawnCrossRain() {
   const int ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
   const int index = std::max(0, std::min(this->effectLevel - 1, 9));
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   const int spread = ranges[index] * 50;
 
   const float half = static_cast<float>(spread) * 0.5f;
@@ -3803,7 +3803,7 @@ void CSevereRainStorm::SpawnCrystalRain() {
 // OFFSET: 0x00726BE0
 // FUNCTION: fn_07418
 void CSevereRainStorm::SpawnSevereRain() {
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   position.z += 10.0f;
   if (ClampedRandom(10) >= 5) {
     position.x = static_cast<float>(ClampedRandom(251)) * 0.1f + position.x;
