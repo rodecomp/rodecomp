@@ -654,16 +654,16 @@ void CGameMode::DrawTimeAttackTimer() {
     value = 0;
   }
   digits[0] = value % 10;
-  digits[1] = value / 10 % 10;
+  digits[1] = (value /= 10) % 10;
   if (minutes > 0) {
     count = 4;
     digits[3] = minutes % 10;
-    digits[4] = minutes / 10 % 10;
+    digits[4] = (minutes /= 10) % 10;
   }
   if (hours > 0) {
     count = 6;
     digits[6] = hours % 10;
-    digits[7] = hours / 10 % 10;
+    digits[7] = (hours /= 10) % 10;
   }
 
   int total;
@@ -671,7 +671,7 @@ void CGameMode::DrawTimeAttackTimer() {
   int startIndex;
   if (days > 0) {
     digits[9] = days % 10;
-    digits[10] = days / 10 % 10;
+    digits[10] = (days /= 10) % 10;
     total = 11;
     offset = -220;
     startIndex = 10;
