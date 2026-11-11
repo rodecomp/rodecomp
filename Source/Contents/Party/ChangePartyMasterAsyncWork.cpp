@@ -108,7 +108,8 @@ bool CChangePartyMasterAsyncWork::Execute() {
 // OFFSET: 0x005CE090
 // FUNCTION: fn_03682
 void CChangePartyMasterAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteChangeMaster(this->m_diagnostic, this->m_response);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompleteChangeMaster(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CChangePartyMasterAsyncWork*>::push_back(CChangePartyMasterAsyncWork*&&);

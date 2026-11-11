@@ -20,31 +20,36 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
 
   Json::Value root;
   Json::Reader reader;
-  const std::string document(response.c_str());
 
-  if (!reader.parse(document, root, true)) {
+  if (!reader.parse(std::string(response.c_str()), root, true)) {
     return;
   }
 
-  const int type = root["Type"].asInt();
+  switch (root["Type"].asInt()) {
+  case 1: {
+    this->LoadUseSkillLevels(root["data"]);
+    this->LoadHomunculusSkillLevels(root["data"]);
 
-  if (type == 4) {
+    {
+      const Json::Value comparison = root["data"]["ItemComparison"];
+      g_serviceOptions.Set(264, comparison.isNull() ? true : comparison.asBool());
+    }
+
+    {
+      const Json::Value sorting = root["data"]["SortPrivateTab"];
+      g_sortPrivateTab = sorting.isNull() ? false : sorting.asBool();
+    }
+
+    this->LoadNormalItemSlots(root["data"]);
+    this->m_loaded = true;
+    break;
+  }
+  case 4:
     LoadSkillUseLevelRegistry();
     g_session.SetOption(7, 1, 0);
     g_session.SetOption(8, 1, 0);
     this->m_loaded = true;
-  } else if (type == 1) {
-    this->LoadUseSkillLevels(root["data"]);
-    this->LoadHomunculusSkillLevels(root["data"]);
-
-    const Json::Value comparison = root["data"]["ItemComparison"];
-    g_serviceOptions.Set(264, comparison.isNull() ? true : comparison.asBool());
-
-    const Json::Value sorting = root["data"]["SortPrivateTab"];
-    g_sortPrivateTab = sorting.isNull() ? false : sorting.asBool();
-
-    this->LoadNormalItemSlots(root["data"]);
-    this->m_loaded = true;
+    break;
   }
 
   this->m_accountId = accountId;

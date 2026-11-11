@@ -90,7 +90,8 @@ bool CLoadMyPartyAsyncWork::Execute() {
 // OFFSET: 0x005CF8F0
 // FUNCTION: fn_03689
 void CLoadMyPartyAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteMyParty(this->m_diagnostic, this->m_response);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompleteMyParty(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CLoadMyPartyAsyncWork*>::push_back(CLoadMyPartyAsyncWork*&&);

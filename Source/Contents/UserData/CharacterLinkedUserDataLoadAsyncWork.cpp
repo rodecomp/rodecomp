@@ -90,7 +90,8 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
 // OFFSET: 0x005E51A0
 // FUNCTION: fn_03920
 void CCharacterLinkedUserDataLoadAsyncWork::Complete() {
-  g_characterLinkedUserDataMgr->CompleteLoad(
+  CCharacterLinkedUserDataMgr* manager = g_characterLinkedUserDataMgr;
+  manager->CompleteLoad(
     this->m_diagnostic, this->m_accountId, this->m_characterId, this->m_accountName, this->m_response
   );
 }

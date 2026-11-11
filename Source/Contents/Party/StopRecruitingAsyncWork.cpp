@@ -91,7 +91,8 @@ bool CStopRecruitingAsyncWork::Execute() {
 // OFFSET: 0x005D64B0
 // FUNCTION: fn_03715
 void CStopRecruitingAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteStopRecruiting(this->m_diagnostic, this->m_response);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompleteStopRecruiting(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CStopRecruitingAsyncWork*>::push_back(CStopRecruitingAsyncWork*&&);
