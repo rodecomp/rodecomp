@@ -122,6 +122,8 @@ public:
   void LoadModes();
   void OnAdapterSelect(CUIComboItem* item, const RenderAdapter& adapter);
   void OnModeSelect(CUIComboItem* item, const DisplayMode& mode);
+  void BindAdapterItem(CUIComboItem* item, const RenderAdapter& adapter);
+  void BindModeItem(CUIComboItem* item, const DisplayMode& mode);
 
   /* 0084 */ CUIComboBox<CUIComboItem, RenderAdapter>* m_adapterCombo;
   /* 0088 */ CUIStaticText* m_modeText;
@@ -141,6 +143,7 @@ public:
   void Refresh() override;
   void LoadBackends();
   void OnSelect(CUIComboItem* item, const RenderBackend& backend);
+  void BindItem(CUIComboItem* item, const RenderBackend& backend);
 
   /* 0084 */ CUIComboBox<CUIComboItem, RenderBackend>* m_combo;
   /* 0088 */ int m_backend;
@@ -202,6 +205,7 @@ public:
   void Apply() override;
   void Refresh() override;
   void OnSelect(CUIComboItem* item, const std::string& name);
+  void BindItem(CUIComboItem* item, const std::string& name);
 
   /* 0084 */ CUIComboBox<CUIComboItem, std::string>* m_combo;
 };

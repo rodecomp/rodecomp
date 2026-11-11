@@ -48,7 +48,7 @@
 
 namespace {
   struct RodexSpamOptionPacket {
-    /* 0000 */ std::int16_t id;
+    /* 0000 */ int id;
     /* 0004 */ int option;
     /* 0008 */ int value;
   };
@@ -118,7 +118,6 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Resize(int width, 
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, int height);
 
-void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name);
 // OFFSET: 0x00A2C3C0
 // FUNCTION: fn_15400
 void GameSettingsUI::CUIGroupSkin::OnCreate(int width, int height) {
@@ -173,7 +172,7 @@ void GameSettingsUI::CUIGroupSkin::OnCreate(int width, int height) {
   this->m_combo->Move(110, 9);
   this->m_combo->SetOnSelect([this](CUIComboItem* item, const std::string& name) { this->OnSelect(item, name); });
   this->m_combo->SetItemBinder([this](CUIComboItem* item, const std::string& name) {
-    SetComboItemSkinText(item, name);
+    this->BindItem(item, name);
   });
   this->AddChild(this->m_combo);
 }
@@ -1358,7 +1357,7 @@ void CUIGroupLogInOut::Apply() {
 // FUNCTION: fn_15974
 void CUIGroupRodexSpam::Apply() {
   RodexSpamOptionPacket packet = {0x0B93, 1, 1};
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
 // OFFSET: 0x00A40550
@@ -1723,8 +1722,8 @@ void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
 // OFFSET: 0x00A41F30
 // FUNCTION: fn_16007
 void CUIGroupRodexSpam::OnSelect(CUIRadioButton* button) {
-  RodexSpamOptionPacket packet = {0x0B93, 1, button != this->m_offButton};
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  RodexSpamOptionPacket packet = {0x0B93, 1, this->m_offButton != button};
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
 // OFFSET: 0x00A42FE0
@@ -2037,25 +2036,25 @@ void CUIGameSettingsUI::OnTabChanged(UIWindow* window) {
 
 // OFFSET: 0x00A3F9B0
 // FUNCTION: fn_15952
-void SetComboItemAdapterText(GameSettingsUI::CUIComboItem* item, const RenderAdapter& adapter) {
+void GameSettingsUI::CUIGroupGraphics::BindAdapterItem(CUIComboItem* item, const RenderAdapter& adapter) {
   item->m_text->SetText(adapter.description);
 }
 
 // OFFSET: 0x00A3FA90
 // FUNCTION: fn_15954
-void SetComboItemModeText(GameSettingsUI::CUIComboItem* item, const DisplayMode& mode) {
+void GameSettingsUI::CUIGroupGraphics::BindModeItem(CUIComboItem* item, const DisplayMode& mode) {
   item->m_text->SetText(mode.description);
 }
 
 // OFFSET: 0x00A3FB20
 // FUNCTION: fn_15956
-void SetComboItemBackendText(GameSettingsUI::CUIComboItem* item, const RenderBackend& backend) {
+void GameSettingsUI::CUIGroupGraphicsAPI::BindItem(CUIComboItem* item, const RenderBackend& backend) {
   item->m_text->SetText(backend.name);
 }
 
 // OFFSET: 0x00A3FBA0
 // FUNCTION: fn_15958
-void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name) {
+void GameSettingsUI::CUIGroupSkin::BindItem(CUIComboItem* item, const std::string& name) {
   item->m_text->SetText(name.c_str(), name.size());
 }
 
@@ -3043,7 +3042,7 @@ void GameSettingsUI::CUIGroupGraphics::OnCreate(int width, int height) {
   this->m_adapterCombo->Move(150, 9);
   this->m_adapterCombo->SetOnSelect([this](CUIComboItem* item, const RenderAdapter& adapter) { this->OnAdapterSelect(item, adapter); });
   this->m_adapterCombo->SetItemBinder([this](CUIComboItem* item, const RenderAdapter& adapter) {
-    SetComboItemAdapterText(item, adapter);
+    this->BindAdapterItem(item, adapter);
   });
   this->AddChild(this->m_adapterCombo);
 
@@ -3098,7 +3097,7 @@ void GameSettingsUI::CUIGroupGraphics::OnCreate(int width, int height) {
   this->m_modeCombo->Move(150, 41);
   this->m_modeCombo->SetOnSelect([this](CUIComboItem* item, const DisplayMode& mode) { this->OnModeSelect(item, mode); });
   this->m_modeCombo->SetItemBinder([this](CUIComboItem* item, const DisplayMode& mode) {
-    SetComboItemModeText(item, mode);
+    this->BindModeItem(item, mode);
   });
   this->AddChild(this->m_modeCombo);
 }
@@ -3157,7 +3156,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::OnCreate(int width, int height) {
   this->m_combo->Move(150, 9);
   this->m_combo->SetOnSelect([this](CUIComboItem* item, const RenderBackend& backend) { this->OnSelect(item, backend); });
   this->m_combo->SetItemBinder([this](CUIComboItem* item, const RenderBackend& backend) {
-    SetComboItemBackendText(item, backend);
+    this->BindItem(item, backend);
   });
   this->AddChild(this->m_combo);
 }
@@ -4276,8 +4275,9 @@ void GameSettingsUI::CUIListPage::LoadOptions(int tab) {
     this->m_optionList->data.push_back(static_cast<TALKTYPE>(id));
   }
   this->m_optionList->UpdateScrollBar();
-  this->m_optionList->layoutFlag = 1;
-  this->m_optionList->Invalidate();
+  auto* const list = this->m_optionList;
+  list->layoutFlag = 1;
+  list->Invalidate();
   this->RefreshOptions();
 }
 

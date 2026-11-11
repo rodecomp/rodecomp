@@ -7,9 +7,9 @@
 #include <windows.h>
 
 struct DisplayMode {
-  /* 0000 */ unsigned width;
-  /* 0004 */ unsigned height;
-  /* 0008 */ unsigned bitsPerPixel;
+  /* 0000 */ unsigned width = 0;
+  /* 0004 */ unsigned height = 0;
+  /* 0008 */ unsigned bitsPerPixel = 0;
   /* 000C */ std::string description;
 
   bool Matches(const DisplayMode& other) const;
