@@ -1497,9 +1497,10 @@ int CCashEmotionMgr::InsertEmotionGroup(lua_State* state) {
   const int packId = luaL_checkinteger(state, 1);
   const int emotionId = luaL_checkinteger(state, 2);
 
-  const char* title = g_cashEmotionMgr->GetPackTitle(packId);
+  CCashEmotionMgr* mgr = g_cashEmotionMgr;
+  const char* title = mgr->GetPackTitle(packId);
   if (title) {
-    g_cashEmotionMgr->AddShortcut(title, packId, emotionId);
+    mgr->AddShortcut(title, packId, emotionId);
   }
 
   return 1;
