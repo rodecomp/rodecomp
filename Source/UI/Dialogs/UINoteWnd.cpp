@@ -77,23 +77,28 @@ UINoteWnd::UINoteWnd()
 // OFFSET: 0x00950840
 // FUNCTION: fn_12944
 int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(this->geometry.id);
     }
-  } else if (message == UM_SETINFO) {
-    UINoteWnd_Scroll* scroll = this->m_scroll;
-    const std::string text = LookupMessage(static_cast<int>(argument1));
-    UIStaticText_LF* label = new UIStaticText_LF(0);
-    scroll->m_text = label;
-    label->SetSize(scroll->geometry.width - 13, 12);
-    label->Move(0, 0);
-    label->SetText(text);
-    scroll->AddScrollChild(label);
-    scroll->horizontalBar->Show(0);
-    scroll->scrollBar->Show(0);
-    scroll->Invalidate();
+    break;
+  case UM_SETINFO: {
+    {
+      UINoteWnd_Scroll* scroll = this->m_scroll;
+      const std::string text = LookupMessage(static_cast<int>(argument1));
+      scroll->m_text = new UIStaticText_LF(0);
+      scroll->m_text->SetSize(scroll->geometry.width - 13, 12);
+      scroll->m_text->Move(0, 0);
+      scroll->m_text->SetText(text);
+      scroll->AddScrollChild(scroll->m_text);
+      scroll->horizontalBar->Show(0);
+      scroll->scrollBar->Show(0);
+      scroll->Invalidate();
+    }
     this->Invalidate();
+    break;
+  }
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
