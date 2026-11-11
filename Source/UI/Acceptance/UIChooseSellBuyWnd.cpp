@@ -6034,31 +6034,33 @@ void UIItemIdentifyWnd::UpdateScroll() {
     return;
   }
 
-  auto* bar = static_cast<UIScrollBar*>(this->m_scrollBar);
-
   const int total = this->m_items.size() / this->m_columns + (this->m_items.size() % this->m_columns != 0);
-
-  int maximum = total - this->m_rows;
-  if (maximum < 0) {
-    maximum = 0;
+  const int visible = this->m_rows;
+  int maximum = 0;
+  if (total - visible >= 0) {
+    maximum = total - visible;
   }
   this->m_scrollable = maximum != 0;
 
-  if (maximum == 0) {
-    this->m_scroll = 0;
-    bar->SetRange(0, this->m_rows, total);
-  } else {
-    bar->SetRange(maximum, this->m_rows, total);
-    if (this->m_scroll < 0) {
+  if (maximum) {
+    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(maximum, visible, total);
+    int top = this->m_scroll;
+    if (top < 0) {
       this->m_scroll = 0;
+      top = 0;
     }
-    if (this->m_scroll > total - this->m_rows) {
-      this->m_scroll = total - this->m_rows;
+    const int limit = total - this->m_rows;
+    if (top > limit) {
+      this->m_scroll = limit;
+      top = limit;
     }
-    bar->SetPosition(this->m_scroll);
+    static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(top);
+  } else {
+    this->m_scroll = 0;
+    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(0, visible, total);
   }
 
-  bar->Invalidate();
+  this->m_scrollBar->Invalidate();
 }
 
 // OFFSET: 0x00909CD0
