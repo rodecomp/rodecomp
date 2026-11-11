@@ -1043,12 +1043,12 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
 
-    if (message == UM_SETNAID) {
-      this->npcId = static_cast<int>(argument1);
-      return 0;
+    if (message != UM_SETNAID) {
+      return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
 
-    return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    this->npcId = static_cast<int>(argument1);
+    return 0;
   }
 
   this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
@@ -5843,15 +5843,15 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         break;
       }
 
-      int error;
       if (this->m_titleEdit->Length() == 0) {
-        error = 13;
+        g_windowMgr.Confirm(LookupMessage(13), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
-        error = 14;
+        g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
-        error = 190;
+        g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
-        error = this->m_passwordEdit->Length() != 0 ? 16 : 15;
+        const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
+        g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         ChatRoomSetting setting;
         setting.limit = this->m_limit;
@@ -5862,9 +5862,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         setting.password = this->m_passwordEdit->Text();
         g_modeMgr.gameMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
         g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
-        break;
       }
-      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
       break;
     }
     case ID_CANCEL:
@@ -5889,18 +5887,21 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       UIWindow* list = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int count = 1;
-      if (a == ID_NUMCOMBO) {
+      switch (a) {
+      case ID_NUMCOMBO:
         this->m_listKind = 0;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
-      } else if (a == ID_CLASSCOMBO) {
+        break;
+      case ID_CLASSCOMBO:
         this->m_listKind = 1;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
         }
+        break;
       }
 
       const int height = count * 16;
@@ -5916,12 +5917,15 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     break;
   case UM_COMBOBOX_SELECTED:
-    if (this->m_listKind == 0) {
+    switch (this->m_listKind) {
+    case 0:
       this->m_limitText->SetText(this->m_limitLabels[a].c_str(), 0);
       this->m_limit = this->m_limits[a];
-    } else if (this->m_listKind == 1) {
+      break;
+    case 1:
       this->m_typeText->SetText(this->m_typeLabels[a].c_str(), 0);
       this->m_type = this->m_types[a];
+      break;
     }
     break;
   default:
@@ -5937,15 +5941,15 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      int error;
       if (this->m_titleEdit->Length() == 0) {
-        error = 13;
+        g_windowMgr.Confirm(LookupMessage(13), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
-        error = 14;
+        g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
-        error = 190;
+        g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
-        error = this->m_passwordEdit->Length() != 0 ? 16 : 15;
+        const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
+        g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         ChatRoomSetting setting;
         setting.limit = this->m_limit;
@@ -5956,9 +5960,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         setting.password = this->m_passwordEdit->Text();
         g_modeMgr.gameMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
         g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
-        return 0;
       }
-      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
       return 0;
     }
     case ID_CANCEL:
@@ -5972,18 +5974,21 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       UIWindow* list = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       int count = 1;
-      if (a == ID_NUMCOMBO) {
+      switch (a) {
+      case ID_NUMCOMBO:
         this->m_listKind = 0;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
-      } else if (a == ID_CLASSCOMBO) {
+        break;
+      case ID_CLASSCOMBO:
         this->m_listKind = 1;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
         }
+        break;
       }
 
       const int height = count * 16;
@@ -6010,7 +6015,11 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->m_public = setting->isPublic == 0;
     for (int i = 0; i < 2; ++i) {
       this->m_publicButtons[i]->Invalidate();
-      this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, i == this->m_public ? 1 : 0, 0, 0, 0);
+      if (i == this->m_public) {
+        this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+      } else {
+        this->m_publicButtons[i]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+      }
     }
     this->m_closeButton->SetTooltip("");
     this->Invalidate();
@@ -9415,7 +9424,8 @@ void UISecondPasswordInputWnd::Paint() {
     textColor = 0xF0F0F0;
     shadowColor = 0xE6E6E6;
   }
-  this->DrawEmboldenedText(414, 76, LookupMessage(MSI_STORE_PASSWORD), textColor, shadowColor, 0, 0, 12);
+  const char* label = LookupMessage(MSI_STORE_PASSWORD);
+  this->DrawEmboldenedText(414, 76, label, textColor, shadowColor, 0, 0, 12);
   this->FillRegion(414, 89, 100, 16, boxColor);
   this->FillRegion(415, 90, 98, 14, 0xFFFFFF);
 
@@ -9434,11 +9444,13 @@ void UISecondPasswordInputWnd::Paint() {
     }
   }
 
-  if (this->passwordStage == 2 || this->passwordStage == 3) {
-    if (this->passwordStage == 3) {
-      this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
-    }
+  switch (this->passwordStage) {
+  case 3:
+    this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
+    [[fallthrough]];
+  case 2:
     this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+    break;
   }
 
   for (std::size_t index = 0, x = 416; index < std::strlen(this->currentPassword); ++index, x += 5) {
