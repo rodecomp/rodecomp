@@ -1073,8 +1073,15 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   case JT_GUNSLINGER_B:
   case JT_REBELLION_B:
   case JT_NIGHT_WATCH:
-    if (view >= 18 && view <= 21) {
+    switch (view) {
+    case W_RIFLE:
+    case W_GATLING:
+    case W_SHOTGUN:
+    case W_GRENADE:
       result = true;
+      break;
+    default:
+      break;
     }
     break;
   case JT_NINJA:
