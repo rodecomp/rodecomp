@@ -174,8 +174,9 @@ bool CRendererDX9::RenderToTexture(int width, int height, const std::list<Render
     this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
     if (SUCCEEDED(this->nativeDevice->BeginScene())) {
-      for (RenderPrimitive* primitive : primitives) {
-        this->device->state.SetTexture(0, primitive->texture ? static_cast<CTextureDX9*>(primitive->texture)->NativeTexture() : nullptr);
+      for (const auto& primitive : primitives) {
+        IDirect3DTexture9* selected = primitive->texture ? static_cast<CTextureDX9*>(primitive->texture)->NativeTexture() : nullptr;
+        this->device->state.SetTexture(0, selected);
         this->DrawPrimitive(primitive);
       }
 
