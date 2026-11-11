@@ -252,6 +252,7 @@ bool CReputeMgr::Load() {
   }
 
   if (!this->LoadReputeGroupData(this->m_groups)) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed : LoadReputeInfoData", 0);
     return false;
   }
 
