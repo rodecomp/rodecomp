@@ -5775,7 +5775,8 @@ void CEZ2STRScreenEffect::Open() {
 // OFFSET: 0x00B531E0
 // FUNCTION: fn_19040
 void CEZ2STRScreenEffect::InitEvents() {
-  switch (this->id) {
+  const int id = this->id;
+  switch (id) {
   case EF_POTION1:
   case EF_POTION2:
   case EF_POTION3:
@@ -5840,7 +5841,9 @@ void CEZ2STRScreenEffect::InitEvents() {
 
   case EF_QUAGMIRE_VISUAL: {
     int random = rand() % 12;
-    random = random < 0 ? 0 : random;
+    if (random < 0) {
+      random = 0;
+    }
     if (random == 0) {
       this->AddEvent(0, "effect\\wizard_quagmire.wav", 0, std::bit_cast<int>(-100.0f));
     }
@@ -6091,7 +6094,7 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_STORMSLASH_3:
   case EF_STORMSLASH_4:
   case EF_STORMSLASH_5:
-    for (int i = 0; i <= this->id - 0x686; ++i) {
+    for (int i = 0; i <= id - 0x686; ++i) {
       this->AddEvent(0, FormatOwnedString("effect\\DK_STORMSLASH%d.wav", rand() % 4 + 1).c_str(), i * 15, 0);
     }
     break;
@@ -6360,11 +6363,13 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_DILUVIO_2.wav", 0, 0);
     break;
 
-  case EF_DIAMOND_STORM_BOTTOM:
-    this->particle->life = static_cast<float>(EffectLifetime(0x7EB)) / 60.0f;
+  case EF_DIAMOND_STORM_BOTTOM: {
+    CEZ2STRParticle* particle = this->particle;
+    particle->life = EffectLifetime(EF_DIAMOND_STORM_BOTTOM) / 60.0f;
     this->particle->flags = 13;
     this->AddEvent(0, "effect\\EM_DIAMOND_STORM.wav", 0, 0);
     break;
+  }
 
   case EF_DIAMOND_STORM_CAST_BOTTOM:
   case EF_CONFLAGRATION_CAST_BOTTOM:
@@ -6499,15 +6504,19 @@ void CEZ2STRScreenEffect::InitEvents() {
     this->AddEvent(0, "effect\\MT_RUSH_QUAKE.wav", 0, 0);
     break;
 
-  case EF_WOODEN_WARRIOR_THROWROCK:
-    this->particle->m_angle = static_cast<float>(ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition)) + 180.0);
+  case EF_WOODEN_WARRIOR_THROWROCK: {
+    const double angle = ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition));
+    this->particle->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\BO_THROWROCK.wav", 0, 0);
     break;
+  }
 
-  case EF_WOODEN_WARRIOR_ATTACK:
-    this->particle->m_angle = static_cast<float>(ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition)) + 180.0);
+  case EF_WOODEN_WARRIOR_ATTACK: {
+    const double angle = ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition));
+    this->particle->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
     break;
+  }
 
   case EF_ROSEBLOSSOM_ROSE:
     this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_ROSE.wav", 0, 0);
@@ -6938,9 +6947,9 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   default:
-    if (this->id >= 0x9B5) {
+    if (id >= 0x9B5) {
       bool renderBefore = false;
-      g_session.m_hotkeyScript->Call("IsRenderBeforeCharacter", "d>b", this->id - 0x9B5, &renderBefore);
+      g_session.m_hotkeyScript->Call("IsRenderBeforeCharacter", "d>b", id - 0x9B5, &renderBefore);
       if (renderBefore) {
         this->particle->flags = 13;
       }
