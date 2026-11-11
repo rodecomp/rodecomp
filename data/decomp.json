@@ -26,6 +26,13 @@
    "keyBytes": 8,
    "includeTerminator": true,
    "lengthArgument": true
+  },
+  {
+   "macro": "CRYPT_BYTES",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true,
+   "lengthArgument": true
   }
  ],
  "matchPolicy": {
