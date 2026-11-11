@@ -80,9 +80,9 @@ namespace {
 
       for (int x = 0; x < image.width; ++x) {
         if (remaining) {
-          --remaining;
           const std::uint16_t value = 0;
           std::memcpy(row + x * sizeof(value), &value, sizeof(value));
+          --remaining;
         } else {
           if (*input) {
             const std::uint16_t value = palette[*input];
