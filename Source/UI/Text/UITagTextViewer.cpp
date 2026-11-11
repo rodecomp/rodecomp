@@ -8,6 +8,8 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/CreateLineInfo.h"
 
+extern template std::string::basic_string(const char*);
+
 // OFFSET: 0x0083E1B0
 // FUNCTION: fn_10515
 UITagTextViewer::UITagTextViewer()

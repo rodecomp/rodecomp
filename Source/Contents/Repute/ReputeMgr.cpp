@@ -15,6 +15,9 @@
 #include <cstring>
 #include <utility>
 
+extern template std::vector<int>::vector(const std::vector<int>&);
+extern template std::vector<int>::~vector();
+
 extern "C" void JsonDestroy();
 
 struct JsonValueCopy {

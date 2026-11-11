@@ -38,6 +38,9 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+
+extern template std::string& std::string::operator=(std::string&&) noexcept;
+
 namespace {
   // GLOBAL: gl_25136
   int g_locationFrame = 1;

@@ -13,6 +13,8 @@
 #include <json/value.h>
 #include <json/writer.h>
 
+extern template std::vector<std::string>::~vector();
+
 // OFFSET: 0x00605BF0
 // FUNCTION: fn_04226
 CMCStoreInfoBackup::CMCStoreInfoBackup() : loaded(false), pendingSaves(0), saveUrl(""), loadUrl(""), title(""), type(0) {

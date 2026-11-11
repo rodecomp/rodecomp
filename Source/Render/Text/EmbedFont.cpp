@@ -9,6 +9,8 @@
 #include <t2embapi.h>
 #include <vector>
 
+extern template std::string::basic_string(const std::string&);
+
 // GLOBAL: gl_24812
 CEmbedFont* g_embedFont;
 

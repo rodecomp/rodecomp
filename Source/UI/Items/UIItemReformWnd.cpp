@@ -38,6 +38,8 @@
 #include <string>
 #include <vector>
 
+extern template std::vector<int>::~vector();
+
 #pragma pack(push, 1)
 struct PACKET_CZ_ITEM_REFORM {
   /* 0000 */ std::int16_t packetType;

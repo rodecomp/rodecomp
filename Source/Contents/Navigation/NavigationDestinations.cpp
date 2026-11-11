@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x00B974D0
 // FUNCTION: fn_19599
 bool CNavigationManager::LoadStates(std::vector<char> packet) {
