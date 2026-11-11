@@ -2102,20 +2102,10 @@ void __stdcall Nullsub479(int value) {
 // FUNCTION: fn_21996
 int CountItemRandomOptions(const unsigned char* entries) {
   int count = 0;
-  if (*reinterpret_cast<const std::uint16_t*>(entries) != 0) {
-    ++count;
-  }
-  if (*reinterpret_cast<const std::uint16_t*>(entries + 5) != 0) {
-    ++count;
-  }
-  if (*reinterpret_cast<const std::uint16_t*>(entries + 10) != 0) {
-    ++count;
-  }
-  if (*reinterpret_cast<const std::uint16_t*>(entries + 15) != 0) {
-    ++count;
-  }
-  if (*reinterpret_cast<const std::uint16_t*>(entries + 20) != 0) {
-    ++count;
+  for (int index = 0; index < 5; ++index) {
+    if (0 != *reinterpret_cast<const std::uint16_t*>(entries + index * 5)) {
+      ++count;
+    }
   }
   return count;
 }
