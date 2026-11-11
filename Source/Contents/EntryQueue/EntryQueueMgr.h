@@ -86,7 +86,7 @@ public:
 };
 
 extern CEntryQueueMgr* g_entryQueueMgr;
-extern std::map<int, EntryQueueInfo*> g_entryQueueList;
+extern std::map<unsigned int, EntryQueueInfo*> g_entryQueueList;
 
 bool CreateEntryQueueMgr();
 void DestroyEntryQueueMgr();

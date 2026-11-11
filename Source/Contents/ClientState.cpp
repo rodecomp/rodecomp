@@ -1054,7 +1054,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       int queueId = 0;
       std::memcpy(&queueId, data.data() + offset, header.bytes);
       offset += header.bytes;
-      for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
+      for (std::map<unsigned int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
         if (queueId == it->second->id) {
           g_entryQueueMgr->current = it->second;
         }

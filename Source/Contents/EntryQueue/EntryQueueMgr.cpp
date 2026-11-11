@@ -37,10 +37,10 @@ struct EntryQueueNamePacket {
 // GLOBAL: gl_24868
 CEntryQueueMgr* g_entryQueueMgr;
 // GLOBAL: gl_24869
-std::map<int, EntryQueueInfo*> g_entryQueueList;
+std::map<unsigned int, EntryQueueInfo*> g_entryQueueList;
 
 CEntryQueueMgr::~CEntryQueueMgr() {
-  for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
+  for (std::map<unsigned int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
     if (it->second) {
       delete it->second;
     }

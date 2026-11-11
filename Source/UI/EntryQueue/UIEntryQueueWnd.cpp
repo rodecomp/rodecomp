@@ -375,12 +375,12 @@ void UIEntryQueueWnd::OnCreate(int width, int height) {
   this->m_list->backgroundBlue = 240;
   this->AddChild(this->m_list);
 
-  const std::map<int, EntryQueueInfo*>::iterator end = g_entryQueueList.end();
-  for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != end; ++it) {
+  const std::map<unsigned int, EntryQueueInfo*>::iterator end = g_entryQueueList.end();
+  for (std::map<unsigned int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != end; ++it) {
     this->m_list->AddEntry(it->second->displayName, it->second->id);
   }
 
-  std::map<int, EntryQueueInfo*>::iterator first = g_entryQueueList.begin();
+  std::map<unsigned int, EntryQueueInfo*>::iterator first = g_entryQueueList.begin();
   g_entryQueueMgr->current = first->second;
 
   const char* labels[7] = {
@@ -549,7 +549,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_LIST_SELECTION:
     if (this->m_list) {
       const int value = this->m_list->EntryValue(static_cast<int>(b));
-      std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
+      std::map<unsigned int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
       if (it != g_entryQueueList.end() && it->second) {
         this->SelectQueue(it->second);
       }
