@@ -71,6 +71,8 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
 
+extern template std::string* std::_Move_unchecked<std::string*, std::string*>(std::string*, std::string*, std::string*);
+
 namespace {
 #pragma pack(push, 1)
 struct MemorialDungeonCommandPacket {

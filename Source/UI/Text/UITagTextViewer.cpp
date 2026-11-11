@@ -12,8 +12,7 @@
 // FUNCTION: fn_10515
 UITagTextViewer::UITagTextViewer()
     : UIScroll(), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(false),
-      m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0) {
-  m_offsetY = m_topMargin;
+      m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0), m_offsetY(m_topMargin) {
 }
 
 // OFFSET: 0x0083E740

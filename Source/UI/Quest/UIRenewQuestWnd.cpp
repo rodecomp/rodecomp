@@ -968,7 +968,7 @@ void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
     this->m_questIds[2].clear();
     this->m_questIds[3].clear();
     CRenewQuestMgr* mgr = g_renewQuestMgr;
-    for (auto it = mgr->m_ongoingQuests.begin(); it != mgr->m_ongoingQuests.end(); ++it) {
+    for (auto it = mgr->m_ongoingQuests.begin(); mgr->m_ongoingQuests.end() != it; ++it) {
       if (it->second.questType == 1) {
         this->m_questIds[3].push_back(it->first);
       } else if (it->second.m_state == 1) {
@@ -982,12 +982,12 @@ void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
   if (type == 0 || type == 2) {
     this->m_questIds[1].clear();
     CRenewQuestMgr* mgr = g_renewQuestMgr;
-    for (auto it = mgr->m_recommendedQuests.begin(); it != mgr->m_recommendedQuests.end(); ++it) {
+    for (auto it = mgr->m_recommendedQuests.begin(); mgr->m_recommendedQuests.end() != it; ++it) {
       if (it->second.m_state == 1) {
         this->m_questIds[1].push_back(it->first);
       }
     }
-    for (auto it = mgr->m_recommendedQuests.begin(); it != mgr->m_recommendedQuests.end(); ++it) {
+    for (auto it = mgr->m_recommendedQuests.begin(); mgr->m_recommendedQuests.end() != it; ++it) {
       if (it->second.m_state == 0) {
         this->m_questIds[1].push_back(it->first);
       }

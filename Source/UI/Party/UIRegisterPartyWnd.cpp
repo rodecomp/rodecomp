@@ -28,6 +28,10 @@
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
+#include <vector>
+#include <string>
+
+extern template std::vector<std::string>::~vector();
 
 namespace {
   // OFFSET: 0x007BBFC0

@@ -110,6 +110,21 @@ struct CooldownSnapshotPacket {
   /* 0002 */ std::int16_t size;
   /* 0004 */ CooldownSnapshotEntry entries[1];
 };
+
+struct CooldownRecordEntry {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t remaining;
+};
+
+struct CooldownRecordPacket {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::int16_t size;
+  /* 0004 */ CooldownRecordEntry entries[1];
+};
+
+struct SeekPartyClosePacket {
+  /* 0000 */ std::int16_t id;
+};
 #pragma pack(pop)
 
 // OFFSET: 0x00D42070
@@ -587,8 +602,9 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE: {
-      std::int16_t packetType = 0x806;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
+      SeekPartyClosePacket packet;
+      packet.id = 0x806;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;
     }

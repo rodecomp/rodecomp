@@ -22,6 +22,9 @@
 #include <algorithm>
 #include <new>
 #include <string>
+#include <vector>
+
+extern template std::vector<std::string>::~vector();
 
 // GLOBAL: gl_25000
 template <>

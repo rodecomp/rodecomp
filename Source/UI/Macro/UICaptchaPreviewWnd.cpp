@@ -19,6 +19,14 @@
 #include <timeapi.h>
 #include <zlib.h>
 
+namespace {
+#pragma pack(push, 1)
+struct MacroDetectorImageReceivedPacket {
+  /* 0000 */ std::int16_t id;
+};
+#pragma pack(pop)
+}
+
 // OFFSET: 0x007ED2F0
 // FUNCTION: fn_09808
 void UICaptchaPreviewWnd::AddImageData(const void* data, int size) {

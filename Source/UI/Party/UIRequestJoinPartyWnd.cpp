@@ -145,8 +145,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     char level[5] = {};
     _snprintf_s(level, sizeof(level), _TRUNCATE, "%d", this->level);
     this->levelText->SetText(level, 0);
-    const int width = this->TextWidth(level, 0, 0, 12, 0, 0);
-    this->levelText->Move(25 - width / 2, 56);
+    this->levelText->Move(25 - this->TextWidth(level, 0, 0, 12, 0, 0) / 2, 56);
     this->details->Clear();
     char messageText[1024] = {};
     _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(MSI_EXIT), request.name);

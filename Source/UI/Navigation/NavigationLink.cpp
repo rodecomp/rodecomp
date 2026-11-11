@@ -55,6 +55,9 @@
 #include "Utility/Text/TextTokens.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include <string>
+
+extern template std::vector<std::string>::~vector();
 extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
 
 namespace LineCutter {
