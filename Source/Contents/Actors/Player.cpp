@@ -606,51 +606,51 @@ void CPc::LoadEquipAction(int slot, const char* name) {
       switch (slot) {
         case 0:
           if (this->sex != 0) {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Act"));
           } else {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Act"));
           }
           break;
         case 5:
           if (this->sex != 0) {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Act"));
           } else {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Act"));
           }
           break;
         case 6:
           this->equipActions[slot] = nullptr;
           break;
         default:
-          this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+          this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load(name));
           break;
       }
     } else {
       switch (slot) {
         case 0:
           if (this->sex != 0) {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Act"));
           } else {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Act"));
           }
           break;
         case 5:
           if (this->sex != 0) {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Act"));
           } else {
-            this->equipActions[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Act");
+            this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Act"));
           }
           break;
         case 6:
           this->equipActions[slot] = nullptr;
           break;
         default:
-          this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+          this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load(name));
           break;
       }
     }
   } else {
-    this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+    this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load(name));
   }
 
   if (this->equipActions[slot]) {

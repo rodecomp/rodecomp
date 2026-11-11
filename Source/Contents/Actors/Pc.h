@@ -137,7 +137,7 @@ public:
   /* 04A8 */ int layerCellY;
   /* 04AC */ std::map<int, std::pair<int, int>> padding_04AC;
   /* 04B4 */ std::vector<CSprRes*> equipSprites;
-  /* 04C0 */ std::vector<CRes*> equipActions;
+  /* 04C0 */ std::vector<CActRes*> equipActions;
   /* 04CC */ int pkState;
   /* 04D0 */ int bodyStyle;
   /* 04D4 */ int appearanceJob;
