@@ -15,8 +15,7 @@
 void UIShortCutWnd::OnMouseHover(int x, int y) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
-  const bool itemSlotActive = g_session.ItemSlotActive();
-  const int column = grid.HitTest(x, y, itemSlotActive, g_session.m_hotkeyPage);
+  const int column = this->HitTestSlot(x, y);
   if (column != grid.hovered) {
     grid.hovered = column;
     window.Invalidate();
@@ -31,7 +30,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
   int tooltipY = -17;
 
   if (9 * grid.rows <= index) {
-    if (!itemSlotActive) {
+    if (!g_session.ItemSlotActive()) {
       return;
     }
 

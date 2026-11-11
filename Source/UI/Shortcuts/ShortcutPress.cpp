@@ -20,7 +20,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  const int column = this->HitTestSlot(x, y);
   if (column == -1) {
     return;
   }

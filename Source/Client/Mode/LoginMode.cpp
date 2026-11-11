@@ -2896,7 +2896,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_ACCEPT_MAKECHAR2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       g_charInfo = packet->info;
-      g_selectedSlotIndex = static_cast<char>(g_charInfo.slot);
+      g_selectedSlotIndex = static_cast<unsigned char>(g_charInfo.slot);
       memcpy_s(&this->characters[this->characterCount], sizeof(CharacterInfo), &packet->info, sizeof(CharacterInfo));
       char* mapName = this->characters[this->characterCount].mapName;
       StringFormat(mapName, sizeof(this->characters[this->characterCount].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));

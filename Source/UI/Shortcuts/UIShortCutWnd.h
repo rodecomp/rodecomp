@@ -34,6 +34,7 @@ public:
 
 private:
   void ClickControl(int id);
+  int HitTestSlot(int x, int y);
   void PlaceRowButtons();
   void ResizeRows();
   void RestoreLayout(NormalItemSlotWindow* value);

@@ -12,7 +12,7 @@ class UIBmpTextButton;
 class UIStaticText;
 class CUIControl;
 
-extern char g_selectedSlotIndex;
+extern unsigned char g_selectedSlotIndex;
 
 struct CharSlotInfo {
   CharSlotInfo();

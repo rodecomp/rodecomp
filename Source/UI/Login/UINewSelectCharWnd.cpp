@@ -44,7 +44,7 @@
 
 
 // GLOBAL: gl_25013
-char g_selectedSlotIndex;
+unsigned char g_selectedSlotIndex;
 
 
 extern const char* LookupMessage(int id);
@@ -171,7 +171,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   }
 
   g_session.m_options.Values()[6] = 1;
-  g_selectedSlotIndex = static_cast<char>(this->m_slotsPerPage * this->m_page + this->m_pageSlot);
+  g_selectedSlotIndex = static_cast<unsigned char>(this->m_slotsPerPage * this->m_page + this->m_pageSlot);
 
   for (int index = 0; index < this->m_slotsPerPage; ++index) {
     const int slot = this->m_page * this->m_slotsPerPage + index;

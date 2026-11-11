@@ -11,8 +11,6 @@ struct ShortcutGrid {
   // INLINED
   ShortcutGrid() : hovered(-1), row(-1), rows(1) {
   }
-
-  int HitTest(int x, int y, bool itemSlotActive, unsigned char& currentRow);
 };
 
 static_assert(sizeof(ShortcutGrid) == 12);

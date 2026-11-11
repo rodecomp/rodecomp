@@ -24,7 +24,7 @@ namespace {
   }
 
   // INLINED
-  void RemoveFirst(std::list<ShortcutCooldownRecord>& cooldowns, int slot) {
+  __forceinline void RemoveFirst(std::list<ShortcutCooldownRecord>& cooldowns, int slot) {
     for (ShortcutCooldownRecord& record : cooldowns) {
       for (std::list<CooldownState>::iterator state = record.main.begin(); state != record.main.end(); ++state) {
         if (state->slot == slot) {
@@ -62,7 +62,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   if (value.skill != 0) {
     const std::string copiedName = value.skillName;
     const std::uint32_t id = value.id;
-    const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+    const int column = this->HitTestSlot(x, y);
 
     if (column != -1) {
       if (9 * g_session.m_hotkeyPage + column == value.slot) {
@@ -146,7 +146,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
   case 19: {
-    const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+    const int column = this->HitTestSlot(x, y);
     if (column != -1 && 9 * grid.rows <= 9 * g_session.m_hotkeyPage + column) {
       if (g_session.ItemSlotActive()) {
         g_session.AssignItemShortcut(static_cast<std::uint32_t>(item.GetItemId()), column);
@@ -182,7 +182,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
   case 19: {
-    const int column = grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+    const int column = this->HitTestSlot(x, y);
     if (column != -1) {
       const int index = 9 * g_session.m_hotkeyPage + column;
       if (grid.rows <= g_session.m_hotkeyPage) {

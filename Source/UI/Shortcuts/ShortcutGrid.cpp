@@ -1,14 +1,16 @@
-#include "UI/Shortcuts/ShortcutGrid.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "Client/Session/Session.h"
 
 #include <bit>
 #include <cstdint>
 
 // OFFSET: 0x0091C540
 // FUNCTION: fn_12616
-int ShortcutGrid::HitTest(int x, int y, bool itemSlotActive, unsigned char& currentRow) {
-  this->row = -1;
-  int extent = 33 * this->rows;
-  if (itemSlotActive) {
+int UIShortCutWnd::HitTestSlot(int x, int y) {
+  ShortcutGrid& grid = this->m_grid;
+  grid.row = -1;
+  int extent = 33 * grid.rows;
+  if (g_session.ItemSlotActive()) {
     extent += 33;
   }
 
@@ -21,10 +23,10 @@ int ShortcutGrid::HitTest(int x, int y, bool itemSlotActive, unsigned char& curr
     return -1;
   }
 
-  this->row = (y - 4) / 33;
-  currentRow = static_cast<unsigned char>(this->row);
-  if (y > this->row * 33 + 30) {
-    this->row = -1;
+  grid.row = (y - 4) / 33;
+  g_session.m_hotkeyPage = static_cast<unsigned char>(grid.row);
+  if (y > grid.row * 33 + 30) {
+    grid.row = -1;
   }
 
   const int column = static_cast<int>(columnOffset) / 29;

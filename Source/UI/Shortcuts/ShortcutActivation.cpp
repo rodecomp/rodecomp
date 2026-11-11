@@ -8,7 +8,7 @@
 // OFFSET: 0x00930900
 // FUNCTION: fn_12689
 void UIShortCutWnd::OnLBtnDblClk(int x, int y) {
-  const int column = this->m_grid.HitTest(x, y, g_session.ItemSlotActive(), g_session.m_hotkeyPage);
+  const int column = this->HitTestSlot(x, y);
   if (column == -1) {
     return;
   }
