@@ -1611,7 +1611,7 @@ struct ZoneServerChangePacket {
 // FUNCTION: fn_21777
 void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
   const auto* change = reinterpret_cast<const ZoneServerChangePacket*>(packet);
-  this->ChangeZoneServer(std::string(change->mapName, change->mapName + sizeof(change->mapName)).c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string());
+  this->ChangeZoneServer(std::string(change->mapName, change->mapName + sizeof(change->mapName)).c_str(), change->x, change->y, static_cast<int>(change->ip), change->port, std::string(""));
 }
 
 // OFFSET: 0x00D79F00
@@ -12243,31 +12243,30 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
 // OFFSET: 0x00D373C0
 // FUNCTION: fn_21763
 void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
-  const unsigned length = *reinterpret_cast<const std::uint16_t*>(packet + 2);
-  const unsigned size = length - 4;
-  if (length - 5 > 0x168) {
+  const unsigned size = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
+  if (size - 1 > 0x168) {
     return;
   }
 
-  std::vector<char> text(length - 3, 0);
+  std::vector<char> text(size + 1, 0);
   memcpy_s(text.data(), text.size(), packet + 4, size);
   if (g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
 
-  if (g_windowMgr.chatRoomWnd == nullptr) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFF00, 1, 0, 0);
-    char* message = text.data();
+  if (g_windowMgr.chatRoomWnd != nullptr) {
+    g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.empty() ? nullptr : &text[0]), 0x7800, 0, 0, 0);
+  } else {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.empty() ? nullptr : &text[0]), 0xFF00, 1, 0, 0);
+    char* message = text.empty() ? nullptr : &text[0];
     this->scene->player->SendMsg(
       nullptr, AM_CHAT, 0, reinterpret_cast<int>(message), reinterpret_cast<int>(message) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     );
-  } else {
-    g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x7800, 0, 0, 0);
   }
 
   if (g_session.m_whisperRecord != 0) {
-    this->WriteChatLog(text.data());
+    this->WriteChatLog(text.empty() ? nullptr : &text[0]);
   }
 }
 // OFFSET: 0x00D787E0
