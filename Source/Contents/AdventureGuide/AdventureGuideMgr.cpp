@@ -1307,11 +1307,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLev
   detail.maxLevel = maxLevel;
   detail.questId = 0;
   detail.text = text;
-  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [](const auto& entry) {
-    return entry.second.type == 4;
-  });
-  if (it != m_intros.end()) {
-    it->second.details.try_emplace(id, std::as_const(detail));
+  for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
+    if (it->second.type == 4) {
+      it->second.details.try_emplace(id, std::as_const(detail));
+      break;
+    }
   }
 
   return AdventureGuideResult(true, "good");
@@ -1353,11 +1353,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLev
   detail.maxLevel = maxLevel;
   detail.questId = questId;
   detail.text = text;
-  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [](const auto& entry) {
-    return entry.second.type == 1;
-  });
-  if (it != m_intros.end()) {
-    it->second.details.try_emplace(id, std::as_const(detail));
+  for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
+    if (it->second.type == 1) {
+      it->second.details.try_emplace(id, std::as_const(detail));
+      break;
+    }
   }
 
   return AdventureGuideResult(true, "good");
@@ -1421,11 +1421,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntrySubMenu(int type, int id, in
   detail.maxLevel = maxLevel;
   detail.questId = 0;
   detail.text = text;
-  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [type](const auto& entry) {
-    return entry.second.type == type;
-  });
-  if (it != m_intros.end()) {
-    it->second.details.try_emplace(id, std::as_const(detail));
+  for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
+    if (type == it->second.type) {
+      it->second.details.try_emplace(id, std::as_const(detail));
+      break;
+    }
   }
 
   return AdventureGuideResult(true, "good");
@@ -1515,11 +1515,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestSubMenu(int id, int minLevel
   detail.maxLevel = maxLevel;
   detail.questId = 0;
   detail.text = text;
-  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [](const auto& entry) {
-    return entry.second.type == 3;
-  });
-  if (it != m_intros.end()) {
-    it->second.details.try_emplace(id, std::as_const(detail));
+  for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
+    if (it->second.type == 3) {
+      it->second.details.try_emplace(id, std::as_const(detail));
+      break;
+    }
   }
 
   return AdventureGuideResult(true, "good");
