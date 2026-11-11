@@ -1434,13 +1434,12 @@ __declspec(noinline) void CGameMode::ResetItemLists(const unsigned char*) {
 // OFFSET: 0x00D8A1F0
 // FUNCTION: fn_22216
 __declspec(noinline) void CGameMode::ClearItemLists(const unsigned char* packet) {
-  const std::uint16_t slot = *reinterpret_cast<const std::uint16_t*>(packet + 2);
-  g_session.UnflagInventoryItem(slot);
+  g_session.UnflagInventoryItem(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   this->inventoryChanged = 1;
   RefreshItemWindows(&g_windowMgr);
-  g_session.UnflagMerchantShopItem(slot);
+  g_session.UnflagMerchantShopItem(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   g_session.RefreshItem1740Window();
-  g_session.UnflagCartItem(slot);
+  g_session.UnflagCartItem(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   g_session.RefreshItem1738Window();
 }
 
@@ -2583,9 +2582,8 @@ __declspec(noinline) void CGameMode::Zc_Trycollection(const unsigned char* packe
 // OFFSET: 0x00D32830
 // FUNCTION: fn_21745
 __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
-  const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   std::uint32_t color = 0xFFFFFF;
-  switch (message) {
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
   case MSI_CANNOT_PARTYCALL:
   case MSI_NO_PARTYMEM_ON_THISMAP:
   case MSI_INVALID_CLASS:
@@ -2596,7 +2594,7 @@ __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
   }
 
   int type = 0;
-  switch (message) {
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
   case MSI_SEND_TO_TWITTER_FAILED:
   case MSI_KEYWORD_FILTER:
     type = 0x17;
@@ -2604,18 +2602,17 @@ __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
   }
 
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  const char* text = LookupMessage(message);
+  const char* text = LookupMessage(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, type, 0, 0);
-  const char* chatText = LookupMessage(message);
+  const char* chatText = LookupMessage(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(chatText), color, type, 0, 0);
 }
 
 // OFFSET: 0x00D328E0
 // FUNCTION: fn_21746
 __declspec(noinline) void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
-  const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
   std::uint32_t color = *reinterpret_cast<const std::uint32_t*>(packet + 4);
-  switch (message) {
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
   case MSI_CANNOT_PARTYCALL:
   case MSI_NO_PARTYMEM_ON_THISMAP:
   case MSI_INVALID_CLASS:
@@ -2626,8 +2623,8 @@ __declspec(noinline) void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
   }
 
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(*reinterpret_cast<const std::uint16_t*>(packet + 2))), color, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(*reinterpret_cast<const std::uint16_t*>(packet + 2))), color, 0, 0, 0);
 }
 
 // OFFSET: 0x00D7B5E0
@@ -9180,7 +9177,7 @@ void CGameMode::ReceiveGuildInfo(const unsigned char* data) {
   std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
   std::memcpy(masterName, packet->masterName, sizeof(packet->masterName));
   std::memcpy(manageLand, packet->manageLand, sizeof(packet->manageLand));
-  if (g_forbiddenWords.Contains(guildName) == true) {
+  if (g_forbiddenWords.Contains(guildName)) {
     std::string masked("");
     g_forbiddenWords.Mask(guildName, &masked);
   }
@@ -11807,8 +11804,8 @@ void CGameMode::ReceiveAddRelatedGuild(const unsigned char* data) {
   }
 
   GuildInfo::RelatedGuild guild;
-  guild.guildId = *reinterpret_cast<const int*>(data + 6);
   guild.relation = *reinterpret_cast<const int*>(data + 2);
+  guild.guildId = *reinterpret_cast<const int*>(data + 6);
   guild.name = name;
   guildInfo->relatedGuilds.push_back(guild);
   g_windowMgr.RefreshGuildWindows();
