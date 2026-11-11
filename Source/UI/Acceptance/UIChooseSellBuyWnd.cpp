@@ -2628,21 +2628,21 @@ int UIBookWnd::LoadBookmark(const char* name) {
   HKEY key;
   const LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key);
   DWORD page = 1;
-  if (status != ERROR_SUCCESS) {
-    return 1;
-  }
-  RegCloseKey(key);
+  if (status == ERROR_SUCCESS) {
+    RegCloseKey(key);
 
-  HKEY values;
-  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &values) == ERROR_SUCCESS) {
-    DWORD type = REG_DWORD;
-    DWORD size = sizeof(page);
-    if (RegQueryValueExA(values, name, nullptr, &type, reinterpret_cast<BYTE*>(&page), &size) != ERROR_SUCCESS) {
-      page = 1;
+    HKEY values;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &values) == ERROR_SUCCESS) {
+      DWORD type = REG_DWORD;
+      DWORD size = sizeof(page);
+      if (RegQueryValueExA(values, name, nullptr, &type, reinterpret_cast<BYTE*>(&page), &size) != ERROR_SUCCESS) {
+        page = 1;
+      }
+      RegCloseKey(values);
     }
-    RegCloseKey(values);
+    return page;
   }
-  return page;
+  return 1;
 }
 
 // OFFSET: 0x008F6640
@@ -7363,7 +7363,10 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd()
 // OFFSET: 0x008C8D40
 // FUNCTION: fn_11972
 UISecondPasswordInputWnd::UISecondPasswordInputWnd()
-    : UIStorePasswordInputWnd(), passwordLength(4), inputMode(0), padding_0120(0), keypadButtons(), instructionText(nullptr) {
+    : UIStorePasswordInputWnd(), passwordLength(4), inputMode(0), padding_0120(0), instructionText(nullptr) {
+  for (int i = 0; i < 11; ++i) {
+    this->keypadButtons[i] = nullptr;
+  }
   this->actionButtons[0] = nullptr;
   this->actionButtons[1] = nullptr;
   this->actionButtons[2] = nullptr;
