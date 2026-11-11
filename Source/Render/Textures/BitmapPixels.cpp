@@ -194,8 +194,8 @@ void CDCBitmap::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidth, 
       }
     }
 
-    destination += this->m_bitmap.width;
     input += source.m_bitmap.width;
+    destination += this->m_bitmap.width;
   }
 }
 
