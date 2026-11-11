@@ -674,36 +674,36 @@ void UIParaItemShopWnd::Paint() {
     return;
   }
 
-  const int barHeight = this->DrawButtonBar(this->alternateButtonBar == 1 ? 2 : 0, 0, 1);
+  const int barHeight = this->DrawButtonBar(this->alternateButtonBar != 1 ? 0 : 2, 0, 1);
   unsigned red = 0xFF, green = 0xFF, blue = 0xFF;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   const int height = this->geometry.height - barHeight - titleHeight;
   this->FillRegion(0, titleHeight, this->geometry.width, height, RGB(red, green, blue));
 
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
   if (left) {
     for (int i = 0; i < height / left->image.height; ++i) {
-      this->DrawBitmap(0, left->image.height * i + titleHeight, &left->image, false);
+      this->DrawBitmap(0, left->image.height * i + titleHeight, left, false);
     }
     if (height % left->image.height > 0) {
-      this->DrawBitmap(0, this->geometry.height - barHeight - left->image.height, &left->image, false);
+      this->DrawBitmap(0, this->geometry.height - barHeight - left->image.height, left, false);
     }
   }
 
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
   if (right) {
     for (int i = 0; i < height / right->image.height; ++i) {
-      this->DrawBitmap(this->geometry.width - right->image.width, right->image.height * i + titleHeight, &right->image, false);
+      this->DrawBitmap(this->geometry.width - right->image.width, right->image.height * i + titleHeight, right, false);
     }
     if (height % right->image.height > 0) {
-      this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - barHeight - right->image.height, &right->image, false);
+      this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - barHeight - right->image.height, right, false);
     }
   }
 
   const int footer = this->showFooter == 1 ? this->footerHeight : 0;
-  int slots = (height - footer) / 32;
-  for (int y = titleHeight; slots > 0; --slots, y += 32) {
-    DrawItemSlotBackground(*this, 30, y);
+  const int rows = (height - footer) / 32;
+  for (int row = 0; row < rows; ++row) {
+    DrawItemSlotBackground(*this, 30, titleHeight + row * 32);
   }
 
   int index = 0;
@@ -733,12 +733,12 @@ void UIParaItemShopWnd::Paint() {
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         34, top + 16,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
@@ -815,7 +815,7 @@ void UIParaResultWnd::Paint() {
     this->FillRegion(20, 17, (this->geometry.width - 60) % 32, listHeight, RGB(red, green, blue));
     this->FillRegion(20, listHeight / 32 * 32 + 17, this->geometry.width - 24, listHeight % 32, RGB(red, green, blue));
   }
-  this->DrawButtonBar(this->alternateButtonBar == 1 ? 2 : 0, 0, 1);
+  this->DrawButtonBar(this->alternateButtonBar != 1 ? 0 : 2, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
   const int slots = (this->geometry.height - this->headerHeight - this->footerHeight - 17) / 32;
@@ -853,7 +853,7 @@ void UIParaResultWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
