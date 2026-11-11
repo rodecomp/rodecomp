@@ -701,9 +701,11 @@ int CEfstAction_GROUND_GROW::GetEffectId(int efstId, int argument4) {
   };
   std::string suffix = step == 11 ? std::string(full()) : std::format("{:02}", step);
 
-  const char prefixSource[] = {'\xD2', '\x07', '\x0E', '\x2A', '\x93', '\x3F', '\x44', '\xE8', '\xC7', '\x1A', '\x16', '\x00', '\xFD'};
-  thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource);
-  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(prefixName.Text()) + suffix);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string([] {
+    const char prefixSource[] = {'\xD2', '\x07', '\x0E', '\x2A', '\x93', '\x3F', '\x44', '\xE8', '\xC7', '\x1A', '\x16', '\x00', '\xFD'};
+    thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource);
+    return prefixName.Text();
+  }()) + suffix);
 }
 
 // OFFSET: 0x00622920
@@ -759,15 +761,16 @@ void CEfstAction_THUNDERING_ROD::OnEfstEnd(int efstId, int argument2, int argume
 // FUNCTION: fn_04515
 int CEfstAction_THUNDERING_ROD::GetEffectId(int efstId, int argument4) {
   const int step = argument4 - 1;
-  if (static_cast<unsigned int>(step) > 5) {
-    return -1;
+  if (static_cast<unsigned int>(step) <= 5) {
+    std::string suffix = std::format("{:02}", step);
+    return CEZ2STREffectMgr::GetInstance()->EffectId(std::string([] {
+      constexpr std::array<char, 16> prefixSource = CRYPT_NAME("thundering_rod_", 0x0BEB63A5C905B3A7ULL);
+      thread_local EncryptedName<sizeof(prefixSource), 0x0BEB63A5C905B3A7ULL> prefixName(prefixSource);
+      return prefixName.Text();
+    }()) + suffix);
   }
 
-  std::string suffix = std::format("{:02}", step);
-  constexpr auto prefixSourceText = CRYPT_NAME("thundering_rod_", 0x0BEB63A5C905B3A7ULL);
-  const auto& prefixSource = prefixSourceText.data;
-  thread_local EncryptedName<sizeof(prefixSource), 0x0BEB63A5C905B3A7ULL> prefixName(prefixSource);
-  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(prefixName.Text()) + suffix);
+  return -1;
 }
 
 // OFFSET: 0x00622DD0
