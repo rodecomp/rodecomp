@@ -28,6 +28,7 @@
 #include "Render/Renderer.h"
 #include "Render/Primitives/RenderPrimitive.h"
 
+#include <algorithm>
 #include <bit>
 #include <cmath>
 #include <cstdio>
@@ -58,8 +59,7 @@ namespace {
       return 0;
     }
 
-    const int value = rand() % range;
-    return value >= 0 ? value : 0;
+    return std::ranges::max(rand() % range, 0);
   }
 
   // INLINED
