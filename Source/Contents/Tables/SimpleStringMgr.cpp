@@ -112,7 +112,7 @@ void CSimpleStringMgr::AddString(STR_TYPE type, const char* key, const char* val
   }
 
   auto table = this->m_tables.find(type);
-  if (table == this->m_tables.end()) {
+  if (this->m_tables.end() == table) {
     std::unordered_map<std::string, std::string> entries;
     entries.emplace(key, value);
     this->m_tables.emplace(type, std::move(entries));

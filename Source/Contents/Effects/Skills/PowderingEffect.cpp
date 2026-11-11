@@ -171,14 +171,14 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
 // OFFSET: 0x007097B0
 // FUNCTION: fn_07093
 bool CPowderingEffect::IsAlive() {
-  for (CParticle* particle : this->smokeParticles) {
-    if (particle->animationState != 2) {
+  for (auto it = this->smokeParticles.begin(); it != this->smokeParticles.end(); ++it) {
+    if ((*it)->animationState != 2) {
       return true;
     }
   }
 
-  for (CParticle* particle : this->spriteParticles) {
-    if (particle->animationState != 2) {
+  for (auto it = this->spriteParticles.begin(); it != this->spriteParticles.end(); ++it) {
+    if ((*it)->animationState != 2) {
       return true;
     }
   }

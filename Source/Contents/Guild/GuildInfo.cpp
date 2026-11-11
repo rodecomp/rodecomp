@@ -53,7 +53,12 @@ void GuildInfo::ClearMembers() {
 // OFFSET: 0x00AE4270
 // FUNCTION: fn_18033
 void GuildInfo::RemoveAgitId(int value) {
-  auto it = std::find(this->agitIds.begin(), this->agitIds.end(), value);
+  auto it = this->agitIds.begin();
+  for (; it != this->agitIds.end(); ++it) {
+    if (value == *it) {
+      break;
+    }
+  }
   if (it != this->agitIds.end()) {
     this->agitIds.erase(it);
   }

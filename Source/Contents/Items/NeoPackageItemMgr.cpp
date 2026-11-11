@@ -223,15 +223,17 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
 bool CPaidPackageItemMgr::LoadScript() {
   CLuaInstance script;
   script.SetGlobal("C_AddItemSold", CPaidPackageItemMgr::LuaAddItemSold);
-  if (script.LoadFile("LuaFiles514\\Lua Files\\ProbabilityInfo\\SimpleCashShopScript.lub") == true) {
-    lua_State* state = script.GetState();
-    if (state) {
-      lua_getfield(state, LUA_GLOBALSINDEX, "LoadItemSoldTbl");
-      if (lua_pcall(state, 0, 0, 0) != 0) {
-        MessageBoxA(nullptr, lua_tolstring(state, -1, nullptr), "CPaidItemMgr", 0);
-      } else {
-        return true;
-      }
+  if (script.LoadFile("LuaFiles514\\Lua Files\\ProbabilityInfo\\SimpleCashShopScript.lub") == false) {
+    return false;
+  }
+
+  lua_State* state = script.GetState();
+  if (state) {
+    lua_getfield(state, LUA_GLOBALSINDEX, "LoadItemSoldTbl");
+    if (lua_pcall(state, 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tolstring(state, -1, nullptr), "CPaidItemMgr", 0);
+    } else {
+      return true;
     }
   }
 

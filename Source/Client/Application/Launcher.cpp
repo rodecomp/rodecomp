@@ -833,9 +833,9 @@ HANDLE StartClientProcess(char* program) {
 
   STARTUPINFOA startup = {};
   startup.cb = sizeof(startup);
+  PROCESS_INFORMATION process = {};
   startup.dwFlags = STARTF_USESHOWWINDOW;
   startup.wShowWindow = SW_SHOWNORMAL;
-  PROCESS_INFORMATION process = {};
 
   CreateProcessA(nullptr, commandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
   return process.hProcess;

@@ -305,8 +305,8 @@ int AiHomunAttack(lua_State* state) {
 // OFFSET: 0x00D9ECA0
 // FUNCTION: fn_22336
 int AiMercenaryAttack(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
-  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
+  std::uint32_t target = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
   if (!g_session.IsMercenaryAid(aid)) {
     return 0;
   }
@@ -1067,13 +1067,13 @@ int AiMove(lua_State* state) {
 // OFFSET: 0x00DA0260
 // FUNCTION: fn_22345
 int AiMoveToOwner(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
     return 0;
   }
 
+  MoveToOwnerPacket packet;
   if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid)) {
-    MoveToOwnerPacket packet;
     packet.opcode = ID_CZ_REQUEST_MOVETOOWNER;
     packet.aid = aid;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
@@ -1085,12 +1085,12 @@ int AiMoveToOwner(lua_State* state) {
 // OFFSET: 0x00DA0300
 // FUNCTION: fn_22346
 int AiSkillGround(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   int skillArgs[4];
-  skillArgs[0] = static_cast<int>(lua_tonumber(state, 3));
-  skillArgs[1] = static_cast<int>(lua_tonumber(state, 4));
-  skillArgs[2] = static_cast<int>(lua_tonumber(state, 5));
-  skillArgs[3] = static_cast<int>(lua_tonumber(state, 2));
+  skillArgs[0] = static_cast<int>(luaL_checknumber(state, 3));
+  skillArgs[1] = static_cast<int>(luaL_checknumber(state, 4));
+  skillArgs[2] = static_cast<int>(luaL_checknumber(state, 5));
+  skillArgs[3] = static_cast<int>(luaL_checknumber(state, 2));
 
   if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
     return 0;
@@ -1111,10 +1111,10 @@ int AiSkillGround(lua_State* state) {
 // OFFSET: 0x00DA0420
 // FUNCTION: fn_22347
 int AiSkillObject(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
-  unsigned int level = static_cast<unsigned int>(lua_tonumber(state, 2));
-  std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
-  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 4));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
+  unsigned int level = static_cast<unsigned int>(luaL_checknumber(state, 2));
+  std::uint32_t skillId = static_cast<std::uint32_t>(luaL_checknumber(state, 3));
+  std::uint32_t target = static_cast<std::uint32_t>(luaL_checknumber(state, 4));
 
   CSkillInfo skill = g_session.LookupSkill(skillId);
   if (!skill.available) {

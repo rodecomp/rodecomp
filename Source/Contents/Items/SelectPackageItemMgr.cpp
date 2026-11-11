@@ -56,15 +56,17 @@ bool CSelectPackageItemMgr::LoadScript() {
   CLuaInstance script;
   script.SetGlobal("AddTab", CSelectPackageItemMgr::LuaAddTab);
   script.SetGlobal("AddItem", CSelectPackageItemMgr::LuaAddItem);
-  if (script.LoadFile("LuaFiles514\\Lua Files\\SelectPackage\\SelectPackageItem_Cln.lub") == true) {
-    lua_State* state = script.GetState();
-    if (state) {
-      lua_getfield(state, LUA_GLOBALSINDEX, "LoadTable");
-      if (lua_pcall(state, 0, 0, 0) != 0) {
-        MessageBoxA(nullptr, lua_tolstring(state, -1, nullptr), "CSelectPackageItemMgr", 0);
-      } else {
-        lua_settop(state, -2);
-      }
+  if (script.LoadFile("LuaFiles514\\Lua Files\\SelectPackage\\SelectPackageItem_Cln.lub") == false) {
+    return false;
+  }
+
+  lua_State* state = script.GetState();
+  if (state) {
+    lua_getfield(state, LUA_GLOBALSINDEX, "LoadTable");
+    if (lua_pcall(state, 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tolstring(state, -1, nullptr), "CSelectPackageItemMgr", 0);
+    } else {
+      lua_settop(state, -2);
     }
   }
 
