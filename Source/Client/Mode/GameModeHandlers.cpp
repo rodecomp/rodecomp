@@ -2501,6 +2501,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
 #include "UI/Text/UIBroadcastBalloon.h"
 
 extern template decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, std::uint32_t&>(std::string&, std::uint32_t&);
+extern template std::list<BroadcastBalloonLine>::~list();
 
 #include <chrono>
 
