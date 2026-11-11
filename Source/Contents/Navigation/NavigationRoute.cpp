@@ -1731,7 +1731,7 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
         int playerX;
         int playerY;
         mode->PlayerCell(&playerX, &playerY);
-        if (playerX <= x + 1 && playerX >= x - 1 && playerY <= y + 1 && playerY >= y - 1) {
+        if (x + 1 >= playerX && x - 1 <= playerX && y + 1 >= playerY && y - 1 <= playerY) {
           return 11;
         }
       }
