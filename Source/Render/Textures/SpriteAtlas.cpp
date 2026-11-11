@@ -69,7 +69,7 @@ void SpriteAtlas::Initialize(unsigned spareCount) {
   this->m_spare.reserve(spareCount);
 
   for (unsigned i = 0; i < spareCount; ++i) {
-    CTexture* texture = CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
+    CTexture* texture = g_texMgr.CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
     if (!texture) {
       break;
     }
@@ -134,13 +134,13 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
 
   if (width <= 256 && height <= 256) {
     if (this->m_spare.empty()) {
-      page.texture = CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
+      page.texture = g_texMgr.CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
     } else {
       page.texture = this->m_spare.back();
       this->m_spare.pop_back();
     }
   } else {
-    page.texture = CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
+    page.texture = g_texMgr.CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
   }
 
   page.texture->Fill(nullptr, 0);

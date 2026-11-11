@@ -37,7 +37,7 @@ bool CRendererDX7::RenderToTexture(
   int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture
 ) {
   if (!texture) {
-    texture = CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);
+    texture = g_texMgr.CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);
 
     if (!texture) {
       return false;

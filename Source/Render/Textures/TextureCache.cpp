@@ -69,7 +69,7 @@ CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixel
 
 // OFFSET: 0x00571660
 // FUNCTION: fn_02450
-CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
+CTexture* TextureCache::CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
   return GetRenderSystemHolder()->CreateTexture(width, height, format, dynamic, renderTarget);
 }
 

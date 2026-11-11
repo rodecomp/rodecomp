@@ -179,7 +179,7 @@ bool CSprRes::Load(const char* name) {
 
       const int width = g_spriteHalfWidth != 0 ? image->width / 2 : image->width;
       const int height = g_spriteHalfHeight != 0 ? image->height / 2 : image->height;
-      CTexture* texture = CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
+      CTexture* texture = g_texMgr.CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
       image->surface = texture;
       texture->Upload(0, 0, image->width, image->height, pixels, 0, 0);
       delete[] pixels;

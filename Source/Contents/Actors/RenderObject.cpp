@@ -3445,7 +3445,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
     this->controls[index] = nullptr;
   }
   this->emblemTexture = nullptr;
-  this->texture = CreateTexture(35, 35, 1, false, false);
+  this->texture = g_texMgr.CreateTexture(35, 35, 1, false, false);
   this->litPositions.resize(4900);
 }
 

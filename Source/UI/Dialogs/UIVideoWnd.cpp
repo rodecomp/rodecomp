@@ -128,7 +128,7 @@ int UIVideoWnd::SendMsg(
       }
 
       const BinkHandle* handle = this->m_movie->Handle();
-      this->m_texture = CreateTexture(handle->width, handle->height, 4, false, false);
+      this->m_texture = g_texMgr.CreateTexture(handle->width, handle->height, 4, false, false);
     }
     break;
   case UM_SET_VIDEO_VOLUME:

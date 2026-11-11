@@ -17,6 +17,7 @@ public:
   CTexture* Load(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget);
   CTexture* Default();
   CTexture* Create(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget);
+  CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
   __declspec(noinline) CTexture* Upload(int width, int height, const std::uint32_t* pixels, int format, int option, bool fullSize, bool dynamic, bool renderTarget);
   void Remove(CTexture* texture);
   void Clear();
@@ -33,7 +34,5 @@ static_assert(sizeof(TextureCache) == 8);
 
 extern TextureCache g_texMgr;
 extern int g_textureReduction;
-
-CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
 
 #endif

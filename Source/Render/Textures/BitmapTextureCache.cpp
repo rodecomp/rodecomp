@@ -25,7 +25,7 @@ void BitmapTextureCache::Update(BitmapPixels& bitmap) {
 
   if (this->m_alpha) {
     if (this->m_textures.empty()) {
-      CTexture* texture = CreateTexture(bitmap.width, bitmap.height, TextureFormat::A8R8G8B8, false, false);
+      CTexture* texture = g_texMgr.CreateTexture(bitmap.width, bitmap.height, TextureFormat::A8R8G8B8, false, false);
       if (texture) {
         this->m_textures.push_back(texture);
       }
@@ -39,7 +39,7 @@ void BitmapTextureCache::Update(BitmapPixels& bitmap) {
       for (unsigned y = 0; y < bitmap.height; y += 256) {
         for (unsigned x = 0; x < bitmap.width; x += 256) {
           this->m_textures.push_back(
-            CreateTexture(std::min(256u, bitmap.width - x), std::min(256u, bitmap.height - y), TextureFormat::A1R5G5B5, false, false)
+            g_texMgr.CreateTexture(std::min(256u, bitmap.width - x), std::min(256u, bitmap.height - y), TextureFormat::A1R5G5B5, false, false)
           );
         }
       }

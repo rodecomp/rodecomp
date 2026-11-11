@@ -34,7 +34,7 @@ void CGraffiSkill::BuildTexture() {
   this->m_penY = 0;
 
   this->m_font = g_texMgr.Load("effect\\alpabet.bmp", 0, false, true, false);
-  this->m_canvas = CreateTexture(0x180, 0x180, 0, false, false);
+  this->m_canvas = g_texMgr.CreateTexture(0x180, 0x180, 0, false, false);
 
   int length = static_cast<int>(std::strlen(this->m_text));
   this->m_penY += (0x90 - length) / 24 * 36;
