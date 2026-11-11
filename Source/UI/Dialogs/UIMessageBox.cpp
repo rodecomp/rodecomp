@@ -4197,16 +4197,16 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      int error;
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        error = 2812;
-      } else {
-        if (this->m_nameEdit->Length() < 4) {
-          g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
-          goto create;
-        }
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
+        this->m_nameEdit->SetText("");
+        return 0;
+      }
 
+      if (this->m_nameEdit->Length() < 4) {
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
         const bool allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
         bool valid = true;
         if (g_serviceType == 1) {
@@ -4225,10 +4225,11 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           if (blank) {
             g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
           }
-          goto create;
-        }
-
-        if (this->m_nameEdit->Length() < 24) {
+        } else if (this->m_nameEdit->Length() >= 24) {
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+          this->m_nameEdit->SetText("");
+          return 0;
+        } else {
           char name[24] = {};
           std::strcpy(name, this->m_nameEdit->Text());
           std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
@@ -4248,17 +4249,9 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
           g_modeMgr.gameMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
           g_windowMgr.Schedule(this);
-          goto create;
         }
-
-        error = 531;
       }
 
-      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
-      this->m_nameEdit->SetText("");
-      return 0;
-
-    create:
       g_modeMgr.gameMode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       int values[8];
       values[0] = this->m_info.stats[0];
