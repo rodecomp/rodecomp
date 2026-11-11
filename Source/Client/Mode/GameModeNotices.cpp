@@ -5270,8 +5270,7 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
 
   std::string text = FormatOwnedString(LookupMessage(!success + 3271), name.c_str(), refine, itemName.c_str());
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     message.lines.push_back(BroadcastBalloonLine{text, 0x62B0FF, 0});
     balloon->AddMessage(0, message);
   }
@@ -5320,8 +5319,7 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   }
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     message.lines.emplace_back(text, 0x62B0FF, 0);
     balloon->AddMessage(0, message);
   }
@@ -5557,8 +5555,7 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     break;
   }
 
-  BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-  message.start = std::chrono::system_clock::now();
+  BroadcastBalloonMessage message;
   message.fontHeight = 14;
   std::uint32_t color = 0xFFC8C8;
   message.lines.emplace_back(text, color);
@@ -7698,8 +7695,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
           header = header + " ] : " + message.data();
         }
 
-        BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-        balloonMessage.start = std::chrono::system_clock::now();
+        BroadcastBalloonMessage balloonMessage;
         std::uint32_t color = 0xFFFF;
         balloonMessage.lines.emplace_back(header, color);
         balloon->AddMessage(1, balloonMessage);
@@ -7762,8 +7758,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
           prefix = std::move(linked);
         }
 
-        BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-        balloonMessage.start = std::chrono::system_clock::now();
+        BroadcastBalloonMessage balloonMessage;
         std::uint32_t color = 0xFFFF;
         const char* lineText = prefix.c_str();
         balloonMessage.lines.emplace_back(lineText, color);

@@ -7,6 +7,8 @@
 
 #include <windows.h>
 
+template decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, std::uint32_t&>(std::string&, std::uint32_t&);
+
 // OFFSET: 0x007C27B0
 // FUNCTION: fn_09330
 UIBroadcastBalloon::UIBroadcastBalloon() : UIWindow(0) {

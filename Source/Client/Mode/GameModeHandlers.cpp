@@ -2483,6 +2483,8 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
 
 #include "UI/Text/UIBroadcastBalloon.h"
 
+extern template decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, std::uint32_t&>(std::string&, std::uint32_t&);
+
 #include <chrono>
 
 // OFFSET: 0x00D3C9B0
@@ -2499,8 +2501,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
 
   if (!text.empty()) {
     if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-      BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-      message.start = std::chrono::system_clock::now();
+      BroadcastBalloonMessage message;
       message.lines.emplace_back(text, color);
       balloon->AddMessage(0, message);
     }

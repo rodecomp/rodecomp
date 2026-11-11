@@ -244,8 +244,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
     } else {
       UIBroadcastBalloon* balloonWindow = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
-        BroadcastBalloonMessage balloon{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-        balloon.start = std::chrono::system_clock::now();
+        BroadcastBalloonMessage balloon;
         balloon.lines.push_back(BroadcastBalloonLine{message, 0x62B0FF, 0});
         balloonWindow->AddMessage(0, balloon);
       }

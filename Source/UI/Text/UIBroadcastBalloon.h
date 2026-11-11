@@ -17,6 +17,10 @@ struct BroadcastBalloonLine {
 };
 
 struct BroadcastBalloonMessage {
+  BroadcastBalloonMessage() : start(), duration(20), fontHeight(12), backgroundColor(0x40000000), width(0), height(0) {
+    this->start = std::chrono::system_clock::now();
+  }
+
   /* 0000 */ std::list<BroadcastBalloonLine> lines;
   /* 0008 */ std::chrono::system_clock::time_point start;
   /* 0010 */ std::chrono::seconds duration;

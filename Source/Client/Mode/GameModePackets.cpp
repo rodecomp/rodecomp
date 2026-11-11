@@ -15197,8 +15197,7 @@ void CGameMode::ReceiveRefineBroadcast(const unsigned char* data) {
   std::string text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN), name.c_str(), material.DisplayName(0).c_str(), item.DisplayName(1).c_str());
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     std::uint32_t color = 0x62B0FF;
     message.lines.emplace_back(text, color);
     balloon->AddMessage(0, message);
@@ -15218,8 +15217,7 @@ void CGameMode::ReceiveTradeBroadcast(const unsigned char* data) {
   std::string text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN), name.c_str(), otherName.c_str(), item.DisplayName(1).c_str());
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     std::uint32_t color = 0x62B0FF;
     message.lines.emplace_back(text, color);
     balloon->AddMessage(0, message);
@@ -15238,8 +15236,7 @@ void CGameMode::ReceiveItemBroadcast(const unsigned char* data) {
   std::string text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN2), name.c_str(), item.DisplayName(0).c_str());
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     message.lines.emplace_back(text, 0x62B0FF, 0);
     balloon->AddMessage(0, message);
   }
@@ -15445,8 +15442,7 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
 
   std::uint32_t color = 0xFFFF;
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     message.lines.emplace_back(expLine, color);
     message.lines.emplace_back(dropLine, color);
     message.lines.emplace_back(deathLine, color);
@@ -15487,8 +15483,7 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     const int color = (data[4] << 16) | (data[5] << 8) | data[6];
-    BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    balloonMessage.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage balloonMessage;
     balloonMessage.fontHeight = *reinterpret_cast<const short*>(data + 10);
     message = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(message);
     balloonMessage.lines.emplace_back(message, color);
@@ -15609,8 +15604,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   WrapPlainText(message.c_str(), lines, 0x48);
   if (lines.begin() != lines.end()) {
     if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-      BroadcastBalloonMessage balloonMessage{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-      balloonMessage.start = std::chrono::system_clock::now();
+      BroadcastBalloonMessage balloonMessage;
       for (const std::string& line : lines) {
         balloonMessage.lines.emplace_back(line, color);
       }
@@ -15675,8 +15669,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   std::string line = text;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     std::uint32_t color = 0x62B0FF;
     message.lines.emplace_back(line, color);
     balloon->AddMessage(0, message);
@@ -15718,8 +15711,7 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
 
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-    BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
-    message.start = std::chrono::system_clock::now();
+    BroadcastBalloonMessage message;
     std::uint32_t color = 0x62B0FF;
     message.lines.emplace_back(text, color);
     balloon->AddMessage(0, message);
