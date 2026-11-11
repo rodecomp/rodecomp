@@ -434,10 +434,13 @@ void CSkillAction_KR_THUNDERING_FOCUS::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("thundering_focus_g", 0x61FF87ED7BF39BE1ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("thundering_focus_g", 0x61FF87ED7BF39BE1ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2880
@@ -453,10 +456,13 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("thundering_focus_y", 0x7D993F650D2785FFULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x7D993F650D2785FFULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("thundering_focus_y", 0x7D993F650D2785FFULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2A90
