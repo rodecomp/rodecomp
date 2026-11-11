@@ -85,6 +85,9 @@
 #include <windows.h>
 #include <timeapi.h>
 
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+extern template std::vector<std::string>::~vector();
+
 namespace {
   struct NavigationTargetLook {
     /* 0000 */ int job;

@@ -16,6 +16,8 @@
 #include <string>
 #include "Utility/StdStringCompare.h"
 
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x00AD9530
 // FUNCTION: fn_17878
 std::uint32_t MovementRouteInterpolation::Duration() const {

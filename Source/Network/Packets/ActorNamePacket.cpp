@@ -10,6 +10,8 @@
 #include <cstdio>
 #include <string>
 
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x00D1DFB0
 // FUNCTION: fn_21632
 void CGameMode::ReceiveActorNameAll(const ActorNameAllPacket* packet) {

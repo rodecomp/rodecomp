@@ -1,5 +1,7 @@
 #include "Render/Device/RenderBackends.h"
 
+extern template std::string& std::string::assign(const char*, std::string::size_type);
+
 // OFFSET: 0x0056A2A0
 // FUNCTION: fn_02289
 std::vector<RenderBackend> EnumerateRenderBackends() {

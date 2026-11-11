@@ -1195,6 +1195,9 @@ UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl() : UIWindow(0) {
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Edit/UIEditPaint.inl"
 
+extern template void std::vector<unsigned int>::_Tidy() noexcept;
+extern template std::size_t std::_Traits_find<std::char_traits<char>>(const char* const, const std::size_t, const std::size_t, const char* const, const std::size_t) noexcept;
+
 // OFFSET: 0x0085C4F0
 // FUNCTION: fn_10801
 void UIChatEditCtrl::Paint() {
