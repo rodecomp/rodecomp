@@ -250,6 +250,10 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 
+using SnapRectangleTree = std::_Tree<std::_Tmap_traits<UIWindow*, SnapRectangle, std::less<UIWindow*>, std::allocator<std::pair<UIWindow* const, SnapRectangle>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<UIWindow* const, SnapRectangle>, void*>*>
+SnapRectangleTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
+
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {

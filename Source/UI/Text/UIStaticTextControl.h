@@ -30,7 +30,11 @@ public:
   void SetText(const char* value, std::size_t length) {
     this->SetText(std::string_view(value, length));
   }
-  void SetTooltip(const char* value, std::size_t length);
+  void SetTooltip(std::string_view value);
+  // INLINED
+  void SetTooltip(const char* value, std::size_t length) {
+    this->SetTooltip(std::string_view(value, length));
+  }
 
   std::string& Tooltip() {
     return *reinterpret_cast<std::string*>(this->tooltipStorage);

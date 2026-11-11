@@ -2939,8 +2939,8 @@ void CUIStaticText::SetText(std::string_view value) {
 
 // OFFSET: 0x009F0E80
 // FUNCTION: fn_14681
-void CUIStaticText::SetTooltip(const char* value, std::size_t length) {
-  this->Tooltip().assign(value, length);
+void CUIStaticText::SetTooltip(std::string_view value) {
+  this->Tooltip().assign(value.data(), value.size());
 }
 
 // OFFSET: 0x009F1D20
