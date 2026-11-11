@@ -10993,8 +10993,9 @@ void CGameMode::ReceiveGuildMemberList3(const unsigned char* data) {
   guildInfo->memberCount = count;
   guildInfo->ClearMembers();
 
-  const GuildMemberMemoOnlyRecord* record = reinterpret_cast<const GuildMemberMemoOnlyRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const GuildMemberMemoOnlyRecord* records = reinterpret_cast<const GuildMemberMemoOnlyRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const GuildMemberMemoOnlyRecord* record = &records[i];
     GuildInfo::Member member;
     member.accountId = record->accountId;
     member.characterId = record->characterId;
@@ -11036,8 +11037,9 @@ void CGameMode::ReceiveGuildRelationList(const unsigned char* data) {
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildRelationRecord);
   guildInfo->relatedGuilds.clear();
 
-  const GuildRelationRecord* record = reinterpret_cast<const GuildRelationRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const GuildRelationRecord* records = reinterpret_cast<const GuildRelationRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const GuildRelationRecord* record = &records[i];
     char name[25];
     std::memcpy(name, record->name, sizeof(record->name));
     name[24] = '\0';
