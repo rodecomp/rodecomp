@@ -915,13 +915,12 @@ void CUITextButton::OnMouseHover(int, int) {
     int screenY = -20;
     this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
-    return;
+  } else {
+    int screenX = -6;
+    int screenY = -4;
+    this->ToScreen(screenX, screenY);
+    g_modeMgr.gameMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
-
-  int screenX = -6;
-  int screenY = -4;
-  this->ToScreen(screenX, screenY);
-  g_modeMgr.gameMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009ED360
