@@ -108,7 +108,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
   for (int slot = 0; slot < 10; ++slot) {
     bool fromSwap = true;
     ITEM_INFO item = this->GetSlotItem(slot);
-    if (item.identity[1] == 0) {
+    if (item.identity[1] <= 0) {
       fromSwap = false;
       if (this->equipmentPage == 2) {
         item = g_session.GetCostumeItemAt(slot);
@@ -121,7 +121,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
       int xCoords[4] = {34, 173, 6, 250};
       int yCoords[4] = {54, 80, 106, 132};
 
-      if (fromSwap) {
+      if (fromSwap == true) {
         this->SetSlotValue(slot, item.sprite);
         const int row = slot & 3;
         if (slot < 8) {
@@ -145,13 +145,14 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
           fromSwap = this->GetSlotItem(locations[i]).identity[1] > 0;
         }
 
-        if (!fromSwap) {
+        if (fromSwap != true) {
           this->SetSlotValue(slot, item.sprite);
           char path[128];
           if (slot < 8) {
+            const char* id = item.itemId.c_str();
             const int iconX = xCoords[slot / 4 + 2];
             std::memset(path, 0, sizeof(path));
-            g_session.IconPath(path, item.itemId.c_str(), 1);
+            g_session.IconPath(path, id, 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             const int row = slot & 3;
             if (bitmap) {
@@ -165,9 +166,10 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
               this->DrawBitmap(iconX, row * 26 + 60, gradeBitmap, true);
             }
           } else {
+            const char* id = item.itemId.c_str();
             const int iconX = xCoords[(slot & 3) + 2];
             std::memset(path, 0, sizeof(path));
-            g_session.IconPath(path, item.itemId.c_str(), 1);
+            g_session.IconPath(path, id, 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             if (bitmap) {
               this->DrawAuxiliary(1, iconX, 22, &bitmap->image, true, false);
