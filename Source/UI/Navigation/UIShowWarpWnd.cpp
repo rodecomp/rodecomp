@@ -16,15 +16,15 @@
 // FUNCTION: fn_12899
 void UIShowWarpWnd::OnCreate(int width, int height) {
   this->m_list = new UIListBox();
-  width -= 0x18;
-  height -= 0x32;
-  if (width < 0x14) {
-    width = 0x14;
+  int listWidth = width - 0x18;
+  int listHeight = height - 0x32;
+  if (listWidth < 0x14) {
+    listWidth = 0x14;
   }
-  if (height < 0x1e) {
-    height = 0x1e;
+  if (listHeight < 0x1e) {
+    listHeight = 0x1e;
   }
-  this->m_list->Configure(0x0c, 0x14, width, height, 0);
+  this->m_list->Configure(0x0c, 0x14, listWidth, listHeight, 0);
   this->m_list->backgroundRed = 0xf0;
   this->m_list->backgroundGreen = 0xf0;
   this->m_list->backgroundBlue = 0xf0;

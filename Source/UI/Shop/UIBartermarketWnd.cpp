@@ -1118,6 +1118,7 @@ void UIPurchaseButton::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10582
 std::string UIExpandedBarterPurchaseButton::FormatChunkText(int refine, std::string name, int amount) {
   std::string text;
+  text.clear();
   if (refine > 0) {
     char buffer[5] = {};
     _itoa(refine, buffer, 10);

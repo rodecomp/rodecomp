@@ -667,20 +667,14 @@ void UISeekPartyListWnd::StoreInfo() {
 // OFFSET: 0x00D42590
 // FUNCTION: fn_21828
 void CGameMode::LoadCooldownRecords(const void* packet) {
-  const auto* bytes = static_cast<const unsigned char*>(packet);
-  std::int16_t size;
-  std::memcpy(&size, bytes + 2, sizeof(size));
-  const int count = (size - 2) / 6;
+  const auto* records = static_cast<const CooldownRecordPacket*>(packet);
+  const int count = (records->size - 2) / 6;
+  const CooldownRecordEntry* entry = records->entries;
 
-  for (int index = 0; index < count; ++index) {
-    const unsigned char* source = bytes + 4 + index * 6;
+  for (int index = 0; index < count; ++index, ++entry) {
     ShortcutCooldownRecord value;
-    std::uint16_t id;
-    std::uint32_t remaining;
-    std::memcpy(&id, source, sizeof(id));
-    std::memcpy(&remaining, source + 2, sizeof(remaining));
-    value.id = id;
-    value.end = timeGetTime() + remaining;
+    value.id = entry->id;
+    value.end = timeGetTime() + entry->remaining;
     g_session.m_requestTimers.push_back(value);
   }
 }
