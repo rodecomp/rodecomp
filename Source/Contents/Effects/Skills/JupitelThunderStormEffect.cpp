@@ -104,7 +104,7 @@ void CJupitelThunderStormEffect::Open() {
 // OFFSET: 0x007065F0
 // FUNCTION: fn_07044
 bool CJupitelThunderStormEffect::IsAlive() {
-  if (this->particle && ParticleAlive(this->particle)) {
+  if (this->particle && ParticleAlive(this->particle) == true) {
     return true;
   }
 
