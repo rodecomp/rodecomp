@@ -1300,10 +1300,10 @@ void UITVTextButton::OnRBtnUp(int x, int y) {
 // OFFSET: 0x00892DE0
 // FUNCTION: fn_11495
 void UIComboBoxV2Wnd::OnWheel(int value) {
-  this->selected += value < 0 ? 1 : -1;
-  const int count = static_cast<int>(this->list->lines.size());
+  this->selected += 0 > value ? 1 : -1;
 
-  if (this->selected >= count) {
+  const int count = static_cast<int>(this->list->lines.size());
+  if (count <= this->selected) {
     this->selected = count - 1;
   }
 
