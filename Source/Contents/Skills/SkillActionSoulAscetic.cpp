@@ -199,10 +199,12 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillHit(int argument1, CGame
   CGameActor* source = reinterpret_cast<CGameActor*>(argument1);
   CGameActor* target = argument2;
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_soul_stealing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_soul_stealing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -235,7 +237,8 @@ void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillCast(int level, CGameActor
 // FUNCTION: fn_08883
 void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_blue_dragon"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_blue_dragon"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -276,7 +279,8 @@ void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillCast(int level, CGameActor
 // FUNCTION: fn_08888
 void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_white_tiger"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_white_tiger"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
