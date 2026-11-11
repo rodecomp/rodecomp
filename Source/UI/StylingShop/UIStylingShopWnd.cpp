@@ -2168,14 +2168,14 @@ void UIMyStyleWnd::OnCreate(int, int) {
 // FUNCTION: fn_10333
 void UIAccessoryCusWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
-  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
-                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->SetSize(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
-  this->m_showInfo->SetSize(this->m_display->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.4f)));
+  this->m_showInfo->SetSize(this->m_display->geometry.width, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.4f)));
   const int layout = 497;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(0, this->m_display->geometry.height);
@@ -2183,8 +2183,8 @@ void UIAccessoryCusWnd::OnCreate(int, int) {
   this->AddChild(this->m_showInfo);
 
   UIAccessoryShowCase* showCase =
-    new UIAccessoryShowCase(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.46f)), this->geometry.height);
-  showCase->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.6f)), 13);
+    new UIAccessoryShowCase(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.46f)), this->geometry.height);
+  showCase->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.6f)), 13);
   this->AddChild(showCase);
 }
 
@@ -2281,8 +2281,8 @@ void UIDisplayCharacter::OnCreate(int width, int height) {
   this->topAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]);
   this->middleAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
   this->bottomAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
-  this->shadowX = static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
-  this->shadowY = static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
+  this->shadowX = static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
+  this->shadowY = static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
 }
 
 // OFFSET: 0x00829080
@@ -2314,8 +2314,8 @@ void UIShowInfoWnd::OnCreate(int, int) {
 // FUNCTION: fn_10332
 void UI2ndCostumeWnd::OnCreate(int, int) {
   this->m_display = new (std::nothrow) UIDisplayCharacter();
-  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
-                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->SetSize(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
 
@@ -2417,8 +2417,8 @@ void UIBasicStylingWnd::OnCreate(int, int) {
 // FUNCTION: fn_10335
 void UICostumeChangeWnd::OnCreate(int, int) {
   this->m_display = new UIDisplayCharacter();
-  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
-                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->SetSize(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)));
   this->m_display->LoadCostumes();
   this->m_display->Move(0, 0);
   this->AddChild(this->m_display);
