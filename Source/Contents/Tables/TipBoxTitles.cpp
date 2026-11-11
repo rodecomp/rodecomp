@@ -333,13 +333,13 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
     return false;
   }
 
-  if (lua_toboolean(state.GetState(), -2)) {
-    return true;
+  if (!lua_toboolean(state.GetState(), -2)) {
+    const std::string message = std::string("error found :") + lua_tostring(state.GetState(), -1);
+    MessageBoxA(nullptr, message.c_str(), "TipBox", MB_OK);
+    return false;
   }
 
-  const std::string message = std::string("error found :") + lua_tostring(state.GetState(), -1);
-  MessageBoxA(nullptr, message.c_str(), "TipBox", MB_OK);
-  return false;
+  return true;
 }
 
 // OFFSET: 0x007AD890

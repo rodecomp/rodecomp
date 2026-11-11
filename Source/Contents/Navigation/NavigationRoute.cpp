@@ -1149,42 +1149,42 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
 // OFFSET: 0x00B891C0
 // FUNCTION: fn_19385
 int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
-  if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_NAVIGATION_ZZALL), std::strlen(LookupMessage(MSI_NAVIGATION_ZZALL))) != 0) {
-    return 1;
-  }
-  std::size_t prefixLength = std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_TITLE));
-  if (prefixLength < tokens[0].size() && std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_TITLE), prefixLength) == 0) {
-    std::string token(tokens[0]);
-    const char* separator = std::strstr(token.c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG1));
-    std::string minimum;
-    std::string maximum;
-    if (separator == nullptr) {
-      minimum.assign(token.c_str() + prefixLength, token.c_str() + token.size());
-      maximum = minimum;
-    } else {
-      minimum.assign(token.c_str() + prefixLength, separator);
-      maximum.assign(separator + std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG1)), token.c_str() + token.size());
-      if (maximum.size() == 0) {
-        maximum = "500";
+  if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_NAVIGATION_ZZALL), std::strlen(LookupMessage(MSI_NAVIGATION_ZZALL))) == 0) {
+    std::size_t prefixLength = std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_TITLE));
+    if (prefixLength < tokens[0].size() && std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_TITLE), prefixLength) == 0) {
+      std::string token(tokens[0]);
+      const char* separator = std::strstr(token.c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG1));
+      std::string minimum;
+      std::string maximum;
+      if (separator == nullptr) {
+        minimum.assign(token.c_str() + prefixLength, token.c_str() + token.size());
+        maximum = minimum;
+      } else {
+        minimum.assign(token.c_str() + prefixLength, separator);
+        maximum.assign(separator + std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG1)), token.c_str() + token.size());
+        if (maximum.size() == 0) {
+          maximum = "500";
+        }
       }
+      int low = std::atoi(minimum.c_str());
+      int high = std::atoi(maximum.c_str());
+      int kind;
+      if (low < 1 || high < 1 || low > high) {
+        kind = 0;
+      } else {
+        tokens.clear();
+        tokens.push_back(minimum);
+        tokens.push_back(maximum);
+        kind = 3;
+      }
+      return kind;
     }
-    int low = std::atoi(minimum.c_str());
-    int high = std::atoi(maximum.c_str());
-    int kind;
-    if (low < 1 || high < 1 || low > high) {
-      kind = 0;
-    } else {
-      tokens.clear();
-      tokens.push_back(minimum);
-      tokens.push_back(maximum);
-      kind = 3;
+    if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG2), std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG2))) == 0) {
+      return 2;
     }
-    return kind;
+    return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? 4 : 0;
   }
-  if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_SHOP_ITEM_BAY_MAG2), std::strlen(LookupMessage(MSI_SHOP_ITEM_BAY_MAG2))) == 0) {
-    return 2;
-  }
-  return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? 4 : 0;
+  return 1;
 }
 
 // OFFSET: 0x00B896E0
