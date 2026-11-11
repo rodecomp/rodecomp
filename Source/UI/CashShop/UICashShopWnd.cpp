@@ -427,7 +427,8 @@ void UICashShopWnd_Item::OnCreate(int, int) {
 // FUNCTION: fn_09539
 void UICashShopWnd::Paint() {
   const char* background = this->m_selectedTab == 9 ? "유저인터페이스\\cashshop\\img_shop_bg2.bmp" : "유저인터페이스\\cashshop\\img_shop_bg.bmp";
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), false);
+  CBitmapRes* backgroundBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
+  this->DrawBitmap(0, 0, backgroundBitmap, false);
   if (g_session.characterRenameEnabled) {
     this->DrawBitmap(
       0x218, 0x11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_bg3_cover.bmp"))), false
@@ -441,17 +442,7 @@ void UICashShopWnd::Paint() {
     this->DrawWrappedFormattedText(0xF7, 0x1EE, FormatOwnedString("^b%d^/b / %d", this->m_page + 1, this->m_pageCount), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
   }
 
-  if (!g_session.characterRenameEnabled) {
-    this->DrawCenteredText(0x21A, 0x1B, LookupMessage(MSI_CASHSHOP_TAB_LIMITED), 0xB9, 0, 0xE, 0, 1);
-    this->DrawCenteredText(0x219, 0x1A, LookupMessage(MSI_CASHSHOP_TAB_LIMITED), 0xB9, 0, 0xE, 0xFFFFFF, 1);
-    this->DrawRightAlignedText(0x273, 0x33, IntToString(this->m_cashPoints, 0).c_str(), 0, 0, 0xC, 0xFFFFFF, 1);
-    this->DrawTextAt(0x226, 0x1B2, LookupMessage(MSI_CASHSHOP_REFRESH), 0, 0, 0xC, 0, 0, 0);
-    this->DrawRightAlignedText(0x2C4, 0x1B2, FormatOwnedString("%d C", this->m_secondaryPoints).c_str(), 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(0x226, 0x1C2, LookupMessage(MSI_STAR_EMPEROR_F), 0, 0, 0xC, 0, 0, 0);
-    this->DrawRightAlignedText(0x2C4, 0x1C2, "C", 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(0x226, 0x1D2, LookupMessage(MSI_SOUL_REAPER_F), 0, 0, 0xC, 0, 0, 0);
-    this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
-  } else {
+  if (g_session.characterRenameEnabled) {
     {
       const auto source = CRYPT_NAME("스토브 구입 리스트", 0x474DC581D5E98357ULL);
       thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source.data);
@@ -462,6 +453,16 @@ void UICashShopWnd::Paint() {
       thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> title(source);
       this->DrawCenteredText(0x219, 0x1A, title.Text(), 0xB9, 0, 0xE, 0xFFFFFF, 1);
     }
+  } else {
+    this->DrawCenteredText(0x21A, 0x1B, LookupMessage(MSI_CASHSHOP_TAB_LIMITED), 0xB9, 0, 0xE, 0, 1);
+    this->DrawCenteredText(0x219, 0x1A, LookupMessage(MSI_CASHSHOP_TAB_LIMITED), 0xB9, 0, 0xE, 0xFFFFFF, 1);
+    this->DrawRightAlignedText(0x273, 0x33, IntToString(this->m_cashPoints, 0).c_str(), 0, 0, 0xC, 0xFFFFFF, 1);
+    this->DrawTextAt(0x226, 0x1B2, LookupMessage(MSI_CASHSHOP_REFRESH), 0, 0, 0xC, 0, 0, 0);
+    this->DrawRightAlignedText(0x2C4, 0x1B2, FormatOwnedString("%d C", this->m_secondaryPoints).c_str(), 0, 0, 0xC, 0, 0);
+    this->DrawTextAt(0x226, 0x1C2, LookupMessage(MSI_STAR_EMPEROR_F), 0, 0, 0xC, 0, 0, 0);
+    this->DrawRightAlignedText(0x2C4, 0x1C2, "C", 0, 0, 0xC, 0, 0);
+    this->DrawTextAt(0x226, 0x1D2, LookupMessage(MSI_SOUL_REAPER_F), 0, 0, 0xC, 0, 0, 0);
+    this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
   }
 
   this->DrawCenteredText(0x228, 0x1EC, FormatOwnedString("%d C", this->m_totalPrice).c_str(), 0x9A, 0, 0xE, 0xFFFFFF, 1);
