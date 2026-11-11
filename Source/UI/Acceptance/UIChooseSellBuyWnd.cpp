@@ -356,7 +356,8 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
-  this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELECT_DEAL_TYPE)), 38, 0, 0);
+  const char* text = LookupMessage(MSI_SELECT_DEAL_TYPE);
+  this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
 }
 
 // OFFSET: 0x008DD9A0
@@ -3935,11 +3936,11 @@ void UIBookWnd::OnCreate(int width, int height) {
 
   const std::string prefix = "book\\";
   const char* names[4] = {"책갈피", "책왼쪽", "책오른쪽", "책닫기"};
-  const int ids[4] = {356, 354, 355, 201};
   const struct {
     int x;
     int y;
   } positions[4] = {{10, 25}, {width - 57, 25}, {width - 35, 25}, {width - 25, height - 25}};
+  const int ids[4] = {356, 354, 355, 201};
   const char* tooltips[4] = {LookupMessage(MSI_BOOK_KEEP), LookupMessage(MSI_BOOK_PREV), LookupMessage(MSI_BOOK_NEXT), LookupMessage(MSI_BOOK_CLOSE)};
 
   for (int index = 0; index < 4; ++index) {
@@ -7721,14 +7722,15 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DO_YOU_AGREE)), 38, 0, 0);
+  const char* text = LookupMessage(MSI_DO_YOU_AGREE);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
 }
 
 // OFFSET: 0x008E4390
 // FUNCTION: fn_12186
 void UINotifyLevelUpWnd::OnCreate(int, int) {
-  int ids[3] = {192};
   int positions[3] = {0};
+  int ids[3] = {192};
   const char* names[8] = {"lv_up"};
   const std::string prefix("유저인터페이스\\basic_interface\\");
 
@@ -7747,8 +7749,8 @@ void UINotifyLevelUpWnd::OnCreate(int, int) {
 // OFFSET: 0x008E4970
 // FUNCTION: fn_12187
 void UINotifyQuestWnd::OnCreate(int, int) {
-  int ids[3] = {192};
   int positions[3] = {0};
+  int ids[3] = {192};
   const char* names[8] = {"quest"};
   const std::string prefix("유저인터페이스\\basic_interface\\");
 
@@ -7893,7 +7895,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
 namespace {
 #pragma pack(push, 1)
   struct WearEquipPacket {
-    /* 0000 */ std::uint16_t packetType;
+    /* 0000 */ std::int16_t packetType;
     /* 0002 */ std::uint16_t index;
     /* 0004 */ std::int32_t location;
   };
