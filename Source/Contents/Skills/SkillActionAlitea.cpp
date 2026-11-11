@@ -28,7 +28,7 @@
 
 class CSkillAction_AnimalForm : public CSkillAction {
 public:
-  bool CanUse(CGameActor* actor);
+  __declspec(noinline) bool CanUse(CGameActor* actor);
   virtual bool IsInForm(CGameActor* actor) = 0;
   virtual void PlayFormAttackEffect(CGameActor* actor) = 0;
 };
@@ -707,12 +707,13 @@ void CSkillAction_AT_ALPHA_CLAW::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr auto bytesText = CRYPT_NAME("alpha_claw", 0x1D6D75EDE7CD311FULL);
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A69B0
@@ -738,16 +739,15 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source
 // OFFSET: 0x005A6A00
 // FUNCTION: fn_03192
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
-  if (source && source->GetShapeShift() != 0) {
-    this->IsInForm(source);
-  }
+  this->CanUse(source);
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("pulse_of_madness", 0x2FF3C5036D070127ULL);
     const std::uint8_t (&bytes)[17] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A6C00
@@ -779,12 +779,13 @@ void CSkillAction_AT_FRENZY_FANG::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
         constexpr auto bytesText = CRYPT_NAME("frenzy_fang", 0x17359BF953C367B3ULL);
         const auto& bytes = bytesText.data;
         thread_local EncryptedName<sizeof(bytes), 0x17359BF953C367B3ULL> name(bytes);
         return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
@@ -823,12 +824,13 @@ void CSkillAction_AT_PINION_SHOT::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
         constexpr auto bytesText = CRYPT_NAME("pinion_shot", 0xC52FB5FBB94FF917ULL);
         const auto& bytes = bytesText.data;
         thread_local EncryptedName<sizeof(bytes), 0xC52FB5FBB94FF917ULL> name(bytes);
         return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
@@ -1860,11 +1862,11 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
 // FUNCTION: fn_03264
 void CSkillAction_AT_TEMPEST_FLAP::OnSkillCast(int level, CGameActor* source) {
   if (this->CanUse(source)) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 18> bytes = CRYPT_NAME("tempest_flap_cast", 0x33832D4D3FDFBDBFULL);
       thread_local EncryptedName<sizeof(bytes), 0x33832D4D3FDFBDBFULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -2011,12 +2013,12 @@ void CSkillAction_AT_PRIMAL_CLAW::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr auto bytesText = CRYPT_NAME("primal_claw", 0x812BE72BCD5707B7ULL);
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x812BE72BCD5707B7ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005AF700
@@ -2032,12 +2034,13 @@ void CSkillAction_AT_FERAL_CLAW::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr auto bytesText = CRYPT_NAME("feral_claw", 0x3375B1C7DBB5FD55ULL);
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // GLOBAL: gl_25058
