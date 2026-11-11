@@ -121,12 +121,12 @@ short CRagConnection::GetPacketType(const char* packet) {
 // FUNCTION: fn_20397
 bool CConnection::Receive() {
   for (;;) {
-    fd_set readable;
-    FD_ZERO(&readable);
-    FD_SET(this->m_socket, &readable);
     timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
+    fd_set readable;
+    FD_ZERO(&readable);
+    FD_SET(this->m_socket, &readable);
     const int ready = select(0, &readable, nullptr, nullptr, &timeout);
 
     if (ready == SOCKET_ERROR || ready <= 0) {
@@ -135,19 +135,22 @@ bool CConnection::Receive() {
 
     char data[2048];
     const int bytes = g_connectionReceive(this->m_socket, data, sizeof(data), 0);
-    if (bytes == SOCKET_ERROR) {
-      const int error = WSAGetLastError();
-      if (error == WSAEWOULDBLOCK || error == WSAENOTCONN) {
-        continue;
+    if (bytes != SOCKET_ERROR) {
+      if (bytes <= 0) {
+        break;
       }
-    } else if (bytes > 0) {
-      this->m_input.InsertData(bytes, data);
-      continue;
-    }
 
-    this->Close();
-    return false;
+      this->m_input.InsertData(bytes, data);
+    } else {
+      const int error = WSAGetLastError();
+      if (error != WSAEWOULDBLOCK && error != WSAENOTCONN) {
+        break;
+      }
+    }
   }
+
+  this->Close();
+  return false;
 }
 
 // OFFSET: 0x00C7CB30
