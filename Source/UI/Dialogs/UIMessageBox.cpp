@@ -103,6 +103,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 
+extern template std::vector<std::string>::~vector();
 extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";

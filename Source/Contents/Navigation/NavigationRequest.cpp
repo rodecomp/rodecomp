@@ -10,6 +10,8 @@
 #include <windows.h>
 #include <shlwapi.h>
 
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x00B8C0B0
 // FUNCTION: fn_19420
 __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects) {
