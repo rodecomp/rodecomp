@@ -161,7 +161,9 @@ int __fastcall sub_5C22F0(const int* object) {
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
 UIWindow::UIWindow(unsigned char cached)
-    : parent(nullptr), hasTextBackground(0), textBackgroundColor(0), renderLayer(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0) {
+    : parent(nullptr), hasTextBackground(0), textBackgroundColor(0), renderLayer(4), m_dirty(1), m_clip(0) {
+  this->m_uid = ++g_windowUid;
+  this->m_cached = cached;
 }
 
 // OFFSET: 0x00A79E90
