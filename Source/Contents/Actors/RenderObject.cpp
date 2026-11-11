@@ -230,7 +230,7 @@ void CRenderObject::ProcessMotion() {
       this->render.animation = this->render.sequenceAnimations[4];
       this->render.previousAnimation = this->render.sequenceAnimations[4] + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFrames[4];
-      if (this->render.sequenceDeadline == 0) {
+      if (this->render.sequenceDeadline <= 0) {
         this->render.animationSequenceActive = 0;
         this->render.motionType = 1;
       }
@@ -269,7 +269,7 @@ void CRenderObject::ProcessMotion() {
       this->render.animation = this->render.sequenceFinishAnimation;
       this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFinishFrame;
-      if (this->render.sequenceDeadline == 0) {
+      if (this->render.sequenceDeadline <= 0) {
         this->render.frameSequenceActive = 0;
         this->render.motionType = 1;
       }
@@ -315,7 +315,7 @@ void CRenderObject::ProcessMotion() {
       this->render.animation = this->render.sequenceFinishAnimation;
       this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
       this->render.curMotion = this->render.sequenceFinishFrame;
-      if (this->render.sequenceDeadline == 0) {
+      if (this->render.sequenceDeadline <= 0) {
         this->render.frameSequenceActive = 0;
         this->render.motionType = 1;
       }
@@ -1838,7 +1838,13 @@ void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const int* input, float 
 
   float jitter[4];
   for (int index = 0; index < 4; ++index) {
-    const int value = spread == 0 ? 0 : std::max(0, rand() % spread);
+    int value;
+    if (spread == 0) {
+      value = 0;
+    } else {
+      const int roll = rand() % spread;
+      value = roll >= 0 ? roll : 0;
+    }
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
@@ -2528,32 +2534,32 @@ int CGameActor::GetEffectiveJob(int job) {
         return JT_DRAGON_KNIGHT_CHICKEN;
     }
   } else if (StateFlag23(this->GetStateFlags())) {
-    if (job == JT_RUNE_KNIGHT) {
-      return JT_RUNE_CHICKEN2;
-    }
-    if (job == JT_RUNE_KNIGHT_H) {
-      return JT_RUNE_CHICKEN2_H;
+    switch (job) {
+      case JT_RUNE_KNIGHT:
+        return JT_RUNE_CHICKEN2;
+      case JT_RUNE_KNIGHT_H:
+        return JT_RUNE_CHICKEN2_H;
     }
   } else if (StateFlag24(this->GetStateFlags())) {
-    if (job == JT_RUNE_KNIGHT) {
-      return JT_RUNE_CHICKEN3;
-    }
-    if (job == JT_RUNE_KNIGHT_H) {
-      return JT_RUNE_CHICKEN3_H;
+    switch (job) {
+      case JT_RUNE_KNIGHT:
+        return JT_RUNE_CHICKEN3;
+      case JT_RUNE_KNIGHT_H:
+        return JT_RUNE_CHICKEN3_H;
     }
   } else if (StateFlag25(this->GetStateFlags())) {
-    if (job == JT_RUNE_KNIGHT) {
-      return JT_RUNE_CHICKEN4;
-    }
-    if (job == JT_RUNE_KNIGHT_H) {
-      return JT_RUNE_CHICKEN4_H;
+    switch (job) {
+      case JT_RUNE_KNIGHT:
+        return JT_RUNE_CHICKEN4;
+      case JT_RUNE_KNIGHT_H:
+        return JT_RUNE_CHICKEN4_H;
     }
   } else if (StateFlag26(this->GetStateFlags())) {
-    if (job == JT_RUNE_KNIGHT) {
-      return JT_RUNE_CHICKEN5;
-    }
-    if (job == JT_RUNE_KNIGHT_H) {
-      return JT_RUNE_CHICKEN5_H;
+    switch (job) {
+      case JT_RUNE_KNIGHT:
+        return JT_RUNE_CHICKEN5;
+      case JT_RUNE_KNIGHT_H:
+        return JT_RUNE_CHICKEN5_H;
     }
   }
 
@@ -4355,55 +4361,6 @@ void CGameActor::SetCharm(int type, int count) {
   }
 }
 
-namespace {
-
-__declspec(noinline) bool __stdcall IsTreeGroupTwoLocal(int job) {
-  if (job >= JT_RUNE_KNIGHT && job <= JT_MADOGEAR_B) {
-    return true;
-  }
-
-  switch (job) {
-  case JT_PIG_GENETIC:
-  case JT_SHEEP_SURA:
-  case JT_SHEEP_ARCB:
-  case JT_FOX_SORCERER:
-  case JT_FOX_WARLOCK:
-  case JT_DOG_G_CROSS:
-  case JT_DOG_CHASER:
-  case JT_OSTRICH_MINSTREL:
-  case JT_OSTRICH_WANDER:
-  case JT_FOX_WARLOCK_B:
-  case JT_SHEEP_ARCB_B:
-  case JT_DOG_G_CROSS_B:
-  case JT_FOX_SORCERER_B:
-  case JT_OSTRICH_MINSTREL_B:
-  case JT_OSTRICH_WANDER_B:
-  case JT_SHEEP_SURA_B:
-  case JT_PIG_GENETIC_B:
-  case JT_DOG_CHASER_B:
-  case JT_PIG_MECHANIC:
-  case JT_OSTRICH_RANGER:
-  case JT_LION_ROYAL_GUARD:
-  case JT_LION_RUNE_KNIGHT:
-  case JT_PIG_MECHANIC_B:
-  case JT_OSTRICH_RANGER_B:
-  case JT_LION_ROYAL_GUARD_B:
-  case JT_LION_RUNE_KNIGHT_B:
-    return true;
-  default:
-    return false;
-  }
-}
-
-__declspec(noinline) bool __stdcall IsTreeGroupThreeLocal(int job) {
-  const auto value = static_cast<unsigned>(job);
-  return value - JT_DRAGON_KNIGHT <= unsigned(JT_FOURTH_JOB_END - JT_DRAGON_KNIGHT) ||
-    value - JT_SKY_EMPEROR <= unsigned(JT_UPPER_EXTENDED_JOB2_END - 1 - JT_SKY_EMPEROR) || job == JT_ALITEA ||
-    job == JT_ALITEA_RIDING;
-}
-
-}
-
 // OFFSET: 0x00CAA4D0
 // FUNCTION: fn_21017
 void CGameActor::UpdateMaxLevelAura() {
@@ -4411,7 +4368,7 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
-  if (IsTreeGroupTwoLocal(this->GetEffectiveJob(-1))) {
+  if (g_session.IsTreeGroupTwo(this->GetEffectiveJob(-1))) {
     if (static_cast<std::int16_t>(this->characterLevel) == g_session.m_maxLevel) {
       this->SendMsg(nullptr, 0x96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
@@ -4420,7 +4377,7 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
-  if (IsTreeGroupThreeLocal(this->GetEffectiveJob(-1)) == true) {
+  if (g_session.IsTreeGroupThree(this->GetEffectiveJob(-1)) == true) {
     if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x74])) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL4TH_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
@@ -4499,17 +4456,29 @@ void CGameActor::SetActorJob(int job) {
   case JT_WOLF_WINDHAWK:
     this->job = 0x10a1;
     break;
-  case JT_CHICKEN2_H:
-    this->job = 0xfaf;
-    break;
   case JT_CHICKEN_B:
     this->job = 0xfbe;
+    break;
+  case JT_CHICKEN2_H:
+    this->job = 0xfaf;
     break;
   case JT_CHICKEN2_B:
     this->job = 0xfc5;
     break;
   case JT_STAR2:
     this->job = 0xfcf;
+    break;
+  case JT_ROYAL_CHICKEN:
+    this->job = 0xfe2;
+    break;
+  case JT_ROYAL_CHICKEN_H:
+    this->job = 0xfe9;
+    break;
+  case JT_ROYAL_CHICKEN_B:
+    this->job = 0x1006;
+    break;
+  case JT_RUNE_CHICKEN_B:
+    this->job = 0x1000;
     break;
   case JT_RUNE_CHICKEN:
   case JT_RUNE_CHICKEN2:
@@ -4525,32 +4494,20 @@ void CGameActor::SetActorJob(int job) {
   case JT_RUNE_CHICKEN5_H:
     this->job = 0xfdc;
     break;
-  case JT_ROYAL_CHICKEN:
-    this->job = 0xfe2;
-    break;
-  case JT_ROYAL_CHICKEN_H:
-    this->job = 0xfe9;
-    break;
   case JT_WOLF_RANGER:
     this->job = 0xfd8;
     break;
   case JT_WOLF_RANGER_H:
     this->job = 0xfde;
     break;
+  case JT_WOLF_RANGER_B:
+    this->job = 0x1002;
+    break;
   case JT_MADOGEAR:
     this->job = 0xfda;
     break;
   case JT_MADOGEAR_H:
     this->job = 0xfe0;
-    break;
-  case JT_RUNE_CHICKEN_B:
-    this->job = 0x1000;
-    break;
-  case JT_ROYAL_CHICKEN_B:
-    this->job = 0x1006;
-    break;
-  case JT_WOLF_RANGER_B:
-    this->job = 0x1002;
     break;
   case JT_MADOGEAR_B:
     this->job = 0x1004;
