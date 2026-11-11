@@ -871,11 +871,11 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     static int s_minPickSize = static_cast<int>(g_renderer->UiScaleX() * 40.0f);
 
     float depth = 0.0f;
-    if ((g_pickModifierKey != 0) == (g_pickInvert != 0)) {
+    if ((g_pickModifierKey == 0 && g_pickInvert == 0) || (g_pickModifierKey != 0 && g_pickInvert != 0)) {
       if (g_session.GetSiegeMode() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 400.0f;
@@ -885,7 +885,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       } else {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 400.0f;
@@ -897,7 +897,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       if (g_session.GetSiegeMode() != 0) {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 400.0f : 100.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 200.0f;
@@ -907,7 +907,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       } else {
         if (IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = 400.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1))) {
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           depth = this->objectType == 7 ? 50.0f : 200.0f;
@@ -3471,9 +3471,8 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
     }
 
     RenderVertex* previousVertices = this->vertices[mesh];
-    const int triangleCount = this->model->GetTriangleCount(mesh);
-    this->vertices[mesh] = new RenderVertex[triangleCount * 3];
-    std::memset(this->vertices[mesh], 0, triangleCount * 3 * sizeof(RenderVertex));
+    this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
+    std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
     if (previousVertices != nullptr) {
       delete[] previousVertices;
     }
@@ -4015,7 +4014,7 @@ void C3dGrannyGameActor::Render(int argument) {
   this->model->Animate(this->motionProgress, this->instance);
   this->lastClock = this->clock;
 
-  if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
+  if (this->motion == 2 && this->controls[2] != nullptr && !(GrannyGetControlDurationLeft(this->controls[2]) > 0.0f)) {
     this->motion = 0;
     this->controls[this->motion] = this->model->PlayAnimation(0, this->instance, this->controls[0], 0);
   }
@@ -4026,7 +4025,9 @@ void C3dGrannyGameActor::Render(int argument) {
   light.green = 200;
   light.blue = 200;
   light.intensity = 0x80;
-  if (this->renderState == 1 || this->renderState == 2) {
+  switch (this->renderState) {
+  case 1:
+  case 2:
     return;
   }
 
@@ -4290,7 +4291,36 @@ void CGameActor::SetCharm(int type, int count) {
 
   this->charmType = type;
   this->charmCount = count;
-  if (!g_effectMgr->HasAllocator(0xE4)) {
+  if (g_effectMgr->HasAllocator(0xE4)) {
+    CEffect* effect;
+    if (type == 1) {
+      effect = g_effectMgr->Spawn(
+        this->render.accountId, 0x2E1, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+      );
+    } else if (type == 2) {
+      effect = g_effectMgr->Spawn(
+        this->render.accountId, 0x2E2, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+      );
+    } else if (type == 3) {
+      effect = g_effectMgr->Spawn(
+        this->render.accountId, 0x2DF, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+      );
+    } else if (type == 4) {
+      effect = g_effectMgr->Spawn(
+        this->render.accountId, 0x2E0, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+      );
+    } else if (type == 5) {
+      effect = g_effectMgr->Spawn(
+        this->render.accountId, 0xE4, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+      );
+    } else {
+      return;
+    }
+
+    if (effect != nullptr) {
+      static_cast<CEnergyOrbEffect*>(effect)->SetCount(count);
+    }
+  } else {
     int effectId;
     if (type == 1) {
       effectId = 0x2E1;
@@ -4309,29 +4339,6 @@ void CGameActor::SetCharm(int type, int count) {
     if (effect != nullptr) {
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
-    return;
-  }
-
-  int effectId;
-  if (type == 1) {
-    effectId = 0x2E1;
-  } else if (type == 2) {
-    effectId = 0x2E2;
-  } else if (type == 3) {
-    effectId = 0x2DF;
-  } else if (type == 4) {
-    effectId = 0x2E0;
-  } else if (type == 5) {
-    effectId = 0xE4;
-  } else {
-    return;
-  }
-
-  CEffect* effect = g_effectMgr->Spawn(
-    this->render.accountId, effectId, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
-  );
-  if (effect != nullptr) {
-    static_cast<CEnergyOrbEffect*>(effect)->SetCount(count);
   }
 }
 
@@ -4343,7 +4350,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsTreeGroupTwo(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->characterLevel) == g_session.m_maxLevel) {
+    if (g_session.m_maxLevel == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, 0x96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4352,7 +4359,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsTreeGroupThree(this->GetEffectiveJob(-1)) == true) {
-    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x74])) {
+    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x74]) == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL4TH_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4361,7 +4368,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsSuperNovice2Job(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0])) {
+    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0]) == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4370,7 +4377,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsExpandedJob(this->GetEffectiveJob(-1))) {
-    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[4])) {
+    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[4]) == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4380,11 +4387,11 @@ void CGameActor::UpdateMaxLevelAura() {
 
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
     const int skill = static_cast<std::int16_t>(this->characterLevel);
-    if (skill == *reinterpret_cast<int*>(&g_session.jobLevelLimits[8])) {
+    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[8]) == skill) {
       this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (skill != *reinterpret_cast<int*>(g_session.maxBaseLevel)) {
+    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != skill) {
       this->hasLevelAura = 0;
       return;
     }
@@ -4397,7 +4404,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
-    if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x28])) {
+    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x28]) == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4405,7 +4412,7 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
-  if (static_cast<std::int16_t>(this->characterLevel) == *reinterpret_cast<int*>(g_session.maxBaseLevel)) {
+  if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<std::int16_t>(this->characterLevel)) {
     this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     return;
   }
