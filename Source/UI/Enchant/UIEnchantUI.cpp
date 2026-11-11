@@ -1182,8 +1182,9 @@ void CUIUpgradeEnchantPage::SetSlot(int value) {
   for (const auto& slot : this->slots) {
     CUISlot* item = slot.second;
     const bool selected = value == slot.first;
-    item->radioButton->checked = selected;
-    item->radioButton->Invalidate();
+    auto* radioButton = item->radioButton;
+    radioButton->checked = selected;
+    radioButton->Invalidate();
     item->description->SetTextColor(selected ? 0x644031 : 0xB6752E);
     item->description->SetBold(selected);
     item->description->Relayout();
@@ -1552,7 +1553,7 @@ namespace EnchantUI {
 // OFFSET: 0x00A05CF0
 // FUNCTION: fn_14981
 void CUIEnchantPage::OnInit() {
-  for (int i = 0; i < 8; ++i) {
+  for (int i = 0; i < 8u; ++i) {
     CUIIngredient* ingredient = this->CreateIngredient();
     ingredient->Move(ingredient->geometry.x + i % 4 * 74, ingredient->geometry.y + i / 4 * 52);
     this->ingredients.push_back(ingredient);
