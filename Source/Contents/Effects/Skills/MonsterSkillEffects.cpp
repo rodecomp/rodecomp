@@ -471,18 +471,18 @@ void CStemSpearEffect::OnProcess() {
       this->SetSourceActor(this->sourceActor);
       emitter->angle = static_cast<float>(emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
 
-      const float dx = this->sourcePosition[0] - this->position[0];
       const float dy = this->sourcePosition[1] - this->position[1];
+      const float dx = this->sourcePosition[0] - this->position[0];
       const float dz = this->sourcePosition[2] - this->position[2];
-      const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
+      const float inverse = 1.0f / SquareRoot(dy * dy + dx * dx + dz * dz);
 
       emitter->velocity.x += dx * inverse * emitter->speed;
-      emitter->velocity.y += dy * inverse * emitter->speed;
       emitter->velocity.z += dz * inverse * emitter->speed;
+      emitter->velocity.y += dy * inverse * emitter->speed;
 
       emitter->position.x = this->position[0] + emitter->velocity.x;
-      emitter->position.y = this->position[1] - 10.0f;
       emitter->position.z = this->position[2] + emitter->velocity.z;
+      emitter->position.y = this->position[1] - 10.0f;
 
       if (this->frame >= 10) {
         emitter->alpha -= 40;
@@ -514,12 +514,13 @@ bool CSvgSpiritEffect::IsAlive() {
 void CSvgSpiritEffect::OnProcess() {
   if (this->emitter->elapsed >= 0) {
     this->SetSourceActor(this->sourceActor);
-    this->emitter->angle = static_cast<float>(this->emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    EZ2STREmitter* spirit = this->emitter;
+    spirit->angle = static_cast<float>(spirit->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
 
-    const float dx = this->sourcePosition[0] - this->position[0];
     const float dy = this->sourcePosition[1] - this->position[1];
+    const float dx = this->sourcePosition[0] - this->position[0];
     const float dz = this->sourcePosition[2] - this->position[2];
-    const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
+    const float inverse = 1.0f / SquareRoot(dy * dy + dx * dx + dz * dz);
 
     EZ2STREmitter* emitter = this->emitter;
     emitter->velocity.x += dx * inverse * emitter->speed;
@@ -4029,8 +4030,8 @@ void CCrimsonArrowEffect::Open() {
     return;
   }
 
-  vector3d to{this->sourcePosition[0], this->sourcePosition[1], this->sourcePosition[2]};
-  vector3d from{this->position[0], this->position[1], this->position[2]};
+  vector3d to = *reinterpret_cast<const vector3d*>(this->sourcePosition);
+  vector3d from = *reinterpret_cast<const vector3d*>(this->position);
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;
   float fromX;
@@ -4360,7 +4361,8 @@ void CDancingKnifeEffect::OnProcess() {
 // OFFSET: 0x0070E400
 // FUNCTION: fn_07173
 void CCurseOfCubeEffect::SpawnLoop() {
-  if (this->id == 0x901) {
+  switch (this->id) {
+  case 0x901: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_loop.str");
@@ -4373,7 +4375,9 @@ void CCurseOfCubeEffect::SpawnLoop() {
       cube->m_loop = true;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
     }
-  } else if (this->id == 0x902) {
+    break;
+  }
+  case 0x902: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_loop.str");
@@ -4386,6 +4390,8 @@ void CCurseOfCubeEffect::SpawnLoop() {
       cube->m_loop = true;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
     }
+    break;
+  }
   }
 }
 
