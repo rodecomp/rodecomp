@@ -9,7 +9,7 @@
 // OFFSET: 0x00DDE3D0
 // FUNCTION: fn_23395
 const char* CSession::GetHitWaveName(int job) {
-  if (!((job >= 31 && job < 1000) || job < 0 || (job > 1000 && job < 3999) || (job >= 20021 && job <= 31999))) {
+  if (!((job >= 31 && job < 1000) || job < 0 || (job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978)) {
     const std::vector<std::string>& jobWaves = reinterpret_cast<const std::vector<std::string>&>(this->weaponSoundTables[0x0C]);
     if (job > 3950) {
       return jobWaves.begin()[job - 3950].c_str();
@@ -17,7 +17,7 @@ const char* CSession::GetHitWaveName(int job) {
     return jobWaves.begin()[job].c_str();
   }
 
-  const int weapon = GetRealWeaponId(-1);
+  const int weapon = g_session.GetRealWeaponId(-1);
   if (weapon == -1) {
     switch (std::max(std::rand() % 4, 0)) {
     case 0:
@@ -59,7 +59,7 @@ const char* CSession::GetHitWaveName(int job) {
 // OFFSET: 0x00DE3680
 // FUNCTION: fn_23481
 const char* CSession::GetWeaponHitWaveName(int weapon) {
-  const int realWeapon = GetRealWeaponId(weapon);
+  const int realWeapon = g_session.GetRealWeaponId(weapon);
   if (realWeapon == -1) {
     switch (std::max(std::rand() % 4, 0)) {
     case 0:

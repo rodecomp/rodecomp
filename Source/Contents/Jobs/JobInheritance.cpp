@@ -774,7 +774,7 @@ void CSession::InitializeSkillTree() {
 
 // OFFSET: 0x00DE0830
 // FUNCTION: fn_23461
-int __stdcall GetRealWeaponId(int weapon) {
+int CSession::GetRealWeaponId(int weapon) const {
   int real = 0;
   if (g_session.m_hotkeyScript->Call("GetRealWeaponId", "d>d", weapon, &real)) {
     return real;
@@ -798,7 +798,7 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
     }
   }
 
-  const std::int64_t view = GetRealWeaponId(static_cast<int>(weapon));
+  const std::int64_t view = g_session.GetRealWeaponId(static_cast<int>(weapon));
   bool result = false;
 
   switch (job) {
@@ -1202,7 +1202,7 @@ std::string CSession::GetWeaponSprName(int job, int sex, int weapon, int weaponI
 
 // OFFSET: 0x00DFBE10
 // FUNCTION: fn_23590
-bool __stdcall IsVisibleJob(int job) {
+bool CSession::IsVisibleJob(int job) const {
   return job != JT_WARPNPC && job != JT_EFFECTLAUNCHER && job != JT_HIDDEN_NPC;
 }
 

@@ -2737,7 +2737,7 @@ void CCharacterNpc::SendMsg(
   switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
   case AM_INITSTANDENTRY:
     this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
+    this->render.visible = g_session.IsVisibleJob(info->job) ? 1 : 0;
     this->SetGuildInfo(info->guildId, info->guildEmblemVersion);
     if (this->characterRender != nullptr) {
       return;

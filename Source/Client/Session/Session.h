@@ -715,6 +715,8 @@ public:
   bool IsCostumeJob(int job) const;
   int GetSiegeMode() const;
   int IsPlayerJobId(int job) const;
+  bool IsVisibleJob(int job) const;
+  int GetRealWeaponId(int weapon) const;
   int GetBattleFieldMode() const;
   bool IsShadowItemType(int type) const;
   bool IsConsumableItemType(int type) const;

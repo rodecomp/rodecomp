@@ -738,7 +738,7 @@ void CNpc::SendMsg(
         this->emblemVersion = info->ownerId;
         break;
     }
-    this->render.visible = IsVisibleJob(info->job);
+    this->render.visible = g_session.IsVisibleJob(info->job);
     this->SetGuildInfo(info->guildId, info->guildVersion);
     return;
   }
