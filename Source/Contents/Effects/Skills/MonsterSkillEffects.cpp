@@ -139,9 +139,9 @@ bool CRootTwistEffect::IsAlive() {
 void CRootTwistEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     const vector3d position = {this->position[0] + 0.0f, this->position[1] + 3.0f, this->position[2] + 0.0f};
-    EZ2STREmitter* emitter = *it;
-    ++emitter->elapsed;
-    emitter->position = position;
+    CSpriteParticle* particle = *it;
+    ++particle->elapsedFrames;
+    particle->position = position;
   }
 }
 
@@ -149,7 +149,7 @@ void CRootTwistEffect::OnProcess() {
 // FUNCTION: fn_07133
 void CRootTwistEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->Draw(1);
+    (*emitter)->Draw(1);
   }
 }
 
@@ -335,13 +335,11 @@ CSpriteMableEffect::CSpriteMableEffect() : CEffect(1096) {
 // FUNCTION: fn_07144
 void CSpriteMableEffect::Open() {
   for (int i = 0; i < 3; ++i) {
-    EZ2STREmitter* emitter =
-        reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
-    if (!emitter) {
+    CSpriteParticle* particle =
+        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    if (!particle) {
       continue;
     }
-
-    CSpriteParticle* particle = AsSprite(emitter);
 
     particle->effectId = this->id;
     particle->columnIndex = i;
@@ -368,7 +366,7 @@ void CSpriteMableEffect::Open() {
     }
 
     this->effectLifetime = 9999;
-    this->emitters.push_back(emitter);
+    this->emitters.push_back(particle);
   }
 }
 
@@ -386,7 +384,7 @@ void CSpriteMableEffect::Render() {
   }
 
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->Draw(1);
+    (*emitter)->Draw(1);
   }
 }
 
@@ -399,13 +397,13 @@ CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 // FUNCTION: fn_07151
 void CStemSpearEffect::Open() {
   for (int i = 0; i < 4; ++i) {
-    EZ2STREmitter* emitter =
-        reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-    if (!emitter) {
+    CSpriteParticle* particle =
+        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+    if (!particle) {
       continue;
     }
 
-    CSpriteParticle* particle = reinterpret_cast<CSpriteParticle*>(emitter);
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
 
     particle->effectId = this->id;
     particle->columnIndex = i;
@@ -434,7 +432,7 @@ void CStemSpearEffect::Open() {
     const float distance = SquareRoot(dx * dx + dz * dz);
     emitter->speed = distance / static_cast<float>(this->effectLifetime);
     emitter->elapsed = -(this->effectLifetime / 4) * i;
-    this->emitters.push_back(emitter);
+    this->emitters.push_back(particle);
   }
 }
 
@@ -447,7 +445,7 @@ void __stdcall Nullsub226(int) {
 // FUNCTION: fn_07153
 bool CStemSpearEffect::IsAlive() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    if ((*emitter)->elapsed < this->effectLifetime) {
+    if ((*emitter)->elapsedFrames < this->effectLifetime) {
       return true;
     }
   }
@@ -464,7 +462,7 @@ CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
 // FUNCTION: fn_07154
 void CStemSpearEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(*it);
     if (emitter->elapsed >= 0) {
       this->SetSourceActor(this->sourceActor);
       emitter->angle = static_cast<float>(emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
@@ -495,8 +493,8 @@ void CStemSpearEffect::OnProcess() {
 // FUNCTION: fn_07155
 void CStemSpearEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    if ((*emitter)->elapsed > 0 && (*emitter)->elapsed < this->effectLifetime) {
-      AsSprite(*emitter)->Draw(1);
+    if ((*emitter)->elapsedFrames > 0 && (*emitter)->elapsedFrames < this->effectLifetime) {
+      (*emitter)->Draw(1);
     }
   }
 }
@@ -560,7 +558,7 @@ bool CTunaPartyEffect::IsAlive() {
 // FUNCTION: fn_07169
 void CTunaPartyEffect::Render() {
   for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
-    AsSprite(*emitter)->Draw(1);
+    (*emitter)->Draw(1);
   }
 }
 
@@ -615,7 +613,6 @@ CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(1114), fadingIn(0), expireT
 // FUNCTION: fn_07183
 void CWarningPlaneEffect::AddPlane(vector3d position) {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
-  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   if (particle) {
     particle->SetTexture("warning_plane.tga");
     particle->effectId = this->id;
@@ -627,7 +624,7 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
     particle->SetColor(255, 0, 0);
     particle->position = position;
     InitParticleQuad(particle->vertices);
-    this->emitters.push_back(emitter);
+    this->emitters.push_back(particle);
   }
 }
 
@@ -691,10 +688,8 @@ void CCylinderEffect::Open() {
 // FUNCTION: fn_07187
 void CWarningPlaneEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
-    if (this->expireTime != 0 && emitter) {
-      CEZ2STRParticle* particle = AsParticle(emitter);
-
+    CParticle* particle = *it;
+    if (this->expireTime != 0 && particle) {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeXRotation(1.570796f);
@@ -723,7 +718,7 @@ void CWarningPlaneEffect::OnProcess() {
       particle->alpha = alpha;
     }
 
-    ++emitter->elapsed;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -732,7 +727,7 @@ void CWarningPlaneEffect::OnProcess() {
 void CWarningPlaneEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (this->expireTime != 0 && *it) {
-      AsParticle(*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 }
@@ -3389,7 +3384,7 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
 // FUNCTION: fn_07128
 void CRootTwistEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -3398,7 +3393,7 @@ void CRootTwistEffect::Close() {
 // FUNCTION: fn_07143
 void CSpriteMableEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -3407,7 +3402,7 @@ void CSpriteMableEffect::Close() {
 // FUNCTION: fn_07165
 void CTunaPartyEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -3425,7 +3420,7 @@ void CCurseOfCubeEffect::Close() {
 // FUNCTION: fn_07184
 void CWarningPlaneEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -3488,7 +3483,7 @@ void CSprArrowEffect::Close() {
 // FUNCTION: fn_07150
 void CStemSpearEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -4089,13 +4084,13 @@ void CCrimsonArrowEffect::Open() {
 // OFFSET: 0x0070DE90
 // FUNCTION: fn_07166
 void CTunaPartyEffect::Open() {
-  EZ2STREmitter* emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-  if (!emitter) {
+  CSpriteParticle* created =
+      static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (!created) {
     return;
   }
 
-  CSpriteParticle* particle = AsSprite(emitter);
+  CSpriteParticle* particle = created;
 
   particle->effectId = this->id;
   particle->columnIndex = 1;
@@ -4106,14 +4101,14 @@ void CTunaPartyEffect::Open() {
   particle->animationParameter = 0.0f;
   particle->loopMode = 3;
   this->effectLifetime = 9999;
-  this->emitters.push_back(emitter);
+  this->emitters.push_back(created);
 }
 
 // OFFSET: 0x0070DF40
 // FUNCTION: fn_07168
 void CTunaPartyEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CSpriteParticle* particle = AsSprite(*it);
+    CSpriteParticle* particle = *it;
     const float phase = particle->animationParameter + 0.05f;
     particle->animationParameter = phase;
     const float cosine = ClientCos(phase) * 10.0f;
@@ -4141,10 +4136,10 @@ void CTunaPartyEffect::OnProcess() {
 // OFFSET: 0x0070C2F0
 // FUNCTION: fn_07129
 void CRootTwistEffect::Open() {
-  EZ2STREmitter* emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
-  if (emitter) {
-    CSpriteParticle* particle = AsSprite(emitter);
+  CSpriteParticle* created =
+      static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (created) {
+    CSpriteParticle* particle = created;
     particle->effectId = this->id;
     particle->columnIndex = 0;
     particle->rowIndex = 0;
@@ -4154,7 +4149,7 @@ void CRootTwistEffect::Open() {
     particle->renderOptions |= 0x200;
     particle->frameDelay = 8.0f;
     particle->depthOffset = 0.00015f;
-    this->emitters.push_back(emitter);
+    this->emitters.push_back(created);
   }
   this->effectLifetime = 9999;
 }
@@ -4575,7 +4570,7 @@ void CCylinderEffect::OnProcess() {
 // FUNCTION: fn_07146
 void CSpriteMableEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CSpriteParticle* particle = AsSprite(*it);
+    CSpriteParticle* particle = *it;
     const float yaw = particle->animationParameter += 0.02f;
     const float bob = reinterpret_cast<float&>(particle->animationParameters) += 0.05f;
 

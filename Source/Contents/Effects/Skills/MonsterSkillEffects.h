@@ -12,6 +12,7 @@
 
 class CParticle;
 class CEZ2STRParticle;
+class CSpriteParticle;
 
 class CCrimsonArrowEffect : public CEffect {
 public:
@@ -35,7 +36,7 @@ public:
   void InitEvents() override;
   void Close() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CSpriteParticle*> emitters;
 };
 
 class CSpriteMableEffect : public CEffect {
@@ -47,7 +48,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CSpriteParticle*> emitters;
 };
 
 class CStemSpearEffect : public CEffect {
@@ -59,7 +60,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CSpriteParticle*> emitters;
 };
 
 class CSvgSpiritEffect : public CEffect {
@@ -83,7 +84,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CSpriteParticle*> emitters;
 };
 
 class CCurseOfCubeEffect : public CEffect {
@@ -116,7 +117,7 @@ public:
   void Close() override;
   void AddPlane(vector3d position);
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CParticle*> emitters;
   /* 00D8 */ unsigned char fadingIn;
   /* 00D9 */ unsigned char padding_00D9[3];
   /* 00DC */ unsigned int expireTime;
