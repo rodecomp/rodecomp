@@ -1840,7 +1840,7 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
     while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
-      if (header.tag == 20001) {
+      if (20001 == header.tag) {
         break;
       }
       if (static_cast<unsigned short>(header.tag - 20100) <= 399) {
