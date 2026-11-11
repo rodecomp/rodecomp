@@ -279,9 +279,9 @@ def build_import_libs(tc, out_dir):
 # the repository). Clank does not know about these files.
 EXE_ONLY_UNITS = {
     "Recovered/nProtect/GameGuard.cpp": ("Source/Security/NProtectGameGuardMgr.cpp", []),
-    "Recovered/jsoncons/JsonCppLoaderGlue.cpp": ("Source/Utility/JsonCppLoader.cpp", ["Recovered/jsoncons/include"]),
+    "Recovered/jsoncons/JsonCppLoaderGlue.cpp": ("Source/Resource/Json/JsonCppLoader.cpp", ["Recovered/jsoncons/include"]),
     "Recovered/GPak/PakAuxiliary.cpp": ("Source/Archive/GPak.cpp", []),
-    "Recovered/GGHash/GGHash.cpp": ("Source/Utility/GGHash.cpp", []),
+    "Recovered/GGHash/GGHash.cpp": ("Source/Utility/Hash/GGHash.cpp", []),
 }
 
 

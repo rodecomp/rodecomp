@@ -8,7 +8,7 @@
 // (0x0076B973), and none of those has an xref, call, jump, pointer or RVA in the image.
 // No build or open project has the original logic, so these only trap if ever reached.
 
-#include "Utility/GGHash.h"
+#include "Utility/Hash/GGHash.h"
 
 #include <intrin.h>
 
