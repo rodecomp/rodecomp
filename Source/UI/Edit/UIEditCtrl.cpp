@@ -944,7 +944,7 @@ void UIEditCtrl_Custom::Synchronize() {
     this->firstVisible = 0;
   }
 
-  if (this->cursor > previousCursor || clamped) {
+  if (this->cursor > previousCursor || clamped == true) {
     int before = 0;
 
     if (this->firstVisible != 0) {
@@ -962,8 +962,8 @@ void UIEditCtrl_Custom::Synchronize() {
       }
 
       const auto tail = static_cast<unsigned>(std::strlen(next));
-      const auto scrolled = static_cast<unsigned>(this->firstVisible + this->cursor - previousCursor);
-      this->firstVisible = std::min<unsigned>(this->cursor - tail, scrolled);
+      const auto scrolled = static_cast<unsigned>(this->firstVisible + (this->cursor - previousCursor));
+      this->firstVisible = std::min<unsigned>(scrolled, this->cursor - tail);
     }
   } else if (this->cursor < previousCursor) {
     if (this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->labelBold, 0) + 3 < this->geometry.width - 12 && this->firstVisible > this->cursor) {
@@ -4082,8 +4082,7 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
     std::sprintf(line, LookupMessage(MSI_BUYINGSTORE_MAKEWND_ITEMLIST), name, price, quantity);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(line), 0x5AFFFF, 0, 0, 0);
 
-    const std::string notice = FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256));
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x5AFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256)).c_str()), 0x5AFFFF, 0, 0, 0);
   }
 
   std::sprintf(price, "%s", FormatGroupedInteger(g_session.m_zeny, grouped, 32));
@@ -8909,12 +8908,7 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   }
 
   this->itemTags->taggedText = this->text;
-  {
-    const std::string name = item.DisplayName(0);
-    const std::string tag = this->itemTags->AppendTag(name);
-    g_serverLanguage->ResetInput();
-    g_serverLanguage->Insert(tag.c_str());
-  }
+  g_serverLanguage->ReplaceInput(this->itemTags->AppendTag(item.DisplayName(0)).c_str());
   this->itemTags->AddItemTag(item, 0x12B8A4);
 }
 
@@ -10567,8 +10561,7 @@ void UIMerchantShopMakeWnd::PrintSellList() {
 
     const double rate = PriceCommission(_atoi64(text)) * 0.01;
     const std::int64_t commission = static_cast<std::int64_t>(_atoi64(text) * rate);
-    const std::string notice = FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256));
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x5AFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256)).c_str()), 0x5AFFFF, 0, 0, 0);
   }
 
   std::sprintf(price, "%s", FormatGroupedInteger(g_session.m_zeny, grouped, 32));
