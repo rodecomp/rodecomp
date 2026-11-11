@@ -59,5 +59,8 @@ extern template int std::_Traits_compare<std::char_traits<char>>(const char*, st
 using SnapRectangleTree = std::_Tree<std::_Tmap_traits<UIWindow*, SnapRectangle, std::less<UIWindow*>, std::allocator<std::pair<UIWindow* const, SnapRectangle>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<UIWindow* const, SnapRectangle>, void*>*>
 SnapRectangleTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
+using PersistentWindowTree = std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIWindow*>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<UIWindow*, void*>*>
+PersistentWindowTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
 extern template void std::vector<std::string>::push_back(std::string&&);
 extern template std::string std::operator+(const std::string&, const char* const);

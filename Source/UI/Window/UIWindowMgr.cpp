@@ -380,10 +380,10 @@ void UIWindowMgr::DrawWindows() {
         g_renderDiagnosticLine = 3850;
       }
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      window->FlushPrimitives(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      window->FlushPrimitives();
       g_renderDiagnosticLine = 3860;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      g_cooldownOwner->Drawing().SubmitNormal(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_cooldownOwner->Drawing().SubmitNormal();
       g_renderDiagnosticLine = 3866;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
       if (window == this->roulletteWnd) {
@@ -948,10 +948,10 @@ void UIWindowMgr::Shutdown() {
   }
 
   for (UIWindow*& window : this->rendered) {
-    if (this->HasModalWindow() && this->persistentWindows.find(window) != this->persistentWindows.end()) {
+    if (this->HasModalWindow() && this->persistentWindows.count(window)) {
       this->retainedPersistentWindow = true;
     } else if (!this->HasModalWindow() || std::find(this->modalWindows.begin(), this->modalWindows.end(), window) == this->modalWindows.end()) {
-      if (this->persistentWindows.find(window) != this->persistentWindows.end()) {
+      if (this->persistentWindows.count(window)) {
         this->persistentWindows.erase(window);
       }
       window->StoreInfo();
@@ -1029,7 +1029,7 @@ void UIWindowMgr::ClearMapWindows() {
     }
 
     if (!this->modalWindows.empty() && this->modalWindows.back()) {
-      if (this->persistentWindows.find(window) != this->persistentWindows.end()) {
+      if (this->persistentWindows.count(window)) {
         this->retainedPersistentWindow = true;
         ++entry;
         continue;
@@ -1576,104 +1576,104 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
 // FUNCTION: fn_17223
 bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
   this->imeInputActive = 1;
-  if (g_modeMgr.GetGameMode() == nullptr) {
-    return this->ProcessHotkeyAction(key, pressed);
-  }
-
-  if (this->LookupWindow(WID_HOTKEYWND) != nullptr) {
-    this->imeInputActive = 0;
-  } else if (!this->inputSuggestionsEnabled) {
-    UIWindow* hover = this->hoverWindow;
-    UIWindow* parent = hover ? hover->parent : nullptr;
-    if (!hover || !parent || parent == this->chatWnd || !parent->geometry.visible) {
+  if (g_modeMgr.GetGameMode() != nullptr) {
+    if (this->LookupWindow(WID_HOTKEYWND) != nullptr) {
       this->imeInputActive = 0;
-    }
-  }
-
-  int action = this->TranslateHotkey(key, keyData);
-  if (this->hotkeyWnd != nullptr) {
-    static_cast<UIHotKeyWnd*>(this->hotkeyWnd)->AssignSelectedHotkey(action);
-    return false;
-  }
-
-  bool hoverOnButton = false;
-  if (this->inputSuggestionsEnabled) {
-    const UIWindow* window = this->chatWnd;
-    if (window) {
-      UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
-      if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
-        hoverOnButton = true;
+    } else if (!this->inputSuggestionsEnabled) {
+      UIWindow* hover = this->hoverWindow;
+      UIWindow* parent = hover ? hover->parent : nullptr;
+      if (!hover || !parent || parent == this->chatWnd || !parent->geometry.visible) {
+        this->imeInputActive = 0;
       }
     }
-  }
-  if (!hoverOnButton) {
-    UIWindow* hover = this->hoverWindow;
-    if (hover) {
-      UIWindow* parent = hover->parent;
-      if (parent && parent != this->chatWnd && parent->geometry.visible) {
-        hoverOnButton = true;
+
+    int action = this->TranslateHotkey(key, keyData);
+    if (this->hotkeyWnd != nullptr) {
+      static_cast<UIHotKeyWnd*>(this->hotkeyWnd)->AssignSelectedHotkey(action);
+      return false;
+    }
+
+    bool hoverOnButton = false;
+    if (this->inputSuggestionsEnabled) {
+      const UIWindow* window = this->chatWnd;
+      if (window) {
+        UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
+        if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
+          hoverOnButton = true;
+        }
       }
     }
-  }
+    if (!hoverOnButton) {
+      UIWindow* hover = this->hoverWindow;
+      if (hover) {
+        UIWindow* parent = hover->parent;
+        if (parent && parent != this->chatWnd && parent->geometry.visible) {
+          hoverOnButton = true;
+        }
+      }
+    }
 
-  if (hoverOnButton) {
-    if (this->modifierKey == 0) {
-      switch (this->keyCode) {
-      case VK_TAB:
-      case VK_RETURN:
-      case VK_SHIFT:
-      case VK_CONTROL:
-      case VK_MENU:
-      case VK_CAPITAL:
-      case VK_INSERT:
-      case VK_F1:
-      case VK_F2:
-      case VK_F3:
-      case VK_F4:
-      case VK_F5:
-      case VK_F6:
-      case VK_F7:
-      case VK_F8:
-      case VK_F9:
-      case VK_F10:
-      case VK_F11:
-      case VK_F12:
-        break;
-      default:
+    if (hoverOnButton) {
+      if (this->modifierKey == 0) {
+        switch (this->keyCode) {
+        case VK_TAB:
+        case VK_RETURN:
+        case VK_SHIFT:
+        case VK_CONTROL:
+        case VK_MENU:
+        case VK_CAPITAL:
+        case VK_INSERT:
+        case VK_F1:
+        case VK_F2:
+        case VK_F3:
+        case VK_F4:
+        case VK_F5:
+        case VK_F6:
+        case VK_F7:
+        case VK_F8:
+        case VK_F9:
+        case VK_F10:
+        case VK_F11:
+        case VK_F12:
+          break;
+        default:
+          return this->ProcessHotkeyAction(key, pressed);
+        }
+      } else if (this->modifierKey == 0x10) {
+        return this->ProcessHotkeyAction(key, pressed);
+      } else if (this->modifierKey == 0x11) {
+        switch (this->keyCode) {
+        case 0x41:
+        case 0x43:
+        case 0x56:
+        case 0x58:
+          return this->ProcessHotkeyAction(key, pressed);
+        }
+      }
+    }
+
+    int& lastKey = g_session.m_currentHotkey;
+    if (lastKey != key) {
+      if (pressed == 0) {
         return this->ProcessHotkeyAction(key, pressed);
       }
-    } else if (this->modifierKey == 0x10) {
-      return this->ProcessHotkeyAction(key, pressed);
-    } else if (this->modifierKey == 0x11) {
-      switch (this->keyCode) {
-      case 0x41:
-      case 0x43:
-      case 0x56:
-      case 0x58:
-        return this->ProcessHotkeyAction(key, pressed);
-      }
+      g_session.m_automaticSkills.DisableAll();
     }
-  }
+    lastKey = key;
 
-  int& lastKey = g_session.m_currentHotkey;
-  if (lastKey != key) {
-    if (pressed == 0) {
+    if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
+      return true;
+    }
+    if (!this->ProcessShortcutKey(action)) {
       return this->ProcessHotkeyAction(key, pressed);
     }
-    g_session.m_automaticSkills.DisableAll();
-  }
-  lastKey = key;
-
-  if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
+    if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
+      this->imeInputActive = 1;
+    }
     return true;
   }
-  if (!this->ProcessShortcutKey(action)) {
-    return this->ProcessHotkeyAction(key, pressed);
-  }
-  if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
-    this->imeInputActive = 1;
-  }
-  return true;
+
+  return this->ProcessHotkeyAction(key, pressed);
 }
 
 // OFFSET: 0x00AA57E0

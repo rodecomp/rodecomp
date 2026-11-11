@@ -204,7 +204,7 @@ void CooldownDrawing::DrawReverse(CooldownState& value) {
 
 // OFFSET: 0x00CA6670
 // FUNCTION: fn_20963
-void CooldownDrawing::SubmitNormal(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
+void CooldownDrawing::SubmitNormal() {
   Submit(this->normal);
 }
 

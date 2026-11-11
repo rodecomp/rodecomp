@@ -151,7 +151,7 @@ public:
     int x, int y, const std::string& text, int width, int lineSpacing, int align, int family, int height,
     std::uint32_t color, unsigned char bold
   );
-  void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
+  void FlushPrimitives();
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
   void WrapLinkText(int* kind, std::vector<std::string>* lines, const std::string& text);
   void WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<bool>* breaks, int width);

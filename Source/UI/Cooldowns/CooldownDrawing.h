@@ -15,7 +15,7 @@ struct CooldownDrawing {
   void Draw(
     int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
   );
-  void SubmitNormal(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
+  void SubmitNormal();
   void SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
 
 private:

@@ -27,6 +27,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Render/Text/TextContext.h"
 #include "Render/Textures/Texture.h"
@@ -80,10 +81,16 @@
 #include <cstdio>
 #include <cstring>
 #include <functional>
+#include <set>
 #include <span>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+template std::_Tree_find_result<std::_Tree_node<UIWindow*, void*>*>
+std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIWindow*>, false>>::_Find_lower_bound<UIWindow*>(
+  UIWindow* const&
+) const;
 
 namespace {
   struct NavigationTargetLook {
@@ -1152,9 +1159,9 @@ void UIWindow::DrawEmboldenedText(int x, int y, const char* text, std::uint32_t 
 
 // OFFSET: 0x00A7C470
 // FUNCTION: fn_16944
-void UIWindow::FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
+void UIWindow::FlushPrimitives() {
   for (RenderPrimitive* primitive : this->m_overlayPrimitives) {
-    queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 513);
   }
 
   this->m_overlayPrimitives.clear();
