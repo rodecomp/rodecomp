@@ -45,7 +45,7 @@ public:
   // INLINED
   void SetMessage(int id, int messageId, unsigned int color) {
     this->m_popups[id].m_messageId = messageId;
-    this->m_popups[id].m_color = ((((color >> 8) & 0xFF) | ((color & 0xFF) << 8)) << 8) | ((color >> 16) & 0xFF);
+    this->m_popups[id].m_color = static_cast<unsigned char>(color >> 16) | (static_cast<unsigned char>(color >> 8) << 8) | (static_cast<unsigned char>(color) << 16);
   }
 
   /* 0004 */ bool m_initialized;
