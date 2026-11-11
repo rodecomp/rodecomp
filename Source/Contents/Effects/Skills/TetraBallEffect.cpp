@@ -64,7 +64,7 @@ void CTetraBallEffect::RemoveBall(int index) {
 
 // OFFSET: 0x0072EA90
 // FUNCTION: fn_07514
-unsigned char CTetraBallEffect::ActiveCount() {
+int CTetraBallEffect::ActiveCount() {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
     if (this->balls[index]) {
@@ -117,7 +117,7 @@ void CTetraBallEffect::Render() {
 // OFFSET: 0x0072EC40
 // FUNCTION: fn_07519
 void CTetraBallEffect::Spread() {
-  const unsigned char count = this->ActiveCount();
+  const int count = this->ActiveCount();
   if (count > 1) {
     for (int index = 0; index < 5; ++index) {
       if (this->balls[index]) {

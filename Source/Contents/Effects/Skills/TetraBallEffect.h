@@ -19,7 +19,7 @@ public:
 
   void AddBall(int id, int index);
   void RemoveBall(int index);
-  unsigned char ActiveCount();
+  int ActiveCount();
   void Spread();
   void MoveFirstTo(int index);
 
