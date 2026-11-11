@@ -167,8 +167,8 @@ void UIQuestDisplay::OnRBtnUp(int x, int y) {
   int multiple = 0;
   int index = 0;
   int offset = 0;
-  const auto end = g_renewQuestMgr->m_ongoingQuests.end();
-  for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
+  const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
+  for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); it != end; ++it, ++index) {
     if (single + multiple + none >= 5) {
       break;
     }
