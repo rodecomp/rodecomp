@@ -1838,7 +1838,7 @@ void CEffectPrim::PrimTeiHit2() {
         slot.rotStart += 360;
       }
     } else if (slot.process <= 10) {
-      slot.alphaB += 25;
+      slot.alphaB += 15;
     } else {
       slot.alphaB -= 3;
 
