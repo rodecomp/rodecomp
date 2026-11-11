@@ -71,7 +71,8 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_response = "";
-  const std::uint8_t diagnosticSource[] = {0xA4, 0x0F, 0x9A, 0xE7, 0x18, 0x3E, 0x8B, 0xD3};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0xD3E5516F89F161D1ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xD3E5516F89F161D1ULL>(diagnosticSource)), loadSource, 55);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;
@@ -144,7 +145,8 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  const std::uint8_t diagnosticSource[] = {0xCC, 0x63, 0x44, 0xCF, 0x34, 0x94, 0x61, 0x49};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x490FFB43A12F0DB9ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x490FFB43A12F0DB9ULL>(diagnosticSource)), saveSource, 57);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_type = type;

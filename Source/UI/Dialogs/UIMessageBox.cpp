@@ -1021,8 +1021,8 @@ void UIReplayRECControlWnd::AnimateLoading() {
 // OFFSET: 0x008AE8A0
 // FUNCTION: fn_11741
 void UILoginOTPWnd::OnCreate(int, int) {
-  const char prefixSource[] = {'\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x79'};
-  thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource);
+  const auto prefixSource = CRYPT_NAME("유저인터페이스\\", 0x793F370985ED674FULL);
+  thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource.data);
   const std::string prefix(prefixName.Text());
 
   this->authCodeEdit = new UIEditCtrl();

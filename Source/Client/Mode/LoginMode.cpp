@@ -2548,8 +2548,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_SC_ACK_ENCRYPTION: {
-      const std::array<std::uint8_t, 25> source = {0x17, 0x62, 0xEB, 0xFF, 0x1C, 0x00, 0xFE, 0xD4, 0x2D, 0x2D, 0x8E, 0xC1, 0x1E, 0x11, 0xEC, 0xC1,
-                                                   0x2D, 0x64, 0xA4, 0xC1, 0x5D, 0x42, 0xB4, 0x90, 0x59};
+      constexpr std::array<std::uint8_t, 25> source = CRYPT_NAME("No Packet Encryption !!!", 0xB195637DAFCB0D59ULL);
       thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> text(source);
       ShowErrorDialog(GetRenderSystemHolder()->system, text.Text(), 0);
       break;
@@ -3190,7 +3189,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       if (argument1 == 1) {
         g_tipOfTheDayEnglish = true;
         g_serverLanguage->alternateLanguage = static_cast<std::uint16_t>(argument1);
-        const std::array<std::uint8_t, 5> prefixSource = {0xBC, 0x94, 0x3A, 0xD7, 0x8F};
+        constexpr std::array<std::uint8_t, 5> prefixSource = CRYPT_NAME("uae\\", 0x23BBD58F8B5FF5C9ULL);
         thread_local EncryptedName<sizeof(prefixSource), 0x23BBD58F8B5FF5C9ULL> prefix(prefixSource);
         g_serverLanguage->SetServicePrefix(prefix.Text());
         const std::array<std::uint8_t, 5> suffixSource = {0xF2, 0x72, 0x0E, 0x23, 0x39};

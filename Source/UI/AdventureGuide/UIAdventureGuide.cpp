@@ -24,6 +24,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 #include <cstring>
 #include <format>
 #include <list>
@@ -2631,11 +2632,8 @@ void CUIItem::OnCreate(int width, int height) {
     button->Invalidate();
   }
   {
-    const char moveDisableSource[] = {
-        '\x09', '\xAE', '\x2D', '\x15', '\x27', '\xA7', '\xDA', '\x6E', '\x0F', '\xE5', '\x2D', '\x23', '\x5A', '\xD3', '\x43', '\xE2', '\xAD', '\x77', '\x88',
-        '\x81', '\x93', '\x1C', '\x6D', '\xC6', '\x8E', '\x74', '\x84', '\x8B', '\x82', '\x35', '\x7D', '\xD7', '\xA7', '\x5E', '\x80', '\x80', '\x91', '\x0C',
-        '\x40', '\xC7', '\xA0', '\x72', '\x8C', '\x8D', '\x8B', '\x0C', '\x31', '\xC1', '\xA4', '\x71', '\xED'};
-    thread_local EncryptedName<sizeof(moveDisableSource), 0xA31F69E7EFED01C9ULL> moveDisableName(moveDisableSource);
+    const auto moveDisableSource = CRYPT_NAME("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0xA31F69E7EFED01C9ULL);
+    thread_local EncryptedName<sizeof(moveDisableSource), 0xA31F69E7EFED01C9ULL> moveDisableName(moveDisableSource.data);
     const std::string moveDisable(moveDisableName.Text());
     const char moveOverSource[] = {
         '\xAB', '\xE4', '\x7B', '\xFB', '\x47', '\xA1', '\x6C', '\x7A', '\xAD', '\xAF', '\x7B', '\xCD', '\x3A', '\xD5', '\xF5', '\xF6', '\x0F', '\x3D', '\xDE',

@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cctype>
 #include <windows.h>
@@ -57,7 +58,8 @@ void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, 
   this->m_accountName = accountName;
   this->m_guildId = guildId;
   this->m_path = path;
-  const std::uint8_t diagnosticSource[] = {0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0xC52FB5FBB94FF917ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>(diagnosticSource)), sourceFile, 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
@@ -79,9 +81,11 @@ bool CEmblemDataUploadAsyncWork::Execute() {
 
   std::string imageType = g_curlMgr->ToUtf8(extension);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0xF6, 0x4E, 0x13, 0xCD};
+  constexpr std::array<std::uint8_t, 4> aidArray = CRYPT_NAME("AID", 0x812BE72BCD5707B7ULL);
+  const std::uint8_t (&aid)[4] = aidArray._Elems;
   handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(aid), account, 4);
-  const std::uint8_t authToken[] = {0xE0, 0x48, 0xEB, 0xBF, 0x37, 0xE0, 0x4C, 0x3C, 0xCF, 0x3D};
+  constexpr std::array<std::uint8_t, 10> authTokenArray = CRYPT_NAME("AuthToken", 0x59278F63D79F3DA1ULL);
+  const std::uint8_t (&authToken)[10] = authTokenArray._Elems;
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(authToken), this->m_token, 4);
   const std::uint8_t worldName[] = {0x48, 0x5E, 0xBF, 0x8B, 0x89, 0x3B, 0x0C, 0x70, 0x7A, 0x31};
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(worldName), name, 4);

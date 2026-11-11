@@ -11,6 +11,7 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <json/reader.h>
 #include <json/writer.h>
@@ -30,7 +31,8 @@ namespace {
 
   // INLINED
   const char* DefaultAccountName() {
-    const std::uint8_t source[] = {0x6A, 0x5F, 0xA6, 0x89, 0x82, 0x02, 0x03, 0x1D};
+    constexpr std::array<std::uint8_t, 8> sourceArray = CRYPT_NAME("unknown", 0x1D6D75EDE7CD311FULL);
+    const std::uint8_t (&source)[8] = sourceArray._Elems;
     return DecryptText<0x1D6D75EDE7CD311FULL>(source);
   }
 }
@@ -99,14 +101,18 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
     Json::Value root;
     Json::Reader reader;
     if (reader.parse(response, root, true)) {
-      const std::uint8_t typeSource[] = {0x43, 0x80, 0x3F, 0xDC, 0xFB};
+      constexpr std::array<std::uint8_t, 5> typeSourceArray = CRYPT_NAME("Type", 0xC52FB5FBB94FF917ULL);
+      const std::uint8_t (&typeSource)[5] = typeSourceArray._Elems;
       switch (root[DecryptText<0xC52FB5FBB94FF917ULL>(typeSource)].asInt()) {
       case 1: {
-        const std::uint8_t whisperSource[] = {0xA1, 0xAC, 0xF3, 0x94, 0xA1};
+        constexpr std::array<std::uint8_t, 5> whisperSourceArray = CRYPT_NAME("data", 0x93E7A3A1F587CDC5ULL);
+        const std::uint8_t (&whisperSource)[5] = whisperSourceArray._Elems;
         LoadWhisperBlockList(root[DecryptText<0x93E7A3A1F587CDC5ULL>(whisperSource)]);
-        const std::uint8_t emotionSource[] = {0x43, 0x60, 0x73, 0x0C, 0x03};
+        constexpr std::array<std::uint8_t, 5> emotionSourceArray = CRYPT_NAME("data", 0x2FF3C5036D070127ULL);
+        const std::uint8_t (&emotionSource)[5] = emotionSourceArray._Elems;
         g_session.m_emotionHotkeys.Load(root[DecryptText<0x2FF3C5036D070127ULL>(emotionSource)]);
-        const std::uint8_t hotkeySource[] = {0xD7, 0x06, 0xB7, 0x32, 0xF9};
+        constexpr std::array<std::uint8_t, 5> hotkeySourceArray = CRYPT_NAME("data", 0x17359BF953C367B3ULL);
+        const std::uint8_t (&hotkeySource)[5] = hotkeySourceArray._Elems;
         g_userHotkeyMgr->LoadV2(*g_session.m_hotkeyScript, root[DecryptText<0x17359BF953C367B3ULL>(hotkeySource)]);
       }
         [[fallthrough]];
@@ -128,9 +134,11 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
 void CAccountLinkedUserDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
   const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
   if (!base.empty()) {
-    const std::uint8_t saveSource[] = {0x8E, 0x48, 0xEC, 0xB2, 0x11, 0xEC, 0x48, 0x37, 0xC7, 0x54, 0xF8, 0xF8, 0x10, 0xEE, 0x51, 0x3C, 0xA1};
+    constexpr std::array<std::uint8_t, 17> saveSourceArray = CRYPT_NAME("/userconfig/save", 0x59278F63D79F3DA1ULL);
+    const std::uint8_t (&saveSource)[17] = saveSourceArray._Elems;
     this->m_saveUrl = base + DecryptText<0x59278F63D79F3DA1ULL>(saveSource);
-    const std::uint8_t loadSource[] = {0x98, 0x72, 0x24, 0xA8, 0x59, 0x84, 0x44, 0xEF, 0xD1, 0x6E, 0x30, 0xE2, 0x47, 0x88, 0x4A, 0xE5, 0xB7};
+    constexpr std::array<std::uint8_t, 17> loadSourceArray = CRYPT_NAME("/userconfig/load", 0x812BE72BCD5707B7ULL);
+    const std::uint8_t (&loadSource)[17] = loadSourceArray._Elems;
     this->m_loadUrl = base + DecryptText<0x812BE72BCD5707B7ULL>(loadSource);
   }
 }

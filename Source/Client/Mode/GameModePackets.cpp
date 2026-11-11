@@ -147,6 +147,7 @@
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 #include <new>
 
 // OFFSET: 0x00D7AF70
@@ -15636,7 +15637,8 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   item.identified = 1;
 
   int job = 0;
-  const std::uint8_t signatureSource[] = {0x1B, 0x2D, 0xBB, 0xD1};
+  constexpr std::array<std::uint8_t, 4> signatureSourceArray = CRYPT_NAME("d>d", 0xED796785D1DF137FULL);
+  const std::uint8_t (&signatureSource)[4] = signatureSourceArray._Elems;
   thread_local EncryptedName<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
   const char* signatureText = signature.Text();
   const std::uint8_t functionSource[] = {0xB6, 0xA2, 0x4D, 0x4C, 0x66, 0x0C, 0x26, 0x81, 0xBB, 0xA8, 0x5B, 0x09};

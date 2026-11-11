@@ -4,6 +4,7 @@
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Script/LuaScript.h"
 #include "Utility/Cipher/EncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <new>
 
@@ -73,9 +74,8 @@ __declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
   const std::string base =
     ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
   if (!base.empty()) {
-    const char saveSource[] = {'\xFE', '\x02', '\x99', '\xE8', '\x1D', '\x32', '\x8A', '\xBD', '\xB7',
-                               '\x08', '\x96', '\xA6', '\x1C', '\x30', '\x93', '\xB6', '\xD1'};
-    thread_local EncryptedName<sizeof(saveSource), 0xD3E5516F89F161D1ULL> savePath(saveSource);
+    const auto saveSource = CRYPT_NAME("/charconfig/save", 0xD3E5516F89F161D1ULL);
+    thread_local EncryptedName<sizeof(saveSource), 0xD3E5516F89F161D1ULL> savePath(saveSource.data);
     this->m_saveUrl = base + savePath.Text();
 
     const char loadSource[] = {'\x78', '\x8C', '\xB9', '\xD4', '\xD9', '\x1C', '\x92', '\x31', '\x31',

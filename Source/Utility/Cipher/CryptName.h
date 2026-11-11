@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 
 namespace utility {
 
@@ -24,12 +25,20 @@ namespace utility {
 
   // INLINED
   template <std::uint64_t Key, std::size_t Length>
-  constexpr CryptedText<Length> CryptText(const char (&text)[Length]) {
-    CryptedText<Length> out{};
-    for (std::size_t index = 0; index < Length; ++index) {
-      out.data[index] = static_cast<char>(static_cast<std::uint8_t>(text[index]) ^ static_cast<std::uint8_t>(Key >> (8 * (index & 7))));
-    }
-    return out;
+  consteval char CryptChar(const char (&text)[Length], std::size_t index) {
+    return static_cast<char>(static_cast<std::uint8_t>(text[index]) ^ static_cast<std::uint8_t>(Key >> (8 * (index & 7))));
+  }
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length, std::size_t... Index>
+  consteval CryptedText<Length> CryptText(const char (&text)[Length], std::index_sequence<Index...>) {
+    return CryptedText<Length>{{CryptChar<Key>(text, Index)...}};
+  }
+
+  // INLINED
+  template <std::uint64_t Key, std::size_t Length>
+  consteval CryptedText<Length> CryptText(const char (&text)[Length]) {
+    return CryptText<Key>(text, std::make_index_sequence<Length>{});
   }
 
 }

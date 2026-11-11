@@ -2,6 +2,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <array>
 #include <cstddef>
@@ -21,7 +22,8 @@ void CUISubTab::OnCreate(int width, int height) {
   this->labelText->SetAlign(6, 6);
   {
     CUIStaticText* text = this->labelText;
-    const std::uint8_t fontSource[] = {0x16, 0x82, 0x37, 0x1E, 0xF0, 0xA1};
+    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xB127A19D775BF751ULL);
+    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
     thread_local EncryptedName<sizeof(fontSource), 0xB127A19D775BF751ULL> fontName(fontSource);
     text->SetFont(fontName.Text());
   }
@@ -57,7 +59,8 @@ void CUITab::OnCreate(int width, int height) {
   this->labelText->SetAlign(6, 6);
   {
     CUIStaticText* text = this->labelText;
-    const std::uint8_t fontSource[] = {0xBA, 0xC0, 0x5F, 0x86, 0x3C, 0x37};
+    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0x91493751EF33B5FDULL);
+    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
     thread_local EncryptedName<sizeof(fontSource), 0x91493751EF33B5FDULL> fontName(fontSource);
     text->SetFont(fontName.Text());
   }
@@ -80,7 +83,8 @@ void CUITabInfo::OnCreate(int width, int height) {
   this->titleText->SetAlign(0, 6);
   {
     CUIStaticText* text = this->titleText;
-    const std::uint8_t fontSource[] = {0x28, 0x08, 0x97, 0x4A, 0x1C, 0x07};
+    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xCD8F077123FB7D6FULL);
+    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
     thread_local EncryptedName<sizeof(fontSource), 0xCD8F077123FB7D6FULL> fontName(fontSource);
     text->SetFont(fontName.Text());
   }

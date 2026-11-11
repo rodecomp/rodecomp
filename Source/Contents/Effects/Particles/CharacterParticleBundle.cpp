@@ -142,7 +142,8 @@ const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
 // FUNCTION: fn_03135
 void CChopChopClawMarks::OnInit() {
   const int id = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xC2, 0x55, 0xF0, 0xA7, 0x3C, 0xEC, 0x4F, 0x36, 0xD1, 0x3D};
+    constexpr std::array<std::uint8_t, 10> bytesArray = CRYPT_NAME("chop_chop", 0x59278F63D79F3DA1ULL);
+    const std::uint8_t (&bytes)[10] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x59278F63D79F3DA1ULL> name(bytes);
     return name.Text();
   }());

@@ -37,7 +37,8 @@ namespace {
 
 // INLINED
 __forceinline const char* TimeFontActionName() {
-  const char source[] = {'\xB1', '\x4F', '\xAD', '\xDA', '\xD7', '\xA1', '\x01', '\x29', '\x18', '\xEE', '\x0E', '\x4D', '\x7E', '\x61', '\x29', '\x53', '\x10', '\xE0', '\x1F', '\x0B'};
+  constexpr auto sourceText = CRYPT_NAME("이팩트\\TimeFont.act", 0x7D5D0F110B6B8371ULL);
+  const auto& source = sourceText.data;
   // GLOBAL: gl_25508
   thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
   return name.Text();

@@ -49,7 +49,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   if (remainingTime == 0xFFFFFFFE && packet->remainingFreeTime == 0xFFFFFFFE) {
     const char* message = LookupMessage(MSI_BILLING_FREE_USER);
     const char* format = [] {
-      const std::uint8_t source[] = {0x34, 0x90, 0x59, 0x99};
+      constexpr std::array<std::uint8_t, 4> sourceArray = CRYPT_NAME("%s\x0A", 0x4B755DB19953E311ULL);
+      const std::uint8_t (&source)[4] = sourceArray._Elems;
       // GLOBAL: gl_25061
       thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
       return name.Text();
@@ -58,7 +59,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   } else if (remainingTime == 0xFFFFFFFD && packet->remainingFreeTime == 0xFFFFFFFD) {
     const char* message = LookupMessage(MSI_BILLING_PCB);
     const char* format = [] {
-      const std::uint8_t source[] = {0x7E, 0xC4, 0x6B, 0x59};
+      constexpr std::array<std::uint8_t, 4> sourceArray = CRYPT_NAME("%s\x0A", 0xF715514F5961B75BULL);
+      const std::uint8_t (&source)[4] = sourceArray._Elems;
       // GLOBAL: gl_25062
       thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
       return name.Text();
@@ -67,7 +69,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   } else if (remainingTime == 0xFFFFFFFF && packet->remainingFreeTime == 0xFFFFFFFF) {
     const char* message = LookupMessage(MSI_BILLING_INTERNET_CAFE);
     const char* format = [] {
-      const std::uint8_t source[] = {0xBC, 0x4A, 0xF7, 0x31};
+      constexpr std::array<std::uint8_t, 4> sourceArray = CRYPT_NAME("%s\x0A", 0x4191BB5531FD3999ULL);
+      const std::uint8_t (&source)[4] = sourceArray._Elems;
       // GLOBAL: gl_25063
       thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
       return name.Text();
@@ -81,7 +84,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
     } else {
       const char* message = LookupMessage(MSI_BILLING_100);
       const char* format = [] {
-        const std::uint8_t source[] = {0xF6, 0x4A, 0x65, 0x11};
+        constexpr std::array<std::uint8_t, 4> sourceArray = CRYPT_NAME("%s\x0A", 0xB19D1FA9116F39D3ULL);
+        const std::uint8_t (&source)[4] = sourceArray._Elems;
         // GLOBAL: gl_25064
         thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
         return name.Text();
@@ -95,7 +99,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
     if (packet->remainingFreeTime > 0) {
       const char* message = LookupMessage(MSI_BILLING_800);
       const char* format = [] {
-        const std::uint8_t source[] = {0x8A, 0x7A, 0x03, 0xE7};
+        constexpr std::array<std::uint8_t, 4> sourceArray = CRYPT_NAME("%s\x0A", 0x9569C9C7E70909AFULL);
+        const std::uint8_t (&source)[4] = sourceArray._Elems;
         // GLOBAL: gl_25065
         thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
         return name.Text();
@@ -106,7 +111,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
       sprintf(text + strlen(text), hourFormat, freeTime / 60, freeTime % 60);
     } else {
       const char* format = [] {
-        const std::uint8_t source[] = {0x67, 0xBF};
+        constexpr std::array<std::uint8_t, 2> sourceArray = CRYPT_NAME("\x0A", 0xD7A749EB27D5BF6DULL);
+        const std::uint8_t (&source)[2] = sourceArray._Elems;
         // GLOBAL: gl_25066
         thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
         return name.Text();

@@ -7,6 +7,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -53,7 +54,8 @@ void CRegisterPartyAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_info = info;
-  const std::uint8_t diagnosticSource[] = {0x80, 0xE9, 0x96, 0x93, 0x58, 0x52, 0x01, 0x93};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 50);
   this->m_diagnostic.MoveFrom(diagnostic);
 }

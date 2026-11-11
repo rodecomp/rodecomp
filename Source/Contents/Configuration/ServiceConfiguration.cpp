@@ -186,8 +186,8 @@ void InitializeServiceStrings() {
   case 20:
     break;
   default: {
-    const char source[] = {'\x5C', '\xC7', '\x2C', '\x31', '\xB6', '\x2A', '\x1B', '\xF3', '\x5A', '\xCC', '\x35', '\x29',
-                                   '\xB0', '\x3E', '\x10', '\x87', '\x70', '\xD9', '\x22', '\x7F', '\xF8', '\x7C', '\x54', '\xD3'};
+    constexpr auto sourceText = CRYPT_NAME("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL);
+    const auto& source = sourceText.data;
     ShowErrorDialog(DecryptString<0xD3755DD95F47A909ULL>(source), 0);
     break;
   }
@@ -208,31 +208,33 @@ void InitializeServiceStrings() {
   GetLocalTime(&time);
 
   {
-    const std::uint8_t source[] = {0x63, 0x0B, 0xC5, 0x25, 0x3A, 0x20, 0xE4, 0x69, 0x2E, 0x40, 0xB7, 0x3D, 0x2B, 0x37, 0x81};
+    constexpr std::array<std::uint8_t, 15> sourceArray = CRYPT_NAME("..\\licence.txt", 0x078143534999254DULL);
+    const std::uint8_t (&source)[15] = sourceArray._Elems;
     g_licenceFileName = DecryptText<0x078143534999254DULL>(source);
   }
   g_startupSecondPhase = static_cast<unsigned char>(time.wSecond) & 3;
 
   {
-    const char source[] = {'\xD6', '\x0E', '\xED', '\x63', '\x08', '\x00', '\xD7', '\xCA', '\xD9', '\x26', '\xF9', '\x76', '\x09', '\x08', '\xD1', '\xD6',
-                                   '\xA5', '\x32', '\xE4', '\x71', '\x0B', '\x3D', '\xF7', '\xCE', '\xE2', '\x0F', '\xEA', '\x65', '\x10', '\x0A', '\xA5'};
+    constexpr auto sourceText = CRYPT_NAME("Software\\Gravity Soft\\Ragnarok", 0xAFA5617F178B6185ULL);
+    const auto& source = sourceText.data;
     g_subKey = DecryptString<0xAFA5617F178B6185ULL>(source);
   }
 
   {
-    const std::uint8_t source[] = {0xBB, 0xB2, 0x5A, 0x69, 0x54, 0x5B, 0x64, 0x8E, 0xE9};
+    constexpr std::array<std::uint8_t, 9> sourceArray = CRYPT_NAME("Ragnarok", 0xE50B2935073DD3E9ULL);
+    const std::uint8_t (&source)[9] = sourceArray._Elems;
     g_windowName = DecryptText<0xE50B2935073DD3E9ULL>(source);
   }
 
   switch (g_serviceMode) {
   case 2: {
-    const std::uint8_t client[] = {0x59, 0xD4, 0xEE, 0x5C, 0x67, 0xD3, 0xF6, 0xAC, 0x79, 0x9B, 0xEC, 0x6D, 0x6C, 0xB7};
+    constexpr std::array<std::uint8_t, 14> clientArray = CRYPT_NAME("RagIndoor.exe", 0xC399B7091589B50BULL);
+    const std::uint8_t (&client)[14] = clientArray._Elems;
     g_clientExeName = DecryptText<0xC399B7091589B50BULL>(client);
     const std::uint8_t patcher[] = {0x50, 0x03, 0xAB, 0x90, 0x32, 0x73, 0xB4, 0x0F, 0x37, 0x08, 0xB7, 0x9A, 0x5D};
     g_patcherExeName = DecryptText<0x7FC1015DFFCF6D19ULL>(patcher);
-    const char message[] = {'\x69', '\x8D', '\xCC', '\x8E', '\x92', '\xC2', '\x73', '\x75', '\x4C', '\x8F', '\x89', '\xBD', '\x80',
-                                    '\xC0', '\x1A', '\x69', '\x5D', '\x8E', '\xC6', '\x9D', '\xCF', '\xC2', '\x2B', '\x62', '\x39'};
-    g_runPatcherMessage = DecryptString<0x0753A7E1EFA9E139ULL>(message);
+    const auto message = CRYPT_NAME("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
+    g_runPatcherMessage = DecryptString<0x0753A7E1EFA9E139ULL>(message.data);
     break;
   }
   case 3: {

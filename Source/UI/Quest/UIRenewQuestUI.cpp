@@ -404,7 +404,8 @@ __declspec(noinline) const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text(
 // OFFSET: 0x00A5A550
 // FUNCTION: fn_16400
 __declspec(noinline) EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
-  const std::uint8_t source[] = {0x0E, 0x18, 0x13, 0x8A, 0xAA, 0x01};
+  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0x114901C7E37F6D49ULL);
+  const std::uint8_t (&source)[6] = sourceArray._Elems;
   thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
   return name;
 }
@@ -448,7 +449,8 @@ __declspec(noinline) EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonNa
 // OFFSET: 0x00A5A9B0
 // FUNCTION: fn_16405
 __declspec(noinline) EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
-  const std::uint8_t source[] = {0x46, 0x00, 0x91, 0xB0, 0x42, 0xBD};
+  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xB7AFBD2FD9FD7501ULL);
+  const std::uint8_t (&source)[6] = sourceArray._Elems;
   thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
   return name;
 }
@@ -492,7 +494,8 @@ __declspec(noinline) EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3
 // OFFSET: 0x00A5AE30
 // FUNCTION: fn_16410
 __declspec(noinline) EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
-  const std::uint8_t source[] = {0x1E, 0xF0, 0xEB, 0x10, 0x9A, 0x2F};
+  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xE33F2FF779878559ULL);
+  const std::uint8_t (&source)[6] = sourceArray._Elems;
   thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
   return name;
 }
@@ -536,7 +539,8 @@ __declspec(noinline) EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonNam
 // OFFSET: 0x00A5B2C0
 // FUNCTION: fn_16415
 __declspec(noinline) EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
-  const std::uint8_t source[] = {0xCC, 0xE8, 0x1B, 0xE4, 0x8C, 0xDD};
+  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0x1767DDE18D779D8BULL);
+  const std::uint8_t (&source)[6] = sourceArray._Elems;
   thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
   return name;
 }
@@ -580,7 +584,8 @@ __declspec(noinline) EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonNam
 // OFFSET: 0x00A5B750
 // FUNCTION: fn_16420
 __declspec(noinline) EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
-  const std::uint8_t source[] = {0xC8, 0x2C, 0x0D, 0x82, 0xD8, 0x19};
+  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xC70319B5EB61598FULL);
+  const std::uint8_t (&source)[6] = sourceArray._Elems;
   thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
   return name;
 }

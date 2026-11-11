@@ -234,7 +234,8 @@ void CSkillAction_KR_DOUBLE_SLASH::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const std::uint8_t effectSource[] = {0x7B, 0x5E, 0xB8, 0x85, 0x81, 0x10, 0x32, 0x6E, 0x73, 0x50, 0xBE, 0x8F, 0xED};
+  constexpr std::array<std::uint8_t, 13> effectSourceArray = CRYPT_NAME("double_slash", 0x1D6D75EDE7CD311FULL);
+  const std::uint8_t (&effectSource)[13] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
   effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -269,7 +270,8 @@ void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x005B0CD0
 // FUNCTION: fn_03347
 void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  const std::uint8_t effectSource[] = {0xD0, 0x0B, 0xA2, 0x24, 0xA6, 0xEC, 0x54, 0x61, 0xD6, 0x67};
+  constexpr std::array<std::uint8_t, 10> effectSourceArray = CRYPT_NAME("claw_wave", 0x17359BF953C367B3ULL);
+  const std::uint8_t (&effectSource)[10] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0);
 }
@@ -289,14 +291,16 @@ void CSkillAction_KR_EARTH_DRILL::OnSkillHit(int level, CGameActor* source, CGam
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t effectSource[] = {0x72, 0x98, 0x3D, 0xCD, 0x93, 0xEA, 0x4B, 0xB7, 0x7E, 0x95, 0x23, 0xB9};
+    constexpr std::array<std::uint8_t, 12> effectSourceArray = CRYPT_NAME("earth_drill", 0xC52FB5FBB94FF917ULL);
+    const std::uint8_t (&effectSource)[12] = effectSourceArray._Elems;
     thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
     return effectName.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bottomSource[] = {0xA0, 0xAC, 0xF5, 0x81, 0xC9, 0xFC, 0x83, 0xE1, 0xAC, 0xA1, 0xEB, 0xAA, 0xC3, 0xCC, 0x93, 0xE7, 0xAA, 0xA0, 0x87};
+    constexpr std::array<std::uint8_t, 19> bottomSourceArray = CRYPT_NAME("earth_drill_bottom", 0x93E7A3A1F587CDC5ULL);
+    const std::uint8_t (&bottomSource)[19] = bottomSourceArray._Elems;
     thread_local EncryptedName<sizeof(bottomSource), 0x93E7A3A1F587CDC5ULL> bottomName(bottomSource);
     return bottomName.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -311,8 +315,8 @@ int CSkillAction_KR_EARTH_STAMP::GetSkillAttackMotion() {
 // OFFSET: 0x005B1250
 // FUNCTION: fn_03351
 void CSkillAction_KR_EARTH_STAMP::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  const char effectSource[] = {'\xB2', '\x2E', '\x71', '\xE1', '\xB1', '\xDA', '\xDC', '\x4B', '\xB6', '\x22', '\x73', '\x95'};
-  thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource);
+  const auto effectSource = CRYPT_NAME("earth_stamp", 0x3FAF85D995034FD7ULL);
+  thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource.data);
   g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position, 0, -1, 0, 0);
 
   const char bottomSource[] = {'\xDC', '\x6C', '\x5D', '\xD5', '\x2B', '\xA4', '\x7C', '\x3D', '\xD8', '\x60', '\x5F', '\xFE', '\x21', '\x94', '\x7B', '\x3D', '\xD6', '\x60', '\x2F'};
@@ -525,7 +529,8 @@ void CSkillAction_KR_ICE_SPLASH::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  const std::uint8_t effectSource[] = {0x58, 0x3A, 0x4E, 0x5E, 0x12, 0xBD, 0x09, 0xEA, 0x42, 0x31, 0x2B};
+  constexpr std::array<std::uint8_t, 11> effectSourceArray = CRYPT_NAME("ice_splash", 0x8B65CD61012B5931ULL);
+  const std::uint8_t (&effectSource)[11] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x8B65CD61012B5931ULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }

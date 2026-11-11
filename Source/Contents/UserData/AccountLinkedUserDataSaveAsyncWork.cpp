@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -64,7 +65,8 @@ void CAccountLinkedUserDataSaveAsyncWork::Bind(std::uint32_t accountId, std::str
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  const std::uint8_t diagnosticSource[] = {0xC2, 0x69, 0x3C, 0xA3, 0x5C, 0x88, 0x45, 0x81};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x812BE72BCD5707B7ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource), 54);
   this->m_diagnostic.MoveFrom(diagnostic);
 }
@@ -76,9 +78,11 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
   StringFormat(accountId, sizeof(accountId), _TRUNCATE, "%lu", this->m_accountId);
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t aid[] = {0x56, 0xB0, 0x0B, 0xB9};
+  constexpr std::array<std::uint8_t, 4> aidArray = CRYPT_NAME("AID", 0xC52FB5FBB94FF917ULL);
+  const std::uint8_t (&aid)[4] = aidArray._Elems;
   handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);
-  const std::uint8_t token[] = {0x84, 0xB8, 0xF3, 0x9D, 0xF5, 0xCC, 0x8C, 0xF6, 0xAB, 0xCD};
+  constexpr std::array<std::uint8_t, 10> tokenArray = CRYPT_NAME("AuthToken", 0x93E7A3A1F587CDC5ULL);
+  const std::uint8_t (&token)[10] = tokenArray._Elems;
   handler.AddField(DecryptName<0x93E7A3A1F587CDC5ULL>(token), this->m_token, 4);
   const std::uint8_t worldName[] = {0x70, 0x6E, 0x75, 0x01, 0x67, 0x8B, 0x92, 0x42, 0x42, 0x01};
   handler.AddField(DecryptName<0x2FF3C5036D070127ULL>(worldName), name, 4);
@@ -86,7 +90,8 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
   handler.AddField(DecryptName<0x17359BF953C367B3ULL>(data), this->m_data, 4);
 
   if (handler.Perform() != 0) {
-    const std::uint8_t error[] = {0x17, 0x98, 0x30, 0x99, 0x81};
+    constexpr std::array<std::uint8_t, 5> errorArray = CRYPT_NAME("fail", 0x91651D81F559F971ULL);
+    const std::uint8_t (&error)[5] = errorArray._Elems;
     Report(this->m_diagnostic, false, DecryptName<0x91651D81F559F971ULL>(error), 102);
   } else {
     const std::uint8_t good[] = {0x6C, 0x14, 0xB0, 0x05, 0x4B};

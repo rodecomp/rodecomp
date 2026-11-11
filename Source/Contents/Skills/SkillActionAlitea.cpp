@@ -441,8 +441,8 @@ void CSkillAction_ThunderingExpand::PlayThunderEffect(CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const std::uint8_t bytes[] = {0xCD, 0x65, 0x5A, 0xCF, 0x27, 0x9E, 0x7D, 0x20, 0xD7, 0x6A, 0x70, 0xC0, 0x37, 0x8F, 0x6E, 0x2A,
-                                    0xD2, 0x52, 0x56, 0xA1};
+      constexpr std::array<std::uint8_t, 20> bytesArray = CRYPT_NAME("thundering_attack_y", 0x490FFB43A12F0DB9ULL);
+      const std::uint8_t (&bytes)[20] = bytesArray._Elems;
       thread_local EncryptedName<sizeof(bytes), 0x490FFB43A12F0DB9ULL> name(bytes);
       return name.Text();
     }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -743,7 +743,8 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* sour
   }
 
   g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0x57, 0x74, 0x6B, 0x1E, 0x66, 0x9A, 0x9C, 0x49, 0x78, 0x6C, 0x66, 0x09, 0x6D, 0xA0, 0x80, 0x5C, 0x27};
+    constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("pulse_of_madness", 0x2FF3C5036D070127ULL);
+    const std::uint8_t (&bytes)[17] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -1088,9 +1089,8 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectRemove(CRenderObject* 
 
   EffectLists* effects = g_effectMgr;
   effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x48', '\xF3', '\xD2', '\xB8', '\x86', '\xAC', '\x65', '\xC4', '\x42', '\xF0', '\xDD', '\xB4', '\x83', '\xA0', '\x63', '\xF3',
-                                  '\x70', '\xF3', '\xDC', '\xB4', '\x9F', '\xC9'};
-    thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes);
+    const auto bytes = CRYPT_NAME("glacier_monolith_loop", 0x9B17C9EFDBB39F2FULL);
+    thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes.data);
     return name.Text();
   }()));
   effects = g_effectMgr;
@@ -1103,15 +1103,14 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectRemove(CRenderObject* 
 
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x86', '\xF7', '\x92', '\x18', '\x84', '\xE2', '\x8D', '\x3E', '\x8C', '\xF4', '\x9D', '\x14', '\x81', '\xEE', '\x8B', '\x09', '\xBE', '\xFE', '\x9D', '\x1F', '\xED'};
-    thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
+    const auto bytes = CRYPT_NAME("glacier_monolith_end", 0x61FF87ED7BF39BE1ULL);
+    thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes.data);
     return name.Text();
   }()), object->render.position, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x98', '\xE9', '\x46', '\x6E', '\x0C', '\x5A', '\xEB', '\x22', '\x92', '\xEA', '\x49', '\x62', '\x09', '\x56', '\xED', '\x15',
-                                  '\xA0', '\xE0', '\x49', '\x69', '\x3A', '\x5D', '\xF6', '\x09', '\x8B', '\xEA', '\x4A', '\x0D'};
-    thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
+    const auto bytes = CRYPT_NAME("glacier_monolith_end_bottom", 0x7D993F650D2785FFULL);
+    thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes.data);
     return name.Text();
   }()), object->render.position, 0, -1, 0, 0);
 }

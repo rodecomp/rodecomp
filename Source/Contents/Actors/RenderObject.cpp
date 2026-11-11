@@ -73,6 +73,7 @@
 #include <timeapi.h>
 #include "Contents/Guild/GuildInfo.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 using InstantValueTree = std::_Tree<std::_Tmap_traits<
   int, std::int64_t, std::less<int>, std::allocator<std::pair<const int, std::int64_t>>, false>>;
@@ -2998,7 +2999,8 @@ static std::string ShapeShiftName(int form, int job) {
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
-      const std::uint8_t source[] = {0xC8, 0x80, 0x3F, 0xEE, 0x80, 0x66, 0xB1, 0xE3, 0xAD, 0xC5};
+      constexpr std::array<std::uint8_t, 10> sourceArray = CRYPT_NAME("WEREWOLF2", 0xA5FD29D7AB6DC59FULL);
+      const std::uint8_t (&source)[10] = sourceArray._Elems;
       thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
       return name.Text();
     }

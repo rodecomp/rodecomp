@@ -555,7 +555,8 @@ void CSkillAction_DR_FLICKING_TONADO::OnSkillEffect(int level, CGameActor* sourc
     return;
   }
 
-  const std::uint8_t effectSource[] = {0x41, 0x6D, 0x6E, 0x0E, 0x68, 0xAC, 0x9D, 0x48, 0x78, 0x75, 0x68, 0x03, 0x62, 0xA1, 0x9C, 0x2F};
+  constexpr std::array<std::uint8_t, 16> effectSourceArray = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
+  const std::uint8_t (&effectSource)[16] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
@@ -695,15 +696,15 @@ int CEfstAction_GROUND_GROW::GetEffectId(int efstId, int argument4) {
   }
 
   const auto full = []() {
-    const char fullSource[] = {'\xAF', '\xC2', '\x49', '\xFB', '\xBB'};
-    thread_local EncryptedName<sizeof(fullSource), 0x078333BB9725B7C9ULL> fullName(fullSource);
+    const auto fullSource = CRYPT_NAME("full", 0x078333BB9725B7C9ULL);
+    thread_local EncryptedName<sizeof(fullSource), 0x078333BB9725B7C9ULL> fullName(fullSource.data);
     return fullName.Text();
   };
   std::string suffix = step == 11 ? std::string(full()) : std::format("{:02}", step);
 
   return CEZ2STREffectMgr::GetInstance()->EffectId(std::string([] {
-    const char prefixSource[] = {'\xD2', '\x07', '\x0E', '\x2A', '\x93', '\x3F', '\x44', '\xE8', '\xC7', '\x1A', '\x16', '\x00', '\xFD'};
-    thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource);
+    const auto prefixSource = CRYPT_NAME("ground_grow_", 0x8F1B5BFD5F6175B5ULL);
+    thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource.data);
     return prefixName.Text();
   }()) + suffix);
 }
@@ -1002,7 +1003,8 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillDamage(int level, CGameActor* source, 
   }
 
   g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t effectSource[] = {0xB0, 0x98, 0xE3, 0x61, 0x24, 0x35, 0xC2, 0xFE, 0xA4, 0x84, 0xF9, 0x71, 0x12, 0x33, 0xCC, 0xD5, 0xD3};
+    constexpr std::array<std::uint8_t, 17> effectSourceArray = CRYPT_NAME("cutting_wind_hit", 0xA1A55B4D1597EDD3ULL);
+    const std::uint8_t (&effectSource)[17] = effectSourceArray._Elems;
     thread_local EncryptedName<sizeof(effectSource), 0xA1A55B4D1597EDD3ULL> effectName(effectSource);
     return effectName.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1070,8 +1072,8 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  const char effectSource[] = {'\xFA', '\xDF', '\x1A', '\xBA', '\xBF', '\x59', '\xB2', '\x0B', '\xF7', '\xC2', '\x02', '\xAA', '\xA3', '\x3D'};
-  thread_local EncryptedName<sizeof(effectSource), 0x6DED3DD1CF75AD9BULL> effectName(effectSource);
+  const auto effectSource = CRYPT_NAME("around_flower", 0x6DED3DD1CF75AD9BULL);
+  thread_local EncryptedName<sizeof(effectSource), 0x6DED3DD1CF75AD9BULL> effectName(effectSource.data);
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 

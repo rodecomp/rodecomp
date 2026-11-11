@@ -66,7 +66,8 @@ void CAccountLinkedUserDataLoadAsyncWork::Bind(std::uint32_t accountId, std::str
   this->m_url = url;
   this->m_response = "";
 
-  const std::uint8_t diagnosticSource[] = {0xC2, 0x69, 0x3C, 0xA3, 0x5C, 0x88, 0x45, 0x81};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x812BE72BCD5707B7ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource), 50);
   this->m_diagnostic.MoveFrom(diagnostic);
 }

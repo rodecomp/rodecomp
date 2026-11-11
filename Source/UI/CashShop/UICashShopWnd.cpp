@@ -461,8 +461,8 @@ void UICashShopWnd::Paint() {
     this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
   } else {
     {
-      const char source[] = {'\xEA', '\x39', '\x2C', '\x31', '\x3B', '\x2F', '\x6D', '\xF6', '\xEF', '\x43', '\x3D', '\xF5', '\x39', '\x6B', '\xF0', '\xFD', '\x91', '\x2D', '\xE9'};
-      thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source);
+      const auto source = CRYPT_NAME("스토브 구입 리스트", 0x474DC581D5E98357ULL);
+      thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source.data);
       this->DrawCenteredText(0x21A, 0x1B, title.Text(), 0xB9, 0, 0xE, 0, 1);
     }
     {

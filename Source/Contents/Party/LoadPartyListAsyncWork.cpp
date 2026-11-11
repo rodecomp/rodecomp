@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -61,7 +62,8 @@ void CLoadPartyListAsyncWork::Bind(
   this->m_filter = filter;
   this->m_page = page;
   this->m_search = search;
-  const std::uint8_t diagnosticSource[] = {0x80, 0xE9, 0x96, 0x93, 0x58, 0x52, 0x01, 0x93};
+  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
+  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource), 54);
   this->m_diagnostic.MoveFrom(diagnostic);
   this->m_windows = &windows;
@@ -78,11 +80,14 @@ bool CLoadPartyListAsyncWork::Execute() {
   StringFormat(page, sizeof(page), _TRUNCATE, "%d", this->m_page);
   const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
-  const std::uint8_t gid[] = {0xCE, 0x74, 0x29, 0xE5};
+  constexpr std::array<std::uint8_t, 4> gidArray = CRYPT_NAME("GID", 0x2F2701A7E56D3D89ULL);
+  const std::uint8_t (&gid)[4] = gidArray._Elems;
   handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>(gid), character, 4);
-  const std::uint8_t aid[] = {0x64, 0xD8, 0x43, 0xA3};
+  constexpr std::array<std::uint8_t, 4> aidArray = CRYPT_NAME("AID", 0x6B3301E1A3079125ULL);
+  const std::uint8_t (&aid)[4] = aidArray._Elems;
   handler.AddField(DecryptName<0x6B3301E1A3079125ULL>(aid), account, 4);
-  const std::uint8_t worldName[] = {0xF8, 0xCE, 0xB7, 0x5B, 0x73, 0x27, 0xD6, 0x1C, 0xCA, 0xA1};
+  constexpr std::array<std::uint8_t, 10> worldNameArray = CRYPT_NAME("WorldName", 0x71B7691737C5A1AFULL);
+  const std::uint8_t (&worldName)[10] = worldNameArray._Elems;
   handler.AddField(DecryptName<0x71B7691737C5A1AFULL>(worldName), world, 4);
   const std::uint8_t authToken[] = {0x22, 0x4C, 0x09, 0xC9, 0x0D, 0xDA, 0xF4, 0xA6, 0x0D, 0x39};
   handler.AddField(DecryptName<0xC39FB559A17D3963ULL>(authToken), this->m_token, 4);

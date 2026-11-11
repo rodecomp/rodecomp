@@ -2900,7 +2900,7 @@ void CSession::LoadExternalSettings() {
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]) == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x20]) == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x24]) == -1) {
-    const std::array<char, 27> source = {'\x1E', '\x9B', '\xE7', '\x02', '\xF7', '\x9D', '\x18', '\x1D', '\x2F', '\x8C', '\xE7', '\x03', '\xD6', '\xD8', '\x29', '\x11', '\x32', '\x87', '\xF2', '\x1E', '\xA5', '\xEB', '\x3C', '\x09', '\x2E', '\x8C', '\x95'};
+    constexpr std::array<char, 27> source = CRYPT_NAME("Error ExternSettings Value", 0x655DBD856D95E95BULL);
     thread_local EncryptedName<sizeof(source), 0x655DBD856D95E95BULL> name(source);
     ShowErrorDialog(name.Text(), 0);
   }

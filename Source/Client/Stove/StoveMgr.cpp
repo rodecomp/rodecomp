@@ -363,7 +363,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else {
           const char captionSource[] = {'\xAF', '\x27', '\xF2', '\x7A', '\x3A', '\x43', '\x2F'};
           const char* caption = DecryptName<0xC52FB5FBB94FF917ULL>(captionSource);
-          const std::array<char, 34> messageSource = {'\x06', '\x89', '\x74', '\x9C', '\x4C', '\x5C', '\xF4', '\xE1', '\x93', '\xD9', '\x09', '\x93', '\x43', '\xBB', '\xF1', '\xBC', '\x76', '\xB0', '\x73', '\xBE', '\x41', '\x35', '\xF5', '\xC3', '\x07', '\xA8', '\x77', '\x8A', '\xD9', '\xB3', '\x10', '\x64', '\x9A', '\x67'};
+          constexpr std::array<char, 34> messageSource = CRYPT_NAME("등록되지 않은 카테고리입니다 (%s)", 0x17359BF953C367B3ULL);
           const char* message = DecryptName<0x17359BF953C367B3ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
@@ -388,9 +388,10 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "14A6891F90E24D7") == 0) {
           list = 8;
         } else {
-          const char captionSource[] = {'\x79', '\x11', '\x6E', '\xF0', '\x56', '\xEB', '\xFD'};
+          constexpr auto captionSourceText = CRYPT_NAME("메시지", 0x69FD1D9733D3CFC1ULL);
+          const auto& captionSource = captionSourceText.data;
           const char* caption = DecryptName<0x69FD1D9733D3CFC1ULL>(captionSource);
-          const std::array<char, 34> messageSource = {'\x70', '\x23', '\x30', '\x3A', '\x14', '\x64', '\x26', '\x65', '\xE5', '\x73', '\x4D', '\x35', '\x1B', '\x83', '\x23', '\x38', '\x00', '\x1A', '\x37', '\x18', '\x19', '\x0D', '\x27', '\x47', '\x71', '\x02', '\x33', '\x2C', '\x81', '\x8B', '\xC2', '\xE0', '\xEC', '\xCD'};
+          constexpr std::array<char, 34> messageSource = CRYPT_NAME("등록되지 않은 카테고리입니다 (%s)", 0x93E7A3A1F587CDC5ULL);
           const char* message = DecryptName<0x93E7A3A1F587CDC5ULL>(messageSource);
           MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
@@ -432,7 +433,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
   } else {
     const char captionSource[] = {'\x89', '\x87', '\x96', '\xC2', '\xA0', '\x3B', '\x65'};
     const char* caption = DecryptName<0x8B65CD61012B5931ULL>(captionSource);
-    const std::array<char, 56> messageSource = {'\x07', '\x28', '\x5B', '\xEB', '\xAF', '\xDC', '\x45', '\x4C', '\x18', '\x76', '\x18', '\x1D', '\xD8', '\xB2', '\xDA', '\x41', '\x7A', '\x0D', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xD5', '\x94', '\x99', '\xAA', '\x6B', '\x5A', '\x5D', '\xD5', '\x18', '\x77', '\x79', '\x59', '\x83', '\xDA', '\xB0', '\xD2', '\x3B', '\xE7', '\x74', '\x4B', '\xFD', '\xD8', '\x5D', '\xDC', '\x2C', '\x71', '\x35', '\x51', '\xF2', '\xAB', '\xA4', '\x4B', '\xF5'};
+    constexpr std::array<char, 56> messageSource = CRYPT_NAME("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF5657D1F3DE5CDC7ULL);
     const char* message = DecryptName<0xF5657D1F3DE5CDC7ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }

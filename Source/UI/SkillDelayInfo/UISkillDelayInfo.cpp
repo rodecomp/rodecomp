@@ -21,6 +21,7 @@
 #include <vector>
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 extern template std::string std::operator+(std::string&&, const char* const);
 
@@ -141,7 +142,8 @@ void CUIDelayItem::OnCreate(int width, int height) {
   this->level->SetText("");
   this->level->SetFitText(0);
   this->level->SetAlign(6, 6);
-  const std::uint8_t levelFontSource[] = {0x1E, 0xF0, 0xEB, 0x10, 0x9A, 0x2F};
+  constexpr std::array<std::uint8_t, 6> levelFontSourceArray = CRYPT_NAME("Gulim", 0xE33F2FF779878559ULL);
+  const std::uint8_t (&levelFontSource)[6] = levelFontSourceArray._Elems;
   // GLOBAL: gl_25165
   thread_local EncryptedName<sizeof(levelFontSource), 0xE33F2FF779878559ULL> levelFont(levelFontSource);
   this->level->SetFont(std::string(levelFont.Text()));
@@ -174,7 +176,8 @@ void CUITime::OnCreate(int width, int height) {
   this->text->SetText("");
   this->text->SetFitText(0);
   this->text->SetAlign(6, 6);
-  const std::uint8_t textFontSource[] = {0xEC, 0xDA, 0xE1, 0xE4, 0xDE, 0x8D};
+  constexpr std::array<std::uint8_t, 6> textFontSourceArray = CRYPT_NAME("Gulim", 0xD5A78DB38D8DAFABULL);
+  const std::uint8_t (&textFontSource)[6] = textFontSourceArray._Elems;
   // GLOBAL: gl_25166
   thread_local EncryptedName<sizeof(textFontSource), 0xD5A78DB38D8DAFABULL> textFont(textFontSource);
   this->text->SetFont(std::string(textFont.Text()));

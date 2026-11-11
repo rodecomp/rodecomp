@@ -3,6 +3,7 @@
 #include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Window/UIEnums.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Client/Session/Session.h"
 #include "Client/Mode/CGameMode.h"
@@ -655,14 +656,9 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->titleBar;
-    const char titleRightSource[] = {
-      '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
-      '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x63',
-      '\x5E', '\x33', '\xC1', '\x5C', '\xDD', '\x84', '\xDB', '\x48', '\x45', '\x2E', '\xCA', '\x51', '\xCB', '\xCB', '\xCB', '\x7A',
-      '\x47', '\x47'
-    };
+    const auto titleRightSource = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x17A9E5BF39AD4737ULL);
     // GLOBAL: gl_25394
-    thread_local EncryptedName<sizeof(titleRightSource), 0x17A9E5BF39AD4737ULL> titleRightName(titleRightSource);
+    thread_local EncryptedName<sizeof(titleRightSource), 0x17A9E5BF39AD4737ULL> titleRightName(titleRightSource.data);
     const std::string titleRight(titleRightName.Text());
     const char titleMiddleSource[] = {
       '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',

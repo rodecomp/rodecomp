@@ -37,6 +37,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Singleton.h"
 #include "Utility/Text/StringUtil.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
@@ -522,11 +523,7 @@ bool CGameSettingsMgr::LoadSettings() {
 
   this->Init_Func();
 
-  const std::array<char, 50> source = {
-      '\x5B', '\x6E', '\x4C', '\xE5', '\xD4', '\x87', '\x24', '\x7C', '\x22', '\x2A', '\x19', '\xFF', '\xF1', '\x9E', '\x20', '\x2F',
-      '\x51', '\x72', '\x41', '\xC6', '\xCE', '\xB7', '\x0E', '\x7F', '\x63', '\x72', '\x42', '\xCD', '\xF4', '\x85', '\x27', '\x60',
-      '\x4B', '\x5C', '\x4C', '\xCE', '\xD8', '\xB8', '\x24', '\x7B', '\x63', '\x72', '\x43', '\xC4', '\xCE', '\xC5', '\x2D', '\x7A',
-      '\x75', '\x1B'};
+  constexpr std::array<char, 50> source = CRYPT_NAME("LuaFiles514\\Lua Files\\OptionInfo\\GameSettings.lub", 0x0F41EBBDA32D1B17ULL);
   thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
   if (!this->LoadFile(name.Text())) {
     return false;
