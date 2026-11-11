@@ -859,9 +859,10 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
-  const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(data + sizeof(ItemStoreListHeader));
+  const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(data + sizeof(ItemStoreListHeader));
   StoreItemOption options[5] = {0};
-  for (int i = 0; i < count; ++i, ++record) {
+  for (int i = 0; i < count; ++i) {
+    const StoreEquipRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -900,8 +901,9 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipOptionRecord);
-  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(data + sizeof(ItemStoreListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(data + sizeof(ItemStoreListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StoreEquipOptionRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -940,8 +942,9 @@ void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreNormalRecord);
-  const StoreNormalRecord* record = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(ItemStoreListHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const StoreNormalRecord* records = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(ItemStoreListHeader));
+  for (int i = 0; i < count; ++i) {
+    const StoreNormalRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[1] = record->index;
@@ -1693,9 +1696,10 @@ __declspec(noinline) void CGameMode::ReceiveActorInt64Pair(const unsigned char* 
 // FUNCTION: fn_21670
 __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned char* packet) {
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipRecord);
-  const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
+  const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
   StoreItemOption options[5] = {0};
-  for (int i = 0; i < count; ++i, ++record) {
+  for (int i = 0; i < count; ++i) {
+    const StoreEquipRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -1728,8 +1732,9 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
 // FUNCTION: fn_21671
 void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipOptionRecord);
-  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
-  for (int i = 0; i < count; ++i, ++record) {
+  const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
+  for (int i = 0; i < count; ++i) {
+    const StoreEquipOptionRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -2018,8 +2023,9 @@ __declspec(noinline) void __stdcall ReceiveBuyingStorePurchase(const unsigned ch
 __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740Record);
-  const Item1740Record* record = reinterpret_cast<const Item1740Record*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const Item1740Record* records = reinterpret_cast<const Item1740Record*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const Item1740Record* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[1] = record->index;
@@ -2072,8 +2078,9 @@ __declspec(noinline) void CGameMode::ReceiveItemInventoryList(const unsigned cha
 
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(StoreNormalRecord);
-  const StoreNormalRecord* record = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const StoreNormalRecord* records = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const StoreNormalRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[1] = record->index;
@@ -4287,8 +4294,9 @@ __declspec(noinline) void CGameMode::ReceiveSwapEquipmentList(const unsigned cha
 
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(SwapEquipmentRecord);
-  const SwapEquipmentRecord* record = reinterpret_cast<const SwapEquipmentRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const SwapEquipmentRecord* records = reinterpret_cast<const SwapEquipmentRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const SwapEquipmentRecord* record = &records[i];
     ITEM_INFO item = g_session.FindItemByIdentity(record->index, record->location);
     item.identity[3] = record->location;
     if (item.identity[1] == 0) {
@@ -4374,8 +4382,9 @@ void CGameMode::ReceiveGuildMemberList(const unsigned char* data) {
   guildInfo->memberCount = count;
   guildInfo->ClearMembers();
 
-  const GuildMemberRecord* record = reinterpret_cast<const GuildMemberRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const GuildMemberRecord* records = reinterpret_cast<const GuildMemberRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const GuildMemberRecord* record = &records[i];
     GuildInfo::Member member;
     member.accountId = record->accountId;
     member.characterId = record->characterId;
@@ -7962,8 +7971,9 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 45) / 67u;
-  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 45);
-  for (int index = 0; index < count; ++index, ++record) {
+  const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 45);
+  for (int index = 0; index < count; ++index) {
+    const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -7996,8 +8006,9 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 47) / 67u;
-  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 47);
-  for (int index = 0; index < count; ++index, ++record) {
+  const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 47);
+  for (int index = 0; index < count; ++index) {
+    const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -8031,8 +8042,9 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 47) / 68u;
-  const EquipWindowGradeRecord* record = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 47);
-  for (int index = 0; index < count; ++index, ++record) {
+  const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 47);
+  for (int index = 0; index < count; ++index) {
+    const EquipWindowGradeRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -8128,8 +8140,9 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 4) / 67u;
-  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
-  for (int index = 0; index < count; ++index, ++record) {
+  const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
+  for (int index = 0; index < count; ++index) {
+    const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -8149,8 +8162,9 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
   const int count = static_cast<unsigned>(length - 4) / 68u;
-  const EquipWindowGradeRecord* record = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 4);
-  for (int index = 0; index < count; ++index, ++record) {
+  const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(packet + 4);
+  for (int index = 0; index < count; ++index) {
+    const EquipWindowGradeRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     ITEM_INFO item;
@@ -9659,8 +9673,9 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
     if (joined) {
       const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
       std::list<std::pair<std::string, int>> members;
-      const ChatRoomMemberRecord* record = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
-      for (int i = 0; i < count; ++i, ++record) {
+      const ChatRoomMemberRecord* records = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
+      for (int i = 0; i < count; ++i) {
+        const ChatRoomMemberRecord* record = &records[i];
         std::pair<std::string, int> member;
         char name[25];
         name[24] = '\0';
@@ -10250,8 +10265,9 @@ void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
   guildInfo->bannedMembers.clear();
 
-  const GuildBanCharacterRecord* record = reinterpret_cast<const GuildBanCharacterRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const GuildBanCharacterRecord* record = &records[i];
     char reason[41];
     std::memcpy(reason, record->reason, sizeof(record->reason));
     reason[40] = '\0';
@@ -10279,8 +10295,9 @@ void CGameMode::ReceiveGuildBanList3(const unsigned char* data) {
   const std::int64_t count = (packet->length - static_cast<std::int64_t>(sizeof(PacketLengthHeader))) / static_cast<std::int64_t>(sizeof(GuildBanNamedRecord));
   guildInfo->bannedMembers.clear();
 
-  const GuildBanNamedRecord* record = reinterpret_cast<const GuildBanNamedRecord*>(data + sizeof(PacketLengthHeader));
-  for (int i = 0; i < count; ++i, ++record) {
+  const GuildBanNamedRecord* records = reinterpret_cast<const GuildBanNamedRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i) {
+    const GuildBanNamedRecord* record = &records[i];
     char reason[41];
     std::memcpy(reason, record->reason, sizeof(record->reason));
     reason[40] = '\0';
