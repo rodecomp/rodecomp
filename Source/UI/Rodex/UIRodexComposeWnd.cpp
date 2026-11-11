@@ -123,8 +123,7 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
     }
   }
 
-  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
-  if (tagCtrl->tags.size() >= 3) {
+  if (static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->tags.size() >= 3) {
     return;
   }
 
@@ -132,8 +131,8 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
     return;
   }
 
-  std::string tagText = tagCtrl->AddSkillTag(tagId, 0xd630a9);
-  tagCtrl->taggedText = std::string(this->m_contents->Text());
+  std::string tagText = static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AddSkillTag(tagId, 0xd630a9);
+  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->taggedText = std::string(this->m_contents->Text());
 
   this->m_contents->SetText((this->m_contents->Text() + tagText).c_str());
   this->m_contents->MoveCursorToEnd();
@@ -377,37 +376,37 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         return 0;
       }
 
-      if (this->m_recipientIdText->GetText().length() <= 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MAIL_COMMISSION)), 0x64FFFF, 0, 0, 0);
+      if (this->m_recipientIdText->GetText().length() > 0) {
+        std::string body(this->m_contents->Text());
+        if (g_navigationLinkParser->HasLink(this->m_contents->Text())) {
+          this->m_contents->SetText("");
+          body.clear();
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+          return 0;
+        }
+
+        if (this->m_contents->links.size() != 0) {
+          body.clear();
+          body = this->m_contents->TakePendingText();
+        }
+
+        auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
+        if (tagCtrl && tagCtrl->linkedText.size() != 0) {
+          body = tagCtrl->linkedText.c_str();
+        }
+
+        RodexSendMailRequest mail;
+        mail.recipientId = this->m_recipientId;
+        mail.recipient = this->m_confirmedRecipientEdit->Text();
+        mail.title = this->m_titleEdit->Text();
+        mail.body = body;
+        mail.zeny = static_cast<int>(zeny);
+        g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
         return 0;
       }
 
-      std::string body(this->m_contents->Text());
-      if (g_navigationLinkParser->HasLink(this->m_contents->Text())) {
-        this->m_contents->SetText("");
-        body.clear();
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
-        return 0;
-      }
-
-      if (this->m_contents->links.size() != 0) {
-        body.clear();
-        body = this->m_contents->TakePendingText();
-      }
-
-      auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
-      if (tagCtrl && tagCtrl->linkedText.size() != 0) {
-        body = tagCtrl->linkedText.c_str();
-      }
-
-      RodexSendMailRequest mail;
-      mail.recipientId = this->m_recipientId;
-      mail.recipient = this->m_confirmedRecipientEdit->Text();
-      mail.title = this->m_titleEdit->Text();
-      mail.body = body;
-      mail.zeny = static_cast<int>(zeny);
-      g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
-      break;
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MAIL_COMMISSION)), 0x64FFFF, 0, 0, 0);
+      return 0;
     }
     }
     return 0;
