@@ -98,6 +98,8 @@ extern template std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
 ActorIdTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
 
 extern template void std::vector<std::string>::resize(size_type, const std::string&);
+extern template void std::vector<unsigned char>::_Tidy() noexcept;
+extern template std::string& std::string::operator=(std::string&&) noexcept;
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -3341,6 +3343,15 @@ void CSession::ClearAchievements() {
   this->trackedAchievements.clear();
 }
 
+namespace {
+struct ParameterNameLess {
+  // INLINED
+  bool operator()(const std::pair<std::string, std::vector<std::string>>& entry, const std::string& name) const {
+    return std::strcmp(entry.first.c_str(), name.c_str()) < 0;
+  }
+};
+}
+
 // OFFSET: 0x00DDC9D0
 // FUNCTION: fn_23371
 const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, int* found) {
@@ -3355,10 +3366,7 @@ const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, 
   }
 
   const char* key = name.c_str();
-  auto it = std::lower_bound(this->m_fogParameters.begin(), this->m_fogParameters.end(), key,
-                             [](const std::pair<std::string, std::vector<std::string>>& entry, const char* value) {
-                               return std::strcmp(entry.first.c_str(), value) < 0;
-                             });
+  auto it = std::lower_bound(this->m_fogParameters.begin(), this->m_fogParameters.end(), key, ParameterNameLess());
   if (it != this->m_fogParameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
     *found = 1;
     return &it->second;
@@ -3382,10 +3390,7 @@ const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswNa
   }
 
   const char* key = name.c_str();
-  auto it = std::lower_bound(parameters.begin(), parameters.end(), key,
-                             [](const std::pair<std::string, std::vector<std::string>>& entry, const char* value) {
-                               return std::strcmp(entry.first.c_str(), value) < 0;
-                             });
+  auto it = std::lower_bound(parameters.begin(), parameters.end(), key, ParameterNameLess());
   if (it != parameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
     *found = 1;
     return &it->second;
