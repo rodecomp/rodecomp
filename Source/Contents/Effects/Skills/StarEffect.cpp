@@ -15,6 +15,16 @@
 
 namespace {
 
+// INLINED
+__forceinline int Random(int range) {
+  if (range == 0) {
+    return 0;
+  }
+
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+
 struct StarParticleState {
   /* 0000 */ float angles[4];
   /* 0010 */ float lifetime;

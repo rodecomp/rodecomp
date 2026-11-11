@@ -104,20 +104,20 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->phaseParameter = ClampedRandom(21) + 80;
       particle->animationParameter = 1.0f;
 
-      if (this->id == EF_STORMKICK8) {
+      if (this->id != EF_STORMKICK8) {
         if (layer == 0) {
-          particle->speedParameter = 28.0f - ring * 5.0f;
-          particle->scale = 10.0f - ring * 2.0f;
+          particle->speedParameter = 48.0f - ring * 5.0f;
+          particle->scale = 14.0f - ring * 2.0f;
         } else if (layer == 1) {
-          particle->speedParameter = 18.0f - ring * 5.0f;
-          particle->scale = 5.0f - ring;
+          particle->speedParameter = 28.0f - ring * 5.0f;
+          particle->scale = 6.0f - ring;
         }
       } else if (layer == 0) {
-        particle->speedParameter = 48.0f - ring * 5.0f;
-        particle->scale = 14.0f - ring * 2.0f;
-      } else if (layer == 1) {
         particle->speedParameter = 28.0f - ring * 5.0f;
-        particle->scale = 6.0f - ring;
+        particle->scale = 10.0f - ring * 2.0f;
+      } else if (layer == 1) {
+        particle->speedParameter = 18.0f - ring * 5.0f;
+        particle->scale = 5.0f - ring;
       }
 
       InitParticleQuad(particle->vertices);

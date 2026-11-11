@@ -11,6 +11,18 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace {
+  // INLINED
+  __forceinline int Random(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    const int value = rand() % range;
+    return value >= 0 ? value : 0;
+  }
+}
+
 // OFFSET: 0x00B439D0
 // FUNCTION: fn_18882
 CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013) {

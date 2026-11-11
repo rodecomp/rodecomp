@@ -11,6 +11,18 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace {
+  // INLINED
+  __forceinline int Random(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    const int value = rand() % range;
+    return value >= 0 ? value : 0;
+  }
+}
+
 // OFFSET: 0x00B6B210
 // FUNCTION: fn_19089
 CLevel99Orb1Effect::CLevel99Orb1Effect() : CEffect(976) {
