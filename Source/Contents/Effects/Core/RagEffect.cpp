@@ -3223,28 +3223,28 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 165, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 5;
-  this->state.currentPrimitive->duration = this->state.duration;
-  this->state.currentPrimitive->totalTexture = 1;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 165, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.totalTexture = 1;
+  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   for (int slot = 0; slot < 4; ++slot) {
-    this->state.currentPrimitive->slots[slot].life = 0;
+    this->state.lastPrim->state.slots[slot].life = 0;
   }
 
   for (int slot = 0; slot < 4; ++slot) {
-    this->state.currentPrimitive->slots[slot].life = 1;
-    this->state.currentPrimitive->slots[slot].process = 0;
-    this->state.currentPrimitive->slots[slot].distance = 0.0f;
-    this->state.currentPrimitive->slots[slot].height[10] = 0.0f;
-    this->state.currentPrimitive->slots[slot].maxHeight = 15.0f;
-    this->state.currentPrimitive->slots[slot].alphaB = 0;
-    this->state.currentPrimitive->slots[slot].riseAngle = static_cast<std::int16_t>((this->state.stateCnt * 4 + slot) * 30);
-    this->state.currentPrimitive->slots[slot].rotStart = 0;
-    this->state.currentPrimitive->slots[slot].height[0] = -5.0f;
-    this->state.currentPrimitive->slots[slot].height[1] = 0.0f;
+    this->state.lastPrim->state.slots[slot].life = 1;
+    this->state.lastPrim->state.slots[slot].process = 0;
+    this->state.lastPrim->state.slots[slot].distance = 0.0f;
+    this->state.lastPrim->state.slots[slot].height[10] = 0.0f;
+    this->state.lastPrim->state.slots[slot].maxHeight = 15.0f;
+    this->state.lastPrim->state.slots[slot].alphaB = 0;
+    this->state.lastPrim->state.slots[slot].riseAngle = static_cast<std::int16_t>((this->state.stateCnt * 4 + slot) * 30);
+    this->state.lastPrim->state.slots[slot].rotStart = 0;
+    this->state.lastPrim->state.slots[slot].height[0] = -5.0f;
+    this->state.lastPrim->state.slots[slot].height[1] = 0.0f;
   }
 }
 
@@ -3734,98 +3734,98 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 90, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->renderFlag = 1;
-  this->state.currentPrimitive->renderFlag |= 5u;
-  this->state.currentPrimitive->duration = this->state.duration;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.currentPrimitive->size = 0.0f;
-  this->state.currentPrimitive->slots[0].life = 0;
-  this->state.currentPrimitive->slots[1].life = 0;
-  this->state.currentPrimitive->slots[2].life = 0;
-  this->state.currentPrimitive->slots[3].life = 0;
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 90, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.renderFlag = 1;
+  this->state.lastPrim->state.renderFlag |= 5u;
+  this->state.lastPrim->state.duration = this->state.duration;
+  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.slots[0].life = 0;
+  this->state.lastPrim->state.slots[1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
   const float scale = static_cast<float>(kind);
 
   for (int index = 0; index < 2; ++index) {
-    this->state.currentPrimitive->slots[index].life = 1;
-    this->state.currentPrimitive->slots[index].process = 0;
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.slots[index].process = 0;
 
     if (kind == 0 || kind == 10 || kind == 20) {
-      this->state.currentPrimitive->slots[index].maxHeight = static_cast<float>(index) + 30.0f;
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 30.0f;
     } else {
-      this->state.currentPrimitive->slots[index].maxHeight = static_cast<float>(index) + 20.0f;
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 20.0f;
     }
 
     if (kind == 0 || kind == 10) {
-      this->state.currentPrimitive->slots[index].alphaB = 65;
-      this->state.currentPrimitive->slots[index].alphaT = 2415;
+      this->state.lastPrim->state.slots[index].alphaB = 65;
+      this->state.lastPrim->state.slots[index].alphaT = 2415;
     } else if (kind == 20) {
-      this->state.currentPrimitive->slots[index].alphaB = 65;
-      this->state.currentPrimitive->slots[index].alphaT = 2170;
+      this->state.lastPrim->state.slots[index].alphaB = 65;
+      this->state.lastPrim->state.slots[index].alphaT = 2170;
     } else {
-      this->state.currentPrimitive->slots[index].alphaB = 32;
-      this->state.currentPrimitive->slots[index].alphaT = kind == 21 ? 2140 : 2385;
+      this->state.lastPrim->state.slots[index].alphaB = 32;
+      this->state.lastPrim->state.slots[index].alphaT = kind == 21 ? 2140 : 2385;
     }
 
     if (kind >= 10 && kind < 20) {
-      this->state.currentPrimitive->slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+      this->state.lastPrim->state.slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
     }
 
     if (kind == 10 || kind == 20) {
-      this->state.currentPrimitive->slots[index].height[0] = static_cast<float>(index) * 0.4f + 7.0f;
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index) * 0.4f + 7.0f;
     } else if (kind == 11 || kind == 21) {
-      this->state.currentPrimitive->slots[index].height[0] = static_cast<float>(index) * 0.4f + 8.5f;
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index) * 0.4f + 8.5f;
     } else if (kind == 0) {
-      this->state.currentPrimitive->slots[index].height[0] = static_cast<float>(index) * 0.4f + 12.5f;
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index) * 0.4f + 12.5f;
     } else {
-      this->state.currentPrimitive->slots[index].height[0] = static_cast<float>(index) * 0.4f + 14.0f;
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index) * 0.4f + 14.0f;
     }
 
-    this->state.currentPrimitive->slots[index].height[1] = this->state.currentPrimitive->slots[index].height[0];
-    this->state.currentPrimitive->slots[index].height[4] = scale;
+    this->state.lastPrim->state.slots[index].height[1] = this->state.lastPrim->state.slots[index].height[0];
+    this->state.lastPrim->state.slots[index].height[4] = scale;
   }
 
   for (int index = 2; index < 4; ++index) {
-    this->state.currentPrimitive->slots[index].life = 1;
-    this->state.currentPrimitive->slots[index].process = 0;
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.slots[index].process = 0;
 
     if (kind == 0 || kind == 10 || kind == 20) {
-      this->state.currentPrimitive->slots[index].maxHeight = static_cast<float>(index) + 30.0f;
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 30.0f;
     } else {
-      this->state.currentPrimitive->slots[index].maxHeight = static_cast<float>(index) + 20.0f;
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 20.0f;
     }
 
     if (kind == 10 || kind == 20) {
-      this->state.currentPrimitive->slots[index].distance = static_cast<float>(index - 2) * 30.2f;
+      this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 30.2f;
     } else if (kind == 11 || kind == 21) {
-      this->state.currentPrimitive->slots[index].distance = static_cast<float>(index - 2) * 30.2f + 15.1f;
+      this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 30.2f + 15.1f;
     } else if (kind == 0) {
-      this->state.currentPrimitive->slots[index].distance = static_cast<float>(index - 2) * 53.2f;
+      this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 53.2f;
     } else {
-      this->state.currentPrimitive->slots[index].distance = static_cast<float>(index - 2) * 53.2f + 26.6f;
+      this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 53.2f + 26.6f;
     }
 
     if (kind == 10 || kind == 20) {
-      this->state.currentPrimitive->slots[index].height[0] = 7.8f;
+      this->state.lastPrim->state.slots[index].height[0] = 7.8f;
     } else if (kind == 11 || kind == 21) {
-      this->state.currentPrimitive->slots[index].height[0] = 9.3f;
+      this->state.lastPrim->state.slots[index].height[0] = 9.3f;
     } else if (kind == 0) {
-      this->state.currentPrimitive->slots[index].height[0] = 13.3f;
+      this->state.lastPrim->state.slots[index].height[0] = 13.3f;
     } else {
-      this->state.currentPrimitive->slots[index].height[0] = 14.8f;
+      this->state.lastPrim->state.slots[index].height[0] = 14.8f;
     }
 
-    this->state.currentPrimitive->slots[index].height[1] = this->state.currentPrimitive->slots[index].height[0];
-    this->state.currentPrimitive->slots[index].height[3] = kind >= 10 ? 18.6f : 26.6f;
-    this->state.currentPrimitive->slots[index].alphaB = 15;
-    this->state.currentPrimitive->slots[index].alphaT = kind < 20 ? 2415 : 2170;
+    this->state.lastPrim->state.slots[index].height[1] = this->state.lastPrim->state.slots[index].height[0];
+    this->state.lastPrim->state.slots[index].height[3] = kind >= 10 ? 18.6f : 26.6f;
+    this->state.lastPrim->state.slots[index].alphaB = 15;
+    this->state.lastPrim->state.slots[index].alphaT = kind < 20 ? 2415 : 2170;
 
     if (kind >= 10 && kind < 20) {
-      this->state.currentPrimitive->slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+      this->state.lastPrim->state.slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
     }
 
-    this->state.currentPrimitive->slots[index].height[4] = scale;
+    this->state.lastPrim->state.slots[index].height[4] = scale;
   }
 }
 
