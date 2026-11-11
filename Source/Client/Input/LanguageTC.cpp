@@ -46,13 +46,12 @@ CLanguageTC::~CLanguageTC() = default;
 
 // OFFSET: 0x00ACF330
 // FUNCTION: fn_17795
-void CLanguageBase::ProcessKey(unsigned) {
+void CLanguageBase::ProcessKey(unsigned char) {
 }
 
 // OFFSET: 0x00ACF340
 // FUNCTION: fn_17796
-void CLanguageTC::ProcessKey(unsigned virtualKey) {
-  const auto key = static_cast<std::uint8_t>(virtualKey);
+void CLanguageTC::ProcessKey(unsigned char key) {
   if (key != 8) {
     for (auto entry = this->keys.begin(); entry != this->keys.end(); ++entry) {
       if (this->mappings[*entry].category == this->mappings[key].category) {

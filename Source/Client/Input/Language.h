@@ -15,7 +15,7 @@ struct CLanguageBase {
   virtual ~CLanguageBase();
   virtual const char* DisplayText() const;
   virtual int DisplayLength() const;
-  virtual void ProcessKey(unsigned virtualKey);
+  virtual void ProcessKey(unsigned char virtualKey);
   virtual LRESULT Message(HWND window, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled);
   virtual const char* NextChar(const char* current, int remaining);
   virtual void RefreshComposition();

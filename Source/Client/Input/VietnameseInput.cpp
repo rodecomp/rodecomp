@@ -173,9 +173,6 @@ int CVietnameseInput::Compose(char key, unsigned short* output, int* replaced) {
     }
     *replaced = 0;
     break;
-  default:
-    index = reinterpret_cast<int>(output);
-    break;
   }
   this->m_index = index;
   if (this->m_vowel >= 'a') {
@@ -198,7 +195,7 @@ int CVietnameseInput::Compose(char key, unsigned short* output, int* replaced) {
 
 // OFFSET: 0x00AFC010
 // FUNCTION: fn_18314
-bool CVietnameseInput::SetMode(int type) {
+int CVietnameseInput::SetMode(int type) {
   this->m_type = type;
   if (this->m_mode) {
     delete this->m_mode;
@@ -220,8 +217,13 @@ int CVietnameseInput::IsComposeKey(char key) {
     }
     this->Reset(0);
   }
-  if (key == 'A' || key == 'a' || key == 'E' || key == 'e' || key == 'I' || key == 'i' || key == 'O' || key == 'o' || key == 'U' || key == 'u' ||
-      key == 'Y' || key == 'y' || key == 'D' || key == 'd') {
+  if (key == 'A' || key == 'a' || key == 'E' || key == 'e' || key == 'I' || key == 'i' || key == 'O' || key == 'o') {
+    if (this->m_state != 1002) {
+      this->m_state = 1002;
+    }
+    return 1;
+  }
+  if (key == 'U' || key == 'u' || key == 'Y' || key == 'y' || key == 'D' || key == 'd') {
     if (this->m_state != 1002) {
       this->m_state = 1002;
     }

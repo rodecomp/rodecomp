@@ -25,7 +25,7 @@ struct CLanguageTC : CLanguageBase {
   ~CLanguageTC() override;
   const char* DisplayText() const override;
   int DisplayLength() const override;
-  void ProcessKey(unsigned virtualKey) override;
+  void ProcessKey(unsigned char virtualKey) override;
   void RefreshComposition() override;
   void EndComposition() override;
   void ResetCandidate() override;

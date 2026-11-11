@@ -41,7 +41,7 @@ public:
   CVietnameseInput();
   int Release();
   int Compose(char key, unsigned short* output, int* replaced);
-  bool SetMode(int type);
+  int SetMode(int type);
   int IsComposeKey(char key);
   void Reset(int resetMode);
 
