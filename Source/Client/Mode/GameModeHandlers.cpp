@@ -571,7 +571,7 @@ void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
     return;
   }
 
-  g_session.m_partyBooking.AddEntries(infos, count, packet[4]);
+  g_session.m_partyBooking.AddEntries(infos, count, *reinterpret_cast<const bool*>(packet + 4));
   window->Invalidate();
 }
 
@@ -1327,7 +1327,7 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
 // OFFSET: 0x00D3F3E0
 // FUNCTION: fn_21812
 void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
-  std::string text;
+  std::string text("");
   switch (*reinterpret_cast<const std::int16_t*>(packet + 6)) {
   case 0:
   case 8: {
@@ -1335,7 +1335,7 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
     if (window) {
       window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, *reinterpret_cast<const int*>(packet + 8), *reinterpret_cast<const int*>(packet + 12), 0, 0);
     }
-    if (*reinterpret_cast<const std::int16_t*>(packet + 6) == 8) {
+    if (8 == *reinterpret_cast<const std::int16_t*>(packet + 6)) {
       text = LookupMessage(MSI_CASH_FAILED_BUY_SOME);
     }
     break;
@@ -2097,10 +2097,10 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
 
     g_gameOptionFlag = enabled != 0;
     g_windowMgr.RefreshGameSettings();
-    if (g_gameOptionFlag) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_FAIL)), 0x64FFFF, 0, 0, 0);
-    } else {
+    if (!g_gameOptionFlag) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_SUCCESS)), 0x64FFFF, 0, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_FAIL)), 0x64FFFF, 0, 0, 0);
     }
 
     break;
@@ -2417,8 +2417,9 @@ void CGameMode::RequestWindow169(unsigned char enable) {
 // OFFSET: 0x00D66A60
 // FUNCTION: fn_22020
 void CGameMode::ShowNoticeText(std::string text) {
-  const std::string message = FormatOwnedString(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING), text.c_str());
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING), text.c_str()).c_str()), 0x64FFFF, 0, 0, 0
+  );
 }
 
 struct DdukddakBoxTestEntry {
@@ -2956,7 +2957,7 @@ void CGameMode::ReceiveClanChat(const unsigned char* packet) {
   strcpy_s(message, sizeof(message), reinterpret_cast<const char*>(packet + 28));
 
   if (g_forbiddenWords.Contains(message) == true) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(message, &masked);
   }
 
