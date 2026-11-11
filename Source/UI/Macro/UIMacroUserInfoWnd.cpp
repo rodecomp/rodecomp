@@ -315,19 +315,19 @@ void UIMacroReporterWnd::UpdateScrollBar() {
     return;
   }
 
-  const int maximum = (std::max)(count - this->m_visibleRows, 0);
+  int maximum = count - this->m_visibleRows;
+  if (maximum < 0) {
+    maximum = 0;
+  }
   this->m_scrollable = maximum > 0;
   if (maximum > 0) {
     this->m_scrollBar->SetRange(maximum, this->m_visibleRows, static_cast<int>(this->m_rows.size()));
     if (this->m_firstRow < 0) {
       this->m_firstRow = 0;
-      this->m_scrollBar->SetPosition(0);
-    } else {
-      if (this->m_firstRow > maximum) {
-        this->m_firstRow = maximum;
-      }
-      this->m_scrollBar->SetPosition(this->m_firstRow);
+    } else if (this->m_firstRow > maximum) {
+      this->m_firstRow = maximum;
     }
+    this->m_scrollBar->SetPosition(this->m_firstRow);
   } else {
     this->m_firstRow = 0;
     this->m_scrollBar->SetRange(0, this->m_visibleRows, static_cast<int>(this->m_rows.size()));

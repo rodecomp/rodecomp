@@ -296,13 +296,12 @@ void CReputeMgr::SetPoint(std::uint64_t id, std::int64_t point) {
 std::vector<const ReputeInfo*> CReputeMgr::FindReputes(const std::string& keyword) const {
   std::vector<const ReputeInfo*> reputes;
   for (auto entry = this->m_infos.begin(); entry != this->m_infos.end(); ++entry) {
-    const ReputeInfo& info = entry->second;
-    if (info.name.find(keyword) == std::string::npos) {
+    if (entry->second.name.find(keyword) == std::string::npos) {
       continue;
     }
 
-    if (info.visibility == REPUTE_VISIBLE || (info.visibility == REPUTE_VISIBLE_WITH_POINT && info.point != 0)) {
-      reputes.push_back(&info);
+    if (REPUTE_VISIBLE == entry->second.visibility || (REPUTE_VISIBLE_WITH_POINT == entry->second.visibility && 0 != entry->second.point)) {
+      reputes.push_back(&entry->second);
     }
   }
 
