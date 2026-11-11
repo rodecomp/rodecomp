@@ -270,15 +270,18 @@ void CSignBoardWnd::OnCreate(int width, int height) {
 // OFFSET: 0x00821C50
 // FUNCTION: fn_10265
 void CBmpObjWnd::Paint() {
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->path.c_str()))), false);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->path.c_str())));
+  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x00821C90
 // FUNCTION: fn_10266
 void CSignBoardWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp"))), false);
-  this->DrawBitmap(5, 5, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->iconPath.c_str()))), true);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp")));
+  this->DrawBitmap(0, 0, background, false);
+  CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->iconPath.c_str())));
+  this->DrawBitmap(5, 5, icon, true);
 }
 
 // OFFSET: 0x00821D10

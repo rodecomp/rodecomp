@@ -4,8 +4,8 @@
 // OFFSET: 0x00CADBE0
 // FUNCTION: fn_21062
 bool EffectActor::HasId(int id) const {
-  for (const CRagEffect* effect : this->state.effects) {
-    if (effect && effect->state.type == id) {
+  for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+    if (*it && (*it)->state.type == id) {
       return true;
     }
   }

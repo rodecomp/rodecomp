@@ -91,7 +91,11 @@ bool CNavigationManager::IsCurrentTarget(const char* name) const {
   }
 
   const std::string resolved = ResourceMgr::Instance().ResolveMapName(name);
-  return std::strcmp(info->GetName(), resolved.c_str()) == 0;
+  if (std::strcmp(info->GetName(), resolved.c_str()) == 0) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00B971D0

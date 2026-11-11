@@ -84,11 +84,12 @@ void CNavi_Link::SetDepth(int depth) {
 bool CNaviInfo::AddNpc(CNavi_Object* npc) {
   std::vector<CNavi_Object*>& npcs = this->npcs;
 
-  if (npc == nullptr) {
+  CNavi_Object* object = npc;
+  if (object == nullptr) {
     return false;
   }
 
-  npcs.push_back(npc);
+  npcs.push_back(object);
   return true;
 }
 
@@ -97,11 +98,12 @@ bool CNaviInfo::AddNpc(CNavi_Object* npc) {
 bool CNaviInfo::AddLink(CNavi_Link* link) {
   std::vector<CNavi_Link*>& links = this->links;
 
-  if (link == nullptr) {
+  CNavi_Link* object = link;
+  if (object == nullptr) {
     return false;
   }
 
-  links.push_back(link);
+  links.push_back(object);
   return true;
 }
 
@@ -110,11 +112,12 @@ bool CNaviInfo::AddLink(CNavi_Link* link) {
 bool CNaviInfo::AddMob(CNavi_Object* mob) {
   std::vector<CNavi_Object*>& mobs = this->mobs;
 
-  if (mob == nullptr) {
+  CNavi_Object* object = mob;
+  if (object == nullptr) {
     return false;
   }
 
-  mobs.push_back(mob);
+  mobs.push_back(object);
   return true;
 }
 

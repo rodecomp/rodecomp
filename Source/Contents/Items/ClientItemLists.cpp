@@ -1546,8 +1546,9 @@ bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
       if (it->quantity <= 0) {
         this->merchantShopItems.erase(it);
       }
+      const std::uint32_t index = item.identity[1];
       for (auto it2 = this->merchantShopItems.begin(); it2 != this->merchantShopItems.end(); ++it2) {
-        if (it2->identity[1] == item.identity[1]) {
+        if (it2->identity[1] == index) {
           it2->flags[2] = 0;
           break;
         }
@@ -1677,8 +1678,9 @@ bool CSession::RemoveCartItem(const ITEM_INFO& item) {
       if (it->quantity <= 0) {
         this->cartItems.erase(it);
       }
+      const std::uint32_t index = item.identity[1];
       for (auto it2 = this->cartItems.begin(); it2 != this->cartItems.end(); ++it2) {
-        if (it2->identity[1] == item.identity[1]) {
+        if (it2->identity[1] == index) {
           it2->flags[2] = 0;
           break;
         }
