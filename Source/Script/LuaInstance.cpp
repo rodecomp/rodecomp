@@ -119,7 +119,7 @@ void CLuaInstance::SetGlobal(const std::string& name, double value) {
 // FUNCTION: fn_23942
 int CLuaInstance::ReadStrings(std::vector<std::string>& values, const char* global) {
   lua_getglobal(this->m_state, global);
-  int type = lua_type(this->m_state, -1);
+  const int type = lua_type(this->m_state, -1);
   if (type != LUA_TTABLE) {
     lua_pop(this->m_state, 1);
     return (type != LUA_TNIL) + 1;
@@ -130,10 +130,11 @@ int CLuaInstance::ReadStrings(std::vector<std::string>& values, const char* glob
 
   for (lua_pushnil(this->m_state); lua_next(this->m_state, -2); lua_pop(this->m_state, 1)) {
     std::string value;
-    type = lua_type(this->m_state, -1);
-    if (type != LUA_TSTRING) {
+    const int valueType = lua_type(this->m_state, -1);
+    if (valueType != LUA_TSTRING) {
+      const int result = (valueType != LUA_TNIL) + 1;
       lua_pop(this->m_state, 3);
-      return (type != LUA_TNIL) + 1;
+      return result;
     }
 
     value = lua_tostring(this->m_state, -1);
