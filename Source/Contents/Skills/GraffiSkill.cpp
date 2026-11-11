@@ -10,22 +10,11 @@
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
 #include <cstdint>
 #include <cstring>
-
-namespace {
-  // INLINED
-  __declspec(noinline) float Sine(float angle) {
-    return sinf(angle);
-  }
-
-  // INLINED
-  __declspec(noinline) float Cosine(float angle) {
-    return cosf(angle);
-  }
-}
 
 // INLINED
 CGraffiSkill::~CGraffiSkill() {
@@ -121,8 +110,8 @@ void CGraffiSkill::Render(int argument) {
   const int cellY = this->m_cellY;
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   GroundGeometry* ground = mode->scene->ground;
-  const float sine = static_cast<float>(std::sin(static_cast<double>(this->m_angle / 180.0f * 3.141592f)));
-  const float cosine = static_cast<float>(std::cos(static_cast<double>(this->m_angle / 180.0f * 3.141592f)));
+  const float sine = ClientSin(this->m_angle / 180.0f * 3.141592f);
+  const float cosine = ClientCos(this->m_angle / 180.0f * 3.141592f);
 
 
   for (int row = 0; row < 18; ++row) {

@@ -12,6 +12,7 @@
 #include "Render/Renderer.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/TextureCache.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
 #include <cstdint>

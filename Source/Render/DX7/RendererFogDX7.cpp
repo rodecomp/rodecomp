@@ -8,21 +8,19 @@
 #include <bit>
 #include <cmath>
 
-namespace {
-  // OFFSET: 0x00556E50
+// OFFSET: 0x00556E50
   // FUNCTION: fn_02039
   __declspec(noinline) float Sine(volatile float angle) {
     angle = sinf(angle);
     return angle;
   }
 
-  // OFFSET: 0x00556E40
+// OFFSET: 0x00556E40
   // FUNCTION: fn_02038
   __declspec(noinline) float Cosine(volatile float angle) {
     angle = cosf(angle);
     return angle;
   }
-}
 
 // OFFSET: 0x00556E60
 // FUNCTION: fn_02040

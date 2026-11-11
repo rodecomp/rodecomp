@@ -3,16 +3,6 @@
 #include <bit>
 #include <cmath>
 
-// INLINED
-float ClientSin(float radians) {
-  return std::sin(radians);
-}
-
-// INLINED
-float ClientCos(float radians) {
-  return std::cos(radians);
-}
-
 // GLOBAL: gl_24568
 float g_radTable[722];
 
