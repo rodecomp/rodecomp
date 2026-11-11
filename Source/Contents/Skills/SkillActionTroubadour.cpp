@@ -360,7 +360,8 @@ void CSkillAction_TR_GEF_NOCTURN::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_TR_GEF_NOCTURN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
