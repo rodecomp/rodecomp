@@ -24,6 +24,11 @@
 #include <vector>
 
 
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x009A0090
 // FUNCTION: fn_13598
 void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
@@ -72,18 +77,9 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13601
 std::vector<unsigned char> UIMakeTargetProcessWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(22000, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(22002, &this->makeType, sizeof(this->makeType));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(22001, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22000, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22002, &this->makeType, sizeof(this->makeType)));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22001, nullptr, 0));
   return records;
 }
 

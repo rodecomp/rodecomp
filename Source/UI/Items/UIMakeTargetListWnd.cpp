@@ -44,6 +44,11 @@ inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const
 }
 }
 
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x009A0490
 // FUNCTION: fn_13600
 std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {

@@ -46,7 +46,7 @@ void UIListBoxEx::OnCreate(int width, int height) {
   vertical->Move((width - 13), 0);
   vertical->OnCreate(thickness, height);
   vertical->OnSize(thickness, height);
-  this->AddChild(vertical);
+  this->AddChild(this->verticalBar);
 
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
@@ -56,7 +56,7 @@ void UIListBoxEx::OnCreate(int width, int height) {
   horizontal->Move(0, (height - 13));
   horizontal->OnCreate((width - 13), horizontalHeight);
   horizontal->OnSize((width - 13), horizontalHeight);
-  this->AddChild(horizontal);
+  this->AddChild(this->horizontalBar);
 }
 
 // OFFSET: 0x00897750

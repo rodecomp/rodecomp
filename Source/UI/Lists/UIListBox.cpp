@@ -159,8 +159,12 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
 // OFFSET: 0x008752F0
 // FUNCTION: fn_11198
 void UIChatHisBox3::AddText(const char* text, int color) {
-  const bool atBottom =
-    this->verticalOverflow == 0 || this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);
+  bool atBottom;
+  if (this->verticalOverflow != 0) {
+    atBottom = this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);
+  } else {
+    atBottom = true;
+  }
 
   if (this->lines.size() >= this->maxLines) {
     this->ShiftNaviLinks();

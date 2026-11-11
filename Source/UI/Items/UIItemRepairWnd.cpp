@@ -44,6 +44,20 @@ struct UIItemRepairRecordHeader {
 };
 #pragma pack(pop)
 
+// INLINED
+static std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + 6, 0);
+  *reinterpret_cast<std::uint16_t*>(record.data()) = id;
+  *reinterpret_cast<std::uint32_t*>(record.data() + 2) = bytes;
+  std::memcpy(record.data() + 6, data, bytes);
+  return record;
+}
+
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x009A3860
 // FUNCTION: fn_13609
 void UIItemRepairWnd::Paint() {
@@ -377,21 +391,10 @@ UIItemRepairWnd::~UIItemRepairWnd() = default;
 // FUNCTION: fn_13599
 std::vector<unsigned char> UIItemRepairWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(22150, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22150, nullptr, 0));
   for (auto it = this->entries.begin(); it != this->entries.end(); ++it) {
-    const UIItemRepairEntry& entry = *it;
-    std::vector<unsigned char> record(sizeof(entry) + 6, 0);
-    *reinterpret_cast<std::uint16_t*>(record.data()) = 22152;
-    *reinterpret_cast<std::uint32_t*>(record.data() + 2) = sizeof(entry);
-    std::memcpy(record.data() + 6, &entry, sizeof(entry));
-    records.insert(records.end(), record.cbegin(), record.cend());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(22152, &*it, sizeof(*it)));
   }
-  {
-    const auto record = BuildReplayTaggedRecord(22151, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22151, nullptr, 0));
   return records;
 }

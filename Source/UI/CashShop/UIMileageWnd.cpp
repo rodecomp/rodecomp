@@ -145,12 +145,7 @@ int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->m_bonus = static_cast<int>(d);
     g_mileageWndBonus = static_cast<int>(d);
 
-    int remaining = 3600 - static_cast<int>(c);
-    if (remaining < 0) {
-      remaining = 0;
-    }
-
-    this->m_remaining = remaining;
+    this->m_remaining = std::max(3600 - static_cast<int>(c), 0);
     this->m_startTime = timeGetTime();
     this->Show(g_serviceOptions.Get(219));
   }
