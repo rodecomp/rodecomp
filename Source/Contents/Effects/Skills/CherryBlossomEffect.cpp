@@ -54,7 +54,7 @@ void CCherryBlossomEffect::Open() {
         particle->scale = 0.55f;
         particle->alpha = 0;
 
-        const float height = static_cast<float>(std::max(rand() % 100, 0));
+        const float height = static_cast<float>(Random(100));
         EffectPoint& offset = this->offsets[row * 4 + column];
         offset.x = 0.0f;
         offset.y = height;
@@ -62,7 +62,7 @@ void CCherryBlossomEffect::Open() {
 
         float* angles = &particle->animationParameter;
         for (int i = 0; i < 4; ++i) {
-          angles[i] = static_cast<float>(std::max(rand() % 360, 0));
+          angles[i] = static_cast<float>(Random(360));
         }
 
         this->petals.push_back(particle);
