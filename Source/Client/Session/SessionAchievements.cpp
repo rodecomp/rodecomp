@@ -61,7 +61,8 @@ bool CSession::ToggleTrackedAchievement(int id) {
   if (record != this->achievements.end()) {
     progress = &record->second;
   } else {
-    this->achievements.insert(std::make_pair(id, SessionRecord6144()));
+    const std::pair<int, SessionRecord6144> entry(id, SessionRecord6144());
+    this->achievements.insert(entry);
     reinterpret_cast<unsigned char*>(&this->achievements[id].completionFlags)[0] = 1;
     progress = &this->achievements[id];
   }
