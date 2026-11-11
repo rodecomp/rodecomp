@@ -1767,9 +1767,9 @@ void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int hei
 
   UITextViewer* viewer = new UITextViewer();
   viewer->Configure(10, 22, width - 20, height - 55, 0);
-  unsigned int red = 0;
-  unsigned int green = 0;
-  unsigned int blue = 0;
+  unsigned int red;
+  unsigned int green;
+  unsigned int blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   viewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
   viewer->Invalidate();
