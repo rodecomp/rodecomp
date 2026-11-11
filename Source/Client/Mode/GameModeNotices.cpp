@@ -93,6 +93,8 @@
 #include "Resource/MSGSTRINGID.h"
 
 
+extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
+
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
 
@@ -4603,7 +4605,7 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
   if (!item) {
     item = new CItem;
     this->scene->objects.push_back(item);
-    this->scene->items.push_back(item);
+    this->scene->items.emplace_back(item);
   }
 
   const std::int64_t entryAddress = reinterpret_cast<int>(&entry);
