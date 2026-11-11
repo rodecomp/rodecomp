@@ -2586,8 +2586,7 @@ void UINavigationV4Wnd::Paint() {
 // FUNCTION: fn_03589
 void UINavigationroadiconWnd::Paint() {
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_roadIocn_select.bmp")));
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_NAVIGATION_SHARETIP), 0);
-  this->DrawBitmap(0, titleHeight, bitmap, false);
+  this->DrawBitmap(0, this->DrawTitleBar(true, LookupMessage(MSI_NAVIGATION_SHARETIP), 0), bitmap, false);
 }
 
 // OFFSET: 0x005C7CC0
