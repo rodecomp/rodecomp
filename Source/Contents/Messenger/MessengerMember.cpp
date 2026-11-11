@@ -1324,19 +1324,18 @@ void UIMessengerGroupWnd::LayoutButtons() {
 
   int x;
   if (this->mode == 1) {
-    const int offset = hidden * -26;
     if (g_session.PartyCount()) {
-      this->buttons[10]->Move(offset + 213, this->geometry.height - 40);
-      this->buttons[9]->Move(offset + 161, this->geometry.height - 40);
-      this->buttons[8]->Move(offset + 187, this->geometry.height - 40);
+      this->buttons[10]->Move(hidden * -26 + 213, this->geometry.height - 40);
+      this->buttons[9]->Move(hidden * -26 + 161, this->geometry.height - 40);
+      this->buttons[8]->Move(hidden * -26 + 187, this->geometry.height - 40);
       this->buttons[7]->Move(-100, -100);
     } else {
       this->buttons[10]->Move(-100, -100);
-      this->buttons[7]->Move(offset + 161, this->geometry.height - 40);
+      this->buttons[7]->Move(hidden * -26 + 161, this->geometry.height - 40);
       this->buttons[8]->Move(-100, -100);
       this->buttons[9]->Move(-100, -100);
     }
-    x = offset + 135;
+    x = hidden * -26 + 135;
   } else {
     this->buttons[7]->Move(-100, -100);
     this->buttons[8]->Move(-100, -100);
