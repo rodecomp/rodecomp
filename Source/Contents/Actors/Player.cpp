@@ -874,17 +874,17 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
     SpriteQuad quad;
     int box[4];
     std::uint32_t quadColor;
-    if (this->GetMonsterTransformJob() == JT_THANATOS) {
-      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
-      if (this->render.state == 0 && index == 1) {
-        quad.bottomRhw = bottomRhw + 0.000008f;
-        quad.topRhw = topRhw + 0.00008f;
-      }
-    } else {
+    if (this->GetMonsterTransformJob() != JT_THANATOS) {
       this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
       if (g_cameraDistance >= 320.0f) {
         quad.bottomRhw = bottomRhw - 0.0000025f;
         quad.topRhw = topRhw - 0.0000025f;
+      }
+    } else {
+      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
+      if (this->render.state == 0 && index == 1) {
+        quad.bottomRhw = bottomRhw + 0.000008f;
+        quad.topRhw = topRhw + 0.00008f;
       }
     }
 
@@ -1896,7 +1896,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
 
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
   bool attached = false;
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
@@ -1986,7 +1986,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
   }
 
   if (model == this->model) {
-    if (this->model->ProjectBounds(bounds, view, rotation, mode->camera->frame.eye)) {
+    if (this->model->ProjectBounds(bounds, view, rotation, camera->frame.eye)) {
       this->SetRenderInfo(bounds, screenX, screenY);
     } else {
       this->SetTlvert(screenX, screenY);
@@ -4584,11 +4584,11 @@ void CGrannyPc::Render(int argument) {
   }
 
   GrannyPcLight light;
-  light.direction = g_weatherEffect.GetWindDirection();
-  light.intensity = 0x80;
   light.red = 200;
+  light.direction = g_weatherEffect.GetWindDirection();
   light.green = 200;
   light.blue = 200;
+  light.intensity = 0x80;
 
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   if (this->renderFrame == 0) {
