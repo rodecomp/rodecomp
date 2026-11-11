@@ -10,14 +10,14 @@
 
 // OFFSET: 0x00556E50
   // FUNCTION: fn_02039
-  __declspec(noinline) float Sine(volatile float angle) {
+  __declspec(noinline) float ClientSin(volatile float angle) {
     angle = sinf(angle);
     return angle;
   }
 
 // OFFSET: 0x00556E40
   // FUNCTION: fn_02038
-  __declspec(noinline) float Cosine(volatile float angle) {
+  __declspec(noinline) float ClientCos(volatile float angle) {
     angle = cosf(angle);
     return angle;
   }
@@ -41,12 +41,12 @@ HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float n
 
   const float half = fov * 0.5f;
 
-  if (epsilon > std::fabs(Sine(half))) {
+  if (epsilon > std::fabs(ClientSin(half))) {
     return E_INVALIDARG;
   }
 
-  const float scaleX = Cosine(half) / Sine(half) * aspect;
-  const float scaleY = Cosine(half) / Sine(half);
+  const float scaleX = ClientCos(half) / ClientSin(half) * aspect;
+  const float scaleY = ClientCos(half) / ClientSin(half);
   const float depth = farPlane / difference;
 
   matrix._12 = 0;
