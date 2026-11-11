@@ -1655,7 +1655,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
   const short alpha = static_cast<short>(this->state.alpha);
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life <= 0 || this->state.alpha <= 0.0f) {
+    if (this->state.slots[ec].life <= 0 || !(this->state.alpha > 0.0f)) {
       continue;
     }
 
