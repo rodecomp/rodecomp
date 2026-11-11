@@ -469,7 +469,7 @@ std::vector<unsigned char> Replay::ReadSection(int id) {
   const int index = this->FindSection(id);
   if (index != -1 && this->sections[index].fileOffset != 0 && this->sections[index].bytes != 0) {
     const ReplaySection& section = this->sections[index];
-    data.resize(section.bytes);
+    data.resize(section.bytes, 0);
     std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
     std::fread(data.data(), section.bytes, 1, this->file);
     this->Cipher(section.bytes, data.data());
@@ -1016,7 +1016,7 @@ void Replay::CachePacket(std::uint16_t id, std::uint16_t size, const unsigned ch
   if (!this->cachedPackets[static_cast<short>(id)].enabled) {
     return;
   }
-  this->cachedPackets[static_cast<short>(id)].bytes.resize(size, 0);
+  this->cachedPackets[static_cast<short>(id)].bytes.resize(size);
   this->cachedPackets[static_cast<short>(id)].bytes.assign(data, data + size);
 }
 
