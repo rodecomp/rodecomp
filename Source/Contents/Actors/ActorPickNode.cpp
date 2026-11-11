@@ -70,14 +70,11 @@ void CActorPickNode::AddPickInfo(ActorPickInfo* info) {
     const int y = static_cast<int>(info->top);
     const int centerX = node->bounds.right / 2;
     const int centerY = node->bounds.bottom / 2;
-    int quadrant;
-    if (x > centerX) {
-      quadrant = (y > centerY) + 1;
+    if (x <= centerX) {
+      node = node->children[y <= centerY ? 0 : 3];
     } else {
-      quadrant = y <= centerY ? 0 : 3;
+      node = node->children[(y > centerY) + 1];
     }
-
-    node = node->children[quadrant];
   }
 
   node->pickInfos.push_back(info);

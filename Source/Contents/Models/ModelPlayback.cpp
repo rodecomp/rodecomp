@@ -20,7 +20,7 @@ void C3dActorV1::Update() {
   switch (this->playback) {
     case 1: {
       const unsigned tick = GetTickCount();
-      if (tick == this->lastTick) {
+      if (tick - this->lastTick == 0) {
         return;
       }
 
@@ -35,7 +35,7 @@ void C3dActorV1::Update() {
     }
     case 2: {
       const unsigned tick = GetTickCount();
-      if (tick == this->lastTick) {
+      if (tick - this->lastTick == 0) {
         return;
       }
 

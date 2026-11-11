@@ -10,7 +10,8 @@ CWhisperBlockMgr* g_whisperBlockMgr;
 
 // OFFSET: 0x00610E60
 // FUNCTION: fn_04322
-CWhisperBlockMgr::CWhisperBlockMgr() : m_enabled(true), m_tracking(false), m_changes(0) {
+CWhisperBlockMgr::CWhisperBlockMgr() : m_tracking(false), m_changes(0) {
+  this->m_enabled = true;
 }
 
 // INLINED

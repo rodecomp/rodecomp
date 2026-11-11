@@ -41,5 +41,8 @@ GUID CSession::GetOptionGuid(const char* key, const GUID& fallback) {
 float CSession::GetOptionFloat(const char* key, float fallback) {
   double value = -1.0;
   this->m_hotkeyScript->Call("l_GetOptionValue", "s>l", key, &value);
-  return value == -1.0 ? fallback : static_cast<float>(value);
+  if (value == -1.0) {
+    return fallback;
+  }
+  return static_cast<float>(value);
 }
