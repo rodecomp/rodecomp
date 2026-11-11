@@ -9163,22 +9163,30 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SetChatInputText(parts[0].c_str());
     this->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
     break;
-  case TT_REQ_WHISPER_PC_EX:
+  case TT_REQ_WHISPER_PC_EX: {
+    this->refuseWhisperName = parts[0];
+    if (this->refuseWhisperName.size() > 0x18) {
+      break;
+    }
+    g_whisperBlockMgr->Add(this->refuseWhisperName);
+    TalkWhisperSettingPacket packet;
+    packet.id = ID_CZ_SETTING_WHISPER_PC;
+    StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
+    packet.type = 0;
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    break;
+  }
   case TT_REQ_WHISPER_PC_IN: {
     this->refuseWhisperName = parts[0];
     if (this->refuseWhisperName.size() > 0x18) {
       break;
     }
+    g_whisperBlockMgr->Remove(this->refuseWhisperName);
     TalkWhisperSettingPacket packet;
-    if (talkType == TT_REQ_WHISPER_PC_EX) {
-      g_whisperBlockMgr->Add(this->refuseWhisperName);
-    } else {
-      g_whisperBlockMgr->Remove(this->refuseWhisperName);
-    }
     packet.id = ID_CZ_SETTING_WHISPER_PC;
-    StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", parts[0].c_str());
-    packet.type = talkType == TT_REQ_WHISPER_PC_EX ? 0 : 1;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
+    packet.type = 1;
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_REQ_SAVE_CHAT_FROM_CHATROOM:
@@ -9855,7 +9863,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     TalkConfigPacket packet;
     packet.value = talkType != TT_REQ_ACCEPT_INVITE_PARTY;
     packet.id = ID_CZ_PARTY_CONFIG;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_REQ_OPEN_EQUIPEDITEM_ONOFF:
@@ -9952,14 +9960,14 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     TalkConfigPacket packet;
     packet.value = talkType == TT_MACRO_REGISTER ? 2 : 3;
     packet.id = ID_CZ_UI_OPEN;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_MACRO_PREVIEW: {
     TalkIntPacket packet;
     packet.id = ID_CZ_REQ_PREVIEW_MACRO_DETECTOR;
     packet.value = std::atoi(parts[0].c_str());
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_VIEW_CAMERAINFO_ON_OFF: {
@@ -10000,7 +10008,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_RESET_COOLTIME: {
     TalkConfigPacket packet;
     packet.id = ID_CZ_CMD_RESETCOOLTIME;
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_ADVEN_PARTY_BOARD:
@@ -10020,14 +10028,14 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       packet.enabled = 0;
       packet.value = 0;
     }
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_MACRO_CHECKER_MAP: {
     TalkNamePacket packet;
     packet.id = ID_CZ_GM_CHECKER;
     strncpy_s(packet.name, sizeof(packet.name), parts[0].c_str(), _TRUNCATE);
-    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }
   case TT_PROBABILITY_TEST: {
