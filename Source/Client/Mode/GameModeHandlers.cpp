@@ -851,18 +851,24 @@ void CGameMode::PlayBgm(unsigned char type, std::string name) {
 
   g_soundMgr->StopStreams();
   switch (type) {
-  case 0:
-    g_soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 0, false);
+  case 0: {
+    CSoundMgr* soundMgr = g_soundMgr;
+    soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 0, false);
     g_soundMgr->secondaryEnabled = 0;
     break;
-  case 1:
-    g_soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 1, false);
+  }
+  case 1: {
+    CSoundMgr* soundMgr = g_soundMgr;
+    soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 1, false);
     g_soundMgr->secondaryEnabled = 1;
     break;
-  case 2:
-    g_soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+  }
+  case 2: {
+    CSoundMgr* soundMgr = g_soundMgr;
+    soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
     g_soundMgr->secondaryEnabled = 0;
     break;
+  }
   }
 }
 
@@ -2151,12 +2157,13 @@ void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
 // FUNCTION: fn_22037
 void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
   ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
-  if (item.identity[1]) {
+  if (item.identity[1] > 0) {
     const int result = *reinterpret_cast<const int*>(packet + 6);
-    if (result == ENCHANTGRADE_UPGRADE_SUCCESS || result == ENCHANTGRADE_UPGRADE_DOWNGRADE) {
-      if (result == ENCHANTGRADE_UPGRADE_SUCCESS) {
-        item.refiningLevel = 0;
-      }
+    if (result == ENCHANTGRADE_UPGRADE_SUCCESS) {
+      item.refiningLevel = 0;
+      item.grade = *reinterpret_cast<const std::int16_t*>(packet + 4);
+      g_session.UpdateInventoryItem(item, 1);
+    } else if (result == ENCHANTGRADE_UPGRADE_DOWNGRADE) {
       item.grade = *reinterpret_cast<const std::int16_t*>(packet + 4);
       g_session.UpdateInventoryItem(item, 1);
     }
