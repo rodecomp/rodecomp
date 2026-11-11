@@ -696,12 +696,12 @@ void CGameActor::UpdateStateEffects() {
     return;
   }
 
-  const DWORD now = timeGetTime();
+  const std::uint64_t now = timeGetTime();
   if (StateFlag00(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(22))) {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(22, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
-      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((now >> 4) % 10 + 1), 0, 0, 0, 0);
     }
   }
 
@@ -709,7 +709,7 @@ void CGameActor::UpdateStateEffects() {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
-      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, static_cast<std::int64_t>((now >> 4) % 10 + 1), 0, 0, 0, 0);
     }
   }
 
