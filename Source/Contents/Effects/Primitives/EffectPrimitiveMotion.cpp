@@ -58,7 +58,8 @@ namespace {
       return 0;
     }
 
-    return std::abs(rand() % range);
+    const int value = rand() % range;
+    return value >= 0 ? value : 0;
   }
 
   // INLINED
@@ -807,9 +808,12 @@ bool CEffectPrim::UpdateStoneCurse() {
 // FUNCTION: fn_19776
 void CEffectPrim::Prim3DCircle() {
   const CRagEffect* master = this->state.master;
-  this->state.orgPos.x = master->render.position.x + this->state.deltaPos2.x;
-  this->state.orgPos.y = master->render.position.y + this->state.deltaPos2.y;
-  this->state.orgPos.z = master->render.position.z + this->state.deltaPos2.z;
+  const float masterX = master->render.position.x;
+  const float masterY = master->render.position.y;
+  const float masterZ = master->render.position.z;
+  this->state.orgPos.x = masterX + this->state.deltaPos2.x;
+  this->state.orgPos.y = masterY + this->state.deltaPos2.y;
+  this->state.orgPos.z = masterZ + this->state.deltaPos2.z;
 
   float base;
 
@@ -2367,9 +2371,12 @@ __declspec(noinline) void CEffectPrim::PrimWaterFall() {
 // FUNCTION: fn_19779
 bool CEffectPrim::Prim3DParticle() {
   const CRagEffect* master = this->state.master;
-  this->state.orgPos.x = master->render.position.x + this->state.deltaPos2.x;
-  this->state.orgPos.y = master->render.position.y + this->state.deltaPos2.y;
-  this->state.orgPos.z = master->render.position.z + this->state.deltaPos2.z;
+  const float masterX = master->render.position.x;
+  const float masterY = master->render.position.y;
+  const float masterZ = master->render.position.z;
+  this->state.orgPos.x = masterX + this->state.deltaPos2.x;
+  this->state.orgPos.y = masterY + this->state.deltaPos2.y;
+  this->state.orgPos.z = masterZ + this->state.deltaPos2.z;
 
   const int frame = this->state.stateCnt;
 
@@ -2873,10 +2880,12 @@ bool CEffectPrim::Prim3DParticleOrbit() {
 // FUNCTION: fn_19783
 bool CEffectPrim::Prim3DParticleSpline() {
   const CRagEffect* master = this->state.master;
-  this->state.orgPos = {
-    master->render.position.x + this->state.deltaPos2.x, master->render.position.y + this->state.deltaPos2.y,
-    master->render.position.z + this->state.deltaPos2.z
-  };
+  const float masterX = master->render.position.x;
+  const float masterY = master->render.position.y;
+  const float masterZ = master->render.position.z;
+  this->state.orgPos.x = masterX + this->state.deltaPos2.x;
+  this->state.orgPos.y = masterY + this->state.deltaPos2.y;
+  this->state.orgPos.z = masterZ + this->state.deltaPos2.z;
 
   const int angle = static_cast<int>(this->state.roll);
   const float lateral = this->state.latiSpeed;
@@ -7908,9 +7917,7 @@ bool CEffectPrim::PrimFloatingMotes() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
