@@ -989,16 +989,22 @@ void UIRefiningWnd::SetState(int state, int result) {
   case 1:
     this->result = 7;
     this->refiningButton->Enable(1);
-    this->refiningButton->SetDisabled(1);
-    this->refiningButton->Invalidate();
+    {
+      UIButton* button = this->refiningButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
     this->Invalidate();
     return;
   case 2:
     this->refiningButton->Enable(1);
-    this->refiningButton->SetDisabled(1);
-    this->refiningButton->Invalidate();
+    {
+      UIButton* button = this->refiningButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
     if (UIButton* button = this->cancelButton) {
