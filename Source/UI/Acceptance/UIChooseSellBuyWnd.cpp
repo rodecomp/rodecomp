@@ -4320,17 +4320,16 @@ void UIItemIdentifyWnd::Paint() {
       continue;
     }
 
-    const int top = row / this->m_columns * 32;
-    const int y = top + 34;
+    const int y = row / this->m_columns * 32 + 34;
     if (this->m_selected == index) {
       unsigned red, green, blue;
       SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
-      this->FillRegion(5, top + 31, this->geometry.width - 24, 30, RGB(red, green, blue));
+      this->FillRegion(5, y - 3, this->geometry.width - 24, 30, RGB(red, green, blue));
     }
 
     DrawItemIcon(*this, ResourceMgr::Instance(), 8, y, *it, 0);
     this->DrawFittedItemName(40, y, &*it, 0, 0, 12, 0);
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         8, y + 12,
         static_cast<CBitmapRes*>(
