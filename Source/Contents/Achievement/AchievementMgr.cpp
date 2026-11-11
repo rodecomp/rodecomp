@@ -283,39 +283,39 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std:
 // FUNCTION: fn_05325
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, int value) {
   const auto found = this->achievements.find(id);
-  if (found == this->achievements.end()) {
+  if (found != this->achievements.end()) {
+    found->second.rewardBuffId = value;
+    return std::make_pair(true, "good");
+  } else {
     const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
     return std::make_pair(false, message);
   }
-
-  found->second.rewardBuffId = value;
-  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F570
 // FUNCTION: fn_05326
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, int value) {
   const auto found = this->achievements.find(id);
-  if (found == this->achievements.end()) {
+  if (found != this->achievements.end()) {
+    found->second.rewardItemId = value;
+    return std::make_pair(true, "good");
+  } else {
     const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
     return std::make_pair(false, message);
   }
-
-  found->second.rewardItemId = value;
-  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F690
 // FUNCTION: fn_05327
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, int value) {
   const auto found = this->achievements.find(id);
-  if (found == this->achievements.end()) {
+  if (found != this->achievements.end()) {
+    found->second.rewardTitleId = value;
+    return std::make_pair(true, "good");
+  } else {
     const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
     return std::make_pair(false, message);
   }
-
-  found->second.rewardTitleId = value;
-  return std::make_pair(true, "good");
 }
 
 // OFFSET: 0x0066F7B0
