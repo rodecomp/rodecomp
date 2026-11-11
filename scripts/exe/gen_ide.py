@@ -87,6 +87,9 @@ def compile_commands(config, units, tc):
     for unit, (shape, extra) in sorted(units.items()):
         args = [cl, *(expand(a, tc) for a in config["shapes"][shape]), *system]
         args += [f"/I{(ROOT / d).as_posix()}" for d in extra]
+        prelude = build_exe.unit_prelude(unit)
+        if prelude:
+            args.append(f"/FI{prelude.as_posix()}")
         args.append((ROOT / unit).as_posix())
         entries.append({"directory": ROOT.as_posix(), "file": (ROOT / unit).as_posix(), "arguments": args})
     out = BUILD / "editor-x86"

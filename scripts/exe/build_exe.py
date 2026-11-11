@@ -304,6 +304,16 @@ def exe_units(config):
     return units
 
 
+def unit_prelude(unit):
+    """The unit's linkage prelude (data/decomp.json unitPrelude), forced in with /FI, or None."""
+    project = json.loads((ROOT / "data" / "decomp.json").read_text(encoding="utf-8"))
+    directory = project.get("unitPrelude")
+    if not directory:
+        return None
+    path = ROOT / directory / f"{unit}.h"
+    return path if path.is_file() else None
+
+
 def compile_units(tc, config, out_dir, jobs):
     env = dict(tc.env)
     for key, value in config["env"].items():
@@ -326,7 +336,9 @@ def compile_units(tc, config, out_dir, jobs):
         obj = out_dir / (unit.replace("/", "_") + ".obj")
         deps_file = obj.with_suffix(".deps.json")
         extra = [f"/I{tc.path(ROOT / directory)}" for directory in includes]
-        args = [*(tc.expand(a) for a in config["shapes"][shape]), *extra, "/Z7", f"/Fo{tc.path(obj)}", tc.path(ROOT / unit)]
+        prelude = unit_prelude(unit)
+        forced = [f"/FI{tc.path(prelude)}"] if prelude else []
+        args = [*(tc.expand(a) for a in config["shapes"][shape]), *extra, *forced, "/Z7", f"/Fo{tc.path(obj)}", tc.path(ROOT / unit)]
         key = "\x00".join(args)
         try:
             record = json.loads(deps_file.read_text(encoding="utf-8"))

@@ -1,31 +1,40 @@
 {
-  "name": "rodecomp",
-  "sourceDirs": [
-    "Source",
-    "ThirdParty"
-  ],
-  "includeDirs": [],
-  "headerGlobs": [
-    "Source/**/*.h",
-    "Source/**/*.hpp",
-    "Source/**/*.inl"
-  ],
-  "toolchain": "ragnarok",
-  "globalRules": true,
-  "offsetAnnotations": true,
-  "encodedLiterals": [
-    { "macro": "CRYPT_NAME", "kind": "xor-repeating-key", "keyBytes": 8, "includeTerminator": true }
-  ],
-  "matchPolicy": {
-    "reviewAt": "match_unresolved",
-    "maxCleanupCycles": 5,
-    "approvals": 1,
-    "approvalsWithHeaderChanges": 2
-  },
-  "exeBuild": ["python", "scripts/exe/build_exe.py"],
-  "lintLimits": {
-    "maxInitializerNumbers": 65536,
-    "maxFiles": 2048
-  },
-  "compileCommands": "data/compile.json"
+ "name": "rodecomp",
+ "sourceDirs": [
+  "Source",
+  "ThirdParty"
+ ],
+ "includeDirs": [],
+ "headerGlobs": [
+  "Source/**/*.h",
+  "Source/**/*.hpp",
+  "Source/**/*.inl"
+ ],
+ "toolchain": "ragnarok",
+ "globalRules": true,
+ "offsetAnnotations": true,
+ "encodedLiterals": [
+  {
+   "macro": "CRYPT_NAME",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  }
+ ],
+ "matchPolicy": {
+  "reviewAt": "match_unresolved",
+  "maxCleanupCycles": 5,
+  "approvals": 1,
+  "approvalsWithHeaderChanges": 2
+ },
+ "exeBuild": [
+  "python",
+  "scripts/exe/build_exe.py"
+ ],
+ "lintLimits": {
+  "maxInitializerNumbers": 65536,
+  "maxFiles": 2048
+ },
+ "compileCommands": "data/compile.json",
+ "unitPrelude": "Source/Linkage"
 }
