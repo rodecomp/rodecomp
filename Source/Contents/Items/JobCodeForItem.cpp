@@ -24,21 +24,22 @@
 template <typename... Groups>
 void CJobCodeForItem::AddJobCodeFromGroups(unsigned long code, Groups... groups) {
   std::set<unsigned int> groupSet = {static_cast<unsigned int>(groups)...};
-  if (!groupSet.empty()) {
-    std::set<int> jobs;
-    for (const unsigned int& group : groupSet) {
-      auto groupIt = this->m_jobGroups.find(group);
-      if (this->m_jobGroups.end() != groupIt) {
-        jobs.merge(std::set<int>(groupIt->second));
-      }
+  if (groupSet.empty()) {
+    return;
+  }
+  std::set<int> jobs;
+  for (const unsigned int& group : groupSet) {
+    auto groupIt = this->m_jobGroups.find(group);
+    if (this->m_jobGroups.end() != groupIt) {
+      jobs.merge(std::set<int>(groupIt->second));
     }
+  }
 
-    auto it = this->m_jobCodes.find(code);
-    if (this->m_jobCodes.end() == it) {
-      this->m_jobCodes[code] = jobs;
-    } else {
-      it->second.merge(jobs);
-    }
+  auto it = this->m_jobCodes.find(code);
+  if (this->m_jobCodes.end() == it) {
+    this->m_jobCodes[code] = jobs;
+  } else {
+    it->second.merge(jobs);
   }
 }
 
