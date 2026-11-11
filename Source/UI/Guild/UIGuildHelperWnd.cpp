@@ -24,6 +24,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 // GLOBAL: gl_24878
 static const std::string s_itemLinkOpening = "<ITEML>";
 
@@ -287,22 +289,11 @@ void UICreateGuildWnd::OnCreate(int, int) {
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
-    std::string name;
-
     for (unsigned int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
-      name.assign(prefix);
-      name += names[i][0];
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 0, 0);
-      name.assign(prefix);
-      name += names[i][1];
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 1, 0);
-      name.assign(prefix);
-      name += names[i][2];
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 2, 0);
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->Move(positions[i][0], positions[i][1]);
       button->SetId(ids[i]);
@@ -322,21 +313,11 @@ void UIGuildHelperWnd::OnCreate(int width, int height) {
   int ids[3] = {343, 448, 184};
 
   int x = 8;
-  std::string name;
   for (int i = 0; i < 3; ++i) {
     this->m_button = new UIBitmapButton();
-    name.assign(prefix);
-    name += names[i][0];
-    name += ".bmp";
-    this->m_button->SetBitmap(name.c_str(), 0, 0);
-    name.assign(prefix);
-    name += names[i][1];
-    name += ".bmp";
-    this->m_button->SetBitmap(name.c_str(), 1, 0);
-    name.assign(prefix);
-    name += names[i][2];
-    name += ".bmp";
-    this->m_button->SetBitmap(name.c_str(), 2, 0);
+    this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
     this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
     this->m_button->Move(i < 2 ? x : width - 52, height - 24);
     this->m_button->SetId(ids[i]);
@@ -411,11 +392,11 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 15, height - 55, 0);
 
-  unsigned int red = 0;
-  unsigned int green = 0;
-  unsigned int blue = 0;
+  unsigned int red;
+  unsigned int green;
+  unsigned int blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_textViewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
+  this->m_textViewer->backgroundColor = 0xFF000000 | RGB(red, green, blue);
   this->m_textViewer->Invalidate();
   this->AddChild(this->m_textViewer);
 
