@@ -837,32 +837,32 @@ __declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
   switch (slot) {
   case 0:
     display = tab->m_display;
-    if (desc.viewId == display->topAccessory) {
-      display->topAccessoryItemId = 0;
-      display->topAccessory = 0;
-    } else {
+    if (desc.viewId != display->topAccessory) {
       display->topAccessoryItemId = itemId;
       display->topAccessory = desc.viewId;
+    } else {
+      display->topAccessoryItemId = 0;
+      display->topAccessory = 0;
     }
     break;
   case 1:
     display = tab->m_display;
-    if (desc.viewId == display->middleAccessory) {
-      display->middleAccessoryItemId = 0;
-      display->middleAccessory = 0;
-    } else {
+    if (desc.viewId != display->middleAccessory) {
       display->middleAccessoryItemId = itemId;
       display->middleAccessory = desc.viewId;
+    } else {
+      display->middleAccessoryItemId = 0;
+      display->middleAccessory = 0;
     }
     break;
   case 2:
     display = tab->m_display;
-    if (desc.viewId == display->bottomAccessory) {
-      display->bottomAccessoryItemId = 0;
-      display->bottomAccessory = 0;
-    } else {
+    if (desc.viewId != display->bottomAccessory) {
       display->bottomAccessoryItemId = itemId;
       display->bottomAccessory = desc.viewId;
+    } else {
+      display->bottomAccessoryItemId = 0;
+      display->bottomAccessory = 0;
     }
     break;
   }
@@ -1097,33 +1097,24 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   switch (argument1) {
-  case ID_CANCEL:
-    this->LoadSessionStyle();
-    break;
-  case ID_RIGHT:
-    if (this->direction > 0) {
-      --this->direction;
-    } else {
-      this->direction = 7;
-    }
-    break;
   case ID_LEFT:
     this->direction = this->direction < 7 ? this->direction + 1 : 0;
+    break;
+  case ID_RIGHT:
+    if (this->direction <= 0) {
+      this->direction = 7;
+    } else {
+      --this->direction;
+    }
     break;
   case ID_PREVIEW:
     this->SelectPreviousStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
     break;
+  case ID_CANCEL:
+    this->LoadSessionStyle();
+    break;
   case ID_NEXTVIEW:
     this->SelectNextStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
-    break;
-  case ID_BOOKMARK:
-    if (this->m_favoriteButton->m_argument == 0) {
-      if (shop->AddToMyStyle() == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_LOCALIZING), 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        this->m_favoriteButton->SetTooltip(LookupMessage(MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK));
-      }
-    }
     break;
   case 450:
     this->SelectPreviousStyle(this->GetStyleTable(2).c_str(), &this->head);
@@ -1133,6 +1124,15 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     break;
   case 495:
     shop->SendMsg(nullptr, 495, 0, 0, 0, 0);
+    break;
+  case ID_BOOKMARK:
+    if (this->m_favoriteButton->m_argument == 0) {
+      if (shop->AddToMyStyle() == true) {
+        g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_LOCALIZING), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        this->m_favoriteButton->SetTooltip(LookupMessage(MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK));
+      }
+    }
     break;
   }
 
