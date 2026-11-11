@@ -530,13 +530,13 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
   this->senderButtons[row]->m_value = static_cast<int>(mailId);
   this->senderButtons[row]->Enable(1);
 
-  std::uint32_t color;
+  std::uint32_t color = 0;
   if (noAttachment == 0) {
     this->returnButtons[row]->Enable(1);
     this->returnButtons[row]->m_argument = static_cast<int>(mailId);
     color = read == 1 ? 0xC8C8E6 : 0xFF;
-  } else {
-    color = read == 1 ? 0xC8C8C8 : 0;
+  } else if (read == 1) {
+    color = 0xC8C8C8;
   }
 
   this->subjectButtons[row]->m_color = color;
@@ -559,7 +559,8 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
 // OFFSET: 0x00809670
 // FUNCTION: fn_10058
 void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t expireTime, unsigned char returned) {
-  _difftime32(_time32(nullptr), sendTime);
+  const __time32_t now = _time32(nullptr);
+  _difftime32(now, sendTime);
   int remaining = static_cast<int>(_difftime32(expireTime, _time32(nullptr)));
   if (remaining <= 0) {
     remaining = 0;
