@@ -158,24 +158,33 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
   this->catalystCount = 0;
   this->notice->SetNotice("", 0, 0);
 
-  this->refiningButton->cost = 0;
-  this->refiningButton->Invalidate();
-  this->refiningButton->SetDisabled(1);
-  this->refiningButton->Invalidate();
+  {
+    UIRefining_BtnRefining* button = this->refiningButton;
+    button->cost = 0;
+    button->Invalidate();
+  }
+  {
+    UIRefining_BtnRefining* button = this->refiningButton;
+    button->SetDisabled(1);
+    button->Invalidate();
+  }
 
   this->state = 0;
   this->result = 7;
   this->stateTick = timeGetTime();
   this->frame = 0;
-  if (this->cancelButton) {
-    this->cancelButton->SetDisabled(0);
-    this->cancelButton->Invalidate();
+  if (UIButton* button = this->cancelButton) {
+    button->SetDisabled(0);
+    button->Invalidate();
   }
 
   this->result = 7;
   this->refiningButton->Enable(1);
-  this->refiningButton->SetDisabled(1);
-  this->refiningButton->Invalidate();
+  {
+    UIRefining_BtnRefining* button = this->refiningButton;
+    button->SetDisabled(1);
+    button->Invalidate();
+  }
   this->returnButton->Enable(0);
   this->againButton->Enable(0);
   this->Invalidate();
