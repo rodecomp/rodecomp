@@ -226,7 +226,7 @@ int CChangeMaterialMgr::LuaInsertRecipe(lua_State* L) {
     lua_pop(L, 1);
     lua_pop(L, 1);
 
-    ChangeMaterialEntry entry = {static_cast<int>(itemId), static_cast<int>(count)};
+    ChangeMaterialEntry entry(static_cast<int>(itemId), static_cast<int>(count));
     materials.push_back(entry);
 
     ++index;
@@ -267,7 +267,7 @@ int CChangeMaterialMgr::LuaInsertRecipe(lua_State* L) {
     lua_pop(L, 1);
     lua_pop(L, 1);
 
-    ChangeMaterialProduct product = {static_cast<int>(itemId), static_cast<int>(count), static_cast<int>(rate)};
+    ChangeMaterialProduct product(static_cast<int>(itemId), static_cast<int>(count), static_cast<int>(rate));
     products.push_back(product);
 
     ++index;
