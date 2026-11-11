@@ -276,8 +276,8 @@ public:
   /* 0000 */ std::vector<CNaviInfo*> destinations;
   /* 000C */ std::vector<CNavi_Link*> objects;
   /* 0018 */ CNaviInfo* info;
-  /* 001C */ int cellX;
-  /* 0020 */ int cellY;
+  /* 001C */ int cellX = 0;
+  /* 0020 */ int cellY = 0;
   /* 0024 */ int range;
   /* 0028 */ std::vector<NaviDataEntry> entries;
   /* 0034 */ std::vector<NaviLink> startLinks;

@@ -370,14 +370,13 @@ bool CNavigationManager::ParseFlags(const char* text, bool* first, bool* second,
   const int firstValue = std::atoi(firstText.c_str());
   const int secondValue = std::atoi(secondText.c_str());
   const int thirdValue = std::atoi(thirdText.c_str());
-  if ((firstValue != 0 && firstValue != 1) || (secondValue != 0 && secondValue != 1) || (thirdValue != 0 && thirdValue != 1)) {
-    return false;
+  if ((firstValue == 0 || firstValue == 1) && (secondValue == 0 || secondValue == 1) && (thirdValue == 0 || thirdValue == 1)) {
+    *first = firstValue == 1;
+    *second = secondValue == 1;
+    *third = thirdValue == 1;
+    return true;
   }
-
-  *first = firstValue == 1;
-  *second = secondValue == 1;
-  *third = thirdValue == 1;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00B938F0
