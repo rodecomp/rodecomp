@@ -3,6 +3,8 @@
 #include <process.h>
 #include <utility>
 
+extern template std::string::basic_string(const std::string&);
+
 namespace {
   struct ThreadNameInfo {
     DWORD type;

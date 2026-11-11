@@ -27,6 +27,8 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 
+extern template std::string& std::string::operator=(std::string&&) noexcept;
+
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
 UIApplyForPartyWnd::UIApplyForPartyWnd()

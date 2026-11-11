@@ -4,6 +4,8 @@
 
 #include <cstdlib>
 
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x006F9EC0
 // FUNCTION: fn_06888
 CAnimatedEmitterEffect::CAnimatedEmitterEffect() {

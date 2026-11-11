@@ -23,6 +23,7 @@
 #include <cstring>
 #include <vector>
 
+extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 // INLINED
 static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {

@@ -103,6 +103,8 @@
 #include <random>
 #include <timeapi.h>
 
+extern template void std::string::reserve(std::string::size_type);
+
 void TraceSelection(int selection);
 void TraceSelectionRange(int first, int last);
 

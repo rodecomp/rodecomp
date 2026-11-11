@@ -17,6 +17,8 @@
 #include <new>
 #include <string>
 
+extern template std::string::basic_string(const std::string&);
+
 // GLOBAL: gl_24848
 CNProtectGameGuardMgr* g_nProtectGameGuardMgr;
 
