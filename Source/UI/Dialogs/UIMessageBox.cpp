@@ -295,7 +295,6 @@ void UIMakeCharWnd::Paint() {
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
     const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
     POINT offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
-    const std::uint32_t* palette = sprite->palette;
 
     if (i == 1) {
       CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
@@ -306,6 +305,7 @@ void UIMakeCharWnd::Paint() {
       }
     }
 
+    const std::uint32_t* palette = sprite->palette;
     switch (i) {
     case 0:
       if (this->m_view.bodyPalette) {
@@ -467,9 +467,13 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
 long long UIBank_NewWnd::AdjustAmount(int amount) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
-  long long result = amount;
-  if (!text.empty() && this->IsNumeric(text)) {
-    result += _atoi64(text.c_str());
+  long long result;
+  if (text.empty()) {
+    result = amount;
+  } else if (!this->IsNumeric(text)) {
+    result = amount;
+  } else {
+    result = amount + _atoi64(text.c_str());
   }
   if (result > 0x7FFFFFFF) {
     result = 0x7FFFFFFF;
@@ -1316,10 +1320,12 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       const int index = this->m_index;
       unsigned char position;
 
-      if (index <= 0 && this->m_scroll <= 255 && static_cast<unsigned char>(this->m_scroll) != this->m_bottomPositions[index] - 19) {
+      if (index <= 0 && this->m_scroll <= 255) {
         position = static_cast<unsigned char>(this->m_scroll);
 
-        if (position != 255) {
+        if (position == this->m_bottomPositions[index] - 19) {
+          position = 255;
+        } else if (position != 255) {
           position = static_cast<unsigned char>(this->m_scroll + 19);
           const int limit = this->m_bottomPositions[index] - 19;
 
@@ -1348,7 +1354,9 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->LoadNotice();
       break;
     case ID_PREV:
-      if (--this->m_index < 0) {
+      --this->m_index;
+
+      if (this->m_index < 0) {
         this->m_index = 0;
         return 0;
       }
@@ -1406,8 +1414,7 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 
   this->viewer->Resize(0xA5, 0x50);
   this->viewer->Move(7, 0x17);
-  this->viewer->backgroundColor = 0xFFFF00FF;
-  this->viewer->Invalidate();
+  this->viewer->SetBackgroundColor(0xFFFF00FF);
 
   auto accept = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == 187; });
   if (accept != this->m_children.end()) {
@@ -2752,12 +2759,12 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_modeMgr.gameMode->SendMsg(MM_EXIT_REPLAY, 0, 0, 0, 0);
       Replay::Instance().speed = 1.0f;
       return 0;
-    case ID_INCREASE_REPLAY_SPEED:
-      g_modeMgr.gameMode->SendMsg(MM_INCREASE_REPLAY_SPEED, 0, 0, 0, 0);
-      this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-      return 0;
     case ID_DECREASE_REPLAY_SPEED:
       g_modeMgr.gameMode->SendMsg(MM_DECREASE_REPLAY_SPEED, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+      return 0;
+    case ID_INCREASE_REPLAY_SPEED:
+      g_modeMgr.gameMode->SendMsg(MM_INCREASE_REPLAY_SPEED, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     }
