@@ -65,18 +65,18 @@ void CBezierArcThrowEffect::OnProcess() {
   }
 
   const vector3d actorPos = actor->render.position;
-  CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
-  vector3d actorView = TransformPoint(camera->frame.view, actorPos);
-  float targetViewX = this->m_target.y * camera->frame.view.values[3] +
-                      this->m_target.x * camera->frame.view.values[0] +
-                      this->m_target.z * camera->frame.view.values[6] +
-                      camera->frame.view.values[9];
+  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  vector3d actorView = TransformPoint(view, actorPos);
+  float targetViewX = this->m_target.y * view.values[3] +
+                      this->m_target.x * view.values[0] +
+                      this->m_target.z * view.values[6] +
+                      view.values[9];
 
   matrix rotation;
-  if (targetViewX < actorView.x) {
-    rotation.MakeYRotation(2.094395f);
-  } else {
+  if (targetViewX >= actorView.x) {
     rotation.MakeYRotation(4.188789f);
+  } else {
+    rotation.MakeYRotation(2.094395f);
   }
 
   actorView.y -= 10.0f;
