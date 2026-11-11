@@ -496,41 +496,40 @@ bool UIWindow::Update(int redraw) {
   }
 
   CDCBitmap& source = *static_cast<CDCBitmap*>(this->geometry.surface);
-  if (this->m_clip == 0) {
+  if (this->m_clip != 0) {
+    const int x = this->geometry.x >= 0 ? this->geometry.x : 0;
+    int width = this->geometry.width;
+    int sourceX;
+    if (this->geometry.x < 0) {
+      width += this->geometry.x;
+      sourceX = -this->geometry.x;
+    } else {
+      sourceX = 0;
+    }
+
+    if (parentWindow->geometry.width < (x + width)) {
+      width = (parentWindow->geometry.width - x);
+    }
+
+    const int y = this->geometry.y >= 0 ? this->geometry.y : 0;
+    int height = this->geometry.height;
+    int sourceY;
+    if (this->geometry.y < 0) {
+      height += this->geometry.y;
+      sourceY = -this->geometry.y;
+    } else {
+      sourceY = 0;
+    }
+
+    if (parentWindow->geometry.height < (y + height)) {
+      height = (parentWindow->geometry.height - y);
+    }
+
+    if (width > 0 && height > 0) {
+      parentWindow->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, source);
+    }
+  } else {
     parentWindow->geometry.surface->BlendFrom(this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, source);
-    return true;
-  }
-
-  const int x = this->geometry.x >= 0 ? this->geometry.x : 0;
-  int width = this->geometry.width;
-  int sourceX;
-  if (this->geometry.x < 0) {
-    width += this->geometry.x;
-    sourceX = -this->geometry.x;
-  } else {
-    sourceX = 0;
-  }
-
-  if (parentWindow->geometry.width < (x + width)) {
-    width = (parentWindow->geometry.width - x);
-  }
-
-  const int y = this->geometry.y >= 0 ? this->geometry.y : 0;
-  int height = this->geometry.height;
-  int sourceY;
-  if (this->geometry.y < 0) {
-    height += this->geometry.y;
-    sourceY = -this->geometry.y;
-  } else {
-    sourceY = 0;
-  }
-
-  if (parentWindow->geometry.height < (y + height)) {
-    height = (parentWindow->geometry.height - y);
-  }
-
-  if (width > 0 && height > 0) {
-    parentWindow->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, source);
   }
 
   return true;
@@ -1115,19 +1114,7 @@ void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int widt
     }
 
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    int advance = 0;
-    {
-      const std::string character(current, next);
-      const char* const measured = character.c_str();
-      if (measured) {
-        const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
-        if (bytes) {
-          TextContext context(*this->geometry.surface);
-          context.SetFont(family, height, currentBold, 0);
-          advance = context.Measure(measured, bytes).cx;
-        }
-      }
-    }
+    const int advance = this->TextWidth(std::string(current, next).c_str(), 0, family, height, currentBold, 0);
 
     {
       const std::string character(current, next);
@@ -1432,18 +1419,7 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
 
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
     const std::string character(current, next);
-    const char* const measured = character.c_str();
-    int advance = 0;
-    if (measured) {
-      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
-      if (bytes) {
-        TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, currentBold, 0);
-        advance = context.Measure(measured, bytes).cx;
-      }
-    }
-
-    total += advance;
+    total += this->TextWidth(character.c_str(), 0, family, height, currentBold, 0);
     current = next;
   }
 
@@ -3345,7 +3321,7 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
   link += g_windowNaviLinkCloseTag;
 
   if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->geometry.id != 516) {
-    if (g_windowMgr.GetHoverWindow() == ChatWindow()->m_suggestions && !g_windowMgr.inputSuggestionsEnabled) {
+    if (ChatWindow()->m_suggestions == g_windowMgr.GetHoverWindow() && !g_windowMgr.inputSuggestionsEnabled) {
       ChatWindow()->ToggleInput();
     }
   } else if (!g_windowMgr.inputSuggestionsEnabled) {
