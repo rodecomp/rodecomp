@@ -6738,9 +6738,12 @@ void CGameMode::ReloadScene() {
   g_weatherEffect.ResetEffect();
   this->mousePointer = new CMousePointer();
   this->scene->objects.push_back(this->mousePointer);
-  this->camera->camera.target[0] = this->scene->player->render.position.x;
-  this->camera->camera.target[1] = this->scene->player->render.position.y;
-  this->camera->camera.target[2] = this->scene->player->render.position.z;
+  const float x = this->scene->player->render.position.x;
+  const float y = this->scene->player->render.position.y;
+  const float z = this->scene->player->render.position.z;
+  this->camera->camera.target[0] = x;
+  this->camera->camera.target[1] = y;
+  this->camera->camera.target[2] = z;
 }
 
 // OFFSET: 0x00CDBEB0
