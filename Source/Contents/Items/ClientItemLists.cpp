@@ -256,7 +256,7 @@ void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
 static int CountItemOptions(const ItemRandomOption* options) {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
-    if (options[index].id != 0) {
+    if (0 != options[index].id) {
       ++count;
     }
   }
@@ -1001,7 +1001,7 @@ void CSession::MergeShopItem(const ITEM_INFO& item) {
 
 // OFFSET: 0x00DD7B80
 // FUNCTION: fn_23299
-bool CSession::AddCartItem(const ITEM_INFO& item, unsigned char refresh) {
+__declspec(noinline) bool CSession::AddCartItem(const ITEM_INFO& item, unsigned char refresh) {
   if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Item)) {
     return true;
   }
