@@ -2693,20 +2693,149 @@ void CSession::LoadMiniPartyInfo() {
 // OFFSET: 0x00DFD060
 // FUNCTION: fn_23603
 void CSession::LoadExternalSettings() {
-  switch (g_serviceMode) {
-  case 1:
-    this->m_hotkeyScript->Load(std::strstr(g_launchServerName, "QmSakray") != nullptr ? "Lua Files\\service_korea\\ExternalSettings_kr_sak_qm" : "Lua Files\\service_korea\\ExternalSettings_kr_sak", true, false);
-    break;
-  case 2:
-    this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_indoor", true, false);
-    break;
+  switch (g_serviceType) {
   case 0:
-    if (std::strstr(g_launchServerName, "Dev") != nullptr) {
-      this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_qm", true, false);
+    switch (g_serviceMode) {
+    case 1:
+      {
+        const char* fileName = std::strstr(g_launchServerName, "QmSakray") != nullptr ? "Lua Files\\service_korea\\ExternalSettings_kr_sak_qm" : "Lua Files\\service_korea\\ExternalSettings_kr_sak";
+        this->m_hotkeyScript->Load(fileName, true, false);
+      }
+      break;
+    case 2:
+      this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_indoor", true, false);
+      break;
+    default:
+      if (g_serviceMode == 0 && std::strstr(g_launchServerName, "Dev") != nullptr) {
+        this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr_qm", true, false);
+      } else {
+        this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr", true, false);
+      }
       break;
     }
-  default:
-    this->m_hotkeyScript->Load("Lua Files\\service_korea\\ExternalSettings_kr", true, false);
+    break;
+  case 1:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_usa\\ExternalSettings_usa_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_usa\\ExternalSettings_usa", true, false);
+      break;
+    }
+    break;
+  case 2:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_japan\\ExternalSettings_jp_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_japan\\ExternalSettings_jp", true, false);
+      break;
+    }
+    break;
+  case 3:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_china\\ExternalSettings_ch_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_china\\ExternalSettings_ch", true, false);
+      break;
+    }
+    break;
+  case 4:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_taiwan\\ExternalSettings_tw_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_taiwan\\ExternalSettings_tw", true, false);
+      break;
+    }
+    break;
+  case 5:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_thailand\\ExternalSettings_th_sak", true, false);
+      break;
+    case 13:
+      this->m_hotkeyScript->Load("Lua Files\\service_thailand\\ExternalSettings_th_stage", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_thailand\\ExternalSettings_th", true, false);
+      break;
+    }
+    break;
+  case 6:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_indonesia\\ExternalSettings_id_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_indonesia\\ExternalSettings_id", true, false);
+      break;
+    }
+    break;
+  case 7:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_philippine\\ExternalSettings_ph_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_philippine\\ExternalSettings_ph", true, false);
+      break;
+    }
+    break;
+  case 12:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_brazil\\ExternalSettings_br_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_brazil\\ExternalSettings_br", true, false);
+      break;
+    }
+    break;
+  case 18:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_france\\ExternalSettings_fr_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_france\\ExternalSettings_fr", true, false);
+      break;
+    }
+    break;
+  case 15:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_vietnam\\ExternalSettings_vn_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_vietnam\\ExternalSettings_vn", true, false);
+      break;
+    }
+    break;
+  case 14:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_ru\\ExternalSettings_ru_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_ru\\ExternalSettings_ru", true, false);
+      break;
+    }
+    break;
+  case 20:
+    switch (g_serviceMode) {
+    case 1:
+      this->m_hotkeyScript->Load("Lua Files\\service_eu\\ExternalSettings_eu_sak", true, false);
+      break;
+    default:
+      this->m_hotkeyScript->Load("Lua Files\\service_eu\\ExternalSettings_eu", true, false);
+      break;
+    }
     break;
   }
 
