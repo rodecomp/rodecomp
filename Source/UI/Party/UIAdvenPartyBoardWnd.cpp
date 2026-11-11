@@ -23,6 +23,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
@@ -31,8 +32,6 @@
 #include <cstdlib>
 
 namespace {
-  constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
-
   // INLINED
   void DisableButton(UIButton* button, unsigned char value) {
     button->SetDisabled(value);
@@ -67,9 +66,9 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->minimum->SetSize(25, 14);
   this->minimum->invalidatesParent = 1;
   this->minimum->maximum = 3;
-  this->minimum->TextColor(0, 0xFFFFFFFFu);
+  this->minimum->TextColor(0, 0, 0, 0xFFFFFFFFu);
   char minimumText[10] = {};
-  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
+  StringFormat(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
   this->minimum->SetText(minimumText);
   this->minimum->Move(10, 24);
   this->minimum->Background(242, 242, 242);
@@ -80,9 +79,9 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->maximum->SetSize(25, 14);
   this->maximum->invalidatesParent = 1;
   this->maximum->maximum = 3;
-  this->maximum->TextColor(0, 0xFFFFFFFFu);
+  this->maximum->TextColor(0, 0, 0, 0xFFFFFFFFu);
   char maximumText[10] = {};
-  _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", level + 5);
+  StringFormat(maximumText, sizeof(maximumText), _TRUNCATE, "%d", level + 5);
   this->maximum->SetText(maximumText);
   this->maximum->Move(46, 24);
   this->maximum->Background(242, 242, 242);
@@ -91,15 +90,15 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
 
   const int positions[][2] = {{160, 23}, {178, 23}, {196, 23}, {214, 23}};
   const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off", "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
-  const std::string path = prefix;
+  const std::string path = "유저인터페이스\\UIadventurerAgency\\";
   const char* tooltips[] = {LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK), LookupMessage(MSI_CANNOT_FIND_PARTYMASTER), LookupMessage(MSI_QUESTWND_LOWER), LookupMessage(MSI_EXPAND_SIGHT_ON)};
 
   for (int index = 0; index < 4; ++index) {
     this->jobs[index] = new UIJobSlotButton();
     this->jobs[index]->SetSize(16, 16);
     this->jobs[index]->Move(positions[index][0], positions[index][1]);
-    this->jobs[index]->selectedImage = path + images[index * 2] + ".bmp";
-    this->jobs[index]->unselectedImage = path + images[index * 2 + 1] + ".bmp";
+    this->jobs[index]->selectedImage = static_cast<const std::string&>(path + images[index * 2] + ".bmp");
+    this->jobs[index]->unselectedImage = static_cast<const std::string&>(path + images[index * 2 + 1] + ".bmp");
     this->jobs[index]->SetSelected(0);
     this->jobs[index]->SetTooltip(tooltips[index]);
     this->AddChild(this->jobs[index]);
@@ -109,7 +108,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->memo = memo;
   memo->SetSize(116, 14);
   memo->maximum = 150;
-  memo->TextColor(0, 0xFFFFFFFFu);
+  memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
   memo->SetPlaceholderEnabled(true);
   memo->SetPlaceholder(LookupMessage(MSI_EXPLAIN_CHAT_BLOCK));
   memo->SetPlaceholderColor(0x646464);
@@ -183,7 +182,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   }
 
   char pages[1024] = {};
-  _snprintf_s(pages, sizeof(pages), _TRUNCATE, "%d / %d", this->page, this->totalPages);
+  StringFormat(pages, sizeof(pages), _TRUNCATE, "%d / %d", this->page, this->totalPages);
 
   this->ownParty = new UIPartyInfoWnd();
   this->ownParty->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_recruit_on.bmp", 0, 0);
@@ -337,7 +336,7 @@ __forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
   }
 
   char text[1024] = {};
-  _snprintf_s(text, sizeof(text), _TRUNCATE, "%d / %d", this->page, this->totalPages);
+  StringFormat(text, sizeof(text), _TRUNCATE, "%d / %d", this->page, this->totalPages);
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->pageText->Resize((width + 1), 16);
   this->pageText->SetText(text, 0);
@@ -381,10 +380,10 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
 void UIAdvenPartyBoardWnd::ResetSearch() {
   const int level = g_session.m_level;
   char minimumText[10] = {};
-  _snprintf_s(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
+  StringFormat(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
   this->minimum->SetText(minimumText);
   char maximumText[10] = {};
-  _snprintf_s(maximumText, sizeof(maximumText), _TRUNCATE, "%d", level + 5);
+  StringFormat(maximumText, sizeof(maximumText), _TRUNCATE, "%d", level + 5);
   this->maximum->SetText(maximumText);
   this->types->Select(0);
 
@@ -417,13 +416,13 @@ __forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
 
   if (!digits(this->minimum->Text())) {
     char number[10] = {};
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
     this->minimum->SetText(number);
   }
 
   if (!digits(this->maximum->Text())) {
     char number[10] = {};
-    _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
     this->maximum->SetText(number);
   }
 
