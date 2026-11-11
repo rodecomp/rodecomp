@@ -290,17 +290,17 @@ bool CRendererDX7::SaveLogo(std::string filename) {
 
       if (locked.ddpfPixelFormat.dwRGBBitCount == 16) {
         const std::uint16_t value = *reinterpret_cast<const std::uint16_t*>(pixel);
-        destination[0] = ExpandedChannel(
-          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0,
-          g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8
+        destination[0] = static_cast<unsigned char>(
+          static_cast<unsigned char>((value & (g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0)) >> (g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0))
+          << (g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8)
         );
-        destination[1] = ExpandedChannel(
-          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0,
-          g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8
+        destination[1] = static_cast<unsigned char>(
+          static_cast<unsigned char>((value & (g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0)) >> (g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0))
+          << (g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8)
         );
-        destination[2] = ExpandedChannel(
-          value, g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0, g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0,
-          g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8
+        destination[2] = static_cast<unsigned char>(
+          static_cast<unsigned char>((value & (g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0)) >> (g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0))
+          << (g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8)
         );
       } else {
         memcpy_s(destination, remaining, pixel, 3);
