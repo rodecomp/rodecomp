@@ -217,10 +217,11 @@ void CMergeItemWnd::OnWheel(int delta) {
     if (step > 3) {
       step = 3;
     }
-    if (delta >= 0) {
-      step = -step;
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
     }
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 

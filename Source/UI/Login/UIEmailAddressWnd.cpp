@@ -8,16 +8,17 @@
 // OFFSET: 0x008F9820
 // FUNCTION: fn_12341
 int UIEmailAddressWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == UM_COMMAND) {
-    g_windowMgr.modalResponse = static_cast<int>(a);
-    if (a == 184) {
-      g_modeMgr.gameMode->SendMsg(LMM_SET_EMAIL_ADDRESS, reinterpret_cast<int>(this->m_edit->Text()), 0, 0, 0);
-    }
-
-    return 0;
+  if (message != UM_COMMAND) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  g_windowMgr.modalResponse = static_cast<int>(a);
+  if (a == 184) {
+    CMode* mode = g_modeMgr.gameMode;
+    mode->SendMsg(LMM_SET_EMAIL_ADDRESS, reinterpret_cast<int>(this->m_edit->Text()), 0, 0, 0);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x008C7800

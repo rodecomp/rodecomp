@@ -26,10 +26,11 @@ void UIBattleMsgOptionWnd::OnWheel(int delta) {
     if (step > 3) {
       step = 3;
     }
-    if (delta >= 0) {
-      step = -step;
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
     }
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
   }
 }
 
@@ -134,8 +135,12 @@ void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
 
   if (this->hoveredOption != -1) {
     this->optionStates[this->hoveredOption] = this->optionStates[this->hoveredOption] == 0;
-    (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex].options[this->hoveredOption] =
-      this->optionStates[this->hoveredOption];
+    const bool state = this->optionStates[this->hoveredOption];
+    if (this->useMainChatOptions) {
+      g_session.m_noSubChatWnds[this->chatWindowIndex].options[this->hoveredOption] = state;
+    } else {
+      g_session.m_subChatWnds[this->chatWindowIndex].options[this->hoveredOption] = state;
+    }
     this->allChecked = 1;
     for (int i = 0; i < 25; ++i) {
       if (this->optionStates[i] == 0) {
@@ -143,8 +148,9 @@ void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
         break;
       }
     }
-    this->m_allCheckBox->geometry.state = this->allChecked;
-    this->m_allCheckBox->Invalidate();
+    UICheckBox* checkBox = this->m_allCheckBox;
+    checkBox->geometry.state = this->allChecked;
+    checkBox->Invalidate();
     this->Invalidate();
   }
 }
