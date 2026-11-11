@@ -5436,7 +5436,11 @@ void UIItemShopWnd::OnRBtnDown(int x, int y) {
 void UIItemBaseWnd::OnWheel(int value) {
   if (this->scrollOverflow) {
     const int step = std::min(this->visibleRows - 1, 3);
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, value < 0 ? step : -step, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -5851,7 +5855,11 @@ void UISkillListWnd::OnCreate(int width, int height) {
 void UISkillListWnd::OnWheel(int value) {
   if (this->hasVerticalOverflow) {
     const int step = std::min(this->visibleRows - 1, 3);
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, value < 0 ? step : -step, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -5960,7 +5968,11 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
 void UIItemStoreFindWnd::OnWheel(int value) {
   if (this->scrollOverflow) {
     const int step = std::min(this->visibleRows - 1, 3);
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, value < 0 ? step : -step, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -5969,7 +5981,11 @@ void UIItemStoreFindWnd::OnWheel(int value) {
 void UIItemStoreSubWnd::OnWheel(int value) {
   if (this->scrollOverflow) {
     const int step = std::min(this->visibleRows - 1, 3);
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, value < 0 ? step : -step, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -5978,7 +5994,11 @@ void UIItemStoreSubWnd::OnWheel(int value) {
 void UIMerchantShopMakeWnd::OnWheel(int value) {
   if (this->scrollable) {
     const int step = std::min(this->minimumRows - 1, 3);
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, value < 0 ? step : -step, 0, 0, 0);
+    if (value < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
