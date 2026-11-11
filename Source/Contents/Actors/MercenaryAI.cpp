@@ -372,8 +372,8 @@ int AiGetTick(lua_State* state) {
 // FUNCTION: fn_22341
 int AiHomunGetV(lua_State* state) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  int property = static_cast<int>(lua_tonumber(state, 1));
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  int property = static_cast<int>(luaL_checknumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
 
   CGameActor* actor = nullptr;
   if (aid == g_session.m_aid) {
@@ -405,8 +405,8 @@ int AiHomunGetV(lua_State* state) {
       int skillId = 0;
       int skillLevel = 0;
       if (property == 13) {
-        skillId = static_cast<int>(lua_tonumber(state, 3));
-        skillLevel = static_cast<int>(lua_tonumber(state, 4));
+        skillId = static_cast<int>(luaL_checknumber(state, 3));
+        skillLevel = static_cast<int>(luaL_checknumber(state, 4));
       }
 
       std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
@@ -426,8 +426,9 @@ int AiHomunGetV(lua_State* state) {
             const float dx = static_cast<float>(targetX - cellX);
             const float dy = static_cast<float>(cellY - targetY);
             const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
-            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(angle) * static_cast<float>(clamped));
-            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(angle) * static_cast<float>(clamped));
+            cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
+            const float sine = ClientSin(angle);
+            cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
 
             if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
               if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
@@ -479,14 +480,14 @@ int AiHomunGetV(lua_State* state) {
 
   case V_SKILLATTACKRANGE:
   case 14: {
-    std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
+    std::uint32_t skillId = static_cast<std::uint32_t>(luaL_checknumber(state, 3));
     CSkillInfo skill = g_session.LookupHomunSkill(skillId);
     if (!skill.available) {
       result = 1.0;
     } else {
       int range = skill.range;
       if (property == 14) {
-        int level = static_cast<int>(lua_tonumber(state, 4));
+        int level = static_cast<int>(luaL_checknumber(state, 4));
         range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
@@ -556,8 +557,8 @@ int AiHomunGetV(lua_State* state) {
 // FUNCTION: fn_22342
 int AiMercenaryGetV(lua_State* state) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  int property = static_cast<int>(lua_tonumber(state, 1));
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  int property = static_cast<int>(luaL_checknumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
 
   CGameActor* actor = nullptr;
   if (aid == g_session.m_aid) {
@@ -589,8 +590,8 @@ int AiMercenaryGetV(lua_State* state) {
       int skillId = 0;
       int skillLevel = 0;
       if (property == 13) {
-        skillId = static_cast<int>(lua_tonumber(state, 3));
-        skillLevel = static_cast<int>(lua_tonumber(state, 4));
+        skillId = static_cast<int>(luaL_checknumber(state, 3));
+        skillLevel = static_cast<int>(luaL_checknumber(state, 4));
       }
 
       std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
@@ -611,8 +612,9 @@ int AiMercenaryGetV(lua_State* state) {
             const float dy = static_cast<float>(cellY - targetY);
             const float dist = SquareRoot(dy * dy + dx * dx);
             const float angle = std::acos((1.0f / dist) * dx);
-            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(angle) * static_cast<float>(clamped));
-            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(angle) * static_cast<float>(clamped));
+            cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
+            const float sine = ClientSin(angle);
+            cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
 
             if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
               if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
@@ -664,14 +666,14 @@ int AiMercenaryGetV(lua_State* state) {
 
   case V_SKILLATTACKRANGE:
   case 14: {
-    std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
+    std::uint32_t skillId = static_cast<std::uint32_t>(luaL_checknumber(state, 3));
     CSkillInfo skill = g_session.LookupMercSkill(skillId);
     if (!skill.available) {
       result = 1.0;
     } else {
       int range = skill.range;
       if (property == 14) {
-        int level = static_cast<int>(lua_tonumber(state, 4));
+        int level = static_cast<int>(luaL_checknumber(state, 4));
         range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
