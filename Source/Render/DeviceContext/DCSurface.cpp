@@ -17,7 +17,7 @@ std::shared_ptr<CSurface> RenderSystemHolder::BackBufferSurface() const {
   if (this->system) {
     return this->system->BackBufferSurface();
   }
-  return {};
+  return nullptr;
 }
 
 // OFFSET: 0x00569C90
