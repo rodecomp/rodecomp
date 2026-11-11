@@ -4735,7 +4735,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
   } while (remaining != 0);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (type == 22 && this->msgEffectList.size() != 0) {
+  if (type == 22 && this->msgEffectList.size() > 0) {
     for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end();) {
       CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
       if (effect->m_type == 22) {
