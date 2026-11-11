@@ -4539,6 +4539,10 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4552,8 +4556,8 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
 
     for (int rcolor = 0; rcolor < 7; ++rcolor) {
       int order = 0;
-      const float inner = static_cast<float>(1.0 - rcolor * 0.05f);
-      const float outer = static_cast<float>(1.0 - (rcolor + 1) * 0.05f);
+      const double inner = 1.0 - rcolor * 0.05f;
+      const double outer = 1.0 - (rcolor + 1) * 0.05f;
 
       for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
         int angle = slot.rotStart + count;
@@ -4562,12 +4566,13 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
           angle -= 360;
         }
 
+        const float dist = slot.distance;
         const float cs = g_cosTable[slot.riseAngle];
         const float sn = g_sinTable[slot.riseAngle];
-        const float x1 = g_cosTable[angle] * slot.distance;
-        const float y1 = g_sinTable[angle] * slot.distance;
-        const vector3d vec1{cs * (x1 * inner), y1 * inner * 2.0f, sn * (x1 * inner)};
-        const vector3d vec4{cs * (x1 * outer), y1 * outer * 2.0f, sn * (x1 * outer)};
+        const float x1 = static_cast<float>(inner * (dist * g_cosTable[angle]));
+        vec1.Set(x1 * cs, static_cast<float>(inner * (dist * g_sinTable[angle]) * 2.0), x1 * sn);
+        const float x4 = static_cast<float>(outer * (dist * g_cosTable[angle]));
+        vec4.Set(x4 * cs, static_cast<float>(outer * (dist * g_sinTable[angle]) * 2.0), x4 * sn);
 
         int next = angle + step;
 
@@ -4575,10 +4580,10 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
           next -= 360;
         }
 
-        const float x2 = g_cosTable[next] * slot.distance;
-        const float y2 = g_sinTable[next] * slot.distance;
-        const vector3d vec2{cs * (x2 * inner), y2 * inner * 2.0f, sn * (x2 * inner)};
-        const vector3d vec3{cs * (x2 * outer), y2 * outer * 2.0f, sn * (x2 * outer)};
+        const float x2 = static_cast<float>(inner * (dist * g_cosTable[next]));
+        vec2.Set(x2 * cs, static_cast<float>(inner * (dist * g_sinTable[next]) * 2.0), x2 * sn);
+        const float x3 = static_cast<float>(outer * (dist * g_cosTable[next]));
+        vec3.Set(x3 * cs, static_cast<float>(outer * (dist * g_sinTable[next]) * 2.0), x3 * sn);
 
         unsigned char red;
         unsigned char green;
