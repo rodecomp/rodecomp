@@ -1254,7 +1254,7 @@ bool CCashEmotionMgr::IsPackAvailable(unsigned int now, int packId) {
 // OFFSET: 0x0059C490
 // FUNCTION: fn_02975
 bool CCashEmotionMgr::IsOwnedPack(int packId) {
-  return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
+  return this->m_ownedPacks.end() != std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
 }
 
 // OFFSET: 0x0059C5A0
