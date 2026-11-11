@@ -7097,7 +7097,8 @@ void CGameMode::ReceiveGuildMemberExpelled(const unsigned char* data) {
   if (std::string(name) == g_session.DecodePlayerName()) {
     g_guildInfo.m_guildId = 0;
     g_windowMgr.CloseWindow(WID_GUILDWND);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BAN_FROM_GUILD)), 0xFF, 4, 0, 0);
+    const char* text = LookupMessage(MSI_BAN_FROM_GUILD);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 4, 0, 0);
     this->SendMsg(MM_DELETEGUILDPOSALL, 0, 0, 0, 0);
     return;
   }
@@ -7191,7 +7192,8 @@ void CGameMode::ReceiveGuildMemberLeft(const unsigned char* data) {
   if (std::string(name) == g_session.DecodePlayerName()) {
     guildInfo->Init();
     g_windowMgr.CloseWindow(WID_GUILDWND);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LEFT_GUILD)), 0xFF, 4, 0, 0);
+    const char* text = LookupMessage(MSI_LEFT_GUILD);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 4, 0, 0);
     this->scene->player->SetGuildInfo(0, 0);
     this->SendMsg(MM_DELETEGUILDPOSALL, 0, 0, 0, 0);
     return;
@@ -7251,7 +7253,8 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
     ClearGuildShortcutSkills();
     g_guildInfo.m_guildId = 0;
     g_windowMgr.CloseWindow(WID_GUILDWND);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BAN_FROM_GUILD)), 0xFF, 4, 0, 0);
+    const char* text = LookupMessage(MSI_BAN_FROM_GUILD);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 4, 0, 0);
     this->SendMsg(MM_DELETEGUILDPOSALL, 0, 0, 0, 0);
     if (this->scene != nullptr && this->scene->player != nullptr) {
       this->scene->player->SetGdid(0);
@@ -7299,7 +7302,8 @@ void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
     ClearGuildShortcutSkills();
     guildInfo->Init();
     g_windowMgr.CloseWindow(WID_GUILDWND);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LEFT_GUILD)), 0xFF, 4, 0, 0);
+    const char* text = LookupMessage(MSI_LEFT_GUILD);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 4, 0, 0);
     this->scene->player->SetGuildInfo(0, 0);
     this->SendMsg(MM_DELETEGUILDPOSALL, 0, 0, 0, 0);
     return;
