@@ -18389,16 +18389,16 @@ void CRagEffect::FreezingCircle(char kind) {
   if (kind == 3) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ghost.bmp", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
-  } else if (kind < 1) {
-    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\freezing_circle.bmp", 0, false, true, false);
-    this->state.lastPrim->state.size = 0.0f;
-  } else {
+  } else if (kind > 0) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\whitelight.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
 
     if (kind == 2) {
       this->state.lastPrim->state.size = 7.0f;
     }
+  } else {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\freezing_circle.bmp", 0, false, true, false);
+    this->state.lastPrim->state.size = 0.0f;
   }
 
   for (int i = 0; i < 4; ++i) {
