@@ -153,7 +153,11 @@ int UIGradeEnchantWnd::SuccessRate() {
     rate += this->blessingAmount / this->info.blessingStepAmount * this->info.bonusPerStep;
   }
 
-  return rate > 100 ? 100 : rate;
+  if (rate > 100) {
+    rate = 100;
+  }
+
+  return rate;
 }
 
 // OFFSET: 0x007E7780
