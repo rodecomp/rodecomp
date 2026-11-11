@@ -1540,6 +1540,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       GameModePacketPayload24 packet{0x213, {}};
       std::memcpy(packet.payload, reinterpret_cast<const void*>(argument1), sizeof(packet.payload));
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      char text[256];
+      std::sprintf(text, "[ %s ]", reinterpret_cast<const char*>(packet.payload));
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x6EFA9B, 0, 0, 0);
       return 0;
     }
     case MM_RC_ID: {
