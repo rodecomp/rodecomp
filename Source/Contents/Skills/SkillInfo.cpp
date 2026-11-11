@@ -1485,12 +1485,13 @@ void CSkillAction_SHC_SHADOW_STAB::OnSkillDamage(int level, CGameActor* source, 
     return;
   }
 
-  CEZ2STREffectMgr* effects = CEZ2STREffectMgr::GetInstance();
+  EffectLists* effects = g_effectMgr;
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
   int variant = std::rand() % 2;
   if (variant < 1) {
     variant = 1;
   }
-  g_effectMgr->Spawn(source->render.accountId, effects->EffectId(std::format("shadow_stab_hit{}", variant)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, manager->EffectId(std::format("shadow_stab_hit{}", variant)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00777E20
@@ -1961,8 +1962,10 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillDamage(int actor, CGameActor* tar
   }
 
   if (targetActor) {
-    g_effectMgr->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effects->Spawn(targetActor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_down"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2019,22 +2022,27 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillHit(int caster, CGameActor* targe
 
   CGameActor* source = reinterpret_cast<CGameActor*>(caster);
   const int duration = static_cast<int>(source ? source->render.speed * 100.0f + 100.0f : 500.0f);
-  CEffect* sign = g_effectMgr->Find(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
+  EffectLists* effects = g_effectMgr;
+  CEffect* sign = effects->Find(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
   const vector3d offset = {0.0f, 0.0f, 0.0f};
   CEffect* effect;
+  effects = g_effectMgr;
   if (sign) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_down"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
-    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_down"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(duration);
     }
-    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
   } else {
-    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(duration);
     }
-    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
   }
 
   if (effect) {
@@ -2056,17 +2064,19 @@ void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillHit(int caster, CGameActor* target,
   CGameActor* source = reinterpret_cast<CGameActor*>(caster);
   if (source) {
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_collect"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_collect"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(duration);
     }
   }
 
   if (target) {
     const int side = std::max(std::rand() % 2, 0);
+    EffectLists* effects = g_effectMgr;
     if (side == 0) {
-      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_leftdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_leftdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_rightdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_rightdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
   }
 }
@@ -2874,10 +2884,14 @@ void CSkillAction_HN_METEOR_STORM_BUSTER::OnSkillCast(int level, CGameActor* sou
 // OFFSET: 0x00783CD0
 // FUNCTION: fn_08539
 void CSkillAction_HN_METEOR_STORM_BUSTER::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position.x, position.y, position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position.x, position.y, position.z, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00784100
