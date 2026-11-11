@@ -603,11 +603,9 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
 
     for (std::size_t index = 0; index < this->labels.size(); ++index) {
       if (this->TextWidth(this->labels[index].c_str(), 0, 0, this->fontSize, 0, 0) > tabWidth) {
-        if (index != this->labels.size() - 1) {
-          if (this->tooltips[index].empty()) {
-            this->tooltips[index] = this->labels[index];
-          }
-        } else if (std::strlen(tooltip) != 0) {
+        if (this->tooltips[index].empty() && index != this->labels.size() - 1) {
+          this->tooltips[index] = this->labels[index];
+        } else if (std::strlen(tooltip) != 0 && index == this->labels.size() - 1) {
           this->tooltips[index] = this->labels[index];
         }
       }
@@ -616,6 +614,7 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
         this->Resize(tabWidth, 15);
       }
       const std::string fitted = FitText(*this->geometry.surface, this->labels[index], tabWidth);
+      this->labels[index] = "";
       this->labels[index] = fitted;
     }
   }
