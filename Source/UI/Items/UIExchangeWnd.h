@@ -7,12 +7,13 @@
 #include <list>
 #include <string>
 
+class UIBitmapButton;
 class UIEditCtrl;
 class UICheckBox;
 
 class UIExchangeWnd : public UIFrameWnd {
 public:
-  /* 00B4 */ UIWindow* m_buttons[3];
+  /* 00B4 */ UIBitmapButton* m_buttons[3];
   /* 00C0 */ UIEditCtrl* zenyEdit;
   /* 00C4 */ UIWindow* m_scrollBar;
   /* 00C8 */ unsigned char padding_00C8[0x04];

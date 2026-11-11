@@ -353,8 +353,7 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->viewer->Invalidate();
+  this->viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->viewer);
   const char* text = LookupMessage(MSI_SELECT_DEAL_TYPE);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
@@ -409,15 +408,7 @@ void UIChooseWarpWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12164
 void UIChooseWnd::OnCreate(int width, int height) {
   this->m_list = new UIListBox();
-  int listHeight = height - 55;
-  if (listHeight < 30) {
-    listHeight = 30;
-  }
-  int listWidth = width - 24;
-  if (listWidth < 20) {
-    listWidth = 20;
-  }
-  this->m_list->Configure(12, 26, listWidth, listHeight, 0);
+  this->m_list->Configure(12, 26, (std::max)(width - 24, 20), (std::max)(height - 55, 30), 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
@@ -461,8 +452,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_viewer);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER)), 38, 0, 0);
 }
@@ -2347,7 +2337,10 @@ bool UIWhisperWnd::GetCustomTransBoxInfo(void*) {
 // FUNCTION: fn_12141
 void UIExchangeWnd::LayoutButtons() {
   const int x[3] = {3, 260, 510};
-  const int y[3] = {this->isLocalTrader * 120, this->isLocalTrader != 0 && this->localConfirmed != 0 && this->localAccepted == 0 ? 0 : 120, 0};
+  int y[3];
+  y[0] = this->isLocalTrader * 120;
+  y[1] = this->isLocalTrader != 0 && this->localConfirmed != 0 && this->localAccepted == 0 ? 0 : 120;
+  y[2] = 0;
 
   for (int index = 0; index < 3; ++index) {
     this->m_buttons[index]->Move(x[index], this->geometry.height - 23 + y[index]);
@@ -4256,15 +4249,15 @@ void UISkillNameChangeWnd::OnCreate(int, int) {
 // FUNCTION: fn_12205
 void UIToolTipWnd::OnCreate(int width, int height) {
   this->m_list = new UIListBox();
-  width -= 24;
-  height -= 60;
-  if (width < 20) {
-    width = 20;
+  int listWidth = width - 24;
+  int listHeight = height - 60;
+  if (listWidth < 20) {
+    listWidth = 20;
   }
-  if (height < 30) {
-    height = 30;
+  if (listHeight < 30) {
+    listHeight = 30;
   }
-  this->m_list->Configure(12, 22, width, height, 1);
+  this->m_list->Configure(12, 22, listWidth, listHeight, 1);
   this->m_list->SetId(184);
   this->m_list->AddLine("__________");
   this->m_list->AddLine("**********");
@@ -5573,16 +5566,16 @@ int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
 // OFFSET: 0x008E8390
 // FUNCTION: fn_12197
 void UISayDialogWnd::OnCreate(int width, int height) {
-  auto* viewer = new UITagTextViewer();
-  this->m_viewer = viewer;
-  viewer->SetSize(width - 20, height - 40);
+  this->m_viewer = new UITagTextViewer();
+  this->m_viewer->SetSize(width - 20, height - 40);
+  UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
   viewer->m_backgroundColor = 0xFFF2F2F2;
   viewer->Invalidate();
-  viewer->m_textWidth = width - 65;
-  viewer->Move(10, 10);
-  this->AddChild(viewer);
-  this->m_message0 = 600;
+  static_cast<UITagTextViewer*>(this->m_viewer)->m_textWidth = width - 65;
+  this->m_viewer->Move(10, 10);
+  this->AddChild(this->m_viewer);
   this->m_responseId = 0;
+  this->m_message0 = 600;
   this->m_responsePending = 0;
 }
 
@@ -5629,44 +5622,42 @@ void UIExchangeWnd::OnCreate(int, int) {
   this->localAccepted = 0;
   this->remoteAccepted = 0;
 
-  const std::string path("유저인터페이스\\btn_");
-  const char* const names[3] = {"ok", "exchange", "cancel"};
   const int ids[3] = {0xB8, 0xE6, 0xB9};
-  const int x[3] = {3, 260, 510};
-  const int y[3] = {
-      this->isLocalTrader * 120, this->isLocalTrader != 0 && this->localConfirmed != 0 && this->localAccepted == 0 ? 0 : 120, 0
-  };
+  const char* const names[3] = {"ok", "exchange", "cancel"};
+  const std::string path("유저인터페이스\\btn_");
+  int x[3] = {3, 260, 510};
+  int y[3];
+  y[0] = this->isLocalTrader * 120;
+  y[1] = this->isLocalTrader != 0 && this->localConfirmed != 0 && this->localAccepted == 0 ? 0 : 120;
+  y[2] = 0;
 
   for (int index = 0; index < 3; ++index) {
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_buttons[index] = button;
-    button->SetBitmap((path + names[index] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((path + names[index] + "_a.bmp").c_str(), 1, 0);
-    button->SetBitmap((path + names[index] + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(x[index], this->geometry.height - 23 + y[index]);
-    button->SetId(ids[index]);
-    this->AddChild(button);
+    this->m_buttons[index] = new UIBitmapButton();
+    this->m_buttons[index]->SetBitmap((path + names[index] + ".bmp").c_str(), 0, 0);
+    this->m_buttons[index]->SetBitmap((path + names[index] + "_a.bmp").c_str(), 1, 0);
+    this->m_buttons[index]->SetBitmap((path + names[index] + "_b.bmp").c_str(), 2, 0);
+    this->m_buttons[index]->SetSize(this->m_buttons[index]->BitmapWidth(), this->m_buttons[index]->BitmapHeight());
+    this->m_buttons[index]->Move(x[index], this->geometry.height - 23 + y[index]);
+    this->m_buttons[index]->SetId(ids[index]);
+    this->AddChild(this->m_buttons[index]);
   }
 
-  UIEditCtrl* edit = new UIEditCtrl();
-  this->zenyEdit = edit;
-  edit->SetSize(0x58, 0x10);
-  edit->Move(0x91, 0x14A);
-  edit->maximum = 0xD;
-  edit->Background(0xE8, 0xE8, 0xE8);
-  edit->SetText("0");
-  this->AddChild(edit);
-  g_windowMgr.SetFocus(edit);
-  edit->SelectAll();
+  this->zenyEdit = new UIEditCtrl();
+  this->zenyEdit->SetSize(0x58, 0x10);
+  this->zenyEdit->Move(0x91, 0x14A);
+  this->zenyEdit->maximum = 0xD;
+  this->zenyEdit->Background(0xE8, 0xE8, 0xE8);
+  this->zenyEdit->SetText("0");
+  this->AddChild(this->zenyEdit);
+  g_windowMgr.SetFocus(this->zenyEdit);
+  this->zenyEdit->SelectAll();
 
-  UICheckBox* checkBox = new UICheckBox();
-  this->screenshotCheckBox = checkBox;
-  checkBox->SetSize(0x30, 0xC);
-  checkBox->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
-  checkBox->Move(0x69, this->geometry.height - 0x13);
-  checkBox->SetChecked(this->takeScreenshot);
-  this->AddChild(checkBox);
+  this->screenshotCheckBox = new UICheckBox();
+  this->screenshotCheckBox->SetSize(0x30, 0xC);
+  this->screenshotCheckBox->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
+  this->screenshotCheckBox->Move(0x69, this->geometry.height - 0x13);
+  this->screenshotCheckBox->SetChecked(this->takeScreenshot);
+  this->AddChild(this->screenshotCheckBox);
 
   this->m_message0 = 600;
 }
@@ -5674,10 +5665,9 @@ void UIExchangeWnd::OnCreate(int, int) {
 // OFFSET: 0x008DE400
 // FUNCTION: fn_12167
 void UIComboBoxIDWnd::OnCreate(int width, int height) {
-  auto* list = new UIComboBoxID();
-  this->m_list = list;
-  list->Configure(0, 0, width, height, 1);
-  this->AddChild(list);
+  this->m_list = new UIComboBoxID();
+  this->m_list->Configure(0, 0, width, height, 1);
+  this->AddChild(this->m_list);
 }
 
 // OFFSET: 0x008D9F20
@@ -7115,7 +7105,7 @@ void UIWhisperWnd::StoreInfo() {
     this->placement->x = this->geometry.x;
     this->placement->y = this->geometry.y;
   }
-  g_windowMgr.UnregisterNamedWindow(std::string(this->m_target.c_str(), this->m_target.size()));
+  g_windowMgr.UnregisterNamedWindow(this->m_target);
 }
 
 
@@ -7719,8 +7709,7 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_viewer);
   const char* text = LookupMessage(MSI_DO_YOU_AGREE);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
@@ -7828,9 +7817,9 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
 // FUNCTION: fn_12195
 void UIQuitWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
-  int positions[3][3] = {{29, 30, 0}, {29, 61, 0}, {29, 96, 0}};
-  int ids[3] = {220, 221, 185};
   const char* names[3][3] = {{"esc_01a", "esc_01b", "esc_01c"}, {"esc_03a", "esc_03b", "esc_03c"}, {"esc_02a", "esc_02b", "esc_02c"}};
+  int ids[3] = {220, 221, 185};
+  int positions[3][3] = {{29, 30}, {29, 61}, {29, 96}};
 
   for (int i = 0; i < 3; ++i) {
     auto* button = new UIBitmapButton();
@@ -8400,24 +8389,25 @@ void UIPasswordWnd::OnCreate(int, int) {
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
 
-  auto* title = new UIStaticText();
-  this->itemTitle = reinterpret_cast<std::uintptr_t>(title);
-  title->SetSize(this->geometry.width - 30, 15);
-  title->Move(15, 6);
-  title->SetText(LookupMessage(MSI_ENTER_PASSWORD), 0);
-  this->AddChild(title);
+  this->itemTitle = reinterpret_cast<std::uintptr_t>(new UIStaticText());
+  reinterpret_cast<UIStaticText*>(this->itemTitle)->SetSize(this->geometry.width - 30, 15);
+  reinterpret_cast<UIStaticText*>(this->itemTitle)->Move(15, 6);
+  reinterpret_cast<UIStaticText*>(this->itemTitle)->SetText(LookupMessage(MSI_ENTER_PASSWORD), 0);
+  this->AddChild(reinterpret_cast<UIStaticText*>(this->itemTitle));
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->m_message0 = 184;
   this->geometry.state = 0;
   this->roomId = 0;
@@ -9023,8 +9013,7 @@ void UIBookWnd::Paint() {
   this->DrawTextAt(this->geometry.width / 2 - 72, 2, title, 0, 0, 12, 0, 0, 0);
 
   this->FillRegion(1, titleHeight, this->geometry.width - 2, this->geometry.height - 18, RGB(this->m_red, this->m_green, this->m_blue));
-  this->m_viewer->backgroundColor = 0xFF000000u | RGB(this->m_red, this->m_green, this->m_blue);
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(this->m_red, this->m_green, this->m_blue));
 }
 
 // OFFSET: 0x008ECF50
