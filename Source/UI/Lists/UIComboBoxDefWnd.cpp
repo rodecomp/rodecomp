@@ -168,11 +168,9 @@ void TrimTrailing(std::string& text, const char* characters) {
 // OFFSET: 0x00897E90
 // FUNCTION: fn_11544
 int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  const int value = static_cast<int>(a);
-
   switch (message) {
   case UM_COMMAND:
-    if (value == ID_OPEN_MEMBER_POS_COMBO) {
+    if (a == ID_OPEN_MEMBER_POS_COMBO) {
       this->expanded = this->expanded == 0;
       this->Resize(
         this->geometry.width, this->expanded ? (this->geometry.height + this->list->geometry.height) : (this->geometry.height - this->list->geometry.height)
@@ -190,7 +188,8 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     return 0;
-  case UM_COMBOBOX_SELECTED:
+  case UM_COMBOBOX_SELECTED: {
+    const int value = static_cast<int>(a);
     if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) == 0 ||
         value < 0) {
       return 0;
@@ -200,13 +199,16 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
     this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
-  case UM_CHANGEMSG:
+  }
+  case UM_CHANGEMSG: {
+    const int value = static_cast<int>(a);
     if (value >= 0) {
       this->label->SetText(this->list->lines[value].text.c_str(), 0);
       this->Invalidate();
     }
 
     return 0;
+  }
   default:
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
@@ -215,11 +217,9 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // OFFSET: 0x00898940
 // FUNCTION: fn_11551
 int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  const int value = static_cast<int>(a);
-
   switch (message) {
   case UM_COMMAND:
-    if (value == ID_OPEN_MEMBER_POS_COMBO) {
+    if (a == ID_OPEN_MEMBER_POS_COMBO) {
       this->expanded = this->expanded == 0;
 
       if (this->expanded) {
@@ -242,7 +242,8 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     }
 
     return 0;
-  case UM_COMBOBOX_SELECTED:
+  case UM_COMBOBOX_SELECTED: {
+    const int value = static_cast<int>(a);
     if (value < 0) {
       return 0;
     }
@@ -251,6 +252,7 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
     this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
+  }
   default:
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
