@@ -217,7 +217,7 @@ void CSkill::Render(int argument) {
 
 // OFFSET: 0x00E4B690
 // FUNCTION: fn_24271
-void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
+__declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
   if (g_effectMgr->HasAllocator(effectId)) {
     g_effectMgr->Spawn(this->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 1, 0);
   }
