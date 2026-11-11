@@ -112,6 +112,10 @@ int g_textureDetailLevel;
 // GLOBAL: gl_25086
 std::map<int, int> g_optionHotkeys;
 
+using OptionHotkeyTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
+OptionHotkeyTree::_Find_lower_bound<int>(const int&) const;
+
 // GLOBAL: gl_25229
 bool g_restartClient;
 
@@ -2298,14 +2302,11 @@ void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
 void GameSettingsUI::CUIGroupProcessPriority::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL_TOOLTIP));
   this->m_highText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE));
-  const char* highTooltip = LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE_TOOLTIP);
-  this->m_highText->SetTooltip(highTooltip, std::strlen(highTooltip));
+  this->m_highText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE_TOOLTIP));
   this->m_normalText->SetText(LookupMessage(MSI_GAME_SETTINGS_AURA));
-  const char* normalTooltip = LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA);
-  this->m_normalText->SetTooltip(normalTooltip, std::strlen(normalTooltip));
+  this->m_normalText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA));
   this->m_idleText->SetText(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_OFF));
-  const char* idleTooltip = LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_ON);
-  this->m_idleText->SetTooltip(idleTooltip, std::strlen(idleTooltip));
+  this->m_idleText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_ON));
 }
 
 // OFFSET: 0x00A41870
@@ -2380,13 +2381,12 @@ void GameSettingsUI::CUIGroupLogInOut::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CAST_STAT));
   this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
   this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
-  const char* tooltipText = []() {
+  this->m_title->SetTooltip([]() {
     constexpr std::uint8_t bytes[] = {0x8A, 0xF1, 0x02, 0x9E, 0x0A, 0x49, 0x18, 0x76, 0xD1, 0x97, 0x42, 0x95, 0x0A, 0x27};
     constexpr EncryptedSource<14> source(bytes);
     thread_local EncryptedName<14, 0x03772763F96D9DA5ULL> name(source);
     return name.Text();
-  }();
-  this->m_title->SetTooltip(tooltipText, std::strlen(tooltipText));
+  }());
 }
 
 // OFFSET: 0x00A1F890
