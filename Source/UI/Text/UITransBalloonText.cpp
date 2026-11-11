@@ -8,7 +8,7 @@
 
 namespace {
   // INLINED
-  int Family(unsigned mode) {
+  int Family(std::uint16_t mode) {
     int family = 0;
     if (mode == 1) {
       family = 21;
@@ -147,9 +147,12 @@ void UITransBalloonText::Paint() {
   this->ClearSurface(0xFFFF00FF);
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
   std::uint32_t color = this->m_textColor;
-  const int height = this->m_fontMode == 0 ? this->m_fontHeight : 12;
-  const int family = Family(this->m_fontMode);
   int y = 4;
+  int height = this->m_fontHeight;
+  if (this->m_fontMode != 0) {
+    height = 12;
+  }
+  const int family = Family(this->m_fontMode);
 
   for (std::size_t index = 0; index < this->m_lines.size(); ++index) {
     color = index < this->m_lineColors.size() && this->m_lineColors[index] != 0 ? this->m_lineColors[index] : this->m_textColor;
