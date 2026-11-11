@@ -874,18 +874,13 @@ int CCashEmotionMgr::GetPackPrice(int packId) {
 // OFFSET: 0x0059A150
 // FUNCTION: fn_02955
 Timestamp* CCashEmotionMgr::FindExpiry(int packId) {
-  auto it = this->m_expiry.begin();
-  for (; this->m_expiry.end() != it; ++it) {
-    if (it->first == packId) {
-      break;
-    }
+  auto it = std::find_if(this->m_expiry.begin(), this->m_expiry.end(), [packId](const auto& entry) { return entry.first == packId; });
+
+  if (this->m_expiry.end() != it) {
+    return &it->second;
   }
 
-  if (this->m_expiry.end() == it) {
-    return nullptr;
-  }
-
-  return &it->second;
+  return nullptr;
 }
 
 // OFFSET: 0x0059A1C0
@@ -1287,23 +1282,13 @@ bool CCashEmotionMgr::RemoveExpiredPacks() {
 // OFFSET: 0x0059C730
 // FUNCTION: fn_02978
 void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry) {
-  auto owned = this->m_ownedPacks.begin();
-  for (; this->m_ownedPacks.end() != owned; ++owned) {
-    if (*owned == packId) {
-      break;
-    }
-  }
+  auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
 
   if (this->m_ownedPacks.end() != owned) {
     this->m_ownedPacks.erase(owned);
   }
 
-  auto unowned = this->m_unownedPacks.begin();
-  for (; this->m_unownedPacks.end() != unowned; ++unowned) {
-    if (*unowned == packId) {
-      break;
-    }
-  }
+  auto unowned = std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId);
 
   if (this->m_unownedPacks.end() == unowned) {
     this->m_unownedPacks.push_back(packId);
@@ -1316,12 +1301,7 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
   }
 
   if (clearExpiry) {
-    auto it = this->m_expiry.begin();
-    for (; this->m_expiry.end() != it; ++it) {
-      if (packId == it->first) {
-        break;
-      }
-    }
+    auto it = std::find_if(this->m_expiry.begin(), this->m_expiry.end(), [packId](const auto& entry) { return packId == entry.first; });
 
     if (this->m_expiry.end() != it) {
       this->m_expiry.erase(it);
