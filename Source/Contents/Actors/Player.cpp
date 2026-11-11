@@ -1846,7 +1846,7 @@ bool IsReadyOrAttackAction(int action) {
 
 // OFFSET: 0x00DABE20
 // FUNCTION: fn_22588
-void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
+granny_world_pose* CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
   if (!model) {
     model = this->model;
   }
@@ -1857,8 +1857,7 @@ void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
 
   if (model != this->model) {
     model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), nullptr, 0);
-    model->Animate(this->animationTime, GrannyInstantiateModel(model->model));
-    return;
+    return model->Animate(this->animationTime, GrannyInstantiateModel(model->model));
   }
 
   if (this->motion == 2 && this->controls[2] && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
@@ -1866,7 +1865,7 @@ void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
     this->controls[this->motion] = model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), this->controls[this->motion], 0);
   }
 
-  model->Animate(this->animationTime * g_depthAverageHalf, this->instance);
+  return model->Animate(this->animationTime * g_depthAverageHalf, this->instance);
 }
 
 // OFFSET: 0x00DAC030
@@ -4134,19 +4133,14 @@ void CGrannyPc::RenderModel(
 
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
-  union {
-    void (CGrannyPc::*asVoid)(C3dGrannyModelRes*);
-    granny_world_pose* (CGrannyPc::*asPose)(C3dGrannyModelRes*);
-  } update;
-  update.asVoid = &CGrannyPc::UpdateAnimation;
   granny_world_pose* pose = nullptr;
   RenderCommand** commands = this->layerCommands[layer];
   if (!model) {
     model = this->model;
-    this->worldPose = (this->*update.asPose)(nullptr);
+    this->worldPose = this->UpdateAnimation(nullptr);
     commands = this->commands;
   } else if (animation) {
-    pose = (this->*update.asPose)(animation);
+    pose = this->UpdateAnimation(animation);
   } else {
     pose = this->worldPose;
   }

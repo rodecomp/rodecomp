@@ -283,7 +283,7 @@ public:
   void PlayMotion(int repeat);
   void ReleaseMeshes();
   void UpdateGaugeWindow();
-  void UpdateAnimation(C3dGrannyModelRes* model);
+  granny_world_pose* UpdateAnimation(C3dGrannyModelRes* model);
   void RenderModel(const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation);
   void RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model);
   void RenderShadow(int argument, vector3d lightDirection, bool cached);
