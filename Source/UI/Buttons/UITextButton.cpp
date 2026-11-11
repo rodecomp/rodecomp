@@ -65,6 +65,17 @@
 
 extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>*, UIWindow* const&);
 
+using IntIntTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
+IntIntTree::_Find_lower_bound<int>(const int&) const;
+using IdListLineTree = std::_Tree<std::_Tmap_traits<int, IdListLine, std::less<int>, std::allocator<std::pair<const int, IdListLine>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, IdListLine>, void*>*>
+IdListLineTree::_Find_lower_bound<int>(const int&) const;
+using ExtendedListLineTree = std::_Tree<std::_Tmap_traits<int, ExtendedListLine, std::less<int>, std::allocator<std::pair<const int, ExtendedListLine>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, ExtendedListLine>, void*>*>
+ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;
+extern template UITextButton** std::allocator<UITextButton*>::allocate(const std::size_t);
+
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
 UITextButton::UITextButton() : UIButton() {
@@ -2805,6 +2816,8 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 
 #include <format>
 
+extern template std::string std::format<const std::string&>(const std::_Fmt_string<const std::string&>, const std::string&);
+
 // OFFSET: 0x00884720
 // FUNCTION: fn_11310
 void UIItemTagOnChat::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
@@ -2949,10 +2962,18 @@ void UIComboBoxID::OnLBtnUp(int x, int y) {
 
   if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
     const auto found = this->lineData.find(this->selected);
-    target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found != this->lineData.end() ? found->second : 0, 0, 0);
-  } else if (this->parent) {
+    if (found != this->lineData.end()) {
+      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found->second, 0, 0);
+    } else {
+      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, 0, 0, 0);
+    }
+  } else if (UIWindow* parent = this->parent) {
     const auto found = this->lineData.find(this->selected);
-    this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found != this->lineData.end() ? found->second : 0, 0, 0);
+    if (found != this->lineData.end()) {
+      parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found->second, 0, 0);
+    } else {
+      parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, 0, 0, 0);
+    }
   }
 
   g_windowMgr.CloseWindow(WID_COMBOBOXWND);
