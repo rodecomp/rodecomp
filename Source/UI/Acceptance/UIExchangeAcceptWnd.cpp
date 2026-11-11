@@ -54,9 +54,9 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();
-    for (int state = 0; state < 3; ++state) {
-      button->SetBitmap((prefix + names[i][state] + ".bmp").c_str(), state, 0);
-    }
+    button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(positions[i][0], positions[i][1]);
     button->SetId(ids[i]);
