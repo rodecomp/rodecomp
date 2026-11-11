@@ -481,17 +481,19 @@ void UIEmailAddressWnd::OnCreate(int, int) {
   g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 28;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 28;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->m_message0 = 184;
 }
 
@@ -1025,7 +1027,9 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == ID_OK && this->edit->Length()) {
-      g_modeMgr.gameMode->SendMsg(MM_SEND_NUMBER_TO_NPC, this->npcId, std::atoi(this->edit->Text()), 0, 0);
+      CMode* mode = g_modeMgr.gameMode;
+      const int number = std::atoi(this->edit->Text());
+      mode->SendMsg(MM_SEND_NUMBER_TO_NPC, this->npcId, number, 0, 0);
       g_windowMgr.CloseWindow(WID_NPCEDITDIALOGWND);
     }
     return 0;
@@ -4230,17 +4234,19 @@ void UISkillNameChangeWnd::OnCreate(int, int) {
   g_windowMgr.SetFocus(this->m_edit);
   this->m_edit->SelectAll();
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->m_skillId = -1;
   this->m_message0 = 184;
 }
@@ -5407,8 +5413,9 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 // FUNCTION: fn_12345
 int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_COMMAND: {
-    if (a == ID_OK) {
+  case UM_COMMAND:
+    switch (a) {
+    case ID_OK: {
       struct {
         int area[4];
         const char* text;
@@ -5419,13 +5426,13 @@ int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       request.area[3] = this->area[3];
       request.text = this->edit->Text();
       g_modeMgr.GetGameMode()->SendMsg(MM_USE_SKILL_TOGROUND_WITH_TALKBOX, reinterpret_cast<int>(&request), 0, 0, 0);
-    } else if (a != ID_CANCEL) {
-      return 0;
     }
-
-    g_windowMgr.Schedule(this);
+      [[fallthrough]];
+    case ID_CANCEL:
+      g_windowMgr.Schedule(this);
+      break;
+    }
     return 0;
-  }
   case UM_SET_SKILL_INFO: {
     const int* area = reinterpret_cast<const int*>(a);
     this->area[0] = area[0];
@@ -7799,17 +7806,19 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
   g_windowMgr.SetFocus(this->edit);
   this->edit->SelectAll();
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->npcId = -1;
   this->m_message0 = 184;
 }
@@ -8080,13 +8089,15 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case ID_OK:
+    case ID_OK: {
+      CMode* mode = g_modeMgr.gameMode;
       g_windowMgr.CloseWindow(WID_ITEMSHOPWND2);
       g_windowMgr.CloseWindow(WID_ITEMSELLWND2);
-      g_modeMgr.gameMode->SendMsg(MM_ITEMLISTWIN_RES, 0, 0, 0, 0);
+      mode->SendMsg(MM_ITEMLISTWIN_RES, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_MIXACCEPTWND);
       g_session.ClearTradeItems();
       break;
+    }
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_MIXACCEPTWND);
       break;
@@ -9154,8 +9165,7 @@ template <class Window> static __forceinline void AppendAcceptanceReplayRecords(
   char text[260];
   std::memset(text, 0, sizeof(text));
   window->viewer->CopyText(text, 0);
-  const char parentheses[] = {'(', ')'};
-  std::string decoration(parentheses, sizeof(parentheses));
+  std::string decoration("()");
   decoration.append(LookupMessage(message));
   AppendReplayRecord(records, BuildReplayTaggedRecord(id + 2, text + 1, window->viewer->TextLength() - decoration.size()));
 
@@ -9621,17 +9631,19 @@ void UIAutoMessageWnd::OnCreate(int, int) {
   this->m_edit->SelectAll();
   this->AddChild(this->m_edit);
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(184);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(184);
+    this->AddChild(button);
+  }
   this->m_message0 = 184;
 }
 
