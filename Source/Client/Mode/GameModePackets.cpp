@@ -4080,7 +4080,7 @@ void CGameMode::SetActorNameCard(std::uint32_t id, const char* name, const char*
   }
 
   std::string jobTitle = GetJobTitleString(job);
-  this->nameCard.Set(id, name, value1, value2, value3, jobTitle, std::string(), 0);
+  this->nameCard.Set(id, name, value1, value2, value3, jobTitle, std::string(""), 0);
 }
 
 // OFFSET: 0x00D79BB0
@@ -7473,7 +7473,8 @@ std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 // FUNCTION: fn_21667
 __declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
   const MiniMapEffectMarkerPacket* marker = reinterpret_cast<const MiniMapEffectMarkerPacket*>(packet);
-  auto found = g_miniMapEffectMarkers.find(marker->key);
+  const int key = marker->key;
+  auto found = g_miniMapEffectMarkers.find(key);
   if (found != g_miniMapEffectMarkers.end()) {
     found->second.x = marker->x;
     found->second.y = marker->y;
@@ -7481,7 +7482,7 @@ __declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char*
     return;
   }
 
-  g_miniMapEffectMarkers.emplace(marker->key, MiniMapEffectMarker{0x78, marker->x, marker->y});
+  g_miniMapEffectMarkers.emplace(key, MiniMapEffectMarker{0x78, marker->x, marker->y});
 }
 
 struct ActorMessage32 {
@@ -7576,7 +7577,9 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
     info.m_huntMinLevel[i] = hunt.minLevel;
     info.m_huntMaxLevel[i] = hunt.maxLevel;
     const int mobId = hunt.mobId;
-    if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+    if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
+    } else {
       if (mobId == 0x1099) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
       } else if (mobId == 0x109A) {
@@ -7587,8 +7590,6 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
       }
-    } else {
-      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
     }
   }
 
@@ -7629,7 +7630,9 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
     info.m_huntMinLevel[i] = hunt.minLevel;
     info.m_huntMaxLevel[i] = hunt.maxLevel;
     const int mobId = hunt.mobId;
-    if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
+    if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
+    } else {
       if (mobId == 0x1099) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
       } else if (mobId == 0x109A) {
@@ -7640,8 +7643,6 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
       }
-    } else {
-      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt.name);
     }
   }
 
