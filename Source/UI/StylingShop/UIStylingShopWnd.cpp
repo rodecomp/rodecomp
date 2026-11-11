@@ -1484,10 +1484,6 @@ struct StyleChangeItem {
   /* 0004 */ int value;
 };
 
-struct StyleChangePacket {
-  /* 0000 */ StyleChangeHeader header;
-  /* 0006 */ unsigned char items[2042];
-};
 #pragma pack(pop)
 
 #include "Client/Mode/CGameMode.h"
@@ -1826,105 +1822,84 @@ void UIShowInfoWnd::Paint() {
 // OFFSET: 0x00824EE0
 // FUNCTION: fn_10318
 bool UIShowInfoWnd::SendStyleChange() {
-  StyleChangeHeader header = {};
+  char packet[2048];
+  StyleChangeHeader header = {0xBF7, 0, 0};
+  SecureZeroMemory(&header, sizeof(header));
   header.packetType = 0xBF7;
-  const short count = static_cast<short>(this->m_list.size());
+  const unsigned short count = static_cast<unsigned short>(this->m_list.size());
   const short length = count * 8 + 6;
   header.packetLength = length;
 
-  StyleChangePacket packet;
-  memset(packet.items, 0, sizeof(packet.items));
-  packet.header = header;
-  packet.header.count = count;
+  memset(&packet[sizeof(header)], 0, sizeof(packet) - sizeof(header));
+  *reinterpret_cast<StyleChangeHeader*>(packet) = header;
+  reinterpret_cast<StyleChangeHeader*>(packet)->count = count;
 
   bool changed = false;
   int index = 0;
   for (std::list<int>::iterator it = this->m_list.begin(); it != this->m_list.end(); ++it, ++index) {
-    StyleChangeItem item;
-    item.kind = 0;
-    item.value = 0;
-    UIDisplayCharacter* display = this->m_display;
+    int kind = 0;
+    int value = 0;
     const int type = *it;
-    switch (type) {
-    case 1: {
+    if (type == 1) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 1;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->headPalette, &item.value);
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->headPalette, &value);
       }
-
-      break;
-    }
-    case 2: {
+    } else if (type == 2) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 2;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->head, &item.value);
-        item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->head, &value);
+        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
       }
-
-      break;
-    }
-    case 3: {
+    } else if (type == 3) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 3;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->bodyStyle, &item.value);
-        item.kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bodyStyle, &value);
+        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
       }
-
-      break;
-    }
-    case 4: {
+    } else if (type == 4) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 4;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->topAccessoryItemId, &item.value);
-        item.kind = 3;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->topAccessoryItemId, &value);
+        kind = 3;
       }
-
-      break;
-    }
-    case 5: {
+    } else if (type == 5) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 5;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->middleAccessoryItemId, &item.value);
-        item.kind = 4;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->middleAccessoryItemId, &value);
+        kind = 4;
       }
-
-      break;
-    }
-    case 6: {
+    } else if (type == 6) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = 6;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", display->GetStyleTable(table).c_str(), display->bottomAccessoryItemId, &item.value);
-        item.kind = 5;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bottomAccessoryItemId, &value);
+        kind = 5;
       }
-
-      break;
-    }
-    case 7: {
+    } else if (type == 7) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
+        UIDisplayCharacter* display = this->m_display;
         std::map<int, int>::iterator job = display->m_jobs.find(display->job);
         if (job != display->m_jobs.end()) {
-          item.value = job->second;
-          item.kind = 9;
+          value = job->second;
+          kind = 9;
         }
       }
-
-      break;
-    }
     }
 
     const int offset = index * 8 + 6;
-    memcpy_s(reinterpret_cast<char*>(&packet) + offset, length - offset, &item, sizeof(item));
+    StyleChangeItem item = {kind, value};
+    memcpy_s(&packet[offset], length - offset, &item, sizeof(item));
   }
 
   if (changed == true) {
-    GetRagConnection().Send(length, &packet);
+    GetRagConnection().Send(length, packet);
     return true;
   }
 
