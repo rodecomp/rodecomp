@@ -805,7 +805,7 @@ std::vector<int> CCashEmotionMgr::GetPackEmotions(int packId) {
   std::vector<int> result;
 
   auto it = this->emotionOrder.find(packId);
-  if (it == this->emotionOrder.end()) {
+  if (this->emotionOrder.end() == it) {
     return result;
   }
 
