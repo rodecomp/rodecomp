@@ -1495,17 +1495,18 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   }
 
   std::string fitted(display);
-  ATL::CA2WEX<128> wide(display.c_str(), CP_THREAD_ACP);
-  std::wstring remaining(wide);
+  std::wstring remaining(ATL::CA2WEX<128>(display.c_str(), CP_THREAD_ACP));
 
   while (remaining.size() > 1) {
-    std::size_t length = remaining.size() - 1;
+    if (remaining.size() >= 2) {
+      std::size_t length = remaining.size() - 1;
 
-    if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
-      --length;
+      if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
+        --length;
+      }
+
+      remaining.resize(length);
     }
-
-    remaining.resize(length);
 
     ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
     fitted = std::string(converted) + "...";
@@ -2612,51 +2613,6 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   case UM_COMMAND:
     if (argument1 != 0x150 && argument1 != 0x1B9) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-      if (argument1 > 499) {
-        break;
-      }
-      if (argument1 == 499) {
-        if (!g_windowMgr.LookupWindow(WID_WAITWND)) {
-          UIPrivateAirplaneWnd* window = new UIPrivateAirplaneWnd();
-          window->SetSize(0xD0, 0x6E);
-          window->Move(static_cast<int>((g_renderer->viewport.width - 0xD0) * 0.5), static_cast<int>((g_renderer->viewport.height - 0x6E) * 0.5));
-          g_windowMgr.AddRendered(window);
-          if (g_navigationManager.GetCurrentTargetType() == 2) {
-            window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)), 0, 0, 0);
-          }
-
-          std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
-          mapName = mapName.substr(0, mapName.find(".rsw")) + ".gat";
-          if (!g_privateAirplaneItems->IsStartableMap(mapName)) {
-            window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-          }
-
-          std::string targetName = g_navigationManager.GetCurrentTargetName() + ".gat";
-          if (!g_privateAirplaneItems->IsEndableMap(targetName)) {
-            window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_REGISTER_NAME_THAT_CONTAINS_BADWORDS)), 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-          }
-
-          if (mapName.compare(targetName) == 0) {
-            window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY)), 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-          }
-
-          CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-          if (mode->scene && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player &&
-              static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.state == 3) {
-            window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY2)), 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-          }
-
-          g_windowMgr.privateAirplaneWnd = window;
-          if (g_windowMgr.RunModal(window) == 0xBC) {
-            g_windowMgr.privateAirplaneWnd = nullptr;
-          }
-        }
-        break;
-      }
     }
 
     switch (argument1) {
@@ -2859,6 +2815,47 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_worldViewMgr.ResetSelection();
         g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
         g_windowMgr.CloseWindow(WID_NAVIGATIONV4WND);
+      }
+      break;
+    case 499:
+      if (!g_windowMgr.LookupWindow(WID_WAITWND)) {
+        UIPrivateAirplaneWnd* window = new UIPrivateAirplaneWnd();
+        window->SetSize(0xD0, 0x6E);
+        window->Move(static_cast<int>((g_renderer->viewport.width - 0xD0) * 0.5), static_cast<int>((g_renderer->viewport.height - 0x6E) * 0.5));
+        g_windowMgr.AddRendered(window);
+        if (g_navigationManager.GetCurrentTargetType() == 2) {
+          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)), 0, 0, 0);
+        }
+
+        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        mapName = mapName.substr(0, mapName.find(".rsw")) + ".gat";
+        if (!g_privateAirplaneItems->IsStartableMap(mapName)) {
+          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
+        }
+
+        std::string targetName = g_navigationManager.GetCurrentTargetName() + ".gat";
+        if (!g_privateAirplaneItems->IsEndableMap(targetName)) {
+          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_REGISTER_NAME_THAT_CONTAINS_BADWORDS)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
+        }
+
+        if (mapName.compare(targetName) == 0) {
+          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
+        }
+
+        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        if (mode->scene && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player &&
+            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.state == 3) {
+          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY2)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
+        }
+
+        g_windowMgr.privateAirplaneWnd = window;
+        if (g_windowMgr.RunModal(window) == 0xBC) {
+          g_windowMgr.privateAirplaneWnd = nullptr;
+        }
       }
       break;
     }
