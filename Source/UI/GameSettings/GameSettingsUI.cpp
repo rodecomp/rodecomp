@@ -3335,7 +3335,8 @@ void GameSettingsUI::CUIOptionItem::OnCheck(bool checked) {
   if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
     Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
   }
-  Singleton<CGameSettingsMgr>::s_instance->SetOption(this->m_optionId, IsServiceOption(this->m_optionId) ^ checked, false);
+  CGameSettingsMgr* const settings = Singleton<CGameSettingsMgr>::s_instance;
+  settings->SetOption(this->m_optionId, IsServiceOption(this->m_optionId) ^ checked, false);
 }
 
 // OFFSET: 0x00A40280
