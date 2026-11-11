@@ -136,41 +136,10 @@ void UISecondCostumeWnd::LoadLists() {
 // OFFSET: 0x0094A2D0
 // FUNCTION: fn_12886
 void UISecondCostumeWnd::SelectSavedEntries() {
-  unsigned int selected = 0;
-  for (unsigned int index = 0; index < this->m_entries[0].size(); ++index) {
-    if (this->m_entries[0][index].value == g_session.m_headPalette) {
-      selected = index;
-      break;
-    }
-  }
-  this->m_selected[0] = selected;
-
-  selected = 0;
-  for (unsigned int index = 0; index < this->m_entries[1].size(); ++index) {
-    if (this->m_entries[1][index].value == g_session.m_head) {
-      selected = index;
-      break;
-    }
-  }
-  this->m_selected[1] = selected;
-
-  selected = 0;
-  for (unsigned int index = 0; index < this->m_entries[2].size(); ++index) {
-    if (this->m_entries[2][index].value == g_session.m_bodyStyle) {
-      selected = index;
-      break;
-    }
-  }
-  this->m_selected[2] = selected;
-
-  selected = 0;
-  for (unsigned int index = 0; index < this->m_entries[3].size(); ++index) {
-    if (this->m_entries[3][index].value == g_session.m_bodyCostume) {
-      selected = index;
-      break;
-    }
-  }
-  this->m_selected[3] = selected;
+  this->m_selected[0] = FindEntryIndex(this->m_entries[0], g_session.m_headPalette);
+  this->m_selected[1] = FindEntryIndex(this->m_entries[1], g_session.m_head);
+  this->m_selected[2] = FindEntryIndex(this->m_entries[2], g_session.m_bodyStyle);
+  this->m_selected[3] = FindEntryIndex(this->m_entries[3], g_session.m_bodyCostume);
 }
 
 // OFFSET: 0x0094C5B0
@@ -240,22 +209,18 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_SECONDCOSTUMEWND);
-      break;
+    case ID_LEFT:
+      this->m_page = this->m_page < 7 ? this->m_page + 1 : 0;
+      this->Invalidate();
+      return 0;
 
     case ID_RIGHT:
-      if (this->m_page < 1) {
+      if (this->m_page <= 0) {
         this->m_page = 7;
       } else {
         --this->m_page;
       }
 
-      this->Invalidate();
-      return 0;
-
-    case ID_LEFT:
-      this->m_page = this->m_page < 7 ? this->m_page + 1 : 0;
       this->Invalidate();
       return 0;
 
@@ -265,6 +230,10 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         this->Invalidate();
         return 0;
       }
+      break;
+
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_SECONDCOSTUMEWND);
       break;
     }
 
