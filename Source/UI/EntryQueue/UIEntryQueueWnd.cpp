@@ -222,7 +222,7 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       g_entryQueueMgr->SendAdmissionReply(2);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND);
-      return 0;
+      break;
     }
   }
 
@@ -308,7 +308,7 @@ int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       break;
     case 1:
       g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
-      return 0;
+      break;
     }
   }
 
