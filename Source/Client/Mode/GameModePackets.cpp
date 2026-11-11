@@ -2719,7 +2719,7 @@ __declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, i
     return;
   }
 
-  if (actor->UpdateMaximumValue(value)) {
+  if (actor->UpdateMaximumValue(value) == true) {
     actor->LaunchEffect(0x2a5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
@@ -3904,7 +3904,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
   case JT_DRAGON_KNIGHT_CHICKEN:
     break;
   case JT_ABYSS_CHASER:
-    if (count == 0) {
+    if (0 == count) {
       g_effectMgr->Retire(actor->render.accountId, 2109);
       return;
     }
@@ -11176,11 +11176,11 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
     g_guildStorageLogs[0].push_back(entry);
   }
 
-  if (result == 0) {
+  if (0 == result) {
     return;
   }
 
-  if (result == 1) {
+  if (1 == result) {
     GuildStorageLogEntry pivot;
     std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
       return std::strcmp(left.timestamp, right.timestamp) > 0;
@@ -11198,7 +11198,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
 
   char text[250];
   int messageId;
-  if (result == 2) {
+  if (2 == result) {
     std::memset(text, 0, sizeof(text));
     messageId = 2543;
   } else {
@@ -12542,7 +12542,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   } else {
     const short job = packet->job;
     CGameActor* created;
-    if ((job >= JT_WARPNPC && job < 1000) || (job > 1000 && job < 3999) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
+    if ((JT_WARPNPC <= job && 1000 > job) || (1000 < job && 3999 > job) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsCompanionJob(job)) {
       if (g_session.IsHomunAid(packet->aid)) {
         g_session.homunAlive = 1;
@@ -12645,7 +12645,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
   } else {
     const short job = packet->job;
     CGameActor* created;
-    if ((job >= JT_WARPNPC && job < 1000) || (job > 1000 && job < 3999) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
+    if ((JT_WARPNPC <= job && 1000 > job) || (1000 < job && 3999 > job) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsCompanionJob(job) || packet->objectType == 9) {
       if (g_session.IsHomunAid(packet->aid)) {
         g_session.homunAlive = 1;
@@ -13261,7 +13261,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     }
   } else {
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
@@ -13395,7 +13395,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     }
   } else {
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
         packet->objectType != 9) {
       actor = new CPc;
     } else {
@@ -13542,7 +13542,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     }
   } else {
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
         packet->objectType != 9) {
       actor = new CPc;
     } else {
@@ -13668,7 +13668,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     }
   } else {
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
@@ -14272,7 +14272,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -14397,7 +14397,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -14525,7 +14525,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -14656,7 +14656,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -14937,7 +14937,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
     }
   } else {
     const short job = packet->job;
-    if ((job < 45 || job > 999) && (job < 1001 || job > 3998) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
@@ -15383,7 +15383,7 @@ void CGameMode::SpawnStateActor(
     break;
   }
 
-  if (objectType != 0 && job == 0x2D2) {
+  if (objectType != 0 && 0x2D2 == job) {
     actor->SetGuildInfo(actor->GetGdid(), guildVersion);
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
   } else {
