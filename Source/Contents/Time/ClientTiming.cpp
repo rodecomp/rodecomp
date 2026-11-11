@@ -487,7 +487,7 @@ std::uint32_t CSession::AddPingSample(std::uint32_t sample) {
   this->m_pingSamples.push_back(sample);
 
   while (this->m_pingSamples.size() > 3) {
-    this->m_pingSamples.pop_front();
+    this->m_pingSamples.erase(this->m_pingSamples.begin());
   }
 
   std::uint32_t sum = 0;
