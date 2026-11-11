@@ -36,12 +36,12 @@
 
 #pragma pack(push, 1)
 struct GradeEnchantSelectPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t index;
 };
 
 struct GradeEnchantRequestPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t index;
   /* 0004 */ int material;
   /* 0008 */ unsigned char useBlessing;
@@ -50,7 +50,7 @@ struct GradeEnchantRequestPacket {
 };
 
 struct GradeEnchantClosePacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
 };
 #pragma pack(pop)
 
