@@ -1390,6 +1390,12 @@ CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
   return {changed, nextTime};
 }
 
+// OFFSET: 0x0059CD60
+// FUNCTION: fn_02980
+void LuaScript::Register(std::string name, int (*function)(lua_State*)) {
+  lua_register(this->m_state, name.c_str(), function);
+}
+
 // OFFSET: 0x0059CDE0
 // FUNCTION: fn_02981
 void CCashEmotionMgr::SetServerTime(int param) {
