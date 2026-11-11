@@ -1322,16 +1322,14 @@ void CNpc::UpdateMinimapMarker() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   MinimapMarker* marker = mode->FindMinimapMarker(this->render.accountId);
-  if (marker && marker->effectType != 9999) {
+  if (marker && 9999 != marker->effectType) {
+    if (this->attachedEffect && marker->effectType == this->minimapMarkerCell[0] && marker->questIconId == this->minimapMarkerCell[1]) {
+      return;
+    }
     if (this->attachedEffect) {
-      if (marker->effectType == this->minimapMarkerCell[0] && marker->questIconId == this->minimapMarkerCell[1]) {
-        return;
-      }
-      if (this->attachedEffect) {
-        this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        this->attachedEffect = nullptr;
-        this->attachedEffectId = 9999;
-      }
+      this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->attachedEffect = nullptr;
+      this->attachedEffectId = 9999;
     }
 
     const int base = marker->effectType < 6 ? 0x24 : 0x36;
@@ -1557,34 +1555,32 @@ void CHalluPC::Render(int argument) {
   rand();
   rand();
 
-  if (!this->render.visible) {
+  if (this->render.visible) {
+    if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+      return;
+    }
+
+    if (this->render.state != 6 && this->render.state != 3) {
+      this->DrawShadow(argument, this->render.scale);
+    }
+    if (this->render.enabled) {
+      if (IsObfuscatedMessage(this->render.accountId)) {
+        this->RenderOverlaySprite(matrix, 1);
+        return;
+      }
+
+      if (this->renderWithoutLayer != 0) {
+        this->DrawSprite(argument, false, 0.0f);
+        return;
+      }
+
+      this->DrawLayers(matrix, 1, 0);
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+  } else {
     this->UpdateTlvertex(matrix);
-    return;
   }
-
-  if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
-    return;
-  }
-
-  if (this->render.state != 6 && this->render.state != 3) {
-    this->DrawShadow(argument, this->render.scale);
-  }
-  if (!this->render.enabled) {
-    this->UpdateTlvertex(matrix);
-    return;
-  }
-
-  if (IsObfuscatedMessage(this->render.accountId)) {
-    this->RenderOverlaySprite(matrix, 1);
-    return;
-  }
-
-  if (this->renderWithoutLayer != 0) {
-    this->DrawSprite(argument, false, 0.0f);
-    return;
-  }
-
-  this->DrawLayers(matrix, 1, 0);
 }
 
 
