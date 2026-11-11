@@ -34,7 +34,7 @@ void PumpApplicationMessages() {
       );
     }
 
-    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0) {
+    if (0 == (GetAsyncKeyState(VK_LBUTTON) & 0x8000)) {
       g_windowDragging = false;
       if (g_serviceOptions.Get(ServiceOption::ConfineCursor) != 0) {
         ClipApplicationCursor(hWnd);
