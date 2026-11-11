@@ -90,13 +90,10 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
     value["Identified"] = item.identified != 0;
     value["RefiningLevel"] = item.refiningLevel;
     value["GradeLevel"] = item.grade;
-    const char* slotKeys[] = {"Slot_1", "Slot_2", "Slot_3", "Slot_4"};
-
-    for (unsigned index = 0; index < 4; ++index) {
-      std::int32_t slot;
-      std::memcpy(&slot, item.cards + 4 * index, sizeof(slot));
-      value[slotKeys[index]] = slot;
-    }
+    value["Slot_1"] = LoadField<std::int32_t>(item.cards + 0);
+    value["Slot_2"] = LoadField<std::int32_t>(item.cards + 4);
+    value["Slot_3"] = LoadField<std::int32_t>(item.cards + 8);
+    value["Slot_4"] = LoadField<std::int32_t>(item.cards + 12);
 
     const int count = item.optionCount;
     value["RandomOptionCount"] = count;
