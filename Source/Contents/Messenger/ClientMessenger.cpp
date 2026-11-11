@@ -5584,22 +5584,22 @@ bool CGameMode::IsValidCell(int x, int y) {
 __declspec(noinline) void CSession::UpdateRandomStats() {
   if (g_resetMessengerRandomStats != 0) {
     g_resetMessengerRandomStats = 0;
-    this->randomStatIndexC = std::max(std::rand() % 12, 0);
-    this->randomStatIndexB = std::max(std::rand() % 12, 0);
-    this->randomStatIndexE = std::max(std::rand() % 12, 0);
-    this->randomStatIndexA = std::max(std::rand() % 12, 0);
-    this->randomStatIndexD = std::max(std::rand() % 12, 0);
+    this->randomStatIndexC = std::ranges::max(std::rand() % 12, 0);
+    this->randomStatIndexB = std::ranges::max(std::rand() % 12, 0);
+    this->randomStatIndexE = std::ranges::max(std::rand() % 12, 0);
+    this->randomStatIndexA = std::ranges::max(std::rand() % 12, 0);
+    this->randomStatIndexD = std::ranges::max(std::rand() % 12, 0);
   }
 
   const int bound70 = reinterpret_cast<int&>(this->spAndHomunculusStats[0]);
   const int bound74 = reinterpret_cast<int&>(this->spAndHomunculusStats[4]);
   const int bound68 = this->hp;
   const int bound6C = this->maxHp;
-  this->randomStatIndexC = std::max(std::rand() % 12, 0);
-  this->randomStatIndexA = std::max(std::rand() % 12, 0);
-  this->randomStatIndexD = std::max(std::rand() % 12, 0);
-  this->randomStatIndexB = std::max(std::rand() % 12, 0);
-  this->randomStatIndexE = std::max(std::rand() % 12, 0);
+  this->randomStatIndexC = std::ranges::max(std::rand() % 12, 0);
+  this->randomStatIndexA = std::ranges::max(std::rand() % 12, 0);
+  this->randomStatIndexD = std::ranges::max(std::rand() % 12, 0);
+  this->randomStatIndexB = std::ranges::max(std::rand() % 12, 0);
+  this->randomStatIndexE = std::ranges::max(std::rand() % 12, 0);
   for (int& value : this->randomStatValues) {
     value = std::max(std::abs(std::rand()) % 1, 0);
   }
