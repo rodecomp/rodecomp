@@ -180,7 +180,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     if (a == ID_OPEN_MEMBER_POS_COMBO) {
       this->expanded = this->expanded == 0;
       this->Resize(
-        this->geometry.width, this->expanded ? (this->geometry.height + this->list->geometry.height) : (this->geometry.height - this->list->geometry.height)
+        this->geometry.width, this->expanded ? (this->list->geometry.height + this->geometry.height) : (this->geometry.height - this->list->geometry.height)
       );
       this->parent->Invalidate();
       this->Invalidate();
@@ -202,7 +202,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       return 0;
     }
 
-    this->label->SetText(this->list->lines[value].text.c_str(), 0);
+    this->label->SetText(LineText(this->list, value), 0);
     this->SendMsg(nullptr, UM_COMMAND, ID_OPEN_MEMBER_POS_COMBO, 0, 0, 0);
     this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, value, 0, 0, 0);
     return 0;
@@ -210,7 +210,7 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case UM_CHANGEMSG: {
     const int value = static_cast<int>(a);
     if (value >= 0) {
-      this->label->SetText(this->list->lines[value].text.c_str(), 0);
+      this->label->SetText(LineText(this->list, value), 0);
       this->Invalidate();
     }
 
