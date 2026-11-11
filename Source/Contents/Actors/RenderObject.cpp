@@ -3517,7 +3517,18 @@ bool CGrannyCorpse3d::OnProcess() {
 void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
   this->render.state = 0;
   switch (animation) {
+    case 48:
+      this->render.state = 4;
+      break;
+    case 80:
+    case 88:
+      this->render.state = 2;
+      break;
+    case 64:
+      this->render.state = 3;
+      break;
     case 0:
+      this->render.state = 0;
       break;
     case 8:
       this->render.state = 1;
@@ -3531,16 +3542,6 @@ void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
     case 40:
       this->render.state = 12;
       break;
-    case 48:
-      this->render.state = 4;
-      break;
-    case 64:
-      this->render.state = 3;
-      break;
-    case 80:
-    case 88:
-      this->render.state = 2;
-      break;
   }
 
   this->motion = this->render.state;
@@ -3550,7 +3551,11 @@ void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
   }
 
   this->motionProgress = 0;
-  this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], repeat == 1);
+  if (repeat == 1) {
+    this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], 1);
+  } else {
+    this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], 0);
+  }
 }
 
 // OFFSET: 0x00CC5080
@@ -4667,7 +4672,7 @@ bool C3dGrannyGameActor::OnProcess() {
     this->initializeFacing = 0;
   } else {
     float current = this->angle;
-    const float target = 180.0f - static_cast<float>(static_cast<int>(facing));
+    const int target = static_cast<int>(180.0f - static_cast<int>(facing));
     if (current > 360.0f) {
       current = static_cast<float>(static_cast<int>(current) % 360);
       this->angle = current;
@@ -4679,14 +4684,10 @@ bool C3dGrannyGameActor::OnProcess() {
 
     int delta = static_cast<int>(current - target);
     if (delta > 360 || delta < -360) {
-      const int adjust = static_cast<int>((static_cast<long long>(delta) * 0x49f49f49LL) >> 32) - delta;
-      delta = delta + ((adjust >> 8) - (adjust >> 31)) * 360;
+      delta += delta / -360 * 360;
     }
 
-    int absolute = delta + 360;
-    if (delta >= 0) {
-      absolute = delta;
-    }
+    const int absolute = delta < 0 ? delta + 360 : delta;
     if (absolute > 12) {
       if (absolute < 180) {
         this->angle = current - 6.0f;
