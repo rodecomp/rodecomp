@@ -793,12 +793,13 @@ void UIAchListWnd::UpdateScroll() {
 
   for (int index = 0; index < this->rowCount; ++index) {
     UIButton* button = this->buttons[index];
-    if (static_cast<unsigned>(this->firstRow + index) < static_cast<unsigned>(this->achievementList->count)) {
-      button->SetDisabled(0);
-    } else {
+    if (static_cast<unsigned>(this->firstRow + index) >= static_cast<unsigned>(this->achievementList->count)) {
       button->SetDisabled(1);
+      button->Invalidate();
+    } else {
+      button->SetDisabled(0);
+      button->Invalidate();
     }
-    button->Invalidate();
   }
 }
 
