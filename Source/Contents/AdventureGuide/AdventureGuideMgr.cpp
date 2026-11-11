@@ -11,6 +11,8 @@
 #include <optional>
 #include <windows.h>
 
+extern template bool std::string_view::_Equal(std::string_view) const noexcept;
+
 // GLOBAL: gl_24502
 CAdventureGuideMgr* g_adventureGuideMgr;
 
@@ -1134,20 +1136,20 @@ AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& sourc
 // FUNCTION: fn_05189
 static std::optional<AdventureGuideEntryTable::mapped_type*> FindMapped(AdventureGuideEntryTable& map, const int& key) {
   auto it = map.find(key);
-  if (it == map.end()) {
-    return std::nullopt;
+  if (it != map.end()) {
+    return &it->second;
   }
-  return &it->second;
+  return std::nullopt;
 }
 
 // OFFSET: 0x0065F6D0
 // FUNCTION: fn_05190
 static std::optional<AdventureGuideContentsTable::mapped_type*> FindMapped(AdventureGuideContentsTable& map, const int& key) {
   auto it = map.find(key);
-  if (it == map.end()) {
-    return std::nullopt;
+  if (it != map.end()) {
+    return &it->second;
   }
-  return &it->second;
+  return std::nullopt;
 }
 
 // OFFSET: 0x00660F70
@@ -1312,11 +1314,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLev
   detail.maxLevel = maxLevel;
   detail.questId = 0;
   detail.text = text;
-  for (auto& [key, intro] : m_intros) {
-    if (intro.type == 4) {
-      intro.details.try_emplace(id, std::as_const(detail));
-      break;
-    }
+  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [](const auto& entry) {
+    return entry.second.type == 4;
+  });
+  if (it != m_intros.end()) {
+    it->second.details.try_emplace(id, std::as_const(detail));
   }
 
   return AdventureGuideResult(true, "good");
@@ -1520,11 +1522,11 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestSubMenu(int id, int minLevel
   detail.maxLevel = maxLevel;
   detail.questId = 0;
   detail.text = text;
-  for (auto& [key, intro] : m_intros) {
-    if (intro.type == 3) {
-      intro.details.try_emplace(id, std::as_const(detail));
-      break;
-    }
+  const auto it = std::find_if(m_intros.begin(), m_intros.end(), [](const auto& entry) {
+    return entry.second.type == 3;
+  });
+  if (it != m_intros.end()) {
+    it->second.details.try_emplace(id, std::as_const(detail));
   }
 
   return AdventureGuideResult(true, "good");
