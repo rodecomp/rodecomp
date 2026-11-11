@@ -24,11 +24,14 @@ void CAdventurerAgencyMgr::CompleteChangeMaster(AsyncDiagnostic diagnostic, std:
     return;
   }
 
-  const int type = root["Type"].asInt();
-
-  if (type != 2 && type != 3) {
+  switch (root["Type"].asInt()) {
+  case 2:
+  case 3:
+    break;
+  default:
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND)) {
       window->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
     }
+    break;
   }
 }
