@@ -828,12 +828,12 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   alignas(16) RenderVertex vertex;
-  if (pw == 10) {
+  if (10 == pw) {
     this->state.triangles[*rpCnt].sourceBlend = 2;
     this->state.triangles[*rpCnt].destinationBlend = 1;
   } else {
     this->state.triangles[*rpCnt].sourceBlend = 5;
-    this->state.triangles[*rpCnt].destinationBlend = pw == 99 ? 6 : destBlend;
+    this->state.triangles[*rpCnt].destinationBlend = 99 == pw ? 6 : destBlend;
   }
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->viewport.Project(&vec1.x, wtm.values, vertex);
@@ -884,12 +884,12 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     ++*rpCnt;
   }
 
-  if (pw == 10) {
+  if (10 == pw) {
     this->state.triangles[*rpCnt].sourceBlend = 2;
     this->state.triangles[*rpCnt].destinationBlend = 1;
   } else {
     this->state.triangles[*rpCnt].sourceBlend = 5;
-    this->state.triangles[*rpCnt].destinationBlend = pw == 99 ? 6 : destBlend;
+    this->state.triangles[*rpCnt].destinationBlend = 99 == pw ? 6 : destBlend;
   }
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->viewport.Project(&vec4.x, wtm.values, vertex);
@@ -1638,33 +1638,33 @@ void CEffectPrim::RenderRiseArc(matrix& wtm) {
 
 // INLINED
 static __forceinline void RenderFacingQuad(
-  CEffectPrim& prim, int* rpCnt, const EffectPrimitiveSlot& slot, const vector3d& vec1, const vector3d& vec2, const vector3d& vec3, const vector3d& vec4,
-  const vector3d& position, char alphaValue, matrix& wtm
+  CEffectPrim& prim, int* rpCnt, const EffectPrimitiveSlot& slot, vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, const vector3d& corner1,
+  const vector3d& corner2, const vector3d& corner3, const vector3d& corner4, const vector3d& position, char alphaValue, matrix& wtm
 ) {
-  const vector3d corner1{position.x + vec1.x, position.y + vec1.y, position.z + vec1.z};
-  const vector3d corner2{position.x + vec2.x, position.y + vec2.y, position.z + vec2.z};
-  const vector3d corner3{position.x + vec3.x, position.y + vec3.y, position.z + vec3.z};
-  const vector3d corner4{position.x + vec4.x, position.y + vec4.y, position.z + vec4.z};
+  vec1 = {position.x + corner1.x, position.y + corner1.y, position.z + corner1.z};
+  vec2 = {position.x + corner2.x, position.y + corner2.y, position.z + corner2.z};
+  vec3 = {position.x + corner3.x, position.y + corner3.y, position.z + corner3.z};
+  vec4 = {position.x + corner4.x, position.y + corner4.y, position.z + corner4.z};
   const int alpha = std::max(alphaValue * 2, 0);
 
   if (slot.flag1[5] == 7) {
-    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else if (slot.flag1[5] == 8) {
-    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else if (slot.flag1[5] == 10) {
-    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else {
-    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
 // OFFSET: 0x00BE67E0
 // FUNCTION: fn_19929
-void CEffectPrim::RenderFacingQuads(matrix& wtm) {
-  vector3d vec1{};
-  vector3d vec2{};
-  vector3d vec3{};
-  vector3d vec4{};
+__declspec(safebuffers) void CEffectPrim::RenderFacingQuads(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1675,16 +1675,21 @@ void CEffectPrim::RenderFacingQuads(matrix& wtm) {
     }
 
     const float size = slot.distance;
-    vec1 = {size * g_cosTable[45], 0.0f, size * g_sinTable[45]};
-    vec2 = {size * g_cosTable[135], 0.0f, size * g_sinTable[135]};
-    vec3 = {size * g_cosTable[225], 0.0f, size * g_sinTable[225]};
-    vec4 = {size * g_cosTable[315], 0.0f, size * g_sinTable[315]};
+    vec1.Set(size * g_cosTable[45], 0.0f, size * g_sinTable[45]);
+    vec2.Set(size * g_cosTable[135], 0.0f, size * g_sinTable[135]);
+    vec3.Set(size * g_cosTable[225], 0.0f, size * g_sinTable[225]);
+    vec4.Set(size * g_cosTable[315], 0.0f, size * g_sinTable[315]);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecBPre, slot.flag1[11], wtm);
-    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecBNow, slot.flag1[12], wtm);
-    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecTPre, slot.flag1[13], wtm);
-    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, slot.vecTNow, slot.flag1[14], wtm);
+    const vector3d corner1{vec1.x, vec1.y, vec1.z};
+    const vector3d corner2{vec2.x, vec2.y, vec2.z};
+    const vector3d corner3{vec3.x, vec3.y, vec3.z};
+    const vector3d corner4{vec4.x, vec4.y, vec4.z};
+
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, corner1, corner2, corner3, corner4, slot.vecBPre, slot.flag1[11], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, corner1, corner2, corner3, corner4, slot.vecBNow, slot.flag1[12], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, corner1, corner2, corner3, corner4, slot.vecTPre, slot.flag1[13], wtm);
+    RenderFacingQuad(*this, &rpCnt, slot, vec1, vec2, vec3, vec4, corner1, corner2, corner3, corner4, slot.vecTNow, slot.flag1[14], wtm);
   }
 }
 
@@ -2096,7 +2101,7 @@ void CEffectPrim::RenderMagnum2(matrix& wtm) {
 
 // OFFSET: 0x00BD8870
 // FUNCTION: fn_19889
-void CEffectPrim::RenderRipple(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -2312,18 +2317,22 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
 
 // OFFSET: 0x00BE0990
 // FUNCTION: fn_19912
-void CEffectPrim::RenderSMA3(matrix&) {
+__declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
   const EffectPrimitiveSlot& slot = this->state.slots[0];
   if (slot.life != 1) {
     return;
   }
 
-  int effectId;
   if (slot.flag1[0] == 0) {
-    if (slot.process % 8 != 0) {
-      return;
+    if (slot.process % 8 == 0) {
+      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CRagEffect* effect = gameMode->scene->player->LaunchEffect(552, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        vector3d position = slot.vecBNow;
+        float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+      }
     }
-    effectId = 552;
   } else if (slot.flag1[0] == 1) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     CRagEffect* effect = gameMode->scene->player->LaunchEffect(556, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2331,22 +2340,16 @@ void CEffectPrim::RenderSMA3(matrix&) {
       vector3d position = slot.vecBNow;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
-    return;
   } else if (slot.flag1[0] == 99) {
-    if (slot.process % 8 != 0) {
-      return;
+    if (slot.process % 8 == 0) {
+      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CRagEffect* effect = gameMode->scene->player->LaunchEffect(1205, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        vector3d position = slot.vecBNow;
+        float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+      }
     }
-    effectId = 1205;
-  } else {
-    return;
-  }
-
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  CRagEffect* effect = gameMode->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  if (effect) {
-    vector3d position = slot.vecBNow;
-    float extra[3] = {static_cast<float>(slot.process), slot.process % 16 != 0 ? 1.0f : 0.0f, 0.0f};
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
   }
 }
 // OFFSET: 0x00BDD0D0
@@ -2438,7 +2441,7 @@ void CEffectPrim::RenderCone(matrix& wtm) {
 
 // OFFSET: 0x00BDE460
 // FUNCTION: fn_19904
-void CEffectPrim::RenderPeong(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderPeong(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -2565,7 +2568,7 @@ void CEffectPrim::RenderRotatedRing(matrix& wtm) {
 // OFFSET: 0x00BE1A80
 // FUNCTION: fn_19917
 void CEffectPrim::RenderFloorSquare(matrix& wtm) {
-  vector3d corners[4]{};
+  ZeroVector3d corners[4];
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2578,7 +2581,10 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
     const float dist = slot.distance;
     const vector3d& center = slot.vecBNow;
     const float y = center.y + 0.0f;
-    int angle = slot.riseAngle + 45 < 360 ? slot.riseAngle + 45 : slot.riseAngle - 315;
+    int angle = slot.riseAngle + 45;
+    if (angle >= 360) {
+      angle -= 360;
+    }
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
@@ -2599,7 +2605,7 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
 // OFFSET: 0x00BE0E30
 // FUNCTION: fn_19914
 void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
-  vector3d corners[4]{};
+  ZeroVector3d corners[4];
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2612,7 +2618,8 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
     const float dist = slot.distance;
     const vector3d& center = slot.vecBNow;
     const float y = center.y + 0.0f;
-    int angle = slot.riseAngle < 270 ? slot.riseAngle + 90 : slot.riseAngle - 270;
+    int angle = slot.riseAngle;
+    angle += angle < 270 ? 90 : -270;
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
@@ -2715,7 +2722,7 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
 
 // OFFSET: 0x00BDEC50
 // FUNCTION: fn_19907
-void CEffectPrim::RenderTrailSquares(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -3014,7 +3021,7 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
 
 // OFFSET: 0x00BD8080
 // FUNCTION: fn_19887
-void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -3342,7 +3349,7 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
 
 // OFFSET: 0x00BD4E40
 // FUNCTION: fn_19881
-void CEffectPrim::RenderBladeTrail(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -3720,7 +3727,7 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
 
 // OFFSET: 0x00BDC3E0
 // FUNCTION: fn_19898
-void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -4011,7 +4018,7 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
 
 // OFFSET: 0x00BCFE80
 // FUNCTION: fn_19868
-void CEffectPrim::RenderHaloLayers(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -5039,7 +5046,7 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 
 // OFFSET: 0x00BE1D70
 // FUNCTION: fn_19918
-void CEffectPrim::RenderSoulLink(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5070,12 +5077,11 @@ void CEffectPrim::RenderSoulLink(matrix& wtm) {
     }
 
     if (slot.process < 180) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       CRagEffect* effect = nullptr;
 
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        effect = gameMode->scene->player->LaunchEffect(506, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (auto* actor = static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
+        effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(506, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      } else if (auto* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
         effect = actor->LaunchEffect(506, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
 
@@ -5354,7 +5360,7 @@ void CEffectPrim::Render2DDiamond() {
 
 // OFFSET: 0x00BCC960
 // FUNCTION: fn_19863
-void CEffectPrim::RenderRecordQuads(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderRecordQuads(matrix& wtm) {
   int rpCnt = 0;
 
   for (int index = 0; index < this->state.numSegment; ++index) {
@@ -5410,7 +5416,7 @@ void CEffectPrim::RenderRecordQuads(matrix& wtm) {
 
 // OFFSET: 0x00BC97E0
 // FUNCTION: fn_19858
-void CEffectPrim::RenderRecordRings(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
   ZeroVector3d point1;
   ZeroVector3d point2;
   ZeroVector3d point3;
@@ -6458,7 +6464,7 @@ __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
 
 // OFFSET: 0x00BD37B0
 // FUNCTION: fn_19878
-void CEffectPrim::RenderChemical(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
