@@ -166,11 +166,11 @@ bool CConnection::Flush() {
     }
 
     fd_set writable;
-    FD_ZERO(&writable);
-    FD_SET(this->m_socket, &writable);
     timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
+    FD_ZERO(&writable);
+    FD_SET(this->m_socket, &writable);
     const int ready = select(0, nullptr, &writable, nullptr, &timeout);
 
     if (ready != SOCKET_ERROR) {
@@ -178,7 +178,7 @@ bool CConnection::Flush() {
         return true;
       }
 
-      const int sent = g_connectionSend(this->m_socket, this->m_output.Data(), this->m_output.GetSize(), 0);
+      const int sent = g_connectionSend(this->m_socket, this->m_output.Data(), this->m_output.Pending(), 0);
       if (sent != SOCKET_ERROR) {
         this->m_output.RemoveData(sent);
       } else {
@@ -311,8 +311,11 @@ void CConnection::SetBlock(unsigned char value) {
     return;
   }
 
-  while (this->m_pending.GetSize() != 0) {
-    const int bytes = this->m_pending.GetSize();
+  if (this->m_pending.GetSize() == 0) {
+    return;
+  }
+
+  for (int bytes = this->m_pending.Pending(); bytes != 0; bytes = this->m_pending.Pending()) {
     this->m_output.InsertData(bytes, this->m_pending.Data());
     this->m_pending.RemoveData(bytes);
     this->Flush();

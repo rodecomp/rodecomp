@@ -22,6 +22,10 @@ public:
   unsigned Size() const {
     return static_cast<unsigned>(this->m_storage.size());
   }
+  // INLINED
+  int Pending() const {
+    return this->m_write - this->m_read;
+  }
 
 private:
   /* 0000 */ char* m_data;
