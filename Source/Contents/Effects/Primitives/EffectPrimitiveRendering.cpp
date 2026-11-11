@@ -1116,9 +1116,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     blue = 124;
     break;
   case 32:
-    red = 0;
-    green = 0;
-    blue = 0;
+    red = green = blue = 0;
     blend = 6;
     break;
   case 40:
