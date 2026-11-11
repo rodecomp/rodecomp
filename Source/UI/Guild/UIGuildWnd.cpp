@@ -212,7 +212,11 @@ void UIGuildSkillWnd::OnRBtnUp(int, int) {
 void UIGuildBanishedMemberWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -221,7 +225,11 @@ void UIGuildBanishedMemberWnd::OnWheel(int delta) {
 void UIGuildMemberManageWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -230,7 +238,11 @@ void UIGuildMemberManageWnd::OnWheel(int delta) {
 void UIGuildPositionManageWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -239,7 +251,11 @@ void UIGuildPositionManageWnd::OnWheel(int delta) {
 void UIGuildSkillWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 
@@ -248,7 +264,11 @@ void UIGuildSkillWnd::OnWheel(int delta) {
 void UIGuildTotalInfoWnd::OnWheel(int delta) {
   if (this->m_scrollable != 0) {
     const int step = std::min(this->m_visibleRows - 1, 3);
-    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 

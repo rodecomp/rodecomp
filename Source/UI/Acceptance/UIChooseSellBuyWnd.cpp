@@ -2574,7 +2574,11 @@ void UIItemIdentifyWnd::OnWheel(int delta) {
   }
 
   const int step = (std::min)(this->m_rows - 1, 3);
-  this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+  if (delta < 0) {
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+  } else {
+    this->SendMsg(this->m_scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x008F6370
