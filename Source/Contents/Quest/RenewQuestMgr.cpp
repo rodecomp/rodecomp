@@ -170,7 +170,7 @@ void CRenewQuestMgr::Destroy() {
 // OFFSET: 0x00677D20
 // FUNCTION: fn_05437
 void CRenewQuestMgr::RemoveStatusRequest(unsigned int id) {
-  const auto found = this->m_statusRequests.find(id);
+  const auto found = this->m_statusRequests.find(static_cast<unsigned int>(id));
   if (found != this->m_statusRequests.end()) {
     this->m_statusRequests.erase(found);
   }
@@ -515,8 +515,8 @@ void CRenewQuestMgr::LoadQuestInfo() {
 // OFFSET: 0x0067A500
 // FUNCTION: fn_05450
 void CRenewQuestMgr::AddNewQuest(unsigned int id) {
-  this->m_newQuests.insert(id);
-  const auto found = this->m_statusRequests.find(id);
+  this->m_newQuests.insert(static_cast<unsigned int>(id));
+  const auto found = this->m_statusRequests.find(static_cast<unsigned int>(id));
   if (found != this->m_statusRequests.end()) {
     this->m_statusRequests.erase(found);
   }
@@ -578,7 +578,7 @@ void CRenewQuestMgr::AddRecommendedQuest(unsigned int id, const RenewQuestRecomm
 // OFFSET: 0x0067AEB0
 // FUNCTION: fn_05453
 bool CRenewQuestMgr::IsNewQuest(unsigned int id) {
-  return this->m_newQuests.find(id) != this->m_newQuests.end();
+  return this->m_newQuests.find(static_cast<unsigned int>(id)) != this->m_newQuests.end();
 }
 
 // OFFSET: 0x0067AF00
