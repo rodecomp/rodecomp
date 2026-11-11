@@ -212,7 +212,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     file.Read(&footer, 4);
 
     if (footer != 0x12345678u) {
-      ShowErrorDialog(GetRenderSystemHolder()->system, "data corrupt", 0);
+      ShowErrorDialog("data corrupt", 0);
       return false;
     }
   }
