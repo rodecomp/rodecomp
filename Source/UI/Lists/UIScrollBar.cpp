@@ -322,16 +322,16 @@ void UIScrollBar::OnMouseMove(int x, int y) {
   const int previous = this->state;
 
   switch (this->Part(x, y)) {
-  case SB_NULL:
-  case SB_UPPAGE:
-  case SB_DNPAGE:
-    this->state = 0;
-    break;
   case SB_UPBTN:
     this->state = 1;
     break;
   case SB_THUMB:
     this->state = 3;
+    break;
+  case SB_NULL:
+  case SB_UPPAGE:
+  case SB_DNPAGE:
+    this->state = 0;
     break;
   case SB_DNBTN:
     this->state = 2;
@@ -1268,124 +1268,123 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
   const int first = this->scrollRow;
   const int last = this->geometry.height / this->itemHeight + first;
   const int gap = this->itemPadding - 2;
-  if (static_cast<int>(nodes.size()) <= 0) {
-    return y;
-  }
+  if (static_cast<int>(nodes.size()) > 0) {
+    for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++this->itemCount, ++it) {
+      int labelX = x;
+      if ((*it)->collapseButton) {
+        labelX = (*it)->collapseButton->BitmapWidth() + gap + x;
+      }
 
-  for (std::list<UITreeNode*>::iterator it = nodes.begin(); it != nodes.end(); ++this->itemCount, ++it) {
-    int labelX = x;
-    if ((*it)->collapseButton) {
-      labelX = (*it)->collapseButton->BitmapWidth() + gap + x;
-    }
+      int bottom = y;
+      if (this->itemCount >= first && this->itemCount < last) {
+        if ((*it)->icon > -1) {
+          auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((*it)->icons[(*it)->icon].c_str())));
+          bottom = bitmap->image.height + y;
+          if (bottom >= this->geometry.height) {
+            continue;
+          }
+          this->DrawBitmap(labelX, y, bitmap, true);
+          labelX += bitmap->image.width + gap;
+        }
 
-    int bottom = y;
-    if (this->itemCount >= first && this->itemCount < last) {
-      if ((*it)->icon > -1) {
-        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((*it)->icons[(*it)->icon].c_str())));
-        bottom = bitmap->image.height + y;
         if (bottom >= this->geometry.height) {
           continue;
         }
-        this->DrawBitmap(labelX, y, bitmap, true);
-        labelX += bitmap->image.width + gap;
+
+        UITVTextButton* label = (*it)->labelButton;
+        label->drawBackground = 0;
+        label->Invalidate();
+        if (this->selectedNode && this->selectedNode == *it) {
+          label = (*it)->labelButton;
+          label->drawBackground = 1;
+          label->Invalidate();
+        }
+
+        label = (*it)->labelButton;
+        label->highlighted = 0;
+        label->m_highlightColor = 0;
+        label->Invalidate();
+        if (this->mouseInside && this->dragNode && this->dropNode && this->highlightColor) {
+          if (this->dropNode == *it) {
+            label = (*it)->labelButton;
+            label->m_highlightColor = this->highlightColor;
+            label->highlighted = 1;
+            label->Invalidate();
+          }
+          if ((*it)->parent && (*it)->parent->labelButton && (*it)->parent->labelButton->highlighted) {
+            label = (*it)->labelButton;
+            label->m_highlightColor = this->highlightColor;
+            label->highlighted = 1;
+            label->Invalidate();
+          }
+        }
+
+        int maxWidth = this->geometry.width - labelX - 2;
+        if (this->verticalOverflow) {
+          maxWidth -= this->verticalBar->geometry.width;
+        }
+
+        (*it)->labelButton->Move(labelX, y + 2);
+        label = (*it)->labelButton;
+        const int height = label->geometry.height;
+        if (maxWidth != label->geometry.width && std::strcmp(label->label.c_str(), "") != 0) {
+          label->displayText = label->label;
+          int width;
+          if (label->geometry.width > maxWidth) {
+            const char* fitted = label->ClipTextToWidth(label->label.c_str(), maxWidth - 2, label->m_fontFamily, label->m_fontHeight, label->m_outlined);
+            label->displayText = fitted;
+            width = label->m_border ? maxWidth + 2 : maxWidth;
+          } else {
+            width = label->TextWidth(label->label.c_str(), 0, label->m_fontFamily, label->m_fontHeight,
+                      label->m_outlined, 0
+                    ) +
+                    2;
+            width = label->m_border ? width + 2 : width;
+          }
+          label->UIWindow::Resize(width, height);
+        }
+
+        if (this->editNode == *it) {
+          (*it)->labelButton->Move(-100, -100);
+          this->edit->Resize((*it)->labelButton->geometry.width, (*it)->labelButton->geometry.height);
+          this->edit->Move(labelX, y + 2);
+        }
+
+        rowHeight = (*it)->labelButton->geometry.height + this->itemPadding;
+        this->itemHeight = std::max(this->itemHeight, rowHeight);
       }
 
       if (bottom >= this->geometry.height) {
         continue;
       }
 
-      UITVTextButton* label = (*it)->labelButton;
-      label->drawBackground = 0;
-      label->Invalidate();
-      if (this->selectedNode && this->selectedNode == *it) {
-        (*it)->labelButton->drawBackground = 1;
-        (*it)->labelButton->Invalidate();
-      }
-
-      label = (*it)->labelButton;
-      label->highlighted = 0;
-      label->m_highlightColor = 0;
-      label->Invalidate();
-      if (this->mouseInside && this->dragNode && this->dropNode && this->highlightColor) {
-        if (this->dropNode == *it) {
-          label = (*it)->labelButton;
-          label->highlighted = 1;
-          label->m_highlightColor = this->highlightColor;
-          label->Invalidate();
-        }
-        if ((*it)->parent && (*it)->parent->labelButton && (*it)->parent->labelButton->highlighted) {
-          label = (*it)->labelButton;
-          label->m_highlightColor = this->highlightColor;
-          label->highlighted = 1;
-          label->Invalidate();
-        }
-      }
-
-      int maxWidth = this->geometry.width - labelX - 2;
-      if (this->verticalOverflow) {
-        maxWidth -= this->verticalBar->geometry.width;
-      }
-
-      (*it)->labelButton->Move(labelX, y + 2);
-      label = (*it)->labelButton;
-      const int height = label->geometry.height;
-      if (maxWidth != label->geometry.width && std::strcmp(label->label.c_str(), "") != 0) {
-        label->displayText = label->label;
-        int width;
-        if (label->geometry.width > maxWidth) {
-          const char* fitted = label->ClipTextToWidth(label->label.c_str(), maxWidth - 2, label->m_fontFamily, label->m_fontHeight, label->m_outlined);
-          label->displayText = fitted;
-          width = label->m_border ? maxWidth + 2 : maxWidth;
-        } else {
-          width = label->TextWidth(label->label.c_str(), 0, label->m_fontFamily, label->m_fontHeight,
-                    label->m_outlined, 0
-                  ) +
-                  2;
-          width = label->m_border ? width + 2 : width;
-        }
-        label->UIWindow::Resize(width, height);
-      }
-
-      if (this->editNode == *it) {
-        (*it)->labelButton->Move(-100, -100);
-        this->edit->Resize((*it)->labelButton->geometry.width, (*it)->labelButton->geometry.height);
-        this->edit->Move(labelX, y + 2);
-      }
-
-      rowHeight = (*it)->labelButton->geometry.height + this->itemPadding;
-      this->itemHeight = std::max(this->itemHeight, rowHeight);
-    }
-
-    if (bottom >= this->geometry.height) {
-      continue;
-    }
-
-    if ((*it)->expanded == 0) {
-      if (this->itemCount >= first && this->itemCount < last) {
-        if ((*it)->expandButton) {
-          (*it)->expandButton->Move(x, y + 4);
-        }
-        y += rowHeight;
-      }
-    } else if ((*it)->expanded == 1) {
-      if (this->itemCount >= first && this->itemCount < last) {
-        if ((*it)->collapseButton) {
-          (*it)->collapseButton->Move(x, y + 4);
-        }
-        y += rowHeight;
-        bottom += rowHeight;
-      }
-
-      if (static_cast<int>((*it)->children.size()) > 0 && bottom < this->geometry.height) {
-        if ((*it)->collapseButton) {
-          x += (*it)->collapseButton->BitmapWidth() + gap;
-        }
-        const int next = this->LayoutNodes((*it)->children, x, y);
+      if ((*it)->expanded == 0) {
         if (this->itemCount >= first && this->itemCount < last) {
-          y = next;
+          if ((*it)->expandButton) {
+            (*it)->expandButton->Move(x, y + 4);
+          }
+          y += rowHeight;
         }
-        if ((*it)->collapseButton) {
-          x -= (*it)->collapseButton->BitmapWidth() + gap;
+      } else if ((*it)->expanded == 1) {
+        if (this->itemCount >= first && this->itemCount < last) {
+          if ((*it)->collapseButton) {
+            (*it)->collapseButton->Move(x, y + 4);
+          }
+          y += rowHeight;
+          bottom += rowHeight;
+        }
+
+        if (static_cast<int>((*it)->children.size()) > 0 && bottom < this->geometry.height) {
+          if ((*it)->collapseButton) {
+            x += (*it)->collapseButton->BitmapWidth() + gap;
+          }
+          const int next = this->LayoutNodes((*it)->children, x, y);
+          if (this->itemCount >= first && this->itemCount < last) {
+            y = next;
+          }
+          if ((*it)->collapseButton) {
+            x -= (*it)->collapseButton->BitmapWidth() + gap;
+          }
         }
       }
     }
@@ -1460,11 +1459,10 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_SCROLLVERTPAGEDOWN: {
     this->HideNodes(this->root->children);
     const int previous = this->scrollRow;
-    const int visible = this->geometry.height / this->itemHeight;
     if (message == UM_SCROLLVERTPAGEUP) {
-      this->scrollRow = previous - visible + 1;
+      this->scrollRow = previous - this->geometry.height / this->itemHeight + 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->scrollRow = previous - 1 + visible;
+      this->scrollRow = previous - 1 + this->geometry.height / this->itemHeight;
     } else {
       this->scrollRow = previous + static_cast<int>(a);
     }
@@ -1473,9 +1471,8 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->scrollRow = 0;
     }
 
-    const int maximum = this->itemCount - visible;
-    if (this->scrollRow > maximum) {
-      this->scrollRow = maximum;
+    if (this->scrollRow > this->itemCount - this->geometry.height / this->itemHeight) {
+      this->scrollRow = this->itemCount - this->geometry.height / this->itemHeight;
     }
 
     this->verticalBar->position = this->scrollRow;
@@ -1512,35 +1509,34 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     }
 
-    if (message == UM_TEXT_RBTN_UP) {
-      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
-      break;
-    }
-
-    if (this->selectedNode->children.size() != 0) {
-      this->HideNodes(this->root->children);
-      const int x = sender->geometry.x;
-      const int y = message == UM_TEXT_LBTN_UP ? sender->geometry.y - 6 : sender->geometry.y;
-      UIWindow* button;
-      if (this->selectedNode->expanded == 0) {
-        this->selectedNode->expanded = 1;
-        button = this->selectedNode->collapseButton;
-      } else {
-        this->selectedNode->expanded = 0;
-        button = this->selectedNode->expandButton;
+    if (message != UM_TEXT_RBTN_UP) {
+      if (this->selectedNode->children.size() != 0) {
+        this->HideNodes(this->root->children);
+        const int x = sender->geometry.x;
+        const int y = message == UM_TEXT_LBTN_UP ? sender->geometry.y - 6 : sender->geometry.y;
+        UIWindow* button;
+        if (this->selectedNode->expanded == 0) {
+          this->selectedNode->expanded = 1;
+          button = this->selectedNode->collapseButton;
+        } else {
+          this->selectedNode->expanded = 0;
+          button = this->selectedNode->expandButton;
+        }
+        button->Move(x, y);
+        this->Invalidate();
       }
-      button->Move(x, y);
-      this->Invalidate();
-    }
 
-    if (message == UM_TEXT_LBTN_UP) {
-      this->parent->SendMsg(
-        this, 98, reinterpret_cast<std::intptr_t>(this->selectedNode), sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0
-      );
-    }
+      if (message == UM_TEXT_LBTN_UP) {
+        this->parent->SendMsg(
+          this, 98, reinterpret_cast<std::intptr_t>(this->selectedNode), sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0
+        );
+      }
 
-    this->dragNode = nullptr;
-    this->dropNode = nullptr;
+      this->dragNode = nullptr;
+      this->dropNode = nullptr;
+    } else {
+      this->parent->SendMsg(this, UM_TEXT_RBTN_UP, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
+    }
     break;
   case UM_BEGIN_DRAG_BTN:
     this->dragNode = reinterpret_cast<UITreeNode*>(a);
@@ -1600,7 +1596,10 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_CHANGE_TVITEM_TEXT:
     if (b == 0) {
       this->editNode = reinterpret_cast<UITreeNode*>(a);
-      this->edit->maximum = c > 361 ? 361 : static_cast<int>(c);
+      if (c > 361) {
+        c = 361;
+      }
+      this->edit->maximum = static_cast<int>(c);
       this->edit->SetText(this->editNode->name);
       g_windowMgr.SetFocus(this->edit);
       this->Invalidate();
