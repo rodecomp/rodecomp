@@ -1108,12 +1108,12 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
       offsetY += node->geometry.y;
     }
 
-    const int localX = x - offsetX;
-    const int localY = y - offsetY;
-    window->RecordDrop(localX, localY, *drag, -1);
+    x -= offsetX;
+    y -= offsetY;
+    window->RecordDrop(x, y, *drag, -1);
     drag->sourceWindow = reinterpret_cast<std::uint32_t>(window);
     if (this->itemDropCntWnd != window->Root()) {
-      window->DragAndDrop(localX, localY, reinterpret_cast<std::intptr_t>(drag));
+      window->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(drag));
     }
 
     return true;
@@ -1181,11 +1181,11 @@ void UIWindowMgr::CycleWindowVisibilityTwice() {
 // OFFSET: 0x00A8FDB0
 // FUNCTION: fn_17151
 int UIWindowMgr::RunEmailAddress() {
-  if (this->Top()) {
+  if (!this->modalWindows.empty() && this->modalWindows.back()) {
     return 185;
   }
 
-  auto* window = new UIEmailAddressWnd();
+  UIWindow* window = new UIEmailAddressWnd();
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
   this->rendered.push_back(window);
