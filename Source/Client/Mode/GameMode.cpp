@@ -98,6 +98,7 @@
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "Network/TextEncoding.h"
 #include "Resource/MSGSTRINGID.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 extern "C" long long _Xtime_get_ticks();
 
@@ -5565,40 +5566,10 @@ void CPingLiveSchedule::Process(const std::uint64_t& now) {
 
 namespace {
 
-template <std::size_t Length, std::uint64_t Key>
-class GameModeEncryptedName {
-public:
-  // INLINED
-  explicit GameModeEncryptedName(const char (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~GameModeEncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  /* 0000 */ std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptGameModeName(const char (&source)[Length]) {
-  thread_local GameModeEncryptedName<Length, Key> name(source);
+  thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
 
@@ -5638,7 +5609,7 @@ int CGameMode::Run() {
       if (!message.empty()) {
         const char source[] = {'\x53', '\x11', '\xF9', '\xA6', '\x8D', '\x7E', '\xA6', '\xD9', '\x1D', '\x06',
                                        '\xEA', '\xA4', '\x9C', '\x5C', '\xB0', '\xCC', '\x4F', '\x25', '\x8B'};
-        thread_local GameModeEncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
+        thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
         MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
       }
     }
@@ -6758,7 +6729,6 @@ void CGameMode::End() {
   g_session.SetPlayerSkillMode(0);
 }
 
-
 // OFFSET: 0x00CE8DE0
 // FUNCTION: fn_21342
 void CGameMode::ReloadScene() {
@@ -7209,8 +7179,6 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 #include "UI/Window/UIWindowFactory.h"
 #include <list>
 #include <windows.h>
-
-
 
 // GLOBAL: gl_24776
 int g_visibleMinX;
@@ -8003,7 +7971,6 @@ void CGameMode::Initialize(const char* name) {
   this->isInitializing[0] = 0;
 }
 
-
 // OFFSET: 0x00D07030
 // FUNCTION: fn_21580
 void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills) {
@@ -8135,7 +8102,6 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
   *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = this->nameBalloon->geometry.height;
   this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
 }
-
 
 // OFFSET: 0x00CE18A0
 // FUNCTION: fn_21332
@@ -8453,7 +8419,6 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
 #include "Contents/World/WorldModelView.h"
 #include "Contents/World/WorldTerrainPicking.h"
 
-
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
 int CGameMode::ProcessGroundClick(int result) {
@@ -8732,7 +8697,6 @@ int CGameMode::ProcessGroundClick(int result) {
 #include "Contents/World/WorldOcclusion.h"
 #include "UI/Dialogs/UIMenuWnd.h"
 #include "UI/Window/InputFocus.h"
-
 
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Mode/ModeFade.h"

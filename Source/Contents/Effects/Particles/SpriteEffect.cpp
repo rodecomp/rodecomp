@@ -1,5 +1,6 @@
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/SpriteEffect.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -13,36 +14,6 @@
 #include <cstdint>
 
 namespace {
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>

@@ -24,6 +24,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -31,39 +32,7 @@
 #include <timeapi.h>
 #include <windows.h>
 
-
 namespace {
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  explicit EncryptedName(const char (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  // INLINED
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 __forceinline const char* TimeFontActionName() {
@@ -85,7 +54,6 @@ __forceinline const char* TimeFontSpriteName() {
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
-
 
 // OFFSET: 0x00CCFCE0
 // FUNCTION: fn_21246
@@ -580,7 +548,6 @@ int g_minimapCoordinateValue;
 int g_minimapCoordinateDigits;
 // GLOBAL: gl_25046
 int g_minimapCoordinateDigitValues[4];
-
 
 // OFFSET: 0x00CD2A10
 // FUNCTION: fn_21261

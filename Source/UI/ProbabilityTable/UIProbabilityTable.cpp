@@ -1,5 +1,6 @@
 #include "UI/Window/WindowId.h"
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include "Network/TextEncoding.h"
 #include "UI/Edit/UIEditBoxEx.h"
@@ -30,37 +31,6 @@ static const std::string g_probabilityHighlightBegin = "^FF0000<B>";
 static const std::string g_probabilityHighlightEnd = "^000000</B>";
 
 namespace {
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  // INLINED
-  template <typename Byte>
-  explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
 
 // INLINED
 template <std::uint64_t Key, std::size_t Length>

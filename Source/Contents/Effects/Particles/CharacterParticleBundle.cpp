@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particles/CharacterParticleBundle.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -21,36 +22,6 @@
 #include <vector>
 
 namespace {
-  template <std::size_t Length, std::uint64_t Key>
-  class EncryptedName {
-  public:
-    // INLINED
-    template <typename Byte>
-    explicit EncryptedName(const Byte (&source)[Length]) : m_encrypted(true) {
-      for (std::uint64_t index = 0; index < Length; ++index) {
-        this->m_text[index] = source[index];
-      }
-    }
-
-    ~EncryptedName() {
-      for (std::uint64_t index = 0; index < Length; ++index) {
-        this->m_text[index] = 0;
-      }
-    }
-
-    const char* Text() {
-      if (this->m_encrypted) {
-        utility::XorBytes(this->m_text, Length, Key);
-        this->m_encrypted = false;
-      }
-
-      return reinterpret_cast<const char*>(this->m_text);
-    }
-
-  private:
-    std::uint8_t m_text[Length];
-    bool m_encrypted;
-  };
 
   // GLOBAL: gl_24870
   std::unordered_map<int, std::vector<RadialGridPoint>> g_clawMarkRings;

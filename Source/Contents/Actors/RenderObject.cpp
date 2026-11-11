@@ -72,9 +72,9 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Contents/Guild/GuildInfo.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
 
 extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
-
 
 // GLOBAL: gl_25173
 int g_playerPoisoned;
@@ -93,42 +93,8 @@ struct CharacterRenderDrawItem {
   RenderCommand* command;
 };
 
-
 // GLOBAL: gl_24798
 int g_multiHitInterval = 200;
-
-namespace {
-
-template <std::size_t Length, std::uint64_t Key>
-class EncryptedName {
-public:
-  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = source[index];
-    }
-  }
-
-  ~EncryptedName() {
-    for (std::uint64_t index = 0; index < Length; ++index) {
-      this->m_text[index] = 0;
-    }
-  }
-
-  const char* Text() {
-    if (this->m_encrypted) {
-      utility::XorBytes(this->m_text, Length, Key);
-      this->m_encrypted = false;
-    }
-
-    return reinterpret_cast<const char*>(this->m_text);
-  }
-
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
-};
-
-}
 
 class CGrannyCorpse3d : public CGameObject {
 public:
@@ -701,7 +667,6 @@ void CRenderObject::SetAnimationSpeed(float speed) {
     this->render.speed = speed;
   }
 }
-
 
 // OFFSET: 0x00CC2810
 // FUNCTION: fn_21142
@@ -4815,7 +4780,6 @@ CCharacterNpc::~CCharacterNpc() {
     this->characterRender = nullptr;
   }
 }
-
 
 // OFFSET: 0x00CBFC40
 // FUNCTION: fn_21120
