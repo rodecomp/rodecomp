@@ -120,9 +120,9 @@ public:
 struct RuneSetInfoLine {
   // INLINED
   RuneSetInfoLine(std::string value, std::uint32_t lineColor, bool lineBold, int lineX) {
-    this->text = value;
     this->color = lineColor;
     this->bold = lineBold;
+    this->text = value;
     this->x = lineX;
   }
 

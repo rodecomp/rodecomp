@@ -78,8 +78,9 @@ int UIWindow::DrawTitleBarAt(int x, int width, bool closeButton, const char* tit
     const int extent = width - right - left;
     const int count = extent / middleWidth + (extent % middleWidth != 0);
 
+    const int start = x + left;
     for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(x + left + index * middleWidth, 0, middle, false);
+      this->DrawBitmap(start + index * middleWidth, 0, middle, false);
     }
   }
 

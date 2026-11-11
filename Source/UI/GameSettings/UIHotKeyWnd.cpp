@@ -195,8 +195,10 @@ void UIHotKeyWnd::SetHotkey(int tab, int index, HotkeyInfo info) {
 // OFFSET: 0x00934360
 // FUNCTION: fn_12740
 void UIHotKeyWnd::SaveHotkeys() {
-  for (unsigned int tab = 0; tab < 4; ++tab) {
-    for (const auto& entry : this->hotkeys[tab]) {
+  unsigned int tab = 0;
+  std::map<int, HotkeyInfo>* tables = this->hotkeys;
+  for (; tab < 4; ++tab) {
+    for (const auto& entry : tables[tab]) {
       g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
       if (tab == 1) {
         g_windowMgr.RefreshGameSettingHotkeys();

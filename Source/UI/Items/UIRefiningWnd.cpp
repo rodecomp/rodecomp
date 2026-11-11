@@ -409,11 +409,11 @@ void UIRefining_Notice::Paint() {
     std::list<std::string> lines;
     this->WrapFormattedText(this->text, &lines, this->geometry.width - 18, 0, 11, 0);
 
-    int offset = 0;
+    int row = 0;
     for (auto line = lines.begin(); line != lines.end(); ++line) {
-      this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line->c_str(), 0, 0, 11, color, 0, 0
+      this->DrawTextAt(18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + row * 11), line->c_str(), 0, 0, 11, color, 0, 0
       );
-      offset += 11;
+      ++row;
     }
   }
 }

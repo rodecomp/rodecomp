@@ -161,8 +161,11 @@ int __fastcall sub_5C22F0(const int* object) {
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
 UIWindow::UIWindow(unsigned char cached)
-    : parent(nullptr), hasTextBackground(0), textBackgroundColor(0), renderLayer(4), m_dirty(1), m_clip(0) {
-  this->m_uid = ++g_windowUid;
+    : parent(nullptr), hasTextBackground(0), textBackgroundColor(0), renderLayer(4), m_dirty(1) {
+  const std::uint32_t uid = g_windowUid + 1;
+  this->m_clip = 0;
+  g_windowUid = uid;
+  this->m_uid = uid;
   this->m_cached = cached;
 }
 

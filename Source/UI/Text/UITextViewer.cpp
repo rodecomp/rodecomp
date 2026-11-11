@@ -110,12 +110,12 @@ void UITextViewer::OnLBtnDblClk(int, int) {
 // OFFSET: 0x007B78D0
 // FUNCTION: fn_09228
 void UIAchListWnd::OnLBtnDown(int x, int y) {
-  if (x < 0 || x > this->geometry.width - this->scrollBarWidth) {
+  if (x < 0 || this->geometry.width - this->scrollBarWidth < x) {
     return;
   }
 
   const int row = y / this->rowHeight;
-  if (static_cast<unsigned>(row) >= static_cast<unsigned>(this->achievementList->count)) {
+  if (static_cast<unsigned>(this->achievementList->count) <= static_cast<unsigned>(row)) {
     return;
   }
 

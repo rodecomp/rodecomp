@@ -43,7 +43,8 @@ UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
 void UIMerchantItemLogWnd::OnCreate(int width, int height) {
   UIStaticText* title = new UIStaticText();
   title->SetSize(160, 15);
-  title->SetText(LookupMessage(2559 + (this->mode != 0)), 0);
+  const char* text = LookupMessage(2559 + (this->mode != 0));
+  title->SetText(text, 0);
   title->Move(16, 2);
   title->shadow = 1;
   this->AddChild(title);
@@ -194,7 +195,7 @@ void UIMerchantItemLogWnd::OnProcess() {
     }
   }
 
-  if (changed) {
+  if (changed == true) {
     this->Invalidate();
   }
 }
