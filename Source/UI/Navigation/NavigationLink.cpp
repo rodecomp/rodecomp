@@ -186,6 +186,10 @@ void DestroyNavigationLinkParser() {
   }
 }
 
+// GLOBAL: gl_25500
+static const std::string g_parserItemLinkTag = "<ITEML>";
+// GLOBAL: gl_25501
+static const std::string g_parserItemLinkCloseTag = "</ITEML>";
 // GLOBAL: gl_25506
 static const std::string g_parserMessageTag = "<MSG>";
 // GLOBAL: gl_25507
@@ -242,8 +246,10 @@ std::vector<LineFontState> CCreateLineInfo::s_fontStackCache;
 // OFFSET: 0x00832500
 // FUNCTION: fn_10407
 bool NavigationLinkParser::HasLink(std::string text) {
-  return text.find(g_naviLinkTag) != std::string::npos || text.find(g_naviLinkCloseTag) != std::string::npos ||
-         text.find(g_itemLinkTag) != std::string::npos || text.find(g_itemLinkCloseTag) != std::string::npos;
+  return text.find(g_parserNaviLinkTag) != std::string::npos ||
+         text.find(g_parserNaviLinkCloseTag) != std::string::npos ||
+         text.find(g_parserItemLinkTag) != std::string::npos ||
+         text.find(g_parserItemLinkCloseTag) != std::string::npos;
 }
 
 // OFFSET: 0x00832640
