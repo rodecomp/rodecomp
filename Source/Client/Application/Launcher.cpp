@@ -1399,29 +1399,29 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   if (!InitUnhandledExceptionHandler(reinterpret_cast<int (*)()>(&IgnoreNull))) {
     const std::array failureSource = {'\xB6', '\xEA', '\xAF', '\x66', '\xCF', '\x3A', '\x50', '\x9B', '\xFB', '\xEA', '\xAF', '\x7C', '\xDF', '\x2E', '\x51', '\x87',
                                           '\xFB', '\xE5', '\xA0', '\x66', '\xC7', '\x4F'};
-    thread_local EncryptedName<sizeof(failureSource), 0xEB3D4FAB0FC183DBULL> failure(failureSource);
+    EncryptedName<sizeof(failureSource), 0xEB3D4FAB0FC183DBULL>& failure = ThreadLocalName<0xEB3D4FAB0FC183DBULL>(failureSource);
     ShowErrorDialog(failure.Text(), MB_OK);
     return 0;
   }
 
   const std::array replaySource = {'\x1B', '\x9A', '\xA5', '\x93', '\xB0', '\x3A', '\xBF'};
-  thread_local EncryptedName<sizeof(replaySource), 0xFFBF43D1FFD5FF49ULL> replay(replaySource);
+  EncryptedName<sizeof(replaySource), 0xFFBF43D1FFD5FF49ULL>& replay = ThreadLocalName<0xFFBF43D1FFD5FF49ULL>(replaySource);
   g_replayMode = std::strstr(commandLine, replay.Text()) != nullptr;
   Replay::Instance().SetState(1);
 
   const std::array qmSource = {'\xD6', '\x3C', '\x6E', '\x48', '\x07'};
-  thread_local EncryptedName<sizeof(qmSource), 0x7DB1050779034DE7ULL> qm(qmSource);
+  EncryptedName<sizeof(qmSource), 0x7DB1050779034DE7ULL>& qm = ThreadLocalName<0x7DB1050779034DE7ULL>(qmSource);
   if (std::strstr(commandLine, qm.Text())) {
     const char* server;
     const std::array sakSource = {'\x80', '\xE4', '\x42', '\x80', '\x2C', '\x3B'};
-    thread_local EncryptedName<sizeof(sakSource), 0x5D6B3B1DEB2397B1ULL> sak(sakSource);
+    EncryptedName<sizeof(sakSource), 0x5D6B3B1DEB2397B1ULL>& sak = ThreadLocalName<0x5D6B3B1DEB2397B1ULL>(sakSource);
     if (std::strstr(commandLine, sak.Text())) {
       const std::array sakraySource = {'\x74', '\x94', '\xE4', '\x5E', '\xD6', '\x11', '\x84', '\x06', '\x25'};
-      thread_local EncryptedName<sizeof(sakraySource), 0x7FE563BD3FB7F925ULL> sakray(sakraySource);
+      EncryptedName<sizeof(sakraySource), 0x7FE563BD3FB7F925ULL>& sakray = ThreadLocalName<0x7FE563BD3FB7F925ULL>(sakraySource);
       server = sakray.Text();
     } else {
       const std::array devSource = {'\xCD', '\xBA', '\xAB', '\x5B'};
-      thread_local EncryptedName<sizeof(devSource), 0x8B3FA35B5BDDDF89ULL> dev(devSource);
+      EncryptedName<sizeof(devSource), 0x8B3FA35B5BDDDF89ULL>& dev = ThreadLocalName<0x8B3FA35B5BDDDF89ULL>(devSource);
       server = dev.Text();
     }
 
@@ -1429,16 +1429,16 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   const std::array rocSource = {'\x8E', '\xF7', '\x48', '\x1E', '\x62', '\x23'};
-  thread_local EncryptedName<sizeof(rocSource), 0xE3FB23537D2785BFULL> roc(rocSource);
+  EncryptedName<sizeof(rocSource), 0xE3FB23537D2785BFULL>& roc = ThreadLocalName<0xE3FB23537D2785BFULL>(rocSource);
   g_session.SetOption(18, std::strstr(commandLine, roc.Text()) != nullptr, 0);
 
   const std::array stoveSandboxSource = {'\xCC', '\x24', '\x61', '\x32', '\x61', '\xE4', '\x84', '\x6C', '\x82', '\x39', '\x71', '\x3F', '\x78', '\xF9', '\xDB'};
-  thread_local EncryptedName<sizeof(stoveSandboxSource), 0x1FDB81175D1557E3ULL> stoveSandbox(stoveSandboxSource);
+  EncryptedName<sizeof(stoveSandboxSource), 0x1FDB81175D1557E3ULL>& stoveSandbox = ThreadLocalName<0x1FDB81175D1557E3ULL>(stoveSandboxSource);
   if (std::strstr(commandLine, stoveSandbox.Text())) {
     g_launchPassCommandLine = true;
   } else {
     const std::array stoveLiveSource = {'\xF8', '\x34', '\x89', '\x0C', '\x7B', '\x5C', '\x74', '\x1F', '\xBE', '\x31', '\x98', '\x63'};
-    thread_local EncryptedName<sizeof(stoveLiveSource), 0x732B390D63FD47D7ULL> stoveLive(stoveLiveSource);
+    EncryptedName<sizeof(stoveLiveSource), 0x732B390D63FD47D7ULL>& stoveLive = ThreadLocalName<0x732B390D63FD47D7ULL>(stoveLiveSource);
     if (std::strstr(commandLine, stoveLive.Text())) {
       g_launchPassCommandLine = true;
     }
@@ -1446,18 +1446,18 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   const std::array manifestSource = {'\xFC', '\x96', '\x2C', '\xAF', '\x90', '\x05', '\xC2', '\xD3', '\xFE', '\x8D', '\x20', '\x92', '\x94', '\x0A', '\xC9', '\xDE',
                                          '\xF9', '\x9C', '\x32', '\xB9', '\xF9'};
-  thread_local EncryptedName<sizeof(manifestSource), 0xB7A76BF9CD41F99FULL> manifest(manifestSource);
+  EncryptedName<sizeof(manifestSource), 0xB7A76BF9CD41F99FULL>& manifest = ThreadLocalName<0xB7A76BF9CD41F99FULL>(manifestSource);
   WIN32_FIND_DATAA manifestData;
   HANDLE manifestFind = FindFirstFileA(manifest.Text(), &manifestData);
   if ((g_launchPassCommandLine && manifestFind == INVALID_HANDLE_VALUE) || (!g_launchPassCommandLine && manifestFind != INVALID_HANDLE_VALUE)) {
     FindClose(manifestFind);
     const std::array captionSource = {'\xE2', '\x5D', '\x16', '\x35', '\xBE', '\x29', '\xC0', '\x03', '\xE3', '\x46', '\x0B', '\x43'};
-    thread_local EncryptedName<sizeof(captionSource), 0x71A509DB43792991ULL> caption(captionSource);
+    EncryptedName<sizeof(captionSource), 0x71A509DB43792991ULL>& caption = ThreadLocalName<0x71A509DB43792991ULL>(captionSource);
     const char* title = caption.Text();
     const std::array messageSource = {'\x2E', '\x27', '\xE0', '\xD7', '\x9A', '\xCD', '\xAC', '\x71', '\xCB', '\xA0', '\x4F', '\x6D', '\x41', '\x1D', '\xAF', '\x73',
                                           '\xC5', '\xF5', '\xAF', '\x64', '\x14', '\x2A', '\xB1', '\xFD', '\xC0', '\x94', '\x48', '\x41', '\x38', '\x35', '\x49', '\x1C',
                                           '\xAB', '\xEF', '\x33', '\x1E', '\x1B', '\xED'};
-    thread_local EncryptedName<sizeof(messageSource), 0xDD69EDFFA18F537DULL> message(messageSource);
+    EncryptedName<sizeof(messageSource), 0xDD69EDFFA18F537DULL>& message = ThreadLocalName<0xDD69EDFFA18F537DULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), title, MB_OK);
     return 0;
   }
@@ -1465,7 +1465,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   FindClose(manifestFind);
   if (!g_launchPassCommandLine) {
     const std::array accountMarkerSource = {'\xA4', '\xAF', '\x59', '\x79'};
-    thread_local EncryptedName<sizeof(accountMarkerSource), 0xB3CF9BEB7963DB89ULL> accountMarker(accountMarkerSource);
+    EncryptedName<sizeof(accountMarkerSource), 0xB3CF9BEB7963DB89ULL>& accountMarker = ThreadLocalName<0xB3CF9BEB7963DB89ULL>(accountMarkerSource);
     if (std::strstr(commandLine, accountMarker.Text()) && !g_replayMode) {
       g_session.m_launchAccountEnabled = true;
       char* marker = std::strstr(commandLine, "-t:");
@@ -1492,12 +1492,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       g_launchServerName[length > 23 ? 23 : length] = 0;
 
       const std::array nonPaySource = {'\x3D', '\x4E', '\x89', '\x17', '\x4A', '\x00', '\xED', '\xEA', '\x14', '\x21'};
-      thread_local EncryptedName<sizeof(nonPaySource), 0x8BBF792B47E72173ULL> nonPay(nonPaySource);
+      EncryptedName<sizeof(nonPaySource), 0x8BBF792B47E72173ULL>& nonPay = ThreadLocalName<0x8BBF792B47E72173ULL>(nonPaySource);
       if (std::strstr(g_launchServerName, nonPay.Text())) {
         g_launchServerKind = 2;
       } else {
         const std::array eventSource = {'\x3C', '\x81', '\x70', '\x5B', '\xD9', '\x51'};
-        thread_local EncryptedName<sizeof(eventSource), 0x9B9D51AD3515F779ULL> event(eventSource);
+        EncryptedName<sizeof(eventSource), 0x9B9D51AD3515F779ULL>& event = ThreadLocalName<0x9B9D51AD3515F779ULL>(eventSource);
         if (std::strstr(g_launchServerName, event.Text())) {
           g_launchServerKind = 2;
         }
@@ -1505,18 +1505,18 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     } else {
       const std::array secondManifestSource = {'\x34', '\x90', '\x80', '\x2D', '\xC6', '\xDB', '\xB2', '\xD1', '\x36', '\x8B', '\x8C', '\x10', '\xC2', '\xD4', '\xB9', '\xDC',
                                                    '\x31', '\x9A', '\x9E', '\x3B', '\xAF'};
-      thread_local EncryptedName<sizeof(secondManifestSource), 0xB5D7B5AF4FEDFF57ULL> secondManifest(secondManifestSource);
+      EncryptedName<sizeof(secondManifestSource), 0xB5D7B5AF4FEDFF57ULL>& secondManifest = ThreadLocalName<0xB5D7B5AF4FEDFF57ULL>(secondManifestSource);
       WIN32_FIND_DATAA secondManifestData;
       HANDLE secondManifestFind = FindFirstFileA(secondManifest.Text(), &secondManifestData);
       if (secondManifestFind != INVALID_HANDLE_VALUE) {
         FindClose(secondManifestFind);
         const std::array secondCaptionSource = {'\xC4', '\x47', '\x4A', '\x7F', '\xDE', '\x15', '\xE0', '\x71', '\xC5', '\x5C', '\x57', '\x09'};
-        thread_local EncryptedName<sizeof(secondCaptionSource), 0x038535BB092533B7ULL> secondCaption(secondCaptionSource);
+        EncryptedName<sizeof(secondCaptionSource), 0x038535BB092533B7ULL>& secondCaption = ThreadLocalName<0x038535BB092533B7ULL>(secondCaptionSource);
         const char* title = secondCaption.Text();
         const std::array secondMessageSource = {'\x80', '\x03', '\x88', '\x1F', '\x32', '\xE7', '\xEE', '\x57', '\x65', '\x84', '\x27', '\xA5', '\xE9', '\x37', '\xED', '\x55',
                                                     '\x6B', '\xD1', '\xC7', '\xAC', '\xBC', '\x00', '\xF3', '\xDB', '\x6E', '\xB0', '\x20', '\x89', '\x90', '\x1F', '\x0B', '\x3A',
                                                     '\x05', '\xCB', '\x5B', '\xD6', '\xB3', '\xC7'};
-        thread_local EncryptedName<sizeof(secondMessageSource), 0xFB2BC75769E777D3ULL> secondMessage(secondMessageSource);
+        EncryptedName<sizeof(secondMessageSource), 0xFB2BC75769E777D3ULL>& secondMessage = ThreadLocalName<0xFB2BC75769E777D3ULL>(secondMessageSource);
         MessageBoxA(hWnd, FormatOwnedString(secondMessage.Text()).c_str(), title, MB_OK);
         return 0;
       }
@@ -1533,7 +1533,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   const std::array ragSource = {'\x32', '\x47', '\xF8', '\xD2', '\x82', '\x77'};
-  thread_local EncryptedName<sizeof(ragSource), 0x6BC977B3B5993503ULL> rag(ragSource);
+  EncryptedName<sizeof(ragSource), 0x6BC977B3B5993503ULL>& rag = ThreadLocalName<0x6BC977B3B5993503ULL>(ragSource);
   std::strstr(commandLine, rag.Text());
 
   {
@@ -1546,14 +1546,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   const std::array accountSource = {'\x74', '\xFC', '\x46', '\x4E', '\xE8', '\x58', '\x43', '\x73', '\x61', '\x9D'};
-  thread_local EncryptedName<sizeof(accountSource), 0x072D2D872D259D5BULL> account(accountSource);
+  EncryptedName<sizeof(accountSource), 0x072D2D872D259D5BULL>& account = ThreadLocalName<0x072D2D872D259D5BULL>(accountSource);
   account.Text();
   g_launchFromPc = std::strstr(commandLine, "pc") != nullptr;
 
   char protection[64];
   std::memset(protection, 0, sizeof(protection));
   const std::array dataGrfSource = {'\x3B', '\x18', '\xD5', '\x86', '\xDF', '\xAA', '\x2D', '\xE1', '\x5F'};
-  thread_local EncryptedName<sizeof(dataGrfSource), 0x875FCDF1E7A1795FULL> dataGrf(dataGrfSource);
+  EncryptedName<sizeof(dataGrfSource), 0x875FCDF1E7A1795FULL>& dataGrf = ThreadLocalName<0x875FCDF1E7A1795FULL>(dataGrfSource);
   dataGrf.Text();
   HMODULE kernel = GetModuleHandleA("kernel32.dll");
   if (kernel) {
@@ -1588,10 +1588,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   LoadClientInfo(protection);
 
   const std::array patchSandboxSource = {'\x5A', '\x16', '\x15', '\xB6', '\x3B', '\x6C', '\x80', '\x0A', '\x14', '\x0B', '\x05', '\xBB', '\x22', '\x71', '\xDF'};
-  thread_local EncryptedName<sizeof(patchSandboxSource), 0x79DF094DD9616575ULL> patchSandbox(patchSandboxSource);
+  EncryptedName<sizeof(patchSandboxSource), 0x79DF094DD9616575ULL>& patchSandbox = ThreadLocalName<0x79DF094DD9616575ULL>(patchSandboxSource);
   if (!std::strstr(g_commandLine, patchSandbox.Text())) {
     const std::array patchLiveSource = {'\x98', '\x12', '\x89', '\xD0', '\x41', '\x48', '\xD0', '\xF1', '\xDE', '\x17', '\x98', '\xBF'};
-    thread_local EncryptedName<sizeof(patchLiveSource), 0x9D8F2D37BFFD61B7ULL> patchLive(patchLiveSource);
+    EncryptedName<sizeof(patchLiveSource), 0x9D8F2D37BFFD61B7ULL>& patchLive = ThreadLocalName<0x9D8F2D37BFFD61B7ULL>(patchLiveSource);
     if (!std::strstr(g_commandLine, patchLive.Text()) &&
         ReplaceClientExecutable(const_cast<char*>(g_clientExeName), g_patcherExeName)) {
       return 0;
@@ -1601,7 +1601,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_session.Init();
 
   const std::array setupSource = {'\x64', '\x98', '\x01', '\x20', '\x45', '\xEF', '\x30', '\x3F', '\x52', '\xFD'};
-  thread_local EncryptedName<sizeof(setupSource), 0x4755C1355575FD37ULL> setup(setupSource);
+  EncryptedName<sizeof(setupSource), 0x4755C1355575FD37ULL>& setup = ThreadLocalName<0x4755C1355575FD37ULL>(setupSource);
   while (ReadSetup() == 0) {
     if (_access(setup.Text(), 0) == 0) {
       WaitForSingleObject(StartClientProcess(const_cast<char*>(setup.Text())), INFINITE);
@@ -1609,12 +1609,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   const std::array saveDataSource = {'\x74', '\xBC', '\x01', '\x06', '\x07', '\x54', '\xBF', '\x70', '\x07'};
-  thread_local EncryptedName<sizeof(saveDataSource), 0x11CB35636377DD07ULL> saveData(saveDataSource);
+  EncryptedName<sizeof(saveDataSource), 0x11CB35636377DD07ULL>& saveData = ThreadLocalName<0x11CB35636377DD07ULL>(saveDataSource);
   WIN32_FIND_DATAA saveDataData;
   HANDLE saveDataFind = FindFirstFileA(saveData.Text(), &saveDataData);
   if (saveDataFind == INVALID_HANDLE_VALUE) {
     const std::array saveDataDirectorySource = {'\x54', '\xF2', '\x09', '\x6A', '\x3F', '\x7E', '\x43', '\x5C', '\x27'};
-    thread_local EncryptedName<sizeof(saveDataDirectorySource), 0x3D371F5B0F7F9327ULL> saveDataDirectory(saveDataDirectorySource);
+    EncryptedName<sizeof(saveDataDirectorySource), 0x3D371F5B0F7F9327ULL>& saveDataDirectory = ThreadLocalName<0x3D371F5B0F7F9327ULL>(saveDataDirectorySource);
     CreateDirectoryA(saveDataDirectory.Text(), nullptr);
   } else {
     FindClose(saveDataFind);
@@ -1639,7 +1639,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   if (!CSoundMgr::Create()) {
     const std::array audioFailureSource = {'\x68', '\xBA', '\x4D', '\x6E', '\x8C', '\x09', '\xA4', '\x12', '\x5A', '\xBB', '\x4C', '\x6A', '\xC3', '\x60', '\x99', '\x02',
                                                '\x5D', '\xEF', '\x6F', '\x66', '\x8A', '\x45', '\x92', '\x0F', '\x29'};
-    thread_local EncryptedName<sizeof(audioFailureSource), 0x6BF729E30729CF29ULL> audioFailure(audioFailureSource);
+    EncryptedName<sizeof(audioFailureSource), 0x6BF729E30729CF29ULL>& audioFailure = ThreadLocalName<0x6BF729E30729CF29ULL>(audioFailureSource);
     if (audioFailure.Encrypted()) {
       audioFailure.Text();
     } else {
@@ -1653,7 +1653,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   ResourceMgr& resources = ResourceMgr::Instance();
   const std::array resourceNamesSource = {'\x8F', '\xA4', '\x00', '\x0D', '\x46', '\x3C', '\x78', '\x4B', '\x9C', '\xA3', '\x1F', '\x26', '\x09', '\x25', '\x65', '\x6B',
                                               '\xFD'};
-  thread_local EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL> resourceNames(resourceNamesSource);
+  EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL>& resourceNames = ThreadLocalName<0x1F1D51274373C1FDULL>(resourceNamesSource);
   resources.LoadAliases(reinterpret_cast<int>(resourceNames.Text()));
 
   if (!InitApp(instance, showCommand)) {
@@ -1663,7 +1663,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   std::pair<bool, std::string> managers = InitializeManagers();
   if (!managers.first) {
     const std::array errorSource = {'\x72', '\x27', '\xFF', '\xE8', '\x91', '\xA1'};
-    thread_local EncryptedName<sizeof(errorSource), 0x5F93A1C3A7AD7537ULL> error(errorSource);
+    EncryptedName<sizeof(errorSource), 0x5F93A1C3A7AD7537ULL>& error = ThreadLocalName<0x5F93A1C3A7AD7537ULL>(errorSource);
     MessageBoxA(nullptr, managers.second.c_str(), error.Text(), MB_OK);
     return 1;
   }
@@ -1672,7 +1672,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const std::array deviceFailureSource = {'\x14', '\xE2', '\x87', '\xBB', '\xEE', '\xB1', '\x6D', '\x2E', '\x39', '\xEA', '\x9D', '\xF5', '\xE5', '\xF6', '\x29', '\x67',
                                                 '\x18', '\xD1', '\xC9', '\xB2', '\xF3', '\xA3', '\x6D', '\x21', '\x3E', '\xEF', '\x8C', '\xF5', '\xE9', '\xA4', '\x3E', '\x67',
                                                 '\x27', '\xF1', '\x86', '\xB7', '\xED', '\xA0', '\x20', '\x69', '\x57'};
-    thread_local EncryptedName<sizeof(deviceFailureSource), 0x474DC581D5E98357ULL> deviceFailure(deviceFailureSource);
+    EncryptedName<sizeof(deviceFailureSource), 0x474DC581D5E98357ULL>& deviceFailure = ThreadLocalName<0x474DC581D5E98357ULL>(deviceFailureSource);
     ShowErrorDialog(deviceFailure.Text(), MB_OK);
     return 1;
   }
@@ -1694,7 +1694,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_grannyAnimationLibrary.Initialize();
   const std::array guildFlagSource = {'\xEA', '\xC8', '\x21', '\x16', '\x79', '\xD5', '\x40', '\x6D', '\xEA', '\xC8', '\x27', '\x2F', '\x72', '\xFC', '\x1A', '\x65',
                                           '\xE3', '\xC1', '\x29', '\x12', '\x72', '\xB0', '\x43', '\x56', '\xB6', '\x89', '\x22', '\x01', '\x27', '\x89'};
-  thread_local EncryptedName<sizeof(guildFlagSource), 0x097389157345A787ULL> guildFlag(guildFlagSource);
+  EncryptedName<sizeof(guildFlagSource), 0x097389157345A787ULL>& guildFlag = ThreadLocalName<0x097389157345A787ULL>(guildFlagSource);
   g_grannyAnimationLibrary.Load(guildFlag.Text(), 1, 0);
   g_skinInfo.Refresh();
   CreateTrigonometricTable();
@@ -1709,7 +1709,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   const std::array memoSource = {'\xE4', '\x0E', '\x84', '\xF0', '\x4B'};
-  thread_local EncryptedName<sizeof(memoSource), 0xC5995F4B9FE96B89ULL> memo(memoSource);
+  EncryptedName<sizeof(memoSource), 0xC5995F4B9FE96B89ULL>& memo = ThreadLocalName<0xC5995F4B9FE96B89ULL>(memoSource);
   WIN32_FIND_DATAA memoData;
   HANDLE memoFind = FindFirstFileA(memo.Text(), &memoData);
   if (memoFind == INVALID_HANDLE_VALUE) {
@@ -1721,12 +1721,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_navigationManager.LoadSettings();
 
   const std::array replayFolderSource = {'\x49', '\xAC', '\xB1', '\x83', '\xB0', '\x04', '\x0F'};
-  thread_local EncryptedName<sizeof(replayFolderSource), 0x610F7DD1EFC1C91BULL> replayFolder(replayFolderSource);
+  EncryptedName<sizeof(replayFolderSource), 0x610F7DD1EFC1C91BULL>& replayFolder = ThreadLocalName<0x610F7DD1EFC1C91BULL>(replayFolderSource);
   WIN32_FIND_DATAA replayData;
   HANDLE replayFind = FindFirstFileA(replayFolder.Text(), &replayData);
   if (replayFind == INVALID_HANDLE_VALUE) {
     const std::array replayDirectorySource = {'\xEB', '\x48', '\x4D', '\x5F', '\xEC', '\xEA', '\x15'};
-    thread_local EncryptedName<sizeof(replayDirectorySource), 0xED15938D333D2DB9ULL> replayDirectory(replayDirectorySource);
+    EncryptedName<sizeof(replayDirectorySource), 0xED15938D333D2DB9ULL>& replayDirectory = ThreadLocalName<0xED15938D333D2DB9ULL>(replayDirectorySource);
     CreateDirectoryA(replayDirectory.Text(), nullptr);
   } else {
     FindClose(replayFind);
@@ -1736,7 +1736,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   HANDLE navigationFind = FindFirstFileA("", &navigationData);
   if (replayFind == INVALID_HANDLE_VALUE) {
     const std::array navigationDirectorySource = {'\x0D', '\x58', '\x2D', '\x02', '\x00', '\x4C', '\x05', '\xA0', '\x2C', '\x57', '\x3F', '\x0A', '\x13', '\x4C', '\x71'};
-    thread_local EncryptedName<sizeof(navigationDirectorySource), 0xC9712D676B5B3943ULL> navigationDirectory(navigationDirectorySource);
+    EncryptedName<sizeof(navigationDirectorySource), 0xC9712D676B5B3943ULL>& navigationDirectory = ThreadLocalName<0xC9712D676B5B3943ULL>(navigationDirectorySource);
     CreateDirectoryA(navigationDirectory.Text(), nullptr);
   } else {
     FindClose(navigationFind);
@@ -1805,44 +1805,44 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   if (g_restartClient) {
     const std::array devServerSource = {'\x55', '\x86', '\x25', '\x99'};
-    thread_local EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL> devServer(devServerSource);
+    EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL>& devServer = ThreadLocalName<0x4B755DB19953E311ULL>(devServerSource);
     if (!std::strstr(g_launchServerName, devServer.Text())) {
       const char* parameters = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
       const char* file = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
       const std::array openSource = {'\x22', '\xEF', '\x90', '\x69', '\xEB'};
-      thread_local EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL> open(openSource);
+      EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = ThreadLocalName<0xD7A749EB27D5BF6DULL>(openSource);
       ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
     } else if (g_serviceMode == 0) {
       const std::array parametersSource = {'\xE5', '\xF5', '\x65', '\x83', '\x89', '\x86', '\x46', '\x9C', '\xE9', '\xEC', '\x65', '\x9C', '\xDC', '\xC5', '\x1A', '\xD3',
                                                '\xEA', '\xEF', '\x7B', '\x9C', '\xCA', '\x87', '\x0A', '\x92', '\xE0', '\xAE', '\x76', '\x92', '\xDE', '\xCC', '\x1A', '\x89',
                                                '\xEC', '\xF3', '\x65', '\x96', '\xC1', '\x86', '\x0D', '\x98', '\xFB', '\xF3', '\x7E', '\xDD', '\xD2', '\xDA', '\x19', '\xC2',
                                                '\xCA', '\xE0', '\x7C', '\x96', '\xF0', '\xC6', '\x0D', '\x98', '\xB0', '\xB5', '\x21', '\xC2', '\x82', '\xA9'};
-      thread_local EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL> parameters(parametersSource);
+      EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL>& parameters = ThreadLocalName<0xFD69A9B3F311818DULL>(parametersSource);
       const char* arguments = parameters.Text();
       const std::array fileSource = {'\x43', '\x6B', '\x9D', '\xDB', '\xFB', '\xD0', '\x02', '\x1E', '\x4F', '\x72', '\x9D', '\xC4', '\xAE', '\x93', '\x5E', '\x51',
                                          '\x4C', '\x71', '\x83', '\xC4', '\xB8', '\xD1', '\x4E', '\x10', '\x46', '\x30', '\x8E', '\xCA', '\xAC', '\x9A', '\x5E', '\x0B',
                                          '\x4A', '\x6D', '\x9D', '\xCE', '\xB3', '\xD0', '\x49', '\x1A', '\x5D', '\x6D', '\x86', '\x85', '\xA0', '\x8C', '\x5D', '\x40',
                                          '\x6C', '\x7E', '\x84', '\xCE', '\x82', '\x90', '\x49', '\x1A', '\x16', '\x2B', '\xD9', '\x9A', '\xF0', '\xFF'};
-      thread_local EncryptedName<sizeof(fileSource), 0x7F2DFFC1ABE91F2BULL> file(fileSource);
+      EncryptedName<sizeof(fileSource), 0x7F2DFFC1ABE91F2BULL>& file = ThreadLocalName<0x7F2DFFC1ABE91F2BULL>(fileSource);
       const char* target = file.Text();
       const std::array openSource = {'\x74', '\xB7', '\x44', '\x55', '\xC1'};
-      thread_local EncryptedName<sizeof(openSource), 0xBD2BA1C11B01E73BULL> open(openSource);
+      EncryptedName<sizeof(openSource), 0xBD2BA1C11B01E73BULL>& open = ThreadLocalName<0xBD2BA1C11B01E73BULL>(openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
     } else {
       const std::array parametersSource = {'\x31', '\x79', '\xBF', '\xDF', '\x47', '\x4C', '\xBA', '\xD0', '\x3D', '\x60', '\xBF', '\xC0', '\x12', '\x0F', '\xE6', '\x9F',
                                                '\x3E', '\x63', '\xA1', '\xC0', '\x04', '\x4D', '\xF6', '\xDE', '\x34', '\x22', '\xAC', '\xCE', '\x10', '\x06', '\xE6', '\xC5',
                                                '\x38', '\x7F', '\xBF', '\xCA', '\x0F', '\x4C', '\xF1', '\xD4', '\x2F', '\x7F', '\xA4', '\x81', '\x1C', '\x10', '\xE5', '\x8E',
                                                '\x1E', '\x6C', '\xA6', '\xCA', '\x3E', '\x0C', '\xF1', '\xD4', '\x64', '\x3B', '\xFB', '\x9E', '\x4C', '\x63'};
-      thread_local EncryptedName<sizeof(parametersSource), 0xB195637DAFCB0D59ULL> parameters(parametersSource);
+      EncryptedName<sizeof(parametersSource), 0xB195637DAFCB0D59ULL>& parameters = ThreadLocalName<0xB195637DAFCB0D59ULL>(parametersSource);
       const char* arguments = parameters.Text();
       const std::array fileSource = {'\x65', '\x17', '\xF9', '\x79', '\x7F', '\x7C', '\xA0', '\xB8', '\x69', '\x0E', '\xF9', '\x66', '\x2A', '\x3F', '\xFC', '\xF7',
                                          '\x6A', '\x0D', '\xE7', '\x66', '\x3C', '\x7D', '\xEC', '\xB6', '\x60', '\x4C', '\xEA', '\x68', '\x28', '\x36', '\xFC', '\xAD',
                                          '\x6C', '\x11', '\xF9', '\x6C', '\x37', '\x7C', '\xEB', '\xBC', '\x7B', '\x11', '\xE2', '\x27', '\x24', '\x20', '\xFF', '\xE6',
                                          '\x4A', '\x02', '\xE0', '\x6C', '\x06', '\x3C', '\xEB', '\xBC', '\x30', '\x55', '\xBD', '\x38', '\x74', '\x53'};
-      thread_local EncryptedName<sizeof(fileSource), 0xD98F5345098D630DULL> file(fileSource);
+      EncryptedName<sizeof(fileSource), 0xD98F5345098D630DULL>& file = ThreadLocalName<0xD98F5345098D630DULL>(fileSource);
       const char* target = file.Text();
       const std::array openSource = {'\xDC', '\x25', '\x9A', '\xA1', '\x4D'};
-      thread_local EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL> open(openSource);
+      EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL>& open = ThreadLocalName<0x9B0F234DEFDF7593ULL>(openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
     }
   }
