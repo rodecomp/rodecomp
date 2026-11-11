@@ -5608,8 +5608,8 @@ struct QuestHuntUpdatePacket2 {
 // FUNCTION: fn_21851
 void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const QuestHuntUpdatePacket*>(data);
-  std::vector<std::string> notices;
   const int count = (packet->length - 6) / sizeof(QuestHuntUpdateEntry);
+  std::vector<std::string> notices;
   for (int i = 0; i < count; ++i) {
     const QuestHuntUpdateEntry& entry = packet->entries[i];
     const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(entry.questId);
@@ -5618,26 +5618,25 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
     }
 
     RenewQuestOngoingInfo info = quest;
-    int index = 0;
-    for (; index < 3; ++index) {
-      if (info.m_huntId[index] == entry.huntId) {
-        break;
+    for (int index = 0; index < 3; ++index) {
+      if (entry.huntId != info.m_huntId[index]) {
+        continue;
       }
-    }
-    if (index < 3) {
+
       info.m_huntKillCount[index] = entry.count;
       info.m_huntMaxCount[index] = entry.maxCount;
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
       if (info.m_huntMobId[index] == 0x7CFF) {
-        name.assign(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
+        name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
       }
       name = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CLEAR_QUEST_MONSTER), info.m_title.c_str(), name.c_str(), info.m_huntKillCount[index], entry.maxCount));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(name.c_str()), 0xFFFF, 19, 0, 0);
       g_renewQuestMgr->SetOngoingQuest(entry.questId, info);
+      break;
     }
   }
 
