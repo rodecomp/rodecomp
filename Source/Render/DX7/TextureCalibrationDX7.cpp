@@ -9,7 +9,7 @@
 namespace {
   // INLINED
   unsigned Component(unsigned pixel, DWORD mask, const DeviceOwnerDX7::Channel& channel) {
-    return ((pixel & mask) >> (channel.shift & 31)) << (channel.expansion & 31);
+    return ((pixel & mask) >> channel.shift) << channel.expansion;
   }
 }
 
@@ -23,15 +23,15 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
   this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, 0);
   this->device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
   this->device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
-  this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+  this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   this->device->SetTexture(0, texture.NativeSurface());
 
+  unsigned first = 0;
   const unsigned columns = this->width >> 2;
   const unsigned capacity = columns * (this->height >> 2);
   int bestScore = -1024;
   int best = 32896;
-  unsigned first = 0;
 
   do {
     this->device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1, 0);
@@ -67,8 +67,7 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
 
     this->device->EndScene();
     readback.m_surface->Blt(nullptr, this->renderTarget, nullptr, DDBLT_WAIT, nullptr);
-    DDSURFACEDESC2 locked{};
-    locked.dwSize = sizeof(locked);
+    DDSURFACEDESC2 locked = {sizeof(DDSURFACEDESC2)};
 
     if (FAILED(readback.m_surface->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
       return false;
@@ -122,8 +121,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
 
   g_textureOffsetX = static_cast<float>(best % 256) * (1.0f / 256.0f);
   g_textureOffsetY = static_cast<float>(best / 256) * (1.0f / 256.0f);
-  this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+  this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
 
   return true;
 }
