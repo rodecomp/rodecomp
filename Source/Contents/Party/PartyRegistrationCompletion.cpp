@@ -28,18 +28,20 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
 
   const int type = root["Type"].asInt();
 
-  if (type == 2 || type == 3) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVEN_TANKER)), 0xFF, 0, 0, 0);
-    return;
+  switch (type) {
+    case 2:
+    case 3:
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVEN_TANKER)), 0xFF, 0, 0, 0);
+      return;
   }
 
   this->registered = true;
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BASIC_EXP_ZERO)), 0xFFFF64, 0, 0, 0);
   UIWindow* board = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND);
 
-  if (board) {
-    board->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
-  } else {
+  if (board == nullptr) {
     g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND);
+  } else {
+    board->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
   }
 }
