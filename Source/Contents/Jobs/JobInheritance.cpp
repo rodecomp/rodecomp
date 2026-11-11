@@ -58,7 +58,7 @@ const char* g_playerNameKey = g_playerNameKeyData;
 
 // OFFSET: 0x00DFBC00
 // FUNCTION: fn_23585
-__declspec(noinline) bool CSession::IsTreeGroupTwo(int job) const {
+__declspec(noinline) int CSession::IsTreeGroupTwo(int job) const {
   if (job >= JT_RUNE_KNIGHT && job <= JT_MADOGEAR_B) {
     return true;
   }

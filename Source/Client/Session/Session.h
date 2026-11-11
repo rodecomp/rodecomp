@@ -1081,7 +1081,7 @@ public:
   void InitResourceNameTables();
   void InitJobSpriteNames();
   const char* GetEFSTImgFileName(int efstId, int type);
-  bool IsTreeGroupTwo(int job) const;
+  int IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
   bool IsThirdJobOrHigher(int job);
   std::string GetSexName(int sex);

@@ -1552,13 +1552,13 @@ void UIStylingShopWnd::OnCreate(int, int) {
   this->AddTab("유저인터페이스\\styleshop\\tab_accessories_off.bmp", "유저인터페이스\\styleshop\\tab_accessories_off_over.bmp",
                "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD));
 
-  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) != true && g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) != 1) {
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true || g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) == 1) {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
-    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
                  costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   } else {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
-    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
                  costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   }
 
