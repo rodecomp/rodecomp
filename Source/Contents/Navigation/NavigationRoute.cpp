@@ -1070,13 +1070,13 @@ __declspec(noinline) bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vect
   for (auto info = this->destinations.begin(); info != this->destinations.end(); ++info) {
     std::vector<CNavi_Link*>::iterator link;
     for (link = (*info)->LinksBegin(); link != (*info)->LinksEnd(); ++link) {
-      if ((*link)->GetLinkedInfo() == target) {
+      if (target == (*link)->GetLinkedInfo()) {
         out->push_back(*link);
       }
     }
   }
   for (auto& link : this->objects) {
-    if (link->GetLinkedInfo() == target) {
+    if (target == link->GetLinkedInfo()) {
       out->push_back(link);
     }
   }
