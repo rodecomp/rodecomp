@@ -260,19 +260,16 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     case ID_EQUIP: {
       UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
-      if (equip) {
-        if (equip->m_page == 0) {
-          g_windowMgr.CloseWindow(WID_EQUIPWND);
-          return 0;
-        }
-      } else {
+      if (!equip) {
         equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_EQUIPWND)));
-        if (!equip) {
-          return 0;
+        if (equip) {
+          equip->m_tabs->SelectTab(0);
         }
+      } else if (equip->m_page == 0) {
+        g_windowMgr.CloseWindow(WID_EQUIPWND);
+      } else {
+        equip->m_tabs->SelectTab(0);
       }
-
-      equip->m_tabs->SelectTab(0);
       break;
     }
     case ID_MAP:
@@ -327,19 +324,16 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     case 578: {
       UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
-      if (equip) {
-        if (equip->m_page == 1) {
-          g_windowMgr.CloseWindow(WID_EQUIPWND);
-          return 0;
-        }
-      } else {
+      if (!equip) {
         equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_EQUIPWND)));
-        if (!equip) {
-          return 0;
+        if (equip) {
+          equip->m_tabs->SelectTab(1);
         }
+      } else if (equip->m_page == 1) {
+        g_windowMgr.CloseWindow(WID_EQUIPWND);
+      } else {
+        equip->m_tabs->SelectTab(1);
       }
-
-      equip->m_tabs->SelectTab(1);
       break;
     }
     }
