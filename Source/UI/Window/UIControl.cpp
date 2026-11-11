@@ -37,6 +37,9 @@
 #include <format>
 #include <windows.h>
 
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char* const, std::size_t, const char* const, std::size_t) noexcept;
+template __declspec(noinline) std::map<int, CResPtr<CBitmapRes>>::const_iterator std::map<int, CResPtr<CBitmapRes>>::_Mybase::find(const int&) const;
+
 // GLOBAL: gl_25174
 const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
 
@@ -465,11 +468,11 @@ void CUIHThumb::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   if (this->resizable) {
-    const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
     int x = 0;
+    const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
     if (this->top) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+        this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->top)), true, false);
       } else {
         this->DrawBitmap(0, 0, this->top, false);
       }
@@ -479,7 +482,7 @@ void CUIHThumb::Paint() {
     if (this->middle) {
       while (x < end) {
         if (this->transparent) {
-          this->DrawAuxiliary(1, x, 0, &this->middle->image, true, false);
+          this->DrawAuxiliary(1, x, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
         } else {
           this->DrawBitmap(x, 0, this->middle, false);
         }
@@ -488,16 +491,15 @@ void CUIHThumb::Paint() {
     }
 
     if (this->bottom) {
-      const int bottomX = this->geometry.width - this->bottom->image.width;
       if (this->transparent) {
-        this->DrawAuxiliary(1, bottomX, 0, &this->bottom->image, true, false);
+        this->DrawAuxiliary(1, this->geometry.width - this->bottom->image.width, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->bottom)), true, false);
       } else {
-        this->DrawBitmap(bottomX, 0, this->bottom, false);
+        this->DrawBitmap(this->geometry.width - this->bottom->image.width, 0, this->bottom, false);
       }
     }
   } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
+      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
     } else {
       this->DrawBitmap(0, 0, this->middle, false);
     }
@@ -580,20 +582,17 @@ void CUIVScrollBar::Show(int visible) {
 // OFFSET: 0x009F25C0
 // FUNCTION: fn_14717
 void CUIVScrollBar::UpdateThumb() {
-  CUIThumb* bar = this->thumb;
-  float offset;
-  if (bar->resizable) {
+  if (this->thumb->resizable) {
     const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
-    bar->Resize(this->geometry.width, length > 1 ? length : 1);
-    offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+    this->thumb->Resize(this->geometry.width, length > 1 ? length : 1);
+    const float offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+    this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
+  } else if (this->total - this->visible <= 0) {
+    this->thumb->Move(0, this->upButton->geometry.height);
   } else {
-    if (this->total - this->visible <= 0) {
-      bar->Move(0, this->upButton->geometry.height);
-      return;
-    }
-    offset = static_cast<float>(this->position * (this->trackLength - bar->geometry.height)) / static_cast<float>(this->total - this->visible);
+    const float offset = static_cast<float>(this->position * (this->trackLength - this->thumb->geometry.height)) / static_cast<float>(this->total - this->visible);
+    this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
   }
-  this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
 }
 
 // OFFSET: 0x009F2180
@@ -607,10 +606,10 @@ void CUIVScrollBar::Paint() {
 
   if (this->transparent) {
     for (int y = 0; y < this->trackLength - this->background->image.height; y += this->background->image.height) {
-      this->DrawAuxiliary(1, 0, this->upButton->geometry.height + y, &this->background->image, true, false);
+      this->DrawAuxiliary(1, 0, this->upButton->geometry.height + y, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false);
     }
     this->DrawAuxiliary(
-      1, 0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, &this->background->image, true, false
+      1, 0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false
     );
     return;
   }
@@ -730,9 +729,9 @@ void CUIVThumb::Paint() {
     const int end = this->geometry.height - (this->bottom ? this->bottom->image.height : 0);
     if (this->top) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+        this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->top)), true, false);
       } else {
-        this->DrawBitmap(0, 0, &this->top->image, false);
+        this->DrawBitmap(0, 0, this->top, false);
       }
       y = this->top->image.height;
     }
@@ -740,27 +739,26 @@ void CUIVThumb::Paint() {
     if (this->middle) {
       while (y < end) {
         if (this->transparent) {
-          this->DrawAuxiliary(1, 0, y, &this->middle->image, true, false);
+          this->DrawAuxiliary(1, 0, y, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
         } else {
-          this->DrawBitmap(0, y, &this->middle->image, false);
+          this->DrawBitmap(0, y, this->middle, false);
         }
         y += this->middle->image.height;
       }
     }
 
     if (this->bottom) {
-      const int bottomY = this->geometry.height - this->bottom->image.height;
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, bottomY, &this->bottom->image, true, false);
+        this->DrawAuxiliary(1, 0, this->geometry.height - this->bottom->image.height, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->bottom)), true, false);
       } else {
-        this->DrawBitmap(0, bottomY, &this->bottom->image, false);
+        this->DrawBitmap(0, this->geometry.height - this->bottom->image.height, this->bottom, false);
       }
     }
   } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
+      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
     } else {
-      this->DrawBitmap(0, 0, &this->middle->image, false);
+      this->DrawBitmap(0, 0, this->middle, false);
     }
   }
 }
@@ -1460,7 +1458,7 @@ void CUIImageButton::Paint() {
 
   if (image) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, &image->image, true, false);
+      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(image), true, false);
       return;
     }
     this->DrawBitmap(0, 0, image, false);
@@ -2132,10 +2130,11 @@ void CUIVScrollBar::PageDown() {
 // OFFSET: 0x009F1D80
 // FUNCTION: fn_14705
 int CUIVScrollBar::PositionFromOffset(int offset) {
-  float value = 0.0f;
-  if (this->trackLength != 0) {
-    value = static_cast<float>(this->total) * static_cast<float>(offset) / static_cast<float>(this->trackLength);
-    value = static_cast<float>(std::ceil(value));
+  float value;
+  if (this->trackLength == 0) {
+    value = 0.0f;
+  } else {
+    value = std::ceil(static_cast<float>(this->total) * static_cast<float>(offset) / static_cast<float>(this->trackLength));
   }
 
   return static_cast<int>(value);
@@ -2159,10 +2158,10 @@ void CUIHScrollBar::Paint() {
 
   if (this->transparent) {
     for (int x = 0; x < this->trackLength - this->background->image.width; x += this->background->image.width) {
-      this->DrawAuxiliary(1, this->upButton->geometry.width + x, 0, &this->background->image, true, false);
+      this->DrawAuxiliary(1, this->upButton->geometry.width + x, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false);
     }
     this->DrawAuxiliary(
-      1, this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, &this->background->image, true, false
+      1, this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false
     );
     return;
   }
@@ -2197,20 +2196,17 @@ void CUIHScrollBar::OnWheel(int value) {
 // OFFSET: 0x009EE290
 // FUNCTION: fn_14604
 void CUIHScrollBar::UpdateThumb() {
-  CUIThumb* bar = this->thumb;
-  float offset;
-  if (bar->resizable) {
+  if (this->thumb->resizable) {
     const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
-    bar->Resize(length > 1 ? length : 1, this->geometry.height);
-    offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+    this->thumb->Resize(length > 1 ? length : 1, this->geometry.height);
+    const float offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+    this->thumb->Move(static_cast<int>(offset + static_cast<float>(this->upButton->geometry.width)), 0);
+  } else if (this->total - this->visible <= 0) {
+    this->thumb->Move(this->upButton->geometry.width, 0);
   } else {
-    if (this->total - this->visible <= 0) {
-      bar->Move(this->upButton->geometry.width, 0);
-      return;
-    }
-    offset = static_cast<float>((this->trackLength - bar->geometry.width) * this->position) / static_cast<float>(this->total - this->visible);
+    const float offset = static_cast<float>((this->trackLength - this->thumb->geometry.width) * this->position) / static_cast<float>(this->total - this->visible);
+    this->thumb->Move(static_cast<int>(offset + static_cast<float>(this->upButton->geometry.width)), 0);
   }
-  this->thumb->Move(static_cast<int>(offset + static_cast<float>(this->upButton->geometry.width)), 0);
 }
 
 // OFFSET: 0x009EE380
@@ -2549,20 +2545,20 @@ void CUIResizer::OnMouseMove(int x, int y) {
     return;
   }
 
-  int screenX = x;
   int screenY = y;
+  int screenX = x;
   this->ToScreen(screenX, screenY);
 
-  const int rows = static_cast<int>(std::roundf(static_cast<float>(screenY - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
-  int width = static_cast<int>(std::roundf(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
-  if (width > this->maxWidth) {
+  const int rows = static_cast<int>(std::round(static_cast<float>(screenY - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+  if (this->maxWidth < width) {
     width = this->maxWidth;
   } else if (width < this->minWidth) {
     width = this->minWidth;
   }
 
   int height = rows + this->startHeight;
-  if (height > this->maxHeight) {
+  if (this->maxHeight < height) {
     height = this->maxHeight;
   } else if (height < this->minHeight) {
     height = this->minHeight;
@@ -2878,7 +2874,7 @@ void CUIStaticText::UpdateText() {
   if (this->horizontalAlign == 0) {
     this->textX = 0;
   } else if (this->horizontalAlign == 6) {
-    this->textX = static_cast<int>(std::roundf(static_cast<float>(this->geometry.width - size.cx) * 0.5f));
+    this->textX = static_cast<int>(std::round(static_cast<float>(this->geometry.width - size.cx) * 0.5f));
   } else if (this->horizontalAlign == 2) {
     this->textX = this->geometry.width - size.cx;
   }
@@ -2886,7 +2882,7 @@ void CUIStaticText::UpdateText() {
   if (this->verticalAlign == 0) {
     this->textY = 0;
   } else if (this->verticalAlign == 6) {
-    this->textY = static_cast<int>(std::roundf(static_cast<float>(this->geometry.height - size.cy) * 0.5f));
+    this->textY = static_cast<int>(std::round(static_cast<float>(this->geometry.height - size.cy) * 0.5f));
   } else if (this->verticalAlign == 8) {
     this->textY = this->geometry.height - size.cy;
   }
@@ -2968,11 +2964,12 @@ void CUITextButton::UpdateText() {
     this->fullText.clear();
   }
 
-  const SIZE size = this->orientation == 1
-                      ? this->VerticalTextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
-                        )
-                      : this->TextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
-                        );
+  SIZE size;
+  if (this->orientation == 1) {
+    size = this->VerticalTextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
+  } else {
+    size = this->TextSize(this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
+  }
 
   if (this->horizontalAlign == 0) {
     this->textX = 0;
@@ -3210,7 +3207,7 @@ void CUIStaticText::Paint() {
 
 // OFFSET: 0x009E80C0
 // FUNCTION: fn_14489
-void CUIImageTextButton::Paint() {
+__declspec(noinline) void CUIImageTextButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   CBitmapRes* image = nullptr;
@@ -3233,45 +3230,44 @@ void CUIImageTextButton::Paint() {
 // FUNCTION: fn_14689
 void CUITabButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  if (!this->useSkinColors) {
-    this->CUIImageTextButton::Paint();
-    return;
-  }
-
-  if (this->orientation == 1) {
-    if (this->state != 1) {
-      this->FillRegion(2, 1, this->geometry.width - 3, this->geometry.height - 2, this->normalColor);
-      this->FillRegion(1, 2, 1, this->geometry.height - 4, this->borderColor);
-      this->FillRegion(2, 1, 1, 1, this->borderColor);
-      this->FillRegion(2, this->geometry.height - 2, 1, 1, this->borderColor);
-      this->FillRegion(3, 0, this->geometry.width - 3, 1, this->borderColor);
-      this->FillRegion(3, this->geometry.height - 1, this->geometry.width - 3, 1, this->borderColor);
-      this->FillRegion(this->geometry.width - 1, 0, 1, this->geometry.height, this->borderColor);
-    } else {
-      this->FillRegion(1, 1, this->geometry.width - 1, this->geometry.height - 2, this->selectedColor);
-      this->FillRegion(0, 2, 1, this->geometry.height - 4, this->borderColor);
+  if (this->useSkinColors) {
+    if (this->orientation == 1) {
+      if (this->state == 1) {
+        this->FillRegion(1, 1, this->geometry.width - 1, this->geometry.height - 2, this->selectedColor);
+        this->FillRegion(0, 2, 1, this->geometry.height - 4, this->borderColor);
+        this->FillRegion(1, 1, 1, 1, this->borderColor);
+        this->FillRegion(1, this->geometry.height - 2, 1, 1, this->borderColor);
+        this->FillRegion(2, 0, this->geometry.width - 2, 1, this->borderColor);
+        this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 2, 1, this->borderColor);
+      } else {
+        this->FillRegion(2, 1, this->geometry.width - 3, this->geometry.height - 2, this->normalColor);
+        this->FillRegion(1, 2, 1, this->geometry.height - 4, this->borderColor);
+        this->FillRegion(2, 1, 1, 1, this->borderColor);
+        this->FillRegion(2, this->geometry.height - 2, 1, 1, this->borderColor);
+        this->FillRegion(3, 0, this->geometry.width - 3, 1, this->borderColor);
+        this->FillRegion(3, this->geometry.height - 1, this->geometry.width - 3, 1, this->borderColor);
+        this->FillRegion(this->geometry.width - 1, 0, 1, this->geometry.height, this->borderColor);
+      }
+    } else if (this->state == 1) {
+      this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 1, this->selectedColor);
+      this->FillRegion(2, 0, this->geometry.width - 4, 1, this->borderColor);
       this->FillRegion(1, 1, 1, 1, this->borderColor);
-      this->FillRegion(1, this->geometry.height - 2, 1, 1, this->borderColor);
-      this->FillRegion(2, 0, this->geometry.width - 2, 1, this->borderColor);
-      this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 2, 1, this->borderColor);
+      this->FillRegion(this->geometry.width - 2, 1, 1, 1, this->borderColor);
+      this->FillRegion(0, 2, 1, this->geometry.height - 2, this->borderColor);
+      this->FillRegion(this->geometry.width - 1, 2, 1, this->geometry.height - 2, this->borderColor);
+    } else {
+      this->FillRegion(1, 2, this->geometry.width - 2, this->geometry.height - 3, this->normalColor);
+      this->FillRegion(2, 1, this->geometry.width - 4, 1, this->borderColor);
+      this->FillRegion(1, 2, 1, 1, this->borderColor);
+      this->FillRegion(this->geometry.width - 2, 2, 1, 1, this->borderColor);
+      this->FillRegion(0, 3, 1, this->geometry.height - 3, this->borderColor);
+      this->FillRegion(this->geometry.width - 1, 3, 1, this->geometry.height - 3, this->borderColor);
+      this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->borderColor);
     }
-  } else if (this->state == 1) {
-    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 1, this->selectedColor);
-    this->FillRegion(2, 0, this->geometry.width - 4, 1, this->borderColor);
-    this->FillRegion(1, 1, 1, 1, this->borderColor);
-    this->FillRegion(this->geometry.width - 2, 1, 1, 1, this->borderColor);
-    this->FillRegion(0, 2, 1, this->geometry.height - 2, this->borderColor);
-    this->FillRegion(this->geometry.width - 1, 2, 1, this->geometry.height - 2, this->borderColor);
+    this->CUITextButton::DrawLabel();
   } else {
-    this->FillRegion(1, 2, this->geometry.width - 2, this->geometry.height - 3, this->normalColor);
-    this->FillRegion(2, 1, this->geometry.width - 4, 1, this->borderColor);
-    this->FillRegion(1, 2, 1, 1, this->borderColor);
-    this->FillRegion(this->geometry.width - 2, 2, 1, 1, this->borderColor);
-    this->FillRegion(0, 3, 1, this->geometry.height - 3, this->borderColor);
-    this->FillRegion(this->geometry.width - 1, 3, 1, this->geometry.height - 3, this->borderColor);
-    this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->borderColor);
+    this->CUIImageTextButton::Paint();
   }
-  this->CUITextButton::DrawLabel();
 }
 
 // OFFSET: 0x009EC430
