@@ -339,16 +339,21 @@ void CSkillAction_KR_GROUND_BLOOM::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const char effectSource[] = {'\x16', '\x8B', '\x36', '\x80', '\xEF', '\x79', '\x3A', '\xF3', '\x1D', '\x96', '\x36', '\x98', '\x81'};
-  thread_local EncryptedName<sizeof(effectSource), 0x91651D81F559F971ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("ground_bloom", 0x91651D81F559F971ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x91651D81F559F971ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\x6C', '\x09', '\xB0', '\x14', '\x25', '\x03', '\x8E', '\x11', '\x67', '\x14', '\xB0', '\x0C', '\x14', '\x05', '\xBE', '\x07',
-                                       '\x7F', '\x14', '\xB2', '\x61'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x73D1674B61DF7B0BULL> bottomName(bottomSource);
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("ground_bloom_bottom", 0x73D1674B61DF7B0BULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x73D1674B61DF7B0BULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B19B0
@@ -1046,16 +1051,24 @@ void CSkillAction_KR_SHARPEN_GUST::OnSkillEffect(int level, CGameActor* source, 
   }
 
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
-  const char effectSource[] = {'\x1E', '\x37', '\x98', '\x41', '\x93', '\x1E', '\x3B', '\x60', '\x0A', '\x2A', '\x8A', '\x47', '\xE3'};
-  thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("sharpen_gust", 0x3F557BE333F95F6DULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x3F557BE333F95F6DULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetAngle(angle);
     effect->SetPitch(30.0f);
   }
 
-  const char bottomSource[] = {'\x4A', '\x89', '\xC8', '\x9D', '\x91', '\xC2', '\x3D', '\x58', '\x5E', '\x94', '\xDA', '\x9B', '\xBE', '\xC5', '\x3C', '\x73', '\x4D', '\x8E', '\xC4', '\xEF'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x0753A7E1EFA9E139ULL> bottomName(bottomSource);
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("sharpen_gust_bottom", 0x0753A7E1EFA9E139ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x0753A7E1EFA9E139ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetAngle(angle);
     effect->SetPitch(30.0f);
   }
