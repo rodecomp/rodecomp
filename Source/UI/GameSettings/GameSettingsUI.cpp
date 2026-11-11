@@ -2470,7 +2470,7 @@ GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen() : CUIGroup(0) {
 // FUNCTION: fn_15892
 GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics()
     : CUIGroup(), m_adapterCombo(nullptr), m_modeText(nullptr), m_modeCombo(nullptr),
-      m_adapter(), m_pendingAdapter(), m_mode(), m_pendingMode() {
+      m_adapter(), m_pendingAdapter() {
 }
 
 // OFFSET: 0x00A3C910
