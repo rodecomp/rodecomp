@@ -1824,10 +1824,12 @@ void CUIGroupSound::Refresh() {
   this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
   const bool bgmMuted = !g_serviceOptions.Get(7);
   this->m_bgmSlider->SetTransparent(bgmMuted);
-  this->m_bgmSlider->dragging = bgmMuted;
-  this->m_bgmSlider->Invalidate();
-  this->m_bgmMute->checked = bgmMuted;
-  this->m_bgmMute->Invalidate();
+  CUIVScrollBar* const bgmSlider = this->m_bgmSlider;
+  bgmSlider->dragging = bgmMuted;
+  bgmSlider->Invalidate();
+  CUICheckBox* const bgmMute = this->m_bgmMute;
+  bgmMute->checked = bgmMuted;
+  bgmMute->Invalidate();
 
   this->m_effectSlider->SetTotal(135);
   this->m_effectSlider->SetVisible(this->m_effectSlider->PositionFromOffset(8));
@@ -1835,10 +1837,12 @@ void CUIGroupSound::Refresh() {
   this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
   const bool effectMuted = !g_serviceOptions.Get(0xB);
   this->m_effectSlider->SetTransparent(effectMuted);
-  this->m_effectSlider->dragging = effectMuted;
-  this->m_effectSlider->Invalidate();
-  this->m_effectMute->checked = effectMuted;
-  this->m_effectMute->Invalidate();
+  CUIVScrollBar* const effectSlider = this->m_effectSlider;
+  effectSlider->dragging = effectMuted;
+  effectSlider->Invalidate();
+  CUICheckBox* const effectMute = this->m_effectMute;
+  effectMute->checked = effectMuted;
+  effectMute->Invalidate();
 }
 
 // OFFSET: 0x00A43A40
@@ -2241,11 +2245,8 @@ void GameSettingsUI::CUIGroupGraphics::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_GRAPHIC_SETTING_MOUSE_SET));
   this->m_modeText->SetText(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FEE));
   GetRenderSystemHolder();
-  this->m_pendingAdapter = SelectedRenderAdapter();
-  this->m_adapter = this->m_pendingAdapter;
-  DisplayMode mode{static_cast<unsigned>(g_configuredScreenWidth), static_cast<unsigned>(g_configuredScreenHeight), static_cast<unsigned>(g_configuredBitsPerPixel)};
-  this->m_pendingMode = std::move(mode);
-  this->m_mode = this->m_pendingMode;
+  this->m_adapter = this->m_pendingAdapter = SelectedRenderAdapter();
+  this->m_mode = this->m_pendingMode = DisplayMode{static_cast<unsigned>(g_configuredScreenWidth), static_cast<unsigned>(g_configuredScreenHeight), static_cast<unsigned>(g_configuredBitsPerPixel)};
 }
 
 // OFFSET: 0x00A41510
@@ -4254,20 +4255,20 @@ void GameSettingsUI::CUIListPage::BindOption(CUIOptionItem* item, const TALKTYPE
     return;
   }
 
-  GameSettingsOption* option = *found;
-  item->m_check->Show(option->type == 0);
+  item->m_check->Show((*found)->type == 0);
   CUICheckBox* check = item->m_check;
   if (check->geometry.visible) {
     check->checked = IsServiceOption(item->m_optionId) ^ g_serviceOptions.Get(item->m_optionId);
     check->Invalidate();
   }
-  item->m_runButton->Show(option->type == 1);
-  item->m_label->SetText(option->title);
-  item->m_label->tooltipText = option->tooltip;
-  item->m_label->disabled = option->tipBoxId <= 0;
-  item->m_label->Invalidate();
-  item->m_label->SetId(option->tipBoxId);
-  item->m_description->SetText(option->description);
+  item->m_runButton->Show((*found)->type == 1);
+  item->m_label->SetText((*found)->title);
+  item->m_label->tooltipText = (*found)->tooltip;
+  auto* const label = item->m_label;
+  label->disabled = (*found)->tipBoxId <= 0;
+  label->Invalidate();
+  item->m_label->SetId((*found)->tipBoxId);
+  item->m_description->SetText((*found)->description);
 }
 
 // OFFSET: 0x00A42290
