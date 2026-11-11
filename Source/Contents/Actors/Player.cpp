@@ -2315,42 +2315,40 @@ void CPc::Render(int argument) {
     return;
   }
 
-  if (!this->render.visible) {
-    this->UpdateTlvertex(matrix);
-    return;
-  }
-
-  if (this->render.state != 6 && this->render.state != 3) {
-    this->DrawShadow(argument, this->render.scale);
-  }
-  if (this->render.state == 6) {
-    switch (this->GetEffectiveJob(-1)) {
-    case JT_STAR2:
-    case JT_STAR2_B:
-    case JT_STAR2_EMPEROR:
-    case JT_STAR2_EMPEROR_B:
-    case JT_SKY_EMPEROR2:
+  if (this->render.visible) {
+    if (this->render.state != 6 && this->render.state != 3) {
       this->DrawShadow(argument, this->render.scale);
-      break;
     }
-  }
+    if (this->render.state == 6) {
+      switch (this->GetEffectiveJob(-1)) {
+      case JT_STAR2:
+      case JT_STAR2_B:
+      case JT_STAR2_EMPEROR:
+      case JT_STAR2_EMPEROR_B:
+      case JT_SKY_EMPEROR2:
+        this->DrawShadow(argument, this->render.scale);
+        break;
+      }
+    }
 
-  if (!this->render.enabled) {
+    if (this->render.enabled) {
+      if (IsObfuscatedMessage(this->render.accountId)) {
+        this->RenderOverlaySprite(matrix, 0);
+        return;
+      }
+
+      if (this->renderWithoutLayer != 0) {
+        this->DrawSprite(argument, false, 0.0f);
+        return;
+      }
+
+      this->DrawLayers(matrix, 0, 0);
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+  } else {
     this->UpdateTlvertex(matrix);
-    return;
   }
-
-  if (IsObfuscatedMessage(this->render.accountId)) {
-    this->RenderOverlaySprite(matrix, 0);
-    return;
-  }
-
-  if (this->renderWithoutLayer != 0) {
-    this->DrawSprite(argument, false, 0.0f);
-    return;
-  }
-
-  this->DrawLayers(matrix, 0, 0);
 }
 
 // OFFSET: 0x00DAD8C0
@@ -5467,15 +5465,15 @@ bool CGrannyPc::ProcessState() {
     }
     return true;
   }
-  case ST_SKILL:
+  case ST_ATTACK:
     this->ProcessMotion();
+    this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
     return true;
-  case ST_ATTACK:
+  case ST_SKILL:
     this->ProcessMotion();
-    this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
@@ -5518,6 +5516,13 @@ bool CPc::ProcessState() {
     }
     return true;
   }
+  case ST_ATTACK:
+    this->ProcessMotion();
+    this->GetElapsedFrames();
+    if (this->render.isMotionFinished) {
+      this->SetState(0, 1);
+    }
+    return true;
   case ST_SKILL:
   case ST_AB_SPECIAL:
   case 62:
@@ -5539,13 +5544,6 @@ bool CPc::ProcessState() {
   case 79:
   case 80:
     this->ProcessMotion();
-    if (this->render.isMotionFinished) {
-      this->SetState(0, 1);
-    }
-    return true;
-  case ST_ATTACK:
-    this->ProcessMotion();
-    this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(0, 1);
     }
