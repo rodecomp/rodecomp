@@ -1012,12 +1012,13 @@ __declspec(noinline) void CGameMode::ReceiveHomunculusProperty(const unsigned ch
 // FUNCTION: fn_21715
 __declspec(noinline) void CGameMode::ReceiveHuntingList(const unsigned char* packet) {
   char text[256];
+  const unsigned char* data = packet + 4;
   int size = *reinterpret_cast<const short*>(packet + 2) - 4;
   if (size > 5000) {
     size = 5000;
   }
   char* list = new char[size + 1];
-  std::memcpy(list, packet + 4, size);
+  std::memcpy(list, data, size);
   list[size] = '\0';
   std::sprintf(text, "=========== HUNTING LIST =============");
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x9BCD9B, 0, 0, 0);
