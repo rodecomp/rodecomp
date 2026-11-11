@@ -1659,12 +1659,14 @@ int CSkillAction_AT_SOLID_STOMP::GetSkillAttackMotion() {
 // FUNCTION: fn_03270
 void CSkillAction_AT_SOLID_STOMP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 12> bytes = CRYPT_NAME("solid_stomp", 0xFF7D83CB791339D9ULL);
       thread_local EncryptedName<sizeof(bytes), 0xFF7D83CB791339D9ULL> name(bytes);
       return name.Text();
     }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 19> bytes = CRYPT_NAME("solid_stomp_bottom", 0xED5143E7C1B39315ULL);
       thread_local EncryptedName<sizeof(bytes), 0xED5143E7C1B39315ULL> name(bytes);
       return name.Text();
