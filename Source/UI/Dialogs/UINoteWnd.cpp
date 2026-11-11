@@ -8,6 +8,9 @@
 #include "UI/Window/WindowBorder.h"
 
 #include "Resource/MSGSTRINGID.h"
+
+extern template std::string::basic_string(const std::string&);
+
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
 void UINoteWnd::OnCreate(int width, int height) {

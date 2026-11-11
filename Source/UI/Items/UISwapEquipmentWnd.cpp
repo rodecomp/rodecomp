@@ -39,6 +39,8 @@
 #include <new>
 #include <string>
 
+extern template std::string& std::string::operator=(std::string&&) noexcept;
+
 // GLOBAL: gl_24874
 unsigned long g_swapEquipmentTick;
 
@@ -211,15 +213,29 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_MERCHANTSHOP)), 0xFF, 0, 0, 0);
-      } else if (g_windowMgr.merchantItemMyShopWnd || g_windowMgr.merchantItemPurchaseWnd || g_windowMgr.merchantShopMakeWnd) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->actorWindows[3]) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_USE_NPC)), 0xFF, 0, 0, 0);
-      } else if (g_windowMgr.sayDialogWnd || g_windowMgr.choose3Wnd) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_ARROW_CNT)), 0xFF, 0, 0, 0);
-      } else {
-        g_modeMgr.GetGameMode()->SendMsg(MM_SWAP_EQUIPMENT, 0, 0, 0, 0);
+        return 1;
       }
+      if (g_windowMgr.merchantItemMyShopWnd) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
+        return 1;
+      }
+      if (g_windowMgr.merchantItemPurchaseWnd) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
+        return 1;
+      }
+      if (g_windowMgr.merchantShopMakeWnd) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
+        return 1;
+      }
+      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->actorWindows[3]) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_USE_NPC)), 0xFF, 0, 0, 0);
+        return 1;
+      }
+      if (g_windowMgr.sayDialogWnd || g_windowMgr.choose3Wnd) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_ARROW_CNT)), 0xFF, 0, 0, 0);
+        return 1;
+      }
+      g_modeMgr.GetGameMode()->SendMsg(MM_SWAP_EQUIPMENT, 0, 0, 0, 0);
       return 1;
     }
     break;
@@ -440,16 +456,16 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
       this->ToScreen(tooltipX, tooltipY);
 
       std::string text;
-      if (item.quantity > 1) {
+      if (item.quantity <= 1) {
         if (item.optionCount != 0) {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0)));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
+          text = item.DisplayName(0);
         }
       } else if (item.optionCount != 0) {
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0)));
       } else {
-        text = static_cast<const std::string&>(item.DisplayName(0));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
       }
 
       g_modeMgr.GetGameMode()->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
