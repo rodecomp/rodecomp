@@ -51,10 +51,17 @@ HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float n
   const float scaleY = Cosine(half) / Sine(half);
   const float depth = farPlane / difference;
 
-  matrix._12 = matrix._13 = matrix._14 = 0;
-  matrix._21 = matrix._23 = matrix._24 = 0;
-  matrix._31 = matrix._32 = 0;
-  matrix._41 = matrix._42 = matrix._44 = 0;
+  matrix._12 = 0;
+  matrix._13 = 0;
+  matrix._14 = 0;
+  matrix._21 = 0;
+  matrix._23 = 0;
+  matrix._24 = 0;
+  matrix._31 = 0;
+  matrix._32 = 0;
+  matrix._41 = 0;
+  matrix._42 = 0;
+  matrix._44 = 0;
   matrix._34 = 1;
   matrix._33 = depth;
   const float translation = -depth * nearPlane;
