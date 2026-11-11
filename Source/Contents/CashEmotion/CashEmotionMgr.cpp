@@ -663,7 +663,7 @@ void CCashEmotionMgr::ProcessChatCommand(const char* command) {
   {
     std::string key(command + 1);
     auto it = this->m_commands.find(key);
-    actionId = this->m_commands.end() == it ? 0 : it->second;
+    actionId = this->m_commands.end() != it ? it->second : 0;
   }
 
   if (actionId == 0) {
@@ -2737,7 +2737,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[0]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first);
-      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[0]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[0]->Set(-1, -1, false, false, false);
@@ -2747,7 +2747,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[1]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 1);
-      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[1]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[1]->Set(-1, -1, false, false, false);
@@ -2757,7 +2757,7 @@ void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[2]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 2);
-      const bool owned = entry.first == g_cashEmotionMgr->BasePackId() ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
       this->m_pieces[2]->Set(entry.first, entry.second, false, false, !owned);
     } else {
       this->m_pieces[2]->Set(-1, -1, false, false, false);
