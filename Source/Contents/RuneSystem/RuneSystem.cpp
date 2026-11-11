@@ -201,7 +201,7 @@ CTagData* CRuneSystemMgr::GetTag(int tagId) {
   }
 
   if (tagId > 0) {
-    for (CTagData* tag : this->m_tags) {
+    for (CTagData*& tag : this->m_tags) {
       if (tagId == tag->m_id) {
         return tag;
       }
@@ -336,15 +336,15 @@ int CRuneSystemMgr::GetItemListCount(int listId) {
 // FUNCTION: fn_08134
 RuneData* CRuneSystemMgr::GetCurrentRune(int type, int index) {
   CTagData* tag = this->GetTag(-1);
-  if (!tag || index < 0) {
+  if (tag == nullptr) {
     return nullptr;
   }
 
-  if (static_cast<unsigned int>(index) < tag->m_runes[type].size()) {
-    return tag->m_runes[type][index];
+  if (index < 0 || tag->m_runes[type].size() <= static_cast<unsigned int>(index)) {
+    return nullptr;
   }
 
-  return nullptr;
+  return tag->m_runes[type][index];
 }
 
 // OFFSET: 0x00766F60
@@ -390,14 +390,15 @@ RuneData* CRuneSystemMgr::FindRune(int tagId, int type, std::int64_t id, unsigne
 // FUNCTION: fn_08138
 RuneData* CTagData::FindRune(int type, std::int64_t id, unsigned int* index) {
   if (type == 0 || type == 1) {
-    const unsigned int count = static_cast<unsigned int>(this->m_runes[type].size());
+    std::vector<RuneData*>& runes = this->m_runes[type];
+    const unsigned int count = static_cast<unsigned int>(runes.size());
     for (unsigned int i = 0; i < count; ++i) {
-      if (this->m_runes[type][i] && id == this->m_runes[type][i]->m_id) {
+      if (runes[i] && id == runes[i]->m_id) {
         if (index) {
           *index = i;
         }
 
-        return this->m_runes[type][i];
+        return runes[i];
       }
     }
   }
@@ -775,16 +776,13 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
 // OFFSET: 0x007688A0
 // FUNCTION: fn_08156
 void CRuneSystemMgr::SetSelectTag(int tagId) {
-  if (this->m_tags.empty()) {
-    return;
+  if (!this->m_tags.empty()) {
+    if (this->GetTag(tagId)) {
+      this->m_selectTag = tagId;
+    } else {
+      this->m_selectTag = this->m_tags.front()->m_id;
+    }
   }
-
-  if (this->GetTag(tagId)) {
-    this->m_selectTag = tagId;
-    return;
-  }
-
-  this->m_selectTag = this->m_tags.front()->m_id;
 }
 
 // OFFSET: 0x00768920
@@ -1147,7 +1145,7 @@ int AddRuneGradeList(lua_State* state) {
 // FUNCTION: fn_08180
 int AddRuneSlotCollectionList(lua_State* state) {
   const int tagId = static_cast<int>(lua_tonumber(state, -3));
-  const double runeSetValue = lua_tonumber(state, -2);
+  const int runeSetId = static_cast<int>(lua_tonumber(state, -2));
   const double runeValue = lua_tonumber(state, -1);
 
   if (!lua_isnumber(state, -3)) {
@@ -1158,19 +1156,19 @@ int AddRuneSlotCollectionList(lua_State* state) {
 
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("SlotCollectionList ID:%d", static_cast<int>(runeSetValue)).c_str());
+    lua_pushstring(state, FormatOwnedString("SlotCollectionList ID:%d", runeSetId).c_str());
     return 2;
   }
 
   if (!lua_isnumber(state, -1)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("SlotCollectionList ID:%d RuneID%d", static_cast<int>(runeSetValue), static_cast<int>(runeValue)).c_str());
+    lua_pushstring(state, FormatOwnedString("SlotCollectionList ID:%d RuneID%d", runeSetId, static_cast<int>(runeValue)).c_str());
     return 2;
   }
 
   CTagData* tag = g_runeSystemMgr->GetTag(tagId);
   if (tag) {
-    RuneData* runeSet = tag->FindRune(0, static_cast<int>(runeSetValue), nullptr);
+    RuneData* runeSet = tag->FindRune(0, runeSetId, nullptr);
     if (runeSet) {
       RuneData* rune = g_runeSystemMgr->FindRune(tagId, 1, static_cast<int>(runeValue), nullptr);
       static_cast<RuneSetData*>(runeSet)->m_slots.push_back(rune);
