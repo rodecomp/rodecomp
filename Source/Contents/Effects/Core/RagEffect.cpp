@@ -1400,16 +1400,15 @@ void CRagEffect::EnergyDrain2() {
 // OFFSET: 0x00C1DC70
 // FUNCTION: fn_20075
 void CRagEffect::InitEZ2STRFrame() {
-  const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(this->state.resource);
   this->state.currentLayer = 0;
   this->state.stateCnt = 0;
-  this->state.endLayer = clips.clipCount;
+  this->state.endLayer = static_cast<EZeffectData*>(this->state.resourceData)->clipCount;
 
-  if (clips.clips[0].frameCount == 0) {
+  if (static_cast<EZeffectData*>(this->state.resourceData)->clips[0].frameCount == 0) {
     --this->state.endLayer;
   }
 
-  for (int layer = 0; layer < clips.clipCount; ++layer) {
+  for (int layer = 0; layer < static_cast<EZeffectData*>(this->state.resourceData)->clipCount; ++layer) {
     this->state.currentKey[layer] = 0;
   }
 }
@@ -18695,11 +18694,7 @@ void CRagEffect::TorchDust(char kind) {
 // OFFSET: 0x00C41420
 // FUNCTION: fn_20135
 void CRagEffect::WhiteYellowRings() {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
-  std::atomic_signal_fence(std::memory_order_seq_cst);
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 22);
