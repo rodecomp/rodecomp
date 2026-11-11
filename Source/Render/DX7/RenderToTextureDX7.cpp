@@ -48,15 +48,15 @@ bool CRendererDX7::RenderToTexture(
   SecureZeroMemory(&description, sizeof(description));
   description.dwSize = sizeof(description);
   description.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-  description.dwWidth = width;
-  description.dwHeight = height;
   description.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_3DDEVICE | DDSCAPS_VIDEOMEMORY | DDSCAPS_LOCALVIDMEM;
   description.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_ALPHAPIXELS;
   description.ddpfPixelFormat.dwRGBBitCount = 32;
+  description.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
   description.ddpfPixelFormat.dwRBitMask = 0xFF0000;
   description.ddpfPixelFormat.dwGBitMask = 0xFF00;
   description.ddpfPixelFormat.dwBBitMask = 0xFF;
-  description.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
+  description.dwWidth = width;
+  description.dwHeight = height;
   lcSurfaceaAapter target;
 
   if (FAILED((g_deviceOwnerDX7 ? g_deviceOwnerDX7->draw : nullptr)->CreateSurface(&description, &target.surface, nullptr))) {
@@ -84,11 +84,9 @@ bool CRendererDX7::RenderToTexture(
     (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 0, 0);
 
     if ((g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->BeginScene() == S_OK) {
-      for (auto* primitive : primitives) {
-        auto* selected = static_cast<CTextureDX7*>(primitive->texture);
-
-        this->SetTexture(0, selected);
-        primitive->Draw(reinterpret_cast<int>(g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr));
+      for (auto it = primitives.begin(); it != primitives.end(); ++it) {
+        this->SetTexture(0, static_cast<CTextureDX7*>((*it)->texture));
+        (*it)->Draw(reinterpret_cast<int>(g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr));
       }
 
       (g_deviceOwnerDX7 ? g_deviceOwnerDX7->device : nullptr)->EndScene();
