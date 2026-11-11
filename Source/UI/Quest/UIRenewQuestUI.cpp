@@ -1037,27 +1037,26 @@ void CUIRenewQuestUI::OnCallback56() {
 void CUIRenewQuestUI::SelectQuest(unsigned int questId) {
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
     CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list;
-    for (auto node = listBox->data.begin(); node != listBox->data.end(); ++node) {
-      if (*node == questId) {
-        this->tab->SelectPage(list);
-        CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* pageListBox = list->list;
+    auto node = std::find(listBox->data.begin(), listBox->data.end(), questId);
+    if (node != listBox->data.end()) {
+      this->tab->SelectPage(list);
+      CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* pageListBox = list->list;
 
-        int index = 0;
-        for (auto it = listBox->data.begin(); it != node; ++it) {
-          ++index;
-        }
-
-        pageListBox->scrollBar->SetPosition(pageListBox->rowHeight * index);
-
-        for (RenewQuestUI::CUIQuestItem* item : pageListBox->items) {
-          if (item->index == index) {
-            pageListBox->SelectItem(item);
-            return;
-          }
-        }
-
-        return;
+      int index = 0;
+      for (auto it = listBox->data.begin(); it != node; ++it) {
+        ++index;
       }
+
+      pageListBox->scrollBar->SetPosition(pageListBox->rowHeight * index);
+
+      for (RenewQuestUI::CUIQuestItem* item : pageListBox->items) {
+        if (index == item->index) {
+          pageListBox->SelectItem(item);
+          return;
+        }
+      }
+
+      return;
     }
   }
 
