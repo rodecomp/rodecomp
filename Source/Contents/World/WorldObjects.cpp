@@ -148,7 +148,7 @@ void CWorld::OnProcess() {
         }
       }
 
-      pending.fetch_sub(1, std::memory_order_seq_cst);
+      _InterlockedDecrement(reinterpret_cast<volatile long*>(&this->pending));
       ++this->published;
     }
   }
