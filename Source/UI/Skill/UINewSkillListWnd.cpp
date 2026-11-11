@@ -191,6 +191,8 @@ void UINewSkillListWnd::DrawCharacter() {
     int offsetX = 0;
     int offsetY = 0;
     if (g_session.IsDoramJob(job) == true) {
+      int x = 0;
+      int y = 0;
       int view = 0;
       if (layer == 4) {
         view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
@@ -199,8 +201,6 @@ void UINewSkillListWnd::DrawCharacter() {
       } else if (layer == 2) {
         view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
       }
-      int x = 0;
-      int y = 0;
       g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.GetCurrentSex(), &x, &y);
       offsetX = x;
       offsetY = y;
@@ -217,17 +217,20 @@ void UINewSkillListWnd::DrawCharacter() {
         g_skillListHeadOffsetY = offsetY;
       }
     }
-    if (layer == 0) {
+    switch (layer) {
+    case 0:
       if (bodyPalette != 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(bodyPal.c_str()))->palette;
       }
-    } else if (layer == 1) {
+      break;
+    case 1:
       if (headPalette != 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(headPal.c_str()))->palette;
       }
+      break;
     }
 
-    const SpriteFrameCell& cell = actionFrame.Cell(layer > 1 ? 0 : layer);
+    const SpriteFrameCell& cell = actionFrame.Cell(layer <= 1 ? layer : 0);
     if (cell.image == -1) {
       continue;
     }
@@ -244,9 +247,9 @@ void UINewSkillListWnd::DrawCharacter() {
     }
 
     const int y = offsetY - 25 + cell.y + this->geometry.height;
-    const int clipY = y < 0 ? y : 0;
+    const int clipY = y >= 0 ? 0 : y;
     this->geometry.surface->DrawSurface(
-      cell.x + offsetX + 48, y < 0 ? 0 : y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
+      cell.x + offsetX + 48, y >= 0 ? y : 0, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
       image->height + clipY, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
     );
   }
@@ -1635,10 +1638,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       const int planned = SkillValueOf(this->m_plannedSkillLevels, static_cast<int>(skill.id));
       const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
       if (current) {
-        int added = planned - current->learnedLevel;
-        if (added < 0) {
-          added = 0;
-        }
+        const int added = std::max(0, planned - current->learnedLevel);
         if (added > 0) {
           this->DrawTextAt(x + 30, y + 44, FormatString("+%d", added), 0, 0, 11, 0xFF, 0, 0);
         }
@@ -1649,21 +1649,16 @@ void UINewSkillListWnd::DrawSkillTree() {
     int red = shade;
     int green = shade;
     int blue = shade;
-    if (level > maxLevel) {
+    if (skill.level > maxLevel) {
       red = 127;
       green = 60;
       blue = 255;
     }
 
     const int textY = y + 70;
-    const std::uint32_t gray = (shade << 8 | shade) << 8 | shade;
     const bool usesLevel = CSkillInfo::UsesLevel(script, static_cast<int>(skill.id));
     if (level != 0) {
-      if (!usesLevel) {
-        std::sprintf(text, "%d", skill.level);
-        const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
-        DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
-      } else {
+      if (usesLevel) {
         int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
         if (useLevel <= 0 || useLevel > skill.level) {
           useLevel = skill.level;
@@ -1671,9 +1666,9 @@ void UINewSkillListWnd::DrawSkillTree() {
         std::sprintf(text, "%d / %d", useLevel, skill.level);
         int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
         std::sprintf(text, "%d", useLevel);
-        DrawOutlinedText(*this, textX, textY, text, 0, useLevel == skill.level ? gray : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+        DrawOutlinedText(*this, textX, textY, text, 0, useLevel == skill.level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(text, 0, 0, 11, 1, 0);
-        DrawOutlinedText(*this, textX, textY, " / ", 0, gray, 0xFFFFFF, 0, 11, 1, 0);
+        DrawOutlinedText(*this, textX, textY, " / ", 0, (shade << 8 | shade) << 8 | shade, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = skill.id;
@@ -1688,6 +1683,10 @@ void UINewSkillListWnd::DrawSkillTree() {
         }
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", target);
         DrawOutlinedText(*this, textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+      } else {
+        std::sprintf(text, "%d", skill.level);
+        const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
+        DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       }
     }
 
@@ -1696,7 +1695,7 @@ void UINewSkillListWnd::DrawSkillTree() {
     if (nameWidth < 48) {
       nameOffset = (48 - nameWidth) / 2;
     }
-    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, gray, 0, 0
+    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, (shade << 8 | shade) << 8 | shade, 0, 0
     );
 
     if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {
