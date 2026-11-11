@@ -6,8 +6,6 @@
 
 #include <algorithm>
 
-#include "Utility/StdWindowListEmplace.h"
-
 // OFFSET: 0x00AA2C90
 // FUNCTION: fn_17219
 __declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {

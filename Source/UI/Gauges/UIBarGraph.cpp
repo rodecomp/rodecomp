@@ -9,8 +9,6 @@
 #include <string>
 #include <windows.h>
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x0086C190
 // FUNCTION: fn_11022
 UIBarGraph2::UIBarGraph2() : UIBarGraph() {

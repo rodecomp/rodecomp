@@ -11,8 +11,6 @@
 #include <cstdint>
 #include <new>
 
-extern template std::string& std::string::assign(const char*, std::string::size_type);
-
 // STATIC: 0x013898D4
 // GLOBAL: gl_24355
 CEmblemDataMgr* g_emblemDataMgr;

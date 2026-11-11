@@ -18,8 +18,6 @@
 #include <iterator>
 #include <new>
 
-extern template char* std::_UIntegral_to_buff<char, unsigned int>(char*, unsigned int);
-
 // GLOBAL: gl_24882
 template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;

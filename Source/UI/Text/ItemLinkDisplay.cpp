@@ -7,8 +7,6 @@
 
 #include <mbstring.h>
 
-#include "Utility/StdTraitsFind.h"
-
 // OFFSET: 0x008816E0
 // FUNCTION: fn_11299
 bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {

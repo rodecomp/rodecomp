@@ -33,8 +33,6 @@
 #include <functional>
 #include <windows.h>
 
-#include "Utility/StdStringConcat.h"
-
 namespace {
 
 std::int64_t BaseExpCurrent() {

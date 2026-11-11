@@ -24,8 +24,6 @@
 #include <cstring>
 #include <format>
 
-#include "Utility/StdStringConcat.h"
-
 namespace {
 #pragma pack(push, 1)
   struct ExchangeRecordHeader {

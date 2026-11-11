@@ -39,8 +39,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
 
-#include "Utility/StdStringMoveAssign.h"
-
 namespace {
   // GLOBAL: gl_25136
   int g_locationFrame = 1;
@@ -60,7 +58,6 @@ void CNavigationManager::DrawRoute(const float* matrix) {
   if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
     mode->PlayerCell(&playerX, &playerY);
   }
-
 
   int visible = 0;
   const int maxY = playerY + 10;

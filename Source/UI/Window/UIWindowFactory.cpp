@@ -14,8 +14,6 @@
 
 #include <string>
 
-#include "Utility/StdWindowListEmplace.h"
-
 // GLOBAL: gl_25184
 bool g_searchStoreInfoCreated;
 

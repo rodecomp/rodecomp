@@ -2,8 +2,6 @@
 
 #include "Network/NIPAddr.h"
 
-#include "Utility/StdStringCopy.h"
-
 // INLINED
 inline void NIPAddr::SetAddress(std::string text) {
   this->address = inet_addr(text.c_str());

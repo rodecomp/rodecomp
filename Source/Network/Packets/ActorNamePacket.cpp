@@ -10,8 +10,6 @@
 #include <cstdio>
 #include <string>
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x00D1DFB0
 // FUNCTION: fn_21632
 void CGameMode::ReceiveActorNameAll(const ActorNameAllPacket* packet) {

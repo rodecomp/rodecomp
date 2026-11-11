@@ -17,14 +17,10 @@
 #include <new>
 #include <string>
 
-#include "Utility/StdStringCopy.h"
-extern template std::string& std::string::replace(std::string::size_type, std::string::size_type, const char*, std::string::size_type);
-
 // OFFSET: 0x00881BB0
 // FUNCTION: fn_11300
 std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   std::string result = "";
-
 
   for (std::vector<UIItemTagButton*>& row : this->itemTags) {
     const int count = static_cast<int>(row.size());

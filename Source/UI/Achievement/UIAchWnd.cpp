@@ -26,8 +26,6 @@
 #include <cstring>
 #include <new>
 
-#include "Utility/StdStringInsert.h"
-
 // GLOBAL: gl_25003
 std::vector<AchTracingEntry> g_achievementTracking;
 
@@ -1521,7 +1519,6 @@ UIAchListWnd::~UIAchListWnd() {
     delete[] this->buttons;
   }
 }
-
 
 // OFFSET: 0x007B1F40
 // FUNCTION: fn_09182

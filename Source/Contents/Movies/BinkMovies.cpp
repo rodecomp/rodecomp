@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <cmath>
 #include <new>
-#include "Utility/StdStringCompare.h"
 
 // INLINED
 NamedBinkMovie::NamedBinkMovie() : decoder(nullptr), radius(150.0f) {

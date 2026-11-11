@@ -3,8 +3,6 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
-extern template std::string& std::string::assign(const char*, std::string::size_type);
-
 // OFFSET: 0x005CB3B0
 // FUNCTION: fn_03657
 void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, std::uint32_t targetCharacterId, std::string targetName) {

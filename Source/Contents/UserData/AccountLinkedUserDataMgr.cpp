@@ -18,9 +18,6 @@
 #include <cstddef>
 #include <new>
 
-#include "Utility/StdTraitsEqual.h"
-#include "Utility/StdStringVectorDestroy.h"
-
 namespace {
   // INLINED
   template <std::uint64_t Key, std::size_t Length>

@@ -11,7 +11,6 @@ extern "C" {
 #include <lua.h>
 #include <lualib.h>
 }
-#include "Utility/StdStringCompare.h"
 
 // GLOBAL: gl_24636
 CPrivateAirplaneMgr* g_privateAirplaneItems;

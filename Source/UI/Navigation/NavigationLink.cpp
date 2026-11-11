@@ -57,9 +57,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include <string>
 
-#include "Utility/StdStringVectorDestroy.h"
-#include "Utility/StdStringConcat.h"
-
 namespace LineCutter {
   class UIText : public UIWindow {
   public:

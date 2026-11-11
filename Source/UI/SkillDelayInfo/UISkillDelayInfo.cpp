@@ -23,8 +23,6 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 
-extern template std::string std::operator+(std::string&&, const char* const);
-
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
 template <>

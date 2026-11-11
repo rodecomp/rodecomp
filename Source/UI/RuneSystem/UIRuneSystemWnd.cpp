@@ -13,8 +13,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-#include "Utility/StdTraitsEqual.h"
-
 // GLOBAL: gl_24886
 extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
 // GLOBAL: gl_24887
@@ -1684,7 +1682,6 @@ void UIRune_Decom::SetItem(int itemId) {
     this->SelectDecomType(this->m_decomType);
   }
 }
-
 
 // OFFSET: 0x008184A0
 // FUNCTION: fn_10175

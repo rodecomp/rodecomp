@@ -6,8 +6,6 @@
 
 #include <string>
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x008E1210
 // FUNCTION: fn_12174
 void UIGraffiStrboxWnd::OnCreate(int, int) {

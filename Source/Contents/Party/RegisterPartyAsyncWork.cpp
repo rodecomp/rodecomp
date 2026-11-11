@@ -13,8 +13,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-#include "Utility/StdStringMoveAssign.h"
-
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CRegisterPartyAsyncWork.cpp";
 

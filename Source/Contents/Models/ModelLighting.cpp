@@ -10,7 +10,6 @@
 #include "Utility/Math/ScalarConversion.h"
 #include <cmath>
 #include <cstring>
-#include "Utility/StdStringCompare.h"
 
 union ModelColor {
   std::uint32_t value;

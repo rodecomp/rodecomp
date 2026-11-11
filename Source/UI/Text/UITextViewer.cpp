@@ -21,8 +21,6 @@
 #include <algorithm>
 #include <new>
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {

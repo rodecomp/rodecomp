@@ -39,8 +39,6 @@ extern "C" {
 #include <vector>
 #include <windows.h>
 
-#include "Utility/StdStringInsert.h"
-
 struct MiniMapPosition {
   MiniMapPosition() {
   }
@@ -89,7 +87,6 @@ static void AddCashShopBanner2(CashShopBannerWindow* window, std::string image, 
 static void AddAttendanceBanner(UICheckAttendanceWnd* window, std::string image, std::string url, int action, int argument) {
   window->m_banner->AddBanner(image, url, action, argument);
 }
-
 
 // OFFSET: 0x00AFF7E0
 // FUNCTION: fn_18354

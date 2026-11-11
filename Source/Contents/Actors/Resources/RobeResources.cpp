@@ -6,8 +6,6 @@
 
 #include <string>
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x00BAC050
 // FUNCTION: fn_19755
 std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex, int robe, bool riding, int, int costumeJob) {

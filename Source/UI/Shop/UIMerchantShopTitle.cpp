@@ -14,8 +14,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Text/UIStaticText.h"
 
-#include "Utility/StdStringMoveAssign.h"
-
 // OFFSET: 0x0085ACE0
 // FUNCTION: fn_10788
 void UIMerchantShopTitle::OnCreate(int, int) {

@@ -11,8 +11,6 @@
 #include <string>
 #include <windows.h>
 
-#include "Utility/StdStringInsert.h"
-
 // GLOBAL: gl_24512
 unsigned char g_hexDigits[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -4,8 +4,6 @@
 
 #include <cstdlib>
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x006F9EC0
 // FUNCTION: fn_06888
 CAnimatedEmitterEffect::CAnimatedEmitterEffect() {

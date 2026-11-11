@@ -19,8 +19,6 @@ extern "C" {
 #include <utility>
 #include <windows.h>
 
-extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-
 // GLOBAL: gl_24856
 CAchievementMgr* g_achievementMgr;
 

@@ -1,8 +1,6 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
-#include "Utility/StdWindowListEmplace.h"
-
 // OFFSET: 0x00A8B060
 // FUNCTION: fn_17120
 void UIWindowMgr::RegisterWindow(UIWindow* window) {

@@ -39,8 +39,6 @@
 #include <new>
 #include <string>
 
-#include "Utility/StdStringMoveAssign.h"
-
 // GLOBAL: gl_24874
 unsigned long g_swapEquipmentTick;
 

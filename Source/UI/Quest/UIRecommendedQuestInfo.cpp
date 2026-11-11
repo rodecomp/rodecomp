@@ -14,8 +14,6 @@
 #include <cstring>
 #include <format>
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x00A568E0
 // FUNCTION: fn_16321
 void CUIRecommendedQuestInfo::Initialize() {

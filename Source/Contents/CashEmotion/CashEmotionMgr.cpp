@@ -69,8 +69,6 @@ extern "C" {
 #include <new>
 #include <windows.h>
 
-#include "Utility/StdIntVectorCopy.h"
-
 // STATIC: 0x013896C4
 // GLOBAL: gl_24350
 CCashEmotionMgr* g_cashEmotionMgr = nullptr;

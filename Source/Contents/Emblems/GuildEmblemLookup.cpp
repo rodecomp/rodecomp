@@ -3,8 +3,6 @@
 #include "Contents/Guild/GuildMgr.h"
 #include "Resource/ResourceMgr.h"
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x0065E450
 // FUNCTION: fn_05174
 std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {

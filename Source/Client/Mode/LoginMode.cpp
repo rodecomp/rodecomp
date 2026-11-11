@@ -103,8 +103,6 @@
 #include <random>
 #include <timeapi.h>
 
-extern template void std::string::reserve(std::string::size_type);
-
 void TraceSelection(int selection);
 void TraceSelectionRange(int first, int last);
 
@@ -1613,8 +1611,6 @@ struct PasswordModePacket {
 };
 #pragma pack(pop)
 
-
-
 // OFFSET: 0x00D90C90
 // FUNCTION: fn_22286
 void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
@@ -1777,7 +1773,6 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   }
 }
 
-
 // OFFSET: 0x00D97410
 // FUNCTION: fn_22300
 void CLoginMode::Initialize(const char* name) {
@@ -1925,7 +1920,6 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
 
 // GLOBAL: gl_25155
 char g_loginFailCount;
-
 
 // OFFSET: 0x00D91790
 // FUNCTION: fn_22289

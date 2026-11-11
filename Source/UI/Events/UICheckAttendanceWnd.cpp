@@ -40,8 +40,6 @@
 #include <list>
 #include <string>
 
-#include "Utility/StdStringConcat.h"
-
 struct CheckAttendanceRequestPacket {
   /* 0000 */ std::int16_t id;
 };
@@ -57,7 +55,6 @@ UICheckAttendanceWnd::UICheckAttendanceWnd()
 // INLINED
 UICheckAttendanceWnd::~UICheckAttendanceWnd() {
 }
-
 
 // OFFSET: 0x007DCBD0
 // FUNCTION: fn_09636
@@ -109,7 +106,6 @@ UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner()
 // INLINED
 UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
 }
-
 
 // OFFSET: 0x007DCF50
 // FUNCTION: fn_09639

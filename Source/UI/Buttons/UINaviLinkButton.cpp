@@ -2,9 +2,6 @@
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 
-#include "Utility/StdStringCopy.h"
-#include "Utility/StdTraitsFind.h"
-
 // OFFSET: 0x0086DF60
 // FUNCTION: fn_11062
 UINaviLinkButton::UINaviLinkButton() : UITextButton() {

@@ -20,8 +20,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x009663D0
 // FUNCTION: fn_13154
 UIHotkeyGuideWnd::UIHotkeyGuideWnd()

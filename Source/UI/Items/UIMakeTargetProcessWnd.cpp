@@ -23,8 +23,6 @@
 #include <cstring>
 #include <vector>
 
-#include "Utility/StdTraitsEqual.h"
-
 // INLINED
 static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
   records.insert(records.end(), record.begin(), record.end());

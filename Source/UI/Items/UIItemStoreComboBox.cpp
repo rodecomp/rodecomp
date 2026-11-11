@@ -6,8 +6,6 @@
 #include <cstdio>
 #include <string>
 
-#include "Utility/StdStringConcat.h"
-
 // OFFSET: 0x0086D530
 // FUNCTION: fn_11047
 UIItemStoreComboBox::UIItemStoreComboBox()

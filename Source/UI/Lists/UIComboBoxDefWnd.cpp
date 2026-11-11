@@ -33,10 +33,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include <timeapi.h>
 
-#include "Utility/StdTraitsFind.h"
-
-#include "Utility/StdStringConcat.h"
-
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 

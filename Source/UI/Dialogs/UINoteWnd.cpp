@@ -9,8 +9,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x0094C2D0
 // FUNCTION: fn_12895
 void UINoteWnd::OnCreate(int width, int height) {

@@ -30,7 +30,6 @@
 #include <string>
 #include <utility>
 #include <windows.h>
-#include "Utility/StdStringCompare.h"
 
 // OFFSET: 0x00BA3920
 // FUNCTION: fn_19677
@@ -73,7 +72,6 @@ __declspec(noinline) UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 UIEntryQueueListBox::~UIEntryQueueListBox() {
 }
 
-
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
@@ -111,7 +109,6 @@ UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
 // INLINED
 UIEntryQueueRequestWnd::~UIEntryQueueRequestWnd() {
 }
-
 
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
@@ -243,7 +240,6 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd()
 UIEntryQueueStandByWnd::~UIEntryQueueStandByWnd() {
 }
 
-
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
@@ -351,7 +347,6 @@ UIEntryQueueWnd::UIEntryQueueWnd() : UIFrameWnd(0) {
 // INLINED
 UIEntryQueueWnd::~UIEntryQueueWnd() {
 }
-
 
 // OFFSET: 0x00BA6410
 // FUNCTION: fn_19706

@@ -14,9 +14,6 @@
 
 #include <map>
 #include <string>
-#include "Utility/StdStringCompare.h"
-
-#include "Utility/StdStringCopy.h"
 
 // OFFSET: 0x00AD9530
 // FUNCTION: fn_17878

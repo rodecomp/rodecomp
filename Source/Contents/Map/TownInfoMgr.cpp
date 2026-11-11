@@ -14,7 +14,6 @@ extern "C" {
 #include <cstring>
 #include <new>
 #include <utility>
-#include "Utility/StdStringCompare.h"
 
 // GLOBAL: gl_24817
 CTownInfoMgr* g_townInfoMgr;

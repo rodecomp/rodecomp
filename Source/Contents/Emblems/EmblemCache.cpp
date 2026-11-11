@@ -21,8 +21,6 @@
 #include <windows.h>
 #include <zlib.h>
 
-#include "Utility/StdStringConcat.h"
-
 namespace {
   // INLINED
   __forceinline std::string Basename(const std::string& path) {

@@ -10,8 +10,6 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-#include "Utility/StdTraitsEqual.h"
-
 // OFFSET: 0x00B8C0B0
 // FUNCTION: fn_19420
 __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects) {

@@ -30,7 +30,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include "Utility/StdStringCompare.h"
 
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571

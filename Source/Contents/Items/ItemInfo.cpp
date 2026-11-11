@@ -13,10 +13,6 @@
 #include <cstring>
 #include <list>
 #include <vector>
-#include "Utility/StdStringCompare.h"
-
-#include "Utility/StdTraitsEqual.h"
-#include "Utility/StdIntVectorCopy.h"
 
 namespace {
 #pragma pack(push, 1)

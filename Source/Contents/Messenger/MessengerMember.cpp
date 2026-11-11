@@ -49,9 +49,6 @@
 #include <string>
 #include <vector>
 
-#include "Utility/StdStringCopy.h"
-extern template std::vector<unsigned char>::vector(std::size_t, const unsigned char&, const std::allocator<unsigned char>&);
-
 namespace {
 #pragma pack(push, 1)
   struct MessengerRecordHeader {

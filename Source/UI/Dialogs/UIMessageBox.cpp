@@ -103,8 +103,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-#include "Utility/StdStringVectorDestroy.h"
-#include "Utility/StdTraitsEqual.h"
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 

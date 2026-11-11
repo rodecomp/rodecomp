@@ -2,8 +2,6 @@
 
 #include <cstring>
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x00B974D0
 // FUNCTION: fn_19599
 bool CNavigationManager::LoadStates(std::vector<char> packet) {

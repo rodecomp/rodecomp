@@ -10,8 +10,6 @@
 #include <new>
 #include <process.h>
 
-#include "Utility/StdTraitsEqual.h"
-
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
 CSoundMgr* g_soundMgr = nullptr;

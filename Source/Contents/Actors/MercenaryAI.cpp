@@ -33,8 +33,6 @@ extern "C" {
 #include <windows.h>
 #include <timeapi.h>
 
-#include "Utility/StdTraitsEqual.h"
-
 namespace {
 
 struct SkillOwnerPacket {

@@ -24,9 +24,6 @@
 #include <cstring>
 #include <timeapi.h>
 #include <windows.h>
-#include "Utility/StdStringCompare.h"
-
-#include "Utility/StdTraitsEqual.h"
 
 // GLOBAL: gl_24705
 int g_serviceMode;

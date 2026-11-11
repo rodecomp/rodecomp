@@ -9,9 +9,6 @@
 #include <json/value.h>
 #include <json/writer.h>
 
-extern template std::string& std::string::assign(const char*, std::string::size_type);
-#include "Utility/StdStringVectorDestroy.h"
-
 // OFFSET: 0x00DE0E40
 // FUNCTION: fn_23474
 int CSession::UseLevel(int id) const {

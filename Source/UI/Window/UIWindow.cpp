@@ -85,9 +85,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-#include "Utility/StdTraitsEqual.h"
-#include "Utility/StdStringVectorDestroy.h"
-
 namespace {
   struct NavigationTargetLook {
     /* 0000 */ int job;
@@ -3781,7 +3778,6 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     }
   }
 }
-
 
 // OFFSET: 0x00A84400
 // FUNCTION: fn_17010

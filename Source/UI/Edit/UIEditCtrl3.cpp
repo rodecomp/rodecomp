@@ -5,8 +5,6 @@
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextFitting.h"
 
-#include "Utility/StdStringCopy.h"
-
 // OFFSET: 0x00861AB0
 // FUNCTION: fn_10902
 void UIEditCtrl3::UpdateScrollBar() {

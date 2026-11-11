@@ -24,8 +24,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-#include "Utility/StdStringConcat.h"
-
 // GLOBAL: gl_24878
 static const std::string s_itemLinkOpening = "<ITEML>";
 

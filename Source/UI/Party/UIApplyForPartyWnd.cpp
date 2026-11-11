@@ -28,8 +28,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
 
-#include "Utility/StdStringMoveAssign.h"
-
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
 UIApplyForPartyWnd::UIApplyForPartyWnd()

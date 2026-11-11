@@ -8,8 +8,6 @@
 #include <cstdlib>
 #include <strstream>
 
-extern template std::vector<int>::~vector();
-
 // OFFSET: 0x007461C0
 // FUNCTION: fn_07770
 CRmaRes::CRmaRes() {

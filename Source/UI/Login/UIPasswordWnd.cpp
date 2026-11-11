@@ -11,9 +11,6 @@
 #include <algorithm>
 #include <string>
 
-#include "Utility/StdStringConcat.h"
-
-
 // OFFSET: 0x008C89F0
 // FUNCTION: fn_11965
 UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}

@@ -15,9 +15,6 @@
 #include <cstring>
 #include <utility>
 
-#include "Utility/StdIntVectorCopy.h"
-extern template std::vector<int>::~vector();
-
 extern "C" void JsonDestroy();
 
 struct JsonValueCopy {

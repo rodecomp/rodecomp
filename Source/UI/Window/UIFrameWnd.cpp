@@ -61,7 +61,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-#include "Utility/StdStringConcat.h"
 template __declspec(noinline) std::string& std::string::erase(std::size_t, std::size_t);
 
 // GLOBAL: gl_24747

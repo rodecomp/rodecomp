@@ -17,9 +17,6 @@
 #include <cstdio>
 #include <string>
 
-extern template std::string std::string::substr(std::string::size_type, std::string::size_type) const;
-#include "Utility/StdStringMoveAssign.h"
-
 // OFFSET: 0x0084EF70
 // FUNCTION: fn_10655
 UIChatRoomTitle::UIChatRoomTitle() : UIWindow(0) {

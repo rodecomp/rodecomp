@@ -2,7 +2,6 @@
 #include "Network/TextEncoding.h"
 
 #include <new>
-#include "Utility/StdStringCompare.h"
 
 // STATIC: 0x01389940
 // GLOBAL: gl_24357

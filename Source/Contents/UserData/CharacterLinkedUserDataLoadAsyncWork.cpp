@@ -11,8 +11,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-extern template std::string& std::string::assign(const char*, std::string::size_type);
-
 namespace {
   constexpr char sourceFile[] = "C:"
                                 "\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\CharacterLinkedUserData\\CCh"

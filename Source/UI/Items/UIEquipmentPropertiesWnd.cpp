@@ -26,8 +26,6 @@
 #include <string>
 #include <windows.h>
 
-#include "Utility/StdTraitsEqual.h"
-
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:

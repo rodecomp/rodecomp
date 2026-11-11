@@ -10,7 +10,6 @@
 #include "UI/Macro/UICaptchaPreviewWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
-#include "Utility/StdStringCompare.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"

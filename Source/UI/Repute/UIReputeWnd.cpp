@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "Utility/StdStringVectorDestroy.h"
-
 // GLOBAL: gl_25000
 template <>
 CReputeMgr* Singleton<CReputeMgr>::s_instance = nullptr;

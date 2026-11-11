@@ -20,7 +20,6 @@
 #include <new>
 #include <string>
 #include <vector>
-#include "Utility/StdStringCompare.h"
 
 // GLOBAL: gl_24485
 template <>

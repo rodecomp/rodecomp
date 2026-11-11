@@ -3,8 +3,6 @@
 #include <process.h>
 #include <utility>
 
-#include "Utility/StdStringCopy.h"
-
 namespace {
   struct ThreadNameInfo {
     DWORD type;

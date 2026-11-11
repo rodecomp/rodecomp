@@ -6,8 +6,6 @@
 #include <windows.h>
 #include <utility>
 
-#include "Utility/StdStringConcat.h"
-
 namespace {
   // INLINED
   bool Hex(unsigned char value) {

@@ -49,10 +49,6 @@
 #include <windows.h>
 #include <shellapi.h>
 #include <timeapi.h>
-#include "Utility/StdStringCompare.h"
-
-#include "Utility/StdStringConcat.h"
-
 
 #pragma pack(push, 1)
 struct CashItemPurchase {
@@ -72,8 +68,6 @@ struct PACKET_CZ_SE_PC_BUY_CASHITEM_LIST {
 
 static_assert(sizeof(CashItemPurchase) == 10);
 static_assert(offsetof(PACKET_CZ_SE_PC_BUY_CASHITEM_LIST, items) == 10);
-
-
 
 struct CashShopReplaceCartItemText {
   EncryptedName<85, 0x3B915119EFD523EFULL>& operator()() const;

@@ -6,7 +6,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include "Utility/StdStringCompare.h"
 
 // GLOBAL: gl_24582
 ResourceFailures g_resourceFailures;

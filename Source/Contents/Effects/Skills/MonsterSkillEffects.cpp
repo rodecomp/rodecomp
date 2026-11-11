@@ -35,8 +35,6 @@
 #include <timeapi.h>
 #include <format>
 
-#include "Utility/StdStringConcat.h"
-
 namespace {
 // INLINED
 __forceinline int ClampedRandom(int range) {

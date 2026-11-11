@@ -71,8 +71,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
 
-extern template std::string* std::_Move_unchecked<std::string*, std::string*>(std::string*, std::string*, std::string*);
-
 namespace {
 #pragma pack(push, 1)
 struct MemorialDungeonCommandPacket {
@@ -81,8 +79,6 @@ struct MemorialDungeonCommandPacket {
 };
 #pragma pack(pop)
 }
-
-
 
 // GLOBAL: gl_24888
 static bool g_subChatMiniFirstCollapsed;
@@ -99,7 +95,6 @@ UIShortCutWnd::UIShortCutWnd()
 // OFFSET: 0x00915D90
 // FUNCTION: fn_12577
 UIShortCutWnd::~UIShortCutWnd() = default;
-
 
 // OFFSET: 0x0091E800
 // FUNCTION: fn_12629

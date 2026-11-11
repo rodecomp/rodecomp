@@ -29,8 +29,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-extern template std::vector<int>::~vector();
-
 namespace {
 struct RandomCombineItemPacket {
   std::int16_t id;

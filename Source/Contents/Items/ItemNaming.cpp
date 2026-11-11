@@ -12,9 +12,6 @@
 #include <vector>
 #include "Resource/MSGSTRINGID.h"
 
-extern template void std::string::reserve(std::size_t);
-extern template std::string& std::string::operator+=(const char*);
-
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
 

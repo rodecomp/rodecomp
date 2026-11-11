@@ -17,8 +17,6 @@
 #include <new>
 #include <string>
 
-#include "Utility/StdStringCopy.h"
-
 // GLOBAL: gl_24848
 CNProtectGameGuardMgr* g_nProtectGameGuardMgr;
 

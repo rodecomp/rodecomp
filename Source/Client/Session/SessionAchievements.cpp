@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include "Utility/StdStringCompare.h"
 
 struct JobTitleLess {
   bool operator()(int left, int right) const;

@@ -9,8 +9,6 @@
 #include <t2embapi.h>
 #include <vector>
 
-#include "Utility/StdStringCopy.h"
-
 // GLOBAL: gl_24812
 CEmbedFont* g_embedFont;
 

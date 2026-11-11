@@ -11,8 +11,6 @@
 #include <json/value.h>
 #include <io.h>
 
-#include "Utility/StdTraitsEqual.h"
-
 // OFFSET: 0x005BC230
 // FUNCTION: fn_03463
 void EmotionHotkeys::Load(Json::Value& data) {

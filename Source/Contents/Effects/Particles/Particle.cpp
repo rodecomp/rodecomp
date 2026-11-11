@@ -23,8 +23,6 @@
 #include <cstring>
 #include <regex>
 
-#include "Utility/StdStringConcat.h"
-
 // INLINED
 static __forceinline float ToRadians(float degrees) {
   return (degrees / 180.0f) * 3.141592f;
@@ -139,7 +137,6 @@ CEZ2STRParticle::CEZ2STRParticle(vector3d position, int flags) : CParticle(posit
 // INLINED
 CEZ2STRParticle::~CEZ2STRParticle() {
 }
-
 
 // OFFSET: 0x00B3CFC0
 // FUNCTION: fn_18815

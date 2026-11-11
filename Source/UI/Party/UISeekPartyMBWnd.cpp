@@ -23,8 +23,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Utility/StdStringCopy.h"
-
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_PARTY_BOOKING_REQ_REGISTER {

@@ -30,7 +30,6 @@
 #include <cmath>
 #include <windows.h>
 #include <timeapi.h>
-#include "Utility/StdStringCompare.h"
 
 namespace {
   __declspec(noinline) float ScreenLineSine(float angle) {
