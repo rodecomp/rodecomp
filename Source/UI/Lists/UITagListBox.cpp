@@ -357,7 +357,7 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       UITagButton* tag = this->m_tagWindows[index];
       if (tag) {
         const int line = tag->m_value;
-        if (line < this->topLine || this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine <= line) {
+        if (line < this->topLine || line >= this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
           tag->Enable(0);
         } else {
           tag->Enable(1);
