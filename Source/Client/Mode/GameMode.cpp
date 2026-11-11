@@ -459,7 +459,7 @@ std::string CGameMode::LocationText() {
 // FUNCTION: fn_21284
 bool CGameMode::HasInventoryItem(int id) {
   const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, id, 0);
-  return item.identity[1] != 0 && item.quantity > 0;
+  return item.identity[1] > 0 && item.quantity > 0;
 }
 
 // OFFSET: 0x00CD58B0
@@ -471,31 +471,27 @@ bool CGameMode::HasResurrectionItem() {
     return false;
   }
 
-  if (item.identity[1] != 0 && item.quantity > 0) {
+  if (item.identity[1] > 0 && item.quantity > 0) {
     return true;
   }
 
   item = LookupClientItem(g_session.m_inventoryItems, 6833, 0);
-  if (item.identity[1] != 0 && item.quantity > 0) {
+  if (item.identity[1] > 0 && item.quantity > 0) {
     return true;
   }
 
   item = LookupClientItem(g_session.m_inventoryItems, 6316, 0);
-  if (item.identity[1] != 0 && item.quantity > 0) {
+  if (item.identity[1] > 0 && item.quantity > 0) {
     return true;
   }
 
   item = LookupClientItem(g_session.m_inventoryItems, 6293, 0);
-  if (item.identity[1] != 0 && item.quantity > 0) {
+  if (item.identity[1] > 0 && item.quantity > 0) {
     return true;
   }
 
   item = LookupClientItem(g_session.m_inventoryItems, 25310, 0);
-  if (item.identity[1] != 0 && item.quantity > 0) {
-    return true;
-  }
-
-  return false;
+  return item.identity[1] > 0 && item.quantity > 0;
 }
 
 // OFFSET: 0x00CD5CD0
@@ -697,19 +693,22 @@ void CGameMode::RecordChatRoomSettings() {
 
   GameModeTextRecord record;
   std::memset(record.buffer, 0, sizeof(record.buffer));
+  const std::uint16_t length = static_cast<std::uint16_t>(this->chatRoomTitle.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoomPassword.size());
+  const int titleLength = static_cast<int>(this->chatRoomTitle.size());
+  const int passwordLength = static_cast<int>(this->chatRoomPassword.size());
   record.header = 0x038808AE;
-  record.firstLength = static_cast<int>(this->chatRoomTitle.size());
-  record.secondLength = static_cast<int>(this->chatRoomPassword.size());
+  record.length = length;
+  record.firstLength = titleLength;
+  record.secondLength = passwordLength;
   record.roomOptionA = this->chatRoomPublic;
   record.roomOptionB = this->chatRoomMemberCount;
   record.roomOptionC = this->chatRoomMemberLimit;
   record.roomOptionD = this->chatRoomId;
 
-  std::memcpy(record.buffer, this->chatRoomTitle.data(), record.firstLength);
-  std::memcpy(record.buffer + record.firstLength, this->chatRoomPassword.data(), record.secondLength);
-  record.length = static_cast<std::int16_t>(offsetof(GameModeTextRecord, buffer) + record.firstLength + record.secondLength);
+  std::memcpy(record.buffer, this->chatRoomTitle.data(), titleLength);
+  std::memcpy(record.buffer + titleLength, this->chatRoomPassword.data(), passwordLength);
 
-  Replay::Instance().Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
+  Replay::Instance().Record(length, &record, 0x2A, 0);
 }
 
 #pragma pack(push, 1)
@@ -4883,18 +4882,16 @@ bool CGameMode::IsEffectId994Group(int id) {
 // OFFSET: 0x00CF0950
 // FUNCTION: fn_21419
 bool CGameMode::ConfirmDraggedItemUse() {
-  if (g_session.equippedArrowIndex != this->drag.id) {
-    return false;
-  }
-
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->drag.id);
-  if (item.identity[1] > 0) {
-    if (g_replayAnimationScaling) {
-      this->replayDragState[0] = 0;
+  if (g_session.equippedArrowIndex == this->drag.id) {
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->drag.id);
+    if (item.identity[1] > 0) {
+      if (g_replayAnimationScaling) {
+        this->replayDragState[0] = 0;
+      }
+      g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_UNEQUIP_ARROW), 0, true, false, 0, "Message", 280, 120, 0);
+      return true;
     }
-    g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_UNEQUIP_ARROW), 0, true, false, 0, "Message", 280, 120, 0);
-    return true;
   }
 
   return false;
@@ -5245,8 +5242,7 @@ bool CGameMode::SaveEmblemFile(const std::vector<unsigned char>& data) {
   }
 
   const int nameLength = *reinterpret_cast<const int*>(data.data());
-  std::string name;
-  name.assign(reinterpret_cast<const char*>(data.data() + 4), nameLength);
+  std::string name(reinterpret_cast<const char*>(data.data() + 4), nameLength);
 
   char path[260];
   std::memset(path, 0, sizeof(path));
@@ -5441,12 +5437,24 @@ float g_outdoorCameraDistance = 300.0f;
 // OFFSET: 0x00CECB90
 // FUNCTION: fn_21359
 void CGameMode::InitializeCamera() {
-  this->camera->camera.target[0] = this->scene->player->render.position.x;
-  this->camera->camera.target[1] = this->scene->player->render.position.y;
-  this->camera->camera.target[2] = this->scene->player->render.position.z;
-  this->camera->camera.desiredTarget[0] = this->scene->player->render.position.x;
-  this->camera->camera.desiredTarget[1] = this->scene->player->render.position.y;
-  this->camera->camera.desiredTarget[2] = this->scene->player->render.position.z;
+  {
+    const float x = this->scene->player->render.position.x;
+    const float y = this->scene->player->render.position.y;
+    const float z = this->scene->player->render.position.z;
+    CView* view = this->camera;
+    view->camera.target[0] = x;
+    view->camera.target[1] = y;
+    view->camera.target[2] = z;
+  }
+  {
+    const float x = this->scene->player->render.position.x;
+    const float y = this->scene->player->render.position.y;
+    const float z = this->scene->player->render.position.z;
+    CView* view = this->camera;
+    view->camera.desiredTarget[0] = x;
+    view->camera.desiredTarget[1] = y;
+    view->camera.desiredTarget[2] = z;
+  }
   this->hasViewParameters = 0;
 
   int found;
@@ -7992,18 +8000,18 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
     g_session.m_mercSkills.clear();
   }
 
-  for (const SkillListEntry& entry : skills) {
+  for (auto entry = skills.begin(); entry != skills.end(); ++entry) {
     CSkillInfo skill;
-    if ((entry.id != 0 && entry.id < 7999) || g_session.IsHomunculusSkill(entry.id) || g_session.IsMercenarySkill(entry.id)) {
-      skill.id = entry.id;
-      skill.type = entry.type;
-      skill.level = entry.level;
-      skill.spCost = entry.spCost;
-      skill.upgradable = entry.upgradable;
-      skill.range = entry.range;
+    if ((entry->id >= 1 && entry->id < 7999) || g_session.IsHomunculusSkill(entry->id) || g_session.IsMercenarySkill(entry->id)) {
+      skill.id = entry->id;
+      skill.type = entry->type;
+      skill.level = entry->level;
+      skill.spCost = entry->spCost;
+      skill.upgradable = entry->upgradable;
+      skill.range = entry->range;
       skill.name = skill.IdName(*g_session.m_hotkeyScript);
-      skill.learnedLevel = entry.learnedLevel;
-      skill.apCost = skill.UseApAmount(*g_session.m_hotkeyScript, entry.level);
+      skill.learnedLevel = entry->learnedLevel;
+      skill.apCost = skill.UseApAmount(*g_session.m_hotkeyScript, entry->level);
       g_session.m_skillBundle.ApplyLevelChange(skill);
 
       if (packetType == 0x10F || packetType == 0xB32) {
@@ -8097,20 +8105,18 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
   }
 
   CItem* item = this->scene->GetItemByAID(id);
-  if (!item) {
-    return;
+  if (item) {
+    std::string name(item->name.c_str());
+    placed = 0;
+    this->EnsureNameBalloon(this->nameBalloon);
+    this->nameBalloon->AddNameLine(name.c_str());
+    this->nameBalloon->SetIcon("", 0);
+    this->nameBalloon->m_textColor = 0x95EFFF;
+    this->nameBalloon->m_outlineColor = 0;
+    *reinterpret_cast<int*>(&this->nameBalloonSize[0]) = this->nameBalloon->geometry.width;
+    *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = this->nameBalloon->geometry.height;
+    this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
   }
-
-  std::string name(item->name.c_str());
-  placed = 0;
-  this->EnsureNameBalloon(this->nameBalloon);
-  this->nameBalloon->AddNameLine(name.c_str());
-  this->nameBalloon->SetIcon("", 0);
-  this->nameBalloon->m_textColor = 0x95EFFF;
-  this->nameBalloon->m_outlineColor = 0;
-  *reinterpret_cast<int*>(&this->nameBalloonSize[0]) = this->nameBalloon->geometry.width;
-  *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = this->nameBalloon->geometry.height;
-  this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
 }
 
 // OFFSET: 0x00CE18A0
@@ -8264,7 +8270,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
 // FUNCTION: fn_21317
 CGameActor* CGameMode::NewActor(int job) {
   CGameActor* actor;
-  if (IsPlayerJob(job)) {
+  if (IsPlayerJob(job) == 1) {
     actor = new CCharacterNpc;
   } else {
     const char* jobName = g_session.GetJobName(job, -1);
