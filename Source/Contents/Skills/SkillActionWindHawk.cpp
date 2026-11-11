@@ -168,7 +168,8 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* target, CGameActor* argument3) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetAngle(
         ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f
       );
