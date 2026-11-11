@@ -1439,11 +1439,10 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
   state.defZ = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
 
   float ratio;
-  const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(state.resource);
 
-  for (int layer = 0; layer < clips.clipCount; ++layer) {
+  for (int layer = 0; layer < static_cast<EZeffectData*>(state.resourceData)->clipCount; ++layer) {
     state.layerDrawn[layer] = false;
-    const EZeffectClip& clip = clips.clips[layer];
+    const EZeffectClip& clip = static_cast<EZeffectData*>(state.resourceData)->clips[layer];
 
     if (clip.frameCount == 0 || state.currentKey[layer] == -1) {
       continue;
@@ -5298,7 +5297,7 @@ void CRagEffect::GRANDCROSS2(char flag) {
 void CRagEffect::Magnum2(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt == 0) {
-    this->state.count = 0;
+    this->state.flag = 0;
   } else if (this->state.stateCnt == 20) {
     PlayEffectWave(*this, "permeter_attack.wav");
   } else if (this->state.stateCnt == 30) {
@@ -5308,7 +5307,7 @@ void CRagEffect::Magnum2(const char* name) {
   const int frame = this->state.stateCnt;
   const int elapsed = frame - 25;
   if (static_cast<unsigned int>(elapsed) <= 30) {
-    if (frame % 3 == 0 && static_cast<int>(++this->state.count) < 11) {
+    if (frame % 3 == 0 && static_cast<int>(++this->state.flag) < 11) {
       this->state.lastPrim = CreateEffectParticle(*this, this->render, 73, 0.0f, 0.0f, 0.0f, WorldObjects());
       this->state.lastPrim->state.renderFlag = 5;
       this->state.lastPrim->state.duration = this->state.duration;
