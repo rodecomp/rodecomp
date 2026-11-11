@@ -19,6 +19,27 @@
 #include "Client/Session/Session.h"
 #include "Script/LuaScript.h"
 #include "Resource/MSGSTRINGID.h"
+// INLINED
+static int SelectedEntryValue(const std::vector<SecondCostumeEntry>& entries, const int& selected) {
+  if (entries.empty()) {
+    return 0;
+  }
+  if (entries.size() <= static_cast<unsigned>(selected)) {
+    return 0;
+  }
+  return entries[selected].value;
+}
+
+// INLINED
+static int FindEntryIndex(const std::vector<SecondCostumeEntry>& entries, const int& value) {
+  for (unsigned int index = 0; index < entries.size(); ++index) {
+    if (entries[index].value == value) {
+      return index;
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x00948D20
 // FUNCTION: fn_12882
 void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
@@ -27,37 +48,24 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   const std::uint32_t time = this->m_previewStartTime;
   const int action = this->m_page;
 
-  int headPalette = 0;
-  if (!this->m_entries[0].empty() && static_cast<unsigned>(this->m_selected[0]) < this->m_entries[0].size()) {
-    headPalette = this->m_entries[0][this->m_selected[0]].value;
-  }
+  const int headPalette = SelectedEntryValue(this->m_entries[0], this->m_selected[0]);
 
-  int bodyStyle = 0;
-  if (!this->m_entries[2].empty() && static_cast<unsigned>(this->m_selected[2]) < this->m_entries[2].size()) {
-    bodyStyle = this->m_entries[2][this->m_selected[2]].value;
-  }
+  const int bodyStyle = SelectedEntryValue(this->m_entries[2], this->m_selected[2]);
 
   const int robe = g_session.m_robe;
-  const short midAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[8]);
-  const short topAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[4]);
-  const short bottomAccessory = *reinterpret_cast<const short*>(&g_session.accessoryAppearance[0]);
+  const unsigned short midAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[8]);
+  const unsigned short topAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[4]);
+  const unsigned short bottomAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[0]);
 
-  int head = 0;
-  if (!this->m_entries[1].empty() && static_cast<unsigned>(this->m_selected[1]) < this->m_entries[1].size()) {
-    head = this->m_entries[1][this->m_selected[1]].value;
-  }
+  const unsigned short head = static_cast<unsigned short>(SelectedEntryValue(this->m_entries[1], this->m_selected[1]));
 
-  int body = 0;
-  if (!this->m_entries[3].empty() && static_cast<unsigned>(this->m_selected[3]) < this->m_entries[3].size()) {
-    body = this->m_entries[3][this->m_selected[3]].value;
-  }
+  const int body = SelectedEntryValue(this->m_entries[3], this->m_selected[3]);
 
-  FuncDrawWNDChar drawer(
+  FuncDrawWNDChar(
     this, x, y, static_cast<unsigned char>(g_session.GetCurrentSex()), static_cast<short>(g_session.GetDisplayJob()), g_session.GetDisplayJob(),
     static_cast<short>(body), static_cast<short>(head), bottomAccessory, topAccessory, midAccessory, robe, flags, 0, bodyStyle, headPalette, action, 0,
     static_cast<int>(time)
-  );
-  drawer.Draw(0);
+  ).Draw(0);
 }
 
 // OFFSET: 0x00949BA0
