@@ -2573,7 +2573,7 @@ void CLoginMode::PollNetworkStatus() {
         GameRoomReplyPacket reply;
         reply.id = ID_CA_REPLY_PNGAMEROOM;
         reply.permission = 1;
-        GetRagConnection().Send(g_packetLengths.FixedLength(reply.id), &reply);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(reply.id), &reply);
       } else {
         GetRagConnection().Close();
         g_charServerAccountIdPending = 0;
@@ -2630,7 +2630,7 @@ void CLoginMode::PollNetworkStatus() {
           ChangeCharacterNamePacket request;
           request.id = ID_CH_REQ_CHANGE_CHARNAME;
           request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1]);
-          GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(request.id), &request);
           break;
         }
       } else if (g_windowMgr.Confirm(LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
