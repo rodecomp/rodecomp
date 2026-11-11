@@ -763,7 +763,9 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (17000 == header.type) {
+  if (17000 != header.type) {
+    offset = 0xFFFFFFFFu;
+  } else {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
@@ -791,8 +793,6 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
         break;
       }
     }
-  } else {
-    offset = 0xFFFFFFFFu;
   }
 
   return offset;
@@ -5069,7 +5069,9 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (15000 == header.type) {
+  if (15000 != header.type) {
+    offset = 0xFFFFFFFFu;
+  } else {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
@@ -5090,8 +5092,6 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
         break;
       }
     }
-  } else {
-    offset = 0xFFFFFFFFu;
   }
 
   return offset;
@@ -5107,7 +5107,9 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
   GameModeChunkHeader header = {};
   unsigned offset = 6;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (10000 == header.type) {
+  if (10000 != header.type) {
+    offset = 0xFFFFFFFFu;
+  } else {
     std::vector<unsigned char> record;
     while (offset < data.size()) {
       header = {};
@@ -5204,8 +5206,6 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
         break;
       }
     }
-  } else {
-    offset = 0xFFFFFFFFu;
   }
 
   return offset;
@@ -5760,7 +5760,9 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
   unsigned offset = 6;
   std::uint32_t guildId = 0;
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (13000 == header.type) {
+  if (13000 != header.type) {
+    offset = 0xFFFFFFFFu;
+  } else {
     while (offset < data.size()) {
       header = {};
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
@@ -5800,8 +5802,6 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
         break;
       }
     }
-  } else {
-    offset = 0xFFFFFFFFu;
   }
 
 finished:
@@ -6299,7 +6299,9 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   UIWindow* window = g_windowMgr.LookupWindow(packet->windowId);
   this->drag = drag;
 
-  if (this->drag.quantity == 1) {
+  if (this->drag.quantity != 1) {
+    this->replayDragState[0] = this->IsAllowedPair(packet->windowId, packet->source);
+  } else {
     const int kind = packet->windowId;
     if (kind == 0x17 || kind == 0x2C) {
       if (packet->itemType <= 3 || packet->itemType == 7) {
@@ -6310,8 +6312,6 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
         this->replayDragState[0] = this->IsAllowedPair(0x16, packet->source);
       }
     }
-  } else {
-    this->replayDragState[0] = this->IsAllowedPair(packet->windowId, packet->source);
   }
 
   if (window != nullptr) {
@@ -6322,12 +6322,12 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   if (kind == 0x24 || kind == 0x9F) {
     this->replayDragState[0] = 0;
   } else if (this->replayDragState[0] == 1 && g_windowMgr.itemDropCntWnd != nullptr) {
-    if (drag.type == 6) {
-      const ItemCardName card = FindItemCardName(std::atoi(drag.name.c_str()));
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETTEXT, 0, reinterpret_cast<std::intptr_t>(card.name), 0, 0);
-    } else {
+    if (drag.type != 6) {
       const ITEM_DESC description = FindItemDescription(std::atoi(drag.name.c_str()));
       g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETTEXT, 0, reinterpret_cast<std::intptr_t>(description.identifiedName), 0, 0);
+    } else {
+      const ItemCardName card = FindItemCardName(std::atoi(drag.name.c_str()));
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETTEXT, 0, reinterpret_cast<std::intptr_t>(card.name), 0, 0);
     }
   }
 
