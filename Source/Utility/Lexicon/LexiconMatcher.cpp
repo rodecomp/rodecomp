@@ -4,8 +4,8 @@
 // FUNCTION: fn_17631
 int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* text, const unsigned char* end, int) {
   bool failed = false;
-  int accepted = 0;
   int matched = 0;
+  int accepted = 0;
   if (*text == 0) {
     return 1000;
   }
@@ -26,9 +26,9 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
     offsetBytes[1] = entry[1];
     offsetBytes[0] = entry[2];
     entry += 3;
-    const unsigned char* candidate = data + offset;
-    const int count = *candidate;
-    if (count < 0x20 && candidate[1] == *text) {
+    const unsigned char* node = data + offset;
+    const int count = *node;
+    if (count < 0x20 && node[1] == *text) {
       ++offset;
       for (int index = 0; index < count; ++index) {
         if (data[offset++] != *text) {
@@ -38,27 +38,27 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
 
         ++matched;
         ++text;
-        const unsigned char marker = data[offset];
-        if (marker < 0x20) {
-          if ((marker & 2) != 0) {
+        node = data + offset;
+        if (*node < 0x20) {
+          if ((*node & 2) != 0) {
             accepted = matched;
           }
 
-          if ((marker & 4) != 0) {
-            entry = data + offset + 1;
+          if ((*node & 4) != 0) {
+            entry = node + 1;
             break;
           }
 
           ++offset;
         }
       }
-    } else if (*candidate >= *text) {
-      if (*candidate != *text) {
+    } else if (*node >= *text) {
+      if (*node != *text) {
         return accepted;
       }
 
       ++matched;
-      entry = candidate + 1;
+      entry = node + 1;
       ++text;
       if ((*entry & 0x80) != 0) {
         accepted = matched;
