@@ -33,6 +33,54 @@
    "keyBytes": 8,
    "includeTerminator": true,
    "lengthArgument": true
+  },
+  {
+   "macro": "OBFUSCATE_STRING",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_STRING_BODY",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_ARRAY",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_ARRAY_BODY",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_TEXT",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_TEXT_NAMED",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_TEXT",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_TEXT_NAMED",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
   }
  ],
  "matchPolicy": {
