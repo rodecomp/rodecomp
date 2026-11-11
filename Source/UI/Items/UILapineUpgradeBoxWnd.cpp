@@ -426,28 +426,30 @@ inline UILapineUpgradeBox_IngredientInfoWnd* UILapineUpgradeBoxWnd::FindSelected
 // FUNCTION: fn_04210
 void UILapineUpgradeBoxWnd::OnProcess() {
   UILapineUpgradeBox_IngredientInfoWnd* selected = this->FindSelected();
+  UIBitmapButton* selectButton = this->selectButton;
   if (!selected) {
-    if (this->selectButton->Disabled() == 0) {
-      this->selectButton->SetDisabled(1);
-      this->selectButton->Invalidate();
+    if (selectButton->Disabled() == 0) {
+      selectButton->SetDisabled(1);
+      selectButton->Invalidate();
       this->Invalidate();
     }
-  } else if (this->selectButton->Disabled() == 1 && this->item.identity[1] <= 0) {
-    this->selectButton->SetDisabled(0);
-    this->selectButton->Invalidate();
+  } else if (selectButton->Disabled() == 1 && this->item.identity[1] <= 0) {
+    selectButton->SetDisabled(0);
+    selectButton->Invalidate();
     this->Invalidate();
   }
 
   if (this->waiting == 0) {
+    UIBitmapButton* upgradeButton = this->upgradeButton;
     if (this->item.identity[1] > 0) {
-      if (this->upgradeButton->Disabled() == 1) {
-        this->upgradeButton->SetDisabled(0);
-        this->upgradeButton->Invalidate();
+      if (upgradeButton->Disabled() == 1) {
+        upgradeButton->SetDisabled(0);
+        upgradeButton->Invalidate();
         this->Invalidate();
       }
-    } else if (this->upgradeButton->Disabled() == 0) {
-      this->upgradeButton->SetDisabled(1);
-      this->upgradeButton->Invalidate();
+    } else if (upgradeButton->Disabled() == 0) {
+      upgradeButton->SetDisabled(1);
+      upgradeButton->Invalidate();
       this->Invalidate();
     }
   }
@@ -587,14 +589,11 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
   }
 
-  if (Equipment(item) && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
-    for (std::size_t offset = 0; offset < sizeof(item.cards); offset += sizeof(std::uint32_t)) {
-      std::uint32_t card = 0;
-      std::memcpy(&card, item.cards + offset, sizeof(card));
-      if (card != 0) {
-        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
-        break;
-      }
+  if (Equipment(item) == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+    const std::uint32_t* cards = reinterpret_cast<const std::uint32_t*>(item.cards);
+    const std::uint32_t* cardsEnd = cards + 4;
+    if (std::find_if(cards, cardsEnd, [](std::uint32_t card) { return card != 0; }) != cardsEnd) {
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
     }
   }
 

@@ -104,9 +104,15 @@ void UIGuildHelperWnd::OnMouseMove(int x, int y) {
 void UICreateGuildWnd::Paint() {
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  const int text = this->m_mode == 0 ? 2077 : 2089;
+  int text;
+  if (this->m_mode == 0) {
+    text = MSI_PLEASE_PUT_GUILD_NAME_IN;
+  } else {
+    text = MSI_BASIC_EXP_MSG_BRZ;
+  }
   this->DrawTitleBar(true, LookupMessage(text - 1), 0);
-  this->DrawTextAt(16, 23, LookupMessage(text), 0, 0, 12, 0, 0, 0);
+  const char* message = LookupMessage(text);
+  this->DrawTextAt(16, 23, message, 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0095FBE0

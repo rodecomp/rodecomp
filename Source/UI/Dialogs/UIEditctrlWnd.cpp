@@ -105,49 +105,51 @@ int UIMiniMapWnd::LoadMemos() {
   int count = 0;
   const std::string path = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
   FILE* file = std::fopen(path.c_str(), "rb");
-  if (file) {
-    char separators[] = "\t ,\t\r\n";
-    char line[1024];
-    std::memset(line, 0, sizeof(line));
-    std::vector<std::string> tokens;
+  if (!file) {
+    return 0;
+  }
 
-    int lineCount = 0;
-    while (!std::feof(file)) {
-      if (++lineCount >= 40 || count >= 20) {
+  char separators[] = "\t ,\t\r\n";
+  char line[1024];
+  std::memset(line, 0, sizeof(line));
+  std::vector<std::string> tokens;
+
+  int lineCount = 0;
+  while (!std::feof(file)) {
+    if (++lineCount >= 40 || count >= 20) {
+      break;
+    }
+
+    std::fgets(line, sizeof(line), file);
+    for (char* token = std::strtok(line, separators); token; token = std::strtok(nullptr, separators)) {
+      tokens.push_back(std::string(token));
+    }
+
+    if (tokens.size() >= 2) {
+      const int x = std::atoi(tokens[0].c_str());
+      const int y = std::atoi(tokens[1].c_str());
+      if (x <= 0 || this->geometry.width < x || y <= 0 || this->geometry.height < y) {
         break;
       }
 
-      std::fgets(line, sizeof(line), file);
-      for (char* token = std::strtok(line, separators); token; token = std::strtok(nullptr, separators)) {
-        tokens.push_back(std::string(token));
-      }
-
-      if (tokens.size() >= 2) {
-        const int x = std::atoi(tokens[0].c_str());
-        const int y = std::atoi(tokens[1].c_str());
-        if (x <= 0 || this->geometry.width < x || y <= 0 || this->geometry.height < y) {
+      std::string text;
+      for (unsigned index = 2; index < tokens.size(); ++index) {
+        if (text.size() > 30) {
           break;
         }
-
-        std::string text;
-        for (unsigned index = 2; index < tokens.size(); ++index) {
-          if (text.size() > 30) {
-            break;
-          }
-          text += " ";
-          text += tokens[index];
-        }
-
-        tokens.clear();
-        this->memoButtons[count]->Move(x, y);
-        this->memoButtons[count]->SetTooltip(text.c_str());
-        ++count;
+        text += " ";
+        text += tokens[index];
       }
-    }
 
-    std::fclose(file);
-    this->Invalidate();
+      tokens.clear();
+      this->memoButtons[count]->Move(x, y);
+      this->memoButtons[count]->SetTooltip(text.c_str());
+      ++count;
+    }
   }
+
+  std::fclose(file);
+  this->Invalidate();
 
   return count;
 }
@@ -227,8 +229,12 @@ void UIMiniMapWnd::OnLBtnDown(int x, int y) {
   if (y > 17) {
     if (x >= 2 && y >= 19 && this->geometry.width - 2 >= x && this->geometry.height - 19 >= y && this->dragging) {
       this->dragging = 0;
+      int clickX = x - 6;
       g_windowMgr.miniMapClickY = y - 6;
-      g_windowMgr.miniMapClickX = x - 6 < 0 ? 0 : x - 6;
+      if (clickX < 0) {
+        clickX = 0;
+      }
+      g_windowMgr.miniMapClickX = clickX;
       g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
     }
   } else {
