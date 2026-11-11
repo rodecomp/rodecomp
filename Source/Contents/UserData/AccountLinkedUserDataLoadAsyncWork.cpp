@@ -97,7 +97,8 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 // OFFSET: 0x005BA830
 // FUNCTION: fn_03447
 void CAccountLinkedUserDataLoadAsyncWork::Complete() {
-  g_accountLinkedUserDataMgr->CompleteLoad(
+  CAccountLinkedUserDataMgr* manager = g_accountLinkedUserDataMgr;
+  manager->CompleteLoad(
     this->m_diagnostic, this->m_accountId, this->m_accountName, this->m_response
   );
 }
