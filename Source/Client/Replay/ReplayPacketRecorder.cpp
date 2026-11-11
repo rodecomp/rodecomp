@@ -26,14 +26,14 @@ namespace {
 // OFFSET: 0x00B86880
 // FUNCTION: fn_19332
 bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
-  if (bytes == 0 || !packet) {
+  if (0 == bytes || !packet) {
     return false;
   }
 
   std::uint16_t id;
   std::memcpy(&id, packet, sizeof(id));
 
-  if (id != ID_CC_REPLAYPACKET) {
+  if (ID_CC_REPLAYPACKET != id) {
     if (g_packetLengths.IsRecorded(id) == 0) {
       return false;
     }
@@ -143,14 +143,14 @@ bool Replay::WriteFinalSection() {
 bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay) {
   const std::uint16_t bytes = static_cast<std::uint16_t>(packet.size());
   const unsigned char* data = packet.empty() ? nullptr : &packet[0];
-  if (bytes == 0 || !data) {
+  if (0 == bytes || !data) {
     return false;
   }
 
   std::uint16_t id;
   std::memcpy(&id, data, sizeof(id));
 
-  if (id != ID_CC_REPLAYPACKET) {
+  if (ID_CC_REPLAYPACKET != id) {
     if (g_packetLengths.IsRecorded(id) == 0) {
       return false;
     }
