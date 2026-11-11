@@ -1607,18 +1607,21 @@ void CUIGroupGraphicsAPI::Refresh() {
 // OFFSET: 0x00A3FCD0
 // FUNCTION: fn_15960
 std::string CUIListPage::GetHotkeyText(int tab, int index) {
-  HotkeyInfo info;
+  int key1 = 0;
+  int key2 = 0;
+  std::string hotkeyText;
+  std::string hotkeyDescription;
   const char* keyText = nullptr;
   const char* description = nullptr;
-  g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+  g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description);
   if (IsNullOrEmpty(keyText)) {
-    g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+    g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description);
   }
 
   if (IsNullOrEmpty(keyText)) {
-    return "";
+    return std::string();
   }
-  return keyText;
+  return std::string(keyText);
 }
 
 // OFFSET: 0x00A40C30
