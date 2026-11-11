@@ -1,5 +1,6 @@
 #include "Contents/Effects/Particles/CharacterParticleBundle.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -79,11 +80,8 @@ void CChopChopClawMarks::SpawnParticle() {
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
-    const char bytes[] = {
-      '\x5B', '\x63', '\x98', '\xAE', '\xA9', '\x29', '\x26', '\x4F', '\x40', '\x72', '\x85', '\xA8', '\xBD', '\x2A', '\x2E', '\x55',
-      '\x50', '\x61', '\x91', '\x84', '\x85', '\x1A', '\x1D', '\x42', '\x7C', '\x59', '\xA2', '\x97', '\xB1', '\x16', '\x05', '\x72',
-      '\x6F', '\x6E', '\xAE', '\x8F', '\x82', '\x05', '\x43', '\x6E', '\x6B', '\x43', '\xCD'
-    };
+    constexpr auto bytesText = CRYPT_NAME("DRUID\\KR_CHOP_CHOP\\chop_chop\\chop_chop.str", 0x1D6D75EDE7CD311FULL);
+    const auto& bytes = bytesText.data;
     // GLOBAL: gl_24875
     thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
     particle->Load(name.Text());

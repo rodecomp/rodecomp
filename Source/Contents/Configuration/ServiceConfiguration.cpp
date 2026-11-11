@@ -424,8 +424,8 @@ void InitializeLanguage() {
     g_textCodePage = 1256;
     break;
   default: {
-    const char source[] = {'\xF9', '\x1E', '\x87', '\xD1', '\x00', '\x4D', '\xE4', '\x2E', '\xF6', '\x16', '\xC2', '\x9D',
-                           '\x12', '\x46', '\xF7', '\x2F', '\xFE', '\x1F', '\xC0', '\x9D', '\x40', '\x02', '\xA2', '\x5B'};
+    constexpr auto sourceText = CRYPT_NAME("no language setting !!!", 0x5B832361BDA77197ULL);
+    const auto& source = sourceText.data;
     ShowErrorDialog(DecryptString<0x5B832361BDA77197ULL>(source), 0);
   }
   case 1:
@@ -473,10 +473,8 @@ void InitializeServiceConfiguration() {
   const std::uint8_t portSource[] = {0xED, 0xBA, 0xF1, 0x3F, 0xAB};
   g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
 
-  const char webPageSource[] = {
-    '\x21', '\x8B', '\xA1', '\x8F', '\xEB', '\x6C', '\x90', '\x88', '\x3E', '\x88', '\xFB', '\x8D', '\xB0', '\x24', '\xD1', '\x9E',
-    '\x3B', '\x90', '\xBE', '\xD1', '\xB2', '\x2C', '\x91', '\x94', '\x3B', '\xFF'
-  };
+  constexpr auto webPageSourceText = CRYPT_NAME("http://www.ragnarok.co.kr", 0xFFBF43D1FFD5FF49ULL);
+  const auto& webPageSource = webPageSourceText.data;
   g_webPageUrl = DecryptString<0xFFBF43D1FFD5FF49ULL>(webPageSource);
 
   g_extendedSlot = true;
@@ -491,30 +489,21 @@ void InitializeServiceConfiguration() {
     // (jump into the empty stub 0x027AB0FE). The code from here on starts at 0x00AD237E.
     g_serviceFlag07 = 29;
     if (std::strstr(g_launchServerName, "QmSakray")) {
-      const char keySource[] = {
-        '\x3C', '\x83', '\xDA', '\xE6', '\x72', '\x9C', '\xCE', '\x77', '\x36', '\xDF', '\xC7', '\xAA', '\x64', '\x9F', '\x82', '\x37',
-        '\x38', '\x9A', '\x9B', '\xA8', '\x6C', '\xDF', '\x88', '\x37', '\x6D', '\xC7', '\x8C', '\xFB', '\x33', '\xF1'
-      };
+      constexpr auto keySourceText = CRYPT_NAME("kro-qm-2a.ragnarok.co.kr:6900", 0x45E3F103CBB5F157ULL);
+      const auto& keySource = keySourceText.data;
       g_serviceOverrideKey = DecryptString<0x45E3F103CBB5F157ULL>(keySource);
 
-      const char addressSource[] = {
-        '\xB4', '\x35', '\xC2', '\x4A', '\x6E', '\x14', '\x1E', '\x1C', '\xBE', '\x69', '\xDF', '\x06', '\x78', '\x17', '\x52', '\x5F',
-        '\xB0', '\x2C', '\x83', '\x04', '\x70', '\x57', '\x58', '\x5F', '\xE5', '\x71', '\x94', '\x52', '\x2E', '\x79'
-      };
+      constexpr auto addressSourceText = CRYPT_NAME("kro-qm-1a.ragnarok.co.kr:6951", 0x2D33791F67AD47DFULL);
+      const auto& addressSource = addressSourceText.data;
       const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0x2D33791F67AD47DFULL>(addressSource));
     } else {
-      const char keySource[] = {
-        '\x4E', '\xE3', '\x68', '\x8E', '\x80', '\x62', '\x50', '\x58', '\x0B', '\xE3', '\x66', '\xC4', '\x8F', '\x60', '\x41', '\x04',
-        '\x4E', '\xBF', '\x64', '\xCC', '\xCF', '\x6A', '\x41', '\x51', '\x13', '\xA8', '\x37', '\x93', '\xE1'
-      };
+      constexpr auto keySourceText = CRYPT_NAME("kro-acc3.ragnarok.co.kr:6900", 0x6B3301E1A3079125ULL);
+      const auto& keySource = keySourceText.data;
       g_serviceOverrideKey = DecryptString<0x6B3301E1A3079125ULL>(keySource);
 
-      const char addressSource[] = {
-        '\x08', '\x4B', '\x12', '\x8C', '\x38', '\xD2', '\xFA', '\xAD', '\x00', '\x40', '\x50', '\xD2', '\x77', '\xC7', '\xFE', '\xA4',
-        '\x0D', '\x58', '\x0F', '\xCE', '\x32', '\x9B', '\xFC', '\xAC', '\x4D', '\x52', '\x0F', '\x9B', '\x6F', '\x8C', '\xAA', '\xF7',
-        '\x63'
-      };
+      constexpr auto addressSourceText = CRYPT_NAME("kro-agency-s.ragnarok.co.kr:6954", 0xC39FB559A17D3963ULL);
+      const auto& addressSource = addressSourceText.data;
       const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0xC39FB559A17D3963ULL>(addressSource));
     }
@@ -529,9 +518,8 @@ void InitializeServiceConfiguration() {
     break;
   }
   case 3: {
-    const char hostSource[] = {
-      '\x3F', '\x6A', '\x58', '\xAD', '\x8A', '\x26', '\xAF', '\xA7', '\x3F', '\x6F', '\x5E', '\xAD', '\x8A', '\x20', '\xA8', '\x89'
-    };
+    constexpr auto hostSourceText = CRYPT_NAME("211.172.247.115", 0x899D11BB83695B0DULL);
+    const auto& hostSource = hostSourceText.data;
     g_serviceHost = DecryptString<0x899D11BB83695B0DULL>(hostSource);
     g_serviceFlag07 = 29;
     const std::uint8_t portSource[] = {0xC3, 0x1C, 0x63, 0xD9, 0xD7};

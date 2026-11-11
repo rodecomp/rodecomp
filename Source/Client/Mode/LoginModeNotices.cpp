@@ -9,6 +9,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <array>
@@ -236,7 +237,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   }
 
   if (strlen(text) != 0) {
-    const std::array<std::uint8_t, 7> source = {0x1E, 0x94, 0x29, 0x3E, 0xA5, 0x88, 0x2B};
+    constexpr std::array<std::uint8_t, 7> source = CRYPT_NAME("%s(%d)", 0xBD2BA1C11B01E73BULL);
     // GLOBAL: gl_25060
     thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
     char message[256];

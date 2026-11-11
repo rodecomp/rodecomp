@@ -1,6 +1,7 @@
 #include "UI/Login/UIWaitDBSaveWnd.h"
 #include "UI/Window/WindowId.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -22,16 +23,16 @@ namespace {
 
 // INLINED
 __forceinline const char* WaitSpriteName() {
-  const char spriteSource[] = {'\x1A', '\x44', '\xF0', '\x3D', '\x17', '\x01', '\xD2', '\x66', '\x3B', '\x40', '\xC5', '\x07', '\x3C',
-                               '\x34', '\xCD', '\x68', '\x2C', '\x41', '\xF0', '\x27', '\x34', '\x6D', '\xF2', '\x77', '\x3F', '\x25'};
+  constexpr auto spriteSourceText = CRYPT_NAME("WaitDBSave\\NowLoading.spr", 0x078143534999254DULL);
+  const auto& spriteSource = spriteSourceText.data;
   thread_local EncryptedName<sizeof(spriteSource), 0x078143534999254DULL> spriteName(spriteSource);
   return spriteName.Text();
 }
 
 // INLINED
 __forceinline const char* WaitActionName() {
-  const char actionSource[] = {'\x36', '\xCE', '\xE6', '\x4D', '\xCF', '\x8B', '\xAC', '\x76', '\x17', '\xCA', '\xD3', '\x77', '\xE4',
-                               '\xBE', '\xB3', '\x78', '\x00', '\xCB', '\xE6', '\x57', '\xEC', '\xE7', '\x9E', '\x74', '\x15', '\xAF'};
+  constexpr auto actionSourceText = CRYPT_NAME("WaitDBSave\\NowLoading.act", 0x17FFC98B398FAF61ULL);
+  const auto& actionSource = actionSourceText.data;
   thread_local EncryptedName<sizeof(actionSource), 0x17FFC98B398FAF61ULL> actionName(actionSource);
   return actionName.Text();
 }
@@ -78,10 +79,8 @@ void UIWaitDBSaveWnd::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   ResourceMgr& resources = ResourceMgr::Instance();
-  const char backgroundSource[] = {
-      '\xF3', '\x3C', '\x8D', '\x6F', '\x5B', '\x5B', '\x9E', '\x56', '\xF5', '\x77', '\x8D', '\x59', '\x26', '\x2F', '\x07', '\xCC',
-      '\x52', '\xFA', '\x39', '\xD1', '\xD9', '\xC6', '\x3A', '\xED', '\x56', '\xCF', '\x21', '\xFA', '\xFA', '\xF1', '\x32', '\xF5',
-      '\x54', '\xBD', '\x2F', '\xF8', '\xEB', '\x95'};
+  constexpr auto backgroundSourceText = CRYPT_NAME("유저인터페이스\\WaitDBSave\\loading.bmp", 0x9B5B959B954D9333ULL);
+  const auto& backgroundSource = backgroundSourceText.data;
   thread_local EncryptedName<sizeof(backgroundSource), 0x9B5B959B954D9333ULL> backgroundName(backgroundSource);
   CBitmapRes* background = static_cast<CBitmapRes*>(resources.Load(Resolve(backgroundName.Text())));
   if (background) {

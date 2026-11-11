@@ -67,6 +67,7 @@
 #include "Contents/Effects/Skills/ViolentQuakeEffect.h"
 #include "Contents/Effects/Skills/WindEffect.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
@@ -448,12 +449,8 @@ struct CEffectAllocator : CAllocator {
 // OFFSET: 0x00B1D9E0
 // FUNCTION: fn_18561
 __declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName() {
-  const char source[] = {
-      '\x3B', '\x47', '\xD8', '\x58', '\x73', '\x53', '\xC0', '\x7D', '\x20', '\x41', '\xC5', '\x44', '\x79', '\x4B', '\xCE', '\x7D',
-      '\x36', '\x5B', '\xCA', '\x4E', '\x78', '\x5D', '\xC9', '\x73', '\x0B', '\x7D', '\xF8', '\x7F', '\x53', '\x6A', '\xF9', '\x46',
-      '\x11', '\x72', '\xD2', '\x7E', '\x45', '\x6D', '\xD4', '\x40', '\x0D', '\x77', '\xD1', '\x65', '\x5F', '\x7A', '\xE5', '\x4B',
-      '\x1A', '\x67', '\xE4', '\x7F', '\x50', '\x50', '\xE4', '\x5D', '\x1D', '\x4A', '\xFE', '\x7C', '\x56', '\x63', '\xE7', '\x01',
-      '\x0C', '\x61', '\xFF', '\x11'};
+  constexpr auto sourceText = CRYPT_NAME("DRUID\\KR_THUNDERING_ORB\\thundering_orb_orb\\thundering_orb_small.str", 0x2F8B0F37118D157FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
   return name;
 }

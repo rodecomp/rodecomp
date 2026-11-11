@@ -7,6 +7,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <array>
 #include <cstdio>
@@ -86,20 +87,20 @@ bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
   StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_type);
 
   CCURLPostHander handler(this->m_url);
-  const std::array<std::uint8_t, 4> aid = {0xB4, 0x6C, 0x17, 0xE9};
+  constexpr std::array<std::uint8_t, 4> aid = CRYPT_NAME("AID", 0x2B8725D7E95325F5ULL);
   handler.AddField(DecryptName<0x2B8725D7E95325F5ULL>(aid), account, 4);
-  const std::array<std::uint8_t, 4> gid = {0x4A, 0x12, 0x2D, 0x83};
+  constexpr std::array<std::uint8_t, 4> gid = CRYPT_NAME("GID", 0x899D11BB83695B0DULL);
   handler.AddField(DecryptName<0x899D11BB83695B0DULL>(gid), character, 4);
-  const std::array<std::uint8_t, 10> authToken = {0x2A, 0x7E, 0xD1, 0xAD, 0xD3, 0xB2, 0xC6, 0xD8, 0x05, 0x0B};
+  constexpr std::array<std::uint8_t, 10> authToken = CRYPT_NAME("AuthToken", 0xBDADDD87C5A50B6BULL);
   handler.AddField(DecryptName<0xBDADDD87C5A50B6BULL>(authToken), this->m_token, 4);
-  const std::array<std::uint8_t, 5> typeName = {0xE9, 0xE4, 0x4B, 0x82, 0x0D};
+  constexpr std::array<std::uint8_t, 5> typeName = CRYPT_NAME("Type", 0x7989830DE73B9DBDULL);
   handler.AddField(DecryptName<0x7989830DE73B9DBDULL>(typeName), type, 4);
-  const std::array<std::uint8_t, 10> worldName = {0xDE, 0x52, 0x1F, 0x89, 0xC3, 0x4F, 0x46, 0x42, 0xEC, 0x3D};
+  constexpr std::array<std::uint8_t, 10> worldName = CRYPT_NAME("WorldName", 0x2F2701A7E56D3D89ULL);
   handler.AddField(DecryptName<0x2F2701A7E56D3D89ULL>(worldName), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    const std::array<std::uint8_t, 5> good = {0x42, 0xFE, 0x68, 0xC7, 0xE1};
+    constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x6B3301E1A3079125ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x6B3301E1A3079125ULL>(good), loadSource, 115);
     this->m_diagnostic.MoveFrom(diagnostic);
   }
@@ -159,26 +160,26 @@ bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
 
   CCURLPostHander handler(this->m_url);
-  const std::array<std::uint8_t, 4> aid = {0x48, 0xE0, 0x03, 0x5F};
+  constexpr std::array<std::uint8_t, 4> aid = CRYPT_NAME("AID", 0xD3755DD95F47A909ULL);
   handler.AddField(DecryptName<0xD3755DD95F47A909ULL>(aid), account, 4);
-  const std::array<std::uint8_t, 4> gid = {0x2A, 0xAA, 0x01, 0xA3};
+  constexpr std::array<std::uint8_t, 4> gid = CRYPT_NAME("GID", 0x31D7C1EDA345E36DULL);
   handler.AddField(DecryptName<0x31D7C1EDA345E36DULL>(gid), character, 4);
-  const std::array<std::uint8_t, 10> authToken = {0x2C, 0x16, 0x41, 0x45, 0xF1, 0x6C, 0xE4, 0xBC, 0x03, 0x63};
+  constexpr std::array<std::uint8_t, 10> authToken = CRYPT_NAME("AuthToken", 0xD98F03A52D35636DULL);
   handler.AddField(DecryptName<0xD98F03A52D35636DULL>(authToken), this->m_token, 4);
-  const std::array<std::uint8_t, 10> worldName = {0x86, 0x76, 0xEF, 0xE3, 0x0F, 0xC5, 0x6E, 0x62, 0xB4, 0x19};
+  constexpr std::array<std::uint8_t, 10> worldName = CRYPT_NAME("WorldName", 0x0F0F8B6B8F9D19D1ULL);
   handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(worldName), name, 4);
-  const std::array<std::uint8_t, 5> typeName = {0x01, 0x84, 0xC5, 0xBE, 0xC7};
+  constexpr std::array<std::uint8_t, 5> typeName = CRYPT_NAME("Type", 0x3375B1C7DBB5FD55ULL);
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(typeName), type, 4);
-  const std::array<std::uint8_t, 5> dataName = {0x7B, 0x50, 0xB9, 0x86, 0xED};
+  constexpr std::array<std::uint8_t, 5> dataName = CRYPT_NAME("data", 0x1D6D75EDE7CD311FULL);
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(dataName), this->m_data, 4);
 
   if (handler.Perform() != 0) {
-    const std::array<std::uint8_t, 5> fail = {0xC7, 0x5C, 0xF6, 0xBB, 0x63};
+    constexpr std::array<std::uint8_t, 5> fail = CRYPT_NAME("fail", 0x59278F63D79F3DA1ULL);
     AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x59278F63D79F3DA1ULL>(fail), saveSource, 112);
     this->m_diagnostic.MoveFrom(diagnostic);
     this->m_response = handler.Response();
   } else {
-    const std::array<std::uint8_t, 5> good = {0xD0, 0x68, 0x38, 0xA9, 0x2B};
+    constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x812BE72BCD5707B7ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x812BE72BCD5707B7ULL>(good), saveSource, 122);
     this->m_diagnostic.MoveFrom(diagnostic);
     this->m_response = handler.Response();

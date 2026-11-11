@@ -99,6 +99,7 @@
 #include <timeapi.h>
 #include <utility>
 #include "Resource/MSGSTRINGID.h"
+#include "Utility/Cipher/CryptName.h"
 
 // GLOBAL: gl_24398
 RECT Rect;
@@ -467,7 +468,7 @@ const char* EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>::Text() {
 // OFFSET: 0x00E55EC0
 // FUNCTION: fn_24331
 EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() const {
-  const std::array<std::uint8_t, 14> source = {0x2C, 0x27, 0x61, 0x68, 0xF6, 0x57, 0xCA, 0x81, 0x28, 0x4D, 0x70, 0x75, 0xE0, 0x03};
+  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("ADTESTEXE.EXE", 0xD98F03A52D35636DULL);
   thread_local EncryptedName<sizeof(source), 0xD98F03A52D35636DULL> name(source);
   return name;
 }
@@ -475,7 +476,7 @@ EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() con
 // OFFSET: 0x00E55F90
 // FUNCTION: fn_24332
 EncryptedName<13, 0x73D1674B61DF7B0BULL>& RagexeMProcessName::operator()() const {
-  const std::array<std::uint8_t, 13> source = {0x59, 0x3A, 0x98, 0x24, 0x13, 0x22, 0x8E, 0x3E, 0x25, 0x3E, 0x87, 0x24, 0x4B};
+  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXE_M.EXE", 0x73D1674B61DF7B0BULL);
   thread_local EncryptedName<sizeof(source), 0x73D1674B61DF7B0BULL> name(source);
   return name;
 }
@@ -483,7 +484,7 @@ EncryptedName<13, 0x73D1674B61DF7B0BULL>& RagexeMProcessName::operator()() const
 // OFFSET: 0x00E56060
 // FUNCTION: fn_24333
 EncryptedName<13, 0x91651D81F559F971ULL>& SakexeMProcessName::operator()() const {
-  const std::array<std::uint8_t, 13> source = {0x22, 0xB8, 0x12, 0xB0, 0xD9, 0x58, 0x3A, 0xDC, 0x5F, 0xBC, 0x01, 0xB0, 0x81};
+  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("SAKEXE_M.EXE", 0x91651D81F559F971ULL);
   thread_local EncryptedName<sizeof(source), 0x91651D81F559F971ULL> name(source);
   return name;
 }
@@ -491,7 +492,7 @@ EncryptedName<13, 0x91651D81F559F971ULL>& SakexeMProcessName::operator()() const
 // OFFSET: 0x00E56130
 // FUNCTION: fn_24334
 EncryptedName<13, 0x17359BF953C367B3ULL>& Kernel32LibraryName::operator()() const {
-  const std::array<std::uint8_t, 13> source = {0xD8, 0x02, 0xB1, 0x3D, 0x9C, 0xF7, 0x06, 0x25, 0x9D, 0x03, 0xAF, 0x3F, 0xF9};
+  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("kernel32.dll", 0x17359BF953C367B3ULL);
   thread_local EncryptedName<sizeof(source), 0x17359BF953C367B3ULL> name(source);
   return name;
 }
@@ -499,7 +500,7 @@ EncryptedName<13, 0x17359BF953C367B3ULL>& Kernel32LibraryName::operator()() cons
 // OFFSET: 0x00E56200
 // FUNCTION: fn_24335
 EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
-  const std::array<std::uint8_t, 10> source = {0xC9, 0x7E, 0x4E, 0xD1, 0x2A, 0xD5, 0x6B, 0x25, 0xD5, 0x0D};
+  constexpr std::array<std::uint8_t, 10> source = CRYPT_NAME("psapi.dll", 0x490FFB43A12F0DB9ULL);
   thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> name(source);
   return name;
 }
@@ -507,8 +508,8 @@ EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
 // OFFSET: 0x00E562D0
 // FUNCTION: fn_24336
 EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator()() const {
-  const char source[] = {'\x64', '\x73', '\x62', '\x0C', '\x77', '\xA0', '\xA7', '\x40', '\x48', '\x6D', '\x6F', '\x08', '\x6F', '\xB5', '\xC0', '\x1D',
-                         '\x74', '\x6F', '\x66', '\x1D', '\x70', '\xAD', '\x9C', '\x5B', '\x27'};
+  constexpr auto sourceText = CRYPT_NAME("CreateToolhelp32Snapshot", 0x2FF3C5036D070127ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
   return name;
 }
@@ -516,7 +517,7 @@ EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator
 // OFFSET: 0x00E563B0
 // FUNCTION: fn_24337
 EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const {
-  const std::array<std::uint8_t, 14> source = {0x92, 0x21, 0x76, 0xF8, 0x89, 0xF7, 0xC0, 0x5C, 0xB2, 0x3C, 0x70, 0xF0, 0xAA, 0x85};
+  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("EnumProcesses", 0x3FAF85D995034FD7ULL);
   thread_local EncryptedName<sizeof(source), 0x3FAF85D995034FD7ULL> name(source);
   return name;
 }
@@ -524,9 +525,8 @@ EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const 
 // OFFSET: 0x00E56480
 // FUNCTION: fn_24338
 EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::operator()() const {
-  const char source[] = {'\x40', '\xE2', '\xFD', '\x1F', '\x60', '\x91', '\x15', '\x1C', '\x71', '\xC6', '\xEB', '\x28', '\x62', '\x9A', '\x0F', '\x0A',
-                         '\x7A', '\xEE', '\xFE', '\x1B', '\x3F', '\xC5', '\x22', '\x1B', '\x66', '\xC2', '\xED', '\x0C', '\x4C', '\x91', '\x12', '\x1D',
-                         '\x62', '\xCD', '\xFA', '\x0C', '\x2D', '\xD6', '\x61'};
+  constexpr auto sourceText = CRYPT_NAME("CAdventurerAgencyMgr::CreateInstance()", 0x6961FF056999A303ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x6961FF056999A303ULL> name(source);
   return name;
 }
@@ -534,9 +534,8 @@ EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::op
 // OFFSET: 0x00E56560
 // FUNCTION: fn_24339
 EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::operator()() const {
-  const char source[] = {'\x24', '\x66', '\xB9', '\xC4', '\x74', '\xB4', '\x8A', '\xEE', '\x05', '\x65', '\x84', '\xC8', '\x6B', '\x91', '\x8E', '\xEF',
-                         '\x05', '\x56', '\xA6', '\xC6', '\x77', '\xFB', '\xD5', '\xDE', '\x03', '\x4A', '\x8A', '\xD5', '\x60', '\x88', '\x81', '\xEE',
-                         '\x05', '\x4E', '\x85', '\xC2', '\x60', '\xE9', '\xC6', '\x9D'};
+  constexpr auto sourceText = CRYPT_NAME("UIRequestJoinPartyMgr::CreateInstance()", 0x9DEFC105A1EB2F71ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x9DEFC105A1EB2F71ULL> name(source);
   return name;
 }
@@ -544,9 +543,8 @@ EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::op
 // OFFSET: 0x00E56640
 // FUNCTION: fn_24340
 EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::operator()() const {
-  const char source[] = {'\x3A', '\xAA', '\x45', '\xE9', '\x58', '\xDD', '\x81', '\x78', '\x0B', '\x8E', '\x66', '\xEA', '\x54', '\xD7', '\x90', '\x40',
-                         '\x1E', '\x99', '\x1B', '\xA5', '\x7E', '\xC1', '\x90', '\x6C', '\x0D', '\x8E', '\x68', '\xF1', '\x4E', '\xC7', '\x94', '\x63',
-                         '\x1A', '\x8E', '\x09', '\xB6', '\x3D'};
+  constexpr auto sourceText = CRYPT_NAME("CAdventureGuideMgr::CreateInstance()", 0x0DF5B33D9F21EB79ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
   return name;
 }
@@ -554,7 +552,7 @@ EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::oper
 // OFFSET: 0x00E56720
 // FUNCTION: fn_24341
 EncryptedName<5, 0x01E7898D9D235DDFULL>& GoodResultName::operator()() const {
-  const std::array<std::uint8_t, 5> source = {0xB8, 0x32, 0x4C, 0xF9, 0x8D};
+  constexpr std::array<std::uint8_t, 5> source = CRYPT_NAME("good", 0x01E7898D9D235DDFULL);
   thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
   return name;
 }
@@ -562,7 +560,7 @@ EncryptedName<5, 0x01E7898D9D235DDFULL>& GoodResultName::operator()() const {
 // OFFSET: 0x00E567E0
 // FUNCTION: fn_24342
 EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const {
-  const std::array<std::uint8_t, 15> source = {0x4F, 0x43, 0xA2, 0x84, 0x88, 0x06, 0x1E, 0x2E, 0x2D, 0x77, 0xA4, 0x95, 0x9E, 0x01, 0x6D};
+  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("Process32First", 0x1D6D75EDE7CD311FULL);
   thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> name(source);
   return name;
 }
@@ -570,7 +568,8 @@ EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const
 // OFFSET: 0x00E568C0
 // FUNCTION: fn_24343
 EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() const {
-  const char source[] = {'\x02', '\x4F', '\xCE', '\x86', '\xBB', '\x05', '\x70', '\x76', '\x22', '\x52', '\xC8', '\xA6', '\x84', '\x13', '\x6A', '\x79', '\x22', '\x52', '\xBB'};
+  constexpr auto sourceText = CRYPT_NAME("EnumProcessModules", 0x151F77EBEBBB2147ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
   return name;
 }
@@ -578,7 +577,7 @@ EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() c
 // OFFSET: 0x00E56990
 // FUNCTION: fn_24344
 EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const {
-  const std::array<std::uint8_t, 14> source = {0x05, 0x8F, 0xDA, 0xB8, 0xA2, 0xC2, 0x06, 0x00, 0x67, 0xB3, 0xD0, 0xA3, 0xB3, 0xB1};
+  constexpr std::array<std::uint8_t, 14> source = CRYPT_NAME("Process32Next", 0x3375B1C7DBB5FD55ULL);
   thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
   return name;
 }
@@ -586,7 +585,8 @@ EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const 
 // OFFSET: 0x00E56A60
 // FUNCTION: fn_24345
 EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() const {
-  const char source[] = {'\x74', '\x42', '\x47', '\x42', '\xD2', '\x29', '\x4C', '\x41', '\x56', '\x65', '\x52', '\x7C', '\xD8', '\x03', '\x58', '\x40', '\x56', '\x66', '\x33'};
+  constexpr auto sourceText = CRYPT_NAME("GetModuleBaseNameA", 0x2D394DBD0F332733ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
   return name;
 }
@@ -594,7 +594,7 @@ EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() c
 // OFFSET: 0x00E56B30
 // FUNCTION: fn_24346
 EncryptedName<11, 0x7D993F650D2785FFULL>& RagexeModuleName::operator()() const {
-  const std::array<std::uint8_t, 11> source = {0xAD, 0xC4, 0x60, 0x48, 0x3D, 0x7A, 0xB7, 0x38, 0xA7, 0xC0, 0x27};
+  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("RAGEXE.EXE", 0x7D993F650D2785FFULL);
   thread_local EncryptedName<sizeof(source), 0x7D993F650D2785FFULL> name(source);
   return name;
 }
@@ -602,7 +602,7 @@ EncryptedName<11, 0x7D993F650D2785FFULL>& RagexeModuleName::operator()() const {
 // OFFSET: 0x00E56C00
 // FUNCTION: fn_24347
 EncryptedName<11, 0x812BE72BCD5707B7ULL>& RagexeProcessName::operator()() const {
-  const std::array<std::uint8_t, 11> source = {0xE5, 0x46, 0x10, 0x88, 0x73, 0xA2, 0x05, 0xC4, 0xEF, 0x42, 0x57};
+  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("RAGEXE.EXE", 0x812BE72BCD5707B7ULL);
   thread_local EncryptedName<sizeof(source), 0x812BE72BCD5707B7ULL> name(source);
   return name;
 }
@@ -610,7 +610,7 @@ EncryptedName<11, 0x812BE72BCD5707B7ULL>& RagexeProcessName::operator()() const 
 // OFFSET: 0x00E56CD0
 // FUNCTION: fn_24348
 EncryptedName<11, 0x61FF87ED7BF39BE1ULL>& SakexeModuleName::operator()() const {
-  const std::array<std::uint8_t, 11> source = {0xB2, 0xDA, 0xB8, 0x3E, 0xB5, 0xC2, 0xD1, 0x24, 0xB9, 0xDE, 0xF3};
+  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("SAKEXE.EXE", 0x61FF87ED7BF39BE1ULL);
   thread_local EncryptedName<sizeof(source), 0x61FF87ED7BF39BE1ULL> name(source);
   return name;
 }
@@ -618,7 +618,7 @@ EncryptedName<11, 0x61FF87ED7BF39BE1ULL>& SakexeModuleName::operator()() const {
 // OFFSET: 0x00E56DA0
 // FUNCTION: fn_24349
 EncryptedName<11, 0x59278F63D79F3DA1ULL>& SakexeProcessName::operator()() const {
-  const std::array<std::uint8_t, 11> source = {0xF2, 0x7C, 0xD4, 0x92, 0x3B, 0xCA, 0x09, 0x1C, 0xF9, 0x78, 0x9F};
+  constexpr std::array<std::uint8_t, 11> source = CRYPT_NAME("SAKEXE.EXE", 0x59278F63D79F3DA1ULL);
   thread_local EncryptedName<sizeof(source), 0x59278F63D79F3DA1ULL> name(source);
   return name;
 }
@@ -626,7 +626,7 @@ EncryptedName<11, 0x59278F63D79F3DA1ULL>& SakexeProcessName::operator()() const 
 // OFFSET: 0x00E56E70
 // FUNCTION: fn_24350
 EncryptedName<13, 0x2D3B15774149D5DDULL>& RagexereModuleName::operator()() const {
-  const std::array<std::uint8_t, 13> source = {0x8F, 0x94, 0x0E, 0x04, 0x2F, 0x50, 0x69, 0x68, 0xF3, 0x90, 0x11, 0x04, 0x77};
+  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXERE.EXE", 0x2D3B15774149D5DDULL);
   thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
   return name;
 }
@@ -634,7 +634,7 @@ EncryptedName<13, 0x2D3B15774149D5DDULL>& RagexereModuleName::operator()() const
 // OFFSET: 0x00E56F40
 // FUNCTION: fn_24351
 EncryptedName<13, 0x31D7C1EDA345E36DULL>& RagexereProcessName::operator()() const {
-  const std::array<std::uint8_t, 13> source = {0x3F, 0xA2, 0x02, 0xE6, 0xB5, 0x84, 0x85, 0x74, 0x43, 0xA6, 0x1D, 0xE6, 0xED};
+  constexpr std::array<std::uint8_t, 13> source = CRYPT_NAME("RAGEXERE.EXE", 0x31D7C1EDA345E36DULL);
   thread_local EncryptedName<sizeof(source), 0x31D7C1EDA345E36DULL> name(source);
   return name;
 }
@@ -642,7 +642,7 @@ EncryptedName<13, 0x31D7C1EDA345E36DULL>& RagexereProcessName::operator()() cons
 // OFFSET: 0x00E57010
 // FUNCTION: fn_24352
 EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() const {
-  const std::array<std::uint8_t, 15> source = {0x5B, 0xE8, 0x00, 0x0B, 0x9C, 0x0E, 0x21, 0x96, 0x51, 0xEC, 0x69, 0x1A, 0x81, 0x18, 0x75};
+  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("RAGTESTEXE.EXE", 0xD3755DD95F47A909ULL);
   thread_local EncryptedName<sizeof(source), 0xD3755DD95F47A909ULL> name(source);
   return name;
 }
@@ -650,7 +650,7 @@ EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() co
 // OFFSET: 0x00E570F0
 // FUNCTION: fn_24353
 EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() const {
-  const std::array<std::uint8_t, 15> source = {0x82, 0x58, 0xD6, 0xDB, 0x2E, 0xD8, 0x5B, 0x4A, 0x89, 0x5C, 0xB3, 0xCA, 0x33, 0xCE, 0x0F};
+  constexpr std::array<std::uint8_t, 15> source = CRYPT_NAME("SAKTESTEXE.EXE", 0x0F0F8B6B8F9D19D1ULL);
   thread_local EncryptedName<sizeof(source), 0x0F0F8B6B8F9D19D1ULL> name(source);
   return name;
 }
@@ -733,22 +733,22 @@ bool RestartFromCommandLine() {
 // OFFSET: 0x00E58A60
 // FUNCTION: fn_24365
 void ApplyAiPatch() {
-  const std::array<std::uint8_t, 9> patchSource = {0xAE, 0x6A, 0x8A, 0x9F, 0x78, 0x25, 0xF2, 0x53, 0xEF};
+  constexpr std::array<std::uint8_t, 9> patchSource = CRYPT_NAME("AI_patch", 0x3B915119EFD523EFULL);
   EncryptedName<sizeof(patchSource), 0x3B915119EFD523EFULL>& patchName = ThreadLocalName<0x3B915119EFD523EFULL>(patchSource);
   if (_access(patchName.Text(), 0) != 0) {
     return;
   }
 
-  const std::array<std::uint8_t, 3> aiSource = {0x5A, 0x44, 0x39};
+  constexpr std::array<std::uint8_t, 3> aiSource = CRYPT_NAME("AI", 0x5B8F49AF09390D1BULL);
   EncryptedName<sizeof(aiSource), 0x5B8F49AF09390D1BULL>& aiName = ThreadLocalName<0x5B8F49AF09390D1BULL>(aiSource);
   if (_access(aiName.Text(), 0) != 0) {
     return;
   }
 
-  const std::array<std::uint8_t, 10> backupSource = {0x80, 0x9A, 0x84, 0x15, 0xFA, 0x16, 0xA8, 0x3C, 0xB1, 0xD3};
+  constexpr std::array<std::uint8_t, 10> backupSource = CRYPT_NAME("AI_backup", 0x49C3759B77DBD3C1ULL);
   EncryptedName<sizeof(backupSource), 0x49C3759B77DBD3C1ULL>& backupName = ThreadLocalName<0x49C3759B77DBD3C1ULL>(backupSource);
   if (_access(backupName.Text(), 0) == 0) {
-    const std::array<std::uint8_t, 10> deleteSource = {0xDA, 0xE4, 0x2A, 0xAD, 0xB0, 0x5E, 0x86, 0x18, 0xEB, 0xAD};
+    constexpr std::array<std::uint8_t, 10> deleteSource = CRYPT_NAME("AI_backup", 0x6DED3DD1CF75AD9BULL);
     char path[16] = {};
     EncryptedName<sizeof(deleteSource), 0x6DED3DD1CF75AD9BULL>& deleteName = ThreadLocalName<0x6DED3DD1CF75AD9BULL>(deleteSource);
     std::strcpy(path, deleteName.Text());
@@ -757,24 +757,24 @@ void ApplyAiPatch() {
     SHFileOperationA(&operation);
   }
 
-  const std::array<std::uint8_t, 10> backupTargetSource = {0xBC, 0xB4, 0x22, 0x91, 0x80, 0x76, 0x92, 0x6E, 0x8D, 0xFD};
+  constexpr std::array<std::uint8_t, 10> backupTargetSource = CRYPT_NAME("AI_backup", 0x1BF915E1F37DFDFDULL);
   EncryptedName<sizeof(backupTargetSource), 0x1BF915E1F37DFDFDULL>& backupTarget = ThreadLocalName<0x1BF915E1F37DFDFDULL>(backupTargetSource);
   const char* backup = backupTarget.Text();
-  const std::array<std::uint8_t, 3> currentSource = {0x9E, 0x90, 0x5D};
+  constexpr std::array<std::uint8_t, 3> currentSource = CRYPT_NAME("AI", 0x01FF9313695DD9DFULL);
   EncryptedName<sizeof(currentSource), 0x01FF9313695DD9DFULL>& current = ThreadLocalName<0x01FF9313695DD9DFULL>(currentSource);
   std::rename(current.Text(), backup);
 
-  const std::array<std::uint8_t, 3> installTargetSource = {0x52, 0x8E, 0x03};
+  constexpr std::array<std::uint8_t, 3> installTargetSource = CRYPT_NAME("AI", 0x4F1791FB1503C713ULL);
   EncryptedName<sizeof(installTargetSource), 0x4F1791FB1503C713ULL>& installTarget = ThreadLocalName<0x4F1791FB1503C713ULL>(installTargetSource);
   const char* install = installTarget.Text();
-  const std::array<std::uint8_t, 9> patchedSource = {0x92, 0xA4, 0xC8, 0x65, 0x2C, 0x2F, 0xC6, 0xC9, 0xD3};
+  constexpr std::array<std::uint8_t, 9> patchedSource = CRYPT_NAME("AI_patch", 0xA1A55B4D1597EDD3ULL);
   EncryptedName<sizeof(patchedSource), 0xA1A55B4D1597EDD3ULL>& patched = ThreadLocalName<0xA1A55B4D1597EDD3ULL>(patchedSource);
   std::rename(patched.Text(), install);
 }
 
 // INLINED
 void ExitForProtectionCheck(const char* commandLine) {
-  const std::array<std::uint8_t, 15> checkSource = {0x64, 0xB0, 0x1F, 0xE0, 0x92, 0x06, 0xA4, 0xB3, 0x23, 0xB6, 0x1A, 0xEC, 0x95, 0x0C, 0xFB};
+  constexpr std::array<std::uint8_t, 15> checkSource = CRYPT_NAME("/check_themida", 0xC7FB6DF18577D34BULL);
   EncryptedName<sizeof(checkSource), 0xC7FB6DF18577D34BULL>& check = ThreadLocalName<0xC7FB6DF18577D34BULL>(checkSource);
   if (std::strstr(commandLine, check.Text())) {
     ExitProcess(0);
@@ -936,12 +936,12 @@ int InitApp(HINSTANCE instance, int showCommand) {
     GetSystemMetrics(SM_CXSCREEN);
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      const std::array<std::uint8_t, 12> xSource = {0x78, 0xF6, 0xDD, 0xBF, 0x80, 0xBE, 0x48, 0xC3, 0x7F, 0xF0, 0xC0, 0xDB};
+      constexpr std::array<std::uint8_t, 12> xSource = CRYPT_NAME("Window_XPos", 0x9B17C9EFDBB39F2FULL);
       EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL>& xName = ThreadLocalName<0x9B17C9EFDBB39F2FULL>(xSource);
       x = g_session.GetOptionInteger(xName.Text(), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
-      const std::array<std::uint8_t, 12> ySource = {0x3A, 0x5A, 0x61, 0xF1, 0xB4, 0x32, 0x8C, 0x30, 0x3D, 0x5C, 0x7C, 0x95};
+      constexpr std::array<std::uint8_t, 12> ySource = CRYPT_NAME("Window_YPos", 0x69D345DB950F336DULL);
       EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL>& yName = ThreadLocalName<0x69D345DB950F336DULL>(ySource);
       y = g_session.GetOptionInteger(yName.Text(), defaultY);
     } else {
@@ -966,7 +966,7 @@ int InitApp(HINSTANCE instance, int showCommand) {
   int windowWidth = static_cast<int>(width);
   int windowHeight = static_cast<int>(height);
   if (!g_configuredFullscreen) {
-    const std::array<std::uint8_t, 14> traySource = {0x22, 0x73, 0x96, 0x93, 0xEB, 0x7A, 0xC5, 0xB5, 0x10, 0x62, 0xA4, 0x91, 0xE3, 0x25};
+    constexpr std::array<std::uint8_t, 14> traySource = CRYPT_NAME("Shell_TrayWnd", 0xC7912587FFF31B71ULL);
     EncryptedName<sizeof(traySource), 0xC7912587FFF31B71ULL>& trayName = ThreadLocalName<0xC7912587FFF31B71ULL>(traySource);
     RECT trayRect;
     HWND tray = FindWindowA(trayName.Text(), nullptr);
@@ -989,11 +989,10 @@ int InitApp(HINSTANCE instance, int showCommand) {
 
   hWnd = CreateApplicationWindow(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
   if (!hWnd) {
-    const std::array<std::uint8_t, 6> titleSource = {0x8C, 0xE5, 0x77, 0xD8, 0xE9, 0x33};
+    constexpr std::array<std::uint8_t, 6> titleSource = CRYPT_NAME("ERROR", 0x078333BB9725B7C9ULL);
     EncryptedName<sizeof(titleSource), 0x078333BB9725B7C9ULL>& title = ThreadLocalName<0x078333BB9725B7C9ULL>(titleSource);
     const char* caption = title.Text();
-    const std::array<std::uint8_t, 23> messageSource = {0xE2, 0x1C, 0x0F, 0x3B, 0x92, 0x2C, 0x3B, 0xCC, 0xC7, 0x10, 0x00, 0x2B,
-                                          0x94, 0x34, 0x75, 0xAF, 0xF3, 0x14, 0x08, 0x33, 0x98, 0x3F, 0x1B};
+    constexpr std::array<std::uint8_t, 23> messageSource = CRYPT_NAME("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL);
     EncryptedName<sizeof(messageSource), 0x8F1B5BFD5F6175B5ULL>& message = ThreadLocalName<0x8F1B5BFD5F6175B5ULL>(messageSource);
     MessageBoxA(nullptr, message.Text(), caption, MB_OK);
     return 0;

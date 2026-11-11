@@ -16,6 +16,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <algorithm>
 #include <array>
@@ -433,7 +434,8 @@ void CSkillAction_KR_THUNDERING_FOCUS::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  const char effectSource[] = {'\x95', '\xF3', '\x86', '\x15', '\x89', '\xE2', '\x8D', '\x08', '\x8F', '\xFC', '\xAC', '\x1D', '\x82', '\xE4', '\x8A', '\x12', '\xBE', '\xFC', '\xF3'};
+  constexpr auto effectSourceText = CRYPT_NAME("thundering_focus_g", 0x61FF87ED7BF39BE1ULL);
+  const auto& effectSource = effectSourceText.data;
   thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
@@ -451,7 +453,8 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  const char effectSource[] = {'\x8B', '\xED', '\x52', '\x63', '\x01', '\x5A', '\xEB', '\x14', '\x91', '\xE2', '\x78', '\x6B', '\x0A', '\x5C', '\xEC', '\x0E', '\xA0', '\xFC', '\x27'};
+  constexpr auto effectSourceText = CRYPT_NAME("thundering_focus_y", 0x7D993F650D2785FFULL);
+  const auto& effectSource = effectSourceText.data;
   thread_local EncryptedName<sizeof(effectSource), 0x7D993F650D2785FFULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
@@ -658,7 +661,7 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillCast(int level, CGameActor* source) {
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::array<char, 13> bytes = {'\x6A', '\x05', '\xAE', '\x8D', '\x2D', '\x64', '\xAF', '\x20', '\x71', '\x0C', '\xA6', '\x93', '\x5D'};
+        constexpr std::array<char, 13> bytes = CRYPT_NAME("sharpen_hail", 0x7FC1015DFFCF6D19ULL);
         thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
         return name.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
@@ -666,8 +669,7 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillCast(int level, CGameActor* source) {
   }
   effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        const std::array<char, 20> bytes = {'\x50', '\xEB', '\xBA', '\xF1', '\x31', '\xD8', '\x51', '\x94', '\x4B', '\xE2', '\xB2', '\xEF', '\x1E', '\xDF', '\x50', '\xBF',
-                                      '\x57', '\xEC', '\xB6', '\x83'};
+        constexpr std::array<char, 20> bytes = CRYPT_NAME("sharpen_hail_bottom", 0xCB3FBD4183DB8323ULL);
         thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
         return name.Text();
       }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
@@ -804,26 +806,28 @@ void CSkillAction_KR_TYPHOON_WING::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_KR_TYPHOON_WING::OnGroundSkillEffect(vector3d position, int level, int argument5) {
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(
     level < 6 ? std::string([] {
-      const char source[] = {'\x67', '\xBE', '\x73', '\x7D', '\x94', '\xFE', '\x79', '\x10', '\x64', '\xAE', '\x6D', '\x72', '\xA4', '\xA4', '\x6F', '\x7A', '\x13'};
+      constexpr auto sourceText = CRYPT_NAME("typhoon_wing_5x5", 0x4F1791FB1503C713ULL);
+      const auto& source = sourceText.data;
       thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
       return name.Text();
     }())
               : std::string([] {
-      const char source[] = {'\xA7', '\x94', '\xE7', '\x7D', '\x22', '\x34', '\xCB', '\xFE', '\xA4', '\x84', '\xF9', '\x72', '\x12', '\x6C', '\xDD', '\x96', '\xD3'};
+      constexpr auto sourceText = CRYPT_NAME("typhoon_wing_7x7", 0xA1A55B4D1597EDD3ULL);
+      const auto& source = sourceText.data;
       thread_local EncryptedName<sizeof(source), 0xA1A55B4D1597EDD3ULL> name(source);
       return name.Text();
     }())
   );
   const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId(
     level < 6 ? std::string([] {
-      const char source[] = {'\x89', '\x84', '\x0D', '\x9B', '\x8E', '\x7A', '\x97', '\x44', '\x8A', '\x94', '\x13', '\x94',
-                                     '\xBE', '\x20', '\x81', '\x2E', '\xA2', '\x9F', '\x12', '\x87', '\x95', '\x7A', '\x94', '\x1B'};
+      constexpr auto sourceText = CRYPT_NAME("typhoon_wing_5x5_bottom", 0x1BF915E1F37DFDFDULL);
+      const auto& source = sourceText.data;
       thread_local EncryptedName<sizeof(source), 0x1BF915E1F37DFDFDULL> name(source);
       return name.Text();
     }())
               : std::string([] {
-      const char source[] = {'\xAB', '\xA0', '\x2D', '\x01', '\x7C', '\xFC', '\x91', '\x5E', '\xA8', '\xB0', '\x33', '\x0E',
-                                     '\x4C', '\xA4', '\x87', '\x36', '\x80', '\xBB', '\x32', '\x1D', '\x67', '\xFC', '\x92', '\x01'};
+      constexpr auto sourceText = CRYPT_NAME("typhoon_wing_7x7_bottom", 0x01FF9313695DD9DFULL);
+      const auto& source = sourceText.data;
       thread_local EncryptedName<sizeof(source), 0x01FF9313695DD9DFULL> name(source);
       return name.Text();
     }())
@@ -874,13 +878,13 @@ void CEfstAction_WIND_VEIL::OnEfstBegin(int efstId, int value, int argument3, in
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::array<char, 10> source = {'\xEC', '\xC4', '\x19', '\xAB', '\x8E', '\x4B', '\x88', '\x04', '\xF7', '\xAD'};
+    constexpr std::array<char, 10> source = CRYPT_NAME("wild_veil", 0x6DED3DD1CF75AD9BULL);
     thread_local EncryptedName<sizeof(source), 0x6DED3DD1CF75AD9BULL> name(source);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::array<char, 17> source = {'\xB6', '\xBA', '\xB7', '\x13', '\xC4', '\x03', '\xA6', '\x20', '\xAD', '\x8C', '\xB9', '\x18', '\xEF', '\x01', '\xAC', '\x24', '\xC1'};
+    constexpr std::array<char, 17> source = CRYPT_NAME("wild_veil_bottom", 0x49C3759B77DBD3C1ULL);
     thread_local EncryptedName<sizeof(source), 0x49C3759B77DBD3C1ULL> name(source);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -895,13 +899,13 @@ void CEfstAction_WIND_VEIL::OnEfstEnd(int efstId, int argument2, int argument3, 
 
   EffectLists* effects = g_effectMgr;
   effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::array<char, 10> source = {'\xD8', '\x26', '\x47', '\x87', '\x80', '\x63', '\x36', '\x56', '\xC3', '\x4F'};
+    constexpr std::array<char, 10> source = CRYPT_NAME("wild_veil", 0x3F5315DFE32B4FAFULL);
     thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
     return name.Text();
   }()));
   effects = g_effectMgr;
   effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::array<char, 17> source = {'\x9E', '\xBA', '\x51', '\x63', '\x6A', '\x5F', '\x6E', '\x8C', '\x85', '\x8C', '\x5F', '\x68', '\x41', '\x5D', '\x64', '\x88', '\xE9'};
+    constexpr std::array<char, 17> source = CRYPT_NAME("wild_veil_bottom", 0xE50B2935073DD3E9ULL);
     thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
     return name.Text();
   }()));

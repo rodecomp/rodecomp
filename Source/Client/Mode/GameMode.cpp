@@ -99,6 +99,7 @@
 #include "Network/TextEncoding.h"
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 extern "C" long long _Xtime_get_ticks();
 
@@ -5607,8 +5608,8 @@ int CGameMode::Run() {
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
       if (!message.empty()) {
-        const char source[] = {'\x53', '\x11', '\xF9', '\xA6', '\x8D', '\x7E', '\xA6', '\xD9', '\x1D', '\x06',
-                                       '\xEA', '\xA4', '\x9C', '\x5C', '\xB0', '\xCC', '\x4F', '\x25', '\x8B'};
+        constexpr auto sourceText = CRYPT_NAME("nProtect GameGuard", 0xADC51BF9C98B413DULL);
+        const auto& source = sourceText.data;
         thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
         MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
       }
@@ -6614,19 +6615,24 @@ void CGameMode::UpdateBalloons() {
       shownSkill = this->skillId;
       std::string text;
       if (shownSkill == 10000) {
-        const char source[] = {'\xBC', '\x82', '\x2D', '\x77', '\xD2', '\xDD', '\xC6', '\x1F', '\xB2', '\x8C', '\x33', '\x70', '\xD3', '\xCA', '\xD1', '\x3F'};
+        constexpr auto sourceText = CRYPT_NAME("Capture Monster", 0x3FA3AFA7035DE3FFULL);
+        const auto& source = sourceText.data;
         text.assign(DecryptGameModeName<0x3FA3AFA7035DE3FFULL>(source));
       } else if (shownSkill == 20000) {
-        const char source[] = {'\x09', '\xEB', '\x66', '\x1C', '\x26', '\xAE', '\x07', '\x96', '\x38', '\xF5', '\x71', '\x04', '\x75', '\x86', '\x42', '\xDB'};
+        constexpr auto sourceText = CRYPT_NAME("Please Marry Me", 0xDB27CB557D038759ULL);
+        const auto& source = sourceText.data;
         text = DecryptGameModeName<0xDB27CB557D038759ULL>(source);
       } else if (shownSkill == 20001) {
-        const char source[] = {'\xCF', '\xD8', '\x9B', '\x0E', '\xCE', '\x19', '\xF9', '\x30', '\xEF', '\xC4', '\xBB'};
+        constexpr auto sourceText = CRYPT_NAME("Be my Baby", 0x51BB39B763BBBD8DULL);
+        const auto& source = sourceText.data;
         text = DecryptGameModeName<0x51BB39B763BBBD8DULL>(source);
       } else if (shownSkill == 40000) {
-        const char source[] = {'\xAC', '\x4C', '\x27', '\x79', '\xB0', '\xA3', '\x86', '\xA7', '\xA2', '\x42', '\x39', '\x7E', '\xB1', '\xB4', '\x91', '\x87'};
+        constexpr auto sourceText = CRYPT_NAME("Capture Monster", 0x87E3D1C50D572DEFULL);
+        const auto& source = sourceText.data;
         text = DecryptGameModeName<0x87E3D1C50D572DEFULL>(source);
       } else if (g_session.IsState291To303(shownSkill)) {
-        const char source[] = {'\x3E', '\x4A', '\xC2', '\xE6', '\x2F'};
+        constexpr auto sourceText = CRYPT_NAME("????", 0xB7AFBD2FD9FD7501ULL);
+        const auto& source = sourceText.data;
         text = DecryptGameModeName<0xB7AFBD2FD9FD7501ULL>(source);
       } else {
         text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);

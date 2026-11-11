@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <array>
 #include <cstdio>
@@ -76,14 +77,14 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  const std::array<std::uint8_t, 4> aid = {0x56, 0xB0, 0x0B, 0xB9};
+  constexpr std::array<std::uint8_t, 4> aid = CRYPT_NAME("AID", 0xC52FB5FBB94FF917ULL);
   handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);
-  const std::array<std::uint8_t, 10> worldName = {0x92, 0xA2, 0xF5, 0x99, 0xC5, 0xED, 0x86, 0xFE, 0xA0, 0xCD};
+  constexpr std::array<std::uint8_t, 10> worldName = CRYPT_NAME("WorldName", 0x93E7A3A1F587CDC5ULL);
   handler.AddField(DecryptName<0x93E7A3A1F587CDC5ULL>(worldName), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    const std::array<std::uint8_t, 5> good = {0x40, 0x6E, 0x68, 0x09, 0x03};
+    constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x2FF3C5036D070127ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FF3C5036D070127ULL>(good), 92);
     this->m_diagnostic.MoveFrom(diagnostic);
   }

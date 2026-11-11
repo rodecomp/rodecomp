@@ -8,6 +8,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Threading/NSyncObject.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <array>
@@ -124,35 +125,43 @@ std::string CNProtectGameGuardMgr::ErrorMessage() {
 const char* CNProtectGameGuardMgr::GameName() {
   switch (g_serviceType) {
   case 3: {
-    const char source[] = {'\xB3', '\xD6', '\xC4', '\x01', '\x81'};
+    constexpr auto sourceText = CRYPT_NAME("ROCN", 0x7321C3814F8799E1ULL);
+    const auto& source = sourceText.data;
     return DecryptName<0x7321C3814F8799E1ULL>(source);
   }
   case 0:
     if (std::strstr(g_session.clientVersion, g_devClientTag) != nullptr) {
-      const char source[] = {'\x1D', '\xC0', '\xA8', '\x5B', '\x02', '\xA5', '\x2E', '\x12', '\x04', '\xF3', '\xCF'};
+      constexpr auto sourceText = CRYPT_NAME("RagnarokKR", 0x7941D76335CFA14FULL);
+      const auto& source = sourceText.data;
       return DecryptName<0x7941D76335CFA14FULL>(source);
     } else {
-      const char source[] = {'\x2D', '\xB4', '\xC8', '\x35', '\x0A', '\xC3', '\x7A', '\x64', '\x34', '\x87', '\xAF'};
+      constexpr auto sourceText = CRYPT_NAME("RagnarokKR", 0x0F15B16B5BAFD57FULL);
+      const auto& source = sourceText.data;
       return DecryptName<0x0F15B16B5BAFD57FULL>(source);
     }
   case 2: {
-    const char source[] = {'\x71', '\x90', '\xB0', '\x79', '\xB6', '\x3B', '\x8C', '\x16', '\x69', '\xA1', '\xD7'};
+    constexpr auto sourceText = CRYPT_NAME("RagnarokJP", 0x7DE349D717D7F123ULL);
+    const auto& source = sourceText.data;
     return DecryptName<0x7DE349D717D7F123ULL>(source);
   }
   case 12: {
-    const char source[] = {'\x0F', '\x6C', '\x2E', '\xE7', '\xC0', '\x0F', '\x82', '\xF4', '\x1F', '\x5F', '\x49'};
+    constexpr auto sourceText = CRYPT_NAME("RagnarokBR", 0x9FED7DA189490D5DULL);
+    const auto& source = sourceText.data;
     return DecryptName<0x9FED7DA189490D5DULL>(source);
   }
   case 7: {
-    const char source[] = {'\x37', '\x34', '\xAE', '\x11', '\x6C', '\x9D', '\x40', '\x2E', '\x35', '\x1D', '\xC9'};
+    constexpr auto sourceText = CRYPT_NAME("RagnarokPH", 0x452FEF0D7FC95565ULL);
+    const auto& source = sourceText.data;
     return DecryptName<0x452FEF0D7FC95565ULL>(source);
   }
   case 4: {
-    const char source[] = {'\x3F', '\x54', '\xF3', '\x46', '\x77'};
+    constexpr auto sourceText = CRYPT_NAME("ROTW", 0xF3CB6F7711A71B6DULL);
+    const auto& source = sourceText.data;
     return DecryptName<0xF3CB6F7711A71B6DULL>(source);
   }
   default: {
-    const char source[] = {'\xE1', '\x06', '\x3E', '\xE1', '\xBE', '\x55', '\xF4', '\xE8', '\xB3'};
+    constexpr auto sourceText = CRYPT_NAME("Ragnarok", 0x839B27DF8F5967B3ULL);
+    const auto& source = sourceText.data;
     return DecryptName<0x839B27DF8F5967B3ULL>(source);
   }
   }
@@ -189,20 +198,23 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   switch (code) {
   case 0x3F3: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    const char source[] = {'\x32', '\x68', '\x05', '\x86', '\xD9', '\xC2', '\x41'};
+    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x0F41EBBDA32D1B17ULL);
+    const auto& source = sourceText.data;
     manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
   case 0x3E9:
   case 0x3EA: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    const char source[] = {'\x98', '\x1B', '\x0A', '\x4D', '\xD8', '\x94', '\x3F', '\x05', '\xC8', '\x11', '\x48', '\x23'};
+    constexpr auto sourceText = CRYPT_NAME("unknown(%d)", 0x2D51E3B7236175EDULL);
+    const auto& source = sourceText.data;
     manager->SetError(g_nprotectSource, 0x13B, std::string(FormatString(DecryptName<0x2D51E3B7236175EDULL>(source), code)));
     return 0;
   }
   case 0x3F6: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    const char source[] = {'\x40', '\x80', '\xFF', '\x78', '\xE9', '\x3A', '\x6F'};
+    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x176F138D5DD7F365ULL);
+    const auto& source = sourceText.data;
     manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
@@ -214,7 +226,8 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   }
   case 0x3F7: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    const char source[] = {'\xE4', '\x34', '\xED', '\x32', '\x85', '\xB0', '\xD5'};
+    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0xFBD599E117C547C1ULL);
+    const auto& source = sourceText.data;
     manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
@@ -244,14 +257,14 @@ bool CNProtectGameGuardMgr::Initialize() {
   const int status = gameLib->Init();
   if (status != 0x755) {
     char message[0x400] = {};
-    const std::array<char, 21> bodySource = {'\x18', '\x54', '\xC2', '\xF0', '\xDA', '\xFC', '\x92', '\xBD', '\x3B', '\x15', '\xEA', '\xE7', '\xEF', '\xE6', '\x81', '\xF5', '\x7F', '\x10', '\xC3', '\xE0', '\x9D'};
+    constexpr std::array<char, 21> bodySource = CRYPT_NAME("GameGuard Error: %lu", 0xCFF3899D95AF355FULL);
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), DecryptName<0xCFF3899D95AF355FULL>(bodySource), status);
 
     char title[0x100] = {};
-    const std::array<char, 22> titleSource = {'\x62', '\x10', '\xC2', '\xAE', '\x4A', '\x86', '\x4C', '\x97', '\x41', '\x51', '\xEA', '\xB9', '\x7F', '\x9C', '\x5F', '\xC5', '\x1F', '\x51', '\x8A', '\xA7', '\x78', '\xF3'};
+    constexpr std::array<char, 22> titleSource = CRYPT_NAME("GameGuard Error : %lu", 0xE52DF30DCBAF7125ULL);
     StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), DecryptName<0xE52DF30DCBAF7125ULL>(titleSource), status);
 
-    const std::array<char, 10> tagSource = {'\xF6', '\x41', '\x9F', '\xAF', '\x7A', '\x91', '\xC9', '\x08', '\xF2', '\x31'};
+    constexpr std::array<char, 10> tagSource = CRYPT_NAME("ApplyNPGE", 0x4F99DF03C3EF31B7ULL);
     if (std::strstr(g_commandLine, DecryptName<0x4F99DF03C3EF31B7ULL>(tagSource)) == nullptr) {
       MessageBoxA(hWnd, message, title, 0);
       return false;

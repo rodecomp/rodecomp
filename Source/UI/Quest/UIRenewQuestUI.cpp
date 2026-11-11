@@ -20,6 +20,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
@@ -411,7 +412,8 @@ __declspec(noinline) EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
 // OFFSET: 0x00A5A620
 // FUNCTION: fn_16401
 __declspec(noinline) EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonName1() {
-  const char source[] = {'\x0F', '\x74', '\x11', '\xEF', '\x59', '\xE1', '\xAA', '\xDE', '\x09', '\x3F', '\x11', '\xD9', '\x24', '\x95', '\x33', '\x41', '\xAA', '\xB5', '\xB4', '\x62', '\xC6', '\x7E', '\x1A', '\x76', '\xBC', '\xAF', '\x84', '\x5C', '\xC5', '\x4D', '\x1B', '\x7D', '\x90', '\xB5', '\xBE', '\x67', '\xF4', '\x4E', '\x03', '\x4C', '\xA0', '\xBD', '\xB7', '\x3B', '\xFB', '\x42', '\x1F', '\x13'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x136F2F9915D1DBCFULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
   return name;
 }
@@ -419,7 +421,8 @@ __declspec(noinline) EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonNa
 // OFFSET: 0x00A5A700
 // FUNCTION: fn_16402
 __declspec(noinline) EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonName() {
-  const char source[] = {'\xEB', '\x78', '\x89', '\xD5', '\xCF', '\x1F', '\xE6', '\xC6', '\xED', '\x33', '\x89', '\xE3', '\xB2', '\x6B', '\x7F', '\x59', '\x4E', '\xB9', '\x2C', '\x58', '\x50', '\x80', '\x56', '\x6E', '\x58', '\xA3', '\x1C', '\x66', '\x53', '\xB3', '\x57', '\x65', '\x74', '\xB9', '\x26', '\x5D', '\x62', '\xB0', '\x4F', '\x54', '\x44', '\xB9', '\x67', '\x4D', '\x62', '\xA1', '\x23'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_on.bmp", 0x0B23D10F2F49D72BULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
   return name;
 }
@@ -427,7 +430,8 @@ __declspec(noinline) EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonNam
 // OFFSET: 0x00A5A7F0
 // FUNCTION: fn_16403
 __declspec(noinline) EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonName2() {
-  const char source[] = {'\x81', '\x92', '\x97', '\x8F', '\xF9', '\x51', '\x88', '\xAA', '\x87', '\xD9', '\x97', '\xB9', '\x84', '\x25', '\x11', '\x35', '\x24', '\x53', '\x32', '\x02', '\x66', '\xCE', '\x38', '\x02', '\x32', '\x49', '\x02', '\x3C', '\x65', '\xFD', '\x39', '\x09', '\x1E', '\x53', '\x38', '\x07', '\x54', '\xFE', '\x21', '\x38', '\x2E', '\x5B', '\x31', '\x5B', '\x5B', '\xF2', '\x3D', '\x67'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x674D9F3975573D41ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
   return name;
 }
@@ -435,7 +439,8 @@ __declspec(noinline) EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonNa
 // OFFSET: 0x00A5A8D0
 // FUNCTION: fn_16404
 __declspec(noinline) EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonName3() {
-  const char source[] = {'\x91', '\x02', '\x3D', '\xD1', '\x8F', '\xFD', '\x1A', '\xA6', '\x97', '\x49', '\x3D', '\xE7', '\xF2', '\x89', '\x83', '\x39', '\x34', '\xC3', '\x98', '\x5C', '\x10', '\x62', '\xAA', '\x0E', '\x22', '\xD9', '\xA8', '\x62', '\x13', '\x51', '\xAB', '\x05', '\x0E', '\xC3', '\x92', '\x59', '\x22', '\x52', '\xB3', '\x34', '\x3E', '\xCB', '\x9B', '\x05', '\x2D', '\x5E', '\xAF', '\x6B'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x6BDF334F2BFDAD51ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
   return name;
 }
@@ -451,7 +456,8 @@ __declspec(noinline) EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
 // OFFSET: 0x00A5AA80
 // FUNCTION: fn_16406
 __declspec(noinline) EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1() {
-  const char source[] = {'\x1D', '\xFA', '\xAF', '\x55', '\x29', '\xDB', '\x2C', '\xB4', '\x1B', '\xB1', '\xAF', '\x63', '\x54', '\xAF', '\xB5', '\x2B', '\xB8', '\x3B', '\x0A', '\xD8', '\xB6', '\x44', '\x9C', '\x1C', '\xAE', '\x21', '\x3A', '\xE6', '\xB5', '\x77', '\x9D', '\x17', '\x82', '\x26', '\x1A', '\xCD', '\xB6', '\x7A', '\x8F', '\x1F', '\xF3', '\x37', '\x02', '\xDF', '\xE9'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x79E915E9AF6F55DDULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
   return name;
 }
@@ -459,7 +465,8 @@ __declspec(noinline) EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1
 // OFFSET: 0x00A5AB70
 // FUNCTION: fn_16407
 __declspec(noinline) EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName() {
-  const char source[] = {'\x23', '\x7A', '\x93', '\x0D', '\x65', '\xC9', '\x26', '\x7E', '\x25', '\x31', '\x93', '\x3B', '\x18', '\xBD', '\xBF', '\xE1', '\x86', '\xBB', '\x36', '\x80', '\xFA', '\x56', '\x96', '\xD6', '\x90', '\xA1', '\x06', '\xBE', '\xF9', '\x65', '\x97', '\xDD', '\xBC', '\xA6', '\x26', '\x95', '\xFA', '\x68', '\x8D', '\x9D', '\x81', '\xB8', '\x23', '\xF7'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_on.bmp", 0xB3E307A5F753D5E3ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
   return name;
 }
@@ -467,7 +474,8 @@ __declspec(noinline) EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName()
 // OFFSET: 0x00A5AC50
 // FUNCTION: fn_16408
 __declspec(noinline) EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2() {
-  const char source[] = {'\x25', '\xD4', '\xF3', '\xD3', '\x8D', '\xAB', '\xE8', '\xD4', '\x23', '\x9F', '\xF3', '\xE5', '\xF0', '\xDF', '\x71', '\x4B', '\x80', '\x15', '\x56', '\x5E', '\x12', '\x34', '\x58', '\x7C', '\x96', '\x0F', '\x66', '\x60', '\x11', '\x07', '\x59', '\x77', '\xBA', '\x08', '\x46', '\x4B', '\x12', '\x0A', '\x4B', '\x7F', '\xCB', '\x19', '\x5E', '\x59', '\x4D'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x192D654D29337BE5ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
   return name;
 }
@@ -475,7 +483,8 @@ __declspec(noinline) EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2
 // OFFSET: 0x00A5AD40
 // FUNCTION: fn_16409
 __declspec(noinline) EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3() {
-  const char source[] = {'\x7F', '\xC6', '\x23', '\x37', '\x45', '\x49', '\x9A', '\x3C', '\x79', '\x8D', '\x23', '\x01', '\x38', '\x3D', '\x03', '\xA3', '\xDA', '\x07', '\x86', '\xBA', '\xDA', '\xD6', '\x2A', '\x94', '\xCC', '\x1D', '\xB6', '\x84', '\xD9', '\xE5', '\x2B', '\x9F', '\xE0', '\x1A', '\x96', '\xAF', '\xDA', '\xE8', '\x39', '\x97', '\x91', '\x0B', '\x8E', '\xBD', '\x85'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0xF15F8785CDE369BFULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
   return name;
 }
@@ -491,7 +500,8 @@ __declspec(noinline) EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
 // OFFSET: 0x00A5AF00
 // FUNCTION: fn_16411
 __declspec(noinline) EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonName1() {
-  const char source[] = {'\xF3', '\xCC', '\x95', '\x0B', '\xE9', '\xFB', '\x16', '\x84', '\xF5', '\x87', '\x95', '\x3D', '\x94', '\x8F', '\x8F', '\x1B', '\x56', '\x0D', '\x30', '\x86', '\x76', '\x64', '\xA6', '\x2C', '\x40', '\x17', '\x00', '\xB8', '\x75', '\x57', '\xA7', '\x27', '\x6C', '\x07', '\x34', '\x98', '\x45', '\x4C', '\x8C', '\x26', '\x55', '\x05', '\x7B', '\x93', '\x44', '\x45', '\xD3'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x49D33529F1556333ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
   return name;
 }
@@ -499,7 +509,8 @@ __declspec(noinline) EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonNam
 // OFFSET: 0x00A5AFF0
 // FUNCTION: fn_16412
 __declspec(noinline) EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName() {
-  const char source[] = {'\x75', '\x20', '\x81', '\xDF', '\xD3', '\x33', '\xEA', '\xB4', '\x73', '\x6B', '\x81', '\xE9', '\xAE', '\x47', '\x73', '\x2B', '\xD0', '\xE1', '\x24', '\x52', '\x4C', '\xAC', '\x5A', '\x1C', '\xC6', '\xFB', '\x14', '\x6C', '\x4F', '\x9F', '\x5B', '\x17', '\xEA', '\xEB', '\x20', '\x4C', '\x7F', '\x84', '\x70', '\x16', '\xDB', '\xA1', '\x23', '\x48', '\x63', '\xFD'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_on.bmp", 0x792FFD1325418FB5ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
   return name;
 }
@@ -507,7 +518,8 @@ __declspec(noinline) EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName
 // OFFSET: 0x00A5B0E0
 // FUNCTION: fn_16413
 __declspec(noinline) EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonName2() {
-  const char source[] = {'\x57', '\x66', '\x09', '\x61', '\x0D', '\x75', '\x74', '\x08', '\x51', '\x2D', '\x09', '\x57', '\x70', '\x01', '\xED', '\x97', '\xF2', '\xA7', '\xAC', '\xEC', '\x92', '\xEA', '\xC4', '\xA0', '\xE4', '\xBD', '\x9C', '\xD2', '\x91', '\xD9', '\xC5', '\xAB', '\xC8', '\xAD', '\xA8', '\xF2', '\xA1', '\xC2', '\xEE', '\xAA', '\xF1', '\xAF', '\xE7', '\xF9', '\xA0', '\xCB', '\xB1'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0xC5B1BBCD9BC9C997ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
   return name;
 }
@@ -515,7 +527,8 @@ __declspec(noinline) EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonNam
 // OFFSET: 0x00A5B1D0
 // FUNCTION: fn_16414
 __declspec(noinline) EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonName3() {
-  const char source[] = {'\xF1', '\x56', '\x13', '\x03', '\xDD', '\x81', '\x0E', '\xCC', '\xF7', '\x1D', '\x13', '\x35', '\xA0', '\xF5', '\x97', '\x53', '\x54', '\x97', '\xB6', '\x8E', '\x42', '\x1E', '\xBE', '\x64', '\x42', '\x8D', '\x86', '\xB0', '\x41', '\x2D', '\xBF', '\x6F', '\x6E', '\x9D', '\xB2', '\x90', '\x71', '\x36', '\x94', '\x6E', '\x57', '\x9F', '\xFD', '\x9B', '\x70', '\x3F', '\xCB'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x01CB4F1DF9D3F931ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
   return name;
 }
@@ -531,7 +544,8 @@ __declspec(noinline) EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
 // OFFSET: 0x00A5B390
 // FUNCTION: fn_16416
 __declspec(noinline) EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonName1() {
-  const char source[] = {'\x21', '\x2C', '\x11', '\x17', '\xD1', '\x4F', '\x7E', '\x0C', '\x27', '\x67', '\x11', '\x21', '\xAC', '\x3B', '\xE7', '\x93', '\x84', '\xED', '\xB4', '\x9A', '\x4E', '\xD0', '\xCE', '\xA4', '\x92', '\xF7', '\x84', '\xA4', '\x4D', '\xE3', '\xCF', '\xAF', '\xBE', '\xE6', '\xA7', '\x88', '\x7F', '\xF5', '\xE4', '\xAE', '\x87', '\xE5', '\xFF', '\x8F', '\x7C', '\xF1', '\xBB'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0xC1BB8111EDD183E1ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
   return name;
 }
@@ -539,7 +553,8 @@ __declspec(noinline) EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonNam
 // OFFSET: 0x00A5B480
 // FUNCTION: fn_16417
 __declspec(noinline) EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName() {
-  const char source[] = {'\x5F', '\x72', '\x43', '\xE5', '\xB7', '\x8B', '\xDE', '\xEA', '\x59', '\x39', '\x43', '\xD3', '\xCA', '\xFF', '\x47', '\x75', '\xFA', '\xB3', '\xE6', '\x68', '\x28', '\x14', '\x6E', '\x42', '\xEC', '\xA9', '\xD6', '\x56', '\x2B', '\x27', '\x6F', '\x49', '\xC0', '\xB8', '\xF5', '\x7A', '\x19', '\x31', '\x44', '\x48', '\xF1', '\xF3', '\xE1', '\x72', '\x07', '\x45'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_on.bmp", 0x271B45771F83DD9FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
   return name;
 }
@@ -547,7 +562,8 @@ __declspec(noinline) EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName
 // OFFSET: 0x00A5B570
 // FUNCTION: fn_16418
 __declspec(noinline) EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonName2() {
-  const char source[] = {'\xD7', '\xFE', '\x21', '\xBB', '\xF9', '\x0D', '\x46', '\x4A', '\xD1', '\xB5', '\x21', '\x8D', '\x84', '\x79', '\xDF', '\xD5', '\x72', '\x3F', '\x84', '\x36', '\x66', '\x92', '\xF6', '\xE2', '\x64', '\x25', '\xB4', '\x08', '\x65', '\xA1', '\xF7', '\xE9', '\x48', '\x34', '\x97', '\x24', '\x57', '\xB7', '\xDC', '\xE8', '\x71', '\x37', '\xCF', '\x23', '\x54', '\xB3', '\x83'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x8783C33941E15117ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
   return name;
 }
@@ -555,7 +571,8 @@ __declspec(noinline) EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonNam
 // OFFSET: 0x00A5B660
 // FUNCTION: fn_16419
 __declspec(noinline) EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonName3() {
-  const char source[] = {'\x17', '\x3A', '\xDF', '\x61', '\x91', '\x8B', '\x42', '\xC6', '\x11', '\x71', '\xDF', '\x57', '\xEC', '\xFF', '\xDB', '\x59', '\xB2', '\xFB', '\x7A', '\xEC', '\x0E', '\x14', '\xF2', '\x6E', '\xA4', '\xE1', '\x4A', '\xD2', '\x0D', '\x27', '\xF3', '\x65', '\x88', '\xF0', '\x69', '\xFE', '\x3F', '\x31', '\xD8', '\x64', '\xB1', '\xF3', '\x31', '\xF9', '\x3C', '\x35', '\x87'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x0B8745519B1F95D7ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
   return name;
 }
@@ -571,7 +588,8 @@ __declspec(noinline) EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
 // OFFSET: 0x00A5B820
 // FUNCTION: fn_16421
 __declspec(noinline) EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1() {
-  const char source[] = {'\xB3', '\x40', '\x7B', '\x2B', '\x15', '\x2D', '\x6E', '\x32', '\xB5', '\x0B', '\x7B', '\x1D', '\x68', '\x59', '\xF7', '\xAD', '\x16', '\x81', '\xDE', '\xA6', '\x8A', '\xB2', '\xDE', '\x9A', '\x00', '\x9B', '\xEE', '\x98', '\x89', '\x81', '\xDF', '\x91', '\x2C', '\x8A', '\xCF', '\xB2', '\x8A', '\x8C', '\xCD', '\x99', '\x5D', '\x8D', '\xD6', '\xA1', '\xD5'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xFFABE3D5D1BBEF73ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
   return name;
 }
@@ -579,7 +597,8 @@ __declspec(noinline) EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1
 // OFFSET: 0x00A5B910
 // FUNCTION: fn_16422
 __declspec(noinline) EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName() {
-  const char source[] = {'\x15', '\x96', '\xEB', '\xB3', '\x27', '\x69', '\x52', '\x68', '\x13', '\xDD', '\xEB', '\x85', '\x5A', '\x1D', '\xCB', '\xF7', '\xB0', '\x57', '\x4E', '\x3E', '\xB8', '\xF6', '\xE2', '\xC0', '\xA6', '\x4D', '\x7E', '\x00', '\xBB', '\xC5', '\xE3', '\xCB', '\x8A', '\x5C', '\x5F', '\x2A', '\xB8', '\xC8', '\xF9', '\x8B', '\xB7', '\x54', '\x5B', '\x49'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_on.bmp", 0xA597A7E7492B39D5ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
   return name;
 }
@@ -587,7 +606,8 @@ __declspec(noinline) EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName()
 // OFFSET: 0x00A5B9F0
 // FUNCTION: fn_16423
 __declspec(noinline) EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2() {
-  const char source[] = {'\x6B', '\x00', '\x4D', '\x77', '\x73', '\x43', '\x62', '\x18', '\x6D', '\x4B', '\x4D', '\x41', '\x0E', '\x37', '\xFB', '\x87', '\xCE', '\xC1', '\xE8', '\xFA', '\xEC', '\xDC', '\xD2', '\xB0', '\xD8', '\xDB', '\xD8', '\xC4', '\xEF', '\xEF', '\xD3', '\xBB', '\xF4', '\xCA', '\xF9', '\xEE', '\xEC', '\xE2', '\xC1', '\xB3', '\x85', '\xCD', '\xE0', '\xFD', '\xB3'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xD5A78DB38D8DAFABULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
   return name;
 }
@@ -595,7 +615,8 @@ __declspec(noinline) EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2
 // OFFSET: 0x00A5BAE0
 // FUNCTION: fn_16424
 __declspec(noinline) EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3() {
-  const char source[] = {'\xCF', '\xE0', '\x85', '\x55', '\x5D', '\x8B', '\x5C', '\xCE', '\xC9', '\xAB', '\x85', '\x63', '\x20', '\xFF', '\xC5', '\x51', '\x6A', '\x21', '\x20', '\xD8', '\xC2', '\x14', '\xEC', '\x66', '\x7C', '\x3B', '\x10', '\xE6', '\xC1', '\x27', '\xED', '\x6D', '\x50', '\x2A', '\x31', '\xCC', '\xC2', '\x2A', '\xFF', '\x65', '\x21', '\x2D', '\x28', '\xDF', '\x9D'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0x0399459DAF454F0FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
   return name;
 }
@@ -603,7 +624,8 @@ __declspec(noinline) EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3
 // OFFSET: 0x00A5BBD0
 // FUNCTION: fn_16425
 __declspec(noinline) EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButtonName() {
-  const char source[] = {'\xE7', '\x0A', '\x53', '\x65', '\xC1', '\x9D', '\xA4', '\x60', '\xE1', '\x41', '\x53', '\x53', '\xBC', '\xE9', '\x3D', '\xFF', '\x42', '\xCB', '\xF6', '\xE8', '\x5E', '\x02', '\x14', '\xC8', '\x54', '\xD1', '\xC6', '\xD6', '\x5D', '\x31', '\x15', '\xC3', '\x78', '\xD6', '\xF6', '\xFE', '\x73', '\x30', '\x09', '\xF2', '\x49', '\xCA', '\xE1', '\xF2', '\x60', '\x3F', '\x4F', '\xCF', '\x4A', '\xD5', '\x93'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_normal.bmp", 0xAD6153019F93A527ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
   return name;
 }
@@ -611,7 +633,8 @@ __declspec(noinline) EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButto
 // OFFSET: 0x00A5BCB0
 // FUNCTION: fn_16426
 __declspec(noinline) EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButtonName() {
-  const char source[] = {'\xBF', '\xF4', '\xB5', '\x5F', '\x67', '\x3B', '\x24', '\x48', '\xB9', '\xBF', '\xB5', '\x69', '\x1A', '\x4F', '\xBD', '\xD7', '\x1A', '\x35', '\x10', '\xD2', '\xF8', '\xA4', '\x94', '\xE0', '\x0C', '\x2F', '\x20', '\xEC', '\xFB', '\x97', '\x95', '\xEB', '\x20', '\x28', '\x10', '\xC4', '\xD5', '\x96', '\x89', '\xDA', '\x0F', '\x29', '\x10', '\xD6', '\xD4', '\xDB', '\x83', '\xE8', '\x0F', '\x5B'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_press.bmp", 0x85E1F5A7A5755B7FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
   return name;
 }
@@ -619,7 +642,8 @@ __declspec(noinline) EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButton
 // OFFSET: 0x00A5BD90
 // FUNCTION: fn_16427
 __declspec(noinline) EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonName() {
-  const char source[] = {'\xFD', '\xD2', '\x95', '\xDB', '\x01', '\xBB', '\x5C', '\xA8', '\xFB', '\x99', '\x95', '\xED', '\x7C', '\xCF', '\xC5', '\x37', '\x58', '\x13', '\x30', '\x56', '\x9E', '\x24', '\xEC', '\x00', '\x4E', '\x09', '\x00', '\x68', '\x9D', '\x17', '\xED', '\x0B', '\x62', '\x0E', '\x30', '\x40', '\xB3', '\x16', '\xF1', '\x3A', '\x52', '\x0B', '\x30', '\x53', '\xEF', '\x17', '\xF4', '\x15', '\x3D'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_over.bmp", 0x659975C121557D3DULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
   return name;
 }
@@ -627,7 +651,8 @@ __declspec(noinline) EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonN
 // OFFSET: 0x00A5BE70
 // FUNCTION: fn_16428
 __declspec(noinline) EncryptedName<52, 0xBFF5C517A1A77F59ULL>& SearchDisableButtonName() {
-  const char source[] = {'\x99', '\xD0', '\x67', '\x5B', '\xD7', '\x0B', '\x30', '\x72', '\x9F', '\x9B', '\x67', '\x6D', '\xAA', '\x7F', '\xA9', '\xED', '\x3C', '\x11', '\xC2', '\xD6', '\x48', '\x94', '\x80', '\xDA', '\x2A', '\x0B', '\xF2', '\xE8', '\x4B', '\xA7', '\x81', '\xD1', '\x06', '\x0C', '\xC2', '\xC0', '\x65', '\xA6', '\x9D', '\xE0', '\x3D', '\x16', '\xD4', '\xC0', '\x75', '\xA9', '\x90', '\x91', '\x3B', '\x12', '\xD7', '\xA1'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_disable.bmp", 0xBFF5C517A1A77F59ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
   return name;
 }
@@ -1446,30 +1471,17 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
   this->list->SetBinder([this](CUIQuestItem* item, const unsigned long& questId) { this->BindItem(item, questId); });
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    const char disabledSource[] = {
-      '\x09', '\x5A', '\x9F', '\x71', '\x4F', '\x1B', '\x7E', '\xEE', '\x0F', '\x11', '\x9F', '\x47', '\x32', '\x6F', '\xE7', '\x71',
-      '\xAC', '\x9B', '\x3A', '\xFC', '\xD0', '\x84', '\xCE', '\x46', '\xBA', '\x81', '\x0A', '\xC2', '\xD3', '\xB7', '\xDC', '\x7C',
-      '\xB8', '\x80', '\x3A', '\xF8', '\xFB', '\x99', '\xD2', '\x50', '\xBD', '\xDB', '\x3D', '\xE6', '\xFF', '\xD5'
-    };
+    constexpr auto disabledSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x23BBD58F8B5FF5C9ULL);
+    const auto& disabledSource = disabledSourceText.data;
     const std::string disabled(DecryptName<0x23BBD58F8B5FF5C9ULL>(disabledSource));
-    const char pressedSource[] = {
-      '\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\x9F',
-      '\x0A', '\x13', '\x9E', '\x54', '\x2E', '\x56', '\xFA', '\xA8', '\x1C', '\x09', '\xAE', '\x6A', '\x2D', '\x65', '\xE8', '\x92',
-      '\x1E', '\x08', '\x9E', '\x50', '\x05', '\x4B', '\xE6', '\xBE', '\x1B', '\x53', '\x99', '\x4E', '\x01', '\x07'
-    };
+    constexpr auto pressedSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0xCD8F077123FB7D6FULL);
+    const auto& pressedSource = pressedSourceText.data;
     const std::string pressed(DecryptName<0xCD8F077123FB7D6FULL>(pressedSource));
-    const char hoverSource[] = {
-      '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xCB',
-      '\x26', '\x47', '\x36', '\x50', '\x8A', '\xEE', '\x3C', '\xFC', '\x30', '\x5D', '\x06', '\x6E', '\x89', '\xDD', '\x2E', '\xC6',
-      '\x32', '\x5C', '\x36', '\x54', '\xA1', '\xF3', '\x20', '\xEA', '\x37', '\x76', '\x30', '\x4F', '\xB0', '\xDC', '\x22', '\xB7',
-      '\x21', '\x44', '\x23', '\x27'
-    };
+    constexpr auto hoverSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList_check.bmp", 0x9949BFD527532943ULL);
+    const auto& hoverSource = hoverSourceText.data;
     const std::string hover(DecryptName<0x9949BFD527532943ULL>(hoverSource));
-    const char normalSource[] = {
-      '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x45',
-      '\x52', '\x29', '\xC8', '\x4E', '\xE0', '\xB4', '\xDC', '\x72', '\x44', '\x33', '\xF8', '\x70', '\xE3', '\x87', '\xCE', '\x48',
-      '\x46', '\x32', '\xC8', '\x4A', '\xCB', '\xA9', '\xC0', '\x64', '\x43', '\x69', '\xCF', '\x54', '\xCF', '\xE5'
-    };
+    constexpr auto normalSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x17A9E5BF39AD4737ULL);
+    const auto& normalSource = normalSourceText.data;
     const std::string normal(DecryptName<0x17A9E5BF39AD4737ULL>(normalSource));
     list->SetImages(normal, hover, pressed, disabled);
   }
@@ -1483,45 +1495,25 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
   this->list->scrollBar->step = 138;
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    const char downSource[] = {
-      '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x51',
-      '\xC0', '\xF3', '\x08', '\x8E', '\x3C', '\x76', '\x02', '\x66', '\xD6', '\xE9', '\x38', '\xB0', '\x3F', '\x45', '\x03', '\x5C',
-      '\xD6', '\xFE', '\x1F', '\x96', '\x0F', '\x4B', '\x15', '\x62', '\xD7', '\xC2', '\x0C', '\x8B', '\x11', '\x48', '\x00', '\x5C',
-      '\xC1', '\xF2', '\x1A', '\x97', '\x4D', '\x45', '\x1A', '\x73', '\xA5'
-    };
+    constexpr auto downSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp", 0x03772763F96D9DA5ULL);
+    const auto& downSource = downSourceText.data;
     const std::string down(DecryptName<0x03772763F96D9DA5ULL>(downSource));
-    const char upSource[] = {
-      '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\x97',
-      '\x08', '\xD5', '\xF0', '\x5A', '\xCC', '\xAA', '\x62', '\xA0', '\x1E', '\xCF', '\xC0', '\x64', '\xCF', '\x99', '\x63', '\x9A',
-      '\x1E', '\xD8', '\xE7', '\x42', '\xFF', '\x97', '\x75', '\xA4', '\x1F', '\xE4', '\xF4', '\x5F', '\xE1', '\x94', '\x60', '\x9A',
-      '\x18', '\xCB', '\xE5', '\x48', '\xE1', '\xD5', '\x75', '\xA8', '\x1D', '\xBB'
-    };
+    constexpr auto upSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", 0xC517FB932D95BB6DULL);
+    const auto& upSource = upSourceText.data;
     const std::string up(DecryptName<0xC517FB932D95BB6DULL>(upSource));
     list->SetScrollBarButtonImages(up, down);
   }
   this->list->SetScrollBarBackground("");
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    const char bottomSource[] = {
-      '\x2F', '\xDE', '\x1F', '\xE9', '\xAD', '\x81', '\x02', '\x20', '\x29', '\x95', '\x1F', '\xDF', '\xD0', '\xF5', '\x9B', '\xBF',
-      '\x8A', '\x1F', '\xBA', '\x64', '\x32', '\x1E', '\xB2', '\x88', '\x9C', '\x05', '\x8A', '\x5A', '\x31', '\x2D', '\xB3', '\xB2',
-      '\x9C', '\x12', '\xAD', '\x7C', '\x01', '\x23', '\x85', '\x8C', '\x9D', '\x2E', '\xBB', '\x7C', '\x1A', '\x21', '\xE9', '\x8F',
-      '\x82', '\x01', '\xDF'
-    };
+    constexpr auto bottomSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp", 0xEDC74F6D13DF71EFULL);
+    const auto& bottomSource = bottomSourceText.data;
     const std::string bottom(DecryptName<0xEDC74F6D13DF71EFULL>(bottomSource));
-    const char middleSource[] = {
-      '\x55', '\x20', '\x21', '\xF7', '\x9D', '\xC7', '\xA4', '\x3C', '\x53', '\x6B', '\x21', '\xC1', '\xE0', '\xB3', '\x3D', '\xA3',
-      '\xF0', '\xE1', '\x84', '\x7A', '\x02', '\x58', '\x14', '\x94', '\xE6', '\xFB', '\xB4', '\x44', '\x01', '\x6B', '\x15', '\xAE',
-      '\xE6', '\xEC', '\x93', '\x62', '\x31', '\x65', '\x23', '\x90', '\xE7', '\xD0', '\x8C', '\x64', '\x39', '\x27', '\x03', '\x9C',
-      '\xE5', '\x8F'
-    };
+    constexpr auto middleSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp", 0xF161095D0DE18F95ULL);
+    const auto& middleSource = middleSourceText.data;
     const std::string middle(DecryptName<0xF161095D0DE18F95ULL>(middleSource));
-    const char topSource[] = {
-      '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x59',
-      '\xE2', '\x7D', '\x0E', '\x08', '\x66', '\x58', '\x04', '\x6E', '\xF4', '\x67', '\x3E', '\x36', '\x65', '\x6B', '\x05', '\x54',
-      '\xF4', '\x70', '\x19', '\x10', '\x55', '\x65', '\x33', '\x6A', '\xF5', '\x4C', '\x1E', '\x0F', '\x17', '\x6B', '\x1C', '\x7B',
-      '\x87'
-    };
+    constexpr auto topSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", 0x0B7109397F6B1387ULL);
+    const auto& topSource = topSourceText.data;
     const std::string top(DecryptName<0x0B7109397F6B1387ULL>(topSource));
     list->SetScrollBarThumbImages(top, middle, bottom);
   }

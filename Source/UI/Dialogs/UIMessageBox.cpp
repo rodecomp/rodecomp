@@ -99,6 +99,7 @@
 #include "Resource/Bitmap/PaletteResource.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 
@@ -1098,9 +1099,8 @@ void UILoginOTPWnd::OnCreate(int, int) {
 // FUNCTION: fn_11764
 void UILoginOTPWnd::Paint() {
   auto& resources = ResourceMgr::Instance();
-  const char source[] = {'\x11', '\xF4', '\x57', '\x1F', '\xF9', '\x49', '\x2E', '\xE2', '\x17', '\xBF', '\x57', '\x29', '\x84', '\x3D', '\xB7', '\x43',
-                                 '\xBE', '\x3C', '\xFE', '\x8B', '\x66', '\xEE', '\x85', '\x5B', '\xB4', '\x29', '\xF1', '\x84', '\x5A', '\xE2', '\xB7', '\x4D',
-                                 '\xB6', '\x04', '\xF9', '\x80', '\x4E', '\xE8', '\x9F', '\x5F', '\xE0', '\x75', '\xF5', '\x88', '\x49', '\x87'};
+  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\login_interface\\bg_newotp1.bmp", 0x2FEB8739E5975BD1ULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
   auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
   this->DrawBitmap(0, 0, background, false);
@@ -2037,7 +2037,8 @@ void UILoginOTPWnd::OnProcess() {
 
   const unsigned remaining = static_cast<unsigned>(60.0 - (timeGetTime() - login->otpStarted) * 0.001);
   UIStaticText* timer = this->timerText;
-  const char source[] = {'\x6A', '\x91', '\xFD', '\x51', '\x43', '\xED', '\x61', '\x5C', '\x7F', '\x93', '\xAB', '\x35'};
+  constexpr auto sourceText = CRYPT_NAME("%02d : %02d", 0x7941D76335CFA14FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> format(source);
   timer->SetText(FormatOwnedString(format.Text(), remaining / 60, remaining % 60).c_str(), 0);
   this->Invalidate();
@@ -3289,11 +3290,8 @@ UIPetInfoWnd::~UIPetInfoWnd() {
 // OFFSET: 0x008A5CC0
 // FUNCTION: fn_11686
 EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
-  const char source[] = {'\x05', '\x6F', '\xD3', '\x61', '\x4D', '\x40', '\xE4', '\x81', '\x02', '\x35', '\xCF', '\x70', '\x19', '\x08', '\xAA', '\x9E',
-                                 '\x08', '\x35', '\xC4', '\x7E', '\x1A', '\x40', '\xA7', '\x9C', '\x0A', '\x72', '\xC9', '\x3E', '\x1B', '\x00', '\xAC', '\x9A',
-                                 '\x03', '\x68', '\xD3', '\x74', '\x07', '\x41', '\xAA', '\x80', '\x1D', '\x24', '\xD7', '\x63', '\x12', '\x19', '\x9E', '\xA1',
-                                 '\x21', '\x26', '\x88', '\x5F', '\x3F', '\x21', '\x88', '\x9C', '\x00', '\x76', '\xC8', '\x7F', '\x58', '\x21', '\x83', '\xBD',
-                                 '\x42', '\x56', '\xC2', '\x7C', '\x15', '\x0A', '\xB9', '\x99', '\x02', '\x72', '\xC9', '\x3F', '\x16', '\x1C', '\xBB', '\xF3'};
+  constexpr auto sourceText = CRYPT_NAME("http://ro.hangame.com/login/loginstep.asp?prevURL=/NHNCommon/NHN/Memberjoin.asp", 0xF3CB6F7711A71B6DULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
   return name;
 }
@@ -3429,7 +3427,8 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_windowMgr.Schedule(this);
       }
     } else if (a == 382) {
-      const char soundSource[] = {'\x58', '\x6F', '\x41', '\xFF', '\x3D', '\x11', '\x99', '\xDD', '\xCF', '\xEE', '\xE6', '\x39', '\x81'};
+      constexpr auto soundSourceText = CRYPT_NAME("버튼소리.wav", 0x7321C3814F8799E1ULL);
+      const auto& soundSource = soundSourceText.data;
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->authCodeEdit->Length() == 8) {

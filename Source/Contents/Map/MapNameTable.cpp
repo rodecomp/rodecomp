@@ -6,6 +6,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -18,7 +19,8 @@
 bool CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
   CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
-  const char source[] = {'\x52', '\x88', '\x4B', '\xB1', '\x0A', '\x62', '\x9E', '\x43', '\x5E', '\x8B', '\x57', '\x9A', '\x45', '\x7B', '\x83', '\x63', '\x3F'};
+  constexpr auto sourceText = CRYPT_NAME("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
   const bool loaded = storage.LoadTokens(tokens, name.Text(), 0);
 

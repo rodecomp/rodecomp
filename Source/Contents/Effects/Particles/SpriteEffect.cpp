@@ -1,6 +1,7 @@
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/SpriteEffect.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -335,12 +336,12 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 8.0f;
     break;
   case EF_UNK_2443: {
-    const char spriteSource[] = {'\x99', '\x4B', '\xC5', '\xAC', '\x93', '\x65', '\x7B', '\x98', '\x06', '\xB5', '\x33', '\x4F', '\x60',
-                                 '\x99', '\x48', '\xA8', '\x1F', '\xE2', '\x70', '\x09', '\x34', '\xE5', '\x54', '\xAB', '\x2B', '\x87'};
+    constexpr auto spriteSourceText = CRYPT_NAME("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL);
+    const auto& spriteSource = spriteSourceText.data;
     particle->SetSprite(DecryptName<0xDB27CB557D038759ULL>(spriteSource));
 
-    const char actionSource[] = {'\x4D', '\x71', '\x7D', '\xB2', '\x71', '\x97', '\xE7', '\x12', '\xD2', '\x8F', '\x8B', '\x51', '\x82',
-                                 '\x6B', '\xD4', '\x22', '\xCB', '\xD8', '\xC8', '\x17', '\xD6', '\x17', '\xDA', '\x32', '\xF9', '\xBD'};
+    constexpr auto actionSourceText = CRYPT_NAME("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL);
+    const auto& actionSource = actionSourceText.data;
     particle->SetAction(DecryptName<0x51BB39B763BBBD8DULL>(actionSource));
     particle->flags = 1;
     particle->depthOffset = 0.0015f;

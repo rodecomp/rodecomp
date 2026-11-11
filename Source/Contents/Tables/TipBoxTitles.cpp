@@ -7,6 +7,7 @@
 #include "Script/NLuaState.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -303,10 +304,12 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
   lua_register(state.GetState(), "AddPage", AddPage);
   lua_register(state.GetState(), "AddIsTag", AddIsTag);
 
-  const char source[] = {'\xF4', '\xCA', '\x76', '\xBD', '\xC0', '\x0E', '\xB7', '\x7F', '\xCE', '\xC3', '\x67', '\xA6', '\xDD', '\x4D', '\x87', '\x7E', '\xC6', '\xB3'};
+  constexpr auto sourceText = CRYPT_NAME("System\\tipbox.lua", 0x0BEB63A5C905B3A7ULL);
+  const auto& source = sourceText.data;
 
   if (luaL_loadfile(state.GetState(), DecryptName<0x0BEB63A5C905B3A7ULL>(source)) != 0) {
-    const char secondSource[] = {'\x9A', '\xCE', '\x56', '\xE3', '\xDE', '\x5E', '\xDF', '\x73', '\xA0', '\xC7', '\x47', '\xF8', '\xC3', '\x1D', '\xEF', '\x72', '\xAB', '\xB7'};
+    constexpr auto secondSourceText = CRYPT_NAME("System\\tipbox.lub", 0x078333BB9725B7C9ULL);
+    const auto& secondSource = secondSourceText.data;
 
     if (luaL_loadfile(state.GetState(), DecryptName<0x078333BB9725B7C9ULL>(secondSource)) != 0) {
       MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);

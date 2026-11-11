@@ -3,6 +3,7 @@
 #include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Utility/Cipher/EncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
@@ -108,11 +109,8 @@ UICashShopWnd::~UICashShopWnd() {
 // OFFSET: 0x007CE110
 // FUNCTION: fn_09523
 EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator()() const {
-  const char source[] = {'\x5E', '\x9B', '\x15', '\x3B', '\x39', '\xE9', '\x3F', '\x86', '\x55', '\xE5', '\x7B', '\x50', '\xB8', '\xE5', '\x53', '\x1B', '\x28', '\xF2', '\xF5', '\x2E',
-                         '\xA7', '\xE6', '\x68', '\xFB', '\x28', '\x03', '\x6B', '\x29', '\xD9', '\x9D', '\x54', '\xE0', '\x57', '\x9B', '\xF5', '\x5B', '\xFA', '\x91', '\x2A', '\x1B',
-                         '\x53', '\xD5', '\xF5', '\x2F', '\xCF', '\xEC', '\x51', '\x8F', '\x20', '\x97', '\x0C', '\xC1', '\x39', '\x0A', '\xB4', '\x48', '\xB2', '\x03', '\x6E', '\x1C',
-                         '\xDE', '\xE1', '\x51', '\x83', '\x58', '\xED', '\xF5', '\x5E', '\xAA', '\x92', '\x2D', '\xFC', '\x20', '\x9E', '\x16', '\x5F', '\xC3', '\xEC', '\x51', '\x8F',
-                         '\x20', '\x92', '\x3B', '\xD0', '\x19'};
+  constexpr auto sourceText = CRYPT_NAME("구입 리스트에는 한 종류의 아이템만 담을 수 있습니다. [%s] 상품으로 교체하시겠습니까?", 0x3B915119EFD523EFULL);
+  const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0x3B915119EFD523EFULL> name(source);
   return name;
 }

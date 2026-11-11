@@ -4,6 +4,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -219,8 +220,8 @@ bool CAchievementMgr::LoadAchievementInfo() {
     lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
     lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
     lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
-    const char source[] = {'\xCA', '\x74', '\x5C', '\xD5', '\x26', '\x96', '\x53', '\x08', '\xDA', '\x65', '\x46', '\xC4', '\x35', '\x9E',
-                           '\x62', '\x2C', '\xD7', '\x79', '\x70', '\xCD', '\x2A', '\x88', '\x7B', '\x67', '\xD5', '\x78', '\x4D', '\xA1'};
+    constexpr auto sourceText = CRYPT_NAME("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL);
+    const auto& source = sourceText.data;
     thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> path(source);
     if (luaL_loadfile(lua.GetState(), path.Text()) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
       MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
