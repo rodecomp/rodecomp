@@ -225,14 +225,14 @@ bool CNumEffect::OnProcess() {
 
   if (this->render.scale > 1.0f) {
     this->render.scale = this->baseScale - elapsed * 0.24f;
-    return elapsed <= 120.0f;
-  }
-
-  if (this->render.scale < 1.0f) {
+  } else if (this->render.scale < 1.0f) {
     this->render.scale = 1.0f;
   }
 
-  return elapsed <= 120.0f;
+  if (elapsed > 120.0f) {
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x00DA3A60
@@ -1009,32 +1009,30 @@ void CHalluNPC::Render(int argument) {
   rand();
 
   if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
-    if (!this->render.visible) {
-      this->UpdateTlvertex(matrix);
-      return;
-    }
-
-    if ((this->render.color & 0xFF000000) == 0xFF000000) {
-      this->DrawShadow(argument, this->render.scale);
-    }
-    if (this->render.enabled) {
-      this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
+    if (this->render.visible) {
+      if ((this->render.color & 0xFF000000) == 0xFF000000) {
+        this->DrawShadow(argument, this->render.scale);
+      }
+      if (this->render.enabled) {
+        this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
+      } else {
+        this->UpdateTlvertex(matrix);
+      }
     } else {
       this->UpdateTlvertex(matrix);
     }
     return;
   }
 
-  if (!this->render.visible) {
-    this->UpdateTlvertex(matrix);
-    return;
-  }
-
-  if (this->render.state != 6 && this->render.state != 3) {
-    this->DrawShadow(argument, this->render.scale);
-  }
-  if (this->render.enabled) {
-    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+  if (this->render.visible) {
+    if (this->render.state != 6 && this->render.state != 3) {
+      this->DrawShadow(argument, this->render.scale);
+    }
+    if (this->render.enabled) {
+      this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
   } else {
     this->UpdateTlvertex(matrix);
   }
@@ -1147,7 +1145,10 @@ bool CBlowEffect::OnProcess() {
   const int frameCount = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation));
   this->render.curMotion = static_cast<int>(frame / this->render.speed) % frameCount;
   this->PlayFrameSounds();
-  return frame / this->render.speed / static_cast<float>(frameCount) < 1.0f;
+  if (frame / this->render.speed / static_cast<float>(frameCount) >= 1.0f) {
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x00DA3DF0
@@ -1485,34 +1486,32 @@ void CBlurPC::Render(int argument) {
   rand();
   rand();
 
-  if (!this->render.visible) {
+  if (this->render.visible) {
+    if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+      return;
+    }
+
+    if (this->render.state != 6 && this->render.state != 3) {
+      this->DrawShadow(argument, this->render.scale);
+    }
+    if (this->render.enabled) {
+      if (IsObfuscatedMessage(this->render.accountId)) {
+        this->RenderOverlaySprite(matrix, 1);
+        return;
+      }
+
+      if (this->renderWithoutLayer != 0) {
+        this->DrawSprite(argument, false, 0.0f);
+        return;
+      }
+
+      this->DrawLayers(matrix, 1, 2);
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+  } else {
     this->UpdateTlvertex(matrix);
-    return;
   }
-
-  if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
-    return;
-  }
-
-  if (this->render.state != 6 && this->render.state != 3) {
-    this->DrawShadow(argument, this->render.scale);
-  }
-  if (!this->render.enabled) {
-    this->UpdateTlvertex(matrix);
-    return;
-  }
-
-  if (IsObfuscatedMessage(this->render.accountId)) {
-    this->RenderOverlaySprite(matrix, 1);
-    return;
-  }
-
-  if (this->renderWithoutLayer != 0) {
-    this->DrawSprite(argument, false, 0.0f);
-    return;
-  }
-
-  this->DrawLayers(matrix, 1, 2);
 }
 
 // OFFSET: 0x00DA42C0
