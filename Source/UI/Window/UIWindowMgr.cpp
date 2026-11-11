@@ -23,6 +23,7 @@
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Party/MiniPartyWndAreaMgr.h"
 #include "UI/Window/InputFocus.h"
@@ -253,6 +254,8 @@
 using SnapRectangleTree = std::_Tree<std::_Tmap_traits<UIWindow*, SnapRectangle, std::less<UIWindow*>, std::allocator<std::pair<UIWindow* const, SnapRectangle>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<UIWindow* const, SnapRectangle>, void*>*>
 SnapRectangleTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
+extern template void std::vector<std::string>::push_back(std::string&&);
+extern template std::string std::operator+(const std::string&, const char* const);
 
 namespace {
 #pragma pack(push, 1)
@@ -1132,8 +1135,7 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
     return;
   }
 
-  char* list = *reinterpret_cast<char**>(reinterpret_cast<char*>(this->chatWnd) + 0xC0);
-  std::vector<std::string>& names = *reinterpret_cast<std::vector<std::string>*>(list + 0x11C);
+  std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit)->history;
   int index = 0;
   bool found = false;
   for (const std::string& entry : names) {
@@ -1148,9 +1150,8 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
     names.push_back(std::string(name));
   }
 
-  UIWindow* field = *reinterpret_cast<UIWindow**>(reinterpret_cast<char*>(this->chatWnd) + 0xC0);
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(field) + 0x128) = index;
-  this->chatWnd->SendMsg(field, UM_COMBOBOX_SELECTED, index, 0, 0, 0);
+  static_cast<UIWhisperEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit)->historyIndex = index;
+  this->chatWnd->SendMsg(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit, UM_COMBOBOX_SELECTED, index, 0, 0, 0);
 }
 
 // GLOBAL: gl_25163
@@ -1160,7 +1161,7 @@ const char* g_newWhisperWave = "..\\..\\BGM\\Msg_NewMsg.wav";
 // FUNCTION: fn_17123
 int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId) {
   int shown = 0;
-  const bool isFriend = g_session.IsFriendName(name) != 0;
+  const int isFriend = g_session.IsFriendName(name) != 0;
   if ((g_session.m_autoOpenWhisperWindow != 0 && !isFriend) || (g_session.m_autoOpenFriendWhisperWindow != 0 && isFriend)) {
     const char* label = nullptr;
     if (isFriend) {
@@ -1203,23 +1204,28 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
     int companion = -1;
     if (window->geometry.id == 12) {
       companion = 234;
-    } else if (window->geometry.id == 82) {
+    }
+    if (window->geometry.id == 82) {
       companion = 250;
     }
 
     if (companion != -1) {
-      const auto found = std::find_if(this->rendered.begin(), this->rendered.end(), [&](const UIWindow* value) { return value->geometry.id == companion; });
-      if (found != this->rendered.end()) {
-        UIWindow* value = *found;
-        this->rendered.erase(found);
-        this->rendered.push_back(value);
+      for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+        if ((*it)->geometry.id == companion) {
+          UIWindow* value = *it;
+          this->rendered.erase(it);
+          this->rendered.push_back(value);
+          break;
+        }
       }
     }
 
-    const auto found = std::find(this->rendered.begin(), this->rendered.end(), window);
-    if (found != this->rendered.end()) {
-      this->rendered.erase(found);
-      this->rendered.push_back(window);
+    for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if (*it == window) {
+        this->rendered.erase(it);
+        this->rendered.push_back(window);
+        break;
+      }
     }
   }
   return 1;
@@ -1232,8 +1238,7 @@ void UIWindowMgr::AddWhisperName(const char* name) {
     return;
   }
 
-  char* list = *reinterpret_cast<char**>(reinterpret_cast<char*>(this->chatWnd) + 0xC0);
-  std::vector<std::string>& names = *reinterpret_cast<std::vector<std::string>*>(list + 0x11C);
+  std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit)->history;
   for (const std::string& entry : names) {
     if (entry == name) {
       return;
@@ -1242,9 +1247,9 @@ void UIWindowMgr::AddWhisperName(const char* name) {
 
   names.push_back(std::string(name));
   const unsigned count = static_cast<unsigned>(names.size());
-  unsigned& current = *reinterpret_cast<unsigned*>(*reinterpret_cast<char**>(reinterpret_cast<char*>(this->chatWnd) + 0xC0) + 0x128);
-  if (count - 1 <= current) {
-    current = count;
+  UIWhisperEditCtrl* whisper = static_cast<UIWhisperEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit);
+  if (count - 1 <= static_cast<unsigned>(whisper->historyIndex)) {
+    whisper->historyIndex = count;
   }
 }
 
@@ -1872,7 +1877,8 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     break;
   case UIM_MAKE_WHISPER_WINDOW: {
     std::string name(text);
-    if (this->namedWindows.find(name) == this->namedWindows.end()) {
+    const auto existing = this->namedWindows.find(name);
+    if (existing == this->namedWindows.end()) {
       UIWhisperWnd* window = new UIWhisperWnd();
       window->SetSize(280, 120);
       this->rendered.push_back(window);
@@ -1927,24 +1933,27 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     if (g_replayAnimationScaling != 0 && !Replay::Instance().header.options.recordRestricted) {
       break;
     }
-    std::uint32_t color = static_cast<std::uint32_t>(b);
-    if (this->chatWnd == nullptr) {
-      if (color == 0) {
-        color = 0xFFFFFF;
+    if (this->chatWnd != nullptr) {
+      if (b == 0) {
+        b = 0xFFFFFF;
+      }
+      if (std::strcmp(text, "No Msg") != 0 && std::strcmp(text, "NO MSG") != 0) {
+        if (selector == UIM_PUSHINTOCHATHISTORY2) {
+          this->chatWnd->SendMsg(nullptr, UM_ADDCHAT2, a, b, c, d);
+        } else {
+          this->chatWnd->SendMsg(nullptr, UM_ADDCHAT, a, b, c, d);
+        }
+      }
+    } else {
+      if (b == 0) {
+        b = 0xFFFFFF;
       }
       std::vector<std::string> lines;
       WrapPlainText(text, lines, 94);
       for (unsigned int index = 0; index < lines.size(); ++index) {
         std::string line;
         line = lines[index];
-        this->pendingNoticeLines.push_back({line, color});
-      }
-    } else {
-      if (color == 0) {
-        color = 0xFFFFFF;
-      }
-      if (std::strcmp(text, "No Msg") != 0 && std::strcmp(text, "NO MSG") != 0) {
-        this->chatWnd->SendMsg(nullptr, selector == UIM_PUSHINTOCHATHISTORY2 ? UM_ADDCHAT2 : UM_ADDCHAT, a, color, c, d);
+        this->pendingNoticeLines.push_back({line, static_cast<std::uint32_t>(b)});
       }
     }
     break;
