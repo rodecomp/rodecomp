@@ -75,11 +75,12 @@ void CShowEffect::Close() {
   const std::uint32_t actorId = this->actor;
   CRenderObject* target = FindActor(actorId);
 
-  for (const auto& entry : this->effects) {
+  for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
     if (target) {
-      target->SendMsg(nullptr, AM_DELETE_TAGGED_EFFECT, 0, entry.first, entry.first >> 31, entry.second, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    } else if (g_effectMgr->HasAllocator(entry.second)) {
-      g_effectMgr->Retire(actorId, entry.first, entry.second);
+      target->SendMsg(nullptr, AM_DELETE_TAGGED_EFFECT, 0, static_cast<int>(static_cast<std::int64_t>(it->first)),
+        static_cast<int>(static_cast<std::int64_t>(it->first) >> 32), it->second, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else if (g_effectMgr->HasAllocator(it->second)) {
+      g_effectMgr->Retire(actorId, it->first, it->second);
     }
   }
 
