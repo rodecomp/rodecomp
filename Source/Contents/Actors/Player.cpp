@@ -786,15 +786,14 @@ void CPc::SetSprRobe(int first, int second) {
 
   g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", first, &this->isHelmRobe);
 
-  if (this->isHelmRobe) {
-    const int accessory = this->robe;
+  if (this->isHelmRobe == true) {
     this->LoadEquipAction(
       8,
-      g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, accessory).c_str()
+      g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->sex, this->head, this->robe).c_str()
     );
     this->LoadEquipSprite(
       8,
-      g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, accessory).c_str()
+      g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->sex, this->head, this->robe).c_str()
     );
   } else {
     this->LoadEquipAction(
@@ -2033,17 +2032,17 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     SpriteQuad quad;
     int box[4];
     std::uint32_t color;
-    if (this->GetMonsterTransformJob() == JT_THANATOS) {
-      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
-      if (this->render.state == 0 && index == 1) {
-        quad.bottomRhw = bottomRhw + 0.000008f;
-        quad.topRhw = topRhw + 0.00008f;
-      }
-    } else {
+    if (this->GetMonsterTransformJob() != JT_THANATOS) {
       this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
       if (g_cameraDistance <= 320.0f) {
         quad.bottomRhw = bottomRhw - 0.0000025f;
         quad.topRhw = topRhw - 0.0000025f;
+      }
+    } else {
+      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
+      if (this->render.state == 0 && index == 1) {
+        quad.bottomRhw = bottomRhw + 0.000008f;
+        quad.topRhw = topRhw + 0.00008f;
       }
     }
 
