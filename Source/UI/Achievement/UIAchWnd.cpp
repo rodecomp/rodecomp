@@ -820,13 +820,10 @@ void UIAchTab::UpdateScrollBar() {
     this->scrollBar->SetRange(overflow, visible, count);
     if (this->scrollPos < 0) {
       this->scrollPos = 0;
-      this->scrollBar->SetPosition(0);
-    } else {
-      if (this->scrollPos > overflow) {
-        this->scrollPos = overflow;
-      }
-      this->scrollBar->SetPosition(this->scrollPos);
+    } else if (this->scrollPos > overflow) {
+      this->scrollPos = overflow;
     }
+    this->scrollBar->SetPosition(this->scrollPos);
   } else {
     this->scrollPos = 0;
     this->scrollBar->SetRange(0, visible, count);
