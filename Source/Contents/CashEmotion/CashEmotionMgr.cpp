@@ -1131,11 +1131,13 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
   bool inserted = false;
   auto it = this->m_emotionsByPack.find(packId);
   if (this->m_emotionsByPack.end() != it) {
-    return it->second.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId).second;
+    auto result = it->second.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId);
+    return result.second;
   }
 
   CashEmotionTable table;
-  if (table.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId).second == true) {
+  auto result = table.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId);
+  if (result.second == true) {
     inserted = this->m_emotionsByPack.emplace(packId, table).second;
   }
 

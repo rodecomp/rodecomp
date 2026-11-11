@@ -92,13 +92,13 @@ bool CSpecialPopupMgr::Init() {
     return false;
   }
 
-  if (lua_toboolean(luaState.GetState(), -2)) {
-    return true;
+  if (!lua_toboolean(luaState.GetState(), -2)) {
+    std::string message = std::string("error found :") + lua_tostring(luaState.GetState(), -1);
+    MessageBoxA(NULL, message.c_str(), "CSpecialPopupMgr", 0);
+    return false;
   }
 
-  std::string message = std::string("error found :") + lua_tostring(luaState.GetState(), -1);
-  MessageBoxA(NULL, message.c_str(), "CSpecialPopupMgr", 0);
-  return false;
+  return true;
 }
 
 // OFFSET: 0x007A7DB0

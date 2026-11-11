@@ -86,7 +86,7 @@ bool ITEM_INFO::HasCards() const {
   const bool first = g_itemCardNames.contains(CardId(*this, 0));
   const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
 
-  if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || !Equipment(*this)) {
+  if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || Equipment(*this) != true) {
     return first;
   }
 

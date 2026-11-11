@@ -160,16 +160,21 @@ void CGroundScope::Render(int argument) {
 
       const char* name;
       std::uint32_t tint = color;
-      if (this->m_skillId == 0x7F0) {
-        name = g_serviceOptions.Get(0xE5) ? "effect\\mineffect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga"
-                                           : "effect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga";
-      } else if (this->m_skillId == 0x8A5) {
-        name = "effect\\new_comet\\new_comet_cast_magicrune\\new_comet_cast_magicrune.tga";
-      } else if (this->m_skillId == 0x149E) {
-        name = "effect\\competentia\\competentia_cast_bottom\\com_rune_01.tga";
-        tint = static_cast<unsigned char>(static_cast<int>(static_cast<float>(color >> 24) * 0.6f)) << 24 | 0xFFFFFF;
-      } else {
-        name = "effect\\magic_target.tga";
+      switch (this->m_skillId) {
+        case 0x7F0:
+          name = g_serviceOptions.Get(0xE5) ? "effect\\mineffect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga"
+                                             : "effect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga";
+          break;
+        case 0x8A5:
+          name = "effect\\new_comet\\new_comet_cast_magicrune\\new_comet_cast_magicrune.tga";
+          break;
+        case 0x149E:
+          name = "effect\\competentia\\competentia_cast_bottom\\com_rune_01.tga";
+          tint = static_cast<unsigned char>(static_cast<int>(static_cast<float>(color >> 24) * 0.6f)) << 24 | 0xFFFFFF;
+          break;
+        default:
+          name = "effect\\magic_target.tga";
+          break;
       }
 
       CTexture* texture = g_texMgr.Load(name, 0, false, true, false);

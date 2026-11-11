@@ -178,25 +178,26 @@ int CCheckAttendanceMgr::L_InsertCheckAttendanceReward(lua_State* state) {
 
   const int day = static_cast<int>(lua_tonumber(state, -3));
   const int item = static_cast<int>(lua_tonumber(state, -2));
-  std::string message;
   if (item == 0) {
     lua_pushboolean(state, 0);
-    message = FormatOwnedString("[InsertCheckAttendanceReward] Check ItemID : %d", 0);
-  } else {
-    const int count = static_cast<int>(lua_tonumber(state, -1));
-    if (count < 1) {
-      lua_pushboolean(state, 0);
-      message = FormatOwnedString("[InsertCheckAttendanceReward] Check ItemCnt : [%d] %d", item, count);
-    } else if (g_checkAttendanceMgr->m_rewards.insert(std::make_pair(day, lcReward(item, count))).second) {
-      lua_pushboolean(state, 1);
-      lua_pushstring(state, "good");
-      return 2;
-    } else {
-      lua_pushboolean(state, 0);
-      message = FormatOwnedString("[InsertCheckAttendanceReward] Check RewardInfo : %d [%s] %d", day, item, count);
-    }
+    lua_pushstring(state, FormatOwnedString("[InsertCheckAttendanceReward] Check ItemID : %d", 0).c_str());
+    return 2;
   }
 
-  lua_pushstring(state, message.c_str());
+  const int count = static_cast<int>(lua_tonumber(state, -1));
+  if (count <= 0) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, FormatOwnedString("[InsertCheckAttendanceReward] Check ItemCnt : [%d] %d", item, count).c_str());
+    return 2;
+  }
+
+  if (!g_checkAttendanceMgr->m_rewards.insert(std::make_pair(day, lcReward(item, count))).second) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, FormatOwnedString("[InsertCheckAttendanceReward] Check RewardInfo : %d [%s] %d", day, item, count).c_str());
+    return 2;
+  }
+
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }

@@ -1156,7 +1156,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
 
   gameMode->TargetActorByAid(member.accountId);
   MessengerMember selectedMember = this->MemberAtIndex(this->selected);
-  if (this->mode == 1 && !g_session.m_lockMouse && !g_windowMgr.HasMiniPartyMember(selectedMember.accountId)) {
+  if (this->mode == 1 && g_session.m_lockMouse != true && g_windowMgr.HasMiniPartyMember(selectedMember.accountId) != true) {
     gameMode->SetDragIds(29, this->selected);
     if (!g_windowMgr.transientWnd) {
       UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(selectedMember);
@@ -1172,7 +1172,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
 
         int index = 0;
         for (const MessengerMember& entry : this->members) {
-          if (this->scrollTop * this->columns <= index && entry.valid && entry.accountId == selectedMember.accountId) {
+          if (index >= this->scrollTop * this->columns && entry.valid && entry.accountId == selectedMember.accountId) {
             CGameActor* actor = entry.accountId == g_session.m_aid
                                   ? gameMode->scene->player
                                   : static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(entry.accountId));

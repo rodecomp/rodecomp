@@ -434,10 +434,10 @@ bool CJobCodeForItem::IsJobAllowed(int job, unsigned long code) {
   switch (code) {
   case 0xFFFFE: {
     auto group = this->m_jobGroups.find(0);
-    if (group == this->m_jobGroups.end()) {
-      return false;
+    if (group != this->m_jobGroups.end()) {
+      return group->second.end() == group->second.find(job);
     }
-    return group->second.end() == group->second.find(job);
+    return false;
   }
   case 0xFFFFF:
     return true;
