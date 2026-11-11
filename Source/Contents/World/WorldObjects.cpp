@@ -404,8 +404,7 @@ bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor*
   }
 
   if (g_effectMgr->HasAllocator(effectId)) {
-    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, source->render.position.x, source->render.position.y,
-                                         source->render.position.z, target->render.accountId, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, source->render.position, target->render.accountId, -1, 0, 0);
     if (!effect) {
       return false;
     }
@@ -415,7 +414,7 @@ bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor*
     }
 
     if (effectId == 539) {
-      g_effectMgr->Spawn(source->render.accountId, 980, source->render.position.x, source->render.position.y, source->render.position.z,
+      g_effectMgr->Spawn(source->render.accountId, 980, source->render.position,
                          target->render.accountId, -1, 0, 0);
     }
     return true;

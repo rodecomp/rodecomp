@@ -1797,12 +1797,12 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             position.x -= static_cast<float>(offsetX);
             position.y -= static_cast<float>(offsetY);
           }
-          CEffect* effect = g_effectMgr->Spawn(0, 1567, position.x, position.y, position.z, 0, -1, 0, 0);
+          CEffect* effect = g_effectMgr->Spawn(0, 1567, position, 0, -1, 0, 0);
           effect->SetAngle(static_cast<float>(std::max(rand() % 360, 0)));
         } else if (hitEffect == 2132) {
           const vector3d& playerPosition = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
           g_soundMgr->PlayWave("effect\\ABC_DEFT_STAB2.wav", playerPosition.x - this->render.position.x, 0.0f, playerPosition.z - this->render.position.z, 250, 40, 1.0f, 0);
-        } else if (g_effectMgr->Spawn(this->render.accountId, hitEffect, offset.x, offset.y, offset.z, 0, -1, 0, 0) == nullptr) {
+        } else if (g_effectMgr->Spawn(this->render.accountId, hitEffect, offset, 0, -1, 0, 0) == nullptr) {
           CRagEffect* effect = this->LaunchEffect(hitEffect, offset, 0.0f);
           if (effect != nullptr) {
             effect->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
@@ -1815,7 +1815,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             this->render.angle -= 360.0f;
           }
         } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->skillId, reinterpret_cast<int>(attacker), this, reinterpret_cast<CGameActor*>(damageMessage->skillTarget))) {
-          if (g_effectMgr->Spawn(this->render.accountId, skillEffect, offset.x, offset.y, offset.z, 0, -1, 0, 0) == nullptr) {
+          if (g_effectMgr->Spawn(this->render.accountId, skillEffect, offset, 0, -1, 0, 0) == nullptr) {
             CRagEffect* effect = this->LaunchEffect(skillEffect, offset, 0.0f);
             if (effect != nullptr) {
               effect->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
@@ -2363,11 +2363,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     const vector3d offset{0.0f, 0.0f, 0.0f};
     if (showFirst != 0) {
-      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position, 0, -1, 0, 0) == nullptr) {
         this->LaunchEffect(first, offset, 0.0f);
       }
     }
-    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position, 0, -1, 0, 0) == nullptr) {
       this->LaunchEffect(second, offset, 0.0f);
     }
     break;
@@ -2416,11 +2416,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     const vector3d offset{0.0f, 0.0f, 0.0f};
     if (showFirst != 0) {
-      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position, 0, -1, 0, 0) == nullptr) {
         this->LaunchEffect(first, offset, 0.0f);
       }
     }
-    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position, 0, -1, 0, 0) == nullptr) {
       this->LaunchEffect(second, offset, 0.0f);
     }
     break;
@@ -2445,11 +2445,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     const vector3d offset{0.0f, 0.0f, 0.0f};
     if (showFirst != 0) {
-      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position, 0, -1, 0, 0) == nullptr) {
         this->LaunchEffect(first, offset, 0.0f);
       }
     }
-    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position, 0, -1, 0, 0) == nullptr) {
       this->LaunchEffect(second, offset, 0.0f);
     }
     break;
@@ -2468,11 +2468,11 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     const int second = g_session.m_maxLevelEffect4thSub;
     const vector3d offset{0.0f, 0.0f, 0.0f};
     if (showFirst != 0) {
-      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+      if (g_effectMgr->Spawn(this->render.accountId, first, this->render.position, 0, -1, 0, 0) == nullptr) {
         this->LaunchEffect(first, offset, 0.0f);
       }
     }
-    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0) == nullptr) {
+    if (g_effectMgr->Spawn(this->render.accountId, second, this->render.position, 0, -1, 0, 0) == nullptr) {
       this->LaunchEffect(second, offset, 0.0f);
     }
     break;
@@ -3070,9 +3070,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
             g_effectMgr->Retire(this->render.accountId, id + 0xA7);
           }
           if (g_serviceOptions.Get(0xE5)) {
-            g_effectMgr->Spawn(this->render.accountId, f + 0x5BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+            g_effectMgr->Spawn(this->render.accountId, f + 0x5BA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
           } else {
-            g_effectMgr->Spawn(this->render.accountId, f + 0x513, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+            g_effectMgr->Spawn(this->render.accountId, f + 0x513, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
           }
         }
       } else {
@@ -3312,7 +3312,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_KO_JYUMONJIKIRI:
       g_effectMgr->Retire(this->render.accountId, 0x3E6);
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0 && g_effectMgr->HasAllocator(0x3E6)) {
-        g_effectMgr->Spawn(this->render.accountId, 0x3E6, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x3E6, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_KYOMU:
@@ -3355,7 +3355,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_GENSOU:
       g_effectMgr->Retire(this->render.accountId, 0x3ED);
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0 && g_effectMgr->HasAllocator(0x3ED)) {
-        CEffect* orb = g_effectMgr->Spawn(this->render.accountId, 0x3ED, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        CEffect* orb = g_effectMgr->Spawn(this->render.accountId, 0x3ED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         if (orb) {
           static_cast<CEnergyOrbEffect*>(orb)->SetCount(10);
         }
@@ -3411,7 +3411,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_FLOWER_LEAF:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
-        g_effectMgr->Spawn(this->render.accountId, 0x3F5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x3F5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x3F5);
       }
@@ -3503,26 +3503,26 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       this->SendMsg(this, AM_DELETE_EFFECT, 0, 0x433, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       if (on) {
         if (g_session.actorEffectStates.find(static_cast<int>(this->render.accountId)) == g_session.actorEffectStates.end() && g_effectMgr->HasAllocator(0x425)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x425, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x425, this->render.position, 0, -1, 0, 0);
         }
         if (g_effectMgr->HasAllocator(0x433)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x433, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x433, this->render.position, 0, -1, 0, 0);
         }
       }
       break;
     case EFST_ANTI_M_BLAST:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x470, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x470, this->render.position, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x470);
       }
       break;
     case EFST_E_QD_SHOT_READY:
-      g_effectMgr->Spawn(0, 0x434, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x434, this->render.position, 0, -1, 0, 0);
       break;
     case EFST_H_MINE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x473, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x473, this->render.position, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x473);
       }
@@ -3530,7 +3530,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_H_MINE_SPLASH:
       if (on) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 0x425, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        g_effectMgr->Spawn(0, 0x432, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, 0x432, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_FLOWERSMOKE:
@@ -3614,7 +3614,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_MARKING_USE_CHANGEMONSTER:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
-        g_effectMgr->Spawn(this->render.accountId, 0x442, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x442, this->render.position, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x442);
       }
@@ -3646,7 +3646,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_SPRITEMABLE:
       g_effectMgr->Retire(this->render.accountId, 0x448);
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x448, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x448, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_SUHIDE:
@@ -3673,7 +3673,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_TUNAPARTY:
       if (on == true) {
         if (!g_effectMgr->Has(this->render.accountId, 0x449)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x449, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x449, this->render.position, 0, -1, 0, 0);
         }
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x449);
@@ -3681,14 +3681,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_SV_ROOTTWIST:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x456, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x456, this->render.position, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x456);
       }
       break;
     case EFST_BITESCAR:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x45F, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x45F, this->render.position, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x45F);
       }
@@ -3710,7 +3710,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_IMMUNE_PROPERTY_UNDEAD: {
       const int effectId = b + 0x87;
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (g_effectMgr->Has(this->render.accountId, effectId) == true) {
         g_effectMgr->Retire(this->render.accountId, effectId);
       }
@@ -3721,7 +3721,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4B1);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4B1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         const vector3d& player =
           reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
         g_soundMgr->PlayWave(
@@ -3736,7 +3736,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4BE);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4BE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_LUNARSTANCE:
@@ -3744,7 +3744,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4BF);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4BF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_STARSTANCE:
@@ -3752,7 +3752,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4C0);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4C0, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_UNIVERSESTANCE:
@@ -3760,7 +3760,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4C1);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4C1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_FLASHKICK:
@@ -3768,7 +3768,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4C5);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4C5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_SOULUNITY: {
@@ -3776,7 +3776,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         g_effectMgr->Retire(this->render.accountId, 0x4C6);
       }
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x4C6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x4C6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         const vector3d& player =
           reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
         g_soundMgr->PlayWave(
@@ -3801,7 +3801,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
         if (g_effectMgr->Find(this->render.accountId, 0x552)) {
           break;
         }
-        g_effectMgr->Spawn(this->render.accountId, 0x552, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x552, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_soundMgr->PlayWave("effect\\s포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       } else {
         CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x552);
@@ -3820,7 +3820,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       g_effectMgr->Retire(actor->render.accountId, 0x66C);
       if (on == true) {
-        g_effectMgr->Spawn(actor->render.accountId, 0x66C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 0x66C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     }
@@ -3916,7 +3916,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       }
       g_effectMgr->Retire(actor->render.accountId, 0x63F);
       if (on == true) {
-        g_effectMgr->Spawn(actor->render.accountId, 0x63F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 0x63F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     }
@@ -3985,7 +3985,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, AM_MAKE_DEEPSILENCE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8C5);
-        g_effectMgr->Spawn(this->render.accountId, 0x8C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8C5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         this->SendMsg(nullptr, AM_DELETE_DEEPSILENCE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8C5);
@@ -3994,21 +3994,21 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_HANDICAPSTATE_LASSITUDE:
       if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) == 1) {
         this->SendMsg(nullptr, AM_MAKE_LASSITUDE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        g_effectMgr->Spawn(this->render.accountId, 0x8C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8C4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         this->SendMsg(nullptr, AM_DELETE_LASSITUDE_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
       break;
     case EFST_HANDICAPSTATE_FROSTBITE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x8DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8DE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (g_effectMgr->Has(this->render.accountId, 0x8DE)) {
         g_effectMgr->Retire(this->render.accountId, 0x8DE);
-        g_effectMgr->Spawn(this->render.accountId, 0x8DF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8DF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       if (this->render.accountId == g_session.m_aid) {
         if (on == true) {
-          g_effectMgr->Spawn(this->render.accountId, 0x8E0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x8E0, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         } else {
           g_effectMgr->Retire(this->render.accountId, 0x8E0);
         }
@@ -4017,12 +4017,12 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_HANDICAPSTATE_LIGHTNINGSTRIKE:
       g_effectMgr->Retire(this->render.accountId, 0x8DC);
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x8DC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8DC, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_HANDICAPSTATE_CRYSTALLIZATION:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x8E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8E1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x8E1);
       }
@@ -4030,7 +4030,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_HANDICAPSTATE_HOLYFLAME:
       if (on == true) {
         this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        g_effectMgr->Spawn(this->render.accountId, 0x8C6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8C6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         this->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
@@ -4040,7 +4040,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       if (on == true) {
         this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8DD);
-        g_effectMgr->Spawn(this->render.accountId, 0x8DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8DD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         this->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8DD);
@@ -4057,7 +4057,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_HANDICAPSTATE_DEADLYPOISON:
       if (on == true) {
         this->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 0xAA, 0, 0, 0, 0xAA, 0, 0, 0, 0, 0, 0, 0);
-        g_effectMgr->Spawn(this->render.accountId, 0x8E2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8E2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         this->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         g_effectMgr->Retire(this->render.accountId, 0x8E2);
@@ -4083,16 +4083,16 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       g_effectMgr->Retire(actor->render.accountId, 0x6BE);
       g_effectMgr->Retire(actor->render.accountId, 0x6BF);
       if (on == true) {
-        g_effectMgr->Spawn(actor->render.accountId, 0x6BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 0x6BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 0x6BE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 0x6BF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     }
     case EFST_FIRST_BRAND: {
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x806, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x803, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x804, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x806, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x803, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x804, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         if (second) {
           second->SetDelay(1000);
         }
@@ -4107,9 +4107,9 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     case EFST_SECOND_BRAND: {
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x821, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x81e, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x81f, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x821, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        CEffect* const second = g_effectMgr->Spawn(this->render.accountId, 0x81e, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        CEffect* const third = g_effectMgr->Spawn(this->render.accountId, 0x81f, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         if (second) {
           second->SetDelay(1000);
         }
@@ -4125,7 +4125,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
     case EFST_HOLY_OIL:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x7c7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7c7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7c7);
       }
@@ -4133,7 +4133,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_MEDIALE:
       if (on == true) {
         if (!g_serviceOptions.Get(0xe5) && !g_effectMgr->Find(this->render.accountId, 0x712)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x712, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x712, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         }
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x712);
@@ -4141,7 +4141,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_DEADLY_DEFEASANCE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x6cd, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x6cd, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x6cd)) {
         g_effectMgr->Retire(effect, 1);
       }
@@ -4149,20 +4149,20 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_CLIMAX:
       g_effectMgr->Retire(this->render.accountId, 0x708);
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x708, this->render.position.x, this->render.position.y, this->render.position.z, 0, f, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x708, this->render.position, 0, f, 0, 0);
       }
       break;
     case EFST_FIRST_FAITH_POWER:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x7b7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7b7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7b7);
       }
       break;
     case EFST_SECOND_JUDGE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x7ba, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(this->render.accountId, 0x7bd, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7ba, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7bd, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7ba);
         g_effectMgr->Retire(this->render.accountId, 0x7bd);
@@ -4170,8 +4170,8 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_THIRD_EXOR_FLAME:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x7be, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(this->render.accountId, 0x7c1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7be, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x7c1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x7be);
         g_effectMgr->Retire(this->render.accountId, 0x7c1);
@@ -4179,14 +4179,14 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_ABYSS_SLAYER:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x84e, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x84e, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x84e);
       }
       break;
     case EFST_D_MACHINE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x719, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x719, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         this->LaunchEffect(0x8f8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x719)) {
         g_effectMgr->Retire(effect, 1);
@@ -4194,7 +4194,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_A_MACHINE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x72f, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x72f, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x72f);
       }
@@ -4202,10 +4202,10 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_COMPETENTIA:
       if (on == true) {
         if (!g_effectMgr->Find(this->render.accountId, 0x73d)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x73d, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x73d, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         }
         if (!g_serviceOptions.Get(0xe5) && !g_effectMgr->Find(this->render.accountId, 0x73c)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x73c, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x73c, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         }
         this->LaunchEffect(0x8fc, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else {
@@ -4222,7 +4222,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case EFST_CLIMAX_CRYIMP:
       if (on == true) {
         if (!g_effectMgr->Find(this->render.accountId, 0x743)) {
-          g_effectMgr->Spawn(this->render.accountId, 0x743, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          g_effectMgr->Spawn(this->render.accountId, 0x743, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         }
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x743);
@@ -4230,21 +4230,21 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_SOUNDBLEND:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x80c, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x80c, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x80c)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
     case EFST_WINDSIGN:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x76c, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x76c, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x76c);
       }
       break;
     case EFST_E_SLASH_COUNT:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x779, this->render.position.x, this->render.position.y, this->render.position.z, 0, f, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x779, this->render.position, 0, f, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x779);
       }
@@ -4258,7 +4258,7 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_BO_HELL_DUSTY:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x8be, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8be, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_CLOUD_POISON:
@@ -4298,22 +4298,22 @@ void CGameActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       break;
     case EFST_KILLING_AURA:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x8fe, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8fe, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
         g_effectMgr->Retire(this->render.accountId, 0x8fe);
-        g_effectMgr->Spawn(this->render.accountId, 0x8ff, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x8ff, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     case EFST_CURSE_R_CUBE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x901, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x901, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x901)) {
         static_cast<CCurseOfCubeEffect*>(effect)->Restart();
       }
       break;
     case EFST_CURSE_B_CUBE:
       if (on == true) {
-        g_effectMgr->Spawn(this->render.accountId, 0x902, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, 0x902, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (CEffect* const effect = g_effectMgr->Find(this->render.accountId, 0x902)) {
         static_cast<CCurseOfCubeEffect*>(effect)->Restart();
       }

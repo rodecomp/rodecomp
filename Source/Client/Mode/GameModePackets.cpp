@@ -3703,8 +3703,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, status, actor->render.position.x, actor->render.position.y,
-                                       actor->render.position.z, 0, 0xFFFFFFFF, 0, 0);
+  CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, status, actor->render.position, 0, 0xFFFFFFFF, 0, 0);
   if (effect == nullptr) {
     actor->LaunchEffect(status, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
@@ -4898,13 +4897,13 @@ void CGameMode::ApplyStatusChange(
     if (type == EFST_SPELLFIST && actor) {
       const unsigned char element = static_cast<unsigned char>(value3);
       if (element == 19) {
-        g_effectMgr->Spawn(actor->render.accountId, 1665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1666, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 20) {
-        g_effectMgr->Spawn(actor->render.accountId, 1669, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 14) {
-        g_effectMgr->Spawn(actor->render.accountId, 1667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1667, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1668, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
   }
@@ -5143,7 +5142,7 @@ void CGameMode::ApplyStatusChange(
           g_effectMgr->Retire(player->render.accountId, 1467 + i);
         }
         g_effectMgr->Spawn(
-          player->render.accountId, g_serviceOptions.Get(229) ? value1 + 1466 : value1 + 1299, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          player->render.accountId, g_serviceOptions.Get(229) ? value1 + 1466 : value1 + 1299, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         );
         std::sprintf(message, "");
       }
@@ -5715,7 +5714,7 @@ void CGameMode::ApplyStatusChange(
       std::sprintf(message, LookupMessage(MSI_ACCOUNTCLASS_INTEGRATION));
       break;
     case EFST_SOULCURSE:
-      g_effectMgr->Spawn(aid, 1362, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(aid, 1362, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\s포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case EFST_MADOGEAR_TYPE:
@@ -5753,13 +5752,13 @@ void CGameMode::ApplyStatusChange(
 
       const unsigned char element = static_cast<unsigned char>(value3);
       if (element == 19) {
-        g_effectMgr->Spawn(actor->render.accountId, 1665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1666, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 20) {
-        g_effectMgr->Spawn(actor->render.accountId, 1669, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 14) {
-        g_effectMgr->Spawn(actor->render.accountId, 1667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1667, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1668, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     }
@@ -11269,7 +11268,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 
   CEffect* effect;
   if (skillId == CD_FRAMEN) {
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x78A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x78A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -11285,12 +11284,12 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case WL_SOULEXPANSION: {
     const float speed = target->render.speed;
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x635, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x635, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const int duration = static_cast<int>(speed * 150.0f + 200.0f) + delay;
     if (effect) {
       effect->SetLifeTime(duration);
     }
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x636, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x636, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(duration);
     }
@@ -11302,11 +11301,11 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case WL_CHAINLIGHTNING:
     target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     return;
   case RA_AIMEDBOLT:
     target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x673, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, 0x673, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -11467,7 +11466,7 @@ void CGameMode::NotifySkillCasting(
     if (effect) {
       effect->Open();
     } else {
-      g_effectMgr->Spawn(source->render.accountId, 0x474, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x474, source->render.position, 0, -1, 0, 0);
     }
   }
 
@@ -11486,7 +11485,7 @@ void CGameMode::NotifySkillCasting(
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
     } else if (skillId == 0x1479) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x7C4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
 
     CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
@@ -16057,13 +16056,12 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
 
   if (g_effectMgr->HasAllocator(effectId)) {
-    g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position, 0, -1, 0, 0);
   } else {
     const int delayFrames = delay / 16;
     actor->SendMsg(nullptr, AM_MAKE_BEGIN_SPELL, 0, effectId, effectId >> 31, delayFrames, delayFrames >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  const vector3d origin{0.0f, 0.0f, 0.0f};
   CEffect* effect;
 
   switch (skillId) {
@@ -16122,13 +16120,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     const std::int64_t key = skillId;
     const vector3d position{0.0f, 0.0f, 0.0f};
     if (primaryEffects.find(key) != primaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[key]), position, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
     if (secondaryEffects.find(key) != secondaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[key]), position.x, position.y, position.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[key]), position, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
@@ -16136,7 +16134,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   }
   case RK_IGNITIONBREAK:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16149,17 +16147,17 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case WL_TETRAVORTEX:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5A0, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5A0, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x597, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x597, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4FD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4FD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4ED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
@@ -16167,69 +16165,69 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case WL_COMET:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x600, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x600, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x603, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x603, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x587, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x587, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_JACKFROST:
-    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(0xE5) ? 0x607 : 0x5A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(0xE5) ? 0x607 : 0x5A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_HELLINFERNO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x610, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x610, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AB_CLEARANCE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x617, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x617, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_SOULEXPANSION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x633, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x633, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x634, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x634, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AB_JUDEX:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_CHAINLIGHTNING:
-    g_effectMgr->Spawn(actor->render.accountId, 0x663, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x664, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x663, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x664, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case RA_AIMEDBOLT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x671, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x671, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16261,14 +16259,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       } else if (id == 0x547) {
         id = 0x5D0;
       }
-      g_effectMgr->Spawn(actor->render.accountId, id, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x5D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x5D5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x5D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x5D5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      g_effectMgr->Spawn(actor->render.accountId, id, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, id + 1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x568, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x569, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id + 1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x568, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, 0x569, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     return;
   }
@@ -16285,7 +16283,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position.x, position.y, position.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16296,7 +16294,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position.x, position.y, position.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16304,17 +16302,17 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
   case GN_CARTCANNON:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DC, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DC, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
@@ -16322,23 +16320,23 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case NPC_RAYOFGENESIS:
   case LG_RAYOFGENESIS:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x591, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x591, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x592, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x592, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case SO_VARETYR_SPEAR:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x61B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x61B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x61C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x61C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16347,271 +16345,271 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     actor->LaunchEffect(0x10, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     return;
   case SR_GATEOFHELL:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x625, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x625, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case SR_HOWLINGOFLION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WM_METALICSOUND:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case GN_WALLOFTHORN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x654, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x654, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x655, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x655, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case GN_MANDRAGORA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x669, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WM_SOUND_OF_DESTRUCTION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case LG_OVERBRAND:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x697, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x697, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x698, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x698, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_DEADLY_PROJECTION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_DESTRUCTIVE_HURRICANE:
   case AG_STORM_CANNON:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
       effect->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
     }
     return;
   case AG_SOUL_VC_STRIKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ROCK_DOWN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_RAIN_OF_CRYSTAL:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_CRIMSON_ARROW:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DD, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_VIOLENT_QUAKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ASTRAL_STRIKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_MYSTERY_ILLUSION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6ED, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6ED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_TORNADO_STORM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_FROZEN_SLASH:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_CLIMAX:
-    g_effectMgr->Spawn(actor->render.accountId, 0x70A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x70A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(200);
       effect->SetLifeTime(delay - 200);
     }
     return;
   case AG_FLORAL_FLARE_ROAD:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ALL_BLOOM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x704, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x704, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x705, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x705, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_FIRST_FAITH_POWER:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_JUDGE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_THIRD_EXOR_FLAME:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_MEDIALE_VOTUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x711, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x711, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARGUTUS_VITA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x714, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x714, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARGUTUS_TELUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x716, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x716, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_PRESENS_ACIES:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x718, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x718, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARBITRIUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_COMPETENTIA: {
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x73B, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x73B, actor->render.position, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
@@ -16634,197 +16632,197 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   }
   case AG_CRYSTAL_IMPACT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x740, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x740, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x741, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x741, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_MOTHER_NET:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x76D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x76D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_RELIGIO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x745, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x745, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_FLAMETRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x781, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x781, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_DEEPBLINDTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x751, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x751, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_SWIFTTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x755, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x755, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_SOLIDTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x758, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x758, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x759, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x759, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case ABC_ABYSS_SLAYER:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x850, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x850, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_BENEDICTUM:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x760, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x760, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x761, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x761, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_PNEUMATICUS_PROCELLA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7A6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_DILECTIO_HEAL:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x785, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, 0x785, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x786, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x786, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_STRANTUM_TREMOR:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x762, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x762, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x763, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x763, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_INFINITY:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x774, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x774, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_BATTLE_WARIOR:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x78F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x78F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_DUAL_CANNON:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x77C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x77C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_HAWKBOOMERANG:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B1, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_INCREASING_ACTIVITY:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7C9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7C9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7CA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7CA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_ACTIVITY_BURN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_SUMMON_ELEMENTAL_SERPENS:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case ABC_CHAIN_REACTION_SHOT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DF, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_SUMMON_ELEMENTAL_DILUVIO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E5, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E6, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case TR_NIPELHEIM_REQUIEM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->effectLifetime = delay;
     }
     return;
   case TR_MUSICAL_INTERLUDE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay + 50);
     }
     return;
   case MH_HEILIGE_PFERD:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x91D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, 0x91D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay + 50);
     }

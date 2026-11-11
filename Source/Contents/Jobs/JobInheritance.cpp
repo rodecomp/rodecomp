@@ -1545,7 +1545,7 @@ bool CSession::PlaySkillTargetEffect(int skillId, int level, CGameActor* source,
 
       if (g_effectMgr->HasAllocator(effectId)) {
         g_effectMgr->Spawn(
-          target->render.accountId, effectId, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0
+          target->render.accountId, effectId, target->render.position, 0, -1, 0, 0
         );
       } else {
         target->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1880,15 +1880,8 @@ bool CSession::UnequipCostumeItem(int location) {
 // OFFSET: 0x00E1E250
 // FUNCTION: fn_45483
 bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
-  vector3d position;
-  std::uint32_t sourceId;
-  if (source != nullptr) {
-    position = source->render.position;
-    sourceId = source->render.accountId;
-  } else {
-    position = vector3d{0.0f, 0.0f, 0.0f};
-    sourceId = 0;
-  }
+  const vector3d& position = source != nullptr ? source->render.position : vector3d{0.0f, 0.0f, 0.0f};
+  const std::uint32_t sourceId = source != nullptr ? source->render.accountId : 0;
   const std::uint32_t targetId = target != nullptr ? target->render.accountId : 0;
 
   bool hasInfo = false;
@@ -1913,7 +1906,7 @@ bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor
     }
 
     if (g_effectMgr->HasAllocator(effectId)) {
-      g_effectMgr->Spawn(sourceId, effectId, position.x, position.y, position.z, sourceId != targetId ? targetId : 0, -1, 0, 0);
+      g_effectMgr->Spawn(sourceId, effectId, position, sourceId != targetId ? targetId : 0, -1, 0, 0);
     } else if (source != nullptr) {
       CRagEffect* effect = source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
@@ -1951,7 +1944,7 @@ bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
       }
 
       if (g_effectMgr->HasAllocator(effectId)) {
-        g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, effectId, position, 0, -1, 0, 0);
       } else {
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())
           ->LaunchDummyEffect(&position, effectId, EffectLifetime(effectId) + 10, 0);
@@ -2612,8 +2605,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (g_serviceOptions.Get(0xE5)) {
       effectId += 0xA3;
     }
-    g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5C5 : 0x522, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5C5 : 0x522, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effect = source->LaunchEffect(0x301, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = vector3d{0.0f, static_cast<float>(target->render.accountId), 0.0f};
@@ -2632,7 +2625,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1CA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case GC_CROSSIMPACT:
-    g_effectMgr->Spawn(target->render.accountId, 0x61E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x61E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effect = source->LaunchEffect(0x620, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -2668,7 +2661,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("wug_strike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case RA_AIMEDBOLT: {
-    g_effectMgr->Spawn(target->render.accountId, 0x672, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x672, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
@@ -2683,7 +2676,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     } else {
       effectId = 0x66F;
     }
-    g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   }
   case NPC_ARROWSTORM:
@@ -2693,10 +2686,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     g_soundMgr->PlayWave("arrowstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     const int effectId = g_serviceOptions.Get(0xE5) ? 0x5B1 : 0x50D;
-    g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     vector3d position{0.0f, 0.0f, 0.0f};
     for (int delay = 600; delay < 1200; delay += 200) {
-      CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, effectId + 1, position.x, position.y, position.z, 0, -1, 0, 0);
+      CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, effectId + 1, position, 0, -1, 0, 0);
       if (arrow) {
         arrow->SetDelay(delay);
       }
@@ -2713,7 +2706,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case WL_CHAINLIGHTNING:
   case WL_CHAINLIGHTNING_ATK:
-    g_effectMgr->Spawn(target->render.accountId, 0x666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x666, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case RK_SONICWAVE:
     g_soundMgr->PlayWave("effect\\기공포.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -2739,10 +2732,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AB_JUDEX:
     g_soundMgr->PlayWave("effect\\AB_judex.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    g_effectMgr->Spawn(source->render.accountId, 0x65B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 0x65C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x65F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x660, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x65B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x65C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x65F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x660, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     for (int count = 0; count < 12; ++count) {
       vector3d position = target->render.position;
       const float radius = static_cast<float>(std::max(std::rand() % 15, 2));
@@ -2753,11 +2746,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       spot.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + position.y;
       spot.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + position.z;
       const int delay = std::max(std::rand() % 10, 0) * 50;
-      CEffect* spawned = g_effectMgr->Spawn(0, 0x661, spot.x, spot.y, spot.z, 0, -1, 0, 0);
+      CEffect* spawned = g_effectMgr->Spawn(0, 0x661, spot, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(delay);
       }
-      spawned = g_effectMgr->Spawn(0, 0x662, spot.x, spot.y, spot.z, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(0, 0x662, spot, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(delay);
       }
@@ -2767,17 +2760,17 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\AB_adoramus.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(
-        target->render.accountId, 0x594, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x594, target->render.position, target->render.accountId, level, 0, 0
       );
       g_effectMgr->Spawn(
-        target->render.accountId, 0x595, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x595, target->render.position, target->render.accountId, level, 0, 0
       );
     } else {
       g_effectMgr->Spawn(
-        target->render.accountId, 0x4EA, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x4EA, target->render.position, target->render.accountId, level, 0, 0
       );
       g_effectMgr->Spawn(
-        target->render.accountId, 0x4EB, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x4EB, target->render.position, target->render.accountId, level, 0, 0
       );
     }
     break;
@@ -2788,23 +2781,23 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     );
     if (g_serviceOptions.Get(0xE5)) {
       g_effectMgr->Spawn(
-        target->render.accountId, 0x5A1, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x5A1, target->render.position, target->render.accountId, level, 0, 0
       );
       g_effectMgr->Spawn(
-        target->render.accountId, 0x5A2, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x5A2, target->render.position, target->render.accountId, level, 0, 0
       );
     } else {
       g_effectMgr->Spawn(
-        target->render.accountId, 0x4FA, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x4FA, target->render.position, target->render.accountId, level, 0, 0
       );
       g_effectMgr->Spawn(
-        target->render.accountId, 0x4FB, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, level, 0, 0
+        target->render.accountId, 0x4FB, target->render.position, target->render.accountId, level, 0, 0
       );
     }
     break;
   case WL_HELLINFERNO:
-    g_effectMgr->Spawn(target->render.accountId, 0x60E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x60F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x60E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x60F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     for (int index = 0; index < 4; ++index) {
       matrix rotation;
       rotation.MakeYRotation((static_cast<float>(index) * 90.0f + 45.0f) / 180.0f * 3.141592f);
@@ -2812,8 +2805,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       spot.x = rotation.values[0] * 15.0f + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + target->render.position.x;
       spot.y = rotation.values[1] * 15.0f + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + target->render.position.y;
       spot.z = rotation.values[2] * 15.0f + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + target->render.position.z;
-      g_effectMgr->Spawn(0, 0x611, spot.x, spot.y, spot.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, 0x612, spot.x, spot.y, spot.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x611, spot, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x612, spot, 0, -1, 0, 0);
     }
     break;
   case NC_BOOSTKNUCKLE:
@@ -2895,35 +2888,35 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
     if (g_serviceOptions.Get(0xE5)) {
-      spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x86, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x86, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5DF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5DF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5E0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5E0, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      spawned = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x559, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x559, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x55A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x55A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (spawned) {
       spawned->SetDelay(duration);
     }
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(source->render.accountId, 0x5E1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x5E2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5E1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5E2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      g_effectMgr->Spawn(source->render.accountId, 0x55B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x55C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x55B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x55C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     g_soundMgr->PlayWave("effect\\LG_BANISHINGPOINT.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -2955,18 +2948,18 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     if (g_serviceOptions.Get(0xE5)) {
       if (!g_effectMgr->Find(source->render.accountId, 0x5EF)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x5EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, 0x5EF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
-        CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x6F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x6F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         if (spawned) {
           spawned->SetDelay(duration);
         }
       }
     } else {
       if (!g_effectMgr->Find(source->render.accountId, 0x580)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x580, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, 0x580, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
-        CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        CEffect* spawned = g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         if (spawned) {
           spawned->SetDelay(duration);
         }
@@ -2981,7 +2974,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   }
   case SR_GATEOFHELL:
-    g_effectMgr->Spawn(target->render.accountId, 0x626, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x626, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effect = source->LaunchEffect(0x627, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
@@ -3033,14 +3026,14 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case NPC_FATALMENACE:
   case SC_STARTMARK: {
-    g_effectMgr->Spawn(source->render.accountId, 0x574, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 0x575, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x574, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x575, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const int duration = static_cast<int>(source->render.speed * 100.0f + 150.0f);
-    CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x572, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x572, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (spawned) {
       spawned->SetDelay(duration);
     }
-    spawned = g_effectMgr->Spawn(target->render.accountId, 0x573, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    spawned = g_effectMgr->Spawn(target->render.accountId, 0x573, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (spawned) {
       spawned->SetDelay(duration);
     }
@@ -3050,23 +3043,23 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
     if (g_serviceOptions.Get(0xE5)) {
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x5B4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x510, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x510, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
       }
-      spawned = g_effectMgr->Spawn(target->render.accountId, 0x511, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      spawned = g_effectMgr->Spawn(target->render.accountId, 0x511, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (spawned) {
       spawned->SetDelay(duration);
     }
     spawned = g_effectMgr->Spawn(
-      0, 0x52C, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+      0, 0x52C, source->render.position, target->render.accountId, -1, 0, 0
     );
     if (spawned) {
       spawned->SetDelay(duration);
@@ -3084,9 +3077,9 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     source->LaunchEffect(0x31A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NC_VULCANARM: {
-    g_effectMgr->Spawn(source->render.accountId, 0x6A7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 0x6A8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x6A9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x6A7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x6A8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    CEffect* spawned = g_effectMgr->Spawn(target->render.accountId, 0x6A9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (spawned) {
       spawned->SetAngle(static_cast<float>(std::max(std::rand() % 36, 0)) * 10.0f);
     }
@@ -3102,14 +3095,14 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       if (g_effectMgr->Find(source->render.accountId, 0x5D6)) {
         return;
       }
-      g_effectMgr->Spawn(source->render.accountId, 0x5D6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x5D7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5D6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5D7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
       if (g_effectMgr->Find(source->render.accountId, 0x553)) {
         return;
       }
-      g_effectMgr->Spawn(source->render.accountId, 0x553, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x554, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x553, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x554, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case NC_POWERSWING: {
@@ -3127,15 +3120,15 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     } else {
       effectId = 0x6A2;
     }
-    g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x6A6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x6A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   }
   case NC_AXEBOOMERANG:
     g_effectMgr->Spawn(
-      source->render.accountId, 0x679, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+      source->render.accountId, 0x679, source->render.position, target->render.accountId, -1, 0, 0
     );
-    g_effectMgr->Spawn(target->render.accountId, 0x67C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x67C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case SR_GENTLETOUCH_QUIET:
     source->LaunchEffect(0x375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3148,7 +3141,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\SR_DRAGONCOMBO.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SR_TIGERCANNON:
-    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5FC : 0x52B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5FC : 0x52B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     target->LaunchEffect(0x379, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_TIGERCANNON.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -3163,12 +3156,12 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case SR_RAMPAGEBLASTER:
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(source->render.accountId, 0x5B5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x5B6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5B5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x5B6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->LaunchEffect(0x609, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
-      g_effectMgr->Spawn(source->render.accountId, 0x51E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x51F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x51E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, 0x51F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     g_soundMgr->PlayWave("effect\\SR_RAMPAGEBLASTER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -3202,9 +3195,9 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(0x1AD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case SU_SV_STEMSPEAR:
-    g_effectMgr->Spawn(0, 0x44D, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, 0x44D, source->render.position, 0, -1, 0, 0);
     g_effectMgr->Spawn(
-      source->render.accountId, 0x44C, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+      source->render.accountId, 0x44C, source->render.position, target->render.accountId, -1, 0, 0
     );
     break;
   case MT_A_MACHINE: {
@@ -3221,10 +3214,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   }
   case SU_SVG_SPIRIT:
     g_effectMgr->Spawn(
-      source->render.accountId, 0x468, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+      source->render.accountId, 0x468, source->render.position, target->render.accountId, -1, 0, 0
     );
     g_effectMgr->Spawn(
-      target->render.accountId, 0x469, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, -1, 0, 0
+      target->render.accountId, 0x469, target->render.position, target->render.accountId, -1, 0, 0
     );
     break;
   case HFLI_MOON:

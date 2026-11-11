@@ -2663,7 +2663,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
   switch (result) {
   case 0: {
     g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
-    g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, 1608, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
     if (item.identity[1] <= 0) {
       return;
@@ -7029,7 +7029,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case EFST_D_MACHINE:
       if (CEffect* effect = g_effectMgr->Find(packet->aid, 1817)) {
         g_effectMgr->Retire(effect, 1);
-        g_effectMgr->Spawn(packet->aid, 1821, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(packet->aid, 1821, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_TR_KVASIR_SONATA_OFF));
       break;

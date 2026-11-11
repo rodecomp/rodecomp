@@ -3200,7 +3200,7 @@ void CGameActor::SetEffectState(int effectId, bool on) {
 // FUNCTION: fn_21021
 void CGameActor::SetEffectInstance(int effectId, int instance, bool on) {
   if (on) {
-    g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, instance);
+    g_effectMgr->Spawn(this->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, instance);
   } else {
     g_effectMgr->Retire(this->render.accountId, instance, effectId);
   }
@@ -4295,23 +4295,23 @@ void CGameActor::SetCharm(int type, int count) {
     CEffect* effect;
     if (type == 1) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E1, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+        this->render.accountId, 0x2E1, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 2) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E2, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+        this->render.accountId, 0x2E2, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 3) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2DF, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+        this->render.accountId, 0x2DF, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 4) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E0, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+        this->render.accountId, 0x2E0, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 5) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0xE4, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+        this->render.accountId, 0xE4, this->render.position, 0, -1, 0, 0
       );
     } else {
       return;
@@ -5785,8 +5785,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\SR_FALLENEMPIRE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x622, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x623, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x622, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x623, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case SR_RAMPAGEBLASTER:
     if (target != this) {

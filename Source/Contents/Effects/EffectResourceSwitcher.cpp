@@ -118,7 +118,7 @@ void EffectResourceSwitcher::SetNames(const std::string& source, const std::stri
 
   EffectLists* effects = g_effectMgr;
   this->effect = static_cast<CEZ2STREffectEx*>(
-      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
   this->spawnPosition = actor->render.position;
 }
 
@@ -156,8 +156,7 @@ void EffectResourceSwitcher::OnProcess() {
   CEZ2STREffectEx* previous = this->effect;
   this->sourceName = this->targetName;
   this->targetName = "";
-  this->effect = static_cast<CEZ2STREffectEx*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition.x,
-                                                                this->spawnPosition.y, this->spawnPosition.z, 0, -1, 0, 0));
+  this->effect = static_cast<CEZ2STREffectEx*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition, 0, -1, 0, 0));
   this->active = 0;
   if (previous) {
     previous->EndLoop(0);

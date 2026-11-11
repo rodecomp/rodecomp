@@ -289,7 +289,7 @@ void EffectLists::Add(int actor, CEffect* effect) {
 
 // OFFSET: 0x00B24A50
 // FUNCTION: fn_18774
-CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
+CEffect* EffectLists::Spawn(int actor, int id, vector3d position, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
   CEffect* effect = nullptr;
 
   if (id < 0 || id > 60000) {
@@ -368,9 +368,9 @@ CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::u
   if (effect) {
     effect->SetActor(actor);
     effect->SetSourceActor(sourceActor);
-    effect->position[0] = x;
-    effect->position[1] = y;
-    effect->position[2] = z;
+    effect->position[0] = position.x;
+    effect->position[1] = position.y;
+    effect->position[2] = position.z;
     effect->SetId(id);
     if (frame != -1) {
       effect->effectLevel = frame;

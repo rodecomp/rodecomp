@@ -121,6 +121,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
 
     g_session.UpdateInventoryItem(item, 1);
     int effect = 0;
+    const vector3d position = {0.0f, 0.0f, 0.0f};
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
@@ -135,9 +136,10 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       effect = 0x90E;
       break;
     }
-    g_effectMgr->Spawn(g_session.m_aid, effect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
   } else if (messageId == 0xF12) {
     int effect = 0;
+    const vector3d position = {0.0f, 0.0f, 0.0f};
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
@@ -150,7 +152,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       effect = 0x90F;
       break;
     }
-    g_effectMgr->Spawn(g_session.m_aid, effect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
   } else {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
   }

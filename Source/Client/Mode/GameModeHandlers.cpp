@@ -1739,7 +1739,7 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
 
   switch (packet[0x32]) {
   case 0: {
-    CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2399, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2399, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const vector3d offset = {598.0f, 219.0f, 0.0f};
     const int* words = reinterpret_cast<const int*>(&offset);
     effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
@@ -2218,7 +2218,7 @@ void CGameMode::ReceiveAchievementUpdate(
     static_cast<UIBalloonText*>(this->achievementBalloon)->m_textColor = 0xFFFFFF;
     static_cast<UIBalloonText*>(this->achievementBalloon)->m_outlineColor = 0;
     this->achievementBalloon->Move(0, 50);
-    g_effectMgr->Spawn(g_session.m_aid, 0x446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, 0x446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0x1D9, 1, 0);
     }

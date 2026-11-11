@@ -567,7 +567,7 @@ bool CSkill::OnProcess() {
     if (!this->m_hasEffect) {
       this->m_hasEffect = true;
       this->LaunchEffect(0x677, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(this->render.accountId, 0x676, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x676, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
 
@@ -614,9 +614,9 @@ bool CSkill::OnProcess() {
       int random = rand() % 100;
       random = random < 0 ? 0 : random;
       if (random == 1) {
-        g_effectMgr->Spawn(this->skillAid, 0x60A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->skillAid, 0x60A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (random == 2) {
-        g_effectMgr->Spawn(this->skillAid, 0x60B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->skillAid, 0x60B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
@@ -730,7 +730,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_EVILLAND:
-    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x613, this->render.position.x, this->render.position.y, this->render.position.z, 0, this->range * 2, 0, 0)) {
+    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x613, this->render.position, 0, this->range * 2, 0, 0)) {
       this->m_hasEffect = true;
     }
     break;
@@ -763,7 +763,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_CLOUD_KILL:
-    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x438, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0)) {
+    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x438, this->render.position, 0, -1, 0, 0)) {
       this->m_hasEffect = true;
       this->m_effectId = 0x438;
     }
@@ -810,7 +810,7 @@ bool CSkill::OnProcess() {
     if (this->m_effectTimer >= EffectLifetime(0x5F) - 20u) {
       this->m_effectTimer = 0;
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(0, 0x489, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, 0x489, this->render.position, 0, -1, 0, 0);
       } else {
         this->LaunchEffect(0x5F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -871,7 +871,7 @@ bool CSkill::OnProcess() {
   case UNT_SEVERE_RAINSTORM:
     if (this->m_effectTimer >= EffectLifetime(0x359) - 8u) {
       this->m_effectTimer = 0;
-      g_effectMgr->Spawn(0, 0x4FC, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x4FC, this->render.position, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\rainstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -1052,7 +1052,7 @@ bool CSkill::OnProcess() {
   case UNT_POWER_OF_GAIA:
     if (this->m_effectTimer >= EffectLifetime(0x440) - 1u) {
       this->m_effectTimer = 0;
-      g_effectMgr->Spawn(this->render.accountId, 0x440, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, 0x440, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
 
@@ -1196,14 +1196,14 @@ bool CSkill::OnProcess() {
   case UNT_FIRE_RAIN:
     if (this->m_effectTimer >= EffectLifetime(0x428) - 1u) {
       this->m_effectTimer = 0;
-      g_effectMgr->Spawn(0, 0x428, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x428, this->render.position, 0, -1, 0, 0);
     }
     break;
 
   case UNT_GLITTERING_GREED:
     if (!this->m_hasEffect) {
       this->m_hasEffect = true;
-      g_effectMgr->Spawn(0, 0x4FE, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, 0x4FE, this->render.position, 0, -1, 0, 0);
     }
     break;
 

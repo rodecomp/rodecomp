@@ -172,7 +172,7 @@ void CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::OnSkillCast(int level, CGameAct
 void CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_the_five_elements"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_the_five_elements"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -199,10 +199,10 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillHit(int argument1, CGame
   CGameActor* source = reinterpret_cast<CGameActor*>(argument1);
   CGameActor* target = argument2;
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_soul_stealing"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_soul_stealing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -219,7 +219,7 @@ void CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL::OnSkillCast(int level, CGameAc
 void CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("exorcism_of_malicuous_soul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("exorcism_of_malicuous_soul"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -235,7 +235,7 @@ void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillCast(int level, CGameActor
 // FUNCTION: fn_08883
 void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_blue_dragon"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_blue_dragon"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -244,7 +244,7 @@ void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_FIRST_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, 1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 1, 0, 0);
   }
 }
 
@@ -276,7 +276,7 @@ void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillCast(int level, CGameActor
 // FUNCTION: fn_08888
 void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_white_tiger"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_white_tiger"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -285,7 +285,7 @@ void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_SECOND_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, 2, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 2, 0, 0);
   }
 }
 
@@ -318,9 +318,9 @@ void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillCast(int level, CGameActor
 void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_red_phoenix_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_red_phoenix_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_red_phoenix"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_red_phoenix"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -329,7 +329,7 @@ void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_THIRD_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, 3, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 3, 0, 0);
   }
 }
 
@@ -377,7 +377,7 @@ int CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::GetSkillScopeType() {
 void CEfstAction_T_FOURTH_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, 4, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 4, 0, 0);
   }
 }
 
@@ -410,7 +410,7 @@ void CSkillAction_SOA_TALISMAN_OF_FOUR_BEARING_GOD::OnSkillCast(int level, CGame
 void CSkillAction_SOA_TALISMAN_OF_FOUR_BEARING_GOD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_four_bearing_god"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_four_bearing_god"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -427,7 +427,7 @@ void CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS::OnSkillCast(int level
 void CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -436,7 +436,7 @@ void CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS::OnSkillEffect(int lev
 void CEfstAction_T_FIVETH_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("circle_directions_elements_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -474,7 +474,7 @@ void CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH::OnSkillCast(int level, CGameActo
 void CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -483,7 +483,7 @@ void CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH::OnSkillEffect(int level, CGameAc
 void CEfstAction_HEAVEN_AND_EARTH::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_of_heaven_and_earth_buff"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -521,7 +521,7 @@ void CSkillAction_SOA_TALISMAN_OF_PROTECTION::OnSkillCast(int level, CGameActor*
 void CSkillAction_SOA_TALISMAN_OF_PROTECTION::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_protection"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_protection"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -544,7 +544,7 @@ void CSkillAction_SOA_TALISMAN_OF_WARRIOR::OnSkillCast(int level, CGameActor* so
 void CSkillAction_SOA_TALISMAN_OF_WARRIOR::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_warrior"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_warrior"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -567,9 +567,9 @@ void CSkillAction_SOA_TALISMAN_OF_MAGICIAN::OnSkillCast(int level, CGameActor* s
 void CSkillAction_SOA_TALISMAN_OF_MAGICIAN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_magician_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -586,7 +586,7 @@ void CSkillAction_SOA_SOUL_GATHERING::OnSkillCast(int level, CGameActor* source)
 void CSkillAction_SOA_SOUL_GATHERING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_gathering"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("soul_gathering"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -609,13 +609,13 @@ int CSkillAction_SOA_TOTEM_OF_TUTELARY::GetSkillScopeType() {
 void CSkillObjectAction_SOA_TOTEM_OF_TUTELARY::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_start"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_start"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -626,10 +626,10 @@ void CSkillObjectAction_SOA_TOTEM_OF_TUTELARY::OnSkillObjectRemove(CRenderObject
     EffectLists* effects = g_effectMgr;
     effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_loop"));
     effects = g_effectMgr;
-    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_end"), object->render.position.x, object->render.position.y, object->render.position.z, 0, -1, 0, 0);
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_bottom_end"), object->render.position, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_loop"));
     effects = g_effectMgr;
-    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_end"), object->render.position.x, object->render.position.y, object->render.position.z, 0, -1, 0, 0);
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_end"), object->render.position, 0, -1, 0, 0);
   }
 }

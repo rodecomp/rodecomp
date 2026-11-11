@@ -462,7 +462,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnDirectionalEffect(CGameActor* sourc
 
   const bool flipped = direction == 1 || direction == 2;
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name.data()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name.data()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetFlipX(flipped);
     effect->SetAngle(static_cast<float>((static_cast<int>(angle + (flipped ? -180.0f : 0.0f)) + 360) % 360));
   }
@@ -582,7 +582,7 @@ void CEfstAction_BasicAction::OnEfstBegin(int efstId, int value, int argument3, 
   if (actor) {
     const int id = this->GetEffectId(efstId, argument4);
     if (id >= 0) {
-      g_effectMgr->Spawn(actor->render.accountId, id, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
   }
 }
@@ -600,12 +600,12 @@ void CSkillAction_Earthing::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_Icing::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect =
-            effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+            effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -1018,14 +1018,14 @@ void CSkillAction_AT_CHILLING_BLAST::OnSkillEffect(int level, CGameActor* source
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0xD98F03A52D35636DULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr auto bytesText = CRYPT_NAME("chilling_blast_bottom", 0x0F0F8B6B8F9D19D1ULL);
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x0F0F8B6B8F9D19D1ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1053,20 +1053,20 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectCreate(int argument, C
     constexpr std::array<char, 23> bytes = CRYPT_NAME("glacier_monolith_start", 0xD3755DD95F47A909ULL);
     thread_local EncryptedName<sizeof(bytes), 0xD3755DD95F47A909ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr std::array<char, 30> bytes = CRYPT_NAME("glacier_monolith_start_bottom", 0x31D7C1EDA345E36DULL);
     thread_local EncryptedName<sizeof(bytes), 0x31D7C1EDA345E36DULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
         constexpr std::array<char, 22> bytes = CRYPT_NAME("glacier_monolith_loop", 0xC7912587FFF31B71ULL);
         thread_local EncryptedName<sizeof(bytes), 0xC7912587FFF31B71ULL> name(bytes);
         return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(990);
   }
   effects = g_effectMgr;
@@ -1074,7 +1074,7 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectCreate(int argument, C
         constexpr std::array<char, 29> bytes = CRYPT_NAME("glacier_monolith_loop_bottom", 0x69D345DB950F336DULL);
         thread_local EncryptedName<sizeof(bytes), 0x69D345DB950F336DULL> name(bytes);
         return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(990);
   }
 }
@@ -1106,14 +1106,14 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectRemove(CRenderObject* 
     const char bytes[] = {'\x86', '\xF7', '\x92', '\x18', '\x84', '\xE2', '\x8D', '\x3E', '\x8C', '\xF4', '\x9D', '\x14', '\x81', '\xEE', '\x8B', '\x09', '\xBE', '\xFE', '\x9D', '\x1F', '\xED'};
     thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
     return name.Text();
-  }()), object->render.position.x, object->render.position.y, object->render.position.z, 0, -1, 0, 0);
+  }()), object->render.position, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char bytes[] = {'\x98', '\xE9', '\x46', '\x6E', '\x0C', '\x5A', '\xEB', '\x22', '\x92', '\xEA', '\x49', '\x62', '\x09', '\x56', '\xED', '\x15',
                                   '\xA0', '\xE0', '\x49', '\x69', '\x3A', '\x5D', '\xF6', '\x09', '\x8B', '\xEA', '\x4A', '\x0D'};
     thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
     return name.Text();
-  }()), object->render.position.x, object->render.position.y, object->render.position.z, 0, -1, 0, 0);
+  }()), object->render.position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A8FC0
@@ -1159,7 +1159,7 @@ void CSkillAction_AT_GLACIER_SHARD::OnSkillEffect(int level, CGameActor* source,
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x69FD1D9733D3CFC1ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1179,7 +1179,7 @@ void CSkillAction_AT_GLACIER_STOMP::OnSkillEffect(int level, CGameActor* source,
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0xF5657D1F3DE5CDC7ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1199,14 +1199,14 @@ void CSkillAction_AT_ROARING_CHARGE::OnSkillEffect(int level, CGameActor* source
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x8B65CD61012B5931ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr auto bytesText = CRYPT_NAME("roaring_charge_bottom", 0xF7530137154D8FE5ULL);
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0xF7530137154D8FE5ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1225,13 +1225,13 @@ void CSkillAction_AT_ROARING_CHARGE_S::OnSkillEffect(int level, CGameActor* sour
       constexpr std::array<char, 17> bytes = CRYPT_NAME("roaring_charge_s", 0x8B3FEB5B8BD5C3C3ULL);
       thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 24> bytes = CRYPT_NAME("roaring_charge_s_bottom", 0x0BEB63A5C905B3A7ULL);
       thread_local EncryptedName<sizeof(bytes), 0x0BEB63A5C905B3A7ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1303,7 +1303,7 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
         const auto& bytes = bytesText.data;
         thread_local EncryptedName<sizeof(bytes), 0x5B8F49AF09390D1BULL> name(bytes);
         return name.Text();
-      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetLifeTime(1000);
   }
 
@@ -1334,10 +1334,10 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
 
   for (int delay = 0; delay < 1000; delay += 250) {
     const int variant = std::max(std::rand() % 2, 0);
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormA : stormB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormA : stormB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(delay);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(delay);
     }
   }
@@ -1513,20 +1513,20 @@ void CSkillAction_AT_AERO_SYNC::OnSkillEffect(int level, CGameActor* source, CGa
       const char bytes[] = {'\xBE', '\xBC', '\x2F', '\x06', '\x4C', '\xE0', '\x86', '\x6F', '\xBC', '\x86', '\x2E', '\x10', '\x7D', '\xF0', '\xFF'};
       thread_local EncryptedName<sizeof(bytes), 0x01FF9313695DD9DFULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       const char bytes[] = {'\xFA', '\xC8', '\x07', '\xA0', '\x8E', '\x4E', '\x94', '\x03', '\xF8', '\xF2', '\x18', '\xAE', '\xB8', '\x53', '\xED'};
       thread_local EncryptedName<sizeof(bytes), 0x6DED3DD1CF75AD9BULL> name(bytes);
       return name.Text();
-    }()), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    }()), source->render.position, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       const char bytes[] = {'\xA0', '\xB6', '\xA9', '\x18', '\xC4', '\x06', '\xBA', '\x27', '\xA2', '\x8C', '\xB6', '\x16', '\xF2', '\x1B', '\x9C', '\x2B',
                                     '\xAE', '\xA7', '\xAF', '\x18', '\xF6', '\x75'};
       thread_local EncryptedName<sizeof(bytes), 0x49C3759B77DBD3C1ULL> name(bytes);
       return name.Text();
-    }()), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    }()), source->render.position, 0, -1, 0, 0);
   }
 }
 
@@ -1629,8 +1629,8 @@ void CSkillAction_AT_TERRA_HARVEST::OnSkillEffect(int level, CGameActor* source,
     thread_local EncryptedName<sizeof(bytes), 0x955D4DF94DE9BB07ULL> name(bytes);
     return name.Text();
   }()));
-  g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-  g_effectMgr->Spawn(target->render.accountId, bottomId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, bottomId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005AD630
@@ -1664,12 +1664,12 @@ void CSkillAction_AT_SOLID_STOMP::OnSkillEffect(int level, CGameActor* source, C
       constexpr std::array<char, 12> bytes = CRYPT_NAME("solid_stomp", 0xFF7D83CB791339D9ULL);
       thread_local EncryptedName<sizeof(bytes), 0xFF7D83CB791339D9ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 19> bytes = CRYPT_NAME("solid_stomp_bottom", 0xED5143E7C1B39315ULL);
       thread_local EncryptedName<sizeof(bytes), 0xED5143E7C1B39315ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1701,13 +1701,13 @@ void CEfstAction_ZEPHYR_LINK::OnEfstBegin(int efstId, int value, int argument3, 
       constexpr std::array<char, 12> bytes = CRYPT_NAME("zephyr_link", 0x393D916561BDC391ULL);
       thread_local EncryptedName<sizeof(bytes), 0x393D916561BDC391ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 19> bytes = CRYPT_NAME("zephyr_link_bottom", 0x31956551B311FD95ULL);
       thread_local EncryptedName<sizeof(bytes), 0x31956551B311FD95ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1749,14 +1749,14 @@ void CEfstAction_INSANE::OnEfstBegin(int efstId, int value, int argument3, int a
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x71B7691737C5A1AFULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr auto bytesText = CRYPT_NAME("efst_insane_bottom_01", 0xC39FB559A17D3963ULL);
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0xC39FB559A17D3963ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFFFF200);
   }
 }
@@ -1788,14 +1788,14 @@ void CEfstAction_INSANE2::OnEfstBegin(int efstId, int value, int argument3, int 
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x45E3F103CBB5F157ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr auto bytesText = CRYPT_NAME("efst_insane_bottom_02", 0x07112F85A39F4FABULL);
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x07112F85A39F4FABULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFFF7F27);
   }
 }
@@ -1811,14 +1811,14 @@ void CEfstAction_INSANE3::OnEfstBegin(int efstId, int value, int argument3, int 
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x2D33791F67AD47DFULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr auto bytesText = CRYPT_NAME("efst_insane_bottom_03", 0x936F3D2FFDFD87F5ULL);
       const auto& bytes = bytesText.data;
       thread_local EncryptedName<sizeof(bytes), 0x936F3D2FFDFD87F5ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     static_cast<CPc*>(actor)->outlineColor = static_cast<int>(0xFFED1C24);
   }
 }
@@ -1850,14 +1850,14 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
     const char bytes[] = {'\x9A', '\xB2', '\x4B', '\x66', '\x52', '\x4C', '\x54', '\x89', '\x9C', '\xBD', '\x5A', '\x62', '\x35'};
     thread_local EncryptedName<sizeof(bytes), 0xE50B2935073DD3E9ULL> name(bytes);
     return name.Text();
-  }()), target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  }()), target->render.position, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const char bytes[] = {'\x82', '\xA2', '\x9F', '\xDC', '\xCA', '\x68', '\x2A', '\x11', '\x84', '\xAD', '\x8E', '\xD8', '\xF2', '\x6F', '\x1A', '\x09',
                                   '\x85', '\xAC', '\x84', '\xBD'};
     thread_local EncryptedName<sizeof(bytes), 0x7D750DADBDE9C3F1ULL> name(bytes);
     return name.Text();
-  }()), target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  }()), target->render.position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005AC990
@@ -2129,12 +2129,10 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(int sourceActor, CGa
 
       const float offset = g_featherOffsets[std::max(std::rand() % 3, 0)];
       const float step = static_cast<float>(column);
-      const float x = rightX * step + baseX + offset * forwardX;
-      const float y = rightY * step + baseY + offset * forwardY;
-      const float z = rightZ * step + baseZ + offset * forwardZ;
+      const vector3d position = {rightX * step + baseX + offset * forwardX, rightY * step + baseY + offset * forwardY, rightZ * step + baseZ + offset * forwardZ};
       const int fade = std::max(std::rand() % 101, 0) + alpha;
       const int scale = std::max(std::rand() % 11, 7);
-      if (CEffect* effect = g_effectMgr->Spawn(0, effectId, x, y, z, 0, -1, 0, 0)) {
+      if (CEffect* effect = g_effectMgr->Spawn(0, effectId, position, 0, -1, 0, 0)) {
         effect->SetFlipX(flipped);
         effect->SetDelay(fade);
         effect->SetScale(static_cast<float>(scale) * 0.1f);

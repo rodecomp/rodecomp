@@ -154,9 +154,9 @@ public:
 void CSkillAction_IG_GUARDIAN_SHIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -165,9 +165,9 @@ void CSkillAction_IG_GUARDIAN_SHIELD::OnSkillEffect(int level, CGameActor* sourc
 void CEfstAction_IG_GUARDIAN_SHIELD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_start"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guardianshield_buff_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -203,14 +203,14 @@ EfstActionMessage CEfstAction_IG_GUARDIAN_SHIELD::GetEfstEndMessage() {
 void CSkillAction_IG_HOLY_SHIELD::OnSkillCast(int level, CGameActor* source) {
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
 
   effects = g_effectMgr;
   effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_cast_bottom"),
-                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                          vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -221,9 +221,9 @@ void CSkillAction_IG_HOLY_SHIELD::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_IG_HOLY_SHIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -232,9 +232,9 @@ void CSkillAction_IG_HOLY_SHIELD::OnSkillEffect(int level, CGameActor* source, C
 void CEfstAction_IG_HOLY_SHIELD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_holy_shield_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -276,14 +276,14 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillCast(int level, CGameActor* source)
 
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
 
   effects = g_effectMgr;
   effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_cast_bottom"),
-                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                          vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -295,7 +295,7 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillEffect(int level, CGameActor* sourc
   if (source && target) {
     const vector3d position = source->render.position;
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_shot"), position.x, position.y, position.z,
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_shot"), position,
                    target->render.accountId, -1, 0, 0);
   }
 }
@@ -305,11 +305,9 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillEffect(int level, CGameActor* sourc
 void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_bottom"), source->render.position.x,
-                   source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_bottom"), source->render.position, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross"), source->render.position.x,
-                   source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross"), source->render.position, 0, -1, 0, 0);
   }
 }
 
@@ -317,7 +315,7 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillHit(int level, CGameActor* source, 
 // FUNCTION: fn_08607
 void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -330,7 +328,7 @@ void CSkillAction_IG_OVERSLASH::OnSkillCast(int level, CGameActor* source) {
 
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -341,9 +339,9 @@ void CSkillAction_IG_OVERSLASH::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_IG_OVERSLASH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -352,7 +350,7 @@ void CSkillAction_IG_OVERSLASH::OnSkillEffect(int level, CGameActor* source, CGa
 void CSkillAction_IG_OVERSLASH::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -365,14 +363,14 @@ void CSkillAction_IG_REBOUND_SHIELD::OnSkillCast(int level, CGameActor* source) 
 
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
 
   effects = g_effectMgr;
   effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_cast_bottom"),
-                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                          vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -383,9 +381,9 @@ void CSkillAction_IG_REBOUND_SHIELD::OnSkillCast(int level, CGameActor* source) 
 void CSkillAction_IG_REBOUND_SHIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_rebound_shield_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -415,9 +413,9 @@ void CSkillAction_IG_ULTIMATE_SACRIFICE::OnSkillCast(int level, CGameActor* sour
 void CSkillAction_IG_ULTIMATE_SACRIFICE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimatesacrifice"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -425,7 +423,7 @@ void CSkillAction_IG_ULTIMATE_SACRIFICE::OnSkillEffect(int level, CGameActor* so
 // FUNCTION: fn_08618
 void CEfstAction_IG_ULTIMATE_SACRIFICE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ultimate_sacrifice_buff"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -449,7 +447,7 @@ void CEfstAction_IG_ULTIMATE_SACRIFICE::OnEfstUpdate(int efstId, int value, int 
 void CSkillAction_IG_IMPERIAL_CROSS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -458,7 +456,7 @@ void CSkillAction_IG_IMPERIAL_CROSS::OnSkillEffect(int level, CGameActor* source
 void CSkillAction_IG_IMPERIAL_CROSS::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -471,7 +469,7 @@ void CSkillAction_IG_RADIANT_SPEAR::OnSkillCast(int level, CGameActor* source) {
 
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -492,11 +490,9 @@ void CSkillAction_IG_RADIANT_SPEAR::OnSkillEffect(int level, CGameActor* source,
   }
   const std::string side = direction;
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position.x,
-                 target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position.x,
-                 target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x0078AC80
@@ -504,7 +500,7 @@ void CSkillAction_IG_RADIANT_SPEAR::OnSkillEffect(int level, CGameActor* source,
 void CSkillAction_IG_RADIANT_SPEAR::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -517,7 +513,7 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillCast(int level, CGameActor* sourc
 
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperal_pressure_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -528,9 +524,9 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillCast(int level, CGameActor* sourc
 void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -539,7 +535,7 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillEffect(int level, CGameActor* sou
 void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -548,7 +544,7 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillDamage(int level, CGameActor* sou
 void CSkillAction_IG_SHIELD_SHOOTING::OnSkillCast(int level, CGameActor* source) {
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -562,7 +558,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const vector3d position = source->render.position;
-  g_effectMgr->Spawn(source->render.accountId, 2183, position.x, position.y, position.z, target->render.accountId, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, 2183, position, target->render.accountId, -1, 0, 0);
 
   const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
   g_soundMgr->PlayWave("effect\\IG_SHIELD_SHOOTING.wav", target->render.position.x - player->render.position.x, 0.0f,
@@ -574,7 +570,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
 void CSkillAction_IG_SHIELD_SHOOTING::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -592,18 +588,18 @@ void CSkillAction_IG_ATTACK_STANCE::OnSkillCast(int level, CGameActor* source) {
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_start"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level - 100);
   }
 
   effects = g_effectMgr;
   effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_cast_bottom"),
-                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                          vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level - 100);
   }
@@ -614,7 +610,7 @@ void CSkillAction_IG_ATTACK_STANCE::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_IG_ATTACK_STANCE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -623,7 +619,7 @@ void CSkillAction_IG_ATTACK_STANCE::OnSkillEffect(int level, CGameActor* source,
 void CEfstAction_IG_ATTACK_STANCE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_attack_stance_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -668,18 +664,18 @@ void CSkillAction_IG_GUARD_STANCE::OnSkillCast(int level, CGameActor* source) {
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_start"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast"),
-                                   0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                                   vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level - 100);
   }
 
   effects = g_effectMgr;
   effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_cast_bottom"),
-                          0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+                          vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level - 100);
   }
@@ -690,7 +686,7 @@ void CSkillAction_IG_GUARD_STANCE::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_IG_GUARD_STANCE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -699,7 +695,7 @@ void CSkillAction_IG_GUARD_STANCE::OnSkillEffect(int level, CGameActor* source, 
 void CEfstAction_IG_GUARD_STANCE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -735,12 +731,12 @@ void CSkillAction_IG_CROSS_RAIN::OnSkillCast(int level, CGameActor* source) {
   }
 
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
   effects = g_effectMgr;
-  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -756,8 +752,8 @@ int CSkillAction_IG_CROSS_RAIN::GetSkillScopeType() {
 // FUNCTION: fn_08581
 void CSkillObjectAction_IG_CROSS_RAIN::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object && source) {
-    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, 2462, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 2462, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -769,12 +765,12 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillCast(int level, CGameActor* source)
   }
 
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
   effects = g_effectMgr;
-  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -788,9 +784,9 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   const int subEffectId = CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_sub");
   for (int index = 0; index < 8; ++index) {
     const float originX = target->render.position.x;
@@ -812,7 +808,7 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
       z = originZ + static_cast<float>(std::max(rand() % 8, 0));
       break;
     }
-    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, x, y, z, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, vector3d{x, y, z}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(140 * (index + 1));
     }
@@ -824,7 +820,7 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
 void CEfstAction_IG_GRAND_JUDGEMENT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

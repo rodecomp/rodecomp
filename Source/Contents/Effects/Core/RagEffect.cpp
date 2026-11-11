@@ -22343,7 +22343,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_SEVERERAINSTORM_HIT:
     if (this->state.stateCnt % 30 == 0) {
       const vector3d& position = this->state.parent->render.position;
-      g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1533 : 1285, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1533 : 1285, position, 0, -1, 0, 0);
     }
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
@@ -22408,7 +22408,7 @@ bool CRagEffect::OnProcess3() {
           const float x = m[0] * static_cast<float>(distance) + m[3] * offset.x + m[6] * offset.x + m[9] + this->render.position.x;
           const float y = m[1] * static_cast<float>(distance) + m[4] * offset.x + m[7] * offset.x + m[10] + this->render.position.y;
           const float z = m[2] * static_cast<float>(distance) + m[5] * offset.x + m[8] * offset.x + m[11] + this->render.position.z;
-          g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1544 : 1447, x, y, z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1544 : 1447, vector3d{x, y, z}, 0, -1, 0, 0);
         }
       }
       if (this->state.stateCnt == 0) {

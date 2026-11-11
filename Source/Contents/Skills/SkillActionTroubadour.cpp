@@ -143,7 +143,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillHit(int level, CGameActor* source, CGam
 void CSkillAction_TR_ROSEBLOSSOM::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -152,7 +152,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillDamage(int level, CGameActor* source, C
 void CSkillAction_TR_ROSEBLOSSOM_ATK::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_rose"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_rose"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -162,13 +162,13 @@ void CSkillAction_TR_KVASIR_SONATA::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -181,7 +181,7 @@ void CSkillAction_TR_KVASIR_SONATA::OnSkillEffect(int level, CGameActor* source,
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kvasirsonata"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -202,12 +202,12 @@ EfstActionMessage CEfstAction_KVASIR_SONATA::GetEfstEndMessage() {
 void CSkillAction_TR_PRON_MARCH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     if (CEffect* effect = g_effectMgr->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -220,7 +220,7 @@ void CSkillAction_TR_PRON_MARCH::OnSkillEffect(int level, CGameActor* source, CG
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -250,13 +250,13 @@ void CSkillAction_TR_JAWAII_SERENADE::OnSkillCast(int level, CGameActor* source)
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -269,7 +269,7 @@ void CSkillAction_TR_JAWAII_SERENADE::OnSkillEffect(int level, CGameActor* sourc
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jawaii_serenade"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -299,7 +299,7 @@ void CSkillAction_TR_AIN_RHAPSODY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -312,7 +312,7 @@ void CSkillAction_TR_AIN_RHAPSODY::OnSkillEffect(int level, CGameActor* source, 
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ain_rhapsody"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -342,13 +342,13 @@ void CSkillAction_TR_GEF_NOCTURN::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -360,7 +360,7 @@ void CSkillAction_TR_GEF_NOCTURN::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_TR_GEF_NOCTURN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gef_nocturn"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -389,12 +389,12 @@ EfstActionMessage CEfstAction_GEF_NOCTURN::GetEfstEndMessage() {
 void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     if (CEffect* effect = g_effectMgr->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -406,9 +406,9 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillCast(int level, CGameActor* source)
 void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -417,7 +417,7 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillEffect(int level, CGameActor* sourc
 void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -426,7 +426,7 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillDamage(int level, CGameActor* sourc
 void CSkillAction_TR_METALIC_FURY::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("metalic_fury"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("metalic_fury"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -436,7 +436,7 @@ void CSkillAction_TR_MYSTIC_SYMPHONY::OnSkillCast(int level, CGameActor* source)
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -449,7 +449,7 @@ void CSkillAction_TR_MYSTIC_SYMPHONY::OnSkillEffect(int level, CGameActor* sourc
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -458,7 +458,7 @@ void CSkillAction_TR_MYSTIC_SYMPHONY::OnSkillEffect(int level, CGameActor* sourc
 void CEfstAction_MYSTIC_SYMPHONY::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mysticsymphony_note"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -501,13 +501,13 @@ void CSkillAction_TR_RHYTHMSHOOTING::OnSkillCast(int level, CGameActor* source) 
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -522,7 +522,7 @@ void CSkillAction_TR_RHYTHMSHOOTING::OnSkillHit(int level, CGameActor* source, C
   }
 
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
     effect->SetAngle(angle + 180.0f);
@@ -534,7 +534,7 @@ void CSkillAction_TR_RHYTHMSHOOTING::OnSkillHit(int level, CGameActor* source, C
 void CSkillAction_TR_RHYTHMSHOOTING::OnSkillDamage(int, CGameActor* source, CGameActor*) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -544,13 +544,13 @@ void CSkillAction_TR_ROKI_CAPRICCIO::OnSkillCast(int level, CGameActor* source) 
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -563,7 +563,7 @@ void CSkillAction_TR_ROKI_CAPRICCIO::OnSkillEffect(int level, CGameActor* source
   if (source) {
     source->SetFrameSequence(96, 1, 3, 96, 3, 1, 500, 0);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roki_capriccio"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -573,13 +573,13 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -592,7 +592,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillEffect(int level, CGameActor* source, C
   if (source && target) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_shot"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       const float angle = ScreenAngle(
         &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values

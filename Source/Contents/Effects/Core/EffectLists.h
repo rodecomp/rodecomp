@@ -30,7 +30,11 @@ public:
 
   virtual ~EffectLists();
 
-  CEffect* Spawn(int actor, int id, float x, float y, float z, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance);
+  CEffect* Spawn(int actor, int id, vector3d position, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance);
+  // INLINED
+  CEffect* Spawn(int actor, int id, float x, float y, float z, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
+    return Spawn(actor, id, vector3d{x, y, z}, sourceActor, frame, reuse, instance);
+  }
   CEffect* Find(int actor, int id) const;
   CEffect* Find(int actor, int instance, int id) const;
   CEffect* At(int id, unsigned index) const;

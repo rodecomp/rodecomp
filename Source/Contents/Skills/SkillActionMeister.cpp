@@ -73,9 +73,9 @@ void CSkillAction_MT_SPARK_BLASTER::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_MT_SPARK_BLASTER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -97,7 +97,7 @@ void CSkillAction_MT_TRIPLE_LASER::OnSkillEffect(int level, CGameActor* source, 
 void CSkillAction_MT_TRIPLE_LASER::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("triple_laser"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("triple_laser"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -106,7 +106,7 @@ void CSkillAction_MT_TRIPLE_LASER::OnSkillHit(int level, CGameActor* source, CGa
 void CSkillAction_MT_MIGHTY_SMASH::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mighty_smash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mighty_smash"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -124,12 +124,12 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillCast(int level, CGameActor* source
   }
 
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
   effects = g_effectMgr;
-  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -143,9 +143,8 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillEffect(int level, CGameActor* sour
   }
 
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
-  const vector3d position = source->render.position;
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade"), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade"), source->render.position, 0, -1, 0, 0);
   if (effect) {
     effect->SetAngle(angle + 180.0f);
   }
@@ -156,7 +155,7 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillEffect(int level, CGameActor* sour
 void CSkillAction_MT_ENERGY_CANNONADE::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_hit_big"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_hit_big"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -165,7 +164,7 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillHit(int level, CGameActor* source,
 void CSkillAction_MT_ENERGY_CANNONADE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -180,9 +179,9 @@ void CSkillAction_MT_RUSH_STRIKE::OnSkillEffect(int level, CGameActor* source, C
     ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetFlipX(source->render.previousAnimation % 8 >= 4);
   }
@@ -193,7 +192,7 @@ void CSkillAction_MT_RUSH_STRIKE::OnSkillEffect(int level, CGameActor* source, C
 void CSkillAction_MT_RUSH_STRIKE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -205,12 +204,12 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
   }
 
   if (!g_serviceOptions.Get(229)) {
-    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f);
     }
   }
-  CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetFlipX(source->render.previousAnimation % 8 >= 4);
   }
@@ -221,7 +220,7 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
 void CSkillAction_MT_POWERFUL_SWING::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

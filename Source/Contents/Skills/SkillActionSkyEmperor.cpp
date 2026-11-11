@@ -166,7 +166,7 @@ public:
 // FUNCTION: fn_08815
 void CSkillObjectAction_SKE_STAR_CANNON::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 2350, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 2350, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -189,7 +189,7 @@ void CSkillAction_SKE_ALL_IN_THE_SKY::OnSkillCast(int level, CGameActor* source)
 void CSkillAction_SKE_ALL_IN_THE_SKY::OnTargetSkillCast(int argument1, int argument2, int argument3) {
   if (CGameActor* source = reinterpret_cast<CGameActor*>(argument2)) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_all_in_the_sky"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_all_in_the_sky"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -206,9 +206,9 @@ void CSkillAction_SKE_ENCHANTING_SKY::OnSkillCast(int level, CGameActor* source)
 void CEfstAction_SKY_ENCHANT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_00"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -226,7 +226,7 @@ void CEfstAction_SKY_ENCHANT::OnEfstEnd(int efstId, int argument2, int argument3
 void CEfstAction_SKY_ENCHANT::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -238,12 +238,11 @@ void CSkillAction_SKE_SKY_SUN::OnSkillEffect(int level, CGameActor* source, CGam
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   for (int index = 0; index < 6; ++index) {
     effects = g_effectMgr;
-    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_small"), target->render.position.x, target->render.position.y,
-                                     target->render.position.z, 0, -1, 0, 0);
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_small"), target->render.position, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -262,7 +261,7 @@ void CSkillAction_SKE_SKY_SUN::OnSkillEffect(int level, CGameActor* source, CGam
 void CSkillAction_SKE_SKY_SUN::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -271,11 +270,11 @@ void CSkillAction_SKE_SKY_SUN::OnSkillDamage(int level, CGameActor* source, CGam
 void CSkillAction_SKE_SKY_MOON::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_cast"),
-                                             0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+                                             vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_cast_bottom"),
-                                             0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+                                             vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -290,12 +289,12 @@ void CSkillAction_SKE_SKY_MOON::OnSkillEffect(int level, CGameActor* source, CGa
 
   const float scale = source->attackMotion * source->render.speed * 16.0f;
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
   }
   effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_bottom"),
-                                       0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+                                       vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
   }
 }
@@ -305,7 +304,7 @@ void CSkillAction_SKE_SKY_MOON::OnSkillEffect(int level, CGameActor* source, CGa
 void CSkillAction_SKE_SKY_MOON::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -318,9 +317,9 @@ void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillEffect(int level, CGameActor* sour
 
   source->LaunchEffect(2426, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00798B90
@@ -328,7 +327,7 @@ void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillEffect(int level, CGameActor* sour
 void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -342,8 +341,8 @@ int CSkillAction_SKE_RISING_SUN::GetSkillAttackMotion() {
 // FUNCTION: fn_08833
 void CEfstAction_RISING_SUN::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_00"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -361,7 +360,7 @@ void CEfstAction_RISING_SUN::OnEfstEnd(int efstId, int argument2, int argument3,
 void CEfstAction_RISING_SUN::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -369,8 +368,8 @@ void CEfstAction_RISING_SUN::OnEfstUpdate(int efstId, int value, int argument3, 
 // FUNCTION: fn_08836
 void CEfstAction_NOON_SUN::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_02"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_02"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -388,7 +387,7 @@ void CEfstAction_NOON_SUN::OnEfstEnd(int efstId, int argument2, int argument3, i
 void CEfstAction_NOON_SUN::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_03"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -396,8 +395,8 @@ void CEfstAction_NOON_SUN::OnEfstUpdate(int efstId, int value, int argument3, in
 // FUNCTION: fn_08839
 void CEfstAction_SUNSET_SUN::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_04"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_04"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -415,7 +414,7 @@ void CEfstAction_SUNSET_SUN::OnEfstEnd(int efstId, int argument2, int argument3,
 void CEfstAction_SUNSET_SUN::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_sun_05"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -430,7 +429,7 @@ int CSkillAction_SKE_NOON_BLAST::GetSkillAttackMotion() {
 void CSkillAction_SKE_NOON_BLAST::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_noon_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_noon_blast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -448,12 +447,11 @@ void CSkillAction_SKE_SUNSET_BLAST::OnSkillEffect(int level, CGameActor* source,
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   for (int index = 0; index < 6; ++index) {
     effects = g_effectMgr;
-    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast_small"), target->render.position.x,
-                                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("sunset_blast_small"), target->render.position, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -478,9 +476,9 @@ int CSkillAction_SKE_RISING_MOON::GetSkillAttackMotion() {
 void CEfstAction_RISING_MOON::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_00"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -498,7 +496,7 @@ void CEfstAction_RISING_MOON::OnEfstEnd(int efstId, int argument2, int argument3
 void CEfstAction_RISING_MOON::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_01"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -507,9 +505,9 @@ void CEfstAction_RISING_MOON::OnEfstUpdate(int efstId, int value, int argument3,
 void CEfstAction_MIDNIGHT_MOON::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_02"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_02"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -527,7 +525,7 @@ void CEfstAction_MIDNIGHT_MOON::OnEfstEnd(int efstId, int argument2, int argumen
 void CEfstAction_MIDNIGHT_MOON::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_03"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -536,9 +534,9 @@ void CEfstAction_MIDNIGHT_MOON::OnEfstUpdate(int efstId, int value, int argument
 void CEfstAction_DAWN_MOON::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_04"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_04"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -556,7 +554,7 @@ void CEfstAction_DAWN_MOON::OnEfstEnd(int efstId, int argument2, int argument3, 
 void CEfstAction_DAWN_MOON::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -579,7 +577,7 @@ void CSkillAction_SKE_MIDNIGHT_KICK::OnSkillCast(int level, CGameActor* source) 
 void CSkillAction_SKE_MIDNIGHT_KICK::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_midnight_kick"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_midnight_kick"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -602,7 +600,7 @@ void CSkillAction_SKE_DAWN_BREAK::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_SKE_DAWN_BREAK::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_dawn_break"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_dawn_break"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -630,7 +628,7 @@ void CSkillAction_SKE_TWINKLING_GALAXY::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08865
 void CSkillObjectAction_SKE_TWINKLING_GALAXY::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 2349, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 2349, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -652,7 +650,7 @@ void CSkillAction_SKE_STAR_BURST::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08868
 void CEfstAction_STAR_BURST::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, 2348, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2348, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

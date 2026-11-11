@@ -53,7 +53,7 @@ public:
 // FUNCTION: fn_09023
 void CSkillAction_WH_GALESTORM::OnSkillCast(int level, CGameActor* source) {
   if (CEffect* effect = g_effectMgr->Spawn(
-        source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
       )) {
     effect->SetLifeTime(level);
   }
@@ -63,7 +63,7 @@ void CSkillAction_WH_GALESTORM::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_09024
 void CSkillAction_WH_GALESTORM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    g_effectMgr->Spawn(target->render.accountId, 1973, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 1973, target->render.position, 0, level, 0, 0);
   }
 }
 
@@ -72,7 +72,7 @@ void CSkillAction_WH_GALESTORM::OnSkillEffect(int level, CGameActor* source, CGa
 void CSkillAction_WH_GALESTORM::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -82,7 +82,7 @@ void CSkillAction_WH_CALAMITYGALE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
@@ -94,7 +94,7 @@ void CSkillAction_WH_CALAMITYGALE::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_WH_CALAMITYGALE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -103,7 +103,7 @@ void CSkillAction_WH_CALAMITYGALE::OnSkillEffect(int level, CGameActor* source, 
 void CEfstAction_CALAMITYGALE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -157,7 +157,7 @@ bool CSkillAction_WH_CRESCIVE_BOLT::SuppressAttackSkillArrow() {
 void CSkillAction_WH_CRESCIVE_BOLT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -168,7 +168,7 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* target, CGameActor* argument3) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetAngle(
         ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f
       );
@@ -182,7 +182,7 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* targ
 void CSkillAction_WH_CRESCIVE_BOLT::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -191,12 +191,12 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillDamage(int level, CGameActor* source,
 void CSkillAction_WH_WILD_WALK::OnSkillCast(int level, CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
     effects = g_effectMgr;
     if (CEffect* effect =
-            effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+            effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -207,7 +207,7 @@ void CSkillAction_WH_WILD_WALK::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_WH_WILD_WALK::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     source->LaunchEffect(2425, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
@@ -216,7 +216,7 @@ void CSkillAction_WH_WILD_WALK::OnSkillEffect(int level, CGameActor* source, CGa
 // FUNCTION: fn_09041
 void CSkillAction_WH_WILD_WALK::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
     }
   }

@@ -4912,9 +4912,8 @@ void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, f
     return;
   }
 
-  CSprArrowEffect* effect = static_cast<CSprArrowEffect*>(
-    g_effectMgr->Spawn(0, 0x964, position->x, position->y, position->z, actorId, -1, 0, 0)
-  );
+  EffectLists* effects = g_effectMgr;
+  CSprArrowEffect* effect = static_cast<CSprArrowEffect*>(effects->Spawn(0, 0x964, *position, actorId, -1, 0, 0));
   if (effect != nullptr) {
     effect->delayFrames = scale;
     effect->SetBulletSprite(job);
@@ -7165,7 +7164,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(effectId)) {
-      g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
       static_cast<EffectActor*>(actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -7176,7 +7175,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, secondEffectId, secondEffectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(secondEffectId)) {
-      g_effectMgr->Spawn(actor->render.accountId, secondEffectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, secondEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
       static_cast<EffectActor*>(actor)->LaunchEffect(secondEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }

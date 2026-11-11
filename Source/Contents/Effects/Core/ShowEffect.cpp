@@ -22,6 +22,11 @@ namespace {
 
     return world->GetGameActorByAID(actorId);
   }
+
+  // INLINED
+  bool HasEffect(const std::map<int, int>& effects, int tag) {
+    return effects.find(tag) != effects.end();
+  }
 }
 
 // OFFSET: 0x00729400
@@ -33,11 +38,12 @@ CShowEffect::CShowEffect() : CEffect(0x947), effects() {
 // FUNCTION: fn_07446
 void CShowEffect::Add(int tag, int effectId) {
   const std::uint32_t actorId = this->actor;
-  if (this->effects.find(tag) != this->effects.end() || g_effectMgr->Find(actorId, effectId)) {
+  if (HasEffect(this->effects, tag) || g_effectMgr->Find(actorId, effectId)) {
     return;
   }
 
-  if (!g_effectMgr->Spawn(actorId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, tag)) {
+  EffectLists* effects = g_effectMgr;
+  if (!effects->Spawn(actorId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, tag)) {
     if (!g_modeMgr.GetGameMode()) {
       return;
     }
@@ -84,13 +90,6 @@ void CShowEffect::Close() {
 // FUNCTION: fn_07448
 unsigned CShowEffect::Count() const {
   return this->effects.size();
-}
-
-namespace {
-  // INLINED
-  bool HasEffect(const std::map<int, int>& effects, int tag) {
-    return effects.find(tag) != effects.end();
-  }
 }
 
 // OFFSET: 0x00729A90

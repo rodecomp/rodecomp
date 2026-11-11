@@ -2192,7 +2192,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
                                      {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};
       const int effects[7] = {0x975, 0x975, 0x975, 0x975, 0x975, 0x975, 0x976};
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         const vector3d& position = positions[argument2];
         effect->SetWindowOffset(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
