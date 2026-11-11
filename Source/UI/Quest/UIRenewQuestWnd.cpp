@@ -534,8 +534,8 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(viewers[2]);
 
   for (int index = 0; index < 3; ++index) {
-    for (const std::string& description : quest.m_descriptions[index]) {
-      viewers[index]->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(description.c_str()), 0, 0, 0);
+    for (auto it = quest.m_descriptions[index].begin(); it != quest.m_descriptions[index].end(); ++it) {
+      viewers[index]->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
     }
   }
 
@@ -1107,12 +1107,12 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::vector<unsigned int>& recommended = this->m_questIds[1];
         auto it = recommended.begin();
         if (it != recommended.end()) {
-          for (; it != recommended.end(); ++it) {
+          for (; recommended.end() != it; ++it) {
             if (!g_renewQuestMgr->GetRecommendedQuest(*it).m_state) {
               break;
             }
           }
-          if (it == recommended.end()) {
+          if (recommended.end() == it) {
             it = recommended.begin();
           }
           UIRenewDetailQuestInfoWnd* detail = static_cast<UIRenewDetailQuestInfoWnd*>(g_windowMgr.EnsureWindow(WID_RENEWDETAILQUESTINFOWND));
@@ -1147,9 +1147,14 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       bool found = false;
       for (int tab = 0; tab <= 2; ++tab) {
         const std::vector<unsigned int>& ids = this->m_questIds[tab];
-        if (std::find(ids.begin(), ids.end(), static_cast<unsigned int>(argument2)) != ids.end()) {
+        for (auto it = ids.begin(); ids.end() != it; ++it) {
+          if (static_cast<unsigned int>(argument2) == *it) {
+            found = true;
+            break;
+          }
+        }
+        if (found) {
           this->SendMsg(this, UM_TAB, tab, 0, 0, 0);
-          found = true;
           break;
         }
       }
