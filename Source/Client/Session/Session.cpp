@@ -2376,12 +2376,12 @@ bool CSession::AreInventoryCategoriesEmpty() const {
 // OFFSET: 0x00DFA3C0
 // FUNCTION: fn_23573
 bool CSession::HasItem1740Number(int value) const {
-  std::list<ITEM_INFO>::const_iterator it = this->merchantShopItems.begin();
-  for (; it != this->merchantShopItems.end(); ++it) {
-    if (value == std::atoi(it->itemId.c_str())) {
-      break;
+  std::list<ITEM_INFO>::const_iterator it = std::find_if(
+    this->merchantShopItems.begin(), this->merchantShopItems.end(),
+    [value](const ITEM_INFO& item) {
+      return value == std::atoi(item.itemId.c_str());
     }
-  }
+  );
 
   return it != this->merchantShopItems.end();
 }
