@@ -342,10 +342,12 @@ void CSkillAction_DR_WERERAPTOR::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("wereraptor", 0xD3755DD95F47A909ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("wereraptor", 0xD3755DD95F47A909ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620190
@@ -555,14 +557,20 @@ void CSkillAction_DR_FLICKING_TONADO::OnSkillEffect(int level, CGameActor* sourc
     return;
   }
 
-  constexpr std::array<std::uint8_t, 16> effectSourceArray = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
-  const std::uint8_t (&effectSource)[16] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr std::array<std::uint8_t, 16> effectSourceArray = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
+    const std::uint8_t (&effectSource)[16] = effectSourceArray._Elems;
+    thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
-  const std::uint8_t bottomSource[] = CRYPT_BYTES(23, "flicking_tonado_bottom", 0x17359BF953C367B3ULL);
-  thread_local EncryptedName<sizeof(bottomSource), 0x17359BF953C367B3ULL> bottomName(bottomSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bottomSource[] = CRYPT_BYTES(23, "flicking_tonado_bottom", 0x17359BF953C367B3ULL);
+    thread_local EncryptedName<sizeof(bottomSource), 0x17359BF953C367B3ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00621C00
@@ -1115,10 +1123,12 @@ void CSkillAction_DR_ICE_CLOUD::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("ice_cloud", 0x474DC581D5E98357ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("ice_cloud", 0x474DC581D5E98357ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624F80
@@ -1128,10 +1138,12 @@ void CSkillAction_DR_ICE_TOTEM::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("ice_totem", 0x3F557BE333F95F6DULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("ice_totem", 0x3F557BE333F95F6DULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00625180
@@ -1233,10 +1245,12 @@ void CSkillAction_DR_PREENING::OnSkillEffect(int level, CGameActor* source, CGam
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("preening", 0xC52FB5FBB94FF917ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("preening", 0xC52FB5FBB94FF917ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620DF0
