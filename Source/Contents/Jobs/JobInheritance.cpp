@@ -741,8 +741,9 @@ void CSession::InitializeSkillTree() {
     int group = 1;
     if (inherited == JT_NOVICE || this->InheritedJob(index + 1) == JT_NOVICE || inherited == JT_DO_SUMMONER || inherited == JT_DO_SUMMONER_B) {
       group = 0;
-    } else if (this->IsTreeGroupTwo(inherited) == 1 || inherited == JT_STAR_EMPEROR || inherited == JT_SOUL_REAPER || inherited == JT_STAR_EMPEROR_B ||
-      inherited == JT_SOUL_REAPER_B) {
+    } else if (this->IsTreeGroupTwo(inherited) == 1) {
+      group = 2;
+    } else if (inherited == JT_STAR_EMPEROR || inherited == JT_SOUL_REAPER || inherited == JT_STAR_EMPEROR_B || inherited == JT_SOUL_REAPER_B) {
       group = 2;
     } else if (this->IsTreeGroupThree(inherited) == true) {
       group = 3;
@@ -1121,12 +1122,12 @@ const char* CSession::GetWeaponClassName(int item) {
 // OFFSET: 0x00BAD420
 // FUNCTION: fn_19759
 std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int sex, int weapon, int weaponItem, int costume) {
-  std::string result;
-  std::string jobName;
-  std::string sexName;
-  std::string weaponName;
+  std::string result("");
+  std::string jobName("");
+  std::string sexName("");
+  std::string weaponName("");
 
-  const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
+  const int spriteJob = g_session.GetSpriteJob(job > 31 ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
   sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
 
@@ -1145,13 +1146,13 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
 // OFFSET: 0x00BACEE0
 // FUNCTION: fn_19758
 std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job, int sex, int weapon, int weaponItem, int effect, int costume) {
-  std::string result;
-  std::string jobName;
-  std::string sexName;
-  std::string weaponName;
+  std::string result("");
+  std::string jobName("");
+  std::string sexName("");
+  std::string weaponName("");
   const char* const effects[] = {"_검광", "_발광"};
 
-  const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
+  const int spriteJob = g_session.GetSpriteJob(job > 31 ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
   sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
   weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
@@ -1595,15 +1596,16 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
     }
   }
 
-  if (id == 0) {
-    enabled = 0;
-    value = 0;
-  }
-
   NormalItemSlot& target = this->SkillHotkey(slot);
-  target.enabled = static_cast<unsigned char>(enabled);
-  target.itemId = static_cast<std::uint32_t>(id);
-  target.value = static_cast<std::int16_t>(value);
+  if (id != 0) {
+    target.enabled = static_cast<unsigned char>(enabled);
+    target.itemId = static_cast<std::uint32_t>(id);
+    target.value = static_cast<std::int16_t>(value);
+  } else {
+    target.enabled = 0;
+    target.itemId = 0;
+    target.value = 0;
+  }
 
   return g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
 }
