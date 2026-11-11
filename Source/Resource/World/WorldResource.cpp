@@ -128,7 +128,7 @@ bool C3dWorldRes::Load(const char* name) {
   magic[4] = 0;
 
   if (std::strcmp(magic, signature) != 0) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Invalid Format", 0);
+    ShowErrorDialog("Invalid Format", 0);
     return false;
   }
 
@@ -141,7 +141,7 @@ bool C3dWorldRes::Load(const char* name) {
 
   if (major > 2 || (major == 2 && minor > 7)) {
     sprintf_s(message, sizeof(message), "Unsupported Version\n current version: %d.%d < %d.%d", 2, 7, major, minor);
-    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    ShowErrorDialog(message, 0);
 
     return false;
   }
@@ -155,7 +155,7 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   if (IsUnsupportedWorldVersion(major, minor, build, message, sizeof(message)) == 1) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    ShowErrorDialog(message, 0);
     return false;
   }
 
