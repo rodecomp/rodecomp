@@ -287,13 +287,19 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
 void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   this->ingredientId = id;
 
-  ITEM_INFO item;
-  item.SetItemId(id);
-  char name[0x104];
-  std::memset(name, 0, sizeof(name));
-  int capacity = sizeof(name);
-  item.GetIdDisplayName(name, capacity, 0);
-  this->title.assign(name, std::strlen(name));
+  {
+    std::vector<char*> breaks;
+    char name[0x104];
+    std::memset(name, 0, sizeof(name));
+    char* highlight = nullptr;
+    char* cursor = name;
+    ITEM_INFO item;
+    item.SetItemId(id);
+    std::size_t remaining = sizeof(name);
+    int highlightColor;
+    this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+    this->title.assign(name, std::strlen(name));
+  }
 
   int minimumRefine = 0;
   int maximumRefine = 0;
@@ -310,8 +316,6 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_need_source_string", "d>s", id, &source);
   this->description.assign(source, std::strlen(source));
 }
-
-
 
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
