@@ -1307,8 +1307,8 @@ void UIRuneSystem_ActiveWnd::Paint() {
       }
 
       ITEM_INFO item;
-      item.SetItemId(itemId);
       item.identified = 1;
+      item.SetItemId(itemId);
       char path[128];
       std::memset(path, 0, sizeof(path));
       g_session.IconPath(path, item.itemId.c_str(), 1);
@@ -1349,8 +1349,8 @@ void UIRuneSystem_DecomItemWnd::Paint() {
       }
 
       ITEM_INFO item;
-      item.SetItemId(itemId);
       item.identified = 1;
+      item.SetItemId(itemId);
       char path[128];
       std::memset(path, 0, sizeof(path));
       g_session.IconPath(path, item.itemId.c_str(), 1);
