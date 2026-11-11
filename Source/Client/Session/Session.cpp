@@ -770,6 +770,7 @@ const char* CSession::GetEnemyHitWaveName(int element) {
     return "_enemy_hit_normal2.wav";
   case 2:
     return "_enemy_hit_normal3.wav";
+  case 3:
   default:
     return "_enemy_hit_normal4.wav";
   }
