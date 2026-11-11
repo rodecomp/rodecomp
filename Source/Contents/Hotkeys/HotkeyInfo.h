@@ -15,6 +15,8 @@ struct HotkeyInfo {
   /* 0020 */ std::string description;
   HotkeyInfo();
   HotkeyInfo(const HotkeyInfo& other);
+  HotkeyInfo& operator=(const HotkeyInfo& other) = default;
+  HotkeyInfo& operator=(HotkeyInfo&& other) = default;
 
   // OFFSET: 0x005F7C30
   // FUNCTION: fn_04053
