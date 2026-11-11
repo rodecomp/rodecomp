@@ -635,14 +635,12 @@ void UISeekPartyListWnd::InitJobFilter() {
   this->m_jobOptions[0].push_back(std::string(LookupMessage(MSI_PARTY_BOOKING_ALL_SELECT)));
 
   for (int i = 0; i < 4; ++i) {
-    std::string name(LookupMessage(0x6B0 + i));
-    this->m_jobOptions[1].push_back(name);
+    this->m_jobOptions[1].push_back(std::string(LookupMessage(0x6B0 + i)));
   }
 
   for (int category = 2; category < 9; ++category) {
     for (int i = 0; i < counts[category]; ++i) {
-      std::string name(LookupMessage(0x65D + message));
-      this->m_jobOptions[category].push_back(name);
+      this->m_jobOptions[category].push_back(std::string(LookupMessage(0x65D + message)));
       ++message;
     }
   }
