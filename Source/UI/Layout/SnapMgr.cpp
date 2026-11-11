@@ -66,7 +66,7 @@ void CSnapMgr::ResetVisited() {
 // OFFSET: 0x007E25C0
 // FUNCTION: fn_09700
 void CSnapMgr::SetRoot(UIWindow* window) {
-  if (!g_snapEnabled || this->Find(window) || this->root) {
+  if (!g_snapEnabled || this->Contains(window) || this->root) {
     return;
   }
 
@@ -79,7 +79,7 @@ void CSnapMgr::SetRoot(UIWindow* window) {
 // OFFSET: 0x007E2670
 // FUNCTION: fn_09701
 void CSnapMgr::Add(UIWindow* window) {
-  if (!g_snapEnabled || (this->root && this->root->window == window) || this->Find(window)) {
+  if (!g_snapEnabled || (this->root && this->root->window == window) || this->Contains(window)) {
     return;
   }
 
@@ -102,8 +102,10 @@ bool CSnapMgr::IsRoot(const UIWindow* window) const {
 // OFFSET: 0x007E2D80
 // FUNCTION: fn_09713
 bool CSnapMgr::Contains(const UIWindow* window) const {
-  if (this->Find(window)) {
-    return true;
+  for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+    if (window == (*entry)->window) {
+      return true;
+    }
   }
 
   return false;
@@ -160,7 +162,7 @@ void CSnapMgr::UpdateLinks(SnapObject* object) {
 // OFFSET: 0x007E29C0
 // FUNCTION: fn_09705
 void CSnapMgr::Refresh(UIWindow* window) {
-  if (!this->Find(window)) {
+  if (!this->Contains(window)) {
     return;
   }
 
