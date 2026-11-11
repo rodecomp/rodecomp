@@ -2635,22 +2635,13 @@ void CUIItem::OnCreate(int width, int height) {
     const auto moveDisableSource = CRYPT_NAME("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0xA31F69E7EFED01C9ULL);
     thread_local EncryptedName<sizeof(moveDisableSource), 0xA31F69E7EFED01C9ULL> moveDisableName(moveDisableSource.data);
     const std::string moveDisable(moveDisableName.Text());
-    const char moveOverSource[] = {
-        '\xAB', '\xE4', '\x7B', '\xFB', '\x47', '\xA1', '\x6C', '\x7A', '\xAD', '\xAF', '\x7B', '\xCD', '\x3A', '\xD5', '\xF5', '\xF6', '\x0F', '\x3D', '\xDE',
-        '\x6F', '\xF3', '\x1A', '\xDB', '\xD2', '\x2C', '\x3E', '\xD2', '\x65', '\xE2', '\x33', '\xCB', '\xC3', '\x05', '\x14', '\xD6', '\x6E', '\xF1', '\x0A',
-        '\xF6', '\xD8', '\x1D', '\x2E', '\xC9', '\x2F', '\xE5', '\x02', '\xD9', '\xB7'};
+    const char moveOverSource[] = CRYPT_CHARS(48, "유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xB7A96F8701BB4B6BULL);
     thread_local EncryptedName<sizeof(moveOverSource), 0xB7A96F8701BB4B6BULL> moveOverName(moveOverSource);
     const std::string moveOver(moveOverName.Text());
-    const char movePressSource[] = {
-        '\xFD', '\xD2', '\x95', '\xDB', '\x01', '\xBB', '\x5C', '\xA8', '\xFB', '\x99', '\x95', '\xED', '\x7C', '\xCF', '\xC5', '\x24', '\x59', '\x0B', '\x30',
-        '\x4F', '\xB5', '\x00', '\xEB', '\x00', '\x7A', '\x08', '\x3C', '\x45', '\xA4', '\x29', '\xFB', '\x11', '\x53', '\x22', '\x38', '\x4E', '\xB7', '\x10',
-        '\xC6', '\x15', '\x4F', '\x18', '\x26', '\x52', '\xEF', '\x17', '\xF4', '\x15', '\x3D'};
+    const char movePressSource[] = CRYPT_CHARS(49, "유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0x659975C121557D3DULL);
     thread_local EncryptedName<sizeof(movePressSource), 0x659975C121557D3DULL> movePressName(movePressSource);
     const std::string movePress(movePressName.Text());
-    const char moveNormalSource[] = {
-        '\x99', '\xD0', '\x67', '\x5B', '\xD7', '\x0B', '\x30', '\x72', '\x9F', '\x9B', '\x67', '\x6D', '\xAA', '\x7F', '\xA9', '\xFE', '\x3D', '\x09', '\xC2',
-        '\xCF', '\x63', '\xB0', '\x87', '\xDA', '\x1E', '\x0A', '\xCE', '\xC5', '\x72', '\x99', '\x97', '\xCB', '\x37', '\x20', '\xCA', '\xCE', '\x61', '\xA0',
-        '\xAA', '\xD1', '\x36', '\x0D', '\xCA', '\xC0', '\x7B', '\xEB', '\x97', '\xD2', '\x29', '\x7F'};
+    const char moveNormalSource[] = CRYPT_CHARS(50, "유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0xBFF5C517A1A77F59ULL);
     thread_local EncryptedName<sizeof(moveNormalSource), 0xBFF5C517A1A77F59ULL> moveNormalName(moveNormalSource);
     const std::string moveNormal(moveNormalName.Text());
     this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);
@@ -2828,28 +2819,16 @@ void CUIQuest::OnCreate(int width, int height) {
     button->Invalidate();
   }
   {
-    const char moveDisableSource[] = {
-        '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x62', '\x79', '\xB1', '\x2E',
-        '\xDB', '\xA9', '\x02', '\x3B', '\x46', '\x5A', '\xB2', '\x22', '\xD1', '\xB8', '\x2B', '\x2B', '\x57', '\x73', '\x98', '\x26', '\xDA', '\xAB', '\x12',
-        '\x16', '\x47', '\x74', '\xB4', '\x2A', '\xD7', '\xB1', '\x12', '\x67', '\x41', '\x70', '\xB7', '\x4B'};
+    const char moveDisableSource[] = CRYPT_CHARS(51, "유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0x234977DDB54BC71DULL);
     thread_local EncryptedName<sizeof(moveDisableSource), 0x234977DDB54BC71DULL> moveDisableName(moveDisableSource);
     const std::string moveDisable(moveDisableName.Text());
-    const char moveOverSource[] = {
-        '\xE5', '\xDE', '\x6F', '\x31', '\xCD', '\x3D', '\xE8', '\x28', '\xE3', '\x95', '\x6F', '\x07', '\xB0', '\x49', '\x71', '\xA4', '\x41', '\x07', '\xCA',
-        '\xA5', '\x79', '\x86', '\x5F', '\x80', '\x62', '\x04', '\xC6', '\xAF', '\x68', '\xAF', '\x4F', '\x91', '\x4B', '\x2E', '\xC2', '\xA4', '\x7B', '\x96',
-        '\x72', '\x8A', '\x53', '\x14', '\xDD', '\xE5', '\x6F', '\x9E', '\x5D', '\xE5'};
+    const char moveOverSource[] = CRYPT_CHARS(48, "유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xE52DF30DCBAF7125ULL);
     thread_local EncryptedName<sizeof(moveOverSource), 0xE52DF30DCBAF7125ULL> moveOverName(moveOverSource);
     const std::string moveOver(moveOverName.Text());
-    const char movePressSource[] = {
-        '\x9F', '\x9A', '\x6F', '\x6F', '\x5D', '\x47', '\x36', '\x02', '\x99', '\xD1', '\x6F', '\x59', '\x20', '\x33', '\xAF', '\x8E', '\x3B', '\x43', '\xCA',
-        '\xFB', '\xE9', '\xFC', '\x81', '\xAA', '\x18', '\x40', '\xC6', '\xF1', '\xF8', '\xD5', '\x91', '\xBB', '\x31', '\x6A', '\xC2', '\xFA', '\xEB', '\xEC',
-        '\xAC', '\xBF', '\x2D', '\x50', '\xDC', '\xE6', '\xB3', '\xEB', '\x9E', '\xBF', '\x5F'};
+    const char movePressSource[] = CRYPT_CHARS(49, "유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0xCFF3899D95AF355FULL);
     thread_local EncryptedName<sizeof(movePressSource), 0xCFF3899D95AF355FULL> movePressName(movePressSource);
     const std::string movePress(movePressName.Text());
-    const char moveNormalSource[] = {
-        '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xD0', '\x93', '\xBF', '\x06',
-        '\x07', '\x09', '\xEC', '\x03', '\xF4', '\xB0', '\xBC', '\x0A', '\x0D', '\x18', '\xC5', '\x13', '\xE5', '\x99', '\x96', '\x0E', '\x06', '\x0B', '\xFC',
-        '\x2E', '\xFF', '\x98', '\xBB', '\x0E', '\x08', '\x11', '\xB7', '\x13', '\xFC', '\x87', '\xC9'};
+    const char moveNormalSource[] = CRYPT_CHARS(50, "유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0x9171997D6963C9F7ULL);
     thread_local EncryptedName<sizeof(moveNormalSource), 0x9171997D6963C9F7ULL> moveNormalName(moveNormalSource);
     const std::string moveNormal(moveNormalName.Text());
     this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);

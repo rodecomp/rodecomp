@@ -717,15 +717,15 @@ void CSession::LoadRobeAlpha() {
     int period = 0;
     LuaScript* script = this->m_hotkeyScript;
 
-    const char signatureSource[] = {'\x15', '\x45', '\xC9', '\x0F', '\x21', '\x81', '\x73'};
+    const char signatureSource[] = CRYPT_CHARS(7, "d>dddd", 0x6373E5456BAD7B71ULL);
     const auto functionSource = CRYPT_NAME("querytransparentiteminfo", 0xD51953E763B94747ULL);
 
     if (!script->Call(DecryptName<0xD51953E763B94747ULL>(functionSource.data), DecryptName<0x6373E5456BAD7B71ULL>(signatureSource), index, &robeId, &from, &to, &period)) {
       char message[260];
       std::memset(message, 0, sizeof(message));
-      const char formatSource[] = {'\xAA', '\x72', '\x76', '\xA1', '\x8C', '\x37', '\x93', '\x0A', '\xB5', '\x74', '\x63', '\xB2', '\x87', '\x26', '\x8F', '\x1F', '\xB2', '\x73', '\x76', '\xBE', '\x9C', '\x2D', '\x87', '\x04', '\xFB', '\x28', '\x3C', '\xF3', '\xD0', '\x27', '\xC1', '\xAB', '\x0B', '\xB6', '\xF1', '\xF3', '\x48', '\x84', '\x27', '\xBB', '\xDB'};
+      const char formatSource[] = CRYPT_CHARS(41, "querytransparentiteminfo // %d 읽기 실패", 0x6BE143F5D31307DBULL);
       std::sprintf(message, DecryptName<0x6BE143F5D31307DBULL>(formatSource), index);
-      const char titleSource[] = {'\xC8', '\x0D', '\x8B', '\xC0', '\xA5', '\x91'};
+      const char titleSource[] = CRYPT_CHARS(6, "Error", 0xAB5791D7AFF97F8DULL);
       MessageBoxA(hWnd, message, DecryptName<0xAB5791D7AFF97F8DULL>(titleSource), 0);
       return;
     }

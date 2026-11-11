@@ -460,7 +460,7 @@ void UICashShopWnd::Paint() {
       this->DrawCenteredText(0x21A, 0x1B, title.Text(), 0xB9, 0, 0xE, 0, 1);
     }
     {
-      const char source[] = {'\xD0', '\xE5', '\x3C', '\xD7', '\x59', '\x91', '\x75', '\x8E', '\xD5', '\x9F', '\x2D', '\x13', '\x5B', '\xD5', '\xE8', '\x85', '\xAB', '\xF1', '\xF9'};
+      const char source[] = CRYPT_CHARS(19, "스토브 구입 리스트", 0x3F557BE333F95F6DULL);
       thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> title(source);
       this->DrawCenteredText(0x219, 0x1A, title.Text(), 0xB9, 0, 0xE, 0xFFFFFF, 1);
     }

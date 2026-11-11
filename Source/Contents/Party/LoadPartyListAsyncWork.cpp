@@ -92,7 +92,8 @@ bool CLoadPartyListAsyncWork::Execute() {
 
   switch (this->m_search) {
   case 0: {
-    const std::uint8_t pageName[] = {0x85, 0x44, 0x34, 0x8C, 0xD7};
+    constexpr std::array<std::uint8_t, 5> pageNameArray = CRYPT_NAME("page", 0x2B8725D7E95325F5ULL);
+    const std::uint8_t (&pageName)[5] = pageNameArray._Elems;
     handler.AddField(DecryptName<0x2B8725D7E95325F5ULL>(pageName), page, 4);
     break;
   }

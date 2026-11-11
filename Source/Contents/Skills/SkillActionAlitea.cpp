@@ -1095,8 +1095,7 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectRemove(CRenderObject* 
   }()));
   effects = g_effectMgr;
   effects->Retire(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\xBA', '\xB9', '\x28', '\x22', '\x1E', '\x70', '\x49', '\x72', '\xB0', '\xBA', '\x27', '\x2E', '\x1B', '\x7C', '\x4F', '\x45',
-                                  '\x82', '\xB9', '\x26', '\x2E', '\x07', '\x4A', '\x59', '\x42', '\xA9', '\xA1', '\x26', '\x2C', '\x77'};
+    const char bytes[] = CRYPT_CHARS(29, "glacier_monolith_loop_bottom", 0x2D3B15774149D5DDULL);
     thread_local EncryptedName<sizeof(bytes), 0x2D3B15774149D5DDULL> name(bytes);
     return name.Text();
   }()));
@@ -1246,8 +1245,8 @@ void CSkillAction_AT_ROARING_PIERCER::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xBB, 0xD8, 0x44, 0xE5, 0xD2, 0x5D, 0xE4, 0x58, 0xB9, 0xDE, 0x40, 0xE5, 0xD8, 0x56, 0xF1, 0x58,
-                                  0xAE, 0xB7};
+    constexpr std::array<std::uint8_t, 18> bytesArray = CRYPT_NAME("roaring_piercer_g", 0x078333BB9725B7C9ULL);
+    const std::uint8_t (&bytes)[18] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
     return name.Text();
   }());
@@ -1271,8 +1270,8 @@ void CSkillAction_AT_ROARING_PIERCEER_S::OnSkillEffect(int level, CGameActor* so
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xC7, 0x1A, 0x00, 0x2D, 0x94, 0x35, 0x7C, 0xD0, 0xC5, 0x1C, 0x04, 0x2D, 0x9E, 0x3E, 0x69, 0xD0,
-                                  0xCC, 0x75};
+    constexpr std::array<std::uint8_t, 18> bytesArray = CRYPT_NAME("roaring_piercer_y", 0x8F1B5BFD5F6175B5ULL);
+    const std::uint8_t (&bytes)[18] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
     return name.Text();
   }());
@@ -1509,20 +1508,19 @@ void CSkillAction_AT_AERO_SYNC::OnSkillEffect(int level, CGameActor* source, CGa
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\xBE', '\xBC', '\x2F', '\x06', '\x4C', '\xE0', '\x86', '\x6F', '\xBC', '\x86', '\x2E', '\x10', '\x7D', '\xF0', '\xFF'};
+      const char bytes[] = CRYPT_CHARS(15, "aero_sync_sync", 0x01FF9313695DD9DFULL);
       thread_local EncryptedName<sizeof(bytes), 0x01FF9313695DD9DFULL> name(bytes);
       return name.Text();
     }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\xFA', '\xC8', '\x07', '\xA0', '\x8E', '\x4E', '\x94', '\x03', '\xF8', '\xF2', '\x18', '\xAE', '\xB8', '\x53', '\xED'};
+      const char bytes[] = CRYPT_CHARS(15, "aero_sync_main", 0x6DED3DD1CF75AD9BULL);
       thread_local EncryptedName<sizeof(bytes), 0x6DED3DD1CF75AD9BULL> name(bytes);
       return name.Text();
     }()), source->render.position, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      const char bytes[] = {'\xA0', '\xB6', '\xA9', '\x18', '\xC4', '\x06', '\xBA', '\x27', '\xA2', '\x8C', '\xB6', '\x16', '\xF2', '\x1B', '\x9C', '\x2B',
-                                    '\xAE', '\xA7', '\xAF', '\x18', '\xF6', '\x75'};
+      const char bytes[] = CRYPT_CHARS(22, "aero_sync_main_bottom", 0x49C3759B77DBD3C1ULL);
       thread_local EncryptedName<sizeof(bytes), 0x49C3759B77DBD3C1ULL> name(bytes);
       return name.Text();
     }()), source->render.position, 0, -1, 0, 0);
@@ -1846,14 +1844,13 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
   }
   EffectLists* effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x9A', '\xB2', '\x4B', '\x66', '\x52', '\x4C', '\x54', '\x89', '\x9C', '\xBD', '\x5A', '\x62', '\x35'};
+    const char bytes[] = CRYPT_CHARS(13, "savage_lunge", 0xE50B2935073DD3E9ULL);
     thread_local EncryptedName<sizeof(bytes), 0xE50B2935073DD3E9ULL> name(bytes);
     return name.Text();
   }()), target->render.position, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const char bytes[] = {'\x82', '\xA2', '\x9F', '\xDC', '\xCA', '\x68', '\x2A', '\x11', '\x84', '\xAD', '\x8E', '\xD8', '\xF2', '\x6F', '\x1A', '\x09',
-                                  '\x85', '\xAC', '\x84', '\xBD'};
+    const char bytes[] = CRYPT_CHARS(20, "savage_lunge_bottom", 0x7D750DADBDE9C3F1ULL);
     thread_local EncryptedName<sizeof(bytes), 0x7D750DADBDE9C3F1ULL> name(bytes);
     return name.Text();
   }()), target->render.position, 0, -1, 0, 0);

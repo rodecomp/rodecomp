@@ -1077,7 +1077,7 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\xA0', '\xA1', '\xB4', '\x02', '\xF5', '\x11', '\x9C', '\x2F', '\xAD', '\xBC', '\xAC', '\x12', '\xE9', '\x2A', '\xA1', '\x26', '\xB5', '\xA7', '\xB4', '\x1A', '\x9B'};
+  const char bottomSource[] = CRYPT_CHARS(21, "around_flower_bottom", 0x49C3759B77DBD3C1ULL);
   thread_local EncryptedName<sizeof(bottomSource), 0x49C3759B77DBD3C1ULL> bottomName(bottomSource);
   effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -1262,7 +1262,8 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bytes[] = {0xB6, 0xA5, 0xE8, 0x9A, 0xD5, 0xCA, 0x89, 0xF4, 0x9A, 0xAB, 0xE2, 0x94, 0xD5, 0xCB, 0x82, 0xE1, 0xC5};
+    constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("shooting_feather", 0x93E7A3A1F587CDC5ULL);
+    const std::uint8_t (&bytes)[17] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {

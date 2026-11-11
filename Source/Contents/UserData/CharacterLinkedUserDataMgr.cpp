@@ -78,8 +78,7 @@ __declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
     thread_local EncryptedName<sizeof(saveSource), 0xD3E5516F89F161D1ULL> savePath(saveSource.data);
     this->m_saveUrl = base + savePath.Text();
 
-    const char loadSource[] = {'\x78', '\x8C', '\xB9', '\xD4', '\xD9', '\x1C', '\x92', '\x31', '\x31',
-                               '\x86', '\xB6', '\x9A', '\xC7', '\x10', '\x9C', '\x3B', '\x57'};
+    const char loadSource[] = CRYPT_CHARS(17, "/charconfig/load", 0x5FFD7FABB5D1EF57ULL);
     thread_local EncryptedName<sizeof(loadSource), 0x5FFD7FABB5D1EF57ULL> loadPath(loadSource);
     this->m_loadUrl = base + loadPath.Text();
   }

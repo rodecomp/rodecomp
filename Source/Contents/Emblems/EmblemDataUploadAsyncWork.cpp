@@ -87,7 +87,8 @@ bool CEmblemDataUploadAsyncWork::Execute() {
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(authToken), this->m_token, 4);
   const std::uint8_t worldName[] = {0x48, 0x5E, 0xBF, 0x8B, 0x89, 0x3B, 0x0C, 0x70, 0x7A, 0x31};
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(worldName), name, 4);
-  const std::uint8_t gdid[] = {0x12, 0xB9, 0xFC, 0x9F, 0xC7};
+  constexpr std::array<std::uint8_t, 5> gdidArray = CRYPT_NAME("GDID", 0x3375B1C7DBB5FD55ULL);
+  const std::uint8_t (&gdid)[5] = gdidArray._Elems;
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(gdid), guild, 4);
   const std::uint8_t imgType[] = {0x98, 0x74, 0xFA, 0xDB, 0x12, 0xFB, 0x6A, 0x0F};
   handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(imgType), imageType, 4);

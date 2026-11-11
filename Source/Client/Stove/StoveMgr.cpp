@@ -361,7 +361,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "44C71118750747D") == 0) {
           list = 8;
         } else {
-          const char captionSource[] = {'\xAF', '\x27', '\xF2', '\x7A', '\x3A', '\x43', '\x2F'};
+          const char captionSource[] = CRYPT_CHARS(7, "메시지", 0xC52FB5FBB94FF917ULL);
           const char* caption = DecryptName<0xC52FB5FBB94FF917ULL>(captionSource);
           constexpr std::array<char, 34> messageSource = CRYPT_NAME("등록되지 않은 카테고리입니다 (%s)", 0x17359BF953C367B3ULL);
           const char* message = DecryptName<0x17359BF953C367B3ULL>(messageSource);
@@ -431,7 +431,7 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       }
     }
   } else {
-    const char captionSource[] = {'\x89', '\x87', '\x96', '\xC2', '\xA0', '\x3B', '\x65'};
+    const char captionSource[] = CRYPT_CHARS(7, "메시지", 0x8B65CD61012B5931ULL);
     const char* caption = DecryptName<0x8B65CD61012B5931ULL>(captionSource);
     constexpr std::array<char, 56> messageSource = CRYPT_NAME("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF5657D1F3DE5CDC7ULL);
     const char* message = DecryptName<0xF5657D1F3DE5CDC7ULL>(messageSource);
@@ -471,9 +471,9 @@ EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator
 void InitializeCallback::operator()(Stove::PCSDK::CallbackResult callbackResult) const {
   g_stoveWaitingCallback = false;
   if (!callbackResult.GetResult().IsSuccessful()) {
-    const char captionSource[] = {'\xD5', '\x3D', '\xF8', '\x60', '\x2C', '\x37', '\xD7'};
+    const char captionSource[] = CRYPT_CHARS(7, "메시지", 0x31D7C1EDA345E36DULL);
     const char* caption = DecryptName<0x31D7C1EDA345E36DULL>(captionSource);
-    const char messageSource[] = {'\xCE', '\x63', '\xFB', '\xA9', '\xF9', '\xE6', '\x92', '\x13', '\xF5', '\x89', '\x87', '\x84', '\x67', '\xAA', '\xB5', '\x1F', '\x29', '\x14', '\x80', '\x99', '\x09', '\x9A', '\xBA', '\x6C', '\xA0', '\x89', '\xF7', '\x8B', '\x19', '\x8E', '\xB5', '\x68', '\x29', '\x68', '\xF9', '\xE8', '\x38', '\x9A', '\xA0', '\x67', '\xC6', '\x1D', '\x9E', '\x71', '\xD9'};
+    const char messageSource[] = CRYPT_CHARS(45, "필수 사전 작업이 실패하여 게임을 종료합니다.", 0xD3755DD95F47A909ULL);
     const char* message = DecryptName<0xD3755DD95F47A909ULL>(messageSource);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
     PostQuitMessage(0);

@@ -46,7 +46,7 @@ __forceinline const char* TimeFontActionName() {
 
 // INLINED
 __forceinline const char* TimeFontSpriteName() {
-  const char source[] = {'\x89', '\xA1', '\xB9', '\x32', '\x01', '\xAF', '\x15', '\x45', '\x20', '\x00', '\x1A', '\xA5', '\xA8', '\x6F', '\x3D', '\x3F', '\x3A', '\x1D', '\x0D', '\xE3'};
+  const char source[] = CRYPT_CHARS(20, "이팩트\\TimeFont.spr", 0x114901C7E37F6D49ULL);
   // GLOBAL: gl_25509
   thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
   return name.Text();

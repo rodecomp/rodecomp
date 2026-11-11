@@ -547,11 +547,7 @@ CEffect* CEffectAllocator<CThunderingOrb>::Create() {
 
 // INLINED
 EncryptedName<0x3B, 0x39FF7FB50DEB998FULL>& WindBombName() {
-  const char source[] = {
-      '\xCB', '\xCB', '\xBE', '\x44', '\xF1', '\x23', '\xBB', '\x6B', '\xD0', '\xCE', '\xA2', '\x43', '\xF1', '\x20', '\xBD', '\x76',
-      '\xC2', '\xDB', '\xB7', '\x7A', '\xDC', '\x11', '\x9B', '\x66', '\xED', '\xF6', '\x86', '\x6F', '\xEA', '\x0B', '\x90', '\x4B',
-      '\xE1', '\xF8', '\x8F', '\x62', '\xE9', '\x08', '\x96', '\x57', '\xEB', '\xC6', '\x89', '\x62', '\xD8', '\x1D', '\xA0', '\x4D',
-      '\xE0', '\xEB', '\x85', '\x6C', '\xD1', '\x10', '\xD1', '\x4A', '\xFB', '\xEB', '\xEB'};
+  const char source[] = CRYPT_CHARS(59, "DRUID\\DR_WIND_BOMB\\wind_bomb_tornado\\wind_bomb_tornado.str", 0x39FF7FB50DEB998FULL);
   thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
   return name;
 }
