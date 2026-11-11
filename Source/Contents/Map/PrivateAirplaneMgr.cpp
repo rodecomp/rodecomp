@@ -54,10 +54,12 @@ void CPrivateAirplaneMgr::Destroy() {
 // FUNCTION: fn_06506
 int CPrivateAirplaneMgr::GetNeedItem(int index) {
   auto it = this->m_needItems.begin();
-  for (int count = 0; count < index; ++count) {
+  int count = 0;
+  while (count < index) {
     if (it == this->m_needItems.end()) {
       break;
     }
+    ++count;
     ++it;
   }
 
