@@ -153,7 +153,10 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
     entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
     entry->guildId = actor->GetGdid();
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
+    {
+      CGuildMgr* guildMgr = g_guildMgr;
+      entry->emblemVersion = static_cast<std::uint16_t>(guildMgr->GetEmblemVersion(actor->GetGdid()));
+    }
     entry->isPkModeOn = actor->healthState != 0;
     entry->sex = static_cast<std::uint8_t>(actor->sex);
     entry->xSize = static_cast<std::uint8_t>(actor->xSize);
@@ -192,8 +195,10 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
 
     if (actor->render.state == 3) {
       entry->state = 1;
+    } else if (actor->render.state == 6) {
+      entry->state = 2;
     } else {
-      entry->state = actor->render.state == 6 ? 2 : 0;
+      entry->state = 0;
     }
 
     entry->packetType = packetType;
@@ -207,7 +212,10 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
     entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
     entry->guildId = actor->GetGdid();
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
+    {
+      CGuildMgr* guildMgr = g_guildMgr;
+      entry->emblemVersion = static_cast<std::uint16_t>(guildMgr->GetEmblemVersion(actor->GetGdid()));
+    }
     entry->isPkModeOn = actor->healthState != 0;
     entry->sex = static_cast<std::uint8_t>(actor->sex);
     entry->xSize = static_cast<std::uint8_t>(actor->xSize);
@@ -215,7 +223,10 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->level = actor->characterLevel;
     entry->font = static_cast<std::uint16_t>(actor->render.fontSequenceState);
     entry->bodyPalette = static_cast<std::uint16_t>(actor->render.bodyPalette);
-    entry->emblemVersion = static_cast<std::uint16_t>(g_guildMgr->GetEmblemVersion(actor->GetGdid()));
+    {
+      CGuildMgr* guildMgr = g_guildMgr;
+      entry->emblemVersion = static_cast<std::uint16_t>(guildMgr->GetEmblemVersion(actor->GetGdid()));
+    }
 
     if (actor->objectType == 0) {
       CPc* pc = static_cast<CPc*>(actor);
