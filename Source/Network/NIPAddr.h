@@ -9,6 +9,7 @@ public:
   explicit NIPAddr(std::string text);
   virtual ~NIPAddr();
   static bool IsPrivateAddress(std::uint32_t address);
+  void SetAddress(std::string text);
 
   /* 0004 */ std::uint32_t address;
 };

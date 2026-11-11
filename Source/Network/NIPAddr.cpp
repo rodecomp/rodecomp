@@ -2,10 +2,17 @@
 
 #include "Network/NIPAddr.h"
 
+extern template std::string::basic_string(const std::string&);
+
+// INLINED
+inline void NIPAddr::SetAddress(std::string text) {
+  this->address = inet_addr(text.c_str());
+}
+
 // OFFSET: 0x007349C0
 // FUNCTION: fn_07599
 NIPAddr::NIPAddr(std::string text) {
-  this->address = inet_addr(text.c_str());
+  this->SetAddress(text);
 }
 
 // OFFSET: 0x00734BD0
