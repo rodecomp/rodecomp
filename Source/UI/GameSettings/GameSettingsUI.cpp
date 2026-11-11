@@ -869,9 +869,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -911,9 +911,10 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -926,9 +927,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -968,9 +969,10 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -983,9 +985,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -1025,9 +1027,10 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -1040,9 +1043,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -1082,9 +1085,10 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -1097,9 +1101,9 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
@@ -1139,9 +1143,10 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -1611,10 +1616,10 @@ void CUIPage::OnInit() {
 // FUNCTION: fn_15942
 void CUIGroupSound::SetBgmEnabled(bool enabled) {
   const unsigned char previous = g_serviceOptions.Get(7);
-  const bool muted = !enabled;
-  this->m_bgmSlider->SetTransparent(muted);
-  this->m_bgmSlider->dragging = muted;
-  this->m_bgmSlider->Invalidate();
+  this->m_bgmSlider->SetTransparent(!enabled);
+  CUIVScrollBar* const slider = this->m_bgmSlider;
+  slider->dragging = !enabled;
+  slider->Invalidate();
   g_serviceOptions.Set(7, enabled);
   if (previous != enabled) {
     g_modeMgr.gameMode->SendMsg(MM_REFRESH_MUSIC, 0, 0, 0, 0);
@@ -1663,8 +1668,9 @@ void CUIGroupSound::OnBgmMute(bool muted) {
 // FUNCTION: fn_15949
 void CUIGroupSound::OnEffectMute(bool muted) {
   this->m_effectSlider->SetTransparent(muted);
-  this->m_effectSlider->dragging = muted;
-  this->m_effectSlider->Invalidate();
+  CUIVScrollBar* const slider = this->m_effectSlider;
+  slider->dragging = muted;
+  slider->Invalidate();
   g_serviceOptions.Set(0xB, !muted);
 }
 
