@@ -1727,11 +1727,11 @@ CHawkVumerangEffect::~CHawkVumerangEffect() {
 // FUNCTION: fn_07297
 void CHawkVumerangEffect::Close() {
   for (auto it = this->finishedEmitters.begin(); it != this->finishedEmitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->finishedEmitters.clear();
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -1749,7 +1749,7 @@ void CHawkVumerangEffect::OnProcess() {
     return;
   }
 
-  EZ2STREmitter* emitter = this->emitters.back();
+  CEZ2STRParticle* particle = this->emitters.back();
   this->emitters.pop_back();
 
   const DWORD elapsed = timeGetTime() - this->startTime;
@@ -1760,25 +1760,25 @@ void CHawkVumerangEffect::OnProcess() {
       angle -= 6.283184f;
     }
 
-    AsParticle(emitter)->m_angle = 360.0f - static_cast<float>(angle) / 3.141592f * 180.0f;
-    const float sine = static_cast<float>(std::sin(static_cast<float>(angle)) * this->orbitRadius);
-    const float cosine = static_cast<float>(std::cos(static_cast<float>(angle)) * this->orbitRadius);
-    emitter->position.z = this->orbitCenter.z + sine + this->orbitOffsetZ;
-    emitter->position.x = cosine + this->orbitCenter.x + this->orbitOffsetX;
-    emitter->position.y = this->orbitCenter.y + 0.0f + this->orbitOffsetY;
-    this->emitters.emplace_front(emitter);
+    particle->m_angle = 360.0f - static_cast<float>(angle) / 3.141592f * 180.0f;
+    const float sine = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->orbitRadius);
+    const float cosine = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->orbitRadius);
+    particle->position.z = this->orbitCenter.z + sine + this->orbitOffsetZ;
+    particle->position.x = cosine + this->orbitCenter.x + this->orbitOffsetX;
+    particle->position.y = this->orbitCenter.y + 0.0f + this->orbitOffsetY;
+    this->emitters.push_front(particle);
   } else {
-    this->finishedEmitters.push_back(emitter);
+    this->finishedEmitters.push_back(particle);
   }
 
   long long index = this->count - this->emitters.size();
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it, ++index) {
-    EZ2STREmitter* current = *it;
+    CEZ2STRParticle* current = *it;
     if (current) {
       const double alpha = 1.0f - 1.0f / static_cast<float>(this->count) * static_cast<float>(index);
-      AsParticle(current)->m_scale = static_cast<float>(alpha);
-      AsParticle(current)->m_alpha = static_cast<float>(alpha);
-      AsParticle(current)->Process(0.0f, 0.0f, 0.0f);
+      current->m_scale = static_cast<float>(alpha);
+      current->m_alpha = static_cast<float>(alpha);
+      current->Process(0.0f, 0.0f, 0.0f);
     }
   }
 }
@@ -1787,9 +1787,9 @@ void CHawkVumerangEffect::OnProcess() {
 // FUNCTION: fn_07301
 void CHawkVumerangEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
-    if (emitter) {
-      AsParticle(emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    CEZ2STRParticle* particle = *it;
+    if (particle) {
+      particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }
@@ -4763,7 +4763,7 @@ void CHawkVumerangEffect::Open() {
     particle->Open("hawkvumerang\\hawkvumerang\\hawkvumerang.str");
     particle->m_angle = 360.0f - static_cast<float>(this->startAngle) / 3.141592f * 180.0f;
     particle->m_loop = true;
-    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    this->emitters.push_back(particle);
   }
 
   this->AddEvent(0, "effect\\WH_HAWKBOOMERANG.wav", 0, 0);

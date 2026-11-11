@@ -11,6 +11,7 @@
 #include <vector>
 
 class CParticle;
+class CEZ2STRParticle;
 
 class CCrimsonArrowEffect : public CEffect {
 public:
@@ -532,8 +533,8 @@ public:
   void Close() override;
   void OnProcess() override;
 
-  /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> finishedEmitters;
+  /* 00CC */ std::list<CEZ2STRParticle*> emitters;
+  /* 00D4 */ std::list<CEZ2STRParticle*> finishedEmitters;
   /* 00DC */ int padding_00DC;
   union {
     struct {
