@@ -141,7 +141,7 @@ void CEffect::Update(std::uint32_t aid) {
   }
 
   const vector3d player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
-  for (auto event = this->events.begin(); event != this->events.end(); ++event) {
+  for (auto event = this->events.begin(); this->events.end() != event; ++event) {
     if (this->frame != event->frame) {
       continue;
     }

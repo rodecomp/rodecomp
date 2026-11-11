@@ -29,19 +29,19 @@ void CEZ2STREffectEx::EnableTimeLimit() {
 // OFFSET: 0x006FF780
 // FUNCTION: fn_06966
 float ScreenAngle(const float* from, const float* to, const float* matrix) {
-  float fromX;
-  float fromY;
   float fromDepth = 0.0f;
-  float toX;
-  float toY;
   float toDepth = 0.0f;
+  float fromY;
+  float fromX;
+  float toY;
+  float toX;
   g_renderer->ProjectViewport(from, matrix, &fromX, &fromY, &fromDepth);
   g_renderer->ProjectViewport(to, matrix, &toX, &toY, &toDepth);
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;
   const float length = SquareRoot(dy * dy + dx * dx);
-  if (length == 0.0f) {
+  if (0.0f == length) {
     return 0.0f;
   }
 
