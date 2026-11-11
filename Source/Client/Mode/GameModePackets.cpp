@@ -4063,10 +4063,12 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
   window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
 
   window = reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd);
-  if (window) {
+  if (!window) {
+    window = g_windowMgr.EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_2);
+  } else {
     g_session.RefreshMerchantMyShopItems();
-    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  } else if ((window = g_windowMgr.EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_2)) != nullptr) {
+  }
+  if (window) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
@@ -11200,10 +11202,10 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
       return std::strcmp(left.timestamp, right.timestamp) > 0;
     });
     for (std::vector<GuildStorageLogEntry>::iterator it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
-      if (it->operation == 1) {
-        g_guildStorageLogs[1].push_back(*it);
-      } else {
+      if (it->operation != 1) {
         g_guildStorageLogs[2].push_back(*it);
+      } else {
+        g_guildStorageLogs[1].push_back(*it);
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
@@ -11692,16 +11694,16 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
       g_session.petEggIndex = item.identity[1];
     }
 
-    if (item.identity[3] == 0) {
-      g_session.AddInventoryItem(item, 0);
-      g_session.UpdateInventoryItem(item, 0);
-    } else {
+    if (item.identity[3] != 0) {
       char equipped = 1;
       if (g_session.IsCostumeLocation(item.identity[3])) {
         g_session.EquipCostumeItem(item, &equipped);
       } else {
         g_session.EquipInventoryItem(item, &equipped);
       }
+    } else {
+      g_session.AddInventoryItem(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
     }
     record += 0x25;
   }
@@ -11735,12 +11737,12 @@ __declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char*
       }
     }
 
-    if (item.identity[3] == 0) {
-      g_session.AddInventoryItem(item, 0);
-      g_session.UpdateInventoryItem(item, 0);
-    } else {
+    if (item.identity[3] != 0) {
       char equipped = 1;
       g_session.EquipInventoryItem(item, &equipped);
+    } else {
+      g_session.AddInventoryItem(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
     }
     record += 0x22;
   }
@@ -11777,16 +11779,16 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
       }
     }
 
-    if (item.identity[3] == 0) {
-      g_session.AddInventoryItem(item, 0);
-      g_session.UpdateInventoryItem(item, 0);
-    } else {
+    if (item.identity[3] != 0) {
       char equipped = 1;
       if (g_session.IsCostumeLocation(item.identity[3])) {
         g_session.EquipCostumeItem(item, &equipped);
       } else {
         g_session.EquipInventoryItem(item, &equipped);
       }
+    } else {
+      g_session.AddInventoryItem(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
     }
     record += 0x26;
   }
@@ -12734,7 +12736,19 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
-  if (!actor) {
+  if (actor) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+    actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int actorJob = actor->GetEffectiveJob(-1);
+    if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
+      const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
+      const int guildVersion = packet->shield;
+      if (guildId > 0 && !actor->GetGdid()) {
+        actor->SetGuildInfo(guildId, guildVersion);
+      }
+    }
+    actor->characterLevel = packet->actorFlags;
+  } else {
     actor = this->NewActor(packet->job);
     entry.appearanceVariant = 0;
     actor->objectType = packet->objectType;
@@ -12750,20 +12764,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
       }
     }
     actor->characterLevel = packet->actorFlags;
-    return;
   }
-
-  const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-  actor->SendMsg(nullptr, AM_STANDENTRY, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  const int actorJob = actor->GetEffectiveJob(-1);
-  if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
-    const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-    const int guildVersion = packet->shield;
-    if (guildId > 0 && !actor->GetGdid()) {
-      actor->SetGuildInfo(guildId, guildVersion);
-    }
-  }
-  actor->characterLevel = packet->actorFlags;
 }
 
 struct ActorMoveEntry {
