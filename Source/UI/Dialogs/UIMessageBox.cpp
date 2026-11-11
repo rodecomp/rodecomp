@@ -1068,14 +1068,23 @@ void UILoginOTPWnd::OnCreate(int, int) {
   this->AddChild(label);
 
   UIBmpTextButton* button = new UIBmpTextButton();
-  const char normalSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_otp_normal.bmp", 0xE55723712993051DULL);
-  thread_local EncryptedName<sizeof(normalSource), 0xE55723712993051DULL> normalName(normalSource);
+  EncryptedName<49, 0xE55723712993051DULL>& normalName = []() -> EncryptedName<49, 0xE55723712993051DULL>& {
+    const char normalSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_otp_normal.bmp", 0xE55723712993051DULL);
+    thread_local EncryptedName<sizeof(normalSource), 0xE55723712993051DULL> name(normalSource);
+    return name;
+  }();
   button->SetBitmap(normalName.Text(), 0, 0);
-  const char hoverSource[] = CRYPT_CHARS(47, "유저인터페이스\\login_interface\\bt_otp_over.bmp", 0x7DE349D717D7F123ULL);
-  thread_local EncryptedName<sizeof(hoverSource), 0x7DE349D717D7F123ULL> hoverName(hoverSource);
+  EncryptedName<47, 0x7DE349D717D7F123ULL>& hoverName = []() -> EncryptedName<47, 0x7DE349D717D7F123ULL>& {
+    const char hoverSource[] = CRYPT_CHARS(47, "유저인터페이스\\login_interface\\bt_otp_over.bmp", 0x7DE349D717D7F123ULL);
+    thread_local EncryptedName<sizeof(hoverSource), 0x7DE349D717D7F123ULL> name(hoverSource);
+    return name;
+  }();
   button->SetBitmap(hoverName.Text(), 1, 0);
-  const char pressedSource[] = CRYPT_CHARS(48, "유저인터페이스\\login_interface\\bt_otp_press.bmp", 0x0F15B16B5BAFD57FULL);
-  thread_local EncryptedName<sizeof(pressedSource), 0x0F15B16B5BAFD57FULL> pressedName(pressedSource);
+  EncryptedName<48, 0x0F15B16B5BAFD57FULL>& pressedName = []() -> EncryptedName<48, 0x0F15B16B5BAFD57FULL>& {
+    const char pressedSource[] = CRYPT_CHARS(48, "유저인터페이스\\login_interface\\bt_otp_press.bmp", 0x0F15B16B5BAFD57FULL);
+    thread_local EncryptedName<sizeof(pressedSource), 0x0F15B16B5BAFD57FULL> name(pressedSource);
+    return name;
+  }();
   button->SetBitmap(pressedName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(186, 92);
@@ -1132,17 +1141,26 @@ void UILoginWnd::SaveLogin() {
     saveId = 0;
   }
 
-  const char idSource[] = CRYPT_CHARS(3, "ID", 0xC517FB932D95BB6DULL);
-  thread_local EncryptedName<sizeof(idSource), 0xC517FB932D95BB6DULL> idName(idSource);
+  EncryptedName<3, 0xC517FB932D95BB6DULL>& idName = []() -> EncryptedName<3, 0xC517FB932D95BB6DULL>& {
+    const char idSource[] = CRYPT_CHARS(3, "ID", 0xC517FB932D95BB6DULL);
+    thread_local EncryptedName<sizeof(idSource), 0xC517FB932D95BB6DULL> name(idSource);
+    return name;
+  }();
   RegSetValueExA(key, idName.Text(), 0, REG_SZ, reinterpret_cast<const BYTE*>(id), 51);
 
-  const char checkSource[] = CRYPT_CHARS(10, "CHECKSAVE", 0x03772763F96D9DA5ULL);
-  thread_local EncryptedName<sizeof(checkSource), 0x03772763F96D9DA5ULL> checkName(checkSource);
+  EncryptedName<10, 0x03772763F96D9DA5ULL>& checkName = []() -> EncryptedName<10, 0x03772763F96D9DA5ULL>& {
+    const char checkSource[] = CRYPT_CHARS(10, "CHECKSAVE", 0x03772763F96D9DA5ULL);
+    thread_local EncryptedName<sizeof(checkSource), 0x03772763F96D9DA5ULL> name(checkSource);
+    return name;
+  }();
   RegSetValueExA(key, checkName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&saveId), 4);
 
   int bitwise = 1;
-  const char bitwiseSource[] = CRYPT_CHARS(8, "BITWISE", 0x0B7109397F6B1387ULL);
-  thread_local EncryptedName<sizeof(bitwiseSource), 0x0B7109397F6B1387ULL> bitwiseName(bitwiseSource);
+  EncryptedName<8, 0x0B7109397F6B1387ULL>& bitwiseName = []() -> EncryptedName<8, 0x0B7109397F6B1387ULL>& {
+    const char bitwiseSource[] = CRYPT_CHARS(8, "BITWISE", 0x0B7109397F6B1387ULL);
+    thread_local EncryptedName<sizeof(bitwiseSource), 0x0B7109397F6B1387ULL> name(bitwiseSource);
+    return name;
+  }();
   RegSetValueExA(key, bitwiseName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&bitwise), 4);
   RegCloseKey(key);
 }
