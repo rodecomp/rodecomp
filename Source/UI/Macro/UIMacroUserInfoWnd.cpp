@@ -134,7 +134,7 @@ void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
   auto* btn2 = new UITextButton();
   btn2->Configure("", 0, 0, 13, 0, 1);
   static_cast<AccessibleTextButton*>(btn2)->m_hoverColor = 0x2D2D2D;
-  btn2->label = truncated;
+  btn2->SetLabel(truncated);
   btn2->ResizeToText();
   btn2->SetTooltip(name.c_str());
   btn2->SetId(aid);
