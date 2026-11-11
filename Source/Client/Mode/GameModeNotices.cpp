@@ -290,7 +290,7 @@ struct RouletteInfoPacket {
 static int CountItemSlotOptions(const ItemSlotOption* options) {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
-    if (options[index].id != 0) {
+    if (0 != options[index].id) {
       ++count;
     }
   }
@@ -2744,7 +2744,7 @@ struct ExpGainNoticePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ std::int64_t amount;
-  /* 000E */ std::int16_t type;
+  /* 000E */ std::uint16_t type;
   /* 0010 */ std::int16_t quest;
 };
 #pragma pack(pop)
@@ -2758,8 +2758,8 @@ void CGameMode::ReceiveExpGainNotice(const unsigned char* data) {
     return;
   }
 
-  const std::uint32_t color = packet->quest == 1 ? 0xBE58BE : 0xFFFF;
-  if (packet->amount == 0) {
+  const std::uint32_t color = packet->quest != 1 ? 0xFFFF : 0xBE58BE;
+  if (0 == packet->amount) {
     return;
   }
 
@@ -3002,7 +3002,7 @@ void CGameMode::ReceiveBankWithdrawAck(const unsigned char* data) {
 // FUNCTION: fn_21610
 void CGameMode::ReceiveBankCheck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const BankCheckPacket*>(data);
-  if (packet->reason == 0) {
+  if (0 == packet->reason) {
     g_session.m_bankBalance = packet->money;
     if (!g_windowMgr.CloseWindow(WID_BANK_NEWWND)) {
       g_windowMgr.EnsureWindow(WID_BANK_NEWWND);
@@ -3010,10 +3010,10 @@ void CGameMode::ReceiveBankCheck(const unsigned char* data) {
     return;
   }
 
-  if (packet->reason == 2) {
+  if (2 == packet->reason) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DAILYSENDRODEXCNT_LIMIT)), 0xFF, 0, 0, 0);
   } else {
-    char text[256];
+    char text[250];
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BANK_DEPOSIT_ZERO));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
