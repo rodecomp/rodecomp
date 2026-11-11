@@ -75,6 +75,29 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "Utility/StdStringCompare.h"
+#include "Utility/Math/AffineMatrix.h"
+
+using SessionShopTree = std::_Tree<std::_Tmap_traits<
+  int, SessionShop, std::less<int>, std::allocator<std::pair<const int, SessionShop>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, SessionShop>, void*>*>
+SessionShopTree::_Find_lower_bound<int>(const int&) const;
+
+using NameToIdTree = std::_Tree<std::_Tmap_traits<
+  std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
+NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
+
+using ShopEntryTree = std::_Tree<std::_Tmap_traits<
+  int, std::pair<int, int>, std::less<int>, std::allocator<std::pair<const int, std::pair<int, int>>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::pair<int, int>>, void*>*>
+ShopEntryTree::_Find_lower_bound<int>(const int&) const;
+
+using ActorIdTree = std::_Tree<std::_Tset_traits<
+  std::uint32_t, std::less<std::uint32_t>, std::allocator<std::uint32_t>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
+ActorIdTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
+
+extern template void std::vector<std::string>::resize(size_type, const std::string&);
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -1981,7 +2004,7 @@ void CSession::IgnoreText(std::string text) {
 // OFFSET: 0x00DFF2A0
 // FUNCTION: fn_23616
 void CSession::SaveMiniPartyInfo() {
-  std::string text;
+  std::string text("");
 
   for (auto it = this->miniPartyRecords.begin(); it != this->miniPartyRecords.end(); ++it) {
     char line[512];
@@ -2508,10 +2531,10 @@ std::uint32_t CSession::GetItemNameColor(const ITEM_INFO& item) const {
 // OFFSET: 0x00E30720
 // FUNCTION: fn_24166
 int CSession::CountDistinctCostumeItems() const {
-  std::vector<std::uint32_t> itemIds;
   int count = 0;
+  std::vector<std::uint32_t> itemIds;
   for (int i = 0; i < 10; ++i) {
-    const std::uint32_t itemId = this->costumeItems[i].identity[1];
+    const int itemId = this->costumeItems[i].identity[1];
     if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
       itemIds.push_back(itemId);
       ++count;
@@ -2524,10 +2547,10 @@ int CSession::CountDistinctCostumeItems() const {
 // OFFSET: 0x00E30830
 // FUNCTION: fn_24167
 int CSession::CountDistinctEquippedItems() const {
-  std::vector<std::uint32_t> itemIds;
   int count = 0;
+  std::vector<std::uint32_t> itemIds;
   for (int i = 0; i < 10; ++i) {
-    const std::uint32_t itemId = this->equippedItems[i].identity[1];
+    const int itemId = this->equippedItems[i].identity[1];
     if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
       itemIds.push_back(itemId);
       ++count;
@@ -2566,12 +2589,12 @@ const char* CSession::GetMonsterW3dName(int job) const {
 // OFFSET: 0x00DE38E0
 // FUNCTION: fn_23483
 unsigned char CSession::GetShopType(int id) {
-  auto it = this->m_shops.lower_bound(id);
-  if (it == this->m_shops.end() || it->first != id) {
-    return 0;
+  auto it = this->m_shops.find(id);
+  if (it != this->m_shops.end()) {
+    return it->second.flag;
   }
 
-  return it->second.flag;
+  return 0;
 }
 
 // OFFSET: 0x00DE3930
@@ -2613,11 +2636,15 @@ bool CSession::HasControlCharacter(std::string text) {
 // FUNCTION: fn_23488
 void CSession::HiFriends(char* text) {
   std::string greeting = "(Hi) ";
-  greeting += text ? text : "*^_^*";
+  if (text) {
+    greeting += text;
+  } else {
+    greeting += "*^_^*";
+  }
 
-  for (const MessengerMember& member : this->m_friends) {
+  for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     g_windowMgr.chatInputText = greeting.c_str();
-    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(it->name.c_str()), 0, 0, 0);
     if (++g_pendingWhisperCount > 40) {
       g_pendingWhisperCount = 40;
     }
@@ -7054,18 +7081,19 @@ void CSession::LoadSessionTables() {
   session->InitJobHitWaveNames();
 
   CCommonObject& storage = reinterpret_cast<CCommonObject&>(session->minimapTokenStorage[0x30]);
-  std::vector<char*> tokens;
-  session->m_bgmFileNames.clear();
-  session->m_bgmFileNames.reserve(512);
-  storage.LoadTokens(tokens, "mp3NameTable.txt", 0);
-  for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
-    session->m_bgmFileNames.push_back(std::make_pair(token[0], token[1]));
+  {
+    std::vector<char*> tokens;
+    session->m_bgmFileNames.clear();
+    session->m_bgmFileNames.reserve(512);
+    storage.LoadTokens(tokens, "mp3NameTable.txt", 0);
+    for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
+      session->m_bgmFileNames.push_back(std::make_pair(token[0], token[1]));
+    }
+    std::sort(session->m_bgmFileNames.begin(), session->m_bgmFileNames.end(),
+              [](const std::pair<const char*, const char*>& left, const std::pair<const char*, const char*>& right) {
+                return std::strcmp(left.first, right.first) < 0;
+              });
   }
-  std::sort(session->m_bgmFileNames.begin(), session->m_bgmFileNames.end(),
-            [](const std::pair<const char*, const char*>& left, const std::pair<const char*, const char*>& right) {
-              return std::strcmp(left.first, right.first) < 0;
-            });
-  tokens = std::vector<char*>();
 
   storage.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
   std::sort(session->m_indoorRswNames.begin(), session->m_indoorRswNames.end(),
@@ -7098,20 +7126,21 @@ void CSession::LoadSessionTables() {
   session->InitCommandTables();
   session->ResetCharacterState();
   session->ClearItemContainers();
-  session->m_inventoryItems.clear();
-  session->m_pingSamples.clear();
+  session->m_inventoryItems.erase(session->m_inventoryItems.begin(), session->m_inventoryItems.end());
+  session->m_pingSamples.erase(session->m_pingSamples.begin(), session->m_pingSamples.end());
   for (int index = 0; index < 10; ++index) {
     session->equippedItems[index].Reset();
   }
 
-  std::vector<char*> buyingStoreItems;
-  session->inventoryFilterIds.clear();
-  session->inventoryFilterIds.reserve(512);
-  storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
-  for (char* token : buyingStoreItems) {
-    session->inventoryFilterIds.push_back(std::atoi(token));
+  {
+    std::vector<char*> buyingStoreItems;
+    session->inventoryFilterIds.clear();
+    session->inventoryFilterIds.reserve(512);
+    storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
+    for (char* token : buyingStoreItems) {
+      session->inventoryFilterIds.push_back(std::atoi(token));
+    }
   }
-  buyingStoreItems = std::vector<char*>();
 
   session->mapPositionsScaled = 0;
   session->m_mapPosListCount = -1;
