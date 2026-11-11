@@ -7018,16 +7018,8 @@ void CEffectPrim::Render2DPrimitive() {
   if (this->state.slots[0].life == 'b') {
     for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
       if (effect.id == static_cast<std::uint32_t>(this->state.slots[0].rotStart)) {
-        const std::uint32_t expire = effect.expiration;
-        bool match = false;
-        if (timeGetTime() < expire && expire != 999999 && expire != 0) {
-          match = true;
-        } else if (g_replayAnimationScaling != 0) {
-          if (Replay::Instance().elapsed < expire && expire != 999999 && expire != 0) {
-            match = true;
-          }
-        }
-        if (match) {
+        if ((timeGetTime() < effect.expiration && effect.expiration != 999999 && effect.expiration != 0) ||
+            (g_replayAnimationScaling != 0 && Replay::Instance().elapsed < effect.expiration && effect.expiration != 999999 && effect.expiration != 0)) {
           CooldownState* cdState = g_cooldownOwner->Find(effect.id);
           if (cdState) {
             cdState->x = static_cast<int>(this->render.position.x);
