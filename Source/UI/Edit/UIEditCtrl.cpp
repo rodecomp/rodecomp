@@ -2423,32 +2423,28 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   int y = 54;
   for (int index = 0; index < this->slotCount; ++index, y += 42) {
     if (this->mode != 0) {
-      UIEditCtrl* quantity = new UIEditCtrlWheel();
-      this->quantityEdits[index] = quantity;
-      quantity->SetSize(42, 16);
-      quantity->Move(this->geometry.width - 231, y);
-      quantity->maximum = 5;
-      quantity->SetText("0");
-      quantity->Background(232, 232, 232);
-      this->AddChild(quantity);
+      this->quantityEdits[index] = new UIEditCtrlWheel();
+      this->quantityEdits[index]->SetSize(42, 16);
+      this->quantityEdits[index]->Move(this->geometry.width - 231, y);
+      this->quantityEdits[index]->maximum = 5;
+      this->quantityEdits[index]->SetText("0");
+      this->quantityEdits[index]->Background(232, 232, 232);
+      this->AddChild(this->quantityEdits[index]);
     }
 
-    UIEditCtrl* price = new UIEditCtrlWheel();
-    this->priceEdits[index] = price;
-    price->SetSize(94, 16);
-    price->Move(this->geometry.width - 119, y);
-    price->maximum = 14;
-    price->SetText("0");
-    int shade;
+    this->priceEdits[index] = new UIEditCtrlWheel();
+    this->priceEdits[index]->SetSize(94, 16);
+    this->priceEdits[index]->Move(this->geometry.width - 119, y);
+    this->priceEdits[index]->maximum = 14;
+    this->priceEdits[index]->SetText("0");
     if (this->mode != 0) {
-      shade = 232;
+      this->priceEdits[index]->Background(232, 232, 232);
     } else {
-      price->disabled = 1;
-      price->Invalidate();
-      shade = 182;
+      this->priceEdits[index]->disabled = 1;
+      this->priceEdits[index]->Invalidate();
+      this->priceEdits[index]->Background(182, 182, 182);
     }
-    price->Background(shade, shade, shade);
-    this->AddChild(price);
+    this->AddChild(this->priceEdits[index]);
   }
 
   if (this->mode != 0) {
@@ -9596,28 +9592,32 @@ void UIMerchantShopMakeWnd::Paint() {
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   int barHeight;
-  if (this->mode == 0) {
-    this->DrawButtonBar(2, 0, 1);
-  } else {
+  if (this->mode != 0) {
     barHeight = this->DrawButtonBar(2, 0, 2);
+  } else {
+    this->DrawButtonBar(2, 0, 1);
   }
 
   for (int i = 0; i < this->slotCount; ++i) {
-    if (this->mode == 0) {
-      this->priceEdits[i]->Show(i < this->visibleRows);
+    if (this->mode != 0) {
+      if (i < this->visibleRows) {
+        this->priceEdits[i]->Show(1);
+        this->quantityEdits[i]->Show(1);
+      } else {
+        this->priceEdits[i]->Show(0);
+        this->quantityEdits[i]->Show(0);
+      }
     } else if (i < this->visibleRows) {
       this->priceEdits[i]->Show(1);
-      this->quantityEdits[i]->Show(1);
     } else {
       this->priceEdits[i]->Show(0);
-      this->quantityEdits[i]->Show(0);
     }
   }
 
   for (int i = 0; i < this->slotCount; ++i) {
-    unsigned char hidden = 1;
+    bool hidden = true;
     if (this->scroll <= i && i < this->visibleRows + this->scroll) {
-      hidden = 0;
+      hidden = false;
       this->priceEdits[i]->Move(this->geometry.width - 119, (i - this->scroll) * 42 + 54);
     }
     this->priceEdits[i]->Show(hidden ^ 1);
@@ -9743,7 +9743,7 @@ void UIMerchantShopMakeWnd::Paint() {
   int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
-    if (index < this->columns * this->scroll) {
+    if (index < this->scroll * this->columns) {
       continue;
     }
 
@@ -9760,9 +9760,9 @@ void UIMerchantShopMakeWnd::Paint() {
     if (it->grade > 0) {
       this->DrawBitmap(
         x, top + 60,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
