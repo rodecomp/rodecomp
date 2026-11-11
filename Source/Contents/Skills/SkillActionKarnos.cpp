@@ -366,23 +366,19 @@ void CSkillAction_KR_THUNDERING_CALL::OnSkillEffect(int level, CGameActor* sourc
   int effectId;
   int bottomEffectId;
   if (level < 7) {
-    const char effectSource[] = {'\x19', '\x0B', '\x40', '\x43', '\xC1', '\x66', '\xFD', '\xB0', '\x03', '\x04', '\x6A', '\x4E', '\xC4', '\x6F', '\xE3', '\x86',
-                                         '\x0A', '\x3C', '\x06', '\x55', '\x96', '\x03'};
+    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_g_3x3", 0xD98F03A52D35636DULL);
     thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
     effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
 
-    const char bottomSource[] = {'\xA5', '\x71', '\xE8', '\xE1', '\x0F', '\xEE', '\x7D', '\x66', '\xBF', '\x7E', '\xC2', '\xEC', '\x0A', '\xE7', '\x63', '\x50',
-                                         '\xB6', '\x46', '\xAE', '\xF7', '\x58', '\xD4', '\x6D', '\x60', '\xA5', '\x6D', '\xF2', '\xE2', '\x6B'};
+    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_g_3x3_bottom", 0x0F0F8B6B8F9D19D1ULL);
     thread_local EncryptedName<sizeof(bottomSource), 0x0F0F8B6B8F9D19D1ULL> bottomName(bottomSource);
     bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
   } else {
-    const char effectSource[] = {'\x7D', '\xC1', '\x32', '\x31', '\xBD', '\x38', '\x07', '\xBA', '\x67', '\xCE', '\x18', '\x3C', '\xB8', '\x31', '\x19', '\x8C',
-                                         '\x6E', '\xF6', '\x72', '\x27', '\xEC', '\x5D'};
+    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_g_5x5", 0xD3755DD95F47A909ULL);
     thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
     effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
 
-    const char bottomSource[] = {'\x19', '\x8B', '\x30', '\xCD', '\x89', '\xA4', '\xA5', '\x58', '\x03', '\x84', '\x1A', '\xC0', '\x8C', '\xAD', '\xBB', '\x6E',
-                                         '\x0A', '\xBC', '\x70', '\xDB', '\xD8', '\x9E', '\xB5', '\x5E', '\x19', '\x97', '\x2A', '\xCE', '\xED'};
+    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_g_5x5_bottom", 0x31D7C1EDA345E36DULL);
     thread_local EncryptedName<sizeof(bottomSource), 0x31D7C1EDA345E36DULL> bottomName(bottomSource);
     bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
   }
@@ -401,23 +397,19 @@ void CSkillAction_KR_THUNDERING_CALL_S::OnSkillEffect(int level, CGameActor* sou
   int effectId;
   int bottomEffectId;
   if (level < 7) {
-    const char effectSource[] = {'\x05', '\x73', '\x86', '\x91', '\xE3', '\x40', '\xE3', '\xAE', '\x1F', '\x7C', '\xAC', '\x9C', '\xE6', '\x49', '\xFD', '\x98',
-                                         '\x08', '\x44', '\xC0', '\x87', '\xB4', '\x25'};
+    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_y_3x3", 0xC7912587FFF31B71ULL);
     thread_local EncryptedName<sizeof(effectSource), 0xC7912587FFF31B71ULL> effectName(effectSource);
     effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
 
-    const char bottomSource[] = {'\x19', '\x5B', '\x7A', '\xFB', '\xBF', '\x20', '\xA1', '\x00', '\x03', '\x54', '\x50', '\xF6', '\xBA', '\x29', '\xBF', '\x36',
-                                         '\x14', '\x6C', '\x3C', '\xED', '\xE8', '\x1A', '\xB1', '\x06', '\x19', '\x47', '\x60', '\xF8', '\xDB'};
+    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_y_3x3_bottom", 0x69D345DB950F336DULL);
     thread_local EncryptedName<sizeof(bottomSource), 0x69D345DB950F336DULL> bottomName(bottomSource);
     bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
   } else {
-    const char effectSource[] = {'\x5B', '\xF7', '\xC6', '\xB5', '\x8B', '\xAC', '\x65', '\xF2', '\x41', '\xF8', '\xEC', '\xB8', '\x8E', '\xA5', '\x7B', '\xC4',
-                                         '\x56', '\xC0', '\x86', '\xA3', '\xDA', '\xC9'};
+    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_y_5x5", 0x9B17C9EFDBB39F2FULL);
     thread_local EncryptedName<sizeof(effectSource), 0x9B17C9EFDBB39F2FULL> effectName(effectSource);
     effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
 
-    const char bottomSource[] = {'\xA9', '\xBD', '\x3C', '\x2F', '\x13', '\x70', '\x49', '\x44', '\xB3', '\xB2', '\x16', '\x22', '\x16', '\x79', '\x57', '\x72',
-                                         '\xA4', '\x8A', '\x7C', '\x39', '\x42', '\x4A', '\x59', '\x42', '\xA9', '\xA1', '\x26', '\x2C', '\x77'};
+    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_y_5x5_bottom", 0x2D3B15774149D5DDULL);
     thread_local EncryptedName<sizeof(bottomSource), 0x2D3B15774149D5DDULL> bottomName(bottomSource);
     bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
   }
@@ -482,14 +474,13 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  const char effectSource[] = {'\x47', '\x4F', '\x46', '\x61', '\xD9', '\x28', '\x4B', '\x44', '\x5D', '\x40', '\x6C', '\x60', '\xCF', '\x2F', '\x66', '\x4A', '\x33'};
+  constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_g", 0x2D394DBD0F332733ULL);
   thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  const char bottomSource[] = {'\x33', '\x49', '\xCE', '\x85', '\x8F', '\x12', '\x6D', '\x7C', '\x29', '\x46', '\xE4', '\x84', '\x99', '\x15', '\x40', '\x72',
-                                       '\x18', '\x43', '\xD4', '\x9F', '\x9F', '\x18', '\x72', '\x15'};
+  constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_g_bottom", 0x151F77EBEBBB2147ULL);
   thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
     effect->SetDelay(300);
@@ -508,14 +499,13 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  const char effectSource[] = {'\xB5', '\xA7', '\xA6', '\x5D', '\xF3', '\x78', '\x8F', '\x00', '\xAF', '\xA8', '\x8C', '\x5C', '\xE5', '\x7F', '\xA2', '\x10', '\xC1'};
+  constexpr std::array<char, 17> effectSource = CRYPT_NAME("thundering_orb_y", 0x69FD1D9733D3CFC1ULL);
   thread_local EncryptedName<sizeof(effectSource), 0x69FD1D9733D3CFC1ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  const char bottomSource[] = {'\xB3', '\xA5', '\x90', '\x53', '\x7B', '\x18', '\x17', '\x9C', '\xA9', '\xAA', '\xBA', '\x52', '\x6D', '\x1F', '\x3A', '\x8C',
-                                       '\x98', '\xAF', '\x8A', '\x49', '\x6B', '\x12', '\x08', '\xF5'};
+  constexpr std::array<char, 24> bottomSource = CRYPT_NAME("thundering_orb_y_bottom", 0xF5657D1F3DE5CDC7ULL);
   thread_local EncryptedName<sizeof(bottomSource), 0xF5657D1F3DE5CDC7ULL> bottomName(bottomSource);
   if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
     effect->SetDelay(300);
