@@ -776,16 +776,16 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
     display = 0;
   }
   digits[0] = display % 10;
-  digits[1] = display / 10 % 10;
+  digits[1] = (display /= 10) % 10;
   if (minutes > 0) {
     count = 4;
     digits[3] = minutes % 10;
-    digits[4] = minutes / 10 % 10;
+    digits[4] = (minutes /= 10) % 10;
   }
   if (hours > 0) {
     count = 6;
     digits[6] = hours % 10;
-    digits[7] = hours / 10 % 10;
+    digits[7] = (hours /= 10) % 10;
   }
 
   int total;
@@ -793,7 +793,7 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   int startIndex;
   if (days > 0) {
     digits[9] = days % 10;
-    digits[10] = days / 10 % 10;
+    digits[10] = (days /= 10) % 10;
     total = 11;
     offset = -220;
     startIndex = 10;
