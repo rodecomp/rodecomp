@@ -657,6 +657,8 @@ public:
   void IgnoreRemovedPacket16(const unsigned char* packet);
   void ReceiveItemSlotAddOptions(const unsigned char* data);
   void ReceiveItemSlotAddGrade(const unsigned char* data);
+  void ReceiveItemSlot(const unsigned char* data);
+  void ReceiveItemSlotOptions(const unsigned char* data);
   void ReceiveGuildAgitOwnershipChange(unsigned char value, std::uint32_t removeAid, std::uint32_t addAid);
   void ReceiveItemOptionsRefresh(const unsigned char* data);
   void ReceivePartyJobLevel(const unsigned char* packet);

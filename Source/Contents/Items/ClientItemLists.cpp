@@ -386,7 +386,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
 
 // OFFSET: 0x00D1F770
 // FUNCTION: fn_21641
-void ReceiveItemSlot(const unsigned char* data) {
+void CGameMode::ReceiveItemSlot(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
   ItemRandomOptions options = {};
   AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
@@ -396,7 +396,7 @@ void ReceiveItemSlot(const unsigned char* data) {
 
 // OFFSET: 0x00D1F970
 // FUNCTION: fn_21642
-void ReceiveItemSlotOptions(const unsigned char* data) {
+void CGameMode::ReceiveItemSlotOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
   AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
                         packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
