@@ -26,9 +26,9 @@ void UIGraffiStrboxWnd::OnCreate(int, int) {
 
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBitmapButton();
-    for (int state = 0; state < 3; ++state) {
-      button->SetBitmap((prefix + names[index][state] + ".bmp").c_str(), state, 0);
-    }
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(positions[index][0], positions[index][1]);
     button->SetId(ids[index]);
