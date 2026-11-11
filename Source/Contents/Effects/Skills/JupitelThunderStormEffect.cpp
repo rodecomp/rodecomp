@@ -23,7 +23,7 @@ static __forceinline bool ParticleAlive(const CParticle* particle) {
 
 // OFFSET: 0x00705F80
 // FUNCTION: fn_07040
-CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step{}, duration(10) {
+CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
 }
 
 // OFFSET: 0x00706110

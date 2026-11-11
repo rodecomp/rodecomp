@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0072CDC0
 // FUNCTION: fn_07484
-CStormCannonEffect::CStormCannonEffect() : CEffect(1755) {
+CStormCannonEffect::CStormCannonEffect() : CEffect(1755), direction({0.0f, 0.0f, 0.0f}), origin({0.0f, 0.0f, 0.0f}) {
 }
 
 // OFFSET: 0x0072CF60

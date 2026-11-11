@@ -1065,7 +1065,7 @@ void CFloralFlareRoad::Render() {
 
 // OFFSET: 0x00711F80
 // FUNCTION: fn_07235
-CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), leftFoot(1), lastPosition{}, lastGroundHeight(-1000.0f) {
+CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), leftFoot(1), lastPosition({0.0f, 0.0f, 0.0f}), lastGroundHeight(-1000.0f) {
   this->lastPosition.x = this->position[0];
   this->lastPosition.y = this->position[1];
   this->lastPosition.z = this->position[2];
@@ -1714,9 +1714,9 @@ CHawkVumerangEffect::CHawkVumerangEffect()
       orbitOffsetX(0),
       orbitOffsetY(-17.0f),
       orbitOffsetZ(0),
-      targetPosition{},
-      originPosition{},
-      orbitCenter{} {
+      targetPosition({0.0f, 0.0f, 0.0f}),
+      originPosition({0.0f, 0.0f, 0.0f}),
+      orbitCenter({0.0f, 0.0f, 0.0f}) {
 }
 
 // OFFSET: 0x00718620
