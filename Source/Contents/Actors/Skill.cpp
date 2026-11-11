@@ -291,7 +291,7 @@ void CSkill::SetRenderInfo(const float* box, float x, float y) {
 
 // OFFSET: 0x00E55320
 // FUNCTION: fn_24304
-void CSkill::ShowModel(const char* modelName) {
+__declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
   if (modelName == nullptr || this->render.enabled == 0) {
     return;
   }
