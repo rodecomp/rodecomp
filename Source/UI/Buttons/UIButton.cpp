@@ -121,12 +121,11 @@ void UIButton::OnMouseMove(int x, int y) {
     this->Invalidate();
   }
 
-  UIWindow* parent = this->parent;
-  if (parent == g_windowMgr.basicInfoWnd) {
+  if (this->parent == g_windowMgr.basicInfoWnd) {
     if (this->geometry.state == 0) {
-      parent->SendMsg(this, UM_COMMAND, ID_APPLY, 0, 0, 0);
+      this->parent->SendMsg(this, UM_COMMAND, ID_APPLY, 0, 0, 0);
     } else {
-      parent->SendMsg(this, UM_COMMAND, ID_APPLY, 1, 0, 0);
+      this->parent->SendMsg(this, UM_COMMAND, ID_APPLY, 1, 0, 0);
     }
   }
 }
