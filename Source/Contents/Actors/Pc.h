@@ -15,6 +15,7 @@
 class C3dGrannyModelRes;
 class CActRes;
 class CRes;
+class CSprRes;
 class CTexture;
 struct ActionFrame;
 struct RenderCommand;
@@ -135,7 +136,7 @@ public:
   /* 04A4 */ int layerCellX;
   /* 04A8 */ int layerCellY;
   /* 04AC */ std::map<int, std::pair<int, int>> padding_04AC;
-  /* 04B4 */ std::vector<CRes*> equipSprites;
+  /* 04B4 */ std::vector<CSprRes*> equipSprites;
   /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int pkState;
   /* 04D0 */ int bodyStyle;

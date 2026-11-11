@@ -711,51 +711,51 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
       switch (slot) {
       case 0:
         if (this->sex) {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Spr"));
         } else {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Spr"));
         }
         break;
       case 5:
         if (this->sex) {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Spr"));
         } else {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Spr"));
         }
         break;
       case 6:
         this->equipSprites[slot] = nullptr;
         break;
       default:
-        this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+        this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(name));
         break;
       }
     } else {
       switch (slot) {
       case 0:
         if (this->sex) {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Spr"));
         } else {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Spr"));
         }
         break;
       case 5:
         if (this->sex) {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Spr"));
         } else {
-          this->equipSprites[slot] = ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Spr");
+          this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Spr"));
         }
         break;
       case 6:
         this->equipSprites[slot] = nullptr;
         break;
       default:
-        this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+        this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(name));
         break;
       }
     }
   } else {
-    this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+    this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(name));
   }
 
   if (this->equipSprites[slot]) {
@@ -1784,14 +1784,15 @@ bool CPc::IsCostumeOutfit() const {
 int CPc::GetDualWieldWeaponType(int first, int second) {
   int result = W_FIST;
   int main = first;
-  int sub = 0;
+  int sub;
 
   if (!first) {
-    if (!second) {
+    main = second;
+    if (!main) {
       return result;
     }
 
-    main = second;
+    sub = 0;
   } else {
     sub = second;
   }
@@ -2808,15 +2809,16 @@ void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, 
 // OFFSET: 0x00DB6820
 // FUNCTION: fn_22669
 float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
+  float adjusted;
   if (target->actorType == 1) {
-    return std::max(distance - 20.0f, 0.0f);
+    adjusted = distance - 20.0f;
+  } else if (target->GetNpcLocationRadius() > 0) {
+    adjusted = distance - static_cast<float>(target->GetNpcLocationRadius() + 1) * 4.0f;
+  } else {
+    adjusted = distance;
   }
 
-  if (target->GetNpcLocationRadius() > 0) {
-    return std::max(distance - static_cast<float>(target->GetNpcLocationRadius() + 1) * 4.0f, 0.0f);
-  }
-
-  return std::max(distance, 0.0f);
+  return std::max(adjusted, 0.0f);
 }
 
 // GLOBAL: gl_25248
