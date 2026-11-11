@@ -12,6 +12,9 @@
 #include <vector>
 #include "Resource/MSGSTRINGID.h"
 
+extern template void std::string::reserve(std::size_t);
+extern template std::string& std::string::operator+=(const char*);
+
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
 
@@ -46,21 +49,10 @@ bool Equipment(const ITEM_INFO& item) {
 
 namespace {
   // INLINED
-  void CardIds(const ITEM_INFO& item, int (&ids)[4]) {
-    std::memcpy(ids, item.cards, sizeof(ids));
-  }
-
-  // INLINED
   int CardId(const ITEM_INFO& item, int index) {
     int id;
     std::memcpy(&id, &item.cards[index * sizeof(id)], sizeof(id));
     return id;
-  }
-
-  // INLINED
-  int Copy(char* output, int capacity, const char* text) {
-    const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
-    return error == 0 || error == 80 ? (output ? static_cast<int>(strnlen(output, capacity)) : 0) : 0;
   }
 
   // INLINED
@@ -297,7 +289,9 @@ namespace {
 
   // INLINED
   __forceinline void AppendName(const ITEM_INFO& item, std::string& result, char (&text)[128], int& capacity) {
-    AppendText(result, text, Copy(text, capacity, FindItemDescription(std::atoi(item.itemId.c_str())).identifiedName));
+    const int id = std::atoi(item.itemId.c_str());
+    const char* name = FindItemDescription(id, g_itemDescriptions).identifiedName;
+    AppendText(result, text, CopyText(text, capacity, 0, name ? name : " "));
   }
 }
 
@@ -311,12 +305,10 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
 
   if (this->identified == 1) {
     const int id = std::atoi(this->itemId.c_str());
-    int cards[4];
-    CardIds(*this, cards);
-    if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && cards[3] == 1) {
+    if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && CardId(*this, 3) == 1) {
       AppendText(result, text, this->Apprentice(text, capacity, 0));
       AppendName(*this, result, text, capacity);
-    } else if (cards[0] == 254 && cards[1] == 0) {
+    } else if (CardId(*this, 0) == 254 && CardId(*this, 1) == 0) {
       if (this->refiningLevel > 0) {
         AppendText(result, text, this->Refine(text, capacity, 0));
       }
@@ -351,7 +343,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
           AppendName(*this, result, text, capacity);
           AppendText(result, text, this->Suffixes(text, capacity, 0));
           AppendText(result, text, this->Slots(text, capacity, 0));
-        } else if (cards[0] != 254 && cards[0] != 255) {
+        } else if (CardId(*this, 0) != 254 && CardId(*this, 0) != 255) {
           AppendName(*this, result, text, capacity);
           AppendText(result, text, this->Slots(text, capacity, 0));
         } else if (g_serviceType == 12) {
@@ -834,7 +826,7 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
-__declspec(noinline) int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
   switch (this->cards[4]) {
   case 0: {
     const int id = std::atoi(this->itemId.c_str());
@@ -858,7 +850,7 @@ __declspec(noinline) int ITEM_INFO::Element(char* output, int& capacity, unsigne
 
 // OFFSET: 0x006D6B90
 // FUNCTION: fn_06584
-__declspec(noinline) int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Star(char* output, int& capacity, unsigned char consume) const {
   switch (this->cards[5]) {
   case 5:
     return CopyText(output, capacity, consume, LookupMessage(MSI_ONE_STARPIECE));
