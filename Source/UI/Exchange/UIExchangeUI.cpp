@@ -537,7 +537,7 @@ void CUIExchangeUI::BindItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemD
 
   item->quantityText->SetText(quantity > 0 ? std::to_string(data.item.quantity) : "");
   item->itemNameText->SetText(quantity > 0 ? data.item.DisplayName(0) : "");
-  item->itemNameText->SetTooltip("", 0);
+  item->itemNameText->SetTooltip("");
 
   if (data.frozen) {
     item->SetFrozen(true);
