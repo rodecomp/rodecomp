@@ -1212,7 +1212,7 @@ void CFootprintEffect::Render() {
 // FUNCTION: fn_07245
 CFootprintStrEffect::CFootprintStrEffect()
     : CEffect(2412), bottomScale(1.0), topScale(1.0), topHeight(0.0), stepDistance(50.0), footGap(2.0),
-      adjustAngle(0), leftFoot(1), lastPosition{} {
+      adjustAngle(0), leftFoot(1), lastPosition({0.0f, 0.0f, 0.0f}) {
 }
 
 // OFFSET: 0x007130E0
