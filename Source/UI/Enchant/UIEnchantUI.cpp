@@ -17,6 +17,8 @@
 #include <iterator>
 #include <new>
 
+extern template char* std::_UIntegral_to_buff<char, unsigned int>(char*, unsigned int);
+
 namespace {
 
 template <std::size_t Length>
@@ -1644,9 +1646,9 @@ void CUIReset::UpdateEnchantInfo() {
 // OFFSET: 0x00A06800
 // FUNCTION: fn_15004
 void CUIEnchantPage::ResetSlots() {
-  for (const auto& slot : this->slots) {
+  std::for_each(this->slots.begin(), this->slots.end(), [](const auto& slot) {
     slot.second->Show(0);
-  }
+  });
 
   for (CUIIngredient* ingredient : this->ingredients) {
     ingredient->Show(0);
