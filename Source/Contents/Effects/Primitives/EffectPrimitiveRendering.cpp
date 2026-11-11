@@ -1828,8 +1828,8 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
 // OFFSET: 0x00BDB530
 // FUNCTION: fn_19896
 void CEffectPrim::RenderHitLine3(matrix& wtm) {
-  ZeroVector3d vec1;
   ZeroVector3d vec3;
+  ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec4;
   int rpCnt = 0;
