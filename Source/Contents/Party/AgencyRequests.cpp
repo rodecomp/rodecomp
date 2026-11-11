@@ -10,7 +10,7 @@ void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, st
   const std::uint32_t character = g_session.m_gid;
   g_asyncWorkMgr->ChangePartyMaster(
     account, character, std::string(g_session.DecodePlayerName()), targetAccountId, targetCharacterId, targetName, std::string(g_session.m_accountName.c_str()),
-    this->ServiceUrl(6), std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), g_windowMgr
+    this->ServiceUrl(6), std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16)
   );
   ++this->pending;
 }
@@ -22,7 +22,7 @@ void CAdventurerAgencyMgr::RequestMyParty() {
   const std::uint32_t character = g_session.m_gid;
   g_asyncWorkMgr->LoadMyParty(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(5),
-    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), g_windowMgr
+    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16)
   );
   ++this->pending;
 }

@@ -4,7 +4,8 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-class CConnection;
+#include <cstdint>
+#include <string>
 
 class CEmblemDataDownloadAsyncWork : public NAsyncWork {
 public:
@@ -13,9 +14,7 @@ public:
   void Reset() override;
   bool Execute() override;
   void Complete() override;
-  void Bind(
-    std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::uint32_t version, CConnection& connection
-  );
+  void Bind(std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::uint32_t version);
 
 protected:
   /* 0028 */ std::string m_url;
@@ -27,11 +26,10 @@ protected:
   /* 007C */ std::string m_response;
   /* 0094 */ int m_responseCode;
   /* 0098 */ AsyncDiagnostic m_diagnostic;
-  CConnection* m_connection;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CEmblemDataDownloadAsyncWork) == 212);
+static_assert(sizeof(CEmblemDataDownloadAsyncWork) == 208);
 #endif
 
 #endif

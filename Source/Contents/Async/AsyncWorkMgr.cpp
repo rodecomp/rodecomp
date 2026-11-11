@@ -98,13 +98,13 @@ void CAsyncWorkMgr::SaveAccount(std::uint32_t accountId, std::string world, std:
 // FUNCTION: fn_02501
 void CAsyncWorkMgr::ChangePartyMaster(
   std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,
-  std::string targetName, std::string world, std::string url, std::string token, WindowManagerWindows& windows
+  std::string targetName, std::string world, std::string url, std::string token
 ) {
   NAsyncWorkPtr work(this->m_pools, "Change_PartyMaster");
 
   if (work.Get()) {
     static_cast<CChangePartyMasterAsyncWork*>(work.Get())
-      ->Bind(accountId, characterId, characterName, targetAccountId, targetCharacterId, targetName, world, url, token, windows);
+      ->Bind(accountId, characterId, characterName, targetAccountId, targetCharacterId, targetName, world, url, token);
     this->Submit(work);
   }
 }
@@ -136,12 +136,12 @@ void CAsyncWorkMgr::SaveCharacter(std::uint32_t accountId, std::uint32_t charact
 // OFFSET: 0x00574430
 // FUNCTION: fn_02504
 void CAsyncWorkMgr::DownloadEmblem(
-  std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version, CConnection& connection
+  std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version
 ) {
   NAsyncWorkPtr work(this->m_pools, "Emblem_Download");
 
   if (work.Get()) {
-    static_cast<CEmblemDataDownloadAsyncWork*>(work.Get())->Bind(url, accountId, token, world, guildId, version, connection);
+    static_cast<CEmblemDataDownloadAsyncWork*>(work.Get())->Bind(url, accountId, token, world, guildId, version);
     this->Submit(work);
   }
 }
@@ -159,13 +159,11 @@ void CAsyncWorkMgr::UploadEmblem(std::string url, std::uint32_t accountId, std::
 
 // OFFSET: 0x005746D0
 // FUNCTION: fn_02506
-void CAsyncWorkMgr::LoadMyParty(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, WindowManagerWindows& windows
-) {
+void CAsyncWorkMgr::LoadMyParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token) {
   NAsyncWorkPtr work(this->m_pools, "MyParty_Load");
 
   if (work.Get()) {
-    static_cast<CLoadMyPartyAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, windows);
+    static_cast<CLoadMyPartyAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token);
     this->Submit(work);
   }
 }

@@ -24,9 +24,9 @@ public:
   void RequestRegistration(const CAdvenPartyInfo& info);
   void RequestStop(std::uint32_t masterAccountId);
   void RequestStop();
-  void CompleteChangeMaster(AsyncDiagnostic diagnostic, std::string response, WindowManagerWindows& windows);
+  void CompleteChangeMaster(AsyncDiagnostic diagnostic, std::string response);
   void CompleteList(AsyncDiagnostic diagnostic, std::string response, WindowManagerWindows& windows);
-  void CompleteMyParty(AsyncDiagnostic diagnostic, std::string response, WindowManagerWindows& windows);
+  void CompleteMyParty(AsyncDiagnostic diagnostic, std::string response);
   void CompletePartyInfo(AsyncDiagnostic diagnostic, std::string response);
   void CompleteRegistration(AsyncDiagnostic diagnostic, std::string response);
   void CompleteStopRecruiting(AsyncDiagnostic diagnostic, std::string response);

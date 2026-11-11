@@ -21,15 +21,13 @@ public:
   void SaveAccount(std::uint32_t accountId, std::string world, std::string url, std::string token, std::string data);
   void ChangePartyMaster(
     std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,
-    std::string targetName, std::string world, std::string url, std::string token, WindowManagerWindows& windows
+    std::string targetName, std::string world, std::string url, std::string token
   );
   void LoadCharacter(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token);
   void SaveCharacter(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data);
-  void DownloadEmblem(
-    std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version, CConnection& connection
-  );
+  void DownloadEmblem(std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::uint32_t version);
   void UploadEmblem(std::string url, std::uint32_t accountId, std::string token, std::string world, std::uint32_t guildId, std::string path);
-  void LoadMyParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, WindowManagerWindows& windows);
+  void LoadMyParty(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token);
   void LoadPartyInfo(
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId
   );

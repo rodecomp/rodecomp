@@ -32,7 +32,7 @@ namespace {
 // FUNCTION: fn_03963
 CEmblemDataDownloadAsyncWork::CEmblemDataDownloadAsyncWork()
     : NAsyncWork("Emblem_Download"), m_accountId(0), m_guildId(0), m_version(0), m_responseCode(500),
-      m_diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5})), sourceFile, 29), m_connection(nullptr) {
+      m_diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5})), sourceFile, 29) {
 }
 
 // INLINED
@@ -46,7 +46,7 @@ void CEmblemDataDownloadAsyncWork::Reset() {
 // OFFSET: 0x005EA0D0
 // FUNCTION: fn_03965
 void CEmblemDataDownloadAsyncWork::Bind(
-  std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::uint32_t version, CConnection& connection
+  std::string url, std::uint32_t accountId, std::string token, std::string accountName, std::uint32_t guildId, std::uint32_t version
 ) {
   this->m_group = timeGetTime();
   this->m_key = 0;
@@ -58,7 +58,6 @@ void CEmblemDataDownloadAsyncWork::Bind(
   this->m_version = version;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93}), 57);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_connection = &connection;
 }
 
 // OFFSET: 0x005EA430

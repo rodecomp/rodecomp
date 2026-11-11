@@ -22,7 +22,7 @@ std::shared_ptr<CSurface> RenderSystemHolder::BackBufferSurface() const {
 
 // OFFSET: 0x00569C90
 // FUNCTION: fn_02270
-void RenderSystemHolder::Shutdown() noexcept {
+RenderSystemHolder::~RenderSystemHolder() noexcept {
   delete this->system;
   this->system = nullptr;
   ClearDirectDrawModes();

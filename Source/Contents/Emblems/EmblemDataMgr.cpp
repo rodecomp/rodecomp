@@ -75,9 +75,7 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
 // FUNCTION: fn_03972
 void CEmblemDataMgr::Download(std::uint32_t guildId, std::uint32_t version) {
   const std::string token(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16);
-  g_asyncWorkMgr->DownloadEmblem(
-    this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version, GetRagConnection()
-  );
+  g_asyncWorkMgr->DownloadEmblem(this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version);
 }
 
 // OFFSET: 0x005EB410

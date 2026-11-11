@@ -38,7 +38,7 @@ namespace {
 // OFFSET: 0x005CF1B0
 // FUNCTION: fn_03685
 CLoadMyPartyAsyncWork::CLoadMyPartyAsyncWork()
-    : NAsyncWork("MyParty_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 28)), m_windows(nullptr) {
+    : NAsyncWork("MyParty_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 28)) {
 }
 
 // INLINED
@@ -51,9 +51,7 @@ void CLoadMyPartyAsyncWork::Reset() {
 
 // OFFSET: 0x005CF670
 // FUNCTION: fn_03687
-void CLoadMyPartyAsyncWork::Bind(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, WindowManagerWindows& windows
-) {
+void CLoadMyPartyAsyncWork::Bind(std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
   this->m_characterId = characterId;
@@ -63,7 +61,6 @@ void CLoadMyPartyAsyncWork::Bind(
   this->m_token = token;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17}), 49);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_windows = &windows;
 }
 
 // OFFSET: 0x005CF9B0
@@ -93,7 +90,7 @@ bool CLoadMyPartyAsyncWork::Execute() {
 // OFFSET: 0x005CF8F0
 // FUNCTION: fn_03689
 void CLoadMyPartyAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteMyParty(this->m_diagnostic, this->m_response, *this->m_windows);
+  g_adventurerAgencyMgr->CompleteMyParty(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CLoadMyPartyAsyncWork*>::push_back(CLoadMyPartyAsyncWork*&&);

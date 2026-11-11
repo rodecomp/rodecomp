@@ -39,7 +39,7 @@ namespace {
 // FUNCTION: fn_03677
 CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
     : NAsyncWork("Change_PartyMaster"), m_accountId(0), m_characterId(0), m_token(""), m_worldName(""), m_response(""), m_url(""),
-      m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 27), m_windows(nullptr) {
+      m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 27) {
 }
 
 // INLINED
@@ -54,7 +54,7 @@ void CChangePartyMasterAsyncWork::Reset() {
 // FUNCTION: fn_03680
 void CChangePartyMasterAsyncWork::Bind(
   std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,
-  std::string targetName, std::string worldName, std::string url, std::string token, WindowManagerWindows& windows
+  std::string targetName, std::string worldName, std::string url, std::string token
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -69,7 +69,6 @@ void CChangePartyMasterAsyncWork::Bind(
   this->m_token = token;
   AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17}), 55);
   this->m_diagnostic.MoveFrom(diagnostic);
-  this->m_windows = &windows;
 }
 
 // OFFSET: 0x005CE150
@@ -109,7 +108,7 @@ bool CChangePartyMasterAsyncWork::Execute() {
 // OFFSET: 0x005CE090
 // FUNCTION: fn_03682
 void CChangePartyMasterAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteChangeMaster(this->m_diagnostic, this->m_response, *this->m_windows);
+  g_adventurerAgencyMgr->CompleteChangeMaster(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CChangePartyMasterAsyncWork*>::push_back(CChangePartyMasterAsyncWork*&&);

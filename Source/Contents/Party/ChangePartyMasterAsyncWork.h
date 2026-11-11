@@ -4,7 +4,8 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Async/NAsyncWork.h"
 
-#include "UI/Window/WindowManagerWindows.h"
+#include <cstdint>
+#include <string>
 
 class CChangePartyMasterAsyncWork : public NAsyncWork {
 public:
@@ -15,7 +16,7 @@ public:
   void Complete() override;
   void Bind(
     std::uint32_t accountId, std::uint32_t characterId, std::string characterName, std::uint32_t targetAccountId, std::uint32_t targetCharacterId,
-    std::string targetName, std::string worldName, std::string url, std::string token, WindowManagerWindows& windows
+    std::string targetName, std::string worldName, std::string url, std::string token
   );
 
 protected:
@@ -30,11 +31,10 @@ protected:
   /* 0098 */ std::string m_response;
   /* 00B0 */ std::string m_url;
   /* 00C8 */ AsyncDiagnostic m_diagnostic;
-  WindowManagerWindows* m_windows;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CChangePartyMasterAsyncWork) == 260);
+static_assert(sizeof(CChangePartyMasterAsyncWork) == 256);
 #endif
 
 #endif

@@ -18,7 +18,9 @@ ScreenDimensions* DefaultResolution(ScreenDimensions* output);
 struct RenderSystemHolder {
   /* 0000 */ CRenderSystemBase* system;
 
-  void Shutdown() noexcept;
+  RenderSystemHolder() : system(nullptr) {
+  }
+  ~RenderSystemHolder() noexcept;
   CRenderer* CreateRenderer();
   CSurface* CreateSurface(std::uint32_t width, std::uint32_t height);
   CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
