@@ -1809,7 +1809,7 @@ void CSession::RemovePartyMemberByName(const char* name) {
     }
 
     CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
-    if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160)) {
+    if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
@@ -1895,7 +1895,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
     return false;
   }
 
-  return static_cast<std::int16_t>(actor->characterLevel) <= 50 && g_session.IsBabyJob(aid) != true &&
+  return 50 >= static_cast<std::int16_t>(actor->characterLevel) && g_session.IsBabyJob(aid) != true &&
          static_cast<unsigned>(aid - JT_NOVICE_H) > 20;
 }
 
@@ -3306,7 +3306,7 @@ void CSession::ClearItemContainers() {
   if (mode != nullptr) {
     for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
-      if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160)) {
+      if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
         actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
     }
