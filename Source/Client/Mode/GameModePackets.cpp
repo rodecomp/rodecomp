@@ -15641,7 +15641,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   const std::uint8_t (&signatureSource)[4] = signatureSourceArray._Elems;
   thread_local EncryptedName<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
   const char* signatureText = signature.Text();
-  const std::uint8_t functionSource[] = {0xB6, 0xA2, 0x4D, 0x4C, 0x66, 0x0C, 0x26, 0x81, 0xBB, 0xA8, 0x5B, 0x09};
+  const std::uint8_t functionSource[] = CRYPT_BYTES(12, "GetEquipJob", 0xF14F79170939C7F1ULL);
   thread_local EncryptedName<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
   g_session.m_hotkeyScript->Call(function.Text(), signatureText, itemId, &job);
   if (job != 0) {

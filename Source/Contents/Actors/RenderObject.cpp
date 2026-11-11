@@ -3005,12 +3005,12 @@ static std::string ShapeShiftName(int form, int job) {
       return name.Text();
     }
     case JT_ALITEA: {
-      const std::uint8_t source[] = {0x5E, 0x62, 0x7D, 0xFE, 0xEA, 0x12, 0x31, 0x9F, 0x3A, 0x27};
+      const std::uint8_t source[] = CRYPT_BYTES(10, "WEREWOLF3", 0xD97D5DBDBB2F2709ULL);
       thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
       return name.Text();
     }
     default: {
-      const std::uint8_t source[] = {0x28, 0x56, 0x8D, 0x94, 0xD2, 0x28, 0x35, 0xAB, 0x7F};
+      const std::uint8_t source[] = CRYPT_BYTES(9, "WEREWOLF", 0xED796785D1DF137FULL);
       thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
       return name.Text();
     }
@@ -3019,17 +3019,17 @@ static std::string ShapeShiftName(int form, int job) {
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
-      const std::uint8_t source[] = {0xEA, 0xF8, 0xBF, 0x72, 0xE9, 0xFE, 0xBF, 0xD7, 0xF2, 0xEF, 0xDF, 0x37};
+      const std::uint8_t source[] = CRYPT_BYTES(12, "WERERAPTOR2", 0x83EFBFBB37EDBDBDULL);
       thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
       return name.Text();
     }
     case JT_ALITEA: {
-      const std::uint8_t source[] = {0xF0, 0xB0, 0x2D, 0x7C, 0x63, 0x0A, 0x7B, 0xEB, 0xE8, 0xA7, 0x4C, 0x39};
+      const std::uint8_t source[] = CRYPT_BYTES(12, "WERERAPTOR3", 0xBF2B4B31397FF5A7ULL);
       thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
       return name.Text();
     }
     default: {
-      const std::uint8_t source[] = {0xB6, 0x3E, 0xAB, 0x92, 0x87, 0x52, 0x69, 0x89, 0xAE, 0x29, 0xF9};
+      const std::uint8_t source[] = CRYPT_BYTES(11, "WERERAPTOR", 0xDD3913D5D7F97BE1ULL);
       thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
       return name.Text();
     }

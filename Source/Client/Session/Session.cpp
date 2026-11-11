@@ -2909,7 +2909,7 @@ void CSession::LoadExternalSettings() {
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x78]));
 
   if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) == -1 || *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) == -1) {
-    const std::array<char, 27> source = {'\xC2', '\x6B', '\x53', '\x54', '\x97', '\x4F', '\xEC', '\xE5', '\xF3', '\x7C', '\x53', '\x55', '\xB6', '\x0A', '\xDD', '\xE9', '\xEE', '\x77', '\x46', '\x48', '\xC5', '\x39', '\xC8', '\xF1', '\xF2', '\x7C', '\x21'};
+    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0x9DA96FE53B211987ULL);
     thread_local EncryptedName<sizeof(source), 0x9DA96FE53B211987ULL> name(source);
     ShowErrorDialog(name.Text(), 0);
   }
@@ -2918,7 +2918,7 @@ void CSession::LoadExternalSettings() {
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]));
 
   if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]) == -1) {
-    const std::array<char, 27> source = {'\x84', '\x29', '\xA1', '\x34', '\x8D', '\xA7', '\xC6', '\xDF', '\xB5', '\x3E', '\xA1', '\x35', '\xAC', '\xE2', '\xF7', '\xD3', '\xA8', '\x35', '\xB4', '\x28', '\xDF', '\xD1', '\xE2', '\xCB', '\xB4', '\x3E', '\xD3'};
+    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0xA78387FF5BD35BC1ULL);
     thread_local EncryptedName<sizeof(source), 0xA78387FF5BD35BC1ULL> name(source);
     ShowErrorDialog(name.Text(), 0);
   }
@@ -2945,7 +2945,7 @@ void CSession::LoadExternalSettings() {
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th_sub", &this->m_maxLevelEffect4thSub);
 
   if (this->m_maxLevelEffect4th == -1 || this->m_maxLevelEffect4thSub == -1) {
-    const std::array<char, 27> source = {'\x66', '\x23', '\xB5', '\x54', '\xA1', '\x55', '\x94', '\xF9', '\x57', '\x34', '\xB5', '\x55', '\x80', '\x10', '\xA5', '\xF5', '\x4A', '\x3F', '\xA0', '\x48', '\xF3', '\x23', '\xB0', '\xED', '\x56', '\x34', '\xC7'};
+    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0x81D175D33BC75123ULL);
     thread_local EncryptedName<sizeof(source), 0x81D175D33BC75123ULL> name(source);
     ShowErrorDialog(name.Text(), 0);
   }
@@ -2962,15 +2962,15 @@ void CSession::Init() {
   const char* fileName = std::strrchr(modulePath, '\\');
   std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName + 1));
 
-  const std::array<char, 32> keySource = {'\xC4', '\x9E', '\x87', '\xA9', '\xA6', '\xF2', '\x9B', '\x4A', '\xCB', '\xB6', '\x93', '\xBC', '\xA7', '\xFA', '\x9D', '\x56', '\xCB', '\xA3', '\x80', '\xBA', '\xBF', '\xF2', '\x9B', '\x40', '\xFC', '\xBE', '\x8F', '\xB1', '\xB8', '\xFD', '\x8C', '\x2F'};
+  const std::array<char, 32> keySource = CRYPT_CHARS(32, "Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL);
   thread_local EncryptedName<sizeof(keySource), 0x2FE993D1DDE1F197ULL> keyName(keySource);
   HKEY key;
   if (RegCreateKeyExA(HKEY_CURRENT_USER, keyName.Text(), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
-    const std::array<char, 8> pathSource = {'\xAF', '\xB6', '\x2A', '\xF9', '\xD4', '\xFB', '\xFF', '\xE7'};
+    const std::array<char, 8> pathSource = CRYPT_CHARS(8, "RagPath", 0xE7978FB5A94DD7FDULL);
     thread_local EncryptedName<sizeof(pathSource), 0xE7978FB5A94DD7FDULL> pathName(pathSource);
     std::string valueName = pathName.Text();
     if (g_serviceMode == 1) {
-      const std::array<char, 11> sakraySource = {'\x38', '\xD8', '\xAC', '\x7D', '\x06', '\xF6', '\xAD', '\xD6', '\x1F', '\xD1', '\xC7'};
+      const std::array<char, 11> sakraySource = CRYPT_CHARS(11, "SakrayPath", 0xB7FD8F670FC7B96BULL);
       thread_local EncryptedName<sizeof(sakraySource), 0xB7FD8F670FC7B96BULL> sakrayName(sakraySource);
       std::string sakrayValueName = sakrayName.Text();
     }
@@ -4779,42 +4779,42 @@ CSession::CSession() {
   CSpecialPopupMgr::Create();
   CRuneSystemMgr::Create();
   if (!CUserHotkeyMgr::Initialize()) {
-    const std::array<char, 6> captionSource = {'\x3A', '\x61', '\xAD', '\xBE', '\xF7', '\x67'};
+    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xED796785D1DF137FULL);
     thread_local EncryptedName<sizeof(captionSource), 0xED796785D1DF137FULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::array<char, 33> textSource = {'\xB2', '\x92', '\x4A', '\x6C', '\x65', '\x31', '\x20', '\x85', '\x9A', '\xA2', '\x40', '\x44', '\x70', '\x0B', '\x75', '\xCB', '\xB2', '\xB5', '\x5C', '\x68', '\x63', '\x1C', '\x06', '\x9F', '\x82', '\xB3', '\x58', '\x67', '\x74', '\x1C', '\x67', '\xD8', '\xF1'};
+    const std::array<char, 33> textSource = CRYPT_CHARS(33, "CUserHotkeyMgr::CreateInstance()", 0xF14F79170939C7F1ULL);
     thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CBarterMarketItemMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = {'\xE2', '\x87', '\x0D', '\x56', '\x43', '\x4B'};
+    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xBF2B4B31397FF5A7ULL);
     thread_local EncryptedName<sizeof(captionSource), 0xBF2B4B31397FF5A7ULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::array<char, 47> textSource = {'\x40', '\x49', '\x5C', '\xCF', '\xDC', '\x33', '\x1E', '\xBC', '\x4A', '\x65', '\x4E', '\xC9', '\xC9', '\x38', '\x0F', '\x94', '\x68', '\x55', '\x44', '\xDE', '\xC9', '\x14', '\x09', '\xBC', '\x64', '\x6A', '\x48', '\xC9', '\x87', '\x67', '\x3E', '\xAB', '\x6C', '\x46', '\x5B', '\xDE', '\xF4', '\x33', '\x0E', '\xAD', '\x68', '\x49', '\x4C', '\xDE', '\x95', '\x74', '\x7D'};
+    const std::array<char, 47> textSource = CRYPT_CHARS(47, "InstanceCBarterMarketItemMgr::CreateInstance()", 0xD97D5DBDBB2F2709ULL);
     thread_local EncryptedName<sizeof(textSource), 0xD97D5DBDBB2F2709ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CExpandedBarterMarketItemMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = {'\xDE', '\x25', '\x71', '\xF6', '\x15', '\x05'};
+    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0x050505679903579BULL);
     thread_local EncryptedName<sizeof(captionSource), 0x050505679903579BULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::array<char, 48> textSource = {'\xF4', '\xD3', '\x9E', '\x43', '\xDA', '\xD1', '\x8C', '\xE6', '\xFE', '\xFF', '\x8C', '\x45', '\xCF', '\xDA', '\x9D', '\xCE', '\xDC', '\xCF', '\x86', '\x52', '\xCF', '\xF6', '\x9B', '\xE6', '\xD0', '\x8F', '\xA0', '\x50', '\xC9', '\x85', '\xD5', '\xC0', '\xCF', '\xD8', '\x8C', '\x43', '\xDE', '\xF6', '\x81', '\xF0', '\xC9', '\xDC', '\x83', '\x54', '\xDE', '\x97', '\xC6', '\x83'};
+    const std::array<char, 48> textSource = CRYPT_CHARS(48, "InstanceCBarterMarketItem2Mgr::CreateInstance()", 0x83EFBFBB37EDBDBDULL);
     thread_local EncryptedName<sizeof(textSource), 0x83EFBFBB37EDBDBDULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CPetEvolutionMgr::Create()) {
-    const std::array<char, 6> captionSource = {'\x88', '\x83', '\xEB', '\xDA', '\xFF', '\x5B'};
+    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xAD075B8DB599F1CDULL);
     thread_local EncryptedName<sizeof(captionSource), 0xAD075B8DB599F1CDULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::array<char, 27> textSource = {'\xA2', '\x2B', '\x9C', '\xA3', '\x90', '\x65', '\x56', '\xB1', '\x94', '\x0F', '\x90', '\xB8', '\xBB', '\x5E', '\x5E', '\xAF', '\xC1', '\x1D', '\x90', '\xBB', '\xB0', '\x33', '\x70', '\xB3', '\x88', '\x0F', '\xF9'};
+    const std::array<char, 27> textSource = CRYPT_CHARS(27, "CPetEvolutionMgr file Init", 0xDD3913D5D7F97BE1ULL);
     thread_local EncryptedName<sizeof(textSource), 0xDD3913D5D7F97BE1ULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
   if (!CAchievementMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = {'\xCA', '\xEB', '\x99', '\x62', '\xC7', '\x7F'};
+    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0x39FF7FB50DEB998FULL);
     thread_local EncryptedName<sizeof(captionSource), 0x39FF7FB50DEB998FULL> caption(captionSource);
     const char* captionText = caption.Text();
-    const std::array<char, 26> textSource = {'\x3C', '\x54', '\xEE', '\x79', '\x5E', '\x6A', '\xFD', '\x4A', '\x12', '\x70', '\xE3', '\x65', '\x7A', '\x68', '\xF9', '\x0F', '\x19', '\x7C', '\xE1', '\x74', '\x17', '\x66', '\xE5', '\x46', '\x0B', '\x15'};
+    const std::array<char, 26> textSource = CRYPT_CHARS(26, "CAchievementMgr file init", 0x2F8B0F37118D157FULL);
     thread_local EncryptedName<sizeof(textSource), 0x2F8B0F37118D157FULL> text(textSource);
     MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
   }
@@ -4869,7 +4869,7 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName", true, false);
   {
-    const std::array<char, 27> source = {'\x39', '\xB8', '\x8C', '\x7D', '\x2D', '\x0C', '\x89', '\x50', '\x06', '\x91', '\xA9', '\x3C', '\x1F', '\x04', '\xAC', '\x5B', '\x13', '\xA2', '\xB1', '\x0D', '\x0E', '\x11', '\xAC', '\x5B', '\x13', '\xA2', '\xED'};
+    const std::array<char, 27> source = CRYPT_CHARS(27, "Lua Files\\DataInfo\\PetInfo", 0x35E5656B5DEDCD75ULL);
     thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4888,12 +4888,12 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\jobinheritlist", true, false);
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\SkillID", true, false);
   {
-    const std::array<char, 35> source = {'\xB1', '\xCC', '\xDA', '\x01', '\xD9', '\x94', '\x2D', '\x2C', '\x8E', '\xE5', '\xE8', '\x4A', '\xF6', '\x91', '\x2D', '\x00', '\x93', '\xDF', '\xD4', '\x5B', '\xC3', '\xAE', '\x2A', '\x20', '\x91', '\xD5', '\xF2', '\x4F', '\xF9', '\x92', '\x0D', '\x20', '\x8E', '\xCD', '\xBB'};
+    const std::array<char, 35> source = CRYPT_CHARS(35, "Lua Files\\SkillInfoz\\SkillInfoList", 0x4941FD9F21BBB9FDULL);
     thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 35> source = {'\x29', '\x6C', '\x24', '\x29', '\x6B', '\x4A', '\x77', '\xEC', '\x16', '\x45', '\x16', '\x62', '\x44', '\x4F', '\x77', '\xC0', '\x0B', '\x7F', '\x2A', '\x73', '\x71', '\x70', '\x70', '\xE0', '\x09', '\x75', '\x01', '\x6C', '\x5E', '\x40', '\x69', '\xE0', '\x15', '\x6D', '\x45'};
+    const std::array<char, 35> source = CRYPT_CHARS(35, "Lua Files\\SkillInfoz\\SkillDescript", 0x891B232D09451965ULL);
     thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4902,7 +4902,7 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\skilltreeview", true, false);
   this->m_hotkeyScript->Load("Lua Files\\StateIcon\\EFSTIDs", true, false);
   {
-    const std::array<char, 34> source = {'\xF5', '\x70', '\x16', '\x6F', '\x4D', '\x74', '\xE3', '\x10', '\xCA', '\x59', '\x24', '\x3B', '\x6A', '\x69', '\xEA', '\x3C', '\xDA', '\x6A', '\x19', '\x13', '\x58', '\x69', '\xEE', '\x01', '\xDC', '\x4C', '\x14', '\x20', '\x65', '\x54', '\xE1', '\x13', '\xD6', '\x05'};
+    const std::array<char, 34> source = CRYPT_CHARS(34, "Lua Files\\StateIcon\\StateIconInfo", 0x758F1D0B4F7705B9ULL);
     thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4948,7 +4948,7 @@ void CSession::LoadLuaDataFiles() {
   this->LoadNavigationScripts();
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\HelpMsgStr", true, false);
   {
-    const std::array<char, 36> source = {'\x1D', '\xFE', '\xAC', '\x21', '\xFD', '\x54', '\x2D', '\xB4', '\x22', '\xD7', '\x88', '\x6F', '\xCF', '\x4F', '\x38', '\x80', '\x24', '\xEE', '\xB8', '\x64', '\xE7', '\x78', '\x2F', '\xA5', '\x23', '\xF2', '\x9C', '\x74', '\xDE', '\x48', '\x24', '\x9D', '\x38', '\xF8', '\xB9', '\x01'};
+    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\EntryQueue\\EntryQueueList", 0xD1413DBB01CD8B51ULL);
     thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4982,7 +4982,7 @@ void CSession::LoadLuaDataFiles() {
 
   this->m_hotkeyScript->Load("Lua Files\\SignBoardList_F", true, false);
   {
-    const std::array<char, 24> source = {'\x25', '\x6A', '\x16', '\x75', '\xDB', '\xFC', '\x17', '\x06', '\x1A', '\x43', '\x24', '\x3C', '\xFA', '\xFB', '\x39', '\x0C', '\x08', '\x6D', '\x13', '\x19', '\xF4', '\xE6', '\x0F', '\x63'};
+    const std::array<char, 24> source = CRYPT_CHARS(24, "Lua Files\\SignBoardList", 0x637B959D55771F69ULL);
     thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4992,12 +4992,12 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos", true, false);
   {
-    const std::array<char, 37> source = {'\x95', '\x8C', '\x80', '\xC3', '\x2B', '\x7C', '\xC1', '\x4E', '\xAA', '\xA5', '\x85', '\x82', '\x19', '\x74', '\xC4', '\x45', '\xBF', '\x96', '\xBD', '\xAF', '\x0C', '\x65', '\xC4', '\x45', '\xBC', '\xBD', '\x85', '\x96', '\x06', '\x51', '\xE9', '\x4A', '\xB2', '\xBB', '\x8E', '\x9B', '\x6D'};
+    const std::array<char, 37> source = CRYPT_CHARS(37, "Lua Files\\datainfo\\LapineDdukDDakBox", 0x2BAD156DE3E1F9D9ULL);
     thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 36> source = {'\xC3', '\xC8', '\x8E', '\xA7', '\x3B', '\xAC', '\xC1', '\x10', '\xFC', '\xE1', '\x8B', '\xE6', '\x09', '\xA4', '\xC4', '\x1B', '\xE9', '\xD2', '\xB3', '\xCB', '\x1C', '\xB5', '\xC4', '\x1B', '\xEA', '\xE8', '\x9F', '\xE0', '\x0F', '\xA4', '\xC9', '\x10', '\xCD', '\xD2', '\x97', '\x87'};
+    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\datainfo\\LapineUpgradeBox", 0x75ADC57D87EFBD8FULL);
     thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -5009,28 +5009,28 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_cashshop_banner", true, false);
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_stoveshop_banner", true, false);
   {
-    const std::array<char, 26> source = {'\xA3', '\x04', '\xBE', '\x33', '\x2B', '\x26', '\xAB', '\x88', '\x9C', '\x2D', '\x9E', '\x74', '\x04', '\x3B', '\x9B', '\xAC', '\x88', '\x18', '\xAB', '\x50', '\x02', '\x21', '\xA1', '\x84', '\x88', '\x71'};
+    const std::array<char, 26> source = CRYPT_CHARS(26, "Lua Files\\Agit\\AgitConfig", 0xEDC74F6D13DF71EFULL);
     thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 28> source = {'\xD9', '\xFA', '\x80', '\x2D', '\x1B', '\x60', '\x0D', '\x94', '\xE6', '\xD3', '\xA0', '\x6A', '\x34', '\x7D', '\x3D', '\xB0', '\xF2', '\xE6', '\x95', '\x4E', '\x32', '\x67', '\x07', '\x98', '\xF2', '\xD0', '\xA7', '\x0D'};
+    const std::array<char, 28> source = CRYPT_CHARS(28, "Lua Files\\Agit\\AgitConfig_F", 0xF161095D0DE18F95ULL);
     thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_checkAttendance_banner", true, false);
   {
-    const std::array<char, 36> source = {'\xCB', '\x66', '\x0A', '\x5F', '\x7F', '\x60', '\x1D', '\x6E', '\xF4', '\x4F', '\x2F', '\x1E', '\x54', '\x68', '\x16', '\x6E', '\xD4', '\x78', '\x02', '\x11', '\x65', '\x4D', '\x10', '\x66', '\xE6', '\x74', '\x0E', '\x2C', '\x52', '\x60', '\x1F', '\x47', '\xEE', '\x60', '\x1F', '\x7F'};
+    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinList", 0x0B7109397F6B1387ULL);
     thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 36> source = {'\xE9', '\xE8', '\x0C', '\xD9', '\x25', '\x4E', '\x1B', '\x66', '\xD6', '\xC1', '\x29', '\x98', '\x0E', '\x46', '\x10', '\x66', '\xF6', '\xF6', '\x04', '\x97', '\x3F', '\x63', '\x16', '\x6E', '\xC4', '\xFA', '\x08', '\xAA', '\x08', '\x4E', '\x19', '\x4A', '\xCB', '\xFB', '\x02', '\xF9'};
+    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinInfo", 0x03772763F96D9DA5ULL);
     thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 38> source = {'\x21', '\xCE', '\xF4', '\x0D', '\xD5', '\x92', '\x7B', '\xA0', '\x1E', '\xE7', '\xD1', '\x4C', '\xFE', '\x9A', '\x70', '\xA0', '\x3E', '\xD0', '\xFC', '\x43', '\xCF', '\xBF', '\x76', '\xA8', '\x0C', '\xDC', '\xF0', '\x7E', '\xF8', '\x92', '\x79', '\x8C', '\x03', '\xDD', '\xFA', '\x72', '\xD5', '\xFB'};
+    const std::array<char, 38> source = CRYPT_CHARS(38, "Lua Files\\DamageSkin\\DamageSkinInfo_F", 0xC517FB932D95BB6DULL);
     thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }

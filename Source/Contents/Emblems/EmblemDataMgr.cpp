@@ -66,7 +66,7 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
       this->m_uploadUrl = base + name.Text();
     }
     {
-      const std::uint8_t source[] = {0xEA, 0xA8, 0xEA, 0x97, 0xCD, 0xC6, 0x8A, 0xBC, 0xA1, 0xA2, 0xF0, 0x9B, 0xCD, 0xCC, 0x86, 0xF7, 0xC5};
+      const std::uint8_t source[] = CRYPT_BYTES(17, "/emblem/download", 0x93E7A3A1F587CDC5ULL);
       thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
       this->m_downloadUrl = base + name.Text();
     }

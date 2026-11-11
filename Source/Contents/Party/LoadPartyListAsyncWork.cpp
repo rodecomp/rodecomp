@@ -87,7 +87,7 @@ bool CLoadPartyListAsyncWork::Execute() {
   constexpr std::array<std::uint8_t, 10> worldNameArray = CRYPT_NAME("WorldName", 0x71B7691737C5A1AFULL);
   const std::uint8_t (&worldName)[10] = worldNameArray._Elems;
   handler.AddField(DecryptName<0x71B7691737C5A1AFULL>(worldName), world, 4);
-  const std::uint8_t authToken[] = {0x22, 0x4C, 0x09, 0xC9, 0x0D, 0xDA, 0xF4, 0xA6, 0x0D, 0x39};
+  const std::uint8_t authToken[] = CRYPT_BYTES(10, "AuthToken", 0xC39FB559A17D3963ULL);
   handler.AddField(DecryptName<0xC39FB559A17D3963ULL>(authToken), this->m_token, 4);
 
   switch (this->m_search) {
@@ -100,51 +100,51 @@ bool CLoadPartyListAsyncWork::Execute() {
   case 1: {
     char minimum[10] = {};
     StringFormat(minimum, sizeof(minimum), _TRUNCATE, "%d", this->m_filter.minimumLevel);
-    const std::uint8_t minLevel[] = {0x40, 0x32, 0x07, 0xCF, 0xED, 0x11};
+    const std::uint8_t minLevel[] = CRYPT_BYTES(6, "MinLV", 0x899D11BB83695B0DULL);
     handler.AddField(DecryptName<0x899D11BB83695B0DULL>(minLevel), minimum, 4);
     char maximum[10] = {};
     StringFormat(maximum, sizeof(maximum), _TRUNCATE, "%d", this->m_filter.maximumLevel);
-    const std::uint8_t maxLevel[] = {0x26, 0x6A, 0xDD, 0x89, 0xD1, 0xDD};
+    const std::uint8_t maxLevel[] = CRYPT_BYTES(6, "MaxLV", 0xBDADDD87C5A50B6BULL);
     handler.AddField(DecryptName<0xBDADDD87C5A50B6BULL>(maxLevel), maximum, 4);
 
     if (this->m_filter.tanker) {
-      const std::uint8_t tankerOn[] = {0x66, 0xEF};
-      const std::uint8_t tanker[] = {0xE9, 0xFC, 0x55, 0x8C, 0x68, 0xF1, 0x89};
+      const std::uint8_t tankerOn[] = CRYPT_BYTES(2, "1", 0x5FFD7FABB5D1EF57ULL);
+      const std::uint8_t tanker[] = CRYPT_BYTES(7, "Tanker", 0x7989830DE73B9DBDULL);
       handler.AddField(DecryptName<0x7989830DE73B9DBDULL>(tanker), DecryptName<0x5FFD7FABB5D1EF57ULL>(tankerOn), 4);
     }
 
     if (this->m_filter.dealer) {
-      const std::uint8_t dealerOn[] = {0xBC, 0x13};
-      const std::uint8_t dealer[] = {0x9B, 0xFE, 0x5E, 0x95, 0xE0, 0x6B, 0x47};
+      const std::uint8_t dealerOn[] = CRYPT_BYTES(2, "1", 0xF535E561137F138DULL);
+      const std::uint8_t dealer[] = CRYPT_BYTES(7, "Dealer", 0xA7471985F93F9BDFULL);
       handler.AddField(DecryptName<0xA7471985F93F9BDFULL>(dealer), DecryptName<0xF535E561137F138DULL>(dealerOn), 4);
     }
 
     if (this->m_filter.healer) {
-      const std::uint8_t healerOn[] = {0xEE, 0x5D};
-      const std::uint8_t healer[] = {0x99, 0x04, 0x90, 0xE5, 0x0A, 0x23, 0xE5};
+      const std::uint8_t healerOn[] = CRYPT_BYTES(2, "1", 0x01E7898D9D235DDFULL);
+      const std::uint8_t healer[] = CRYPT_BYTES(7, "Healer", 0xD3E5516F89F161D1ULL);
       handler.AddField(DecryptName<0xD3E5516F89F161D1ULL>(healer), DecryptName<0x01E7898D9D235DDFULL>(healerOn), 4);
     }
 
     if (this->m_filter.assist) {
-      const std::uint8_t assistOn[] = {0x40, 0x2F};
-      const std::uint8_t assist[] = {0x38, 0x98, 0x52, 0xF6, 0x4E, 0xC7, 0xF5};
+      const std::uint8_t assistOn[] = CRYPT_BYTES(2, "1", 0x9DEFC105A1EB2F71ULL);
+      const std::uint8_t assist[] = CRYPT_BYTES(7, "Assist", 0x0DF5B33D9F21EB79ULL);
       handler.AddField(DecryptName<0x0DF5B33D9F21EB79ULL>(assist), DecryptName<0x9DEFC105A1EB2F71ULL>(assistOn), 4);
     }
 
     if (this->m_filter.type != 0) {
       char type[10] = {};
       StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_filter.type);
-      const std::uint8_t typeName[] = {0x57, 0xDA, 0xE9, 0x0C, 0x05};
+      const std::uint8_t typeName[] = CRYPT_BYTES(5, "Type", 0x6961FF056999A303ULL);
       handler.AddField(DecryptName<0x6961FF056999A303ULL>(typeName), type, 4);
     }
 
     if (!this->m_filter.memo.empty()) {
       std::string memo = CCURLMgr::GetInstance()->ToUtf8(this->m_filter.memo);
-      const std::uint8_t memoName[] = {0xB0, 0x34, 0xD8, 0x36, 0x01};
+      const std::uint8_t memoName[] = CRYPT_BYTES(5, "Memo", 0xBD3F430159B551FDULL);
       handler.AddField(DecryptName<0xBD3F430159B551FDULL>(memoName), memo, 4);
     }
 
-    const std::uint8_t pageName[] = {0x3B, 0xB2, 0x10, 0xE0, 0xF1};
+    const std::uint8_t pageName[] = CRYPT_BYTES(5, "page", 0xC7FB6DF18577D34BULL);
     handler.AddField(DecryptName<0xC7FB6DF18577D34BULL>(pageName), page, 4);
     break;
   }
@@ -152,7 +152,7 @@ bool CLoadPartyListAsyncWork::Execute() {
 
   if (handler.Perform() == 0) {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    const std::uint8_t success[] = {0xE4, 0x04, 0xC4, 0xDE, 0x04, 0x50, 0xF0, 0x5B};
+    const std::uint8_t success[] = CRYPT_BYTES(8, "success", 0x5B832361BDA77197ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x5B832361BDA77197ULL>(success), 138);
     this->m_diagnostic.MoveFrom(diagnostic);
   }

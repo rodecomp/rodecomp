@@ -231,39 +231,36 @@ void InitializeServiceStrings() {
     constexpr std::array<std::uint8_t, 14> clientArray = CRYPT_NAME("RagIndoor.exe", 0xC399B7091589B50BULL);
     const std::uint8_t (&client)[14] = clientArray._Elems;
     g_clientExeName = DecryptText<0xC399B7091589B50BULL>(client);
-    const std::uint8_t patcher[] = {0x50, 0x03, 0xAB, 0x90, 0x32, 0x73, 0xB4, 0x0F, 0x37, 0x08, 0xB7, 0x9A, 0x5D};
+    const std::uint8_t patcher[] = CRYPT_BYTES(13, "Indoorup.exe", 0x7FC1015DFFCF6D19ULL);
     g_patcherExeName = DecryptText<0x7FC1015DFFCF6D19ULL>(patcher);
     const auto message = CRYPT_NAME("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
     g_runPatcherMessage = DecryptString<0x0753A7E1EFA9E139ULL>(message.data);
     break;
   }
   case 3: {
-    const std::uint8_t client[] = {0x1F, 0xB0, 0xAC, 0x80, 0x8C, 0x1E, 0xA1, 0x1B, 0x63, 0xB4, 0xB3, 0xA2, 0xF9};
+    const std::uint8_t client[] = CRYPT_BYTES(13, "RagGuild.exe", 0x7FCD77F9C7CBD14DULL);
     g_clientExeName = DecryptText<0x7FCD77F9C7CBD14DULL>(client);
-    const std::uint8_t patcher[] = {0x64, 0xF6, 0xB2, 0xEF, 0x25, 0xC8, 0x4F, 0xE5, 0x46, 0xFB, 0xBE, 0x83};
+    const std::uint8_t patcher[] = CRYPT_BYTES(12, "Guildup.exe", 0xCB3FBD4183DB8323ULL);
     g_patcherExeName = DecryptText<0xCB3FBD4183DB8323ULL>(patcher);
-    const char message[] = {'\xBF', '\x4F', '\xB0', '\x8E', '\x6A', '\x34', '\xB1', '\x49', '\x9A', '\x4D', '\xF5', '\xBD',
-                                    '\x78', '\x36', '\xD6', '\x4E', '\x86', '\x4F', '\xB1', '\xC1', '\x7C', '\x29', '\xF4', '\x3B'};
+    const char message[] = CRYPT_CHARS(24, "Please run RagGuild.exe", 0x3B915119EFD523EFULL);
     g_runPatcherMessage = DecryptString<0x3B915119EFD523EFULL>(message);
     break;
   }
   default: {
-    const std::uint8_t dev[] = {0xEB, 0x2A, 0x5D, 0xE3};
+    const std::uint8_t dev[] = CRYPT_BYTES(4, "Dev", 0x3F5315DFE32B4FAFULL);
     if (std::strstr(g_launchServerName, DecryptText<0x3F5315DFE32B4FAFULL>(dev))) {
-      const std::uint8_t client[] = {0xED, 0xDC, 0xB8, 0x51, 0x2C, 0x5F, 0xEC, 0x58, 0xEE, 0xF0, 0xF1, 0x5A, 0x35, 0x48, 0x83};
+      const std::uint8_t client[] = CRYPT_BYTES(15, "RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
       g_clientExeName = DecryptText<0x33832D4D3FDFBDBFULL>(client);
-      const std::uint8_t patcher[] = {0xA1, 0xA2, 0x9D, 0xDE, 0xC5, 0x78, 0x05, 0x2C, 0xBC, 0xED, 0x8C, 0xC5, 0xC8, 0x0D};
+      const std::uint8_t patcher[] = CRYPT_BYTES(14, "PatchupQM.exe", 0x7D750DADBDE9C3F1ULL);
       g_patcherExeName = DecryptText<0x7D750DADBDE9C3F1ULL>(patcher);
-      const char message[] = {'\x45', '\xFF', '\xD6', '\xA0', '\x94', '\x26', '\x71', '\x9F', '\x60', '\xFD', '\x93', '\x93', '\x86',
-                                      '\x24', '\x3F', '\x8C', '\x67', '\xFC', '\xD8', '\x90', '\xAA', '\x6D', '\x34', '\x95', '\x70', '\x93'};
+      const char message[] = CRYPT_CHARS(26, "Please run RagnarokQM.exe", 0xED5143E7C1B39315ULL);
       g_runPatcherMessage = DecryptString<0xED5143E7C1B39315ULL>(message);
     } else {
-      const std::uint8_t client[] = {0x8B, 0x58, 0x74, 0x17, 0xAA, 0xF1, 0x12, 0x94, 0xF7, 0x5C, 0x6B, 0x1C, 0xCB};
+      const std::uint8_t client[] = CRYPT_BYTES(13, "Ragnarok.exe", 0xFF7D83CB791339D9ULL);
       g_clientExeName = DecryptText<0xFF7D83CB791339D9ULL>(client);
-      const std::uint8_t patcher[] = {0xC5, 0x9C, 0x65, 0xD0, 0x39, 0x10, 0xE5, 0x1F, 0xF0, 0x85, 0x74, 0xB3};
+      const std::uint8_t patcher[] = CRYPT_BYTES(12, "Patchup.exe", 0x31956551B311FD95ULL);
       g_patcherExeName = DecryptText<0x31956551B311FD95ULL>(patcher);
-      const char message[] = {'\xC1', '\xAF', '\xD8', '\x00', '\x16', '\xF4', '\x1D', '\x4B', '\xE4', '\xAD', '\x9D', '\x33',
-                                      '\x04', '\xF6', '\x53', '\x58', '\xE3', '\xAC', '\xD6', '\x4F', '\x00', '\xE9', '\x58', '\x39'};
+      const char message[] = CRYPT_CHARS(24, "Please run Ragnarok.exe", 0x393D916561BDC391ULL);
       g_runPatcherMessage = DecryptString<0x393D916561BDC391ULL>(message);
     }
     break;
@@ -472,7 +469,7 @@ void InitializeLanguage() {
 // OFFSET: 0x00AD1C90
 // FUNCTION: fn_17817
 void InitializeServiceConfiguration() {
-  const std::uint8_t portSource[] = {0xED, 0xBA, 0xF1, 0x3F, 0xAB};
+  const std::uint8_t portSource[] = CRYPT_BYTES(5, "6900", 0xEB3D4FAB0FC183DBULL);
   g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
 
   constexpr auto webPageSourceText = CRYPT_NAME("http://www.ragnarok.co.kr", 0xFFBF43D1FFD5FF49ULL);
@@ -497,7 +494,7 @@ void InitializeServiceConfiguration() {
 
       constexpr auto addressSourceText = CRYPT_NAME("kro-qm-1a.ragnarok.co.kr:6951", 0x2D33791F67AD47DFULL);
       const auto& addressSource = addressSourceText.data;
-      const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
+      const std::uint8_t formatSource[] = CRYPT_BYTES(3, "%s", 0x2F2701A7E56D3D89ULL);
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0x2D33791F67AD47DFULL>(addressSource));
     } else {
       constexpr auto keySourceText = CRYPT_NAME("kro-acc3.ragnarok.co.kr:6900", 0x6B3301E1A3079125ULL);
@@ -506,7 +503,7 @@ void InitializeServiceConfiguration() {
 
       constexpr auto addressSourceText = CRYPT_NAME("kro-agency-s.ragnarok.co.kr:6954", 0xC39FB559A17D3963ULL);
       const auto& addressSource = addressSourceText.data;
-      const std::uint8_t formatSource[] = {0xAC, 0x4E, 0x6D};
+      const std::uint8_t formatSource[] = CRYPT_BYTES(3, "%s", 0x2F2701A7E56D3D89ULL);
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0xC39FB559A17D3963ULL>(addressSource));
     }
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
@@ -515,7 +512,7 @@ void InitializeServiceConfiguration() {
   }
   case 2: {
     g_serviceFlag07 = 14;
-    const std::uint8_t hostSource[] = {0x9E, 0x98, 0xF7, 0x19, 0x26, 0x5F, 0x8F, 0x5F, 0x9A, 0x8F, 0xF0, 0x05, 0x17};
+    const std::uint8_t hostSource[] = CRYPT_BYTES(13, "192.168.5.52", 0x71B7691737C5A1AFULL);
     g_serviceHost = DecryptText<0x71B7691737C5A1AFULL>(hostSource);
     break;
   }
@@ -524,7 +521,7 @@ void InitializeServiceConfiguration() {
     const auto& hostSource = hostSourceText.data;
     g_serviceHost = DecryptString<0x899D11BB83695B0DULL>(hostSource);
     g_serviceFlag07 = 29;
-    const std::uint8_t portSource[] = {0xC3, 0x1C, 0x63, 0xD9, 0xD7};
+    const std::uint8_t portSource[] = CRYPT_BYTES(5, "6900", 0x2B8725D7E95325F5ULL);
     g_servicePort = DecryptText<0x2B8725D7E95325F5ULL>(portSource);
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
     g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));

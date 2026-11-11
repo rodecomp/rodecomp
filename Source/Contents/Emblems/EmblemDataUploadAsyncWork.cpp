@@ -85,22 +85,22 @@ bool CEmblemDataUploadAsyncWork::Execute() {
   constexpr std::array<std::uint8_t, 10> authTokenArray = CRYPT_NAME("AuthToken", 0x59278F63D79F3DA1ULL);
   const std::uint8_t (&authToken)[10] = authTokenArray._Elems;
   handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(authToken), this->m_token, 4);
-  const std::uint8_t worldName[] = {0x48, 0x5E, 0xBF, 0x8B, 0x89, 0x3B, 0x0C, 0x70, 0x7A, 0x31};
+  const std::uint8_t worldName[] = CRYPT_BYTES(10, "WorldName", 0x1D6D75EDE7CD311FULL);
   handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(worldName), name, 4);
   constexpr std::array<std::uint8_t, 5> gdidArray = CRYPT_NAME("GDID", 0x3375B1C7DBB5FD55ULL);
   const std::uint8_t (&gdid)[5] = gdidArray._Elems;
   handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(gdid), guild, 4);
-  const std::uint8_t imgType[] = {0x98, 0x74, 0xFA, 0xDB, 0x12, 0xFB, 0x6A, 0x0F};
+  const std::uint8_t imgType[] = CRYPT_BYTES(8, "ImgType", 0x0F0F8B6B8F9D19D1ULL);
   handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(imgType), imageType, 4);
-  const std::uint8_t img[] = {0x24, 0x0E, 0x52, 0x2D};
+  const std::uint8_t img[] = CRYPT_BYTES(4, "Img", 0xD98F03A52D35636DULL);
   handler.AddField(DecryptName<0xD98F03A52D35636DULL>(img), path, 10);
 
   if (handler.Perform() == 0) {
     this->m_response = g_curlMgr->FromUtf8(handler.Response());
-    const std::uint8_t good[] = {0x0A, 0x8C, 0x2A, 0xC7, 0xED};
+    const std::uint8_t good[] = CRYPT_BYTES(5, "good", 0x31D7C1EDA345E36DULL);
     Report(this->m_diagnostic, true, DecryptName<0x31D7C1EDA345E36DULL>(good), 100);
   } else {
-    const std::uint8_t fail[] = {0x6F, 0xC8, 0x2E, 0x33, 0xD9};
+    const std::uint8_t fail[] = CRYPT_BYTES(5, "fail", 0xD3755DD95F47A909ULL);
     Report(this->m_diagnostic, false, DecryptName<0xD3755DD95F47A909ULL>(fail), 109);
   }
 

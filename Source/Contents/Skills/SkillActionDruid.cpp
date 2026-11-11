@@ -560,8 +560,7 @@ void CSkillAction_DR_FLICKING_TONADO::OnSkillEffect(int level, CGameActor* sourc
   thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
-  const std::uint8_t bottomSource[] = {0xD5, 0x0B, 0xAA, 0x30, 0x92, 0xF2, 0x5B, 0x70, 0xEC, 0x13, 0xAC, 0x3D, 0x98, 0xFF, 0x5A, 0x48,
-                                       0xD1, 0x08, 0xB7, 0x27, 0x96, 0xF6, 0x35};
+  const std::uint8_t bottomSource[] = CRYPT_BYTES(23, "flicking_tonado_bottom", 0x17359BF953C367B3ULL);
   thread_local EncryptedName<sizeof(bottomSource), 0x17359BF953C367B3ULL> bottomName(bottomSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }

@@ -46,6 +46,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Client/Mode/CMode.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
@@ -472,10 +473,7 @@ std::list<CSkillInfo>& UINewSkillListWnd::SkillList(int tab, bool live) {
 // FUNCTION: fn_13810
 void UINewSkillListWnd::InitTabs() {
   const int initialTabCount = this->m_tabs->labels.size();
-  const std::uint8_t source[23] = {
-    0xEF, 0xF2, 0x0F, 0xAA, 0x08, 0x4E, 0x1B, 0x6F, 0xF1, 0xFC, 0x0F, 0xA6,
-    0x24, 0x42, 0x03, 0x57, 0xC4, 0xFF, 0x23, 0x98, 0x0E, 0x42, 0x77
-  };
+  const std::uint8_t source[] = CRYPT_BYTES(23, "JobSkillTab_GetTabName", 0x03772763F96D9DA5ULL);
   thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> funcName(source);
   const char* func = funcName.Text();
 

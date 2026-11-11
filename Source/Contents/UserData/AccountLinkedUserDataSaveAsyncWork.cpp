@@ -82,9 +82,9 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
   constexpr std::array<std::uint8_t, 10> tokenArray = CRYPT_NAME("AuthToken", 0x93E7A3A1F587CDC5ULL);
   const std::uint8_t (&token)[10] = tokenArray._Elems;
   handler.AddField(DecryptName<0x93E7A3A1F587CDC5ULL>(token), this->m_token, 4);
-  const std::uint8_t worldName[] = {0x70, 0x6E, 0x75, 0x01, 0x67, 0x8B, 0x92, 0x42, 0x42, 0x01};
+  const std::uint8_t worldName[] = CRYPT_BYTES(10, "WorldName", 0x2FF3C5036D070127ULL);
   handler.AddField(DecryptName<0x2FF3C5036D070127ULL>(worldName), name, 4);
-  const std::uint8_t data[] = {0xD7, 0x06, 0xB7, 0x32, 0xF9};
+  const std::uint8_t data[] = CRYPT_BYTES(5, "data", 0x17359BF953C367B3ULL);
   handler.AddField(DecryptName<0x17359BF953C367B3ULL>(data), this->m_data, 4);
 
   if (handler.Perform() != 0) {
@@ -92,7 +92,7 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
     const std::uint8_t (&error)[5] = errorArray._Elems;
     Report(this->m_diagnostic, false, DecryptName<0x91651D81F559F971ULL>(error), 102);
   } else {
-    const std::uint8_t good[] = {0x6C, 0x14, 0xB0, 0x05, 0x4B};
+    const std::uint8_t good[] = CRYPT_BYTES(5, "good", 0x73D1674B61DF7B0BULL);
     Report(this->m_diagnostic, true, DecryptName<0x73D1674B61DF7B0BULL>(good), 106);
   }
 
