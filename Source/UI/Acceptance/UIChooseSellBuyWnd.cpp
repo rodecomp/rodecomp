@@ -6935,7 +6935,7 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   }
 
   ITEM_INFO item = this->ItemIconAt(x, y);
-  if (item.identity[1] != 0 && item.quantity > 0) {
+  if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
     g_modeMgr.gameMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], this->m_page == 1, 0, 0);
   }
@@ -7004,7 +7004,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_12302
 void UIEquipWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemEntryAt(x, y);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
@@ -7060,7 +7060,7 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_12303
 void UIExchangeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
@@ -7190,7 +7190,7 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
   }
 
   ITEM_INFO item = this->ItemAt(x, y);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     int source;
     if (this->m_selected < 0) {
@@ -7208,7 +7208,7 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_12306
 void UInCashWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
-  if (item.identity[1] != 0 && this->m_selected >= 0) {
+  if (item.identity[1] > 0 && this->m_selected >= 0) {
     g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
@@ -7968,7 +7968,7 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->equippedSecondParam = 0;
     const ITEM_DESC& description = FindItemDescription(std::atoi(this->m_label.c_str()));
     ITEM_INFO equipped = this->FindEquippedItem(description.descriptionFlags);
-    if (equipped.identity[1] != 0) {
+    if (equipped.identity[1] > 0) {
       const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
       if (equippedDescription.descriptionValues.size() == 2) {
         this->equippedParam = equippedDescription.descriptionValues[0];
@@ -7990,7 +7990,7 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->equippedSecondParam = 0;
     const ITEM_DESC& slot = FindItemDescription(std::atoi(this->m_label.c_str()));
     ITEM_INFO equipped = this->FindEquippedItem(slot.descriptionFlags);
-    if (equipped.identity[1] != 0) {
+    if (equipped.identity[1] > 0) {
       const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
       if (equippedDescription.descriptionValues.size() == 2) {
         this->equippedParam = equippedDescription.descriptionValues[0];
@@ -8040,7 +8040,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (header.type == 0x5460) {
+    if (0x5460 == header.type) {
       while (offset < static_cast<unsigned>(b)) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
@@ -10006,7 +10006,7 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   }
 
   ITEM_INFO item = this->ItemIconAt(x, y);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
@@ -10055,7 +10055,7 @@ UInCashWnd::UInCashWnd() : UIItemBaseWnd() {
 // FUNCTION: fn_12267
 void UInCashWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
-  if (item.identity[1] == 0 || this->m_selected >= 0) {
+  if (item.identity[1] <= 0 || this->m_selected >= 0) {
     return;
   }
 
@@ -10069,7 +10069,7 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
   const int count = lists.GetList2Size();
   for (int index = 0; index < count; ++index) {
     ITEM_INFO other = g_session.GetItem1720At(index);
-    if (other.identity[1] != 0) {
+    if (other.identity[1] > 0) {
       this->m_otherItems.push_back(other);
     }
   }
@@ -11527,17 +11527,17 @@ void UIEquipWnd::RefreshLook()
   appearance[5] = 0;
   robeId = 0;
   ITEM_INFO middle = GetSlotItem(8);
-  if (middle.identity[1] != 0)
+  if (middle.identity[1] > 0)
     appearance[4] = middle.sprite;
   ITEM_INFO lower = GetSlotItem(9);
-  if (lower.identity[1] != 0 && middle.identity[1] != lower.identity[1])
+  if (lower.identity[1] > 0 && middle.identity[1] != lower.identity[1])
     appearance[5] = lower.sprite;
   ITEM_INFO upper = GetSlotItem(0);
-  if (upper.identity[1] != 0 && middle.identity[1] != upper.identity[1] && lower.identity[1] != upper.identity[1])
+  if (upper.identity[1] > 0 && middle.identity[1] != upper.identity[1] && lower.identity[1] != upper.identity[1])
     appearance[3] = upper.sprite;
   ITEM_INFO robe(0);
   robe = GetSlotItem(2);
-  if (robe.identity[1] != 0)
+  if (robe.identity[1] > 0)
     robeId = robe.sprite;
 }
 
