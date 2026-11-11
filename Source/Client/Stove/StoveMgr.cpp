@@ -494,7 +494,7 @@ void ConfirmPurchaseCallback::operator()(Stove::PCSDK::CallbackResult callbackRe
                                          int resultCode) const {
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
-    if (count != 0 && purchased == true) {
+    if (count > 0 && purchased == true) {
       g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 4, 0, 0, 0);
       g_stoveMgr->FetchAllProducts();
       UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
