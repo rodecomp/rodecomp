@@ -30,9 +30,8 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
     } else {
       const char* prefix = g_serverLanguage->Prefix(false);
       display = prefix + this->text;
-      const unsigned prefixBytes = static_cast<unsigned>(std::strlen(prefix));
-      begin = std::min(this->anchor, this->cursor) + prefixBytes;
-      end = std::max(this->anchor, this->cursor) + g_serverLanguage->candidate.size() + prefixBytes;
+      begin = std::min(this->anchor, this->cursor) + std::strlen(prefix);
+      end = std::max(this->anchor, this->cursor) + g_serverLanguage->candidate.size() + std::strlen(prefix);
     }
 
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
@@ -40,11 +39,21 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
 
     if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
       this->DrawSelection(left + x, right - left);
+      if (this->secondColor == 0xFFFFFFFF) {
+        this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
+      } else {
+        this->DrawEmboldenedText(x, this->textY, display.c_str(), this->textColor, this->secondColor, 0, 0, 12);
+      }
     } else if (!g_serverLanguage->candidate.empty()) {
       this->MoveCandidateWindow(left);
       this->MoveReadingWindow(right);
       if (((timeGetTime() / 500) & 1) == 0) {
         this->DrawSelection(left + x, std::max(right - left, 2));
+      }
+      if (this->secondColor == 0xFFFFFFFF) {
+        this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
+      } else {
+        this->DrawEmboldenedText(x, this->textY, display.c_str(), this->textColor, this->secondColor, 0, 0, 12);
       }
     } else {
       if (this->secondColor == 0xFFFFFFFF) {
@@ -58,36 +67,27 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
       if (this->invalidatesParent != 0 && this->parent) {
         this->parent->Invalidate();
       }
-      this->UpdateLinks();
-      return;
     }
-
+  } else {
+    if (this->mask != 0) {
+      display.assign(this->text.size(), static_cast<char>(this->mask));
+    } else {
+      display = this->text;
+    }
     if (this->secondColor == 0xFFFFFFFF) {
-      this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
+      if (placeholderEnabled) {
+        this->DrawTextAt(x, this->textY, display == "" ? placeholder->c_str() : display.c_str(), 0, 0, 12, placeholderColor, 0, 0);
+      } else {
+        this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
+      }
     } else {
       this->DrawEmboldenedText(x, this->textY, display.c_str(), this->textColor, this->secondColor, 0, 0, 12);
     }
-    this->UpdateLinks();
-    return;
+    if (this->invalidatesParent != 0 && this->parent) {
+      this->parent->Invalidate();
+    }
   }
 
-  if (this->mask != 0) {
-    display.assign(this->text.size(), static_cast<char>(this->mask));
-  } else {
-    display = this->text;
-  }
-  if (this->secondColor == 0xFFFFFFFF) {
-    if (placeholderEnabled) {
-      this->DrawTextAt(x, this->textY, display == "" ? placeholder->c_str() : display.c_str(), 0, 0, 12, placeholderColor, 0, 0);
-    } else {
-      this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
-    }
-  } else {
-    this->DrawEmboldenedText(x, this->textY, display.c_str(), this->textColor, this->secondColor, 0, 0, 12);
-  }
-  if (this->invalidatesParent != 0 && this->parent) {
-    this->parent->Invalidate();
-  }
   this->UpdateLinks();
 }
 

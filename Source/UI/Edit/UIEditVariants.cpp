@@ -942,7 +942,11 @@ int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_DOWNPUSH:
     if (this->history.size() != 0 && this->historyIndex < this->history.size()) {
       ++this->historyIndex;
-      this->SetText((this->historyIndex == this->history.size() ? this->pending : this->history[this->historyIndex]).c_str());
+      if (this->historyIndex == this->history.size()) {
+    this->SetText(this->pending.c_str());
+  } else {
+    this->SetText(this->history[this->historyIndex].c_str());
+  }
       this->OnBeginEdit();
     }
     break;

@@ -573,7 +573,7 @@ __declspec(noinline) void UIEditCtrl::TextColor(unsigned char red, unsigned char
 // OFFSET: 0x00856EB0
 // FUNCTION: fn_10756
 void UIEditCtrl3::DrawBlinkingCaret(const std::uint32_t& color) {
-  if (timeGetTime() / 500 & 1) {
+  if (1 == timeGetTime() / 500 % 2) {
     return;
   }
 
@@ -676,7 +676,11 @@ void UIChatEditCtrl::PushHistory() {
   }
 
   ++this->historyIndex;
-  this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
+  if (this->historyIndex == static_cast<int>(this->history.size())) {
+    this->SetText("");
+  } else {
+    this->SetText(this->history[this->historyIndex].c_str());
+  }
 }
 
 // OFFSET: 0x0086A060
@@ -727,7 +731,11 @@ void UIWhisperEditCtrl::AddHistory() {
     }
   }
 
-  this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
+  if (this->historyIndex == static_cast<int>(this->history.size())) {
+    this->SetText("");
+  } else {
+    this->SetText(this->history[this->historyIndex].c_str());
+  }
 }
 
 // OFFSET: 0x0086A550
@@ -843,9 +851,11 @@ void UITextureButton::VisitChildren() {
 
   switch (this->geometry.state) {
   case 0:
-    texture = g_texMgr.Load(
-      (this->toggleEnabled == 1 && this->toggled == 1 ? this->pressedTexture : this->normalTexture).c_str(), 0, false, true, false
-    );
+    if (this->toggleEnabled == 1 && this->toggled == 1) {
+      texture = g_texMgr.Load(this->pressedTexture.c_str(), 0, false, true, false);
+    } else {
+      texture = g_texMgr.Load(this->normalTexture.c_str(), 0, false, true, false);
+    }
     break;
   case 1:
     texture = g_texMgr.Load(this->hoverTexture.c_str(), 0, false, true, false);
@@ -4249,11 +4259,12 @@ void UIMerchantItemShopWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10746
 int UIEditCtrl3::DecodeLinkNumber(std::string text) {
   char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const int length = static_cast<int>(text.size());
   int value = 0;
-  char* characters = new char[length + 1];
-  strcpy_s(characters, length + 1, text.c_str());
+  const int size = static_cast<int>(text.size()) + 1;
+  char* characters = new char[size];
+  strcpy_s(characters, size, text.c_str());
 
+  const int length = size - 1;
   for (int position = 0; position < length; ++position) {
     for (int digit = 0; digit < 62; ++digit) {
       if (characters[position] != digits[digit]) {
@@ -4465,7 +4476,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
 // OFFSET: 0x00869810
 // FUNCTION: fn_10973
 void UIEditCtrl3::SetLinkedText(const char* value) {
-  std::string resolved = this->ResolveItemLinks(std::string(value, std::strlen(value)));
+  std::string resolved = this->ResolveItemLinks(std::string(value));
 
   std::vector<std::string> lines;
   int width = this->geometry.width - 6;
@@ -4483,7 +4494,7 @@ void UIEditCtrl3::SetLinkedText(const char* value) {
 
   if (this->scrollEnabled != 0) {
     lines.clear();
-    resolved = this->ResolveItemLinks(std::string(value, std::strlen(value)));
+    resolved = this->ResolveItemLinks(std::string(value));
     width = this->geometry.width - 6;
     if (this->scrollEnabled != 0) {
       width += 3 - this->scrollBar->geometry.width;
@@ -4492,7 +4503,7 @@ void UIEditCtrl3::SetLinkedText(const char* value) {
     this->WrapLines(lines);
   }
 
-  std::string text(value, std::strlen(value));
+  std::string text(value);
   for (std::size_t index = 0; index < lines.size(); ++index) {
     const int lineIndex = static_cast<int>(index);
     lines[index] = this->PlaceLineLinks(lines[index].c_str(), text, &lineIndex);
@@ -10022,11 +10033,10 @@ void UIItemWnd::RefreshSortButton() {
     name += "_off";
   }
 
-  UIBitmapButton* button = static_cast<UIBitmapButton*>(this->filterButton);
-  button->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
-  button->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
-  button->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
-  button->SetTooltip(std::format("{} {}", LookupMessage(MSI_BABY_INDEPENDENCE_RODEX_ERASED), g_sortPrivateTab ? "ON" : "OFF").c_str());
+  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
+  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
+  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
+  this->filterButton->SetTooltip(std::format("{} {}", LookupMessage(MSI_BABY_INDEPENDENCE_RODEX_ERASED), g_sortPrivateTab ? "ON" : "OFF").c_str());
   this->Invalidate();
 }
 
