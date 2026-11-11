@@ -22,6 +22,9 @@ public:
   /* 00EC */ WindowPlacement* m_placement;
 
   UIItemIdentifyWnd();
+  // INLINED
+  ~UIItemIdentifyWnd() override {
+  }
   void StoreInfo() override;
   void Paint() override;
   void OnCreate(int width, int height) override;

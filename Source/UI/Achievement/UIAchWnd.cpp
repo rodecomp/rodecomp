@@ -1550,8 +1550,8 @@ UIAchViewWnd::UIAchViewWnd() : UIWindow(0), achievementId(-1), info(nullptr) {
     this->conditions[index] = nullptr;
     this->gauges[index] = nullptr;
   }
-  for (UIToolTipBitmapWnd*& reward : this->rewards) {
-    reward = nullptr;
+  for (int index = 0; index < 3; ++index) {
+    this->rewards[index] = nullptr;
   }
 }
 

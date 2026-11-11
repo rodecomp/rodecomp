@@ -325,7 +325,7 @@ void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
 // OFFSET: 0x008C7420
 // FUNCTION: fn_11931
 UIChooseWarpWnd::UIChooseWarpWnd()
-    : UIFrameWnd(0), m_list(nullptr), skillId(0), m_choices() {
+    : UIFrameWnd(0), m_choices() {
   this->m_choices.reserve(6);
 }
 
@@ -1140,7 +1140,7 @@ int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   switch (argument1) {
   case ID_OK: {
-    std::string name;
+    std::string name("");
     name = this->m_edit->Text();
     this->m_edit->SelectAll();
     if (std::strlen(name.c_str()) != 0) {
@@ -9818,8 +9818,8 @@ std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
 std::vector<unsigned char> UISayDialogWnd::GetReplayData() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, MakeReplayTaggedRecord(22500, nullptr, 0));
-  const UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
-  for (auto text = viewer->m_texts.begin(); text != viewer->m_texts.end(); ++text) {
+  const std::vector<std::string>& texts = static_cast<UITagTextViewer*>(this->m_viewer)->m_texts;
+  for (auto text = texts.begin(); text != texts.end(); ++text) {
     AppendReplayRecord(records, MakeReplayTaggedRecord(22503, text->c_str(), text->size()));
   }
   AppendReplayRecord(records, MakeReplayTaggedRecord(22504, &this->m_responsePending, sizeof(this->m_responsePending)));
