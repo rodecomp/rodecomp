@@ -63,9 +63,13 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 
+extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>*, UIWindow* const&);
+
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
-UITextButton::UITextButton() : UIButton(), m_outlineColor(0xFFFFFF), m_value(0) {
+UITextButton::UITextButton() : UIButton() {
+  this->m_value = 0;
+  this->m_outlineColor = 0xFFFFFF;
 }
 
 // OFFSET: 0x00871D60
@@ -346,8 +350,8 @@ void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, 
   text.x = x;
   text.y = y;
   text.height = height;
-  text.bold = bold;
   text.color = color;
+  text.bold = bold;
   text.drawShadow = drawShadow;
 
   if (x == -1000) {
@@ -362,14 +366,9 @@ void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, 
     text.y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
   }
 
-  auto it = this->m_texts.begin();
-  for (; it != this->m_texts.end(); ++it) {
-    if (it->id == id) {
-      break;
-    }
-  }
+  const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [id](const UIBmpRadioBtnText& entry) { return id == entry.id; });
 
-  if (it != this->m_texts.end()) {
+  if (this->m_texts.end() != it) {
     *it = text;
   }
 
@@ -568,13 +567,11 @@ void UIBasicSkillCtrl::OnMouseHover(int, int) {
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x00A8B9D0
 // FUNCTION: fn_17125
 void UIWindowMgr::AddRendered(UIWindow* window) {
   this->rendered.push_back(window);
 }
-#pragma inline_depth()
 
 // OFFSET: 0x00891CC0
 // FUNCTION: fn_11457
@@ -793,8 +790,13 @@ void UITVTextButton::ResizeToText() {
   this->displayText = this->label;
   const int width =
     this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0);
-  const int border = this->m_border ? 2 : 0;
-  UIWindow::Resize(width + 2 + border, this->m_fontHeight + 2 + border);
+  int resizedWidth = width + 2;
+  int resizedHeight = this->m_fontHeight + 2;
+  if (this->m_border) {
+    resizedWidth += 2;
+    resizedHeight += 2;
+  }
+  UIWindow::Resize(resizedWidth, resizedHeight);
 }
 
 // OFFSET: 0x00897960
@@ -2296,16 +2298,17 @@ void UIBasicSkillCtrl::Paint() {
 
       char text[1024];
       g_session.ItemBitmapPath(skill.name, text);
-      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text))), true);
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+      this->DrawBitmap(0, 0, bitmap, true);
       if (skill.level != 0) {
         std::sprintf(text, "%d", skill.level);
         FontCache& fonts = g_fontCache;
-        const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0);
-        this->DrawTextAt(x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x - 1, 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x - 1, 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-        this->DrawTextAt(x - 1, 15, text, 0, 0, 11, 0, 0, 0);
+        const int x = this->geometry.width - this->TextWidth(text, 0, 0, 11, 0, 0) - 1;
+        this->DrawTextAt(x + 1, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x - 1, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x, 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x, 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(x, 15, text, 0, 0, 11, 0, 0, 0);
       }
     }
   }
@@ -2572,12 +2575,10 @@ void UIComboBoxV2Wnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   if (!this->text.empty()) {
-    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str())));
-    this->DrawBitmap(0, 0, bitmap, false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str()))), false);
   }
 
-  const std::string selected = this->SelectedText();
-  this->DrawTextAt(2, 3, selected.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(2, 3, this->SelectedText().c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x00880CC0
@@ -2753,11 +2754,10 @@ void __fastcall ActivateNaviLink(UINaviLinkButton* button, void*, int x, int y) 
 // FUNCTION: fn_11360
 void UIImgMenu::Paint() {
   this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x99A8AC);
-  this->DrawBitmap(
-    1, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str()))), false
-  );
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+  this->DrawBitmap(1, 1, background, false);
 
-  if (this->hovered < 0) {
+  if (this->hovered <= -1) {
     return;
   }
 
@@ -2766,23 +2766,14 @@ void UIImgMenu::Paint() {
   const std::string path = this->baseName + suffix;
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
 
-  int offset = 3;
-  if (this->pressedItems[this->hovered] == 0) {
-    offset = 0;
-  }
+  const int offset = this->pressedItems[this->hovered] == 0 ? 0 : 3;
 
   if (this->disabledItems[this->hovered] == 0) {
-    int x;
-    int y;
-    if (this->horizontal == 0) {
-      x = 1;
-      y = this->itemHeight * this->hovered + 1 + offset;
+    if (this->horizontal != 0) {
+      this->DrawBitmap(this->itemWidth * this->hovered + 1 + offset, 1, bitmap, false);
     } else {
-      x = this->itemWidth * this->hovered + 1 + offset;
-      y = 1;
+      this->DrawBitmap(1, this->itemHeight * this->hovered + 1 + offset, bitmap, false);
     }
-
-    this->DrawBitmap(x, y, bitmap, false);
   }
 }
 
