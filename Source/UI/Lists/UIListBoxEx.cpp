@@ -237,18 +237,19 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
-    const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == UM_SCROLLVERTPAGEUP ? (1 - visible) : message == UM_SCROLLVERTPAGEDOWN ? (visible - 1) : value;
-    this->topLine = previous + delta;
+    if (message == UM_SCROLLVERTPAGEUP) {
+      this->topLine = previous - this->geometry.height / this->lineHeight + 1;
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
+      this->topLine = previous - 1 + this->geometry.height / this->lineHeight;
+    } else {
+      this->topLine = previous + value;
+    }
 
     if (this->topLine < 0) {
       this->topLine = 0;
     }
-
-    const int maximum = ((static_cast<int>(this->lines.size()) - visible) + this->bottomMargin);
-
-    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
-      this->topLine = maximum;
+    if (this->topLine > this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin) {
+      this->topLine = this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin;
     }
 
     this->verticalBar->position = this->topLine;
