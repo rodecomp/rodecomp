@@ -52,6 +52,7 @@
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Events/UIRoulletteWnd.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Utility/StdStringCompare.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
