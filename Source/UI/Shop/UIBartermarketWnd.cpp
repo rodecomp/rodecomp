@@ -870,7 +870,7 @@ void UIBartermarketWnd::OnRBtnDown(int x, int y) {
 
 // INLINED
 __forceinline int UIExpandedBarterItemPurchaseWnd::GetEntryIndexAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
     return -1;
   }
 
@@ -911,7 +911,7 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
 
 // INLINED
 __forceinline int UIExpandedBartermarketWnd::GetEntryIndexAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
     return -1;
   }
 
@@ -1117,8 +1117,7 @@ void UIPurchaseButton::OnMouseHover(int x, int y) {
 // OFFSET: 0x00846940
 // FUNCTION: fn_10582
 std::string UIExpandedBarterPurchaseButton::FormatChunkText(int refine, std::string name, int amount) {
-  std::string text;
-  text.clear();
+  std::string text("");
   if (refine > 0) {
     char buffer[5] = {};
     _itoa(refine, buffer, 10);
