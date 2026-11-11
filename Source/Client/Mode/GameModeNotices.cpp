@@ -3679,18 +3679,19 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
 // OFFSET: 0x00D73A10
 // FUNCTION: fn_22142
 void CGameMode::ReceiveNavigation(const unsigned char* packet) {
-  int group = packet[3] >= 100 ? 1 : 0;
-  int code = packet[3] >= 100 ? packet[3] - 100 : packet[3];
+  const int value = packet[3];
+  unsigned char group = value >= 100;
+  int code = value >= 100 ? value - 100 : value;
   if (code >= 10) {
     group += 2;
     code -= 10;
   }
 
-  const unsigned char mode = static_cast<unsigned char>(group + (code < 1 ? 0 : 4));
+  const unsigned char mode = code >= 1 ? group + 4 : group;
   const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x15);
   const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x17);
   const int id = *reinterpret_cast<const std::int16_t*>(packet + 0x19);
-  g_navigationManager.StartNavigation(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, packet[4] != 0, x, y, id);
+  g_navigationManager.StartNavigation(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, *reinterpret_cast<const bool*>(packet + 4), x, y, id);
 }
 
 // OFFSET: 0x00D73AF0
