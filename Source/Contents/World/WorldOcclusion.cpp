@@ -1,20 +1,32 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Models/ModelActor.h"
-#include "Contents/World/WorldOcclusion.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/World/WorldRayQuery.h"
 #include "Contents/World/WorldSpatialTree.h"
 #include "Render/Renderer.h"
 
-#include "Utility/Math/ScalarConversion.h"
 #include <cstring>
 
-// INLINED
-void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit, WorldSpatialTree& root, GroundGeometry& ground, bool markGround) {
-  float actorRay[7];
-  std::memcpy(actorRay, ray, 6 * sizeof(float));
-  actorRay[6] = actorLimit;
+// OFFSET: 0x00CD5AD0
+// FUNCTION: fn_21286
+void CGameMode::MarkWorldOcclusion() {
+  if (!this->scene || !this->scene->player || !g_renderer) {
+    return;
+  }
+
+  const int screenX = this->scene->player->render.screenX;
+  const int screenY = static_cast<int>(static_cast<float>(this->scene->player->render.screenY) - g_renderer->viewport.uiScaleY * 23.0f);
   WorldRayQuery query;
-  query.Collect(ray, &root);
+  float ray[6]{};
+  g_renderer->viewport.Ray(screenX, screenY, this->camera->frame.eye, this->camera->frame.inverse.values, ray);
+
+  float actorRay[7];
+  std::memcpy(actorRay, ray, sizeof(ray));
+  actorRay[6] = (this->scene->player->render.position.y + this->camera->camera.distance) - 16.0f;
+  query.Collect(ray, &this->scene->spatial);
 
   for (WorldSpatialTree* node : query.nodes) {
     for (C3dActor* model : node->objects) {
@@ -22,7 +34,7 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
     }
   }
 
-  if (markGround) {
+  if (this->checkGroundAlpha) {
     for (WorldSpatialTree* node : query.nodes) {
       int row = node->groundCells[1];
 
@@ -30,7 +42,7 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
         int column = node->groundCells[0];
 
         while (column <= node->groundCells[2]) {
-          ground.MarkRay(ray, column, row, groundLimit);
+          node->ground->MarkRay(ray, column, row, actorRay[6]);
           ++column;
         }
 
@@ -38,18 +50,4 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
       }
     }
   }
-}
-
-// OFFSET: 0x00CD5AD0
-// FUNCTION: fn_21286
-void MarkScreenWorldOcclusion(
-  int screenX, int screenY, float rendererScale, const float* origin, const float* cameraMatrix, float playerHeight,
-  float cameraHeight, WorldSpatialTree& root, GroundGeometry& ground, bool markGround
-) {
-  const float shifted = static_cast<float>(screenY) - rendererScale * 23.0f;
-  const int y = TruncateToInt(shifted);
-  float ray[6]{};
-  g_renderer->viewport.Ray(screenX, y, origin, cameraMatrix, ray);
-  const float limit = (playerHeight + cameraHeight) - 16.0f;
-  MarkWorldOcclusionRay(ray, limit, limit, root, ground, markGround);
 }

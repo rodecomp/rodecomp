@@ -8712,7 +8712,6 @@ int CGameMode::ProcessGroundClick(int result) {
   return result;
 }
 
-#include "Contents/World/WorldOcclusion.h"
 #include "UI/Dialogs/UIMenuWnd.h"
 #include "UI/Window/InputFocus.h"
 
@@ -9016,13 +9015,7 @@ void CGameMode::ProcessInput() {
     }
   }
 
-  if (this->scene && this->scene->player && g_renderer) {
-    MarkScreenWorldOcclusion(
-      this->scene->player->render.screenX, this->scene->player->render.screenY, g_renderer->viewport.uiScaleY, this->camera->frame.eye,
-      this->camera->frame.inverse.values, this->scene->player->render.position.y, this->camera->camera.distance, this->scene->spatial, *this->scene->ground,
-      this->checkGroundAlpha != 0
-    );
-  }
+  this->MarkWorldOcclusion();
 
   if (this->isPlayerDead == 0 && (this->isOnQuest == 0 || this->scene->player->actorWindows[3] != 0) && !blocker && g_windowMgr.itemStoreWnd == nullptr &&
       !g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {

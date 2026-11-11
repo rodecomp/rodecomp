@@ -401,6 +401,7 @@ public:
   std::vector<char> BuildActorEntryPacket(CGameActor* actor, std::uint16_t packetType);
   CGameActor* NewActor(int job);
   void UpdateHoverNameBalloon();
+  void MarkWorldOcclusion();
   void ShowHoverActorName(CGameActor* actor);
   const char* DragItemName();
   void AddPendingItemPickup(int value);
