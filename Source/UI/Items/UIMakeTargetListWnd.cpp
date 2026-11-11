@@ -53,18 +53,11 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 // FUNCTION: fn_13600
 std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(22050, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22050, nullptr, 0));
   for (auto it = this->itemIds.begin(); it != this->itemIds.end(); ++it) {
-    const auto record = MakeReplayTaggedRecord(22052, &*it, sizeof(*it));
-    records.insert(records.end(), record.begin(), record.end());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(22052, &*it, sizeof(*it)));
   }
-  {
-    const auto record = BuildReplayTaggedRecord(22051, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22051, nullptr, 0));
   return records;
 }
 

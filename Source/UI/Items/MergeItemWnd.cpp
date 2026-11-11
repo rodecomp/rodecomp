@@ -254,13 +254,17 @@ void CMergeItemWnd::UpdateScroll() {
   const int rows = this->m_itemCount / columns;
   const int total = rows > 0 ? rows + 1 : rows;
   int maximum = total - this->m_rows;
-  if (maximum <= 0) {
+  if (maximum > 0) {
+    if (this->m_scrollRow >= 0) {
+      if (this->m_scrollRow > maximum) {
+        this->m_scrollRow = maximum;
+      }
+    } else {
+      this->m_scrollRow = 0;
+    }
+  } else {
     maximum = 0;
     this->m_scrollRow = 0;
-  } else if (this->m_scrollRow < 0) {
-    this->m_scrollRow = 0;
-  } else if (this->m_scrollRow > maximum) {
-    this->m_scrollRow = maximum;
   }
   this->m_scrollable = maximum;
   this->m_scrollBar->SetRange(maximum, this->m_rows, total);
