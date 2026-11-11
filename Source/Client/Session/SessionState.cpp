@@ -92,7 +92,7 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
       if (lua_type(L, -1) == LUA_TTABLE) {
         lua_pushnil(L);
         while (lua_next(L, -2) != 0) {
-          skillFlag = static_cast<int>(skillFlag + lua_tonumber(L, -1));
+          skillFlag += lua_tonumber(L, -1);
           lua_settop(L, -2);
         }
       }
@@ -127,7 +127,7 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
     CGameActor* actor = static_cast<CGameActor*>(
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->elementalGid)
     );
-    int delay = 0;
+    int delay;
     if (actor) {
       switch (actor->GetEffectiveJob(-1)) {
       case JT_EL_AGNI_S:
@@ -153,7 +153,12 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
       case JT_EM_SERPENS:
         delay = 9000;
         break;
+      default:
+        delay = 0;
+        break;
       }
+    } else {
+      delay = 0;
     }
     delays[0][3] = delay;
   }
@@ -350,13 +355,13 @@ void CSession::ResolvePendingActorName(std::uint32_t id, const char* name) {
     return;
   }
 
-  if (this->pendingActorNames.end() == this->pendingActorNames.find(id)) {
+  if (this->pendingActorNames.end() == this->pendingActorNames.find(static_cast<std::uint32_t>(id))) {
     return;
   }
 
   chat->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
   g_windowMgr.SendNotice(UIM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(name), 0, 0, 0, 0);
-  this->pendingActorNames.erase(id);
+  this->pendingActorNames.erase(static_cast<std::uint32_t>(id));
 }
 
 // OFFSET: 0x00E1A5E0
