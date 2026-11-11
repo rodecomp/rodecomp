@@ -96,7 +96,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 // OFFSET: 0x00BF23A0
 // FUNCTION: fn_19989
 __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
-  matrix& wtm, int* rpCnt, float scale, short slotIndex, char pw, unsigned char red, unsigned char green, unsigned char blue
+  matrix& wtm, int* rpCnt, float scale, short slotIndex, short pw, unsigned char red, unsigned char green, unsigned char blue
 ) {
   EffectPrimitiveSlot& slot = this->state.slots[slotIndex];
   float tilt = slot.height[8];
@@ -369,7 +369,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     vec4.y = slot.vecBNow.y + vec4.y;
     vec4.z = slot.vecBNow.z + vec4.z;
 
-    const short alpha = slot.alphaB < 0 ? 0 : slot.alphaB;
+    const int alpha = slot.alphaB < 0 ? 0 : slot.alphaB;
     if (slot.flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (slot.flag1[0] == 1) {
