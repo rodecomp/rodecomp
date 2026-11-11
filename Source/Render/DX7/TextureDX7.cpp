@@ -397,10 +397,10 @@ void CTextureDX7::Update(const RECT* rectangle) {
   IDirectDrawSurface7* level = this->m_surface;
 
   while (SUCCEEDED(level->GetAttachedSurface(&caps, &level))) {
-    destination.left >>= 1;
     destination.top >>= 1;
-    destination.right >>= 1;
     destination.bottom >>= 1;
+    destination.left >>= 1;
+    destination.right >>= 1;
 
     if (destination.left != destination.right && destination.top != destination.bottom) {
       if (FAILED(level->Blt(&destination, this->m_surface, const_cast<RECT*>(rectangle), DDBLT_ASYNC, nullptr))) {
