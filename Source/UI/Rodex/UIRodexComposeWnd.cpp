@@ -452,48 +452,35 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 void UIRodexComposeWnd::Paint() {
   this->ClearSurface(0x00FF00FF);
 
-  const auto* bg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp")))->image;
-  this->DrawBitmap(0, 0, bg, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))), false);
 
   if (this->m_confirmedRecipientEdit->geometry.visible == 1) {
-    const auto* balloon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_id_balloon.bmp")))->image;
-    this->DrawBitmap(161, 21, balloon, true);
+    this->DrawBitmap(161, 21, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_id_balloon.bmp"))), true);
   }
 
-  std::string countStr = std::format("/ {}", 1000);
-  this->DrawTextAt(261, 276, countStr.c_str(), 0, 0, 10, 0xD66E44, 0, 0);
+  this->DrawTextAt(261, 276, std::format("/ {}", 1000).c_str(), 0, 0, 10, 0xD66E44, 0, 0);
+  this->DrawRightAlignedText(258, 276, FormatOwnedString("%d", this->m_contents->Length() + this->m_contents->tagTextLength).c_str(), 0, 0, 10, 0xD66E44, 0);
 
-  int length = this->m_contents->Length() + this->m_contents->tagTextLength;
-  std::string lengthStr = FormatOwnedString("%d", length);
-  this->DrawRightAlignedText(258, 276, lengthStr.c_str(), 0, 0, 10, 0xD66E44, 0);
+  this->DrawBitmap(199, 305, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_weight.bmp"))), true);
 
-  const auto* weightBg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_weight.bmp")))->image;
-  this->DrawBitmap(199, 305, weightBg, true);
-
-  const char* weightMsg = LookupMessage(MSI_TWITTER_TAG);
-  this->DrawTextAt(245, 316, weightMsg, 0, 0, 11, 0x737373, 0, 0);
-
-  std::string weightStr = FormatOwnedString("%d", static_cast<int>(g_session.achievementResult));
-  this->DrawRightAlignedText(244, 316, weightStr.c_str(), 0, 0, 11, 0x737373, 0);
+  this->DrawTextAt(245, 316, LookupMessage(MSI_TWITTER_TAG), 0, 0, 11, 0x737373, 0, 0);
+  this->DrawRightAlignedText(244, 316, FormatOwnedString("%d", static_cast<std::int16_t>(g_session.achievementResult)).c_str(), 0, 0, 11, 0x737373, 0);
 
   this->FillRegion(35, 347, 95, 16, 0xFFFFFF);
   DrawRectangleBorder(*this, 35, 347, 95, 16, 0xA6A6A6);
 
-  const auto* zenyIcon = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp")))->image;
-  this->DrawBitmap(19, 342, zenyIcon, true);
+  this->DrawBitmap(19, 342, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))), true);
 
   this->DrawTextAt(135, 350, "Zeny", 0, 0, 11, 0x737373, 0, 0);
 
   char zenyBuf[260] = {};
   FormatGroupedInteger(static_cast<std::int64_t>(g_session.m_zeny), zenyBuf, sizeof(zenyBuf));
-  std::string zenyStr = FormatOwnedString("%s Zeny", zenyBuf);
-  this->DrawTextAt(144, 350, zenyStr.c_str(), 0, 0, 11, 0x737373, 1, 0);
+  this->DrawTextAt(144, 350, FormatOwnedString("%s Zeny", zenyBuf).c_str(), 0, 0, 11, 0x737373, 1, 0);
 
-  const auto* taxBg = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_tax.bmp")))->image;
-  this->DrawBitmap(9, 377, taxBg, true);
+  this->DrawBitmap(9, 377, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_tax.bmp"))), true);
 
   char taxBuf[260] = {};
-  std::int64_t tax = static_cast<std::int64_t>(g_session.CountSelectionItems()) * 2500;
+  std::int64_t tax = g_session.CountSelectionItems() * 2500;
   char inputBuf[260] = {};
   strcpy_s(inputBuf, sizeof(inputBuf), this->m_zeny->Text());
   g_session.IsNumberWithCommas(inputBuf);
@@ -507,32 +494,29 @@ void UIRodexComposeWnd::Paint() {
   this->DrawRightAlignedText(104, 382, taxBuf, 0, 0, 11, taxColor, 0);
 
   if (this->m_zeny->Length() != 0) {
-    std::uint32_t textColor = (inputZeny > g_session.m_zeny || inputZeny + this->m_tax > g_session.m_zeny) ? 0xFF : 0;
-    this->m_zeny->TextColor(textColor, 0xFFFFFFFF);
+    if (inputZeny > g_session.m_zeny || inputZeny + this->m_tax > g_session.m_zeny) {
+      this->m_zeny->TextColor(0xFF, 0, 0, 0xFFFFFFFF);
+    } else {
+      this->m_zeny->TextColor(0, 0, 0, 0xFFFFFFFF);
+    }
   }
 
   for (int x = 26; x < 196; x += 34) {
-    const auto* shadowOff = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp")))->image;
-    this->DrawBitmap(x, 319, shadowOff, true);
+    this->DrawBitmap(x, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp"))), true);
   }
 
-  if (!this->m_items.empty()) {
-    int itemX = 30;
-    for (const auto& item : this->m_items) {
-      const auto* shadowOn = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp")))->image;
-      this->DrawBitmap(itemX - 4, 319, shadowOn, true);
-      if (this->m_tax <= g_session.m_zeny) {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), itemX, 309, item, 0, 0);
-      } else {
-        DrawItemWithQuantityAuxiliary(*this, 2, itemX, 309, item, item.identified, 0);
-      }
-      if (item.grade > 0) {
-        std::string gradeStr = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade));
-        const auto* gradeBmp = &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(gradeStr.c_str())))->image;
-        this->DrawBitmap(itemX, 321, gradeBmp, true);
-      }
-      itemX += 34;
+  int itemX = 30;
+  for (const auto& item : this->m_items) {
+    this->DrawBitmap(itemX - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    if (this->m_tax <= g_session.m_zeny) {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), itemX, 309, item, 0, 0);
+    } else {
+      DrawItemWithQuantityAuxiliary(*this, 2, itemX, 309, item, item.identified, 0);
     }
+    if (item.grade > 0) {
+      this->DrawBitmap(itemX, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade)).c_str()))), true);
+    }
+    itemX += 34;
   }
 
   if (this->m_tagCtrl) {
