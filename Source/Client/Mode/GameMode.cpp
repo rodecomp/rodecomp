@@ -5440,18 +5440,18 @@ float g_outdoorCameraDistance = 300.0f;
 // FUNCTION: fn_21359
 void CGameMode::InitializeCamera() {
   {
-    const float x = this->scene->player->render.position.x;
-    const float y = this->scene->player->render.position.y;
     const float z = this->scene->player->render.position.z;
+    const float y = this->scene->player->render.position.y;
+    const float x = this->scene->player->render.position.x;
     CView* view = this->camera;
     view->camera.target[0] = x;
     view->camera.target[1] = y;
     view->camera.target[2] = z;
   }
   {
-    const float x = this->scene->player->render.position.x;
-    const float y = this->scene->player->render.position.y;
     const float z = this->scene->player->render.position.z;
+    const float y = this->scene->player->render.position.y;
+    const float x = this->scene->player->render.position.x;
     CView* view = this->camera;
     view->camera.desiredTarget[0] = x;
     view->camera.desiredTarget[1] = y;
@@ -6754,9 +6754,9 @@ void CGameMode::ReloadScene() {
   g_weatherEffect.ResetEffect();
   this->mousePointer = new CMousePointer();
   this->scene->objects.push_back(this->mousePointer);
-  const float x = this->scene->player->render.position.x;
-  const float y = this->scene->player->render.position.y;
   const float z = this->scene->player->render.position.z;
+  const float y = this->scene->player->render.position.y;
+  const float x = this->scene->player->render.position.x;
   this->camera->camera.target[0] = x;
   this->camera->camera.target[1] = y;
   this->camera->camera.target[2] = z;
