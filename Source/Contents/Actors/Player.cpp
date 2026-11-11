@@ -189,8 +189,11 @@ void CGrannyPc::PlayMotion(int repeat) {
   }
   this->animationTime = 0;
 
-  const int loopCount = (repeat == 1 && this->render.state != 6) ? 1 : 0;
-  this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], loopCount);
+  if (repeat == 1 && this->render.state != 6) {
+    this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], 1);
+  } else {
+    this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], 0);
+  }
 }
 
 // OFFSET: 0x00DAFE00
@@ -1860,7 +1863,7 @@ granny_world_pose* CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
     return model->Animate(this->animationTime, GrannyInstantiateModel(model->model));
   }
 
-  if (this->motion == 2 && this->controls[2] && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
+  if (this->motion == 2 && this->controls[2] && !(GrannyGetControlDurationLeft(this->controls[2]) > 0.0f)) {
     this->motion = 0;
     this->controls[this->motion] = model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), this->controls[this->motion], 0);
   }
@@ -2176,8 +2179,7 @@ bool CGrannyPc::OnProcess() {
     this->ModifyArgb(8, 8, 8, 8);
   }
 
-  bool (CGameActor::*slot14)() = &CGameActor::ProcessState;
-  const bool result = (this->*slot14)();
+  const bool result = this->ProcessState();
 
   this->PlayFrameSounds();
 
