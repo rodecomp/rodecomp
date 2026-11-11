@@ -1908,7 +1908,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
 // OFFSET: 0x00E2F710
 // FUNCTION: fn_24158
 int CSession::GetBodyStyle(int job, int style, int renderJob) {
-  if (style >= 2 || static_cast<unsigned>(renderJob - JT_RUNE_KNIGHT_2ND) < JT_SECOND_JOB_END - JT_RUNE_KNIGHT_2ND) {
+  if (style >= 2 || static_cast<unsigned>(renderJob - JT_RUNE_KNIGHT_2ND) <= JT_SECOND_JOB_END - JT_RUNE_KNIGHT_2ND - 1) {
     return style;
   }
 
