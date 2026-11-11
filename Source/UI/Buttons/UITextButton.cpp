@@ -63,7 +63,7 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 
-extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>*, UIWindow* const&);
+extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
 
 using IntIntTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
