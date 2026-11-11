@@ -5275,17 +5275,19 @@ void CEffectPrim::PrimExpandPulse() {
       slot.distance += slot.height[0];
     }
 
-    if (static_cast<unsigned>(slot.process - 11) > 9) {
+    if (slot.process >= 11 && slot.process <= 20) {
+      if (slot.flag1[1] == 16) {
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
+      } else if (slot.flag1[1] == 24) {
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(229) != 0 ? 8 : 15));
+      } else {
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
+      }
+    } else {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 5);
       if (slot.alphaB <= 0) {
         slot.alphaB = 0;
       }
-    } else if (slot.flag1[1] == 16) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
-    } else if (slot.flag1[1] != 24) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
-    } else {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(229) != 0 ? 8 : 15));
     }
   }
 }
