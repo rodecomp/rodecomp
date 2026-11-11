@@ -526,13 +526,15 @@ void UICashShopWnd_Item::Paint() {
       0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_item_bg2.bmp"))), false
     );
 
-    std::string stock;
-    if (this->m_item.prices[0] == 0) {
-      stock = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CASHSHOP_NON_TRADABLE)));
-    } else {
-      stock = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAP_PROPERTY_DISABLE_CALLED), this->m_item.quantity));
+    {
+      std::string stock;
+      if (this->m_item.prices[0] == 0) {
+        stock = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CASHSHOP_NON_TRADABLE)));
+      } else {
+        stock = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAP_PROPERTY_DISABLE_CALLED), this->m_item.quantity));
+      }
+      this->DrawCenteredOutlinedText(6, 0x22, stock.c_str(), 0x49, 0, 0xFFFFFF, 0, 0, 0xB, 1);
     }
-    this->DrawCenteredOutlinedText(6, 0x22, stock.c_str(), 0x49, 0, 0xFFFFFF, 0, 0, 0xB, 1);
 
     if (this->m_item.identity[1] > 0) {
       std::string name = this->FitDisplayText(0xA8, this->m_item.displayName.c_str(), 0, 0xC, 1);
@@ -577,8 +579,9 @@ void UICashShopWnd_Item::Paint() {
     const int center = this->geometry.width / 2;
     const int startWidth = this->TextWidth(text, 0, 0, 0xC, 0, 0);
     this->DrawTextAt(static_cast<int>(center - startWidth * 0.5), 0xA0, text, 0, 0, 0xB, 0, 0, 0);
-    const int endWidth = this->TextWidth(endText.c_str(), 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(0x9E - endWidth, 0xAD, endText.c_str(), 0, 0, 0xB, 0, 0, 0);
+    text = endText.c_str();
+    const int endWidth = this->TextWidth(text, 0, 0, 0xC, 0, 0);
+    this->DrawTextAt(0x9E - endWidth, 0xAD, text, 0, 0, 0xB, 0, 0, 0);
   } else {
     this->DrawBitmap(
       0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg.bmp"))), false
