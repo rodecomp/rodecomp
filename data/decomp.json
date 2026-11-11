@@ -19,6 +19,13 @@
    "kind": "xor-repeating-key",
    "keyBytes": 8,
    "includeTerminator": true
+  },
+  {
+   "macro": "CRYPT_CHARS",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true,
+   "lengthArgument": true
   }
  ],
  "matchPolicy": {
