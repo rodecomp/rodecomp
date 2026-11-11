@@ -367,7 +367,11 @@ bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& n
     name = head.substr(begin + std::strlen(g_parserNaviLinkTag.c_str()));
   }
 
-  return !name.empty();
+  if (name.empty()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00835600
@@ -838,37 +842,39 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
 // FUNCTION: fn_10452
 int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle style) {
   const std::tuple<bool, std::string, std::string> info = SplitLinkInfo(text, type);
-  if (std::get<0>(info)) {
-    std::string display = std::get<1>(info);
-    if (this->m_parent) {
-      display = RemoveTextColors(display.c_str());
+  if (!std::get<0>(info)) {
+    return x;
+  }
+
+  std::string display = std::get<1>(info);
+  if (this->m_parent) {
+    display = RemoveTextColors(display.c_str());
+  }
+
+  const std::string linkData = std::get<2>(info);
+  const std::vector<std::string> parts = SplitString(linkData.c_str(), ",");
+  const int width = MeasureText(this->m_parent, display, style).cx;
+  if (width > this->m_width) {
+    const std::vector<std::string> lines = SplitLines(this->m_parent, display, style, this->m_width);
+    for (auto line = lines.begin(); line != lines.end(); ++line) {
+      this->NewLine();
+      x = 0;
+      UITextButton* button = this->CreateLinkWindow(*line, parts, type, style);
+      if (button) {
+        this->AddWindow(button);
+        x = button->geometry.width;
+      }
+    }
+  } else {
+    if (x + width > this->m_width) {
+      this->NewLine();
+      x = 0;
     }
 
-    const std::string linkData = std::get<2>(info);
-    const std::vector<std::string> parts = SplitString(linkData.c_str(), ",");
-    const int width = MeasureText(this->m_parent, display, style).cx;
-    if (width > this->m_width) {
-      const std::vector<std::string> lines = SplitLines(this->m_parent, display, style, this->m_width);
-      for (auto line = lines.begin(); line != lines.end(); ++line) {
-        this->NewLine();
-        x = 0;
-        UITextButton* button = this->CreateLinkWindow(*line, parts, type, style);
-        if (button) {
-          this->AddWindow(button);
-          x = button->geometry.width;
-        }
-      }
-    } else {
-      if (x + width > this->m_width) {
-        this->NewLine();
-        x = 0;
-      }
-
-      if (!display.empty() && !parts.empty()) {
-        UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
-        this->AddWindow(button);
-        x += button->geometry.width;
-      }
+    if (!display.empty() && !parts.empty()) {
+      UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
+      this->AddWindow(button);
+      x += button->geometry.width;
     }
   }
 
@@ -914,7 +920,7 @@ int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
 // FUNCTION: fn_10454
 int CCreateLineInfo::LayoutText(int x, std::string text, LineTextStyle style) {
   const int width = MeasureText(this->m_parent, text, style).cx;
-  if (this->m_width < width) {
+  if (width > this->m_width) {
     const std::string first = FitText(this->m_parent, text, style, this->m_width - x);
     UIWindow* last = this->CreateTextWindow(first, style);
     if (last) {
@@ -1048,13 +1054,15 @@ std::string CCreateLineInfo::FitText(UIWindow* window, std::string text, const L
   while (position < length) {
     const std::string rest = text.substr(position, length - position);
     const std::string character = NextCharacter(rest);
-    if (!character.empty()) {
-      total += MeasureText(window, character, style).cx;
-      if (total > width) {
-        return text.substr(0, position);
-      }
-      position += static_cast<int>(character.size());
+    if (character.empty()) {
+      continue;
     }
+
+    total += MeasureText(window, character, style).cx;
+    if (total > width) {
+      return text.substr(0, position);
+    }
+    position += static_cast<int>(character.size());
   }
 
   return text;
@@ -1153,9 +1161,11 @@ UITextButton* CCreateLineInfo::CreateLinkWindow(const std::string& text, const s
   }
 
   const int width = MeasureText(this->m_parent, text, style).cx;
+  const std::uint32_t color = type == LINE_SEGMENT_URL ? 0xE6A300 : 0xF4934A;
+  const std::uint32_t hoverColor = type == LINE_SEGMENT_URL ? 0xEFB700 : 0xFF7864;
   UITextButton* button = new UITextButton();
-  button->Configure(text.c_str(), type == LINE_SEGMENT_URL ? 0xE6A300 : 0xF4934A, 0, 12, 0, 1);
-  button->m_hoverColor = type == LINE_SEGMENT_URL ? 0xEFB700 : 0xFF7864;
+  button->Configure(text.c_str(), color, 0, 12, 0, 1);
+  button->m_hoverColor = hoverColor;
   button->SetId(type);
   button->ResizeToTextClipped(width + 1, button->geometry.height);
 
@@ -1520,43 +1530,31 @@ static int ParseColorCode(CCreateLineInfo& info, int index) {
 // OFFSET: 0x0083D090
 // FUNCTION: fn_10495
 int CCreateLineInfo::ParseTag(int index) {
+  int next = index;
   if (this->m_text.at(index) == '^') {
-    int next = index;
-    const std::string code = this->m_text.substr(index + 1, 6);
-    const char* digits = code.c_str();
-    if (digits) {
-      char* end = nullptr;
-      const unsigned long value = std::strtol(digits, &end, 16);
-      if (end > digits && end - digits == 6) {
-        next = index + 7;
-        const std::uint32_t color = RGB((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
-        this->m_newSegment = true;
-        this->m_defaultColor = color;
-        this->m_color = color;
-      }
-    }
-    if (index != next) {
-      return next;
-    }
+    next = ParseColorCode(*this, index);
   }
 
-  int next = this->ParseItemName(index);
   if (index != next) {
     return next;
   }
-  next = this->ParseEmotion(index);
+  next = this->ParseItemName(next);
   if (index != next) {
     return next;
   }
-  next = this->ParseItemImage(index);
+  next = this->ParseEmotion(next);
   if (index != next) {
     return next;
   }
-  next = this->ParseLink(index);
+  next = this->ParseItemImage(next);
   if (index != next) {
     return next;
   }
-  next = this->ParseMarkup(index);
+  next = this->ParseLink(next);
+  if (index != next) {
+    return next;
+  }
+  next = this->ParseMarkup(next);
   return index != next ? next : index;
 }
 
@@ -1637,19 +1635,23 @@ std::tuple<bool, std::string, std::string> CCreateLineInfo::SplitLinkInfo(std::s
     return std::tuple<bool, std::string, std::string>(false, "", "");
   }
 
-  if (text.find(close, begin) != std::string::npos) {
-    const std::size_t infoBegin = text.find(g_infoTag, begin);
-    if (infoBegin != std::string::npos) {
-      const std::size_t infoEnd = text.find(g_infoCloseTag, infoBegin);
-      if (infoEnd != std::string::npos) {
-        const std::string name = text.substr(begin + open.size(), infoBegin - open.size() - begin);
-        const std::string info = text.substr(infoBegin + g_infoTag.size(), infoEnd - g_infoTag.size() - infoBegin);
-        return std::tuple<bool, std::string, std::string>(true, name, info);
-      }
-    }
+  if (text.find(close, begin) == std::string::npos) {
+    return std::tuple<bool, std::string, std::string>(false, "", "");
   }
 
-  return std::tuple<bool, std::string, std::string>(false, "", "");
+  const std::size_t infoBegin = text.find(g_infoTag, begin);
+  if (infoBegin == std::string::npos) {
+    return std::tuple<bool, std::string, std::string>(false, "", "");
+  }
+
+  const std::size_t infoEnd = text.find(g_infoCloseTag, infoBegin);
+  if (infoEnd == std::string::npos) {
+    return std::tuple<bool, std::string, std::string>(false, "", "");
+  }
+
+  const std::string name = text.substr(begin + open.size(), infoBegin - open.size() - begin);
+  const std::string info = text.substr(infoBegin + g_infoTag.size(), infoEnd - g_infoTag.size() - infoBegin);
+  return std::tuple<bool, std::string, std::string>(true, name, info);
 }
 
 // OFFSET: 0x0083D660
