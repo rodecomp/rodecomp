@@ -467,27 +467,29 @@ void CWorldViewMgr::ClearMarks() {
 // OFFSET: 0x006171D0
 // FUNCTION: fn_04382
 WorldViewRecord* CWorldViewMgr::MarkAt(unsigned int index, bool currentWorldOnly) {
-  if (static_cast<int>(index) >= 0 && this->marks.size() > index) {
-    WorldViewRecord* mark = &this->marks[index];
-    if (!currentWorldOnly || mark->worldIndex == this->currentWorld) {
-      return mark;
-    }
+  if (static_cast<int>(index) < 0 || this->marks.size() <= index) {
+    return nullptr;
   }
 
-  return nullptr;
+  if (currentWorldOnly && this->marks[index].worldIndex != this->currentWorld) {
+    return nullptr;
+  }
+
+  return &this->marks[index];
 }
 
 // OFFSET: 0x00617220
 // FUNCTION: fn_04383
 int* CWorldViewMgr::MarkAreaAt(unsigned int index, bool currentWorldOnly) {
-  if (static_cast<int>(index) >= 0 && this->marks.size() > index) {
-    WorldViewRecord* mark = &this->marks[index];
-    if (!currentWorldOnly || mark->worldIndex == this->currentWorld) {
-      return &mark->left;
-    }
+  if (static_cast<int>(index) < 0 || this->marks.size() <= index) {
+    return nullptr;
   }
 
-  return nullptr;
+  if (currentWorldOnly && this->marks[index].worldIndex != this->currentWorld) {
+    return nullptr;
+  }
+
+  return &this->marks[index].left;
 }
 
 // OFFSET: 0x00617270
