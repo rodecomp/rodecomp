@@ -35,7 +35,8 @@ inline void BitmapImage::Clear() {
     std::free(this->auxiliary);
   }
 
-  this->width = this->height = 0;
+  this->width = 0;
+  this->height = 0;
   this->pixels = nullptr;
   this->auxiliary = nullptr;
 }
