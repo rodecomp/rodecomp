@@ -73,7 +73,9 @@ public:
   // INLINED
   CUIControl() : UIWindow(0), hitEnabled(1) {
   }
-  ~CUIControl() override;
+  // INLINED
+  ~CUIControl() override {
+  }
   bool CanHitTest() override;
   void DragAndDrop(int x, int y, std::intptr_t value) override;
   void OnLBtnDown(int x, int y) override;

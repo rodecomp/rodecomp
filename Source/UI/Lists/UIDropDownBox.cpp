@@ -34,7 +34,11 @@ bool CUIDropDownBox::HasChild(const UIWindow* window) const {
 // OFFSET: 0x009E3490
 // FUNCTION: fn_14418
 bool CUIDropDownBox::HasOwnerChild(const UIWindow* window) const {
-  return window && this->owner && std::find(this->owner->m_children.begin(), this->owner->m_children.end(), window) != this->owner->m_children.end();
+  if (!window || !this->owner) {
+    return false;
+  }
+
+  return this->owner->m_children.end() != std::find(this->owner->m_children.begin(), this->owner->m_children.end(), window);
 }
 
 // OFFSET: 0x009E3500

@@ -245,8 +245,6 @@ __forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tool
 __forceinline CUIImageButton::CUIImageButton() : CUIButton(), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
-CUIControl::~CUIControl() = default;
-
 // OFFSET: 0x009D5490
 // FUNCTION: fn_14047
 bool CUIControl::CanHitTest() {
