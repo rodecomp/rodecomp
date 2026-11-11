@@ -34,10 +34,8 @@ int CSession::AddAchievementJobTitle(int id) {
     return -1;
   }
 
-  for (std::vector<int>::iterator it = this->jobTitles.begin(); it != this->jobTitles.end(); ++it) {
-    if (*it == value) {
-      return -1;
-    }
+  if (std::find(this->jobTitles.begin(), this->jobTitles.end(), value) != this->jobTitles.end()) {
+    return -1;
   }
 
   this->jobTitles.push_back(value);
