@@ -1654,15 +1654,14 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     this->pendingCursorType = 7;
     break;
   case PINCODE_WRONG:
-    if (packet->count == 0) {
+    if (packet->count <= 0) {
       g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
       g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNTLINKEDUSERDATA_LOAD_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else {
       g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
       this->pendingCursorType = 7;
-      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count);
-      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     }
     break;
   case PINCODE_ILLEGAL:
@@ -1737,14 +1736,13 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   case PINCODE_WRONG: {
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     ++this->passwordRetryCount;
-    const int remaining = 3 - this->passwordRetryCount;
     this->pendingCursorType = 7;
-    if (remaining <= 0) {
+    if (3 - this->passwordRetryCount <= 0) {
       g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_3), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else {
-      std::string message = FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), remaining);
-      g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), 3 - this->passwordRetryCount).c_str(), 0, true, false, 0,
+        "Message", 280, 120, 0);
     }
     break;
   }
@@ -1878,8 +1876,10 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   g_session.m_loginTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
   g_session.SetServerTime(packet->startTime);
   g_session.SetOption(11, 1, 0);
-  g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
-    packet->posDir[2] & 0xF);
+  const int x = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
+  const int y = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  const int dir = packet->posDir[2] & 0xF;
+  g_session.SetPlayerPosition(x, y, dir);
   g_session.chatFont[0] = packet->font;
 
   char mapName[36];

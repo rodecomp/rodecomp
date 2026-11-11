@@ -1706,8 +1706,10 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
 // FUNCTION: fn_22009
 void CGameMode::ReceiveGameOptions(int count, const GameOptionEntry* entries) {
   for (int i = 0; i < count; ++i) {
-    if (entries[i].id == 1) {
+    switch (entries[i].id) {
+    case 1:
       g_gameOptionFlag = entries[i].value != 0;
+      break;
     }
   }
 }
