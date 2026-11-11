@@ -39,5 +39,9 @@ bool CWebBrowser::Create(HWND parent, HINSTANCE instance, int width, int height)
     return false;
   }
 
-  return this->CreateAddressBar(width, 22);
+  if (!this->CreateAddressBar(width, 22)) {
+    return false;
+  }
+
+  return true;
 }

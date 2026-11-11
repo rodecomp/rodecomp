@@ -257,6 +257,10 @@ extern template std::_Tree_find_result<std::_Tree_node<std::pair<UIWindow* const
 SnapRectangleTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
 extern template void std::vector<std::string>::push_back(std::string&&);
 extern template std::string std::operator+(const std::string&, const char* const);
+using BrowserTree = std::_Tree<std::_Tmap_traits<HWND, CWebBrowser*, std::less<HWND>, std::allocator<std::pair<HWND const, CWebBrowser*>>, false>>;
+template std::_Tree_find_result<std::_Tree_node<std::pair<HWND const, CWebBrowser*>, void*>*>
+BrowserTree::_Find_lower_bound<HWND>(HWND const&) const;
+template std::pair<std::map<HWND, CWebBrowser*>::iterator, bool> std::map<HWND, CWebBrowser*>::insert<std::pair<HWND, CWebBrowser*>>(std::pair<HWND, CWebBrowser*>&&);
 
 namespace {
 #pragma pack(push, 1)
