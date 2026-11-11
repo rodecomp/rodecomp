@@ -370,37 +370,35 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   const int value = static_cast<int>(argument1);
 
   switch (message) {
-  case UM_DOWNPUSH:
-  case UM_SETCURITEM: {
-    this->selected = message == UM_DOWNPUSH ? (this->selected + 1) : value;
-
-    if (message == UM_SETCURITEM && this->selected < 0) {
+  case UM_SETCURITEM:
+    this->selected = value;
+    if (this->selected < 0) {
       this->selected = 0;
     }
-
-    const int last = (static_cast<int>(this->lines.size()) - 1);
-
-    if (static_cast<unsigned>(this->selected) > static_cast<unsigned>(last)) {
-      this->selected = last;
+    if (this->selected > this->lines.size() - 1) {
+      this->selected = this->lines.size() - 1;
     }
 
-    int top = this->topLine;
-
-    if (message == UM_SETCURITEM && this->selected < top) {
+    if (this->selected < this->topLine) {
       this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
-      top = this->topLine;
     }
-
-    const int edge = message == UM_DOWNPUSH ? (top - 1) : top;
-    const int rows = this->geometry.height / this->lineHeight;
-    const int bottom = (edge + (message == UM_DOWNPUSH ? rows : (rows - 1)));
-
-    if (this->selected > bottom) {
+    if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
       this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     break;
-  }
+
+  case UM_DOWNPUSH:
+    this->selected = (this->selected + 1);
+    if (this->selected > this->lines.size() - 1) {
+      this->selected = this->lines.size() - 1;
+    }
+
+    if (this->selected > this->topLine - 1 + this->geometry.height / this->lineHeight) {
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
+    }
+
+    break;
 
   case UM_UPPUSH:
     this->selected = (this->selected - 1);
@@ -419,18 +417,20 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
-    const int visible = this->geometry.height / this->lineHeight;
-    const int delta = message == UM_SCROLLVERTPAGEUP ? (1 - visible) : message == UM_SCROLLVERTPAGEDOWN ? (visible - 1) : value;
-    this->topLine = (previous + delta);
+    if (message == UM_SCROLLVERTPAGEUP) {
+      this->topLine = previous - this->geometry.height / this->lineHeight + 1;
+    } else if (message == UM_SCROLLVERTPAGEDOWN) {
+      this->topLine = previous - 1 + this->geometry.height / this->lineHeight;
+    } else {
+      this->topLine = previous + value;
+    }
 
     if (this->topLine < 0) {
       this->topLine = 0;
     }
 
-    const int maximum = ((static_cast<int>(this->lines.size()) - visible) + this->bottomMargin);
-
-    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
-      this->topLine = maximum;
+    if (this->topLine > this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin) {
+      this->topLine = this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin;
     }
 
     this->verticalBar->position = this->topLine;
@@ -474,7 +474,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
   case UM_TEXT_LBTN_UP:
     if (argument3 > 0) {
-      if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND)) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
         window->SendMsg(nullptr, UM_ITEMEXPLANATION, argument3, 0, 0, 0);
       }
     }
