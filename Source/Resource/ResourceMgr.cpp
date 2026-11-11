@@ -66,7 +66,7 @@ ResourceMgr::~ResourceMgr() {
 // FUNCTION: fn_18188
 void ResourceMgr::Register(const char* extension, const char* prefix, CRes* prototype) {
   const int type = static_cast<int>(this->m_extensions.size());
-  this->m_extensions.emplace(extension, type);
+  this->m_extensions.insert({extension, type});
   this->m_prototypes.push_back(prototype);
   this->m_prefixes.push_back(prefix);
   this->m_resources.resize(static_cast<std::size_t>(type) + 1);
@@ -248,15 +248,14 @@ void ResourceMgr::ClearUnused(const char* extension) {
 
   for (auto entry = resources.begin(); entry != resources.end();) {
     CRes* resource = entry->second;
-    if (resource->references != 0) {
+    if (resource->references == 0) {
+      this->EraseTransient(resource);
+      entry->second->Unload();
+      delete entry->second;
+      entry = resources.erase(entry);
+    } else {
       ++entry;
-      continue;
     }
-
-    this->EraseTransient(resource);
-    resource->Unload();
-    delete resource;
-    entry = resources.erase(entry);
   }
 }
 
@@ -269,15 +268,14 @@ void ResourceMgr::ClearUnused() {
     auto& resources = this->m_resources[type];
     for (auto entry = resources.begin(); entry != resources.end();) {
       CRes* resource = entry->second;
-      if (resource->references != 0) {
+      if (resource->references == 0) {
+        this->EraseTransient(resource);
+        entry->second->Unload();
+        delete entry->second;
+        entry = resources.erase(entry);
+      } else {
         ++entry;
-        continue;
       }
-
-      this->EraseTransient(resource);
-      resource->Unload();
-      delete resource;
-      entry = resources.erase(entry);
     }
   }
 }
@@ -298,8 +296,8 @@ void ResourceMgr::ClearExpired() {
       }
 
       this->EraseTransient(resource);
-      resource->Unload();
-      delete resource;
+      entry->second->Unload();
+      delete entry->second;
       entry = resources.erase(entry);
     }
   }
