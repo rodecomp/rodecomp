@@ -11053,8 +11053,8 @@ void CGameMode::ReceiveGuildRelationList(const unsigned char* data) {
     }
 
     GuildInfo::RelatedGuild guild;
-    guild.guildId = record->guildId;
     guild.relation = record->relation;
+    guild.guildId = record->guildId;
     guild.name = name;
     guildInfo->relatedGuilds.push_back(guild);
   }
