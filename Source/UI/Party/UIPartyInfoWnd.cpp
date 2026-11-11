@@ -91,7 +91,7 @@ void UIPartyInfoWnd::Paint() {
     break;
   }
 
-  if (this->m_disabled != 0 && !this->m_names[3].empty()) {
+  if (this->m_disabled != 0 && this->m_names[3].size() > 0) {
     background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
   }
 
@@ -99,26 +99,21 @@ void UIPartyInfoWnd::Paint() {
     this->DrawBitmap(0, 0, background, false);
   }
 
-  const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(x, 5, value, bytes, 0, 12, 0, 0, 0); };
-  text(11, this->levels.c_str());
-  text(64, TypeName(this->type));
+  this->DrawTextAt(11, 5, this->levels.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(64, 5, TypeName(this->type), 0, 0, 12, 0, 0, 0);
 
-  CBitmapRes* job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(this->info.tanker ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp")));
-  this->DrawBitmap(109, 3, job, false);
-  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(this->info.healer ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp")));
-  this->DrawBitmap(127, 3, job, false);
-  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(this->info.dealer ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp")));
-  this->DrawBitmap(145, 3, job, false);
-  job = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp")));
-  this->DrawBitmap(163, 3, job, false);
+  this->DrawBitmap(109, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.tanker ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp"))), false);
+  this->DrawBitmap(127, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.healer ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp"))), false);
+  this->DrawBitmap(145, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.dealer ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp"))), false);
+  this->DrawBitmap(163, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp"))), false);
 
   const std::string fitted = FitText(*this->geometry.surface, this->name, 119);
-  text(192, fitted.c_str(), static_cast<int>(fitted.size()));
-  text(315, this->memo.c_str(), static_cast<int>(this->memo.size()));
+  this->DrawTextAt(192, 5, fitted.c_str(), static_cast<int>(fitted.size()), 0, 12, 0, 0, 0);
+  this->DrawTextAt(315, 5, this->memo.c_str(), static_cast<int>(this->memo.size()), 0, 12, 0, 0, 0);
 
   if (this->m_invalidateParent != 0 && this->parent) {
     this->parent->Invalidate();
@@ -141,13 +136,16 @@ void UIPartyInfoWnd::OnRBtnUp(int, int) {
   }
 
   const std::string name = this->info.characterName;
-  const char* relationship = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(MSI_FRIEND) : nullptr;
+  const char* relationship = nullptr;
+  if (g_windowMgr.IsFriend(name.c_str())) {
+    relationship = LookupMessage(MSI_FRIEND);
+  }
 
   if (g_session.IsGuildMemberAccount(this->info.accountId)) {
     relationship = "GuildMember";
   }
 
-  std::string code;
+  std::string code("");
   code = ShortcutFilename(this->info.characterId);
   g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }

@@ -21,6 +21,7 @@
 #include "UI/Party/UIPartyInfoWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 
@@ -98,55 +99,54 @@ void UIApplyForPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_REGISTER), 0);
-  const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(x, y, value, 0, 0, 12, 0, 0, 0); };
-  text(10, 25, LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED));
+  this->DrawTextAt(10, 25, LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED), 0, 0, 12, 0, 0, 0);
   const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
-  text(60, 25, fitted.c_str());
-  text(10, 49, LookupMessage(MSI_LEVEL));
+  this->DrawTextAt(60, 25, fitted.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 49, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   char levels[10] = {};
-  _snprintf_s(levels, sizeof(levels), _TRUNCATE, "%d~%d", this->info.minimumLevel, this->info.maximumLevel);
-  text(60, 49, levels);
-  text(10, 73, LookupMessage(MSI_INCLUDE_BAD_WORD));
-  text(60, 73, UIPartyInfoWnd::TypeName(this->info.type));
-  text(10, 97, LookupMessage(MSI_JOB));
-  const auto job = [&](int x, bool selected, const char* selectedImage, const char* unselectedImage) {
-    this->DrawBitmap(x, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(selected == 1 ? selectedImage : unselectedImage))), false);
-  };
-  job(60, this->info.tanker, "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp");
-  job(78, this->info.healer, "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp");
-  job(96, this->info.dealer, "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp");
-  job(114, this->info.assist, "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp", "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp");
-  text(10, 121, LookupMessage(MSI_ADVEN_DUNJUN));
-  text(60, 121, this->info.memo.c_str());
+  StringFormat(levels, sizeof(levels), _TRUNCATE, "%d~%d", this->info.minimumLevel, this->info.maximumLevel);
+  this->DrawTextAt(60, 49, levels, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 73, LookupMessage(MSI_INCLUDE_BAD_WORD), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(60, 73, UIPartyInfoWnd::TypeName(this->info.type), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 97, LookupMessage(MSI_JOB), 0, 0, 12, 0, 0, 0);
+  this->DrawBitmap(60, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.tanker ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp"))), false);
+  this->DrawBitmap(78, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.healer ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp"))), false);
+  this->DrawBitmap(96, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.dealer ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp"))), false);
+  this->DrawBitmap(114, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp"))), false);
+  this->DrawTextAt(10, 121, LookupMessage(MSI_ADVEN_DUNJUN), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(60, 121, this->info.memo.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x007BFCC0
 // FUNCTION: fn_09309
 void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
-  if (static_cast<unsigned>(y) - 95u > 16u) {
+  if (y < 95 || y > 111) {
     return;
   }
 
-  const unsigned mouseX = static_cast<unsigned>(x);
   std::string label;
-  int left = 0;
+  unsigned int left = static_cast<unsigned int>(x);
 
-  if (mouseX > 60 && mouseX < 76) {
+  if (left > 60 && left < 76) {
     left = 60;
     label = LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK);
-  } else if (mouseX > 78 && mouseX < 94) {
+  } else if (left > 78 && left < 94) {
     left = 78;
     label = LookupMessage(MSI_CANNOT_FIND_PARTYMASTER);
-  } else if (mouseX > 96 && mouseX < 112) {
+  } else if (left > 96 && left < 112) {
     left = 96;
     label = LookupMessage(MSI_QUESTWND_LOWER);
-  } else if (mouseX > 114 && mouseX < 130) {
+  } else if (left > 114 && left < 130) {
     left = 114;
     label = LookupMessage(MSI_EXPAND_SIGHT_ON);
   }
 
   if (!label.empty()) {
-    int screenX = left;
+    int screenX = static_cast<int>(left);
     int screenY = 75;
     this->ToScreen(screenX, screenY);
     g_modeMgr.gameMode->ShowTooltip(label.c_str(), screenX, screenY, -1, false, true);
