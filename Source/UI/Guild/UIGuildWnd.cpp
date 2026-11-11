@@ -413,8 +413,8 @@ GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* found) 
 // OFFSET: 0x00957BB0
 // FUNCTION: fn_13042
 __declspec(noinline) CSkillInfo UIGuildSkillWnd::SkillAt(int index) {
-  CSkillInfo result(0);
   int current = 0;
+  CSkillInfo result(0);
   for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++current) {
     if (index == current) {
       result = *skill;
