@@ -274,7 +274,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     // GLOBAL: gl_25060
     thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
     char message[256];
-    sprintf(message, format.Text(), text, packet->errorCode);
+    sprintf(message, format.Text(), text, errorCode);
     g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
   }
 
