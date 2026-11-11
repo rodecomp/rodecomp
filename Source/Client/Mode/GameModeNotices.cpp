@@ -1225,9 +1225,9 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  if (packet->state == 0) {
+  if (0 == packet->state) {
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  } else if (packet->state != 1 || static_cast<EffectActor*>(actor)->HasId(228)) {
+  } else if (1 != packet->state || static_cast<EffectActor*>(actor)->HasId(228)) {
     return;
   }
 
@@ -3217,7 +3217,7 @@ struct GuildStorageLogPacket {
 // FUNCTION: fn_21627
 void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildStorageLogPacket*>(data);
-  if (packet->result == 0) {
+  if (0 == packet->result) {
     for (int i = 0; i < packet->count; ++i) {
       const GuildStorageLogPacketEntry& source = packet->entries[i];
       ITEM_INFO item;
@@ -3246,7 +3246,7 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       entry.category = source.highlighted;
       g_guildStorageLogs[0].push_back(entry);
     }
-  } else if (packet->result == 1) {
+  } else if (1 == packet->result) {
     for (int i = 0; i < packet->count; ++i) {
       const GuildStorageLogPacketEntry& source = packet->entries[i];
       ITEM_INFO item;
@@ -3289,7 +3289,7 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
   } else {
     char text[252];
-    if (packet->result == 2) {
+    if (2 == packet->result) {
       std::memset(text, 0, 250);
       std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_LOG_OUT));
     } else {
@@ -7582,7 +7582,7 @@ void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildStorageLogItemsPacket*>(data);
   std::vector<GuildStorageLogItem> items;
   items.reserve(packet->count);
-  if (packet->result == 0 || packet->result == 1) {
+  if (0 == packet->result || 1 == packet->result) {
     for (long long index = 0; index < packet->count; ++index) {
       const GuildStorageLogItemRecord& record = packet->records[index];
       ITEM_INFO item;
