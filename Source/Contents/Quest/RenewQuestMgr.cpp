@@ -120,7 +120,8 @@ RenewQuestRecommendedInfo::RenewQuestRecommendedInfo() : backgroundImage("") {
 
 // OFFSET: 0x00675990
 // FUNCTION: fn_05414
-CRenewQuestMgr::CRenewQuestMgr() : m_initialized(false) {
+CRenewQuestMgr::CRenewQuestMgr() {
+  this->m_initialized = false;
   this->m_initialized = this->Clear();
   this->m_parameter = 24;
 }

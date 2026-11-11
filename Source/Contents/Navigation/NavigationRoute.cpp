@@ -999,7 +999,7 @@ CNavi_Object::~CNavi_Object() {
   this->cellX = 0;
   this->cellY = 0;
   this->info = nullptr;
-  this->links.clear();
+  this->links.erase(this->links.begin(), this->links.end());
 }
 
 // OFFSET: 0x00B8CE30

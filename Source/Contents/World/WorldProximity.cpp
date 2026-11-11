@@ -265,7 +265,7 @@ bool WorldProximityRangeCallback::Invoke() {
 // OFFSET: 0x00AC9D50
 // FUNCTION: fn_17686
 __declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t aid, const CellFloatPos& pos) {
-  if (this->player && this->player->GetGdid() > 0 && this->IsGuildMaster(aid)) {
+  if (this->player && this->player->GetGdid() >= 1 && this->IsGuildMaster(aid)) {
     auto isNearby = [](const CellFloatPos& cell, const CellFloatPos& player, int range) {
       return std::fabs(cell.x - player.x) <= static_cast<float>(range) && std::fabs(cell.z - player.z) <= static_cast<float>(range);
     };

@@ -88,6 +88,7 @@ struct EquipmentValueA {
 struct EquipmentValueC {
   /* 0000 */ int value;
 };
+template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
 
 struct EquipmentEntryA {
   /* 0000 */ int value;
@@ -5846,11 +5847,7 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
     this->m_value = std::max(this->m_value, source->m_value);
     break;
   case 4:
-    if (source->m_value < 0) {
-      this->m_value = 0;
-    } else {
-      this->m_value = std::max(this->m_value, source->m_value);
-    }
+    this->m_value = source->m_value < 0 ? 0 : std::max(this->m_value, source->m_value);
     break;
   }
   return this;
