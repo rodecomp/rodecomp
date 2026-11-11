@@ -1501,16 +1501,20 @@ void CUIEnchantPage::UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemD
   item->SetFrozen(data.frozen);
 }
 
+}
+
 // OFFSET: 0x00A05B90
 // FUNCTION: fn_14979
-void UpdateTargetItem(CUITargetItem* item, ITEM_INFO* info) {
-  item->itemIcon->SetItem(*info);
-  if (0 < info->grade) {
-    item->targetIcon->SetImage(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", info->grade));
+void CUIEnchantUI::UpdateTargetItem(EnchantUI::CUITargetItem* item, const ITEM_INFO& info) {
+  item->itemIcon->SetItem(info);
+  if (0 < info.grade) {
+    item->targetIcon->SetImage(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", info.grade));
   }
-  item->targetIcon->Show(0 < info->grade);
-  item->targetText->SetText(info->DisplayName(0));
+  item->targetIcon->Show(0 < info.grade);
+  item->targetText->SetText(info.DisplayName(0));
 }
+
+namespace EnchantUI {
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
 void CUIMainPage::OnInit() {
@@ -2396,7 +2400,7 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   this->targetList->SetSize(220, 400);
   this->targetList->Move(0, 17);
   this->targetList->SetOnSelect([this](EnchantUI::CUITargetItem* item, const ITEM_INFO& info) { this->OnSelectTarget(item, info); });
-  this->targetList->SetBinder([this](EnchantUI::CUITargetItem* item, const ITEM_INFO& info) { EnchantUI::UpdateTargetItem(item, const_cast<ITEM_INFO*>(&info)); });
+  this->targetList->SetBinder([this](EnchantUI::CUITargetItem* item, const ITEM_INFO& info) { this->UpdateTargetItem(item, info); });
   {
     const std::string disabled([]() {
       constexpr std::uint8_t bytes[] = {

@@ -52,6 +52,7 @@ public:
   virtual void Initialize();
   void SetEnchantGroup(uint64_t group);
   void OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
+  void UpdateTargetItem(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
   void OnClickClose();
 };
 
