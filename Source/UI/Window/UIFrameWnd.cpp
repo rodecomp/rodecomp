@@ -118,7 +118,7 @@ void UIWindow::ToScreen(int& x, int& y) const {
 
 // INLINED
 static __forceinline void RaiseWindow(UIWindow* window) {
-  if (window && g_windowMgr.lastWindowId != window->geometry.id) {
+  if (g_windowMgr.lastWindowId != window->geometry.id) {
     g_windowMgr.BringToFront(window->geometry.id);
     g_windowMgr.lastWindowId = window->geometry.id;
   }
@@ -127,6 +127,10 @@ static __forceinline void RaiseWindow(UIWindow* window) {
 // OFFSET: 0x008BA1E0
 // FUNCTION: fn_11779
 void UIFrameWnd::OnLBtnDown(int x, int y) {
+  if (this == nullptr) {
+    return;
+  }
+
   RaiseWindow(this);
   g_windowMgr.SetCapture(this);
   int screenX = x;

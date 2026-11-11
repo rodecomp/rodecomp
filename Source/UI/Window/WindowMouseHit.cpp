@@ -185,10 +185,9 @@ int UIWindowMgr::ProcessMouse() {
   this->deferredDeletion.clear();
 
   for (auto account = this->closedMiniPartyIds.begin(); account != this->closedMiniPartyIds.end(); ++account) {
-    const int accountId = *account;
     for (auto entry = this->snapExcluded.begin(); entry != this->snapExcluded.end();) {
       UIWindow* window = *entry;
-      if (static_cast<int>(PartyMember(static_cast<UIMiniPartyWnd*>(window)).accountId) == accountId) {
+      if (*account == static_cast<int>(PartyMember(static_cast<UIMiniPartyWnd*>(window)).accountId)) {
         this->Destroy(window);
         entry = this->snapExcluded.erase(entry);
       } else {
@@ -224,8 +223,6 @@ int UIWindowMgr::ProcessMouse() {
     int left;
     int top;
     WindowScreenPosition(this->inputWindow, left, top);
-    const int localX = x - left;
-    const int localY = y - top;
 
     if (g_mouse.buttons[0] == 1) {
       UIWindow* root = this->inputWindow->Root();
@@ -233,8 +230,11 @@ int UIWindowMgr::ProcessMouse() {
         PromoteWindow(this, root);
       }
 
-      this->inputWindow->OnLBtnDown(localX, localY);
+      this->inputWindow->OnLBtnDown(x - left, y - top);
     }
+
+    const int localX = x - left;
+    const int localY = y - top;
 
     if (g_mouse.buttons[0] == 4 && (g_replayAnimationScaling == 0 || g_modeMgr.state == 0)) {
       this->inputWindow->OnLBtnDown(localX, localY);

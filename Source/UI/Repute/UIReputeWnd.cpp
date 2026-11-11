@@ -136,13 +136,11 @@ void UIReputeWnd::Paint() {
   DrawRectangleBorder(*this, 0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
   DrawRectangleBorder(*this, 0, titleHeight, this->geometry.width, 1, 0);
 
-  if (Singleton<CReputeMgr>::GetInstance()->m_waitingForPoints) {
+  if (Singleton<CReputeMgr>::GetInstance()->m_waitingForPoints == true) {
     DrawRoundedBorder(*this, 225, 155, 190, 140, 0xCE9484);
     DrawFilledRoundedBorder(*this, 226, 156, 188, 138, 0xFFE7DE);
     DrawFilledRoundedBorder(*this, 231, 161, 178, 128, 0xFFFFFF);
-    CBitmapRes* bitmap =
-      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
-    this->DrawBitmap(288, 182, bitmap, true);
+    this->DrawBitmap(288, 182, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp"))), true);
     this->DrawCenteredText(225, 260, LookupMessage(MSI_ENCHANT_TAB_GENERAL), 190, 0, 15, 0xC89482, 1);
     return;
   }
@@ -160,7 +158,7 @@ void UIReputeWnd::Paint() {
 
     const int left = (i & 1) * 316;
     const int top = (i >> 1) * 86;
-    const char* background = info->updated ? "유저인터페이스\\Reputation\\bg_highlight.bmp" : "유저인터페이스\\Reputation\\bg_info.bmp";
+    const char* background = info->updated == true ? "유저인터페이스\\Reputation\\bg_highlight.bmp" : "유저인터페이스\\Reputation\\bg_info.bmp";
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
     this->DrawBitmap(left + 7, top + 50, bitmap, false);
     this->DrawTextAt(left + 12, top + 56, info->name.c_str(), 0, 0, 12, 0, 1, 0);
@@ -169,13 +167,11 @@ void UIReputeWnd::Paint() {
     if (point < 0) {
       const std::int64_t value = -point;
       for (std::uint64_t k = 0; k < info->maxPointNegative / 1000; ++k) {
-        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
-        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp"))), true);
       }
 
       for (std::uint64_t k = 0; k < value / 1000; ++k) {
-        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_red.bmp")));
-        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_red.bmp"))), true);
       }
 
       const std::uint64_t remain = value % 1000;
@@ -183,13 +179,11 @@ void UIReputeWnd::Paint() {
       this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), remain).c_str(), 0, 0, 12, 0, 1);
     } else {
       for (std::uint64_t k = 0; k < info->maxPointPositive / 1000; ++k) {
-        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
-        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp"))), true);
       }
 
       for (std::uint64_t k = 0; k < info->point / 1000; ++k) {
-        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_blue.bmp")));
-        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, bitmap, true);
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_blue.bmp"))), true);
       }
 
       const std::uint64_t remain = info->point % 1000;
