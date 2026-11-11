@@ -204,12 +204,14 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
   }
 
   if (!g_serviceOptions.Get(229)) {
-    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f);
     }
   }
-  CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetFlipX(source->render.previousAnimation % 8 >= 4);
   }
