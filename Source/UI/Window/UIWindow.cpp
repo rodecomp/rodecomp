@@ -465,7 +465,7 @@ bool UIWindow::Update(int redraw) {
   }
 
   if (this->m_cached == 1) {
-    if (redraw != 1 && !changed) {
+    if (redraw != 1 && changed != true) {
       return false;
     }
 
@@ -482,13 +482,17 @@ bool UIWindow::Update(int redraw) {
     return this->parent != nullptr;
   }
 
-  if (!this->parent || (redraw != 1 && !changed)) {
+  if (!this->parent) {
     return false;
   }
 
   UIWindow* parentWindow = this->Parent();
   if (parentWindow->m_cached != 0) {
-    return true;
+    return redraw == 1 || changed == true;
+  }
+
+  if (redraw != 1 && changed != true) {
+    return false;
   }
 
   CDCBitmap& source = *static_cast<CDCBitmap*>(this->geometry.surface);
@@ -3579,13 +3583,17 @@ int UIPrivateAirplaneWnd::SendMsg(
     this->Invalidate();
     break;
   case UM_COMMAND:
-    if (argument1 == ID_CLOSE) {
+    switch (argument1) {
+    case ID_CLOSE:
       if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
         g_windowMgr.modalResponse = 0xBC;
       }
-    } else if (argument1 == 500) {
+      break;
+    case 500: {
       const std::string mapName = g_navigationManager.GetCurrentTargetName() + ".gat";
       g_navigationManager.RequestPrivateAirship(mapName, static_cast<int>(argument2));
+      break;
+    }
     }
     break;
   }
