@@ -78,6 +78,13 @@ public:
 
   __declspec(noinline) RouletteMgr();
   void AddItem(RouletteSlot slot);
+
+  // INLINED
+  void SetPoints(int gold, int silver, int bronze) {
+    this->m_goldPoint = gold;
+    this->m_silverPoint = silver;
+    this->m_bronzePoint = bronze;
+  }
   void Reset();
   void Draw();
   void Update();

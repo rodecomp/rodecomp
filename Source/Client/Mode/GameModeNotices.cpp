@@ -582,40 +582,58 @@ void CGameMode::NotifyCaptchaRegistrationResult(int result) {
 // FUNCTION: fn_22051
 void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
   const auto* deleted = reinterpret_cast<const RodexMailDeletedPacket*>(packet);
-  RodexMailMap::iterator mail;
-  RodexMailMap::iterator end;
 
   switch (deleted->type) {
-  case MAIL_INBOX_NORMAL:
-    mail = g_rodexMailStore->m_mails0.find(deleted->mailId);
-    end = g_rodexMailStore->m_mails0.end();
-    break;
-  case MAIL_INBOX_ACCOUNT:
-    mail = g_rodexMailStore->m_mails1.find(deleted->mailId);
-    end = g_rodexMailStore->m_mails1.end();
-    break;
-  case MAIL_INBOX_RETURNED:
-    mail = g_rodexMailStore->m_mails2.find(deleted->mailId);
-    end = g_rodexMailStore->m_mails2.end();
-    break;
-  default:
-    goto refresh;
-  }
-
-  if (mail != end) {
-    mail->second.isReturned = 1;
-    if (!mail->second.isRead) {
-      --g_rodexMailStore->unreadCount;
-      if (g_rodexMailStore->unreadCount == 0) {
-        UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
-        if (window) {
-          window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+  case MAIL_INBOX_NORMAL: {
+    RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(deleted->mailId);
+    if (mail != g_rodexMailStore->m_mails0.end()) {
+      mail->second.isReturned = 1;
+      if (!mail->second.isRead) {
+        --g_rodexMailStore->unreadCount;
+        if (g_rodexMailStore->unreadCount == 0) {
+          UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
+          if (window) {
+            window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+          }
         }
       }
     }
+    break;
+  }
+  case MAIL_INBOX_ACCOUNT: {
+    RodexMailMap::iterator mail = g_rodexMailStore->m_mails1.find(deleted->mailId);
+    if (mail != g_rodexMailStore->m_mails1.end()) {
+      mail->second.isReturned = 1;
+      if (!mail->second.isRead) {
+        --g_rodexMailStore->unreadCount;
+        if (g_rodexMailStore->unreadCount == 0) {
+          UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
+          if (window) {
+            window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+          }
+        }
+      }
+    }
+    break;
+  }
+  case MAIL_INBOX_RETURNED: {
+    RodexMailMap::iterator mail = g_rodexMailStore->m_mails2.find(deleted->mailId);
+    if (mail != g_rodexMailStore->m_mails2.end()) {
+      mail->second.isReturned = 1;
+      if (!mail->second.isRead) {
+        --g_rodexMailStore->unreadCount;
+        if (g_rodexMailStore->unreadCount == 0) {
+          UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND);
+          if (window) {
+            window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+          }
+        }
+      }
+    }
+    break;
+  }
   }
 
-refresh:
   if (g_windowMgr.rodexInboxWnd) {
     reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->Invalidate();
   }
@@ -652,53 +670,49 @@ void CGameMode::IgnoreRemovedPacket6() {
 // FUNCTION: fn_22054
 void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
   const auto* result = reinterpret_cast<const RouletteResultPacket*>(packet);
-  unsigned char bonus;
 
   switch (result->result) {
   case GENERATE_ROULETTE_SUCCESS:
     g_rouletteMgr->m_stage = result->stage;
     g_rouletteMgr->SetAdditionItem(result->additionItemId);
-    bonus = 0;
-    break;
-  case GENERATE_ROULETTE_LOSING:
-    g_rouletteMgr->m_stage = result->stage;
-    g_rouletteMgr->SetAdditionItem(result->additionItemId);
-    bonus = 1;
+    g_rouletteMgr->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
+    g_rouletteMgr->SetResult(result->index, 0, 0);
+    g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
+      static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
     break;
   case GENERATE_ROULETTE_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_RECV_ITEM_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
-    return;
+    break;
   case GENERATE_ROULETTE_NO_ENOUGH_POINT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_RECV_ITEM_OVERWEIGHT)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
-    return;
+    break;
+  case GENERATE_ROULETTE_LOSING:
+    g_rouletteMgr->m_stage = result->stage;
+    g_rouletteMgr->SetAdditionItem(result->additionItemId);
+    g_rouletteMgr->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
+    g_rouletteMgr->SetResult(result->index, 0, 1);
+    g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
+      static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
+    break;
   case 4:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JPN_PERSONALINFO_DEATHMSG)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
-    return;
+    break;
   case 5:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_DELETE)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
-    return;
-  default:
-    return;
+    break;
   }
-
-  g_rouletteMgr->m_goldPoint = result->goldPoint;
-  g_rouletteMgr->m_silverPoint = result->silverPoint;
-  g_rouletteMgr->m_bronzePoint = result->bronzePoint;
-  g_rouletteMgr->SetResult(result->index, 0, bonus);
-  g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
-    static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
 }
 
 // OFFSET: 0x00D69FC0
@@ -1388,14 +1402,12 @@ void CGameMode::ReceiveMessageBox(const unsigned char* data) {
 
   std::string caption = LookupMessage(packet->captionId);
   if (packet->captionArgument) {
-    const std::string formatted = FormatOwnedString(caption.c_str(), packet->captionArgument);
-    caption = formatted;
+    caption = static_cast<const std::string&>(FormatOwnedString(caption.c_str(), packet->captionArgument));
   }
 
   std::string text = LookupMessage(packet->textId);
   if (packet->textArgument) {
-    const std::string formatted = FormatOwnedString(text.c_str(), packet->textArgument);
-    text = formatted;
+    text = static_cast<const std::string&>(FormatOwnedString(text.c_str(), packet->textArgument));
   }
 
   g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, caption.c_str(), 280, 120, 0);
@@ -1756,20 +1768,19 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
   switch (result) {
   case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_INPUT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_CHECK_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACROBLACKLISTCHECKWND);
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SELECT_CAPTCHA), 0, true, false, 0, "Message", 280, 120, 0);
-    return;
-  default:
-    return;
+    break;
   }
-
-  GetRagConnection().Close();
-  g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D6E520
@@ -1778,20 +1789,19 @@ void CGameMode::ReceiveMacroDetectorResult(int result) {
   switch (result) {
   case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_INPUT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_CHECK_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACRODETECTORWND);
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SELECT_CAPTCHA), 0, true, false, 0, "Message", 280, 120, 0);
-    return;
-  default:
-    return;
+    break;
   }
-
-  GetRagConnection().Close();
-  g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D71600
@@ -1849,18 +1859,11 @@ int g_buyingStoreNoPermission;
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
 void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
-  UIWindow* window = nullptr;
-  bool notify = true;
-
-  if (packet->type == 2) {
+  if (2 == packet->type) {
     g_windowMgr.Confirm(LookupMessage(MSI_USESKILL_FAIL_COINTS), 0, true, true, 0, "Message", 280, 120, 0);
-    window = g_windowMgr.LookupWindow(WID_ITEMSTOREWND);
-  } else {
-    window = g_windowMgr.LookupWindow(WID_ITEMSTOREWND);
-    notify = window != nullptr;
-  }
-
-  if (notify) {
+    g_windowMgr.LookupWindow(WID_ITEMSTOREWND)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+    g_windowMgr.CloseWindow(WID_ITEMSTOREWND);
+  } else if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMSTOREWND)) {
     window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_ITEMSTOREWND);
   }
@@ -1990,9 +1993,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
     g_rouletteMgr->m_serial = open->serial;
     g_rouletteMgr->m_stage = open->stage;
     g_rouletteMgr->SetAdditionItem(open->additionItemId);
-    g_rouletteMgr->m_goldPoint = open->goldPoint;
-    g_rouletteMgr->m_silverPoint = open->silverPoint;
-    g_rouletteMgr->m_bronzePoint = open->bronzePoint;
+    g_rouletteMgr->SetPoints(open->goldPoint, open->silverPoint, open->bronzePoint);
     const unsigned char index = open->index;
     g_rouletteMgr->SetResult(index, index != 0xFF, 0);
     if (index != 0xFF) {
@@ -2094,33 +2095,31 @@ struct BuyingStoreResultPacket {
 // OFFSET: 0x00D1D460
 // FUNCTION: fn_21629
 void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
-  char text[256];
-  int message;
+  char text[250];
   const std::int16_t result = packet->result;
-  if (result == 0) {
+  if (0 == result) {
     std::memset(text, 0, 250);
-    message = 0x9C0;
-  } else if (result == 2) {
+    std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_PERMISSON));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (2 == result) {
     std::memset(text, 0, 250);
-    message = 0x9C1;
-  } else if (result == 3) {
+    std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_TITLE));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (3 == result) {
     g_buyingStoreNoPermission = 1;
     std::memset(text, 0, 250);
-    message = 0x9C2;
-  } else if (result == 1) {
+    std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_PERMISSON_WARNING_MSG));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (1 == result) {
     g_buyingStoreMode = 1;
-    g_buyingStoreDbNumber = packet->value;
-    if (packet->value != 0) {
-      return;
-    }
+    const std::int16_t dbNumber = packet->value;
+    g_buyingStoreDbNumber = dbNumber;
+    if (dbNumber == 0) {
     std::memset(text, 0, 250);
-    message = 0x9C5;
-  } else {
-    return;
+    std::sprintf(text, LookupMessage(MSI_BARGAINSALE_TOOLWND_DB_NUMBER));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    }
   }
-
-  std::sprintf(text, LookupMessage(message));
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D18BA0
@@ -2505,26 +2504,28 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
   case 0: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
 
-    RodexMailMap::iterator mail;
     switch (packet->type) {
-    case MAIL_INBOX_NORMAL:
-      mail = g_rodexMailStore->m_mails0.find(packet->mailId);
+    case MAIL_INBOX_NORMAL: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
         mail->second.type -= 2;
       }
       break;
-    case MAIL_INBOX_ACCOUNT:
-      mail = g_rodexMailStore->m_mails1.find(packet->mailId);
+    }
+    case MAIL_INBOX_ACCOUNT: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
         mail->second.type -= 2;
       }
       break;
-    case MAIL_INBOX_RETURNED:
-      mail = g_rodexMailStore->m_mails2.find(packet->mailId);
+    }
+    case MAIL_INBOX_RETURNED: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
         mail->second.type -= 2;
       }
       break;
+    }
     }
 
     if (g_windowMgr.rodexContentsWnd) {
@@ -2596,7 +2597,11 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
 void CGameMode::ShowFormattedNotice(unsigned short messageId, std::uint32_t color, int argument) {
   std::string text = FormatOwnedString(LookupMessage(messageId), argument);
   if (!text.empty()) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), color, messageId == 2962 ? 22 : 0, 0, 0);
+    if (2962 == messageId) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), color, 22, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0, 0);
+    }
   }
 }
 
@@ -2611,10 +2616,9 @@ void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int 
     auto* window = static_cast<UICaptchaRegisterWnd*>(g_windowMgr.LookupWindow(WID_CAPTCHAREGISTERWND));
     if (!window) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_DETECTOR_NOTICE2)), 0xFF, 0, 0, 0);
-      break;
+    } else {
+      g_timeScheduler->AddSchedule(new CCaptchaUploadSchedule(_Xtime_get_ticks(), sessionId, window->m_decompressedSize, window->m_decompressedData));
     }
-
-    g_timeScheduler->AddSchedule(new CCaptchaUploadSchedule(_Xtime_get_ticks(), sessionId, window->m_decompressedSize, window->m_decompressedData));
     break;
   }
   }
@@ -2698,32 +2702,33 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ZENY_FROM_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
     g_session.ClearItemQuantities();
 
-    RodexMailMap::iterator mail;
     switch (packet->type) {
-    case MAIL_INBOX_NORMAL:
-      mail = g_rodexMailStore->m_mails0.find(packet->mailId);
+    case MAIL_INBOX_NORMAL: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails0.end()) {
         mail->second.type -= 4;
       }
       break;
-    case MAIL_INBOX_ACCOUNT:
-      mail = g_rodexMailStore->m_mails1.find(packet->mailId);
+    }
+    case MAIL_INBOX_ACCOUNT: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails1.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails1.end()) {
         mail->second.type -= 4;
       }
       break;
-    case MAIL_INBOX_RETURNED:
-      mail = g_rodexMailStore->m_mails2.find(packet->mailId);
+    }
+    case MAIL_INBOX_RETURNED: {
+      RodexMailMap::iterator mail = g_rodexMailStore->m_mails2.find(packet->mailId);
       if (mail != g_rodexMailStore->m_mails2.end()) {
         mail->second.type -= 4;
       }
       break;
     }
+    }
 
     if (g_windowMgr.rodexContentsWnd) {
-      auto* contents = reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd);
-      contents->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      contents->DisableItemButton();
+      g_windowMgr.rodexContentsWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->DisableItemButton();
     }
     if (g_windowMgr.rodexInboxWnd) {
       reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -2947,7 +2952,7 @@ struct LongParChangePacket {
 // FUNCTION: fn_21606
 void CGameMode::ReceiveBankDepositAck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const BankDepositAckPacket*>(data);
-  if (packet->reason == 0) {
+  if (0 == packet->reason) {
     g_session.m_bankBalance = packet->money;
     g_session.m_zeny = packet->zeny;
     g_session.RefreshHpSpWindows();
@@ -2955,28 +2960,31 @@ void CGameMode::ReceiveBankDepositAck(const unsigned char* data) {
     return;
   }
 
-  char text[256];
-  if (packet->reason == 2) {
+  char text[250];
+  if (2 == packet->reason) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BANK_OVER_INT_MAX));
-  } else if (packet->reason == 3) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (3 == packet->reason) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_NOT_VALID_AUTH_TICKET));
-  } else if (packet->reason == 4) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (4 == packet->reason) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_WRONG_GUN));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   } else {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BANK_DEPOSIT_ZERO));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   }
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D196E0
 // FUNCTION: fn_21607
 void CGameMode::ReceiveBankWithdrawAck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const BankDepositAckPacket*>(data);
-  if (packet->reason == 0) {
+  if (0 == packet->reason) {
     g_session.m_bankBalance = packet->money;
     g_session.m_zeny = packet->zeny;
     g_session.RefreshHpSpWindows();
@@ -2984,18 +2992,20 @@ void CGameMode::ReceiveBankWithdrawAck(const unsigned char* data) {
     return;
   }
 
-  char text[256];
-  if (packet->reason == 1) {
+  char text[250];
+  if (1 == packet->reason) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BANK_WITHDRAW_ZERO));
-  } else if (packet->reason == 3) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+  } else if (3 == packet->reason) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_WRONG_GUN));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   } else {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BANK_DEPOSIT_ZERO));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   }
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D197F0
