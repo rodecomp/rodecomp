@@ -65,10 +65,10 @@ UIRodexInboxWnd::UIRodexInboxWnd()
     : UIItemWnd(), mailTab(0), accountTab(0), returnTab(0), refreshButton(nullptr), writeButton(nullptr),
       receiveButton(nullptr), deleteButton(nullptr), previousPageButton(nullptr), nextPageButton(nullptr), page(0), pageCount(0),
       expired(0), searchEdit(nullptr), searchButton(0), searchTab(0), searchActive(0), searchResults(), mails0(), mails1(), mails2() {
-  std::memset(this->senderButtons, 0, sizeof(this->senderButtons));
-  std::memset(this->subjectButtons, 0, sizeof(this->subjectButtons));
-  std::memset(this->checks, 0, sizeof(this->checks));
-  std::memset(this->returnButtons, 0, sizeof(this->returnButtons));
+  SecureZeroMemory(this->senderButtons, sizeof(this->senderButtons));
+  SecureZeroMemory(this->subjectButtons, sizeof(this->subjectButtons));
+  SecureZeroMemory(this->checks, sizeof(this->checks));
+  SecureZeroMemory(this->returnButtons, sizeof(this->returnButtons));
   g_rodexMailStore->isPageComplete = false;
   PACKET_CZ_OPEN_RODEXBOX packet;
   packet.packetType = ID_CZ_OPEN_ALL_RODEX;
@@ -116,7 +116,8 @@ void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned
     : read != 0
       ? "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_read.bmp"
       : "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_received.bmp";
-  this->DrawBitmap(0x24, y + 0x7C, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(status))), true);
+  CBitmapRes* statusIcon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(status)));
+  this->DrawBitmap(0x24, y + 0x7C, statusIcon, true);
 
   if ((attachments & 6) == 6) {
     this->DrawBitmap(0xD8, y + 0x8B, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
@@ -681,6 +682,13 @@ void UIRodexInboxWnd::SearchByTitle(const std::string keyword) {
   });
 
   std::sort(this->searchResults.begin(), this->searchResults.end(), RodexMailEntryLess());
+}
+
+// OFFSET: 0x00809910
+// FUNCTION: fn_10060
+void UIBasicButton::SetText(std::string value) {
+  this->text = value;
+  this->Invalidate();
 }
 
 // OFFSET: 0x00807690
