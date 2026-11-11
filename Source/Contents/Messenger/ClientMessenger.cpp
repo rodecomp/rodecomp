@@ -336,7 +336,7 @@ namespace EquipmentProperties {
     /* 001C */ int currentEquipment;
     /* 0020 */ UIWindow* notifyWindow;
     /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
-    /* 0044 */ std::unordered_map<int, CEquipmentExpansion*> properties2;
+    /* 0044 */ std::unordered_map<unsigned int, CEquipmentExpansion*> properties2;
     /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
     /* 0084 */ std::multiset<unsigned long> activeItems;
     /* 008C */ std::map<unsigned int, EquipmentPropertyGroup> propertyGroups;
@@ -4137,7 +4137,7 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetRefiningBonus(const int& fi
 void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind, const int& itemId, bool notify) {
   this->m_dirty = true;
 
-  int key = itemId;
+  unsigned int key = itemId;
   switch (kind) {
   case 0:
   case 1:
@@ -4169,7 +4169,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
 void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& kind, const int& itemId) {
   this->m_dirty = true;
 
-  int key = itemId;
+  unsigned int key = itemId;
   switch (kind) {
   case 0:
   case 1:
@@ -4178,7 +4178,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
   }
 
   auto found = this->properties2.find(key);
-  if (found != this->properties2.end()) {
+  if (this->properties2.end() != found) {
     this->UnequipItem(found->second->GetId(), true);
     found->second->Clear();
     delete found->second;
@@ -4193,7 +4193,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
 // OFFSET: 0x006B7020
 // FUNCTION: fn_06204
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& kind, const int& itemId) {
-  int key = itemId;
+  unsigned int key = itemId;
   switch (kind) {
   case 0:
   case 1:
@@ -5756,8 +5756,7 @@ int CSession::GetList5Size() const {
 // FUNCTION: fn_23305
 void CSession::ClearAllInventoryCategories() {
   for (int index = 0; index < 11; ++index) {
-    std::list<ITEM_INFO>& items = this->inventoryCategories[index];
-    items.erase(items.begin(), items.end());
+    this->inventoryCategories[index].erase(this->inventoryCategories[index].begin(), this->inventoryCategories[index].end());
   }
 }
 
