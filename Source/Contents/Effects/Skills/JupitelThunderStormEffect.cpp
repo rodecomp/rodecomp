@@ -116,7 +116,7 @@ bool CJupitelThunderStormEffect::IsAlive() {
 // FUNCTION: fn_07045
 void CJupitelThunderStormEffect::OnProcess() {
   if (CParticle* particle = this->particle) {
-    if (!ParticleAlive(particle)) {
+    if (ParticleAlive(particle) != true) {
       FreeParticle(particle);
       this->particle = nullptr;
     } else {

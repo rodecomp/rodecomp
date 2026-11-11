@@ -3105,7 +3105,7 @@ void CServantWeaponEffect::OnProcess() {
 
     emitter = this->emitters[1][column];
     if (emitter != nullptr) {
-      if (IsServantEmitterAlive(emitter)) {
+      if (IsServantEmitterAlive(emitter) == true) {
         PlaceServantEmitter(this, emitter, column);
       } else {
         FreeParticle(AsParticle(emitter));
@@ -3122,7 +3122,7 @@ void CServantWeaponEffect::OnProcess() {
 
     emitter = this->emitters[2][column];
     if (emitter != nullptr) {
-      if (IsServantEmitterAlive(emitter)) {
+      if (IsServantEmitterAlive(emitter) == true) {
         PlaceServantEmitter(this, emitter, column);
       } else {
         FreeParticle(AsParticle(emitter));
