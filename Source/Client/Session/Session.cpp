@@ -745,7 +745,7 @@ int CSession::FindSkillFollowEffect(int key) const {
 const char* CSession::GetEnemyHitWaveName(int element) {
   switch (element) {
   case ELE_FIRE:
-    switch (std::rand() % 2) {
+    switch (std::max(std::rand() % 2, 0)) {
     case 0:
       return "_enemy_hit_fire1.wav";
     case 1:
@@ -753,7 +753,7 @@ const char* CSession::GetEnemyHitWaveName(int element) {
     }
     break;
   case ELE_WIND:
-    switch (std::rand() % 2) {
+    switch (std::max(std::rand() % 2, 0)) {
     case 0:
       return "_enemy_hit_wind1.wav";
     case 1:
@@ -762,7 +762,7 @@ const char* CSession::GetEnemyHitWaveName(int element) {
     break;
   }
 
-  switch (std::rand() % 4) {
+  switch (std::max(std::rand() % 4, 0)) {
   case 0:
     return "_enemy_hit_normal1.wav";
   case 1:
@@ -2610,7 +2610,7 @@ std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
   auto name = this->m_nameToId.find(std::string(this->m_navigationPlayerMap));
   if (name != this->m_nameToId.end()) {
     auto shop = this->m_shops.find(name->second);
-    if (shop != this->m_shops.end() && index < shop->second.items.size()) {
+    if (shop != this->m_shops.end() && shop->second.items.size() > index) {
       std::map<int, std::pair<int, int>>& entries = shop->second.items[index];
       auto entry = entries.find(key);
       if (entry != entries.end()) {
@@ -3102,7 +3102,7 @@ void CSession::Init() {
 
   this->m_lockItemDrop = false;
   for (std::list<ITEM_INFO>& items : this->inventoryCategories) {
-    items.clear();
+    items.erase(items.begin(), items.end());
   }
 
   this->replayPacketMode = 0;
@@ -3151,9 +3151,9 @@ void CSession::Init() {
 // OFFSET: 0x00DF7C40
 // FUNCTION: fn_23508
 void CSession::ResetCharacterState() {
-  *reinterpret_cast<float*>(&this->m_navigationPlayerMap[0x18]) = sqrtf(50.0f);
+  *reinterpret_cast<float*>(&this->m_navigationPlayerMap[0x18]) = SquareRoot(50.0f);
 
-  const int randomValue = std::rand() % 1024 + 1;
+  const int randomValue = std::max(0, std::rand() % 1024) + 1;
 
   this->m_zeny = 0;
   *reinterpret_cast<int*>(&this->playerExperienceState[0x04]) = 0;
@@ -3435,8 +3435,7 @@ bool CSession::LoadMapViewParameters() {
     } else if (values.size() < 8) {
       values.push_back(std::string(start, cursor));
     } else {
-      std::string last(start, cursor);
-      values.push_back(last);
+      values.push_back(std::string(start, cursor));
       this->m_mapViewParameters.push_back(std::make_pair(name, values));
       name.clear();
       values.clear();
