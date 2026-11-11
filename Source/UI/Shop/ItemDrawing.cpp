@@ -42,10 +42,10 @@ void DrawItemWithQuantityAuxiliary(
 void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item, unsigned char identified) {
   char path[128];
   g_session.IconPath(path, item.itemId.c_str(), item.identified != 0 || identified != 0);
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(resources.Load(path));
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
-    window.DrawBitmap(x, y, &bitmap->image, true);
+    window.DrawBitmap(x, y, bitmap, true);
   }
 }
 
