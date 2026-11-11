@@ -4756,10 +4756,7 @@ int GetEquipArmorLv(lua_State* state) {
 
   EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
   EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
-  int value = 0;
-  if (wearable != nullptr) {
-    value = wearable->GetValue(2);
-  }
+  const int value = wearable != nullptr ? wearable->GetValue(2) : 0;
   lua_pushnumber(state, value);
   return 1;
 }
@@ -4781,10 +4778,7 @@ int GetEquipWeaponLv(lua_State* state) {
 
   EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
   EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
-  int value = 0;
-  if (wearable != nullptr) {
-    value = wearable->GetValue(2);
-  }
+  const int value = wearable != nullptr ? wearable->GetValue(2) : 0;
   lua_pushnumber(state, value);
   return 1;
 }
