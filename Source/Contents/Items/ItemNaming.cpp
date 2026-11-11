@@ -586,13 +586,12 @@ __declspec(noinline) void LoadItemNameTables() {
     }
 
     g_tableStorage.LoadTokens(tokens, itemFiles[index], 2);
-    char** cursor = tokens.empty() ? nullptr : &tokens[0];
-    char** end = cursor + tokens.size();
+    std::vector<char*>::iterator cursor = tokens.begin();
 
-    while (cursor < end) {
+    while (cursor < tokens.end()) {
       ITEM_DESC& desc = EnsureItemDescription(std::atoi(*cursor), g_itemDescriptions);
       cursor += 2;
-      if (cursor >= end) {
+      if (cursor >= tokens.end()) {
         ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
       }
 
@@ -603,7 +602,7 @@ __declspec(noinline) void LoadItemNameTables() {
       }
       desc.identifiedName = name;
       cursor += 2;
-      if (cursor >= end) {
+      if (cursor >= tokens.end()) {
         ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
       }
 
@@ -613,7 +612,7 @@ __declspec(noinline) void LoadItemNameTables() {
       }
 
       ++cursor;
-      if (cursor >= end) {
+      if (cursor >= tokens.end()) {
         ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
       }
 
@@ -627,7 +626,7 @@ __declspec(noinline) void LoadItemNameTables() {
         unidentified = *cursor;
         cursor += 2;
         desc.unidentifiedName = unidentified;
-        if (cursor >= end) {
+        if (cursor >= tokens.end()) {
           ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
         }
 
