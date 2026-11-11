@@ -461,7 +461,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER)), 38, 0, 0);
@@ -7886,7 +7886,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_textViewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_textViewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->m_textViewer->Invalidate();
   this->AddChild(this->m_textViewer);
   this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_BE_PATIENT)), 38, 0, 0);
