@@ -434,13 +434,11 @@ std::vector<unsigned char> ITEM_INFO::Serialize() const {
   return result;
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006D8850
 // FUNCTION: fn_06598
 bool IsBookItem(int id) {
   return g_bookItemNames.find(id) != g_bookItemNames.end();
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006D8890
 // FUNCTION: fn_06599
