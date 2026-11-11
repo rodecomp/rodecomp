@@ -29,6 +29,18 @@
 #include <cstring>
 #include <format>
 
+using RenewQuestOngoingTree = std::_Tree<std::_Tmap_traits<
+  unsigned int, RenewQuestOngoingInfo, std::less<unsigned int>, std::allocator<std::pair<const unsigned int, RenewQuestOngoingInfo>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestOngoingInfo>, void*>*>
+RenewQuestOngoingTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
+
+using RenewQuestRecommendedTree = std::_Tree<std::_Tmap_traits<
+  unsigned int, RenewQuestRecommendedInfo, std::less<unsigned int>, std::allocator<std::pair<const unsigned int, RenewQuestRecommendedInfo>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestRecommendedInfo>, void*>*>
+RenewQuestRecommendedTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
+
+extern template std::function<void()>& std::function<void()>::operator=(const std::function<void()>&);
+
 // GLOBAL: gl_25249
 static bool s_recommendedTabFirstSelect = true;
 
@@ -1111,7 +1123,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnCreate(int width
 // OFFSET: 0x00A63B90
 // FUNCTION: fn_16440
 void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
-  this->onSubmit.swap(handler);
+  this->onSubmit = handler;
 }
 
 // OFFSET: 0x00A63C00
@@ -2250,12 +2262,13 @@ void CUIRenewQuestUI::OnInit() {
   checkBox->Invalidate();
 
   for (unsigned int index = 0; index < this->questLists.size(); ++index) {
-    this->questLists[index]->type = 1 << index;
+    RenewQuestUI::CUIQuestList* list = this->questLists[index];
+    list->type = 1 << index;
   }
   this->UpdateQuestLists(0xF);
 
   for (UIWindow* child : this->filterPanel->m_children) {
-    const std::string name = g_renewQuestMgr->GetFilterName(child->geometry.id);
+    const std::string& name = g_renewQuestMgr->GetFilterName(child->geometry.id);
     static_cast<CUITabButton*>(child)->tooltipText = name;
   }
 }
