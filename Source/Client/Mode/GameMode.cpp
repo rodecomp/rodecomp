@@ -7391,7 +7391,8 @@ void CGameMode::InitializeState() {
   }
 
   if (g_replayAnimationScaling != 1) {
-    std::int16_t packet = 0x7D;
+    GameModePacketHeader packet;
+    packet.packetId = ID_CZ_NOTIFY_ACTORINIT;
     GetRagConnection().Send(2, &packet);
     GetRagConnection().ResetDeferred();
     g_session.SetOption(5, 1, 0);
