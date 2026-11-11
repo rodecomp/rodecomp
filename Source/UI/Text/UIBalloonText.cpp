@@ -126,7 +126,7 @@ void UIBalloonText::FitText() {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0));
     }
 
-    if (this->m_fontMode != 3) {
+    if (3 != this->m_fontMode) {
       height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4));
     }
   }
