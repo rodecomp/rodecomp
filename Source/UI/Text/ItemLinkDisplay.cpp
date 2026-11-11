@@ -7,6 +7,8 @@
 
 #include <mbstring.h>
 
+extern template std::size_t std::_Traits_find<std::char_traits<char>>(const char* const, const std::size_t, const std::size_t, const char* const, const std::size_t) noexcept;
+
 // OFFSET: 0x008816E0
 // FUNCTION: fn_11299
 bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
