@@ -707,19 +707,18 @@ void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
     g_session.m_hotkeyScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->head, coloring);
   }
 
-  const bool* flags = this->m_changed;
-  const UIDisplayCharacter* display = this->m_display;
-  if (*coloring) {
-    if (flags[0] && display->headPalette == g_session.m_headPalette) {
-    } else if (flags[1] && display->head == g_session.m_head) {
-    } else if (this->costumeChanged == 1 && display->job == g_session.m_bodyCostume) {
-    } else if (flags[2] && display->bodyStyle == g_session.m_bodyStyle) {
-    } else if (flags[3] && (display->topAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]) || display->topAccessory == 0)) {
-    } else if (flags[4] && (display->middleAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]) || display->middleAccessory == 0)) {
-    } else if (flags[5] && (display->bottomAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]) || display->middleAccessory == 0)) {
-    } else {
-      return;
-    }
+  if (*coloring &&
+      !((this->m_changed[0] == true && this->m_display->headPalette == g_session.m_headPalette) ||
+        (this->m_changed[1] == true && this->m_display->head == g_session.m_head) ||
+        (this->costumeChanged == 1 && this->m_display->job == g_session.m_bodyCostume) ||
+        (this->m_changed[2] == true && this->m_display->bodyStyle == g_session.m_bodyStyle) ||
+        (this->m_changed[3] == true && (this->m_display->topAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]) ||
+                                        this->m_display->topAccessory == 0)) ||
+        (this->m_changed[4] == true && (this->m_display->middleAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]) ||
+                                        this->m_display->middleAccessory == 0)) ||
+        (this->m_changed[5] == true && (this->m_display->bottomAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]) ||
+                                        this->m_display->middleAccessory == 0)))) {
+    return;
   }
 
   for (unsigned int i = 0; i < this->m_list.size(); ++i) {
@@ -1256,15 +1255,18 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   if (zeny != 0) {
     char path[128];
     memset(path, 0, sizeof(path));
-    if (type == 4 || type == 5 || type == 6) {
-      if (type == 4) {
-        id = this->m_display->topAccessoryItemId;
-      } else if (type == 5) {
-        id = this->m_display->middleAccessoryItemId;
-      } else {
-        id = this->m_display->bottomAccessoryItemId;
-      }
+    bool accessory = true;
+    if (type == 4) {
+      id = this->m_display->topAccessoryItemId;
+    } else if (type == 5) {
+      id = this->m_display->middleAccessoryItemId;
+    } else if (type == 6) {
+      id = this->m_display->bottomAccessoryItemId;
+    } else {
+      accessory = false;
+    }
 
+    if (accessory) {
       char number[32] = {};
       std::sprintf(number, "%d", id);
       g_session.IconPath(path, number, 1);
