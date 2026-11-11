@@ -493,9 +493,9 @@ namespace {
     HashLongInternalLoop(acc, static_cast<const std::uint8_t*>(input), length, secret, secretSize, f_acc512, f_scramble);
 
     XXH128_hash_t h128;
-    h128.low64 = XXH3_mergeAccs(acc, secret + XXH_SECRET_MERGEACCS_START, static_cast<std::uint64_t>(length) * XXH_PRIME64_1);
     h128.high64 = XXH3_mergeAccs(acc, secret + secretSize - sizeof(acc) - XXH_SECRET_MERGEACCS_START,
                                  ~(static_cast<std::uint64_t>(length) * XXH_PRIME64_2));
+    h128.low64 = XXH3_mergeAccs(acc, secret + XXH_SECRET_MERGEACCS_START, static_cast<std::uint64_t>(length) * XXH_PRIME64_1);
     return h128;
   }
 
