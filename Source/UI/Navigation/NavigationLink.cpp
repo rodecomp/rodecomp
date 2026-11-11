@@ -55,13 +55,30 @@
 #include "Utility/Text/TextTokens.h"
 
 #include "Resource/MSGSTRINGID.h"
+extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 namespace LineCutter {
   class UIText : public UIWindow {
   public:
     // INLINED
     explicit UIText()
-        : UIWindow(0), m_color(0), m_fontHeight(12), m_bold(0), m_italic(0), m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0),
-          m_shadowColor(0xFFFFFF) {
+        : UIWindow(0), m_style{0, 12, false, false}, m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0), m_shadowColor(0xFFFFFF) {
+    }
+
+    // INLINED
+    void SetText(std::string text, LineTextStyle style, unsigned char outlined, std::uint32_t outlineColor, unsigned char shadowed, std::uint32_t shadowColor) {
+      this->m_text = text;
+      this->m_outlineColor = outlineColor;
+      this->m_shadowed = shadowed;
+      this->m_style = style;
+      this->m_outlined = outlined;
+      this->m_shadowColor = shadowColor;
+      if (outlined == 1) {
+        const int textWidth = this->TextWidth(text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
+        this->Resize(textWidth + 2, style.fontHeight + 2);
+      }
+
+      this->Invalidate();
     }
 
     void Paint() override;
@@ -74,11 +91,7 @@ namespace LineCutter {
     void OnRBtnUp(int x, int y) override;
     void OnWheel(int value) override;
 
-    /* 007C */ std::uint32_t m_color;
-    /* 0080 */ int m_fontHeight;
-    /* 0084 */ unsigned char m_bold;
-    /* 0085 */ unsigned char m_italic;
-    /* 0086 */ unsigned char padding_0086[2];
+    /* 007C */ LineTextStyle m_style;
     /* 0088 */ unsigned char m_outlined;
     /* 008C */ std::uint32_t m_outlineColor;
     /* 0090 */ unsigned char m_shadowed;
@@ -106,11 +119,13 @@ public:
 
 class UIItemImage : public UIWindow {
 public:
-  // INLINED
-  UIItemImage(const std::string& itemId) : UIWindow(0), m_itemId(itemId) {
-    this->m_clip = 1;
-  }
   explicit UIItemImage();
+
+  // INLINED
+  void SetItemId(std::string itemId) {
+    this->m_itemId = itemId;
+    this->Invalidate();
+  }
 
   void Paint() override;
   void OnMouseHover(int x, int y) override;
@@ -260,7 +275,7 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       messageId = std::atoi(work.c_str());
     }
 
-    const std::string message = FormatMessageArguments(work, messageId);
+    const std::string message = this->FormatMessageArguments(work, messageId);
     work.clear();
     if (expanded.empty()) {
       work = text;
@@ -325,9 +340,9 @@ std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   } while (value >= 62);
   characters.push_back(digits[value]);
 
-  std::string result;
-  for (auto it = characters.rbegin(); it != characters.rend(); ++it) {
-    result += *it;
+  std::string result("");
+  for (std::size_t i = 0; i < characters.size(); ++i) {
+    result += characters[characters.size() - 1 - i];
   }
   return result;
 }
@@ -487,7 +502,7 @@ const std::string NavigationLinkParser::ExtractNavigationLink(std::string value)
 
 // OFFSET: 0x00834160
 // FUNCTION: fn_10415
-static void SplitMessageArguments(const char* text, std::vector<std::string>& arguments) {
+void NavigationLinkParser::SplitMessageArguments(const char* text, std::vector<std::string>& arguments) {
   std::string remaining = text;
   std::size_t separator = remaining.find(',');
 
@@ -505,7 +520,7 @@ static void SplitMessageArguments(const char* text, std::vector<std::string>& ar
 
 // OFFSET: 0x00834C30
 // FUNCTION: fn_10418
-std::string FormatMessageArguments(std::string value, int messageId) {
+std::string NavigationLinkParser::FormatMessageArguments(std::string value, int messageId) {
   const std::string text = value;
   std::string result = LookupMessage(messageId);
   const std::size_t separator = text.find(',');
@@ -514,17 +529,17 @@ std::string FormatMessageArguments(std::string value, int messageId) {
     const std::string tail = text.substr(separator + 1);
     std::vector<std::string> arguments;
     arguments.reserve(8);
-    SplitMessageArguments(tail.c_str(), arguments);
+    this->SplitMessageArguments(tail.c_str(), arguments);
 
     for (std::size_t index = 0; index < arguments.size(); ++index) {
       const std::size_t percent = result.find('%');
       if (percent != std::string::npos) {
-        unsigned length = 1;
+        int length = 1;
         char conversion[8] = {};
         std::size_t position = percent + 1;
 
         for (;;) {
-          strcpy_s(conversion, sizeof(conversion), result.substr(position, 1).c_str());
+          strcpy_s(conversion, sizeof(conversion), std::string(result, position, 1).c_str());
           if (conversion[0] >= 'A') {
             break;
           }
@@ -536,21 +551,20 @@ std::string FormatMessageArguments(std::string value, int messageId) {
         const std::string format = result.substr(0, end);
         const std::string remainder = result.substr(end);
         char buffer[164] = {};
-        std::string& argument = arguments[index];
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
-          if (argument.find("MsgStr(") != std::string::npos) {
-            argument = argument.substr(7);
-            argument = argument.substr(0, argument.size() - 1);
-            const std::string nested = LookupMessage(std::atoi(argument.c_str()));
+          if (arguments[index].find("MsgStr(") != std::string::npos) {
+            arguments[index] = arguments[index].substr(7);
+            arguments[index] = arguments[index].substr(0, arguments[index].size() - 1);
+            const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
           } else {
-            std::sprintf(buffer, format.c_str(), argument.c_str());
+            std::sprintf(buffer, format.c_str(), arguments[index].c_str());
           }
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("d"))) {
-          std::sprintf(buffer, format.c_str(), std::atoi(argument.c_str()));
+          std::sprintf(buffer, format.c_str(), std::atoi(arguments[index].c_str()));
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("f"))) {
-          std::sprintf(buffer, format.c_str(), std::atof(argument.c_str()));
+          std::sprintf(buffer, format.c_str(), std::atof(arguments[index].c_str()));
         }
 
         result = buffer + remainder;
@@ -631,17 +645,17 @@ void LineCutter::UIText::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   if (this->m_shadowed) {
-    this->DrawTextAt(1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_shadowColor, this->m_bold,
-      this->m_italic
+    this->DrawTextAt(1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_style.fontHeight, this->m_shadowColor, this->m_style.bold,
+      this->m_style.italic
     );
   }
 
   if (this->m_outlined == 1) {
     DrawOutlinedText(
-      *this, 1, 1, this->m_text.c_str(), this->m_text.size(), this->m_color, this->m_outlineColor, 0, this->m_fontHeight, this->m_bold, this->m_italic
+      *this, 1, 1, this->m_text.c_str(), this->m_text.size(), this->m_style.color, this->m_outlineColor, 0, this->m_style.fontHeight, this->m_style.bold, this->m_style.italic
     );
   } else {
-    this->DrawTextAt(0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_color, this->m_bold, this->m_italic
+    this->DrawTextAt(0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_style.fontHeight, this->m_style.color, this->m_style.bold, this->m_style.italic
     );
   }
 }
@@ -866,21 +880,31 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
 int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
   std::cmatch match;
 
-  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
+  if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
+    return x;
+  }
+
+  UIItemImage* image;
+  {
     const std::string itemId = match[1].str();
-    UIItemImage* image = new (std::nothrow) UIItemImage(itemId);
+    image = new (std::nothrow) UIItemImage();
     if (image) {
       image->SetSize(25, 25);
-      image->Invalidate();
-      if (this->m_width < image->geometry.width + x) {
-        this->NewLine();
-        this->AddWindow(image);
-        x = image->geometry.width;
-      } else {
-        this->AddWindow(image);
-        x += image->geometry.width;
-      }
+      image->SetItemId(itemId);
     }
+  }
+
+  if (!image) {
+    return x;
+  }
+
+  if (image->geometry.width + x > this->m_width) {
+    this->NewLine();
+    this->AddWindow(image);
+    x = image->geometry.width;
+  } else {
+    this->AddWindow(image);
+    x += image->geometry.width;
   }
 
   return x;
@@ -945,9 +969,11 @@ void CCreateLineInfo::BuildWindows() {
     case LINE_SEGMENT_QUEST:
       x = this->LayoutLink(x, text, segment->type, segment->style);
       break;
-    case LINE_SEGMENT_MESSAGE:
-      x = this->LayoutText(x, GetNavigationLinkParser()->ExpandMessages(text), segment->style);
+    case LINE_SEGMENT_MESSAGE: {
+      const std::string expanded = GetNavigationLinkParser()->ExpandMessages(text);
+      x = this->LayoutText(x, expanded, segment->style);
       break;
+    }
     case LINE_SEGMENT_EMOTION:
       x = this->LayoutEmotion(x, text);
       break;
@@ -955,7 +981,7 @@ void CCreateLineInfo::BuildWindows() {
       x = this->LayoutItemImage(x, text);
       break;
     case LINE_SEGMENT_TEXT:
-      if (text == "\n") {
+      if (text.compare("\n") == 0) {
         this->NewLine();
         x = 0;
       } else {
@@ -1151,21 +1177,7 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
   const tagSIZE size = MeasureText(this->m_parent, text, style);
   LineCutter::UIText* window = new LineCutter::UIText();
   window->SetSize(size.cx, size.cy);
-  window->m_text = text;
-  window->m_outlineColor = this->outlineColor;
-  window->m_shadowed = this->shadow;
-  window->m_color = style.color;
-  window->m_fontHeight = style.fontHeight;
-  window->m_bold = style.bold;
-  window->m_italic = style.italic;
-  window->m_outlined = this->outline;
-  window->m_shadowColor = this->shadowColor;
-  if (window->m_outlined == 1) {
-    const int textWidth = window->TextWidth(window->m_text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
-    window->Resize(textWidth + 2, style.fontHeight + 2);
-  }
-
-  window->Invalidate();
+  window->SetText(text, style, this->outline, this->outlineColor, this->shadow, this->shadowColor);
   return window;
 }
 
@@ -1447,24 +1459,24 @@ int CCreateLineInfo::ParseChar(int index) {
     return index + 1;
   }
 
-  if (character == "\n") {
+  if (character.compare("\n") == 0) {
     this->AddSegment(LINE_SEGMENT_TEXT);
     this->AppendText(character);
     this->m_newSegment = true;
-  } else if (character != "\r") {
-    if (character == " ") {
+  } else if (character.compare("\r") != 0) {
+    if (character.compare(" ") == 0) {
       if (index > 0) {
-        const std::string previousText = this->m_text.substr(index - 1, this->m_text.size() - (index - 1));
+        const int previousIndex = index - 1;
+        const std::string previousText = this->m_text.substr(previousIndex, this->m_text.size() - previousIndex);
         const std::string previous = NextCharacter(previousText);
-        if (previous == "\n") {
+        if (previous.compare("\n") == 0) {
           this->AddSegment(LINE_SEGMENT_TEXT);
         }
         this->AppendText(character);
-        this->m_newSegment = true;
       } else {
         this->AppendText(character);
-        this->m_newSegment = true;
       }
+      this->m_newSegment = true;
     } else {
       if (this->m_newSegment == true) {
         this->AddSegment(LINE_SEGMENT_TEXT);
