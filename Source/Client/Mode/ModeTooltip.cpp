@@ -69,13 +69,12 @@ void CMode::ExpireTooltip() {
 
 // OFFSET: 0x00AD64B0
 // FUNCTION: fn_17833
-std::uint32_t CMode::ClearTooltip() {
+void CMode::ClearTooltip() {
   if (!this->tooltip) {
-    return 0;
+    return;
   }
 
   g_windowMgr.Schedule(this->tooltip);
   this->tooltip = nullptr;
   this->tooltipTick = timeGetTime();
-  return this->tooltipTick;
 }

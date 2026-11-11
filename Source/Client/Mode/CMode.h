@@ -39,7 +39,7 @@ public:
   virtual void OnChangeState(int value);
 
   CMode();
-  std::uint32_t ClearTooltip();
+  void ClearTooltip();
   void ExpireTooltip();
   void ShowTooltip(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert);
   void SetCursorAction(int action);
