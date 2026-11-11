@@ -39,6 +39,7 @@
 #include <vector>
 
 extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
+extern template void std::_List_node<MessengerMember, void*>::_Free_non_head(std::allocator<std::_List_node<MessengerMember, void*>>&, std::_List_node<MessengerMember, void*>*) noexcept;
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 namespace {
@@ -169,7 +170,8 @@ namespace {
     return true;
   }
 
-  void CountSameNameChar(char left, char right, short& matched) {
+  // INLINED
+  void CountSameNameChar(const char& left, const char& right, short& matched) {
     if (left == 'I' || left == 'l') {
       if (right == 'I' || right == 'l') {
         ++matched;
@@ -1468,7 +1470,8 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
 // FUNCTION: fn_23338
 void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
   for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
-    if (std::atoi(item.itemId.c_str()) == std::atoi(it->itemId.c_str())) {
+    const int itemId = std::atoi(it->itemId.c_str());
+    if (itemId == std::atoi(item.itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
@@ -1768,7 +1771,8 @@ void CSession::SetMerchantMyShopItems(int count, const short* ids) {
 // OFFSET: 0x00DF9560
 // FUNCTION: fn_23520
 int CSession::IsGuildMemberNameDifferent(const char* name) {
-  std::list<GuildInfo::Member> members = g_guildInfo.m_members;
+  std::list<GuildInfo::Member> members;
+  members = g_guildInfo.m_members;
   for (auto it = members.begin(); it != members.end(); ++it) {
     if (this->IsDifferentName(name, it->name.c_str()) == 0) {
       return 1;
