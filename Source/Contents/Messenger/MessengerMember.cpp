@@ -1266,7 +1266,11 @@ void UIMessengerGroupWnd::OnWheel(int delta) {
     if (step > 3) {
       step = 3;
     }
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, delta < 0 ? step : -step, 0, 0, 0);
+    if (delta < 0) {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, step, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, UM_SCROLLVERT, -step, 0, 0, 0);
+    }
   }
 }
 

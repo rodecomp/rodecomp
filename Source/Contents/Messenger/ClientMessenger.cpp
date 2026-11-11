@@ -64,6 +64,17 @@ extern "C" {
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
+using SessionShopTree = std::_Tree<std::_Tmap_traits<
+  int, SessionShop, std::less<int>, std::allocator<std::pair<const int, SessionShop>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, SessionShop>, void*>*>
+SessionShopTree::_Find_lower_bound<int>(const int&) const;
+extern template void std::list<CSkillInfo>::clear() noexcept;
+
+using NameToIdTree = std::_Tree<std::_Tmap_traits<
+  std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
+extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
+NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
+
 namespace EquipmentProperties {
   class CEquipmentProperties;
 }
@@ -775,8 +786,8 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
 // OFFSET: 0x00DDE720
 // FUNCTION: fn_23398
 __declspec(noinline) SessionShop* CSession::FindShop(const int& shopId) {
-  const auto found = this->m_shops.lower_bound(shopId);
-  if (found == this->m_shops.end() || shopId < found->first) {
+  const auto found = this->m_shops.find(shopId);
+  if (found == this->m_shops.end()) {
     return nullptr;
   }
   return &found->second;
@@ -800,14 +811,16 @@ int CSession::FindShopId(std::string name) {
 // OFFSET: 0x0068BDB0
 // FUNCTION: fn_05621
 bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
-  const bool previous = this->m_active;
   SessionShop* shop = g_session.FindShop(g_session.FindShopId(""));
-  if (shop != nullptr && !shop->items.empty()) {
-    this->m_active = shop->items[0].find(this->m_id) != shop->items[0].end();
+  bool active;
+  if (shop != nullptr && shop->items.size() >= 1) {
+    active = shop->items[0].find(this->m_id) != shop->items[0].end();
   } else {
-    this->m_active = true;
+    active = true;
   }
-  return previous != this->m_active;
+  const bool changed = this->m_active != active;
+  this->m_active = active;
+  return changed;
 }
 
 // OFFSET: 0x0068BEA0
