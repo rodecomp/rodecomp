@@ -1089,7 +1089,7 @@ void CUITab::SelectPage(UIWindow* page) {
 
     this->current = button;
     for (UIWindow* child : this->m_children) {
-      if (child != this->current) {
+      if (this->current != child) {
         static_cast<CUITabButton*>(child)->SetSelected(false);
       }
     }
@@ -1128,7 +1128,7 @@ bool CUITab::SelectIndex(unsigned int index) {
 
     this->current = button;
     for (UIWindow* child : this->m_children) {
-      if (child != this->current) {
+      if (this->current != child) {
         static_cast<CUITabButton*>(child)->SetSelected(false);
       }
     }
