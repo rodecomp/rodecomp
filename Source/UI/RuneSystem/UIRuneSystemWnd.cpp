@@ -984,7 +984,7 @@ void UIRuneSystem_Decom_RadioBtn::Paint() {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_disabledBitmap.c_str())));
     color = 0xECD5C4;
   } else {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((this->geometry.state ? this->uncheckedBitmap : this->checkedBitmap).c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((this->geometry.state == 0 ? this->checkedBitmap : this->uncheckedBitmap).c_str())));
   }
 
   if (bitmap) {
