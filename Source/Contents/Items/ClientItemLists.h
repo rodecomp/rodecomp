@@ -1,6 +1,4 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ITEMS_CLIENTITEMLISTS_H
 #define RAGNAROK_SOURCE_CONTENTS_ITEMS_CLIENTITEMLISTS_H
 
-void ReceiveFriendAddResult(const unsigned char* data);
-
 #endif

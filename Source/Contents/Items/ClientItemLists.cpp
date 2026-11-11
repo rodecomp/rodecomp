@@ -402,7 +402,7 @@ void CGameMode::ReceiveItemSlotOptions(const unsigned char* data) {
 
 // OFFSET: 0x00D1FBA0
 // FUNCTION: fn_21643
-void ReceiveFriendAddResult(const unsigned char* data) {
+void CGameMode::ReceiveFriendAddResult(const unsigned char* data) {
   const FriendNoticePacket* packet = reinterpret_cast<const FriendNoticePacket*>(data);
   char name[25];
   std::memcpy(name, packet->name, 24);

@@ -2004,8 +2004,8 @@ void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int field14, int 
 
 // OFFSET: 0x00D08640
 // FUNCTION: fn_21591
-__declspec(noinline) void __stdcall ReceiveBuyingStorePurchase(const unsigned char* packet) {
-  ProcessBuyingStorePurchase(
+__declspec(noinline) void CGameMode::ReceiveBuyingStorePurchase(const unsigned char* packet) {
+  this->ProcessBuyingStorePurchase(
     *reinterpret_cast<const int*>(packet + 0x14),
     *reinterpret_cast<const int*>(packet + 2),
     *reinterpret_cast<const short*>(packet + 6),

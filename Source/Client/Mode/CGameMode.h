@@ -822,6 +822,10 @@ public:
   void ReceiveVendingItemList(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data, int value, int unused);
   void ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data);
   void ReceiveVendingItemSoldNow(const unsigned char* data);
+  void ProcessBuyingStorePurchase(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
+  void ReceiveBuyingStorePurchase(const unsigned char* packet);
+  void ReceiveFriendAddResult(const unsigned char* data);
+  void ReceiveNavigation(const unsigned char* packet);
   void ReceiveNotifyGroundSkill(const unsigned char* packet);
   void ReceiveAcceptEnter(const unsigned char* data);
   void ApplyStatusChange(
@@ -976,7 +980,6 @@ void LaunchRollingCutterEffect(CGameActor* actor);
 void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* target, std::uint32_t targetAid, std::uint16_t skillId, short x, short y, int delay);
 void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t skillId, int delay, int effectId);
 void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, float scale, int job);
-void __stdcall ProcessBuyingStorePurchase(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
 void DecodeSrcDst(const unsigned char* packed, int* srcX, int* srcY, int* dstX, int* dstY, int* subX, int* subY);
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -1012,7 +1015,6 @@ static_assert(sizeof(CGameMode) == 0x670);
 
 void SendPacketHeader(std::uint16_t packetType);
 void SendPacketHeader2(std::uint16_t packetType);
-void ReceiveNavigation(const unsigned char* packet);
 void CloseAccountLimitedTool();
 
 struct MiniMapEffectMarker {
