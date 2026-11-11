@@ -460,10 +460,13 @@ void CSkillAction_DR_HUNGER::OnSkillHit(int caster, CGameActor* target, CGameAct
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("hunger", 0x1D6D75EDE7CD311FULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("hunger", 0x1D6D75EDE7CD311FULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620DE0
@@ -1038,10 +1041,13 @@ void CSkillAction_DR_WIND_BOMB::OnSkillEffect(int level, CGameActor* source, CGa
     static_cast<CBezierArcThrowEffect*>(effect)->SetTarget(target->render.position);
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("wind_bomb_main", 0xD1538513DF975701ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0xD1538513DF975701ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        constexpr auto effectSourceText = CRYPT_NAME("wind_bomb_main", 0xD1538513DF975701ULL);
+        const auto& effectSource = effectSourceText.data;
+        thread_local EncryptedName<sizeof(effectSource), 0xD1538513DF975701ULL> effectName(effectSource);
+        return effectName.Text();
+      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 }
@@ -1069,15 +1075,19 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  const char effectSource[] = {'\xFA', '\xDF', '\x1A', '\xBA', '\xBF', '\x59', '\xB2', '\x0B', '\xF7', '\xC2', '\x02', '\xAA', '\xA3', '\x3D'};
-  thread_local EncryptedName<sizeof(effectSource), 0x6DED3DD1CF75AD9BULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::array<char, 14> effectSource = {'\xFA', '\xDF', '\x1A', '\xBA', '\xBF', '\x59', '\xB2', '\x0B', '\xF7', '\xC2', '\x02', '\xAA', '\xA3', '\x3D'};
+    thread_local EncryptedName<sizeof(effectSource), 0x6DED3DD1CF75AD9BULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 
-  const char bottomSource[] = {'\xA0', '\xA1', '\xB4', '\x02', '\xF5', '\x11', '\x9C', '\x2F', '\xAD', '\xBC', '\xAC', '\x12', '\xE9', '\x2A', '\xA1', '\x26', '\xB5', '\xA7', '\xB4', '\x1A', '\x9B'};
-  thread_local EncryptedName<sizeof(bottomSource), 0x49C3759B77DBD3C1ULL> bottomName(bottomSource);
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::array<char, 21> bottomSource = {'\xA0', '\xA1', '\xB4', '\x02', '\xF5', '\x11', '\x9C', '\x2F', '\xAD', '\xBC', '\xAC', '\x12', '\xE9', '\x2A', '\xA1', '\x26', '\xB5', '\xA7', '\xB4', '\x1A', '\x9B'};
+    thread_local EncryptedName<sizeof(bottomSource), 0x49C3759B77DBD3C1ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006249E0
@@ -1109,10 +1119,13 @@ void CSkillAction_DR_ICE_CLOUD::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("ice_cloud", 0x474DC581D5E98357ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("ice_cloud", 0x474DC581D5E98357ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624F80
@@ -1122,10 +1135,13 @@ void CSkillAction_DR_ICE_TOTEM::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("ice_totem", 0x3F557BE333F95F6DULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("ice_totem", 0x3F557BE333F95F6DULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00625180
@@ -1144,10 +1160,13 @@ void CSkillAction_DR_WEREWOLF::OnSkillEffect(int level, CGameActor* source, CGam
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("werewolf", 0x490FFB43A12F0DB9ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x490FFB43A12F0DB9ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("werewolf", 0x490FFB43A12F0DB9ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x490FFB43A12F0DB9ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006253A0
@@ -1185,10 +1204,13 @@ void CSkillAction_DR_BLOOD_HOWLING::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("blood_howling", 0xD98F03A52D35636DULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("blood_howling", 0xD98F03A52D35636DULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006207B0
@@ -1198,10 +1220,13 @@ void CSkillAction_DR_NOMERCY_CLAW::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("nomercy_claw", 0x0F0F8B6B8F9D19D1ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x0F0F8B6B8F9D19D1ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("nomercy_claw", 0x0F0F8B6B8F9D19D1ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x0F0F8B6B8F9D19D1ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006210B0
@@ -1211,10 +1236,13 @@ void CSkillAction_DR_ENRAGE_RAPTOR::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  constexpr auto effectSourceText = CRYPT_NAME("enrage_raptor", 0x812BE72BCD5707B7ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x812BE72BCD5707B7ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto effectSourceText = CRYPT_NAME("enrage_raptor", 0x812BE72BCD5707B7ULL);
+    const auto& effectSource = effectSourceText.data;
+    thread_local EncryptedName<sizeof(effectSource), 0x812BE72BCD5707B7ULL> effectName(effectSource);
+    return effectName.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00621370
