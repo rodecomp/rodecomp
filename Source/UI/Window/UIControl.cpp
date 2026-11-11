@@ -1233,12 +1233,12 @@ void CUIStaticImage::Paint() {
     const int height = static_cast<int>(static_cast<float>(res->image.height) * factor);
     const int width = static_cast<int>(static_cast<float>(res->image.width) * factor);
     if (transparent) {
-      this->DrawAuxiliaryScaled(1, 0, 0, width, height, &res->image, 1, false);
+      this->DrawAuxiliaryScaled(1, 0, 0, width, height, reinterpret_cast<BitmapImage*>(res), 1, false);
     } else {
-      this->DrawBitmapScaled(0, 0, width, height, &res->image, 0);
+      this->DrawBitmapScaled(0, 0, width, height, reinterpret_cast<BitmapImage*>(res), 0);
     }
   } else if (transparent) {
-    this->DrawAuxiliary(1, 0, 0, &res->image, true, false);
+    this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(res), true, false);
   } else {
     this->DrawBitmap(0, 0, res, false);
   }
@@ -1488,19 +1488,20 @@ void CUIImageButton::SetImages(const std::string& normal, const std::string& hov
 // OFFSET: 0x009E31B0
 // FUNCTION: fn_14411
 void CUICheckBox::Paint() {
-  std::map<int, CResPtr<CBitmapRes>>::iterator found;
+  const std::map<int, CResPtr<CBitmapRes>>& images = this->images;
+  std::map<int, CResPtr<CBitmapRes>>::const_iterator found;
   if (this->checked) {
-    found = this->images.find(1);
+    found = images.find(1);
   } else if (this->disabled) {
     if (this->disabledImage) {
       this->DrawBitmap(0, 0, this->disabledImage, false);
     }
     return;
   } else {
-    found = this->images.find(this->state);
+    found = images.find(this->state);
   }
 
-  if (found != this->images.end() && found->second) {
+  if (found != images.end() && found->second) {
     this->DrawBitmap(0, 0, found->second, false);
   }
 }
