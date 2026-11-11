@@ -21,6 +21,7 @@
 #include "Utility/Text/FormatString.h"
 #include "UI/Login/UILoginWnd.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstddef>
 #include <cstdint>
