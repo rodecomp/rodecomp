@@ -2142,12 +2142,11 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   std::vector<unsigned char> data;
   AppendReplayChunk(data, MakeReplayMarker(20000));
-  for (UIWindow* window : this->rendered) {
-    const unsigned id = static_cast<unsigned>(window->geometry.id);
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    const unsigned id = static_cast<unsigned>((*it)->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      std::vector<unsigned char> state = window->GetReplayData();
-      const std::vector<unsigned char> chunk = MakeReplayChunk(window->geometry.id + 20100, state);
-      AppendReplayChunk(data, chunk);
+      std::vector<unsigned char> state = (*it)->GetReplayData();
+      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, state));
     }
   }
   AppendReplayChunk(data, MakeReplayMarker(20001));
