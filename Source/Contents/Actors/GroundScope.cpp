@@ -137,8 +137,8 @@ void CGroundScope::Render(int argument) {
   const int half = this->m_size / 2;
   const int left = cellX - half;
   const int top = cellY - half;
-  const float sine = static_cast<float>(std::sin(static_cast<double>(this->m_angle)));
-  const float cosine = static_cast<float>(std::cos(static_cast<double>(this->m_angle)));
+  const float sine = ClientSin(this->m_angle);
+  const float cosine = ClientCos(this->m_angle);
   const std::uint32_t color = (static_cast<unsigned>(sine * 40.0f) << 24) + 0x80FFFFFF;
 
 
