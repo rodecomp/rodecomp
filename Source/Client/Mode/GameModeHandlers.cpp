@@ -1852,9 +1852,10 @@ void CGameMode::ReceiveRuneSetGrades(const unsigned char* data) {
     count = size / sizeof(RuneSetGradeEntry);
   }
 
-  for (unsigned int i = 0; i < count; ++i) {
-    const RuneSetGradeEntry& entry = packet->entries[i];
-    g_runeSystemMgr->SetRuneGrade(packet->tagId, 0, entry.id, entry.grade, entry.gradeLevel);
+  const RuneSetGradeEntry* entry = packet->entries;
+  for (; count != 0; --count) {
+    g_runeSystemMgr->SetRuneGrade(packet->tagId, 0, entry->id, entry->grade, entry->gradeLevel);
+    ++entry;
   }
 
   CTagData* tag = g_runeSystemMgr->GetTag(packet->tagId);
@@ -2208,9 +2209,6 @@ void CGameMode::ReceiveAchievementUpdate(
     }
 
     AchievementInfo info;
-    info.rewardItemId = -1;
-    info.rewardTitleId = -1;
-    info.rewardBuffId = -1;
     g_achievementMgr->GetAchievement(info, id);
     const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_NEXT_ROULLETE_STAGE), info.title.c_str());
     static_cast<UIBalloonText*>(this->achievementBalloon)->WrapText(text.c_str(), 72);
