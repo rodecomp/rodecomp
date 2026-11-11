@@ -185,7 +185,7 @@ std::string UIAchTab::Label(int group, int sub) {
 // OFFSET: 0x007B4370
 // FUNCTION: fn_09211
 bool UIAchTab::HitTestTab(int x, int y, int* a, int* b) {
-  if (x < 0 || x > this->tabWidth || y < 0) {
+  if (x < 0 || this->tabWidth < x || y < 0) {
     return false;
   }
 
@@ -707,7 +707,7 @@ void UIAchievementWnd::SelectAchievement(int id) {
 
   UIAchListWnd* list = this->list;
   int index = 0;
-  for (std::vector<int>::iterator it = list->ids.begin(); it != list->ids.end() && *it != id; ++it) {
+  for (std::vector<int>::iterator it = list->ids.begin(); it != list->ids.end() && id != *it; ++it) {
     ++index;
   }
 
@@ -765,7 +765,10 @@ void UIAchListWnd::UpdateScroll() {
   }
 
   const int rows = this->rowCount;
-  const int overflow = std::max(info->count - rows, 0);
+  int overflow = info->count - rows;
+  if (overflow < 0) {
+    overflow = 0;
+  }
   this->scrollable = overflow > 0;
 
   if (overflow > 0) {
@@ -806,7 +809,10 @@ void UIAchTab::UpdateScrollBar() {
 
   const int count = static_cast<int>(this->groups[this->selectedGroup].subs.size());
   const int visible = this->visibleSubs;
-  const int overflow = std::max(count - visible, 0);
+  int overflow = count - visible;
+  if (overflow < 0) {
+    overflow = 0;
+  }
   this->scrollable = overflow > 0;
 
   if (overflow > 0) {
@@ -1019,7 +1025,11 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   this->sub = sub;
   this->tab->Select(group, sub);
 
-  this->upper->SetTitle(group == 0 ? LookupMessage(MSI_OTPUSER_ONLY) : this->tab->Label(this->group, this->sub));
+  if (group == 0) {
+    this->upper->SetTitle(LookupMessage(MSI_OTPUSER_ONLY));
+  } else {
+    this->upper->SetTitle(this->tab->Label(this->group, this->sub));
+  }
   this->upper->Invalidate();
 
   if (g_achievementMgr->GetGroupAchievements(this->achievements, this->group, this->sub) == 1) {
