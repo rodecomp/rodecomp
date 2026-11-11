@@ -65,10 +65,12 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
     return Base64Decode(stripped, false);
   }
 
+  const std::size_t capacity = length / 4 * 3;
+  std::size_t pos = 0;
   std::string decoded;
-  decoded.reserve(length / 4 * 3);
+  decoded.reserve(capacity);
 
-  for (std::size_t pos = 0; pos < length; pos += 4) {
+  for (; pos < length; pos += 4) {
     unsigned second = Position(encoded[pos + 1]);
     decoded.push_back(static_cast<char>((Position(encoded[pos]) << 2) + ((second >> 4) & 3)));
     if (pos + 2 < length && encoded[pos + 2] != '=' && encoded[pos + 2] != '.') {
