@@ -89,24 +89,6 @@ static_assert(sizeof(PACKET_CZ_QUEST_STATUS_REQ_BUFFER) == 0x800);
 // GLOBAL: gl_24837
 CRenewQuestMgr* g_renewQuestMgr;
 
-// OFFSET: 0x00676110
-// FUNCTION: fn_05417
-RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), baseExpReward(""), jobExpReward("") {
-  this->m_descriptions.clear();
-  this->m_rewards.clear();
-  for (int index = 0; index < 3; ++index) {
-    this->m_huntMobId[index] = 31999;
-    this->m_huntMinLevel[index] = -1;
-    this->m_huntMaxLevel[index] = -1;
-  }
-
-  for (int index = 0; index < 3; ++index) {
-    for (int offset = 0; offset < 0x33; ++offset) {
-      this->m_huntName[index][offset] = 0;
-    }
-  }
-}
-
 // OFFSET: 0x006765C0
 // FUNCTION: fn_05420
 RenewQuestInfo::RenewQuestInfo()

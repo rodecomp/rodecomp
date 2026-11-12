@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_QUEST_RENEWQUESTMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_QUEST_RENEWQUESTMGR_H
 
+#include <windows.h>
+
 #include <list>
 #include <map>
 #include <set>
@@ -53,7 +55,20 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
   /* 01E8 */ std::vector<std::pair<unsigned int, unsigned int>> m_rewards;
   /* 01F8 */ __int64 questType;
 
-  RenewQuestOngoingInfo();
+  // OFFSET: 0x00676110
+  // FUNCTION: fn_05417
+  RenewQuestOngoingInfo() : m_simpleView(true), baseExpReward(""), jobExpReward("") {
+    this->m_descriptions.clear();
+    this->m_rewards.clear();
+    for (int index = 0; index < 3; ++index) {
+      this->m_huntMobId[index] = 31999;
+      this->m_huntMinLevel[index] = -1;
+      this->m_huntMaxLevel[index] = -1;
+    }
+
+    SecureZeroMemory(this->m_huntName, sizeof(this->m_huntName));
+  }
+
   std::string GetDateString() const;
   std::string GetHuntText(int index) const;
 };
