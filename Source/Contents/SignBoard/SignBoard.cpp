@@ -71,67 +71,65 @@ void CSignBoardMgr::Initialize() {
     std::string entryMap(it->map);
     LowercaseText(entryMap);
     LowercaseText(mapName);
-    if (entryMap != mapName) {
-      continue;
-    }
+    if (entryMap == mapName) {
+      switch (it->type) {
+      case 1: {
+        C3DCooRendering* object = new C3DCooRendering();
+        object->type = it->type;
+        object->Create();
+        std::string image;
+        if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
+          image = "유저인터페이스\\";
+        }
+        image += it->image;
+        object->SetWindowImage(image);
 
-    switch (it->type) {
-    case 1: {
-      C3DCooRendering* object = new C3DCooRendering();
-      object->type = it->type;
-      object->Create();
-      std::string image;
-      if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
-        image = "유저인터페이스\\";
+        vector3d position = {0.0f, 0.0f, 0.0f};
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+          static_cast<float>(it->offset);
+        object->render.position.x = position.x;
+        object->render.position.y = position.y;
+        object->render.position.z = position.z;
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+        break;
       }
-      image += it->image;
-      object->SetWindowImage(image);
-
-      vector3d position = {0.0f, 0.0f, 0.0f};
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
-        static_cast<float>(it->offset);
-      object->render.position.x = position.x;
-      object->render.position.y = position.y;
-      object->render.position.z = position.z;
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
-      break;
-    }
-    case 2: {
-      CIcon* icon = new CIcon();
-      vector3d position = {0.0f, 0.0f, 0.0f};
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
-        static_cast<float>(it->offset);
-      icon->render.position.x = position.x;
-      icon->render.position.y = position.y;
-      icon->render.position.z = position.z;
-      icon->Load(std::string(it->image));
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(icon);
-      break;
-    }
-    case 3: {
-      C3DCooRendering* object = new C3DCooRendering();
-      object->type = it->type;
-      object->Create();
-      std::string image;
-      if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
-        image = "유저인터페이스\\";
+      case 2: {
+        CIcon* icon = new CIcon();
+        vector3d position = {0.0f, 0.0f, 0.0f};
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+          static_cast<float>(it->offset);
+        icon->render.position.x = position.x;
+        icon->render.position.y = position.y;
+        icon->render.position.z = position.z;
+        icon->Load(std::string(it->image));
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(icon);
+        break;
       }
-      image += it->image;
-      object->SetWindowImage(image);
-      object->SetBoard(std::string(it->text), std::string(it->color));
+      case 3: {
+        C3DCooRendering* object = new C3DCooRendering();
+        object->type = it->type;
+        object->Create();
+        std::string image;
+        if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
+          image = "유저인터페이스\\";
+        }
+        image += it->image;
+        object->SetWindowImage(image);
+        object->SetBoard(std::string(it->text), std::string(it->color));
 
-      vector3d position = {0.0f, 0.0f, 0.0f};
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-      position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
-        static_cast<float>(it->offset);
-      object->render.position.x = position.x;
-      object->render.position.y = position.y;
-      object->render.position.z = position.z;
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
-      break;
-    }
+        vector3d position = {0.0f, 0.0f, 0.0f};
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+          static_cast<float>(it->offset);
+        object->render.position.x = position.x;
+        object->render.position.y = position.y;
+        object->render.position.z = position.z;
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+        break;
+      }
+      }
     }
   }
 }
@@ -192,7 +190,7 @@ CBmpObjWnd::CBmpObjWnd() : UIWindow(0) {
 
 // OFFSET: 0x00821120
 // FUNCTION: fn_10256
-CIcon::CIcon() {
+__declspec(noinline) CIcon::CIcon() {
 }
 
 // OFFSET: 0x00821180
