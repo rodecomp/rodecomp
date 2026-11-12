@@ -396,9 +396,18 @@ CSkillActionMgr* g_skillActionMgr;
 // INLINED
 CSkillActionMgr::~CSkillActionMgr() = default;
 
+// INLINED
+__forceinline CSkillActionMgr* GetSkillActionMgr() {
+  if (!g_skillActionMgr) {
+    g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
+  }
+
+  return g_skillActionMgr;
+}
+
 // OFFSET: 0x005B06F0
 // FUNCTION: fn_03339
-__forceinline CSkillActionMgr* CSkillActionMgr::GetInstance() {
+CSkillActionMgr* CSkillActionMgr::GetInstance() {
   if (!g_skillActionMgr) {
     g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
   }
@@ -821,7 +830,7 @@ bool IsSupportSkill(int skillId) {
   case MER_INCAGI:
     return true;
   default:
-    return CSkillActionMgr::GetInstance()->IsSupportAction(skillId);
+    return GetSkillActionMgr()->IsSupportAction(skillId);
   }
 }
 
@@ -3416,19 +3425,26 @@ static EfstActionRegistrar s_efstAction1423(1423, NewAction<CEfstAction_ShowEffe
 // GLOBAL: gl_25725
 static EfstActionRegistrar s_efstAction1424(1424, NewAction<CEfstAction_ShowEffect3, CEfstAction>);
 
+struct EfstActionRegistration {
+  // INLINED
+  __forceinline EfstActionRegistration(int efstId, std::function<CEfstAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterEfstAction(efstId, factory);
+  }
+};
+
+struct SkillActionRegistration {
+  // INLINED
+  __forceinline SkillActionRegistration(int skillId, std::function<CSkillAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x00453F10
 // FUNCTION: fn_45562
-static bool s_efstActionRegistered722 = [](std::function<CEfstAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterEfstAction(722, factory);
-  return true;
-}(NewAction<CEfstAction_UNLIMIT, CEfstAction>);
-
+static EfstActionRegistration s_efstActionRegistered722(722, NewAction<CEfstAction_UNLIMIT, CEfstAction>);
 // OFFSET: 0x00453FE0
 // FUNCTION: fn_45563
-static bool s_skillActionRegistered5002 = [](std::function<CSkillAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillAction(5002, factory);
-  return true;
-}(NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>);
+static SkillActionRegistration s_skillActionRegistered5002(5002, NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>);
 
 // GLOBAL: gl_25726
 static SkillActionRegistrar s_skillAction6516(6516, NewAction<CSkillAction_AG_ENERGY_CONVERSION, CSkillAction>);
@@ -3469,10 +3485,7 @@ static SkillActionRegistrar s_skillAction6519(6519, NewAction<CSkillAction_IQ_BL
 
 // OFFSET: 0x00457500
 // FUNCTION: fn_45564
-static bool s_efstActionRegistered1665 = [](std::function<CEfstAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterEfstAction(1665, factory);
-  return true;
-}(NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>);
+static EfstActionRegistration s_efstActionRegistered1665(1665, NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>);
 
 // GLOBAL: gl_25745
 static SkillActionRegistrar s_skillAction6510(6510, NewAction<CSkillAction_BO_DUST_EXPLOSION, CSkillAction>);
