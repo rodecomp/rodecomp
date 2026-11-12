@@ -145,7 +145,7 @@ void UIShortCutWnd::OnProcess() {
   const int x = (g_mouse.x - this->geometry.x);
   const int y = (g_mouse.y - this->geometry.y);
   const int hovered = this->HitTestSlot(x, y);
-  if (this->m_grid.hovered != hovered) {
+  if (hovered != this->m_grid.hovered) {
     this->m_grid.hovered = hovered;
   }
   this->Invalidate();

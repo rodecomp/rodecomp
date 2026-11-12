@@ -773,9 +773,9 @@ void CEfstAction_ChangeSize::OnEfstBegin(int, int value, int, int, CRenderObject
 // OFFSET: 0x007760D0
 // FUNCTION: fn_08344
 void CSkillAction_CD_DIVINUS_FLOS::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (target) {
+  if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1486,12 +1486,9 @@ void CSkillAction_SHC_SHADOW_STAB::OnSkillDamage(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
-  int variant = std::rand() % 2;
-  if (variant < 1) {
-    variant = 1;
-  }
-  effects->Spawn(source->render.accountId, manager->EffectId(std::format("shadow_stab_hit{}", variant)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(
+    source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("shadow_stab_hit{}", static_cast<int>(std::max(std::rand() % 2, 1)))), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
+  );
 }
 
 // OFFSET: 0x00777E20

@@ -227,13 +227,11 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
     return nullptr;
   }
 
-  ResourceMgr& resources = ResourceMgr::Instance();
-
   if (resolveSkin) {
-    return static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
+    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
   }
 
-  return static_cast<CBitmapRes*>(resources.Load(name));
+  return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(name));
 }
 
 // INLINED

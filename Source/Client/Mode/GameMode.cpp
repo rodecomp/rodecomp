@@ -5396,11 +5396,12 @@ void CGameMode::SendNpcInputText(std::uint32_t npcId, const char* text, const ch
   }
 
   const std::size_t length = std::strlen(buffer);
+  const std::size_t size = length + 8;
   unsigned char* packet = static_cast<unsigned char*>(
-    _MallocaComputeSize(length + 8) != 0
-      ? (_MallocaComputeSize(length + 8) <= _ALLOCA_S_THRESHOLD
-          ? _MarkAllocaS(_alloca(_MallocaComputeSize(length + 8)), _ALLOCA_S_STACK_MARKER)
-          : _MarkAllocaS(std::malloc(_MallocaComputeSize(length + 8)), _ALLOCA_S_HEAP_MARKER))
+    _MallocaComputeSize(size) != 0
+      ? (_MallocaComputeSize(size) <= _ALLOCA_S_THRESHOLD
+          ? _MarkAllocaS(_alloca(_MallocaComputeSize(size)), _ALLOCA_S_STACK_MARKER)
+          : _MarkAllocaS(std::malloc(_MallocaComputeSize(size)), _ALLOCA_S_HEAP_MARKER))
       : nullptr
   );
   if (packet == nullptr) {

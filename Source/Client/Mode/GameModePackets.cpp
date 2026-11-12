@@ -3705,7 +3705,8 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, int amoun
     actor->SendMsg(nullptr, AM_MAKE_NUMBER, 0, amount, option, 0xFFFF55B1, 0, 0x72, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, status, actor->render.position, 0, 0xFFFFFFFF, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  CEffect* effect = effects->Spawn(actor->render.accountId, status, actor->render.position, 0, 0xFFFFFFFF, 0, 0);
   if (effect == nullptr) {
     actor->LaunchEffect(status, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
@@ -10238,9 +10239,8 @@ void CGameMode::ReceiveGuildBanList(const unsigned char* data) {
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanRecord);
   guildInfo->bannedMembers.clear();
 
-  const GuildBanRecord* records = reinterpret_cast<const GuildBanRecord*>(data + sizeof(PacketLengthHeader));
   for (int i = 0; i < count; ++i) {
-    const GuildBanRecord* record = &records[i];
+    const GuildBanRecord* record = &reinterpret_cast<const GuildBanRecord*>(data + sizeof(PacketLengthHeader))[i];
     char name[25];
     std::memcpy(name, record->name, sizeof(record->name));
     name[24] = '\0';
@@ -10956,7 +10956,6 @@ void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
     const GuildMemberNamedRecord* record = &records[i];
     GuildInfo::Member member;
     member.accountId = record->accountId;
-    member.characterId = record->characterId;
     member.head = record->head;
     member.headPalette = record->headPalette;
     member.job = record->job;
@@ -10965,8 +10964,10 @@ void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
     member.level = record->level;
     member.exp = record->exp;
     member.online = record->online;
-    *reinterpret_cast<int*>(member.lastOfflineTime) = record->lastTimeOffline;
+    const int lastTimeOffline = record->lastTimeOffline;
+    member.characterId = record->characterId;
     member.expRatio = 0.0f;
+    *reinterpret_cast<int*>(member.lastOfflineTime) = lastTimeOffline;
     if (member.characterId == g_session.m_gid) {
       member.name = g_session.DecodePlayerName();
     } else {
