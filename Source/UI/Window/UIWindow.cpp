@@ -1453,36 +1453,23 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = std::move(navigation);
   display = DisplayQuestTextTag(display);
 
-  const auto textWidth = [this, family, height, bold](const char* value) {
-    if (!value) {
-      return 0;
-    }
+  const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
+  const int ellipsisWidth = this->TextWidth("...", 3, family, height, bold, 0);
 
-    const unsigned bytes = static_cast<unsigned>(std::strlen(value));
-    if (!bytes) {
-      return 0;
-    }
-
-    TextContext context(*this->geometry.surface);
-    context.SetFont(family, height, bold, 0);
-    return static_cast<int>(context.Measure(value, bytes).cx);
-  };
-
-  const int extent = textWidth(display.c_str());
-  {
-    TextContext context(*this->geometry.surface);
-    context.SetFont(family, height, bold, 0);
-    context.Measure("...", 3);
-  }
-
-  if (extent <= width) {
+  if (textWidth <= width) {
     return display;
   }
 
   std::string fitted(display);
   std::wstring remaining(ATL::CA2WEX<128>(display.c_str(), CP_THREAD_ACP));
 
-  while (remaining.size() > 1) {
+  int extent;
+  do {
+    if (remaining.size() <= 1) {
+      fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+      break;
+    }
+
     if (remaining.size() >= 2) {
       std::size_t length = remaining.size() - 1;
 
@@ -1493,16 +1480,10 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
       remaining.resize(length);
     }
 
-    ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
-    fitted = std::string(converted) + "...";
+    fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+    extent = this->TextWidth(fitted.c_str(), 0, family, height, bold, 0);
+  } while (width < extent);
 
-    if (textWidth(fitted.c_str()) <= width) {
-      return fitted;
-    }
-  }
-
-  ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
-  fitted = std::string(converted) + "...";
   return fitted;
 }
 
