@@ -102,8 +102,11 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   refining->Resize(refining->BitmapWidth(), refining->BitmapHeight());
   this->refiningButton->Move(84, 262);
   this->refiningButton->SetId(184);
-  this->refiningButton->SetDisabled(1);
-  this->refiningButton->Invalidate();
+  {
+    auto* refiningButton = this->refiningButton;
+    refiningButton->SetDisabled(1);
+    refiningButton->Invalidate();
+  }
   this->AddChild(this->refiningButton);
 
   this->returnButton = new UIRefining_BtnReturn();
