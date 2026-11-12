@@ -1097,10 +1097,7 @@ void UILoginOTPWnd::OnCreate(int, int) {
 // FUNCTION: fn_11764
 void UILoginOTPWnd::Paint() {
   auto& resources = ResourceMgr::Instance();
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\login_interface\\bg_newotp1.bmp", 0x2FEB8739E5975BD1ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
-  auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
+  auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(OBFUSCATE_TEXT("유저인터페이스\\login_interface\\bg_newotp1.bmp", 0x2FEB8739E5975BD1ULL))));
   this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(true, LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 280);
 }
@@ -2035,10 +2032,7 @@ void UILoginOTPWnd::OnProcess() {
 
   const unsigned remaining = static_cast<unsigned>(60.0 - (timeGetTime() - login->otpStarted) * 0.001);
   UIStaticText* timer = this->timerText;
-  constexpr auto sourceText = CRYPT_NAME("%02d : %02d", 0x7941D76335CFA14FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> format(source);
-  timer->SetText(FormatOwnedString(format.Text(), remaining / 60, remaining % 60).c_str(), 0);
+  timer->SetText(FormatOwnedString(OBFUSCATE_TEXT_NAMED("%02d : %02d", 0x7941D76335CFA14FULL, format), remaining / 60, remaining % 60).c_str(), 0);
   this->Invalidate();
 }
 
@@ -3292,21 +3286,15 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     if (sender == this->loginTypeCombo) {
       switch (a) {
       case 0: {
-        const char source[] = CRYPT_CHARS(5, "G000", 0x9FED7DA189490D5DULL);
-        thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-        this->loginExtra = name.Text();
+        this->loginExtra = OBFUSCATE_TEXT("G000", 0x9FED7DA189490D5DULL);
         break;
       }
       case 1: {
-        const char source[] = CRYPT_CHARS(5, "G007", 0xFBD599E117C547C1ULL);
-        thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
-        this->loginExtra = name.Text();
+        this->loginExtra = OBFUSCATE_TEXT("G007", 0xFBD599E117C547C1ULL);
         break;
       }
       default: {
-        const char source[] = CRYPT_CHARS(29, "unknown account class found!", 0x176F138D5DD7F365ULL);
-        thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
-        g_windowMgr.Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(OBFUSCATE_TEXT("unknown account class found!", 0x176F138D5DD7F365ULL), 0, false, false, 0, "Message", 280, 120, 0);
         goto quit;
       }
       }
@@ -3319,9 +3307,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         if (g_session.m_channelCopId == 1) {
           g_modeMgr.Quit();
           const char* url = HangameJoinUrl()().Text();
-          const char verbSource[] = CRYPT_CHARS(5, "open", 0x839B27DF8F5967B3ULL);
-          thread_local EncryptedName<sizeof(verbSource), 0x839B27DF8F5967B3ULL> verbName(verbSource);
-          ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+          ShellExecuteA(hWnd, OBFUSCATE_TEXT_NAMED("open", 0x839B27DF8F5967B3ULL, verbName), url, nullptr, nullptr, SW_SHOWNORMAL);
           break;
         }
         if (g_windowMgr.Confirm(LookupMessage(MSI_SELECTCHARWND_RESERVE_TO_DEL_CHAR), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
@@ -3332,9 +3318,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->OpenWebPage();
       break;
     case ID_LOGIN: {
-      const char soundSource[] = CRYPT_CHARS(13, "버튼소리.wav", 0x452FEF0D7FC95565ULL);
-      thread_local EncryptedName<sizeof(soundSource), 0x452FEF0D7FC95565ULL> soundName(soundSource);
-      g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
         g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
@@ -4364,16 +4348,10 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 void UILoginWnd::OnCreate(int, int) {
   this->backgroundWindow = g_windowMgr.EnsureWindow(WID_RPIMAGEWND2);
   UIRPImageWnd2* backgroundWindow = static_cast<UIRPImageWnd2*>(this->backgroundWindow);
-  const char backgroundSource[] = CRYPT_CHARS(44, "유저인터페이스\\login_interface\\bg_login.tga", 0x13E33FA1A591AB67ULL);
-  thread_local EncryptedName<sizeof(backgroundSource), 0x13E33FA1A591AB67ULL> backgroundName(backgroundSource);
-  backgroundWindow->SetImage(backgroundName.Text(), 5);
+  backgroundWindow->SetImage(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bg_login.tga", 0x13E33FA1A591AB67ULL, backgroundName), 5);
 
-  const char uiPathSource[] = CRYPT_CHARS(16, "유저인터페이스\\", 0x17A9E5BF39AD4737ULL);
-  thread_local EncryptedName<sizeof(uiPathSource), 0x17A9E5BF39AD4737ULL> uiPathName(uiPathSource);
-  const std::string uiPath(uiPathName.Text());
-  const char loginPathSource[] = CRYPT_CHARS(32, "유저인터페이스\\login_interface\\", 0x9949BFD527532943ULL);
-  thread_local EncryptedName<sizeof(loginPathSource), 0x9949BFD527532943ULL> loginPathName(loginPathSource);
-  const std::string loginPath(loginPathName.Text());
+  const std::string uiPath(OBFUSCATE_TEXT_NAMED("유저인터페이스\\", 0x17A9E5BF39AD4737ULL, uiPathName));
+  const std::string loginPath(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\", 0x9949BFD527532943ULL, loginPathName));
   this->passwordPlaceholder = true;
 
   UIStaticText* label = new UIStaticText();
@@ -4386,15 +4364,9 @@ void UILoginWnd::OnCreate(int, int) {
 
   UIBmpTextButton* button;
   button = new UIBmpTextButton();
-  const char closeNormalSource[] = CRYPT_CHARS(51, "유저인터페이스\\login_interface\\bt_close_normal.bmp", 0xCD8F077123FB7D6FULL);
-  thread_local EncryptedName<sizeof(closeNormalSource), 0xCD8F077123FB7D6FULL> closeNormalName(closeNormalSource);
-  button->SetBitmap(closeNormalName.Text(), 0, 0);
-  const char closeOverSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_close_over.bmp", 0x637B959D55771F69ULL);
-  thread_local EncryptedName<sizeof(closeOverSource), 0x637B959D55771F69ULL> closeOverName(closeOverSource);
-  button->SetBitmap(closeOverName.Text(), 1, 0);
-  const char closePressSource[] = CRYPT_CHARS(50, "유저인터페이스\\login_interface\\bt_close_press.bmp", 0xD1413DBB01CD8B51ULL);
-  thread_local EncryptedName<sizeof(closePressSource), 0xD1413DBB01CD8B51ULL> closePressName(closePressSource);
-  button->SetBitmap(closePressName.Text(), 2, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close_normal.bmp", 0xCD8F077123FB7D6FULL, closeNormalName), 0, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close_over.bmp", 0x637B959D55771F69ULL, closeOverName), 1, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close_press.bmp", 0xD1413DBB01CD8B51ULL, closePressName), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(13, 104);
   button->SetId(285);
@@ -4409,15 +4381,9 @@ void UILoginWnd::OnCreate(int, int) {
   this->AddChild(button);
 
   button = new UIBmpTextButton();
-  const char joinNormalSource[] = CRYPT_CHARS(50, "유저인터페이스\\login_interface\\bt_join_normal.bmp", 0x758F1D0B4F7705B9ULL);
-  thread_local EncryptedName<sizeof(joinNormalSource), 0x758F1D0B4F7705B9ULL> joinNormalName(joinNormalSource);
-  button->SetBitmap(joinNormalName.Text(), 0, 0);
-  const char joinOverSource[] = CRYPT_CHARS(48, "유저인터페이스\\login_interface\\bt_join_over.bmp", 0x891B232D09451965ULL);
-  thread_local EncryptedName<sizeof(joinOverSource), 0x891B232D09451965ULL> joinOverName(joinOverSource);
-  button->SetBitmap(joinOverName.Text(), 1, 0);
-  const char joinPressSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_join_press.bmp", 0xF161095D0DE18F95ULL);
-  thread_local EncryptedName<sizeof(joinPressSource), 0xF161095D0DE18F95ULL> joinPressName(joinPressSource);
-  button->SetBitmap(joinPressName.Text(), 2, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_normal.bmp", 0x758F1D0B4F7705B9ULL, joinNormalName), 0, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_over.bmp", 0x891B232D09451965ULL, joinOverName), 1, 0);
+  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_press.bmp", 0xF161095D0DE18F95ULL, joinPressName), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(87, 104);
   button->SetId(267);
@@ -4433,30 +4399,18 @@ void UILoginWnd::OnCreate(int, int) {
 
   UIBitmapButton* bitmapButton;
   bitmapButton = new UIBitmapButton();
-  const char startNormalSource[] = CRYPT_CHARS(51, "유저인터페이스\\login_interface\\bt_start_normal.bmp", 0xEDC74F6D13DF71EFULL);
-  thread_local EncryptedName<sizeof(startNormalSource), 0xEDC74F6D13DF71EFULL> startNormalName(startNormalSource);
-  bitmapButton->SetBitmap(startNormalName.Text(), 0, 0);
-  const char startOverSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_start_over.bmp", 0x75ADC57D87EFBD8FULL);
-  thread_local EncryptedName<sizeof(startOverSource), 0x75ADC57D87EFBD8FULL> startOverName(startOverSource);
-  bitmapButton->SetBitmap(startOverName.Text(), 1, 0);
-  const char startPressSource[] = CRYPT_CHARS(50, "유저인터페이스\\login_interface\\bt_start_press.bmp", 0x2BAD156DE3E1F9D9ULL);
-  thread_local EncryptedName<sizeof(startPressSource), 0x2BAD156DE3E1F9D9ULL> startPressName(startPressSource);
-  bitmapButton->SetBitmap(startPressName.Text(), 2, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_start_normal.bmp", 0xEDC74F6D13DF71EFULL, startNormalName), 0, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_start_over.bmp", 0x75ADC57D87EFBD8FULL, startOverName), 1, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_start_press.bmp", 0x2BAD156DE3E1F9D9ULL, startPressName), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
   bitmapButton->Move(192, 32);
   bitmapButton->SetId(186);
   this->AddChild(bitmapButton);
 
   bitmapButton = new UIBitmapButton();
-  const char exitNormalSource[] = CRYPT_CHARS(52, "유저인터페이스\\login_interface\\bt_close2_normal.bmp", 0x2FE993D1DDE1F197ULL);
-  thread_local EncryptedName<sizeof(exitNormalSource), 0x2FE993D1DDE1F197ULL> exitNormalName(exitNormalSource);
-  bitmapButton->SetBitmap(exitNormalName.Text(), 0, 0);
-  const char exitOverSource[] = CRYPT_CHARS(50, "유저인터페이스\\login_interface\\bt_close2_over.bmp", 0x39FF7FB50DEB998FULL);
-  thread_local EncryptedName<sizeof(exitOverSource), 0x39FF7FB50DEB998FULL> exitOverName(exitOverSource);
-  bitmapButton->SetBitmap(exitOverName.Text(), 1, 0);
-  const char exitPressSource[] = CRYPT_CHARS(51, "유저인터페이스\\login_interface\\bt_close2_press.bmp", 0x2F8B0F37118D157FULL);
-  thread_local EncryptedName<sizeof(exitPressSource), 0x2F8B0F37118D157FULL> exitPressName(exitPressSource);
-  bitmapButton->SetBitmap(exitPressName.Text(), 2, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close2_normal.bmp", 0x2FE993D1DDE1F197ULL, exitNormalName), 0, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close2_over.bmp", 0x39FF7FB50DEB998FULL, exitOverName), 1, 0);
+  bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close2_press.bmp", 0x2F8B0F37118D157FULL, exitPressName), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
   bitmapButton->Move(273, 15);
   bitmapButton->SetId(221);
@@ -4468,9 +4422,7 @@ void UILoginWnd::OnCreate(int, int) {
   this->passwordEdit->Move(15, 64);
   this->passwordEdit->labelAlignment = 2;
   this->passwordEdit->Background(255, 255, 255);
-  const char placeholderSource[] = CRYPT_CHARS(9, "PASSWORD", 0xAD075B8DB599F1CDULL);
-  thread_local EncryptedName<sizeof(placeholderSource), 0xAD075B8DB599F1CDULL> placeholderName(placeholderSource);
-  this->passwordEdit->SetText(placeholderName.Text());
+  this->passwordEdit->SetText(OBFUSCATE_TEXT_NAMED("PASSWORD", 0xAD075B8DB599F1CDULL, placeholderName));
   this->passwordEdit->TextColor(156, 156, 156, 0xFFFFFFFF);
   this->passwordEdit->mask = '*';
   this->AddChild(this->passwordEdit);
@@ -4485,12 +4437,8 @@ void UILoginWnd::OnCreate(int, int) {
   this->LoadLogin();
 
   UICheckBox* saveIdCheck = new UICheckBox();
-  const char checkedImageSource[] = CRYPT_CHARS(16, "checkbox_on.bmp", 0x4941FD9F21BBB9FDULL);
-  thread_local EncryptedName<sizeof(checkedImageSource), 0x4941FD9F21BBB9FDULL> checkedImageName(checkedImageSource);
-  const std::string checkedImage = loginPath + std::string(checkedImageName.Text());
-  const char uncheckedImageSource[] = CRYPT_CHARS(17, "checkbox_off.bmp", 0x35E5656B5DEDCD75ULL);
-  thread_local EncryptedName<sizeof(uncheckedImageSource), 0x35E5656B5DEDCD75ULL> uncheckedImageName(uncheckedImageSource);
-  const std::string uncheckedImage = loginPath + std::string(uncheckedImageName.Text());
+  const std::string checkedImage = loginPath + std::string(OBFUSCATE_TEXT_NAMED("checkbox_on.bmp", 0x4941FD9F21BBB9FDULL, checkedImageName));
+  const std::string uncheckedImage = loginPath + std::string(OBFUSCATE_TEXT_NAMED("checkbox_off.bmp", 0x35E5656B5DEDCD75ULL, uncheckedImageName));
   saveIdCheck->SetBitmaps(checkedImage.c_str(), uncheckedImage.c_str());
   saveIdCheck->SetSize(saveIdCheck->geometry.width, saveIdCheck->geometry.height);
   saveIdCheck->Move(56, 85);
