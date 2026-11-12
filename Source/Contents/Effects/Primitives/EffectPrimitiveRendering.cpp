@@ -6522,13 +6522,12 @@ __declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
   float rdist;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     for (int i = 0; i < 3; ++i) {
-      if (slot.flag1[4] == 0) {
+      if (this->state.slots[ec].flag1[4] == 0) {
         if (i == 0) {
           red = 100;
           green = 100;
@@ -6545,7 +6544,7 @@ __declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
           blue = 120;
           rdist = 2.0f;
         }
-      } else if (slot.flag1[4] == 1) {
+      } else if (this->state.slots[ec].flag1[4] == 1) {
         if (i == 0) {
           red = 90;
           green = 90;
@@ -6581,17 +6580,17 @@ __declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
         }
       }
 
-      const float rx = slot.distance * rdist;
+      const float rx = this->state.slots[ec].distance * rdist;
       const float length = 4.0f;
 
-      slot.vecBPre.x = g_cosTable[static_cast<int>(slot.height[3])] * length;
-      slot.vecBPre.z = g_sinTable[static_cast<int>(slot.height[3])] * length;
-      slot.vecBNow.x = g_cosTable[static_cast<int>(slot.height[7])] * length;
-      slot.vecBNow.z = g_sinTable[static_cast<int>(slot.height[7])] * length;
-      slot.vecTPre.x = g_cosTable[static_cast<int>(slot.height[11])] * length;
-      slot.vecTPre.z = g_sinTable[static_cast<int>(slot.height[11])] * length;
-      slot.vecTNow.x = g_cosTable[static_cast<int>(slot.height[15])] * length;
-      slot.vecTNow.z = g_sinTable[static_cast<int>(slot.height[15])] * length;
+      this->state.slots[ec].vecBPre.x = g_cosTable[static_cast<int>(this->state.slots[ec].height[3])] * length;
+      this->state.slots[ec].vecBPre.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[3])] * length;
+      this->state.slots[ec].vecBNow.x = g_cosTable[static_cast<int>(this->state.slots[ec].height[7])] * length;
+      this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[7])] * length;
+      this->state.slots[ec].vecTPre.x = g_cosTable[static_cast<int>(this->state.slots[ec].height[11])] * length;
+      this->state.slots[ec].vecTPre.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[11])] * length;
+      this->state.slots[ec].vecTNow.x = g_cosTable[static_cast<int>(this->state.slots[ec].height[15])] * length;
+      this->state.slots[ec].vecTNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[15])] * length;
 
       vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
       vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
@@ -6607,159 +6606,159 @@ __declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
       int dif;
       int count;
 
-      dif = static_cast<int>(slot.height[3] - this->state.slots[0].alphaT);
-      if (slot.height[2] == 0.0f || slot.height[2] == 2.0f) {
+      dif = static_cast<int>(this->state.slots[ec].height[3] - this->state.slots[0].alphaT);
+      if (this->state.slots[ec].height[2] == 0.0f || this->state.slots[ec].height[2] == 2.0f) {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-          vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-          vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-          vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecBPre.x, vec5.y + this->state.slots[ec].vecBPre.y, vec5.z + this->state.slots[ec].vecBPre.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecBPre.x, vec6.y + this->state.slots[ec].vecBPre.y, vec6.z + this->state.slots[ec].vecBPre.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecBPre.x, vec7.y + this->state.slots[ec].vecBPre.y, vec7.z + this->state.slots[ec].vecBPre.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecBPre.x, vec8.y + this->state.slots[ec].vecBPre.y, vec8.z + this->state.slots[ec].vecBPre.z};
         } else {
-          vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-          vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-          vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-          vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecBPre.x, vec6.y + this->state.slots[ec].vecBPre.y, vec6.z + this->state.slots[ec].vecBPre.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecBPre.x, vec5.y + this->state.slots[ec].vecBPre.y, vec5.z + this->state.slots[ec].vecBPre.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecBPre.x, vec8.y + this->state.slots[ec].vecBPre.y, vec8.z + this->state.slots[ec].vecBPre.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecBPre.x, vec7.y + this->state.slots[ec].vecBPre.y, vec7.z + this->state.slots[ec].vecBPre.z};
         }
       } else {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-          vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-          vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-          vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecBPre.x, vec6.y + this->state.slots[ec].vecBPre.y, vec6.z + this->state.slots[ec].vecBPre.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecBPre.x, vec5.y + this->state.slots[ec].vecBPre.y, vec5.z + this->state.slots[ec].vecBPre.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecBPre.x, vec8.y + this->state.slots[ec].vecBPre.y, vec8.z + this->state.slots[ec].vecBPre.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecBPre.x, vec7.y + this->state.slots[ec].vecBPre.y, vec7.z + this->state.slots[ec].vecBPre.z};
         } else {
-          vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-          vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-          vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-          vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecBPre.x, vec5.y + this->state.slots[ec].vecBPre.y, vec5.z + this->state.slots[ec].vecBPre.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecBPre.x, vec6.y + this->state.slots[ec].vecBPre.y, vec6.z + this->state.slots[ec].vecBPre.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecBPre.x, vec7.y + this->state.slots[ec].vecBPre.y, vec7.z + this->state.slots[ec].vecBPre.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecBPre.x, vec8.y + this->state.slots[ec].vecBPre.y, vec8.z + this->state.slots[ec].vecBPre.z};
         }
       }
-      vec1.y -= slot.height[20];
-      vec2.y -= slot.height[20];
-      vec3.y -= slot.height[20];
-      vec4.y -= slot.height[20];
-      count = static_cast<int>(slot.height[1]);
-      if (count > slot.process) {
-        count = slot.process;
+      vec1.y -= this->state.slots[ec].height[20];
+      vec2.y -= this->state.slots[ec].height[20];
+      vec3.y -= this->state.slots[ec].height[20];
+      vec4.y -= this->state.slots[ec].height[20];
+      count = static_cast<int>(this->state.slots[ec].height[1]);
+      if (count > this->state.slots[ec].process) {
+        count = this->state.slots[ec].process;
       }
       this->RenderTeiRect(
-        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(this->state.slots[ec].height[2]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
         1.0f, 2
       );
 
-      dif = static_cast<int>(slot.height[7] - this->state.slots[0].alphaT);
-      if (slot.height[6] == 0.0f || slot.height[6] == 2.0f) {
+      dif = static_cast<int>(this->state.slots[ec].height[7] - this->state.slots[0].alphaT);
+      if (this->state.slots[ec].height[6] == 0.0f || this->state.slots[ec].height[6] == 2.0f) {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-          vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-          vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-          vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecBNow.x, vec5.y + this->state.slots[ec].vecBNow.y, vec5.z + this->state.slots[ec].vecBNow.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecBNow.x, vec6.y + this->state.slots[ec].vecBNow.y, vec6.z + this->state.slots[ec].vecBNow.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecBNow.x, vec7.y + this->state.slots[ec].vecBNow.y, vec7.z + this->state.slots[ec].vecBNow.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecBNow.x, vec8.y + this->state.slots[ec].vecBNow.y, vec8.z + this->state.slots[ec].vecBNow.z};
         } else {
-          vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-          vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-          vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-          vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecBNow.x, vec6.y + this->state.slots[ec].vecBNow.y, vec6.z + this->state.slots[ec].vecBNow.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecBNow.x, vec5.y + this->state.slots[ec].vecBNow.y, vec5.z + this->state.slots[ec].vecBNow.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecBNow.x, vec8.y + this->state.slots[ec].vecBNow.y, vec8.z + this->state.slots[ec].vecBNow.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecBNow.x, vec7.y + this->state.slots[ec].vecBNow.y, vec7.z + this->state.slots[ec].vecBNow.z};
         }
       } else {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-          vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-          vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-          vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecBNow.x, vec6.y + this->state.slots[ec].vecBNow.y, vec6.z + this->state.slots[ec].vecBNow.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecBNow.x, vec5.y + this->state.slots[ec].vecBNow.y, vec5.z + this->state.slots[ec].vecBNow.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecBNow.x, vec8.y + this->state.slots[ec].vecBNow.y, vec8.z + this->state.slots[ec].vecBNow.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecBNow.x, vec7.y + this->state.slots[ec].vecBNow.y, vec7.z + this->state.slots[ec].vecBNow.z};
         } else {
-          vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-          vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-          vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-          vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecBNow.x, vec5.y + this->state.slots[ec].vecBNow.y, vec5.z + this->state.slots[ec].vecBNow.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecBNow.x, vec6.y + this->state.slots[ec].vecBNow.y, vec6.z + this->state.slots[ec].vecBNow.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecBNow.x, vec7.y + this->state.slots[ec].vecBNow.y, vec7.z + this->state.slots[ec].vecBNow.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecBNow.x, vec8.y + this->state.slots[ec].vecBNow.y, vec8.z + this->state.slots[ec].vecBNow.z};
         }
       }
-      vec1.y -= slot.height[20];
-      vec2.y -= slot.height[20];
-      vec3.y -= slot.height[20];
-      vec4.y -= slot.height[20];
-      count = static_cast<int>(slot.height[5]);
-      if (count > slot.process) {
-        count = slot.process;
+      vec1.y -= this->state.slots[ec].height[20];
+      vec2.y -= this->state.slots[ec].height[20];
+      vec3.y -= this->state.slots[ec].height[20];
+      vec4.y -= this->state.slots[ec].height[20];
+      count = static_cast<int>(this->state.slots[ec].height[5]);
+      if (count > this->state.slots[ec].process) {
+        count = this->state.slots[ec].process;
       }
       this->RenderTeiRect(
-        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[6]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(this->state.slots[ec].height[6]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
         1.0f, 2
       );
 
-      dif = static_cast<int>(slot.height[11] - this->state.slots[0].alphaT);
-      if (slot.height[10] == 0.0f || slot.height[10] == 2.0f) {
+      dif = static_cast<int>(this->state.slots[ec].height[11] - this->state.slots[0].alphaT);
+      if (this->state.slots[ec].height[10] == 0.0f || this->state.slots[ec].height[10] == 2.0f) {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-          vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-          vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-          vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecTPre.x, vec5.y + this->state.slots[ec].vecTPre.y, vec5.z + this->state.slots[ec].vecTPre.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecTPre.x, vec6.y + this->state.slots[ec].vecTPre.y, vec6.z + this->state.slots[ec].vecTPre.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecTPre.x, vec7.y + this->state.slots[ec].vecTPre.y, vec7.z + this->state.slots[ec].vecTPre.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecTPre.x, vec8.y + this->state.slots[ec].vecTPre.y, vec8.z + this->state.slots[ec].vecTPre.z};
         } else {
-          vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-          vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-          vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-          vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecTPre.x, vec6.y + this->state.slots[ec].vecTPre.y, vec6.z + this->state.slots[ec].vecTPre.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecTPre.x, vec5.y + this->state.slots[ec].vecTPre.y, vec5.z + this->state.slots[ec].vecTPre.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecTPre.x, vec8.y + this->state.slots[ec].vecTPre.y, vec8.z + this->state.slots[ec].vecTPre.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecTPre.x, vec7.y + this->state.slots[ec].vecTPre.y, vec7.z + this->state.slots[ec].vecTPre.z};
         }
       } else {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-          vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-          vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-          vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecTPre.x, vec6.y + this->state.slots[ec].vecTPre.y, vec6.z + this->state.slots[ec].vecTPre.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecTPre.x, vec5.y + this->state.slots[ec].vecTPre.y, vec5.z + this->state.slots[ec].vecTPre.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecTPre.x, vec8.y + this->state.slots[ec].vecTPre.y, vec8.z + this->state.slots[ec].vecTPre.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecTPre.x, vec7.y + this->state.slots[ec].vecTPre.y, vec7.z + this->state.slots[ec].vecTPre.z};
         } else {
-          vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-          vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-          vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-          vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecTPre.x, vec5.y + this->state.slots[ec].vecTPre.y, vec5.z + this->state.slots[ec].vecTPre.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecTPre.x, vec6.y + this->state.slots[ec].vecTPre.y, vec6.z + this->state.slots[ec].vecTPre.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecTPre.x, vec7.y + this->state.slots[ec].vecTPre.y, vec7.z + this->state.slots[ec].vecTPre.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecTPre.x, vec8.y + this->state.slots[ec].vecTPre.y, vec8.z + this->state.slots[ec].vecTPre.z};
         }
       }
-      vec1.y -= slot.height[20];
-      vec2.y -= slot.height[20];
-      vec3.y -= slot.height[20];
-      vec4.y -= slot.height[20];
-      count = static_cast<int>(slot.height[9]);
-      if (count > slot.process) {
-        count = slot.process;
+      vec1.y -= this->state.slots[ec].height[20];
+      vec2.y -= this->state.slots[ec].height[20];
+      vec3.y -= this->state.slots[ec].height[20];
+      vec4.y -= this->state.slots[ec].height[20];
+      count = static_cast<int>(this->state.slots[ec].height[9]);
+      if (count > this->state.slots[ec].process) {
+        count = this->state.slots[ec].process;
       }
       this->RenderTeiRect(
-        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[10]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(this->state.slots[ec].height[10]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
         1.0f, 2
       );
 
-      dif = static_cast<int>(slot.height[15] - this->state.slots[0].alphaT);
-      if (slot.height[14] == 0.0f || slot.height[14] == 2.0f) {
+      dif = static_cast<int>(this->state.slots[ec].height[15] - this->state.slots[0].alphaT);
+      if (this->state.slots[ec].height[14] == 0.0f || this->state.slots[ec].height[14] == 2.0f) {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-          vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-          vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-          vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecTNow.x, vec5.y + this->state.slots[ec].vecTNow.y, vec5.z + this->state.slots[ec].vecTNow.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecTNow.x, vec6.y + this->state.slots[ec].vecTNow.y, vec6.z + this->state.slots[ec].vecTNow.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecTNow.x, vec7.y + this->state.slots[ec].vecTNow.y, vec7.z + this->state.slots[ec].vecTNow.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecTNow.x, vec8.y + this->state.slots[ec].vecTNow.y, vec8.z + this->state.slots[ec].vecTNow.z};
         } else {
-          vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-          vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-          vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-          vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecTNow.x, vec6.y + this->state.slots[ec].vecTNow.y, vec6.z + this->state.slots[ec].vecTNow.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecTNow.x, vec5.y + this->state.slots[ec].vecTNow.y, vec5.z + this->state.slots[ec].vecTNow.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecTNow.x, vec8.y + this->state.slots[ec].vecTNow.y, vec8.z + this->state.slots[ec].vecTNow.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecTNow.x, vec7.y + this->state.slots[ec].vecTNow.y, vec7.z + this->state.slots[ec].vecTNow.z};
         }
       } else {
         if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-          vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-          vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-          vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-          vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+          vec1 = {vec6.x + this->state.slots[ec].vecTNow.x, vec6.y + this->state.slots[ec].vecTNow.y, vec6.z + this->state.slots[ec].vecTNow.z};
+          vec2 = {vec5.x + this->state.slots[ec].vecTNow.x, vec5.y + this->state.slots[ec].vecTNow.y, vec5.z + this->state.slots[ec].vecTNow.z};
+          vec3 = {vec8.x + this->state.slots[ec].vecTNow.x, vec8.y + this->state.slots[ec].vecTNow.y, vec8.z + this->state.slots[ec].vecTNow.z};
+          vec4 = {vec7.x + this->state.slots[ec].vecTNow.x, vec7.y + this->state.slots[ec].vecTNow.y, vec7.z + this->state.slots[ec].vecTNow.z};
         } else {
-          vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-          vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-          vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-          vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+          vec1 = {vec5.x + this->state.slots[ec].vecTNow.x, vec5.y + this->state.slots[ec].vecTNow.y, vec5.z + this->state.slots[ec].vecTNow.z};
+          vec2 = {vec6.x + this->state.slots[ec].vecTNow.x, vec6.y + this->state.slots[ec].vecTNow.y, vec6.z + this->state.slots[ec].vecTNow.z};
+          vec3 = {vec7.x + this->state.slots[ec].vecTNow.x, vec7.y + this->state.slots[ec].vecTNow.y, vec7.z + this->state.slots[ec].vecTNow.z};
+          vec4 = {vec8.x + this->state.slots[ec].vecTNow.x, vec8.y + this->state.slots[ec].vecTNow.y, vec8.z + this->state.slots[ec].vecTNow.z};
         }
       }
-      vec1.y -= slot.height[20];
-      vec2.y -= slot.height[20];
-      vec3.y -= slot.height[20];
-      vec4.y -= slot.height[20];
-      count = static_cast<int>(slot.height[13]);
-      if (count > slot.process) {
-        count = slot.process;
+      vec1.y -= this->state.slots[ec].height[20];
+      vec2.y -= this->state.slots[ec].height[20];
+      vec3.y -= this->state.slots[ec].height[20];
+      vec4.y -= this->state.slots[ec].height[20];
+      count = static_cast<int>(this->state.slots[ec].height[13]);
+      if (count > this->state.slots[ec].process) {
+        count = this->state.slots[ec].process;
       }
       this->RenderTeiRect(
-        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(slot.height[14]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
+        &rpCnt, static_cast<short>(count), vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(this->state.slots[ec].height[14]), 0, red, green, blue, 0.0f, 1.0f, 0.0f,
         1.0f, 2
       );
     }
