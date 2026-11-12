@@ -36,8 +36,11 @@ void UIRoundBoxTooltipWnd::OnCreate(int width, int height) {
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 1, 1, red, green, blue);
 
-  this->viewer->backgroundColor = 0xFFFF00FF;
-  this->viewer->Invalidate();
+  {
+    auto* viewer = this->viewer;
+    viewer->backgroundColor = 0xFFFF00FF;
+    viewer->Invalidate();
+  }
   this->viewer->color = 0x803B1A;
   this->AddChild(this->viewer);
 }
