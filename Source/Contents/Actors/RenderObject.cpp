@@ -2691,9 +2691,12 @@ static CCharacterRender* NpcCharacterRender(CCharacterNpc* self) {
 
 // INLINED
 static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
-  NpcCharacterRender(self)->positionX = *reinterpret_cast<int*>(&self->render.position.x);
-  NpcCharacterRender(self)->positionY = *reinterpret_cast<int*>(&self->render.position.y);
-  NpcCharacterRender(self)->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  {
+    CCharacterRender* render = NpcCharacterRender(self);
+    render->positionX = *reinterpret_cast<int*>(&self->render.position.x);
+    render->positionY = *reinterpret_cast<int*>(&self->render.position.y);
+    render->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
   NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
@@ -2708,9 +2711,12 @@ static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, Cha
 
 // INLINED
 static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
-  NpcCharacterRender(self)->positionX = *reinterpret_cast<int*>(&self->render.position.x);
-  NpcCharacterRender(self)->positionY = *reinterpret_cast<int*>(&self->render.position.y);
-  NpcCharacterRender(self)->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  {
+    CCharacterRender* render = NpcCharacterRender(self);
+    render->positionX = *reinterpret_cast<int*>(&self->render.position.x);
+    render->positionY = *reinterpret_cast<int*>(&self->render.position.y);
+    render->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+  }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
   NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
