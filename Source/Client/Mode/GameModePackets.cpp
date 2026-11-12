@@ -9447,16 +9447,14 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_NEED_ITEM: {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
-    const std::string message = FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_ITEM), item.DisplayName(0).c_str(), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_ITEM), item.DisplayName(0).c_str(), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_EQUIPMENT: {
     ITEM_INFO item;
     item.SetItemId(packet->itemId);
     item.identified = 1;
-    const std::string message = FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT), item.DisplayName(0).c_str());
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT), item.DisplayName(0).c_str()).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_COMBOSKILL:
@@ -9540,18 +9538,15 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     notice = LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_CLOSE_RODEX);
     break;
   case USESKILL_FAIL_NEED_BULLETS: {
-    const std::string message = FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CASTING), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CASTING), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_ARROWS: {
-    const std::string message = FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_PARTY: {
-    const std::string message = FormatOwnedString(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_LEVEL), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_LEVEL), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_PARTY_LEADER:
@@ -9570,8 +9565,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     notice = LookupMessage(MSI_RUSSIA_PERSONALINFO_DROP);
     break;
   case USESKILL_FAIL_MAX_TRAPS: {
-    const std::string message = FormatOwnedString(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_MAGIC_SPELLBOOK:
@@ -9581,8 +9575,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     notice = LookupMessage(MSI_LAPINE_WARNING_HAS_CARD_OR_ENCHANTED);
     break;
   case USESKILL_FAIL_NEED_SERVANT_WEAPON: {
-    const std::string message = FormatOwnedString(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT), packet->value);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0xB, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_TWINKLING_GALAXY:
@@ -21865,7 +21858,7 @@ void CGameMode::ProcessIncomingPackets() {
       const std::int16_t amount = *reinterpret_cast<const std::int16_t *>(packet + 4);
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
       if (item.identity[1] && amount > 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_DROP_ITEM), item.DisplayName(0).c_str(), amount).c_str()),
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_DROP_ITEM), item.DisplayName(0).c_str(), amount).c_str()),
                                0xFFFF00, 6, 0, 0);
       }
       g_session.RemoveInventoryItem(index, amount);
