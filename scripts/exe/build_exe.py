@@ -383,6 +383,8 @@ class Slots:
                 path = self.dir / f"{i}.slot"
                 try:
                     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                except PermissionError:
+                    continue  # Windows: another process is deleting this slot right now; busy
                 except FileExistsError:
                     if self._stale(path):
                         try:
@@ -413,11 +415,13 @@ class ObjectCache:
     """Machine-wide cache of compiled objects, shared by every checkout and worktree.
 
     Like ccache's direct mode: the manifest key covers the compiler, the arguments (with this
-    checkout's root replaced by a placeholder and the output path left out) and the text of the
-    unit and its prelude; each manifest entry holds the content hash of every project header the
-    unit included. Toolchain headers are covered by the compiler path (toolchain directories do not
-    change in place). The object's debug info keeps the source paths of the checkout that compiled
-    it; code and data are the same.
+    checkout's root replaced by a placeholder and the output path left out), the text of the
+    unit and its prelude, and the list of every file path under the source directories (a header
+    added where an include resolves earlier, or that a __has_include probe now finds, changes the
+    compile without changing any file the unit read); each manifest entry holds the content hash
+    of every project header the unit included. Toolchain headers are covered by the compiler path
+    (toolchain directories do not change in place). The object's debug info keeps the source paths
+    of the checkout that compiled it; code and data are the same.
 
     RODECOMP_OBJECT_CACHE=off disables it, =<dir> moves it (default ~/.clank/cache/exe).
     """
@@ -436,13 +440,26 @@ class ObjectCache:
         cl = tc.bin / "cl.exe"
         info = cl.stat()
         self.compiler = f"{cl}\0{info.st_size}\0{info.st_mtime_ns}"
+        self.tree = self._tree_list() if self.dir else None
+
+    @staticmethod
+    def _tree_list():
+        """Hash of the sorted repo-relative paths of every file under the project's source and
+        include directories (data/decomp.json), as the compiler would find them."""
+        project = json.loads((ROOT / "data" / "decomp.json").read_text(encoding="utf-8"))
+        paths = []
+        for directory in sorted(set(project.get("sourceDirs", []) + project.get("includeDirs", []))):
+            for dirpath, dirnames, filenames in os.walk(ROOT / directory):
+                rel = Path(dirpath).relative_to(ROOT).as_posix()
+                paths.extend(f"{rel}/{name}" for name in filenames)
+        return _sha("\n".join(sorted(paths)).encode())
 
     def _project(self, path):
         return path.lower().startswith(self.root.lower())
 
     def key(self, args, unit, prelude, env):
         norm = [a.replace(self.troot, "${ROOT}").replace(self.root, "${ROOT}") for a in args if not a.startswith("/Fo")]
-        parts = [self.compiler, json.dumps(env, sort_keys=True), *norm, unit, self.hash_file(str(ROOT / unit)),
+        parts = [self.compiler, self.tree, json.dumps(env, sort_keys=True), *norm, unit, self.hash_file(str(ROOT / unit)),
                  str(prelude and prelude.relative_to(ROOT)), prelude and self.hash_file(str(prelude))]
         return _sha("\0".join(str(p) for p in parts).encode())
 
