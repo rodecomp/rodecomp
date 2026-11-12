@@ -45,6 +45,22 @@ namespace utility {
   constexpr std::array<element, sizeof(text)> source = ::utility::Obfuscator<sizeof(text), key>(text).Array<element>(); \
   thread_local EncryptedName<sizeof(text), key> variable(source)
 
+#define OBFUSCATE_DECLARE(text, key, variable) \
+  constexpr ::utility::Obfuscator<sizeof(text), key> variable##Obfuscator(text); \
+  thread_local EncryptedName<sizeof(text), key> variable(variable##Obfuscator.m_data)
+
+#define OBFUSCATE_DECLARE_BYTES(text, key, variable) \
+  constexpr std::array<std::uint8_t, sizeof(text)> variable##Source = ::utility::Obfuscator<sizeof(text), key>(text).Array<std::uint8_t>(); \
+  thread_local EncryptedName<sizeof(text), key> variable(variable##Source._Elems)
+
+#define OBFUSCATE_DECLARE_ARRAY(text, key, variable) \
+  constexpr std::array<char, sizeof(text)> variable##Source = ::utility::Obfuscator<sizeof(text), key>(text).Array<char>(); \
+  thread_local EncryptedName<sizeof(text), key> variable(variable##Source)
+
+#define OBFUSCATE_DECLARE_BYTES_ARRAY(text, key, variable) \
+  constexpr std::array<std::uint8_t, sizeof(text)> variable##Source = ::utility::Obfuscator<sizeof(text), key>(text).Array<std::uint8_t>(); \
+  thread_local EncryptedName<sizeof(text), key> variable(variable##Source)
+
 #define OBFUSCATE_ARRAY(text, key, element) \
   []() -> EncryptedName<sizeof(text), key>& { \
     OBFUSCATE_NAME_ARRAY_(text, key, element, name); \
