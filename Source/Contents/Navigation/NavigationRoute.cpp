@@ -206,43 +206,39 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
   }
 
   this->cells.clear();
-  if (!found) {
-    return found;
-  }
-
-  CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
-  if (info == nullptr) {
-    const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
-    info = this->FindObject(resolved.c_str());
+  if (found) {
+    CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
     if (info == nullptr) {
-      return found;
+      std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
+      info = this->FindObject(resolved.c_str());
     }
-  }
+    if (info != nullptr) {
+      const int height = info->GetCellY();
+      const int width = info->GetCellX();
+      int offsetX;
+      int offsetY;
+      const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, 126.0f);
+      for (const PathCell& point : this->movementRoute.points) {
+        NaviCell cell;
+        cell.x = static_cast<int>(point.x * scale + offsetX);
+        cell.y = static_cast<int>(126.0f - (point.y * scale + offsetY));
 
-  const int height = info->GetCellY();
-  const int width = info->GetCellX();
-  int offsetX;
-  int offsetY;
-  const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, 126.0f);
-  for (const PathCell& point : this->movementRoute.points) {
-    NaviCell cell;
-    cell.x = static_cast<int>(point.x * scale + offsetX);
-    cell.y = static_cast<int>(126.0f - (point.y * scale + offsetY));
+        bool exists = false;
+        for (const NaviCell& other : this->cells) {
+          if (other.x == cell.x && other.y == cell.y) {
+            exists = true;
+            break;
+          }
+        }
+        if (!exists) {
+          this->cells.push_back(cell);
+        }
+      }
 
-    bool exists = false;
-    for (const NaviCell& other : this->cells) {
-      if (other.x == cell.x && other.y == cell.y) {
-        exists = true;
-        break;
+      if (g_windowMgr.navigationWnd != nullptr) {
+        g_windowMgr.navigationWnd->Invalidate();
       }
     }
-    if (!exists) {
-      this->cells.push_back(cell);
-    }
-  }
-
-  if (g_windowMgr.navigationWnd != nullptr) {
-    g_windowMgr.navigationWnd->Invalidate();
   }
   return found;
 }
@@ -315,11 +311,8 @@ std::string CNavigationManager::RouteText() {
   if (info != nullptr) {
     NaviCell cell;
     if (this->data.GetCell(&cell)->x > 0) {
-      NaviCell cellY;
       NaviCell cellX;
-      const int y = this->data.GetCell(&cellY)->y;
-      const int x = this->data.GetCell(&cellX)->x;
-      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_RODEX_BUTTON_DELETE_SELECTED), info->GetName(), x, y);
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_RODEX_BUTTON_DELETE_SELECTED), info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cell)->y);
     } else {
       StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] %s", LookupMessage(MSI_RODEX_BUTTON_DELETE_SELECTED), info->GetName());
     }
@@ -468,11 +461,9 @@ std::string CNavigationManager::SelectedNodeText() {
     }
 
     CNavi_Object* node = this->nodes[this->selectedNode];
-    NaviCell cellY;
     NaviCell cellX;
-    const int y = node->GetCell(&cellY)->y;
-    const int x = node->GetCell(&cellX)->x;
-    std::sprintf(buffer, "%s %d %d...", node->GetInfo()->GetName(), x, y);
+    NaviCell cellY;
+    std::sprintf(buffer, "%s %d %d...", node->GetInfo()->GetName(), node->GetCell(&cellX)->x, node->GetCell(&cellY)->y);
     this->selectedNodeText.assign(buffer, std::strlen(buffer));
     return this->selectedNodeText;
   }
@@ -480,11 +471,9 @@ std::string CNavigationManager::SelectedNodeText() {
   if (this->viewMode == 2) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
-      NaviCell cellY;
       NaviCell cellX;
-      const int y = this->data.GetCell(&cellY)->y;
-      const int x = this->data.GetCell(&cellX)->x;
-      std::sprintf(buffer, "%s %d %d...", info->GetName(), x, y);
+      NaviCell cellY;
+      std::sprintf(buffer, "%s %d %d...", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
     }
   }
 
@@ -502,11 +491,8 @@ std::string CNavigationManager::SubDestinationText() {
   if (info != nullptr) {
     NaviCell cell;
     if (this->data.GetCell(&cell)->x > 0) {
-      NaviCell cellY;
       NaviCell cellX;
-      const int y = this->data.GetCell(&cellY)->y;
-      const int x = this->data.GetCell(&cellX)->x;
-      std::sprintf(buffer, ">.%s %d %d", info->GetName(), x, y);
+      std::sprintf(buffer, ">.%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cell)->y);
     } else {
       std::sprintf(buffer, ">.%s", info->GetName());
     }
@@ -528,11 +514,9 @@ std::string CNavigationManager::DestinationText() {
     }
 
     CNavi_Object* node = this->nodes[this->selectedNode];
-    NaviCell cellY;
     NaviCell cellX;
-    const int y = node->GetCell(&cellY)->y;
-    const int x = node->GetCell(&cellX)->x;
-    std::sprintf(buffer, "%s %d %d", node->GetInfo()->GetName(), x, y);
+    NaviCell cellY;
+    std::sprintf(buffer, "%s %d %d", node->GetInfo()->GetName(), node->GetCell(&cellX)->x, node->GetCell(&cellY)->y);
     this->destinationText.assign(buffer, std::strlen(buffer));
     return this->destinationText;
   }
@@ -540,11 +524,9 @@ std::string CNavigationManager::DestinationText() {
   if (this->viewMode == 2) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
-      NaviCell cellY;
       NaviCell cellX;
-      const int y = this->data.GetCell(&cellY)->y;
-      const int x = this->data.GetCell(&cellX)->x;
-      std::sprintf(buffer, "%s %d %d", info->GetName(), x, y);
+      NaviCell cellY;
+      std::sprintf(buffer, "%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
     }
   }
 
