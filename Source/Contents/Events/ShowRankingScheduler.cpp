@@ -46,7 +46,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
         bool complete = true;
         const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
         for (int index = 0; index < 10; ++index) {
-          std::string name;
+          std::string name("");
           if (ids[index] == 0) {
             continue;
           }
