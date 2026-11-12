@@ -62,9 +62,10 @@ void CAMachineEffect::OnProcess() {
     return;
   }
 
-  const float x = this->position[0];
-  const float y = this->position[1];
-  const float z = this->position[2];
+  const vector3d source = *reinterpret_cast<const vector3d*>(this->position);
+  const float x = source.x;
+  const float y = source.y;
+  const float z = source.z;
   const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
   const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
   float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + 0.0f;
