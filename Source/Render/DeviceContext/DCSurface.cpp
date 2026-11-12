@@ -146,9 +146,13 @@ HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
   }
 
   if (backend == 0) {
-    backend = 1;
-    if (g_session.DefaultRenderBackend() != 1) {
+    switch (g_session.DefaultRenderBackend()) {
+    case 1:
+      backend = 1;
+      break;
+    default:
       backend = 2;
+      break;
     }
   }
 
