@@ -600,10 +600,7 @@ int CLoginMode::GetMaxCharacterSlot() {
       break;
     }
 
-    const int slot = this->characters[i].slot;
-    if (slot > maxSlot) {
-      maxSlot = slot;
-    }
+    maxSlot = maxSlot >= this->characters[i].slot ? maxSlot : this->characters[i].slot;
   }
 
   return maxSlot;
@@ -1841,7 +1838,8 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
   g_modeMgr.Switch(1, mapName);
-  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
+  UIWaitWnd* waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+  waitWnd->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
   GetRagConnection().SetBlock(0);
   g_session.SetOption(17, 0, 0);
 
@@ -1883,7 +1881,8 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
   g_modeMgr.Switch(1, mapName);
-  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
+  UIWaitWnd* waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+  waitWnd->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
   GetRagConnection().SetBlock(0);
 
   if (g_pingLogEnabled) {
@@ -2247,18 +2246,14 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
     if (x < 1) {
       x = 1;
     }
-    int maximumX = g_renderer->viewport.width - notices->geometry.width;
-    if (x <= maximumX) {
-      maximumX = x;
-    }
+    const int maximumX = g_renderer->viewport.width - notices->geometry.width;
+    x = x <= maximumX ? x : maximumX;
     if (y < 1) {
       y = 1;
     }
-    int maximumY = g_renderer->viewport.height - notices->geometry.height;
-    if (y <= maximumY) {
-      maximumY = y;
-    }
-    notices->Move(maximumX, maximumY);
+    const int maximumY = g_renderer->viewport.height - notices->geometry.height;
+    y = y <= maximumY ? y : maximumY;
+    notices->Move(x, y);
   }
 
   return true;
