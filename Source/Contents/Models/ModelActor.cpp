@@ -234,7 +234,10 @@ void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
 
 // INLINED
 bool C3dActor::Reversed() const {
-  bool result = this->scale[0] < 0.0f;
+  bool result = false;
+  if (this->scale[0] < 0.0f) {
+    result = true;
+  }
   result = this->scale[1] < 0.0f ? !result : result;
 
   if (this->scale[2] < 0.0f) {
