@@ -43,7 +43,10 @@ __declspec(noinline) bool ResourceNameLess::operator()(const ResourceName* left,
 }
 
 // INLINED
-ResourceMgr::ResourceMgr() : padding_004C{} {
+ResourceMgr::ResourceMgr() {
+  for (std::uint32_t& value : this->padding_004C) {
+    value = 0;
+  }
   InitializeCriticalSection(&this->m_lock);
 }
 
