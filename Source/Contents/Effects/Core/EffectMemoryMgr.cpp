@@ -71,13 +71,13 @@ namespace {
 template <>
 CParticle* CEffectMemoryPool<CEZ2STRParticle>::Alloc() {
   if (!this->m_free.empty()) {
-    CEZ2STRParticle* particle = this->m_free.front();
+    CEZ2STRParticle* particle = this->m_free[0];
     particle->Clear();
     this->m_free.pop_front();
     return particle;
   }
 
-  return new (std::nothrow) CEZ2STRParticle(vector3d(), -1);
+  return new (std::nothrow) CEZ2STRParticle(vector3d{0.0f, 0.0f, 0.0f}, -1);
 }
 
 // OFFSET: 0x00B81DF0
@@ -85,13 +85,13 @@ CParticle* CEffectMemoryPool<CEZ2STRParticle>::Alloc() {
 template <>
 CParticle* CEffectMemoryPool<CMultiTexParticle>::Alloc() {
   if (!this->m_free.empty()) {
-    CMultiTexParticle* particle = this->m_free.front();
+    CMultiTexParticle* particle = this->m_free[0];
     particle->Reset();
     this->m_free.pop_front();
     return particle;
   }
 
-  return new (std::nothrow) CMultiTexParticle(vector3d(), -1);
+  return new (std::nothrow) CMultiTexParticle(vector3d{0.0f, 0.0f, 0.0f}, -1);
 }
 
 // OFFSET: 0x00B81EE0
@@ -99,13 +99,13 @@ CParticle* CEffectMemoryPool<CMultiTexParticle>::Alloc() {
 template <>
 CParticle* CEffectMemoryPool<CParticle>::Alloc() {
   if (!this->m_free.empty()) {
-    CParticle* particle = this->m_free.front();
+    CParticle* particle = this->m_free[0];
     particle->Reset();
     this->m_free.pop_front();
     return particle;
   }
 
-  return new (std::nothrow) CParticle(vector3d(), -1);
+  return new (std::nothrow) CParticle(vector3d{0.0f, 0.0f, 0.0f}, -1);
 }
 
 // OFFSET: 0x00B81FD0
@@ -113,13 +113,13 @@ CParticle* CEffectMemoryPool<CParticle>::Alloc() {
 template <>
 CParticle* CEffectMemoryPool<CSpriteParticle>::Alloc() {
   if (!this->m_free.empty()) {
-    CSpriteParticle* particle = this->m_free.front();
+    CSpriteParticle* particle = this->m_free[0];
     particle->Reset();
     this->m_free.pop_front();
     return particle;
   }
 
-  return new (std::nothrow) CSpriteParticle(vector3d(), -1);
+  return new (std::nothrow) CSpriteParticle(vector3d{0.0f, 0.0f, 0.0f}, -1);
 }
 
 }
