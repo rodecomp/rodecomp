@@ -646,6 +646,18 @@ void UIMessageBox::Configure(
   int ids[3] = {184, 187, 188};
 
   switch (type) {
+  case 4: {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(width - 46, height - 24);
+    button->SetId(185);
+    this->AddChild(button);
+    this->m_message0 = 185;
+    break;
+  }
   case 0: {
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
@@ -676,18 +688,6 @@ void UIMessageBox::Configure(
 
     this->m_message0 = defaultAccept ? 187 : 188;
     this->m_message1 = 188;
-    break;
-  }
-  case 4: {
-    auto* button = new UIBitmapButton();
-    button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(width - 46, height - 24);
-    button->SetId(185);
-    this->AddChild(button);
-    this->m_message0 = 185;
     break;
   }
   case 5: {
