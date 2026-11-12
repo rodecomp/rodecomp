@@ -1757,9 +1757,10 @@ void UIBartermarketWnd::Paint() {
   unsigned green;
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
-  const int contentHeight = this->geometry.height - this->bottomPadding - 17;
-  this->FillRegion(20, contentHeight / 32 * 32 + 17, this->geometry.width - 24, contentHeight % 32, RGB(red, green, blue));
+  const int rightRemainder = (this->geometry.width - 60) % 32;
+  this->FillRegion(20, 17, rightRemainder, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
+  const int bottomRemainder = (this->geometry.height - this->bottomPadding - 17) % 32;
+  this->FillRegion(20, (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
