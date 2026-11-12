@@ -23,7 +23,7 @@ void UITextureButton::OnLBtnUp(int x, int y) {
     return;
   }
 
-  if (g_windowMgr.Capture() != this) {
+  if (this != g_windowMgr.Capture()) {
     return;
   }
 
@@ -35,9 +35,8 @@ void UITextureButton::OnLBtnUp(int x, int y) {
     }
 
     this->geometry.state = 1;
-    UIWindow* parent = this->parent;
-    if (parent) {
-      if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, parent->geometry.id) > 0) {
+    if (this->parent) {
+      if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) > 0) {
         int id = this->geometry.id;
         if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
@@ -46,7 +45,7 @@ void UITextureButton::OnLBtnUp(int x, int y) {
           }
         } else {
           if (id == 184 || id == 321) {
-            parent->RecordEditTexts();
+            this->parent->RecordEditTexts();
             id = this->geometry.id;
           }
 
