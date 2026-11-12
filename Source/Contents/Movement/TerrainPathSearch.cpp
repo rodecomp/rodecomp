@@ -54,7 +54,7 @@ bool CPathFinder::FindPath(
       }
       route.startY = y;
 
-      BuildMovementRoute(startTick, current, speed, route);
+      this->BuildMovementRoute(startTick, current, speed, route);
       return true;
     }
 

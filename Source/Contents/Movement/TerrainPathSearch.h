@@ -48,6 +48,7 @@ public:
   bool Walkable(int column, int row) const;
   __declspec(noinline) PathNode* FindOrCreateNode(int x, int y);
   __declspec(noinline) bool AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata);
+  void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route);
   bool FindPath(
     int startTick, int startX, int startY, int currentFractionX, int currentFractionY, int destX, int destY, int speed, MovementRouteInterpolation& route,
     char flag

@@ -40,8 +40,6 @@ struct MovementRouteInterpolation {
   bool Empty() const;
 };
 
-void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route);
-
 static_assert(sizeof(PathCell) == 16);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(PathNode) == 28);

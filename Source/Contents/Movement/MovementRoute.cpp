@@ -1,4 +1,5 @@
 #include "Contents/Movement/MovementRouteInterpolation.h"
+#include "Contents/Movement/TerrainPathSearch.h"
 #include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x00AD7F70
@@ -9,7 +10,7 @@ MovementRouteInterpolation::MovementRouteInterpolation() : startX(0), startY(0) 
 
 // OFFSET: 0x00AD87A0
 // FUNCTION: fn_17867
-void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route) {
+void CPathFinder::BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route) {
   std::uint32_t count = 0;
   for (const PathNode* node = last; node; node = node->parent) {
     ++count;
