@@ -199,19 +199,22 @@ void CMapMagicZoneEffect::OnProcess() {
     const float flat = wave * g_cosTable[particle->phaseParameter];
     const float rise = wave * g_sinTable[particle->phaseParameter];
 
+    const float offsetX = flat * g_cosTable[angle];
+    const float offsetZ = flat * g_sinTable[angle];
     ZoneVector3d points[2];
-    points[0].x = particle->scale * g_cosTable[angle];
-    points[0].z = particle->scale * g_sinTable[angle];
-    points[1].x = points[0].x + flat * g_cosTable[angle];
-    points[1].y = points[0].y - rise;
-    points[1].z = points[0].z + flat * g_sinTable[angle];
+    const float innerX = particle->scale * g_cosTable[angle];
+    const float innerY = 0.0f;
+    const float innerZ = particle->scale * g_sinTable[angle];
+    const float outerX = innerX + offsetX;
+    const float outerY = innerY - rise;
+    const float outerZ = innerZ + offsetZ;
 
-    particle->vertices[3].x = points[0].x;
-    particle->vertices[3].y = points[0].y;
-    particle->vertices[3].z = points[0].z;
-    particle->vertices[1].x = points[1].x;
-    particle->vertices[1].y = points[1].y;
-    particle->vertices[1].z = points[1].z;
+    particle->vertices[3].x = innerX;
+    particle->vertices[3].y = innerY;
+    particle->vertices[3].z = innerZ;
+    particle->vertices[1].x = outerX;
+    particle->vertices[1].y = outerY;
+    particle->vertices[1].z = outerZ;
 
     if (segment != 0) {
       particle->vertices[0].x = this->previousOuter.x;
@@ -222,8 +225,12 @@ void CMapMagicZoneEffect::OnProcess() {
       particle->vertices[2].z = this->previousInner.z;
     }
 
-    this->previousInner = points[0];
-    this->previousOuter = points[1];
+    this->previousInner.x = innerX;
+    this->previousInner.y = innerY;
+    this->previousInner.z = innerZ;
+    this->previousOuter.x = outerX;
+    this->previousOuter.y = outerY;
+    this->previousOuter.z = outerZ;
   }
 }
 
@@ -236,12 +243,11 @@ void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
     const int angle = static_cast<int>(spinAngle + 1.0f);
     spinAngle = static_cast<float>(angle % 360);
     const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
-    const float height = particle->animationParameter;
 
     for (int corner = 0; corner < 4; ++corner) {
       const int index = (angle + corner * 90) % 360;
       corners[corner].x = radius * g_cosTable[index];
-      corners[corner].y = height;
+      corners[corner].y = particle->animationParameter;
       corners[corner].z = radius * g_sinTable[index];
     }
 
