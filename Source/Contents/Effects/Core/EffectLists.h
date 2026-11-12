@@ -28,6 +28,7 @@ public:
   /* 0018 */ std::list<CEffect*> retired;
   /* 0020 */ std::map<int, std::vector<CEffect*>> indexed;
 
+  EffectLists();
   virtual ~EffectLists();
 
   CEffect* Spawn(int actor, int id, vector3d position, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance);

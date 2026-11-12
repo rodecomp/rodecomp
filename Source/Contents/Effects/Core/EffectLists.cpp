@@ -456,6 +456,14 @@ __declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbNa
   return name;
 }
 
+// INLINED
+__forceinline EffectLists::EffectLists() {
+  this->initialized = false;
+  if (this->RegisterAllocators()) {
+    this->initialized = true;
+  }
+}
+
 // OFFSET: 0x00B24FA0
 // FUNCTION: fn_18776
 bool CreateEffectMgr() {
@@ -463,15 +471,7 @@ bool CreateEffectMgr() {
     return false;
   }
 
-  EffectLists* mgr = new (std::nothrow) EffectLists;
-  if (mgr) {
-    mgr->initialized = false;
-    if (mgr->RegisterAllocators()) {
-      mgr->initialized = true;
-    }
-  }
-
-  g_effectMgr = mgr;
+  g_effectMgr = new (std::nothrow) EffectLists;
   if (!g_effectMgr) {
     return false;
   }
@@ -5196,7 +5196,7 @@ bool HasEffectScript(std::string path, std::string name) {
 
   std::string emitterKey = EmitterKey(name, "emitterInfo");
   g_session.m_hotkeyScript->Call("IsExistValue", "s>b", emitterKey.c_str(), &exists);
-  return exists;
+  return exists ? true : false;
 }
 
 // OFFSET: 0x00B3B0A0
