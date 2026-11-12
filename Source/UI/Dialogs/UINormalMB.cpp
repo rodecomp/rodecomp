@@ -102,8 +102,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000u);
   this->AddChild(this->m_viewer);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_message.c_str()), static_cast<int>(width / 7.5), 0, 0);
 

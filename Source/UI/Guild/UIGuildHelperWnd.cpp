@@ -400,8 +400,7 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   unsigned int green;
   unsigned int blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_textViewer->backgroundColor = 0xFF000000 | RGB(red, green, blue);
-  this->m_textViewer->Invalidate();
+  this->m_textViewer->SetBackgroundColor(0xFF000000 | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
 
   if (!g_guildTip.m_bTryLoading) {
