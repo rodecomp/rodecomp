@@ -96,15 +96,15 @@ void CShowRankingScheduler::SetData(const void* data) {
 // OFFSET: 0x00638110
 // FUNCTION: fn_04741
 void CShowRankingScheduler::Show() {
+  const int kind = *reinterpret_cast<const std::int16_t*>(this->rankingData + 2);
   // GLOBAL: gl_25055
   static const std::map<int, RankingBoardStyle> styles = RankingBoardStyles();
 
-  const int kind = *reinterpret_cast<const std::int16_t*>(this->rankingData + 2);
   const char* title;
   std::uint32_t color;
   std::uint32_t background;
-  auto style = styles.lower_bound(kind);
-  if (style != styles.end() && !(kind < style->first)) {
+  auto style = styles.find(kind);
+  if (style != styles.end()) {
     title = style->second.title;
     color = style->second.color;
     background = style->second.background;
@@ -119,29 +119,32 @@ void CShowRankingScheduler::Show() {
   const auto* points = reinterpret_cast<const int*>(this->rankingData + 44);
   for (int index = 0; index < 10; ++index) {
     std::string name;
-    const std::uint32_t id = ids[index];
-    if (id != 0) {
-      for (std::uint32_t listed : this->rankingList) {
-        if (listed == id) {
+    if (ids[index] != 0) {
+      for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
+        if (this->rankingList[listed] == ids[index]) {
           name = g_namelessName;
           break;
         }
       }
       if (name.find(g_namelessName) == std::string::npos) {
-        name = LookupPlayerName(id);
+        name = LookupPlayerName(ids[index]);
       }
     }
     if (name.empty() || name.find(g_namelessName) != std::string::npos) {
       name = LookupMessage(MSI_NAMELESS_USER);
     }
 
-    std::string line = FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
+    g_windowMgr.SendNotice(
+      UIM_PUSHINTOCHATHISTORY,
+      reinterpret_cast<std::intptr_t>(FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]).c_str()), background, 0, 0, 0
+    );
   }
 
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
-  std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84));
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
+  g_windowMgr.SendNotice(
+    UIM_PUSHINTOCHATHISTORY,
+    reinterpret_cast<std::intptr_t>(FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84)).c_str()), background, 0, 0, 0
+  );
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
 
