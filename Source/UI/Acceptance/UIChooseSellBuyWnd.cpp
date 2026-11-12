@@ -1169,32 +1169,30 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
       }
       CMode* mode = g_modeMgr.GetGameMode();
-      if (g_session.PartyCount() != 0) {
-        if (g_session.partyLeader != 0) {
-          if (this->m_expShare != g_session.partyExpShare || this->m_itemShare != g_session.partyItemCollect ||
-              this->m_itemDistribute != g_session.partyItemDistribute) {
-            mode->SendMsg(MM_GROUPINFO_CHANGE_V2, this->m_expShare, this->m_itemShare, this->m_itemDistribute, 0);
+      if (g_session.PartyCount() == 0) {
+        if (this->m_mode == 50) {
+          std::string name;
+          name = this->m_nameEdit->Text();
+          if (name.find("#") != std::string::npos) {
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_ITEM_COMPARE)), 0xFF, 0, 0, 0);
+          } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0xFF, 0, 0, 0);
+          } else if (std::strlen(name.c_str()) != 0) {
+            mode->SendMsg(MM_WHISPER_FILTER, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+            g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
+            g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_HEIGHT_220);
+            mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
+          } else {
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_PUT_PARTY_NAME_IN)), 0xFF, 0, 0, 0);
           }
+        } else {
+          mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
         }
-        return 0;
-      }
-      if (this->m_mode != 50) {
-        mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
-        return 0;
-      }
-
-      std::string name = this->m_nameEdit->Text();
-      if (name.find("#") != std::string::npos) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_ITEM_COMPARE)), 0xFF, 0, 0, 0);
-      } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0xFF, 0, 0, 0);
-      } else if (std::strlen(name.c_str()) != 0) {
-        mode->SendMsg(MM_WHISPER_FILTER, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
-        g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_HEIGHT_220);
-        mode->SendMsg(MM_CONFORM_MAKEGROUP, 0, this->m_itemShare, this->m_itemDistribute, 0);
-      } else {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_PUT_PARTY_NAME_IN)), 0xFF, 0, 0, 0);
+      } else if (g_session.partyLeader != 0) {
+        if (this->m_expShare != g_session.partyExpShare || this->m_itemShare != g_session.partyItemCollect ||
+            this->m_itemDistribute != g_session.partyItemDistribute) {
+          mode->SendMsg(MM_GROUPINFO_CHANGE_V2, this->m_expShare, this->m_itemShare, this->m_itemDistribute, 0);
+        }
       }
       return 0;
     }
@@ -2190,7 +2188,7 @@ void UITipboxWnd::ShowTip(int id) {
 // OFFSET: 0x008F5AF0
 // FUNCTION: fn_12313
 void UITipboxWnd::UpdatePageText() {
-  this->m_pageText->SetText(IntToString((std::max)(0, g_itemTagOwner->paragraphIndex) + 1, 0).c_str(), 0);
+  this->m_pageText->SetText(IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str(), 0);
   this->m_pageText->SetFont(0, 12, 1, 0);
 
   const std::string separator = "/";
@@ -2198,8 +2196,8 @@ void UITipboxWnd::UpdatePageText() {
   this->m_pageTotalText->SetText((separator + IntToString(pages, 0)).c_str(), 0);
 
   const int pageWidth = this->ColoredTextWidth(
-    IntToString((std::max)(0, g_itemTagOwner->paragraphIndex) + 1, 0).c_str(),
-    std::strlen(IntToString((std::max)(0, g_itemTagOwner->paragraphIndex) + 1, 0).c_str()), 0, 12, 1
+    IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str(),
+    std::strlen(IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str()), 0, 12, 1
   );
   const int totalWidth = this->ColoredTextWidth(
     (separator + IntToString(pages, 0)).c_str(), std::strlen((separator + IntToString(pages, 0)).c_str()), 0, 12, 0
@@ -7035,19 +7033,31 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
   }
 
   const int row = (y - 17) / this->m_rowHeight;
-  const std::list<ITEM_INFO>& items = x < 280 ? this->m_myItems : this->m_otherItems;
-  auto it = items.begin();
-  for (int index = 0; index < row; ++index) {
-    if (it == items.end()) {
+  if (x < 280) {
+    std::list<ITEM_INFO>::iterator it = this->m_myItems.begin();
+    for (int index = 0; index < row; ++index) {
+      if (it == this->m_myItems.end()) {
+        return ITEM_INFO(0);
+      }
+      ++it;
+    }
+    if (it == this->m_myItems.end()) {
       return ITEM_INFO(0);
     }
-    ++it;
+    return *it;
+  } else {
+    std::list<ITEM_INFO>::iterator it = this->m_otherItems.begin();
+    for (int index = 0; index < row; ++index) {
+      if (it == this->m_otherItems.end()) {
+        return ITEM_INFO(0);
+      }
+      ++it;
+    }
+    if (it == this->m_otherItems.end()) {
+      return ITEM_INFO(0);
+    }
+    return *it;
   }
-
-  if (it == items.end()) {
-    return ITEM_INFO(0);
-  }
-  return *it;
 }
 
 // OFFSET: 0x008F4300
@@ -10338,12 +10348,11 @@ void UITipboxWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawTitleBar(true, LookupMessage(MSI_AGAIN), 0);
 
-  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp")));
-  this->DrawBitmap(0, 17, background, false);
+  this->DrawBitmap(0, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\TipboxBG.bmp"))), false);
 
   if (this->searchResults->geometry.visible == 1) {
-    const char* path = g_itemTagOwner->HasSearchResults() ? "유저인터페이스\\tipbox\\img_loading.bmp"
-                                                       : "유저인터페이스\\tipbox\\img_NoSearchResults.bmp";
+    const char* path = g_itemTagOwner->HasSearchResults() == true ? "유저인터페이스\\tipbox\\img_loading.bmp"
+                                                               : "유저인터페이스\\tipbox\\img_NoSearchResults.bmp";
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
     this->DrawBitmap(1, 17, bitmap, false);
   } else {
@@ -10351,9 +10360,7 @@ void UITipboxWnd::Paint() {
     switch (manager->m_image.kind) {
     case 0:
       if (manager->m_currentEntry.imageCell == 5 && manager->m_currentEntry.imageScalePercent == 100) {
-        const std::string path = manager->m_currentEntry.bitmapName + ".bmp";
-        auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-        this->DrawBitmap(1, 17, bitmap, false);
+        this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((manager->m_currentEntry.bitmapName + ".bmp").c_str()))), false);
       } else {
         CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
         const int sourceHeight = texture->Height();
@@ -10383,19 +10390,15 @@ void UITipboxWnd::Paint() {
       );
       break;
     }
-    case 2: {
-      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp")));
-      this->DrawBitmap(1, 17, bitmap, false);
+    case 2:
+      this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp"))), false);
       break;
-    }
     }
   }
 
   this->PaintAnimations();
-  auto* border = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\bg_tipbox.bmp")));
-  this->DrawBitmap(241, 17, border, false);
-  auto* bottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\btnbar_bottom.bmp")));
-  this->DrawBitmap(0, 337, bottom, false);
+  this->DrawBitmap(241, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\bg_tipbox.bmp"))), false);
+  this->DrawBitmap(0, 337, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\btnbar_bottom.bmp"))), false);
 }
 
 // OFFSET: 0x008E9370
@@ -12048,14 +12051,14 @@ void UITipboxWnd::RefreshTip() {
   this->BuildAnimations();
   this->searchResults->Show(0);
 
-  std::string title(g_itemTagOwner->m_currentEntry.title.c_str(), g_itemTagOwner->m_currentEntry.title.size());
+  std::string title = g_itemTagOwner->m_currentEntry.title;
   this->TrimAt(title, "#");
   this->tagButton->Enable(g_itemTagOwner->m_currentEntry.searchable);
 
   std::vector<std::string> lines;
   WrapPlainText(title.c_str(), lines, 30);
 
-  UIStaticText* const texts[2] = {this->titleText, this->subtitleText};
+  UIStaticText** texts = &this->titleText;
   for (int index = 0; index < 2; ++index) {
     texts[index]->SetText("", 0);
     texts[index]->Show(0);
@@ -12291,7 +12294,14 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_PROHIBITLISTWND);
     } else if (a == 0x10C) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
-      const std::string labels[4] = {LookupMessage(MSI_PET_FEEDING), LookupMessage(MSI_PET_PERFORMANCE), LookupMessage(MSI_PET_RETURN_EGG), LookupMessage(MSI_PET_ACC_OFF)};
+      std::string feeding;
+      std::string performance;
+      std::string returnEgg;
+      std::string accessoryOff;
+      feeding = LookupMessage(MSI_PET_FEEDING);
+      performance = LookupMessage(MSI_PET_PERFORMANCE);
+      returnEgg = LookupMessage(MSI_PET_RETURN_EGG);
+      accessoryOff = LookupMessage(MSI_PET_ACC_OFF);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_APPEND_PROHIBIT)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ERASE_PROHIBIT)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REDUCE_PROHIBIT)), 0, 0, 0);
@@ -12312,37 +12322,39 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_COMBOBOX_SELECTED: {
     CMode* mode = g_modeMgr.GetGameMode();
-    int text;
-    UICntWnd* counter;
-    if (a == 0) {
+    switch (a) {
+    case 0: {
       if (!IsMonsterJob(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd();
+      UICntWnd* counter = new UICntWnd();
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
       counter->SendMsg(nullptr, UM_SET_TARGET, 0x98, 0, 0, 0);
-      text = 0x186;
-    } else if (a == 1) {
+      counter->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(0x186)), 0, 0, 0);
+      counter->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
+      break;
+    }
+    case 1:
       if (IsAdminAccount(g_session.m_aid)) {
         mode->SendMsg(MM_REQ_GIVE_MANNER_POINT_PLUS, 30000, 0, 0, 0);
       }
-      return 0;
-    } else {
-      if (a != 2 || !IsAdminAccount(g_session.m_aid)) {
+      break;
+    case 2: {
+      if (!IsAdminAccount(g_session.m_aid)) {
         return 0;
       }
-      counter = new UICntWnd();
+      UICntWnd* counter = new UICntWnd();
       counter->SetSize(0xB6, 0x2E);
       counter->Move((g_renderer->viewport.width - 640) / 2 + 200, ScaleByScreenHeight(200));
       g_windowMgr.AddRendered(counter);
       counter->SendMsg(nullptr, UM_SET_TARGET, 0x97, 0, 0, 0);
-      text = 0x185;
+      counter->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(0x185)), 0, 0, 0);
+      counter->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
+      break;
     }
-    counter->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(text)), 0, 0, 0);
-    counter->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
-  
+    }
     break;
   }
   }
