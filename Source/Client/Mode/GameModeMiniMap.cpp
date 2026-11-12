@@ -619,11 +619,11 @@ void CGameMode::DrawTimeAttackTimer() {
   }
 
   const std::uint32_t start = g_session.m_timeAttackStart;
+  const std::uint32_t elapsed = timeGetTime() - start;
   if (start == 0) {
     g_session.m_timeAttackVisible = 0;
   }
 
-  const std::uint32_t elapsed = timeGetTime() - start;
   int digits[16] = {};
   int seconds = static_cast<int>(elapsed / 1000);
   int minutes = 0;
