@@ -306,10 +306,10 @@ bool CThrowItemEffect::IsAlive() {
 void CThrowItemEffect::OnProcess() {
   for (auto particle = this->particles.begin(); particle != this->particles.end(); ++particle) {
     CParticle* target = *particle;
-
-    target->position.x = this->position[0];
-    target->position.y = this->position[1];
-    target->position.z = this->position[2];
+    vector3d& targetPosition = (*particle)->position;
+    targetPosition.x = this->position[0];
+    targetPosition.y = this->position[1];
+    targetPosition.z = this->position[2];
 
     if (target != nullptr && this->launchDelay <= this->frame) {
       float& angle = target->speedParameter;

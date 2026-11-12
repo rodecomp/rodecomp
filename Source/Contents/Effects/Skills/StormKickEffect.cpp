@@ -266,9 +266,10 @@ bool CStormKickEffect::IsAlive() {
 void CStormKickEffect::OnProcess() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
     if (particle) {
       int alpha = particle->alpha;
       if (particle->elapsedFrames > 60 && this->id != EF_STORMKICK7) {
