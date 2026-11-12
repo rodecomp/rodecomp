@@ -157,6 +157,14 @@ static_assert(sizeof(PACKET_CZ_INVENTORY_TAB) == 5);
 struct ItemListChunkHeader {
   /* 0000 */ std::int16_t type;
   /* 0002 */ std::uint32_t size;
+
+  ItemListChunkHeader() : type(0), size(0) {
+  }
+
+  ~ItemListChunkHeader() {
+    this->type = 0;
+    this->size = 0;
+  }
 };
 #pragma pack(pop)
 
@@ -1552,7 +1560,8 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (static_cast<std::uint16_t>(header.type) == 21000 || static_cast<std::uint16_t>(header.type) == 21050) {
       while (static_cast<unsigned>(b) > offset) {
@@ -1843,7 +1852,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 20700) {
       while (static_cast<unsigned>(b) > offset) {
@@ -6298,7 +6308,8 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 21400) {
       while (static_cast<unsigned>(b) > offset) {
@@ -6431,7 +6442,8 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 20800) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
@@ -6662,7 +6674,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 21150 || header.type == 21100) {
       while (static_cast<unsigned>(b) > offset) {
@@ -6776,7 +6789,8 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 21200 || header.type == 21250) {
       while (static_cast<unsigned>(b) > offset) {
@@ -8851,7 +8865,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 20900) {
       while (static_cast<unsigned>(b) > offset) {
@@ -10942,7 +10957,8 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (header.type == 20750) {
       while (static_cast<unsigned>(b) > offset) {
@@ -11575,14 +11591,19 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       while (offset < static_cast<unsigned>(b)) {
         std::memcpy(&header, data + offset, sizeof(header));
         offset += 6;
-        if (header.type == 21301 || header.type == 21351) {
+        switch (header.type) {
+        case 21301:
+        case 21351: {
           UIWindow* window = g_windowMgr.EnsureWindow(header.type == 21301 ? 42 : 175);
           if (window) {
             window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
+          return 0;
+        }
+        default:
+          offset += header.size;
           break;
         }
-        offset += header.size;
       }
     }
     break;
