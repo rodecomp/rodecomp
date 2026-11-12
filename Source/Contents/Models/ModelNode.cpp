@@ -62,15 +62,13 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
   this->alpha = static_cast<float>(resource.alpha) / 255.0f;
 
   if (this->scaleKeys.size() == 0) {
-    this->scaleKeys.push_back({0, {resource.scale[0], resource.scale[1], resource.scale[2]}, {0, 0, 0, 1}});
+    this->scaleKeys.Add(0, resource.scale[0], resource.scale[1], resource.scale[2], 1.0f, 0.0f, 0.0f, 0.0f);
   }
 
   this->rotationKeys = resource.rotationKeys;
 
   if (this->rotationKeys.size() == 0) {
-    const float halfAngle = resource.angle * 0.5f;
-    const float sine = ClientSin(halfAngle);
-    this->rotationKeys.push_back({0, {sine * resource.axis[0], sine * resource.axis[1], sine * resource.axis[2], ClientCos(halfAngle)}});
+    this->rotationKeys.Add(0, resource.axis[0], resource.axis[1], resource.axis[2], resource.angle);
   }
 
   this->positionKeys = resource.legacyPositionKeys;
@@ -79,12 +77,12 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
     this->positionKeys.push_back({0, {resource.position[0], resource.position[1], resource.position[2]}});
   }
 
-  for (const ModelNode* resourceChild : resource.children) {
+  for (auto it = resource.children.begin(); it != resource.children.end(); ++it) {
     auto* child = new C3dNodeV1;
     this->children.push_back(child);
     child->model = this->model;
     child->parent = this;
-    child->Initialize(*resourceChild);
+    child->Initialize(**it);
   }
 
   this->faceState.resize(this->mesh->faceCount);

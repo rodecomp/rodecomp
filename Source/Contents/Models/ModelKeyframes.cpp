@@ -1,3 +1,4 @@
+#include "Contents/Models/ModelAnimation.h"
 #include "Resource/Models/ModelResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -19,14 +20,6 @@ struct ModelVectorKey {
 
 static_assert(sizeof(ModelVectorKey) == 20);
 
-struct ModelRotationKeys : std::vector<ModelRotationKey> {
-  void Add(int frame, float x, float y, float z, float angle);
-};
-
-struct ModelScaleKeys : std::vector<ModelScaleKey> {
-  void Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle);
-};
-
 struct ModelPositionKeysV2 : std::vector<ModelVectorKey> {
   ModelPositionKeysV2& operator=(const ModelPositionKeysV2& other);
 };
@@ -46,7 +39,7 @@ ModelQuaternionKey::ModelQuaternionKey() : frame(0), rotation{0.0f, 0.0f, 0.0f, 
 
 // OFFSET: 0x0053FFE0
 // FUNCTION: fn_01716
-void ModelRotationKeys::Add(int frame, float x, float y, float z, float angle) {
+void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle) {
   angle *= 0.5f;
   const float sine = ClientSin(angle);
   ModelRotationKey key;
@@ -60,7 +53,7 @@ void ModelRotationKeys::Add(int frame, float x, float y, float z, float angle) {
 
 // OFFSET: 0x00540120
 // FUNCTION: fn_01717
-void ModelScaleKeys::Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle) {
+void LegacyScaleTrack::Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle) {
   angle *= 0.5f;
   const float sine = ClientSin(angle);
   ModelScaleKey key;
