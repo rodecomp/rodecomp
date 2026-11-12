@@ -77,9 +77,11 @@ public:
   /* 0038 */ int range;
   /* 003C */ unsigned char areaParameters[12];
   /* 0048 */ int scaleParameter;
-  /* 004C */ unsigned char angleParameter[4];
+  /* 004C */ int baseAngle;
   /* 0050 */ int rotationParameter;
-  /* 0054 */ unsigned char alphaParameters[92];
+  /* 0054 */ int baseAlpha;
+  /* 0058 */ int fadeAlpha;
+  /* 005C */ float heights[21];
   /* 00B0 */ int effectLevel;
   /* 00B4 */ std::vector<EffectEvent> events;
   /* 00C0 */ unsigned char retained;

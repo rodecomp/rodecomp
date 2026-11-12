@@ -362,16 +362,16 @@ int SetMagicFloorInfo(lua_State* state) {
     reinterpret_cast<float&>(effect->scaleParameter) = static_cast<float>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_ANGLE:
-    *reinterpret_cast<int*>(effect->angleParameter) = luaL_checknumber(state, 3);
+    effect->baseAngle = luaL_checknumber(state, 3);
     break;
   case MSG_SET_RISEANGLE:
     reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   case MSG_SET_ALPHA:
-    *reinterpret_cast<int*>(&effect->alphaParameters[0]) = luaL_checknumber(state, 3);
+    effect->baseAlpha = luaL_checknumber(state, 3);
     break;
   case MSG_SET_FDA:
-    *reinterpret_cast<int*>(&effect->alphaParameters[4]) = luaL_checknumber(state, 3);
+    effect->fadeAlpha = luaL_checknumber(state, 3);
     break;
   case MSG_SET_HEIGHT0:
   case MSG_SET_HEIGHT1:
@@ -394,7 +394,7 @@ int SetMagicFloorInfo(lua_State* state) {
   case MSG_SET_HEIGHT18:
   case MSG_SET_HEIGHT19:
   case MSG_SET_HEIGHT20:
-    reinterpret_cast<float*>(&effect->alphaParameters[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    effect->heights[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   }
 
@@ -459,16 +459,16 @@ int SetOtherEffectInfo(lua_State* state) {
     reinterpret_cast<float&>(effect->scaleParameter) = static_cast<float>(luaL_checknumber(state, 4));
     break;
   case MSG_SET_ANGLE:
-    *reinterpret_cast<int*>(effect->angleParameter) = luaL_checknumber(state, 4);
+    effect->baseAngle = luaL_checknumber(state, 4);
     break;
   case MSG_SET_RISEANGLE:
     reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   case MSG_SET_ALPHA:
-    *reinterpret_cast<int*>(&effect->alphaParameters[0]) = luaL_checknumber(state, 4);
+    effect->baseAlpha = luaL_checknumber(state, 4);
     break;
   case MSG_SET_FDA:
-    *reinterpret_cast<int*>(&effect->alphaParameters[4]) = luaL_checknumber(state, 4);
+    effect->fadeAlpha = luaL_checknumber(state, 4);
     break;
   case MSG_SET_HEIGHT0:
   case MSG_SET_HEIGHT1:
@@ -491,7 +491,7 @@ int SetOtherEffectInfo(lua_State* state) {
   case MSG_SET_HEIGHT18:
   case MSG_SET_HEIGHT19:
   case MSG_SET_HEIGHT20:
-    reinterpret_cast<float*>(&effect->alphaParameters[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    effect->heights[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   }
 

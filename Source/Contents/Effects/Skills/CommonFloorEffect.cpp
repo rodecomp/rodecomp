@@ -70,9 +70,9 @@ void CCommonFloorEffect::ResetParticles() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
     particle->scale = *reinterpret_cast<float*>(&this->scaleParameter);
-    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(*reinterpret_cast<int*>(this->angleParameter));
+    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(this->baseAngle);
     particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * *reinterpret_cast<float*>(&this->rotationParameter));
-    particle->alpha = *reinterpret_cast<int*>(this->alphaParameters);
+    particle->alpha = this->baseAlpha;
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
     particle->InitParticleQuad(particle->vertices);

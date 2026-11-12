@@ -1107,7 +1107,7 @@ void CFootprintEffect::Open() {
 
   int alpha = 250;
   g_session.m_hotkeyScript->Call("GetFootprintPngAplha", "d>d", this->instanceId, &alpha);
-  *reinterpret_cast<int*>(this->alphaParameters) = alpha;
+  this->baseAlpha = alpha;
 
   int duration = 10;
   g_session.m_hotkeyScript->Call("GetFootprintPngDuration", "d>d", this->instanceId, &duration);
@@ -1136,11 +1136,11 @@ CParticle* CFootprintEffect::SpawnFootprint() {
     return particle;
   }
 
-  particle->alpha = *reinterpret_cast<int*>(this->alphaParameters);
+  particle->alpha = this->baseAlpha;
   particle->life = static_cast<float>(this->effectLifetime);
   particle->sourceBlend = 5;
   particle->destinationBlend = 6;
-  particle->speedParameter = static_cast<float>(*reinterpret_cast<int*>(this->alphaParameters)) / static_cast<float>(this->effectLifetime * 60);
+  particle->speedParameter = static_cast<float>(this->baseAlpha) / static_cast<float>(this->effectLifetime * 60);
   particle->SetTexture(texture);
   particle->InitParticleQuad(particle->vertices);
 
