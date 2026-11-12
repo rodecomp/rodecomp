@@ -119,13 +119,15 @@ bool CFlowerCastingEffect::IsAlive() {
 // FUNCTION: fn_19063
 void CFlowerCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-
     CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+
     if (particle && particle->elapsedFrames > 0) {
-      float radius = g_sinTable[particle->elapsedFrames % 90 * 4] * 2.5f + *reinterpret_cast<const float*>(particle->animationParameters);
+      int phase = particle->elapsedFrames;
+      phase %= 90;
+      float radius = g_sinTable[phase * 4] * 2.5f + *reinterpret_cast<const float*>(particle->animationParameters);
       particle->speedParameter = radius;
 
       const int age = particle->elapsedFrames;
