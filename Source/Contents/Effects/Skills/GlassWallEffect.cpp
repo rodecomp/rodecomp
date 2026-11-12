@@ -135,18 +135,20 @@ void CGlassWall::Render() {
     CParticle* particle = *it;
     const float width = particle->scale;
     const float height = particle->animationParameter;
+    const float top = -height;
+    const float back = -width;
     particle->vertices[0].x = 0.0f;
-    particle->vertices[0].y = -height;
+    particle->vertices[0].y = top;
     particle->vertices[0].z = width;
     particle->vertices[1].x = 0.0f;
-    particle->vertices[1].y = -height;
-    particle->vertices[1].z = -width;
+    particle->vertices[1].y = top;
+    particle->vertices[1].z = back;
     particle->vertices[2].x = 0.0f;
     particle->vertices[2].y = 0.0f;
     particle->vertices[2].z = width;
     particle->vertices[3].x = 0.0f;
     particle->vertices[3].y = 0.0f;
-    particle->vertices[3].z = -width;
+    particle->vertices[3].z = back;
     particle->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 
