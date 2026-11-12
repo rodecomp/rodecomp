@@ -81,7 +81,8 @@ bool CRollingCutterRagEffect::OnProcess() {
 
   if (this->elapsed == 0) {
     const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", this->render.position.x - player.x, -100.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
+    const vector3d soundPosition = {this->render.position.x - player.x, -100.0f, this->render.position.z - player.z};
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", soundPosition.x, soundPosition.y, soundPosition.z, 250, 40, 1.0f, 0);
   }
 
   this->state.parent->render.angle += 12.0f;
