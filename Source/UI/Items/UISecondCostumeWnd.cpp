@@ -19,6 +19,8 @@
 #include "Client/Session/Session.h"
 #include "Script/LuaScript.h"
 #include "Resource/MSGSTRINGID.h"
+
+template __declspec(noinline) std::string::basic_string(const std::string&);
 // INLINED
 static int SelectedEntryValue(const std::vector<SecondCostumeEntry>& entries, const int& selected) {
   if (entries.empty()) {
