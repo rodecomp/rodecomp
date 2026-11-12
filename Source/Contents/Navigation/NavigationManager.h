@@ -28,6 +28,13 @@ struct NaviCell {
 };
 
 struct NaviLink {
+  // INLINED
+  NaviLink& operator=(const NaviLink& other) {
+    this->link = other.link;
+    this->cost = other.cost;
+    return *this;
+  }
+
   /* 0000 */ CNavi_Link* link;
   /* 0004 */ int cost;
 };
