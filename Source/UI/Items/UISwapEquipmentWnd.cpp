@@ -307,7 +307,7 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
 // OFFSET: 0x00830760
 // FUNCTION: fn_10394
 void UISwapEquipmentWnd::OnCreate(int width, int height) {
-  this->m_swapButton = new (std::nothrow) UISwapBitmapButton();
+  this->m_swapButton = new (std::nothrow) UISwapBitmapButton;
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_normal.bmp", 0, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
