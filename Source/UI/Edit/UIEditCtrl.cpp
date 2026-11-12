@@ -4067,7 +4067,8 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
     if (std::atoi(text) > 99990000) {
       std::sprintf(price, "99,990,000");
     } else {
-      std::sprintf(price, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+      const int value = std::atoi(text);
+      std::sprintf(price, "%s", FormatGroupedInteger(value, grouped, 32));
     }
 
     const double rate = PriceCommission(_atoi64(text)) * 0.01;
@@ -4078,7 +4079,8 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
     if (std::atoi(text) > 9999) {
       std::sprintf(quantity, "9,999");
     } else {
-      std::sprintf(quantity, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+      const int value = std::atoi(text);
+      std::sprintf(quantity, "%s", FormatGroupedInteger(value, grouped, 32));
     }
 
     std::sprintf(line, LookupMessage(MSI_BUYINGSTORE_MAKEWND_ITEMLIST), name, price, quantity);
@@ -10559,7 +10561,8 @@ void UIMerchantShopMakeWnd::PrintSellList() {
     if (std::atoi(text) > 1000000000) {
       std::sprintf(price, "1,000,000,000");
     } else {
-      std::sprintf(price, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+      const int value = std::atoi(text);
+      std::sprintf(price, "%s", FormatGroupedInteger(value, grouped, 32));
     }
 
     std::sprintf(line, "    %s  :  %s  Zeny", name, price);
