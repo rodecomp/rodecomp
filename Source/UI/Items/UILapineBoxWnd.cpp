@@ -190,15 +190,16 @@ void UIIngredientInfoWnd::OnRBtnDown(int, int) {
 __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) {
   if (index >= 0) {
     const unsigned int count = this->items.size();
-    if (static_cast<unsigned int>(index) <= count) {
-      int left = count > 5 ? 0x19 : 0x21;
-      int top = count > 5 ? 0x98 : 0xA2;
-      if (index >= 5) {
+    if (count >= static_cast<unsigned int>(index)) {
+      int columns = 5;
+      int left = count > columns ? 0x19 : 0x21;
+      int top = count > columns ? 0x98 : 0xA2;
+      if (index >= columns) {
         left = 0x2A;
         top = 0xB7;
       }
       out[1] = top;
-      out[0] = left + static_cast<unsigned int>(index) % 5 * 0x22;
+      out[0] = left + static_cast<unsigned int>(index) % columns * 0x22;
       return;
     }
   }

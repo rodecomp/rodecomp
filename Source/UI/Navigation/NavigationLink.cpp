@@ -339,11 +339,12 @@ int DecodeNavigationNumber(std::string value) {
 std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::vector<char> characters;
+  int radix = 62;
 
   do {
-    characters.push_back(digits[value % 62]);
-    value /= 62;
-  } while (value >= 62);
+    characters.push_back(digits[value % radix]);
+    value /= radix;
+  } while (value >= radix);
   characters.push_back(digits[value]);
 
   std::string result("");
