@@ -32,7 +32,11 @@ CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_
   this->slot = slotValue;
   this->ClearEdges();
   std::memset(this->vertices, 0, sizeof(this->vertices));
-  this->color = this->reverse != 0 ? 0xAAFFFFFFu : 0xAA000000u;
+  if (this->reverse != 0) {
+    this->color = 0xAAFFFFFF;
+  } else {
+    this->color = 0xAA000000;
+  }
 }
 
 // OFFSET: 0x00910480
