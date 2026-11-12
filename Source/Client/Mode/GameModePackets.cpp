@@ -148,6 +148,7 @@
 #include "Contents/Ground/TerrainHeight.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 #include <new>
 
 template __declspec(noinline) decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, const int&>(std::string&, const int&);
@@ -15621,13 +15622,8 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   item.identified = 1;
 
   int job = 0;
-  constexpr std::array<std::uint8_t, 4> signatureSourceArray = CRYPT_NAME("d>d", 0xED796785D1DF137FULL);
-  const std::uint8_t (&signatureSource)[4] = signatureSourceArray._Elems;
-  thread_local EncryptedName<sizeof(signatureSource), 0xED796785D1DF137FULL> signature(signatureSource);
-  const char* signatureText = signature.Text();
-  const std::uint8_t functionSource[] = CRYPT_BYTES(12, "GetEquipJob", 0xF14F79170939C7F1ULL);
-  thread_local EncryptedName<sizeof(functionSource), 0xF14F79170939C7F1ULL> function(functionSource);
-  g_session.m_hotkeyScript->Call(function.Text(), signatureText, itemId, &job);
+  const char* signatureText = OBFUSCATE_BYTES_TEXT("d>d", 0xED796785D1DF137FULL);
+  g_session.m_hotkeyScript->Call(OBFUSCATE_BYTES_TEXT("GetEquipJob", 0xF14F79170939C7F1ULL), signatureText, itemId, &job);
   if (job != 0) {
     item.identity[0] = 0x15;
   }
