@@ -17,21 +17,16 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CStopRecruitingAsyncWork.cpp";
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
   }
-}
 
 // GLOBAL: gl_25606
-const char* g_stopRecruitingPoolName = OBFUSCATE_ARRAY_TEXT("Stop_Recruiting", 0xD97D5DBDBB2F2709ULL, std::uint8_t);
+const char* g_stopRecruitingPoolName = OBFUSCATE_BYTES_TEXT("Stop_Recruiting", 0xD97D5DBDBB2F2709ULL);
 
 // OFFSET: 0x005D5D70
 // FUNCTION: fn_03711
 CStopRecruitingAsyncWork::CStopRecruitingAsyncWork()
     : NAsyncWork(g_stopRecruitingPoolName), m_accountId(0), m_masterAccountId(0),
-      m_diagnostic(false, std::string(DecryptName<0xA5FD29D7AB6DC59FULL>({0xEA, 0xAB, 0x06, 0xC5, 0xA0, 0x46, 0x93, 0xA5})), sourceFile, 28) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xA5FD29D7AB6DC59FULL)), sourceFile, 28) {
 }
 
 // INLINED
@@ -52,7 +47,7 @@ void CStopRecruitingAsyncWork::Bind(std::uint32_t accountId, std::string world, 
   this->m_world = world;
   this->m_url = url;
   this->m_token = token;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xF14F79170939C7F1ULL>({0x84, 0xA9, 0x52, 0x67, 0x60, 0x16, 0x21, 0xF1})), sourceFile, 50);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xF14F79170939C7F1ULL)), sourceFile, 50);
 }
 
 // OFFSET: 0x005D6570
@@ -64,16 +59,16 @@ bool CStopRecruitingAsyncWork::Execute() {
   StringFormat(master, sizeof(master), _TRUNCATE, "%lu", this->m_masterAccountId);
   const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
-  handler.AddField(DecryptName<0x050505679903579BULL>({0xDA, 0x1E, 0x47, 0x99}), account, 4);
-  handler.AddField(DecryptName<0xDD3913D5D7F97BE1ULL>({0xB6, 0x14, 0x8B, 0xBB, 0xB1, 0x5D, 0x58, 0xB0, 0x84, 0x7B}), world, 4);
-  handler.AddField(DecryptName<0xBF2B4B31397FF5A7ULL>({0xE6, 0x80, 0x0B, 0x51, 0x65, 0x24, 0x40, 0xDA, 0xC9, 0xF5}), this->m_token, 4);
-  handler.AddField(DecryptName<0x83EFBFBB37EDBDBDULL>({0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xAE, 0xCA, 0xF9, 0xBD}), master, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x050505679903579BULL), account, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0xDD3913D5D7F97BE1ULL), world, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0xBF2B4B31397FF5A7ULL), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("MasterAID", 0x83EFBFBB37EDBDBDULL), master, 4);
 
   if (handler.Perform() != 0) {
-    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x39FF7FB50DEB998FULL>({0xE9, 0xF8, 0x82, 0x61, 0xB5})), sourceFile, 92);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("fail", 0x39FF7FB50DEB998FULL)), sourceFile, 92);
   } else {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x2FE993D1DDE1F197ULL>({0xE4, 0x84, 0x82, 0xBE, 0xB4, 0xE0, 0x9A, 0x2F})), sourceFile, 101);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("success", 0x2FE993D1DDE1F197ULL)), sourceFile, 101);
   }
 
   return false;
