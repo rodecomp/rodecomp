@@ -39,6 +39,11 @@
 #include <malloc.h>
 #include <string>
 
+template __declspec(noinline) std::vector<ChangeMaterialEntry>::vector(const std::vector<ChangeMaterialEntry>&);
+template __declspec(noinline) std::vector<ChangeMaterialProduct>::vector(const std::vector<ChangeMaterialProduct>&);
+template __declspec(noinline) std::vector<MaterialReq>::vector(const std::vector<MaterialReq>&);
+template __declspec(noinline) std::vector<MaterialResult>::vector(const std::vector<MaterialResult>&);
+
 // INLINED
 inline const MaterialListEntry* UIChangeMaterialWnd_List::GetEntry(unsigned int index) const {
   if (index >= this->m_items.size()) {
