@@ -1197,8 +1197,7 @@ void __stdcall CreateHallucinationPc(
   *reinterpret_cast<std::uint16_t*>(argb + 1) = 0xFFFF;
   argb[0] = 0xFF;
 
-  CRenderObject* object = hallu;
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(hallu);
   delete pc;
 }
 
