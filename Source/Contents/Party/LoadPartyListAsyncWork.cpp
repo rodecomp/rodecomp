@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -20,23 +21,23 @@ namespace {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
   }
-
   // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
     return name.Text();
   }
+
 }
 
 // GLOBAL: gl_25604
-const char* g_loadPartyListPoolName = DecryptName<0x07112F85A39F4FABULL>(CRYPT_BYTES(15, "PartyList_Load", 0x07112F85A39F4FABULL));
+const char* g_loadPartyListPoolName = OBFUSCATE_BYTES_TEXT("PartyList_Load", 0x07112F85A39F4FABULL);
 
 // OFFSET: 0x005D1640
 // FUNCTION: fn_03698
 CLoadPartyListAsyncWork::CLoadPartyListAsyncWork()
     : NAsyncWork(g_loadPartyListPoolName), m_accountId(0), m_characterId(0), m_page(0),
-      m_diagnostic(false, std::string(DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x70, 0x0E, 0x5D, 0x2D})), sourceFile, 25) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknown", 0x2D33791F67AD47DFULL)), sourceFile, 25) {
 }
 
 // INLINED
@@ -62,9 +63,7 @@ void CLoadPartyListAsyncWork::Bind(
   this->m_filter = filter;
   this->m_page = page;
   this->m_search = search;
-  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
-  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 54);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x936F3D2FFDFD87F5ULL)), sourceFile, 54);
 }
 
 // OFFSET: 0x005D2000
