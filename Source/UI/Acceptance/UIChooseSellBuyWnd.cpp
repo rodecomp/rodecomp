@@ -787,7 +787,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
     if (town.image.empty()) {
       break;
     }
-    this->AddTownButton(index, std::move(town));
+    this->AddTownButton(index, town);
   }
 }
 
