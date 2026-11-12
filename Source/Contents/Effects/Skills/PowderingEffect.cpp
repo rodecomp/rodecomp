@@ -106,26 +106,20 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
   const int span1 = this->particleGridSize * 5;
-  int r1 = 0;
-  if (span1 != 0) {
-    r1 = std::max(rand() % span1, 0);
-  }
+  const int r1 = RandomSpan(span1);
   const int r1Final = r1 - span1 / 2 + 1;
 
-  const float yVal = static_cast<float>(std::max(rand() % 7, 0) + 7);
+  const float yVal = static_cast<float>(RandomSpan(7) + 7);
 
   const int span2 = this->particleGridSize * 5;
-  int r2 = 0;
-  if (span2 != 0) {
-    r2 = std::max(rand() % span2, 0);
-  }
+  const int r2 = RandomSpan(span2);
   const int r2Final = r2 - span2 / 2 + 1;
 
   spriteParticle->velocity.y = -yVal;
   spriteParticle->velocity.x = static_cast<float>(r1Final);
   spriteParticle->velocity.z = static_cast<float>(r2Final);
 
-  const int r3 = std::max(rand() % 3, 0) + 1;
+  const int r3 = RandomSpan(3) + 1;
 
   spriteParticle->alpha = 0;
   spriteParticle->animationState = 0;
@@ -155,7 +149,7 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
   particle->speedParameter =
     (static_cast<float>(r1Clamped + 1) * 0.1f + 6.0f) / static_cast<float>(particle->angleParameter * 2);
 
-  const int r3 = std::max(rand() % 100, 0);
+  const int r3 = RandomSpan(100);
   const int targetAlpha = r3 + 50;
   *reinterpret_cast<int*>(particle->effectParameters) = targetAlpha;
   *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(targetAlpha / particle->angleParameter);
@@ -250,13 +244,13 @@ void CPowderingEffect::OnProcess() {
 
     int alpha = particle->alpha;
     if (particle->animationState == 0) {
-      alpha += std::max(rand() % 30, 0);
+      alpha += RandomSpan(30);
       if (alpha >= 255) {
         alpha = 254;
         particle->animationState = 1;
       }
     } else if (particle->animationState == 1) {
-      alpha -= std::max(rand() % 30, 0);
+      alpha -= RandomSpan(30);
       if (alpha < 0) {
         if (!this->ActorExists()) {
           alpha = 0;
@@ -271,7 +265,7 @@ void CPowderingEffect::OnProcess() {
 
     vector3d velocity = particle->velocity;
     particle->alpha = alpha;
-    velocity.y += static_cast<float>(std::max(rand() % 10, 0)) * 0.01f;
+    velocity.y += static_cast<float>(RandomSpan(10)) * 0.01f;
     particle->velocity = velocity;
     ++particle->elapsedFrames;
     particle->position = {velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};

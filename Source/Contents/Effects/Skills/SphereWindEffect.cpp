@@ -29,10 +29,14 @@ void CSphereWindEffect::Open() {
     const int id = this->id;
     int tilt = start;
     for (int ring = 0; ring < 4; ++ring) {
-      const float radius = static_cast<float>(std::max(rand() % 11, 0)) * 0.2f + 4.0f;
-      const int rotation = std::max(rand() % 360, 0);
-      const int spread = std::max(rand() % 91, 0) + 180;
-      const int spin = std::max(rand() % 4, 0) + 3;
+      const int radiusRoll = rand() % 11;
+      const float radius = static_cast<float>(radiusRoll >= 0 ? radiusRoll : 0) * 0.2f + 4.0f;
+      const int rotationRoll = rand() % 360;
+      const int rotation = rotationRoll >= 0 ? rotationRoll : 0;
+      const int spreadRoll = rand() % 91;
+      const int spread = (spreadRoll >= 0 ? spreadRoll : 0) + 180;
+      const int spinRoll = rand() % 4;
+      const int spin = (spinRoll >= 0 ? spinRoll : 0) + 3;
 
       for (int segment = 0; segment < 21; ++segment) {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
