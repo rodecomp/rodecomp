@@ -264,8 +264,10 @@ template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
-  this->scrollBar->onChange = onChange;
+  {
+    const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
+    this->scrollBar->onChange = onChange;
+  }
   this->AddChild(this->scrollBar);
 }
 
