@@ -45,6 +45,7 @@ extern "C" {
 #include <lua.h>
 }
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -900,10 +901,8 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
 void ToggleSitStand() {
-  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-    if (effect.id == 933) {
-      return;
-    }
+  if (std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 933; }) != g_activeSkillEffects.end()) {
+    return;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -926,7 +925,7 @@ void ToggleSitStand() {
     times.pop_front();
     times.push_back(timeGetTime());
     const unsigned long elapsed = times.back() - times.front();
-    if (elapsed - 1501 <= 1498) {
+    if (elapsed > 1500 && elapsed < 3000) {
       mode->SendMsg(MM_DORIDORI, 0, 0, 0, 0);
       for (unsigned long& time : times) {
         time = 0;
