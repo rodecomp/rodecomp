@@ -146,10 +146,11 @@ void CRotateBgEffect::OnProcess() {
   }
 
   for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
     if (particle) {
       if (particle->columnIndex == 0) {
         this->segmentAngle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
