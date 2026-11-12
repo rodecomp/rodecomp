@@ -2328,7 +2328,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
   }
 
   auto first = this->m_tabs.find(1);
-  if (first != this->m_tabs.end()) {
+  if (this->m_tabs.end() != first) {
     this->SendMsg(first->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 
