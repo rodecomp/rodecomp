@@ -2534,9 +2534,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_SC_ACK_ENCRYPTION: {
-      constexpr std::array<std::uint8_t, 25> source = CRYPT_NAME("No Packet Encryption !!!", 0xB195637DAFCB0D59ULL);
-      thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> text(source);
-      ShowErrorDialog(GetRenderSystemHolder()->system, text.Text(), 0);
+      ShowErrorDialog(GetRenderSystemHolder()->system, OBFUSCATE_BYTES_TEXT("No Packet Encryption !!!", 0xB195637DAFCB0D59ULL), 0);
       break;
     }
     case ID_AC_NOTIFY_ERROR: {
@@ -2843,9 +2841,7 @@ void CLoginMode::PollNetworkStatus() {
       GetRagConnection().Close();
       const int code = packet->result;
       const char* text = LookupMessage(message);
-      const std::array<std::uint8_t, 7> source = CRYPT_BYTES(7, "%s(%d)", 0xDD3913D5D7F97BE1ULL);
-      thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> format(source);
-      g_windowMgr.Confirm(FormatString(format.Text(), text, code), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(FormatString(OBFUSCATE_BYTES_TEXT("%s(%d)", 0xDD3913D5D7F97BE1ULL), text, code), 0, true, false, 0, "Message", 280, 120, 0);
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
       break;
@@ -3617,16 +3613,12 @@ void CLoginMode::OnChangeState(int value) {
       const std::array<std::uint8_t, 26> hostSource = CRYPT_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
       const char* hostText = host.Text();
-      const std::array<std::uint8_t, 6> formatSource = CRYPT_BYTES(6, "%s:%d", 0x7321C3814F8799E1ULL);
-      thread_local EncryptedName<sizeof(formatSource), 0x7321C3814F8799E1ULL> format(formatSource);
-      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText, port);
+      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
     } else {
       const std::array<std::uint8_t, 34> hostSource = CRYPT_BYTES(34, "kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
       const char* hostText = host.Text();
-      const std::array<std::uint8_t, 3> formatSource = CRYPT_BYTES(3, "%s", 0xCB1D253B7FE1F563ULL);
-      thread_local EncryptedName<sizeof(formatSource), 0xCB1D253B7FE1F563ULL> format(formatSource);
-      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), format.Text(), hostText);
+      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xCB1D253B7FE1F563ULL), hostText);
     }
 
     this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
@@ -3644,17 +3636,11 @@ void CLoginMode::OnChangeState(int value) {
     const std::array<std::uint8_t, 5> codeSource = CRYPT_BYTES(5, "0011", 0x793F370985ED674FULL);
     thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
-    const std::array<std::uint8_t, 3> nameFormatSource = CRYPT_BYTES(3, "%s", 0x234977DDB54BC71DULL);
-    thread_local EncryptedName<sizeof(nameFormatSource), 0x234977DDB54BC71DULL> nameFormat(nameFormatSource);
-    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), nameFormat.Text(), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));
+    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));
     char password[33] = {};
-    const std::array<std::uint8_t, 3> passwordFormatSource = CRYPT_BYTES(3, "%s", 0xEF6D1D893F2B2DC5ULL);
-    thread_local EncryptedName<sizeof(passwordFormatSource), 0xEF6D1D893F2B2DC5ULL> passwordFormat(passwordFormatSource);
-    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), passwordFormat.Text(), reinterpret_cast<const char*>(this->loginCredentials));
+    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), reinterpret_cast<const char*>(this->loginCredentials));
     DecryptRijndael256(password, packet.password);
-    const std::array<std::uint8_t, 3> extraFormatSource = CRYPT_BYTES(3, "%s", 0x39A39F87DD5F535BULL);
-    thread_local EncryptedName<sizeof(extraFormatSource), 0x39A39F87DD5F535BULL> extraFormat(extraFormatSource);
-    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), extraFormat.Text(), reinterpret_cast<const char*>(this->loginExtra));
+    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
     this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
@@ -3700,9 +3686,7 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
-    const std::array<std::uint8_t, 10> countNameSource = CRYPT_BYTES(10, "NUMSERVER", 0x6FE153231D879777ULL);
-    thread_local EncryptedName<sizeof(countNameSource), 0x6FE153231D879777ULL> countName(countNameSource);
-    window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
+    window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMSERVER", 0x6FE153231D879777ULL)), 0, 0);
 
     if (g_loginCancelRequested == 1) {
       g_loginCancelRequested = 0;
@@ -3844,19 +3828,11 @@ void CLoginMode::OnChangeState(int value) {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!std::strstr(g_session.clientVersion, "Dev")) {
-      const std::array<std::uint8_t, 29> hostSource = CRYPT_BYTES(29, "kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL);
-      thread_local EncryptedName<sizeof(hostSource), 0x2FEB8739E5975BD1ULL> host(hostSource);
-      host.Text();
-      const std::array<std::uint8_t, 3> formatSource = CRYPT_BYTES(3, "%s", 0x33133B977BCD03CDULL);
-      thread_local EncryptedName<sizeof(formatSource), 0x33133B977BCD03CDULL> format(formatSource);
-      format.Text();
+      OBFUSCATE_BYTES_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL);
+      OBFUSCATE_BYTES_TEXT("%s", 0x33133B977BCD03CDULL);
     } else {
-      const std::array<std::uint8_t, 30> hostSource = CRYPT_BYTES(30, "kro-qm-1a.ragnarok.co.kr:6900", 0xA12DAB392545D72FULL);
-      thread_local EncryptedName<sizeof(hostSource), 0xA12DAB392545D72FULL> host(hostSource);
-      host.Text();
-      const std::array<std::uint8_t, 3> formatSource = CRYPT_BYTES(3, "%s", 0x6BA1C1132F033B75ULL);
-      thread_local EncryptedName<sizeof(formatSource), 0x6BA1C1132F033B75ULL> format(formatSource);
-      format.Text();
+      OBFUSCATE_BYTES_TEXT("kro-qm-1a.ragnarok.co.kr:6900", 0xA12DAB392545D72FULL);
+      OBFUSCATE_BYTES_TEXT("%s", 0x6BA1C1132F033B75ULL);
     }
 
     CharServerEndpoint endpoint;
@@ -4012,16 +3988,12 @@ void CLoginMode::OnChangeState(int value) {
     g_packetReassembler->Notify(1);
     char keyName[MAX_PATH];
     std::strcpy(keyName, g_subKey);
-    const std::array<std::uint8_t, 9> cashKeySource = CRYPT_BYTES(9, "\\NeoCash", 0xB39FA7917BCFBB8DULL);
-    thread_local EncryptedName<sizeof(cashKeySource), 0xB39FA7917BCFBB8DULL> cashKey(cashKeySource);
-    std::strcat(keyName, cashKey.Text());
+    std::strcat(keyName, OBFUSCATE_BYTES_TEXT("\\NeoCash", 0xB39FA7917BCFBB8DULL));
     DWORD category = 0;
     DWORD disposition = 0;
     HKEY key;
     if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, keyName, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
-      const std::array<std::uint8_t, 14> valueNameSource = CRYPT_BYTES(14, "CASH_CATEGORY", 0x8D1D0FF1AF2B13F7ULL);
-      thread_local EncryptedName<sizeof(valueNameSource), 0x8D1D0FF1AF2B13F7ULL> valueName(valueNameSource);
-      RegSetValueExA(key, valueName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&category), sizeof(category));
+      RegSetValueExA(key, OBFUSCATE_BYTES_TEXT("CASH_CATEGORY", 0x8D1D0FF1AF2B13F7ULL), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&category), sizeof(category));
       RegCloseKey(key);
     }
 
@@ -4055,9 +4027,7 @@ void CLoginMode::OnChangeState(int value) {
     const unsigned char flags = g_serviceOptions.Get(0x6C);
     g_session.SetServiceFlags(flags, flags);
     reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
-    const std::array<std::uint8_t, 44> wallpaperSource = CRYPT_BYTES(44, "유저인터페이스\\login_interface\\warning2.bmp", 0x4F99DF03C3EF31B7ULL);
-    thread_local EncryptedName<sizeof(wallpaperSource), 0x4F99DF03C3EF31B7ULL> wallpaper(wallpaperSource);
-    this->wallpaperName = std::string(wallpaper.Text());
+    this->wallpaperName = std::string(OBFUSCATE_BYTES_TEXT("유저인터페이스\\login_interface\\warning2.bmp", 0x4F99DF03C3EF31B7ULL));
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, 10026, 0, 0, 0);
     break;
@@ -4134,9 +4104,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 30: {
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
-    const std::array<std::uint8_t, 8> countNameSource = CRYPT_BYTES(8, "NUMZONE", 0x9171997D6963C9F7ULL);
-    thread_local EncryptedName<sizeof(countNameSource), 0x9171997D6963C9F7ULL> countName(countNameSource);
-    window->SendMsg(nullptr, UM_SET_TARGET, 10028, reinterpret_cast<std::intptr_t>(countName.Text()), 0, 0);
+    window->SendMsg(nullptr, UM_SET_TARGET, 10028, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMZONE", 0x9171997D6963C9F7ULL)), 0, 0);
     for (unsigned int i = 0; i < this->mapStates.size(); ++i) {
       char mapName[16];
       std::strncpy(mapName, g_session.GatName2RswName(reinterpret_cast<const char*>(&this->mapStates[i].data)), sizeof(mapName));
