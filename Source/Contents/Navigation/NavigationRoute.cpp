@@ -979,11 +979,6 @@ void CNaviData::Clear() {
   this->range = 50000;
   this->endLinks.clear();
 
-  for (NaviDataEntry& entry : this->entries) {
-    entry.previous = -1;
-    entry.link = nullptr;
-    entry.cost = 0;
-  }
   this->entries.clear();
 }
 

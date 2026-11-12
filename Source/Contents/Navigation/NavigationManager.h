@@ -45,6 +45,13 @@ struct NaviDataEntry {
   // INLINED
   NaviDataEntry(int previous, CNavi_Link* link, int cost) : previous(previous), link(link), cost(cost) {}
 
+  // INLINED
+  ~NaviDataEntry() {
+    this->previous = -1;
+    this->link = nullptr;
+    this->cost = 0;
+  }
+
   void Reset();
   void Init();
   int GetPrevious() const;
