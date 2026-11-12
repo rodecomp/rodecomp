@@ -312,7 +312,7 @@ int DecodeNavigationNumber(std::string value) {
   int result = 0;
   char* buffer = new char[size];
   strcpy_s(buffer, size, value.c_str());
-  const int length = static_cast<int>(value.size());
+  const int length = size - 1;
 
   for (int index = 0; index < length; ++index) {
     for (int digit = 0; digit < 62; ++digit) {
