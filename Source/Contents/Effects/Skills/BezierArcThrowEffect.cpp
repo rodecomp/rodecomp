@@ -13,9 +13,9 @@
 // INLINED
 static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   vector3d result;
-  result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
-  result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
-  result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
+  result.x = point.x * transform.values[0] + point.y * transform.values[3] + point.z * transform.values[6] + transform.values[9];
+  result.y = point.x * transform.values[1] + point.y * transform.values[4] + point.z * transform.values[7] + transform.values[10];
+  result.z = point.x * transform.values[2] + point.y * transform.values[5] + point.z * transform.values[8] + transform.values[11];
   return result;
 }
 
