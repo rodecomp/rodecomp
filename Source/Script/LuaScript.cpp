@@ -40,6 +40,7 @@ extern "C" {
 #include <windows.h>
 
 template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](int&&);
+template __declspec(noinline) std::vector<std::string>& std::map<std::string, std::vector<std::string>>::operator[](const std::string&);
 
 struct MiniMapPosition {
   MiniMapPosition() {
@@ -48,6 +49,8 @@ struct MiniMapPosition {
   /* 0000 */ float x;
   /* 0004 */ float y;
 };
+
+template __declspec(noinline) MiniMapPosition& std::map<std::string, MiniMapPosition>::operator[](const std::string&);
 
 // GLOBAL: gl_24913
 std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
