@@ -76,7 +76,7 @@ void CWave::Unload() {
       return;
     }
 
-    std::free(this->data);
+    delete[] static_cast<char*>(this->data);
   }
 
   this->milesAllocated = 0;
