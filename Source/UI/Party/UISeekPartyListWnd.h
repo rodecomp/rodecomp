@@ -3,6 +3,7 @@
 
 #include "Contents/Party/PartyBookingInfo.h"
 #include "Contents/Party/PartyBookingMgr.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <map>
@@ -74,7 +75,8 @@ protected:
   /* 0188 */ int m_mapIndex;
   /* 018C */ int m_jobCategory;
   /* 0190 */ int m_jobCategoryChanged;
-  /* 0194 */ unsigned char padding_0194[0x10];
+  /* 0194 */ int padding_0194;
+  /* 0198 */ std::vector<MiniPartyInfoEntry> m_menuItems;
   /* 01A4 */ int m_firstRow;
   /* 01A8 */ int m_hoverIndex;
   /* 01AC */ int m_columnCount;
