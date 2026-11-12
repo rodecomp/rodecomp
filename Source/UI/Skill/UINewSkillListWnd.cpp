@@ -47,6 +47,7 @@
 #include "Client/Mode/CMode.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
@@ -473,9 +474,7 @@ std::list<CSkillInfo>& UINewSkillListWnd::SkillList(int tab, bool live) {
 // FUNCTION: fn_13810
 void UINewSkillListWnd::InitTabs() {
   const int initialTabCount = this->m_tabs->labels.size();
-  const std::uint8_t source[] = CRYPT_BYTES(23, "JobSkillTab_GetTabName", 0x03772763F96D9DA5ULL);
-  thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> funcName(source);
-  const char* func = funcName.Text();
+  const char* func = OBFUSCATE_BYTES_TEXT("JobSkillTab_GetTabName", 0x03772763F96D9DA5ULL);
 
   const char* defaultTabs[4] = {};
   const char* jobTabs[4] = {};
