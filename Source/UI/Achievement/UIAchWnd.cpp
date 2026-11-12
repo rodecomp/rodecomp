@@ -399,8 +399,8 @@ void UIAchListWnd::Paint() {
 
     if (flags[1] == 1) {
       const std::string date = FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day);
-      DrawOutlinedText(
-        *this, static_cast<int>(276.0 - this->TextWidth(date.c_str(), 0, 0, 10, 0, 0) * 0.5), this->rowHeight * row + 55, date.c_str(), 0, 0x635AA5,
+      this->DrawOutlinedText(
+        static_cast<int>(276.0 - this->TextWidth(date.c_str(), 0, 0, 10, 0, 0) * 0.5), this->rowHeight * row + 55, date.c_str(), 0, 0x635AA5,
         0xFFFFFF, 0, 10, 0, 0
       );
     }
@@ -486,7 +486,7 @@ void UIAchTV::Paint() {
     if (this->outlineColor == 0) {
       this->DrawTextAt(3, this->lineHeight * row + 4, line.c_str(), line.size(), 0, 12, this->textColor, 0, 0);
     } else {
-      DrawOutlinedText(*this, 3, this->lineHeight * row + 4, line.c_str(), line.size(), this->textColor, this->outlineColor, 0, 12, 0, 0);
+      this->DrawOutlinedText(3, this->lineHeight * row + 4, line.c_str(), line.size(), this->textColor, this->outlineColor, 0, 12, 0, 0);
     }
 
     if (this->underline == 1) {
@@ -528,7 +528,7 @@ void UIAchSummaryWnd::Paint() {
       this->DrawBitmap(x + 12, 360, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
     }
 
-    DrawOutlinedText(*this, x - 3, 366, FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day).c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
+    this->DrawOutlinedText(x - 3, 366, FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day).c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
     x += 316;
   }
 }

@@ -1624,7 +1624,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawAuxiliary(2, x + 4, y + 44, &bitmap->image, true, true);
         const std::string value = this->ValueText(static_cast<int>(skill.id));
         if (value.size() != 0) {
-          DrawOutlinedText(*this, x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
+          this->DrawOutlinedText(x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
         }
       } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
         this->DrawAuxiliary(4, x + 4, y + 44, &bitmap->image, true, true);
@@ -1666,9 +1666,9 @@ void UINewSkillListWnd::DrawSkillTree() {
         std::sprintf(text, "%d / %d", useLevel, skill.level);
         int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
         std::sprintf(text, "%d", useLevel);
-        DrawOutlinedText(*this, textX, textY, text, 0, useLevel == skill.level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText(textX, textY, text, 0, useLevel == skill.level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(text, 0, 0, 11, 1, 0);
-        DrawOutlinedText(*this, textX, textY, " / ", 0, (shade << 8 | shade) << 8 | shade, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText(textX, textY, " / ", 0, (shade << 8 | shade) << 8 | shade, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = skill.id;
@@ -1682,11 +1682,11 @@ void UINewSkillListWnd::DrawSkillTree() {
           target = extra->level;
         }
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", target);
-        DrawOutlinedText(*this, textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
         std::sprintf(text, "%d", skill.level);
         const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
-        DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText((24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       }
     }
 

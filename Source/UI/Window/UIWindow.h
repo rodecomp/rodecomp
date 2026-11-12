@@ -131,6 +131,18 @@ public:
   );
   void DrawVerticalText(int x, int y, const char* text, unsigned bytes, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawCenteredText(int x, int y, const char* text, int width, int family, int height, std::uint32_t color, unsigned char bold);
+  void DrawColoredText(int x, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height, bool shadow);
+  void DrawStyledColoredText(
+    int x, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height, unsigned char bold, unsigned char italic,
+    bool shadow
+  );
+  void DrawOutlinedText(
+    int x, int y, const char* text, unsigned bytes, std::uint32_t color, std::uint32_t outline, int family, int height, unsigned char bold,
+    unsigned char italic
+  );
+  void DrawOutlinedColoredText(
+    int x, int y, const char* text, unsigned bytes, std::uint32_t& color, std::uint32_t outline, int family, int height, unsigned char bold
+  );
   void DrawRightOutlinedText(
     int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family,
     int height, unsigned char bold

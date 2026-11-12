@@ -175,8 +175,8 @@ void UIListBoxEx::Paint() {
     }
 
     std::uint32_t color = this->lines[index].color;
-    DrawColoredText(
-      *this, 3 - this->horizontalOffset, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12,
+    this->DrawColoredText(
+      3 - this->horizontalOffset, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12,
       false
     );
   }

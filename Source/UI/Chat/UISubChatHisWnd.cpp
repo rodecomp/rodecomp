@@ -95,7 +95,7 @@ void UISubChatHisWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   std::uint32_t color = 0xFFFFFF;
   this->DrawTextAt(5, 4, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
-  DrawColoredText(*this, 4, 3, this->m_name.c_str(), 0, color, 0, 12, false);
+  this->DrawColoredText(4, 3, this->m_name.c_str(), 0, color, 0, 12, false);
   this->FillRegion(2, 0, this->m_inputWidth - 5, 1, color);
   this->FillRegion(1, 1, 1, 1, color);
   this->FillRegion(0, 2, 1, this->geometry.height - 4, color);

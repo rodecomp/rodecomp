@@ -80,7 +80,7 @@ void CUIGameItemWithNum::Paint() {
   CUIGameItem::Paint();
   if (this->itemInfo.quantity > 0 && this->mode == 0) {
     std::string text = std::to_string(this->itemInfo.quantity);
-    DrawOutlinedText(*this, 14, 15, text.c_str(), 0, 0, 0xFFFFFF, 0, 11, 0, 0);
+    this->DrawOutlinedText(14, 15, text.c_str(), 0, 0, 0xFFFFFF, 0, 11, 0, 0);
   }
 }
 

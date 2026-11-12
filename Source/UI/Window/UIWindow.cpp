@@ -2242,7 +2242,7 @@ void UIListBox_NaviSearch::Paint() {
     }
 
     const std::string& line = this->lines[index];
-    DrawColoredText(*this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    this->DrawColoredText(x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
   }
 }
 
@@ -2489,8 +2489,8 @@ void UINavigationV4Wnd::Paint() {
     this->DrawMapTexture(3, 0x2e, 0x10a);
     CNaviInfo* info = static_cast<CNaviInfo*>(g_navigationManager.GetCurrentTarget().object);
     if (info) {
-      DrawOutlinedText(*this, 9, 0x32, info->GetTitle(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
-      DrawOutlinedText(*this, 9, 0x41, info->GetName(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
+      this->DrawOutlinedText(9, 0x32, info->GetTitle(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
+      this->DrawOutlinedText(9, 0x41, info->GetName(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
     }
 
     if (static_cast<DWORD>(this->noticeUntil) > timeGetTime()) {
@@ -2514,7 +2514,7 @@ void UINavigationV4Wnd::Paint() {
       WrapPlainText(message.c_str(), lines, 0x26);
       int y = (0x29 - static_cast<int>(lines.size())) * 7;
       for (unsigned int index = 0; index < lines.size(); ++index) {
-        DrawOutlinedText(*this, 0x2a, y, lines[index].c_str(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
+        this->DrawOutlinedText(0x2a, y, lines[index].c_str(), 0, 0xffffff, 0, 0, 0xb, 1, 0);
         y += 0xe;
       }
     }

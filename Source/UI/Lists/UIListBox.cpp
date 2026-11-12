@@ -359,7 +359,7 @@ void UIListBox::Paint() {
       y = static_cast<int>(static_cast<float>((this->lineHeight - this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0))) * 0.5f + static_cast<float>((row * this->lineHeight)));
     }
 
-    DrawColoredText(*this, x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
+    this->DrawColoredText(x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
   }
 }
 

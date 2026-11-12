@@ -3120,8 +3120,8 @@ void CUITextButton::DrawLabel() {
       );
     }
     if (this->outline) {
-      DrawOutlinedText(
-        *this, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
+      this->DrawOutlinedText(
+        this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
         this->fontHeight, this->bold, 0
       );
       return;
@@ -3138,8 +3138,8 @@ void CUITextButton::DrawLabel() {
     );
   }
   if (this->outline) {
-    DrawOutlinedText(
-      *this, this->textX, this->textY, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
+    this->DrawOutlinedText(
+      this->textX, this->textY, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
       this->fontHeight, this->bold, 0
     );
     return;
@@ -3192,8 +3192,8 @@ void CUIStaticText::Paint() {
     );
   }
   if (this->outline) {
-    DrawOutlinedText(
-      *this, this->textX, this->textY + 1, this->displayText.c_str(), 0, this->color, this->outlineColor, this->fontIndex, this->fontHeight, this->bold,
+    this->DrawOutlinedText(
+      this->textX, this->textY + 1, this->displayText.c_str(), 0, this->color, this->outlineColor, this->fontIndex, this->fontHeight, this->bold,
       0
     );
     return;

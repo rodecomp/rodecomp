@@ -163,7 +163,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
   int textY = y + 5;
   for (std::list<std::string>::const_iterator it = this->hoveredRecord->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
     const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) == 0 ? 0x8080F0 : 0xFFFFFF;
-    DrawOutlinedText(*this, boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
+    this->DrawOutlinedText(boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
     textY += lineHeight;
   }
 
@@ -275,7 +275,7 @@ void UIRoMapWnd::DrawFieldLabels() {
       }
 
       const int levelX = CenteredTextX(*this, name, field->left, field->right, levelHeight, 1);
-      DrawOutlinedText(*this, levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
+      this->DrawOutlinedText(levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
     }
   }
 }
@@ -642,7 +642,7 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
   DrawRoundedBorder(*this, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0xFFFFFF);
   DrawAlphaRectangle(marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0x66000000);
   std::string name = g_session.GetMapDisplayName(marker.name.c_str());
-  DrawOutlinedText(*this, marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
+  this->DrawOutlinedText(marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
 
 // OFFSET: 0x009119B0

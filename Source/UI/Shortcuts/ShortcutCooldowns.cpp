@@ -840,10 +840,10 @@ void UISerachStoreInfoWnd::Paint() {
 
   this->DrawPanelBackground(0, 0, "");
   this->DrawTitleBar(true, LookupMessage(MSI_SEARCH_STOREINFO), 0);
-  DrawOutlinedText(*this, 5, 20, "Type", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
-  DrawOutlinedText(*this, 98, 20, "Item", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
-  DrawOutlinedText(*this, 185, 20, "Card", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
-  DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  this->DrawOutlinedText(5, 20, "Type", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  this->DrawOutlinedText(98, 20, "Item", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  this->DrawOutlinedText(185, 20, "Card", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+  this->DrawOutlinedText(273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   this->DrawTextAt(353, 38, "~", 0, 0, 12, 0, 0, 0);
 
   this->DrawRightAlignedText(this->geometry.width - 60, 60, FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.storeSearchCount).c_str(), 0, 0, 12, 0, 0);

@@ -1474,8 +1474,8 @@ void UIReplayRECControlWnd::Paint() {
     DrawFilledRoundedBorder(*this, 0, 34, this->geometry.width, this->geometry.height - 34, 0xDEDEDE);
     DrawFilledRoundedBorder(*this, 4, 38, this->geometry.width - 8, 95, 0xFFFFFF);
     DrawFilledRoundedBorder(*this, 4, 138, this->geometry.width - 8, 57, 0xFFFFFF);
-    DrawOutlinedText(*this, 10, 42, LookupMessage(MSI_REPLAY_SETREPLAYSAVEDATA), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
-    DrawOutlinedText(*this, 10, 142, LookupMessage(MSI_REPLAY_SETRECOPTION), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+    this->DrawOutlinedText(10, 42, LookupMessage(MSI_REPLAY_SETREPLAYSAVEDATA), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+    this->DrawOutlinedText(10, 142, LookupMessage(MSI_REPLAY_SETRECOPTION), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
   }
 }
 

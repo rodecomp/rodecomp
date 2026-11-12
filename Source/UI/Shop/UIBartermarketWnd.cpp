@@ -1873,7 +1873,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     if (it->field_28 > 0) {
       std::uint32_t color = 0xFFFFFF;
       const std::string quantity = std::format("+{}", it->field_28);
-      DrawOutlinedColoredText(*this, 50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
+      this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
     int chunkIndex = 0;
@@ -1890,7 +1890,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
         char chunkAmount[16] = {};
         StringFormat(chunkAmount, sizeof(chunkAmount), static_cast<std::size_t>(-1), "+%d", chunkItem.refiningLevel);
         std::uint32_t color = 0xFFFFFF;
-        DrawOutlinedColoredText(*this, chunkX, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
+        this->DrawOutlinedColoredText(chunkX, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
       ++chunkIndex;
     }
@@ -1972,7 +1972,7 @@ void UIExpandedBartermarketWnd::Paint() {
     if (it->field_28 > 0) {
       std::uint32_t color = 0xFFFFFF;
       const std::string quantity = std::format("+{}", it->field_28);
-      DrawOutlinedColoredText(*this, 50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
+      this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
     int chunkIndex = 0;
@@ -1993,7 +1993,7 @@ void UIExpandedBartermarketWnd::Paint() {
         char chunkAmount[16] = {};
         StringFormat(chunkAmount, sizeof(chunkAmount), static_cast<std::size_t>(-1), "+%d", chunkItem.refiningLevel);
         std::uint32_t color = 0xFFFFFF;
-        DrawOutlinedColoredText(*this, chunkX + 8, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
+        this->DrawOutlinedColoredText(chunkX + 8, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
       ++chunkIndex;
     }

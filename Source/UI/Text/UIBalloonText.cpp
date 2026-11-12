@@ -215,8 +215,8 @@ void UINameBalloonText::Paint() {
 
 lines:
   for (auto line = this->m_lines.begin(); line != this->m_lines.end(); ++line) {
-    DrawOutlinedText(
-      *this, x, y, line->c_str(), static_cast<unsigned>(line->size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight,
+    this->DrawOutlinedText(
+      x, y, line->c_str(), static_cast<unsigned>(line->size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight,
       g_serviceFlag06, 0
     );
     y += g_nameBalloonFontHeight + 2;

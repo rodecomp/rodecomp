@@ -12357,7 +12357,7 @@ void UIExchangeWnd::Paint() {
   this->DrawBitmap(0, 0, bitmap, false);
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\exchange_bg2.bmp")));
   this->DrawBitmap(0, 17, bitmap, false);
-  DrawOutlinedText(*this, 123, this->geometry.height - 20, LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE), 0, 0xFF, 0xFFFFFF, 0, 12, 1, 0);
+  this->DrawOutlinedText(123, this->geometry.height - 20, LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE), 0, 0xFF, 0xFFFFFF, 0, 12, 1, 0);
 
   char title[128];
   std::sprintf(title, "%s : ", LookupMessage(MSI_EXCHANGE));

@@ -802,13 +802,13 @@ void UIMemorialDunWnd::Paint() {
     sprintf(name, "%s[%s]%s", nameColor, g_session.memorialDungeonName.c_str(), endColor);
     sprintf(title, LookupMessage(g_session.memorialDungeonState + 0x539), name);
     const int width = this->ColoredTextWidth(title, 0, 0, 12, 0);
-    DrawColoredText(*this, (this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
+    this->DrawColoredText((this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
   }
 
   if (g_session.memorialDungeonState == 0) {
     sprintf(text, LookupMessage(MSI_MEMORIAL_DUN_PRIORITY), g_session.memorialQueuePosition);
     const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-    DrawColoredText(*this, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
+    this->DrawColoredText((this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
   } else if (g_session.memorialDungeonState == 1) {
     if (g_session.memorialExpirationTime) {
       strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.memorialExpirationTime)));
@@ -818,12 +818,12 @@ void UIMemorialDunWnd::Paint() {
       if (lines.size() > 1) {
         int y = static_cast<int>((this->geometry.height - lines.size() * 17 - 72) / 2) + 40;
         for (unsigned int index = 0; index < lines.size(); ++index) {
-          DrawColoredText(*this, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+          this->DrawColoredText(10, y, lines[index].c_str(), 0, color, 0, 12, false);
           y += 17;
         }
       } else {
         const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-        DrawColoredText(*this, (this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
+        this->DrawColoredText((this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
       }
     }
   } else if (g_session.memorialDungeonState == 2) {
@@ -832,21 +832,21 @@ void UIMemorialDunWnd::Paint() {
       strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.memorialCreationTime)));
       sprintf(text, "^ff0000%s^ffffff", timeText);
       const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
-      DrawColoredText(*this, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
+      this->DrawColoredText((this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
     }
   } else if (g_session.memorialDungeonState == 3) {
     std::vector<std::string> lines;
     this->WrapPixelText(LookupMessage(MSI_MEMORIAL_DUN_OUT1), lines, this->geometry.width - 20);
     int y = 55;
     for (unsigned int index = 0; index < lines.size(); ++index) {
-      DrawColoredText(*this, 5, y, lines[index].c_str(), 0, color, 0, 12, false);
+      this->DrawColoredText(5, y, lines[index].c_str(), 0, color, 0, 12, false);
       y += 15;
     }
 
     this->WrapPixelText(LookupMessage(MSI_MEMORIAL_DUN_OUT2), lines, this->geometry.width - 20);
     y = 70;
     for (unsigned int index = 0; index < lines.size(); ++index) {
-      DrawColoredText(*this, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+      this->DrawColoredText(10, y, lines[index].c_str(), 0, color, 0, 12, false);
       y += 15;
     }
   }

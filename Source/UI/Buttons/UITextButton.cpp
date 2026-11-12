@@ -121,7 +121,7 @@ void UITextButton::Paint() {
   }
 
   if (this->m_outline) {
-    DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+    this->DrawOutlinedText(1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
     this->DrawTextAt(1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
@@ -1537,7 +1537,7 @@ void UITVTextButton::Paint() {
   }
 
   if (this->m_outlined != 0) {
-    DrawOutlinedText(*this, inset + 1, 2, this->displayText.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
+    this->DrawOutlinedText(inset + 1, 2, this->displayText.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
   } else {
     this->DrawTextAt(inset + 1, 2, this->displayText.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
   }
@@ -1861,7 +1861,7 @@ void UIItemMoveInfo::Paint() {
   }
 
   if (this->m_outline != 0) {
-    DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+    this->DrawOutlinedText(1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
     this->DrawTextAt(1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
@@ -1881,7 +1881,7 @@ void UIItemTagButton::Paint() {
   }
 
   if (this->m_outline != 0) {
-    DrawOutlinedText(*this, 1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+    this->DrawOutlinedText(1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
     this->DrawTextAt(1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
@@ -1918,7 +1918,7 @@ void UIListBoxNavi::Paint() {
     }
 
     const auto& line = this->lines[index];
-    DrawColoredText(*this, 3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    this->DrawColoredText(3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
 
     if (this->lineColors[index] == 1) {
       color = 0;
@@ -3009,8 +3009,8 @@ void UIListBoxID::Paint() {
       this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
 
-    DrawColoredText(
-      *this, 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+    this->DrawColoredText(
+      3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
       static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
@@ -3046,8 +3046,8 @@ void UIListBoxTitle::Paint() {
       }
     }
 
-    DrawColoredText(
-      *this, 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+    this->DrawColoredText(
+      3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
       static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
@@ -3163,8 +3163,8 @@ void UIListBox2::Paint() {
     }
 
     const std::string& line = this->lines[index];
-    DrawStyledColoredText(
-      *this, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
+    this->DrawStyledColoredText(
+      x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
     );
   }
 }
@@ -3488,9 +3488,9 @@ void UIString::Paint() {
     while (cur < end) {
       cur = ParseColorCode(SegmentEnd(cur, end), color);
     }
-    DrawColoredText(*this, 24, 7, this->text.c_str(), static_cast<unsigned>(this->text.size()), color, 0, 12, false);
+    this->DrawColoredText(24, 7, this->text.c_str(), static_cast<unsigned>(this->text.size()), color, 0, 12, false);
   } else {
-    DrawColoredText(*this, 0, 0, this->text.c_str(), static_cast<unsigned>(this->text.size()), color, 0, 12, false);
+    this->DrawColoredText(0, 0, this->text.c_str(), static_cast<unsigned>(this->text.size()), color, 0, 12, false);
   }
 }
 

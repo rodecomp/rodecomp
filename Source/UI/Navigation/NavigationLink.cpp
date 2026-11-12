@@ -662,8 +662,8 @@ void LineCutter::UIText::Paint() {
   }
 
   if (this->m_outlined == 1) {
-    DrawOutlinedText(
-      *this, 1, 1, this->m_text.c_str(), this->m_text.size(), this->m_style.color, this->m_outlineColor, 0, this->m_style.fontHeight, this->m_style.bold, this->m_style.italic
+    this->DrawOutlinedText(
+      1, 1, this->m_text.c_str(), this->m_text.size(), this->m_style.color, this->m_outlineColor, 0, this->m_style.fontHeight, this->m_style.bold, this->m_style.italic
     );
   } else {
     this->DrawTextAt(0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_style.fontHeight, this->m_style.color, this->m_style.bold, this->m_style.italic

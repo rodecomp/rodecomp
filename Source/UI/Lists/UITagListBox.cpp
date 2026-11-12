@@ -88,16 +88,16 @@ void UITagListBox::Paint() {
       for (int index = first; index < end; ++index) {
         const std::string& line = this->lines[index];
         const int y = (index - first) * this->lineHeight + 4;
-        DrawColoredText(
-          *this, 3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
+        this->DrawColoredText(
+          3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
         );
       }
     } else {
       for (int index = first; index < end; ++index) {
         const std::string& line = this->lines[index];
         const int y = (index - first) * this->lineHeight + 4;
-        DrawOutlinedText(
-          *this, 3, y, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
+        this->DrawOutlinedText(
+          3, y, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
         );
       }
     }

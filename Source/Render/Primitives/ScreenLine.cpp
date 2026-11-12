@@ -409,7 +409,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     name.resize(name.size() - 4);
   }
 
-  DrawOutlinedText(*this, x + 3, y + 115, name.c_str(), 0, 0xFFFFFF, 0x5C5C5C, 0, 12, 1, 0);
+  this->DrawOutlinedText(x + 3, y + 115, name.c_str(), 0, 0xFFFFFF, 0x5C5C5C, 0, 12, 1, 0);
 
   {
     std::string path = "유저인터페이스\\map\\";
@@ -419,5 +419,5 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   }
 
   name = g_session.GetMapDisplayName(this->selectedRecord->name.c_str());
-  DrawOutlinedText(*this, x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
+  this->DrawOutlinedText(x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
