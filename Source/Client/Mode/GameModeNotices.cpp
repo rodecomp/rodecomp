@@ -5295,7 +5295,8 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
 // FUNCTION: fn_22122
 void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GradeEnchantBroadcastPacket*>(data);
-  std::string name(packet->name, 24);
+  std::string name;
+  name.assign(packet->name, 24);
   std::string itemName;
   ITEM_INFO item;
   item.SetItemId(packet->itemId);
@@ -5305,19 +5306,19 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   }
 
   std::string grade;
-  if (packet->grade == 1) {
+  if (1 == packet->grade) {
     grade = "D";
-  } else if (packet->grade == 2) {
+  } else if (2 == packet->grade) {
     grade = "C";
-  } else if (packet->grade == 3) {
+  } else if (3 == packet->grade) {
     grade = "B";
-  } else if (packet->grade == 4) {
+  } else if (4 == packet->grade) {
     grade = "A";
-  } else if (packet->grade == 5) {
+  } else if (5 == packet->grade) {
     grade = "R";
-  } else if (packet->grade == 6) {
+  } else if (6 == packet->grade) {
     grade = "S";
-  } else if (packet->grade == 7) {
+  } else if (7 == packet->grade) {
     grade = "SS";
   }
 
