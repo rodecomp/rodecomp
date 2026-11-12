@@ -184,13 +184,12 @@ void CAsyncWorkMgr::LoadPartyInfo(
 // OFFSET: 0x00574950
 // FUNCTION: fn_02508
 void CAsyncWorkMgr::LoadPartyList(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int search, CAdvenPartyInfo filter, int page,
-  WindowManagerWindows& windows
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int search, CAdvenPartyInfo filter, int page
 ) {
-  NAsyncWorkPtr work(this->m_pools, "PartyList_Load");
+  NAsyncWorkPtr work(this->m_pools, g_loadPartyListPoolName);
 
   if (work.Get()) {
-    static_cast<CLoadPartyListAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, filter, search, page, windows);
+    static_cast<CLoadPartyListAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, filter, search, page);
     this->Submit(work);
   }
 }

@@ -50,8 +50,7 @@ void CLoadPartyListAsyncWork::Reset() {
 // OFFSET: 0x005D1BD0
 // FUNCTION: fn_03700
 void CLoadPartyListAsyncWork::Bind(
-  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo filter, int search, int page,
-  WindowManagerWindows& windows
+  std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo filter, int search, int page
 ) {
   this->m_group = timeGetTime();
   this->m_accountId = accountId;
@@ -66,7 +65,6 @@ void CLoadPartyListAsyncWork::Bind(
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
   this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 54);
-  this->m_windows = &windows;
 }
 
 // OFFSET: 0x005D2000
@@ -165,7 +163,8 @@ bool CLoadPartyListAsyncWork::Execute() {
 // OFFSET: 0x005D1F40
 // FUNCTION: fn_03702
 void CLoadPartyListAsyncWork::Complete() {
-  g_adventurerAgencyMgr->CompleteList(this->m_diagnostic, this->m_response, *this->m_windows);
+  CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
+  manager->CompleteList(this->m_diagnostic, this->m_response);
 }
 
 template void std::deque<CLoadPartyListAsyncWork*>::push_back(CLoadPartyListAsyncWork*&&);

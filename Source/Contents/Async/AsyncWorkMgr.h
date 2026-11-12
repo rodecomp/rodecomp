@@ -32,8 +32,7 @@ public:
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::uint32_t queryAccountId
   );
   void LoadPartyList(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int search, CAdvenPartyInfo filter, int page,
-    WindowManagerWindows& windows
+    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int search, CAdvenPartyInfo filter, int page
   );
   void LoadStore(
     std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, int type

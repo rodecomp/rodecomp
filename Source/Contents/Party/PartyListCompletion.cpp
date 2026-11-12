@@ -10,7 +10,7 @@
 
 // OFFSET: 0x005CC000
 // FUNCTION: fn_03662
-void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string response, WindowManagerWindows& windows) {
+void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string response) {
   --this->pending;
 
   if (!diagnostic.success) {
@@ -29,7 +29,7 @@ void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string 
   }
 
   this->LoadList(root["data"]);
-  auto* board = static_cast<UIAdvenPartyBoardWnd*>(windows.EnsureWindow(WID_ADVENPARTYBOARDWND));
+  auto* board = static_cast<UIAdvenPartyBoardWnd*>(g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND));
 
   if (board) {
     const int pages = root.get("totalPage", 0).asInt();

@@ -15,8 +15,7 @@ public:
   bool Execute() override;
   void Complete() override;
   void Bind(
-    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo filter, int search, int page,
-    WindowManagerWindows& windows
+    std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo filter, int search, int page
   );
 
 protected:

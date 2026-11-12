@@ -37,7 +37,7 @@ void CAdventurerAgencyMgr::RequestList(int page) {
   const std::uint32_t account = g_session.m_aid;
   manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(1),
-    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 0, CAdvenPartyInfo(), page, g_windowMgr
+    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 0, CAdvenPartyInfo(), page
   );
   ++this->pending;
 }
@@ -76,7 +76,7 @@ void CAdventurerAgencyMgr::RequestSearch(const CAdvenPartyInfo& filter, int page
   const std::uint32_t account = g_session.m_aid;
   manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(3),
-    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 1, filter, page, g_windowMgr
+    std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), 1, filter, page
   );
   ++this->pending;
 }
