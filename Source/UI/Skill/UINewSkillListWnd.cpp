@@ -252,7 +252,7 @@ void UINewSkillListWnd::DrawCharacter() {
     const int clipY = y >= 0 ? 0 : y;
     this->geometry.surface->DrawSurface(
       cell.x + offsetX + 48, y >= 0 ? y : 0, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
-      image->height + clipY, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+      image->height + clipY, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
 }

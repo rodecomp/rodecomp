@@ -35,7 +35,7 @@ public:
   HRESULT UnlockBackBuffer() override;
 
   void SetTextureMode(int mode);
-  void DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort);
+  void DrawDepthQueue(bool sort, std::vector<DepthPrimitive>& queue);
   void DrawOpaqueQueues(RenderQueues& queues);
   void DrawGroundQueues();
   void DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass);

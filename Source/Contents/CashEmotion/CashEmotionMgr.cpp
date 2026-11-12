@@ -3839,7 +3839,7 @@ void UICashEmotionSprBtn::Paint() {
     const int sourceY = static_cast<int>(record.v0 * 256.0f + clipY);
     surface->DrawSurface(
       x < 0 ? 0 : x, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, drawWidth < 0 ? 0 : drawWidth,
-      drawHeight < 0 ? 0 : drawHeight, cell->mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 1, 0
+      drawHeight < 0 ? 0 : drawHeight, cell->mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 1
     );
   }
 
@@ -3955,7 +3955,7 @@ void UIHeadsprButton::Paint() {
   const int sourceX = static_cast<int>(record.u0 * 256.0f);
   this->geometry.surface->DrawSurface(
     0, 0, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1,
-    image->doubleHeight + 1, 0, 0
+    image->doubleHeight + 1, 0
   );
 }
 
@@ -4034,7 +4034,7 @@ void UISpriteButton::Paint() {
       const int top = static_cast<int>(sourceY);
       this->geometry.surface->DrawSurface(
         left, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, top < 0 ? 0 : top, drawWidth < 0 ? 0 : drawWidth, drawHeight < 0 ? 0 : drawHeight,
-        cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+        cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
   }

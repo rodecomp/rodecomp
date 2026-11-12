@@ -358,7 +358,7 @@ static float SurfacePixelAlpha(int value) {
 // OFFSET: 0x005460B0
 // FUNCTION: fn_01839
 void CDCBitmap::DrawSurface(
-  int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter, int
+  int x, int y, CSurface* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, bool mirrored, int scaleX, int scaleY, int filter
 ) {
   if (!source || !this->m_bitmap.pixels) {
     return;

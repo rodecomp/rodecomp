@@ -119,7 +119,7 @@ static bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
 
 // OFFSET: 0x005658F0
 // FUNCTION: fn_02221
-void CRendererDX9::DrawDepthQueue(std::vector<DepthPrimitive>& queue, bool sort) {
+void CRendererDX9::DrawDepthQueue(bool sort, std::vector<DepthPrimitive>& queue) {
   if (sort) {
     std::sort(queue.begin(), queue.end());
   }

@@ -179,7 +179,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       if (clip <= top) {
         this->m_window->geometry.surface->DrawSurface(
           x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
-          image->height + clip, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+          image->height + clip, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
         );
       }
     }

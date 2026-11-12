@@ -261,7 +261,7 @@ void CDCSurface::DrawRleSprite(int, int, const CSprRes&, const ActionFrame&, con
 
 // OFFSET: 0x00549240
 // FUNCTION: fn_01871
-void CDCSurface::DrawSurface(int, int, CSurface*, int, int, int, int, bool, int, int, int, int) {
+void CDCSurface::DrawSurface(int, int, CSurface*, int, int, int, int, bool, int, int, int) {
 }
 
 // OFFSET: 0x00549220

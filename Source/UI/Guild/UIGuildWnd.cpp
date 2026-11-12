@@ -1924,7 +1924,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 
     this->geometry.surface->DrawSurface(
       (this->m_rowSpacing - image->width + 36) / 2 + 6, (this->m_rowSpacing + 36) * row + 70, texture, static_cast<int>(record.u0 * 256.0f),
-      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
 

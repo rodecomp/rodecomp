@@ -815,7 +815,7 @@ void UISelCharForUServerWnd::Paint() {
 
       this->geometry.surface->DrawSurface(
         cell.x + offsetX + slot.x, cell.y + offsetY + slot.y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
-        image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+        image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
   }

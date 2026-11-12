@@ -125,7 +125,7 @@ void UINpcSprWnd::Paint() {
       }
 
       this->geometry.surface->DrawSurface(
-        0, 0, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, 1, 1, 0, 0
+        0, 0, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, 1, 1, 0
       );
     }
   }

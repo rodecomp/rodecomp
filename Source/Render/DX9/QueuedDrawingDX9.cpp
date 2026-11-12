@@ -95,7 +95,7 @@ void CRendererDX9::DrawQueues(
   {
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-    this->DrawDepthQueue(queues.queue_021C, true);
+    this->DrawDepthQueue(true, queues.queue_021C);
   }
 
   {
@@ -115,18 +115,18 @@ void CRendererDX9::DrawQueues(
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 159);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    this->DrawDepthQueue(queues.queue_0180, false);
+    this->DrawDepthQueue(false, queues.queue_0180);
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 0);
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 159);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_LESS);
-    this->DrawDepthQueue(queues.queue_0180, false);
+    this->DrawDepthQueue(false, queues.queue_0180);
   }
 
   {
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
     this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(queues.queue_01C8, true);
+    this->DrawDepthQueue(true, queues.queue_01C8);
   }
 
   this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 0);
@@ -135,7 +135,7 @@ void CRendererDX9::DrawQueues(
   {
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 207);
-    this->DrawDepthQueue(queues.queue_0228, true);
+    this->DrawDepthQueue(true, queues.queue_0228);
   }
 
   this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
@@ -144,7 +144,7 @@ void CRendererDX9::DrawQueues(
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
     this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(queues.queue_01D4, true);
+    this->DrawDepthQueue(true, queues.queue_01D4);
   }
 
   {
@@ -165,14 +165,14 @@ void CRendererDX9::DrawQueues(
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
     this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(queues.queue_01E0, true);
+    this->DrawDepthQueue(true, queues.queue_01E0);
   }
 
   {
     ScopedDeviceStateDX9 restore(this->device->state);
     this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    this->DrawDepthQueue(queues.queue_0198, false);
+    this->DrawDepthQueue(false, queues.queue_0198);
   }
 
   {

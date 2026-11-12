@@ -72,7 +72,7 @@ void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) 
 
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
     this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    this->DrawDepthQueue(queues.queue_01A4, true);
+    this->DrawDepthQueue(true, queues.queue_01A4);
   } else {
     const auto drawDepthWriting = [this](const DepthPrimitive& entry) {
       RenderCommand* command = entry.primitive;

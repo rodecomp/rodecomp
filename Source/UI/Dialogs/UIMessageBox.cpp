@@ -338,7 +338,7 @@ void UIMakeCharWnd::Paint() {
 
     this->geometry.surface->DrawSurface(
       this->m_view.x + cell.x + offset.x, this->m_view.y + cell.y + offset.y, texture, static_cast<int>(record.u0 * 256.0f),
-      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0, 0
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
 }
