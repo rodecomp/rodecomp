@@ -29,7 +29,7 @@ const char* g_emblemDataUploadPoolName = DecryptName<0x2FF3C5036D070127ULL>(CRYP
 // OFFSET: 0x005EBF50
 // FUNCTION: fn_03978
 CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
-    : NAsyncWork("Emblem_Upload"), m_accountId(0), m_guildId(0),
+    : NAsyncWork(g_emblemDataUploadPoolName), m_accountId(0), m_guildId(0),
       m_diagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 27) {
 }
 
