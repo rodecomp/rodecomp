@@ -81,7 +81,7 @@ void ResourceMgr::LoadAliases(int) {
         name = token;
       } else {
         replacement = token;
-        this->m_aliases.insert(std::make_pair(name, replacement));
+        this->m_aliases.insert(std::pair<std::string, std::string>(name, replacement));
         name.clear();
         replacement.clear();
       }
