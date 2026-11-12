@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <cstring>
 
+template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
+
 // GLOBAL: gl_24627
 CNavigationManager g_navigationManager;
 
