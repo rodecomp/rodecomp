@@ -3534,8 +3534,7 @@ void UIPrivateAirplaneWnd::OnCreate(int, int) {
     }
 
     UIBasicButton* button = new UIBasicButton();
-    const std::string text = FormatOwnedString(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP), name);
-    button->Configure(0xc0, text.c_str());
+    button->Configure(0xc0, FormatOwnedString(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP), name).c_str());
     button->Move(8, y);
     button->SetId(500);
     button->m_argument = itemId;
