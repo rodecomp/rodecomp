@@ -586,7 +586,9 @@ int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argum
   case UM_COMMAND:
     switch (argument1) {
     case ID_PREV_PAGE:
-      this->m_firstTag = --this->m_firstTag < 0 ? 0 : this->m_firstTag;
+      if (--this->m_firstTag < 0) {
+        this->m_firstTag = 0;
+      }
       this->Invalidate();
       break;
     case ID_NEXT_PAGE:
