@@ -73,17 +73,11 @@ void UIEscOptionWnd::LayoutButtons() {
 UIEscOptionWnd::UIEscOptionWnd()
     : UIFrameWnd(0), m_titleHeight(17) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  int escMode;
   if (mode->isPlayerDead != 0) {
-    if (!mode->HasResurrectionItem() && !g_session.HasSkillEffect(580)) {
-      escMode = 1;
-    } else {
-      escMode = 2;
-    }
+    this->m_mode = !mode->HasResurrectionItem() && !g_session.HasSkillEffect(580) ? 1 : 2;
   } else {
-    escMode = 0;
+    this->m_mode = 0;
   }
-  this->m_mode = escMode;
 }
 
 #include "Contents/Party/AdventurerAgencyMgr.h"
