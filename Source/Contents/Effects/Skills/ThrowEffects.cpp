@@ -508,7 +508,7 @@ void CVolcanoEffect::AddRings() {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
 

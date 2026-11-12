@@ -177,7 +177,7 @@ void CRectUpEffect::Open() {
           particle->phaseParameter = 0;
         }
         this->InitParticle(particle);
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
       }
     }

@@ -624,7 +624,7 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
     particle->position.x = position.x;
     particle->position.y = position.y;
     particle->position.z = position.z;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->emitters.push_back(particle);
   }
 }
@@ -670,7 +670,7 @@ void CCylinderEffect::Open() {
     particle->columnIndex = static_cast<int>(i);
     particle->rowIndex = 0;
     particle->groupIndex = 1;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->angleBits = 0;
     if (this->id == 2077) {
       particle->SetTexture("effect\\nipelheim\\nipelheim_cast\\nip_cast.tga");
@@ -933,7 +933,7 @@ void CFallenAngelEffect::Open() {
     AsParticle(this->emitter)->Restart();
   }
 
-  InitParticleQuad(AsParticle(this->emitter)->vertices);
+  AsParticle(this->emitter)->InitParticleQuad(AsParticle(this->emitter)->vertices);
   this->startX = this->position[0];
   this->startY = this->position[1];
   this->startZ = this->position[2];
@@ -1136,7 +1136,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
   particle->destinationBlend = 6;
   particle->speedParameter = static_cast<float>(*reinterpret_cast<int*>(this->alphaParameters)) / static_cast<float>(this->effectLifetime * 60);
   particle->SetTexture(texture);
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
 
   const float angle =
     ScreenAngle(&this->lastPosition.x, this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 90.0f;
@@ -1816,7 +1816,7 @@ void CDropItemEffect::Open() {
       return;
     }
 
-    InitParticleQuad(AsParticle(emitter)->vertices);
+    AsParticle(emitter)->InitParticleQuad(AsParticle(emitter)->vertices);
     this->emitters.push_back(emitter);
   }
 
@@ -2123,7 +2123,7 @@ void CNewCloudKillEffect::OnProcess() {
       *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
       particle->elapsedFrames = 60;
       particle->animationState = 0;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
     }
 
     if (CEZ2STRParticle* particle = AsParticle(*it)) {
@@ -2660,7 +2660,7 @@ void CRandomOptEffect::Init() {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
 
       if (particle) {
@@ -2806,7 +2806,7 @@ void CRichsCoinEffect::Open() {
       particle->SetTexture("effect\\rl_richs_coin_b\\rcoin1.bmp");
       particle->animationParameter = static_cast<float>(360 / count * i) / 180.0f * 3.141592f - 10.0f;
       reinterpret_cast<float&>(particle->animationParameters) = 0.0f;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
   }
@@ -2825,7 +2825,7 @@ void CRichsCoinEffect::Open() {
         scale.SetScale(1.5f, 1.5f, 1.0f);
         particle->transform = scale;
         particle->alpha = 70;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->coins.push_back(particle);
       }
     }
@@ -3244,7 +3244,7 @@ void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
   *reinterpret_cast<int*>(particle->effectParameters) = ClampedRandom(50) + 150;
   particle->animationState = 0;
   particle->elapsedFrames = 0;
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
 
   const int spread = ClampedRandom(15) + 2;
   const int angle = ClampedRandom(360);
@@ -3274,7 +3274,7 @@ void CNewCloudKillEffect::Open() {
     circle->angleBits = 0;
     circle->elapsedFrames = 60;
     circle->animationState = 0;
-    InitParticleQuad(circle->vertices);
+    circle->InitParticleQuad(circle->vertices);
     this->circleEmitters.push_back(circleEmitter);
   }
 
@@ -3351,7 +3351,7 @@ void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
   particle->scale = static_cast<float>(ClampedRandom(31)) * 0.1f + 2.0f;
   particle->speedParameter = static_cast<float>(ClampedRandom(31)) * 0.01f + 0.05f;
   particle->animationState = 0;
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
 }
 
 // OFFSET: 0x0071DC70
@@ -3366,7 +3366,7 @@ void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
   particle->offsetX = static_cast<float>(ClampedRandom(10)) - 5.0f;
   particle->offsetY = -10.0f;
   particle->elapsedFrames = 0;
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
 }
 
 // OFFSET: 0x0071DD80
@@ -3375,7 +3375,7 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->alpha = 0;
   particle->animationState = 0;
   particle->elapsedFrames = 0;
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
 
   particle->scale = static_cast<float>(ClampedRandom(51)) * 0.1f + 7.0f;
   particle->offsetY = particle->scale * -0.5f;
@@ -4745,7 +4745,7 @@ void CGravityControlEffect::Open() {
     if (particle) {
       particle->m_loop = true;
       particle->Open("WL_TELEKINESIS_INTENSE.str");
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->target = reinterpret_cast<int>(particle);
     }
     break;

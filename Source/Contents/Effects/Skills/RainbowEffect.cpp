@@ -39,7 +39,7 @@ void CRainbowEffect::Open() {
         particle->angleParameter = 180;
         particle->angleBits = 0;
         particle->phaseParameter = angle;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->bands.push_back(particle);
       }
     }

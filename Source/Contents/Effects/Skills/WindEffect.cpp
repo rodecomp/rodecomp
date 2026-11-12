@@ -50,7 +50,7 @@ void CWindEffect::Init() {
       particle->SetTexture(this->textureName);
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(segment) * step + static_cast<float>(startAngle);
       particle->animationState = 0;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       particle->effectId = this->id;
       particle->columnIndex = segment;
       particle->rowIndex = ring;

@@ -54,7 +54,7 @@ void CCommonFloorEffect::Open() {
       particle->phaseParameter = angle;
       particle->speedParameter = 6.0f;
       particle->scale = 15.0f;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
   }
@@ -75,7 +75,7 @@ void CCommonFloorEffect::ResetParticles() {
     particle->alpha = *reinterpret_cast<int*>(this->alphaParameters);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->elapsedFrames = 0;
   }
 }

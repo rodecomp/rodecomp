@@ -56,7 +56,7 @@ void CSphereWind2Effect::Open() {
         *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(speed);
         particle->SetTexture("effect\\fire_ivy.bmp");
         particle->SetColor(255, 89, 182);
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
       }
 

@@ -87,7 +87,7 @@ void CTalismanMarkEffect::PlayEnd() {
     particle->columnIndex = index;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->m_actorId = this->actor;
     particle->Load(s_talismanEndEffects.at(index));
     particle->phaseParameter = angle;
@@ -111,7 +111,7 @@ void CTalismanMarkEffect::Open() {
     particle->columnIndex = i;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->m_actorId = this->actor;
     particle->Load(s_talismanStartEffects.at(i));
     particle->phaseParameter = (i / 2 + i % 2 * 2) * 90;
@@ -150,7 +150,7 @@ void CTalismanMarkEffect::OnProcess() {
         particle->columnIndex = index;
         particle->rowIndex = 0;
         particle->groupIndex = 1;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         particle->m_actorId = this->actor;
         particle->Load(s_talismanLoopEffects.at(index));
         particle->phaseParameter = angle;

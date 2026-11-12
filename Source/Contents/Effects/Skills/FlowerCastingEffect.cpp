@@ -80,7 +80,7 @@ void CFlowerCastingEffect::AddRing(int kind) {
       particle->SetColor(100, 100, 255);
       particle->animationParameter = 0.0f;
       *reinterpret_cast<float*>(particle->animationParameters) = particle->speedParameter;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
   }

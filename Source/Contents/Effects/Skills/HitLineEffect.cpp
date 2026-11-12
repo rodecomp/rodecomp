@@ -54,7 +54,7 @@ void CHitLineEffect::Open() {
             (&particle->animationState)[index] = 0;
             (&particle->animationParameter)[index] = 0.0f;
           }
-          InitParticleQuad(particle->vertices);
+          particle->InitParticleQuad(particle->vertices);
           this->particles.push_back(particle);
         }
       }

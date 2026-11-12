@@ -39,7 +39,7 @@ void CEvilsPawEffect::Open() {
     particle->offsetZ = this->offset.z;
     particle->sourceBlend = 5;
     particle->destinationBlend = 6;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->particles.push_back(particle);
   }
 

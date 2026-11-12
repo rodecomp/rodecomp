@@ -60,7 +60,7 @@ void CSoulCollectEffect::Open() {
         } else if (layer == 1) {
           particle->depthOffset = 0.00002f;
         }
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
       }
     }

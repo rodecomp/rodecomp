@@ -60,7 +60,7 @@ void CLevel99Effect::AddRings() {
       particle->scale = static_cast<float>(row) * 0.2f + 3.9f;
       particle->phaseParameter = tilt;
       particle->animationParameter = 0.0f;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->sprites.push_back(particle);
 
       if (particle) {
@@ -145,7 +145,7 @@ void CLevel99Effect::Open() {
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
       particle->phaseParameter = tilt;
       particle->scale = 9.0f;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->sparkles.push_back(particle);
     }
 

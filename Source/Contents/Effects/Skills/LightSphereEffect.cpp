@@ -97,7 +97,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
         }
         }
 
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->rays.push_back(particle);
       }
     }
@@ -146,7 +146,7 @@ void CLightSphereEffect::Open() {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->spheres.push_back(particle);
     }
   }

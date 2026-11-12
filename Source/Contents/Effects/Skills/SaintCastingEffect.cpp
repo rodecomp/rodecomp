@@ -77,7 +77,7 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
   }

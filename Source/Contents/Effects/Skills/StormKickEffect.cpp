@@ -76,7 +76,7 @@ void CStormKickEffect::CreateStorms(int layer) {
       break;
     }
 
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->storms.push_back(particle);
     this->UpdateStorm(particle);
   }
@@ -120,7 +120,7 @@ void CStormKickEffect::CreateClouds(int layer) {
         particle->scale = 5.0f - ring;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->clouds.push_back(particle);
     }
 

@@ -41,7 +41,7 @@ void CMapMagicZoneEffect::AddSpinner(int kind) {
 
     particle->scale = 30.0f;
     particle->phaseParameter = 0;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->spinners.push_back(particle);
   }
 }
@@ -85,7 +85,7 @@ void CMapMagicZoneEffect::Open() {
       *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
       particle->alpha = 25;
       particle->animationParameter = -1.0f;
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->petals.push_back(particle);
     }
 
@@ -110,7 +110,7 @@ void CMapMagicZoneEffect::Open() {
         particle->scale = static_cast<float>(row) * 0.2f + 12.9f;
         particle->phaseParameter = height;
         particle->animationParameter = 0.0f;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->ribbon.push_back(particle);
       }
     }

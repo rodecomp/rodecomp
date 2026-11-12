@@ -738,7 +738,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
     particle.corners[i].z = 0;
   }
 
-  InitParticleQuad(particle.vertices);
+  particle.InitParticleQuad(particle.vertices);
   particle.submit = SubmitParticlePrimitive;
 }
 
@@ -808,7 +808,7 @@ void CParticle::SetQuad(RenderVertex* vertices, float top, float bottom, float l
 
 // OFFSET: 0x00B3FC80
 // FUNCTION: fn_18837
-void InitParticleQuad(RenderVertex* vertices) {
+void CParticle::InitParticleQuad(RenderVertex* vertices) {
   vertices[0].x = -1.0f;
   vertices[0].y = 1.0f;
   vertices[0].z = 1.0f;

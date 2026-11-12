@@ -51,6 +51,7 @@ public:
 
   void Reset();
   void SetQuad(RenderVertex* vertices, float top, float bottom, float left, float right);
+  void InitParticleQuad(RenderVertex* vertices);
   void Render(bool billboard, float top, float bottom, float left, float right, bool unused, bool depth);
   void Render(const ParticleQuad& quad);
   void SetColor(short redValue, short greenValue, short blueValue);
@@ -166,7 +167,6 @@ public:
   /* 3FF4 */ int padding_3FF4;
 };
 
-void InitParticleQuad(RenderVertex* vertices);
 float RandomRange(float minimum, float maximum);
 vector2d RandomDiscPoint(float x, float y, long long radius);
 std::string EmitterKey(std::string effect, std::string emitter);

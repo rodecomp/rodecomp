@@ -56,7 +56,7 @@ void CSphereWindEffect::Open() {
         particle->angleParameter = spread;
         particle->animationParameter = -14.0f;
         *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(spin);
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
         if (id == 346) {

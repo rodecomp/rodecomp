@@ -33,7 +33,7 @@ void CBindTrapEffect::AddParticle(int index) {
   particle->angleBits = 0;
   particle->phaseParameter = 0;
   particle->scale = static_cast<float>(index) * 6.0f + 9.0f;
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
   this->particles.push_back(particle);
 }
 

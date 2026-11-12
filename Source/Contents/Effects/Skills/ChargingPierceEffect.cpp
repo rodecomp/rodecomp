@@ -223,7 +223,7 @@ void CChargingPierceEffect::OnProcess() {
           spark->SetTexture("effect\\new_chargingpierce\\cha_orb.bmp");
           spark->scale = 1.5f;
           spark->depthOffset = 0.035f;
-          InitParticleQuad(spark->vertices);
+          spark->InitParticleQuad(spark->vertices);
           this->sparks[index] = spark;
         }
       }

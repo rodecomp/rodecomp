@@ -66,7 +66,7 @@ void CSunStanceEffect::Open() {
     particle->alpha = 255;
     particle->scale = 3.0f;
     particle->animationParameter = static_cast<float>(index) * 2.0943947f;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->particles.push_back(particle);
   }
 }

@@ -74,7 +74,7 @@ void CPowderingEffect::Open() {
     particle->offsetZ = static_cast<float>(offsetZ);
 
     this->InitSmokeParticle(particle);
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->smokeParticles.push_back(particle);
   }
 
@@ -95,7 +95,7 @@ void CPowderingEffect::Open() {
     particle->SetAction("이팩트\\particle2.act");
 
     this->InitSpriteParticle(particle);
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->spriteParticles.push_back(particle);
   }
 }

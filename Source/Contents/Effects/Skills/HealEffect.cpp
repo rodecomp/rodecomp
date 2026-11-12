@@ -48,7 +48,7 @@ void CHealEffect::AddSparks(int kind) {
     particle->offsetX = static_cast<float>(driftX - 6);
     particle->offsetZ = static_cast<float>(driftZ - 6);
     particle->SetColor(220, 250, 220);
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->sparkParticles.push_back(particle);
 
     switch (kind) {
@@ -181,7 +181,7 @@ void CHealEffect::AddColumn(int kind) {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->columnParticles.push_back(particle);
     }
   }
@@ -246,7 +246,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->coneParticles.push_back(particle);
     }
   }

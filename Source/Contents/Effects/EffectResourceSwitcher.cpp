@@ -287,7 +287,7 @@ void CEZ2STREffectEx::Open() {
     return;
   }
 
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
   particle->m_actorId = this->actor;
   particle->Load(info->name);
 

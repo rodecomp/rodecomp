@@ -163,7 +163,7 @@ void CNyanggrassEffect::Open() {
         effect->position.x = static_cast<float>((column - half) * 5) + origin.x;
         effect->position.y = origin.y;
         effect->position.z = static_cast<float>((row - half) * 5) + origin.z;
-        InitParticleQuad(effect->vertices);
+        effect->InitParticleQuad(effect->vertices);
         effect->Open("su_nyanggrass\\su_nyanggrass.str");
         this->particles.push_back(particle);
       }

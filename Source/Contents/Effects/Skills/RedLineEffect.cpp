@@ -46,7 +46,7 @@ void CRedLineEffect::CreateLines(int layer) {
         particle->offsetY = 0.0f;
         particle->elapsedFrames = life;
         particle->animationParameter = static_cast<float>(layer);
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->lines.push_back(particle);
       }
     }

@@ -36,7 +36,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         particle->animationParameter = -14.0f;
         *reinterpret_cast<float*>(particle->animationParameters) = 1.0f;
         particle->destinationBlend = 6;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         particle->SetTexture("effect\\hero_005.tga");
         this->particles.push_back(particle);
       }
@@ -62,7 +62,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         *reinterpret_cast<float*>(particle->animationParameters) = 1.0f;
         particle->sourceBlend = 5;
         particle->destinationBlend = 7;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         particle->SetTexture("effect\\hero_005.tga");
         this->particles.push_back(particle);
       }
@@ -107,7 +107,7 @@ void CMapChainEffect::ResetParticles() {
     *reinterpret_cast<float*>(particle->animationParameters) = *reinterpret_cast<const float*>(base + 0x60);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->elapsedFrames = 0;
   }
 }

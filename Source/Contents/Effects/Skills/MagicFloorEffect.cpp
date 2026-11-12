@@ -41,7 +41,7 @@ void CMagicFloorEffect::AddFloors() {
     *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
     particle->phaseParameter = 0;
     particle->scale = 30.0f;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->floors.push_back(particle);
   }
 }
@@ -79,7 +79,7 @@ void CMagicFloorEffect::AddClouds(int layer) {
         particle->scale = 22.0f;
       }
 
-      InitParticleQuad(particle->vertices);
+      particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
   }
@@ -124,7 +124,7 @@ void CMagicFloorEffect::ResetParticles() {
     particle->alpha = *reinterpret_cast<const int*>(this->alphaParameters);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     particle->elapsedFrames = 0;
   }
 }

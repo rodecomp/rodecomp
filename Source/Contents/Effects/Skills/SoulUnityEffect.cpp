@@ -41,7 +41,7 @@ void CSoulUnityEffect::Open() {
     particle->groupIndex = 1;
     particle->scale = 2.5f;
     particle->depthOffset = 0.035f;
-    InitParticleQuad(particle->vertices);
+    particle->InitParticleQuad(particle->vertices);
     this->particles.push_back(particle);
   }
 }

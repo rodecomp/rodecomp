@@ -38,7 +38,7 @@ void CElectricEffect::AddBolt(int tilt) {
         particle->scale = 0.0f;
         *reinterpret_cast<float*>(&particle->angleBits) = spin;
         particle->angleParameter = 0;
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->bolts.push_back(particle);
 
         float* arc = &particle->animationParameter;

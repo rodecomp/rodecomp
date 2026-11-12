@@ -5760,7 +5760,7 @@ void CEZ2STRScreenEffect::Open() {
     particle->m_loop = true;
   }
 
-  InitParticleQuad(particle->vertices);
+  particle->InitParticleQuad(particle->vertices);
   this->particle = particle;
   this->InitParticle(particle, this->id);
 

@@ -37,7 +37,7 @@ void CPokJukEffect::SpawnParticles() {
         particle->scale = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
         particle->angleParameter = ClampedRandom(360);
         particle->phaseParameter = ClampedRandom(360);
-        InitParticleQuad(particle->vertices);
+        particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
         const int index = column + rowStart;
