@@ -588,22 +588,17 @@ __declspec(noinline) void CGameMode::ReceiveColoredNotice(const unsigned char* p
 void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   const std::string name = reinterpret_cast<const char*>(packet + 2);
-  const int result = *reinterpret_cast<const int*>(packet + 0x1A);
 
-  switch (result) {
+  switch (*reinterpret_cast<const int*>(packet + 0x1A)) {
   case PARTY_REPLY_JOIN_OTHER_PARTY:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARACTER_IS_ALREADY_IN_PARTY)), 0xFF, 0, 0, 0);
     break;
-  case PARTY_REPLY_REJECTED: {
-    const std::string text = name + LookupMessage(MSI_CHARACTER_REJECT_PARTY_INVITATION);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+  case PARTY_REPLY_REJECTED:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_CHARACTER_REJECT_PARTY_INVITATION)).c_str()), 0xFF, 0, 0, 0);
     break;
-  }
-  case PARTY_REPLY_ACCEPTED: {
-    const std::string text = name + LookupMessage(MSI_CHARACTER_ACCEPT_PARTY_INVITATION);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 0, 0, 0);
+  case PARTY_REPLY_ACCEPTED:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_CHARACTER_ACCEPT_PARTY_INVITATION)).c_str()), 0xFFFF00, 0, 0, 0);
     break;
-  }
   case PARTY_REPLY_FULL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TOO_MANY_PEOPLE_IN_PARTY)), 0xFF, 0, 0, 0);
     break;
@@ -612,7 +607,7 @@ void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
     break;
   }
 
-  switch (result) {
+  switch (*reinterpret_cast<const int*>(packet + 0x1A)) {
   case PARTY_REPLY_JOINMSG_REFUSE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOINMSG_REFUSE)), 0xFF, 0, 0, 0);
     break;
@@ -691,7 +686,8 @@ __declspec(noinline) void CGameMode::ReceiveRentalItemTime(const unsigned char* 
   if (minutes > 0) {
     std::sprintf(text, LookupMessage(MSI_NOTICE_TO_REMAIN_ITEMUSINGTIME), name, minutes);
   } else {
-    std::sprintf(text, LookupMessage(MSI_NOTICE_TO_REMAIN_ITEMUSINGTIME2), name, seconds);
+    const char* format = LookupMessage(MSI_NOTICE_TO_REMAIN_ITEMUSINGTIME2);
+    std::sprintf(text, format, name, seconds);
   }
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
@@ -2783,8 +2779,8 @@ __declspec(noinline) void CGameMode::ReceiveItemDeletionNotice(const unsigned ch
   char number[12];
   char text[260];
   _itoa(*reinterpret_cast<const int*>(packet + 4), number, 10);
-  const ITEM_DESC& description = FindItemDescription(std::atoi(number));
-  std::sprintf(text, LookupMessage(MSI_NOTICE_TO_DELETE_ITEM), description.identifiedName);
+  const char* name = FindItemDescription(std::atoi(number)).identifiedName;
+  std::sprintf(text, LookupMessage(MSI_NOTICE_TO_DELETE_ITEM), name);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
