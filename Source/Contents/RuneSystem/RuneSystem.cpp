@@ -844,7 +844,7 @@ bool CRuneSystemMgr::SetRewardStep(int tagId, std::int64_t id, int step) {
 // FUNCTION: fn_08173
 int AddGradeType(lua_State* state) {
   const int gradeId = static_cast<int>(lua_tonumber(state, -3));
-  const double valueIndex = lua_tonumber(state, -2);
+  const int valueIndex = static_cast<int>(lua_tonumber(state, -2));
   const double value = lua_tonumber(state, -1);
 
   if (!lua_isnumber(state, -3)) {
@@ -855,7 +855,7 @@ int AddGradeType(lua_State* state) {
 
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("gradetable ValIndex:%d", static_cast<int>(valueIndex)).c_str());
+    lua_pushstring(state, FormatOwnedString("gradetable ValIndex:%d", valueIndex).c_str());
     return 2;
   }
 
@@ -865,14 +865,14 @@ int AddGradeType(lua_State* state) {
     return 2;
   }
 
-  const int index = static_cast<int>(valueIndex) - 1;
+  const int index = valueIndex - 1;
   std::map<int, std::vector<int>>& gradeTypes = g_runeSystemMgr->m_gradeTypes;
-  if (gradeTypes[gradeId].size() < 15) {
-    gradeTypes[gradeId].resize(15, 0);
+  if (gradeTypes[static_cast<int>(gradeId)].size() < 15) {
+    gradeTypes[static_cast<int>(gradeId)].resize(15, 0);
   }
 
   if (index < 15) {
-    gradeTypes[gradeId][index] = static_cast<int>(value);
+    gradeTypes[static_cast<int>(gradeId)][index] = static_cast<int>(value);
   }
 
   lua_pushboolean(state, 1);
@@ -884,7 +884,7 @@ int AddGradeType(lua_State* state) {
 // FUNCTION: fn_08174
 int AddGradeTypeFail(lua_State* state) {
   const int gradeId = static_cast<int>(lua_tonumber(state, -3));
-  const double valueIndex = lua_tonumber(state, -2);
+  const int valueIndex = static_cast<int>(lua_tonumber(state, -2));
   const double value = lua_tonumber(state, -1);
 
   if (!lua_isnumber(state, -3)) {
@@ -895,7 +895,7 @@ int AddGradeTypeFail(lua_State* state) {
 
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("gradetable GradeID:%d", static_cast<int>(valueIndex)).c_str());
+    lua_pushstring(state, FormatOwnedString("gradetable GradeID:%d", valueIndex).c_str());
     return 2;
   }
 
@@ -905,14 +905,14 @@ int AddGradeTypeFail(lua_State* state) {
     return 2;
   }
 
-  const int index = static_cast<int>(valueIndex) - 1;
+  const int index = valueIndex - 1;
   std::map<int, std::vector<int>>& gradeFailTypes = g_runeSystemMgr->m_gradeFailTypes;
-  if (gradeFailTypes[gradeId].size() < 15) {
-    gradeFailTypes[gradeId].resize(15, 0);
+  if (gradeFailTypes[static_cast<int>(gradeId)].size() < 15) {
+    gradeFailTypes[static_cast<int>(gradeId)].resize(15, 0);
   }
 
   if (index < 15) {
-    gradeFailTypes[gradeId][index] = static_cast<int>(value);
+    gradeFailTypes[static_cast<int>(gradeId)][index] = static_cast<int>(value);
   }
 
   lua_pushboolean(state, 1);
@@ -1183,22 +1183,22 @@ int AddRuneSlotCollectionList(lua_State* state) {
 // OFFSET: 0x0076A690
 // FUNCTION: fn_08181
 int AddTag(lua_State* state) {
-  const double tagValue = lua_tonumber(state, -2);
+  const int tagValue = static_cast<int>(lua_tonumber(state, -2));
   const std::string name(lua_tostring(state, -1));
 
   if (!lua_isnumber(state, -2)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("RuneSetID:%d", static_cast<int>(tagValue)).c_str());
+    lua_pushstring(state, FormatOwnedString("RuneSetID:%d", tagValue).c_str());
     return 2;
   }
 
   if (!lua_isstring(state, -1)) {
     lua_pushboolean(state, 0);
-    lua_pushstring(state, FormatOwnedString("RuneSetID:%d ResName%s", static_cast<int>(tagValue), name.c_str()).c_str());
+    lua_pushstring(state, FormatOwnedString("RuneSetID:%d ResName%s", tagValue, name.c_str()).c_str());
     return 2;
   }
 
-  g_runeSystemMgr->m_tags.push_back(new CTagData(static_cast<int>(tagValue), name));
+  g_runeSystemMgr->m_tags.push_back(new CTagData(tagValue, name));
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatOwnedString("good").c_str());
   return 2;
