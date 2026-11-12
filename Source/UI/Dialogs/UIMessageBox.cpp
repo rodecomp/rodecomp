@@ -3158,7 +3158,7 @@ void UIPetInfoWnd::Paint() {
 
   const int job = g_session.petJob;
 
-  if (job != -1 && ((job > 1000 && job < 3999) || static_cast<unsigned>(job - 20021) < 11979)) {
+  if (job != -1 && ((job > 1000 && job < 3999) || (job >= 20021 && job <= 31999))) {
     char illust[260];
     std::memset(illust, 0, sizeof(illust));
     g_session.GetPetIllustName(job, g_session.petAccessory, illust);
