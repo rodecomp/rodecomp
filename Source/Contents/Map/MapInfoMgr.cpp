@@ -211,7 +211,7 @@ bool CMapInfoMgr::LoadScript() {
 
 // OFFSET: 0x006CF290
 // FUNCTION: fn_06493
-void CMapInfoMgr::DrawMapName(CRenderSystemBase& system) {
+void CMapInfoMgr::DrawMapName() {
   MapNameDisplay* display = this->m_display;
   if (display == nullptr) {
     return;

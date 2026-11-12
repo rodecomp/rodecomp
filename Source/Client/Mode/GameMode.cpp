@@ -8877,7 +8877,7 @@ void CGameMode::Update() {
     this->DrawMiniMap();
     g_windowMgr.DrawCenteredBackground();
     g_windowMgr.DrawWindows();
-    g_mapInfoMgr->DrawMapName(*GetRenderSystemHolder()->system);
+    g_mapInfoMgr->DrawMapName();
     if (this->scene->isPKZone != 0 || *reinterpret_cast<const int*>(&g_session.interactionFlags[0x08]) != 0) {
       this->DrawMiniMapCoordinates();
       this->DrawTimeAttackTimer();

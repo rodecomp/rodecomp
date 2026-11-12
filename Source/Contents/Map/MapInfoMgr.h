@@ -72,7 +72,7 @@ public:
   const char* GetDisplayName(std::string map);
   const char* GetSignSubName(std::string map);
   bool LoadScript();
-  void DrawMapName(CRenderSystemBase& system);
+  void DrawMapName();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
