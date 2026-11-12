@@ -7121,7 +7121,11 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 3, item, owned.identity[1] > 0 ? item.quantity : 1, -1);
+    if (owned.identity[1] > 0) {
+      mode->drag.BeginItem(g_windowMgr, 3, item, item.quantity, -1);
+    } else {
+      mode->drag.BeginItem(g_windowMgr, 3, item, 1, -1);
+    }
   }
 }
 
@@ -7148,7 +7152,11 @@ void UIItemShopWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 3, item, owned.identity[1] > 0 ? item.quantity : 1, -1);
+    if (owned.identity[1] > 0) {
+      mode->drag.BeginItem(g_windowMgr, 3, item, item.quantity, -1);
+    } else {
+      mode->drag.BeginItem(g_windowMgr, 3, item, 1, -1);
+    }
   }
 }
 
