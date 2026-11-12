@@ -27,6 +27,9 @@
 #include <iterator>
 #include <new>
 
+template __declspec(noinline) std::list<ITEM_INFO>::~list() noexcept;
+template __declspec(noinline) std::list<SelectPackageItemBox::CTabInfoData>::~list() noexcept;
+
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem();
 template <>
@@ -44,18 +47,16 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // FUNCTION: fn_16646
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx()
-    : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A686A0
 // FUNCTION: fn_16647
 template <>
 CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx()
-    : CUIControl(), hoverImage(), pressedImage(), disabledImage(), imageNames(), disabledName(), scrollBar(nullptr),
-      itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), padding_00C5{}, items(), data(),
-      selected(static_cast<unsigned int>(-1)), selectionFlag(1), rebind(0), padding_00E2{}, onSelect(), binder() {
+    : CUIControl(), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), layoutFlag(0), selected(static_cast<unsigned int>(-1)),
+      selectionFlag(1), rebind(0) {
 }
 
 // OFFSET: 0x00A68860

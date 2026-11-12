@@ -133,19 +133,18 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 // FUNCTION: fn_16236
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (OngoingQuestInfo::CUIRewardItem* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -153,13 +152,14 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int distance = first - row;
+      if (distance < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - distance, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -180,9 +180,10 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    OngoingQuestInfo::CUIRewardItem* item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 

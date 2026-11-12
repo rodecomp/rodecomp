@@ -47,6 +47,10 @@
 #include <string>
 #include <vector>
 
+template __declspec(noinline) std::list<RenderAdapter>::~list() noexcept;
+template __declspec(noinline) std::list<DisplayMode>::~list() noexcept;
+template __declspec(noinline) std::list<RenderBackend>::~list() noexcept;
+
 namespace {
   struct RodexSpamOptionPacket {
     /* 0000 */ int id;
