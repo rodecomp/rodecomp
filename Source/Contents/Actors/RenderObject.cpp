@@ -5275,18 +5275,18 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   }
 
   vector3d targetPos;
-  if (target == nullptr) {
-    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
-    targetPos.x = this->render.position.x - (player->render.position.x - this->render.position.x);
-    targetPos.y = this->render.position.y - (player->render.position.y - this->render.position.y);
-    targetPos.z = this->render.position.z - (player->render.position.z - this->render.position.z);
-  } else {
+  if (target != nullptr) {
     if (known) {
       this->SendValueMessage(reinterpret_cast<int>(&target->render.position), reinterpret_cast<CGameObject*>(this->GetEffectCounter(skillId)));
     }
 
     targetPos = target->render.position;
     static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
+  } else {
+    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+    targetPos.x = this->render.position.x - (player->render.position.x - this->render.position.x);
+    targetPos.y = this->render.position.y - (player->render.position.y - this->render.position.y);
+    targetPos.z = this->render.position.z - (player->render.position.z - this->render.position.z);
   }
 
   if (type != DMG_MULTI_HIT && type != DMG_MULTI_HIT_ENDURE && type != DMG_MULTI_HIT_CRITICAL) {
@@ -5696,11 +5696,19 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case SR_RIDEINLIGHTNING:
     if (this->objectType != 5) {
       this->SetSequenceInterval(10);
+      unsigned char animation;
+      unsigned char firstFrame;
+      unsigned char lastFrame;
       if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
-        this->SetFrameSequence(0x58, 4, 5, 0x58, 5, 1, 1100, 0);
+        animation = 0x58;
+        firstFrame = 4;
+        lastFrame = 5;
       } else {
-        this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1100, 0);
+        animation = 0x60;
+        firstFrame = 3;
+        lastFrame = 4;
       }
+      this->SetFrameSequence(animation, firstFrame, lastFrame, animation, lastFrame, 1, 1100, 0);
     }
     break;
   case MO_EXTREMITYFIST:
@@ -5829,28 +5837,19 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     message.time += g_multiHitInterval;
     total += damage;
     message.damage = damage;
-    int kind = 0x1B;
-    switch (skillId) {
-    case MO_CHAINCOMBO:
-      message.action = action;
+    if (skillId == GC_CROSSIMPACT) {
+    } else if (skillId == MO_CHAINCOMBO) {
       message.effectId = 122;
-      break;
-    case CH_CHAINCRUSH:
+    } else if (skillId == CH_CHAINCRUSH) {
       message.action = 0x6C;
       this->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      message.action = action;
-      break;
-    case WL_CRIMSONROCK:
+    } else if (skillId == CG_ARROWVULCAN) {
+    } else if (skillId == WL_CRIMSONROCK) {
       message.effectId = 0x512;
       if (g_serviceOptions.Get(229)) {
-        message.action = action;
         message.effectId = -1;
-        break;
       }
-      message.action = action;
-      break;
-    case WL_COMET:
-      message.action = action;
+    } else if (skillId == WL_COMET) {
       if (previous & 1) {
         message.hitEffect = -1;
       } else if (g_serviceOptions.Get(229)) {
@@ -5860,12 +5859,11 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
         message.hitEffect = 0x588;
         message.effectId = 0x589;
       }
-      break;
-    case ABC_DEFT_STAB:
-      message.hitEffect = -1;
-      message.effectId = g_session.FindSkillFollowEffect(skillId);
-      message.action = action;
-      break;
+    } else if (skillId == LG_RAYOFGENESIS || skillId == NPC_RAYOFGENESIS) {
+      message.effectId = 0x593;
+    }
+
+    switch (skillId) {
     case AG_SOUL_VC_STRIKE:
     case IQ_SECOND_FAITH:
     case IQ_SECOND_JUDGEMENT:
@@ -5888,8 +5886,16 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     case MH_ABSOLUTE_ZEPHYR:
     case MH_BLAZING_AND_FURIOUS:
       message.effectId = g_session.FindSkillFollowEffect(skillId);
-      message.action = action;
       break;
+    case ABC_DEFT_STAB:
+      message.hitEffect = -1;
+      message.effectId = g_session.FindSkillFollowEffect(skillId);
+      break;
+    }
+
+    message.action = action;
+    int kind = 0x1B;
+    switch (skillId) {
     case TK_STORMKICK:
     case TK_DOWNKICK:
     case TK_TURNKICK:
@@ -5902,16 +5908,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     case SJ_FLASHKICK:
     case SJ_SOLARBURST:
     case SJ_PROMINENCEKICK:
-      message.action = action;
       kind = 0x85;
-      break;
-    case NPC_RAYOFGENESIS:
-    case LG_RAYOFGENESIS:
-      message.effectId = 0x593;
-      message.action = action;
-      break;
-    default:
-      message.action = action;
       break;
     }
 
