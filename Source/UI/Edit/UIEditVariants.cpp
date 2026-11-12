@@ -24,6 +24,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) std::vector<bool>::iterator std::vector<bool>::erase(std::vector<bool>::const_iterator) noexcept;
+
 // OFFSET: 0x0084F250
 // FUNCTION: fn_10657
 UIEditCtrl2::UIEditCtrl2() : UIEditCtrl() {
@@ -1170,9 +1172,11 @@ void UIEditCtrl3::ClearLineState() {
   }
   this->wrappedLines.clear();
 
-  while (!this->lineBreaks.empty()) {
-    this->lineBreaks.pop_back();
+  auto lineBreak = this->lineBreaks.begin();
+  while (lineBreak != this->lineBreaks.end()) {
+    lineBreak = this->lineBreaks.erase(lineBreak);
   }
+  this->lineBreaks.clear();
 
   if (this->previousLineText) {
     delete[] this->previousLineText;
