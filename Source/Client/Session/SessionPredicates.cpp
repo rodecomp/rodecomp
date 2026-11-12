@@ -6,8 +6,12 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <map>
+
+template __declspec(noinline) SessionRecord6178Entry* std::allocator<SessionRecord6178Entry>::allocate(std::size_t);
+template __declspec(noinline) std::vector<SessionRecord6178Entry>::~vector() noexcept;
 
 // OFFSET: 0x00E1D6B0
 // FUNCTION: fn_23850
@@ -34,13 +38,9 @@ int CSession::IsState291To303(int state) const {
 // OFFSET: 0x00E1D700
 // FUNCTION: fn_23851
 bool CSession::HasTrackedAchievement(int id) const {
-  auto it = this->trackedAchievements.begin();
-  for (; it != this->trackedAchievements.end(); ++it) {
-    const SessionRecord6178 record = *it;
-    if (id == record.id) {
-      break;
-    }
-  }
+  const auto it = std::find_if(this->trackedAchievements.begin(), this->trackedAchievements.end(), [id](SessionRecord6178 record) {
+    return id == record.id;
+  });
   return it != this->trackedAchievements.end();
 }
 
