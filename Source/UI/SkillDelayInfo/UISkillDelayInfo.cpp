@@ -22,6 +22,7 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
@@ -175,11 +176,8 @@ void CUITime::OnCreate(int width, int height) {
   this->text->SetText("");
   this->text->SetFitText(0);
   this->text->SetAlign(6, 6);
-  constexpr std::array<std::uint8_t, 6> textFontSourceArray = CRYPT_NAME("Gulim", 0xD5A78DB38D8DAFABULL);
-  const std::uint8_t (&textFontSource)[6] = textFontSourceArray._Elems;
   // GLOBAL: gl_25166
-  thread_local EncryptedName<sizeof(textFontSource), 0xD5A78DB38D8DAFABULL> textFont(textFontSource);
-  this->text->SetFont(std::string(textFont.Text()));
+  this->text->SetFont(std::string(OBFUSCATE_ARRAY_TEXT("Gulim", 0xD5A78DB38D8DAFABULL, std::uint8_t)));
   this->text->SetFontHeight(12);
   this->text->SetBold(0);
   this->text->SetColor(0);
