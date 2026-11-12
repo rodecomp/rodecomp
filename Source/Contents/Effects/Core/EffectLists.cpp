@@ -166,8 +166,8 @@ double ScreenAngle(vector3d from, vector3d to) {
 // FUNCTION: fn_18805
 std::string CurrentMapScriptName() {
   std::string name = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
-  const std::size_t at = name.rfind('@');
-  if (at != std::string::npos && at > 3) {
+  const std::size_t at = name.rfind("@");
+  if (at != std::string::npos && at >= 4) {
     name.erase(at - 4, 3);
   }
 
