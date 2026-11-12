@@ -3153,18 +3153,18 @@ void CServantWeaponNewEffect::OnProcess() {
       const float angle = (*it)->angle;
       CEZ2STRParticle* particle =
           static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-      if (!particle) {
+      if (particle) {
+        particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon\\servantweapon.str"));
+        particle->m_loop = true;
+        particle->m_scale = 0.12f;
+        reinterpret_cast<EZ2STREmitter*>(particle)->angle = angle;
+        FreeParticle(AsParticle(*it));
+        *it = reinterpret_cast<EZ2STREmitter*>(particle);
+      } else {
         FreeParticle(AsParticle(*it));
         it = this->emitters.erase(it);
         continue;
       }
-
-      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon\\servantweapon.str"));
-      particle->m_loop = true;
-      particle->m_scale = 0.12f;
-      reinterpret_cast<EZ2STREmitter*>(particle)->angle = angle;
-      FreeParticle(AsParticle(*it));
-      *it = reinterpret_cast<EZ2STREmitter*>(particle);
     }
 
     OrbitServantEmitter(this, *it);
