@@ -417,7 +417,7 @@ class Progress:
 
 def link(tc, objects, out_dir, extra_args):
     rsp = out_dir / "link.rsp"
-    rsp.write_text("\n".join([*(f'"{tc.path(o)}"' for o in objects), *extra_args]), encoding="utf-8")
+    rsp.write_text("\n".join([*(f'"{tc.path(o)}"' for o in objects), *extra_args]), encoding="mbcs" if sys.platform == "win32" else "utf-8")
     exe = out_dir / "Ragexe.exe"
     outputs = (exe, exe.with_suffix(".pdb"), exe.with_suffix(".map"))
     for stale in outputs:
