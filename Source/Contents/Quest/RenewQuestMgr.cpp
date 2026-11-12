@@ -435,7 +435,8 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     offset += sizeof(RenewQuestOngoingRecord);
 
     for (int index = 0; index < huntCount; ++index) {
-      RenewQuestHuntRecord hunt = {};
+      RenewQuestHuntRecord hunt;
+      SecureZeroMemory(&hunt, sizeof(hunt));
       hunt.huntId = static_cast<int>(info.m_huntId[index]);
       hunt.monsterCondition = info.m_huntConditionFlags[index];
       hunt.monsterId = info.m_huntMobId[index];
