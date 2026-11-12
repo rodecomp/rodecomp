@@ -20,8 +20,15 @@ struct ReplayCachedPacket {
   /* 0000 */ bool enabled;
   /* 0004 */ std::vector<unsigned char> bytes;
 
-  ReplayCachedPacket() = default;
+  // INLINED
+  ReplayCachedPacket() {
+    this->enabled = false;
+  }
   ReplayCachedPacket(const ReplayCachedPacket& other);
+  // INLINED
+  ~ReplayCachedPacket() {
+    this->bytes.clear();
+  }
 };
 
 #pragma pack(push, 1)

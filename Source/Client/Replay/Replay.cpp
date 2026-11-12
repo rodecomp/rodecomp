@@ -174,7 +174,15 @@ Replay::Replay() : cipherIndex(0), cipherBase(0), cipherKey(0), recordingState(0
   this->speed = 1.0f;
   std::memset(&this->header, 0, sizeof(this->header));
   std::memset(&this->header.options, 1, sizeof(this->header.options));
-  this->ResetFile();
+  const ReplayOptions savedOptions = this->header.options;
+  std::memset(&this->header, 0, sizeof(this->header));
+  this->header.options = savedOptions;
+  this->header.signature = 0x52414705;
+  this->header.closingSignature = 0x52414705;
+  this->records = 0;
+  this->fileMode = -1;
+  this->file = nullptr;
+  this->fileOffset = 0;
   this->previousTick = timeGetTime();
   this->playbackState = 0;
   this->recordingState = 0;
@@ -1285,7 +1293,8 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
     value.padding_0000 = 0;
     value.shopId = it->second;
     std::memset(value.name, 0, sizeof(value.name));
-    std::memcpy(value.name, it->first.c_str(), (std::min)(it->first.size(), sizeof(value.name)));
+    const std::size_t length = it->first.size();
+    std::memcpy(value.name, it->first.c_str(), length > sizeof(value.name) ? sizeof(value.name) : length);
     AppendRecord(records, MakeReplayRecord(7502, &value, sizeof(value)));
   }
   for (auto shop = this->m_shops.begin(); shop != this->m_shops.end(); ++shop) {
