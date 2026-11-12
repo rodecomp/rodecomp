@@ -1819,6 +1819,7 @@ public:
   /* 000E */ unsigned char padding_000E[0x12];
   /* 0020 */ UIWindow* observerWindow;
   /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
+  /* 0044 */ unsigned char padding_0044[0x1B8];
 
   CEquipmentPropertiesMgr();
   CEquipmentWearable* FindProperty1(const int& key);
