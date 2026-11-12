@@ -233,10 +233,14 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   this->greenMask = format.dwGBitMask;
   this->blueMask = format.dwBBitMask;
   this->alphaMask = format.dwRGBAlphaBitMask;
-  ChannelMask(this->red, this->redMask);
-  ChannelMask(this->green, this->greenMask);
-  ChannelMask(this->blue, this->blueMask);
-  ChannelMask(this->alpha, this->alphaMask);
+  this->red = {0, 8};
+  this->green = {0, 8};
+  this->blue = {0, 8};
+  this->alpha = {0, 8};
+  ChannelMask(this->red, format.dwRBitMask);
+  ChannelMask(this->green, format.dwGBitMask);
+  ChannelMask(this->blue, format.dwBBitMask);
+  ChannelMask(this->alpha, format.dwRGBAlphaBitMask);
   this->renderTarget = (flags & 2) ? this->backBuffer : this->primary;
   this->renderTarget->AddRef();
   SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
