@@ -21,38 +21,26 @@ NIPAddr::~NIPAddr() {
 // OFFSET: 0x00734CE0
 // FUNCTION: fn_07603
 bool NIPAddr::IsPrivateAddress(std::uint32_t address) {
-  const std::uint32_t swapped = MAKELONG(MAKEWORD(HIBYTE(HIWORD(address)), LOBYTE(HIWORD(address))), MAKEWORD(HIBYTE(LOWORD(address)), LOBYTE(LOWORD(address))));
-  std::uint32_t lower;
-  std::uint32_t upper;
-  {
-    NIPAddr first(std::string("10.0.0.0"));
-    lower = first.address;
-  }
-  {
-    NIPAddr last(std::string("10.255.255.255"));
-    upper = last.address;
-  }
+  const WORD low = LOWORD(address);
+  const WORD high = HIWORD(address);
+  const std::uint32_t swapped = MAKELONG(MAKEWORD(HIBYTE(high), LOBYTE(high)), MAKEWORD(HIBYTE(low), LOBYTE(low)));
+
+  std::uint32_t lower = NIPAddr(std::string("10.0.0.0")).address;
+  std::uint32_t upper = NIPAddr(std::string("10.255.255.255")).address;
   if (swapped >= lower && swapped <= upper) {
     return true;
   }
-  {
-    NIPAddr first(std::string("172.16.0.0"));
-    lower = first.address;
-  }
-  {
-    NIPAddr last(std::string("172.31.255.255"));
-    upper = last.address;
-  }
+
+  lower = NIPAddr(std::string("172.16.0.0")).address;
+  upper = NIPAddr(std::string("172.31.255.255")).address;
   if (swapped >= lower && swapped <= upper) {
     return true;
   }
-  {
-    NIPAddr first(std::string("192.168.0.0"));
-    lower = first.address;
+
+  lower = NIPAddr(std::string("192.168.0.0")).address;
+  upper = NIPAddr(std::string("192.168.255.255")).address;
+  if (swapped >= lower && swapped <= upper) {
+    return true;
   }
-  {
-    NIPAddr last(std::string("192.168.255.255"));
-    upper = last.address;
-  }
-  return swapped >= lower && swapped <= upper;
+  return false;
 }
