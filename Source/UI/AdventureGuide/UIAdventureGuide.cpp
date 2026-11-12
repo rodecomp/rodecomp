@@ -1749,11 +1749,7 @@ void CUIItem::OnCreate(int width, int height) {
     button->Invalidate();
   }
   {
-    const std::string moveDisable(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0xA31F69E7EFED01C9ULL, moveDisableName));
-    const std::string moveOver(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xB7A96F8701BB4B6BULL, moveOverName));
-    const std::string movePress(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0x659975C121557D3DULL, movePressName));
-    const std::string moveNormal(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0xBFF5C517A1A77F59ULL, moveNormalName));
-    this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);
+    this->navigationButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0xBFF5C517A1A77F59ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0x659975C121557D3DULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xB7A96F8701BB4B6BULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0xA31F69E7EFED01C9ULL)));
   }
   this->AddChild(this->navigationButton);
 }
@@ -1816,11 +1812,7 @@ void CUIQuest::OnCreate(int width, int height) {
     button->Invalidate();
   }
   {
-    const std::string moveDisable(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0x234977DDB54BC71DULL, moveDisableName));
-    const std::string moveOver(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xE52DF30DCBAF7125ULL, moveOverName));
-    const std::string movePress(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0xCFF3899D95AF355FULL, movePressName));
-    const std::string moveNormal(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0x9171997D6963C9F7ULL, moveNormalName));
-    this->navigationButton->SetImages(moveNormal, movePress, moveOver, moveDisable);
+    this->navigationButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_normal.bmp", 0x9171997D6963C9F7ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_press.bmp", 0xCFF3899D95AF355FULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_over.bmp", 0xE52DF30DCBAF7125ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\AdventureGuide\\btn_move_disable.bmp", 0x234977DDB54BC71DULL)));
   }
   this->AddChild(this->navigationButton);
 }
