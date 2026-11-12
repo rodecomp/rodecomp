@@ -21,6 +21,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "UI/Window/UIRegisterMgr.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
@@ -32,13 +33,6 @@
 
 // GLOBAL: gl_25249
 static bool s_recommendedTabFirstSelect = true;
-
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
 
 // OFFSET: 0x00A59FE0
 // FUNCTION: fn_16371
@@ -391,262 +385,175 @@ __declspec(noinline) const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text(
 // OFFSET: 0x00A5A550
 // FUNCTION: fn_16400
 __declspec(noinline) EncryptedName<6, 0x114901C7E37F6D49ULL>& GulimFontName1() {
-  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0x114901C7E37F6D49ULL);
-  const std::uint8_t (&source)[6] = sourceArray._Elems;
-  thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Gulim", 0x114901C7E37F6D49ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00A5A620
 // FUNCTION: fn_16401
 __declspec(noinline) EncryptedName<48, 0x136F2F9915D1DBCFULL>& NormalOffButtonName1() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x136F2F9915D1DBCFULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x136F2F9915D1DBCFULL);
 }
 
 // OFFSET: 0x00A5A700
 // FUNCTION: fn_16402
 __declspec(noinline) EncryptedName<47, 0x0B23D10F2F49D72BULL>& NormalOnButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_on.bmp", 0x0B23D10F2F49D72BULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_normal_on.bmp", 0x0B23D10F2F49D72BULL);
 }
 
 // OFFSET: 0x00A5A7F0
 // FUNCTION: fn_16403
 __declspec(noinline) EncryptedName<48, 0x674D9F3975573D41ULL>& NormalOffButtonName2() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x674D9F3975573D41ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x674D9F3975573D41ULL);
 }
 
 // OFFSET: 0x00A5A8D0
 // FUNCTION: fn_16404
 __declspec(noinline) EncryptedName<48, 0x6BDF334F2BFDAD51ULL>& NormalOffButtonName3() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x6BDF334F2BFDAD51ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_normal_off.bmp", 0x6BDF334F2BFDAD51ULL);
 }
 
 // OFFSET: 0x00A5A9B0
 // FUNCTION: fn_16405
 __declspec(noinline) EncryptedName<6, 0xB7AFBD2FD9FD7501ULL>& GulimFontName2() {
-  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xB7AFBD2FD9FD7501ULL);
-  const std::uint8_t (&source)[6] = sourceArray._Elems;
-  thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Gulim", 0xB7AFBD2FD9FD7501ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00A5AA80
 // FUNCTION: fn_16406
 __declspec(noinline) EncryptedName<45, 0x79E915E9AF6F55DDULL>& SubOffButtonName1() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x79E915E9AF6F55DDULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x79E915E9AF6F55DDULL);
 }
 
 // OFFSET: 0x00A5AB70
 // FUNCTION: fn_16407
 __declspec(noinline) EncryptedName<44, 0xB3E307A5F753D5E3ULL>& SubOnButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_on.bmp", 0xB3E307A5F753D5E3ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_sub_on.bmp", 0xB3E307A5F753D5E3ULL);
 }
 
 // OFFSET: 0x00A5AC50
 // FUNCTION: fn_16408
 __declspec(noinline) EncryptedName<45, 0x192D654D29337BE5ULL>& SubOffButtonName2() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x192D654D29337BE5ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0x192D654D29337BE5ULL);
 }
 
 // OFFSET: 0x00A5AD40
 // FUNCTION: fn_16409
 __declspec(noinline) EncryptedName<45, 0xF15F8785CDE369BFULL>& SubOffButtonName3() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0xF15F8785CDE369BFULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_sub_off.bmp", 0xF15F8785CDE369BFULL);
 }
 
 // OFFSET: 0x00A5AE30
 // FUNCTION: fn_16410
 __declspec(noinline) EncryptedName<6, 0xE33F2FF779878559ULL>& GulimFontName3() {
-  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xE33F2FF779878559ULL);
-  const std::uint8_t (&source)[6] = sourceArray._Elems;
-  thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Gulim", 0xE33F2FF779878559ULL, std::uint8_t);
 }
 
 // OFFSET: 0x00A5AF00
 // FUNCTION: fn_16411
 __declspec(noinline) EncryptedName<47, 0x49D33529F1556333ULL>& DailyOffButtonName1() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x49D33529F1556333ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x49D33529F1556333ULL);
 }
 
 // OFFSET: 0x00A5AFF0
 // FUNCTION: fn_16412
 __declspec(noinline) EncryptedName<46, 0x792FFD1325418FB5ULL>& DailyOnButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_on.bmp", 0x792FFD1325418FB5ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_daily_on.bmp", 0x792FFD1325418FB5ULL);
 }
 
 // OFFSET: 0x00A5B0E0
 // FUNCTION: fn_16413
 __declspec(noinline) EncryptedName<47, 0xC5B1BBCD9BC9C997ULL>& DailyOffButtonName2() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0xC5B1BBCD9BC9C997ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0xC5B1BBCD9BC9C997ULL);
 }
 
 // OFFSET: 0x00A5B1D0
 // FUNCTION: fn_16414
 __declspec(noinline) EncryptedName<47, 0x01CB4F1DF9D3F931ULL>& DailyOffButtonName3() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x01CB4F1DF9D3F931ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_daily_off.bmp", 0x01CB4F1DF9D3F931ULL);
 }
 
 // OFFSET: 0x00A5B2C0
 // FUNCTION: fn_16415
 __declspec(noinline) EncryptedName<6, 0x1767DDE18D779D8BULL>& GulimFontName4() {
-  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0x1767DDE18D779D8BULL);
-  const std::uint8_t (&source)[6] = sourceArray._Elems;
-  thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Gulim", 0x1767DDE18D779D8BULL, std::uint8_t);
 }
 
 // OFFSET: 0x00A5B390
 // FUNCTION: fn_16416
 __declspec(noinline) EncryptedName<47, 0xC1BB8111EDD183E1ULL>& EventOffButtonName1() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0xC1BB8111EDD183E1ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0xC1BB8111EDD183E1ULL);
 }
 
 // OFFSET: 0x00A5B480
 // FUNCTION: fn_16417
 __declspec(noinline) EncryptedName<46, 0x271B45771F83DD9FULL>& EventOnButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_on.bmp", 0x271B45771F83DD9FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_event_on.bmp", 0x271B45771F83DD9FULL);
 }
 
 // OFFSET: 0x00A5B570
 // FUNCTION: fn_16418
 __declspec(noinline) EncryptedName<47, 0x8783C33941E15117ULL>& EventOffButtonName2() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x8783C33941E15117ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x8783C33941E15117ULL);
 }
 
 // OFFSET: 0x00A5B660
 // FUNCTION: fn_16419
 __declspec(noinline) EncryptedName<47, 0x0B8745519B1F95D7ULL>& EventOffButtonName3() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x0B8745519B1F95D7ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_event_off.bmp", 0x0B8745519B1F95D7ULL);
 }
 
 // OFFSET: 0x00A5B750
 // FUNCTION: fn_16420
 __declspec(noinline) EncryptedName<6, 0xC70319B5EB61598FULL>& GulimFontName5() {
-  constexpr std::array<std::uint8_t, 6> sourceArray = CRYPT_NAME("Gulim", 0xC70319B5EB61598FULL);
-  const std::uint8_t (&source)[6] = sourceArray._Elems;
-  thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
-  return name;
+  OBFUSCATE_ARRAY_BODY("Gulim", 0xC70319B5EB61598FULL, std::uint8_t);
 }
 
 // OFFSET: 0x00A5B820
 // FUNCTION: fn_16421
 __declspec(noinline) EncryptedName<45, 0xFFABE3D5D1BBEF73ULL>& EtcOffButtonName1() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xFFABE3D5D1BBEF73ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xFFABE3D5D1BBEF73ULL);
 }
 
 // OFFSET: 0x00A5B910
 // FUNCTION: fn_16422
 __declspec(noinline) EncryptedName<44, 0xA597A7E7492B39D5ULL>& EtcOnButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_on.bmp", 0xA597A7E7492B39D5ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_etc_on.bmp", 0xA597A7E7492B39D5ULL);
 }
 
 // OFFSET: 0x00A5B9F0
 // FUNCTION: fn_16423
 __declspec(noinline) EncryptedName<45, 0xD5A78DB38D8DAFABULL>& EtcOffButtonName2() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xD5A78DB38D8DAFABULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0xD5A78DB38D8DAFABULL);
 }
 
 // OFFSET: 0x00A5BAE0
 // FUNCTION: fn_16424
 __declspec(noinline) EncryptedName<45, 0x0399459DAF454F0FULL>& EtcOffButtonName3() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0x0399459DAF454F0FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_etc_off.bmp", 0x0399459DAF454F0FULL);
 }
 
 // OFFSET: 0x00A5BBD0
 // FUNCTION: fn_16425
 __declspec(noinline) EncryptedName<51, 0xAD6153019F93A527ULL>& SearchNormalButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_normal.bmp", 0xAD6153019F93A527ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_search_normal.bmp", 0xAD6153019F93A527ULL);
 }
 
 // OFFSET: 0x00A5BCB0
 // FUNCTION: fn_16426
 __declspec(noinline) EncryptedName<50, 0x85E1F5A7A5755B7FULL>& SearchPressButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_press.bmp", 0x85E1F5A7A5755B7FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_search_press.bmp", 0x85E1F5A7A5755B7FULL);
 }
 
 // OFFSET: 0x00A5BD90
 // FUNCTION: fn_16427
 __declspec(noinline) EncryptedName<49, 0x659975C121557D3DULL>& SearchOverButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_over.bmp", 0x659975C121557D3DULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_search_over.bmp", 0x659975C121557D3DULL);
 }
 
 // OFFSET: 0x00A5BE70
 // FUNCTION: fn_16428
 __declspec(noinline) EncryptedName<52, 0xBFF5C517A1A77F59ULL>& SearchDisableButtonName() {
-  constexpr auto sourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\btn_search_disable.bmp", 0xBFF5C517A1A77F59ULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("유저인터페이스\\Renew_QuestUI\\btn_search_disable.bmp", 0xBFF5C517A1A77F59ULL);
 }
 
 // OFFSET: 0x00A66BE0
@@ -1360,7 +1267,7 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->titleText->SetText("");
   this->titleText->SetFitText(1);
   this->titleText->SetAlign(0, 0);
-  this->titleText->SetFont(std::string(DecryptName<0xAD075B8DB599F1CDULL>({'\x8A', '\x84', '\xF5', '\xDC', '\xE0', '\x5B'})));
+  this->titleText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xAD075B8DB599F1CDULL)));
   this->titleText->SetFontHeight(12);
   this->titleText->SetBold(1);
   this->titleText->SetColor(0x955322);
@@ -1374,7 +1281,7 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   this->descriptionText->SetText("");
   this->descriptionText->SetFitText(1);
   this->descriptionText->SetAlign(0, 0);
-  this->descriptionText->SetFont(std::string(DecryptName<0xDD3913D5D7F97BE1ULL>({'\xA6', '\x0E', '\x95', '\xBE', '\xB8', '\x13'})));
+  this->descriptionText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xDD3913D5D7F97BE1ULL)));
   this->descriptionText->SetFontHeight(12);
   this->descriptionText->SetBold(0);
   this->descriptionText->SetColor(0x38302E);
@@ -1390,26 +1297,10 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   simpleViewCheckBox->disabled = 0;
   simpleViewCheckBox->Invalidate();
   this->simpleViewCheckBox->SetImages(
-    std::string(DecryptName<0x050505679903579BULL>({
-      '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x57',
-      '\xFE', '\x39', '\x66', '\xEE', '\x38', '\x54', '\x70', '\x60', '\xE8', '\x23', '\x56', '\xD0', '\x3B', '\x67', '\x71', '\x5A',
-      '\xF8', '\x3F', '\x66', '\xFA', '\x0C', '\x5A', '\x6A', '\x63', '\xFD', '\x79', '\x61', '\xF4', '\x17', '\x05'
-    })),
-    std::string(DecryptName<0x83EFBFBB37EDBDBDULL>({
-      '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xD1',
-      '\xD8', '\xD3', '\x88', '\x40', '\xE4', '\xEE', '\x9A', '\xE6', '\xCE', '\xC9', '\xB8', '\x7E', '\xE7', '\xDD', '\x9B', '\xDC',
-      '\xDE', '\xD5', '\x88', '\x54', '\xD0', '\xE0', '\x80', '\xED', '\x93', '\xDF', '\x80', '\x47', '\xBB'
-    })),
-    std::string(DecryptName<0xBF2B4B31397FF5A7ULL>({
-      '\x67', '\x5A', '\xBF', '\xC3', '\xF1', '\x85', '\xEE', '\x72', '\x61', '\x11', '\xBF', '\xF5', '\x8C', '\xF1', '\x77', '\xED',
-      '\xC2', '\x9B', '\x1A', '\x4E', '\x6E', '\x1A', '\x5E', '\xDA', '\xD4', '\x81', '\x2A', '\x70', '\x6D', '\x29', '\x5F', '\xE0',
-      '\xC4', '\x9D', '\x1A', '\x5A', '\x5A', '\x14', '\x44', '\xD9', '\xC1', '\xDB', '\x1D', '\x54', '\x41', '\x4B'
-    })),
-    std::string(DecryptName<0xD97D5DBDBB2F2709ULL>({
-      '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\x8B',
-      '\x6C', '\x49', '\x4A', '\xCC', '\xE2', '\x0C', '\x08', '\xBC', '\x7A', '\x53', '\x7A', '\xF2', '\xE1', '\x3F', '\x09', '\x86',
-      '\x6A', '\x4F', '\x4A', '\xD8', '\xD6', '\x02', '\x12', '\xBF', '\x6F', '\x09', '\x4D', '\xD6', '\xCD', '\x5D'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_off.bmp", 0x050505679903579BULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_on.bmp", 0x83EFBFBB37EDBDBDULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_off.bmp", 0xBF2B4B31397FF5A7ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_off.bmp", 0xD97D5DBDBB2F2709ULL))
   );
   this->simpleViewCheckBox->checked = false;
   this->simpleViewCheckBox->Invalidate();
@@ -1423,26 +1314,10 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
   activeCheckBox->disabled = 0;
   activeCheckBox->Invalidate();
   this->activeCheckBox->SetImages(
-    std::string(DecryptName<0xED796785D1DF137FULL>({
-      '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\xBF',
-      '\x1A', '\x7D', '\xBA', '\xA6', '\xDA', '\x36', '\x0C', '\x88', '\x0C', '\x67', '\x8A', '\x98', '\xD9', '\x05', '\x0D', '\xB2',
-      '\x13', '\x7C', '\xBC', '\xBA', '\xAB', '\x05', '\x14', '\x9D', '\x7F'
-    })),
-    std::string(DecryptName<0xF14F79170939C7F1ULL>({
-      '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\xA3',
-      '\x94', '\xA9', '\x5C', '\x7E', '\x48', '\x28', '\x3A', '\x94', '\x82', '\xB3', '\x6C', '\x40', '\x4B', '\x1B', '\x3B', '\xAE',
-      '\x9D', '\xA8', '\x5A', '\x62', '\x48', '\x16', '\x3F', '\x94', '\x9F', '\xE9', '\x5B', '\x64', '\x67', '\x79'
-    })),
-    std::string(DecryptName<0xA5FD29D7AB6DC59FULL>({
-      '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xF7',
-      '\xFA', '\xAB', '\x08', '\xDC', '\x88', '\x78', '\x88', '\xC0', '\xEC', '\xB1', '\x38', '\xE2', '\x8B', '\x4B', '\x89', '\xFA',
-      '\xF3', '\xAA', '\x0E', '\xC0', '\xF9', '\x4B', '\x90', '\xD5', '\x9F'
-    })),
-    std::string(DecryptName<0x13E33FA1A591AB67ULL>({
-      '\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x41',
-      '\x02', '\xC5', '\xF4', '\xD2', '\xFE', '\x6E', '\x96', '\x76', '\x14', '\xDF', '\xC4', '\xEC', '\xFD', '\x5D', '\x97', '\x4C',
-      '\x0B', '\xC4', '\xF2', '\xCE', '\x8F', '\x5D', '\x8E', '\x63', '\x67'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock.bmp", 0xED796785D1DF137FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock_open.bmp", 0xF14F79170939C7F1ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock.bmp", 0xA5FD29D7AB6DC59FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock.bmp", 0x13E33FA1A591AB67ULL))
   );
   this->activeCheckBox->checked = false;
   this->activeCheckBox->Invalidate();
@@ -1462,18 +1337,10 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
   this->list->SetBinder([this](CUIQuestItem* item, const unsigned long& questId) { this->BindItem(item, questId); });
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    constexpr auto disabledSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x23BBD58F8B5FF5C9ULL);
-    const auto& disabledSource = disabledSourceText.data;
-    const std::string disabled(DecryptName<0x23BBD58F8B5FF5C9ULL>(disabledSource));
-    constexpr auto pressedSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0xCD8F077123FB7D6FULL);
-    const auto& pressedSource = pressedSourceText.data;
-    const std::string pressed(DecryptName<0xCD8F077123FB7D6FULL>(pressedSource));
-    constexpr auto hoverSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList_check.bmp", 0x9949BFD527532943ULL);
-    const auto& hoverSource = hoverSourceText.data;
-    const std::string hover(DecryptName<0x9949BFD527532943ULL>(hoverSource));
-    constexpr auto normalSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x17A9E5BF39AD4737ULL);
-    const auto& normalSource = normalSourceText.data;
-    const std::string normal(DecryptName<0x17A9E5BF39AD4737ULL>(normalSource));
+    const std::string disabled(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x23BBD58F8B5FF5C9ULL));
+    const std::string pressed(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0xCD8F077123FB7D6FULL));
+    const std::string hover(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_questList_check.bmp", 0x9949BFD527532943ULL));
+    const std::string normal(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_questList.bmp", 0x17A9E5BF39AD4737ULL));
     list->SetImages(normal, hover, pressed, disabled);
   }
   {
@@ -1486,26 +1353,16 @@ void RenewQuestUI::CUIQuestList::OnCreate(int width, int height) {
   this->list->scrollBar->step = 138;
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    constexpr auto downSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp", 0x03772763F96D9DA5ULL);
-    const auto& downSource = downSourceText.data;
-    const std::string down(DecryptName<0x03772763F96D9DA5ULL>(downSource));
-    constexpr auto upSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", 0xC517FB932D95BB6DULL);
-    const auto& upSource = upSourceText.data;
-    const std::string up(DecryptName<0xC517FB932D95BB6DULL>(upSource));
+    const std::string down(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp", 0x03772763F96D9DA5ULL));
+    const std::string up(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", 0xC517FB932D95BB6DULL));
     list->SetScrollBarButtonImages(up, down);
   }
   this->list->SetScrollBarBackground("");
   {
     CUIListBoxEx<CUIQuestItem, unsigned long>* list = this->list;
-    constexpr auto bottomSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp", 0xEDC74F6D13DF71EFULL);
-    const auto& bottomSource = bottomSourceText.data;
-    const std::string bottom(DecryptName<0xEDC74F6D13DF71EFULL>(bottomSource));
-    constexpr auto middleSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp", 0xF161095D0DE18F95ULL);
-    const auto& middleSource = middleSourceText.data;
-    const std::string middle(DecryptName<0xF161095D0DE18F95ULL>(middleSource));
-    constexpr auto topSourceText = CRYPT_NAME("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", 0x0B7109397F6B1387ULL);
-    const auto& topSource = topSourceText.data;
-    const std::string top(DecryptName<0x0B7109397F6B1387ULL>(topSource));
+    const std::string bottom(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp", 0xEDC74F6D13DF71EFULL));
+    const std::string middle(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp", 0xF161095D0DE18F95ULL));
+    const std::string top(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", 0x0B7109397F6B1387ULL));
     list->SetScrollBarThumbImages(top, middle, bottom);
   }
   this->list->AddNewItem();
@@ -1518,32 +1375,18 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->titleBar = new CUITitleBar();
   this->titleBar->SetSize(352, 17);
   this->titleBar->Move(29, 0);
-  this->titleBar->SetImages(std::string(DecryptName<0x75ADC57D87EFBD8FULL>({
-    '\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
-    '\xEE', '\xCE', '\x86', '\xE4', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x01',
-    '\xE6', '\xC9', '\x83', '\xE2', '\x1F', '\xA4', '\xDF', '\x2A', '\xE3', '\xD8', '\x89', '\xF3', '\x53', '\xA7', '\xC0', '\x05',
-    '\x8F'
-  })),
-  std::string(DecryptName<0x2BAD156DE3E1F9D9ULL>({
-    '\x19', '\x56', '\x21', '\x19', '\xAD', '\xDB', '\x68', '\xE6', '\x1F', '\x1D', '\x21', '\x2F', '\xD0', '\xAF', '\xF1', '\x49',
-    '\xB8', '\x8A', '\x88', '\x80', '\x32', '\x7C', '\xC3', '\x5F', '\xBC', '\x8B', '\x87', '\x82', '\x0E', '\x70', '\xF1', '\x5F',
-    '\xB0', '\x8D', '\x8D', '\x86', '\x0F', '\x74', '\xDF', '\x74', '\xB4', '\x90', '\x85', '\xCD', '\x0F', '\x78', '\xDD', '\x2B'
-  })),
-  std::string(DecryptName<0x637B959D55771F69ULL>({
-    '\xA9', '\xB0', '\xB7', '\xAF', '\x5D', '\x5B', '\xBE', '\xAE', '\xAF', '\xFB', '\xB7', '\x99', '\x20', '\x2F', '\x27', '\x01',
-    '\x08', '\x6C', '\x1E', '\x36', '\xC2', '\xFC', '\x15', '\x17', '\x0C', '\x6D', '\x11', '\x34', '\xFE', '\xF0', '\x27', '\x17',
-    '\x00', '\x6B', '\x1B', '\x30', '\xFF', '\xF4', '\x09', '\x3C', '\x1B', '\x76', '\x10', '\x3D', '\xE9', '\xBB', '\x19', '\x0E',
-    '\x19', '\x1F'
-  })));
+  this->titleBar->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x75ADC57D87EFBD8FULL)),
+  std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x2BAD156DE3E1F9D9ULL)),
+  std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x637B959D55771F69ULL)));
   this->AddChild(this->titleBar);
 
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
-  title->SetText(DecryptName<0xD1413DBB01CD8B51ULL>({'\x00', '\xDE', '\x88', '\x52', '\xEF', '\x3D'}));
+  title->SetText(OBFUSCATE_TEXT("QUEST", 0xD1413DBB01CD8B51ULL));
   title->SetFitText(0);
   title->SetAlign(0, 6);
-  title->SetFont(std::string(DecryptName<0x758F1D0B4F7705B9ULL>({'\xFE', '\x70', '\x1B', '\x26', '\x66', '\x1D'})));
+  title->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x758F1D0B4F7705B9ULL)));
   title->SetFontHeight(13);
   title->SetBold(0);
   title->SetColor(0);
@@ -1559,37 +1402,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   systemButton->disabled = 0;
   systemButton->Invalidate();
   systemButton->SetImages(
-    std::string(DecryptName<0x891B232D09451965ULL>({
-      '\xA5', '\xB6', '\x85', '\xF3', '\xED', '\xED', '\xDE', '\x44', '\xA3', '\xFD', '\x85', '\xC5', '\x90', '\x99', '\x47', '\xEB',
-      '\x04', '\x6A', '\x2C', '\x6A', '\x72', '\x4A', '\x75', '\xFD', '\x00', '\x6B', '\x23', '\x68', '\x4E', '\x46', '\x47', '\xFA',
-      '\x1C', '\x6A', '\x1A', '\x6B', '\x4C', '\x50', '\x7E', '\xD6', '\x0A', '\x7F', '\x23', '\x27', '\x4F', '\x4E', '\x6B', '\x89'
-    })),
-    std::string(DecryptName<0xEF6D1D893F2B2DC5ULL>({
-      '\x05', '\x82', '\xEB', '\xC5', '\x49', '\xD3', '\xA8', '\x22', '\x03', '\xC9', '\xEB', '\xF3', '\x34', '\xA7', '\x31', '\x8D',
-      '\xA4', '\x5E', '\x42', '\x5C', '\xD6', '\x74', '\x03', '\x9B', '\xA0', '\x5F', '\x4D', '\x5E', '\xEA', '\x78', '\x31', '\x9C',
-      '\xBC', '\x5E', '\x74', '\x5D', '\xE8', '\x6E', '\x08', '\xB0', '\xAA', '\x43', '\x05', '\x5D', '\xE4', '\x6D', '\x6D'
-    })),
-    std::string(DecryptName<0x234977DDB54BC71DULL>({
-      '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x41',
-      '\x7C', '\xB4', '\x22', '\xD6', '\x82', '\x1E', '\x27', '\x57', '\x78', '\xB5', '\x2D', '\xD4', '\xBE', '\x12', '\x15', '\x50',
-      '\x64', '\xB4', '\x14', '\xD7', '\xBC', '\x04', '\x2C', '\x7C', '\x72', '\xA9', '\x65', '\xD7', '\xB0', '\x07', '\x49'
-    })),
-    std::string(DecryptName<0x6FE153231D879777ULL>({
-      '\xB7', '\x38', '\x47', '\xE7', '\xE3', '\x9D', '\x24', '\xA2', '\xB1', '\x73', '\x47', '\xD1', '\x9E', '\xE9', '\xBD', '\x0D',
-      '\x16', '\xE4', '\xEE', '\x7E', '\x7C', '\x3A', '\x8F', '\x1B', '\x12', '\xE5', '\xE1', '\x7C', '\x40', '\x36', '\xBD', '\x1C',
-      '\x0E', '\xE4', '\xD8', '\x7F', '\x42', '\x20', '\x84', '\x30', '\x18', '\xF1', '\xE1', '\x33', '\x41', '\x3E', '\x91', '\x6F'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x891B232D09451965ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xEF6D1D893F2B2DC5ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x234977DDB54BC71DULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x6FE153231D879777ULL))
   );
   this->titleBar->AddChild(systemButton);
 
   this->background = new CUIStaticImage();
   this->background->SetSize(352, 449);
   this->background->Move(29, 17);
-  this->background->SetImage(std::string(DecryptName<0x39A39F87DD5F535BULL>({
-    '\x9B', '\xFC', '\x9F', '\x27', '\x47', '\x51', '\x66', '\xF4', '\x9D', '\xB7', '\x9F', '\x11', '\x3A', '\x25', '\xFF', '\x6B',
-    '\x3E', '\x3D', '\x3A', '\xAA', '\xD8', '\xCE', '\xD6', '\x5C', '\x28', '\x27', '\x0A', '\x94', '\xDB', '\xFD', '\xC4', '\x66',
-    '\x2A', '\x26', '\x3A', '\xAE', '\xF3', '\xB1', '\xC1', '\x54', '\x2B', '\x53'
-  })));
+  this->background->SetImage(std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_quest.bmp", 0x39A39F87DD5F535BULL)));
   this->AddChild(this->background);
 
   this->tab = new CUITab();
@@ -1607,36 +1430,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   processButton->SetText(std::string(""));
   processButton->SetFitText(0);
   processButton->SetAlign(0, 0);
-  processButton->SetFont(std::string(DecryptName<0x2FEB8739E5975BD1ULL>({'\x96', '\x2E', '\xFB', '\x8C', '\x54', '\x87'})));
+  processButton->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x2FEB8739E5975BD1ULL)));
   processButton->SetFontHeight(12);
   processButton->SetBold(0);
   processButton->SetTextColors(0, 0, 0, 0);
   processButton->SetShadow(0, 0);
   processButton->SetOutline(0, 0);
   processButton->SetImages(
-    std::string(DecryptName<0x33133B977BCD03CDULL>({
-      '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x61',
-      '\xA8', '\x6D', '\xA8', '\x0C', '\xC8', '\x6A', '\x66', '\x56', '\xBE', '\x77', '\x98', '\x32', '\xCB', '\x4F', '\x72', '\x51',
-      '\x92', '\x73', '\xBF', '\x14', '\xF4', '\x5E', '\x60', '\x40', '\x92', '\x6C', '\xAB', '\x1D', '\xB9', '\x59', '\x7E', '\x43',
-      '\xCD'
-    })),
-    std::string(DecryptName<0xA12DAB392545D72FULL>({
-      '\xEF', '\x78', '\x85', '\xDF', '\xF9', '\x65', '\xE8', '\x6C', '\xE9', '\x33', '\x85', '\xE9', '\x84', '\x11', '\x71', '\xF3',
-      '\x4A', '\xB9', '\x20', '\x52', '\x66', '\xFA', '\x58', '\xC4', '\x5C', '\xA3', '\x10', '\x6C', '\x65', '\xDF', '\x4C', '\xC3',
-      '\x70', '\xA7', '\x37', '\x4A', '\x5A', '\xCE', '\x5E', '\xD2', '\x70', '\xB8', '\x2B', '\x0B', '\x5B', '\xC6', '\x5D', '\xA1'
-    })),
-    std::string(DecryptName<0x6BA1C1132F033B75ULL>({
-      '\xB5', '\x94', '\xC3', '\xD5', '\xD3', '\x0F', '\x64', '\xA6', '\xB3', '\xDF', '\xC3', '\xE3', '\xAE', '\x7B', '\xFD', '\x39',
-      '\x10', '\x55', '\x66', '\x58', '\x4C', '\x90', '\xD4', '\x0E', '\x06', '\x4F', '\x56', '\x66', '\x4F', '\xB5', '\xC0', '\x09',
-      '\x2A', '\x4B', '\x71', '\x40', '\x70', '\xA4', '\xD2', '\x18', '\x2A', '\x54', '\x65', '\x49', '\x3D', '\xA3', '\xCC', '\x1B',
-      '\x75'
-    })),
-    std::string(DecryptName<0x2DCB7567394DC1ABULL>({
-      '\x6B', '\x6E', '\x8D', '\xC3', '\xA7', '\xBB', '\x0E', '\xE0', '\x6D', '\x25', '\x8D', '\xF5', '\xDA', '\xCF', '\x97', '\x7F',
-      '\xCE', '\xAF', '\x28', '\x4E', '\x38', '\x24', '\xBE', '\x48', '\xD8', '\xB5', '\x18', '\x70', '\x3B', '\x01', '\xAA', '\x4F',
-      '\xF4', '\xB1', '\x3F', '\x56', '\x04', '\x10', '\xB8', '\x5E', '\xF4', '\xAE', '\x2B', '\x5F', '\x49', '\x17', '\xA6', '\x5D',
-      '\xAB'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_process_off.bmp", 0x33133B977BCD03CDULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_process_on.bmp", 0xA12DAB392545D72FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_process_off.bmp", 0x6BA1C1132F033B75ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_process_off.bmp", 0x2DCB7567394DC1ABULL))
   );
   this->tab->AddChild(processButton);
 
@@ -1649,37 +1453,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   recommendedButton->SetText(std::string(""));
   recommendedButton->SetFitText(0);
   recommendedButton->SetAlign(0, 0);
-  recommendedButton->SetFont(std::string(DecryptName<0x4F637DC51307B759ULL>({'\x1E', '\xC2', '\x6B', '\x7A', '\xA8', '\x7D'})));
+  recommendedButton->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x4F637DC51307B759ULL)));
   recommendedButton->SetFontHeight(12);
   recommendedButton->SetBold(0);
   recommendedButton->SetTextColors(0, 0, 0, 0);
   recommendedButton->SetShadow(0, 0);
   recommendedButton->SetOutline(0, 0);
   recommendedButton->SetImages(
-    std::string(DecryptName<0x8D1D0FF1AF2B13F7ULL>({
-      '\x37', '\xBC', '\xEB', '\x55', '\x31', '\xC1', '\xD8', '\x40', '\x31', '\xF7', '\xEB', '\x63', '\x4C', '\xB5', '\x41', '\xDF',
-      '\x92', '\x7D', '\x4E', '\xD8', '\xAE', '\x5E', '\x68', '\xE8', '\x84', '\x67', '\x7E', '\xE6', '\xAD', '\x7B', '\x7C', '\xEF',
-      '\xA8', '\x61', '\x4E', '\xCC', '\x9E', '\x62', '\x70', '\xE8', '\x99', '\x77', '\x4E', '\xCB', '\xAE', '\x60', '\x7B', '\xEB',
-      '\xD9', '\x71', '\x46', '\xDF', '\xF1'
-    })),
-    std::string(DecryptName<0xB39FA7917BCFBB8DULL>({
-      '\x4D', '\x14', '\x0F', '\x81', '\x51', '\x69', '\x5A', '\x7E', '\x4B', '\x5F', '\x0F', '\xB7', '\x2C', '\x1D', '\xC3', '\xE1',
-      '\xE8', '\xD5', '\xAA', '\x0C', '\xCE', '\xF6', '\xEA', '\xD6', '\xFE', '\xCF', '\x9A', '\x32', '\xCD', '\xD3', '\xFE', '\xD1',
-      '\xD2', '\xC9', '\xAA', '\x18', '\xFE', '\xCA', '\xF2', '\xD6', '\xE3', '\xDF', '\xAA', '\x1F', '\xCE', '\xC8', '\xF1', '\x9D',
-      '\xEF', '\xD6', '\xBF', '\x7B'
-    })),
-    std::string(DecryptName<0x9171997D6963C9F7ULL>({
-      '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xC3',
-      '\x92', '\xA7', '\x06', '\x1E', '\x22', '\xC8', '\x04', '\xF4', '\x84', '\xBD', '\x36', '\x20', '\x21', '\xED', '\x10', '\xF3',
-      '\xA8', '\xBB', '\x06', '\x0A', '\x12', '\xF4', '\x1C', '\xF4', '\x99', '\xAD', '\x06', '\x0D', '\x22', '\xF6', '\x17', '\xF7',
-      '\xD9', '\xAB', '\x0E', '\x19', '\x7D'
-    })),
-    std::string(DecryptName<0x4F99DF03C3EF31B7ULL>({
-      '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x1D',
-      '\xD2', '\x5F', '\x8A', '\xB4', '\x5C', '\x8E', '\xEC', '\x2A', '\xC4', '\x45', '\xBA', '\x8A', '\x5F', '\xAB', '\xF8', '\x2D',
-      '\xE8', '\x43', '\x8A', '\xA0', '\x6C', '\xB2', '\xF4', '\x2A', '\xD9', '\x55', '\x8A', '\xA7', '\x5C', '\xB0', '\xFF', '\x29',
-      '\x99', '\x53', '\x82', '\xB3', '\x03'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_recommended_off.bmp", 0x8D1D0FF1AF2B13F7ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_recommended_on.bmp", 0xB39FA7917BCFBB8DULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_recommended_off.bmp", 0x9171997D6963C9F7ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_recommended_off.bmp", 0x4F99DF03C3EF31B7ULL))
   );
   this->tab->AddChild(recommendedButton);
 
@@ -1692,33 +1476,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   holdButton->SetText(std::string(""));
   holdButton->SetFitText(0);
   holdButton->SetAlign(0, 0);
-  holdButton->SetFont(std::string(DecryptName<0xE52DF30DCBAF7125ULL>({'\x62', '\x04', '\xC3', '\xA2', '\x60', '\xF3'})));
+  holdButton->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xE52DF30DCBAF7125ULL)));
   holdButton->SetFontHeight(12);
   holdButton->SetBold(0);
   holdButton->SetTextColors(0, 0, 0, 0);
   holdButton->SetShadow(0, 0);
   holdButton->SetOutline(0, 0);
   holdButton->SetImages(
-    std::string(DecryptName<0xCFF3899D95AF355FULL>({
-      '\x9F', '\x9A', '\x6F', '\x6F', '\x5D', '\x47', '\x36', '\x02', '\x99', '\xD1', '\x6F', '\x59', '\x20', '\x33', '\xAF', '\x9D',
-      '\x3A', '\x5B', '\xCA', '\xE2', '\xC2', '\xD8', '\x86', '\xAA', '\x2C', '\x41', '\xFA', '\xDC', '\xC1', '\xFD', '\x92', '\xAD',
-      '\x00', '\x5D', '\xC0', '\xF9', '\xF9', '\xD6', '\x9C', '\xA9', '\x39', '\x1B', '\xCD', '\xF8', '\xED', '\x89'
-    })),
-    std::string(DecryptName<0xFBD599E117C547C1ULL>({
-      '\x01', '\xE8', '\x05', '\xED', '\x21', '\x57', '\x10', '\x36', '\x07', '\xA3', '\x05', '\xDB', '\x5C', '\x23', '\x89', '\xA9',
-      '\xA4', '\x29', '\xA0', '\x60', '\xBE', '\xC8', '\xA0', '\x9E', '\xB2', '\x33', '\x90', '\x5E', '\xBD', '\xED', '\xB4', '\x99',
-      '\x9E', '\x2F', '\xAA', '\x7B', '\x85', '\xC6', '\xBA', '\x95', '\xEF', '\x25', '\xA8', '\x67', '\xE1'
-    })),
-    std::string(DecryptName<0x176F138D5DD7F365ULL>({
-      '\xA5', '\x5C', '\x17', '\xA7', '\x4D', '\xDD', '\xAA', '\xDA', '\xA3', '\x17', '\x17', '\x91', '\x30', '\xA9', '\x33', '\x45',
-      '\x00', '\x9D', '\xB2', '\x2A', '\xD2', '\x42', '\x1A', '\x72', '\x16', '\x87', '\x82', '\x14', '\xD1', '\x67', '\x0E', '\x75',
-      '\x3A', '\x9B', '\xB8', '\x31', '\xE9', '\x4C', '\x00', '\x71', '\x03', '\xDD', '\xB5', '\x30', '\xFD', '\x13'
-    })),
-    std::string(DecryptName<0x2D51E3B7236175EDULL>({
-      '\x2D', '\xDA', '\xA1', '\xD9', '\x77', '\x2D', '\x94', '\xE0', '\x2B', '\x91', '\xA1', '\xEF', '\x0A', '\x59', '\x0D', '\x7F',
-      '\x88', '\x1B', '\x04', '\x54', '\xE8', '\xB2', '\x24', '\x48', '\x9E', '\x01', '\x34', '\x6A', '\xEB', '\x97', '\x30', '\x4F',
-      '\xB2', '\x1D', '\x0E', '\x4F', '\xD3', '\xBC', '\x3E', '\x4B', '\x8B', '\x5B', '\x03', '\x4E', '\xC7', '\xE3'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_hold_off.bmp", 0xCFF3899D95AF355FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_hold_on.bmp", 0xFBD599E117C547C1ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_hold_off.bmp", 0x176F138D5DD7F365ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_hold_off.bmp", 0x2D51E3B7236175EDULL))
   );
   this->tab->AddChild(holdButton);
 
@@ -1731,33 +1499,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   waitButton->SetText(std::string(""));
   waitButton->SetFitText(0);
   waitButton->SetAlign(0, 0);
-  waitButton->SetFont(std::string(DecryptName<0x0F41EBBDA32D1B17ULL>({'\x50', '\x6E', '\x41', '\xCA', '\xD0', '\xEB'})));
+  waitButton->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x0F41EBBDA32D1B17ULL)));
   waitButton->SetFontHeight(12);
   waitButton->SetBold(0);
   waitButton->SetTextColors(0, 0, 0, 0);
   waitButton->SetShadow(0, 0);
   waitButton->SetOutline(0, 0);
   waitButton->SetImages(
-    std::string(DecryptName<0x839B27DF8F5967B3ULL>({
-      '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xD1',
-      '\xD6', '\x09', '\x3C', '\xF8', '\x80', '\x76', '\xEE', '\xE6', '\xC0', '\x13', '\x0C', '\xC6', '\x83', '\x53', '\xFA', '\xE1',
-      '\xEC', '\x10', '\x38', '\xE6', '\xAB', '\x78', '\xF4', '\xE5', '\xD5', '\x49', '\x3B', '\xE2', '\xAF', '\x27'
-    })),
-    std::string(DecryptName<0xF3CB6F7711A71B6DULL>({
-      '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\xA1',
-      '\x08', '\x75', '\xC2', '\x66', '\x28', '\x3E', '\xBE', '\x96', '\x1E', '\x6F', '\xF2', '\x58', '\x2B', '\x1B', '\xAA', '\x91',
-      '\x32', '\x6C', '\xC6', '\x78', '\x03', '\x30', '\xA4', '\x9D', '\x43', '\x79', '\xCA', '\x61', '\x77'
-    })),
-    std::string(DecryptName<0x452FEF0D7FC95565ULL>({
-      '\xA5', '\xFA', '\x09', '\x85', '\xCD', '\x21', '\xEA', '\x88', '\xA3', '\xB1', '\x09', '\xB3', '\xB0', '\x55', '\x73', '\x17',
-      '\x00', '\x3B', '\xAC', '\x08', '\x52', '\xBE', '\x5A', '\x20', '\x16', '\x21', '\x9C', '\x36', '\x51', '\x9B', '\x4E', '\x27',
-      '\x3A', '\x22', '\xA8', '\x16', '\x79', '\xB0', '\x40', '\x23', '\x03', '\x7B', '\xAB', '\x12', '\x7D', '\xEF'
-    })),
-    std::string(DecryptName<0x9FED7DA189490D5DULL>({
-      '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xCD',
-      '\x38', '\x63', '\x2C', '\xFE', '\xFE', '\x2C', '\x98', '\xFA', '\x2E', '\x79', '\x1C', '\xC0', '\xFD', '\x09', '\x8C', '\xFD',
-      '\x02', '\x7A', '\x28', '\xE0', '\xD5', '\x22', '\x82', '\xF9', '\x3B', '\x23', '\x2B', '\xE4', '\xD1', '\x7D'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_wait_off.bmp", 0x839B27DF8F5967B3ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_wait_on.bmp", 0xF3CB6F7711A71B6DULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_wait_off.bmp", 0x452FEF0D7FC95565ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\tab_wait_off.bmp", 0x9FED7DA189490D5DULL))
   );
   this->tab->AddChild(waitButton);
 
@@ -1769,26 +1521,10 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   checkBox->disabled = 0;
   checkBox->Invalidate();
   this->checkBox->SetImages(
-    std::string(DecryptName<0x7DE349D717D7F123ULL>({
-      '\xE3', '\x5E', '\x17', '\xED', '\x17', '\x87', '\x26', '\xB0', '\xE5', '\x15', '\x17', '\xDB', '\x6A', '\xF3', '\xBF', '\x2F',
-      '\x46', '\x9F', '\xB2', '\x60', '\x88', '\x18', '\x96', '\x18', '\x50', '\x85', '\x82', '\x5E', '\x8B', '\x2A', '\x8B', '\x18',
-      '\x40', '\x9A', '\xB5', '\x78', '\xAF', '\x16', '\x8C', '\x1B', '\x45', '\xDF', '\xB5', '\x7A', '\xA7', '\x49'
-    })),
-    std::string(DecryptName<0x0F15B16B5BAFD57FULL>({
-      '\xBF', '\x7A', '\x6F', '\xA1', '\xAB', '\x7F', '\xD0', '\xC2', '\xB9', '\x31', '\x6F', '\x97', '\xD6', '\x0B', '\x49', '\x5D',
-      '\x1A', '\xBB', '\xCA', '\x2C', '\x34', '\xE0', '\x60', '\x6A', '\x0C', '\xA1', '\xFA', '\x12', '\x37', '\xD2', '\x7D', '\x6A',
-      '\x1C', '\xBE', '\xCD', '\x34', '\x13', '\xEE', '\x7A', '\x61', '\x51', '\xB7', '\xC2', '\x2B', '\x6B'
-    })),
-    std::string(DecryptName<0x7941D76335CFA14FULL>({
-      '\x8F', '\x0E', '\x0F', '\xCF', '\xA3', '\x19', '\x84', '\xB4', '\x89', '\x45', '\x0F', '\xF9', '\xDE', '\x6D', '\x1D', '\x2B',
-      '\x2A', '\xCF', '\xAA', '\x42', '\x3C', '\x86', '\x34', '\x1C', '\x3C', '\xD5', '\x9A', '\x7C', '\x3F', '\xB4', '\x29', '\x1C',
-      '\x2C', '\xCA', '\xAD', '\x5A', '\x1B', '\x88', '\x2E', '\x1F', '\x29', '\x8F', '\xAD', '\x58', '\x13', '\xD7'
-    })),
-    std::string(DecryptName<0x7321C3814F8799E1ULL>({
-      '\x21', '\x36', '\x47', '\xB5', '\x41', '\x0D', '\xE4', '\xBE', '\x27', '\x7D', '\x47', '\x83', '\x3C', '\x79', '\x7D', '\x21',
-      '\x84', '\xF7', '\xE2', '\x38', '\xDE', '\x92', '\x54', '\x16', '\x92', '\xED', '\xD2', '\x06', '\xDD', '\xA0', '\x49', '\x16',
-      '\x82', '\xF2', '\xE5', '\x20', '\xF9', '\x9C', '\x4E', '\x15', '\x87', '\xB7', '\xE5', '\x22', '\xF1', '\xC3'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\checkbox_off.bmp", 0x7DE349D717D7F123ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\checkbox_on.bmp", 0x0F15B16B5BAFD57FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\checkbox_off.bmp", 0x7941D76335CFA14FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\checkbox_off.bmp", 0x7321C3814F8799E1ULL))
   );
   this->checkBox->checked = false;
   this->checkBox->Invalidate();
@@ -1800,7 +1536,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->filterLabel->SetText("");
   this->filterLabel->SetFitText(0);
   this->filterLabel->SetAlign(0, 0);
-  this->filterLabel->SetFont(std::string(DecryptName<0x7115D9F973F913C9ULL>({'\x8E', '\x66', '\x95', '\x1A', '\x94', '\xD9'})));
+  this->filterLabel->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x7115D9F973F913C9ULL)));
   this->filterLabel->SetFontHeight(12);
   this->filterLabel->SetBold(0);
   this->filterLabel->SetColor(0);
@@ -1816,26 +1552,10 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   this->closeButton->SetImages(
-    std::string(DecryptName<0xCB1D253B7FE1F563ULL>({
-      '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xA9',
-      '\x02', '\x86', '\x88', '\x1C', '\x64', '\x4C', '\x73', '\xBF', '\x06', '\x87', '\x87', '\x1E', '\x58', '\x40', '\x41', '\xA9',
-      '\x17', '\x9B', '\xBE', '\x1C', '\x57', '\x4A', '\x6E', '\xAE', '\x4D', '\x97', '\x8C', '\x0F', '\x3B'
-    })),
-    std::string(DecryptName<0x793F370985ED674FULL>({
-      '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x1B',
-      '\x2E', '\x14', '\x84', '\xE6', '\x56', '\x5E', '\x51', '\x0D', '\x2A', '\x15', '\x8B', '\xE4', '\x6A', '\x52', '\x63', '\x1B',
-      '\x3B', '\x09', '\xB2', '\xE6', '\x65', '\x58', '\x4C', '\x1C', '\x10', '\x05', '\xC3', '\xE7', '\x64', '\x47', '\x3F'
-    })),
-    std::string(DecryptName<0xE55723712993051DULL>({
-      '\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x87',
-      '\x7C', '\x76', '\xFA', '\x4A', '\x2E', '\x4A', '\x39', '\x91', '\x78', '\x77', '\xF5', '\x48', '\x12', '\x46', '\x0B', '\x87',
-      '\x69', '\x6B', '\xCC', '\x4A', '\x1D', '\x4C', '\x24', '\x80', '\x42', '\x64', '\xBD', '\x4B', '\x1C', '\x53', '\x57'
-    })),
-    std::string(DecryptName<0x3FA3AFA7035DE3FFULL>({
-      '\x3F', '\x4C', '\x9D', '\xF9', '\x67', '\x61', '\x66', '\xF2', '\x39', '\x07', '\x9D', '\xCF', '\x1A', '\x15', '\xFF', '\x5D',
-      '\x9E', '\x90', '\x34', '\x60', '\xF8', '\xC6', '\xCD', '\x4B', '\x9A', '\x91', '\x3B', '\x62', '\xC4', '\xCA', '\xFF', '\x5D',
-      '\x8B', '\x8D', '\x02', '\x60', '\xCB', '\xC0', '\xD0', '\x5A', '\xD1', '\x81', '\x30', '\x73', '\xA7'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\btn_close.bmp", 0xCB1D253B7FE1F563ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\btn_close_b.bmp", 0x793F370985ED674FULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\btn_close_a.bmp", 0xE55723712993051DULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\btn_close.bmp", 0x3FA3AFA7035DE3FFULL))
   );
   this->AddChild(this->closeButton);
 
@@ -1853,11 +1573,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->searchBackground = new CUIStaticImage();
   this->searchBackground->SetSize(352, 28);
   this->searchBackground->Move(29, 411);
-  this->searchBackground->SetImage(std::string(DecryptName<0xDB27CB557D038759ULL>({
-    '\x99', '\x28', '\xC3', '\x87', '\x95', '\x05', '\xE2', '\x16', '\x9F', '\x63', '\xC3', '\xB1', '\xE8', '\x71', '\x7B', '\x89',
-    '\x3C', '\xE9', '\x66', '\x0A', '\x0A', '\x9A', '\x52', '\xBE', '\x2A', '\xF3', '\x56', '\x34', '\x09', '\xA9', '\x40', '\x84',
-    '\x2A', '\xE2', '\x62', '\x0F', '\x36', '\xA3', '\x09', '\xB9', '\x34', '\xF7', '\x03'
-  })));
+  this->searchBackground->SetImage(std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bg_search.bmp", 0xDB27CB557D038759ULL)));
   this->AddChild(this->searchBackground);
 
   this->filterPanel = new CUITab();
@@ -1876,33 +1592,17 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   allButton->SetText(std::string(""));
   allButton->SetFitText(0);
   allButton->SetAlign(0, 0);
-  allButton->SetFont(std::string(DecryptName<0x51BB39B763BBBD8DULL>({'\xCA', '\xC8', '\xD7', '\x0A', '\xDA', '\x39'})));
+  allButton->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x51BB39B763BBBD8DULL)));
   allButton->SetFontHeight(12);
   allButton->SetBold(0);
   allButton->SetTextColors(0, 0, 0, 0);
   allButton->SetShadow(0, 0);
   allButton->SetOutline(0, 0);
   allButton->SetImages(
-    std::string(DecryptName<0x87E3D1C50D572DEFULL>({
-      '\x2F', '\x82', '\x97', '\xF7', '\x05', '\x1F', '\x26', '\x4A', '\x29', '\xC9', '\x97', '\xC1', '\x78', '\x6B', '\xBF', '\xD5',
-      '\x8A', '\x43', '\x32', '\x7A', '\x9A', '\x80', '\x96', '\xE2', '\x9C', '\x59', '\x02', '\x44', '\x99', '\xB3', '\x97', '\xE9',
-      '\xB0', '\x4C', '\x3B', '\x61', '\x9A', '\xBE', '\x85', '\xE1', '\xC1', '\x4F', '\x3A', '\x7D', '\xC5'
-    })),
-    std::string(DecryptName<0xDF8117FF49CFF551ULL>({
-      '\x91', '\x5A', '\x0F', '\xB3', '\x3F', '\xD9', '\x44', '\x12', '\x97', '\x11', '\x0F', '\x85', '\x42', '\xAD', '\xDD', '\x8D',
-      '\x34', '\x9B', '\xAA', '\x3E', '\xA0', '\x46', '\xF4', '\xBA', '\x22', '\x81', '\x9A', '\x00', '\xA3', '\x75', '\xF5', '\xB1',
-      '\x0E', '\x94', '\xA3', '\x25', '\xA0', '\x78', '\xEF', '\xF1', '\x33', '\x98', '\xBF', '\x49'
-    })),
-    std::string(DecryptName<0xADC51BF9C98B413DULL>({
-      '\xFD', '\xEE', '\x4B', '\x33', '\x39', '\xD5', '\x00', '\x60', '\xFB', '\xA5', '\x4B', '\x05', '\x44', '\xA1', '\x99', '\xFF',
-      '\x58', '\x2F', '\xEE', '\xBE', '\xA6', '\x4A', '\xB0', '\xC8', '\x4E', '\x35', '\xDE', '\x80', '\xA5', '\x79', '\xB1', '\xC3',
-      '\x62', '\x20', '\xE7', '\xA5', '\xA6', '\x74', '\xA3', '\xCB', '\x13', '\x23', '\xE6', '\xB9', '\xF9'
-    })),
-    std::string(DecryptName<0x7D5D0F110B6B8371ULL>({
-      '\xB1', '\x2C', '\xAB', '\xF1', '\xD1', '\xC1', '\x98', '\xB0', '\xB7', '\x67', '\xAB', '\xC7', '\xAC', '\xB5', '\x01', '\x2F',
-      '\x14', '\xED', '\x0E', '\x7C', '\x4E', '\x5E', '\x28', '\x18', '\x02', '\xF7', '\x3E', '\x42', '\x4D', '\x6D', '\x29', '\x13',
-      '\x2E', '\xE2', '\x07', '\x67', '\x4E', '\x60', '\x3B', '\x1B', '\x5F', '\xE1', '\x06', '\x7B', '\x11'
-    }))
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\btn_all_off.bmp", 0x87E3D1C50D572DEFULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\btn_all_on.bmp", 0xDF8117FF49CFF551ULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\btn_all_off.bmp", 0xADC51BF9C98B413DULL)),
+    std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\btn_all_off.bmp", 0x7D5D0F110B6B8371ULL))
   );
   this->filterPanel->AddChild(allButton);
 
