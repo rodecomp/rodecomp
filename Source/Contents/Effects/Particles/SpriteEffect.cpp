@@ -548,7 +548,16 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_C_GUIDE_OF_DEAD_TEXT:
+    case EF_C_GUIDE_OF_DEAD_TEXT: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
+      break;
+    }
     case EF_C_MEDJED_TEXT: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
