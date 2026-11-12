@@ -160,10 +160,8 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
   }
 
   for (unsigned index = 0; index < record.modeCount; ++index) {
-    const auto& mode = record.modes[index];
-
-    if (mode.dwWidth == 1024 && mode.dwHeight == 768 && mode.ddpfPixelFormat.dwRGBBitCount == 16) {
-      record.selectedMode = mode;
+    if (record.modes[index].dwWidth == 1024 && record.modes[index].dwHeight == 768 && record.modes[index].ddpfPixelFormat.dwRGBBitCount == 16) {
+      record.selectedMode = record.modes[index];
       record.selectedIndex = index;
     }
   }

@@ -75,7 +75,7 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
           family = 9;
         } else {
           family = 1;
-          if (g_serverLanguage && g_serverLanguage->alternateLanguage == 31) {
+          if (g_serverLanguage && 31 == g_serverLanguage->alternateLanguage) {
             family = 6;
           }
         }
@@ -101,7 +101,7 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
       if (g_serviceType == 12) {
         height = (height - 2);
       } else if (g_serviceType == 18) {
-        if (g_serverLanguage->alternateLanguage == 31) {
+        if (31 == g_serverLanguage->alternateLanguage) {
           family = 6;
         } else {
           height = (height - 2);
