@@ -3326,19 +3326,25 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   switch (message) {
   case UM_COMBOBOX_SELECTED:
     if (sender == this->loginTypeCombo) {
-      if (a == 0) {
+      switch (a) {
+      case 0: {
         const char source[] = CRYPT_CHARS(5, "G000", 0x9FED7DA189490D5DULL);
         thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
         this->loginExtra = name.Text();
-      } else if (a == 1) {
+        break;
+      }
+      case 1: {
         const char source[] = CRYPT_CHARS(5, "G007", 0xFBD599E117C547C1ULL);
         thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
         this->loginExtra = name.Text();
-      } else {
+        break;
+      }
+      default: {
         const char source[] = CRYPT_CHARS(29, "unknown account class found!", 0x176F138D5DD7F365ULL);
         thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
         g_windowMgr.Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
         goto quit;
+      }
       }
     }
     return 0;
