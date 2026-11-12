@@ -29,7 +29,7 @@ const char* g_stopRecruitingPoolName = DecryptName<0xD97D5DBDBB2F2709ULL>(CRYPT_
 // OFFSET: 0x005D5D70
 // FUNCTION: fn_03711
 CStopRecruitingAsyncWork::CStopRecruitingAsyncWork()
-    : NAsyncWork("Stop_Recruiting"), m_accountId(0), m_masterAccountId(0),
+    : NAsyncWork(g_stopRecruitingPoolName), m_accountId(0), m_masterAccountId(0),
       m_diagnostic(false, std::string(DecryptName<0xA5FD29D7AB6DC59FULL>({0xEA, 0xAB, 0x06, 0xC5, 0xA0, 0x46, 0x93, 0xA5})), sourceFile, 28) {
 }
 
