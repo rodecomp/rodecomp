@@ -1139,6 +1139,7 @@ bool CUITab::SelectIndex(unsigned int index) {
   return true;
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x009F16F0
 // FUNCTION: fn_14695
 void CUITabButton::SetSelected(bool selected) {
@@ -1151,6 +1152,7 @@ void CUITabButton::SetSelected(bool selected) {
   }
   this->Invalidate();
 }
+#pragma inline_depth()
 
 // OFFSET: 0x009F1740
 // FUNCTION: fn_14696
