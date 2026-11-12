@@ -1150,11 +1150,12 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
     case 1:
       std::sprintf(text, LookupMessage(MSI_BILLING_1), *reinterpret_cast<const int*>(packet + 6) / 86400 + 1);
       break;
-    case 2: {
-      const int seconds = *reinterpret_cast<const int*>(packet + 10);
-      std::sprintf(text, LookupMessage(MSI_BILLING_2), seconds / 3600, seconds % 3600 / 60, seconds % 60);
+    case 2:
+      std::sprintf(
+        text, LookupMessage(MSI_BILLING_2), *reinterpret_cast<const int*>(packet + 10) / 3600,
+        *reinterpret_cast<const int*>(packet + 10) % 3600 / 60, *reinterpret_cast<const int*>(packet + 10) % 60
+      );
       break;
-    }
     }
   } else {
     __time32_t now;
@@ -1195,13 +1196,13 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
             if (remaining > 0) {
               std::sprintf(
                 period, " (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)", expire->tm_year + 1900, expire->tm_mon + 1,
-                expire->tm_mday, remaining / 3600, remaining / 60 % 60, remaining % 60
+                expire->tm_mday, remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
               );
             } else if (remaining == 0) {
               std::sprintf(period, " (종료일시 : %04d/%02d/%02d )", expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday);
             }
           } else if (remaining > 0) {
-            std::sprintf(period, " (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, remaining / 60 % 60, remaining % 60);
+            std::sprintf(period, " (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60);
           }
           std::strcat(text, period);
         }
@@ -1214,7 +1215,7 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
           if (remaining > 0) {
             std::sprintf(
               text, "귀하는 혼합요금제 사용자 입니다. (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)",
-              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, remaining / 3600, remaining / 60 % 60, remaining % 60
+              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
             );
           } else if (remaining == 0) {
             std::sprintf(
@@ -1224,7 +1225,7 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
           }
         } else if (remaining > 0) {
           std::sprintf(
-            text, "귀하는 정량요금제 사용자 입니다. (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, remaining / 60 % 60, remaining % 60
+            text, "귀하는 정량요금제 사용자 입니다. (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
           );
         }
         break;
