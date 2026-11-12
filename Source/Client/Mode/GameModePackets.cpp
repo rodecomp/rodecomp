@@ -8810,16 +8810,16 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
     if (member.valid) {
       switch (location) {
       case EQP_HAND_L:
-        text = FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109A));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109A)));
         break;
       case EQP_HAND_R:
-        text = FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109B));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109B)));
         break;
       case EQP_ARMOR:
-        text = FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_BODY));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_BODY)));
         break;
       case EQP_HEAD_TOP:
-        text = FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x10CB));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x10CB)));
         break;
       }
     }
@@ -8827,7 +8827,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
     if (item.identity[1] != 0) {
-      text = FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP), item.DisplayName(0).c_str());
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP), item.DisplayName(0).c_str()));
     }
   }
 
