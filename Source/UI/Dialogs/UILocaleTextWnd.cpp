@@ -79,13 +79,12 @@ void CUITabInfo::OnCreate(int width, int height) {
   this->titleText->SetText("");
   this->titleText->SetFitText(0);
   this->titleText->SetAlign(0, 6);
-  {
-    CUIStaticText* text = this->titleText;
+  this->titleText->SetFont([] {
     constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xCD8F077123FB7D6FULL);
     const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
     thread_local EncryptedName<sizeof(fontSource), 0xCD8F077123FB7D6FULL> fontName(fontSource);
-    text->SetFont(fontName.Text());
-  }
+    return fontName.Text();
+  }());
   this->titleText->SetFontHeight(12);
   this->titleText->SetBold(1);
   this->titleText->SetColor(0x815A48);
@@ -99,12 +98,11 @@ void CUITabInfo::OnCreate(int width, int height) {
   this->descriptionText->SetText("");
   this->descriptionText->SetFitText(1);
   this->descriptionText->SetAlign(0, 6);
-  {
-    CUIStaticText* text = this->descriptionText;
+  this->descriptionText->SetFont([] {
     const std::uint8_t fontSource[] = CRYPT_BYTES(6, "Gulim", 0x9949BFD527532943ULL);
     thread_local EncryptedName<sizeof(fontSource), 0x9949BFD527532943ULL> fontName(fontSource);
-    text->SetFont(fontName.Text());
-  }
+    return fontName.Text();
+  }());
   this->descriptionText->SetFontHeight(12);
   this->descriptionText->SetBold(0);
   this->descriptionText->SetColor(0x2A435D);
