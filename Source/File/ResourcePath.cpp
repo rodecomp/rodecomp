@@ -3,6 +3,9 @@
 #include "Utility/Hash/GGHashMgr.h"
 #include <cstring>
 #include <shlwapi.h>
+#include <string>
+
+template __declspec(noinline) std::string& std::string::replace(const size_type, const size_type, const char* const, const size_type);
 
 // STRING: st_14242
 static char g_dataDirectory[] = "data\\";
@@ -16,9 +19,8 @@ std::string MakeResourcePath(std::string filename) {
     path = path.substr(path.find(":") - 1);
   }
 
-  std::size_t duplicate;
-  while ((duplicate = path.find("//")) != std::string::npos) {
-    path.replace(duplicate, 2, "/", 1);
+  while (path.find("//") != std::string::npos) {
+    path.replace(path.find("//"), 2, "/", 1);
   }
 
   return path;
