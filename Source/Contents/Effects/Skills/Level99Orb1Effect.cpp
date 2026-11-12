@@ -123,7 +123,8 @@ void CLevel99Orb1Effect::OnProcess() {
           offset.x += speed * g_sinTable[static_cast<int>(angles[0])];
           offset.z += speed * g_sinTable[static_cast<int>(angles[1])];
           if (offset.y < -20.0f) {
-            particle->alpha = std::max(particle->alpha - 4, 0);
+            const int alpha = particle->alpha - 4;
+            particle->alpha = alpha >= 0 ? alpha : 0;
           } else if (particle->alpha != 255) {
             particle->alpha = 255;
           }
