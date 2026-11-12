@@ -104,8 +104,11 @@ void UIItemReformWnd::OnCreate(int width, int height) {
   this->reformButton->Configure(60, LookupMessage(MSI_ITEM_REFORM_WARNNING_CARD_MAYBE_LOST));
   this->reformButton->Move(365, 236);
   this->reformButton->SetId(184);
-  this->reformButton->SetDisabled(1);
-  this->reformButton->Invalidate();
+  {
+    UIButton* button = this->reformButton;
+    button->SetDisabled(1);
+    button->Invalidate();
+  }
   this->AddChild(this->reformButton);
 
   this->list = new UIItemReformWnd_List();
