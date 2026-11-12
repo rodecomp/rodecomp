@@ -1109,7 +1109,7 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
   text.push_back(0);
   std::vector<int> spaces;
   spaces.push_back(-1);
-  for (unsigned int i = 0; i < text.size(); ++i) {
+  for (int i = 0; i < text.size(); ++i) {
     if (text[i] == ' ') {
       spaces.push_back(i);
     }
@@ -1128,7 +1128,7 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
   } else {
     int kind = this->ParseSearchKind(tokens);
     out.clear();
-    for (CNaviInfo* info : this->destinations) {
+    for (auto& info : this->destinations) {
       if (kind == 2) {
         info->CollectTargets(type, out);
       } else if (kind == 3) {
