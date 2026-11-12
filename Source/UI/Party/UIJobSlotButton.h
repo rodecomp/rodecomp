@@ -8,7 +8,7 @@ public:
   UIJobSlotButton();
   ~UIJobSlotButton() override;
   void OnLBtnUp(int x, int y) override;
-  __declspec(noinline) void SetSelected(bool value);
+  void SetSelected(bool value);
 
   /* 0120 */ std::string selectedImage;
   /* 0138 */ std::string unselectedImage;

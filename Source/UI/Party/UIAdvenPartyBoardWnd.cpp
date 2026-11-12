@@ -260,6 +260,25 @@ void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
   }
 }
 
+// OFFSET: 0x007C1C50
+// FUNCTION: fn_09318
+void UIJobSlotButton::SetSelected(bool value) {
+  this->selected = value;
+  this->SetState(0);
+
+  if (value == 1) {
+    this->SetBitmap(this->selectedImage.c_str(), 0, 0);
+    this->SetBitmap(this->selectedImage.c_str(), 1, 0);
+    this->SetBitmap(this->unselectedImage.c_str(), 2, 0);
+  } else {
+    this->SetBitmap(this->unselectedImage.c_str(), 0, 0);
+    this->SetBitmap(this->unselectedImage.c_str(), 1, 0);
+    this->SetBitmap(this->selectedImage.c_str(), 2, 0);
+  }
+
+  this->Invalidate();
+}
+
 // OFFSET: 0x007C2120
 // FUNCTION: fn_09322
 void UIAdvenPartyBoardWnd::Registration(bool value) {
@@ -292,6 +311,13 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
   }
 
   this->InvalidateChildren();
+}
+
+// OFFSET: 0x007C2340
+// FUNCTION: fn_09323
+void UIBmpTextButton::SetText(std::string value) {
+  this->text = value;
+  this->Invalidate();
 }
 
 // OFFSET: 0x007C1BC0

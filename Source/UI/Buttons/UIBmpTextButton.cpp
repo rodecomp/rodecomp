@@ -13,13 +13,6 @@ UIBmpTextButton::UIBmpTextButton() : UIBitmapButton() {
 
 UIBmpTextButton::~UIBmpTextButton() = default;
 
-// OFFSET: 0x007C2340
-// FUNCTION: fn_09323
-void UIBmpTextButton::SetText(std::string value) {
-  this->text = value;
-  this->Invalidate();
-}
-
 // OFFSET: 0x0085BDE0
 // FUNCTION: fn_10799
 void UIBmpTextButton::Paint() {
