@@ -23,6 +23,9 @@
 #include <algorithm>
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>::operator++() noexcept;
+
 #pragma pack(push, 1)
 struct PACKET_CZ_ACTIVE_QUEST {
   short packetType;
