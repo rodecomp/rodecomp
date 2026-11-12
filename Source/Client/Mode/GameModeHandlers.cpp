@@ -1939,10 +1939,11 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
       reinterpret_cast<UIWindow*>(g_windowMgr.rodexContentsWnd)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
 
-    RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(mailId);
-    if (mail != g_rodexMailStore->m_mails0.end()) {
+    RodexMailStore* store = g_rodexMailStore;
+    RodexMailMap::iterator mail = store->m_mails0.find(mailId);
+    if (mail != store->m_mails0.end()) {
       if (!mail->second.isRead) {
-        --g_rodexMailStore->unreadCount;
+        --store->unreadCount;
         if (g_rodexMailStore->unreadCount == 0) {
           if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
             window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
