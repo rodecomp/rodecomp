@@ -20,6 +20,11 @@ std::shared_ptr<CSurface> RenderSystemHolder::BackBufferSurface() const {
   return nullptr;
 }
 
+// OFFSET: 0x005699A0
+// FUNCTION: fn_02268
+RenderSystemHolder::RenderSystemHolder() : system(nullptr) {
+}
+
 // OFFSET: 0x00569C90
 // FUNCTION: fn_02270
 RenderSystemHolder::~RenderSystemHolder() noexcept {
