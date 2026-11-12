@@ -19,6 +19,9 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Messenger/MessengerMember.h"
 
+template __declspec(noinline) void std::vector<unsigned char>::assign<const unsigned char*, 0>(const unsigned char*, const unsigned char*);
+template __declspec(noinline) void std::list<ITEM_INFO>::_Construct_range_unchecked<ITEM_INFO*>(ITEM_INFO*, ITEM_INFO*);
+
 // GLOBAL: gl_24549
 int g_replayAnimationScaling = 0;
 
@@ -453,11 +456,10 @@ std::vector<unsigned char> Replay::ReadSection(int id) {
 
   const int index = this->FindSection(id);
   if (index != -1 && this->sections[index].fileOffset != 0 && this->sections[index].bytes != 0) {
-    const ReplaySection& section = this->sections[index];
-    data.resize(section.bytes, 0);
-    std::fseek(this->file, static_cast<long>(section.fileOffset), SEEK_SET);
-    std::fread(data.data(), section.bytes, 1, this->file);
-    this->Cipher(section.bytes, data.data());
+    data.resize(this->sections[index].bytes, 0);
+    std::fseek(this->file, static_cast<long>(this->sections[index].fileOffset), SEEK_SET);
+    std::fread(data.data(), this->sections[index].bytes, 1, this->file);
+    this->Cipher(this->sections[index].bytes, data.data());
   }
 
   return data;
@@ -995,14 +997,12 @@ std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
 // OFFSET: 0x00B86440
 // FUNCTION: fn_19329
 void Replay::CachePacket(std::uint16_t id, std::uint16_t size, const unsigned char* data) {
-  if (size == 0 || id > 3142 || data == nullptr) {
-    return;
+  if (0 < size && 3142 >= id && data != nullptr) {
+    if (this->cachedPackets[static_cast<short>(id)].enabled) {
+      this->cachedPackets[static_cast<short>(id)].bytes.resize(size);
+      this->cachedPackets[static_cast<short>(id)].bytes.assign(data, data + size);
+    }
   }
-  if (!this->cachedPackets[static_cast<short>(id)].enabled) {
-    return;
-  }
-  this->cachedPackets[static_cast<short>(id)].bytes.resize(size);
-  this->cachedPackets[static_cast<short>(id)].bytes.assign(data, data + size);
 }
 
 // OFFSET: 0x00E42EB0
