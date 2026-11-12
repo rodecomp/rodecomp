@@ -52,12 +52,13 @@ bool CRichManKim::IsAlive() {
 void CRichManKim::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
-      int index = ++this->angleIndex;
+      int index = this->angleIndex + 1;
+      this->angleIndex = index;
       if (index > 360) {
         this->angleIndex = 0;
         index = 0;
