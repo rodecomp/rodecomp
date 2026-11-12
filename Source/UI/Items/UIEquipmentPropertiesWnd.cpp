@@ -265,8 +265,9 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
   {
+    CUIVScrollBar* bar = this->scrollBar;
     const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
-    this->scrollBar->onChange = onChange;
+    bar->onChange = onChange;
   }
   this->AddChild(this->scrollBar);
 }
