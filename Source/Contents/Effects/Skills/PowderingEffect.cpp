@@ -142,10 +142,10 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
   const int r2 = rand() % 21;
   particle->alpha = 0;
 
-  const int r2Clamped = std::max(r2, 0);
+  const int r2Clamped = r2 >= 0 ? r2 : 0;
   particle->angleParameter = r2Clamped + 30;
 
-  const int r1Clamped = std::max(r1, 0);
+  const int r1Clamped = r1 >= 0 ? r1 : 0;
   particle->speedParameter =
     (static_cast<float>(r1Clamped + 1) * 0.1f + 6.0f) / static_cast<float>(particle->angleParameter * 2);
 
@@ -156,8 +156,8 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
 
   const int r4 = rand() % 100;
   const int r5 = rand() % 50;
-  const short s4 = static_cast<short>(std::max(r4, 0));
-  const short s5 = static_cast<short>(std::max(r5, 0));
+  const short s4 = static_cast<short>(r4 >= 0 ? r4 : 0);
+  const short s5 = static_cast<short>(r5 >= 0 ? r5 : 0);
   particle->SetColor(115 - s5, 255, 150 - s4);
   particle->animationState = 0;
 }
