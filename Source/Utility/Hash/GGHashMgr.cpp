@@ -8,7 +8,9 @@ CGGHashMgr* g_ggHashMgr = nullptr;
 
 // OFFSET: 0x0076B590
 // FUNCTION: fn_08188
-CGGHashMgr::CGGHashMgr() : m_initialized(false), m_hash(nullptr) {
+CGGHashMgr::CGGHashMgr() {
+  this->m_hash = nullptr;
+  this->m_initialized = false;
   InitializeCriticalSection(&this->m_lock);
 
   this->m_hash = new (std::nothrow) CGGHash;
@@ -16,7 +18,15 @@ CGGHashMgr::CGGHashMgr() : m_initialized(false), m_hash(nullptr) {
     bool valid;
     {
       std::string filename("RagHash.dat");
-      valid = this->m_hash->Load(filename.c_str()) && this->m_hash->GetSize() >= 2 && this->m_hash->Check() == 1;
+      if (!this->m_hash->Load(filename.c_str())) {
+        return;
+      }
+
+      if (this->m_hash->GetSize() < 2) {
+        return;
+      }
+
+      valid = this->m_hash->Check() == 1;
     }
 
     if (valid) {
