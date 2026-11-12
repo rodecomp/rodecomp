@@ -50,8 +50,9 @@ void CUIRecommendedQuestInfo::OnCreate(int width, int height) {
   title->SetColor(0);
   title->SetShadow(0, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->titleBar->titleText = title;
-  this->titleBar->AddChild(title);
+  CUITitleBar* titleBar = this->titleBar;
+  titleBar->titleText = title;
+  titleBar->AddChild(title);
 
   CUIImageButton* firstButton = new CUIImageButton();
   firstButton->SetSize(11, 11);
@@ -94,8 +95,9 @@ void CUIRecommendedQuestInfo::OnCreate(int width, int height) {
   this->closeButton->SetSize(42, 20);
   this->closeButton->Move(288, 388);
   this->closeButton->SetOnClick([this]() { this->OnClose(); });
-  this->closeButton->disabled = 0;
-  this->closeButton->Invalidate();
+  CUIImageButton* closeButton = this->closeButton;
+  closeButton->disabled = 0;
+  closeButton->Invalidate();
   this->closeButton->SetImages(
     std::string("유저인터페이스\\basic_interface\\btn_close.bmp"), std::string("유저인터페이스\\basic_interface\\btn_close_b.bmp"),
     std::string("유저인터페이스\\basic_interface\\btn_close_a.bmp"), std::string("유저인터페이스\\basic_interface\\btn_close.bmp")
