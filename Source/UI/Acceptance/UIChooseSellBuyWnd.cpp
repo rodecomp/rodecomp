@@ -1605,21 +1605,20 @@ void UIStatusWnd::Paint() {
     }
   }
 
-  const int* derived = reinterpret_cast<const int*>(g_session.combatStats);
-  const int required[6] = {derived[0], derived[1], derived[2], derived[3], derived[4], derived[5]};
+  const int required[6] = {g_session.m_statusPointCost[0], g_session.m_statusPointCost[1], g_session.m_statusPointCost[2], g_session.m_statusPointCost[3], g_session.m_statusPointCost[4], g_session.m_statusPointCost[5]};
   const int* cost = required;
   for (int y = 23; y < 119; y += 16, ++cost) {
     this->DrawRightAlignedText(101, y, FormatOwnedString("%d", *cost).c_str(), 0, 1, 14, 0, 0);
   }
 
-  this->DrawRightAlignedText(189, 22, FormatOwnedString("%d + %d", derived[7], derived[12]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(189, 38, FormatOwnedString("%d + %d", derived[14], derived[13]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(189, 54, FormatOwnedString("%d", derived[16]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(189, 70, FormatOwnedString("%d", derived[18]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(275, 22, FormatOwnedString("%d + %d", derived[10], derived[11]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(275, 38, FormatOwnedString("%d + %d", derived[8], derived[15]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(275, 54, FormatOwnedString("%d + %d", derived[17], derived[19]).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(275, 70, FormatOwnedString("%d", (2000 - derived[6]) / 10).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 22, FormatOwnedString("%d + %d", g_session.m_atk1, g_session.m_atk2).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 38, FormatOwnedString("%d + %d", g_session.m_matk2, g_session.m_matk1).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 54, FormatOwnedString("%d", g_session.m_hit).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(189, 70, FormatOwnedString("%d", g_session.m_critical).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 22, FormatOwnedString("%d + %d", g_session.m_def1, g_session.m_def2).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 38, FormatOwnedString("%d + %d", g_session.m_mdef1, g_session.m_mdef2).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 54, FormatOwnedString("%d + %d", g_session.m_flee1, g_session.m_flee2).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 70, FormatOwnedString("%d", (2000 - g_session.m_aspd) / 10).c_str(), 0, 1, 14, 0, 0);
   this->DrawRightAlignedText(275, 86, FormatOwnedString("%d", g_session.m_statusPoint).c_str(), 0, 1, 14, 0, 0);
   if (g_guildInfo.guildName.size() != 0) {
     this->DrawRightAlignedText(275, 102, g_guildInfo.guildName.c_str(), 0, 0, 12, 0, 0);
@@ -8527,7 +8526,7 @@ static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
 // FUNCTION: fn_12383
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = g_modeMgr.gameMode;
-  const int* statCosts = reinterpret_cast<const int*>(g_session.combatStats);
+  const int* statCosts = g_session.m_statusPointCost;
   const int statusPoint = g_session.m_statusPoint;
   switch (message) {
   case UM_COMMAND:

@@ -198,11 +198,11 @@ void UINewSkillListWnd::DrawCharacter() {
       int y = 0;
       int view = 0;
       if (layer == 4) {
-        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
+        view = g_session.m_accessory;
       } else if (layer == 3) {
-        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]);
+        view = g_session.m_accessory2;
       } else if (layer == 2) {
-        view = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
+        view = g_session.m_accessory3;
       }
       g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", view, 23, g_session.GetCurrentSex(), &x, &y);
       offsetX = x;

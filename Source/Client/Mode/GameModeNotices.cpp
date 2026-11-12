@@ -303,7 +303,6 @@ static int CountItemSlotOptions(const ItemSlotOption* options) {
 // FUNCTION: fn_21839
 void CGameMode::ReceiveStatus(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusPacket*>(data);
-  int* bonusStats = reinterpret_cast<int*>(g_session.combatStats);
   g_session.m_standardStats[0] = packet->stats[0];
   g_session.InvalidateWindowFrames();
   g_session.m_standardStats[1] = packet->stats[2];
@@ -316,49 +315,49 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
   g_session.InvalidateWindowFrames();
   g_session.m_standardStats[5] = packet->stats[10];
   g_session.InvalidateWindowFrames();
-  bonusStats[0] = packet->stats[1];
+  g_session.m_statusPointCost[0] = packet->stats[1];
   g_session.InvalidateWindowFrames();
-  bonusStats[1] = packet->stats[3];
+  g_session.m_statusPointCost[1] = packet->stats[3];
   g_session.InvalidateWindowFrames();
-  bonusStats[2] = packet->stats[5];
+  g_session.m_statusPointCost[2] = packet->stats[5];
   g_session.InvalidateWindowFrames();
-  bonusStats[3] = packet->stats[7];
+  g_session.m_statusPointCost[3] = packet->stats[7];
   g_session.InvalidateWindowFrames();
-  bonusStats[4] = packet->stats[9];
+  g_session.m_statusPointCost[4] = packet->stats[9];
   g_session.InvalidateWindowFrames();
-  bonusStats[5] = packet->stats[11];
+  g_session.m_statusPointCost[5] = packet->stats[11];
   g_session.InvalidateWindowFrames();
 
   g_session.m_statusPoint = packet->statusPoint;
   g_session.InvalidateWindowFrames();
 
-  bonusStats[7] = packet->values[0];
+  g_session.m_atk1 = packet->values[0];
   g_session.InvalidateWindowFrames();
-  bonusStats[12] = packet->values[1];
+  g_session.m_atk2 = packet->values[1];
   g_session.InvalidateWindowFrames();
-  bonusStats[13] = packet->values[2];
+  g_session.m_matk1 = packet->values[2];
   g_session.InvalidateWindowFrames();
-  bonusStats[14] = packet->values[3];
+  g_session.m_matk2 = packet->values[3];
   g_session.InvalidateWindowFrames();
-  bonusStats[10] = packet->values[4];
+  g_session.m_def1 = packet->values[4];
   g_session.InvalidateWindowFrames();
-  bonusStats[11] = packet->values[5];
+  g_session.m_def2 = packet->values[5];
   g_session.InvalidateWindowFrames();
-  bonusStats[8] = packet->values[6];
+  g_session.m_mdef1 = packet->values[6];
   g_session.InvalidateWindowFrames();
-  bonusStats[15] = packet->values[7];
+  g_session.m_mdef2 = packet->values[7];
   g_session.InvalidateWindowFrames();
-  bonusStats[16] = packet->values[8];
+  g_session.m_hit = packet->values[8];
   g_session.InvalidateWindowFrames();
-  bonusStats[17] = packet->values[9];
+  g_session.m_flee1 = packet->values[9];
   g_session.InvalidateWindowFrames();
-  bonusStats[19] = packet->values[10];
+  g_session.m_flee2 = packet->values[10];
   g_session.InvalidateWindowFrames();
-  bonusStats[18] = packet->values[11];
+  g_session.m_critical = packet->values[11];
   g_session.InvalidateWindowFrames();
-  bonusStats[6] = packet->values[12];
+  g_session.m_aspd = packet->values[12];
   g_session.InvalidateWindowFrames();
-  bonusStats[9] = packet->values[13];
+  g_session.m_sp36 = packet->values[13];
   g_session.InvalidateWindowFrames();
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
@@ -372,27 +371,27 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangePacket*>(data);
   switch (packet->type) {
   case SP_USTR:
-    reinterpret_cast<int*>(g_session.combatStats)[0] = packet->value;
+    g_session.m_statusPointCost[0] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UAGI:
-    reinterpret_cast<int*>(g_session.combatStats)[1] = packet->value;
+    g_session.m_statusPointCost[1] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UVIT:
-    reinterpret_cast<int*>(g_session.combatStats)[2] = packet->value;
+    g_session.m_statusPointCost[2] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UINT:
-    reinterpret_cast<int*>(g_session.combatStats)[3] = packet->value;
+    g_session.m_statusPointCost[3] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UDEX:
-    reinterpret_cast<int*>(g_session.combatStats)[4] = packet->value;
+    g_session.m_statusPointCost[4] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_ULUK:
-    reinterpret_cast<int*>(g_session.combatStats)[5] = packet->value;
+    g_session.m_statusPointCost[5] = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UPOW:
@@ -443,7 +442,6 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
     return;
   }
 
-  int* bonusStats = reinterpret_cast<int*>(g_session.combatStats);
   switch (packet->type) {
   case SP_STR:
     g_session.m_standardStats[0] = packet->value;
@@ -488,59 +486,59 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
     }
     break;
   case SP_ATK1:
-    bonusStats[7] = packet->value;
+    g_session.m_atk1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_ATK2:
-    bonusStats[12] = packet->value;
+    g_session.m_atk2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MATK1:
-    bonusStats[13] = packet->value;
+    g_session.m_matk1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MATK2:
-    bonusStats[14] = packet->value;
+    g_session.m_matk2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_DEF1:
-    bonusStats[10] = packet->value;
+    g_session.m_def1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_DEF2:
-    bonusStats[11] = packet->value;
+    g_session.m_def2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MDEF1:
-    bonusStats[8] = packet->value;
+    g_session.m_mdef1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MDEF2:
-    bonusStats[15] = packet->value;
+    g_session.m_mdef2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_HIT:
-    bonusStats[16] = packet->value;
+    g_session.m_hit = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_FLEE1:
-    bonusStats[17] = packet->value;
+    g_session.m_flee1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_FLEE2:
-    bonusStats[19] = packet->value;
+    g_session.m_flee2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_CRITICAL:
-    bonusStats[18] = packet->value;
+    g_session.m_critical = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_ASPD:
-    bonusStats[6] = packet->value;
+    g_session.m_aspd = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_36:
-    bonusStats[9] = packet->value;
+    g_session.m_sp36 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_JOBLEVEL:
@@ -4656,10 +4654,10 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       g_session.m_head = packet->value;
       break;
     case LOOK_WEAPON:
-      *reinterpret_cast<std::int64_t*>(&g_session.weaponAppearance[0x4]) = packet->value;
+      g_session.m_weaponLook = packet->value;
       break;
     case LOOK_HEAD_BOTTOM:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = packet->value;
+      g_session.m_accessory = packet->value;
       break;
     case LOOK_HAIR_COLOR:
       g_session.m_headPalette = packet->value;
@@ -4668,13 +4666,13 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), packet->value, g_session.m_bodyCostume);
       break;
     case LOOK_HEAD_TOP:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = packet->value;
+      g_session.m_accessory2 = packet->value;
       break;
     case LOOK_HEAD_MID:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = packet->value;
+      g_session.m_accessory3 = packet->value;
       break;
     case LOOK_SHIELD:
-      *reinterpret_cast<int*>(&g_session.weaponAppearance[0xC]) = packet->value;
+      g_session.m_shield = packet->value;
       break;
     }
     if (!actor) {
@@ -4750,16 +4748,16 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.m_head = value;
       break;
     case LOOK_WEAPON: {
-      *reinterpret_cast<std::int64_t*>(&g_session.weaponAppearance[0x4]) = packet->value;
+      g_session.m_weaponLook = packet->value;
       const int shield = packet->valueHigh;
       const int view = GetWeaponViewValue(shield);
       if (packet->valueLow != 0 && view == -1) {
-        *reinterpret_cast<int*>(&g_session.weaponAppearance[0xC]) = shield;
+        g_session.m_shield = shield;
       }
       break;
     }
     case LOOK_HEAD_BOTTOM:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = value;
+      g_session.m_accessory = value;
       break;
     case LOOK_HAIR_COLOR:
       g_session.m_headPalette = value;
@@ -4768,15 +4766,15 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, g_session.m_bodyCostume);
       break;
     case LOOK_HEAD_TOP:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = value;
+      g_session.m_accessory2 = value;
       break;
     case LOOK_HEAD_MID:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = value;
+      g_session.m_accessory3 = value;
       break;
     case LOOK_RESET_COSTUMES:
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = 0;
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = 0;
-      *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = 0;
+      g_session.m_accessory = 0;
+      g_session.m_accessory2 = 0;
+      g_session.m_accessory3 = 0;
       g_session.m_robe = 0;
       break;
     case LOOK_ROBE:
@@ -7660,7 +7658,7 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
     }
   }
 
-  auto previous = statusLevelEffects.find(*reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]));
+  auto previous = statusLevelEffects.find(g_session.m_bodyState);
   if (previous != statusLevelEffects.end()) {
     this->ApplyStatusChange(aid, 0, previous->second, 9999, 0, 0, 0, 0, 9999);
   }

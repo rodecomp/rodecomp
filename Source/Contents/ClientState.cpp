@@ -1228,83 +1228,83 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1030:
-      std::memcpy(this->combatStats, data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1031:
-      std::memcpy(&this->combatStats[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1032:
-      std::memcpy(&this->combatStats[0x8], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1033:
-      std::memcpy(&this->combatStats[0xC], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1034:
-      std::memcpy(&this->combatStats[0x10], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1035:
-      std::memcpy(&this->combatStats[0x14], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_statusPointCost[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1036:
-      std::memcpy(&this->combatStats[0x18], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_aspd, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1037:
-      std::memcpy(&this->combatStats[0x1C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_atk1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1038:
-      std::memcpy(&this->combatStats[0x20], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_mdef1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1039:
-      std::memcpy(&this->combatStats[0x24], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_sp36, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1040:
-      std::memcpy(&this->combatStats[0x28], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_def1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1041:
-      std::memcpy(&this->combatStats[0x2C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_def2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1042:
-      std::memcpy(&this->combatStats[0x30], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_atk2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1043:
-      std::memcpy(&this->combatStats[0x34], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_matk1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1044:
-      std::memcpy(&this->combatStats[0x38], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_matk2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1045:
-      std::memcpy(&this->combatStats[0x3C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_mdef2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1046:
-      std::memcpy(&this->combatStats[0x40], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_hit, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1047:
-      std::memcpy(&this->combatStats[0x44], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_flee1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1048:
-      std::memcpy(&this->combatStats[0x48], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_critical, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1049:
-      std::memcpy(&this->combatStats[0x4C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_flee2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1050:
@@ -1352,11 +1352,11 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1061:
-      std::memcpy(&this->weaponAppearance[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_weaponLook, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1062:
-      std::memcpy(&this->weaponAppearance[0xC], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_shield, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1063:
@@ -1368,23 +1368,23 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1065:
-      std::memcpy(this->accessoryAppearance, data.data() + offset, header.bytes);
+      std::memcpy(&this->m_accessory, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1066:
-      std::memcpy(&this->accessoryAppearance[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_accessory2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1067:
-      std::memcpy(&this->accessoryAppearance[0x8], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_accessory3, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1068:
-      std::memcpy(this->statusLevelEffects, data.data() + offset, header.bytes);
+      std::memcpy(&this->m_bodyState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1069:
-      std::memcpy(&this->statusLevelEffects[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_effectState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1070:

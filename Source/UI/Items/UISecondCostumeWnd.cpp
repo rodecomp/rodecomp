@@ -55,9 +55,9 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   const int bodyStyle = SelectedEntryValue(this->m_entries[2], this->m_selected[2]);
 
   const int robe = g_session.m_robe;
-  const unsigned short midAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[8]);
-  const unsigned short topAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[4]);
-  const unsigned short bottomAccessory = *reinterpret_cast<const unsigned short*>(&g_session.accessoryAppearance[0]);
+  const unsigned short midAccessory = static_cast<unsigned short>(g_session.m_accessory3);
+  const unsigned short topAccessory = static_cast<unsigned short>(g_session.m_accessory2);
+  const unsigned short bottomAccessory = static_cast<unsigned short>(g_session.m_accessory);
 
   const unsigned short head = static_cast<unsigned short>(SelectedEntryValue(this->m_entries[1], this->m_selected[1]));
 

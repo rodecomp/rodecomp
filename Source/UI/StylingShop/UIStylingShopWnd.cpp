@@ -477,9 +477,9 @@ void UIDisplayCharacter::LoadSessionStyle() {
   this->job = g_session.m_bodyCostume;
   this->headPalette = g_session.m_headPalette;
   this->bodyStyle = g_session.m_bodyStyle;
-  this->topAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]);
-  this->middleAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
-  this->bottomAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
+  this->topAccessory = g_session.m_accessory2;
+  this->middleAccessory = g_session.m_accessory3;
+  this->bottomAccessory = g_session.m_accessory;
 }
 
 // OFFSET: 0x00822C60
@@ -712,11 +712,11 @@ void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
         (this->m_changed[1] == true && this->m_display->head == g_session.m_head) ||
         (this->costumeChanged == 1 && this->m_display->job == g_session.m_bodyCostume) ||
         (this->m_changed[2] == true && this->m_display->bodyStyle == g_session.m_bodyStyle) ||
-        (this->m_changed[3] == true && (this->m_display->topAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]) ||
+        (this->m_changed[3] == true && (this->m_display->topAccessory == g_session.m_accessory2 ||
                                         this->m_display->topAccessory == 0)) ||
-        (this->m_changed[4] == true && (this->m_display->middleAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]) ||
+        (this->m_changed[4] == true && (this->m_display->middleAccessory == g_session.m_accessory3 ||
                                         this->m_display->middleAccessory == 0)) ||
-        (this->m_changed[5] == true && (this->m_display->bottomAccessory == *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]) ||
+        (this->m_changed[5] == true && (this->m_display->bottomAccessory == g_session.m_accessory ||
                                         this->m_display->middleAccessory == 0)))) {
     return;
   }
@@ -1057,7 +1057,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
 
   int sequence = 0;
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "TopAccessory", this->m_display->topAccessoryItemId, &sequence);
-  if (!this->m_changed[3] && this->m_display->topAccessory != *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]) && this->m_display->topAccessory != 0 &&
+  if (!this->m_changed[3] && this->m_display->topAccessory != g_session.m_accessory2 && this->m_display->topAccessory != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(4);
@@ -1065,7 +1065,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
   }
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "MidAccessory", this->m_display->middleAccessoryItemId, &sequence);
-  if (!this->m_changed[4] && this->m_display->middleAccessory != *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]) && this->m_display->middleAccessory != 0 &&
+  if (!this->m_changed[4] && this->m_display->middleAccessory != g_session.m_accessory3 && this->m_display->middleAccessory != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(5);
@@ -1073,7 +1073,7 @@ void UIShowInfoWnd::UpdateChangedStyles() {
   }
 
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "BottomAccessory", this->m_display->bottomAccessoryItemId, &sequence);
-  if (!this->m_changed[5] && this->m_display->bottomAccessory != *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]) && this->m_display->bottomAccessory != 0 &&
+  if (!this->m_changed[5] && this->m_display->bottomAccessory != g_session.m_accessory && this->m_display->bottomAccessory != 0 &&
       sequence != 0) {
     this->m_checks[this->m_list.size()]->SetChecked(1);
     this->m_list.push_back(6);
@@ -2281,9 +2281,9 @@ void UIDisplayCharacter::OnCreate(int width, int height) {
   this->job = g_session.m_bodyCostume;
   this->headPalette = g_session.m_headPalette;
   this->bodyStyle = g_session.m_bodyStyle;
-  this->topAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[4]);
-  this->middleAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[8]);
-  this->bottomAccessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0]);
+  this->topAccessory = g_session.m_accessory2;
+  this->middleAccessory = g_session.m_accessory3;
+  this->bottomAccessory = g_session.m_accessory;
   this->shadowX = static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
   this->shadowY = static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
 }

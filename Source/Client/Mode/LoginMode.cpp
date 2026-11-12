@@ -3130,18 +3130,18 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         *reinterpret_cast<int*>(&g_session.characterLoginData[0x30]) = this->characters[i].characterFlags[0];
         g_session.m_head = this->characters[i].head;
-        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x04]) = 0;
-        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x08]) = 0;
-        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x00]) = this->characters[i].accessory;
-        *reinterpret_cast<int*>(&g_session.weaponAppearance[0x0C]) = this->characters[i].shield;
+        g_session.m_weapon = 0;
+        g_session.m_weaponLeft = 0;
+        g_session.m_accessory = this->characters[i].accessory;
+        g_session.m_shield = this->characters[i].shield;
         g_session.UpdateBodyStyle(this->characters[i].job, this->characters[i].bodyStyle, this->characters[i].bodyCostume);
         g_session.m_headPalette = this->characters[i].headPalette;
-        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x04]) = this->characters[i].accessory2;
-        *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x08]) = this->characters[i].accessory3;
+        g_session.m_accessory2 = this->characters[i].accessory2;
+        g_session.m_accessory3 = this->characters[i].accessory3;
         g_session.m_robe = this->characters[i].robe;
         g_session.m_bodyCostume = this->characters[i].bodyCostume;
-        *reinterpret_cast<int*>(&g_session.statusLevelEffects[0x00]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x10]);
-        *reinterpret_cast<int*>(&g_session.statusLevelEffects[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x14]);
+        g_session.m_bodyState = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x10]);
+        g_session.m_effectState = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x14]);
         g_session.m_jobFlags = *reinterpret_cast<const std::uint32_t*>(&this->characters[i].progressionData[0x18]);
         return 0;
       }

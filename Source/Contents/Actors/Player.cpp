@@ -4310,15 +4310,15 @@ void CPlayer::Initialize() {
   const int bodyState = this->bodyState;
   const std::uint32_t stateFlags = this->stateFlags;
   const int effectState = this->effectState;
-  this->bodyState = *reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]);
+  this->bodyState = g_session.m_bodyState;
   this->stateFlags = g_session.m_jobFlags;
-  this->effectState = *reinterpret_cast<const int*>(&g_session.statusLevelEffects[4]);
+  this->effectState = g_session.m_effectState;
   this->SetMadogearType(g_session.madogearType);
   this->SetBodyCostume(g_session.m_bodyCostume, 0);
   this->SetSprAct2(
-    g_session.GetDisplayJob(), g_session.GetCurrentSex(), g_session.m_head, *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]),
-    *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]),
-    *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]), *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]),
+    g_session.GetDisplayJob(), g_session.GetCurrentSex(), g_session.m_head, g_session.m_weapon,
+    g_session.m_weaponLeft, g_session.m_accessory,
+    g_session.m_accessory2, g_session.m_accessory3,
     g_session.m_headPalette, g_session.m_bodyStyle, g_session.m_jobFlags
   );
   this->SetSprRobe(g_session.m_robe, 0);
@@ -4330,7 +4330,7 @@ void CPlayer::Initialize() {
   this->stateFlags = stateFlags;
   this->effectState = effectState;
   this->SetStatusStates(
-    *reinterpret_cast<const int*>(&g_session.statusLevelEffects[0]), g_session.m_jobFlags, *reinterpret_cast<const int*>(&g_session.statusLevelEffects[4]), false
+    g_session.m_bodyState, g_session.m_jobFlags, g_session.m_effectState, false
   );
 
   this->SendMsg(nullptr, AM_DELETE_EFFECT, 0xA4, 0, 0, 0, 0, 0);

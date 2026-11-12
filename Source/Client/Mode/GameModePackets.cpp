@@ -4519,7 +4519,6 @@ static_assert(sizeof(ParChangePacket) == 8);
 // FUNCTION: fn_21780
 void CGameMode::ReceiveParChange(unsigned char* data) {
   auto* packet = reinterpret_cast<ParChangePacket*>(data);
-  int* derivedStats = reinterpret_cast<int*>(g_session.combatStats);
   g_modeMgr.GetGameMode();
   std::string text;
 
@@ -4762,59 +4761,59 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     break;
   }
   case SP_ATK1:
-    derivedStats[7] = packet->value;
+    g_session.m_atk1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_ATK2:
-    derivedStats[12] = packet->value;
+    g_session.m_atk2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MATK1:
-    derivedStats[13] = packet->value;
+    g_session.m_matk1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MATK2:
-    derivedStats[14] = packet->value;
+    g_session.m_matk2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_DEF1:
-    derivedStats[10] = packet->value;
+    g_session.m_def1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_DEF2:
-    derivedStats[11] = packet->value;
+    g_session.m_def2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MDEF1:
-    derivedStats[8] = packet->value;
+    g_session.m_mdef1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MDEF2:
-    derivedStats[15] = packet->value;
+    g_session.m_mdef2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_HIT:
-    derivedStats[16] = packet->value;
+    g_session.m_hit = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_FLEE1:
-    derivedStats[17] = packet->value;
+    g_session.m_flee1 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_FLEE2:
-    derivedStats[19] = packet->value;
+    g_session.m_flee2 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_CRITICAL:
-    derivedStats[18] = packet->value;
+    g_session.m_critical = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_ASPD:
-    derivedStats[6] = packet->value;
+    g_session.m_aspd = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_36:
-    derivedStats[9] = packet->value;
+    g_session.m_sp36 = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_POW:
@@ -12022,13 +12021,13 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
       entry.job = g_session.GetDisplayJob();
       entry.appearanceVariant = g_session.GetCurrentSex();
       entry.head = g_session.m_head;
-      entry.weapon = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]);
-      entry.shield = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]);
-      entry.accessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]);
+      entry.weapon = g_session.m_weapon;
+      entry.shield = g_session.m_weaponLeft;
+      entry.accessory = g_session.m_accessory;
       entry.direction = 180;
-      entry.shieldAppearance = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0xC]);
-      entry.accessory2 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]);
-      entry.accessory3 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]);
+      entry.shieldAppearance = g_session.m_shield;
+      entry.accessory2 = g_session.m_accessory2;
+      entry.accessory3 = g_session.m_accessory3;
       entry.headPalette = g_session.m_headPalette;
       entry.bodyPalette = g_session.m_bodyStyle;
       entry.robe = g_session.m_robe;
@@ -22283,8 +22282,8 @@ void CGameMode::ProcessIncomingPackets() {
       CRenderObject *actor;
       if (aid == g_session.m_aid) {
         actor = this->scene->player;
-        *reinterpret_cast<int *>(&g_session.statusLevelEffects[0x00]) = state[0];
-        *reinterpret_cast<int *>(&g_session.statusLevelEffects[0x04]) = state[2];
+        g_session.m_bodyState = state[0];
+        g_session.m_effectState = state[2];
         g_session.m_jobFlags = state[1];
         if (g_windowMgr.equipWnd) {
           g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -23457,8 +23456,8 @@ void CGameMode::ProcessIncomingPackets() {
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
         actor = this->scene->player;
         this->ApplyStatusIcons(state[0], state[2]);
-        reinterpret_cast<int *>(g_session.statusLevelEffects)[0] = state[0];
-        reinterpret_cast<int *>(g_session.statusLevelEffects)[1] = state[2];
+        g_session.m_bodyState = state[0];
+        g_session.m_effectState = state[2];
         g_session.m_jobFlags = state[1];
         if (g_windowMgr.equipWnd) {
           g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
