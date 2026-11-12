@@ -1351,7 +1351,7 @@ void UIListBoxID::Refresh() {
     bar->position = bar->maximum;
   }
 
-  bar->Invalidate();
+  this->verticalBar->Invalidate();
 }
 
 // OFFSET: 0x00895D80
@@ -1445,20 +1445,23 @@ void UITreeView::Resize(int width, int height) {
 void UITreeView::UpdateScrollBar() {
   const int visible = this->geometry.height / this->itemHeight;
   const int count = this->itemCount;
-  const int excess = count - visible;
-  const int overflow = excess < 0 ? 0 : excess;
+  const int overflow = 0 > count - visible ? 0 : count - visible;
   this->verticalOverflow = overflow != 0;
-  auto* bar = this->verticalBar;
+  UIScrollBar* bar = this->verticalBar;
   bar->total = count;
   bar->visible = visible;
-  bar->maximum = overflow;
-  bar->Invalidate();
-
-  if (bar->position > bar->maximum) {
-    bar->position = bar->maximum;
-  }
-
-  if (!overflow) {
+  if (overflow != 0) {
+    bar->maximum = overflow;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
+  } else {
+    bar->maximum = 0;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
     this->scrollRow = 0;
     this->itemCount = 0;
   }
