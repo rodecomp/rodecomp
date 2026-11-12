@@ -601,7 +601,7 @@ UIJobIconButton::~UIJobIconButton() = default;
 // OFFSET: 0x00739450
 // FUNCTION: fn_07687
 void UIJobIconButton::Paint() {
-  std::string name;
+  std::string name("");
   if (this->m_disabled == 1) {
     name = this->m_names[3];
   } else {
