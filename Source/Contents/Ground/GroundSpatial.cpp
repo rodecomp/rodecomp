@@ -28,13 +28,6 @@ GroundCell::GroundCell() {
   this->color[0] = this->color[1] = this->color[2] = 255;
 }
 
-// OFFSET: 0x00AC0180
-// FUNCTION: fn_17562
-void GroundBase::SpatialCell(float x, float z, int& column, int& row) const {
-  column = static_cast<int>(std::floor(x / this->cellSize)) + this->width / 2;
-  row = static_cast<int>(std::floor(z / this->cellSize)) + this->height / 2;
-}
-
 // OFFSET: 0x00AC0EA0
 // FUNCTION: fn_17573
 void GroundGeometry::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {

@@ -1,6 +1,15 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Resource/World/TerrainResource.h"
 
+#include <cmath>
+
+// OFFSET: 0x00AC0180
+// FUNCTION: fn_17562
+void GroundBase::SpatialCell(float x, float z, int& column, int& row) const {
+  column = static_cast<int>(std::floor(x / this->cellSize)) + this->width / 2;
+  row = static_cast<int>(std::floor(z / this->cellSize)) + this->height / 2;
+}
+
 // OFFSET: 0x00AC09B0
 // FUNCTION: fn_17568
 void GroundGeometry::WorldColor(float x, float, float z, std::uint32_t* output) const {
