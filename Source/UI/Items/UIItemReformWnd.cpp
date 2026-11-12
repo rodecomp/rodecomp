@@ -203,9 +203,7 @@ void UIItemReformWnd_Item::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->item) {
     ResourceMgr& resources = ResourceMgr::Instance();
-    const std::string name = FormatOwnedString("유저인터페이스\\item\\%s.bmp", ItemResourcePath(*this->item));
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
-    this->DrawBitmap(0, 0, bitmap, true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\item\\%s.bmp", ItemResourcePath(*this->item)).c_str()))), true);
   }
 }
 
