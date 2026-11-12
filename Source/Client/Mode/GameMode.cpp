@@ -5298,8 +5298,10 @@ void WriteMyLog(const char* file, int line, const char* format, ...) {
 std::string CGameMode::HuntTargetText(const RenewQuestOngoingInfo& quest, int index) {
   std::string text;
   if (std::strlen(quest.m_huntName[index]) == 0) {
-    text = static_cast<const std::string&>(
-        g_renewQuestMgr->GetMonsterConditionText(quest.m_huntConditionFlags[index], quest.m_huntMinLevel[index], quest.m_huntMaxLevel[index]));
+    const int maxLevel = quest.m_huntMaxLevel[index];
+    const int minLevel = quest.m_huntMinLevel[index];
+    CRenewQuestMgr* manager = g_renewQuestMgr;
+    text = static_cast<const std::string&>(manager->GetMonsterConditionText(quest.m_huntConditionFlags[index], minLevel, maxLevel));
   } else {
     text = static_cast<const std::string&>(FormatOwnedString("%s", quest.m_huntName[index]));
   }

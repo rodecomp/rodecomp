@@ -2005,7 +2005,8 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
     g_rouletteMgr->m_serial = open->serial;
     g_rouletteMgr->m_stage = open->stage;
     g_rouletteMgr->SetAdditionItem(open->additionItemId);
-    g_rouletteMgr->SetPoints(open->goldPoint, open->silverPoint, open->bronzePoint);
+    RouletteMgr* manager = g_rouletteMgr;
+    manager->SetPoints(open->goldPoint, open->silverPoint, open->bronzePoint);
     const unsigned char index = open->index;
     g_rouletteMgr->SetResult(index, index != 0xFF, 0);
     if (index != 0xFF) {

@@ -105,8 +105,9 @@ void CClimaxEffect::OnProcess() {
 // FUNCTION: fn_07053
 void CClimaxEffect::Render() {
   for (int index = 0; index < 2; ++index) {
-    if (this->particles[index]) {
-      static_cast<CEZ2STRParticle*>(this->particles[index])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    CParticle* particle = this->particles[index];
+    if (particle) {
+      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }

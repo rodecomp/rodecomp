@@ -581,13 +581,13 @@ int SetAnimatedEmitterInfo(lua_State* state) {
 int SetEZ2STRInfo(lua_State* state) {
   EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  const double key = luaL_checknumber(state, 2);
+  const int key = static_cast<int>(luaL_checknumber(state, 2));
   CEffect* effect = effects->At(1412, static_cast<unsigned>(index));
   if (!effect) {
     return 0;
   }
 
-  switch (static_cast<int>(key)) {
+  switch (key) {
   case MSG_SET_STR_FILENAME: {
     std::string name = luaL_checkstring(state, 3);
     effect->SetResource(reinterpret_cast<int>(name.c_str()));

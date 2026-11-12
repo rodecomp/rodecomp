@@ -271,7 +271,14 @@ void UIStaticText::SetFont(int family, int height, unsigned char bold, unsigned 
 // OFFSET: 0x008685E0
 // FUNCTION: fn_10962
 void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, unsigned char bold, unsigned char shadow, int x, int y) {
-  BitmapButtonTextStyle style{state, x, y, height, bold, color, shadow};
+  BitmapButtonTextStyle style;
+  style.state = state;
+  style.x = x;
+  style.y = y;
+  style.height = height;
+  style.color = color;
+  style.bold = bold;
+  style.shadow = shadow;
 
   if (x == -1000) {
     const int width = this->TextWidth(this->text.c_str(), this->text.size(), 0, height, bold, 0
@@ -286,7 +293,7 @@ void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, u
   }
 
   for (const BitmapButtonTextStyle existing : this->styles) {
-    if (existing.state == state) {
+    if (state == existing.state) {
       return;
     }
   }

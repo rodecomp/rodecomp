@@ -630,7 +630,8 @@ int CRenewQuestMgr::L_AddQuestFilterInfo(lua_State* state) {
 int CRenewQuestMgr::L_AddQuestIconTooltip(lua_State* state) {
   const std::string icon = lua_tostring(state, -2);
   const std::string tooltip = lua_tostring(state, -1);
-  g_renewQuestMgr->AddIconTooltip(icon, tooltip);
+  CRenewQuestMgr* manager = g_renewQuestMgr;
+  manager->AddIconTooltip(icon, tooltip);
   return 0;
 }
 

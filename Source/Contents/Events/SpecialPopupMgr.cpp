@@ -130,7 +130,8 @@ int CSpecialPopupMgr::LuaAddDesc(lua_State* state) {
 
   const int id = static_cast<int>(lua_tonumber(state, -2));
   std::string description = lua_tostring(state, -1);
-  g_specialPopupMgr->AddDescription(id, description);
+  CSpecialPopupMgr* manager = g_specialPopupMgr;
+  manager->AddDescription(id, description);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatPopupString("good").c_str());
   return 2;

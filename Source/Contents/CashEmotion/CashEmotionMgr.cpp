@@ -1576,7 +1576,8 @@ int CCashEmotionMgr::InsertEmotionVarientListTable(lua_State* state) {
   const std::string actFile = FromUtf8(luaL_checkstring(state, 5), g_textCodePage);
   const std::string sprFile = FromUtf8(luaL_checkstring(state, 6), g_textCodePage);
 
-  g_cashEmotionMgr->InsertEmotion(packId, emotionId, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
+  CCashEmotionMgr* manager = g_cashEmotionMgr;
+  manager->InsertEmotion(packId, emotionId, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
   return 1;
 }
 

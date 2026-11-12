@@ -478,7 +478,8 @@ int AddTip(lua_State* state) {
   const char* title = lua_tostring(state, -3);
   const double flag = lua_tonumber(state, -2);
   const char* text = lua_tostring(state, -1);
-  g_itemTagOwner->AddTip(id, title, flag, text);
+  CTipBoxMgr* owner = g_itemTagOwner;
+  owner->AddTip(id, title, flag, text);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;

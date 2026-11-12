@@ -2598,12 +2598,13 @@ void UIComboBoxV2Wnd::Paint() {
 // OFFSET: 0x00880CC0
 // FUNCTION: fn_11289
 std::string UIComboBoxV2Wnd::SelectedText() {
-  int index = this->selected;
+  const int selected = this->selected;
 
-  if (index < 0 || index >= static_cast<int>(this->list->lines.size())) {
+  if (selected < 0 || static_cast<int>(this->list->lines.size()) <= selected) {
     return std::string();
   }
 
+  int index = selected;
   return this->list->lines[index].text;
 }
 
