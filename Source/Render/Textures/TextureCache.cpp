@@ -21,6 +21,9 @@ int g_textureReduction = 1;
 // GLOBAL: gl_24638
 TextureCache g_texMgr;
 
+using TextureMap = std::map<const char*, CTexture*, TextureNameLess>;
+template __declspec(noinline) TextureMap::iterator TextureMap::_Mybase::find(const char* const&);
+
 // INLINED
 bool TextureNameLess::operator()(const char* left, const char* right) const {
   return std::strcmp(left, right) < 0;
