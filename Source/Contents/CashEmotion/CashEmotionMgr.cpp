@@ -1076,20 +1076,32 @@ void CCashEmotionMgr::LoadScripts() {
 int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
   switch (type) {
   case CashEmotionSpecial::ChatProhibit: {
-    auto it = this->m_emotionIds.find("ET_CHAT_PROHIBIT");
-    int emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    int emotionId;
+    {
+      std::string key("ET_CHAT_PROHIBIT");
+      auto it = this->m_emotionIds.find(key);
+      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
   }
   case CashEmotionSpecial::Yut: {
-    auto it = this->m_emotionIds.find("ET_YUT1");
-    int emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    int emotionId;
+    {
+      std::string key("ET_YUT1");
+      auto it = this->m_emotionIds.find(key);
+      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
   }
   case CashEmotionSpecial::Dice: {
-    auto it = this->m_emotionIds.find("ET_DICE1");
-    int emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    int emotionId;
+    {
+      std::string key("ET_DICE1");
+      auto it = this->m_emotionIds.find(key);
+      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
   }
