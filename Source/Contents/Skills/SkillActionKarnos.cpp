@@ -384,21 +384,33 @@ void CSkillAction_KR_THUNDERING_CALL::OnSkillEffect(int level, CGameActor* sourc
   int effectId;
   int bottomEffectId;
   if (level < 7) {
-    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_g_3x3", 0xD98F03A52D35636DULL);
-    thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
-    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_g_3x3", 0xD98F03A52D35636DULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0xD98F03A52D35636DULL> name(bytes);
+      return name.Text();
+    }());
 
-    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_g_3x3_bottom", 0x0F0F8B6B8F9D19D1ULL);
-    thread_local EncryptedName<sizeof(bottomSource), 0x0F0F8B6B8F9D19D1ULL> bottomName(bottomSource);
-    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_g_3x3_bottom", 0x0F0F8B6B8F9D19D1ULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0x0F0F8B6B8F9D19D1ULL> name(bytes);
+      return name.Text();
+    }());
   } else {
-    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_g_5x5", 0xD3755DD95F47A909ULL);
-    thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
-    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_g_5x5", 0xD3755DD95F47A909ULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0xD3755DD95F47A909ULL> name(bytes);
+      return name.Text();
+    }());
 
-    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_g_5x5_bottom", 0x31D7C1EDA345E36DULL);
-    thread_local EncryptedName<sizeof(bottomSource), 0x31D7C1EDA345E36DULL> bottomName(bottomSource);
-    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_g_5x5_bottom", 0x31D7C1EDA345E36DULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0x31D7C1EDA345E36DULL> name(bytes);
+      return name.Text();
+    }());
   }
 
   g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -415,21 +427,33 @@ void CSkillAction_KR_THUNDERING_CALL_S::OnSkillEffect(int level, CGameActor* sou
   int effectId;
   int bottomEffectId;
   if (level < 7) {
-    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_y_3x3", 0xC7912587FFF31B71ULL);
-    thread_local EncryptedName<sizeof(effectSource), 0xC7912587FFF31B71ULL> effectName(effectSource);
-    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_y_3x3", 0xC7912587FFF31B71ULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0xC7912587FFF31B71ULL> name(bytes);
+      return name.Text();
+    }());
 
-    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_y_3x3_bottom", 0x69D345DB950F336DULL);
-    thread_local EncryptedName<sizeof(bottomSource), 0x69D345DB950F336DULL> bottomName(bottomSource);
-    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_y_3x3_bottom", 0x69D345DB950F336DULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0x69D345DB950F336DULL> name(bytes);
+      return name.Text();
+    }());
   } else {
-    constexpr std::array<char, 22> effectSource = CRYPT_NAME("thundering_call_y_5x5", 0x9B17C9EFDBB39F2FULL);
-    thread_local EncryptedName<sizeof(effectSource), 0x9B17C9EFDBB39F2FULL> effectName(effectSource);
-    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_y_5x5", 0x9B17C9EFDBB39F2FULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes);
+      return name.Text();
+    }());
 
-    constexpr std::array<char, 29> bottomSource = CRYPT_NAME("thundering_call_y_5x5_bottom", 0x2D3B15774149D5DDULL);
-    thread_local EncryptedName<sizeof(bottomSource), 0x2D3B15774149D5DDULL> bottomName(bottomSource);
-    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      constexpr auto bytesText = CRYPT_NAME("thundering_call_y_5x5_bottom", 0x2D3B15774149D5DDULL);
+      const auto& bytes = bytesText.data;
+      thread_local EncryptedName<sizeof(bytes), 0x2D3B15774149D5DDULL> name(bytes);
+      return name.Text();
+    }());
   }
 
   g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
