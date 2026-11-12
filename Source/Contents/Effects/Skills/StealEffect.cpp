@@ -126,14 +126,13 @@ void CSteal::OnProcess() {
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
 
-    vector3d& offset = this->offsets[index];
-    offset.x = 0.0f * rotation.values[3] + 0.0f * rotation.values[0] + distance * rotation.values[6] + rotation.values[9] + offset.x;
-    offset.y = lift + offset.y;
-    offset.z = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + offset.z;
+    this->offsets[index].x = 0.0f * rotation.values[3] + 0.0f * rotation.values[0] + distance * rotation.values[6] + rotation.values[9] + this->offsets[index].x;
+    this->offsets[index].y = lift + this->offsets[index].y;
+    this->offsets[index].z = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + this->offsets[index].z;
 
-    const float x = velocityX + origin.x + offset.x;
-    const float y = velocityY + origin.y + offset.y;
-    const float z = velocityZ + origin.z + offset.z;
+    const float x = velocityX + origin.x + this->offsets[index].x;
+    const float y = velocityY + origin.y + this->offsets[index].y;
+    const float z = velocityZ + origin.z + this->offsets[index].z;
     const float newScale = scaleStep + scale;
 
     if (lift > 0.0f) {

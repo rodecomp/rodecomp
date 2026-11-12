@@ -39,9 +39,10 @@ void CMappillarEffect::Open() {
       particle->angleParameter = 360;
       particle->speedParameter = 120.0f;
       particle->phaseParameter = 89;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(particle->rowIndex * 90);
-      particle->scale = static_cast<float>(particle->rowIndex) * 0.5f + 11.0f;
-      reinterpret_cast<int*>(&particle->animationParameter)[particle->rowIndex] = 0;
+      const int row = particle->rowIndex;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
+      particle->scale = static_cast<float>(row) * 0.5f + 11.0f;
+      reinterpret_cast<int*>(&particle->animationParameter)[row] = 0;
       particle->elapsedFrames = particle->rowIndex * 30;
 
       const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
@@ -55,22 +56,24 @@ void CMappillarEffect::Open() {
       const float height = particle->speedParameter * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
+      const float offsetX = spread * cosine;
+      const float offsetZ = spread * sine;
 
       EffectPoint points[2];
-      points[0].x = particle->scale * cosine;
-      points[0].y = 0.0f;
-      points[0].z = particle->scale * sine;
-      points[1].x = points[0].x + spread * cosine;
-      points[1].y = 0.0f - height;
-      points[1].z = points[0].z + spread * sine;
+      const float innerX = particle->scale * cosine;
+      const float innerY = 0.0f;
+      const float innerZ = particle->scale * sine;
+      const float outerX = innerX + offsetX;
+      const float outerY = 0.0f - height;
+      const float outerZ = innerZ + offsetZ;
 
       if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
-        particle->vertices[1].x = points[1].x;
-        particle->vertices[1].y = points[1].y;
-        particle->vertices[1].z = points[1].z;
-        particle->vertices[3].x = points[0].x;
-        particle->vertices[3].y = points[0].y;
-        particle->vertices[3].z = points[0].z;
+        particle->vertices[1].x = outerX;
+        particle->vertices[1].y = outerY;
+        particle->vertices[1].z = outerZ;
+        particle->vertices[3].x = innerX;
+        particle->vertices[3].y = innerY;
+        particle->vertices[3].z = innerZ;
         particle->vertices[0].x = this->lastOuter.x;
         particle->vertices[0].y = this->lastOuter.y;
         particle->vertices[0].z = this->lastOuter.z;
@@ -79,12 +82,12 @@ void CMappillarEffect::Open() {
         particle->vertices[2].z = this->lastInner.z;
       }
 
-      this->lastInner.x = points[0].x;
-      this->lastInner.y = points[0].y;
-      this->lastInner.z = points[0].z;
-      this->lastOuter.x = points[1].x;
-      this->lastOuter.y = points[1].y;
-      this->lastOuter.z = points[1].z;
+      this->lastInner.x = innerX;
+      this->lastInner.y = innerY;
+      this->lastInner.z = innerZ;
+      this->lastOuter.x = outerX;
+      this->lastOuter.y = outerY;
+      this->lastOuter.z = outerZ;
       this->particles.push_back(particle);
     }
   }

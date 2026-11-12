@@ -48,7 +48,8 @@ void CJupitelThunderStormEffect::Open() {
   const float dy = this->sourcePosition[1] - this->position[1];
   const float dx = this->sourcePosition[0] - this->position[0];
   const float dz = this->sourcePosition[2] - this->position[2];
-  const float speed = SquareRoot(dy * dy + dx * dx + dz * dz) / static_cast<float>(this->duration);
+  const float distance = SquareRoot(dy * dy + dx * dx + dz * dz);
+  const float speed = distance / static_cast<float>(this->duration);
 
   this->step.x = this->sourcePosition[0] - this->position[0];
   this->step.y = this->sourcePosition[1] - this->position[1];

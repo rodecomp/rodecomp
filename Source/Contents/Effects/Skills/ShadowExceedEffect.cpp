@@ -112,7 +112,7 @@ bool CShadowExceed::IsAlive() {
 void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    if (IsParticleActive(emitter) == true) {
+    if (IsParticleActive(*it) == true) {
       if (emitter) {
         const vector3d position = {this->position[0], this->position[1], this->position[2]};
         const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
