@@ -796,11 +796,10 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
     return;
   }
 
-  const int talkId = value / 10;
-  *data = talkId;
+  *data = value / 10;
   char talk[256];
   std::memset(talk, 0, sizeof(talk));
-  g_session.GetPetTalkText(talkId / 10, value % 10, talkId % 10, talk);
+  g_session.GetPetTalkText(*data / 10, value % 10, *data % 10, talk);
   if (talk[0]) {
     char speech[256];
     g_session.FormatMonsterSpeech(talk, speech, *reinterpret_cast<const std::uint32_t*>(packet + 2), 1 - kind);
