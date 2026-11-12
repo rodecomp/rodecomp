@@ -37,7 +37,7 @@ void QuaternionMatrix(const ModelRotationKey& key, matrix& output) {
 
 // OFFSET: 0x00541B30
 // FUNCTION: fn_01736
-void InterpolateModelRotation(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins, ModelRotationKey& output) {
+void ModelRotationKey::Interpolate(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins) {
   const float dot = ((second.rotation[1] * first.rotation[1] + second.rotation[0] * first.rotation[0]) + first.rotation[2] * second.rotation[2]) +
                     first.rotation[3] * second.rotation[3];
   const bool flip = dot < 0.0f;
@@ -62,8 +62,8 @@ void InterpolateModelRotation(float amount, const ModelRotationKey& first, const
     secondWeight = -secondWeight;
   }
 
-  output.rotation[0] = first.rotation[0] * firstWeight + second.rotation[0] * secondWeight;
-  output.rotation[1] = secondWeight * second.rotation[1] + firstWeight * first.rotation[1];
-  output.rotation[2] = firstWeight * first.rotation[2] + secondWeight * second.rotation[2];
-  output.rotation[3] = firstWeight * first.rotation[3] + secondWeight * second.rotation[3];
+  this->rotation[0] = first.rotation[0] * firstWeight + second.rotation[0] * secondWeight;
+  this->rotation[1] = secondWeight * second.rotation[1] + firstWeight * first.rotation[1];
+  this->rotation[2] = firstWeight * first.rotation[2] + secondWeight * second.rotation[2];
+  this->rotation[3] = firstWeight * first.rotation[3] + secondWeight * second.rotation[3];
 }

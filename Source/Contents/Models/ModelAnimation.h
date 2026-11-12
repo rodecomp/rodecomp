@@ -44,6 +44,5 @@ public:
   void Sample(float frame, const matrix& base, matrix& output) const;
 };
 void QuaternionMatrix(const ModelRotationKey& key, matrix& output);
-void InterpolateModelRotation(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins, ModelRotationKey& output);
 
 #endif

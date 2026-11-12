@@ -29,6 +29,8 @@ struct ModelScaleKey {
 };
 
 struct ModelRotationKey {
+  void Interpolate(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins);
+
   /* 0000 */ int frame;
   /* 0004 */ float rotation[4];
 };
