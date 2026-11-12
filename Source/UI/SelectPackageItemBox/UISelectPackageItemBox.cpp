@@ -678,13 +678,6 @@ void CUISelectPackageItemBox::OnSelectTab(SelectPackageItemBox::CUITabInfo*, con
 
 namespace {
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length, typename Byte>
-const char* DecryptName(const Byte (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 }
 
 // OFFSET: 0x00A69790
