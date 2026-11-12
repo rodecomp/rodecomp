@@ -205,12 +205,14 @@ void UIMenuIconWnd::Paint() {
   this->closeButton->Enable(0);
 
   UIButton* toggle;
-  if (g_session.m_showMenuIcon) {
-    toggle = this->closeButton;
-  } else if (this->notifiedCommands.size() == 0) {
-    toggle = this->openButton;
+  if (!g_session.m_showMenuIcon) {
+    if (this->notifiedCommands.size() != 0) {
+      toggle = this->notificationOpenButton;
+    } else {
+      toggle = this->openButton;
+    }
   } else {
-    toggle = this->notificationOpenButton;
+    toggle = this->closeButton;
   }
   toggle->Enable(1);
 
