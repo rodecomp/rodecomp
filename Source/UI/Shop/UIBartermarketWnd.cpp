@@ -1666,13 +1666,15 @@ void UIBarterItemPurchaseWnd::Paint() {
     return;
   }
 
-  const int borderHeight = this->geometry.height - 38;
-  const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+  const int leftHeight = this->geometry.height - 38;
+  const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, y, bitmap, false);
   }
-  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+  const int rightHeight = this->geometry.height - 38;
+  const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
   }
@@ -1681,17 +1683,10 @@ void UIBarterItemPurchaseWnd::Paint() {
   unsigned green;
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  const std::uint32_t background = RGB(red, green, blue);
-  int rightRemainder = (this->geometry.width - 60) % 32;
-  if (rightRemainder < 0) {
-    rightRemainder += 32;
-  }
-  int bottomRemainder = (this->geometry.height - 38) % 32;
-  if (bottomRemainder < 0) {
-    bottomRemainder += 32;
-  }
-  this->FillRegion(20, 17, rightRemainder, this->geometry.height - 38, background);
-  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, background);
+  const int rightRemainder = (this->geometry.width - 60) % 32;
+  this->FillRegion(20, 17, rightRemainder, this->geometry.height - 38, RGB(red, green, blue));
+  const int bottomRemainder = (this->geometry.height - 38) % 32;
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
   const int rows = (this->geometry.height - 38) / 32;
