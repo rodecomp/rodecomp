@@ -31,9 +31,12 @@ void CHitLineEffect::Close() {
 void CHitLineEffect::Open() {
   for (int pass = 0; pass < 4; ++pass) {
     for (int line = 0; line < 4; ++line) {
-      const int delay = -std::max(0, rand() % 26);
-      const int brightness = std::max(0, rand() % 51) + 125;
-      const int angle = std::max(0, rand() % 360);
+      const int delayRoll = rand() % 26;
+      const int delay = -(delayRoll >= 0 ? delayRoll : 0);
+      const int brightnessRoll = rand() % 51;
+      const int brightness = (brightnessRoll >= 0 ? brightnessRoll : 0) + 125;
+      const int angleRoll = rand() % 360;
+      const int angle = angleRoll >= 0 ? angleRoll : 0;
       for (int segment = 0; segment < 20; ++segment) {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
         if (particle) {

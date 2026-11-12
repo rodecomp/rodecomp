@@ -35,8 +35,10 @@ void CEnergyOrbEffect::Close() {
 // FUNCTION: fn_19025
 void CEnergyOrbEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
-    const int angle = std::max(0, rand() % 360);
-    const int phase = std::max(0, rand() % 3);
+    const int angleRoll = rand() % 360;
+    const int angle = angleRoll >= 0 ? angleRoll : 0;
+    const int phaseRoll = rand() % 3;
+    const int phase = phaseRoll >= 0 ? phaseRoll : 0;
 
     for (int j = 0; j < this->mode; ++j) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
