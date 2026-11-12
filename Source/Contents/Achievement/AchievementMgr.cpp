@@ -509,7 +509,8 @@ int CAchievementMgr::L_InsertAchieveUIType(lua_State* state) {
     const int id = static_cast<int>(lua_tonumber(state, -3));
     const lua_Number type = lua_tonumber(state, -2);
     const std::string text = lua_tostring(state, -1);
-    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveUIType(id, static_cast<int>(type), text);
+    CAchievementMgr* const manager = g_achievementMgr;
+    const std::pair<bool, std::string> result = manager->InsertAchieveUIType(id, static_cast<int>(type), text);
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveUIType : %s", result.second.c_str()));
