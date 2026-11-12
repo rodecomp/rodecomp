@@ -1017,6 +1017,20 @@ void CEfstAction_UNLIMIT::OnEfstUpdate(int efstId, int value, int argument3, int
   this->OnEfstBegin(efstId, value, 0, 0, actor, false);
 }
 
+// OFFSET: 0x007756F0
+// FUNCTION: fn_45569
+template <>
+CEfstAction* NewAction<CEfstAction_UNLIMIT, CEfstAction>() {
+  return new CEfstAction_UNLIMIT;
+}
+
+// OFFSET: 0x00775710
+// FUNCTION: fn_45570
+template <>
+CSkillAction* NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>() {
+  return new CSkillAction_RA_UNLIMIT;
+}
+
 // OFFSET: 0x007764E0
 // FUNCTION: fn_08346
 EfstActionMessage CEfstAction_SHADOW_WEAPON::GetEfstBeginMessage() {
@@ -2023,6 +2037,13 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
   const float z = offsetZ + position.z;
   EffectLists* effects = g_effectMgr;
   return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), vector3d{x, y, z}, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x0077DED0
+// FUNCTION: fn_45571
+template <>
+CEfstAction* NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>() {
+  return new CEfstAction_MYSTERY_POWDER;
 }
 
 // OFFSET: 0x0077DF70
