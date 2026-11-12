@@ -1964,11 +1964,10 @@ static EfstActionRegistrar s_efstAction1710(1710, NewAction<CEfstAction_ZEPHYR_L
 
 // OFFSET: 0x0040D1D0
 // FUNCTION: fn_45560
-static bool s_skillObjectActionRegistered314 = [] {
-  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>;
+static bool s_skillObjectActionRegistered314 = [](std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(314, factory);
   return true;
-}();
+}(NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>);
 
 // GLOBAL: gl_25630
 static SkillActionRegistrar s_skillAction6591(6591, NewAction<CSkillAction_AT_AERO_SYNC, CSkillAction>);
