@@ -2069,7 +2069,8 @@ void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillHit(int caster, CGameActor* target,
   }
 
   if (target) {
-    const int side = std::max(std::rand() % 2, 0);
+    const int roll = std::rand() % 2;
+    const int side = roll >= 0 ? roll : 0;
     EffectLists* effects = g_effectMgr;
     if (side == 0) {
       effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_leftdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2095,17 +2096,17 @@ void CSkillAction_DK_STORMSLASH::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  const float scale = source->render.speed * 50.0f + 30.0f;
+  const int delay = static_cast<int>(source->render.speed * 50.0f + 30.0f);
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("stormslash_{}", level)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (!effect) {
     return;
   }
 
-  effect->SetDelay(static_cast<int>(scale));
-  for (int frame = 0; level > 0; --level, frame += 15) {
+  effect->SetDelay(delay);
+  for (int i = 0; i < level; ++i) {
     const int variant = std::rand() % 4 + 1;
-    effect->AddEvent(0, std::format("effect\\DK_STORMSLASH{}.wav", variant).c_str(), frame, 0);
+    effect->AddEvent(0, std::format("effect\\DK_STORMSLASH{}.wav", variant).c_str(), i * 15, 0);
   }
 }
 
