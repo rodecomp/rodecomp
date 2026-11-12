@@ -169,7 +169,7 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_view.actionNames[0].assign(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
   this->m_view.spriteNames[0].assign(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0));
 
-  if (this->m_info.sex == 1 && this->m_info.head == 13) {
+  if (this->m_info.sex == 1 && 13 == this->m_info.head) {
     this->m_info.head = 14;
   }
 

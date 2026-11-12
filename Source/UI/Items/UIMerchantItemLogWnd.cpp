@@ -126,7 +126,7 @@ void UIMerchantItemLogWnd::Paint() {
     const int x = visible % this->columns * 32 + 44;
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(

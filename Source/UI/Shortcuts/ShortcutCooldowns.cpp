@@ -892,7 +892,7 @@ void UISerachStoreInfoWnd::Paint() {
     const int top = this->m_rowHeight * row + 100;
     const int y = top + 7;
     DrawItemIcon(*this, ResourceMgr::Instance(), 13, top, entry->item, 0);
-    if (entry->item.grade > 0) {
+    if (0 < entry->item.grade) {
       this->DrawBitmap(
         13, y + 5,
         static_cast<CBitmapRes*>(

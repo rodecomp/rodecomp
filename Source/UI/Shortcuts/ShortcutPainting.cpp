@@ -137,7 +137,7 @@ void UIShortCutWnd::Paint() {
           Count(window, x + 27, (y + 17), item.quantity);
         }
 
-        if (item.grade > 0) {
+        if (0 < item.grade) {
           Bitmap(window, Load(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()), x, (y + 12), true);
         }
       }

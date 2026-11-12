@@ -1136,7 +1136,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
 
   if (this->item.identity[1] > 0) {
     DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
-    if (this->item.grade > 0) {
+    if (0 < this->item.grade) {
       this->DrawBitmap(120, 224,
         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.grade).c_str()))),
         true);

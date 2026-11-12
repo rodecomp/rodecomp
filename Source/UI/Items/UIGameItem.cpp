@@ -163,7 +163,7 @@ void CUIGameItem::SetItem(const ITEM_INFO& item) {
     oldImage->Unlock();
   }
 
-  if (item.grade > 0) {
+  if (0 < item.grade) {
     CBitmapRes* overlay = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.grade)));
     if (overlay) {
       overlay->Lock();
