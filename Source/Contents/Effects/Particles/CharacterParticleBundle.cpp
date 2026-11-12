@@ -36,7 +36,7 @@ CharacterParticleBundle::CharacterParticleBundle() : CEffect(-1), startTime(0), 
 
 // OFFSET: 0x005A31F0
 // FUNCTION: fn_03126
-CharacterParticleBundle::~CharacterParticleBundle() {
+__declspec(noinline) CharacterParticleBundle::~CharacterParticleBundle() {
 }
 
 // OFFSET: 0x005A3360

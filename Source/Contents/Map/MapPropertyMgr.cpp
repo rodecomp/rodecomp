@@ -12,7 +12,7 @@ CMapProperty::CMapProperty() {
 
 // OFFSET: 0x00CA76C0
 // FUNCTION: fn_20971
-CMapProperty::~CMapProperty() {
+__declspec(noinline) CMapProperty::~CMapProperty() {
 }
 
 // OFFSET: 0x00CA7790

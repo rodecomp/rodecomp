@@ -35,7 +35,7 @@ bool CPathFinder::Walkable(int column, int row) const {
 
 // OFFSET: 0x00ADA690
 // FUNCTION: fn_17906
-CActorPickNode::~CActorPickNode() {
+__declspec(noinline) CActorPickNode::~CActorPickNode() {
   this->Clear();
 }
 

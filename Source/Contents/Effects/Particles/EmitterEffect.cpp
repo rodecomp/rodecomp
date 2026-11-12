@@ -29,7 +29,7 @@ CEmitterEffect::CEmitterEffect()
 
 // OFFSET: 0x00B4FD90
 // FUNCTION: fn_19009
-CEmitterEffect::~CEmitterEffect() {
+__declspec(noinline) CEmitterEffect::~CEmitterEffect() {
 }
 
 // OFFSET: 0x00B50010

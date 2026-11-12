@@ -24,7 +24,7 @@ CLuaInstance::CLuaInstance() : m_state(nullptr) {
 
 // OFFSET: 0x00522290
 // FUNCTION: fn_01125
-CLuaInstance::~CLuaInstance() {
+__declspec(noinline) CLuaInstance::~CLuaInstance() {
   if (this->m_state) {
     lua_close(this->m_state);
     this->m_state = nullptr;

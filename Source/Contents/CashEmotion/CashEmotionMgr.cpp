@@ -1904,7 +1904,7 @@ UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(int width
 
 // OFFSET: 0x007C4AD0
 // FUNCTION: fn_09364
-UICashEmotionListChildWnd_Purchase::~UICashEmotionListChildWnd_Purchase() {
+__declspec(noinline) UICashEmotionListChildWnd_Purchase::~UICashEmotionListChildWnd_Purchase() {
   delete this->playAction;
   this->playAction = nullptr;
   this->m_items.clear();
@@ -2024,7 +2024,7 @@ UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(int width, in
 
 // OFFSET: 0x007C5720
 // FUNCTION: fn_09377
-UICashEmotionListChildWnd_Search::~UICashEmotionListChildWnd_Search() {
+__declspec(noinline) UICashEmotionListChildWnd_Search::~UICashEmotionListChildWnd_Search() {
   delete this->m_action;
   this->m_action = nullptr;
   this->m_items.clear();
