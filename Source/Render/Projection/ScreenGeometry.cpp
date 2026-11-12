@@ -10,13 +10,13 @@
 
 // OFFSET: 0x0054E2B0
 // FUNCTION: fn_01951
-void DrawScreenLine(float startX, float startY, float endX, float endY, int thickness, CTexture* texture, std::uint32_t color) {
-  if (SquareRoot((endY - startY) * (endY - startY) + (endX - startX) * (endX - startX)) == 0.0f) {
+void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture* texture, std::uint32_t color) {
+  if (SquareRoot((end.y - start.y) * (end.y - start.y) + (end.x - start.x) * (end.x - start.x)) == 0.0f) {
     return;
   }
 
-  const float deltaX = endX - startX;
-  const float deltaY = endY - startY;
+  const float deltaX = end.x - start.x;
+  const float deltaY = end.y - start.y;
   const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX);
   float angle = static_cast<float>(std::acos(static_cast<double>(inverseLength * deltaX)));
   if (inverseLength * deltaY < 0.0f) {
@@ -28,7 +28,7 @@ void DrawScreenLine(float startX, float startY, float endX, float endY, int thic
   const float offsetY = ClientSin(angle) * width;
   const float offsetX = ClientCos(angle) * width;
   DrawScreenQuad(
-    startX - offsetX, startY - offsetY, startX + offsetX, startY + offsetY, endX - offsetX, endY - offsetY, endX + offsetX, endY + offsetY, texture, color
+    start.x - offsetX, start.y - offsetY, start.x + offsetX, start.y + offsetY, end.x - offsetX, end.y - offsetY, end.x + offsetX, end.y + offsetY, texture, color
   );
 }
 

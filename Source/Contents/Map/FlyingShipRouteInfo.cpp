@@ -34,7 +34,7 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     targets.insert(std::pair<std::string, FlyingShipRouteEntry>(entry.name, entry));
 
     DrawScreenLine(
-      from.screenPosition[0], from.screenPosition[1], entry.screenPosition[0], entry.screenPosition[1], 2,
+      ScreenPoint{from.screenPosition[0], from.screenPosition[1]}, ScreenPoint{entry.screenPosition[0], entry.screenPosition[1]}, 2,
       g_texMgr.Load(this->lineTextureName.c_str(), 0, true, true, false), static_cast<std::uint32_t>(this->lineColor)
     );
   }
