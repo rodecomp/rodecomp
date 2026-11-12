@@ -2369,9 +2369,8 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillEffect(int level, CGameActor* source, 
     g_effectMgr->Spawn(source->render.accountId, 2408, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, 2409, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-    g_soundMgr->PlayWave(
-      "effect\\NPC_FROST_FIELD.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
+    const vector3d position = {target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z};
+    g_soundMgr->PlayWave("effect\\NPC_FROST_FIELD.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
   if (target) {
     g_effectMgr->Spawn(target->render.accountId, 1283, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2636,10 +2635,9 @@ void CEfstAction_GROGGY::OnEfstUpdate(int efstId, int value, int argument3, int 
 void CSkillAction_NPC_RESET_EFST::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, 2410, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-    g_soundMgr->PlayWave(
-      "effect\\NPC_RESET_EFST.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
+    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
+    g_soundMgr->PlayWave("effect\\NPC_RESET_EFST.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
 }
 
@@ -2682,10 +2680,9 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_NPC_AIMED_SHOWER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, 1268, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-    g_soundMgr->PlayWave(
-      "effect\\NPC_AIMED_SHOWER.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
+    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
+    g_soundMgr->PlayWave("effect\\NPC_AIMED_SHOWER.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
 }
 
@@ -2712,10 +2709,9 @@ void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillEffect(int level, CGameActor* sou
     g_effectMgr->Spawn(source->render.accountId, 1270, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, 1266, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     static_cast<EffectActor*>(source)->LaunchEffect(225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-    g_soundMgr->PlayWave(
-      "effect\\NPC_BLAZING_ERUPTION.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
+    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
+    g_soundMgr->PlayWave("effect\\NPC_BLAZING_ERUPTION.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
 }
 
