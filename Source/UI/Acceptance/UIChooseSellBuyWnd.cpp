@@ -2391,8 +2391,9 @@ void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
   }
 
   {
+    UIItemTagOnMegaPhone* tagCtrl = this->m_tagCtrl;
     std::string text = this->edit->Text();
-    this->m_tagCtrl->taggedText = text;
+    tagCtrl->taggedText = text;
   }
   this->edit->SetText(this->m_tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->edit->MoveCursorToEnd();
@@ -5749,8 +5750,8 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   {
     const std::string prefix("유저인터페이스\\");
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int positions[2][2] = {{189, 96}, {234, 96}};
     int ids[2] = {184, 185};
+    int positions[2][2] = {{189, 96}, {234, 96}};
     for (int index = 0; index < 2; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
@@ -5761,14 +5762,14 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
       button->SetId(ids[index]);
       this->AddChild(button);
     }
+    this->m_message0 = 184;
   }
-  this->m_message0 = 184;
 
   {
     const std::string prefix("유저인터페이스\\basic_interface\\");
     const char* names[2][3] = {{"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}, {"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}};
-    int positions[2][2] = {{119, 46}, {256, 46}};
     int ids[2] = {228, 229};
+    int positions[2][2] = {{119, 46}, {256, 46}};
     for (int index = 0; index < 2; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
@@ -5814,7 +5815,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   this->m_limitText = new UIStaticText();
   this->m_limitText->SetSize(68, 14);
   this->m_limitText->Move(48, 49);
-  this->m_limitText->SetText(this->m_limitLabels.back().c_str(), 0);
+  this->m_limitText->SetText(this->m_limitLabels[this->m_limitLabels.size() - 1].c_str(), 0);
   this->m_limitText->background = 0xFFF2F2F2;
   this->m_limitText->Invalidate();
   this->AddChild(this->m_limitText);
@@ -9241,7 +9242,8 @@ static __forceinline void AppendItemListReplayRecords(std::vector<unsigned char>
   fields[0] = packetId;
   fields[1] = static_cast<std::int16_t>(packet.size());
   std::int16_t* index = fields + 2;
-  for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != items.end(); ++item) {
+  const std::list<ITEM_INFO>::const_iterator end = items.end();
+  for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != end; ++item) {
     *index++ = static_cast<std::int16_t>(item->identity[1]);
   }
   AppendReplayRecord(records, MakeFramedMessage(id + 3, packet));
@@ -11578,8 +11580,8 @@ void UIBookWnd::OnProcess() {
   }
   int line = this->m_autoLine;
   if (line < this->m_lineCount) {
-    const char* text = this->m_lines[line].c_str();
-    if ((std::strlen(text) == 0 || std::strcmp(text, " ") == 0) && line < this->m_lineCount - 1) {
+    const std::string& text = this->m_lines[line];
+    if ((std::strlen(text.c_str()) == 0 || std::strcmp(text.c_str(), " ") == 0) && line < this->m_lineCount - 1) {
       this->m_autoLine = line + 1;
     }
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -11592,10 +11594,12 @@ void UIBookWnd::OnProcess() {
       g_windowMgr.AddRenderedFront(this->m_balloon);
       balloon = this->m_balloon;
     }
-    static_cast<UITransBalloonText*>(balloon)->SetText(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str()), 100);
+    const char* stripped = this->StripColorCodes(this->m_lines[this->m_autoLine].c_str());
+    static_cast<UITransBalloonText*>(balloon)->SetText(stripped, 100);
     this->m_balloon->Move((g_renderer->viewport.width - 640) / 2 - this->m_balloon->geometry.width / 2 + 320, 81);
-    static_cast<UITransBalloonText*>(this->m_balloon)->m_textColor = 0xE1E4FF;
-    static_cast<UITransBalloonText*>(this->m_balloon)->m_outlineColor = 0;
+    UITransBalloonText* shown = static_cast<UITransBalloonText*>(this->m_balloon);
+    shown->m_textColor = 0xE1E4FF;
+    shown->m_outlineColor = 0;
     ++this->m_autoLine;
     this->m_autoTick = timeGetTime();
   } else {
@@ -11613,10 +11617,10 @@ int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
 // OFFSET: 0x008F2DF0
 // FUNCTION: fn_12262
 void UITipboxWnd::PaintAnimations() {
-  std::string path;
+  std::string path("");
   for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
     path = "유저인터페이스\\tipbox\\ico_effect" + IntToString(this->m_animations[i].kind, 0) + ".bmp";
-    if (this->m_animations[i].visible) {
+    if (this->m_animations[i].visible == true) {
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       this->DrawBitmap(
         static_cast<int>(this->m_animations[i].x), static_cast<int>(this->m_animations[i].y), bitmap, true
@@ -11625,7 +11629,7 @@ void UITipboxWnd::PaintAnimations() {
   }
 
   for (unsigned int i = 0; i < this->m_dots.size(); ++i) {
-    if (this->m_dots[i].visible) {
+    if (this->m_dots[i].visible == true) {
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\ico_effect6.bmp")));
       this->DrawBitmap(static_cast<int>(this->m_dots[i].x), static_cast<int>(this->m_dots[i].y), bitmap, true);
     }
