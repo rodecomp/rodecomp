@@ -136,8 +136,7 @@ void UILapineBoxWnd::OnMouseHover(int x, int y) {
   if (item.identity[1] != 0) {
     int tipX = 0;
     int tipY = -20;
-    const int count = static_cast<int>(this->items.size());
-    for (int index = 0; index < count; ++index) {
+    for (unsigned int index = 0; index < this->items.size(); ++index) {
       if (this->items[index].identity[1] == item.identity[1]) {
         int position[2] = {0, 0};
         this->MaterialPosition(position, index);
