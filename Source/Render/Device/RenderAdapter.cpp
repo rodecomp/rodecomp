@@ -48,7 +48,19 @@ RenderAdapter SelectedRenderAdapter() {
   selected.backend = g_configuredRenderBackend;
 
   if (selected.backend == 0) {
-    selected.backend = g_session.DefaultRenderBackend() == 1 ? 1 : 2;
+    int backend;
+    switch (g_session.DefaultRenderBackend()) {
+    case 1:
+      backend = 1;
+      break;
+    case 2:
+      backend = 2;
+      break;
+    default:
+      backend = 2;
+      break;
+    }
+    selected.backend = backend;
   }
 
   switch (selected.backend) {
