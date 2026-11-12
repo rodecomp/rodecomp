@@ -1172,8 +1172,9 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   vec2.y = 0.0f;
   vec3.y = 0.0f;
   vec4.y = 0.0f;
-  radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f +
-           (g_sinTable[slot.process * 5 % 90] * 2.0f + 1.0f) * slot.distance;
+  int pulse = slot.process * 5;
+  pulse = pulse % 90;
+  radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + (g_sinTable[pulse] * 2.0f + 1.0f) * slot.distance;
   angle = slot.process * 2;
   angle = angle % 360;
   vec1.x = radius * g_cosTable[angle];
