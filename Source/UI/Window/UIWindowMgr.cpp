@@ -949,22 +949,22 @@ void UIWindowMgr::Shutdown() {
     this->dropDownBoxWnd->Show(0);
   }
 
-  for (UIWindow*& window : this->rendered) {
-    if (this->HasModalWindow() && this->persistentWindows.count(window)) {
+  for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if (this->HasModalWindow() && this->persistentWindows.count(*it)) {
       this->retainedPersistentWindow = true;
-    } else if (!this->HasModalWindow() || std::find(this->modalWindows.begin(), this->modalWindows.end(), window) == this->modalWindows.end()) {
-      if (this->persistentWindows.count(window)) {
-        this->persistentWindows.erase(window);
+    } else if (!this->HasModalWindow() || std::find(this->modalWindows.begin(), this->modalWindows.end(), *it) == this->modalWindows.end()) {
+      if (this->persistentWindows.count(*it)) {
+        this->persistentWindows.erase(*it);
       }
-      window->StoreInfo();
-      delete window;
-      window = nullptr;
+      (*it)->StoreInfo();
+      delete *it;
+      *it = nullptr;
     }
   }
 
-  for (auto& entry : this->browsers) {
-    delete entry.second;
-    entry.second = nullptr;
+  for (std::map<HWND, CWebBrowser*>::iterator entry = this->browsers.begin(); entry != this->browsers.end(); ++entry) {
+    delete entry->second;
+    entry->second = nullptr;
   }
   this->browsers.clear();
   if (this->specialBrowser) {
@@ -982,9 +982,9 @@ void UIWindowMgr::Shutdown() {
   this->messageBoxes.clear();
   this->ResetWindows();
 
-  for (UIWindow*& window : this->snapExcluded) {
-    this->Destroy(window);
-    window = nullptr;
+  for (std::list<UIWindow*>::iterator it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
+    this->Destroy(*it);
+    *it = nullptr;
   }
   this->snapExcluded.clear();
 }
