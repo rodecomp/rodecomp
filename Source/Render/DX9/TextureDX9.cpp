@@ -440,36 +440,36 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
   }
 
   IDirect3DDevice9Ex* device = this->m_owner->device;
-  Microsoft::WRL::ComPtr<IDirect3DTexture9> temporary;
-  Microsoft::WRL::ComPtr<IDirect3DSurface9> surface;
+  CComPtr<IDirect3DTexture9> temporary;
+  CComPtr<IDirect3DSurface9> surface;
 
   if (this->m_renderTarget) {
     if (FAILED(device->CreateTexture(
           this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM,
-          temporary.GetAddressOf(), nullptr
+          &temporary, nullptr
         ))) {
       return;
     }
 
-    if (FAILED(temporary->GetSurfaceLevel(0, surface.GetAddressOf()))) {
+    if (FAILED(temporary->GetSurfaceLevel(0, &surface))) {
       return;
     }
 
-    this->ClearSurface(surface.Get(), 0);
+    this->ClearSurface(surface, 0);
   } else {
     surface = this->m_surface;
   }
 
   if (surface) {
-    this->UploadSurface(surface.Get(), x, y, width, height, pixels, option, sourceWidth);
+    this->UploadSurface(surface, x, y, width, height, pixels, option, sourceWidth);
   }
 
   if (this->m_renderTarget && temporary) {
     if (temporary->GetLevelCount() > 1) {
-      D3DXFilterTexture(temporary.Get(), nullptr, UINT(-1), DWORD(-1));
+      D3DXFilterTexture(temporary, nullptr, UINT(-1), DWORD(-1));
     }
 
-    device->UpdateTexture(temporary.Get(), this->m_texture);
+    device->UpdateTexture(temporary, this->m_texture);
   } else {
     this->Filter();
   }
