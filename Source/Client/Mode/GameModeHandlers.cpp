@@ -71,6 +71,7 @@
 #include <timeapi.h>
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+template __declspec(noinline) void std::list<ShortcutCooldownRecord>::push_back(const ShortcutCooldownRecord&);
 
 #pragma pack(push, 1)
 struct ClanInfoPacket {
