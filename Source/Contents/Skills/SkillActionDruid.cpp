@@ -559,10 +559,10 @@ void CSkillAction_DR_FLICKING_TONADO::OnSkillEffect(int level, CGameActor* sourc
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 16> effectSourceArray = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
-    const std::uint8_t (&effectSource)[16] = effectSourceArray._Elems;
-    thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
-    return effectName.Text();
+    constexpr auto bytesText = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
+    return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
@@ -1282,8 +1282,8 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("shooting_feather", 0x93E7A3A1F587CDC5ULL);
-    const std::uint8_t (&bytes)[17] = bytesArray._Elems;
+    constexpr auto bytesText = CRYPT_NAME("shooting_feather", 0x93E7A3A1F587CDC5ULL);
+    const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
