@@ -598,19 +598,17 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
           if (ring > 0) {
             const int alpha = this->state.slots[layer].alphaB - i * 5;
             if (alpha > 0 && layer == 0) {
-              unsigned char green;
-              unsigned char blue;
               if (this->state.slots[0].fullDisplayAngle == 3) {
                 int rb = std::rand() % 26;
                 int rg = std::rand() % 51;
-                blue = static_cast<unsigned char>((rb >= 0 ? rb : 0) + 100);
-                green = static_cast<unsigned char>(rg >= 0 ? rg : 0);
+                this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, lastTop, lastBottom,
+                                    wtm, 0, 0, 1, 255, static_cast<unsigned char>(rg >= 0 ? rg : 0),
+                                    static_cast<unsigned char>((rb >= 0 ? rb : 0) + 100), 0.0f, 1.0f, 0.0f, 1.0f, 0);
               } else {
-                green = static_cast<unsigned char>(i * 3);
-                blue = green;
+                this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, lastTop, lastBottom,
+                                    wtm, 0, 0, 1, 255, static_cast<unsigned char>(i * 3), static_cast<unsigned char>(i * 3),
+                                    0.0f, 1.0f, 0.0f, 1.0f, 0);
               }
-              this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, lastTop, lastBottom,
-                                  wtm, 0, 0, 1, 255, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
           lastBottom = currentBottom;
