@@ -270,7 +270,7 @@ UISeekPartyMBWnd::UISeekPartyMBWnd()
 
 // OFFSET: 0x009146D0
 // FUNCTION: fn_12542
-UISeekPartyMBWnd::~UISeekPartyMBWnd() = default;
+__declspec(noinline) UISeekPartyMBWnd::~UISeekPartyMBWnd() = default;
 
 // OFFSET: 0x009273B0
 // FUNCTION: fn_12650

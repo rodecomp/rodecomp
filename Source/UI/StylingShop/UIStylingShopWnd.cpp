@@ -1304,7 +1304,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
 
 // OFFSET: 0x00823AA0
 // FUNCTION: fn_10297
-UIShowInfoWnd::~UIShowInfoWnd() {
+__declspec(noinline) UIShowInfoWnd::~UIShowInfoWnd() {
 }
 
 // OFFSET: 0x00823180

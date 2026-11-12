@@ -21,7 +21,7 @@ UIRequestJoinPartyMgr::UIRequestJoinPartyMgr() {
 
 // OFFSET: 0x007BB470
 // FUNCTION: fn_09281
-UIRequestJoinPartyMgr::~UIRequestJoinPartyMgr() = default;
+__declspec(noinline) UIRequestJoinPartyMgr::~UIRequestJoinPartyMgr() = default;
 
 // OFFSET: 0x007BBD50
 // FUNCTION: fn_09291

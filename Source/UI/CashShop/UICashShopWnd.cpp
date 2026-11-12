@@ -102,7 +102,7 @@ UICashShopWnd_CartItem::UICashShopWnd_CartItem() : UIWindow(0) {
 
 // OFFSET: 0x007CDE30
 // FUNCTION: fn_09521
-UICashShopWnd::~UICashShopWnd() {
+__declspec(noinline) UICashShopWnd::~UICashShopWnd() {
 }
 
 // OFFSET: 0x007CE110

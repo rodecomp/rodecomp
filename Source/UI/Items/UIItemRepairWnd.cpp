@@ -389,7 +389,7 @@ UIWeaponRefineWnd::UIWeaponRefineWnd()
 
 // OFFSET: 0x0099FB70
 // FUNCTION: fn_13592
-UIItemRepairWnd::~UIItemRepairWnd() = default;
+__declspec(noinline) UIItemRepairWnd::~UIItemRepairWnd() = default;
 
 // OFFSET: 0x009A0280
 // FUNCTION: fn_13599

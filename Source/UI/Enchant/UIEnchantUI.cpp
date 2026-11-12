@@ -257,7 +257,7 @@ CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
 
 // OFFSET: 0x00A04860
 // FUNCTION: fn_14958
-CUIEnchantUI::~CUIEnchantUI() {
+__declspec(noinline) CUIEnchantUI::~CUIEnchantUI() {
   CEnchantMgr::GetInstance()->SendCloseEnchant();
 }
 

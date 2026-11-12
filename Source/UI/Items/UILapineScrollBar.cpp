@@ -375,7 +375,7 @@ UILapineScrollBar::UILapineScrollBar() : UIScrollBar() {
 
 // OFFSET: 0x005FF370
 // FUNCTION: fn_04143
-UIIngredientInfoWnd::~UIIngredientInfoWnd() = default;
+__declspec(noinline) UIIngredientInfoWnd::~UIIngredientInfoWnd() = default;
 
 UILapineBoxWnd::~UILapineBoxWnd() {
   this->items.clear();
