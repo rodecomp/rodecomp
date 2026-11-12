@@ -109,7 +109,8 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     int metadata = 0;
     float x = 0.0f;
     float y = 0.0f;
-    actor->route.Sample(timeGetTime(), &x, &y, &metadata);
+    const DWORD now = timeGetTime();
+    actor->route.Sample(now, &x, &y, &metadata);
 
     int cellX;
     int subX;

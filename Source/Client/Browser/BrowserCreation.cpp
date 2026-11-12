@@ -4,11 +4,12 @@
 // OFFSET: 0x00AB22B0
 // FUNCTION: fn_17413
 bool CWebBrowser::Create(HWND parent, HINSTANCE instance, int width, int height) {
+  HLOCAL message;
   const HRESULT result =
     CoCreateInstance(CLSID_WebBrowser, nullptr, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, IID_IWebBrowser2, reinterpret_cast<void**>(&this->browser));
   if (FAILED(result)) {
     OutputDebugStringA("error : MakeWebBrowserInterface_InProc FAILED \n");
-    HLOCAL message = nullptr;
+    message = nullptr;
     FormatMessageA(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(), 0,
       reinterpret_cast<char*>(&message), 0, nullptr
