@@ -1696,7 +1696,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   CMode* mode = g_modeMgr.gameMode;
   if (text[0] != '/') {
     g_windowMgr.chatInputText = text;
-    const int& chatTarget = *reinterpret_cast<const int*>(&g_session.itemSendState[0x8]);
+    const int& chatTarget = g_session.m_chatTarget;
     if (chatTarget == 2) {
       if (g_guildInfo.m_guildId != 0) {
         mode->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);

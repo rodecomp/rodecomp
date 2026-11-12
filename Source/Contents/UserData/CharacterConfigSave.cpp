@@ -96,7 +96,7 @@ void CCharacterLinkedUserDataMgr::Save() {
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
     g_asyncWorkMgr->SaveCharacter(this->m_accountId, this->m_characterId, this->m_accountName, this->SaveUrl(),
-                                  std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), response);
+                                  std::string(g_session.m_webAuthToken, 16), response);
 
     ++this->m_pendingSaves;
   }

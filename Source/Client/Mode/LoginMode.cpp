@@ -2314,7 +2314,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress);
     this->serverCount = count;
     memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress));
-    memcpy(&g_session.webServiceLoginData[8], packet->body, 16);
+    memcpy(g_session.m_webAuthToken, packet->body, 16);
     break;
   case 4:
     count = (packet->length - offsetof(AcceptLoginPacket, body)) / sizeof(ServerAddress2);
@@ -2325,7 +2325,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress2);
     this->serverCount = count;
     memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress2));
-    memcpy(&g_session.webServiceLoginData[8], packet->body, 16);
+    memcpy(g_session.m_webAuthToken, packet->body, 16);
     break;
   case 6:
   case 7:
@@ -3067,7 +3067,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_windowMgr.LoadShortcutItems();
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].slot == static_cast<unsigned char>(g_selectedSlotIndex)) {
-        *reinterpret_cast<int*>(&g_session.characterLoginData[0x00]) = this->characters[i].slot;
+        g_session.m_charSlot = this->characters[i].slot;
         g_session.SetJob(this->characters[i].job);
         g_session.m_gid = this->characters[i].gid;
         g_session.m_moveSpeed = this->characters[i].speed;
@@ -3123,7 +3123,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x0C]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(&g_session.characterLoginData[0x30]) = this->characters[i].characterFlags[0];
+        g_session.m_characterFlags = this->characters[i].characterFlags[0];
         g_session.m_head = this->characters[i].head;
         g_session.m_weapon = 0;
         g_session.m_weaponLeft = 0;
@@ -3152,7 +3152,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_SELECTACCOUNT:
     this->selectedAccount = argument1;
-    *reinterpret_cast<int*>(&g_session.loginOptions[4]) = argument1;
+    g_session.m_selectedAccount = argument1;
     TraceSelection(argument1);
     if (g_serviceType == 19) {
       std::string suffix;

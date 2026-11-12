@@ -1235,7 +1235,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1056, &this->m_karma, sizeof(this->m_karma)));
   AppendRecord(records, MakeReplayRecord(1057, &this->monsterInfoEnabled, sizeof(this->monsterInfoEnabled)));
   AppendRecord(records, MakeReplayRecord(1058, &this->m_clientTimeOffset, sizeof(this->m_clientTimeOffset)));
-  AppendRecord(records, MakeReplayRecord(1059, &this->characterLoginData[0x30], 4));
+  AppendRecord(records, MakeReplayRecord(1059, &this->m_characterFlags, sizeof(this->m_characterFlags)));
   AppendRecord(records, MakeReplayRecord(1060, &this->m_head, sizeof(this->m_head)));
   AppendRecord(records, MakeReplayRecord(1061, &this->m_weaponLook, sizeof(this->m_weaponLook)));
   AppendRecord(records, MakeReplayRecord(1062, &this->m_shield, sizeof(this->m_shield)));
@@ -1268,8 +1268,8 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1089, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
   AppendRecord(records, MakeReplayRecord(1090, this->storeSlotCounts, 4));
   AppendRecord(records, MakeReplayRecord(1091, &this->storeSlotCounts[0x4], 4));
-  AppendRecord(records, MakeReplayRecord(1092, &this->itemSendState[0x8], 4));
-  AppendRecord(records, MakeReplayRecord(1093, &this->itemSendState[0xC], 4));
+  AppendRecord(records, MakeReplayRecord(1092, &this->m_chatTarget, sizeof(this->m_chatTarget)));
+  AppendRecord(records, MakeReplayRecord(1093, &this->unknown_549C, sizeof(this->unknown_549C)));
   AppendRecord(records, MakeReplayRecord(1094, &this->partyExpShare, sizeof(this->partyExpShare)));
   AppendRecord(records, MakeReplayRecord(1095, &this->partyItemCollect, sizeof(this->partyItemCollect)));
   AppendRecord(records, MakeReplayRecord(1096, &this->partyItemDistribute, sizeof(this->partyItemDistribute)));

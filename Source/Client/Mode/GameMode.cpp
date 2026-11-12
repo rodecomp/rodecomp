@@ -2987,7 +2987,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const GameModePacketWordWord packet{
         0xA04, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
       };
-      *reinterpret_cast<int*>(&g_session.commandTables[0x24]) = static_cast<std::int16_t>(argument2);
+      g_session.m_requestedCommandValue = static_cast<std::int16_t>(argument2);
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
     }
@@ -3934,7 +3934,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_GET_ACCOUNT_LIMITED_SALE_LIST: {
-      auto& tick = *reinterpret_cast<std::uint32_t*>(&g_session.webServiceLoginData[0x18]);
+      auto& tick = g_session.m_limitedSaleRequestTick;
       if (timeGetTime() - tick < 5000U) {
         const char* message = LookupMessage(MSI_CONNECT_SNS_FAIL_CONNECT);
         const std::string text = FormatOwnedString("%d%s", 5U - (timeGetTime() - tick) / 1000U, message);
@@ -6542,7 +6542,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     packet.clientTime = timeGetTime();
     packet.aid = g_session.m_aid;
     packet.gid = g_session.m_gid;
-    packet.authCode = *reinterpret_cast<const int*>(&g_session.characterLoginData[0x04]);
+    packet.authCode = g_session.m_authCode;
     packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
@@ -7370,7 +7370,7 @@ void CGameMode::InitializeState() {
     g_guildInfo.Init();
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIST_COMMAND)), 0xFFE6E6, 0, 0, 0);
-    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.characterLoginData[0x0C]));
+    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.m_zoneServerAddress));
     if (!g_accountLinkedUserDataMgr->m_loaded) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_RATE)), 255, 0, 0, 0);
     }
@@ -7881,7 +7881,7 @@ void CGameMode::Initialize(const char* name) {
   this->strikeCount = 0;
   this->periodicTicks.resize(6);
 
-  if (*reinterpret_cast<const int*>(g_session.whisperRecordStorage) && g_session.IsAdminSubMode(7)) {
+  if (g_session.m_whisperRecord && g_session.IsAdminSubMode(7)) {
     char message[256];
     std::sprintf(message, "Now Auto chat Save System is ENABLED.");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 0, 0, 0);
@@ -8743,7 +8743,7 @@ void CGameMode::Update() {
     g_playerNameDictionary->Update();
     this->nameCard.ProcessRequests();
     g_guildMgr->UpdateEmblemRequests(
-      *g_emblemDataMgr, g_session.m_aid, g_session.m_accountName, reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), GetRagConnection(),
+      *g_emblemDataMgr, g_session.m_aid, g_session.m_accountName, g_session.m_webAuthToken, GetRagConnection(),
       *g_asyncWorkMgr
     );
     g_asyncWorkMgr->Update(1000);
@@ -8863,8 +8863,8 @@ void CGameMode::Update() {
       this->DrawMiniMapCoordinates();
       this->DrawTimeAttackTimer();
     }
-    if (*reinterpret_cast<const int*>(&g_session.timeAttackState[0x08]) != 0) {
-      this->DrawTimeAttackCountdown(*reinterpret_cast<const std::uint32_t*>(&g_session.timeAttackState[0x00]), g_session.m_timeAttackMode);
+    if (g_session.m_timeAttackVisible != 0) {
+      this->DrawTimeAttackCountdown(g_session.m_timeAttackCountdown, g_session.m_timeAttackMode);
     }
 
     if (this->drag.source != 0 && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
@@ -9262,7 +9262,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       this->SendMsg(MM_CHAT_BATTLEFIELD, 0, 0, 0, 0);
       break;
     }
-    const int sendMode = *reinterpret_cast<const int*>(&g_session.itemSendState[8]);
+    const int sendMode = g_session.m_chatTarget;
     if (sendMode == 2 && g_guildInfo.m_guildId != 0) {
       this->SendMsg(alternate ? MM_CHATMSG : MM_CHAT_GUILD, 0, 0, 0, 0);
       break;

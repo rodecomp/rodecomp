@@ -152,7 +152,7 @@ void CMCStoreInfoBackup::Load(
 
   CAsyncWorkMgr* mgr = g_asyncWorkMgr;
   mgr->LoadStore(accountId, characterId, accountName, this->LoadUrl(),
-                            std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), type);
+                            std::string(g_session.m_webAuthToken, 16), type);
 }
 
 // OFFSET: 0x00606EB0
@@ -168,7 +168,7 @@ void CMCStoreInfoBackup::Save(int type) {
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
     g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->SaveUrl(),
-                              std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[8]), 16), response, this->type);
+                              std::string(g_session.m_webAuthToken, 16), response, this->type);
 
     ++this->pendingSaves;
   }

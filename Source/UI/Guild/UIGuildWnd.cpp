@@ -2741,7 +2741,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case MENUID_LEAVE_GUILD: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
-        *reinterpret_cast<float*>(g_session.guildTargetCharacter) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
+        g_session.m_guildTargetCharacter = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
         g_windowMgr.EnsureWindow(WID_GUILDLEAVEREASONDESCWND);
       }
       break;

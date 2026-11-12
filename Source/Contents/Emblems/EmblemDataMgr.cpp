@@ -76,7 +76,7 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
 // OFFSET: 0x005EB260
 // FUNCTION: fn_03972
 void CEmblemDataMgr::Download(std::uint32_t guildId, std::uint32_t version) {
-  const std::string token(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16);
+  const std::string token(g_session.m_webAuthToken, 16);
   g_asyncWorkMgr->DownloadEmblem(this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version);
 }
 
@@ -88,7 +88,7 @@ bool CEmblemDataMgr::Upload(std::uint32_t guildId, std::string path) {
   }
 
   std::string token;
-  token.assign(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16);
+  token.assign(g_session.m_webAuthToken, 16);
   g_asyncWorkMgr->UploadEmblem(this->m_uploadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, path);
 
   return true;

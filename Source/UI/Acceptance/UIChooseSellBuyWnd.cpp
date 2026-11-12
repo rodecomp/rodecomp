@@ -5103,10 +5103,10 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     switch (a) {
     case ID_NEXT: {
       const DWORD tick = GetTickCount();
-      if (tick - *reinterpret_cast<const DWORD*>(&g_session.itemSendState[0x04]) < 300) {
+      if (tick - g_session.m_itemSendTick < 300) {
         return 0;
       }
-      *reinterpret_cast<DWORD*>(&g_session.itemSendState[0x04]) = tick;
+      g_session.m_itemSendTick = tick;
       g_modeMgr.gameMode->SendMsg(this->m_responseMessage, this->m_responseId, 218, 0, 0);
       this->m_responsePending = 1;
       this->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
@@ -11901,8 +11901,8 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     switch (a) {
     case ID_OK: {
       const std::uint32_t tick = GetTickCount();
-      if (tick - *reinterpret_cast<const DWORD*>(&g_session.itemSendState[0x04]) >= 300) {
-        *reinterpret_cast<DWORD*>(&g_session.itemSendState[0x04]) = tick;
+      if (tick - g_session.m_itemSendTick >= 300) {
+        g_session.m_itemSendTick = tick;
         if (this->m_items.empty()) {
           this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
           return 0;

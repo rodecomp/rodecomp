@@ -2897,7 +2897,7 @@ void CSession::LoadExternalSettings() {
     ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0xA78387FF5BD35BC1ULL, char), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->raceCreationOptions));
+  this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &this->m_makeableDoram);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &this->m_default99LvAura);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &this->m_default99LvAuraSub);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &this->m_baby99LvAura);
@@ -2945,7 +2945,7 @@ void CSession::Init() {
   }
 
   this->m_averagePing = 0;
-  *reinterpret_cast<int*>(&this->itemSendState[0x08]) = 0;
+  this->m_chatTarget = 0;
   this->m_showEffects = 1;
   this->m_aid = 0;
 
@@ -2955,24 +2955,24 @@ void CSession::Init() {
     (((((static_cast<unsigned char>(systemTime.wYear) * 12 +systemTime.wMonth) * 31 + systemTime.wDay) * 24 + systemTime.wHour + 9) * 60 + systemTime.wMinute) * 60 + systemTime.wSecond) * 1000 +
     systemTime.wMilliseconds;
   this->m_clientTimeOffset = now - timeGetTime();
-  *reinterpret_cast<int*>(this->guildTargetCharacter) = 0;
-  *reinterpret_cast<int*>(&this->whisperOptions[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->timeAttackState[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->timeAttackState[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->timeAttackState[0x0C]) = 0;
-  *reinterpret_cast<int*>(&this->timeAttackState[0x08]) = 0;
+  this->m_guildTargetCharacter = 0;
+  this->m_whisperOption0 = 0;
+  this->m_timeAttackStart = 0;
+  this->m_timeAttackCountdown = 0;
+  this->unknown_07B0 = 0;
+  this->m_timeAttackVisible = 0;
   this->m_serviceOption229 = 0;
   this->m_isSiegeZone = 0;
   this->m_isPvpZone = 0;
   this->partyBlocked = 0;
   this->m_timeAttackMode = 0;
   this->m_hotkeyPage = 0;
-  *reinterpret_cast<int*>(this->whisperRecordStorage) = 0;
+  this->m_whisperRecord = 0;
   this->mapPropertyId = 0;
   g_mapPropertyMgr->Clear();
   g_activeSkillEffects.clear();
 
-  *reinterpret_cast<int*>(&this->whisperOptions[0x04]) = 0;
+  this->m_whisperOption1 = 0;
   this->m_petNameModified = 0;
   this->petJob = -1;
   this->petLevel = 1;
@@ -2981,8 +2981,8 @@ void CSession::Init() {
   this->m_petFriendly = 100;
   this->petEggIndex = -1;
   this->petPreviousHunger = 100;
-  this->monsterTalkState[0] = 0;
-  *reinterpret_cast<int*>(&this->monsterTalkState[0x04]) = -1;
+  this->m_monsterTalkActive = 0;
+  this->m_monsterTalkId = -1;
   std::sprintf(this->petName, "");
 
   std::sprintf(reinterpret_cast<char*>(&this->spAndHomunculusStats[0x0C]), "");
@@ -3032,7 +3032,7 @@ void CSession::Init() {
   this->m_mercenaryActionState = 0;
   this->autoReplyState[0] = 0;
 
-  *reinterpret_cast<DWORD*>(&this->itemSendState[0x04]) = GetTickCount();
+  this->m_itemSendTick = GetTickCount();
   *reinterpret_cast<int*>(&this->characterRenameData[0x01]) = 0;
   std::sprintf(reinterpret_cast<char*>(&this->characterRenameData[0x05]), "");
   reinterpret_cast<bool&>(this->replaySessionFlag) = false;
@@ -3205,7 +3205,7 @@ void CSession::ResetCharacterState() {
   g_session.m_mapTransitionFlag = 0;
   *reinterpret_cast<std::uint16_t*>(&this->playerStatusFlags[0x08]) = 0;
   this->adoptionSkillAvailable = 0;
-  this->loginOptions[0] = 1;
+  this->m_loginOption = 1;
   this->guildLeader = 0;
   this->showTimer = 0;
   this->mouseAndChannelOptions[0] = 1;
@@ -3914,8 +3914,7 @@ void CSession::InitCommandTables() {
                    [](const std::pair<const char*, int>& left, const std::pair<const char*, int>& right) {
                      return std::strcmp(left.first, right.first) < 0;
                    });
-  std::vector<std::pair<const char*, int>>& chatCommands =
-    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->commandTables[0x00]);
+  std::vector<std::pair<const char*, int>>& chatCommands = this->m_chatCommands;
   chatCommands.push_back({"/taekwon", 152});
   chatCommands.push_back({"/hi", 151});
   chatCommands.push_back({"/blacksmith", 146});
@@ -3935,8 +3934,7 @@ void CSession::InitCommandTables() {
   chatCommands.push_back({"/ex", 15});
   chatCommands.push_back({"/inall", 17});
   chatCommands.push_back({"/exall", 16});
-  std::vector<std::pair<const char*, int>>& windowCommands =
-    reinterpret_cast<std::vector<std::pair<const char*, int>>&>(this->commandTables[0x0C]);
+  std::vector<std::pair<const char*, int>>& windowCommands = this->m_windowCommands;
   if (g_serviceType == 12) {
     windowCommands.push_back({"Sala de Chat", 67});
     windowCommands.push_back({"Atributos", 65});
@@ -3974,7 +3972,7 @@ void CSession::InitCommandTables() {
     windowCommands.push_back({"EmotionList", 76});
     windowCommands.push_back({"PetInfo", 74});
   }
-  std::vector<const char*>& shortcutCommands = reinterpret_cast<std::vector<const char*>&>(this->commandTables[0x18]);
+  std::vector<const char*>& shortcutCommands = this->m_shortcutCommands;
   shortcutCommands.push_back("Alt + C");
   shortcutCommands.push_back("Alt + A");
   shortcutCommands.push_back("Alt + D");
@@ -4034,8 +4032,8 @@ CSession::CSession() {
   this->m_newRobeDrawOnTop = false;
   this->m_localMapMove = 0;
   this->m_swapEquipmentMode = 0;
-  this->raceCreationOptions[0] = 1;
-  *reinterpret_cast<int*>(&this->raceCreationOptions[4]) = 0;
+  this->m_makeableDoram = 1;
+  this->unknown_7F78 = 0;
   CPrivateAirplaneMgr::Create();
   CCheckAttendanceMgr::Create();
   *reinterpret_cast<int*>(&this->equipmentViewState[0x28]) = 0;
@@ -4046,7 +4044,7 @@ CSession::CSession() {
   this->m_maxJobLevel4th = 0;
   CChangeMaterialMgr::CreateInstance();
   this->m_options.Clear();
-  *reinterpret_cast<int*>(&this->webServiceLoginData[0x18]) = 0;
+  this->m_limitedSaleRequestTick = 0;
   this->m_damageSkinIndex = 0;
   this->m_damageSkinMode = 0;
   this->m_damageMillionUnit = 0;

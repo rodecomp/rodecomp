@@ -243,7 +243,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_COMBOBOX_SELECTED:
     switch (this->m_menuMode) {
     case 1:
-      *reinterpret_cast<int*>(&g_session.itemSendState[0x8]) = a;
+      g_session.m_chatTarget = a;
       switch (a) {
       case 0:
         static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0, 0, 0, 0xFFFFFFFF);
@@ -401,7 +401,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_GUILD)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLAN_MANAGE_LAND)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_IMPOSSIBLE)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_SETCURITEM, *reinterpret_cast<int*>(&g_session.itemSendState[0x8]), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_SETCURITEM, g_session.m_chatTarget, 0, 0, 0);
       menu->Resize(0x70, 0x30);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
       int x = this->geometry.width - 0x73;
