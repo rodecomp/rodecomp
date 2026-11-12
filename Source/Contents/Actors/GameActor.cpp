@@ -1189,7 +1189,9 @@ void __stdcall CreateHallucinationPc(
   pc->SetBodyCostume(bodyPalette, 0);
 
   CHalluPC* hallu = new CHalluPC(pc);
-  hallu->render.position = *position;
+  hallu->render.position.x = position->x;
+  hallu->render.position.y = position->y;
+  hallu->render.position.z = position->z;
   unsigned char* const argb = reinterpret_cast<unsigned char*>(&hallu->render.color);
   if (alpha != -1) {
     argb[3] = static_cast<unsigned char>(alpha);
