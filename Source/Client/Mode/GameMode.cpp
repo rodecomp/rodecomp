@@ -6651,8 +6651,11 @@ void CGameMode::UpdateBalloons() {
       g_windowMgr.AddRendered(hintBalloon);
       static_cast<UITransBalloonText*>(hintBalloon)->SetText(LookupMessage(MSI_SELECTTARGET), 35);
       hintBalloon->Move((g_renderer->viewport.width - 640) / 2 - hintBalloon->geometry.width / 2 + 320, 400 * g_renderer->viewport.height / 480);
-      static_cast<UITransBalloonText*>(hintBalloon)->m_textColor = 0x32FF32;
-      static_cast<UITransBalloonText*>(hintBalloon)->m_outlineColor = 0;
+      {
+        UITransBalloonText* hint = static_cast<UITransBalloonText*>(hintBalloon);
+        hint->m_textColor = 0x32FF32;
+        hint->m_outlineColor = 0;
+      }
     }
   }
 
