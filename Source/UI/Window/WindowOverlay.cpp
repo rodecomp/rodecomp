@@ -76,18 +76,13 @@ void UIEquipWnd::DrawDamageSkinPage() {
         true
       );
     }
-    int height;
-    unsigned char bold;
     if (g_session.m_damageSkinIndex == index) {
       this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0xBABABA, 1);
-      height = 14;
-      bold = 1;
+      this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0x323232, 1);
     } else {
       this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0xBABABA, 0);
-      height = 12;
-      bold = 0;
+      this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0x323232, 0);
     }
-    this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, height, 0x323232, bold);
     this->DrawBitmap(
       x + 14, 0x5A,
       static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
