@@ -7541,13 +7541,13 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
 
   for (int index = 0; index < 10; ++index) {
-    const std::string line = FormatOwnedString("[ %2d ] %-18s  :  %4d POINT", index + 1, packet->names[index], packet->points[index]);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY,
+      reinterpret_cast<std::intptr_t>(FormatOwnedString("[ %2d ] %-18s  :  %4d POINT", index + 1, packet->names[index], packet->points[index]).c_str()),
+      background, 0, 0, 0);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 
-  const std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", packet->myPoint);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("MY POINT    :  %4d POINT ", packet->myPoint).c_str()), background, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
 
