@@ -27,7 +27,7 @@ public:
   void EnableTimeLimit() override;
   void EnableGroundRender() override;
 
-  bool IsFinished();
+  unsigned char IsFinished();
   void EndLoop(unsigned char fadeOut);
 
   /* 00CC */ EZ2STREmitter* emitter;

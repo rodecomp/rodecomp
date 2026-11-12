@@ -39,7 +39,7 @@ public:
   virtual bool SaveJpeg(const char* filename, CBitmapRes* overlay) = 0;
   virtual void CleanupTextures() = 0;
   virtual bool SaveLogo(std::string filename) = 0;
-  virtual bool LockBackBuffer() = 0;
+  virtual int LockBackBuffer() = 0;
   virtual HRESULT UnlockBackBuffer() = 0;
   float* ProjectViewport(const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth);
   float* ProjectViewportCentered(

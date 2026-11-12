@@ -846,8 +846,8 @@ public:
   int IsFriendName(const char* name) const;
   bool RemoveFriendByCharacterId(std::uint32_t characterId);
   void RemovePartyMemberByName(const char* name);
-  bool IsGuildMemberAccount(std::uint32_t accountId) const;
-  bool IsGuildMemberCharacter(std::uint32_t characterId) const;
+  int IsGuildMemberAccount(std::uint32_t accountId) const;
+  int IsGuildMemberCharacter(std::uint32_t characterId) const;
   bool IsGuildMemberCharacter(int characterId, char* name) const;
   bool IsGuildMemberName(const char* name) const;
   bool IsIndoorMapName(const char* name) const;

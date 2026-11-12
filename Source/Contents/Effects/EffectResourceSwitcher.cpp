@@ -266,7 +266,7 @@ CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
 
 // OFFSET: 0x006FFA00
 // FUNCTION: fn_06967
-__declspec(noinline) bool CEZ2STREffectEx::IsFinished() {
+__declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {
   if (!this->emitter) {
     return false;
   }

@@ -31,7 +31,7 @@ public:
   bool SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   void CleanupTextures() override;
   bool SaveLogo(std::string filename) override;
-  bool LockBackBuffer() override;
+  int LockBackBuffer() override;
   HRESULT UnlockBackBuffer() override;
 
   void SetTextureMode(int mode);

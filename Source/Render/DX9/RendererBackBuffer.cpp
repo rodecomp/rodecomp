@@ -3,12 +3,12 @@
 
 // OFFSET: 0x00567E80
 // FUNCTION: fn_02232
-bool CRendererDX9::LockBackBuffer() {
+int CRendererDX9::LockBackBuffer() {
   const DeviceOwnerDX9& owner = *this->device;
   D3DLOCKED_RECT locked;
 
   if (FAILED(owner.backBuffer->LockRect(&locked, nullptr, 0))) {
-    return false;
+    return 0;
   }
 
   this->backBuffer.pixels = locked.pBits;
@@ -32,7 +32,7 @@ bool CRendererDX9::LockBackBuffer() {
   }
   this->backBuffer.bitsPerPixel = bitsPerPixel;
 
-  return true;
+  return 1;
 }
 
 // OFFSET: 0x00568ED0

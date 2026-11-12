@@ -29,7 +29,7 @@ public:
   void SetClearColor(unsigned color) override;
   void SetFog(int enabled) override;
   bool Draw() override;
-  bool LockBackBuffer() override;
+  int LockBackBuffer() override;
   HRESULT UnlockBackBuffer() override;
 
   void SetTextureFormat(unsigned format);

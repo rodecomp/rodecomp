@@ -1727,30 +1727,30 @@ bool CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
 
 // OFFSET: 0x00DF9F10
 // FUNCTION: fn_23568
-bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
+int CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
   std::list<GuildInfo::Member> members;
   members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.accountId) == accountId) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00DFA030
 // FUNCTION: fn_23569
-bool CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
+int CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
   std::list<GuildInfo::Member> members;
   members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (static_cast<std::uint32_t>(member.characterId) == characterId) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00DFA150

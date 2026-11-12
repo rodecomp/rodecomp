@@ -2767,7 +2767,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (g_windowMgr.IsFriend(target.name.c_str()) == true) {
           relation = LookupMessage(MSI_FRIEND);
         } else {
-          relation = g_session.IsGuildMemberCharacter(static_cast<std::uint32_t>(target.characterId)) == true ? "GuildMember" : nullptr;
+          relation = g_session.IsGuildMemberCharacter(static_cast<std::uint32_t>(target.characterId)) == 1 ? "GuildMember" : nullptr;
         }
         const std::string filename = ShortcutFilename(target.characterId);
         g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(target.name.c_str()), reinterpret_cast<std::intptr_t>(relation),

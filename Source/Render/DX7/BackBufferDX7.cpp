@@ -43,19 +43,19 @@ bool CRendererDX7::RestoreBackBuffer() {
 
 // OFFSET: 0x0055D3E0
 // FUNCTION: fn_02103
-bool CRendererDX7::LockBackBuffer() {
+int CRendererDX7::LockBackBuffer() {
   DDSURFACEDESC2 description = {sizeof(description)};
   IDirectDrawSurface7* renderTarget = g_deviceOwnerDX7 ? g_deviceOwnerDX7->renderTarget : nullptr;
 
   if (FAILED(renderTarget->Lock(nullptr, &description, DDLOCK_WAIT, nullptr))) {
-    return false;
+    return 0;
   }
 
   this->backBuffer.pixels = description.lpSurface;
   this->backBuffer.bitsPerPixel = description.ddpfPixelFormat.dwRGBBitCount;
   this->backBuffer.pitch = description.lPitch;
 
-  return true;
+  return 1;
 }
 
 // OFFSET: 0x0055FBB0
