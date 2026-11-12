@@ -78,7 +78,6 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   switch (skillId) {
   case KN_AUTOCOUNTER:
   case TF_THROWSTONE:
-  case AS_VENOMKNIFE:
     effectId = -1;
     motion = 11;
     break;
@@ -1191,6 +1190,10 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SA_ELEMENTWATER:
     effectId = 54;
     return;
+  case AS_VENOMKNIFE:
+    effectId = -1;
+    motion = 11;
+    break;
   }
 
   if (effectId != 12) {
