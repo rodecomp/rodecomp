@@ -12,7 +12,7 @@ struct ModelTextureTransform {
   /* 0000 */ float values[5] = {0, 0, 1, 1, 0};
 };
 
-void SampleModelTexture(const ModelTextureChannels& channels, float frame, ModelTextureTransform& output);
+void SampleModelTexture(ModelTextureChannels& channels, float frame, ModelTextureTransform& output);
 
 class C3dNode {
 public:
