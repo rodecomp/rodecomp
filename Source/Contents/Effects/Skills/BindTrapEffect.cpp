@@ -74,10 +74,10 @@ bool CBindTrapEffect::IsAlive() {
 void CBindTrapEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
