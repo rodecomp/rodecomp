@@ -282,8 +282,9 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
     info->textViewer->Clear();
   }
 
-  const auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
-  if (found != g_renewQuestMgr->m_recommendedQuests.end()) {
+  const auto& quests = g_renewQuestMgr->m_recommendedQuests;
+  const auto found = quests.find(questId);
+  if (found != quests.end()) {
     const RenewQuestRecommendedInfo& quest = found->second;
     this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.backgroundImage);
 
