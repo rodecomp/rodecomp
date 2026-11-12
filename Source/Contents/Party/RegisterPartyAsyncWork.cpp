@@ -30,7 +30,7 @@ const char* g_registerPartyPoolName = DecryptName<0x07112F85A39F4FABULL>(CRYPT_B
 // OFFSET: 0x005D3600
 // FUNCTION: fn_03704
 CRegisterPartyAsyncWork::CRegisterPartyAsyncWork()
-    : NAsyncWork("Register_Party"), m_accountId(0), m_characterId(0),
+    : NAsyncWork(g_registerPartyPoolName), m_accountId(0), m_characterId(0),
       m_diagnostic(false, std::string(DecryptName<0x2D33791F67AD47DFULL>({0xAA, 0x29, 0xC6, 0x09, 0x68, 0x16, 0x5D, 0x2D})), sourceFile, 26) {
 }
 
