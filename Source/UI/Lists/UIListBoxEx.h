@@ -9,8 +9,16 @@
 class UIScrollBar;
 
 struct ExtendedListLine {
+  // INLINED
+  ExtendedListLine() : text(), color(0) {
+  }
+
+  // INLINED
+  ExtendedListLine(const char* text, std::uint32_t color) : text(text), color(color) {
+  }
+
   /* 0000 */ std::string text;
-  /* 0018 */ std::uint32_t color = 0;
+  /* 0018 */ std::uint32_t color;
 };
 
 class UIListBoxEx : public UIWindow {
