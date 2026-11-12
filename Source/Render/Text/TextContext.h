@@ -34,7 +34,8 @@ private:
   /* 000C */ int m_family;
   /* 0010 */ int m_height;
   /* 0014 */ unsigned m_charset;
-  /* 0018 */ unsigned char padding_0018[5];
+  /* 0018 */ int padding_0018;
+  /* 001C */ unsigned char padding_001C;
   /* 001D */ unsigned char m_bold;
   /* 001E */ unsigned char m_italic;
   SIZE MeasurePart(const char* text, int bytes, unsigned charset);
