@@ -4208,9 +4208,7 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
@@ -4219,45 +4217,45 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
       const float level = static_cast<float>(row - 1);
 
       for (int turn = 0; turn < 225; turn += 45) {
-        slot.distance = 1.5f - (level < 0.0f ? level * -1.0f : level) + 1.5f;
+        this->state.slots[ec].distance = 1.5f - (level < 0.0f ? level * -1.0f : level) + 1.5f;
 
-        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight, slot.maxHeight + 2.0f, quad);
-        if (slot.flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight, this->state.slots[ec].maxHeight + 2.0f, quad);
+        if (this->state.slots[ec].flag1[0] == 3) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 4) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 5) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
 
-        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight + 0.2f, slot.maxHeight, quad);
-        if (slot.flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.2f, this->state.slots[ec].maxHeight, quad);
+        if (this->state.slots[ec].flag1[0] == 3) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 4) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 5) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
 
-        BuildSphereCageQuad(slot, latitude, turn, slot.maxHeight + 0.4f + slot.height[0], slot.maxHeight, quad);
-        if (slot.flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (slot.flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.4f + this->state.slots[ec].height[0], this->state.slots[ec].maxHeight, quad);
+        if (this->state.slots[ec].flag1[0] == 3) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 2) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 4) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (this->state.slots[ec].flag1[0] == 5) {
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
