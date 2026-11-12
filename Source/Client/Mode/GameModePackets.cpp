@@ -3393,10 +3393,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
   ActorSkillMessage message;
   message.skillId = *reinterpret_cast<const std::uint16_t*>(packet + 2);
-  message.damage = *reinterpret_cast<const std::int16_t*>(packet + 0x18);
   message.actionType = packet[0x1E];
-  message.targetId = *reinterpret_cast<const std::uint32_t*>(packet + 8);
+  message.damage = *reinterpret_cast<const std::int16_t*>(packet + 0x18);
   message.tick = *reinterpret_cast<const std::uint32_t*>(packet + 0xC);
+  message.targetId = *reinterpret_cast<const std::uint32_t*>(packet + 8);
   message.skillLevel = *reinterpret_cast<const std::int16_t*>(packet + 0x1A);
   message.hitCount = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
   message.cellX = -1;
