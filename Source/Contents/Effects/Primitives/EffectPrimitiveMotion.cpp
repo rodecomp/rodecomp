@@ -916,7 +916,7 @@ void CEffectPrim::PrimBottom() {
 
   ++slot.process;
 
-  if (slot.process % 6 == 0) {
+  if (slots[0].process % 6 == 0) {
     for (int index = 3; index > 0; --index) {
       EffectPrimitiveSlot& trail = slots[index];
       const EffectPrimitiveSlot& previous = slots[index - 1];
@@ -931,7 +931,9 @@ void CEffectPrim::PrimBottom() {
           trail.alphaB = 0;
         }
 
-        trail.vecBNow = previous.vecBNow;
+        trail.vecBNow.x = previous.vecBNow.x;
+        trail.vecBNow.y = previous.vecBNow.y;
+        trail.vecBNow.z = previous.vecBNow.z;
         trail.fullDisplayAngle = previous.fullDisplayAngle;
         trail.flag1[0] = previous.flag1[0];
         trail.flag1[2] = 2;
