@@ -103,12 +103,12 @@ void CCrimsonArrowEffect::OnProcess() {
 
   EZ2STREmitter* emitter = this->emitter;
   const vector3d base = {this->position[0], this->position[1], this->position[2]};
-  const float x = emitter->offset.x + base.x;
   const float y = emitter->offset.y + base.y;
   const float z = emitter->offset.z + base.z;
-  emitter->position.x = x;
+  const float x = emitter->offset.x + base.x;
   emitter->position.y = y;
   emitter->position.z = z;
+  emitter->position.x = x;
   AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -898,12 +898,12 @@ void CEternalSlashCountEffect::OnProcess() {
 
   EZ2STREmitter* emitter = this->emitter;
   const vector3d base = {this->position[0], this->position[1], this->position[2]};
-  const float x = emitter->offset.x + base.x;
   const float y = emitter->offset.y + base.y;
   const float z = emitter->offset.z + base.z;
-  emitter->position.x = x;
+  const float x = emitter->offset.x + base.x;
   emitter->position.y = y;
   emitter->position.z = z;
+  emitter->position.x = x;
   AsParticle(this->emitter)->Process(0.0f, 0.0f, 0.0f);
 }
 
