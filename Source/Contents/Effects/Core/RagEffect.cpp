@@ -7991,7 +7991,7 @@ void CRagEffect::FrostSplash(int, int) {
 
   CTexture* texture;
   bool water;
-  if (std::max(rand() % 10, 0) > 0) {
+  if (ClampedRandom(10) > 0) {
     texture = g_texMgr.Load("effect\\freeze_a_small.bmp", 0, false, true, false);
     water = false;
   } else {
@@ -8021,13 +8021,13 @@ void CRagEffect::FrostSplash(int, int) {
     stored()->state.slots[i].maxHeight = 0.05f;
     stored()->state.slots[i].distance = scale * (water ? 7.0f : 4.5f);
 
-    stored()->state.slots[i].vecBPre.y = static_cast<float>(std::max(rand() % 30, 0));
-    stored()->state.slots[i].height[0] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[1] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[2] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[3] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].vecBPre.x = static_cast<float>(std::max(rand() % 45, 0) - 22);
-    stored()->state.slots[i].vecBPre.z = static_cast<float>(std::max(rand() % 11, 0) - 5);
+    stored()->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(30));
+    stored()->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    stored()->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(11) - 5);
     stored()->state.slots[i].vecBPre.x = scale * stored()->state.slots[i].vecBPre.x;
     stored()->state.slots[i].vecBPre.z = scale * stored()->state.slots[i].vecBPre.z;
     stored()->state.slots[i].vecBPre.y = scale * stored()->state.slots[i].vecBPre.y;
@@ -8038,13 +8038,13 @@ void CRagEffect::FrostSplash(int, int) {
       stored()->state.slots[i].vecBPre.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
-    stored()->state.slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 45, 0) - 22);
-    stored()->state.slots[i].vecBNow.y = static_cast<float>(std::max(rand() % 30, 0));
-    stored()->state.slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 11, 0) - 5);
-    stored()->state.slots[i].height[4] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[5] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[6] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[7] = static_cast<float>(std::max(rand() % 360, 0));
+    stored()->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    stored()->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(30));
+    stored()->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    stored()->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
     stored()->state.slots[i].vecBNow.x = scale * stored()->state.slots[i].vecBNow.x;
     stored()->state.slots[i].vecBNow.z = scale * stored()->state.slots[i].vecBNow.z;
     stored()->state.slots[i].vecBNow.y = scale * stored()->state.slots[i].vecBNow.y;
@@ -8055,13 +8055,13 @@ void CRagEffect::FrostSplash(int, int) {
       stored()->state.slots[i].vecBNow.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
-    stored()->state.slots[i].vecTPre.x = static_cast<float>(std::max(rand() % 45, 0) - 22);
-    stored()->state.slots[i].vecTPre.y = static_cast<float>(std::max(rand() % 30, 0));
-    stored()->state.slots[i].vecTPre.z = static_cast<float>(std::max(rand() % 11, 0) - 5);
-    stored()->state.slots[i].height[8] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[9] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[10] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[11] = static_cast<float>(std::max(rand() % 360, 0));
+    stored()->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    stored()->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(30));
+    stored()->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(11) - 5);
+    stored()->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
     stored()->state.slots[i].vecTPre.x = scale * stored()->state.slots[i].vecTPre.x;
     stored()->state.slots[i].vecTPre.z = scale * stored()->state.slots[i].vecTPre.z;
     stored()->state.slots[i].vecTPre.y = scale * stored()->state.slots[i].vecTPre.y;
@@ -8072,13 +8072,13 @@ void CRagEffect::FrostSplash(int, int) {
       stored()->state.slots[i].vecTPre.z = x * g_sinTable[angle] + z * g_cosTable[angle];
     }
 
-    stored()->state.slots[i].vecTNow.x = static_cast<float>(std::max(rand() % 45, 0) - 22);
-    stored()->state.slots[i].vecTNow.y = static_cast<float>(std::max(rand() % 30, 0));
-    stored()->state.slots[i].vecTNow.z = static_cast<float>(std::max(rand() % 11, 0) - 5);
-    stored()->state.slots[i].height[12] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[13] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[14] = static_cast<float>(std::max(rand() % 360, 0));
-    stored()->state.slots[i].height[15] = static_cast<float>(std::max(rand() % 360, 0));
+    stored()->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    stored()->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(30));
+    stored()->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    stored()->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
+    stored()->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
     stored()->state.slots[i].vecTNow.x = scale * stored()->state.slots[i].vecTNow.x;
     stored()->state.slots[i].vecTNow.z = scale * stored()->state.slots[i].vecTNow.z;
     stored()->state.slots[i].vecTNow.y = scale * stored()->state.slots[i].vecTNow.y;
