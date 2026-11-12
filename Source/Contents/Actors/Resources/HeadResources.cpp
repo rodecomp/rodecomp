@@ -6,6 +6,8 @@
 
 #include <string>
 
+template __declspec(noinline) std::string std::operator+(const std::string&, const std::string&);
+
 // GLOBAL: gl_24703
 EquipmentResourceMgr* g_equipmentResourceMgr;
 // GLOBAL: gl_24539
@@ -155,7 +157,7 @@ int CSession::GetDisplayJob() {
 
 // OFFSET: 0x00E0A430
 // FUNCTION: fn_23796
-std::string CSession::GetSexName(int sex) {
+__declspec(noinline) std::string CSession::GetSexName(int sex) {
   return this->m_sexNames[sex];
 }
 
@@ -173,7 +175,9 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
   }
 
   std::string result = "";
-  const int male = sex != 0 ? 1 : 0;
+  if (sex != 0) {
+    sex = 1;
+  }
   std::string sexName = "";
   std::string headName = "";
 
@@ -182,9 +186,9 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
       *head = 10;
     }
 
-    if (male == 1) {
+    if (sex == 1) {
       headName = g_session.m_doramMaleHeadNames[*head];
-    } else if (male == 0) {
+    } else if (sex == 0) {
       headName = g_session.m_doramFemaleHeadNames[*head];
     }
   } else {
@@ -192,16 +196,16 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
       *head = 13;
     }
 
-    if (male == 1) {
+    if (sex == 1) {
       headName = g_session.m_humanMaleHeadNames[*head];
-    } else if (male == 0) {
+    } else if (sex == 0) {
       headName = g_session.m_humanFemaleHeadNames[*head];
     }
   }
 
-  sexName = static_cast<const std::string&>(g_session.GetSexName(male));
-  result = this->GetBodyRacePrefix(job) +
-           FormatOwnedString("\\머리통\\%s\\%s_%s.%s", sexName.c_str(), headName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]);
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  result = static_cast<const std::string&>(this->GetBodyRacePrefix(job)) +
+           static_cast<const std::string&>(FormatOwnedString("\\머리통\\%s\\%s_%s.%s", sexName.c_str(), headName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]));
   return result;
 }
 
