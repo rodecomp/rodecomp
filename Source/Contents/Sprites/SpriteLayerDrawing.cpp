@@ -596,7 +596,12 @@ std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActR
 void SpriteLayerRenderer::DrawLayer(
   int index, int layer, const ActionFrame* frame, CSprRes* sprite, CActRes* action, int animation, int frameIndex, bool replaced
 ) {
-  int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? 1 : layer);
+  int cellIndex;
+  if (g_session.IsSpecialMonsterJob(this->layerViews[layer])) {
+    cellIndex = GetSlotLayer(1);
+  } else {
+    cellIndex = GetSlotLayer(layer);
+  }
   for (int i = 0; i < frame->cellCount; ++i) {
     if (layer == 7) {
       cellIndex = i;
