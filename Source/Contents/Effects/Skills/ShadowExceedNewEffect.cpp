@@ -101,10 +101,10 @@ void CShadowExceedNew::OnProcess() {
 
   const float angle = actor->render.angle / 180.0f * 3.141592f;
   const float cosine = ClientCos(angle);
-  const float sine = ClientSin(angle);
+  const float sine = -ClientSin(angle);
   const float y = actor->render.position.y + 0.0f;
   const float z = cosine * 5.0f + actor->render.position.z;
-  const float x = -sine * 5.0f + actor->render.position.x;
+  const float x = sine * 5.0f + actor->render.position.x;
   const int direction = actor->render.previousAnimation % 8;
   this->drawBackEmitters = static_cast<unsigned int>(direction - 2) <= 3;
 
