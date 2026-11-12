@@ -5,6 +5,10 @@
 #include <map>
 
 struct PacketLengthValue {
+  // INLINED
+  PacketLengthValue(int length, int variable, int record) : length(length), variable(variable), record(record) {
+  }
+
   /* 0000 */ int length;
   /* 0004 */ int variable;
   /* 0008 */ int record;
