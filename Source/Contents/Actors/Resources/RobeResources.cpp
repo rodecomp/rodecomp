@@ -9,8 +9,8 @@
 // OFFSET: 0x00BAC050
 // FUNCTION: fn_19755
 std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex, int robe, bool riding, int, int costumeJob) {
-  if (robe < 1) {
-    return std::string();
+  if (robe <= 0) {
+    return "";
   }
 
   const int spriteJob = g_session.GetSpriteJob(riding == true ? g_session.GetRidingJob(job) : job, costumeJob, true);
