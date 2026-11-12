@@ -4821,7 +4821,7 @@ void UISecondPasswordInputWnd::DisableButtons() {
 
 // OFFSET: 0x0090C8C0
 // FUNCTION: fn_12450
-std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vector<unsigned char>& body) {
+__declspec(noinline) std::vector<unsigned char> MakeFramedMessage(std::uint16_t type, const std::vector<unsigned char>& body) {
   std::vector<unsigned char> message(body.size() + sizeof(FramedMessageHeader), 0);
   FramedMessageHeader* header = reinterpret_cast<FramedMessageHeader*>(message.data());
   header->type = type;
@@ -9245,7 +9245,7 @@ static __forceinline void AppendItemListReplayRecords(std::vector<unsigned char>
   for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != items.end(); ++item) {
     *index++ = static_cast<std::int16_t>(item->identity[1]);
   }
-  AppendReplayRecord(records, MakeReplayTaggedRecord(id + 3, packet.data(), packet.size()));
+  AppendReplayRecord(records, MakeFramedMessage(id + 3, packet));
 
   AppendReplayRecord(records, MakeReplayTaggedRecord(id + 1, nullptr, 0));
 }
