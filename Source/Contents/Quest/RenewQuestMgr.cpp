@@ -190,8 +190,7 @@ std::string RenewQuestOngoingInfo::GetDateString() const {
 // OFFSET: 0x006779A0
 // FUNCTION: fn_05432
 void CRenewQuestMgr::AddIconTooltip(std::string_view icon, std::string_view tooltip) {
-  const std::string text(tooltip);
-  this->m_iconTooltips[std::string(icon)] = text;
+  this->m_iconTooltips[std::string(icon)] = std::string(tooltip);
 }
 
 // OFFSET: 0x00677F40
