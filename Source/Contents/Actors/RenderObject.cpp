@@ -74,6 +74,7 @@
 #include "Contents/Guild/GuildInfo.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 // GLOBAL: gl_25173
 int g_playerPoisoned;
@@ -2987,39 +2988,26 @@ static std::string ShapeShiftName(int form, int job) {
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
-      constexpr std::array<std::uint8_t, 10> sourceArray = CRYPT_NAME("WEREWOLF2", 0xA5FD29D7AB6DC59FULL);
-      const std::uint8_t (&source)[10] = sourceArray._Elems;
-      thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WEREWOLF2", 0xA5FD29D7AB6DC59FULL);
     }
     case JT_ALITEA: {
-      const std::uint8_t source[] = CRYPT_BYTES(10, "WEREWOLF3", 0xD97D5DBDBB2F2709ULL);
-      thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WEREWOLF3", 0xD97D5DBDBB2F2709ULL);
     }
     default: {
-      const std::uint8_t source[] = CRYPT_BYTES(9, "WEREWOLF", 0xED796785D1DF137FULL);
-      thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WEREWOLF", 0xED796785D1DF137FULL);
     }
     }
   case 2:
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
-      const std::uint8_t source[] = CRYPT_BYTES(12, "WERERAPTOR2", 0x83EFBFBB37EDBDBDULL);
-      thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WERERAPTOR2", 0x83EFBFBB37EDBDBDULL);
     }
     case JT_ALITEA: {
-      const std::uint8_t source[] = CRYPT_BYTES(12, "WERERAPTOR3", 0xBF2B4B31397FF5A7ULL);
-      thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WERERAPTOR3", 0xBF2B4B31397FF5A7ULL);
     }
     default: {
-      const std::uint8_t source[] = CRYPT_BYTES(11, "WERERAPTOR", 0xDD3913D5D7F97BE1ULL);
-      thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
-      return name.Text();
+      return OBFUSCATE_BYTES_TEXT("WERERAPTOR", 0xDD3913D5D7F97BE1ULL);
     }
     }
   default:
