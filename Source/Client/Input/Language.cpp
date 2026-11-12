@@ -284,22 +284,22 @@ void CLanguageBase::Character(unsigned value, LPARAM) {
 // OFFSET: 0x00ACE880
 // FUNCTION: fn_17792
 void CLanguageBase::KeyDown(unsigned key, LPARAM) {
-  if (static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8)) {
+  if (HIBYTE(GetKeyState(VK_SHIFT))) {
     switch (key) {
-    case VK_END:
-      this->cursor = static_cast<int>(this->text.size());
-      break;
-    case VK_HOME:
-      this->cursor = 0;
-      break;
     case VK_LEFT:
       this->MoveBack();
       break;
     case VK_RIGHT:
       this->MoveForward();
       break;
+    case VK_END:
+      this->cursor = static_cast<int>(this->text.size());
+      break;
     case VK_INSERT:
       this->Paste();
+      break;
+    case VK_HOME:
+      this->cursor = 0;
       break;
     case VK_DELETE:
       this->CopySelection();
@@ -310,8 +310,15 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     return;
   }
 
-  if (static_cast<unsigned char>(static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8)) {
+  if (HIBYTE(GetKeyState(VK_CONTROL))) {
     switch (key) {
+    case 'X':
+      this->CopySelection();
+      this->DeleteSelection();
+      break;
+    case 'C':
+      this->CopySelection();
+      break;
     case 'A':
       this->anchor = 0;
       this->cursor = static_cast<int>(this->text.size());
@@ -319,15 +326,8 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
         this->cursor = 0;
       }
       break;
-    case 'C':
-      this->CopySelection();
-      break;
     case 'V':
       this->Paste();
-      break;
-    case 'X':
-      this->CopySelection();
-      this->DeleteSelection();
       break;
     }
 
@@ -335,13 +335,12 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
   }
 
   switch (key) {
-  case VK_END:
-    this->cursor = static_cast<int>(this->text.size());
-    this->anchor = this->cursor;
-    break;
-  case VK_HOME:
-    this->cursor = 0;
-    this->anchor = 0;
+  case VK_DELETE:
+    if (!std::abs(this->cursor - this->anchor)) {
+      this->MoveForward();
+    }
+
+    this->DeleteSelection();
     break;
   case VK_LEFT:
     if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
@@ -361,12 +360,13 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     this->MoveForward();
     this->anchor = this->cursor;
     break;
-  case VK_DELETE:
-    if (this->cursor == this->anchor) {
-      this->MoveForward();
-    }
-
-    this->DeleteSelection();
+  case VK_HOME:
+    this->cursor = 0;
+    this->anchor = 0;
+    break;
+  case VK_END:
+    this->cursor = static_cast<int>(this->text.size());
+    this->anchor = this->cursor;
     break;
   }
 }
