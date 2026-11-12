@@ -55,6 +55,12 @@ struct AnimatedModelNode {
 private:
 };
 
+struct AnimatedModelOrigin {
+  float x = 0.0f;
+  float y;
+  float z;
+};
+
 class C3dAnimModelRes : public CRes {
 public:
   C3dAnimModelRes();
@@ -74,9 +80,7 @@ public:
   /* 0148 */ int animationLength;
   /* 014C */ float speed;
   /* 0150 */ std::uint32_t padding_0150;
-  /* 0154 */ float originX;
-  /* 0158 */ float originY;
-  /* 015C */ float originZ;
+  /* 0154 */ AnimatedModelOrigin origin;
   /* 0160 */ std::uint32_t alpha;
 };
 

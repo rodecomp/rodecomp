@@ -67,16 +67,16 @@ AnimatedModelNode::~AnimatedModelNode() {
 
 // OFFSET: 0x007550E0
 // FUNCTION: fn_07979
-C3dAnimModelRes::C3dAnimModelRes() : originX(0.0f) {
+C3dAnimModelRes::C3dAnimModelRes() {
   this->recordCount = 0;
   this->records = nullptr;
   this->frameCount = 0;
   this->animationLength = 0;
   this->speed = 1.0f;
   this->shade = 2;
-  this->originX = 0.0f;
-  this->originY = 0.0f;
-  this->originZ = 0.0f;
+  this->origin.x = 0.0f;
+  this->origin.y = 0.0f;
+  this->origin.z = 0.0f;
   this->padding_0150 = 0;
   this->alpha = 255;
 }
@@ -129,7 +129,7 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   if (major == 1 && minor >= 2) {
     file.Read(&this->speed, 4);
-    file.Read(&this->originX, 12);
+    file.Read(&this->origin, 12);
   }
 
   if (major == 1 && minor == 3) {
