@@ -141,7 +141,7 @@ void UIBarGraphHomun::Paint() {
 
   const std::int64_t current = this->m_current();
   const std::int64_t maximum = this->m_maximum();
-  if (current > maximum) {
+  if (maximum < current) {
     return;
   }
 
@@ -157,12 +157,12 @@ void UIBarGraphHomun::Paint() {
     this->DrawBitmap(this->geometry.width - backRight->image.width, 0, backRight, false);
   }
 
-  if (maximum == 0) {
+  if (0 == maximum) {
     return;
   }
 
   const double ratio = static_cast<double>(current) / static_cast<double>(maximum);
-  if (ratio == 0.0) {
+  if (0.0 == ratio) {
     return;
   }
 
@@ -195,12 +195,12 @@ void UIBarGraphPlayer::Paint() {
 
   const std::int64_t current = this->m_current();
   const std::int64_t maximum = this->m_maximum();
-  if (current > maximum) {
+  if (maximum < current) {
     return;
   }
 
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp"))), false);
-  if (maximum == 0) {
+  if (0 == maximum) {
     return;
   }
 
@@ -234,7 +234,7 @@ void UIBarGraphPlayerAP::Paint() {
 
   const std::int64_t current = this->m_current();
   const std::int64_t maximum = this->m_maximum();
-  if (current > maximum) {
+  if (maximum < current) {
     return;
   }
 
@@ -243,7 +243,7 @@ void UIBarGraphPlayerAP::Paint() {
     const double ratio = static_cast<double>(current) / static_cast<double>(maximum);
     if (ratio > 0.0) {
       std::string color = "blue";
-      if (ratio == 1.0) {
+      if (1.0 == ratio) {
         color = "red";
       }
 
