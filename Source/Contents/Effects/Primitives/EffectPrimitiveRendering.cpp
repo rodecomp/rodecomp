@@ -5727,8 +5727,8 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
 void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
   ZeroVector3d vert[8];
   ZeroVector3d tvert[4];
-  const float width = this->state.widthSize;
   const float height = this->state.heightSize;
+  const float width = this->state.widthSize;
   vert[0] = {-height, 0.0f, width};
   vert[1] = {-height, 0.0f, -width};
   vert[2] = {height, 0.0f, width};
