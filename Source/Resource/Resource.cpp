@@ -12,8 +12,9 @@ ResourceName::ResourceName(const char* name) {
 }
 
 // INLINED
-void ResourceName::Assign(const char* name) {
+ResourceName& ResourceName::Assign(const char* name) {
   myGPack::AssignNameKey(this->hash, this->text, name);
+  return *this;
 }
 
 // OFFSET: 0x00AEDA10
