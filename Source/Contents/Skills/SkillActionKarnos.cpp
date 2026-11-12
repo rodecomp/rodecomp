@@ -475,13 +475,12 @@ void CSkillAction_KR_THUNDERING_FOCUS::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr auto bytesText = CRYPT_NAME("thundering_focus_g", 0x61FF87ED7BF39BE1ULL);
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2880
@@ -497,13 +496,12 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr auto bytesText = CRYPT_NAME("thundering_focus_y", 0x7D993F650D2785FFULL);
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2A90
@@ -1152,11 +1150,12 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     effect->effectLifetime = 1;
   }
 
-  constexpr std::array<std::uint8_t, 14> effectSourceArray = CRYPT_NAME("chop_chop_sub", 0x7D750DADBDE9C3F1ULL);
-  const std::uint8_t (&effectSource)[14] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x7D750DADBDE9C3F1ULL> effectName(effectSource);
-  EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("chop_chop_sub", 0x7D750DADBDE9C3F1ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x7D750DADBDE9C3F1ULL> name(bytes);
+    return name.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(static_cast<float>(std::max(0, rand() % 360)));
   }
 
