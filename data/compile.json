@@ -340,7 +340,7 @@
   "Source/Client/Session/SessionAchievements.cpp": 0,
   "Source/Client/Session/SessionParty.cpp": 0,
   "Source/Client/Session/SessionPredicates.cpp": 0,
-  "Source/Client/Session/SessionState.cpp": 0,
+  "Source/Client/Session/SessionState.cpp": 5,
   "Source/Client/Stove/StoveMgr.cpp": 0,
   "Source/Contents/Achievement/AchievementMgr.cpp": 4,
   "Source/Contents/Actors/ActorGeometry.cpp": 4,
