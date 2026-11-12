@@ -23,7 +23,7 @@ void BitmapTextureCache::Update(BitmapPixels& bitmap) {
     return;
   }
 
-  if (this->m_alpha) {
+  if (this->m_alpha == true) {
     if (this->m_textures.empty()) {
       CTexture* texture = g_texMgr.CreateTexture(bitmap.width, bitmap.height, TextureFormat::A8R8G8B8, false, false);
       if (texture) {
@@ -55,7 +55,8 @@ void BitmapTextureCache::Update(BitmapPixels& bitmap) {
 
     for (unsigned y = 0; y < bitmap.height; y += 256) {
       for (unsigned x = 0; x < bitmap.width; x += 256) {
-        (*texture++)->Upload(0, 0, std::min(256u, bitmap.width - x), std::min(256u, bitmap.height - y), bitmap.pixels + x + y * bitmap.width, 0, bitmap.width);
+        (*texture)->Upload(0, 0, std::min(256u, bitmap.width - x), std::min(256u, bitmap.height - y), bitmap.pixels + x + y * bitmap.width, 0, bitmap.width);
+        ++texture;
       }
     }
   }
@@ -75,7 +76,7 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
     return;
   }
 
-  if (this->m_cache.m_alpha) {
+  if (this->m_cache.m_alpha == true) {
     for (CTexture* texture : this->m_cache.m_textures) {
       texture->Draw(x, y, width, height, color);
     }
@@ -87,7 +88,8 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
       int remainingWidth = width;
 
       for (int column = 0; column < width; column += 256, remainingWidth -= 256) {
-        (*texture++)->Draw(x + column, y + row, std::min(256, remainingWidth), std::min(256, remainingHeight), color);
+        (*texture)->Draw(x + column, y + row, remainingWidth > 256 ? 256 : remainingWidth, remainingHeight > 256 ? 256 : remainingHeight, color);
+        ++texture;
       }
     }
   }
