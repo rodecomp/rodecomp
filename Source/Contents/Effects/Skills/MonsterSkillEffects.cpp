@@ -1143,7 +1143,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
   const float scale = *reinterpret_cast<float*>(&this->scaleParameter);
   matrix world;
   world.SetScale(scale, scale, 0.0f);
-  world.AppendXRotation(1.5707964f);
+  world.AppendXRotation(1.570796f);
   world.AppendYRotation((angle + static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw) / 180.0f * 3.141592f);
   world.AppendTranslate(this->position);
 
@@ -1176,9 +1176,9 @@ void CFootprintEffect::OnProcess() {
   const float dy = this->position[1] - this->lastPosition.y;
   const float dz = this->position[2] - this->lastPosition.z;
   if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->stepDistance) {
-    CParticle* particle = this->SpawnFootprint();
-    if (particle) {
-      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(this->SpawnFootprint());
+    if (emitter) {
+      this->emitters.emplace_back(emitter);
     }
   }
 
@@ -1288,7 +1288,7 @@ void CFootprintStrEffect::SpawnFootprint() {
   direction.z = inverse * direction.z;
 
   matrix rotation;
-  rotation.MakeYRotation(1.5707964f);
+  rotation.MakeYRotation(1.570796f);
   const float side = static_cast<float>((this->leftFoot != 0) * 2 - 1);
   const float gap = static_cast<float>(this->footGap);
   vector3d point;
