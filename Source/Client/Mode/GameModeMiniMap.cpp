@@ -150,7 +150,7 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   }
 
   for (auto it = this->partyPosList.begin(); it != this->partyPosList.end(); ++it) {
-    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, it->second.color, false);
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 2, it->second.color, false);
     if (g_windowMgr.miniMapWnd) {
       g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 0, index, it->second.x, it->second.y);
     }
@@ -159,7 +159,7 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
 
   for (auto it = this->guildPosList.begin(); it != this->guildPosList.end(); ++it) {
     if (this->partyPosList.find(it->first) == this->partyPosList.end()) {
-      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 1, it->second.color, false);
+      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 1, it->second.color, false);
       if (g_windowMgr.miniMapWnd) {
         g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 1, index, it->second.x, it->second.y);
       }
