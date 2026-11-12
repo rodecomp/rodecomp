@@ -2,6 +2,8 @@
 #define RAGNAROK_SOURCE_CLIENT_REPLAY_REPLAY_H
 #include "Client/Replay/ReplayRecordOption.h"
 
+#include <windows.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -192,9 +194,7 @@ public:
     this->selected = -1;
     this->files.clear();
     this->fileState = 0;
-    for (std::size_t index = 0; index < sizeof(this->buffer); ++index) {
-      this->buffer[index] = 0;
-    }
+    SecureZeroMemory(this->buffer, sizeof(this->buffer));
     this->selectionState = 0;
     this->dialogState = 0;
   }
