@@ -47,10 +47,10 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     item.refiningLevel = (*entry).get("RefiningLevel", 0).asInt();
     item.grade = static_cast<std::int16_t>((*entry).get("GradeLevel", 0).asInt());
 
-    StoreField<std::int32_t>(item.cards + 0, (*entry).get("Slot_1", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 4, (*entry).get("Slot_2", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 8, (*entry).get("Slot_3", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 12, (*entry).get("Slot_4", 0).asInt());
+    item.cards[0] = (*entry).get("Slot_1", 0).asInt();
+    item.cards[1] = (*entry).get("Slot_2", 0).asInt();
+    item.cards[2] = (*entry).get("Slot_3", 0).asInt();
+    item.cards[3] = (*entry).get("Slot_4", 0).asInt();
     item.optionCount = (*entry).get("RandomOptionCount", 0).asInt();
     Json::Value options = (*entry)["RandomOptionList"];
     int index = 0;
@@ -88,10 +88,10 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
     value["Identified"] = item.identified != 0;
     value["RefiningLevel"] = item.refiningLevel;
     value["GradeLevel"] = item.grade;
-    value["Slot_1"] = LoadField<std::int32_t>(item.cards + 0);
-    value["Slot_2"] = LoadField<std::int32_t>(item.cards + 4);
-    value["Slot_3"] = LoadField<std::int32_t>(item.cards + 8);
-    value["Slot_4"] = LoadField<std::int32_t>(item.cards + 12);
+    value["Slot_1"] = static_cast<std::int32_t>(item.cards[0]);
+    value["Slot_2"] = static_cast<std::int32_t>(item.cards[1]);
+    value["Slot_3"] = static_cast<std::int32_t>(item.cards[2]);
+    value["Slot_4"] = static_cast<std::int32_t>(item.cards[3]);
 
     const int count = item.optionCount;
     value["RandomOptionCount"] = count;

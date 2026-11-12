@@ -1952,7 +1952,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       const std::string namelessUserName = LookupMessage(MSI_NAMELESS_USER);
       if (label.find(namelessUserName) != std::string::npos) {
         std::uint32_t creator[2];
-        std::memcpy(creator, item.cards + 8, sizeof(creator));
+        std::memcpy(creator, &item.cards[2], sizeof(creator));
         button->tipId = creator[0] + (creator[1] << 16);
         g_session.AddPendingActorName(button->tipId);
       }

@@ -6767,7 +6767,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
 
   for (int index = 0; index < 4; ++index) {
     int card;
-    std::memcpy(&card, item->cards + index * sizeof(card), sizeof(card));
+    std::memcpy(&card, &item->cards[index], sizeof(card));
     if (card != 0) {
       const CEquipmentAttachable attachable(card, index, this);
       this->m_attachables.push_back(attachable);

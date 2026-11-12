@@ -847,7 +847,7 @@ int CUIEnchantPage::FindEmptySlot() {
       return true;
     }
     int card;
-    std::memcpy(&card, item.cards + slot * 4, sizeof(card));
+    std::memcpy(&card, &item.cards[slot], sizeof(card));
     return card == 0;
   });
   if (it != slots.end()) {
@@ -1408,7 +1408,7 @@ bool CUIReset::LoadEnchantList() {
       return false;
     }
     int card;
-    std::memcpy(&card, item.cards + slot * 4, sizeof(card));
+    std::memcpy(&card, &item.cards[slot], sizeof(card));
     return card != 0;
   });
   if (empty) {
@@ -1433,7 +1433,7 @@ bool CUIEnchantPage::SetItem(const ITEM_INFO& item) {
     CUISlot* slot = entry.second;
     int card = 0;
     if (entry.first < 4) {
-      std::memcpy(&card, item.cards + entry.first * 4, sizeof(card));
+      std::memcpy(&card, &item.cards[entry.first], sizeof(card));
     }
     if (card > 0) {
       ITEM_INFO cardInfo;

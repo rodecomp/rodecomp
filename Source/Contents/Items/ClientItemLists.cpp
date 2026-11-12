@@ -139,8 +139,8 @@ namespace {
 #pragma pack(pop)
 
   bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
-    const auto* valueCards = reinterpret_cast<const std::uint32_t*>(value.cards);
-    const auto* itemCards = reinterpret_cast<const std::uint32_t*>(item.cards);
+    const auto* valueCards = value.cards;
+    const auto* itemCards = item.cards;
 
     if (value.itemId != item.itemId || valueCards[0] != itemCards[0] || valueCards[1] != itemCards[1] ||
         valueCards[2] != itemCards[2] || valueCards[3] != itemCards[3] || value.identified != item.identified ||
@@ -271,7 +271,7 @@ static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int 
   item.damaged = damaged;
   item.refiningLevel = refine;
   item.identity[0] = type;
-  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  std::uint32_t* cards = item.cards;
   cards[0] = card1;
   cards[1] = card2;
   cards[2] = card3;
@@ -298,7 +298,7 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
   item.damaged = damaged;
   item.refiningLevel = refine;
   item.identity[0] = type;
-  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  std::uint32_t* cards = item.cards;
   cards[0] = card1;
   cards[1] = card2;
   cards[2] = card3;
@@ -365,7 +365,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
   item.damaged = damaged;
   item.identified = identified;
   item.refiningLevel = refine;
-  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  std::uint32_t* cards = item.cards;
   cards[0] = card1;
   cards[1] = card2;
   cards[2] = card3;

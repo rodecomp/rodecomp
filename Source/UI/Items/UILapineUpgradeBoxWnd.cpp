@@ -591,7 +591,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   if (Equipment(item) == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
-    const std::uint32_t* cards = reinterpret_cast<const std::uint32_t*>(item.cards);
+    const std::uint32_t* cards = item.cards;
     const std::uint32_t* cardsEnd = cards + 4;
     if (std::find_if(cards, cardsEnd, [](std::uint32_t card) { return card != 0; }) != cardsEnd) {
       this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);

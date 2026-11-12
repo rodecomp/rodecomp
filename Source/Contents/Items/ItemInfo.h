@@ -98,7 +98,7 @@ struct alignas(8) ITEM_INFO {
   /* 0000 */ std::uint32_t identity[4];
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t prices[2];
-  /* 001C */ unsigned char cards[16];
+  /* 001C */ std::uint32_t cards[4];
   /* 002C */ std::string itemId;
   /* 0044 */ std::string displayName;
   /* 005C */ unsigned char identified;

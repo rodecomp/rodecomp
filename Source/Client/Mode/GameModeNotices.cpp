@@ -1175,7 +1175,7 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
     item.identity[3] = 0;
     item.SetItemId(packet->itemId);
     for (int card = 0; card < 4; ++card) {
-      reinterpret_cast<std::uint32_t*>(item.cards)[card] = packet->cards[card];
+      item.cards[card] = packet->cards[card];
     }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
@@ -3407,7 +3407,7 @@ static __forceinline void AddStorageEquipItem(
   item.identity[2] = location;
   item.identity[1] = index;
   item.identity[3] = wearState;
-  std::uint32_t* cards = reinterpret_cast<std::uint32_t*>(item.cards);
+  std::uint32_t* cards = item.cards;
   cards[0] = card0;
   cards[1] = card1;
   cards[2] = card2;
@@ -7448,7 +7448,7 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   item.damaged = packet->damaged;
   item.refiningLevel = packet->refine;
   for (long long index = 0; index < 4; ++index) {
-    reinterpret_cast<std::uint32_t*>(item.cards)[index] = packet->cards[index];
+    item.cards[index] = packet->cards[index];
   }
   item.optionCount = CountItemSlotOptions(packet->options);
   for (long long index = 0; index < item.optionCount; ++index) {

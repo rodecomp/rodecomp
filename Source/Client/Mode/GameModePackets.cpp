@@ -23243,7 +23243,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23265,7 +23265,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23288,7 +23288,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23571,7 +23571,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23595,7 +23595,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23620,7 +23620,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -25026,7 +25026,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -25050,7 +25050,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -25075,7 +25075,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -25099,7 +25099,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->wearState;
         item.quantity = 1;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->flags & 1;
@@ -25126,7 +25126,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->wearState;
         item.quantity = 1;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int *>(item.cards)[card] = record->cards[card];
+          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->flags & 1;

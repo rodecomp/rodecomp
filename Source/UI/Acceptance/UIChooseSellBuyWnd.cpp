@@ -2003,7 +2003,7 @@ void UIItemCollectionWnd::OnMouseHover(int x, int y) {
 
   ITEM_INFO card;
   int cardId;
-  std::memcpy(&cardId, this->m_item.cards + index * sizeof(cardId), sizeof(cardId));
+  std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
   card.identified = 1;
   card.identity[0] = 6;
   card.refiningLevel = 0;
@@ -6835,7 +6835,7 @@ __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slot
   for (int index = 0; index < slots; ++index, left += 25) {
     if (left < localX && localX < left + 25) {
       int cardId;
-      std::memcpy(&cardId, this->m_item.cards + index * sizeof(cardId), sizeof(cardId));
+      std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
       if (cardId == 0) {
         return -1;
       }
@@ -9972,7 +9972,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
 
   ITEM_INFO card;
   int cardId;
-  std::memcpy(&cardId, this->m_item.cards + index * sizeof(cardId), sizeof(cardId));
+  std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
   card.identified = 1;
   card.identity[0] = 6;
   card.refiningLevel = 0;
@@ -9983,7 +9983,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
 
   if (UIItemCollectionWnd* comparison = static_cast<UIItemCollectionWnd*>(g_windowMgr.itemCollectionComparisonWnd)) {
     int compareId;
-    std::memcpy(&compareId, comparison->m_item.cards + index * sizeof(compareId), sizeof(compareId));
+    std::memcpy(&compareId, &comparison->m_item.cards[index], sizeof(compareId));
     if (compareId != 0 && compareId != 254 && compareId != 255) {
       ITEM_INFO compareCard;
       compareCard.identified = 1;
@@ -10009,7 +10009,7 @@ void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
 
   ITEM_INFO card;
   int cardId;
-  std::memcpy(&cardId, this->m_item.cards + index * sizeof(cardId), sizeof(cardId));
+  std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
   card.identified = 1;
   card.identity[0] = 6;
   card.refiningLevel = 0;

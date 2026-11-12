@@ -3062,7 +3062,7 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
       reinterpret_cast<SearchStoreOption*>(entry.item.options)[j] = record.options[j];
     }
     for (long long j = 0; j < 4; ++j) {
-      reinterpret_cast<std::uint32_t*>(entry.item.cards)[j] = record.cards[j];
+      entry.item.cards[j] = record.cards[j];
     }
     entry.item.grade = record.grade;
     g_session.storeSearchResults.push_back(entry);

@@ -147,7 +147,7 @@ std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
   this->prices[1] = item.realPrice;
 
   for (int index = 0; index < 4; ++index) {
-    std::memcpy(this->cards + index * 4, &item.cards[index], sizeof(item.cards[index]));
+    std::memcpy(&this->cards[index], &item.cards[index], sizeof(item.cards[index]));
   }
 
   this->itemId = item.itemId;
@@ -580,7 +580,7 @@ void ITEM_INFO::SetOption(ItemOption option, const int& index) {
 // FUNCTION: fn_06613
 void ITEM_INFO::SetCard(const int& card, const int& index) {
   if (index < 4) {
-    std::memcpy(this->cards + index * 4, &card, sizeof(card));
+    std::memcpy(&this->cards[index], &card, sizeof(card));
   }
 }
 
