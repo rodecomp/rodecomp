@@ -2275,7 +2275,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
 
     int count = 0;
     for (int i = 0; i < 5; ++i) {
-      if (packet->options[i].id != 0) {
+      if (0 != packet->options[i].id) {
         ++count;
       }
     }
