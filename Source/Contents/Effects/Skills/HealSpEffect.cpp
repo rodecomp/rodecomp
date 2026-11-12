@@ -9,6 +9,16 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CSpriteParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x00B45200
 // FUNCTION: fn_18896
 CHealSp::~CHealSp() {
@@ -76,7 +86,8 @@ bool CHealSp::IsAlive() {
 void CHealSp::OnProcess() {
   matrix rotation;
   if (this->frame % 2 == 0) {
-    const float angle = static_cast<float>(std::max(rand() % 360, 0));
+    const int roll = rand() % 360;
+    const float angle = static_cast<float>(roll >= 0 ? roll : 0);
     rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
     const float* values = rotation.values;
     const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * 3.0f + values[9];
@@ -115,7 +126,14 @@ void CHealSp::OnProcess() {
       fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
     }
 
-    const float level = std::min(std::max(alpha + fade, 0.0f), static_cast<float>(static_cast<int>(maxAlpha)));
+    float level = alpha + fade;
+    if (level < 0.0f) {
+      level = 0.0f;
+    }
+    const float limit = static_cast<float>(static_cast<int>(maxAlpha));
+    if (level > limit) {
+      level = limit;
+    }
     this->alphaLevel = static_cast<int>(level);
     params[2] = fade;
     params[5] = spin + angle;
@@ -127,7 +145,7 @@ void CHealSp::OnProcess() {
 
   for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end();) {
     CSpriteParticle* sprite = *it;
-    if (sprite->life == 0.0f || static_cast<float>(sprite->elapsedFrames) < sprite->life * 60.0f) {
+    if (IsParticleActive(sprite) == true) {
       float* params = &sprite->animationParameter;
       const float radius = params[0];
       const float delay = params[4];
@@ -148,13 +166,21 @@ void CHealSp::OnProcess() {
           fade = -(alpha / static_cast<float>(30 - sprite->elapsedFrames));
         }
 
-        level = std::min(std::max(alpha + fade, 0.0f), 255.0f);
+        level = alpha + fade;
+        if (level < 0.0f) {
+          level = 0.0f;
+        }
+        if (level > 255.0f) {
+          level = 255.0f;
+        }
       } else {
         level = static_cast<float>(this->alphaLevel);
       }
 
       params[2] = lift;
-      sprite->velocity = velocity;
+      sprite->velocity.x = velocity.x;
+      sprite->velocity.y = velocity.y;
+      sprite->velocity.z = velocity.z;
       sprite->alpha = static_cast<int>(level);
       params[5] = fade;
       sprite->position.x = x;
