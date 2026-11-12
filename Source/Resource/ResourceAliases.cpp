@@ -4,26 +4,33 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <map>
+#include <string>
+
+using AliasTree = std::map<std::string, std::string>::_Mybase;
+
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char* const, const std::size_t, const char* const, const std::size_t) noexcept;
+template __declspec(noinline) std::_Tree_find_result<AliasTree::_Nodeptr> AliasTree::_Find_lower_bound<std::string>(const std::string&) const;
 
 // OFFSET: 0x00AEF500
 // FUNCTION: fn_18180
 const char* ResourceMgr::Resolve(const char* name) const {
   auto entry = this->m_aliases.find(name);
-  if (entry != this->m_aliases.end()) {
-    return entry->second.c_str();
-  }
-
-  std::string key(name);
-  const std::size_t marker = key.rfind("@");
-  if (marker != std::string::npos && marker >= 4) {
-    key.erase(marker - 4, 3);
-    entry = this->m_aliases.find(key);
-    if (entry != this->m_aliases.end()) {
-      return entry->second.c_str();
+  if (entry == this->m_aliases.end()) {
+    std::string key(name);
+    const std::size_t marker = key.rfind("@");
+    if (marker != std::string::npos && marker >= 4) {
+      key.erase(marker - 4, 3);
+      entry = this->m_aliases.find(key);
+      if (entry != this->m_aliases.end()) {
+        name = entry->second.c_str();
+      }
     }
+
+    return name;
   }
 
-  return name;
+  return entry->second.c_str();
 }
 
 // OFFSET: 0x00AEFAE0
