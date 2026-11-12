@@ -24,18 +24,24 @@ void CGameMode::MarkWorldOcclusion() {
   g_renderer->viewport.Ray(screenX, screenY, this->camera->frame.eye, this->camera->frame.inverse.values, ray);
 
   float actorRay[7];
-  std::memcpy(actorRay, ray, sizeof(ray));
+  actorRay[0] = ray[0];
+  actorRay[1] = ray[1];
+  actorRay[2] = ray[2];
+  actorRay[3] = ray[3];
+  actorRay[4] = ray[4];
+  actorRay[5] = ray[5];
   actorRay[6] = (this->scene->player->render.position.y + this->camera->camera.distance) - 16.0f;
   query.Collect(ray, &this->scene->spatial);
 
-  for (WorldSpatialTree* node : query.nodes) {
-    for (C3dActor* model : node->objects) {
-      model->MarkOccluded(actorRay);
+  for (auto node = query.nodes.begin(); node != query.nodes.end(); ++node) {
+    for (auto model = (*node)->objects.begin(); model != (*node)->objects.end(); ++model) {
+      (*model)->MarkOccluded(actorRay);
     }
   }
 
   if (this->checkGroundAlpha) {
-    for (WorldSpatialTree* node : query.nodes) {
+    for (auto it = query.nodes.begin(); it != query.nodes.end(); ++it) {
+      WorldSpatialTree* node = *it;
       int row = node->groundCells[1];
 
       while (row <= node->groundCells[3]) {
