@@ -457,7 +457,7 @@ void CRagEffect::FrostDiver(char type) {
     this->state.flag = 1;
   }
 
-  this->render.position = saved;
+  CopyVector(this->render.position, saved);
   this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.pattern |= 1u;
@@ -531,7 +531,7 @@ void CRagEffect::GrimTooth() {
     this->state.flag = 1;
   }
 
-  this->render.position = saved;
+  CopyVector(this->render.position, saved);
   this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
   this->state.lastPrim->state.pattern |= 1u;
   this->state.lastPrim->state.duration = 40;
@@ -615,7 +615,7 @@ void CRagEffect::IncAgiDex() {
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_IncAgiDex.wav");
@@ -672,7 +672,7 @@ void CRagEffect::IncAgility() {
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_IncAgility.wav");
@@ -2719,7 +2719,7 @@ void CRagEffect::SMA(char flag) {
     this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
     this->state.lastPrim->state.deltaPos.y = this->state.deltaPos[1];
     this->state.lastPrim->state.deltaPos.z = this->state.deltaPos[2];
-    this->state.lastPrim->render.position = this->render.position;
+    CopyVector(this->state.lastPrim->render.position, this->render.position);
 
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
@@ -2799,7 +2799,7 @@ void CRagEffect::Map_Pika(const char* name) {
 // OFFSET: 0x00C5D390
 // FUNCTION: fn_20233
 void CRagEffect::POISON(char flag) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -6836,7 +6836,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
     this->state.lastPrim->state.slots[index].distance = 20.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(11)) * 0.01f + 0.0f;
-    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
+    CopyVector(this->state.lastPrim->state.slots[index].vecBNow, this->render.position);
     this->state.lastPrim->state.slots[index].vecBNow.y -= 10.0f;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
@@ -7351,7 +7351,7 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
 
   this->state.lastPrim->state.textures[1] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->render.position = this->render.position;
+  CopyVector(this->state.lastPrim->render.position, this->render.position);
 
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
@@ -7850,7 +7850,7 @@ void CRagEffect::TexturedRisingPillar(const char* name, char) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->render.position = this->render.position;
+  CopyVector(this->state.lastPrim->render.position, this->render.position);
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 0;
   }
@@ -11896,7 +11896,7 @@ void CRagEffect::BlitzBeat() {
 // OFFSET: 0x00C5C450
 // FUNCTION: fn_20227
 void CRagEffect::Map_MagicZone(const char* name, char type) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -11956,14 +11956,14 @@ void CRagEffect::Demonstration() {
     return;
   }
 
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
   this->state.lastPrim = CreateEffectParticle(*this, this->render, 51, 0.0f, 0.0f, 0.0f, WorldObjects());
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].maxHeight = 0.0f;
   this->state.lastPrim->state.size = 1.2f;
-  this->state.lastPrim->state.slots[0].vecBPre = this->render.position;
+  CopyVector(this->state.lastPrim->state.slots[0].vecBPre, this->render.position);
   this->state.lastPrim->state.slots[0].vecBPre.y -= 1.0f;
   this->state.lastPrim->state.slots[0].flag1[4] = 0;
   this->state.lastPrim->state.alpha = 200.0f;
@@ -12077,7 +12077,7 @@ void CRagEffect::Ghost(char type) {
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.size = 1.5f;
-  this->state.lastPrim->state.slots[0].vecBNow = this->render.position;
+  CopyVector(this->state.lastPrim->state.slots[0].vecBNow, this->render.position);
   this->state.lastPrim->state.slots[0].rotStart = 0;
   this->state.lastPrim->state.slots[0].riseAngle = 0;
 
@@ -12230,7 +12230,7 @@ void CRagEffect::TEIHIT2() {
 
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
-  this->state.lastPrim->render.position = this->render.position;
+  CopyVector(this->state.lastPrim->render.position, this->render.position);
 
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
@@ -12255,7 +12255,7 @@ void CRagEffect::TEIHIT2() {
 // OFFSET: 0x00C64CB0
 // FUNCTION: fn_20265
 void CRagEffect::ShieldBoomerang3(const char* name) {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\cru_shield boomerang.wav");
   } else if (this->state.stateCnt != 3 && this->state.stateCnt != 6 && this->state.stateCnt != 9 && this->state.stateCnt != 12) {
@@ -13599,7 +13599,7 @@ void CRagEffect::WhiteSparkRing(char kind) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
-  this->state.lastPrim->render.position = this->render.position;
+  CopyVector(this->state.lastPrim->render.position, this->render.position);
   this->state.lastPrim->state.slots[0].life = 0;
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
@@ -14493,7 +14493,7 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
     this->state.duration = 70;
   }
 
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (kind == 33) {
     kind = 0;
@@ -15404,7 +15404,7 @@ void CRagEffect::DecAgility() {
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_DecAgility.wav");
