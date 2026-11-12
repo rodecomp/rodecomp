@@ -257,6 +257,9 @@ BrowserTree::_Find_lower_bound<HWND>(HWND const&) const;
 template std::pair<std::map<HWND, CWebBrowser*>::iterator, bool> std::map<HWND, CWebBrowser*>::insert<std::pair<HWND, CWebBrowser*>>(std::pair<HWND, CWebBrowser*>&&);
 template __declspec(noinline) std::_Tree_find_result<std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Nodeptr>
 std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>::operator++() noexcept;
+template __declspec(noinline) void std::map<UIWindow*, SnapRectangle>::_Mybase::clear() noexcept;
 
 namespace {
 #pragma pack(push, 1)
@@ -329,10 +332,9 @@ void UIWindowMgr::DrawWindows() {
   for (auto overlay = this->overlays.begin(); overlay != this->overlays.end(); ++overlay) {
     overlay->second->Update(0);
     CDC* surface = overlay->second->geometry.surface;
-    const std::uint32_t color = overlay->second->Color();
     surface->Draw(
       overlay->second->geometry.x, overlay->second->geometry.y, overlay->second->geometry.width,
-      overlay->second->geometry.height, color
+      overlay->second->geometry.height, overlay->second->Color()
     );
   }
 
@@ -369,15 +371,13 @@ void UIWindowMgr::DrawWindows() {
       if (window->m_cached == 1) {
         CTexture* texture = window->m_texture;
         if (texture != nullptr) {
-          const std::uint32_t color = window->Color();
-          texture->Draw(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color);
+          texture->Draw(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, window->Color());
         }
         g_renderDiagnosticLine = 3844;
       } else {
         CDC* surface = window->geometry.surface;
-        const std::uint32_t color = window->Color();
         surface->Draw(
-          window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, color
+          window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height, window->Color()
         );
         g_renderDiagnosticLine = 3850;
       }
