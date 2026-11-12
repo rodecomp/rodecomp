@@ -74,8 +74,9 @@ void CStarEffect::SetupParticle(CParticle* particle) {
 
   particle->elapsedFrames = 0;
   particle->alpha = 0;
+  float* angle = state.angles;
   for (int index = 0; index < 4; ++index) {
-    state.angles[index] = static_cast<float>(Random(360));
+    *angle++ = static_cast<float>(Random(360));
   }
 
   state.lifetime = static_cast<float>(Random(200) + 300);
@@ -85,8 +86,9 @@ void CStarEffect::SetupParticle(CParticle* particle) {
   particle->SetTexture("effect\\star01.bmp");
 
   float speedZ = static_cast<float>(Random(200) + 25);
-  const float speedY = static_cast<float>(Random(10)) + 80.0f;
+  const int lift = Random(10);
   float speedX = static_cast<float>(Random(200) + 25);
+  const float speedY = static_cast<float>(lift) + 80.0f;
   if (Random(2) == 0) {
     speedX *= -1.0f;
   }
@@ -133,14 +135,15 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
       texture = 1;
     }
     state.texture = static_cast<float>(texture);
-    particle->SetTexture(FormatOwnedString("effect\\star%02d.bmp", texture).c_str());
+    const std::string name = FormatOwnedString("effect\\star%02d.bmp", texture);
+    particle->SetTexture(name.c_str());
   }
 
   int alpha = particle->alpha;
-  if (frame < 80) {
+  if (particle->elapsedFrames < 80) {
     alpha += 3;
   }
-  if (frame > static_cast<int>(state.lifetime)) {
+  if (particle->elapsedFrames > static_cast<int>(state.lifetime)) {
     --alpha;
     if (alpha <= 0) {
       this->SetupParticle(particle);
@@ -148,39 +151,40 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
   }
   particle->alpha = alpha;
 
+  float* angle = state.angles;
   for (int pair = 0; pair < 2; ++pair) {
-    int current = static_cast<int>(state.angles[pair * 2]);
-    int target = static_cast<int>(state.angles[pair * 2 + 1]);
+    int target = static_cast<int>(angle[1]);
+    int current = static_cast<int>(angle[0]);
     if (target > current) {
       current = std::min(current + 1, 359);
-      if (target < current) {
+      if (current > target) {
         target = Random(current);
       }
     } else {
-      current = std::max(0, current - 1);
-      if (target >= current) {
+      const int previous = current - 1;
+      current = previous >= 0 ? previous : 0;
+      if (current <= target) {
         target = 359 - Random(current);
       }
     }
-    state.angles[pair * 2 + 1] = static_cast<float>(target);
-    state.angles[pair * 2] = static_cast<float>(current);
+    angle[1] = static_cast<float>(target);
+    angle[0] = static_cast<float>(current);
+    angle += 2;
   }
 
-  const float offsetX = particle->offsetX;
-  const float offsetY = particle->offsetY;
-  const float offsetZ = particle->offsetZ;
-  particle->offsetY = offsetY;
-  particle->offsetX = g_sinTable[static_cast<int>(state.angles[0])] * 0.05f + offsetX;
-  particle->offsetZ = g_sinTable[static_cast<int>(state.angles[2])] * 0.05f + offsetZ;
+  const vector3d offset = *reinterpret_cast<const vector3d*>(&particle->offsetX);
+  particle->offsetY = offset.y;
+  particle->offsetX = g_sinTable[static_cast<int>(state.angles[0])] * 0.05f + offset.x;
+  particle->offsetZ = g_sinTable[static_cast<int>(state.angles[2])] * 0.05f + offset.z;
   particle->position.x = particle->offsetX + this->position[0];
-  particle->position.y = offsetY;
+  particle->position.y = offset.y;
   particle->position.z = particle->offsetZ + this->position[2];
 
   int phase = static_cast<int>(state.phase + 1.0f);
   if (phase >= 360) {
     phase -= 360;
   }
-  phase = std::max(0, phase);
+  phase = phase >= 0 ? phase : 0;
   particle->scale = state.baseScale * g_sinTable[phase] * 0.05f + state.baseScale;
   state.phase = static_cast<float>(phase);
 
