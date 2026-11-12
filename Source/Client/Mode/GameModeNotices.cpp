@@ -4742,15 +4742,13 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
 // FUNCTION: fn_21836
 void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SpriteChange2Packet*>(data);
-  const int bodyCostume = g_session.m_bodyCostume;
-  const int bodyStyle = g_session.m_bodyStyle;
   const int value = static_cast<int>(packet->value);
   CGameActor* actor;
   if (packet->aid == g_session.m_aid) {
     actor = this->scene->player;
     switch (packet->type) {
     case LOOK_BASE:
-      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), bodyStyle, bodyCostume);
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), g_session.m_bodyStyle, g_session.m_bodyCostume);
       if (g_session.m_job != packet->value) {
         g_session.SetJob(value);
       }
@@ -4770,17 +4768,17 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     case LOOK_HEAD_BOTTOM:
       *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = value;
       break;
+    case LOOK_HAIR_COLOR:
+      g_session.m_headPalette = value;
+      break;
+    case LOOK_CLOTHES_COLOR:
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, g_session.m_bodyCostume);
+      break;
     case LOOK_HEAD_TOP:
       *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x4]) = value;
       break;
     case LOOK_HEAD_MID:
       *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x8]) = value;
-      break;
-    case LOOK_HAIR_COLOR:
-      g_session.m_headPalette = value;
-      break;
-    case LOOK_CLOTHES_COLOR:
-      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, bodyCostume);
       break;
     case LOOK_RESET_COSTUMES:
       *reinterpret_cast<int*>(&g_session.accessoryAppearance[0x0]) = 0;
@@ -4859,17 +4857,17 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   case LOOK_HEAD_BOTTOM:
     actor->SetSprAccessory(value);
     break;
-  case LOOK_HEAD_TOP:
-    actor->SetSprAccessory2(value);
-    break;
-  case LOOK_HEAD_MID:
-    actor->SetSprAccessory3(value);
-    break;
   case LOOK_HAIR_COLOR:
     actor->SetHeadPalette(value);
     break;
   case LOOK_CLOTHES_COLOR:
     actor->SetBodyPalette(value);
+    break;
+  case LOOK_HEAD_TOP:
+    actor->SetSprAccessory2(value);
+    break;
+  case LOOK_HEAD_MID:
+    actor->SetSprAccessory3(value);
     break;
   case LOOK_SHOES:
     actor->SetSprShoe(value);
