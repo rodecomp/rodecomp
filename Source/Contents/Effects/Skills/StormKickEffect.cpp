@@ -280,7 +280,8 @@ void CStormKickEffect::OnProcess() {
       particle->alpha = alpha;
 
       float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
-      rotation = static_cast<float>(static_cast<int>(rotation - static_cast<float>(std::max(rand() % 3, 0) + 3)) % 360);
+      const int turned = static_cast<int>(rotation - static_cast<float>(std::max(rand() % 3, 0) + 3));
+      rotation = static_cast<float>(turned % 360);
 
       matrix transform;
       std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
