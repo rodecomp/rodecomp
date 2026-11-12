@@ -481,7 +481,7 @@ void DecryptAES(const char* input, char* output, unsigned int length) {
   CAES cipher(length, length);
   char buffer[128];
   std::memset(buffer, 0, sizeof(buffer));
-  cipher.Decrypt(input, buffer, length);
+  cipher.Encrypt(input, buffer, length);
   std::memcpy(output, buffer, length);
 }
 

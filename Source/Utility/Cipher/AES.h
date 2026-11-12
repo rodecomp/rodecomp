@@ -20,7 +20,7 @@ public:
   void Xor(unsigned char* destination, const unsigned char* source);
 
   // INLINED
-  void Decrypt(const char* in, char* result, std::size_t n) {
+  void Encrypt(const char* in, char* result, std::size_t n) {
     if (!this->m_bKeyInit) {
       throw std::exception(sm_szErrorMsg1);
     }
@@ -29,10 +29,13 @@ public:
       throw std::exception(sm_szErrorMsg2);
     }
 
-    for (std::size_t i = 0; i < n / this->m_blockSize; ++i) {
-      this->DecryptBlock(in, result);
-      in += this->m_blockSize;
-      result += this->m_blockSize;
+    int i;
+    const char* pin;
+    char* presult;
+    for (i = 0, pin = in, presult = result; i < n / this->m_blockSize; ++i) {
+      this->EncryptBlock(pin, presult);
+      pin += this->m_blockSize;
+      presult += this->m_blockSize;
     }
   }
 
