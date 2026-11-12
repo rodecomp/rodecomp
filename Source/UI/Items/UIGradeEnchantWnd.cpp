@@ -478,12 +478,18 @@ void UIGradeEnchantWnd::OnProcess() {
                         g_session.m_zeny < this->SelectedMaterialZeny() || this->baseSuccessRate == 0;
 
   if (disabled) {
-    this->startButton->SetDisabled(1);
-    this->startButton->Invalidate();
+    {
+      auto* startButton = this->startButton;
+      startButton->SetDisabled(1);
+      startButton->Invalidate();
+    }
     this->startButton->SetState(3);
   } else {
-    this->startButton->SetDisabled(0);
-    this->startButton->Invalidate();
+    {
+      auto* startButton = this->startButton;
+      startButton->SetDisabled(0);
+      startButton->Invalidate();
+    }
     this->startButton->SetState(0);
   }
 }
