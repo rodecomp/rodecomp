@@ -9,6 +9,8 @@
 #include <atlconv.h>
 #include <cstdio>
 
+template __declspec(noinline) std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
 __declspec(noinline) UIStaticText::UIStaticText() : UIWindow(0) {

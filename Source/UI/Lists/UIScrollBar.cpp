@@ -52,6 +52,8 @@
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/TextFitting.h"
 #include "Resource/MSGSTRINGID.h"
+
+template __declspec(noinline) std::string std::operator+(const char* const, const std::string&);
 // OFFSET: 0x0086DDA0
 // FUNCTION: fn_11059
 UIListBoxTitle::UIListBoxTitle() {
