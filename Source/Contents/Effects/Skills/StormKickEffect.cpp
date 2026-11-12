@@ -139,25 +139,30 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
   const int segment = particle->columnIndex;
   float radius = particle->speedParameter;
   const float height = -particle->animationParameter + segment * motion[0];
-  int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->angleBits)) % 360;
+  int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->angleBits));
+  angle = angle % 360;
   for (int step = 1; step <= segment; ++step) {
     radius -= (2.2f - step * 0.2f) * particle->scale;
   }
 
   EffectPoint corners[4];
-  angle = (angle + 90) % 360;
+  angle += 90;
+  angle = angle % 360;
   corners[0].x = radius * g_cosTable[angle];
   corners[0].y = height - 1.0f;
   corners[0].z = radius * g_sinTable[angle];
-  angle = (angle + 90) % 360;
+  angle += 90;
+  angle = angle % 360;
   corners[1].x = radius * g_cosTable[angle];
   corners[1].y = height - 1.0f;
   corners[1].z = radius * g_sinTable[angle];
-  angle = (angle + 90) % 360;
+  angle += 90;
+  angle = angle % 360;
   corners[2].x = radius * g_cosTable[angle];
   corners[2].y = height - 1.0f;
   corners[2].z = radius * g_sinTable[angle];
-  angle = (angle + 90) % 360;
+  angle += 90;
+  angle = angle % 360;
   corners[3].x = radius * g_cosTable[angle];
   corners[3].y = height - 1.0f;
   corners[3].z = radius * g_sinTable[angle];
