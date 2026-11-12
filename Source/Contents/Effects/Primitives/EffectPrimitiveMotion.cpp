@@ -4947,10 +4947,10 @@ __declspec(noinline) void CEffectPrim::PrimHeightRamp() {
       float value;
       if (slot.process < 100) {
         value = 0.0f;
-      } else if (slot.process > 115) {
-        value = slot.maxHeight;
-      } else {
+      } else if (slot.process <= 115) {
         value = g_sinTable[6 * slot.process - 600] * slot.maxHeight;
+      } else {
+        value = slot.maxHeight;
       }
 
       height = value;
@@ -6736,7 +6736,7 @@ namespace {
         angle = 90;
       }
 
-      slot.height[2] = g_sinTable[angle < 0 ? 0 : angle] * slot.maxHeight;
+      slot.height[2] = g_sinTable[angle >= 0 ? angle : 0] * slot.maxHeight;
     } else if (slot.process < 90) {
       slot.height[2] = g_sinTable[slot.process] * slot.maxHeight;
     } else {
