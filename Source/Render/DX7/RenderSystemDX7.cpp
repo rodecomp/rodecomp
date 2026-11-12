@@ -10,6 +10,9 @@
 
 #include <new>
 
+template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=(std::shared_ptr<CSurface>&&) noexcept;
+template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=<CSurfaceDX7>(std::shared_ptr<CSurfaceDX7>&&) noexcept;
+
 // GLOBAL: gl_24503
 DeviceOwnerDX7* g_deviceOwnerDX7;
 
@@ -117,7 +120,8 @@ std::uint32_t CRenderSystemDX7::Height() {
 // FUNCTION: fn_02330
 std::shared_ptr<CSurface> CRenderSystemDX7::BackBufferSurface() {
   if (!this->m_backBuffer) {
-    this->m_backBuffer = std::shared_ptr<CSurface>(std::make_shared<CSurfaceDX7>(*this->m_device, this->m_device->renderTarget));
+    IDirectDrawSurface7* renderTarget = this->m_device->renderTarget;
+    this->m_backBuffer = std::make_shared<CSurfaceDX7>(*this->m_device, renderTarget);
   }
 
   return this->m_backBuffer;
