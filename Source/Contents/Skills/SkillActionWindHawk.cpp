@@ -52,7 +52,8 @@ public:
 // OFFSET: 0x007A5A80
 // FUNCTION: fn_09023
 void CSkillAction_WH_GALESTORM::OnSkillCast(int level, CGameActor* source) {
-  if (CEffect* effect = g_effectMgr->Spawn(
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(
         source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
       )) {
     effect->SetLifeTime(level);
