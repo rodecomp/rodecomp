@@ -27,7 +27,7 @@ static __forceinline T LoadField(const unsigned char* field) {
 // FUNCTION: fn_04233
 void CMCStoreInfoBackup::ImportData(Json::Value& data) {
   this->items.clear();
-  this->title = FromUtf8(data.get("Title", "").asString(), g_textCodePage);
+  this->title = static_cast<const std::string&>(FromUtf8(data.get("Title", "").asString(), g_textCodePage));
   Json::Value values = data["Item"];
   const std::string styledText = values.toStyledString();
 
@@ -36,25 +36,23 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
   }
 
   for (auto entry = values.begin(); entry != values.end(); ++entry) {
-    Json::Value& value = *entry;
-
-    if (!value.isObject()) {
+    if (!(*entry).isObject()) {
       continue;
     }
 
     ITEM_INFO item;
-    item.SetItemId(value.get("ID", 0).asInt());
-    item.quantity = value.get("Count", 0).asInt();
-    item.identified = value.get("Identified", 0).asBool();
-    item.refiningLevel = value.get("RefiningLevel", 0).asInt();
-    item.grade = static_cast<std::int16_t>(value.get("GradeLevel", 0).asInt());
+    item.SetItemId((*entry).get("ID", 0).asInt());
+    item.quantity = (*entry).get("Count", 0).asInt();
+    item.identified = (*entry).get("Identified", 0).asBool();
+    item.refiningLevel = (*entry).get("RefiningLevel", 0).asInt();
+    item.grade = static_cast<std::int16_t>((*entry).get("GradeLevel", 0).asInt());
 
-    StoreField<std::int32_t>(item.cards + 0, value.get("Slot_1", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 4, value.get("Slot_2", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 8, value.get("Slot_3", 0).asInt());
-    StoreField<std::int32_t>(item.cards + 12, value.get("Slot_4", 0).asInt());
-    item.optionCount = value.get("RandomOptionCount", 0).asInt();
-    Json::Value options = value["RandomOptionList"];
+    StoreField<std::int32_t>(item.cards + 0, (*entry).get("Slot_1", 0).asInt());
+    StoreField<std::int32_t>(item.cards + 4, (*entry).get("Slot_2", 0).asInt());
+    StoreField<std::int32_t>(item.cards + 8, (*entry).get("Slot_3", 0).asInt());
+    StoreField<std::int32_t>(item.cards + 12, (*entry).get("Slot_4", 0).asInt());
+    item.optionCount = (*entry).get("RandomOptionCount", 0).asInt();
+    Json::Value options = (*entry)["RandomOptionList"];
     int index = 0;
     unsigned char* record = item.options;
 
@@ -64,7 +62,7 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
       record[4] = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
     }
 
-    item.prices[0] = static_cast<std::uint32_t>(value.get("Price", 0).asInt());
+    item.prices[0] = static_cast<std::uint32_t>((*entry).get("Price", 0).asInt());
     this->items.push_back(item);
   }
 
