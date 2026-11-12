@@ -182,7 +182,7 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
 
         if (60.0f > particle->life * 60.0f - static_cast<float>(age)) {
           const int faded = static_cast<int>(value - fade);
-          particle->alpha = faded < 0 ? 0 : faded;
+          particle->alpha = faded >= 0 ? faded : 0;
         } else {
           const int raised = static_cast<int>(fade + value);
           particle->alpha = raised > 255 ? 255 : raised;
@@ -197,9 +197,9 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
       particle->position.y += particle->offsetY;
       particle->position.z += particle->offsetZ;
       particle->position.x += particle->offsetX;
-      particle->motionVelocity.x += step * this->acceleration.x;
-      particle->motionVelocity.y += step * this->acceleration.y;
-      particle->motionVelocity.z += step * this->acceleration.z;
+      particle->motionVelocity.x += this->timeScale * this->acceleration.x;
+      particle->motionVelocity.y += this->timeScale * this->acceleration.y;
+      particle->motionVelocity.z += this->timeScale * this->acceleration.z;
 
       if (this->billboard == 1) {
         matrix transform;
