@@ -440,14 +440,14 @@ int UIRoulletteWnd::CoinType() const {
     if (roulette->m_stage + 1 < 7 && roulette->m_bonus == 0) {
       return 1;
     }
-  } else if (roulette->m_bronzePoint <= 0) {
-    if (roulette->m_silverPoint >= 10) {
-      return 2;
-    }
-    if (roulette->m_goldPoint >= 10) {
-      return 4;
-    }
+    return 0;
   }
 
-  return 0;
+  if (roulette->m_bronzePoint > 0) {
+    return 0;
+  }
+  if (roulette->m_silverPoint >= 10) {
+    return 2;
+  }
+  return roulette->m_goldPoint >= 10 ? 4 : 0;
 }
