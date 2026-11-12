@@ -171,46 +171,41 @@ void UIRodexContentsWnd::OnCreate(int, int) {
 void UIRodexContentsWnd::Paint() {
   this->ClearSurface(0xFF00FF);
 
-  auto* background = static_cast<CBitmapRes*>(
-    ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))
+  this->DrawBitmap(
+    0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_read.bmp"))), false
   );
-  this->DrawBitmap(0, 0, background, false);
   this->DrawTitleBar(true, LookupMessage(MSI_RODEX_CHOOSEWND_FAILED), 0);
   this->DrawTextAt(8, 29, this->m_title.c_str(), 0, 0, 12, 0x95330F, 1, 0);
   this->DrawTextAt(9, 52, this->m_sender.c_str(), 0, 0, 12, 0x313131, 0, 0);
 
-  auto* zenyIcon = static_cast<CBitmapRes*>(
-    ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))
+  this->DrawBitmap(
+    19, 342, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))), true
   );
-  this->DrawBitmap(19, 342, zenyIcon, true);
 
   if (this->m_zeny > 0) {
     char amount[260];
     std::memset(amount, 0, sizeof(amount));
     FormatGroupedInteger(this->m_zeny, amount, sizeof(amount));
-    const std::string text = FormatOwnedString("%s Zeny", amount);
-    this->DrawTextAt(50, 350, text.c_str(), 0, 0, 11, 0x737373, 1, 0);
+    this->DrawTextAt(50, 350, FormatOwnedString("%s Zeny", amount).c_str(), 0, 0, 11, 0x737373, 1, 0);
   }
 
   for (int x = 26; x < 196; x += 34) {
-    auto* slot = static_cast<CBitmapRes*>(
-      ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp"))
+    this->DrawBitmap(
+      x, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp"))), true
     );
-    this->DrawBitmap(x, 319, slot, true);
   }
 
   int x = 30;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
-    auto* slot = static_cast<CBitmapRes*>(
-      ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))
+    this->DrawBitmap(
+      x - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true
     );
-    this->DrawBitmap(x - 4, 319, slot, true);
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 309, *item, 0, 0);
-    if (item->grade > 0) {
-      ResourceMgr& resources = ResourceMgr::Instance();
-      const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->grade);
-      auto* grade = static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
-      this->DrawBitmap(x, 321, grade, true);
+    if (0 < item->grade) {
+      this->DrawBitmap(
+        x, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->grade).c_str()))),
+        true
+      );
     }
     x += 34;
   }
