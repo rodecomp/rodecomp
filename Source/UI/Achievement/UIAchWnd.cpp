@@ -720,7 +720,11 @@ void UIAchievementWnd::SelectAchievement(int id) {
 
   list->scrollBar->SetPosition(list->firstRow);
   if (list->parent) {
-    list->parent->SendMsg(list, UM_LIST_SELECTION, list->ids.size() > static_cast<unsigned>(list->selectedIndex) ? list->ids[list->selectedIndex] : -1, 0, 0, 0);
+    if (list->ids.size() > static_cast<unsigned>(list->selectedIndex)) {
+      list->parent->SendMsg(list, UM_LIST_SELECTION, list->ids[list->selectedIndex], 0, 0, 0);
+    } else {
+      list->parent->SendMsg(list, UM_LIST_SELECTION, -1, 0, 0, 0);
+    }
   }
 
   list->Invalidate();
