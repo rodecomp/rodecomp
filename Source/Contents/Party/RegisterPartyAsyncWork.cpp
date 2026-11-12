@@ -54,8 +54,7 @@ void CRegisterPartyAsyncWork::Bind(
   this->m_info = info;
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 50);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 50);
 }
 
 // OFFSET: 0x005D3F50
@@ -102,12 +101,10 @@ bool CRegisterPartyAsyncWork::Execute() {
   handler.AddField(DecryptName<0xFFBF43D1FFD5FF49ULL>({0x04, 0x9A, 0xB8, 0x90, 0xD1}), memo, 4);
 
   if (handler.Perform() != 0) {
-    AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xEB3D4FAB0FC183DBULL>({0xBD, 0xE2, 0xA8, 0x63, 0xAB})), sourceFile, 118);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xEB3D4FAB0FC183DBULL>({0xBD, 0xE2, 0xA8, 0x63, 0xAB})), sourceFile, 118);
   } else {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic(true, std::string(DecryptName<0x8F3F2FA959977F9FULL>({0xEC, 0x0A, 0xF4, 0x3A, 0xCC, 0x5C, 0x4C, 0x8F})), sourceFile, 127);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x8F3F2FA959977F9FULL>({0xEC, 0x0A, 0xF4, 0x3A, 0xCC, 0x5C, 0x4C, 0x8F})), sourceFile, 127);
   }
 
   return false;

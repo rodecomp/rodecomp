@@ -15,12 +15,6 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadPartyInfoAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -55,8 +49,7 @@ void CLoadPartyInfoAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_queryAccountId = queryAccountId;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17}), 52);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17})), sourceFile, 52);
 }
 
 // OFFSET: 0x005D0C80
@@ -78,8 +71,7 @@ bool CLoadPartyInfoAsyncWork::Execute() {
 
   if (handler.Perform() == 0) {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31}), 97);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31})), sourceFile, 97);
   }
 
   return false;

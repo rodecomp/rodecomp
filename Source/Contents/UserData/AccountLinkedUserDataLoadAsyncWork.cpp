@@ -66,8 +66,7 @@ void CAccountLinkedUserDataLoadAsyncWork::Bind(std::uint32_t accountId, std::str
 
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x812BE72BCD5707B7ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource), 50);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource)), sourceFile, 50);
 }
 
 // OFFSET: 0x005BA910
@@ -87,7 +86,7 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
     this->m_response = handler.Response();
     constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x2FF3C5036D070127ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FF3C5036D070127ULL>(good), 92);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = std::move(diagnostic);
   }
 
   return false;

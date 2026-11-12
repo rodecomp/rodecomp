@@ -18,19 +18,6 @@ namespace {
                                 "untLinkedUserDataSaveAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
-  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
-    target.MoveFrom(diagnostic);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -65,8 +52,7 @@ void CAccountLinkedUserDataSaveAsyncWork::Bind(std::uint32_t accountId, std::str
   this->m_data = data;
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x812BE72BCD5707B7ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource), 54);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource)), sourceFile, 54);
 }
 
 // OFFSET: 0x005BE210
@@ -90,10 +76,10 @@ bool CAccountLinkedUserDataSaveAsyncWork::Execute() {
   if (handler.Perform() != 0) {
     constexpr std::array<std::uint8_t, 5> errorArray = CRYPT_NAME("fail", 0x91651D81F559F971ULL);
     const std::uint8_t (&error)[5] = errorArray._Elems;
-    Report(this->m_diagnostic, false, DecryptName<0x91651D81F559F971ULL>(error), 102);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x91651D81F559F971ULL>(error)), sourceFile, 102);
   } else {
     const std::uint8_t good[] = CRYPT_BYTES(5, "good", 0x73D1674B61DF7B0BULL);
-    Report(this->m_diagnostic, true, DecryptName<0x73D1674B61DF7B0BULL>(good), 106);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x73D1674B61DF7B0BULL>(good)), sourceFile, 106);
   }
 
   return false;

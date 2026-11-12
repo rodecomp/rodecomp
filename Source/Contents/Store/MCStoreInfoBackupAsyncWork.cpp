@@ -71,8 +71,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Bind(
   this->m_response = "";
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0xD3E5516F89F161D1ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0xD3E5516F89F161D1ULL>(diagnosticSource)), loadSource, 55);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xD3E5516F89F161D1ULL>(diagnosticSource)), loadSource, 55);
   this->m_type = type;
 }
 
@@ -103,7 +102,7 @@ bool CMCStoreInfoBackupLoadAsyncWork::Execute() {
     this->m_response = handler.Response();
     constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x6B3301E1A3079125ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x6B3301E1A3079125ULL>(good), loadSource, 115);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = std::move(diagnostic);
   }
 
   return false;
@@ -145,8 +144,7 @@ void CMCStoreInfoBackupSaveAsyncWork::Bind(
   this->m_data = data;
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x490FFB43A12F0DB9ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic(false, std::string(DecryptName<0x490FFB43A12F0DB9ULL>(diagnosticSource)), saveSource, 57);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x490FFB43A12F0DB9ULL>(diagnosticSource)), saveSource, 57);
   this->m_type = type;
 }
 
@@ -177,13 +175,11 @@ bool CMCStoreInfoBackupSaveAsyncWork::Execute() {
 
   if (handler.Perform() != 0) {
     constexpr std::array<std::uint8_t, 5> fail = CRYPT_NAME("fail", 0x59278F63D79F3DA1ULL);
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x59278F63D79F3DA1ULL>(fail), saveSource, 112);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x59278F63D79F3DA1ULL>(fail)), saveSource, 112);
     this->m_response = handler.Response();
   } else {
     constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x812BE72BCD5707B7ULL);
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x812BE72BCD5707B7ULL>(good), saveSource, 122);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x812BE72BCD5707B7ULL>(good)), saveSource, 122);
     this->m_response = handler.Response();
   }
 

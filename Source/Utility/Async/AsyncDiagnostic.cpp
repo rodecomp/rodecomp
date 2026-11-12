@@ -10,7 +10,7 @@ AsyncDiagnostic::AsyncDiagnostic(const bool* success, std::string* message, cons
 
 // OFFSET: 0x005B9D90
 // FUNCTION: fn_03439
-AsyncDiagnostic& AsyncDiagnostic::MoveFrom(AsyncDiagnostic& other) noexcept {
+AsyncDiagnostic& AsyncDiagnostic::operator=(AsyncDiagnostic&& other) noexcept {
   this->success = other.success;
   this->message = std::move(other.message);
   this->file = std::move(other.file);

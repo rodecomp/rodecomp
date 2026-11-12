@@ -15,19 +15,6 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadMyPartyAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
-  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
-    target.MoveFrom(diagnostic);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -38,7 +25,7 @@ namespace {
 // OFFSET: 0x005CF1B0
 // FUNCTION: fn_03685
 CLoadMyPartyAsyncWork::CLoadMyPartyAsyncWork()
-    : NAsyncWork("MyParty_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 28)) {
+    : NAsyncWork("MyParty_Load"), m_accountId(0), m_characterId(0), m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 28) {
 }
 
 // INLINED
@@ -59,8 +46,7 @@ void CLoadMyPartyAsyncWork::Bind(std::uint32_t accountId, std::uint32_t characte
   this->m_world = world;
   this->m_url = url;
   this->m_token = token;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17}), 49);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17})), sourceFile, 49);
 }
 
 // OFFSET: 0x005CF9B0
@@ -78,10 +64,10 @@ bool CLoadMyPartyAsyncWork::Execute() {
   handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07}), this->m_token, 4);
 
   if (handler.Perform() != 0) {
-    Report(this->m_diagnostic, false, DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9}), 92);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9})), sourceFile, 92);
   } else {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    Report(this->m_diagnostic, true, DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31}), 101);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x31D7C1EDA345E36DULL>({0x1E, 0x96, 0x26, 0xC0, 0x88, 0xB2, 0xA4, 0x31})), sourceFile, 101);
   }
 
   return false;

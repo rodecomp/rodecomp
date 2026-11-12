@@ -17,19 +17,6 @@ namespace {
                                 "aracterLinkedUserDataSaveAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
-  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
-    target.MoveFrom(diagnostic);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -65,8 +52,7 @@ void CCharacterLinkedUserDataSaveAsyncWork::Bind(
   this->m_url = url;
   this->m_token = token;
   this->m_data = data;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93}), 54);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 54);
 }
 
 // OFFSET: 0x005E8390
@@ -86,9 +72,9 @@ bool CCharacterLinkedUserDataSaveAsyncWork::Execute() {
   handler.AddField(DecryptName<0xD98F03A52D35636DULL>({0x09, 0x02, 0x41, 0x4C, 0xA5}), data, 4);
 
   if (handler.Perform() != 0) {
-    Report(this->m_diagnostic, false, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB7, 0x78, 0xF4, 0xE3, 0x6B}), 98);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB7, 0x78, 0xF4, 0xE3, 0x6B})), sourceFile, 98);
   } else {
-    Report(this->m_diagnostic, true, DecryptName<0xD3755DD95F47A909ULL>({0x6E, 0xC6, 0x28, 0x3B, 0xD9}), 102);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0xD3755DD95F47A909ULL>({0x6E, 0xC6, 0x28, 0x3B, 0xD9})), sourceFile, 102);
   }
 
   return false;

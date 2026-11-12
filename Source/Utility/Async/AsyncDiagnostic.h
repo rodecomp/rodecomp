@@ -11,8 +11,9 @@ struct AsyncDiagnostic {
   __forceinline AsyncDiagnostic(const bool& success, std::string&& message, const char* file, const std::uint32_t& line)
       : AsyncDiagnostic(&success, &message, file, &line) {
   }
+  AsyncDiagnostic(const AsyncDiagnostic& other) = default;
   ~AsyncDiagnostic();
-  AsyncDiagnostic& MoveFrom(AsyncDiagnostic& other) noexcept;
+  AsyncDiagnostic& operator=(AsyncDiagnostic&& other) noexcept;
 
   /* 0000 */ std::uint32_t line;
   /* 0004 */ std::string file;

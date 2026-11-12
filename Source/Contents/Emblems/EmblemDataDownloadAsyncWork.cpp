@@ -56,8 +56,7 @@ void CEmblemDataDownloadAsyncWork::Bind(
   this->m_accountName = accountName;
   this->m_guildId = guildId;
   this->m_version = version;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93}), 57);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 57);
 }
 
 // OFFSET: 0x005EA430
@@ -82,10 +81,10 @@ bool CEmblemDataDownloadAsyncWork::Execute() {
     this->m_responseCode = static_cast<int>(handler.ResponseCode());
     this->m_response = handler.Response();
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB6, 0x76, 0xF2, 0xEB, 0x6B}), 96);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = std::move(diagnostic);
   } else {
     AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9}), 105);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = std::move(diagnostic);
   }
 
   return false;

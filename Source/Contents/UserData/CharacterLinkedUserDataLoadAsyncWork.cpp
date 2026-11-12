@@ -17,12 +17,6 @@ namespace {
                                 "aracterLinkedUserDataLoadAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -59,8 +53,7 @@ void CCharacterLinkedUserDataLoadAsyncWork::Bind(
   this->m_token = token;
   this->m_response = "";
 
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F}), 55);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 55);
 }
 
 // OFFSET: 0x005E5280
@@ -80,8 +73,7 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
 
   if (handler.Perform() == 0) {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x31D7C1EDA345E36DULL>({0x0A, 0x8C, 0x2A, 0xC7, 0xED}), 103);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x31D7C1EDA345E36DULL>({0x0A, 0x8C, 0x2A, 0xC7, 0xED})), sourceFile, 103);
   }
 
   return false;

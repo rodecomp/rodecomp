@@ -62,8 +62,7 @@ void CLoadPartyListAsyncWork::Bind(
   this->m_search = search;
   constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x936F3D2FFDFD87F5ULL);
   const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource), 54);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x936F3D2FFDFD87F5ULL>(diagnosticSource)), sourceFile, 54);
   this->m_windows = &windows;
 }
 
@@ -154,7 +153,7 @@ bool CLoadPartyListAsyncWork::Execute() {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     const std::uint8_t success[] = CRYPT_BYTES(8, "success", 0x5B832361BDA77197ULL);
     AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x5B832361BDA77197ULL>(success), 138);
-    this->m_diagnostic.MoveFrom(diagnostic);
+    this->m_diagnostic = std::move(diagnostic);
   }
 
   return false;

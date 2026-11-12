@@ -15,19 +15,6 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CStopRecruitingAsyncWork.cpp";
 
   // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
-  }
-
-  // INLINED
-  __forceinline void Report(AsyncDiagnostic& target, bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    AsyncDiagnostic diagnostic(&success, &message, sourceFile, &line);
-    target.MoveFrom(diagnostic);
-  }
-
-  // INLINED
   template <std::uint64_t Key, std::size_t Length>
   const char* DecryptName(const std::uint8_t (&source)[Length]) {
     thread_local EncryptedName<Length, Key> name(source);
@@ -60,8 +47,7 @@ void CStopRecruitingAsyncWork::Bind(std::uint32_t accountId, std::string world, 
   this->m_world = world;
   this->m_url = url;
   this->m_token = token;
-  AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xF14F79170939C7F1ULL>({0x84, 0xA9, 0x52, 0x67, 0x60, 0x16, 0x21, 0xF1}), 50);
-  this->m_diagnostic.MoveFrom(diagnostic);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xF14F79170939C7F1ULL>({0x84, 0xA9, 0x52, 0x67, 0x60, 0x16, 0x21, 0xF1})), sourceFile, 50);
 }
 
 // OFFSET: 0x005D6570
@@ -79,10 +65,10 @@ bool CStopRecruitingAsyncWork::Execute() {
   handler.AddField(DecryptName<0x83EFBFBB37EDBDBDULL>({0xF0, 0xDC, 0x9E, 0x43, 0xDE, 0xCD, 0xAE, 0xCA, 0xF9, 0xBD}), master, 4);
 
   if (handler.Perform() != 0) {
-    Report(this->m_diagnostic, false, DecryptName<0x39FF7FB50DEB998FULL>({0xE9, 0xF8, 0x82, 0x61, 0xB5}), 92);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x39FF7FB50DEB998FULL>({0xE9, 0xF8, 0x82, 0x61, 0xB5})), sourceFile, 92);
   } else {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    Report(this->m_diagnostic, true, DecryptName<0x2FE993D1DDE1F197ULL>({0xE4, 0x84, 0x82, 0xBE, 0xB4, 0xE0, 0x9A, 0x2F}), 101);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x2FE993D1DDE1F197ULL>({0xE4, 0x84, 0x82, 0xBE, 0xB4, 0xE0, 0x9A, 0x2F})), sourceFile, 101);
   }
 
   return false;
