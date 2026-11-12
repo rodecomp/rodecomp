@@ -31,7 +31,7 @@ const char* g_accountLinkedUserDataSavePoolName = DecryptName<0x1D6D75EDE7CD311F
 // OFFSET: 0x005BDAA0
 // FUNCTION: fn_03478
 CAccountLinkedUserDataSaveAsyncWork::CAccountLinkedUserDataSaveAsyncWork()
-    : NAsyncWork("AccountLinkedUserData_Save"), m_accountId(0),
+    : NAsyncWork(g_accountLinkedUserDataSavePoolName), m_accountId(0),
       m_diagnostic(false, std::string(DecryptName<0x59278F63D79F3DA1ULL>({0xD4, 0x53, 0xF4, 0xB9, 0x14, 0xE0, 0x49, 0x59})), sourceFile, 26) {
 }
 
