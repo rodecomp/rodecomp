@@ -12,6 +12,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <json/reader.h>
 #include <json/writer.h>
@@ -28,9 +29,7 @@ namespace {
 
   // INLINED
   const char* DefaultAccountName() {
-    constexpr std::array<std::uint8_t, 8> sourceArray = CRYPT_NAME("unknown", 0x1D6D75EDE7CD311FULL);
-    const std::uint8_t (&source)[8] = sourceArray._Elems;
-    return DecryptText<0x1D6D75EDE7CD311FULL>(source);
+    return OBFUSCATE_BYTES_TEXT("unknown", 0x1D6D75EDE7CD311FULL);
   }
 }
 
