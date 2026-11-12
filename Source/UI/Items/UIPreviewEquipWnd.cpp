@@ -175,14 +175,9 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
 // OFFSET: 0x007F3EF0
 // FUNCTION: fn_09886
 int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
     switch (a) {
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_PREVIEWEQUIPWND);
-      break;
-    case ID_RESET:
-      this->SyncFromPlayer();
-      break;
     case 0x180:
       this->m_render->actionIndex = this->m_render->actionIndex + 1;
       if (this->m_render->actionIndex > 7) {
@@ -197,8 +192,15 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       this->Invalidate();
       break;
+    case ID_RESET:
+      this->SyncFromPlayer();
+      break;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_PREVIEWEQUIPWND);
+      break;
     }
-  } else if (message == UM_REFRESHITEM) {
+    break;
+  case UM_REFRESHITEM:
     if (a != 0) {
       const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(a);
       switch (item->identity[2]) {
@@ -289,12 +291,14 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         break;
       }
     }
-  } else if (message == UM_SETINFO) {
+    break;
+  case UM_SETINFO:
     this->saved = reinterpret_cast<PreviewEquipWndInfo*>(a);
     if (!this->saved->IsValid()) {
       this->saved->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
+    break;
   }
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
