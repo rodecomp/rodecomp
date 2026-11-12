@@ -6,22 +6,14 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstddef>
 #include <cstdint>
 
 // INLINED
-template <std::uint64_t Key, typename Byte, std::size_t Length>
-const char* DecryptText(const Byte (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> text(source);
-  return text.Text();
-}
-
-// INLINED
 static const char* RenewSetupSubKey() {
-  constexpr std::array<std::uint8_t, 33> sourceArray = CRYPT_NAME("Software\\Gravity Soft\\RenewSetup", 0xC52FB5FBB94FF917ULL);
-  const std::uint8_t (&source)[33] = sourceArray._Elems;
-  return DecryptText<0xC52FB5FBB94FF917ULL>(source);
+  return OBFUSCATE_BYTES_TEXT("Software\\Gravity Soft\\RenewSetup", 0xC52FB5FBB94FF917ULL);
 }
 
 // GLOBAL: gl_25476
@@ -51,14 +43,10 @@ int ReadSetup() {
     type = REG_DWORD;
     size = sizeof(int);
 
-    constexpr auto showTipsSourceText = CRYPT_NAME("SHOWTIPSATSTARTUP", 0x0BEB63A5C905B3A7ULL);
-    const auto& showTipsSource = showTipsSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x0BEB63A5C905B3A7ULL>(showTipsSource), nullptr, &type, reinterpret_cast<BYTE*>(&g_window315Enabled),
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("SHOWTIPSATSTARTUP", 0x0BEB63A5C905B3A7ULL), nullptr, &type, reinterpret_cast<BYTE*>(&g_window315Enabled),
                      &size);
 
-    constexpr auto trilinearFilterSourceText = CRYPT_NAME("TRILINEARFILTER", 0x8B3FEB5B8BD5C3C3ULL);
-    const auto& trilinearFilterSource = trilinearFilterSourceText.data;
-    if (RegQueryValueExA(settingsKey, DecryptText<0x8B3FEB5B8BD5C3C3ULL>(trilinearFilterSource), nullptr, &type,
+    if (RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("TRILINEARFILTER", 0x8B3FEB5B8BD5C3C3ULL), nullptr, &type,
                          reinterpret_cast<BYTE*>(&g_textureFiltering), &size) != ERROR_SUCCESS) {
       g_textureFiltering = 0;
     }
@@ -69,21 +57,15 @@ int ReadSetup() {
 
     type = REG_SZ;
     size = sizeof(g_deviceName);
-    constexpr auto deviceNameSourceText = CRYPT_NAME("DEVICENAME", 0xF7530137154D8FE5ULL);
-    const auto& deviceNameSource = deviceNameSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0xF7530137154D8FE5ULL>(deviceNameSource), nullptr, &type, reinterpret_cast<BYTE*>(g_deviceName), &size);
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("DEVICENAME", 0xF7530137154D8FE5ULL), nullptr, &type, reinterpret_cast<BYTE*>(g_deviceName), &size);
 
     type = REG_BINARY;
     size = sizeof(g_guidDevice);
-    constexpr auto guidDeviceSourceText = CRYPT_NAME("GUIDDEVICE", 0x8B65CD61012B5931ULL);
-    const auto& guidDeviceSource = guidDeviceSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x8B65CD61012B5931ULL>(guidDeviceSource), nullptr, &type, g_guidDevice, &size);
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("GUIDDEVICE", 0x8B65CD61012B5931ULL), nullptr, &type, g_guidDevice, &size);
 
     type = REG_BINARY;
     size = sizeof(g_guidDriver);
-    constexpr auto guidDriverSourceText = CRYPT_NAME("GUIDDRIVER", 0xF5657D1F3DE5CDC7ULL);
-    const auto& guidDriverSource = guidDriverSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0xF5657D1F3DE5CDC7ULL>(guidDriverSource), nullptr, &type, g_guidDriver, &size);
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("GUIDDRIVER", 0xF5657D1F3DE5CDC7ULL), nullptr, &type, g_guidDriver, &size);
 
     RegCloseKey(settingsKey);
   }
@@ -92,38 +74,26 @@ int ReadSetup() {
     type = REG_DWORD;
     size = sizeof(int);
 
-    constexpr auto soundModeSourceText = CRYPT_NAME("SOUNDMODE", 0x69FD1D9733D3CFC1ULL);
-    const auto& soundModeSource = soundModeSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x69FD1D9733D3CFC1ULL>(soundModeSource), nullptr, &type, reinterpret_cast<BYTE*>(&g_soundConfiguration.mode),
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("SOUNDMODE", 0x69FD1D9733D3CFC1ULL), nullptr, &type, reinterpret_cast<BYTE*>(&g_soundConfiguration.mode),
                      &size);
 
-    constexpr auto speakerTypeSourceText = CRYPT_NAME("SPEAKERTYPE", 0x7FCD77F9C7CBD14DULL);
-    const auto& speakerTypeSource = speakerTypeSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x7FCD77F9C7CBD14DULL>(speakerTypeSource), nullptr, &type,
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("SPEAKERTYPE", 0x7FCD77F9C7CBD14DULL), nullptr, &type,
                      reinterpret_cast<BYTE*>(&g_soundConfiguration.speakerType), &size);
 
-    constexpr auto digitalRateTypeSourceText = CRYPT_NAME("DIGITALRATETYPE", 0xCB3FBD4183DB8323ULL);
-    const auto& digitalRateTypeSource = digitalRateTypeSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0xCB3FBD4183DB8323ULL>(digitalRateTypeSource), nullptr, &type,
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("DIGITALRATETYPE", 0xCB3FBD4183DB8323ULL), nullptr, &type,
                      reinterpret_cast<BYTE*>(&g_soundConfiguration.digitalRateType), &size);
 
-    constexpr auto digitalBitsTypeSourceText = CRYPT_NAME("DIGITALBITSTYPE", 0x7FC1015DFFCF6D19ULL);
-    const auto& digitalBitsTypeSource = digitalBitsTypeSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x7FC1015DFFCF6D19ULL>(digitalBitsTypeSource), nullptr, &type,
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("DIGITALBITSTYPE", 0x7FC1015DFFCF6D19ULL), nullptr, &type,
                      reinterpret_cast<BYTE*>(&g_soundConfiguration.digitalBitsType), &size);
 
-    constexpr auto numSampleTypeSourceText = CRYPT_NAME("NUMSAMPLETYPE", 0x0753A7E1EFA9E139ULL);
-    const auto& numSampleTypeSource = numSampleTypeSourceText.data;
-    if (RegQueryValueExA(settingsKey, DecryptText<0x0753A7E1EFA9E139ULL>(numSampleTypeSource), nullptr, &type,
+    if (RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("NUMSAMPLETYPE", 0x0753A7E1EFA9E139ULL), nullptr, &type,
                          reinterpret_cast<BYTE*>(&g_soundConfiguration.numSampleType), &size) != ERROR_SUCCESS) {
       g_soundConfiguration.numSampleType = 2;
     }
 
     type = REG_SZ;
     size = sizeof(g_soundConfiguration.providerName);
-    constexpr auto providerNameSourceText = CRYPT_NAME("PROVIDERNAME", 0x3F557BE333F95F6DULL);
-    const auto& providerNameSource = providerNameSourceText.data;
-    RegQueryValueExA(settingsKey, DecryptText<0x3F557BE333F95F6DULL>(providerNameSource), nullptr, &type,
+    RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("PROVIDERNAME", 0x3F557BE333F95F6DULL), nullptr, &type,
                      reinterpret_cast<BYTE*>(g_soundConfiguration.providerName), &size);
 
     RegCloseKey(settingsKey);
