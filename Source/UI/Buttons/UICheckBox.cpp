@@ -11,10 +11,16 @@
 
 // OFFSET: 0x0084F010
 // FUNCTION: fn_10656
-UICheckBox::UICheckBox()
-    : UIWindow(0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0) {
+UICheckBox::UICheckBox() : UIWindow(0) {
+  this->m_disabled = 0;
   this->geometry.state = 0;
   this->geometry.id = 213;
+  this->m_hidden = 0;
+  this->m_notify = 0;
+  this->m_color = 0;
+  this->m_fontHeight = 12;
+  this->m_message = -1;
+  this->m_text.clear();
 }
 
 // OFFSET: 0x008514C0
