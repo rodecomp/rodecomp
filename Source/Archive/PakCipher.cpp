@@ -293,15 +293,27 @@ namespace myGPack {
       if (block < 20 || block % cycle == 0) {
         std::uint8_t blockInput[8];
         std::uint8_t blockOutput[8];
-        std::memcpy(blockInput, input + offset, 8);
+        for (int i = 0; i < 8; ++i) {
+          blockInput[i] = input[offset + i];
+        }
+
         std::uint32_t low;
         std::uint32_t high;
         std::memcpy(&low, blockInput, sizeof(low));
         std::memcpy(&high, blockInput + 4, sizeof(high));
         this->DecodeBlock(1, this->m_roundKeys, low, high, blockOutput);
-        std::memcpy(output + offset, blockOutput, 8);
+        for (int i = 0; i < 8; ++i) {
+          output[offset + i] = blockOutput[i];
+        }
       } else {
-        if (shuffled == 7) {
+        if (shuffled != 7) {
+          std::uint32_t low;
+          std::uint32_t high;
+          std::memcpy(&low, input + offset, sizeof(low));
+          std::memcpy(&high, input + offset + 4, sizeof(high));
+          std::memcpy(output + offset, &low, sizeof(low));
+          std::memcpy(output + offset + 4, &high, sizeof(high));
+        } else {
           std::uint16_t pair;
           std::memcpy(&pair, input + offset + 3, 2);
           std::memcpy(output + offset, &pair, 2);
@@ -311,16 +323,10 @@ namespace myGPack {
           output[offset + 2] = input[offset + 6];
           output[offset + 6] = input[offset + 5];
           output[offset + 7] = SubstituteLastByte(input[offset + 7]);
-          shuffled = 1;
-        } else {
-          std::uint32_t low;
-          std::uint32_t high;
-          std::memcpy(&low, input + offset, sizeof(low));
-          std::memcpy(&high, input + offset + 4, sizeof(high));
-          std::memcpy(output + offset, &low, sizeof(low));
-          std::memcpy(output + offset + 4, &high, sizeof(high));
-          ++shuffled;
+          shuffled = 0;
         }
+
+        ++shuffled;
       }
 
       offset += 8;
