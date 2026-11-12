@@ -5,7 +5,7 @@
 
 #include <string>
 
-struct BitmapImage;
+class CBitmapRes;
 
 class UIPayConfirmWnd : public UIMessageBox {
 public:
@@ -23,7 +23,7 @@ public:
 
   __declspec(property(get = Title)) std::string& m_title;
 
-  /* 0120 */ const BitmapImage* m_image;
+  /* 0120 */ const CBitmapRes* m_image;
 };
 
 #endif

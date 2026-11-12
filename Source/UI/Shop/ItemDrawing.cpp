@@ -18,7 +18,7 @@ void DrawItemWithQuantityAuxiliary(
   char text[128] = {};
   g_session.IconPath(text, item.itemId.c_str(), identified);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
-  window.DrawAuxiliary(mode, x, y, bitmap ? &bitmap->image : nullptr, true, false);
+  window.DrawAuxiliary(mode, x, y, bitmap, true, false);
 
   if (item.quantity == 0) {
     return;

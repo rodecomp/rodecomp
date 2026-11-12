@@ -1177,12 +1177,12 @@ void UIWindow::FillSurface(std::uint32_t color, const RECT* rectangle) {
 
 // OFFSET: 0x00A7BB20
 // FUNCTION: fn_16934
-void UIWindow::DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option) {
-  if (!this->geometry.surface || !image) {
+void UIWindow::DrawBitmapScaled(int x, int y, int width, int height, const CBitmapRes* bitmap, int option) {
+  if (!this->geometry.surface || !bitmap) {
     return;
   }
 
-  this->geometry.surface->ScaleCopy(x, y, image->width, image->height, width, height, image->pixels, option);
+  this->geometry.surface->ScaleCopy(x, y, bitmap->image.width, bitmap->image.height, width, height, bitmap->image.pixels, option);
 }
 
 // OFFSET: 0x00A7BBB0
@@ -1202,35 +1202,37 @@ void UIWindow::DrawBitmapRegion(int x, int y, CBitmapRes* bitmap, bool transpare
 
 // OFFSET: 0x00A7BDD0
 // FUNCTION: fn_16939
-void UIWindow::DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild) {
-  if (!this->geometry.surface || !image) {
+void UIWindow::DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, CBitmapRes* bitmap, int option, bool rebuild) {
+  if (!this->geometry.surface || !bitmap) {
     return;
   }
 
   if (rebuild) {
-    reinterpret_cast<CBitmapRes*>(image)->ClearAuxiliary();
+    bitmap->ClearAuxiliary();
   }
 
-  reinterpret_cast<CBitmapRes*>(image)->CreateAuxiliary(mode);
-  if (image->auxiliary) {
-    this->geometry.surface->ScaleCopy(x, y, image->width, image->height, width, height, static_cast<const std::uint32_t*>(image->auxiliary), option);
+  bitmap->CreateAuxiliary(mode);
+  if (bitmap->image.auxiliary) {
+    this->geometry.surface->ScaleCopy(
+      x, y, bitmap->image.width, bitmap->image.height, width, height, static_cast<const std::uint32_t*>(bitmap->image.auxiliary), option
+    );
   }
 }
 
 // OFFSET: 0x00A7BE30
 // FUNCTION: fn_16940
-void UIWindow::DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool transparent, bool rebuild) {
-  if (!this->geometry.surface || !image) {
+void UIWindow::DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool transparent, bool rebuild) {
+  if (!this->geometry.surface || !bitmap) {
     return;
   }
 
   if (rebuild) {
-    reinterpret_cast<CBitmapRes*>(image)->ClearAuxiliary();
+    bitmap->ClearAuxiliary();
   }
 
-  reinterpret_cast<CBitmapRes*>(image)->CreateAuxiliary(mode);
-  if (image->auxiliary) {
-    this->geometry.surface->Copy(x, y, image->width, image->height, static_cast<const std::uint32_t*>(image->auxiliary), transparent);
+  bitmap->CreateAuxiliary(mode);
+  if (bitmap->image.auxiliary) {
+    this->geometry.surface->Copy(x, y, bitmap->image.width, bitmap->image.height, static_cast<const std::uint32_t*>(bitmap->image.auxiliary), transparent);
   }
 }
 

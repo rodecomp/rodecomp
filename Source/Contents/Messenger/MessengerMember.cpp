@@ -622,7 +622,7 @@ void UIJobIconButton::Paint() {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     if (bitmap) {
       if (this->offline == 1) {
-        this->DrawAuxiliary(1, 0, 0, &bitmap->image, true, false);
+        this->DrawAuxiliary(1, 0, 0, bitmap, true, false);
       } else {
         this->DrawBitmap(0, 0, bitmap, true);
       }

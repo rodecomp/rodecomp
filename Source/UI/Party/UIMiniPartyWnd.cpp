@@ -548,7 +548,7 @@ void UIMiniPartyInfoWnd::Paint() {
   std::sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", directory.c_str(), job);
   CRes* icon = ResourceMgr::Instance().Load(Resolve(path));
   if (this->m_owner->GetMember().offline == 1) {
-    this->DrawAuxiliary(1, 7, leader == 0 ? 8 : 6, icon ? &static_cast<CBitmapRes*>(icon)->image : nullptr, true, false);
+    this->DrawAuxiliary(1, 7, leader == 0 ? 8 : 6, static_cast<CBitmapRes*>(icon), true, false);
   } else {
     this->DrawBitmap(7, leader == 0 ? 8 : 6, static_cast<CBitmapRes*>(icon), true);
   }
@@ -557,7 +557,7 @@ void UIMiniPartyInfoWnd::Paint() {
     std::sprintf(path, "%sico_partyCrown.bmp", directory.c_str());
     CRes* crown = ResourceMgr::Instance().Load(Resolve(path));
     if (this->m_owner->GetMember().offline == 1) {
-      this->DrawAuxiliary(1, 9, 0, crown ? &static_cast<CBitmapRes*>(crown)->image : nullptr, true, false);
+      this->DrawAuxiliary(1, 9, 0, static_cast<CBitmapRes*>(crown), true, false);
     } else {
       this->DrawBitmap(9, 0, static_cast<CBitmapRes*>(crown), true);
     }

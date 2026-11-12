@@ -3127,7 +3127,7 @@ void UICashEmotionPack::Paint() {
   if (!this->m_background.empty()) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_background.c_str()));
     if (bitmap) {
-      this->DrawBitmapScaled(0, 0, this->geometry.width, this->geometry.height, &bitmap->image, 0);
+      this->DrawBitmapScaled(0, 0, this->geometry.width, this->geometry.height, bitmap, 0);
     }
   }
 

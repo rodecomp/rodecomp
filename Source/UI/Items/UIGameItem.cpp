@@ -57,20 +57,20 @@ void CUIGameItem::Paint() {
     return;
   }
 
-  if (this->scale != 100) {
+  if (100 != this->scale) {
     if (this->transparent) {
-      this->DrawAuxiliaryScaled(1, 0, 0, this->geometry.width, this->geometry.height, &this->image->image, 1, false);
+      this->DrawAuxiliaryScaled(1, 0, 0, this->geometry.width, this->geometry.height, this->image, 1, false);
     } else {
-      this->DrawBitmapScaled(0, 0, this->geometry.width, this->geometry.height, &this->image->image, 0);
+      this->DrawBitmapScaled(0, 0, this->geometry.width, this->geometry.height, this->image, 0);
     }
   } else if (this->transparent) {
-    this->DrawAuxiliary(1, 0, 0, &this->image->image, true, false);
+    this->DrawAuxiliary(1, 0, 0, this->image, true, false);
   } else {
-    this->DrawBitmap(0, 0, &this->image->image, false);
+    this->DrawBitmap(0, 0, this->image, false);
   }
 
   if (this->showOverlay && this->overlay) {
-    this->DrawBitmap(0, 12, &this->overlay->image, true);
+    this->DrawBitmap(0, 12, this->overlay, true);
   }
 }
 

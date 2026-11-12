@@ -468,7 +468,7 @@ void CUIHThumb::Paint() {
     const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
     if (this->top) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->top)), true, false);
+        this->DrawAuxiliary(1, 0, 0, this->top, true, false);
       } else {
         this->DrawBitmap(0, 0, this->top, false);
       }
@@ -478,7 +478,7 @@ void CUIHThumb::Paint() {
     if (this->middle) {
       while (x < end) {
         if (this->transparent) {
-          this->DrawAuxiliary(1, x, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
+          this->DrawAuxiliary(1, x, 0, this->middle, true, false);
         } else {
           this->DrawBitmap(x, 0, this->middle, false);
         }
@@ -488,14 +488,14 @@ void CUIHThumb::Paint() {
 
     if (this->bottom) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, this->geometry.width - this->bottom->image.width, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->bottom)), true, false);
+        this->DrawAuxiliary(1, this->geometry.width - this->bottom->image.width, 0, this->bottom, true, false);
       } else {
         this->DrawBitmap(this->geometry.width - this->bottom->image.width, 0, this->bottom, false);
       }
     }
   } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
+      this->DrawAuxiliary(1, 0, 0, this->middle, true, false);
     } else {
       this->DrawBitmap(0, 0, this->middle, false);
     }
@@ -602,10 +602,10 @@ void CUIVScrollBar::Paint() {
 
   if (this->transparent) {
     for (int y = 0; y < this->trackLength - this->background->image.height; y += this->background->image.height) {
-      this->DrawAuxiliary(1, 0, this->upButton->geometry.height + y, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false);
+      this->DrawAuxiliary(1, 0, this->upButton->geometry.height + y, this->background, true, false);
     }
     this->DrawAuxiliary(
-      1, 0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false
+      1, 0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, this->background, true, false
     );
     return;
   }
@@ -725,7 +725,7 @@ void CUIVThumb::Paint() {
     const int end = this->geometry.height - (this->bottom ? this->bottom->image.height : 0);
     if (this->top) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->top)), true, false);
+        this->DrawAuxiliary(1, 0, 0, this->top, true, false);
       } else {
         this->DrawBitmap(0, 0, this->top, false);
       }
@@ -735,7 +735,7 @@ void CUIVThumb::Paint() {
     if (this->middle) {
       while (y < end) {
         if (this->transparent) {
-          this->DrawAuxiliary(1, 0, y, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
+          this->DrawAuxiliary(1, 0, y, this->middle, true, false);
         } else {
           this->DrawBitmap(0, y, this->middle, false);
         }
@@ -745,14 +745,14 @@ void CUIVThumb::Paint() {
 
     if (this->bottom) {
       if (this->transparent) {
-        this->DrawAuxiliary(1, 0, this->geometry.height - this->bottom->image.height, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->bottom)), true, false);
+        this->DrawAuxiliary(1, 0, this->geometry.height - this->bottom->image.height, this->bottom, true, false);
       } else {
         this->DrawBitmap(0, this->geometry.height - this->bottom->image.height, this->bottom, false);
       }
     }
   } else if (this->middle) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->middle)), true, false);
+      this->DrawAuxiliary(1, 0, 0, this->middle, true, false);
     } else {
       this->DrawBitmap(0, 0, this->middle, false);
     }
@@ -1230,12 +1230,12 @@ void CUIStaticImage::Paint() {
     const int height = static_cast<int>(static_cast<float>(res->image.height) * factor);
     const int width = static_cast<int>(static_cast<float>(res->image.width) * factor);
     if (transparent) {
-      this->DrawAuxiliaryScaled(1, 0, 0, width, height, reinterpret_cast<BitmapImage*>(res), 1, false);
+      this->DrawAuxiliaryScaled(1, 0, 0, width, height, res, 1, false);
     } else {
-      this->DrawBitmapScaled(0, 0, width, height, reinterpret_cast<BitmapImage*>(res), 0);
+      this->DrawBitmapScaled(0, 0, width, height, res, 0);
     }
   } else if (transparent) {
-    this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(res), true, false);
+    this->DrawAuxiliary(1, 0, 0, res, true, false);
   } else {
     this->DrawBitmap(0, 0, res, false);
   }
@@ -1455,7 +1455,7 @@ void CUIImageButton::Paint() {
 
   if (image) {
     if (this->transparent) {
-      this->DrawAuxiliary(1, 0, 0, reinterpret_cast<BitmapImage*>(image), true, false);
+      this->DrawAuxiliary(1, 0, 0, image, true, false);
       return;
     }
     this->DrawBitmap(0, 0, image, false);
@@ -2156,10 +2156,10 @@ void CUIHScrollBar::Paint() {
 
   if (this->transparent) {
     for (int x = 0; x < this->trackLength - this->background->image.width; x += this->background->image.width) {
-      this->DrawAuxiliary(1, this->upButton->geometry.width + x, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false);
+      this->DrawAuxiliary(1, this->upButton->geometry.width + x, 0, this->background, true, false);
     }
     this->DrawAuxiliary(
-      1, this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, reinterpret_cast<BitmapImage*>(static_cast<CBitmapRes*>(this->background)), true, false
+      1, this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, this->background, true, false
     );
     return;
   }

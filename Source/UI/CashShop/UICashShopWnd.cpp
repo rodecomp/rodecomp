@@ -513,7 +513,7 @@ void UICashShopWnd_CartItem::Paint() {
     ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
   );
   if (icon != nullptr) {
-    this->DrawBitmapScaled(4, 0, static_cast<int>(icon->image.width * 0.5), static_cast<int>(icon->image.height * 0.5), &icon->image, 1);
+    this->DrawBitmapScaled(4, 0, static_cast<int>(icon->image.width * 0.5), static_cast<int>(icon->image.height * 0.5), icon, 1);
   }
 
   this->DrawRightAlignedText(0xA0, 0x22, FormatOwnedString("%d C", this->m_item.prices[0]).c_str(), 0, 0, 0xC, 0, 0);

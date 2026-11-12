@@ -1293,7 +1293,7 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   }
 
   if (!enabled) {
-    this->DrawAuxiliary(1, this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, reinterpret_cast<BitmapImage*>(bitmap), true, false);
+    this->DrawAuxiliary(1, this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, bitmap, true, false);
     return;
   }
 

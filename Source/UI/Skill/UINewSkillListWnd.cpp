@@ -293,7 +293,7 @@ void UINewSkillListWnd::DrawSkillList() {
       if (bitmap) {
         if (level == 0) {
           shade = 120;
-          this->DrawAuxiliary(1, x + 44, y + 34, &bitmap->image, true, false);
+          this->DrawAuxiliary(1, x + 44, y + 34, bitmap, true, false);
         } else {
           this->DrawBitmap(x + 44, y + 34, &bitmap->image, true);
         }
@@ -1620,16 +1620,16 @@ void UINewSkillListWnd::DrawSkillTree() {
     }
     if (bitmap) {
       if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
-        this->DrawAuxiliary(2, x + 4, y + 44, &bitmap->image, true, true);
+        this->DrawAuxiliary(2, x + 4, y + 44, bitmap, true, true);
         const std::string value = this->ValueText(static_cast<int>(skill.id));
         if (value.size() != 0) {
           this->DrawOutlinedText(x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
         }
       } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
-        this->DrawAuxiliary(4, x + 4, y + 44, &bitmap->image, true, true);
+        this->DrawAuxiliary(4, x + 4, y + 44, bitmap, true, true);
       } else if (level == 0) {
         shade = 120;
-        this->DrawAuxiliary(1, x + 4, y + 44, &bitmap->image, true, true);
+        this->DrawAuxiliary(1, x + 4, y + 44, bitmap, true, true);
       } else {
         this->DrawBitmap(x + 4, y + 44, bitmap, true);
       }

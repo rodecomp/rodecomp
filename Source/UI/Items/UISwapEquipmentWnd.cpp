@@ -157,7 +157,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             const int row = slot & 3;
             if (bitmap) {
-              this->DrawAuxiliary(1, iconX, row * 26 + 48, &bitmap->image, true, false);
+              this->DrawAuxiliary(1, iconX, row * 26 + 48, bitmap, true, false);
             }
             this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
             if (0 < item.grade) {
@@ -174,7 +174,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             g_session.IconPath(path, id, 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             if (bitmap) {
-              this->DrawAuxiliary(1, iconX, 22, &bitmap->image, true, false);
+              this->DrawAuxiliary(1, iconX, 22, bitmap, true, false);
             }
             this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
           }

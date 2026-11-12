@@ -1421,8 +1421,7 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 
   std::string resource(FindItemDescription(itemId).identifiedResource);
   if (!resource.empty()) {
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
-    this->m_image = bitmap ? &bitmap->image : nullptr;
+    this->m_image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
   }
 }
 
