@@ -4557,10 +4557,10 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
 
     for (int rcolor = 0; rcolor < 7; ++rcolor) {
       int order = 0;
-      const double inner = 1.0 - rcolor * 0.05f;
-      const double outer = 1.0 - (rcolor + 1) * 0.05f;
 
       for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
+        const double inner = 1.0 - rcolor * 0.05f;
+        const double outer = 1.0 - (rcolor + 1) * 0.05f;
         int angle = slot.rotStart + count;
 
         if (angle >= 360) {
@@ -4586,49 +4586,21 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
         const float x3 = static_cast<float>(outer * (dist * g_cosTable[next]));
         vec3.Set(x3 * cs, static_cast<float>(outer * (dist * g_sinTable[next]) * 2.0), x3 * sn);
 
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-
-        switch (rcolor) {
-        case 0:
-          red = 255;
-          green = 0;
-          blue = 0;
-          break;
-        case 1:
-          red = 255;
-          green = 126;
-          blue = 0;
-          break;
-        case 2:
-          red = 255;
-          green = 255;
-          blue = 0;
-          break;
-        case 3:
-          red = 0;
-          green = 255;
-          blue = 0;
-          break;
-        case 4:
-          red = 0;
-          green = 0;
-          blue = 255;
-          break;
-        case 5:
-          red = 115;
-          green = 50;
-          blue = 200;
-          break;
-        case 6:
-          red = 255;
-          green = 0;
-          blue = 255;
-          break;
+        if (rcolor == 0) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 0);
+        } else if (rcolor == 1) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 126, 0);
+        } else if (rcolor == 2) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 255, 0);
+        } else if (rcolor == 3) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 255, 0);
+        } else if (rcolor == 4) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 0, 255);
+        } else if (rcolor == 5) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 115, 50, 200);
+        } else if (rcolor == 6) {
+          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 255);
         }
-
-        this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, red, green, blue);
 
         ++order;
 
