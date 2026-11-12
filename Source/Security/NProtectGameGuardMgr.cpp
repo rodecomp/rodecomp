@@ -198,9 +198,11 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   switch (code) {
   case 0x3F3: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x0F41EBBDA32D1B17ULL);
-    const auto& source = sourceText.data;
-    manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(DecryptName<0x0F41EBBDA32D1B17ULL>(source), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
+    manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(
+      []() {
+        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x0F41EBBDA32D1B17ULL);
+        return DecryptName<0x0F41EBBDA32D1B17ULL>(sourceText.data);
+      }(), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
   case 0x3E9:
@@ -213,9 +215,11 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   }
   case 0x3F6: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x176F138D5DD7F365ULL);
-    const auto& source = sourceText.data;
-    manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(DecryptName<0x176F138D5DD7F365ULL>(source), LookupMessage(MSI_INIT_ERROR), code)));
+    manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(
+      []() {
+        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x176F138D5DD7F365ULL);
+        return DecryptName<0x176F138D5DD7F365ULL>(sourceText.data);
+      }(), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
   case 0x3F4:
@@ -226,9 +230,11 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   }
   case 0x3F7: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0xFBD599E117C547C1ULL);
-    const auto& source = sourceText.data;
-    manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(DecryptName<0xFBD599E117C547C1ULL>(source), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
+    manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(
+      []() {
+        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0xFBD599E117C547C1ULL);
+        return DecryptName<0xFBD599E117C547C1ULL>(sourceText.data);
+      }(), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
   case 0x3FB: {
