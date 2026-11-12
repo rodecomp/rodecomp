@@ -272,7 +272,8 @@ void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x005B0CD0
 // FUNCTION: fn_03347
 void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr std::array<std::uint8_t, 10> effectSourceArray = CRYPT_NAME("claw_wave", 0x17359BF953C367B3ULL);
     const std::uint8_t (&effectSource)[10] = effectSourceArray._Elems;
     thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
