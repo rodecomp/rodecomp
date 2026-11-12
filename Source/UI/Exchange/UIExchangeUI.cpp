@@ -63,24 +63,6 @@ static const char* DecryptName(const char (&source)[Length]) {
   return name.Text();
 }
 
-// OFFSET: 0x00A0F790
-// FUNCTION: fn_15176
-bool UnusedTrueA0F790() {
-  return true;
-}
-
-// OFFSET: 0x00A0F7A0
-// FUNCTION: fn_15177
-bool UnusedTrueA0F7A0() {
-  return true;
-}
-
-// OFFSET: 0x00A0F7B0
-// FUNCTION: fn_15178
-bool UnusedTrueA0F7B0() {
-  return true;
-}
-
 // OFFSET: 0x00A0F840
 // FUNCTION: fn_15180
 template <>
