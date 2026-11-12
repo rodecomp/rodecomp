@@ -138,10 +138,14 @@ bool CRootTwistEffect::IsAlive() {
 // FUNCTION: fn_07132
 void CRootTwistEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    const vector3d position = {this->position[0] + 0.0f, this->position[1] + 3.0f, this->position[2] + 0.0f};
+    const float x = this->position[0] + 0.0f;
+    const float y = this->position[1] + 3.0f;
+    const float z = this->position[2] + 0.0f;
     CSpriteParticle* particle = *it;
     ++particle->elapsedFrames;
-    particle->position = position;
+    particle->position.x = x;
+    particle->position.y = y;
+    particle->position.z = z;
   }
 }
 
@@ -2055,14 +2059,14 @@ void CJupitelThunderHit::OnProcess() {
 void CJupitelThunderHit::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->elapsedFrames >= 0) {
+    if ((*it)->elapsedFrames >= 0 && particle) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 
   for (auto it = this->hitEmitters.begin(); it != this->hitEmitters.end(); ++it) {
     CParticle* particle = *it;
-    if (particle && particle->elapsedFrames >= 0) {
+    if ((*it)->elapsedFrames >= 0 && particle) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
@@ -4547,10 +4551,11 @@ __declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], 
 void CCylinderEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
-    emitter->position.x = this->position[0];
-    emitter->position.y = this->position[1];
-    emitter->position.z = this->position[2];
-    if (!*it) {
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+    if (!emitter) {
       continue;
     }
 
