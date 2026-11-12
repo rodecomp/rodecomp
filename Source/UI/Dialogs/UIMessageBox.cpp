@@ -2315,29 +2315,28 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       auto* edit = static_cast<UIEditCtrl*>(this->filenameEdit);
-      int error;
-
       if (edit->Length() <= 0) {
-        error = 1972;
-      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
-                 _mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        error = 2812;
-      } else {
-        ReplayFileList::Instance().SetPath(edit->Text());
-        g_windowMgr.SetFocus(nullptr);
-        edit->SetText("");
-        g_modeMgr.gameMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
-
-        if (Replay::Instance().state == 1) {
-          return 0;
-        }
-
-        this->mode = 1;
-        this->ApplyMode();
+        g_windowMgr.Confirm(LookupMessage(1972), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
-      g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+          _mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+
+      ReplayFileList::Instance().SetPath(edit->Text());
+      g_windowMgr.SetFocus(nullptr);
+      edit->SetText("");
+      g_modeMgr.gameMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
+
+      if (Replay::Instance().state == 1) {
+        return 0;
+      }
+
+      this->mode = 1;
+      this->ApplyMode();
       return 0;
     }
     case ID_REPLAY_RECORDING_OPTIONS:
@@ -3251,7 +3250,10 @@ void UIMonsterInfoWnd::OnCreate(int, int) {
   this->m_message0 = 184;
 
   this->actorId = g_monsterInfoActorId;
-  this->name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_monsterInfoActorId);
+  {
+    const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_monsterInfoActorId);
+    this->name = actorName;
+  }
   const std::size_t separator = this->name.find("#");
   if (separator != std::string::npos) {
     this->name.erase(separator, this->name.size());
