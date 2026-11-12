@@ -396,4 +396,43 @@ public:
   /* 00FC */ CUIImageButton* m_closeButton;
 };
 
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIListItem* item);
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUIListItem* item);
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIListItem* item);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem();
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem();
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem();
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem();
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem();
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, int height);
+
 #endif

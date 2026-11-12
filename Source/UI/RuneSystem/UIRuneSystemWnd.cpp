@@ -16,9 +16,9 @@
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 // GLOBAL: gl_24886
-extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
+const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
 // GLOBAL: gl_24887
-extern const int g_runeSetSlotY[6] = {70, 70, 207, 207, 344, 344};
+const int g_runeSetSlotY[6] = {70, 70, 207, 207, 344, 344};
 
 // OFFSET: 0x00816630
 // FUNCTION: fn_10164

@@ -142,6 +142,18 @@ public:
 
 }
 
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem();
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
+
+template <>
+__declspec(noinline) CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx();
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x8C);
 static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA4);

@@ -58,7 +58,6 @@ extern GUID g_configuredDeviceGuid;
 extern char g_configuredDeviceName[0x20];
 extern int g_viewportWidth;
 extern int g_viewportHeight;
-extern const GUID g_defaultDrawGuidDX7;
 
 void ClearDirectDrawModes();
 

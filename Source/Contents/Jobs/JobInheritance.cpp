@@ -1769,8 +1769,6 @@ bool CSession::IsCostumeJob(int job) const {
   }
 }
 
-int GetEquipLocationIndex(const int& mask);
-
 namespace EquipmentProperties {
 class CEquipmentProperties;
 

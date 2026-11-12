@@ -1,5 +1,5 @@
+#include "Contents/Actors/Resources/BodyResources.h"
 #include "Client/Session/Session.h"
-#include "Utility/Cipher/EncryptedName.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Utility/Cipher/XorBytes.h"

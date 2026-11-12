@@ -4,13 +4,11 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
-
-CParticle* CreateEZ2STRParticle(const vector3d* position, int flags);
-void FreeParticle(CParticle* particle);
 
 // OFFSET: 0x0072ED00
 // FUNCTION: fn_07521

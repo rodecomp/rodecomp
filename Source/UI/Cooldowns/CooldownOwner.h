@@ -33,6 +33,7 @@ public:
 
 extern CooldownOwner* g_cooldownOwner;
 
+bool CreateCooldownOwner();
 void DestroyCooldownOwner();
 
 #if defined(_WIN32) && !defined(_WIN64)

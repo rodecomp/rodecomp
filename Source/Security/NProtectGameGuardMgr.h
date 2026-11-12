@@ -58,4 +58,6 @@ static_assert(sizeof(CNProtectGameGuardMgr) == 0x50);
 
 extern CNProtectGameGuardMgr* g_nProtectGameGuardMgr;
 
+int __stdcall GameGuardCallback(int code, const int* packet);
+
 #endif

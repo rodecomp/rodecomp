@@ -1242,6 +1242,7 @@ bool IsMonsterJob(int job);
 int MonsterJobColor(int job);
 void SetMemberFlags(std::uint32_t* flags);
 void ClearMemberFlags(std::uint32_t* flags);
+void __fastcall RefreshPartyWindows(CSession* session);
 std::vector<unsigned char> SerializeMessengerMembers(const std::list<MessengerMember>& members);
 
 #if defined(_WIN32) && !defined(_WIN64)

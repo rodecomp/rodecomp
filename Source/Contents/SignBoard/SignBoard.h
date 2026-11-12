@@ -88,6 +88,7 @@ public:
 extern CSignBoardMgr* s_signBoardMgr;
 bool CreateSignBoardMgr();
 void DestroySignBoardMgr();
+void __fastcall InitializeSignBoardManager(CSignBoardMgr* manager);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CIcon) == 0x138);

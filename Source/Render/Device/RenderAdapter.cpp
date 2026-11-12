@@ -1,3 +1,4 @@
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RenderSystemDX9.h"
 #include "Render/Device/RenderAdapter.h"

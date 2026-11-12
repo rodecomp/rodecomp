@@ -17,4 +17,6 @@ struct SoundConfiguration {
 
 extern SoundConfiguration g_soundConfiguration;
 
+int ReadSetup();
+
 #endif

@@ -1,3 +1,4 @@
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Render/DX7/DirectDrawEnumeration.h"
 #include "Render/Device/RenderAdapter.h"
 #include "Render/DX7/RenderSystemDX7.h"

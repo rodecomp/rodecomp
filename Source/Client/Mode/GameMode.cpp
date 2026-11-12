@@ -1,5 +1,6 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/WindowId.h"
+#include "Network/Packets/ActorNamePacket.h"
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"

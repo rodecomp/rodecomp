@@ -188,8 +188,6 @@ static_assert(sizeof(ItemAddGradePacket) == 0x3A);
 static_assert(sizeof(ItemListRecord) == 0x22);
 #endif
 
-int GetEquipLocationIndex(const int& mask);
-
 namespace EquipmentProperties {
 class CEquipment {
 public:

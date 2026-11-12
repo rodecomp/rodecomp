@@ -306,4 +306,11 @@ public:
 };
 }
 
+template <>
+__declspec(noinline) void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNewItem();
+template <>
+__declspec(noinline) void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem();
+template <>
+__declspec(noinline) CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx();
+
 #endif

@@ -68,4 +68,7 @@ extern CWeatherEffect g_weatherEffect;
 extern float g_depthAverageHalf;
 extern CMapSkyMgr* g_mapSkyMgr;
 
+CMapSkyMgr* GetMapSkyMgr();
+void IgnoreNull();
+
 #endif

@@ -78,6 +78,19 @@ public:
   /* 010C */ int skillId;
 };
 
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnWheel(int value);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem();
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SkillDelayInfo::CDelayItemData) == 0x0C);
 #endif

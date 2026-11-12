@@ -47,8 +47,6 @@
 unsigned char g_selectedSlotIndex;
 
 
-extern const char* LookupMessage(int id);
-
 #pragma pack(push, 1)
 struct BlockedCharacterEntry {
   /* 0000 */ std::uint32_t gid;

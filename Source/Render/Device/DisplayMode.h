@@ -21,6 +21,8 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex);
 
 std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter);
 
+LSTATUS SaveDisplayDeviceSettings();
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DisplayMode) == 36);
 static_assert(offsetof(DisplayMode, height) == 0x0004);

@@ -1033,5 +1033,9 @@ extern int g_buyingStoreDbNumber;
 extern int g_buyingStoreNoPermission;
 extern std::string g_gameModeNamelessTag;
 void __stdcall OpenWordDisplay(CGameActor* actor);
+int CountItemRandomOptions(const unsigned char* entries);
+void TraceSelection(int selection);
+void TraceSelectionRange(int first, int last);
+void WriteMyLog(const char* file, int line, const char* format, ...);
 
 #endif

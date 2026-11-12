@@ -6,6 +6,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Sprites/SpriteRidingOffset.h"
+#include "Contents/Tables/MessageTable.h"
 #include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -22,9 +23,6 @@
 #include <cstring>
 #include <string>
 #include <timeapi.h>
-
-extern const char* LookupMessage(int id);
-
 
 #pragma pack(push, 1)
 struct PACKET_CZ_SELECT_CHARACTERS {

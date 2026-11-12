@@ -24,19 +24,6 @@
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnWheel(int value);
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::AddNewItem();
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::LoadSkin(bool resolveSkin);
-template <>
-void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Resize(int width, int height);
-
 namespace {
 
 // INLINED

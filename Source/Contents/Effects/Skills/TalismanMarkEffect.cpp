@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
@@ -10,9 +11,6 @@
 #include <algorithm>
 #include <array>
 #include <string>
-
-CParticle* CreateEZ2STRParticle(const vector3d* position, int flags);
-void FreeParticle(CParticle* particle);
 
 namespace {
 // INLINED

@@ -30,19 +30,6 @@
 template __declspec(noinline) std::list<ITEM_INFO>::~list() noexcept;
 template __declspec(noinline) std::list<SelectPackageItemBox::CTabInfoData>::~list() noexcept;
 
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem();
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::AddNewItem();
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(bool resolveSkin);
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(bool resolveSkin);
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Resize(int width, int height);
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Resize(int width, int height);
-
 // OFFSET: 0x00A684E0
 // FUNCTION: fn_16646
 template <>
@@ -107,11 +94,6 @@ void CUISelectPackageItemBox::Initialize() {
   this->SetSkinColors(0, 0, 0, 0);
   this->m_buttonBarStyle = 3;
 }
-
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int position);
-template <>
-void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnScroll(int position);
 
 // OFFSET: 0x00A695F0
 // FUNCTION: fn_16662

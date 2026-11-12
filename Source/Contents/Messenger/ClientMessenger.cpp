@@ -64,8 +64,6 @@ extern "C" {
 #include <lualib.h>
 }
 
-void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
-
 namespace EquipmentProperties {
   class CEquipmentProperties;
 }

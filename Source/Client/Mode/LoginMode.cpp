@@ -104,9 +104,6 @@
 #include <random>
 #include <timeapi.h>
 
-void TraceSelection(int selection);
-void TraceSelectionRange(int first, int last);
-
 #pragma pack(push, 1)
 struct CharacterSlotsPacket {
   /* 0000 */ std::int16_t id;

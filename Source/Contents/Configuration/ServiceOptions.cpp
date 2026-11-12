@@ -1465,7 +1465,7 @@ int g_viewportWidth = 1024;
 int g_viewportHeight = 768;
 
 // GLOBAL: gl_24767
-extern const GUID g_defaultDrawGuidDX7 = {};
+const GUID g_defaultDrawGuidDX7 = {};
 
 // OFFSET: 0x00DFE4E0
 // FUNCTION: fn_23604

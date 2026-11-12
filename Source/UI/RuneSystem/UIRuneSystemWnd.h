@@ -34,6 +34,9 @@ class Decom_ItemInfo;
 class RuneData;
 class RuneSetData;
 
+extern const int g_runeSetSlotX[6];
+extern const int g_runeSetSlotY[6];
+
 class UIRuneSetReWard : public UIBitmapButton {
 public:
   UIRuneSetReWard();

@@ -177,8 +177,6 @@ struct TradeItemRecord {
 static_assert(sizeof(TradeItemRecord) == 0x22);
 #endif
 
-void __fastcall RefreshPartyWindows(CSession* session);
-
 // GLOBAL: gl_24992
 char g_pendingWhisperCount;
 
@@ -4097,8 +4095,6 @@ void CGameMode::ReceiveShopName(const char* text, int shopId) {
   }
 }
 
-void SetPlayerName(std::uint32_t id, std::string name);
-
 namespace {
   struct FriendRecord {
     /* 0000 */ std::uint32_t accountId;
@@ -4164,8 +4160,6 @@ namespace {
 
   static_assert(sizeof(StatusBonusPacket) == 0xE);
 }
-
-int GetEquipLocationIndex(const int& mask);
 
 namespace EquipmentProperties {
 class CEquipmentWearable;

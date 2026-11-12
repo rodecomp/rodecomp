@@ -12,6 +12,7 @@ class CEquipmentPropertiesMgr;
 }
 
 extern EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
+int GetEquipLocationIndex(const int& mask);
 
 
 #endif

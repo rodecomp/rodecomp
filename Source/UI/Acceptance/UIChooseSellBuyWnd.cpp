@@ -11626,8 +11626,6 @@ void UIBookWnd::OnProcess() {
   }
 }
 
-int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
-
 // OFFSET: 0x008F2DF0
 // FUNCTION: fn_12262
 void UITipboxWnd::PaintAnimations() {

@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_RESOURCE_JSON_JSONCPPLOADER_H
 #define RAGNAROK_SOURCE_RESOURCE_JSON_JSONCPPLOADER_H
 
+#include "Resource/Json/JsonCppLoaderExternal.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <cstddef>
@@ -236,11 +238,6 @@ public:
   /* 0030 */ bool loaded;
   /* 0031 */ bool succeeded;
 };
-
-extern "C" {
-void JsonCopyConstruct();
-void* __cdecl JsonNull();
-}
 
 inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType) {
   const JsonValue* source = static_cast<const JsonValue*>(JsonNull());

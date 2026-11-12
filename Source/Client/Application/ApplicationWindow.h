@@ -12,5 +12,6 @@ HWND __stdcall CreateApplicationWindow(
 
 BOOL ClipApplicationCursor(HWND window);
 BOOL ReleaseApplicationCursor();
+LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 
 #endif

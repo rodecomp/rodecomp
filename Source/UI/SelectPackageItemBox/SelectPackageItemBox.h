@@ -69,6 +69,24 @@ public:
   /* 00F0 */ int packageId;
 };
 
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem();
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::AddNewItem();
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::LoadSkin(bool resolveSkin);
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Resize(int width, int height);
+
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int position);
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnScroll(int position);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SelectPackageItemBox::CTabInfoData) == 0x20);
 #endif

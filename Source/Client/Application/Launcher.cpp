@@ -37,12 +37,14 @@
 #include "Contents/Schedule/TimeScheduler.h"
 #include "Contents/SignBoard/SignBoard.h"
 #include "Contents/Tables/SimpleStringMgr.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Map/TownInfoMgr.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Network/Http/CURLMgr.h"
 #include "Security/NProtectGameGuardMgr.h"
+#include "Security/ProcessSecurity.h"
 #include "Security/ReassemblyPacketMgr.h"
 #include "Security/ThemidaMgr.h"
 #include "UI/Cooldowns/CooldownOwner.h"
@@ -73,6 +75,8 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
+#include "Render/Device/DisplayMode.h"
+#include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/TextureCache.h"
@@ -845,18 +849,6 @@ public:
   bool InitializeLua();
 };
 }
-
-bool CreateCooldownOwner();
-CMapSkyMgr* GetMapSkyMgr();
-void InitMapTypeInfoTable();
-void __fastcall InitializeSignBoardManager(CSignBoardMgr* manager);
-LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
-int ReadSetup();
-int RemoveProtectionTools();
-void IgnoreNull();
-LSTATUS SaveDisplayDeviceSettings();
-
-#include "Render/DX7/RenderSystemDX7.h"
 
 // OFFSET: 0x00E58100
 // FUNCTION: fn_24362

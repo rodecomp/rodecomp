@@ -11,4 +11,6 @@ void WrapRichText(
   const char* text, std::vector<std::string>& lines, int width, bool carriageReturns
 );
 
+int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
+
 #endif

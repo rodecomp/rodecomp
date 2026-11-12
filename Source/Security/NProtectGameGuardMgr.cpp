@@ -1,6 +1,8 @@
 #include "Security/NProtectGameGuardMgr.h"
+#include "Security/NProtectGameMon.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Tables/MessageTable.h"
@@ -27,13 +29,6 @@ static const char g_devClientTag[] = "Dev";
 // STRING: st_02591
 static const char g_nprotectSource[] =
     "C:\\repositories\\RagnarokClient\\RagnarokClient\\Security Solution\\nProtectGameGuard\\CNProtectGameGuardMgr.cpp";
-
-void CloseNPGameMon();
-void PreInitNPGameMonA(const char* name);
-int InitNPGameMon();
-int __stdcall GameGuardCallback(int code, const int* packet);
-void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*));
-void WriteMyLog(const char* file, int line, const char* format, ...);
 
 class CNPGameLib {
 public:

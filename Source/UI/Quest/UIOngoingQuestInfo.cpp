@@ -28,9 +28,6 @@
 template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestOngoingInfo>, void*>*>
 std::map<unsigned int, RenewQuestOngoingInfo>::_Mybase::_Find_lower_bound<unsigned int>(const unsigned int&) const;
 
-template <>
-void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
-template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::AddNewItem(); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::LoadSkin(bool resolveSkin); template <> void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Resize(int width, int height);
 // OFFSET: 0x00A4F580
 // FUNCTION: fn_16213
 bool UnusedTrueA4F580() {
@@ -48,9 +45,6 @@ bool UnusedTrueA4F590() {
 bool UnusedTrueA4F5A0() {
   return true;
 }
-
-template <>
-__declspec(noinline) CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx();
 
 // OFFSET: 0x00A4F630
 // FUNCTION: fn_16217

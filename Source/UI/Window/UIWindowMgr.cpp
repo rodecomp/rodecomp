@@ -2153,8 +2153,6 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   return data;
 }
 
-void __fastcall RefreshPartyWindows(CSession* session);
-
 // OFFSET: 0x00A8C4B0
 // FUNCTION: fn_17132
 void UIWindowMgr::CloseMiniPartyWindow(int id) {

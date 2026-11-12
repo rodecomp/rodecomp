@@ -97,21 +97,6 @@ void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
   }
 }
 
-template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position);
-
-template <>
-bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index);
-
-template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem();
-
-template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(bool resolveSkin);
-
-template <>
-void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height);
-
 // OFFSET: 0x00A47EF0
 // FUNCTION: fn_16104
 bool UnusedTrueA47EF0() {

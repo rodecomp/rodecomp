@@ -1,4 +1,5 @@
 #include "Render/DX7/RenderSystemDX7.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/DirectDrawEnumeration.h"
 #include "Render/DX7/SurfaceDX7.h"

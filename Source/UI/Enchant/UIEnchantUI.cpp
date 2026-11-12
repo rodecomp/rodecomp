@@ -50,13 +50,6 @@ template int CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearData();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
 
-template <>
-__declspec(noinline) void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNewItem();
-template <>
-__declspec(noinline) void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem();
-template <>
-__declspec(noinline) CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx();
-
 // OFFSET: 0x009F93D0
 // FUNCTION: fn_14806
 template <>

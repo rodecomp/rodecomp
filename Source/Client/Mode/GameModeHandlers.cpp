@@ -488,8 +488,6 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
   skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
-int CountItemRandomOptions(const unsigned char* entries);
-
 struct GameOptionEntry {
   /* 0000 */ int id;
   /* 0004 */ int value;

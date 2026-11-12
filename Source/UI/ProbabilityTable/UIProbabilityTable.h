@@ -70,6 +70,21 @@ public:
 
 int HighlightKeyword(std::string& text, std::string_view keyword, std::string_view prefix, std::string_view suffix);
 
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position);
+
+template <>
+bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index);
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem();
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::LoadSkin(bool resolveSkin);
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ProbabilityTable::CItemData) == 0x28);
 static_assert(sizeof(ProbabilityTable::CUIItem) == 0xF8);

@@ -9,13 +9,12 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/Json/JsonCppLoader.h"
+#include "Resource/Json/JsonCppLoaderExternal.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <utility>
-
-extern "C" void JsonDestroy();
 
 struct JsonValueCopy {
   /* 0000 */ JsonValue value;
