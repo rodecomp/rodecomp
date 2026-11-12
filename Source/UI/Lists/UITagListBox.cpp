@@ -118,10 +118,11 @@ void UITagListBox::OnLBtnUp(int, int) {
 // FUNCTION: fn_13872
 int UITagListBox::DecodeNumber(std::string text) {
   char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const int length = static_cast<int>(text.size());
+  const int size = static_cast<int>(text.size()) + 1;
   int result = 0;
-  char* buffer = new char[length + 1];
-  strcpy_s(buffer, length + 1, text.c_str());
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, text.c_str());
+  const int length = size - 1;
 
   for (int index = 0; index < length; ++index) {
     for (int digit = 0; digit < 62; ++digit) {
@@ -421,7 +422,7 @@ std::vector<STagString> ExtractTextTags(std::string text) {
   std::vector<STagString> tags;
   int index = 0;
 
-  for (auto prototype = g_textTagRegistry.begin(); prototype != g_textTagRegistry.end(); ++prototype) {
+  for (auto prototype = g_textTagRegistry.begin(); prototype != g_textTagRegistry.end(); ++prototype, ++index) {
     std::string remaining = text;
 
     for (std::size_t offset = 0; offset < text.size();) {
@@ -450,8 +451,6 @@ std::vector<STagString> ExtractTextTags(std::string text) {
 
       offset += advance;
     }
-
-    ++index;
   }
 
   return tags;
