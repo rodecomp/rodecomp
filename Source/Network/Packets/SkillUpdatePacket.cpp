@@ -21,7 +21,7 @@ namespace {
 // OFFSET: 0x00D42AA0
 // FUNCTION: fn_21829
 void CGameMode::ApplySkillUpdatePacket(const void* packet) {
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
+  this->isReqUpgradeSkillLevel = 0;
 
   const auto* bytes = static_cast<const unsigned char*>(packet);
   CSkillInfo value;
@@ -78,7 +78,7 @@ void CGameMode::ReceiveLearnedSkill(
 // OFFSET: 0x00D2B5C0
 // FUNCTION: fn_45442
 void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
+  this->isReqUpgradeSkillLevel = 0;
   g_session.m_additionalSkills.clear();
 
   const auto* bytes = static_cast<const unsigned char*>(packet);

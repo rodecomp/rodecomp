@@ -2867,7 +2867,7 @@ void CGameMode::ReceiveCardCompositionItemList(const unsigned char* packet) {
   unsigned int count = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOMPOSITIONWND);
   window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
-  window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, *reinterpret_cast<const int*>(this->cardAndSkillBalloonIds), 0, 0, 0);
+  window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, this->cardItemIndex, 0, 0, 0);
   count >>= 1;
   const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
   for (unsigned int index = count; index != 0; --index, ++ids) {
@@ -6498,7 +6498,7 @@ __declspec(noinline) void CGameMode::ReceiveActorColorChat(const unsigned char* 
 // OFFSET: 0x00D1F400
 // FUNCTION: fn_21637
 __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location) {
-  *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[0x04]) = timeGetTime() - 2000;
+  this->waitingWearEquipAck = timeGetTime() - 2000;
   switch (result) {
   case ITEM_EQUIP_ACK_OK: {
     ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
@@ -6761,7 +6761,7 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
 // OFFSET: 0x00D1E7B0
 // FUNCTION: fn_21635
 __declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity) {
-  *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[0x08]) = timeGetTime() - 2000;
+  this->waitingTakeoffEquipAck = timeGetTime() - 2000;
   switch (result) {
   case 0:
     if (location) {
@@ -6845,15 +6845,15 @@ __declspec(noinline) void CGameMode::ReceiveItemConsumed(const unsigned char* pa
     g_windowMgr.CloseWindow(WID_RODEXCOMPOSEWND);
   }
 
-  if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14])) {
-    *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+  if (this->isWaitingCancelExchangeItem) {
+    this->isWaitingCancelExchangeItem = 0;
     g_session.ResetSlots();
   }
 
   g_session.RemoveInventoryItem(
     *reinterpret_cast<const std::uint16_t*>(packet + 4), *reinterpret_cast<const std::int16_t*>(packet + 6)
   );
-  *reinterpret_cast<int*>(&this->balloonDisplayState[0x18]) = 0;
+  this->waitingItemThrowAck = 0;
   this->inventoryChanged = 1;
   if (g_session.petJob != -1 && g_session.petEggIndex == *reinterpret_cast<const std::uint16_t*>(packet + 4)) {
     g_session.ResetPetEggAndJob();
@@ -8305,8 +8305,8 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+    if (this->isWaitingCancelExchangeItem != 0) {
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -8408,8 +8408,8 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+    if (this->isWaitingCancelExchangeItem != 0) {
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -8511,8 +8511,8 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+    if (this->isWaitingCancelExchangeItem != 0) {
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -8630,8 +8630,8 @@ void CGameMode::ReceiveItemPickupAck5(
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) = 0;
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -8749,8 +8749,8 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) = 0;
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -9226,7 +9226,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
         notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE1);
         break;
       case ZCSK_EMOTION:
-        this->requestTimers[0x16] = 0;
+        this->isEmotionRequested = 0;
         notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE2);
         break;
       case ZCSK_SIT:
@@ -9855,8 +9855,8 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) = 0;
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -10020,8 +10020,8 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (*reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) != 0) {
-      *reinterpret_cast<int*>(&static_cast<CGameMode*>(g_modeMgr.GetGameMode())->equipmentRequestState[0x14]) = 0;
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -11545,8 +11545,8 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
     static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
     break;
   case SP_ZENY:
-    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14])) {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+    if (this->isWaitingCancelExchangeItem) {
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.m_zeny = *reinterpret_cast<const int*>(packet + 4);
@@ -21530,8 +21530,8 @@ void CGameMode::ProcessIncomingPackets() {
         g_session.SyncServerTime(serverTime);
       }
       ++this->serverTimeSyncCount;
-      *reinterpret_cast<int *>(&this->requestTimers[0x02]) = 1;
-      g_session.AddPingSample(timeGetTime() - *reinterpret_cast<const std::uint32_t *>(&this->requestTimers[0x06]));
+      this->syncAcknowledged = 1;
+      g_session.AddPingSample(timeGetTime() - this->syncRequestTick);
       break;
     }
     case ID_ZC_NOTIFY_MOVE: {
@@ -21773,7 +21773,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_REQ_WEAR_EQUIP_ACK: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      *reinterpret_cast<std::uint32_t *>(&this->equipmentRequestState[0x04]) = timeGetTime() - 2000;
+      this->waitingWearEquipAck = timeGetTime() - 2000;
       switch (packet[8]) {
       case ACK_REQ_EQUIP_FAILURE:
       case ACK_REQ_EQUIP_FAILURE_LEVEL:
@@ -21793,7 +21793,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_REQ_TAKEOFF_EQUIP_ACK: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      *reinterpret_cast<std::uint32_t *>(&this->equipmentRequestState[0x08]) = timeGetTime() - 2000;
+      this->waitingTakeoffEquipAck = timeGetTime() - 2000;
       const std::uint16_t location = *reinterpret_cast<const std::uint16_t *>(packet + 4);
       if (packet[6] && location) {
         if (g_session.IsCostumeLocation(location)) {
@@ -21806,8 +21806,8 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_ITEM_THROW_ACK: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      if (*reinterpret_cast<int *>(&this->equipmentRequestState[0x14])) {
-        *reinterpret_cast<int *>(&this->equipmentRequestState[0x14]) = 0;
+      if (this->isWaitingCancelExchangeItem) {
+        this->isWaitingCancelExchangeItem = 0;
         g_session.ResetSlots();
       }
 
@@ -21819,7 +21819,7 @@ void CGameMode::ProcessIncomingPackets() {
                                0xFFFF00, 6, 0, 0);
       }
       g_session.RemoveInventoryItem(index, amount);
-      *reinterpret_cast<int *>(this->waitingItemThrowAck) = 0;
+      this->waitingItemThrowAck = 0;
       break;
     }
     case ID_ZC_RESTART_ACK:
@@ -22092,11 +22092,11 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     case ID_ZC_CANCEL_EXCHANGE_ITEM:
-      *reinterpret_cast<int *>(&this->equipmentRequestState[0x00]) = 0;
+      this->isWaitingAddExchangeItem = 0;
       this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_EXCHANGEUI);
       g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
-      *reinterpret_cast<int *>(&this->equipmentRequestState[0x14]) = 0;
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAL_IS_CANCELED)), 0xFF, 0, 0, 0);
@@ -22110,14 +22110,14 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAL_SUCCESS)), 0xFFFF00, 0, 0, 0);
         break;
       case EXITEM_EXCHANGE_FAILED:
-        *reinterpret_cast<int *>(&this->equipmentRequestState[0x14]) = 0;
+        this->isWaitingCancelExchangeItem = 0;
         g_session.ResetSlots();
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAL_FAILED)), 0xFF, 0, 0, 0);
         break;
       }
       break;
     case ID_ZC_EXCHANGEITEM_UNDO:
-      *reinterpret_cast<int *>(&this->equipmentRequestState[0x14]) = 0;
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
       break;
     case ID_ZC_NOTIFY_STOREITEM_COUNTINFO:
@@ -22512,7 +22512,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       g_session.SetEquippedArrowIndex(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
-      *reinterpret_cast<std::uint32_t *>(&this->equipmentRequestState[0x04]) = timeGetTime() - 2000;
+      this->waitingWearEquipAck = timeGetTime() - 2000;
       break;
     case ID_ZC_RECOVERY:
       this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 0);
@@ -22818,7 +22818,7 @@ void CGameMode::ProcessIncomingPackets() {
       unsigned int count = (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2) - 4u) >> 1;
       UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMCOMPOSITIONWND);
       window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
-      window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, *reinterpret_cast<const int *>(this->cardAndSkillBalloonIds), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, this->cardItemIndex, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
@@ -24186,7 +24186,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_REQ_WEAR_EQUIP_ACK2: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      *reinterpret_cast<std::uint32_t *>(&this->equipmentRequestState[0x04]) = timeGetTime() - 2000;
+      this->waitingWearEquipAck = timeGetTime() - 2000;
       switch (packet[8]) {
       case ITEM_EQUIP_ACK_OK: {
         ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
@@ -24205,7 +24205,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_REQ_TAKEOFF_EQUIP_ACK2: {
       const unsigned char *packet = g_gameModePacketBuffer;
-      *reinterpret_cast<std::uint32_t *>(&this->equipmentRequestState[0x08]) = timeGetTime() - 2000;
+      this->waitingTakeoffEquipAck = timeGetTime() - 2000;
       switch (packet[6]) {
       case 0: {
         const std::uint16_t location = *reinterpret_cast<const std::uint16_t *>(packet + 4);
@@ -24816,7 +24816,7 @@ void CGameMode::ProcessIncomingPackets() {
       } else {
         actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2));
         if (!actor) {
-          this->requestTimers[0x16] = 0;
+          this->isEmotionRequested = 0;
           break;
         }
       }
@@ -24842,7 +24842,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
         break;
       }
-      this->requestTimers[0x16] = 0;
+      this->isEmotionRequested = 0;
       break;
     case ID_ZC_SAY_DIALOG2: {
       const unsigned char *packet = g_gameModePacketBuffer;

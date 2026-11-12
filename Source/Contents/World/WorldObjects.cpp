@@ -497,8 +497,8 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   }
 
   UINameBalloonText* balloon = this->nameBalloon;
-  *reinterpret_cast<int*>(this->nameBalloonSize) = balloon->geometry.width;
-  *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = balloon->geometry.height;
+  this->nameBalloonWidth = balloon->geometry.width;
+  this->nameBalloonHeight = balloon->geometry.height;
   if (balloon) {
     const int aid = actor->render.accountId;
     if (g_serviceType == 12) {

@@ -3076,8 +3076,8 @@ void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
 // FUNCTION: fn_21623
 void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExchangeItemAddAckPacket*>(data);
-  int& exchangeAmount = *reinterpret_cast<int*>(&this->equipmentRequestState[0x10]);
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x00]) = 0;
+  int& exchangeAmount = this->exchangeItemCnt;
+  this->isWaitingAddExchangeItem = 0;
   this->inventoryChanged = 1;
   switch (packet->result) {
   case EXITEM_ADD_SUCCEED:
@@ -3114,7 +3114,7 @@ void CGameMode::ReceiveExchangeRequestAck2(const unsigned char* data) {
   switch (packet->result) {
   case TRADE_ACK_ACCEPT: {
     this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 1;
+    this->isWaitingCancelExchangeItem = 1;
     g_session.ResetSlots();
     g_session.ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(WID_EXCHANGEUI);
@@ -3156,7 +3156,7 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
   switch (packet->result) {
   case TRADE_ACK_ACCEPT: {
     this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 1;
+    this->isWaitingCancelExchangeItem = 1;
     g_session.ResetSlots();
     g_session.ClearItemSlotQuantities();
     g_windowMgr.CloseWindow(WID_EXCHANGEUI);
@@ -3651,8 +3651,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     jobExp = packet->value;
     break;
   case SP_ZENY:
-    if (*reinterpret_cast<int*>(&this->equipmentRequestState[0x14])) {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+    if (this->isWaitingCancelExchangeItem) {
+      this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.m_zeny = static_cast<int>(packet->value);

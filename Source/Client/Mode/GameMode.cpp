@@ -860,10 +860,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_ITEMTHROW:
       if (!this->IsMenuWindowOpen() &&
-          *reinterpret_cast<const std::uint32_t*>(&this->equipmentRequestState[4]) + 2000U <= timeGetTime() &&
-          this->waitingUseItemAck == 0 && *reinterpret_cast<int*>(this->waitingItemThrowAck) == 0 && argument1 != 0 &&
+          this->waitingWearEquipAck + 2000U <= timeGetTime() &&
+          this->waitingUseItemAck == 0 && this->waitingItemThrowAck == 0 && argument1 != 0 &&
           this->isPlayerDead == 0) {
-        *reinterpret_cast<int*>(this->waitingItemThrowAck) = 1;
+        this->waitingItemThrowAck = 1;
         const std::uint16_t packet[3] = {
           0x363, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
         };
@@ -1034,7 +1034,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_UPGRADE_SKILLLEVEL: {
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 1;
+      this->isReqUpgradeSkillLevel = 1;
       const GameModePacketWord packet{0x112, static_cast<std::uint16_t>(argument1)};
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
@@ -1049,9 +1049,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_WEAR_EQUIP_ARROW:
       if (!this->IsMenuWindowOpen() &&
-          *reinterpret_cast<const std::uint32_t*>(&this->equipmentRequestState[4]) + 2000U <= timeGetTime() &&
+          this->waitingWearEquipAck + 2000U <= timeGetTime() &&
           this->isPlayerDead == 0) {
-        *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[4]) = timeGetTime();
+        this->waitingWearEquipAck = timeGetTime();
         const GameModePacketWordDword packet{
           static_cast<std::uint16_t>(ID_CZ_REQ_WEAR_EQUIP_V5), static_cast<std::uint16_t>(argument1),
           static_cast<std::uint32_t>(argument2)
@@ -1175,7 +1175,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_ITEMCOMPOSITION_LIST: {
-      *reinterpret_cast<int*>(this->cardAndSkillBalloonIds) = argument1;
+      this->cardItemIndex = argument1;
       const GameModePacketWord packet{0x17A, static_cast<std::uint16_t>(argument1)};
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
@@ -1693,8 +1693,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_SETLOCKONMOUSE:
       this->lockOnMouse = argument1;
       if (argument1 == 0) {
-        *reinterpret_cast<int*>(this->lastActorIds) = 0;
-        *reinterpret_cast<int*>(&this->lastActorIds[4]) = 0;
+        this->lastPcGid = 0;
+        this->lastMonGid = 0;
       }
       return 0;
     case MM_REQ_STATUS:
@@ -1728,7 +1728,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_QUERYRSWNAME:
       return reinterpret_cast<int>(this->mapName);
     case MM_PLAYER_EMOTION_END:
-      this->requestTimers[0x16] = 0;
+      this->isEmotionRequested = 0;
       return 0;
     case MM_ACK_SELL:
       if (this->isPlayerDead == 0) {
@@ -2372,7 +2372,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (this->drag.source == 1) {
         if (!g_session.HasInventoryItem(this->drag.id) ||
-            *reinterpret_cast<const std::uint32_t*>(&this->equipmentRequestState[4]) + 2000U > timeGetTime()) {
+            this->waitingWearEquipAck + 2000U > timeGetTime()) {
           this->drag.source = 0;
           return 0;
         }
@@ -2464,7 +2464,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_REQ_ENTER_ROOM: {
       UIWindow* window = g_windowMgr.chatRoomWnd;
-      std::uint32_t& lastTick = *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0xE]);
+      std::uint32_t& lastTick = this->chatRoomRequestTick;
       if (timeGetTime() > lastTick + 1000U) {
         this->isWaitingEnterRoom = 0;
       }
@@ -2823,7 +2823,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       if (this->IsMenuWindowOpen() ||
-          *reinterpret_cast<const std::uint32_t*>(&this->equipmentRequestState[8]) + 2000U > timeGetTime() ||
+          this->waitingTakeoffEquipAck + 2000U > timeGetTime() ||
           this->isPlayerDead != 0) {
         return 0;
       }
@@ -2832,7 +2832,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (item.identity[1] == 0 || item.quantity <= 0) {
         return 0;
       }
-      *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[8]) = timeGetTime();
+      this->waitingTakeoffEquipAck = timeGetTime();
       const GameModePacketWord packet{0xAB, static_cast<std::uint16_t>(item.identity[1])};
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 1;
@@ -3016,7 +3016,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIMIT_HAVE_ITEM_CNT)), 255, 0, 0, 0);
         return 0;
       }
-      if (*reinterpret_cast<const std::uint32_t*>(&this->equipmentRequestState[4]) + 2000U > timeGetTime() || this->isPlayerDead != 0) {
+      if (this->waitingWearEquipAck + 2000U > timeGetTime() || this->isPlayerDead != 0) {
         return 0;
       }
       const EquipSlots slots = g_session.GetEquipSlots(argument2);
@@ -3031,10 +3031,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument1));
       if (item.bindOnEquip == 1) {
         UIWindow* window = g_windowMgr.EnsureWindow(WID_YOURITEMWND);
-        *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[4]) = timeGetTime();
+        this->waitingWearEquipAck = timeGetTime();
         window->SendMsg(nullptr, UM_SET_BABY_MSG, argument1, argument2, 0, 0);
       } else {
-        *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[4]) = timeGetTime();
+        this->waitingWearEquipAck = timeGetTime();
         const GameModePacketWordDword packet{0x998, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       }
@@ -3116,7 +3116,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           static_cast<std::uint32_t>(argument1) == g_session.m_aid || g_windowMgr.buyingShopItemsWnd != nullptr) {
         return 0;
       }
-      std::uint32_t& lastRequest = *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x12]);
+      std::uint32_t& lastRequest = this->merchantShopRequestTick;
       if (timeGetTime() <= lastRequest + 1000U) {
         return 0;
       }
@@ -3403,7 +3403,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_OPENED_EXCHANGEWND)), 0xFF, 0, 0, 0);
         return 0;
       }
-      if (this->IsMenuWindowOpen() || this->waitingUseItemAck != 0 || *reinterpret_cast<int*>(this->waitingItemThrowAck) != 0 || argument1 == 0 || this->isPlayerDead != 0) {
+      if (this->IsMenuWindowOpen() || this->waitingUseItemAck != 0 || this->waitingItemThrowAck != 0 || argument1 == 0 || this->isPlayerDead != 0) {
         return 0;
       }
       ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
@@ -3787,8 +3787,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
     }
     case MM_REQ_EMOTION: {
-      auto& tick = *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0xA]);
-      if (this->requestTimers[0x16] || timeGetTime() <= tick + 2500U) {
+      auto& tick = this->emotionRequestTick;
+      if (this->isEmotionRequested || timeGetTime() <= tick + 2500U) {
         return 0;
       }
       const bool doram = g_session.IsDoramJob(g_session.GetDisplayJob());
@@ -3806,7 +3806,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       const GameModePacketWordWord packet{0xBE9, static_cast<std::uint16_t>(argument2), static_cast<std::uint16_t>(argument1)};
       tick = timeGetTime();
-      this->requestTimers[0x16] = 1;
+      this->isEmotionRequested = 1;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
     }
@@ -3950,7 +3950,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       int message = 0;
       if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
         message = 0x6A3;
-      } else if (this->IsMenuWindowOpen() || this->waitingUseItemAck || *reinterpret_cast<int*>(this->waitingItemThrowAck)) {
+      } else if (this->IsMenuWindowOpen() || this->waitingUseItemAck || this->waitingItemThrowAck) {
         message = 0xF84;
       } else if (this->isPlayerDead) {
         message = 0xBB7;
@@ -3995,16 +3995,16 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MAXEXCHANGE_IS_10_KIND)), 0xFF, 0, 0, 0);
         return 0;
       }
-      if (*reinterpret_cast<int*>(this->equipmentRequestState) != 0) {
+      if (this->isWaitingAddExchangeItem != 0) {
         return 0;
       }
-      *reinterpret_cast<int*>(this->equipmentRequestState) = 1;
+      this->isWaitingAddExchangeItem = 1;
       const GameModePacketWordDword packet{0xE8, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
-      *reinterpret_cast<int*>(&this->equipmentRequestState[0x10]) = argument2;
+      this->exchangeItemCnt = argument2;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       if (Replay::Instance().state == 2) {
         std::uint16_t record[5] = {0x08AE, 0x0387, 10};
-        std::memcpy(record + 3, &this->equipmentRequestState[0x10], sizeof(int));
+        std::memcpy(record + 3, &this->exchangeItemCnt, sizeof(int));
         Replay::Instance().Record(10, record, 0x2A, 0);
       }
       return 0;
@@ -4040,7 +4040,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (static_cast<std::uint32_t>(argument1) == g_session.m_aid || g_windowMgr.merchantItemShopWnd != nullptr) {
         return 0;
       }
-      auto& previousTick = *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x12]);
+      auto& previousTick = this->merchantShopRequestTick;
       if (timeGetTime() <= previousTick + 1000U) {
         return 0;
       }
@@ -4182,7 +4182,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
         }
       }
-      *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[4]) = timeGetTime();
+      this->waitingWearEquipAck = timeGetTime();
       const GameModePacketWordDword packet{0xA97, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
@@ -5678,7 +5678,7 @@ void CGameMode::TargetActorByAid(int aid) {
 
   if (allowed && g_mouse.buttons[0] == 1 && force != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->leftBtnClickTick[0x20]) = 0;
+    this->isAutoMoveClickOn = 0;
     if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(aid, 0);
       this->forcedAttack = 1;
@@ -6185,7 +6185,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     break;
   }
   case 903:
-    *reinterpret_cast<int*>(&this->equipmentRequestState[0x10]) = values->values[0];
+    this->exchangeItemCnt = values->values[0];
     break;
   case 904: {
     char buffer[200];
@@ -6557,8 +6557,8 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
 // FUNCTION: fn_21333
 void CGameMode::UpdateBalloons() {
   if (this->nameBalloon) {
-    if (*reinterpret_cast<int*>(&this->balloonDisplayState[0x0C]) == 0) {
-      *reinterpret_cast<int*>(&this->balloonDisplayState[0x0C]) = 1;
+    if (this->isNameBalloonPlaced == 0) {
+      this->isNameBalloonPlaced = 1;
       if (this->balloonActorId == g_session.m_aid) {
         this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
       } else {
@@ -6579,8 +6579,8 @@ void CGameMode::UpdateBalloons() {
   }
 
   if (this->itemNameBalloon) {
-    if (*reinterpret_cast<int*>(&this->balloonDisplayState[0x10]) == 0) {
-      *reinterpret_cast<int*>(&this->balloonDisplayState[0x10]) = 1;
+    if (this->isItemNameBalloonPlaced == 0) {
+      this->isItemNameBalloonPlaced = 1;
       if (this->balloonActorId == g_session.m_aid) {
         this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
       } else {
@@ -6600,9 +6600,9 @@ void CGameMode::UpdateBalloons() {
     }
   }
 
-  UIWindow*& skillBalloon = *reinterpret_cast<UIWindow**>(&this->balloonDisplayState[0x00]);
-  UIWindow*& hintBalloon = *reinterpret_cast<UIWindow**>(&this->balloonDisplayState[0x04]);
-  int& shownSkill = *reinterpret_cast<int*>(&this->cardAndSkillBalloonIds[0x04]);
+  UIWindow*& skillBalloon = this->skillBalloon;
+  UIWindow*& hintBalloon = this->skillHintBalloon;
+  int& shownSkill = this->shownSkillId;
   if (this->skillUseType == nullptr) {
     if (skillBalloon) {
       g_windowMgr.Schedule(skillBalloon);
@@ -7281,53 +7281,53 @@ void CGameMode::InitializeState() {
   this->fadeInRequested = 1;
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
-  *reinterpret_cast<int*>(this->leftBtnClickTick) = 0;
-  *reinterpret_cast<int*>(&this->leftBtnClickTick[4]) = g_mouse.x;
-  *reinterpret_cast<int*>(&this->leftBtnClickTick[8]) = g_mouse.y;
+  this->leftBtnClickTick = 0;
+  this->oldMouseX = g_mouse.x;
+  this->oldMouseY = g_mouse.y;
   this->rBtnClickX = g_mouse.x;
   this->rBtnClickY = g_mouse.y;
   this->noMove = 0;
   this->isOnQuest = 0;
   this->isPlayerDead = 0;
-  *reinterpret_cast<int*>(&this->coupleName[0x18]) = 0;
-  *reinterpret_cast<int*>(&this->coupleName[0x1C]) = 0;
-  *reinterpret_cast<int*>(this->balloonDisplayState) = 0;
-  *reinterpret_cast<int*>(&this->balloonDisplayState[4]) = 0;
-  *reinterpret_cast<int*>(&this->balloonDisplayState[8]) = 0;
+  this->nameBalloon = nullptr;
+  this->itemNameBalloon = nullptr;
+  this->skillBalloon = nullptr;
+  this->skillHintBalloon = nullptr;
+  this->unknown_02C0 = 0;
   this->itemWindow = nullptr;
   this->statusIconTooltip = nullptr;
   this->hoveredStatusIconId = -1;
   this->balloonActorId = 0;
-  *reinterpret_cast<int*>(this->nameBalloonSize) = 0;
-  *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = 0;
-  *reinterpret_cast<int*>(&this->balloonDisplayState[0x0C]) = 1;
-  *reinterpret_cast<int*>(&this->balloonDisplayState[0x10]) = 1;
+  this->nameBalloonWidth = 0;
+  this->nameBalloonHeight = 0;
+  this->isNameBalloonPlaced = 1;
+  this->isItemNameBalloonPlaced = 1;
   this->waitingUseItemAck = 0;
-  *reinterpret_cast<int*>(this->waitingItemThrowAck) = 0;
+  this->waitingItemThrowAck = 0;
   this->waitingReqStatusAck = 0;
   this->drag.Clear();
   this->lastNaid = 0;
   this->menuTargetAid = 0;
-  *reinterpret_cast<int*>(this->lastActorIds) = 0;
-  *reinterpret_cast<int*>(&this->lastActorIds[4]) = 0;
-  *reinterpret_cast<int*>(&this->lastActorIds[8]) = 0;
+  this->lastPcGid = 0;
+  this->lastMonGid = 0;
+  this->lastLockOnMonGid = 0;
   this->isAutoMoveClickOn = 1;
   this->isWaitingEnterRoom = 0;
-  *reinterpret_cast<int*>(this->equipmentRequestState) = 0;
-  *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[0x04]) = timeGetTime() - 2000;
-  *reinterpret_cast<std::uint32_t*>(&this->equipmentRequestState[0x08]) = timeGetTime() - 2000;
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x10]) = 0;
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x14]) = 0;
+  this->isWaitingAddExchangeItem = 0;
+  this->waitingWearEquipAck = timeGetTime() - 2000;
+  this->waitingTakeoffEquipAck = timeGetTime() - 2000;
+  this->isReqUpgradeSkillLevel = 0;
+  this->exchangeItemCnt = 0;
+  this->isWaitingCancelExchangeItem = 0;
   this->sameChatRepeatCount = 0;
   this->serverTimeSyncCount = 0;
   this->lastChat = "";
   this->skillUseType = nullptr;
   this->skillId = 0;
   g_pickInvert = 0;
-  *reinterpret_cast<int*>(this->cardAndSkillBalloonIds) = 0;
+  this->cardItemIndex = 0;
   this->miniMapTooltipId = -1;
-  *reinterpret_cast<int*>(&this->cardAndSkillBalloonIds[4]) = -1;
+  this->shownSkillId = -1;
 
   char subKey[512];
   std::strcpy(subKey, g_subKey);
@@ -7349,19 +7349,19 @@ void CGameMode::InitializeState() {
   }
 
   g_mouse.Reset();
-  *reinterpret_cast<int*>(&this->requestTimers[0x02]) = 1;
-  this->requestTimers[0x16] = 0;
-  *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x06]) = timeGetTime();
-  *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x0A]) = timeGetTime();
+  this->syncAcknowledged = 1;
+  this->isEmotionRequested = 0;
+  this->syncRequestTick = timeGetTime();
+  this->emotionRequestTick = timeGetTime();
   this->noMoveStartTick = timeGetTime();
   *reinterpret_cast<std::uint32_t*>(this->windowInvalidateTick) = timeGetTime();
   this->broadcastBalloon = nullptr;
-  *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x0E]) = timeGetTime();
-  *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x12]) = timeGetTime();
+  this->chatRoomRequestTick = timeGetTime();
+  this->merchantShopRequestTick = timeGetTime();
   this->inventoryChanged = 1;
   std::memset(&this->replayDragState[1], 0, 6);
-  *reinterpret_cast<int*>(&this->replayDragState[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->replayDragState[0x0C]) = 0;
+  this->mouseRollCount = 0;
+  this->mouseRollMax = 0;
   g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);
   this->SendMsg(MM_TOGGLE_PLAYERGAGE, 0, 0, 0, 0);
 
@@ -7402,7 +7402,7 @@ void CGameMode::InitializeState() {
   }
 
   SendGameTick(
-    true, *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x02]), *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x06]), g_gameTickInterval,
+    true, this->syncAcknowledged, this->syncRequestTick, g_gameTickInterval,
     GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
   );
   g_weatherEffect.ResetEffect();
@@ -8038,7 +8038,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
 void CGameMode::ReceiveSkillUpdate(
   std::uint16_t id, std::int16_t level, std::int16_t spCost, unsigned char upgradable, std::int16_t range, int type, std::int16_t learnedLevel
 ) {
-  *reinterpret_cast<int*>(&this->equipmentRequestState[0x0C]) = 0;
+  this->isReqUpgradeSkillLevel = 0;
 
   CSkillInfo skill = g_session.LookupSkill(id);
   skill.level = level;
@@ -8070,7 +8070,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
     return;
   }
 
-  int& placed = *reinterpret_cast<int*>(&this->balloonDisplayState[0x0C]);
+  int& placed = this->isNameBalloonPlaced;
   if (this->balloonActorId != id && this->balloonActorId != 0) {
     this->balloonActorId = id;
     placed = 1;
@@ -8108,8 +8108,8 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
     this->nameBalloon->SetIcon("", 0);
     this->nameBalloon->m_textColor = 0x95EFFF;
     this->nameBalloon->m_outlineColor = 0;
-    *reinterpret_cast<int*>(&this->nameBalloonSize[0]) = this->nameBalloon->geometry.width;
-    *reinterpret_cast<int*>(&this->nameBalloonSize[4]) = this->nameBalloon->geometry.height;
+    this->nameBalloonWidth = this->nameBalloon->geometry.width;
+    this->nameBalloonHeight = this->nameBalloon->geometry.height;
     this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
   }
 }
@@ -8221,7 +8221,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     g_session.selectMercenaryEnemy = 1;
   }
 
-  int& targetAid = *reinterpret_cast<int*>(&this->lastActorIds[0x04]);
+  int& targetAid = this->lastMonGid;
   int& forced = this->forcedAttack;
   if (attack != 0 && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->skillId)) {
     CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
@@ -8238,7 +8238,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
 
   if (g_mouse.buttons[0] == 1 && attack != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->lastActorIds[0x08]) = targetAid;
+    this->lastLockOnMonGid = targetAid;
     this->isAutoMoveClickOn = 0;
     if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(targetAid, 0);
@@ -8341,8 +8341,8 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   }
 
   int& lockedPick = this->forcedAttack;
-  int& pickTarget = *reinterpret_cast<int*>(&this->lastActorIds[0x00]);
-  int& clickTarget = *reinterpret_cast<int*>(&this->lastActorIds[0x04]);
+  int& pickTarget = this->lastPcGid;
+  int& clickTarget = this->lastMonGid;
 
   if (this->lockOnMouse == 0) {
     if (!pick) {
@@ -8647,7 +8647,7 @@ int CGameMode::ProcessGroundClick(int result) {
     g_groundOverlaySkip = shopSuspended == true ? 1 : skip;
   }
 
-  std::uint32_t& clickTick = *reinterpret_cast<std::uint32_t*>(&this->leftBtnClickTick[0]);
+  std::uint32_t& clickTick = this->leftBtnClickTick;
   const bool elapsed = timeGetTime() > clickTick + 600;
   if (this->scene->player->proceedType == 0 && g_mouse.buttons[0] == 2) {
     if (!elapsed) {
@@ -8814,7 +8814,7 @@ void CGameMode::Update() {
 
     if (g_updateTick > 0) {
       SendGameTick(
-        false, *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x02]), *reinterpret_cast<std::uint32_t*>(&this->requestTimers[0x06]), g_gameTickInterval,
+        false, this->syncAcknowledged, this->syncRequestTick, g_gameTickInterval,
         GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
       );
       if (timeGetTime() > g_spriteAtlasClearTick) {
@@ -9022,7 +9022,7 @@ void CGameMode::ProcessInput() {
     if (timeGetTime() > this->noMoveStartTick + 5000) {
       this->noMove = 0;
     }
-    *reinterpret_cast<std::uint32_t*>(this->leftBtnClickTick) = timeGetTime();
+    this->leftBtnClickTick = timeGetTime();
   }
 
   const bool statusIcons = g_serviceOptions.Get(0xC9) != 0;
@@ -9069,13 +9069,13 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<std::uint32_t*>(&this->lastActorIds[8])));
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(this->lastLockOnMonGid));
     if (!actor) {
       return;
     }
 
     if (!actor->objectType && actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())) {
-      *reinterpret_cast<int*>(&this->balloonDisplayState[0x10]) = 0;
+      this->isItemNameBalloonPlaced = 0;
       this->ShowHoverActorName(actor);
     }
   }
@@ -10277,8 +10277,8 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   int& forced = this->forcedAttack;
   if (g_mouse.buttons[0] == 1 && attack != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
-    *reinterpret_cast<std::uint32_t*>(&this->lastActorIds[0x08]) = actor->render.accountId;
-    *reinterpret_cast<int*>(&this->lastActorIds[0x0C]) = 0;
+    this->lastLockOnMonGid = actor->render.accountId;
+    this->isAutoMoveClickOn = 0;
     if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(actor->render.accountId, 0);
       if (!skillMode) {
@@ -10296,10 +10296,10 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     }
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
     g_hoverActorGid = actor->GetPkState();
-    *reinterpret_cast<int*>(&this->lastActorIds[0x0C]) = 0;
+    this->isAutoMoveClickOn = 0;
   }
 
-  int& balloonAid = *reinterpret_cast<int*>(&this->lastActorIds[0x00]);
+  int& balloonAid = this->lastPcGid;
   if (this->oldMouseX == g_mouse.x && this->oldMouseY == g_mouse.y) {
     this->ShowActorNameBalloon(balloonAid);
     return;
@@ -10569,12 +10569,12 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (attack && state != 3) {
             this->SetCursorAction(skillMode ? 11 : 5);
             result = 1;
-            *reinterpret_cast<int*>(&this->lastActorIds[0]) = pick->accountId;
+            this->lastPcGid = pick->accountId;
           } else {
             this->SetCursorAction(skillMode && state != 3 ? 10 : 0);
             result = 0;
-            if (g_mouse.buttons[0] == 0 && this->lockOnMouse == 0 && *reinterpret_cast<int*>(&this->lastActorIds[4]) == 0) {
-              *reinterpret_cast<int*>(&this->lastActorIds[0]) = pick->accountId;
+            if (g_mouse.buttons[0] == 0 && this->lockOnMouse == 0 && this->lastMonGid == 0) {
+              this->lastPcGid = pick->accountId;
             }
           }
         } else if (g_session.IsNpcJob(pick->job) == true) {
@@ -10625,7 +10625,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
 
           if (g_mouse.buttons[0] == 0 && this->lockOnMouse == 0) {
-            *reinterpret_cast<int*>(&this->lastActorIds[4]) = pick->accountId;
+            this->lastMonGid = pick->accountId;
           }
           if (g_mouse.buttons[0] == 2 || g_mouse.buttons[1] == 2) {
             result = 2;
@@ -10730,7 +10730,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (actor->objectType == 8 && this->skillId == 0xE7) {
             result = 1;
             this->SetCursorAction(11);
-            *reinterpret_cast<int*>(&this->lastActorIds[4]) = pick->accountId;
+            this->lastMonGid = pick->accountId;
           }
         } else {
           CWorld* scene = this->scene;
@@ -10743,7 +10743,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             }
             result = 1;
             this->SetCursorAction(5);
-            *reinterpret_cast<int*>(&this->lastActorIds[4]) = pick->accountId;
+            this->lastMonGid = pick->accountId;
           }
         }
       }
@@ -10898,8 +10898,8 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
       if (g_mouse.buttons[0] == 1 && attack && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
         this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
-        *reinterpret_cast<int*>(&this->lastActorIds[8]) = pick->accountId;
-        *reinterpret_cast<int*>(&this->lastActorIds[4]) = pick->accountId;
+        this->lastLockOnMonGid = pick->accountId;
+        this->lastMonGid = pick->accountId;
         this->isAutoMoveClickOn = 0;
         if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
           this->RequestPlayerAction(pick->accountId, 0);
@@ -10912,7 +10912,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
 
       if (this->forcedAttack == 0 && g_mouse.buttons[0] == 3) {
-        *reinterpret_cast<int*>(&this->lastActorIds[4]) = 0;
+        this->lastMonGid = 0;
       }
       return result;
     }
@@ -10978,8 +10978,8 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
 
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
-    *reinterpret_cast<int*>(&this->lastActorIds[8]) = pick->accountId;
-    *reinterpret_cast<int*>(&this->lastActorIds[4]) = pick->accountId;
+    this->lastLockOnMonGid = pick->accountId;
+    this->lastMonGid = pick->accountId;
     this->isAutoMoveClickOn = 0;
     if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
       this->RequestPlayerAction(pick->accountId, 0);
