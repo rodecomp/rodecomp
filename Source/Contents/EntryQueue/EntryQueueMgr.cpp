@@ -17,7 +17,7 @@
 #include <string>
 
 struct EntryQueueAdmissionPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint8_t result;
   /* 0003 */ char queueName[24];
   /* 001B */ char characterName[24];
@@ -50,20 +50,23 @@ CEntryQueueMgr::~CEntryQueueMgr() {
 // OFFSET: 0x00BA1F80
 // FUNCTION: fn_19660
 void CEntryQueueMgr::SendAdmissionReply(int result) {
-  if (this->current) {
-    EntryQueueAdmissionPacket packet;
-    packet.id = ID_CZ_REPLY_LOBBY_ADMISSION;
-    strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
-    strcpy_s(packet.characterName, sizeof(packet.characterName), this->characterName.text);
-    packet.result = static_cast<std::uint8_t>(result);
+  if (!this->current) {
     if (result == 2) {
       this->ready = 0;
     }
+    return;
+  }
 
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
-  } else if (result == 2) {
+  EntryQueueAdmissionPacket packet;
+  packet.id = ID_CZ_REPLY_LOBBY_ADMISSION;
+  strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
+  strcpy_s(packet.characterName, sizeof(packet.characterName), this->characterName.text);
+  packet.result = static_cast<std::uint8_t>(result);
+  if (result == 2) {
     this->ready = 0;
   }
+
+  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00BA2030
@@ -122,7 +125,6 @@ void CEntryQueueMgr::SetCharacterName(const EntryQueueName& name) {
 // OFFSET: 0x00BA2310
 // FUNCTION: fn_19667
 void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
-  int message;
   switch (packet->result) {
   case BG_APPLY_ACCEPT: {
     if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND)) {
@@ -143,40 +145,36 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
     return;
   }
   case BG_APPLY_QUEUE_FINISHED:
-    message = 0x834;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_MAXOVER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_INVALID_NAME:
-    message = 0x835;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_NOTLEVEL), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_INVALID_APP:
-    message = 0x836;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_OVERLAP), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_COUNT:
-    message = 0x837;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_RESTART), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_LEVEL:
-    message = 0x838;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTJOB), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_DUPLICATE:
-    message = 0x839;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_ONLYBOSS), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_RECONNECT:
-    message = 0x83A;
-    break;
-  case BG_APPLY_PARTYGUILD_LEADER:
-    message = 0x83C;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_BUSY_PARTYMEMBER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_CLASS:
-    message = 0x83B;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOINWAIT), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    break;
+  case BG_APPLY_PARTYGUILD_LEADER:
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 15:
-    message = 0x83D;
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
-  default:
-    return;
   }
-
-  g_windowMgr.Confirm(LookupMessage(message), 0, false, false, 0, "Message", 0x118, 0x78, 0);
 }
 
 // OFFSET: 0x00BA2660
