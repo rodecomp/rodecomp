@@ -393,7 +393,7 @@ __declspec(noinline) CRijndael::CRijndael() : m_bKeyInit(false) {
 
 // OFFSET: 0x00618060
 // FUNCTION: fn_04403
-__declspec(noinline) CRijndael::~CRijndael() = default;
+CRijndael::~CRijndael() = default;
 
 // OFFSET: 0x00619100
 // FUNCTION: fn_04409

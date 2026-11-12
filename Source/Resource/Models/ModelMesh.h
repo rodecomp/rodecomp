@@ -41,7 +41,7 @@ struct ModelMesh {
   /* 0018 */ std::array<float, 3>* faceNormals;
   /* 001C */ std::array<float, 3>* vertexNormals;
   /* 0020 */ unsigned char parentMesh[4];
-  /* 0024 */ std::array<std::vector<std::uint32_t>, 32> indices;
+  /* 0024 */ std::vector<std::uint32_t> indices[32];
   /* 01A4 */ unsigned char padding_01A4[48];
 
   void CalculateNormals();
