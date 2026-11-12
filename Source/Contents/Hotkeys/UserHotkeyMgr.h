@@ -17,10 +17,9 @@ public:
   void Reset();
   int TabAt(int position) const;
   void LoadV2(LuaScript& script, Json::Value& data);
-  void Capture(LuaScript& script);
+  void Capture();
   bool HasUserAssignments(LuaScript& script) const;
-  bool HasChanges(LuaScript& script) const;
-  void Export(LuaScript& script, Json::Value& data);
+  bool HasChanges() const;
 
 protected:
   friend class CAccountLinkedUserDataMgr;

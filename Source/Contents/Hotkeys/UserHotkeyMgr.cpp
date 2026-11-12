@@ -1,4 +1,6 @@
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
+#include "Client/Session/Session.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/Hotkeys/InterfaceHotkey.h"
 #include "Network/TextEncoding.h"
@@ -175,15 +177,15 @@ void CUserHotkeyMgr::LoadV2(LuaScript& script, Json::Value& data) {
 
 // OFFSET: 0x005F85A0
 // FUNCTION: fn_04061
-void CUserHotkeyMgr::Capture(LuaScript& script) {
+void CUserHotkeyMgr::Capture() {
   this->m_original.clear();
 
   for (int position = 0; position < 4; ++position) {
     const int tab = this->TabAt(position);
-    const int count = HotkeyCount(script, tab);
+    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
 
     for (int row = 0; row < count; ++row) {
-      const int index = HotkeyIndex(script, tab, row);
+      const int index = HotkeyIndex(*g_session.m_hotkeyScript, tab, row);
       if (index == -1) {
         continue;
       }
@@ -193,7 +195,7 @@ void CUserHotkeyMgr::Capture(LuaScript& script) {
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (script.Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
         text = description;
         if (!text.empty()) {
           this->m_original.emplace_back(tab, index, key1, key2, text);
@@ -240,11 +242,11 @@ bool CUserHotkeyMgr::HasUserAssignments(LuaScript& script) const {
 
 // OFFSET: 0x005F80E0
 // FUNCTION: fn_04059
-bool CUserHotkeyMgr::HasChanges(LuaScript& script) const {
+bool CUserHotkeyMgr::HasChanges() const {
   if (static_cast<std::int32_t>(this->m_changes) > 0) {
     return true;
   }
-  if (!this->m_version2 && this->HasUserAssignments(script) == true) {
+  if (!this->m_version2 && this->HasUserAssignments(*g_session.m_hotkeyScript) == true) {
     return true;
   }
   return false;
@@ -252,28 +254,42 @@ bool CUserHotkeyMgr::HasChanges(LuaScript& script) const {
 
 // OFFSET: 0x005BD2C0
 // FUNCTION: fn_03471
-void CUserHotkeyMgr::Export(LuaScript& script, Json::Value& data) {
-  this->Capture(script);
-  const std::list<Hotkey> snapshot = this->m_original;
-  Json::Value tabs[4];
+void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
+  g_userHotkeyMgr->Capture();
+  Json::Value version2;
+  const std::list<CUserHotkeyMgr::Hotkey> snapshot = g_userHotkeyMgr->m_original;
+  Json::Value skillBar1;
+  Json::Value skillBar2;
+  Json::Value interfaceTab;
+  Json::Value emotionTab;
 
-  for (const Hotkey& hotkey : snapshot) {
+  for (const CUserHotkeyMgr::Hotkey& hotkey : snapshot) {
     Json::Value value;
     value["index"] = hotkey.index;
     value["key1"] = hotkey.key1;
     value["key2"] = hotkey.key2;
     value["desc"] = ToUtf8(hotkey.description, g_textCodePage);
 
-    if (hotkey.tab >= 0 && hotkey.tab < 4) {
-      tabs[hotkey.tab].append(value);
+    switch (hotkey.tab) {
+    case 0:
+      skillBar1.append(value);
+      break;
+    case 1:
+      interfaceTab.append(value);
+      break;
+    case 2:
+      emotionTab.append(value);
+      break;
+    case 3:
+      skillBar2.append(value);
+      break;
     }
   }
 
-  Json::Value version2;
-  version2["SkillBar_1Tab"] = tabs[0];
-  version2["SkillBar_2Tab"] = tabs[3];
-  version2["InterfaceTab"] = tabs[1];
-  version2["EmotionTab"] = tabs[2];
+  version2["SkillBar_1Tab"] = skillBar1;
+  version2["SkillBar_2Tab"] = skillBar2;
+  version2["InterfaceTab"] = interfaceTab;
+  version2["EmotionTab"] = emotionTab;
   data["UserHotkey_V2"] = version2;
   data["UserHotkey"] = Json::Value();
 }

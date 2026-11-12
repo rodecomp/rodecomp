@@ -9,6 +9,10 @@ class LuaScript;
 class CRenderSystemBase;
 class CAsyncWorkMgr;
 
+namespace Json {
+class Value;
+}
+
 class CAccountLinkedUserDataMgr {
   friend class CGameMode;
   friend void ShutdownManagers();
@@ -29,6 +33,7 @@ public:
   void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
   void CompleteSave();
   void Save();
+  void ExportUserHotkey(Json::Value& data);
 
 protected:
   /* 0004 */ bool m_enabled;

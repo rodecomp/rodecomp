@@ -179,8 +179,8 @@ void CAccountLinkedUserDataMgr::Save() {
     emotions.Export(data);
   }
 
-  if (g_userHotkeyMgr->HasChanges(*g_session.m_hotkeyScript)) {
-    g_userHotkeyMgr->Export(*g_session.m_hotkeyScript, data);
+  if (g_userHotkeyMgr->HasChanges() == true) {
+    this->ExportUserHotkey(data);
   }
 
   if (!data.isNull()) {
