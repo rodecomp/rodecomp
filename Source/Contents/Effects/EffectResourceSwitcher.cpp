@@ -155,7 +155,8 @@ void EffectResourceSwitcher::OnProcess() {
   CEZ2STREffectEx* previous = this->effect;
   this->sourceName = this->targetName;
   this->targetName = "";
-  this->effect = static_cast<CEZ2STREffectEx*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition, 0, -1, 0, 0));
+  EffectLists* effectMgr = g_effectMgr;
+  this->effect = static_cast<CEZ2STREffectEx*>(effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition, 0, -1, 0, 0));
   this->active = 0;
   if (previous) {
     previous->EndLoop(0);
