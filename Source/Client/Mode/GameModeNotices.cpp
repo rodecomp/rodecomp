@@ -100,6 +100,9 @@ static const std::string g_whisperItemLinkTag = "<ITEML>";
 
 #include "UI/Rodex/UIRodexInboxWnd.h"
 #include "Network/Packets/PacketId.h"
+
+template __declspec(noinline) std::pair<std::int64_t, RodexMail> std::make_pair<const std::int64_t&, RodexMail&>(const std::int64_t&, RodexMail&);
+
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
   /* 0000 */ std::int16_t id;
@@ -373,48 +376,53 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   switch (packet->type) {
   case SP_USTR:
     reinterpret_cast<int*>(g_session.combatStats)[0] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UAGI:
     reinterpret_cast<int*>(g_session.combatStats)[1] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UVIT:
     reinterpret_cast<int*>(g_session.combatStats)[2] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UINT:
     reinterpret_cast<int*>(g_session.combatStats)[3] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UDEX:
     reinterpret_cast<int*>(g_session.combatStats)[4] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_ULUK:
     reinterpret_cast<int*>(g_session.combatStats)[5] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UPOW:
     g_session.m_traits.points[0] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_USTA:
     g_session.m_traits.points[1] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UWIS:
     g_session.m_traits.points[2] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_USPL:
     g_session.m_traits.points[3] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UCON:
     g_session.m_traits.points[4] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
   case SP_UCRT:
     g_session.m_traits.points[5] = packet->value;
+    g_session.InvalidateWindowFrames();
     break;
-  default:
-    if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
-      window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-    }
-    return;
   }
-
-  g_session.InvalidateWindowFrames();
 
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.statusWnd)) {
     window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
@@ -5483,10 +5491,10 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
     mail.isRead = entry->isRead;
     mail.type = entry->type;
     mail.expiresAt = _time32(nullptr) + entry->expireTime;
-    mail.sender.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+    mail.sender.assign(entry->sender, (std::min)(static_cast<std::size_t>(24), std::strlen(entry->sender)));
     mail.title.assign(entry->title, entry->titleLength);
     if (mails->find(entry->mailId) == mails->end()) {
-      mails->insert(std::make_pair(entry->mailId, mail));
+      mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
     }
     entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
   }
@@ -5711,7 +5719,7 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       mail.isRead = entry->isRead;
       mail.type = entry->type;
       mail.expiresAt = _time32(nullptr) + entry->expireTime;
-      mail.sender.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+      mail.sender.assign(entry->sender, (std::min)(static_cast<std::size_t>(24), std::strlen(entry->sender)));
       if (packet->type == MAIL_INBOX_NORMAL && (mail.type & 8) == MAIL_INBOX_NORMAL && !g_session.HasCharacterName(mail.sender)) {
         mail.isKnownSender = g_session.IsKnownName(mail.sender);
       } else {
@@ -5722,17 +5730,17 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       switch (packet->type) {
       case MAIL_INBOX_NORMAL:
         if (g_rodexMailStore->m_mails0.find(entry->mailId) == g_rodexMailStore->m_mails0.end()) {
-          g_rodexMailStore->m_mails0.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+          g_rodexMailStore->m_mails0.insert(std::make_pair(entry->mailId, mail));
         }
         break;
       case MAIL_INBOX_ACCOUNT:
         if (g_rodexMailStore->m_mails1.find(entry->mailId) == g_rodexMailStore->m_mails1.end()) {
-          g_rodexMailStore->m_mails1.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+          g_rodexMailStore->m_mails1.insert(std::make_pair(entry->mailId, mail));
         }
         break;
       case MAIL_INBOX_RETURNED:
         if (g_rodexMailStore->m_mails2.find(entry->mailId) == g_rodexMailStore->m_mails2.end()) {
-          g_rodexMailStore->m_mails2.insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+          g_rodexMailStore->m_mails2.insert(std::make_pair(entry->mailId, mail));
         }
         break;
       }
