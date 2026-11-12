@@ -36,6 +36,9 @@
 #include <new>
 #include <vector>
 
+template __declspec(noinline) std::vector<std::string>& std::map<std::string, std::vector<std::string>>::operator[](const std::string&);
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // GLOBAL: gl_24799
 CWorldViewMgr g_worldViewMgr;
 
