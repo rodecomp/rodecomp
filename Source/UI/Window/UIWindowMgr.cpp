@@ -1439,27 +1439,28 @@ static_assert(sizeof(ReplaySettingHeader) == 6);
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayMarker(std::int16_t tag) {
   std::vector<unsigned char> chunk(6, 0);
-  unsigned char* bytes = chunk.data();
-  *reinterpret_cast<std::int16_t*>(bytes) = tag;
-  *reinterpret_cast<int*>(bytes + 2) = 0;
+  ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
+  header->tag = tag;
+  header->size = 0;
   return chunk;
 }
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag, const int& value) {
   std::vector<unsigned char> chunk(10, 0);
-  unsigned char* bytes = chunk.data();
-  *reinterpret_cast<std::int16_t*>(bytes) = tag;
-  *reinterpret_cast<int*>(bytes + 2) = sizeof(value);
-  *reinterpret_cast<int*>(&chunk[6]) = value;
+  ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
+  header->tag = tag;
+  header->size = sizeof(value);
+  std::memcpy(&chunk[sizeof(ReplaySettingHeader)], &value, sizeof(value));
   return chunk;
 }
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
   std::vector<unsigned char> chunk(state.size() + 6, 0);
-  *reinterpret_cast<std::int16_t*>(chunk.data()) = static_cast<std::int16_t>(tag);
-  *reinterpret_cast<int*>(chunk.data() + 2) = static_cast<int>(state.size());
+  ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
+  header->tag = static_cast<std::int16_t>(tag);
+  header->size = static_cast<int>(state.size());
   if (state.size()) {
     std::memcpy(chunk.data() + 6, state.data(), state.size());
   }

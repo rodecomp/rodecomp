@@ -2944,7 +2944,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     if (buffer) {
       *reinterpret_cast<std::int16_t*>(buffer) = 0x9A3;
       *reinterpret_cast<int*>(buffer + 4) = this->authChallengeId;
-      StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), reinterpret_cast<const char*>(&this->loginCredentials[0x80]));
+      StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), this->m_authCode);
       *reinterpret_cast<std::int16_t*>(buffer + 2) = 14;
       GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(buffer + 2), buffer);
       this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
@@ -3016,7 +3016,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     };
     PacketAD0 packet;
     packet.id = ID_CT_MOTP;
-    memcpy_s(packet.code, sizeof(packet.code), &this->loginCredentials[0x80], sizeof(packet.code));
+    memcpy_s(packet.code, sizeof(packet.code), this->m_authCode, sizeof(packet.code));
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
     static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
@@ -3053,14 +3053,14 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   }
   case LMM_PASSWORD:
-    strcpy(reinterpret_cast<char*>(this->loginCredentials), reinterpret_cast<const char*>(argument1));
+    strcpy(this->m_password, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_ID:
-    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x40]), reinterpret_cast<const char*>(argument1));
+    strcpy(this->m_accountId, reinterpret_cast<const char*>(argument1));
     strcpy(reinterpret_cast<char*>(g_session.characterSelectionData), reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SET_AUTH_CODE:
-    strcpy(reinterpret_cast<char*>(&this->loginCredentials[0x80]), reinterpret_cast<const char*>(argument1));
+    strcpy(this->m_authCode, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SELECT_CHARACTER: {
     g_session.selectedCharacterSlot = static_cast<unsigned char>(g_selectedSlotIndex);
@@ -3624,9 +3624,9 @@ void CLoginMode::OnChangeState(int value) {
     const std::array<std::uint8_t, 5> codeSource = OBFUSCATE_SOURCE_BYTES(5, "0011", 0x793F370985ED674FULL);
     thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
-    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));
+    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), this->m_accountId);
     char password[33] = {};
-    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), reinterpret_cast<const char*>(this->loginCredentials));
+    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), this->m_password);
     DecryptRijndael256(password, packet.password);
     StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
@@ -3855,15 +3855,15 @@ void CLoginMode::OnChangeState(int value) {
     AccountLoginPacket packet;
     packet.id = ID_CA_LOGIN;
     packet.version = g_patchedClientVersion;
-    std::memcpy(packet.name, &this->loginCredentials[0x40], sizeof(packet.name));
+    std::memcpy(packet.name, this->m_accountId, sizeof(packet.name));
     if (g_serviceType == 7) {
       char password[24];
-      DecryptAES(reinterpret_cast<const char*>(this->loginCredentials), password, sizeof(password));
+      DecryptAES(this->m_password, password, sizeof(password));
       std::memcpy(packet.password, password, sizeof(packet.password));
     } else if (g_serviceType == 4) {
-      DecryptRijndael192(reinterpret_cast<const char*>(this->loginCredentials), packet.password);
+      DecryptRijndael192(this->m_password, packet.password);
     } else {
-      std::memcpy(packet.password, this->loginCredentials, sizeof(packet.password));
+      std::memcpy(packet.password, this->m_password, sizeof(packet.password));
     }
     packet.clientType = static_cast<unsigned char>(GetClientType());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);

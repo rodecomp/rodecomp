@@ -107,7 +107,9 @@ public:
   /* 0078 */ bool makingCharNameFirstByte;
   /* 0079 */ unsigned char makingCharNameTail[0x3F];
   /* 00B8 */ unsigned char billingInfo[0x80];
-  /* 0138 */ unsigned char loginCredentials[0x8C];
+  /* 0138 */ char m_password[0x40];
+  /* 0178 */ char m_accountId[0x40];
+  /* 01B8 */ char m_authCode[0xC];
   /* 01C4 */ int serverCount;
   /* 01C8 */ int selectedServer;
   /* 01CC */ int characterCount;

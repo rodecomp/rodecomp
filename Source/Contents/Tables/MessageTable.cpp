@@ -4897,8 +4897,8 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
 
 // OFFSET: 0x00B00360
 // FUNCTION: fn_18368
-void FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
-  for (; first != reinterpret_cast<int*>(last); ++first) {
+void FillMessageBuckets(int* first, int* last, const int* value) {
+  for (; first != last; ++first) {
     *first = *value;
   }
 }
