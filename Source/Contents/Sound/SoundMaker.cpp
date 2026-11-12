@@ -1319,7 +1319,7 @@ void CNpc::UpdateMinimapMarker() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   MinimapMarker* marker = mode->FindMinimapMarker(this->render.accountId);
-  if (marker && 9999 != marker->effectType) {
+  if (marker && marker->effectType != 9999) {
     if (this->attachedEffect && marker->effectType == this->minimapMarkerCell[0] && marker->questIconId == this->minimapMarkerCell[1]) {
       return;
     }
