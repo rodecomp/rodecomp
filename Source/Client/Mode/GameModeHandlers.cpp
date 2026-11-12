@@ -2204,8 +2204,11 @@ void CGameMode::ReceiveAchievementUpdate(
     const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_NEXT_ROULLETE_STAGE), info.title.c_str());
     static_cast<UIBalloonText*>(this->achievementBalloon)->WrapText(text.c_str(), 72);
     static_cast<UIBalloonText*>(this->achievementBalloon)->m_fontHeight = 20;
-    static_cast<UIBalloonText*>(this->achievementBalloon)->m_textColor = 0xFFFFFF;
-    static_cast<UIBalloonText*>(this->achievementBalloon)->m_outlineColor = 0;
+    {
+      UIBalloonText* balloon = static_cast<UIBalloonText*>(this->achievementBalloon);
+      balloon->m_textColor = 0xFFFFFF;
+      balloon->m_outlineColor = 0;
+    }
     this->achievementBalloon->Move(0, 50);
     g_effectMgr->Spawn(g_session.m_aid, 0x446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {

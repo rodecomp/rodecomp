@@ -276,8 +276,11 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             this->allChecked = 0;
           }
         }
-        this->m_allCheckBox->geometry.state = this->allChecked;
-        this->m_allCheckBox->Invalidate();
+        {
+          auto* allCheckBox = this->m_allCheckBox;
+          allCheckBox->geometry.state = this->allChecked;
+          allCheckBox->Invalidate();
+        }
         this->text = info.name;
         this->text += LookupMessage(MSI_SET_CHATINFO);
         this->Invalidate();

@@ -2216,8 +2216,11 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
   case 0xA9:
-    this->m_tab->geometry.state = argument1;
-    this->m_tab->Invalidate();
+    {
+      auto* tab = this->m_tab;
+      tab->geometry.state = argument1;
+      tab->Invalidate();
+    }
     this->SelectTab();
     switch (argument1) {
     case 0:
