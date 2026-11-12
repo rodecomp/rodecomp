@@ -5006,8 +5006,8 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 // FUNCTION: fn_19916
 void CEffectPrim::RenderSlash1(matrix& wtm) {
   ZeroVector3d vec1;
-  ZeroVector3d vec2;
   ZeroVector3d vec3;
+  ZeroVector3d vec2;
   ZeroVector3d vec4;
   int rpCnt = 0;
 
