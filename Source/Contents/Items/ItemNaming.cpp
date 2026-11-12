@@ -363,7 +363,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
       }
     }
   } else {
-    AppendText(result, text, ItemUnidentifiedName(*this, text, capacity, 0));
+    AppendText(result, text, this->UnidentifiedName(text, capacity, 0));
   }
 
   return result;
@@ -465,8 +465,9 @@ int ItemSlotsCount(const ITEM_INFO& item) {
 
 // OFFSET: 0x006D7760
 // FUNCTION: fn_06594
-int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
-  const char* name = FindItemDescription(std::atoi(item.itemId.c_str())).unidentifiedName;
+int ITEM_INFO::UnidentifiedName(char* output, int& capacity, unsigned char consume) const {
+  const int id = std::atoi(this->itemId.c_str());
+  const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
   return CopyText(output, capacity, consume, name ? name : " ");
 }
 

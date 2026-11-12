@@ -11813,7 +11813,7 @@ int UIFrameWnd::BuildItemName(
       }
     }
   } else {
-    *cursor += ItemUnidentifiedName(*item, *cursor, capacity, 1);
+    *cursor += item->UnidentifiedName(*cursor, capacity, 1);
     breaks->push_back(*cursor);
   }
   return 1;

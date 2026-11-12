@@ -91,6 +91,7 @@ struct alignas(8) ITEM_INFO {
   bool IsAboveItemId600() const;
   int Refine(char* output, int& capacity, unsigned char consume) const;
   int GetIdDisplayName(char* output, int& capacity, unsigned char consume) const;
+  int UnidentifiedName(char* output, int& capacity, unsigned char consume) const;
   const std::vector<const char*>& Description() const;
   std::vector<unsigned char> Serialize() const;
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);
