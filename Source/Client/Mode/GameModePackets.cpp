@@ -4083,10 +4083,10 @@ void CGameMode::SetActorNameCard(std::uint32_t id, const char* name, const char*
 void CGameMode::ReceiveShopName(const char* text, int shopId) {
   std::string name = text;
   name.resize(name.size() - 4);
+  ValuePacket packet;
   if (!g_session.AddShopName(name, shopId)) {
-    ValuePacket packet;
-    packet.id = ID_CZ_RES_LISTOFMODIFIED_ITEMNSKILL;
     packet.value = shopId;
+    packet.id = ID_CZ_RES_LISTOFMODIFIED_ITEMNSKILL;
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 }
@@ -10078,25 +10078,25 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
 // FUNCTION: fn_21752
 void CGameMode::ReceivePartyChat(const unsigned char* data) {
   const int length = *reinterpret_cast<const std::uint16_t*>(data + 2) - 8;
+  const unsigned char* message = data + 8;
   if (length <= 0 || length > 361) {
     return;
   }
 
   std::vector<char> text(length + 1, 0);
-  memcpy_s(text.data(), text.size(), data + 8, length);
+  memcpy_s(text.data(), text.size(), message, length);
   if (g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
 
-  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
-  if (aid == g_session.m_aid) {
+  if (*reinterpret_cast<const std::uint32_t*>(data + 4) == g_session.m_aid) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xC8FF, 3, 0, 0);
     this->scene->player->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text.data()), 0, 0, 0, 0, 0);
   } else {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xC8C8FF, 3, 0, 0);
-    if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(data + 4))) {
       actor->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text.data()), 0, 0, 0, 0, 0);
     }
   }
