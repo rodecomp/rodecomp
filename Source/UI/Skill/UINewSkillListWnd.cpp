@@ -769,8 +769,8 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
 
     int titleButtonX[3] = {22, this->geometry.width - 30, this->geometry.width - 16};
     UIBitmapButton** titleButtons = &this->m_btnHelp;
-    for (int i = 0; i < 3; ++i) {
-      titleButtons[i]->Move(titleButtonX[i], 5);
+    for (int i = 0; i < 3; ++i, ++titleButtons) {
+      (*titleButtons)->Move(titleButtonX[i], 5);
     }
   }
 
