@@ -823,13 +823,13 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
 // FUNCTION: fn_10378
 __declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
   UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
-  UIStylingshopTabParentWnd* tab = nullptr;
-  for (auto it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+  auto it = shop->m_tabs.begin();
+  for (; it != shop->m_tabs.end(); ++it) {
     if (it->first->geometry.id == 497) {
-      tab = it->second;
       break;
     }
   }
+  UIStylingshopTabParentWnd* tab = it != shop->m_tabs.end() ? it->second : nullptr;
 
   ITEM_DESC desc = FindItemDescription(itemId);
   UIDisplayCharacter* display;
@@ -1515,7 +1515,8 @@ void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char*
   button->SetTooltip(tooltip);
   this->AddChild(button);
 
-  tab->SetSize(this->geometry.width - (button->geometry.x + button->BitmapWidth()), this->geometry.height - 47);
+  int right = button->geometry.x + button->BitmapWidth();
+  tab->SetSize(this->geometry.width - right, this->geometry.height - 47);
   tab->Move(static_cast<int>(this->geometry.width * 0.1), 17);
   tab->Show(0);
   this->AddChild(tab);
