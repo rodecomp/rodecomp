@@ -270,10 +270,11 @@ void UIListBox::Refresh() {
   UIScrollBar* bar = this->verticalBar;
   if (overflow != 0) {
     bar->maximum = this->bottomMargin + overflow;
+    bar->total = static_cast<int>(this->lines.size());
   } else {
     bar->maximum = 0;
+    bar->total = static_cast<int>(this->lines.size());
   }
-  bar->total = static_cast<int>(this->lines.size());
   bar->visible = visible;
   bar->Invalidate();
 
@@ -387,18 +388,6 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     break;
 
-  case UM_DOWNPUSH:
-    this->selected = (this->selected + 1);
-    if (this->selected > this->lines.size() - 1) {
-      this->selected = this->lines.size() - 1;
-    }
-
-    if (this->selected > this->topLine - 1 + this->geometry.height / this->lineHeight) {
-      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
-    }
-
-    break;
-
   case UM_UPPUSH:
     this->selected = (this->selected - 1);
 
@@ -408,6 +397,18 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     if (this->selected < this->topLine) {
       this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
+    }
+
+    break;
+
+  case UM_DOWNPUSH:
+    this->selected = (this->selected + 1);
+    if (this->selected > this->lines.size() - 1) {
+      this->selected = this->lines.size() - 1;
+    }
+
+    if (this->selected > this->topLine - 1 + this->geometry.height / this->lineHeight) {
+      this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
 
     break;
