@@ -415,7 +415,7 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
     *identifier = UINT64_MAX;
   }
 
-  output.erase(output.begin(), output.end());
+  output.resize(0);
 
   std::uint32_t size;
   std::uint64_t offset;
