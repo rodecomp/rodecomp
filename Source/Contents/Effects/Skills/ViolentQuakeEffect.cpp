@@ -31,7 +31,12 @@ CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 // OFFSET: 0x0072F640
 // FUNCTION: fn_07531
 void CViolentQuakeEffect::InitAllBloom() {
-  switch (rand() % 2) {
+  int roll = rand() % 2;
+  if (roll < 0) {
+    roll = 0;
+  }
+
+  switch (roll) {
   case 0: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     bottom->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb01_bottom.str"));
