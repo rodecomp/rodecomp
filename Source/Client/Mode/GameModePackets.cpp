@@ -7427,7 +7427,8 @@ void CGameMode::RefreshEmotionSaleSchedule() {
     return;
   }
 
-  const int expiry = manager->RefreshUnownedPacks().nextTime;
+  const CashEmotionPackRefresh refresh = manager->RefreshUnownedPacks();
+  const int expiry = refresh.nextTime;
   if (expiry < 0x7FFFFFFF) {
     const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
     const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
