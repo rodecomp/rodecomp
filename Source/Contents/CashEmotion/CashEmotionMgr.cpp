@@ -516,7 +516,7 @@ bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
 // OFFSET: 0x00596430
 // FUNCTION: fn_02915
 CCashEmotionMgr::CCashEmotionMgr()
-    : m_enabled(true), padding_0005{}, m_action(nullptr), basePackId(0), packs{}, m_emotionsByPack{}, emotionOrder{}, m_packNames{}, actIds{},
+    : m_enabled(true), m_action(nullptr), basePackId(0), packs{}, m_emotionsByPack{}, emotionOrder{}, m_packNames{}, actIds{},
       m_commands{}, packOrder{} {
 }
 
