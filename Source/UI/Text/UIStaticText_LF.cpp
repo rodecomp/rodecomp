@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 // OFFSET: 0x0094ECF0
 // FUNCTION: fn_12915
 void UIStaticText_LF::Paint() {
