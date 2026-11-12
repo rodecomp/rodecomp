@@ -257,7 +257,7 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
   MessengerRecordHeader header;
   header.Clear();
   std::memcpy(&header, data.data(), sizeof(header));
-  if (header.id != 251) {
+  if (251 != header.id) {
     return 0xFFFFFFFF;
   }
 
