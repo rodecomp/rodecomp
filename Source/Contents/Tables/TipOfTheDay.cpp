@@ -68,19 +68,16 @@ int CTipOfTheDay::Load() {
   StringList tmpList;
 
   for (int i = 0; i < fileSize; ++i) {
-    switch (fileBuf[i]) {
-    case '#':
+    if (fileBuf[i] == 10) {
+      fileBuf[i] = 0;
+      tmpList.push_back(baseBuf);
+      baseBuf = fileBuf + i + 1;
+    } else if (fileBuf[i] == '#') {
       fileBuf[i] = 0;
       tmpList.push_back(baseBuf);
       this->m_tipList.push_back(tmpList);
       tmpList.clear();
       baseBuf = fileBuf + i + 1;
-      break;
-    case 10:
-      fileBuf[i] = 0;
-      tmpList.push_back(baseBuf);
-      baseBuf = fileBuf + i + 1;
-      break;
     }
   }
 
