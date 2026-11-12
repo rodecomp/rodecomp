@@ -554,7 +554,7 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 // FUNCTION: fn_23764
 std::int64_t CSession::FindSummonHp(std::int64_t key) const {
   auto found = this->summonHp.find(key);
-  if (found != this->summonHp.end()) {
+  if (this->summonHp.end() != found) {
     return found->second;
   }
 
@@ -565,7 +565,7 @@ std::int64_t CSession::FindSummonHp(std::int64_t key) const {
 // FUNCTION: fn_23765
 std::int64_t CSession::FindSummonMaxHp(std::int64_t key) const {
   auto found = this->summonMaxHp.find(key);
-  if (found != this->summonMaxHp.end()) {
+  if (this->summonMaxHp.end() != found) {
     return found->second;
   }
 
