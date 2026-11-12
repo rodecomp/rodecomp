@@ -78,7 +78,7 @@ CMsgEffect::CMsgEffect() {
 // FUNCTION: fn_24258
 CMsgEffect::~CMsgEffect() {
   if (this->m_owner != nullptr) {
-    this->m_owner->SendMsg(this, AM_MSGEFFECT_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->m_owner->SendMsg(this, AM_MSGEFFECT_DEAD, 0, 0, 0, 0, 0, 0);
   }
 }
 
@@ -464,7 +464,7 @@ bool CMsgEffect::OnProcess() {
       {
         const int frame = static_cast<int>(elapsed);
         if (frame % 34 == 0) {
-          this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0);
         }
       }
       return true;
@@ -1536,9 +1536,9 @@ void CMsgEffect::Render(int argument) {
 
 // OFFSET: 0x00E512B0
 // FUNCTION: fn_24301
-void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  const vector3d* position = reinterpret_cast<const vector3d*>(b);
-  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  const vector3d* position = reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(b));
+  switch (message) {
     case AM_REQ_ATTACK:
       if (this->m_type == 18) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
@@ -1610,9 +1610,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
       return;
 
     case AM_SETMASTERGID:
-      this->m_type = d;
-      this->m_value = b;
-      switch (d) {
+      this->m_type = static_cast<int>(c);
+      this->m_value = static_cast<int>(b);
+      switch (static_cast<int>(c)) {
         case MET_CART:
         case 31:
           this->render.flatDepth = 0;
@@ -1699,14 +1699,14 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
           break;
       }
 
-      this->render.curMotion = d;
+      this->render.curMotion = static_cast<int>(c);
       this->render.visible = 1;
-      if (d < 0 || d > 11) {
+      if (static_cast<int>(c) < 0 || static_cast<int>(c) > 11) {
         this->render.curMotion = 0;
       }
 
-      this->render.spriteOffsetX = f;
-      this->m_digit = f;
+      this->render.spriteOffsetX = static_cast<int>(d);
+      this->m_digit = static_cast<int>(d);
       this->render.scale = 5.0f;
       this->m_scale = 5.0f;
       this->render.depthLayer = static_cast<std::uint32_t>(-2);
@@ -1717,18 +1717,18 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     case AM_SETPOS: {
       this->render.visible = 1;
       this->render.motionStartTime = timeGetTime();
-      if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
-        const std::string* names = reinterpret_cast<const std::string*>(d);
+      if (c != 0) {
+        const std::string* names = reinterpret_cast<const std::string*>(static_cast<std::intptr_t>(c));
         this->SetSpriteName(ResourceMgr::Instance(), names[0].c_str());
         this->SetActionName(ResourceMgr::Instance(), names[1].c_str());
       }
 
-      if ((static_cast<std::int64_t>(g) << 32 | static_cast<std::uint32_t>(f)) == 1000) {
+      if (d == 1000) {
         this->SetAction(10, 4, 0);
         this->render.state = 10000;
         this->render.color = 0xFFFF0000;
       } else {
-        this->SetAction(f, 4, 1);
+        this->SetAction(static_cast<unsigned>(d), 4, 1);
       }
 
       switch (this->m_type) {
@@ -1809,5 +1809,5 @@ void CMsgEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, 
     }
   }
 
-  this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
 }

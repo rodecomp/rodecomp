@@ -564,9 +564,7 @@ void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y,
     }
   }
 
-  actor->SendMsg(nullptr, AM_STOPMOVE, 0, static_cast<int>(static_cast<std::int64_t>(x)), static_cast<int>(static_cast<std::int64_t>(x) >> 32),
-    static_cast<int>(static_cast<std::int64_t>(y)), static_cast<int>(static_cast<std::int64_t>(y) >> 32), 0, 0,
-    static_cast<int>(static_cast<std::int64_t>(flag)), static_cast<int>(static_cast<std::int64_t>(flag) >> 32), 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_STOPMOVE, x, y, 0, flag, 0, 0);
 }
 
 // OFFSET: 0x00D69140
@@ -977,7 +975,7 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(packet->effectId)) {
       const std::int64_t effectId = packet->effectId;
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, static_cast<int>(effectId), static_cast<int>(effectId >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, effectId, 0, 0, 0, 0, 0);
     }
   }
 
@@ -1091,7 +1089,7 @@ void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
   if (actor) {
     const std::int64_t y = packet->y;
     const std::int64_t x = packet->x;
-    actor->SendMsg(nullptr, AM_FALLEN_ANGEL, 0, static_cast<int>(x), static_cast<int>(x >> 32), static_cast<int>(y), static_cast<int>(y >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_FALLEN_ANGEL, x, y, 0, 0, 0, 0);
   }
 }
 
@@ -1235,11 +1233,11 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
 
   auto* gameActor = static_cast<CGameActor*>(actor);
   if (StateFlag01(gameActor->GetStateFlags()) == true || StateFlag02(gameActor->GetStateFlags()) == true) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 228, 0, 0, 0, 0, 0);
   }
 
   if (0 == packet->state) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 228, 0, 0, 0, 0, 0);
   } else if (1 != packet->state || static_cast<EffectActor*>(actor)->HasId(228)) {
     return;
   }
@@ -1579,35 +1577,35 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     break;
   case 2:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(305)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 305, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 3:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(306)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 306, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 306, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 4:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1015)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1015, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1015, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1015, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 5:
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1016)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1016, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1016, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1016, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 6: {
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1017)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1017, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1017, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1017, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
@@ -1619,7 +1617,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
   }
   case 7: {
     if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1018)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1018, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1018, 0, 0, 0, 0, 0);
     }
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1018, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
@@ -2556,7 +2554,7 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
 // FUNCTION: fn_22144
 void CGameMode::ReceiveActorStatusValuePacket(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorStatusValuePacket*>(data);
-  this->ReceiveActorStatusValue(packet->aid, packet->status, packet->value, packet->value >> 31);
+  this->ReceiveActorStatusValue(packet->aid, packet->status, packet->value);
 }
 
 // OFFSET: 0x00D73E20
@@ -4032,7 +4030,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
 
   if (*reinterpret_cast<const std::uint32_t*>(packet + 4) == g_session.m_aid) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    this->scene->player->SendMsg(nullptr, AM_GROUNDSKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_GROUNDSKILL, value, 0, 0, 0, 0, 0);
     actor = this->scene->player;
     if (actor != nullptr) {
       job = actor->GetEffectiveJob(-1);
@@ -4041,7 +4039,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     CGameActor* gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      gameActor->SendMsg(nullptr, AM_GROUNDSKILL, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      gameActor->SendMsg(nullptr, AM_GROUNDSKILL, value, 0, 0, 0, 0, 0);
       actor = gameActor;
       job = actor->GetEffectiveJob(-1);
     }
@@ -4618,7 +4616,7 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
   }
 
   const std::int64_t entryAddress = reinterpret_cast<int>(&entry);
-  item->SendMsg(nullptr, AM_INITSTANDENTRY, 0, static_cast<int>(entryAddress), static_cast<int>(entryAddress >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  item->SendMsg(nullptr, AM_INITSTANDENTRY, entryAddress, 0, 0, 0, 0, 0);
 }
 #pragma pack(push, 1)
 struct SpriteChangePacket {
@@ -4690,7 +4688,7 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
         return;
       }
       if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, 0, packet->value, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
       }
       return;
     }
@@ -4804,7 +4802,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
         return;
       }
       if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, 0, value, packet->valueHigh, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
       }
       return;
     }
@@ -4879,12 +4877,12 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   case LOOK_BODY2:
     actor->SetBodyCostume(value, 1);
     if (StateFlag04(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
     }
     if (StateFlag20(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
     }
     break;
   case 14:
@@ -5768,7 +5766,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
       const std::int64_t state = packet->state;
       const std::int64_t type = packet->type;
-      actor->SendMsg(nullptr, AM_STATUS_CHANGE, 0, static_cast<int>(type), static_cast<int>(type >> 32), static_cast<int>(state), static_cast<int>(state >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STATUS_CHANGE, type, state, 0, 0, 0, 0);
     }
   }
 
@@ -6807,19 +6805,19 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_SIREN:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 879, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_DEEP_SLEEP:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_NETHERWORLD:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 453, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
@@ -6827,7 +6825,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(752)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 752, 0, 0, 0, 0, 0);
         }
       }
       std::sprintf(message, "");
@@ -6883,14 +6881,14 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_HANDICAPSTATE_ICEEXPLO:
       if (packet->aid == g_session.m_aid && this->scene->player) {
-        this->scene->player->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
       }
       break;
     case EFST_DARKCROW:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(1040)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1040, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 1040, 0, 0, 0, 0, 0);
         }
       }
       break;
@@ -6898,7 +6896,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         while (player->HasId(1061)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1061, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, 1061, 0, 0, 0, 0, 0);
         }
       }
       break;
@@ -6937,7 +6935,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         g_session.madogearType = 0;
       }
-      actor->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
       break;
     }
     case EFST_RELIEVE_DAMAGE:
@@ -6954,7 +6952,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         actor = this->scene->GetGameActorByAID(packet->aid);
       }
       if (actor) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1601, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1601, 0, 0, 0, 0, 0);
       }
       break;
     }
@@ -6967,7 +6965,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         actor = this->scene->GetGameActorByAID(packet->aid);
       }
       if (actor) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1610, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1610, 0, 0, 0, 0, 0);
       }
       break;
     }
@@ -7074,7 +7072,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
   if (packet->aid == g_session.m_aid) {
     const std::int64_t state = packet->state;
     const std::int64_t type = packet->type;
-    this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, static_cast<int>(type), static_cast<int>(type >> 32), static_cast<int>(state), static_cast<int>(state >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, type, state, 0, 0, 0, 0);
   }
 }
 

@@ -1350,7 +1350,7 @@ void NotifyGameModeOptionFirst() {
 void RequestPlayerAction31() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (CPlayer* player = mode->scene->player) {
-    player->SendMsg(nullptr, AM_REQ_SIT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    player->SendMsg(nullptr, AM_REQ_SIT, 0, 0, 0, 0, 0, 0);
   }
 }
 

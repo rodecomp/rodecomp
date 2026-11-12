@@ -1043,7 +1043,7 @@ void CEfstAction_SHADOW_EXCEED::OnEfstEnd(int efstId, int argument2, int argumen
 
   auto* effectActor = static_cast<EffectActor*>(actor);
   while (effectActor->HasId(1004)) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1004, 0, 0, 0, 0, 0);
   }
 }
 

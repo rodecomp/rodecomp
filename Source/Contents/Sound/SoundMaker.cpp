@@ -532,36 +532,35 @@ void CSoundMaker::Render(int) {
 // OFFSET: 0x00DA4970
 // FUNCTION: fn_22418
 void CBlowEffect::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message != 14 || a != 0) {
-    CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  if (message != 14) {
+    CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
-  const float* position = reinterpret_cast<const float*>(b);
+  const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
   this->render.position.x = position[0];
   this->render.position.y = position[1];
   this->render.position.z = position[2];
   this->render.visible = 1;
-  this->render.color = (d | e) ? 0xFFFF0000u : 0xFFFFFFFFu;
+  this->render.color = c ? 0xFFFF0000u : 0xFFFFFFFFu;
   this->render.motionStartTime = timeGetTime();
 }
 
 // OFFSET: 0x00DA4A00
 // FUNCTION: fn_22419
 void CBlurPC::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (a == 0) {
     switch (message) {
       case BM_RGB:
-        this->SetColor(180, b, d, f);
+        this->SetColor(180, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
         this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
-        this->render.color &= (b << 24) + 0xFFFFFF;
-        this->destCellZ = d << 24;
+        this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
+        this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
         this->destCellX = *reinterpret_cast<const float*>(&b);
@@ -570,26 +569,25 @@ void CBlurPC::SendMsg(
         this->render.isMotionFreezed = 1;
         return;
     }
-  }
 
-  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CPc::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4AD0
 // FUNCTION: fn_22420
 void CCorpse::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4B10
 // FUNCTION: fn_22421
 void CGndRiser::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message == 14 && a == 0) {
-    const float* position = reinterpret_cast<const float*>(b);
+  if (message == 14) {
+    const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     this->render.position.x = position[0];
     this->render.position.y = position[1];
     this->render.position.z = position[2];
@@ -606,23 +604,22 @@ void CGndRiser::SendMsg(
     return;
   }
 
-  EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4BF0
 // FUNCTION: fn_22422
 void CHalluNPC::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (a == 0) {
     switch (message) {
       case BM_RGB:
-        this->SetColor(180, b, d, f);
+        this->SetColor(180, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
         this->fadeStep = 0x8000000;
         return;
       case BM_ALPHA:
-        this->render.color &= (b << 24) + 0xFFFFFF;
-        this->fadeStep = d << 24;
+        this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
+        this->fadeStep = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
         this->hallucinationOffset = *reinterpret_cast<const float*>(&b);
@@ -631,25 +628,23 @@ void CHalluNPC::SendMsg(
         this->render.isMotionFreezed = 1;
         return;
     }
-  }
 
-  CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CNpc::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4CC0
 // FUNCTION: fn_22423
 void CHalluPC2::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (a == 0) {
     switch (message) {
       case BM_RGB:
         this->SetColor(180, 255, 55, 55);
         this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
-        this->render.color &= (b << 24) + 0xFFFFFF;
-        this->destCellZ = d << 24;
+        this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
+        this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
         this->destCellX = *reinterpret_cast<const float*>(&b);
@@ -658,25 +653,23 @@ void CHalluPC2::SendMsg(
         this->render.isMotionFreezed = 1;
         return;
     }
-  }
 
-  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CPc::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4D90
 // FUNCTION: fn_22424
 void CHalluPC::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (a == 0) {
     switch (message) {
       case BM_RGB:
-        this->SetColor(180, b, d, f);
+        this->SetColor(180, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
         this->destCellZ = 0x8000000;
         return;
       case BM_ALPHA:
-        this->render.color &= (b << 24) + 0xFFFFFF;
-        this->destCellZ = d << 24;
+        this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
+        this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
         this->destCellX = *reinterpret_cast<const float*>(&b);
@@ -685,30 +678,29 @@ void CHalluPC::SendMsg(
         this->render.isMotionFreezed = 1;
         return;
     }
-  }
 
-  CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CPc::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA4E60
 // FUNCTION: fn_22425
 void CHalluPlant::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if ((message | a) != 0) {
-    if (message == 1 && a == 0) {
-      this->render.color &= (b << 24) + 0xFFFFFF;
+  if (message != 0) {
+    if (message == 1) {
+      this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
       return;
     }
 
-    if (message == 3 && a == 0) {
+    if (message == 3) {
       this->render.isMotionFreezed = 1;
       return;
     }
 
-    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CNpc::SendMsg(sender, message, b, c, d, e, 0, 0);
   } else {
-    this->SetColor(180, b, d, f);
+    this->SetColor(180, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
   }
 }
 struct NpcAppearInfo {
@@ -724,11 +716,11 @@ struct NpcAppearInfo {
 // OFFSET: 0x00DA4EF0
 // FUNCTION: fn_22426
 void CNpc::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message == 4 && a == 0) {
-    CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    const NpcAppearInfo* info = reinterpret_cast<const NpcAppearInfo*>(b);
+  if (message == 4) {
+    CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
+    const NpcAppearInfo* info = reinterpret_cast<const NpcAppearInfo*>(static_cast<std::intptr_t>(b));
     switch (this->objectType) {
       case 8:
       case 9:
@@ -743,7 +735,7 @@ void CNpc::SendMsg(
     return;
   }
 
-  if (message == AM_UPDATEGAGE && a == 0) {
+  if (message == AM_UPDATEGAGE) {
     if (g_session.IsCompanionAid(this->render.accountId)) {
       if (this->playerGaugeWindow == nullptr) {
         this->playerGaugeWindow = new UIPlayerGage();
@@ -840,22 +832,22 @@ void CNpc::SendMsg(
         return;
       }
     }
-    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetValues(b, d);
+    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetValues(static_cast<int>(b), static_cast<int>(c));
     static_cast<UIPcGage*>(this->pcGaugeWindow)->SetLimits(0, 0);
     const int y = this->render.screenY + ScaleByScreenHeight(12);
     this->pcGaugeWindow->Move(this->render.screenX - 30, y);
     return;
   }
-  CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA5610
 // FUNCTION: fn_22427
 void CNumEffect::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message == 14 && a == 0) {
-    const float* position = reinterpret_cast<const float*>(b);
+  if (message == 14) {
+    const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     this->render.position.x = position[0];
     this->render.position.y = position[1];
     this->render.position.z = position[2];
@@ -863,36 +855,37 @@ void CNumEffect::SendMsg(
     this->render.position.y -= 12.0f;
     this->baseHeight = this->render.position.y;
 
-    this->render.curMotion = d;
-    if (d > 9 || d < 0) {
+    const int motion = static_cast<int>(c);
+    this->render.curMotion = motion;
+    if (motion > 9 || motion < 0) {
       this->render.curMotion = 0;
     }
 
-    this->render.spriteOffsetX = f;
+    this->render.spriteOffsetX = static_cast<int>(d);
     this->render.scale = 5.0f;
     this->baseScale = 5.0f;
     this->render.motionStartTime = timeGetTime();
     return;
   }
 
-  if (message == 22 && a == 0) {
+  if (message == 22) {
     return;
   }
 
-  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
 }
 
 // OFFSET: 0x00DA56E0
 // FUNCTION: fn_22428
 void CSoundMaker::SendMsg(
-  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+  CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message != 14 || a != 0) {
-    CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  if (message != 14) {
+    CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
-  const WorldSoundRecord& sound = *reinterpret_cast<const WorldSoundRecord*>(b);
+  const WorldSoundRecord& sound = *reinterpret_cast<const WorldSoundRecord*>(static_cast<std::intptr_t>(b));
   this->file = sound.file;
   this->volume = sound.volume;
   this->width = sound.width;
@@ -1324,7 +1317,7 @@ void CNpc::UpdateMinimapMarker() {
       return;
     }
     if (this->attachedEffect) {
-      this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->attachedEffect = nullptr;
       this->attachedEffectId = 9999;
     }
@@ -1332,7 +1325,7 @@ void CNpc::UpdateMinimapMarker() {
     const int base = marker->effectType < 6 ? 0x24 : 0x36;
     CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->effectType, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
-    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->attachedEffect = effect;
     this->minimapMarkerCell[0] = marker->effectType;
     this->minimapMarkerCell[1] = marker->questIconId;
@@ -1340,7 +1333,7 @@ void CNpc::UpdateMinimapMarker() {
   }
 
   if (this->attachedEffect) {
-    this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->attachedEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
     this->attachedEffect = nullptr;
     this->attachedEffectId = 9999;
   }
@@ -1407,7 +1400,7 @@ bool CNpc::OnProcess() {
         } else {
           reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\AI.lua");
         }
-        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
       }
     } else {
       this->homunAI = reinterpret_cast<int>(new CMercenaryAI(0));
@@ -1432,7 +1425,7 @@ bool CNpc::OnProcess() {
           path = ".\\AI\\AI_M.lua";
         }
         reinterpret_cast<CMercenaryAI*>(this->merAI)->Load(path);
-        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
       }
     } else {
       this->merAI = reinterpret_cast<int>(new CMercenaryAI(1));
@@ -1440,17 +1433,17 @@ bool CNpc::OnProcess() {
   }
 
   if (g_session.IsPetAid(this->render.accountId)) {
-    this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdateBubblePositions();
 
   if (g_session.homunAlive && g_groundMarkAid == this->render.accountId) {
-    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
   } else if (g_session.mercenaryAlive && g_groundMarkAltAid == this->render.accountId) {
-    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdateMinimapMarker();
@@ -1732,8 +1725,8 @@ void CNpc::SetState(int state, int) {
           this->render.timedSequenceActive = 0;
           this->render.isMotionFreezed = false;
           if (this->bodyState == 2) {
-            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
           }
           this->render.isLieOnGround = true;
           this->render.isMotionFreezed = false;
@@ -1779,8 +1772,8 @@ void CNpc::SetState(int state, int) {
           break;
         case ST_SLEEP:
           if (this->bodyState == 2) {
-            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
+            this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
           }
           this->render.isLieOnGround = false;
           this->render.isMotionFinished = true;

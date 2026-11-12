@@ -503,7 +503,7 @@ bool CGameMode::HasResurrectionItem() {
 // FUNCTION: fn_21287
 void CGameMode::SendMousePointerState(int value) {
   if (this->mousePointer) {
-    this->mousePointer->SendMsg(nullptr, AM_HIDEMOUSE, 0, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->mousePointer->SendMsg(nullptr, AM_HIDEMOUSE, value, 0, 0, 0, 0, 0);
   }
 }
 
@@ -2927,7 +2927,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::strcat(text, " !!  ");
         std::strcat(text, LookupMessage(MSI_LOVE_SKILL));
         const int address = reinterpret_cast<int>(text);
-        actor->SendMsg(nullptr, AM_CHAT, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_CHAT, address, 0, 0, 0, 0, 0);
         return 0;
       }
       if (argument1 == WE_CALLPARTNER) {
@@ -2939,7 +2939,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::strcat(text, " !!  ");
         std::strcat(text, skillName);
         const int address = reinterpret_cast<int>(text);
-        actor->SendMsg(nullptr, AM_CHAT, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_CHAT, address, 0, 0, 0, 0, 0);
         return 0;
       }
       if (argument1 == DC_SCREAM || argument1 == BA_FROSTJOKER || argument1 == ITEM_ENCHANTARMS ||
@@ -2949,7 +2949,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strcpy(skillName, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, argument1));
       std::strcat(skillName, " !!");
       const int address = reinterpret_cast<int>(skillName);
-      actor->SendMsg(nullptr, AM_CHAT, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CHAT, address, 0, 0, 0, 0, 0);
       return 0;
     }
     case MM_REQ_CHANGE_MEMBERPOS: {
@@ -4452,7 +4452,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_CONTACTNPC: {
       if (this->scene->player != nullptr) {
-        this->scene->player->SendMsg(nullptr, AM_FREEZE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_FREEZE, 0, 0, 0, 0, 0, 0);
       }
       const auto* request = reinterpret_cast<const std::uint32_t*>(argument1);
       if (request[1] == 0x2D) {
@@ -4747,7 +4747,7 @@ std::uint64_t CGameMode::LaunchDummyEffect(const vector3d* position, int effectI
     CDummyEffectLauncher* launcher = new CDummyEffectLauncher;
     if (launcher != nullptr) {
       const int address = reinterpret_cast<int>(position);
-      launcher->SendMsg(nullptr, AM_SETPOS, 0, address, address >> 31, effectId, effectId >> 31, lifeFrames, lifeFrames >> 31, value, value >> 31, 0, 0, 0, 0);
+      launcher->SendMsg(nullptr, AM_SETPOS, address, effectId, lifeFrames, value, 0, 0);
       this->scene->objects.push_back(launcher);
       return launcher->identity;
     }
@@ -4773,12 +4773,12 @@ void CGameMode::RequestPlayerAction(int target, int argument) {
 
   switch (reinterpret_cast<std::intptr_t>(this->skillUseType)) {
   case SUT_NOSKILL:
-    this->scene->player->SendMsg(nullptr, AM_PROCEEDATTACK, 0, target, 0, argument, argument >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_PROCEEDATTACK, static_cast<std::uint32_t>(target), argument, 0, 0, 0, 0);
     break;
   case SUT_TO_CHARACTER:
   case SUT_TO_ALL:
-    this->scene->player->SendMsg(nullptr, AM_PROCEEDSKILL, 0, target, 0, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
-    this->scene->player->SendMsg(nullptr, AM_SET_SKILL_USE_LEVEL, 0, this->skillUseLevel, this->skillUseLevel >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_PROCEEDSKILL, static_cast<std::uint32_t>(target), value, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_SET_SKILL_USE_LEVEL, this->skillUseLevel, 0, 0, 0, 0, 0);
     break;
   }
 }
@@ -4821,7 +4821,7 @@ void CGameMode::SendMousePointerPosition(float x, float y, int value) {
   position[0] = x;
   position[1] = y;
   const std::intptr_t address = reinterpret_cast<std::intptr_t>(position);
-  this->mousePointer->SendMsg(nullptr, AM_SETPOSMOUSE, 0, address, address >> 31, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->mousePointer->SendMsg(nullptr, AM_SETPOSMOUSE, address, value, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00CED330
@@ -6527,7 +6527,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
 
   this->noMove = 1;
   this->noMoveStartTick = timeGetTime();
-  this->scene->player->SendMsg(nullptr, AM_FREEZE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->scene->player->SendMsg(nullptr, AM_FREEZE, 0, 0, 0, 0, 0, 0);
   if (g_screenShakeDuration > 0) {
     g_screenShakeDuration = g_screenShakeMode == 2 ? 10001 : g_screenShakeDuration;
   }
@@ -7173,7 +7173,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 
   if (effectId > 0) {
     while (static_cast<EffectActor*>(actor)->HasId(effectId)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, effectId, effectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, effectId, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(effectId)) {
       g_effectMgr->Spawn(actor->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -7184,7 +7184,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
 
   if (secondEffectId > 0) {
     while (static_cast<EffectActor*>(actor)->HasId(secondEffectId)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, secondEffectId, secondEffectId >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, secondEffectId, 0, 0, 0, 0, 0);
     }
     if (g_effectMgr->HasAllocator(secondEffectId)) {
       g_effectMgr->Spawn(actor->render.accountId, secondEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -7972,7 +7972,7 @@ void CGameMode::Initialize(const char* name) {
   }
 
   if (g_screenShakeMode == 2) {
-    this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0, 0x22, 0, g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0, 0, 0, 0, 0);
   }
 
   if (g_session.GetOption(6) > 0) {
@@ -8627,9 +8627,9 @@ int CGameMode::ProcessGroundClick(int result) {
 
     if (this->scene->player) {
       const int skill = this->skillId;
-      this->scene->player->SendMsg(nullptr, AM_PROCEEDGROUNDSKILL, 0, skill, skill >> 31, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_PROCEEDGROUNDSKILL, skill, column, row, 0, 0, 0);
       const int level = this->skillUseLevel;
-      this->scene->player->SendMsg(nullptr, AM_SET_SKILL_USE_LEVEL, 0, level, level >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_SET_SKILL_USE_LEVEL, level, 0, 0, 0, 0, 0);
     }
   }
 
@@ -8684,7 +8684,7 @@ int CGameMode::ProcessGroundClick(int result) {
   g_windowMgr.UpdateNavigationList();
   clickTick = timeGetTime();
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) || g_windowMgr.chatRoomWnd || this->scene->player->render.state == 6) {
-    this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, column, row, 0, 0, 0, 0);
     return result;
   }
 
@@ -8711,7 +8711,7 @@ int CGameMode::ProcessGroundClick(int result) {
     g_windowMgr.CloseWindow(WID_MENUWND);
   }
   if (this->scene->player) {
-    this->scene->player->SendMsg(nullptr, AM_REQ_MOVE, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_REQ_MOVE, column, row, 0, 0, 0, 0);
   }
   return result;
 }
@@ -8800,10 +8800,10 @@ void CGameMode::Update() {
                 if (g_windowMgr.menuWnd != nullptr) {
                   g_windowMgr.CloseWindow(WID_MENUWND);
                 }
-                this->scene->player->SendMsg(nullptr, AM_REQ_MOVE, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+                this->scene->player->SendMsg(nullptr, AM_REQ_MOVE, x, y, 0, 0, 0, 0);
               }
             } else {
-              this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+              this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, x, y, 0, 0, 0, 0);
             }
           }
         }
@@ -8971,7 +8971,7 @@ void CGameMode::ProcessInput() {
 
   if (g_mouse.buttons[0] == 3) {
     if (this->scene->player) {
-      this->scene->player->SendMsg(nullptr, AM_ATTACKCLICKUP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_ATTACKCLICKUP, 0, 0, 0, 0, 0, 0);
     }
     this->SendMsg(MM_DROP, g_mouse.x, g_mouse.y, 0, 0);
     UIMenuWnd* menu = static_cast<UIMenuWnd*>(g_windowMgr.menuWnd);
@@ -10791,7 +10791,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       int column;
       int row;
       this->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
-      this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, 0, column, column >> 31, row, row >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, column, row, 0, 0, 0, 0);
       if (g_windowMgr.HasPendingDialog() == true) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_VIEW_CHANGE_EQUIPMENT_PROPERTIES_MSG)), 255, 25, 0, 0);
@@ -11027,10 +11027,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       this->isAutoMoveClickOn = 0;
       const int skillUse = reinterpret_cast<int>(&this->skillUseType);
       if (!HIBYTE(GetAsyncKeyState(VK_CONTROL)) && forceOption == 0) {
-        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, 0, pick->accountId, 0, skillUse, skillUse >> 31, 1, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, pick->accountId, skillUse, 1, 0, 0, 0);
         this->forcedAttack = 0;
       } else {
-        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, 0, pick->accountId, 0, skillUse, skillUse >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, pick->accountId, skillUse, 0, 0, 0, 0);
         this->forcedAttack = 1;
       }
       return result;
@@ -11038,7 +11038,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     default:
       if (reinterpret_cast<std::intptr_t>(this->skillUseType) == 5) {
         const long long skillUse = static_cast<long long>(reinterpret_cast<int>(this)) + offsetof(CGameMode, skillUseType);
-        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, 0, pick->accountId, 0, static_cast<int>(skillUse), static_cast<int>(skillUse >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, pick->accountId, skillUse, 0, 0, 0, 0);
       }
       return result;
     }
@@ -11047,7 +11047,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     return 0;
   case 1:
     if (g_mouse.buttons[0] == 1 && reinterpret_cast<std::intptr_t>(this->skillUseType) == 0) {
-      this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, 0, pick->accountId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);
     }
     break;
   case 4: {

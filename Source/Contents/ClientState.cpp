@@ -213,9 +213,9 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       if (player) {
         player->SetMadogearType(this->madogearType);
         if (this->madogearType) {
-          player->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0);
         } else {
-          player->SendMsg(nullptr, 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, 106, 0, 0, 0, 0, 0, 0);
         }
       }
       break;

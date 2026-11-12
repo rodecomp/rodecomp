@@ -393,11 +393,11 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
       return;
     }
     CGraffiSkill* skill = new CGraffiSkill;
-    skill->SendMsg(nullptr, AM_SETMASTERGID, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SETMASTERGID, packet.aid, 0, 0, 0, 0, 0);
     const int address = reinterpret_cast<int>(packet.text);
     const int x = packet.x;
     const int y = packet.y;
-    skill->SendMsg(nullptr, AM_SET_SKILL, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
     this->scene->objects.push_back(skill);
     this->scene->skills.push_back(skill);
     return;
@@ -442,7 +442,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
   }
   skill->sourceActorId = packet.owner;
   const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D413F0
@@ -483,10 +483,11 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
     }
     skill->sourceActorId = owner;
     const int address = reinterpret_cast<int>(&data);
-    skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
   } else {
     this->SpawnMirrorActor(aid, owner, x, y);
   }
+
 }
 
 struct GameOptionEntry {
@@ -786,10 +787,7 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
   if (kind == 2) {
     const std::int64_t emotion = value;
     const std::int64_t basePack = g_cashEmotionMgr->BasePackId();
-    actor->SendMsg(
-      nullptr, 160, 0, static_cast<int>(basePack), static_cast<int>(basePack >> 32), static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0,
-      0, 0, 0, 0, 0
-    );
+    actor->SendMsg(nullptr, 160, basePack, emotion, 0, 0, 0, 0);
     return;
   }
 
@@ -802,7 +800,7 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
     g_session.FormatMonsterSpeech(talk, speech, *reinterpret_cast<const std::uint32_t*>(packet + 2), 1 - kind);
     if (std::strcmp(speech, "") != 0) {
       const std::int64_t text = reinterpret_cast<std::intptr_t>(speech);
-      actor->SendMsg(nullptr, AM_CHAT, 0, static_cast<int>(text), static_cast<int>(text >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_CHAT, text, 0, 0, 0, 0, 0);
       if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(speech), 0xFAFAFA, 0, 0, 0);
       }
@@ -891,7 +889,7 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
     return;
   }
 
-  player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, 0, *reinterpret_cast<const int*>(packet + 6) * 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(*reinterpret_cast<const int*>(packet + 6) * 1000), 0, 0, 0, 0, 0);
   g_session.playerStatusFlags[0x0A] = true;
 }
 
@@ -1324,7 +1322,7 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
   }
 
   const std::int64_t argument = reinterpret_cast<std::intptr_t>(&message);
-  actor->SendMsg(nullptr, AM_MAKE_CHAT_TITLE, 0, static_cast<int>(argument), static_cast<int>(argument >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_MAKE_CHAT_TITLE, argument, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D3F3E0
@@ -1579,7 +1577,7 @@ void CGameMode::ReceiveSummonHpInit(const unsigned char* buffer) {
   CRenderObject* actor = this->scene->GetGameActorByAID(packet->summonId);
   if (actor != nullptr) {
     const std::int64_t id = packet->summonId;
-    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, static_cast<int>(id), static_cast<int>(id >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, id, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1603,7 +1601,7 @@ void CGameMode::ReceiveSummonHpUpdate(const unsigned char* buffer) {
   CRenderObject* actor = this->scene->GetGameActorByAID(packet->summonId);
   if (actor != nullptr) {
     const std::int64_t id = packet->summonId;
-    actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, static_cast<int>(id), static_cast<int>(id >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATEGAGE, id, 0, 0, 0, 0, 0);
   }
 }
 
@@ -2555,8 +2553,7 @@ void CGameMode::ReceiveStatusChangeEffect2(const unsigned char* packet) {
 // FUNCTION: fn_22018
 void CGameMode::ReceiveActorStatusValuePacket2(const unsigned char* packet) {
   this->ReceiveActorStatusValue(
-    *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const int*>(packet + 6), *reinterpret_cast<const int*>(packet + 10),
-    *reinterpret_cast<const int*>(packet + 14)
+    *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const int*>(packet + 6), *reinterpret_cast<const std::int64_t*>(packet + 10)
   );
 }
 
@@ -2676,7 +2673,7 @@ void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
 
   skill->sourceActorId = packet.owner;
   const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D40730
@@ -2698,9 +2695,9 @@ void CGameMode::Zc_Skill_Entry2(const unsigned char* record) {
     CGraffiSkill* skill = new CGraffiSkill;
     this->scene->objects.push_back(skill);
     this->scene->skills.push_back(skill);
-    skill->SendMsg(nullptr, AM_SETMASTERGID, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SETMASTERGID, packet.aid, 0, 0, 0, 0, 0);
     const int address = reinterpret_cast<int>(packet.text);
-    skill->SendMsg(nullptr, AM_SET_SKILL, 0, address, address >> 31, data.x, data.x >> 31, data.y, data.y >> 31, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SET_SKILL, address, data.x, data.y, 0, 0, 0);
     return;
   }
 
@@ -2726,7 +2723,7 @@ void CGameMode::Zc_Skill_Entry2(const unsigned char* record) {
   }
 
   const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D40970
@@ -2740,11 +2737,11 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
     CGraffiSkill* skill = new CGraffiSkill;
     this->scene->objects.push_back(skill);
     this->scene->skills.push_back(skill);
-    skill->SendMsg(nullptr, AM_SETMASTERGID, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SETMASTERGID, packet.aid, 0, 0, 0, 0, 0);
     const int address = reinterpret_cast<int>(packet.text);
     const int x = packet.x;
     const int y = packet.y;
-    skill->SendMsg(nullptr, AM_SET_SKILL, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
     return;
   }
 
@@ -2785,7 +2782,7 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
   }
   skill->sourceActorId = packet.owner;
   const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D40BC0
@@ -2799,11 +2796,11 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
     CGraffiSkill* skill = new CGraffiSkill;
     this->scene->objects.push_back(skill);
     this->scene->skills.push_back(skill);
-    skill->SendMsg(nullptr, AM_SETMASTERGID, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SETMASTERGID, packet.aid, 0, 0, 0, 0, 0);
     const int address = reinterpret_cast<int>(packet.text);
     const int x = packet.x;
     const int y = packet.y;
-    skill->SendMsg(nullptr, AM_SET_SKILL, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
     return;
   }
 
@@ -2846,7 +2843,7 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   }
   skill->sourceActorId = packet.owner;
   const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)

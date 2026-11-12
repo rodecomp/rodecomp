@@ -77,8 +77,7 @@ void CShowEffect::Close() {
 
   for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
     if (target) {
-      target->SendMsg(nullptr, AM_DELETE_TAGGED_EFFECT, 0, static_cast<int>(static_cast<std::int64_t>(it->first)),
-        static_cast<int>(static_cast<std::int64_t>(it->first) >> 32), it->second, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_TAGGED_EFFECT, it->first, static_cast<std::uint32_t>(it->second), 0, 0, 0, 0);
     } else if (g_effectMgr->HasAllocator(it->second)) {
       g_effectMgr->Retire(actorId, it->first, it->second);
     }
@@ -105,7 +104,6 @@ void CShowEffect::Remove(int tag) {
     return;
   }
 
-  target->SendMsg(target, AM_DELETE_TAGGED_EFFECT, 0, static_cast<int>(static_cast<std::int64_t>(tag)),
-    static_cast<int>(static_cast<std::int64_t>(tag) >> 32), this->effects[tag], 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  target->SendMsg(target, AM_DELETE_TAGGED_EFFECT, tag, static_cast<std::uint32_t>(this->effects[tag]), 0, 0, 0, 0);
   this->effects.erase(tag);
 }

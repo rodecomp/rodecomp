@@ -190,27 +190,27 @@ void CGroundScope::Render(int argument) {
 
 // OFFSET: 0x00E50DB0
 // FUNCTION: fn_24299
-void CGroundScope::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+void CGroundScope::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  switch (message) {
     case AM_SETPOS:
-      this->m_cellX = b;
-      this->m_cellY = d;
+      this->m_cellX = static_cast<int>(b);
+      this->m_cellY = static_cast<int>(c);
       return;
 
     case AM_SETMASTERGID:
-      this->m_masterGid = b;
+      this->m_masterGid = static_cast<int>(b);
       return;
 
     case AM_SETTIME:
-      this->m_lastingTime = b;
+      this->m_lastingTime = static_cast<unsigned long>(b);
       return;
 
     case AM_SET_SKILL:
-      this->m_size = this->SkillScopeType(b) + 2;
+      this->m_size = this->SkillScopeType(static_cast<int>(b)) + 2;
       this->m_angleSpeed = this->m_size != 0 ? 0.5f / static_cast<float>(this->m_size) : 0.0f;
-      this->m_skillId = b;
+      this->m_skillId = static_cast<int>(b);
       return;
   }
 
-  this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
 }

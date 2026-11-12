@@ -17,30 +17,30 @@ bool CDummyEffectLauncher::OnProcess() {
 
 // OFFSET: 0x00E50A60
 // FUNCTION: fn_24296
-__declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if (message != AM_SETPOS || a != 0) {
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+__declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  if (message != AM_SETPOS) {
+    this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
-  const vector3d* position = reinterpret_cast<const vector3d*>(b);
+  const vector3d* position = reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(b));
   this->render.position.x = position->x;
   this->render.position.y = position->y;
   this->render.position.z = position->z;
   this->render.visible = 0;
   this->render.motionStartTime = timeGetTime();
-  if (g_effectMgr->Spawn(0, d, this->render.position, 0, -1, 0, 0) != nullptr) {
+  if (g_effectMgr->Spawn(0, static_cast<int>(c), this->render.position, 0, -1, 0, 0) != nullptr) {
     return;
   }
 
-  CRagEffect* effect = this->LaunchEffect(d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  if ((f | g) != 0) {
-    this->lifeFrames = f;
-    if (f == 333 && g == 0) {
+  CRagEffect* effect = this->LaunchEffect(static_cast<int>(c), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (d != 0) {
+    this->lifeFrames = static_cast<int>(d);
+    if (d == 333) {
       vector3d value;
       value.y = 0.0f;
       value.z = 0.0f;
-      value.x = static_cast<float>(static_cast<std::int64_t>(i) << 32 | static_cast<std::uint32_t>(h));
+      value.x = static_cast<float>(e);
       if (effect != nullptr) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0, 0);
       }

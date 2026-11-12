@@ -730,7 +730,7 @@ public:
   void ReceiveItem1758List(const unsigned char* packet);
   void ReceiveOpenedVendingItemList(const unsigned char* packet);
   void ReceiveItem1748List(const unsigned char* packet);
-  void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
+  void ReceiveActorStatusValue(std::uint32_t aid, int status, std::int64_t amount);
   void ReceiveActorSkillResult(const unsigned char* packet);
   void UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining, std::uint32_t duration);
   void LoadCooldownSnapshot(const void* packet);

@@ -41,15 +41,15 @@ bool CMandraAttackEffect::OnProcess() {
 
 // OFFSET: 0x00E50F30
 // FUNCTION: fn_24300
-void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if (message != 14 || a != 0) {
-    this->CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  if (message != 14) {
+    this->CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
   const char* sprite;
   const char* action;
-  switch (f) {
+  switch (static_cast<int>(d)) {
     case JT_HYDRA:
       sprite = "몬스터\\hydra_atk.spr";
       action = "몬스터\\hydra_atk.act";
@@ -157,18 +157,18 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
   this->SetSpriteName(sprite);
   this->SetActionName(action);
   vector3d target{0.0f, 0.0f, 0.0f};
-  this->GetTargetPos(b, target);
+  this->GetTargetPos(static_cast<std::uint32_t>(b), target);
   this->render.position.x = target.x;
   this->render.position.y = target.y;
   this->render.position.z = target.z;
   this->render.visible = 1;
   this->render.motionStartTime = timeGetTime();
   this->SetAnimationSpeed(this->GetActRes()->Speed(0));
-  if (f == 0x42C) {
+  if (static_cast<int>(d) == 0x42C) {
     this->SetAnimationSpeed(2.0f);
   }
 
-  if (d != 0 || e != 0) {
-    this->startFrame = *reinterpret_cast<const float*>(d);
+  if (c != 0) {
+    this->startFrame = *reinterpret_cast<const float*>(static_cast<std::intptr_t>(c));
   }
 }

@@ -70,13 +70,13 @@ void CEffectMaker::Render(int) {
 
 // OFFSET: 0x00E50BB0
 // FUNCTION: fn_24297
-void CEffectMaker::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if (message != 14 || a != 0) {
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+void CEffectMaker::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  if (message != 14) {
+    this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
-  const WorldEffectRecord* record = reinterpret_cast<const WorldEffectRecord*>(b);
+  const WorldEffectRecord* record = reinterpret_cast<const WorldEffectRecord*>(static_cast<std::intptr_t>(b));
   this->effectId = record->id;
   if (this->effectId != 45) {
     this->spawnInterval = static_cast<unsigned>(record->delay);

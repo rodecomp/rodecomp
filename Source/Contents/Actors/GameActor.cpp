@@ -104,9 +104,7 @@ void CGameActor::ProcessDamageMessages() {
       }
 
       ActorDamageMessage& message = *it;
-      this->SendMsg(
-        nullptr, message.action, message.action >> 31, reinterpret_cast<int>(&message.targetAid), 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0);
+      this->SendMsg(nullptr, message.action, reinterpret_cast<std::uint32_t>(&message.targetAid), 0, 0, 0, 0, 0);
       it = this->willBeAttackedList.erase(it);
     } else {
       ++it;
@@ -165,7 +163,7 @@ bool CGameActor::ProcessState() {
       this->isCounter = 0;
       this->render.isMotionFreezed = false;
       this->SetState(0, 1);
-      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
     }
     this->ProcessMotion();
     this->lastProcessStateTime = timeGetTime();
@@ -588,7 +586,7 @@ void CGameActor::UpdateGaugePositions() {
 
   if (this->actorWindows[3] != 0) {
     if (timeGetTime() > this->skillRechargeEndTick) {
-      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
       if (this->render.state == 8) {
         this->SetState(0, 1);
       }
@@ -666,7 +664,7 @@ void CGameActor::ReleaseAttachments() {
   }
 
   for (std::list<CGameObject*>::iterator it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
-    (*it)->SendMsg(nullptr, AM_MSGMASTER_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    (*it)->SendMsg(nullptr, AM_MSGMASTER_DEAD, 0, 0, 0, 0, 0, 0);
   }
   this->msgEffectList.erase(this->msgEffectList.begin(), this->msgEffectList.end());
 

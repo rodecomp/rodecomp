@@ -281,7 +281,7 @@ void CEfstAction_GRADUAL_GRAVITY::OnEfstBegin(int efstId, int value, int argumen
 void CEfstAction_GRADUAL_GRAVITY::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     while (static_cast<EffectActor*>(actor)->HasId(779)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 779, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 779, 0, 0, 0, 0, 0);
     }
   }
 }

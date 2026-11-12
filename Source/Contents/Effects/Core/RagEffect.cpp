@@ -114,7 +114,7 @@ CRagEffect::~CRagEffect() {
   }
 
   if (this->state.parent) {
-    this->state.parent->SendMsg(this, AM_EFFECT_DEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(this, AM_EFFECT_DEAD, 0, 0, 0, 0, 0, 0);
   }
 
   if (this->state.resource) {
@@ -184,7 +184,7 @@ static __forceinline void SendAfterimageColor(CGameObject& target, CRagEffect& s
   const int red = static_cast<int>(color.x);
   const int green = static_cast<int>(color.y);
   const int blue = static_cast<int>(color.z);
-  target.SendMsg(&sender, 0, 0, red, red >> 31, green, green >> 31, blue, blue >> 31, 0, 0, 0, 0, 0, 0);
+  target.SendMsg(&sender, 0, red, green, blue, 0, 0, 0);
 }
 
 
@@ -2564,7 +2564,7 @@ void CRagEffect::PotionPillar(float heightSpeed, int duration) {
 // FUNCTION: fn_20094
 bool CRagEffect::Potion_Berserk() {
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 250, 0, 120, 0, 120, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 250, 120, 120, 0, 0, 0);
     this->PotionPillar(1.0f, 50);
   }
 
@@ -2603,7 +2603,7 @@ bool CRagEffect::Potion_Berserk() {
     return true;
   }
 
-  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
   return false;
 }
 
@@ -11451,7 +11451,7 @@ void CRagEffect::Sightrasher() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 22, 0, 0, 0, 0, 0);
     PlayEffectWave(*this, "effect\\wizard_sightrasher.wav");
   }
 
@@ -15211,14 +15211,14 @@ void CRagEffect::AlphaCenterRise() {
   }
 
   if (this->state.stateCnt == 35 && this->state.parent != nullptr) {
-    this->state.parent->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0);
   }
 }
 // OFFSET: 0x00C36710
 // FUNCTION: fn_20093
 bool CRagEffect::Potion_Awakening() {
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 0, 250, 0, 250, 0, 200, 0, 0, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_CHANGE_COLOR, 250, 250, 200, 0, 0, 0);
     this->PotionPillar(1.0f, 50);
   }
 
@@ -15256,7 +15256,7 @@ bool CRagEffect::Potion_Awakening() {
     return true;
   }
 
-  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
   return false;
 }
 // OFFSET: 0x00C3C4E0
@@ -17280,7 +17280,7 @@ void CPlayer::UpdateFootprints(int kind) {
 // OFFSET: 0x00C74B60
 // FUNCTION: fn_20334
 void CPlayer::RefreshEffect164() {
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, 164, 0, 0, 0, 0, 0);
   this->skillEffect = this->LaunchEffect(164, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
@@ -21070,17 +21070,17 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\EF_hit2.wav");
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, 114, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_2:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF0000, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, 114, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_3:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 0, 1, 0, 0xFFFF00FF, 0, 114, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF00FF, 114, 0, 0, 0);
     }
     break;
   case EF_SPREADATTACK:
@@ -21336,7 +21336,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NPC_STOP2_DEL:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 604, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 604, 0, 0, 0, 0, 0);
     }
     break;
   case EF_SIGHT2:
@@ -22236,7 +22236,7 @@ bool CRagEffect::OnProcess3() {
         hallu->render.position.x = this->state.deltaPos[0];
         hallu->render.position.y = this->state.deltaPos[1];
         hallu->render.position.z = this->state.deltaPos[2];
-        hallu->SendMsg(this, 0, 0, 200, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        hallu->SendMsg(this, 0, 200, 200, 0, 0, 0, 0);
         WorldObjects().push_back(hallu);
         this->state.deltaPos[0] += x * step;
         this->state.deltaPos[1] += y * step;

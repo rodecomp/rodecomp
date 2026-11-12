@@ -1802,7 +1802,7 @@ void CSession::RemovePartyMemberByName(const char* name) {
 
     CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
     if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
     }
 
     this->m_partyMembers.erase(it);
@@ -3280,7 +3280,7 @@ void CSession::ClearItemContainers() {
     for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
       if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
       }
     }
   }

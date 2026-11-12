@@ -1307,7 +1307,7 @@ void CSession::ClearPartyMembers() {
     for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(member->accountId);
       if (actor && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
       }
     }
   }

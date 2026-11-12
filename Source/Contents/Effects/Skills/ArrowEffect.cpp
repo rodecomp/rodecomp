@@ -99,11 +99,11 @@ __declspec(safebuffers) bool CArrowEffect::OnProcess() {
 
 // OFFSET: 0x00E50500
 // FUNCTION: fn_24295
-void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if (message == 14 && a == 0) {
+void CArrowEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  if (message == 14) {
     const char* sprite;
     const char* action;
-    switch (static_cast<std::int64_t>(static_cast<std::uint64_t>(static_cast<std::uint32_t>(i)) << 32 | static_cast<std::uint32_t>(h))) {
+    switch (static_cast<std::int64_t>(static_cast<std::uint64_t>(e))) {
       case JT_PARASITE:
       case JT_G_PARASITE:
         action = "몬스터\\PARASITE_BULLET.act";
@@ -245,31 +245,31 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     this->SetSpriteName(sprite);
     this->SetActionName(action);
     this->speedScale = 1.0f;
-    this->render.position = *reinterpret_cast<const vector3d*>(b);
+    this->render.position = *reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(b));
     this->render.position.y -= 10.0f;
     this->startPos.x = this->render.position.x;
     this->startPos.y = this->render.position.y;
     this->startPos.z = this->render.position.z;
-    this->targetAid = d;
+    this->targetAid = static_cast<std::uint32_t>(c);
     this->render.visible = 0;
-    this->GetTargetPos(d, this->targetPos);
+    this->GetTargetPos(static_cast<std::uint32_t>(c), this->targetPos);
     this->render.motionStartTime = timeGetTime();
-  } else if (message == 64 && a == 0) {
+  } else if (message == 64) {
     this->SetSpriteName("몬스터\\skel_archer_arrow.spr");
     this->SetActionName("몬스터\\skel_archer_arrow.act");
     this->speedScale = 1.0f;
-    this->render.position = *reinterpret_cast<const vector3d*>(b);
+    this->render.position = *reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(b));
     this->render.position.y -= 10.0f;
     this->startPos.x = this->render.position.x;
     this->startPos.y = this->render.position.y;
     this->startPos.z = this->render.position.z;
-    this->targetPos = *reinterpret_cast<const vector3d*>(d);
+    this->targetPos = *reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(c));
     this->targetPos.y -= 10.0f;
     this->render.visible = 0;
     this->targetAid = 0;
     this->render.motionStartTime = timeGetTime();
   } else {
-    this->CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 

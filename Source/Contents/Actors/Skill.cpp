@@ -321,12 +321,12 @@ __declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
 
 // OFFSET: 0x00E51BD0
 // FUNCTION: fn_24302
-void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
+void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
-  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+  switch (message) {
   case AM_CHAT: {
-    const char* text = reinterpret_cast<const char*>(b);
+    const char* text = reinterpret_cast<const char*>(static_cast<std::intptr_t>(b));
     if (std::strlen(text) == 0) {
       return;
     }
@@ -349,7 +349,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     return;
   }
   case AM_SKILL: {
-    const SkillHitMessage* hit = reinterpret_cast<const SkillHitMessage*>(b);
+    const SkillHitMessage* hit = reinterpret_cast<const SkillHitMessage*>(static_cast<std::intptr_t>(b));
     const int skillId = hit->skillId;
     const int monsterValue = hit->monsterValue;
     const int cellX = hit->cellX;
@@ -456,13 +456,13 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
 
       const int address = reinterpret_cast<int>(&damageMessage);
       int total = damage;
-      target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      target->SendMsg(this, AM_WILL_BE_ATTACKED, address, total, 0, 0, 0, 0);
       for (int index = 0; index < hitCount - 1;) {
         ++index;
         damageMessage.time += g_multiHitInterval;
         total += damage;
         damageMessage.skillTarget = index;
-        target->SendMsg(this, AM_WILL_BE_ATTACKED, 0, address, address >> 31, total, total >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+        target->SendMsg(this, AM_WILL_BE_ATTACKED, address, total, 0, 0, 0, 0);
       }
     }
 
@@ -472,7 +472,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     return;
   }
   case AM_SKILLSTANDENTRY: {
-    const SkillUnitMessage* unit = reinterpret_cast<const SkillUnitMessage*>(b);
+    const SkillUnitMessage* unit = reinterpret_cast<const SkillUnitMessage*>(static_cast<std::intptr_t>(b));
     this->range = unit->range;
     this->skillAid = unit->aid;
     this->render.accountId = unit->aid;
@@ -879,7 +879,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
   }
   case AM_SETJOB:
-    this->SetActorJob(b);
+    this->SetActorJob(static_cast<int>(b));
     switch (this->GetEffectiveJob(-1)) {
     case UNT_WARP_WAITING: {
       const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
@@ -943,7 +943,7 @@ void CSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int 
     }
     return;
   default:
-    this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 }

@@ -190,7 +190,7 @@ void CWorld::OnProcess() {
       continue;
     }
 
-    skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
     if (skill->HasPendingDamage() == true) {
       if (std::find(this->pendingActorIds.begin(), this->pendingActorIds.end(), aid) == this->pendingActorIds.end()) {
         this->pendingActorIds.push_back(aid);
@@ -270,7 +270,7 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
   auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CRenderObject* object) { return identity == object->identity; });
 
   if (it != this->objects.end()) {
-    (*it)->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
+    (*it)->SendMsg(sender, message, a, b, c, d, 0, 0);
   }
 }
 
@@ -285,8 +285,7 @@ void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int a
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETPOS, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, 0, reinterpret_cast<int>(&flag),
-                    reinterpret_cast<int>(&flag) >> 31, argument, argument >> 31, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, static_cast<int>(aid), static_cast<std::uint32_t>(target), reinterpret_cast<int>(&flag), argument, 0, 0);
   }
 }
 
@@ -297,8 +296,7 @@ void CGameMode::SpawnArrowEffect64(const vector3d* source, const vector3d* targe
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETPOS2, 0, reinterpret_cast<int>(source), reinterpret_cast<int>(source) >> 31, reinterpret_cast<int>(target),
-                    reinterpret_cast<int>(target) >> 31, reinterpret_cast<int>(&speed), reinterpret_cast<int>(&speed) >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<int>(source), reinterpret_cast<int>(target), reinterpret_cast<int>(&speed), 0, 0, 0);
   }
 }
 
@@ -591,9 +589,8 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
       this->scene->objects.emplace_back(effect);
     }
 
-    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, duration, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    effect->SendMsg(nullptr, AM_SETPOS, 0, aid, aid >> 31, reinterpret_cast<int>(&names), reinterpret_cast<int>(&names) >> 31, data->actionIndex,
-                    data->actionIndex >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETMASTERGID, duration, 1, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, aid, reinterpret_cast<int>(&names), data->actionIndex, 0, 0, 0);
   }
 
   return effect;
@@ -626,7 +623,7 @@ void CGameMode::SpawnMandraAttack(std::uint32_t aid, int target, char flag) {
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETPOS, 0, aid, 0, reinterpret_cast<int>(&flag), reinterpret_cast<int>(&flag) >> 31, target, target >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, aid, reinterpret_cast<int>(&flag), target, 0, 0, 0);
   }
 }
 
@@ -913,7 +910,7 @@ bool CWorld::RemoveSkill(std::uint32_t aid) {
         return false;
       }
 
-      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
 
       if (skill->HasPendingDamage() == true) {
         for (std::uint32_t pending : this->pendingActorIds) {
@@ -948,9 +945,8 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
   CMsgEffect* effect = new CMsgEffect;
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, accountId, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&names),
-                    reinterpret_cast<int>(&names) >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETMASTERGID, accountId, 13, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<int>(position), reinterpret_cast<int>(&names), 0, 0, 0, 0);
     effect->render.color = color;
     effect->render.useGroundLighting = 0;
   }
@@ -1358,10 +1354,9 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETMASTERGID, 0, accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETMASTERGID, accountId, type, 0, 0, 0, 0);
     effect->m_visible = visible;
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(names),
-                    reinterpret_cast<int>(names) >> 31, animation, animation >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<int>(position), reinterpret_cast<int>(names), animation, 0, 0, 0);
   }
 
   return effect;

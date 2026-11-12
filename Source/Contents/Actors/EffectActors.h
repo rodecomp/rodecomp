@@ -12,7 +12,7 @@ public:
   ~CBlowEffect() override;
   bool OnProcess() override;
   void SendMsg(
-    CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+    CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
   ) override;
 };
 
@@ -22,7 +22,7 @@ public:
   ~CCorpse() override;
   bool OnProcess() override;
   void SendMsg(
-    CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+    CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
   ) override;
   void Render(int argument) override;
 
@@ -47,7 +47,7 @@ public:
   ~CNumEffect() override;
   bool OnProcess() override;
   void SendMsg(
-    CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+    CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
   ) override;
 
   /* 0138 */ float baseHeight;

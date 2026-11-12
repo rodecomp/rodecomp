@@ -131,14 +131,14 @@ void CItem::Render(int argument) {
 
 // OFFSET: 0x00D8B720
 // FUNCTION: fn_22252
-void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
+void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (message != 4 || a != 0) {
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  if (message != 4) {
+    this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
 
-  const ItemFallEntry* entry = reinterpret_cast<const ItemFallEntry*>(b);
+  const ItemFallEntry* entry = reinterpret_cast<const ItemFallEntry*>(static_cast<std::intptr_t>(b));
   this->itemAid = entry->aid;
   this->name = entry->itemId;
   std::string itemName = this->name;

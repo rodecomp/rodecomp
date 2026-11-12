@@ -137,20 +137,20 @@ void CGraffiSkill::Render(int argument) {
 
 // OFFSET: 0x00E50D10
 // FUNCTION: fn_24298
-void CGraffiSkill::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int, int, int, int, int, int) {
-  const std::uint64_t id = static_cast<std::uint64_t>(static_cast<std::uint32_t>(a)) << 32 | static_cast<std::uint32_t>(message);
+void CGraffiSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
+  const std::uint64_t id = static_cast<std::uint64_t>(message);
   if (id == 22) {
-    this->skillAid = b;
+    this->skillAid = static_cast<std::uint32_t>(b);
     return;
   }
 
   if (id == 117) {
-    std::strcpy(this->m_text, reinterpret_cast<const char*>(b));
-    this->m_cellX = d;
-    this->m_cellY = f;
+    std::strcpy(this->m_text, reinterpret_cast<const char*>(static_cast<std::intptr_t>(b)));
+    this->m_cellX = static_cast<int>(c);
+    this->m_cellY = static_cast<int>(d);
     this->BuildTexture();
     return;
   }
 
-  this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, 0, 0, 0, 0, 0, 0);
+  this->CGameActor::SendMsg(sender, message, b, c, d, 0, 0, 0);
 }
