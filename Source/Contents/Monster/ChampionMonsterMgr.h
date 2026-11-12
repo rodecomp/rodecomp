@@ -25,7 +25,8 @@ public:
   };
 
   // INLINED
-  CChampionMonsterMgr() : m_isValid(true) {
+  CChampionMonsterMgr() {
+    this->m_isValid = true;
   }
   // INLINED
   virtual ~CChampionMonsterMgr() {
