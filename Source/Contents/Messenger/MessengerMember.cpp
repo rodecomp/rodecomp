@@ -681,7 +681,7 @@ UIMessengerGroupWnd::UIMessengerGroupWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x0073A080
 // FUNCTION: fn_07700
-UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
+__declspec(noinline) UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
 
 // OFFSET: 0x0073A1C0
 // FUNCTION: fn_07702
