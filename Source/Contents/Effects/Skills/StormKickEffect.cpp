@@ -62,9 +62,9 @@ void CStormKickEffect::CreateStorms(int layer) {
       particle->SetColor(130, 130, 255);
       break;
     case EF_STORMKICK6:
-      if (motion[1] == 0.0f) {
+      if (0.0f == motion[1]) {
         particle->SetColor(255, 255, 255);
-      } else if (motion[1] == 1.0f) {
+      } else if (1.0f == motion[1]) {
         particle->SetColor(255, 55, 55);
       }
       break;
