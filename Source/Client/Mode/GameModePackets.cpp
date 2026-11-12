@@ -12451,7 +12451,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -12483,7 +12483,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
