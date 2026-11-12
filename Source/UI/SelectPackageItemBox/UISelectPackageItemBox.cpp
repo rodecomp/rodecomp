@@ -678,10 +678,6 @@ void CUISelectPackageItemBox::OnSelectTab(SelectPackageItemBox::CUITabInfo*, con
   this->itemList->UpdateScrollBar();
 }
 
-namespace {
-
-}
-
 // OFFSET: 0x00A69790
 // FUNCTION: fn_16664
 void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {

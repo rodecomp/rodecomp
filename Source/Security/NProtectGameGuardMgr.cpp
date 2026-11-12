@@ -43,12 +43,6 @@ public:
   }
 };
 
-namespace {
-
-  // INLINED
-    // INLINED
-  }
-
 // OFFSET: 0x0076C3E0
 // FUNCTION: fn_45544
 CNProtectGameGuardMgr::~CNProtectGameGuardMgr() {

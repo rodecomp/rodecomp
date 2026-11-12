@@ -8,10 +8,6 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace {
-
-}
-
 // OFFSET: 0x00E0B320
 // FUNCTION: fn_23814
 const char* CSession::GetPetTalkName(int job) {

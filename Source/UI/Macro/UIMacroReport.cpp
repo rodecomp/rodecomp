@@ -24,10 +24,6 @@
 #include <functional>
 #include <string>
 
-namespace {
-
-}
-
 // INLINED
 inline std::string EditBoxText(CUIEditBox* editBox) {
   return editBox->edit->Text();

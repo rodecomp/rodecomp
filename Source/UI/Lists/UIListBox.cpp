@@ -25,8 +25,6 @@
 #include <cstring>
 #include <mbstring.h>
 
-namespace {}
-
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
 UIListBox::UIListBox() : UIWindow(0) {

@@ -32,10 +32,6 @@ template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::
 // GLOBAL: gl_24705
 int g_serviceMode;
 
-namespace {
-
-}
-
 struct NaviUnknownBlock {
   /* 0000 */ int padding_0000;
   /* 0004 */ int padding_0004;
