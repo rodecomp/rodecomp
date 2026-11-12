@@ -159,7 +159,7 @@ CNavi_Link* CNavi_Link::FindLinkAt(int x, int y) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     NaviCell cell;
     NaviCell* found = it->link->GetCell(&cell);
-    if (found->x == x && found->y == y) {
+    if (x == found->x && y == found->y) {
       return it->link;
     }
   }
@@ -173,7 +173,7 @@ CNavi_Link* CNavi_Object::FindLinkAt(int x, int y) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     NaviCell cell;
     NaviCell* found = it->link->GetCell(&cell);
-    if (found->x == x && found->y == y) {
+    if (x == found->x && y == found->y) {
       return it->link;
     }
   }
