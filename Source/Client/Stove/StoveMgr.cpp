@@ -315,10 +315,12 @@ void PurchaseResultCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
     if (reinterpret_cast<std::intptr_t>(reinterpret_cast<const Stove::PCSDK::IAP::StovePCChargeInfo&>(purchaseResult).GetChargeTypeName()) != 2) {
+      CStoveMgr* stoveMgr = g_stoveMgr;
       const std::int64_t productId = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(purchaseResult).GetProductId();
-      g_stoveMgr->m_purchaseIdLow = static_cast<int>(productId);
-      g_stoveMgr->m_purchaseIdHigh = static_cast<int>(productId >> 32);
-      g_stoveMgr->m_purchaseUrl = static_cast<const std::string&>(
+      stoveMgr->m_purchaseIdLow = static_cast<int>(productId);
+      stoveMgr->m_purchaseIdHigh = static_cast<int>(productId >> 32);
+      stoveMgr = g_stoveMgr;
+      stoveMgr->m_purchaseUrl = static_cast<const std::string&>(
           EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::IAP::StovePCPurchasedProduct&>(purchaseResult).GetCategoryId())));
     }
   } else {
@@ -687,9 +689,11 @@ void TermsAgreementCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
     g_modeMgr.GetGameMode()->SendMsg(MM_REQUEST_CASH_SHOP, 0, 0, 0, 0);
   } else {
     std::string path = EncodeText(CP_ACP, std::wstring(url));
-    constexpr auto sourceText = CRYPT_NAME("OPEN", 0x2FF3C5036D070127ULL);
-    const auto& source = sourceText.data;
-    thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> verb(source);
-    ShellExecuteA(nullptr, verb.Text(), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
+    ShellExecuteA(nullptr, [] {
+      constexpr auto sourceText = CRYPT_NAME("OPEN", 0x2FF3C5036D070127ULL);
+      const auto& source = sourceText.data;
+      thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> verb(source);
+      return verb.Text();
+    }(), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
   }
 }
