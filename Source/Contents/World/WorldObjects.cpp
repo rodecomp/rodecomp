@@ -177,12 +177,9 @@ void CWorld::OnProcess() {
 
   for (auto idEntry = this->pendingActorIds.begin(); idEntry != this->pendingActorIds.end(); ++idEntry) {
     std::uint32_t aid = *idEntry;
-    auto skillEntry = this->skills.begin();
-    for (; skillEntry != this->skills.end(); ++skillEntry) {
-      if (static_cast<CSkill*>(*skillEntry)->skillAid == aid) {
-        break;
-      }
-    }
+    auto skillEntry = std::find_if(this->skills.begin(), this->skills.end(), [aid](CRenderObject* entry) {
+      return static_cast<CSkill*>(entry)->skillAid == aid;
+    });
 
     if (skillEntry == this->skills.end()) {
       continue;
