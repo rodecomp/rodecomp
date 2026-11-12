@@ -124,7 +124,11 @@ template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  {
+    CUIVScrollBar* bar = this->scrollBar;
+    const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
+    bar->onChange = onChange;
+  }
   this->AddChild(this->scrollBar);
 }
 
