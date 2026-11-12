@@ -71,13 +71,14 @@ bool CClimaxEffect::IsAlive() {
 // FUNCTION: fn_07052
 void CClimaxEffect::OnProcess() {
   for (int index = 0; index < 2; ++index) {
-    if (!this->particles[index]) {
+    CParticle* particle = this->particles[index];
+    if (!particle) {
       continue;
     }
 
-    this->particles[index]->position.x = this->position[0];
-    this->particles[index]->position.y = this->position[1];
-    this->particles[index]->position.z = this->position[2];
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
 
     CEZ2STRParticle* climax = static_cast<CEZ2STRParticle*>(this->particles[index]);
     if (climax) {
@@ -85,13 +86,16 @@ void CClimaxEffect::OnProcess() {
         const vector3d position = climax->position;
         const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
         const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+        const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
         const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9] + 0.0f;
         const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10] - 10.0f;
-        const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
 
-        climax->position.x = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-        climax->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
-        climax->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+        const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
+        const float worldY = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
+        const float worldZ = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+        climax->position.x = worldX;
+        climax->position.y = worldY;
+        climax->position.z = worldZ;
       }
 
       climax->Process(0.0f, 0.0f, 0.0f);
