@@ -42,7 +42,7 @@ bool CMandraAttackEffect::OnProcess() {
 // OFFSET: 0x00E50F30
 // FUNCTION: fn_24300
 void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int) {
-  if ((static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) != 14) {
+  if (message != 14 || a != 0) {
     this->CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
@@ -168,7 +168,7 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, int message, int a, int b
     this->SetAnimationSpeed(2.0f);
   }
 
-  if ((static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d)) != 0) {
+  if (d != 0 || e != 0) {
     this->startFrame = *reinterpret_cast<const float*>(d);
   }
 }

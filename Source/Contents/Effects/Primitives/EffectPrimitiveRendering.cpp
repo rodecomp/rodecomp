@@ -6948,24 +6948,24 @@ void CEffectPrim::Render2DPrimitive() {
   const float p3_x = width * sinRoll + extra * cosRoll;
   const float p3_y = width * cosRoll - extra * sinRoll;
 
-  this->state.triangles[0].vertices[0].x = (x0 - extra * sinRoll) + this->render.position.x - g_depthAverageHalf;
-  this->state.triangles[0].vertices[0].y = (y0 + extra * cosRoll) + this->render.position.y - g_depthAverageHalf;
+  this->state.triangles[0].vertices[0].x = (x0 - extra * sinRoll) + this->render.position.x - 0.5f;
+  this->state.triangles[0].vertices[0].y = (y0 + extra * cosRoll) + this->render.position.y - 0.5f;
   this->state.triangles[0].vertices[0].z = 0.000001f;
   this->state.triangles[0].vertices[0].rhw = 0.999999f;
   this->state.triangles[0].vertices[0].diffuse = this->state.argb;
   this->state.triangles[0].vertices[0].u = 0.0f;
   this->state.triangles[0].vertices[0].v = 1.0f;
 
-  this->state.triangles[0].vertices[1].x = (p1_x + this->render.position.x) - g_depthAverageHalf;
-  this->state.triangles[0].vertices[1].y = (this->render.position.y + p1_y) - g_depthAverageHalf;
+  this->state.triangles[0].vertices[1].x = (p1_x + this->render.position.x) - 0.5f;
+  this->state.triangles[0].vertices[1].y = (this->render.position.y + p1_y) - 0.5f;
   this->state.triangles[0].vertices[1].z = 0.000001f;
   this->state.triangles[0].vertices[1].rhw = 0.999999f;
   this->state.triangles[0].vertices[1].diffuse = this->state.argb;
   this->state.triangles[0].vertices[1].u = 0.0f;
   this->state.triangles[0].vertices[1].v = 0.0f;
 
-  this->state.triangles[0].vertices[2].x = (p3_y + this->render.position.x) - g_depthAverageHalf;
-  this->state.triangles[0].vertices[2].y = (this->render.position.y + p3_x) - g_depthAverageHalf;
+  this->state.triangles[0].vertices[2].x = (p3_y + this->render.position.x) - 0.5f;
+  this->state.triangles[0].vertices[2].y = (this->render.position.y + p3_x) - 0.5f;
   this->state.triangles[0].vertices[2].z = 0.000001f;
   this->state.triangles[0].vertices[2].rhw = 0.999999f;
   this->state.triangles[0].vertices[2].diffuse = this->state.argb;
@@ -6977,24 +6977,24 @@ void CEffectPrim::Render2DPrimitive() {
   const std::uint16_t flag1 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
   g_renderer->queues.SubmitTriangle(this->state.triangles[0], flag1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
 
-  this->state.triangles[1].vertices[0].x = (p3_y + this->render.position.x) - g_depthAverageHalf;
-  this->state.triangles[1].vertices[0].y = (p3_x + this->render.position.y) - g_depthAverageHalf;
+  this->state.triangles[1].vertices[0].x = (p3_y + this->render.position.x) - 0.5f;
+  this->state.triangles[1].vertices[0].y = (p3_x + this->render.position.y) - 0.5f;
   this->state.triangles[1].vertices[0].z = 0.000001f;
   this->state.triangles[1].vertices[0].rhw = 0.999999f;
   this->state.triangles[1].vertices[0].diffuse = this->state.argb;
   this->state.triangles[1].vertices[0].u = 1.0f;
   this->state.triangles[1].vertices[0].v = 1.0f;
 
-  this->state.triangles[1].vertices[1].x = (this->render.position.x + p1_x) - g_depthAverageHalf;
-  this->state.triangles[1].vertices[1].y = (this->render.position.y + p1_y) - g_depthAverageHalf;
+  this->state.triangles[1].vertices[1].x = (this->render.position.x + p1_x) - 0.5f;
+  this->state.triangles[1].vertices[1].y = (this->render.position.y + p1_y) - 0.5f;
   this->state.triangles[1].vertices[1].z = 0.000001f;
   this->state.triangles[1].vertices[1].rhw = 0.999999f;
   this->state.triangles[1].vertices[1].diffuse = this->state.argb;
   this->state.triangles[1].vertices[1].u = 0.0f;
   this->state.triangles[1].vertices[1].v = 0.0f;
 
-  this->state.triangles[1].vertices[2].x = (this->render.position.x + (width * cosRoll - negHeight * sinRoll)) - g_depthAverageHalf;
-  this->state.triangles[1].vertices[2].y = (this->render.position.y + width * sinRoll + negHeight * cosRoll) - g_depthAverageHalf;
+  this->state.triangles[1].vertices[2].x = (this->render.position.x + (width * cosRoll - negHeight * sinRoll)) - 0.5f;
+  this->state.triangles[1].vertices[2].y = (this->render.position.y + width * sinRoll + negHeight * cosRoll) - 0.5f;
   this->state.triangles[1].vertices[2].z = 0.000001f;
   this->state.triangles[1].vertices[2].rhw = 0.999999f;
   this->state.triangles[1].vertices[2].diffuse = this->state.argb;
