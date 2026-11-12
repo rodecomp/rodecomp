@@ -49,8 +49,8 @@ void CUIFrameWnd::RefreshSkinColors() {
   }
 
   if (this->m_hasSkinColors) {
-    this->m_backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), this->m_backgroundCell, this->m_resolveSkin);
-    this->m_borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->m_borderCell, this->m_resolveSkin);
+    this->m_backgroundColor = SkinPaletteColor(this->m_backgroundCell, this->m_resolveSkin);
+    this->m_borderColor = SkinPaletteColor(this->m_borderCell, this->m_resolveSkin);
   }
 
   for (UIWindow* child : this->m_children) {
@@ -81,6 +81,6 @@ void CUIFrameWnd::SetSkinColors(int backgroundColumn, int backgroundRow, int bor
   this->m_borderCell.row = borderRow;
   this->m_hasSkinColors = true;
 
-  this->m_backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), this->m_backgroundCell, this->m_resolveSkin);
-  this->m_borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->m_borderCell, this->m_resolveSkin);
+  this->m_backgroundColor = SkinPaletteColor(this->m_backgroundCell, this->m_resolveSkin);
+  this->m_borderColor = SkinPaletteColor(this->m_borderCell, this->m_resolveSkin);
 }
