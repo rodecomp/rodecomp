@@ -164,11 +164,13 @@ void CRuneSystemMgr::Destroy() {
 // OFFSET: 0x00766A30
 // FUNCTION: fn_08116
 int RuneSetData::FindLastReward(int count) const {
-  if (count <= 7) {
-    for (int step = count - 1; step > 0; --step) {
-      if (0 != this->m_reward.values[step]) {
-        return step;
-      }
+  if (count > 7) {
+    return -1;
+  }
+
+  for (int step = count - 1; step > 0; --step) {
+    if (0 != this->m_reward.values[step]) {
+      return step;
     }
   }
 
