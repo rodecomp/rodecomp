@@ -31,6 +31,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 namespace {
   __declspec(noinline) float ScreenLineSine(float angle) {
     return static_cast<float>(std::sin(static_cast<double>(angle)));
