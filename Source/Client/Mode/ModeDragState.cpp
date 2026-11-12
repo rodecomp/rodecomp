@@ -76,7 +76,7 @@ void ModeDragState::BeginSkill(
   this->source = sourceValue;
   this->id = idValue;
   this->identified = 0;
-  this->resource = SkillDragResource(resources, nameValue);
+  this->resource = SkillDragResource(nameValue);
   this->name = nameValue;
   this->skillName = nameValue;
   this->skillLevel = level;

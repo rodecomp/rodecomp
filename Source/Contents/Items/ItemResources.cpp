@@ -30,12 +30,12 @@ const char* CSession::ItemDragResource(const char* id, int identified) {
 
 // OFFSET: 0x00DDDCD0
 // FUNCTION: fn_23392
-const char* SkillDragResource(ResourceMgr& resources, const char* name) {
+const char* SkillDragResource(const char* name) {
   static std::string resource;
   resource = "아이템\\";
   resource += name;
 
-  if (!resources.Exists((resource + ".act").c_str())) {
+  if (!ResourceMgr::Instance().Exists((resource + ".act").c_str())) {
     resource = "아이템\\am_berserkpitcher";
   }
 
