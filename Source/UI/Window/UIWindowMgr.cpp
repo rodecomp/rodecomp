@@ -255,6 +255,8 @@ using BrowserTree = std::_Tree<std::_Tmap_traits<HWND, CWebBrowser*, std::less<H
 template std::_Tree_find_result<std::_Tree_node<std::pair<HWND const, CWebBrowser*>, void*>*>
 BrowserTree::_Find_lower_bound<HWND>(HWND const&) const;
 template std::pair<std::map<HWND, CWebBrowser*>::iterator, bool> std::map<HWND, CWebBrowser*>::insert<std::pair<HWND, CWebBrowser*>>(std::pair<HWND, CWebBrowser*>&&);
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Nodeptr>
+std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
 namespace {
 #pragma pack(push, 1)
@@ -1256,7 +1258,7 @@ void UIWindowMgr::RefreshFrameSkins() {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
     auto& entries = CUIRegisterMgr::s_instance->entries;
-    if (entries.find(window->geometry.id) != entries.end()) {
+    if (entries.end() != entries.find(static_cast<int>(window->geometry.id))) {
       static_cast<CUIFrameWnd*>(window)->RefreshSkinColors();
     }
   }
