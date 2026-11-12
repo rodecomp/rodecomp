@@ -19,7 +19,7 @@ CSoulCollectEffect::CSoulCollectEffect() : CEffect(-1) {
 
 // OFFSET: 0x0072A2A0
 // FUNCTION: fn_07456
-CSoulCollectEffect::~CSoulCollectEffect() {
+__declspec(noinline) CSoulCollectEffect::~CSoulCollectEffect() {
 }
 
 // OFFSET: 0x0072A580

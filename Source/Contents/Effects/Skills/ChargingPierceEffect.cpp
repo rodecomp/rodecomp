@@ -38,7 +38,7 @@ CChargingPierceNewEffect::CChargingPierceNewEffect() : CEffect(-1) {
 
 // OFFSET: 0x007032D0
 // FUNCTION: fn_07019
-CChargingPierceNewEffect::~CChargingPierceNewEffect() {
+__declspec(noinline) CChargingPierceNewEffect::~CChargingPierceNewEffect() {
 }
 
 // OFFSET: 0x00703490

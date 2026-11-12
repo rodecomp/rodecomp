@@ -21,7 +21,7 @@ __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
 
 // OFFSET: 0x00B45200
 // FUNCTION: fn_18896
-CHealSp::~CHealSp() {
+__declspec(noinline) CHealSp::~CHealSp() {
 }
 
 // OFFSET: 0x00B45370

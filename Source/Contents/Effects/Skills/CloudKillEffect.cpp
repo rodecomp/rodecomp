@@ -36,7 +36,7 @@ CCloudKillEffect::CCloudKillEffect() : CEffect(1080) {
 
 // OFFSET: 0x006FC600
 // FUNCTION: fn_06924
-CCloudKillEffect::~CCloudKillEffect() {
+__declspec(noinline) CCloudKillEffect::~CCloudKillEffect() {
 }
 
 // OFFSET: 0x006FC8F0

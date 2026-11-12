@@ -1366,7 +1366,7 @@ CMeteorEffect::~CMeteorEffect() {
 
 // OFFSET: 0x00B1D6E0
 // FUNCTION: fn_18558
-CShadowExceedNew::~CShadowExceedNew() {
+__declspec(noinline) CShadowExceedNew::~CShadowExceedNew() {
 }
 
 CSprArrowEffect::~CSprArrowEffect() {

@@ -30,7 +30,7 @@ CPlayerNameDictionary::CPlayerNameDictionary() {
 
 // OFFSET: 0x0060A9D0
 // FUNCTION: fn_04256
-CPlayerNameDictionary::~CPlayerNameDictionary() {
+__declspec(noinline) CPlayerNameDictionary::~CPlayerNameDictionary() {
 }
 
 // OFFSET: 0x0060B010

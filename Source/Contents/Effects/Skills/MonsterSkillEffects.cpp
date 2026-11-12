@@ -1727,7 +1727,7 @@ CHawkVumerangEffect::CHawkVumerangEffect()
 
 // OFFSET: 0x00718620
 // FUNCTION: fn_07295
-CHawkVumerangEffect::~CHawkVumerangEffect() {
+__declspec(noinline) CHawkVumerangEffect::~CHawkVumerangEffect() {
 }
 
 // OFFSET: 0x007187F0
@@ -2915,7 +2915,7 @@ CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
 
 // OFFSET: 0x00722830
 // FUNCTION: fn_07391
-CServantWeaponNewEffect::~CServantWeaponNewEffect() {
+__declspec(noinline) CServantWeaponNewEffect::~CServantWeaponNewEffect() {
 }
 
 // OFFSET: 0x00722A70
@@ -3241,7 +3241,7 @@ CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
 
 // OFFSET: 0x007251C0
 // FUNCTION: fn_07411
-CSevereRainStorm::~CSevereRainStorm() {
+__declspec(noinline) CSevereRainStorm::~CSevereRainStorm() {
 }
 
 // OFFSET: 0x0071D650
