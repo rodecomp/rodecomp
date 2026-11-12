@@ -75,7 +75,7 @@ void UIClanInfoManageWnd::Paint() {
   {
     std::string map = g_clanInfo->m_mapName;
     if (map.size() > 4) {
-      map.replace(map.find(".gat"), 4, std::string(".rsw"));
+      map.replace(map.find(".gat"), std::string(".rsw").size(), ".rsw");
     }
     map = g_session.GetMapDisplayName(map.c_str());
     std::sprintf(text, "%s : %s", LookupMessage(MSI_TWWEB_URL), map.c_str());
