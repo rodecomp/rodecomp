@@ -383,7 +383,7 @@ void CUIVScrollBar::SetTotal(int value) {
 // OFFSET: 0x009D3120
 // FUNCTION: fn_14028
 void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
-  AssignHandler(this->onChange, handler);
+  this->onChange = handler;
 }
 
 // OFFSET: 0x009F2E80
@@ -1353,8 +1353,9 @@ void CUITitleBar::SetSecondButton(CUIButton* button) {
 
   const char* behavior = nullptr;
   if (g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", this->parent->geometry.id, &behavior) && behavior) {
+    CUIButton* second = static_cast<CUIButton*>(this->secondButton);
     const std::string text = behavior;
-    static_cast<CUIButton*>(this->secondButton)->tooltip = text;
+    second->tooltip = text;
   }
 }
 
