@@ -295,18 +295,18 @@ void CSkillAction_KR_EARTH_DRILL::OnSkillHit(int level, CGameActor* source, CGam
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 12> effectSourceArray = CRYPT_NAME("earth_drill", 0xC52FB5FBB94FF917ULL);
-    const std::uint8_t (&effectSource)[12] = effectSourceArray._Elems;
-    thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
-    return effectName.Text();
+    constexpr auto bytesText = CRYPT_NAME("earth_drill", 0xC52FB5FBB94FF917ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0xC52FB5FBB94FF917ULL> name(bytes);
+    return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 19> bottomSourceArray = CRYPT_NAME("earth_drill_bottom", 0x93E7A3A1F587CDC5ULL);
-    const std::uint8_t (&bottomSource)[19] = bottomSourceArray._Elems;
-    thread_local EncryptedName<sizeof(bottomSource), 0x93E7A3A1F587CDC5ULL> bottomName(bottomSource);
-    return bottomName.Text();
+    constexpr auto bytesText = CRYPT_NAME("earth_drill_bottom", 0x93E7A3A1F587CDC5ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
+    return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
