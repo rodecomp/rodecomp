@@ -44,7 +44,7 @@ void CStormKickEffect::CreateStorms(int layer) {
     *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
     particle->scale = 2.0f;
     particle->animationParameter = 50.0f;
-    float* motion = reinterpret_cast<float*>(particle->animationParameters);
+    float* motion = particle->animationParameters;
     motion[0] = 5.0f;
     motion[1] = static_cast<float>(layer);
 
@@ -135,7 +135,7 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
     return;
   }
 
-  const float* motion = reinterpret_cast<const float*>(particle->animationParameters);
+  const float* motion = particle->animationParameters;
   const float depth = -particle->animationParameter;
   const int segment = particle->columnIndex;
   float radius = particle->speedParameter;
@@ -404,7 +404,7 @@ void CStormKickEffect::Render() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
     const int alpha = particle->alpha;
-    const float* motion = reinterpret_cast<const float*>(particle->animationParameters);
+    const float* motion = particle->animationParameters;
 
     switch (this->id) {
     case EF_STORMKICK1:

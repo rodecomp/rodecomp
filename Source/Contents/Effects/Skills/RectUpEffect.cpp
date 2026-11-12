@@ -119,7 +119,7 @@ void CRectUpEffect::Render() {
 void CRectUpEffect::ProcessParticle(CParticle* particle) {
   if (particle && this->id == 1088) {
     particle->phaseParameter += particle->phaseParameter + 1 < 360 ? 1 : -359;
-    const int base = *reinterpret_cast<int*>(particle->effectParameters);
+    const int base = particle->effectParameter;
     particle->SetColor(255, 255, static_cast<short>(g_sinTable[particle->phaseParameter] * 100.0f + static_cast<float>(base)));
   }
 }
@@ -173,7 +173,7 @@ void CRectUpEffect::Open() {
           particle->alpha = 120;
           particle->scale = 3.5f;
           const int shade = ClampedRandom(50) + 100;
-          std::memcpy(particle->effectParameters, &shade, sizeof(shade));
+          particle->effectParameter = shade;
           particle->phaseParameter = 0;
         }
         this->InitParticle(particle);

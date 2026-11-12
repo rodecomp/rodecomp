@@ -74,11 +74,11 @@ public:
   /* 0040 */ short blue;
   /* 0042 */ unsigned char padding_0042[2];
   /* 0044 */ int alpha;
-  /* 0048 */ unsigned char effectParameters[4];
+  /* 0048 */ int effectParameter;
   /* 004C */ int phaseParameter;
   /* 0050 */ int angleParameter;
   /* 0054 */ float animationParameter;
-  /* 0058 */ unsigned char animationParameters[0x50];
+  /* 0058 */ float animationParameters[20];
   /* 00A8 */ unsigned char animationState;
   /* 00A9 */ unsigned char frameParameters[0x17];
   /* 00C0 */ float speedParameter;

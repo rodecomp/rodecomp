@@ -79,7 +79,7 @@ void CFlowerCastingEffect::AddRing(int kind) {
 
       particle->SetColor(100, 100, 255);
       particle->animationParameter = 0.0f;
-      *reinterpret_cast<float*>(particle->animationParameters) = particle->speedParameter;
+      particle->animationParameters[0] = particle->speedParameter;
       particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
@@ -128,7 +128,7 @@ void CFlowerCastingEffect::OnProcess() {
     if (particle && particle->elapsedFrames > 0) {
       int phase = particle->elapsedFrames;
       phase %= 90;
-      float radius = g_sinTable[phase * 4] * 2.5f + *reinterpret_cast<const float*>(particle->animationParameters);
+      float radius = g_sinTable[phase * 4] * 2.5f + particle->animationParameters[0];
       particle->speedParameter = radius;
 
       const int age = particle->elapsedFrames;

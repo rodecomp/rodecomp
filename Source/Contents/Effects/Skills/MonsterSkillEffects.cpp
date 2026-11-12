@@ -351,7 +351,7 @@ void CSpriteMableEffect::Open() {
     particle->scale = 0.3f;
     particle->alpha = 200;
     particle->animationParameter = static_cast<float>(i) * 2.0943947f;
-    reinterpret_cast<float&>(particle->animationParameters) = 0.0f;
+    particle->animationParameters[0] = 0.0f;
     particle->loopMode = 3;
     switch (i) {
     case 0:
@@ -2215,7 +2215,7 @@ void CNewCloudKillEffect::OnProcess() {
       continue;
     }
 
-    const int maximum = *reinterpret_cast<int*>(particle->effectParameters);
+    const int maximum = particle->effectParameter;
     if (particle->animationState == 0) {
       int alpha = std::min(particle->alpha + 2, maximum);
       particle->alpha = alpha;
@@ -2299,7 +2299,7 @@ void CNewCloudKillEffect::OnProcess() {
       continue;
     }
 
-    const int maximum = *reinterpret_cast<int*>(particle->effectParameters);
+    const int maximum = particle->effectParameter;
     if (particle->animationState == 0) {
       int alpha = std::min(particle->alpha + 5, maximum);
       particle->alpha = alpha;
@@ -2812,7 +2812,7 @@ void CRichsCoinEffect::Open() {
     if (particle) {
       particle->SetTexture("effect\\rl_richs_coin_b\\rcoin1.bmp");
       particle->animationParameter = static_cast<float>(360 / count * i) / 180.0f * 3.141592f - 10.0f;
-      reinterpret_cast<float&>(particle->animationParameters) = 0.0f;
+      particle->animationParameters[0] = 0.0f;
       particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
@@ -2825,7 +2825,7 @@ void CRichsCoinEffect::Open() {
       if (particle) {
         particle->SetTexture("effect\\rl_richs_coin_b\\light.bmp");
         particle->animationParameter = static_cast<float>(i * 72) / 180.0f * 3.141592f - 10.0f;
-        reinterpret_cast<float&>(particle->animationParameters) = 0.0f;
+        particle->animationParameters[0] = 0.0f;
         particle->scale = 1.5f;
         matrix scale;
         std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
@@ -3248,7 +3248,7 @@ CSevereRainStorm::~CSevereRainStorm() {
 // FUNCTION: fn_07334
 void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
   particle->alpha = 0;
-  *reinterpret_cast<int*>(particle->effectParameters) = ClampedRandom(50) + 150;
+  particle->effectParameter = ClampedRandom(50) + 150;
   particle->animationState = 0;
   particle->elapsedFrames = 0;
   particle->InitParticleQuad(particle->vertices);
@@ -3395,7 +3395,7 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
 
   particle->frameParameters[0] = ClampedRandom(4);
-  *reinterpret_cast<int*>(particle->effectParameters) = ClampedRandom(151) + 50;
+  particle->effectParameter = ClampedRandom(151) + 50;
   particle->speedParameter = static_cast<float>(ClampedRandom(10)) * 0.01f + 0.05f;
 }
 
@@ -4615,7 +4615,7 @@ void CSpriteMableEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CSpriteParticle* particle = *it;
     const float yaw = particle->animationParameter += 0.02f;
-    const float bob = reinterpret_cast<float&>(particle->animationParameters) += 0.05f;
+    const float bob = particle->animationParameters[0] += 0.05f;
 
     const float offsetX = ClientSin(yaw) * 6.0f;
     const float offsetY = ClientSin(bob) * 3.0f - 6.0f;

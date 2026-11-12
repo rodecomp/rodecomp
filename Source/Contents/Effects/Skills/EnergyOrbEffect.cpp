@@ -57,8 +57,8 @@ void CEnergyOrbEffect::Open() {
       particle->speedParameter = 0.15f;
       particle->animationParameter = 8.0f;
       particle->phaseParameter = angle;
-      *reinterpret_cast<float*>(&particle->animationParameters[0]) = static_cast<float>(phase);
-      *reinterpret_cast<float*>(&particle->animationParameters[4]) = -12.0f;
+      particle->animationParameters[0] = static_cast<float>(phase);
+      particle->animationParameters[1] = -12.0f;
       if (j == 0) {
         particle->destinationBlend = 6;
       }
@@ -88,8 +88,8 @@ void CEnergyOrbEffect::Open() {
         particle->scale = 6.0f;
         particle->speedParameter = 0.05f;
         particle->animationParameter = 4.0f;
-        *reinterpret_cast<float*>(&particle->animationParameters[0]) = 0.0f;
-        *reinterpret_cast<float*>(&particle->animationParameters[4]) = -8.0f;
+        particle->animationParameters[0] = 0.0f;
+        particle->animationParameters[1] = -8.0f;
         particle->destinationBlend = 6;
         break;
       }
@@ -132,7 +132,7 @@ void CEnergyOrbEffect::OnProcess() {
         rotation.AppendXRotation(3.141592f);
 
         const float scale = particle->scale;
-        particle->phaseParameter = static_cast<int>(static_cast<float>(particle->phaseParameter) + *reinterpret_cast<float*>(&particle->animationParameters[0])) % 360;
+        particle->phaseParameter = static_cast<int>(static_cast<float>(particle->phaseParameter) + particle->animationParameters[0]) % 360;
         float pulse = scale * 0.1f * g_sinTable[particle->phaseParameter];
         if (this->mode > 1 && particle->columnIndex == 0) {
           pulse = static_cast<float>(scale * 0.1 + pulse);
@@ -147,7 +147,7 @@ void CEnergyOrbEffect::OnProcess() {
         const float radius = wave + particle->animationParameter;
         matrix translation;
         std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-        translation.MakeTranslate(radius * g_cosTable[index], wave * *reinterpret_cast<float*>(&particle->animationParameters[0]) + *reinterpret_cast<float*>(&particle->animationParameters[4]), radius * g_sinTable[index]);
+        translation.MakeTranslate(radius * g_cosTable[index], wave * particle->animationParameters[0] + particle->animationParameters[1], radius * g_sinTable[index]);
 
         matrix scaled;
         scaled.Compose(scaling, rotation);

@@ -202,7 +202,7 @@ void CHealSp::Render() {
     CParticle* particle = *it;
     const int segment = particle->columnIndex;
     const float height = particle->scale;
-    const float outer = *reinterpret_cast<const float*>(particle->animationParameters);
+    const float outer = particle->animationParameters[0];
     const float inner = particle->animationParameter;
     const float startCos = g_cosTable[segment * 36];
     const float startSin = g_sinTable[segment * 36];

@@ -53,7 +53,7 @@ void CSphereWind2Effect::Open() {
         particle->alpha = 0;
         particle->angleParameter = step;
         particle->animationParameter = -10.0f;
-        *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(speed);
+        particle->animationParameters[0] = static_cast<float>(speed);
         particle->SetTexture("effect\\fire_ivy.bmp");
         particle->SetColor(255, 89, 182);
         particle->InitParticleQuad(particle->vertices);
@@ -104,7 +104,7 @@ void CSphereWind2Effect::OnProcess() {
 
         const int texPart = particle->columnIndex;
         float& spin = *reinterpret_cast<float*>(&particle->angleBits);
-        float rotation = *reinterpret_cast<float*>(particle->animationParameters) + spin;
+        float rotation = particle->animationParameters[0] + spin;
         if (rotation >= 360.0f) {
           rotation -= 360.0f;
         }

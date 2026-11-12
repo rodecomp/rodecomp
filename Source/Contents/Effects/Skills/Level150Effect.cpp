@@ -149,10 +149,10 @@ void CLevel150Effect::AddShock(int kind) {
 
       if (kind == 3) {
         particle->SetTexture("effect\\cir0002.tga");
-        *reinterpret_cast<float*>(particle->animationParameters) = 18.0f;
+        particle->animationParameters[0] = 18.0f;
       } else {
         particle->SetTexture("effect\\emp shock.tga");
-        *reinterpret_cast<float*>(particle->animationParameters) = 11.0f;
+        particle->animationParameters[0] = 11.0f;
       }
 
       this->shocks.push_back(particle);
@@ -270,7 +270,7 @@ void CLevel150Effect::OnProcess() {
       }
       particle->phaseParameter = tilt;
 
-      const float size = *reinterpret_cast<const float*>(particle->animationParameters);
+      const float size = particle->animationParameters[0];
       const float scale = size * 0.1f * g_sinTable[tilt] + 1.0f + size * 0.8f;
       const int segment = particle->columnIndex;
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -354,7 +354,7 @@ void CLevel150SubEffect::Init() {
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(rand() % 360, 0));
       particle->alpha = 200;
       particle->animationParameter = 10.0f;
-      *reinterpret_cast<float*>(particle->animationParameters) = 10.0f;
+      particle->animationParameters[0] = 10.0f;
       particle->effectId = this->id;
       particle->columnIndex = index;
       particle->rowIndex = ring;
@@ -423,7 +423,7 @@ void CLevel150SubEffect::OnProcess() {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
       const float scale = particle->animationParameter;
-      const float height = *reinterpret_cast<const float*>(particle->animationParameters);
+      const float height = particle->animationParameters[0];
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));

@@ -330,8 +330,8 @@ void CThrowItemEffect::OnProcess() {
       if (progress > 1.05f) {
         target->alpha = std::ranges::max(target->alpha - 20, 0);
       } else {
-        const int index = *reinterpret_cast<const int*>(&target->effectParameters[4]);
-        const float radius = angle / *reinterpret_cast<const float*>(&target->effectParameters[0xC]);
+        const int index = target->phaseParameter;
+        const float radius = angle / target->animationParameter;
         offsetX = angle * g_cosTable[index] + offsetX;
         offsetY = radius * this->heightDelta + offsetY;
         offsetZ = angle * g_sinTable[index] + offsetZ;

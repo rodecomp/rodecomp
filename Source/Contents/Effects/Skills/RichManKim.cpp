@@ -34,7 +34,7 @@ void CRichManKim::Open() {
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
   particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
-  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
+  particle->animationParameters[0] = 0.0f;
   particle->SetColor(200, 200, 200);
   particle->InitParticleQuad(particle->vertices);
   this->angleIndex = rand() % 359;
@@ -64,7 +64,7 @@ void CRichManKim::OnProcess() {
         index = 0;
       }
 
-      float& width = *reinterpret_cast<float*>(particle->animationParameters);
+      float& width = particle->animationParameters[0];
       const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
       const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
       particle->animationParameter = height;

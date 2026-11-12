@@ -64,7 +64,7 @@ void CCloudKillEffect::AddSprites() {
       reinterpret_cast<float&>(particle->spinBits) = 3.0f;
       particle->alpha = 0;
       particle->animationParameter = 25.4f;
-      reinterpret_cast<float&>(particle->animationParameters) = 32.0f;
+      particle->animationParameters[0] = 32.0f;
       particle->SetSprite("이팩트\\particle3.spr");
       particle->SetAction("이팩트\\particle3.act");
       particle->life = static_cast<float>(this->spriteLifetimeFrames) / 60.0f;
@@ -115,7 +115,7 @@ void CCloudKillEffect::OnProcess() {
     reinterpret_cast<float&>(particle->spinBits) = 3.0f;
     particle->alpha = 70;
     particle->animationParameter = 25.4f;
-    reinterpret_cast<float&>(particle->animationParameters) = 8.0f;
+    particle->animationParameters[0] = 8.0f;
     particle->SetSprite("이팩트\\particle3.spr");
     particle->SetAction("이팩트\\particle3.act");
     particle->life = static_cast<float>(this->particleLifetimeFrames) / 60.0f;
@@ -144,7 +144,7 @@ void CCloudKillEffect::OnProcess() {
       particle->position.y = particle->velocity.y + this->position[1];
       const int age = particle->elapsedFrames;
       float fade = particle->animationParameter;
-      if (age == static_cast<int>(reinterpret_cast<float&>(particle->animationParameters))) {
+      if (age == static_cast<int>(particle->animationParameters[0])) {
         fade = -(static_cast<float>(particle->alpha) / static_cast<float>(this->particleLifetimeFrames - age));
       }
       particle->animationParameter = fade;
@@ -182,7 +182,7 @@ void CCloudKillEffect::OnProcess() {
       angle = reinterpret_cast<float&>(particle->spinBits) + angle;
       const int age = particle->elapsedFrames;
       float fade = particle->animationParameter;
-      if (age == static_cast<int>(reinterpret_cast<float&>(particle->animationParameters))) {
+      if (age == static_cast<int>(particle->animationParameters[0])) {
         fade = -(static_cast<float>(particle->alpha) / static_cast<float>(this->spriteLifetimeFrames - age));
       }
       particle->animationParameter = fade;

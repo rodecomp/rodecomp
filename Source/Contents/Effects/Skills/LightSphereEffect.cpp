@@ -47,7 +47,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
         particle->angleParameter = r3 < 0 ? 0 : r3;
 
         particle->animationParameter = 10.0f;
-        *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(param);
+        particle->animationParameters[0] = static_cast<float>(param);
 
         switch (this->id) {
         case EF_LIGHTSPHERE_SUN: {
@@ -135,7 +135,7 @@ void CLightSphereEffect::Open() {
       particle->scale = 3.5f;
       particle->alpha = 1;
       particle->animationParameter = -10.0f;
-      *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
+      particle->animationParameters[0] = 0.0f;
 
       switch (this->id) {
       case EF_LIGHTSPHERE_SUN:
@@ -198,7 +198,7 @@ void CLightSphereEffect::OnProcess() {
         particle->alpha = alpha < 0 ? 0 : alpha;
       }
 
-      float& phase = *reinterpret_cast<float*>(particle->animationParameters);
+      float& phase = particle->animationParameters[0];
       const int spin = (static_cast<int>(phase) + 2) % 360;
       phase = static_cast<float>(spin);
       const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
@@ -267,7 +267,7 @@ void CLightSphereEffect::OnProcess() {
       float corner2X;
       float corner2Y;
       float corner2Z;
-      if (0.0f == *reinterpret_cast<float*>(particle->animationParameters)) {
+      if (0.0f == particle->animationParameters[0]) {
         corner1X = -0.5f;
         corner1Y = -particle->animationParameter;
         corner1Z = 0.0f;

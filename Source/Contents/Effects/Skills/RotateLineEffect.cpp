@@ -47,7 +47,7 @@ void CRotateLineEffect::Open() {
       particle->phaseParameter = tilt;
       particle->scale = 7.0f - static_cast<float>(ring);
       particle->animationParameter = 28.0f - static_cast<float>(ring) * 5.0f;
-      *reinterpret_cast<float*>(particle->animationParameters) = 3.0f;
+      particle->animationParameters[0] = 3.0f;
       switch (this->id) {
       case EF_ROTATE_LINE_GRAY:
         particle->SetColor(50, 50, 50);
@@ -126,7 +126,7 @@ void CRotateLineEffect::OnProcess() {
       const int tilt = particle->phaseParameter;
       const float tiltCosine = g_cosTable[tilt];
       EffectPoint points[2];
-      const float height = *reinterpret_cast<float*>(particle->animationParameters);
+      const float height = particle->animationParameters[0];
       points[0].x = cosine * particle->scale;
       points[0].y = -particle->animationParameter;
       points[0].z = sine * particle->scale;

@@ -34,7 +34,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         particle->alpha = 255;
         particle->angleParameter = 60;
         particle->animationParameter = -14.0f;
-        *reinterpret_cast<float*>(particle->animationParameters) = 1.0f;
+        particle->animationParameters[0] = 1.0f;
         particle->destinationBlend = 6;
         particle->InitParticleQuad(particle->vertices);
         particle->SetTexture("effect\\hero_005.tga");
@@ -59,7 +59,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         particle->alpha = 255;
         particle->angleParameter = 60;
         particle->animationParameter = -14.0f;
-        *reinterpret_cast<float*>(particle->animationParameters) = 1.0f;
+        particle->animationParameters[0] = 1.0f;
         particle->sourceBlend = 5;
         particle->destinationBlend = 7;
         particle->InitParticleQuad(particle->vertices);
@@ -104,7 +104,7 @@ void CMapChainEffect::ResetParticles() {
     particle->scale = *reinterpret_cast<const float*>(base + 0x48);
     particle->alpha = *reinterpret_cast<const int*>(base + 0x54);
     particle->animationParameter = *reinterpret_cast<const float*>(base + 0x5C);
-    *reinterpret_cast<float*>(particle->animationParameters) = *reinterpret_cast<const float*>(base + 0x60);
+    particle->animationParameters[0] = *reinterpret_cast<const float*>(base + 0x60);
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
     particle->InitParticleQuad(particle->vertices);
@@ -128,7 +128,7 @@ void CMapChainEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
     if (particle) {
-      float angle = *reinterpret_cast<const float*>(particle->animationParameters) + *reinterpret_cast<float*>(&particle->angleBits);
+      float angle = *static_cast<const float*>(particle->animationParameters) + *reinterpret_cast<float*>(&particle->angleBits);
       if (angle >= 360.0f) {
         angle -= 360.0f;
       }

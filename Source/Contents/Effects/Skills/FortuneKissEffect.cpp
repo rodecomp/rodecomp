@@ -35,7 +35,7 @@ void CFortuneKiss::Open() {
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
   const int drift = rand() % 5;
-  *reinterpret_cast<float*>(particle->animationParameters) = 0.0f;
+  particle->animationParameters[0] = 0.0f;
   particle->animationParameter = -5.0f - static_cast<float>(drift);
   particle->InitParticleQuad(particle->vertices);
   this->angle = rand() % 359;
@@ -63,8 +63,8 @@ void CFortuneKiss::OnProcess() {
         this->angle = 0;
       }
 
-      float& offset = *reinterpret_cast<float*>(&particle->effectParameters[0xC]);
-      float& width = *reinterpret_cast<float*>(&particle->effectParameters[0x10]);
+      float& offset = particle->animationParameter;
+      float& width = particle->animationParameters[0];
       const float cosine = g_cosTable[this->angle];
       const float newOffset = offset - cosine * 0.05;
       const float newWidth = cosine * 0.02 + width;

@@ -147,8 +147,8 @@ void CPowderingEffect::InitSmokeParticle(CParticle* particle) {
 
   const int r3 = RandomSpan(100);
   const int targetAlpha = r3 + 50;
-  *reinterpret_cast<int*>(particle->effectParameters) = targetAlpha;
-  *reinterpret_cast<float*>(particle->animationParameters) = static_cast<float>(targetAlpha / particle->angleParameter);
+  particle->effectParameter = targetAlpha;
+  particle->animationParameters[0] = static_cast<float>(targetAlpha / particle->angleParameter);
 
   const int r4 = rand() % 100;
   const int r5 = rand() % 50;
@@ -185,7 +185,7 @@ void CPowderingEffect::OnProcess() {
       continue;
     }
 
-    const int targetAlpha = *reinterpret_cast<int*>(particle->effectParameters);
+    const int targetAlpha = particle->effectParameter;
     const float scale = particle->speedParameter + particle->scale;
     int alpha = particle->alpha;
     const int step = targetAlpha / particle->angleParameter;

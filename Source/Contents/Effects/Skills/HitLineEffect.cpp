@@ -48,7 +48,7 @@ void CHitLineEffect::Open() {
           particle->groupIndex = 4;
           particle->elapsedFrames = delay;
           particle->scale = 0.1f;
-          *reinterpret_cast<int*>(particle->effectParameters) = brightness;
+          particle->effectParameter = brightness;
           particle->phaseParameter = angle;
           particle->speedParameter = 14.0f;
           for (int index = 0; index < 21; ++index) {
@@ -79,7 +79,7 @@ void CHitLineEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
     if (particle && particle->elapsedFrames > 0) {
-      int& brightness = *reinterpret_cast<int*>(particle->effectParameters);
+      int& brightness = particle->effectParameter;
       short level = static_cast<short>(brightness);
       if (particle->elapsedFrames > 35) {
         level -= 5;
@@ -110,7 +110,7 @@ void CHitLineEffect::OnProcess() {
 void CHitLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle || *reinterpret_cast<int*>(particle->effectParameters) <= 0 || particle->elapsedFrames <= 0) {
+    if (!particle || particle->effectParameter <= 0 || particle->elapsedFrames <= 0) {
       continue;
     }
 
@@ -193,7 +193,7 @@ void CHitLineEffect::Render() {
         particle->vertices[2].x = this->previous[0].x;
         particle->vertices[2].y = this->previous[0].y;
         particle->vertices[2].z = this->previous[0].z;
-        const int alpha = *reinterpret_cast<int*>(particle->effectParameters) - segment * 5;
+        const int alpha = particle->effectParameter - segment * 5;
         if (alpha > 0) {
           particle->alpha = alpha;
           particle->SetColor(255, 200, static_cast<short>(segment * 7 + 10));

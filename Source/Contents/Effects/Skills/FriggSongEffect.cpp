@@ -120,7 +120,7 @@ void CFriggSongEffect::OnProcess() {
       const int age = particle->elapsedFrames;
       const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
       const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
-      float& height = *reinterpret_cast<float*>(&particle->effectParameters[0xC]);
+      float& height = particle->animationParameter;
       if (age < 20) {
         height = 1.0f;
       } else if (age <= 140) {
