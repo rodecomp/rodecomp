@@ -9,6 +9,7 @@
 #include "Render/DX9/TextureDX9.h"
 
 #include <algorithm>
+#include <atlbase.h>
 #include <cstring>
 #include <memory>
 #include <wrl/client.h>
@@ -140,7 +141,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
   }
 
   IDirect3DDevice9Ex* device = this->m_owner->device;
-  D3DFORMAT nativeFormat = D3DFMT_UNKNOWN;
+  D3DFORMAT nativeFormat;
 
   switch (format) {
   case TextureFormat::A1R5G5B5:
@@ -158,6 +159,9 @@ bool CTextureDX9::Create(int width, int height, int format) {
   case TextureFormat::A8R8G8B8:
     nativeFormat = D3DFMT_A8R8G8B8;
     break;
+  default:
+    nativeFormat = D3DFMT_UNKNOWN;
+    break;
   }
 
   const bool renderTarget = this->m_renderTarget;
@@ -167,16 +171,17 @@ bool CTextureDX9::Create(int width, int height, int format) {
   this->m_textureWidth = adjusted[0];
   this->m_textureHeight = adjusted[1];
   this->m_format = format;
-  UINT levels = 1;
+  UINT levels;
 
   if (this->m_allowDynamic && this->m_owner->dynamicTextures) {
     this->m_dynamic = this->m_owner->CanAutoGenerateMipmaps(nativeFormat);
-    levels = 0;
     if (this->m_dynamic) {
       usage = renderTarget ? D3DUSAGE_AUTOGENMIPMAP : D3DUSAGE_DYNAMIC | D3DUSAGE_AUTOGENMIPMAP;
     }
+    levels = 0;
   } else {
     this->m_dynamic = false;
+    levels = 1;
   }
 
   if (FAILED(device->CreateTexture(this->m_textureWidth, this->m_textureHeight, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
@@ -186,12 +191,12 @@ bool CTextureDX9::Create(int width, int height, int format) {
 
   if (!this->m_renderTarget) {
     for (UINT level = 0; level < this->m_texture->GetLevelCount(); ++level) {
-      Microsoft::WRL::ComPtr<IDirect3DSurface9> surface;
-      if (FAILED(this->m_texture->GetSurfaceLevel(level, surface.GetAddressOf()))) {
+      CComPtr<IDirect3DSurface9> surface;
+      if (FAILED(this->m_texture->GetSurfaceLevel(level, &surface))) {
         break;
       }
 
-      this->ClearSurface(surface.Get(), 0);
+      this->ClearSurface(surface, 0);
     }
   }
 
