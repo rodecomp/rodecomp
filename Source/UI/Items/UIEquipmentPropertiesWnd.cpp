@@ -359,8 +359,11 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->list->SetOnSelect([this](EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text) { this->OnSelectLine(line, text); });
   this->list->SetBinder([this](EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text) { this->BindLine(line, text); });
   this->list->SetImages("", "", "", "");
-  this->list->itemX = 0;
-  this->list->itemY = 0;
+  {
+    auto* list = this->list;
+    list->itemX = 0;
+    list->itemY = 0;
+  }
   this->list->scrollBar->SetSize(13, 270);
   this->list->scrollBar->Move(265, 0);
   this->list->scrollBar->step = 18;
