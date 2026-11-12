@@ -888,31 +888,34 @@ int InitApp(HINSTANCE instance, int showCommand) {
   int y = 0;
   if (!g_configuredFullscreen) {
     GetSystemMetrics(SM_CXSCREEN);
+    int posX;
+    int posY;
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
       constexpr std::array<std::uint8_t, 12> xSource = CRYPT_NAME("Window_XPos", 0x9B17C9EFDBB39F2FULL);
       EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL>& xName = ThreadLocalName<0x9B17C9EFDBB39F2FULL>(xSource);
-      x = g_session.GetOptionInteger(xName.Text(), defaultX);
+      posX = g_session.GetOptionInteger(xName.Text(), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
       constexpr std::array<std::uint8_t, 12> ySource = CRYPT_NAME("Window_YPos", 0x69D345DB950F336DULL);
       EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL>& yName = ThreadLocalName<0x69D345DB950F336DULL>(ySource);
-      y = g_session.GetOptionInteger(yName.Text(), defaultY);
+      posY = g_session.GetOptionInteger(yName.Text(), defaultY);
     } else {
-      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
 
-    if (x > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
-      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+    if (posX > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
+      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
     }
-    x = x < 0 ? 0 : x;
-    if (y > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
-      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+    x = posX < 0 ? 0 : posX;
+    if (posY > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
+      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
-    if (y < 0) {
-      y = 0;
+    if (posY < 0) {
+      posY = 0;
     }
+    y = posY;
   }
 
   const __int64 width = rect.right - rect.left;
