@@ -406,6 +406,9 @@ void UIRoulletteWnd::UpdateButtons() {
       this->m_prizeButton->Move(-100, -100);
       return;
     }
+    if (g_rouletteMgr->m_stage != 6) {
+      this->m_startButton->Move(339, 398);
+    }
   } else {
     if (g_rouletteMgr->m_stage != 6 &&
         (g_rouletteMgr->m_bronzePoint > 0 || g_rouletteMgr->m_silverPoint >= 10 || g_rouletteMgr->m_goldPoint >= 10)) {
@@ -422,10 +425,9 @@ void UIRoulletteWnd::UpdateButtons() {
       this->m_prizeButton->Move(-100, -100);
       return;
     }
-  }
-
-  if (g_rouletteMgr->m_stage != 6) {
-    this->m_startButton->Move(339, 398);
+    if (g_rouletteMgr->m_stage != 6) {
+      this->m_startButton->Move(339, 398);
+    }
   }
 }
 
