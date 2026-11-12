@@ -14684,7 +14684,7 @@ void CRagEffect::CHIMTO(char flag) {
 // OFFSET: 0x00C66F60
 // FUNCTION: fn_20277
 void CRagEffect::TANJI() {
-  this->render.position = this->state.parent->render.position;
+  CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
     return;
