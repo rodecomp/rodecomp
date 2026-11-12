@@ -71,7 +71,8 @@ namespace {
       return;
     }
 
-    for (auto& vertex : vertices) {
+    for (int index = 0; index < 4; ++index) {
+      float* vertex = vertices[index];
       if (column & 1) {
         if (vertices[1][0] > vertex[0]) {
           vertex[0] = (vertices[1][0] - vertex[0]) * 0.5f + vertex[0];
@@ -96,8 +97,8 @@ namespace {
       primitive->vertices[corner].z = primitive->vertices[corner].z - bias;
     }
 
-    const float scaleU = static_cast<float>(texture.Width()) / static_cast<float>(texture.TextureWidth());
-    const float scaleV = static_cast<float>(texture.Height()) / static_cast<float>(texture.TextureHeight());
+    const float scaleU = static_cast<float>(texture.ImageWidth()) / static_cast<float>(texture.TextureWidth());
+    const float scaleV = static_cast<float>(texture.ImageHeight()) / static_cast<float>(texture.TextureHeight());
 
     for (unsigned corner = 0; corner < 4; ++corner) {
       primitive->vertices[corner].u = scaleU * uv[corner * 2];
