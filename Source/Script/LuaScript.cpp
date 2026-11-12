@@ -39,6 +39,8 @@ extern "C" {
 #include <vector>
 #include <windows.h>
 
+template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](int&&);
+
 struct MiniMapPosition {
   MiniMapPosition() {
   }
@@ -121,10 +123,10 @@ int SetSubChatWndList(lua_State* state) {
   int index;
   if (type == "On") {
     index = static_cast<int>(g_session.m_noSubChatWnds.size());
-    g_session.m_noSubChatWnds[index] = info;
+    g_session.m_noSubChatWnds[static_cast<int>(g_session.m_noSubChatWnds.size())] = info;
   } else {
     index = static_cast<int>(g_session.m_subChatWnds.size());
-    g_session.m_subChatWnds[index] = info;
+    g_session.m_subChatWnds[static_cast<int>(g_session.m_subChatWnds.size())] = info;
   }
 
   lua_pushnumber(state, index);
