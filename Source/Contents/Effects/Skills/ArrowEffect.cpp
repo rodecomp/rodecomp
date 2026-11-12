@@ -247,7 +247,9 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     this->speedScale = 1.0f;
     this->render.position = *reinterpret_cast<const vector3d*>(b);
     this->render.position.y -= 10.0f;
-    this->startPos = this->render.position;
+    this->startPos.x = this->render.position.x;
+    this->startPos.y = this->render.position.y;
+    this->startPos.z = this->render.position.z;
     this->targetAid = d;
     this->render.visible = 0;
     this->GetTargetPos(d, this->targetPos);
@@ -258,7 +260,9 @@ void CArrowEffect::SendMsg(CGameObject* sender, int message, int a, int b, int c
     this->speedScale = 1.0f;
     this->render.position = *reinterpret_cast<const vector3d*>(b);
     this->render.position.y -= 10.0f;
-    this->startPos = this->render.position;
+    this->startPos.x = this->render.position.x;
+    this->startPos.y = this->render.position.y;
+    this->startPos.z = this->render.position.z;
     this->targetPos = *reinterpret_cast<const vector3d*>(d);
     this->targetPos.y -= 10.0f;
     this->render.visible = 0;
