@@ -6347,8 +6347,8 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (CRenderObject* object : this->scene->items) {
-    CItem* item = static_cast<CItem*>(object);
+  for (auto it = this->scene->items.begin(); it != this->scene->items.end(); ++it) {
+    CItem* item = static_cast<CItem*>(*it);
     ItemEntryPacket packet;
     packet.packetType = ID_ZC_ITEM_ENTRY;
     packet.aid = item->itemAid;
