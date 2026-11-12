@@ -43,7 +43,7 @@ namespace {
   // OFFSET: 0x00893AE0
   // FUNCTION: fn_11507
   int DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field) {
-    std::string value;
+    std::string value("");
     std::vector<std::int32_t> cards;
     int count = 1;
 
@@ -76,7 +76,7 @@ namespace {
   // FUNCTION: fn_11506
   void DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
                      const char& recordSeparator) {
-    std::string value;
+    std::string value("");
 
     while (++position < length + 1) {
       const char byte = text[position];
