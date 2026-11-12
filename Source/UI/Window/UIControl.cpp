@@ -3656,11 +3656,11 @@ void CUIEditBox::OnCreate(int width, int height) {
 void CUITextViewer::AddLine(const std::string& text) {
   const int scrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
   const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
-  unsigned char align;
+  int align;
   if (this->textX == 6) {
     align = 2;
   } else {
-    align = this->textX == 2 ? 1 : 0;
+    align = this->textX == 2;
   }
   LineFontFlags flags{this->bold, false};
   CCreateLineInfo lineInfo(
@@ -3673,7 +3673,7 @@ void CUITextViewer::AddLine(const std::string& text) {
     for (const auto& row : lineInfo.m_lines) {
       for (UIWindow* child : row) {
         child->Move(child->geometry.x, child->geometry.y + this->contentHeight);
-        this->AddChild(child);
+        this->AddChildFront(child);
         this->childPositions[child] = std::pair<int, int>(child->geometry.x, child->geometry.y);
       }
     }
