@@ -144,8 +144,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
 
   DrawItemIcon(*this, ResourceMgr::Instance(), 4, 3, this->item, 0);
 
-  const std::string name = this->FitDisplayText(100, this->item.displayName.c_str(), 0, 12, 0);
-  this->DrawShadowedText(36, 9, name.c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
+  this->DrawShadowedText(36, 9, this->FitDisplayText(100, this->item.displayName.c_str(), 0, 12, 0).c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
 }
 
 // OFFSET: 0x00603B60
