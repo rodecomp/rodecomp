@@ -20,10 +20,7 @@ PakRegistry::~PakRegistry() {
 // FUNCTION: fn_18111
 bool PakRegistry::Add(const char* filename) {
   CGPak* archive = new CGPak;
-  CMemMapPakFile* file = new CMemMapPakFile;
-  if (file) {
-    file->Open(filename);
-  }
+  CMemMapPakFile* file = new CMemMapPakFile(filename);
 
   this->m_archives.emplace_front(file, archive);
   return this->m_archives.front().second->Open(this->m_archives.front().first);
