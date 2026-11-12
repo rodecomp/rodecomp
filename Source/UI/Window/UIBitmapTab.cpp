@@ -5,6 +5,8 @@
 #include "UI/Window/UIBitmapTab.h"
 #include "Utility/Text/FormatString.h"
 
+template __declspec(noinline) void std::vector<BitmapTabEntry>::clear() noexcept;
+
 // OFFSET: 0x0085BBC0
 // FUNCTION: fn_10797
 void UIBitmapTab::Paint() {
