@@ -171,16 +171,20 @@ int CAchievementMgr::GetCompletedCount(int group, int index) {
   } else if (index == -1) {
     for (int i = 0; i < this->groupWidth; ++i) {
       int key = this->groupWidth * group + i;
-      for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-        if (IsAchievementCompleted(*it)) {
+      for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end();) {
+        const int id = *it;
+        ++it;
+        if (IsAchievementCompleted(id)) {
           ++count;
         }
       }
     }
   } else {
     int key = this->groupWidth * group + index;
-    for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
-      if (IsAchievementCompleted(*it)) {
+    for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end();) {
+      const int id = *it;
+      ++it;
+      if (IsAchievementCompleted(id)) {
         ++count;
       }
     }

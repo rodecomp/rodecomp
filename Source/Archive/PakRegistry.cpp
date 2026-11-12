@@ -22,7 +22,7 @@ bool PakRegistry::Add(const char* filename) {
   CGPak* archive = new CGPak;
   CMemMapPakFile* file = new CMemMapPakFile(filename);
 
-  this->m_archives.emplace_front(file, archive);
+  this->m_archives.push_front(std::make_pair(file, archive));
   return this->m_archives.front().second->Open(this->m_archives.front().first);
 }
 

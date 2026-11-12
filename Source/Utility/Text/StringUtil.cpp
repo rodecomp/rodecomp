@@ -173,7 +173,8 @@ std::string FormatDecimal(double value, int precision, bool trimZeros) {
 std::vector<std::string> Split(std::string_view text, std::string_view delimiter) {
   auto parts = text | std::views::split(delimiter)
     | std::views::transform([](auto&& part) { return std::string_view(part.begin(), part.end()); });
-  return std::vector<std::string>(parts.begin(), parts.end());
+  std::vector<std::string> result(parts.begin(), parts.end());
+  return result;
 }
 
 // OFFSET: 0x0058B830

@@ -180,7 +180,14 @@ void CWindEffect::Render() {
       continue;
     }
 
-    const ParticleQuad quad = {true, 0.0f, 1.0f, static_cast<float>(texPart - 1) / 21.0f, static_cast<float>(texPart) / 21.0f, false, true};
+    ParticleQuad quad;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.billboard = true;
+    quad.left = static_cast<float>(texPart - 1) / 21.0f;
+    quad.right = static_cast<float>(texPart) / 21.0f;
     particle->Render(quad);
   }
 }

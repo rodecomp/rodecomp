@@ -50,7 +50,8 @@ std::string ResourceMgr::ResolveMapName(const char* name) const {
   filename += ".gat";
   const char* resolved = this->Resolve(filename.c_str());
   const char* extension = std::strstr(resolved, ".gat");
-  return std::string(resolved, extension);
+  std::string mapName(resolved, extension);
+  return mapName;
 }
 
 // OFFSET: 0x00AEFE50

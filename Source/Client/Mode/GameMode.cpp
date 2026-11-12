@@ -454,7 +454,8 @@ std::string CGameMode::LocationText() {
   }
 
   std::sprintf(text, "Location: %s ( %d , %d )", name.c_str(), column, row);
-  return text;
+  std::string result(text);
+  return result;
 }
 
 // OFFSET: 0x00CD5800

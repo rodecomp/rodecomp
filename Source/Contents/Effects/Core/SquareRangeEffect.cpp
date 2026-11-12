@@ -73,7 +73,7 @@ void CSquareRangeEffect::OnProcess() {
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(1.5707964f);
+      rotation.MakeXRotation(1.570796f);
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
       scale.SetScale(particle->scale, particle->scale, 1.0f);
