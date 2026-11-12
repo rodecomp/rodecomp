@@ -323,14 +323,7 @@ void UIRoMapWnd::DrawDungeonLinks() {
     int y;
     int width;
     int height;
-    if (map->fields.empty()) {
-      isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
-                   map->bottom == selected->bottom;
-      x = map->left;
-      y = map->top;
-      width = map->right - map->left;
-      height = map->bottom - map->top;
-    } else {
+    if (!map->fields.empty()) {
       const CWorldViewField* field = map->fields.front();
       isSelected = selected != nullptr && field->left == selected->left && field->right == selected->right && field->top == selected->top &&
                    field->bottom == selected->bottom;
@@ -352,6 +345,13 @@ void UIRoMapWnd::DrawDungeonLinks() {
       DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture);
       x = field->left;
       y = field->top;
+    } else {
+      isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
+                   map->bottom == selected->bottom;
+      x = map->left;
+      y = map->top;
+      width = map->right - map->left;
+      height = map->bottom - map->top;
     }
 
     DrawTexturedRectangle(x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture);
