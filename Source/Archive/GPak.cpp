@@ -107,14 +107,14 @@ namespace {
     return static_cast<char>((c << 4) | ((c >> 4) & 0x0F));
   }
 
-  __declspec(noinline) std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size);
+  __declspec(noinline) std::uint64_t ReadAuxiliaryIdentifier(std::span<const std::uint8_t> data);
 
   // OFFSET: 0x00658FC0
   // FUNCTION: fn_05116
-  std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size) {
-    if (size != 0) {
+  std::uint64_t ReadAuxiliaryIdentifier(std::span<const std::uint8_t> data) {
+    if (data.size() != 0) {
       PakAuxiliaryFile header;
-      std::memcpy(&header, data, sizeof(header));
+      std::memcpy(&header, data.data(), sizeof(header));
       if (header.version <= 1) {
         return header.identifier;
       }
@@ -323,12 +323,12 @@ bool CGPak::ReadTableV2() {
   uLongf length = table.originalSize + 8;
   std::vector<std::uint8_t> decoded(length);
 
-  if (uncompress(decoded.data(), &length, source, table.compressedSize) != Z_OK) {
+  if (uncompress(decoded.empty() ? nullptr : &decoded[0], &length, source, table.compressedSize) != Z_OK) {
     return false;
   }
 
   this->m_entries.resize(this->m_entryCount);
-  const std::uint8_t* cursor = decoded.data();
+  const std::uint8_t* cursor = decoded.empty() ? nullptr : &decoded[0];
   std::uint32_t maximum = 0;
 
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
@@ -415,28 +415,26 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
     *identifier = UINT64_MAX;
   }
 
-  output.clear();
+  output.erase(output.begin(), output.end());
 
   std::uint32_t size;
   std::uint64_t offset;
+  const std::uint32_t format = this->m_version & 0xFF00;
 
-  switch (this->m_version & 0xFF00) {
-  case 0x200:
+  if (format == 0x100) {
+    return;
+  } else if (format == 0x200) {
     if (this->m_version < 0x201) {
       return;
     }
 
     std::memcpy(&size, this->m_file->Read(this->m_tableOffset - sizeof(size), sizeof(size)), sizeof(size));
     offset = this->m_tableOffset - size - sizeof(size);
-    break;
-  case 0x300: {
-    PakTableFileV3 table;
-    std::memcpy(&table, this->m_file->Read(this->m_tableOffset, sizeof(table)), sizeof(table));
-    size = table.auxiliarySize;
-    offset = this->m_tableOffset + table.compressedSize + sizeof(table);
-    break;
-  }
-  default:
+  } else if (format == 0x300) {
+    const PakTableFileV3* table = reinterpret_cast<const PakTableFileV3*>(this->m_file->Read(this->m_tableOffset, sizeof(PakTableFileV3)));
+    size = table->auxiliarySize;
+    offset = this->m_tableOffset + table->compressedSize + sizeof(PakTableFileV3);
+  } else {
     return;
   }
 
@@ -449,7 +447,7 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
   std::memcpy(output.data(), data, size);
 
   if (identifier) {
-    *identifier = ReadAuxiliaryIdentifier(output.data(), output.size());
+    *identifier = ReadAuxiliaryIdentifier(output);
   }
 }
 
