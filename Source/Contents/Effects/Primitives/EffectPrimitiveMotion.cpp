@@ -1809,7 +1809,9 @@ bool CEffectPrim::PrimSakura() {
 void CEffectPrim::PrimTeiHit2() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
-  this->render.position = this->state.master->render.position;
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   for (int ec = 0; ec < 4; ++ec) {
     EffectPrimitiveSlot& slot = slots[ec];
@@ -2148,7 +2150,9 @@ bool CEffectPrim::PrimGhost() {
     }
 
     slot.vecBPre.y += slot.maxHeight * g_sinTable[slot.riseAngle];
-    this->state.deltaPos = slot.vecBPre;
+    this->state.deltaPos.x = slot.vecBPre.x;
+    this->state.deltaPos.y = slot.vecBPre.y;
+    this->state.deltaPos.z = slot.vecBPre.z;
 
     const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
     int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
