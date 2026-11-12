@@ -29,7 +29,7 @@ bool CImfRes::Load(const char* name) {
   }
 
   file.Read(&version, 4);
-  if (!(1.01f <= version)) {
+  if (version < 1.01f) {
     return false;
   }
 
