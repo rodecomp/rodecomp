@@ -2031,23 +2031,23 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     float bottomRhw;
     float topRhw;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t color;
     if (this->GetMonsterTransformJob() != JT_THANATOS) {
-      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
+      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &color, 0, 0, 0);
       if (g_cameraDistance <= 320.0f) {
         quad.bottomRhw = bottomRhw - 0.0000025f;
         quad.topRhw = topRhw - 0.0000025f;
       }
     } else {
-      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
+      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &color, 0, 0, 0);
       if (this->render.state == 0 && index == 1) {
         quad.bottomRhw = bottomRhw + 0.000008f;
         quad.topRhw = topRhw + 0.00008f;
       }
     }
 
-    this->RaiseTransformPriority((box[3] - box[1]) / 4);
+    this->RaiseTransformPriority((box.bottom - box.top) / 4);
     if (this->render.translucentOther[0] == 1) {
       quad.color = quad.color & 0xFFFFFF | 0x46000000;
     }
@@ -2063,7 +2063,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
       palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
     }
 
-    this->ApplyLayerEffects(&quad, cell, 0, box, scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
+    this->ApplyLayerEffects(&quad, cell, 0, reinterpret_cast<const int*>(&box), scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
     if (IsScreenShakeActive()) {
       this->DrawFlippedQuad(quad, palette, 0x101, x, y, 0);
     } else {
