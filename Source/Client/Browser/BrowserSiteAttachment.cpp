@@ -40,24 +40,3 @@ bool CWebBrowser::AttachSite() {
 
   return SUCCEEDED(result);
 }
-
-// OFFSET: 0x00AB2430
-// FUNCTION: fn_45431
-void CWebBrowser::DetachSite() {
-  IOleObject* object;
-  if (SUCCEEDED(this->browser->QueryInterface(IID_IOleObject, reinterpret_cast<void**>(&object)))) {
-    IConnectionPointContainer* container;
-    if (SUCCEEDED(object->QueryInterface(IID_IConnectionPointContainer, reinterpret_cast<void**>(&container)))) {
-      IConnectionPoint* point;
-      if (SUCCEEDED(container->FindConnectionPoint(DIID_DWebBrowserEvents2, &point))) {
-        point->Unadvise(this->cookie);
-        point->Release();
-      }
-      container->Release();
-    }
-    object->Release();
-  }
-
-  delete this->site;
-  this->site = nullptr;
-}
