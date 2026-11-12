@@ -489,7 +489,7 @@ void UIRuneSystemWnd::OnProcess() {
 // OFFSET: 0x0081CF10
 // FUNCTION: fn_10217
 void UIRuneSetList::OnWheel(int delta) {
-  this->ScrollBy(2 * (delta < 0) - 1);
+  this->ScrollBy(2 * (0 > delta) - 1);
 }
 
 // OFFSET: 0x0081D460
