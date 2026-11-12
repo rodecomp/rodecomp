@@ -1977,14 +1977,12 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
     return;
   }
 
-  int separators = 0;
   const int count = static_cast<int>(this->m_items.size());
-  if (count != 0) {
-    const int last = index < count ? index : count - 1;
-    for (int i = 0; i < last; ++i) {
-      if (this->m_items[i] == g_menuSeparator) {
-        ++separators;
-      }
+  const int last = count == 0 ? 0 : std::min(index, count - 1);
+  int separators = 0;
+  for (int i = 0; i < last; ++i) {
+    if (this->m_items[i] == g_menuSeparator) {
+      ++separators;
     }
   }
 
@@ -3644,12 +3642,14 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
     if (0x53FC == header.type) {
-      while (offset < static_cast<unsigned>(b)) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
         switch (header.type) {
         case 0x53FD:
-          return 0;
+          scanning = false;
+          break;
         case 0x53FE: {
           char name[260];
           std::memset(name, 0, sizeof(name));
@@ -5843,24 +5843,30 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       if (this->m_titleEdit->Length() == 0) {
         g_windowMgr.Confirm(LookupMessage(13), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
+        break;
+      }
+      if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+        break;
+      }
+      if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
+        break;
+      }
+      if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
         const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
         g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        ChatRoomSetting setting;
-        setting.limit = this->m_limit;
-        setting.memberCount = 0;
-        setting.isPublic = this->m_public != 1;
-        setting.roomId = -1;
-        setting.title = this->m_titleEdit->Text();
-        setting.password = this->m_passwordEdit->Text();
-        g_modeMgr.gameMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
+        break;
       }
+      ChatRoomSetting setting;
+      setting.limit = this->m_limit;
+      setting.memberCount = 0;
+      setting.isPublic = this->m_public != 1;
+      setting.roomId = -1;
+      setting.title = this->m_titleEdit->Text();
+      setting.password = this->m_passwordEdit->Text();
+      g_modeMgr.gameMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
       break;
     }
     case ID_CANCEL:
@@ -5941,24 +5947,30 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     case ID_OK: {
       if (this->m_titleEdit->Length() == 0) {
         g_windowMgr.Confirm(LookupMessage(13), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
+        return 0;
+      }
+      if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(14), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+        return 0;
+      }
+      if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(190), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
+        return 0;
+      }
+      if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
         const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
         g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        ChatRoomSetting setting;
-        setting.limit = this->m_limit;
-        setting.memberCount = 0;
-        setting.isPublic = this->m_public != 1;
-        setting.roomId = -1;
-        setting.title = this->m_titleEdit->Text();
-        setting.password = this->m_passwordEdit->Text();
-        g_modeMgr.gameMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
+        return 0;
       }
+      ChatRoomSetting setting;
+      setting.limit = this->m_limit;
+      setting.memberCount = 0;
+      setting.isPublic = this->m_public != 1;
+      setting.roomId = -1;
+      setting.title = this->m_titleEdit->Text();
+      setting.password = this->m_passwordEdit->Text();
+      g_modeMgr.gameMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       return 0;
     }
     case ID_CANCEL:
@@ -8316,12 +8328,14 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
     if (0x54C4 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
         switch (header.type) {
         case 0x54C5:
-          return 0;
+          scanning = false;
+          break;
         case 0x54C6:
           std::memcpy(&this->m_place, packet + offset, header.length);
           offset += header.length;
@@ -10580,9 +10594,9 @@ void UIStorePasswordInputWnd::Paint() {
 
   std::string prefix("유저인터페이스\\");
   {
-    int positions[3][2] = {{this->geometry.width - 91, 146}, {this->geometry.width - 46, 146}, {this->geometry.width - 210, 146}};
     const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_change", "btn_change_a", "btn_change_b"}};
     int ids[3] = {184, 185, 292};
+    int positions[3][2] = {{this->geometry.width - 91, 146}, {this->geometry.width - 46, 146}, {this->geometry.width - 210, 146}};
     const int count = g_session.m_passwordInputAlternate ? 2 : 3;
 
     for (int i = 0; i < count; ++i) {
@@ -10599,6 +10613,7 @@ void UIStorePasswordInputWnd::Paint() {
 
   prefix = "유저인터페이스\\basic_interface\\";
   {
+    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
     const char* names[11][3] = {
       {"btn_num1", "btn_num1_a", "btn_num1_b"}, {"btn_num2", "btn_num2_a", "btn_num2_b"}, {"btn_num3", "btn_num3_a", "btn_num3_b"},
       {"btn_num4", "btn_num4_a", "btn_num4_b"}, {"btn_num5", "btn_num5_a", "btn_num5_b"}, {"btn_num6", "btn_num6_a", "btn_num6_b"},
@@ -10606,7 +10621,6 @@ void UIStorePasswordInputWnd::Paint() {
       {"btn_num0", "btn_num0_a", "btn_num0_b"}, {"btn_numR", "btn_numR_a", "btn_numR_b"}
     };
     int positions[11][2] = {{10, 25}, {40, 25}, {70, 25}, {10, 55}, {40, 55}, {70, 55}, {10, 85}, {40, 85}, {70, 85}, {10, 115}, {40, 115}};
-    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
     int used[10] = {};
     int placed = 0;
 
