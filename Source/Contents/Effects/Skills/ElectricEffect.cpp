@@ -17,7 +17,8 @@
 // FUNCTION: fn_19002
 void CElectricEffect::AddBolt(int tilt) {
   for (int row = 0; row < 4; ++row) {
-    const float spin = static_cast<float>((std::max)(rand() % 11, 0)) * 0.01f;
+    const int roll = rand() % 11;
+    const float spin = static_cast<float>(roll >= 0 ? roll : 0) * 0.01f;
 
     for (int segment = 0; segment < 20; ++segment) {
       for (int strand = 0; strand < 4; ++strand) {
@@ -43,11 +44,11 @@ void CElectricEffect::AddBolt(int tilt) {
         float* arc = &particle->animationParameter;
         arc[20] = 9.0f;
         for (int index = 20; index > 0; --index) {
-          float value = arc[index] + 9.0f;
-          if (value > 180.0f) {
-            value = 180.0f;
+          if (arc[index] + 9.0f > 180.0f) {
+            arc[index - 1] = 180.0f;
+          } else {
+            arc[index - 1] = arc[index] + 9.0f;
           }
-          arc[index - 1] = value;
         }
       }
     }
@@ -104,10 +105,11 @@ void CElectricEffect::OnProcess() {
     ++particle->elapsedFrames;
     int alpha = scale > 15.0f ? particle->alpha - 2 : particle->alpha;
     if (particle->elapsedFrames <= 25) {
-      alpha += 5 + (std::max)(rand() % 4, 0);
+      const int flicker = rand() % 4;
+      alpha += 5 + (flicker >= 0 ? flicker : 0);
     }
     particle->scale = scale;
-    particle->alpha = (std::max)(alpha, 0);
+    particle->alpha = alpha >= 0 ? alpha : 0;
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
@@ -130,9 +132,9 @@ void CElectricEffect::OnProcess() {
         const int jitterZ = rand() % 7;
         const int jitterY = rand() % 7;
         const int jitterX = rand() % 7;
-        this->path[index].x += static_cast<float>((std::max)(jitterX, 0)) * 0.1f - 2.3f;
-        this->path[index].y += static_cast<float>((std::max)(jitterY, 0)) * 0.1f - 0.3f;
-        this->path[index].z += static_cast<float>((std::max)(jitterZ, 0)) * 0.1f - 0.3f;
+        this->path[index].x += static_cast<float>(jitterX >= 0 ? jitterX : 0) * 0.1f - 2.3f;
+        this->path[index].y += static_cast<float>(jitterY >= 0 ? jitterY : 0) * 0.1f - 0.3f;
+        this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
       }
 
       const float dx = this->path[0].x - this->path[1].x;
