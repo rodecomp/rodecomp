@@ -10071,7 +10071,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
 
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), data + 8, length);
-  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
+  const std::uint32_t& aid = *reinterpret_cast<const std::uint32_t*>(data + 4);
   CGameActor* speaker = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
   if (speaker && !speaker->objectType && g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
@@ -10082,11 +10082,9 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
   } else {
     if (IsMonsterJob(aid)) {
-      if (g_serviceType == 5) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFF00, 1, 0, 0);
-      } else {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 10 ? 0x1D8DFF : 0xFFFF, 1, 0, 0);
-      }
+      g_windowMgr.SendNotice(
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 5 ? 0xFFFF00 : (g_serviceType == 10 ? 0x1D8DFF : 0xFFFF), 1, 0, 0
+      );
     } else if (MonsterJobColor(aid)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
     } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
@@ -15868,7 +15866,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
   partyName[24] = '\0';
   std::strncpy(partyName, packet->partyName, sizeof(packet->partyName));
   if (g_forbiddenWords.Contains(partyName)) {
-    std::string masked;
+    std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
   }
   g_session.partyName = partyName;
@@ -15888,7 +15886,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
       g_session.partyLeader = 1;
     }
   } else if (member.offline == 1) {
-    this->SendMsg(MM_DELETEPARTYPOS, member.accountId, 0, 0, 0);
+    this->SendMsg(MM_DELETEPARTYPOS, packet->accountId, 0, 0, 0);
   } else {
     std::string memberMap = member.map;
     std::string currentMap = this->mapName;
@@ -15925,7 +15923,7 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
     const int count = (packet->length - 0x1C) / 0x2E;
     const PartyMemberListEntry* entries = reinterpret_cast<const PartyMemberListEntry*>(data + sizeof(*packet));
     for (int index = 0; index < count; ++index) {
-      const PartyMemberListEntry& entry = entries[index];
+      const PartyMemberListEntry entry = entries[index];
       char name[25];
       name[24] = '\0';
       std::memcpy(name, entry.name, sizeof(entry.name));
