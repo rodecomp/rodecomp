@@ -335,16 +335,9 @@ bool CMsgEffect::OnProcess() {
       if (elapsed > 90.0f) {
         fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
       }
-      int blue = -1;
-      int tint = -1;
-      if (fade <= 210) {
-        tint = 150;
-        blue = 255;
-      }
-      int alpha = 0;
-      if (fade <= 210) {
-        alpha = 210 - fade;
-      }
+      const int blue = fade <= 210 ? 255 : -1;
+      const int tint = fade <= 210 ? 150 : -1;
+      const int alpha = fade > 210 ? 0 : 210 - fade;
       this->SetColor(alpha, tint, tint, blue);
       if (this->render.scale < 2.0f) {
         this->render.scale = elapsed * 0.15f + this->render.scale;
