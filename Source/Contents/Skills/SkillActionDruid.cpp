@@ -1089,7 +1089,7 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x6DED3DD1CF75AD9BULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
@@ -1097,7 +1097,7 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x49C3759B77DBD3C1ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006249E0
@@ -1292,7 +1292,7 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
     const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
     return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
   }
 }
