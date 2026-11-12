@@ -140,7 +140,11 @@ int UIVideoWnd::SendMsg(
     break;
   case UM_TOGGLE_VIDEO_PAUSE: {
     BinkHandle* handle = this->m_movie->Handle();
-    BinkPause(handle, handle->paused == 1 ? 0 : 1);
+    if (handle->paused == 1) {
+      BinkPause(handle, 0);
+    } else {
+      BinkPause(handle, 1);
+    }
     break;
   }
   }
