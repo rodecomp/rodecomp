@@ -9695,6 +9695,9 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
 // GLOBAL: gl_25381
 std::string g_gameModeNamelessTag = "<NAMELESS>";
 
+// GLOBAL: gl_25955
+std::string g_guildMemberNamelessTag = "<NAMELESS>";
+
 namespace {
 #pragma pack(push, 1)
   struct ItemPickupAckV8Packet {
@@ -11886,7 +11889,7 @@ void CGameMode::ReceiveGuildMemberAdd4(const unsigned char* data) {
   member.online = packet->online;
   *reinterpret_cast<int*>(member.lastOfflineTime) = packet->lastTimeOffline;
   if (member.name.size() == 0) {
-    member.name = LookupMessage(MSI_NAMELESS_USER) + g_gameModeNamelessTag;
+    member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildMemberNamelessTag;
   }
 
   guildInfo->AddMember(member);
