@@ -27,6 +27,9 @@ private:
     /* 0000 */ std::string name;
     /* 0018 */ std::uint32_t tick;
 
+    Entry() = default;
+    Entry(std::string value);
+
     bool IsExpired() const;
   };
   struct Request {

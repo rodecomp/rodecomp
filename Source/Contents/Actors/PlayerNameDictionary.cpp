@@ -46,10 +46,14 @@ std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {
   return LookupMessage(MSI_NAMELESS_USER);
 }
 
+// INLINED
+inline CPlayerNameDictionary::Entry::Entry(std::string value) : name(value), tick(timeGetTime()) {
+}
+
 // OFFSET: 0x0060ABB0
 // FUNCTION: fn_04258
 void CPlayerNameDictionary::Set(std::uint32_t id, std::string name) {
-  this->m_names[id] = Entry{name, timeGetTime()};
+  this->m_names[id] = Entry(name);
   const auto request = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& value) { return value.id == id; });
   if (request != this->m_requests.end()) {
     this->m_requests.erase(request);
