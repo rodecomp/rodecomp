@@ -117,8 +117,7 @@ void CUIRecommendedQuestInfo::OnClose() {
 // OFFSET: 0x00A58BE0
 // FUNCTION: fn_16349
 void CUIRecommendedQuestInfo::OnInit() {
-  const char* title = LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD);
-  this->titleBar->SetTitle(title);
+  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
   UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);

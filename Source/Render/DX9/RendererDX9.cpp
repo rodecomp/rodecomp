@@ -55,14 +55,14 @@ void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
 
   const auto type = static_cast<D3DPRIMITIVETYPE>(primitive->primitiveType);
   this->device->state.SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2);
-  const int divisor = type == D3DPT_TRIANGLELIST ? 3 : 2;
 
   if (primitive->indexCount) {
     this->nativeDevice->DrawIndexedPrimitiveUP(
-      type, 0, primitive->vertexCount, primitive->indexCount / divisor, primitive->indices, D3DFMT_INDEX16, primitive->vertices, sizeof(LightmappedVertex)
+      type, 0, primitive->vertexCount, primitive->indexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->indices, D3DFMT_INDEX16,
+      primitive->vertices, sizeof(LightmappedVertex)
     );
   } else {
-    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / divisor, primitive->vertices, sizeof(LightmappedVertex));
+    this->nativeDevice->DrawPrimitiveUP(type, primitive->vertexCount / (type == D3DPT_TRIANGLELIST ? 3 : 2), primitive->vertices, sizeof(LightmappedVertex));
   }
 }
 
