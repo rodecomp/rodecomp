@@ -52,10 +52,12 @@ bool CFortuneKiss::IsAlive() {
 // FUNCTION: fn_06997
 void CFortuneKiss::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+    if (particle) {
       ++this->angle;
       if (this->angle > 360) {
         this->angle = 0;
@@ -84,7 +86,7 @@ void CFortuneKiss::OnProcess() {
       result.Compose(first, translate);
       particle->transform = result;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 

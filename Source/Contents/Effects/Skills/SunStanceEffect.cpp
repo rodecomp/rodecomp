@@ -96,11 +96,14 @@ void CSunStanceEffect::OnProcess() {
 
     particle->animationParameter += 0.02f;
     const float angle = particle->animationParameter;
-    const float cosine = std::cos(angle) * 8.0f;
-    const float sine = std::sin(angle) * 8.0f;
-    particle->position.z = cosine + this->position[2];
-    particle->position.y = this->position[1] - 10.0f;
-    particle->position.x = sine + this->position[0];
+    const float cosine = ClientCos(angle) * 8.0f;
+    const float sine = ClientSin(angle) * 8.0f;
+    const float z = cosine + this->position[2];
+    const float y = this->position[1] - 10.0f;
+    const float x = sine + this->position[0];
+    particle->position.z = z;
+    particle->position.y = y;
+    particle->position.x = x;
   }
 }
 

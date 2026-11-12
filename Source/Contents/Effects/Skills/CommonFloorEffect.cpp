@@ -89,10 +89,12 @@ bool CCommonFloorEffect::IsAlive() {
 // FUNCTION: fn_06941
 void CCommonFloorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+    if (particle) {
       int angle = static_cast<int>(particle->speedParameter + *reinterpret_cast<float*>(&particle->angleBits));
       if (angle >= 360) {
         angle -= 360;

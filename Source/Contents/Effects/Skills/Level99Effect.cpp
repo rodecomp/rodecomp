@@ -167,11 +167,13 @@ bool CLevel99Effect::IsAlive() {
 // FUNCTION: fn_19087
 void CLevel99Effect::OnProcess() {
   for (auto it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
+    CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
 
-    if (CParticle* particle = *it) {
+    if (particle) {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeZRotation(*reinterpret_cast<const float*>(&particle->angleBits) / 180.0f * 3.141592f);
@@ -192,15 +194,17 @@ void CLevel99Effect::OnProcess() {
       result.Compose(scale, rotation);
       particle->transform = result;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 
   for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
+    CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
 
-    if (CParticle* particle = *it) {
+    if (particle) {
       float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
       const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->rowIndex) + baseAngle + 3.0f));
       baseAngle = degrees;
@@ -210,7 +214,7 @@ void CLevel99Effect::OnProcess() {
       rotation.MakeYRotation(degrees / 180.0f * 3.141592f);
       particle->transform = rotation;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 
