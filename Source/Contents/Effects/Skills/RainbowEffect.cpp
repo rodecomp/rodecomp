@@ -98,24 +98,24 @@ void CRainbowEffect::OnProcess() {
       float ratio = 1.0f - static_cast<float>(band) * 0.05f;
       float flat = width * ratio;
       float rise = height * ratio;
-      points[0].x = g_cosTable[particle->phaseParameter] * flat;
-      points[0].y = rise + rise;
-      points[0].z = g_sinTable[particle->phaseParameter] * flat;
+      const float innerX = g_cosTable[particle->phaseParameter] * flat;
+      const float innerY = rise + rise;
+      const float innerZ = g_sinTable[particle->phaseParameter] * flat;
 
       ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
       flat = width * ratio;
       rise = height * ratio;
-      points[1].x = g_cosTable[particle->phaseParameter] * flat;
-      points[1].y = rise + rise;
-      points[1].z = g_sinTable[particle->phaseParameter] * flat;
+      const float outerX = g_cosTable[particle->phaseParameter] * flat;
+      const float outerY = rise + rise;
+      const float outerZ = g_sinTable[particle->phaseParameter] * flat;
 
       if (particle->columnIndex != 0) {
-        particle->vertices[0].x = points[1].x;
-        particle->vertices[0].y = points[1].y;
-        particle->vertices[0].z = points[1].z;
-        particle->vertices[1].x = points[0].x;
-        particle->vertices[1].y = points[0].y;
-        particle->vertices[1].z = points[0].z;
+        particle->vertices[0].x = outerX;
+        particle->vertices[0].y = outerY;
+        particle->vertices[0].z = outerZ;
+        particle->vertices[1].x = innerX;
+        particle->vertices[1].y = innerY;
+        particle->vertices[1].z = innerZ;
         particle->vertices[2].x = this->previousOuter.x;
         particle->vertices[2].y = this->previousOuter.y;
         particle->vertices[2].z = this->previousOuter.z;
@@ -124,12 +124,12 @@ void CRainbowEffect::OnProcess() {
         particle->vertices[3].z = this->previousInner.z;
       }
 
-      this->previousOuter.x = points[1].x;
-      this->previousOuter.y = points[1].y;
-      this->previousOuter.z = points[1].z;
-      this->previousInner.x = points[0].x;
-      this->previousInner.y = points[0].y;
-      this->previousInner.z = points[0].z;
+      this->previousOuter.x = outerX;
+      this->previousOuter.y = outerY;
+      this->previousOuter.z = outerZ;
+      this->previousInner.x = innerX;
+      this->previousInner.y = innerY;
+      this->previousInner.z = innerZ;
 
       switch (band) {
       case 0:
