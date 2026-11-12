@@ -176,8 +176,9 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
     const float x = this->render.position.x;
     const float z = this->render.position.z;
     const float height = mode->scene->terrain->Height(x, z);
+    const vector3d position{x, height, z};
     const int effectId = g_itemInfoMgr->GetEffectId(this->itemIndex);
-    if (effectId >= 0 && !g_effectMgr->Spawn(entry->aid, effectId, x, height, z, 0, -1, 0, 0)) {
+    if (effectId >= 0 && !g_effectMgr->Spawn(entry->aid, effectId, position, 0, -1, 0, 0)) {
       if (CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->render.position.x = x;
         effect->render.position.y = height;
@@ -205,7 +206,7 @@ void CItem::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d
         break;
       }
 
-      if (!g_effectMgr->Spawn(entry->aid, gradeEffectId, x, height, z, 0, -1, 0, 0)) {
+      if (!g_effectMgr->Spawn(entry->aid, gradeEffectId, position, 0, -1, 0, 0)) {
         if (CRagEffect* effect = this->LaunchEffect(gradeEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
           effect->render.position.x = x;
           effect->render.position.y = height;
