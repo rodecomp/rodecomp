@@ -214,13 +214,9 @@ void CWorld::OnProcess() {
 // OFFSET: 0x00ACA200
 // FUNCTION: fn_17690
 bool CWorld::RemoveItem(std::uint32_t aid) {
-  auto actorEntry = this->actors.begin();
-
-  for (; actorEntry != this->actors.end(); ++actorEntry) {
-    if ((*actorEntry)->render.accountId == aid) {
-      break;
-    }
-  }
+  auto actorEntry = std::find_if(this->actors.begin(), this->actors.end(), [aid](CRenderObject* actor) {
+    return actor->render.accountId == aid;
+  });
 
   if (actorEntry == this->actors.end()) {
     return false;
