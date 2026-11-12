@@ -1194,7 +1194,7 @@ void UIRuneSetList::Paint() {
     std::string grade;
     int gradeWidth = 0;
     if (runeSet->m_grade) {
-      grade = FormatOwnedString("+%d", runeSet->m_grade);
+      grade = static_cast<const std::string&>(FormatOwnedString("+%d", runeSet->m_grade));
       gradeWidth = this->TextWidth(grade.c_str(), grade.size(), 0, 12, 0, 0);
     }
 
