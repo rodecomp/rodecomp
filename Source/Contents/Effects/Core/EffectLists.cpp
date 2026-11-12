@@ -68,6 +68,7 @@
 #include "Contents/Effects/Skills/WindEffect.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
@@ -450,10 +451,7 @@ struct CEffectAllocator : CAllocator {
 // OFFSET: 0x00B1D9E0
 // FUNCTION: fn_18561
 __declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName() {
-  constexpr auto sourceText = CRYPT_NAME("DRUID\\KR_THUNDERING_ORB\\thundering_orb_orb\\thundering_orb_small.str", 0x2F8B0F37118D157FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("DRUID\\KR_THUNDERING_ORB\\thundering_orb_orb\\thundering_orb_small.str", 0x2F8B0F37118D157FULL);
 }
 
 // INLINED
@@ -547,9 +545,7 @@ CEffect* CEffectAllocator<CThunderingOrb>::Create() {
 
 // INLINED
 EncryptedName<0x3B, 0x39FF7FB50DEB998FULL>& WindBombName() {
-  const char source[] = CRYPT_CHARS(59, "DRUID\\DR_WIND_BOMB\\wind_bomb_tornado\\wind_bomb_tornado.str", 0x39FF7FB50DEB998FULL);
-  thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-  return name;
+  OBFUSCATE_STRING_BODY("DRUID\\DR_WIND_BOMB\\wind_bomb_tornado\\wind_bomb_tornado.str", 0x39FF7FB50DEB998FULL);
 }
 
 // OFFSET: 0x00B20E70
