@@ -7348,7 +7348,7 @@ UInCash_CallWnd::UInCash_CallWnd()
 // OFFSET: 0x008C8F00
 // FUNCTION: fn_11973
 UISelectCartWnd::UISelectCartWnd()
-    : UIFrameWnd(0), selectionContext(0), cartTypesBegin(0), cartTypesEnd(0), cartTypesCapacity(0) {
+    : UIFrameWnd(0), selectionContext(0), cartTypes() {
 }
 
 // OFFSET: 0x008C9280
@@ -9059,25 +9059,24 @@ void UISelectCartWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   const int levels[] = {0, 40, 65, 80, 90, 100, 110, 120, 130};
-  std::vector<int>& carts = *reinterpret_cast<std::vector<int>*>(&this->cartTypesBegin);
   const int level = g_session.m_level;
-  carts.clear();
+  this->cartTypes.clear();
   for (int i = 0; i < 9; ++i) {
     if (level <= levels[i]) {
       break;
     }
-    carts.push_back(i + 1);
+    this->cartTypes.push_back(i + 1);
   }
   if (level > 100) {
-    carts.push_back(13);
+    this->cartTypes.push_back(13);
   }
 
   int index = 0;
-  for (std::vector<int>::iterator cart = carts.begin(); cart != carts.end(); ++cart, ++index) {
+  for (std::vector<int>::iterator cart = this->cartTypes.begin(); cart != this->cartTypes.end(); ++cart, ++index) {
     this->AddCart(index, *cart);
   }
 
-  const int count = static_cast<int>(carts.size());
+  const int count = static_cast<int>(this->cartTypes.size());
   if (count != 0) {
     this->Resize(this->geometry.width, ((count - 1) / 5 + 1) * 98);
   }
@@ -9086,19 +9085,18 @@ void UISelectCartWnd::OnCreate(int, int) {
 // OFFSET: 0x00904810
 // FUNCTION: fn_12378
 int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  std::vector<int>& carts = *reinterpret_cast<std::vector<int>*>(&this->cartTypesBegin);
   switch (message) {
   case UM_SETINFO: {
     this->DeleteChildren();
     this->AddCloseButton("", 0);
-    carts.clear();
+    this->cartTypes.clear();
     this->selectionContext = static_cast<int>(c);
     const char* types = reinterpret_cast<const char*>(a);
     for (int i = 0; i < b; ++i) {
-      carts.push_back(types[i]);
+      this->cartTypes.push_back(types[i]);
     }
     int index = 0;
-    for (std::vector<int>::iterator cart = carts.begin(); cart != carts.end(); ++cart, ++index) {
+    for (std::vector<int>::iterator cart = this->cartTypes.begin(); cart != this->cartTypes.end(); ++cart, ++index) {
       this->AddCart(index, *cart);
     }
     if (b != 0) {
@@ -9109,9 +9107,9 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_COMMAND:
     if (a != ID_CLOSE) {
       const int type = static_cast<int>(a) - 9000;
-      std::vector<int>::iterator cart = carts.begin();
+      std::vector<int>::iterator cart = this->cartTypes.begin();
       for (;; ++cart) {
-        if (cart == carts.end()) {
+        if (cart == this->cartTypes.end()) {
           return 0;
         }
         if (*cart == type) {

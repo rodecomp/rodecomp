@@ -3,6 +3,8 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <vector>
+
 class UISelectCartWnd : public UIFrameWnd {
 public:
   UISelectCartWnd();
@@ -16,9 +18,7 @@ protected:
 
 public:
   /* 00B4 */ int selectionContext;
-  /* 00B8 */ int cartTypesBegin;
-  /* 00BC */ int cartTypesEnd;
-  /* 00C0 */ int cartTypesCapacity;
+  /* 00B8 */ std::vector<int> cartTypes;
 };
 
 #endif
