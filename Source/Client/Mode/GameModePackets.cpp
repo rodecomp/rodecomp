@@ -1370,9 +1370,8 @@ void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
 // OFFSET: 0x00D79420
 // FUNCTION: fn_22167
 __declspec(noinline) void CGameMode::ReceiveOverweightThreshold(const unsigned char* packet) {
-  const int value = *reinterpret_cast<const int*>(packet + 2);
-  if (value > 0) {
-    g_overweightThresholdPercent = value;
+  if (*reinterpret_cast<const int*>(packet + 2) > 0) {
+    g_overweightThresholdPercent = *reinterpret_cast<const int*>(packet + 2);
   }
 }
 
@@ -4314,29 +4313,20 @@ void CGameMode::ProcessSkillUsePacket(const unsigned char* packet, int type) {
   if (type == 0) {
     sourceAid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
     targetAid = *reinterpret_cast<const std::uint32_t*>(packet + 6);
-    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
-    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
-    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
     property = *reinterpret_cast<const int*>(packet + 0x10);
     delay = *reinterpret_cast<const int*>(packet + 0x14);
+    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
+    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
+    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
   } else if (type == 1) {
     sourceAid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
     targetAid = *reinterpret_cast<const std::uint32_t*>(packet + 6);
-    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
-    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
-    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
     property = *reinterpret_cast<const int*>(packet + 0x10);
     delay = *reinterpret_cast<const int*>(packet + 0x14);
+    skillId = *reinterpret_cast<const std::uint16_t*>(packet + 0xE);
+    x = *reinterpret_cast<const std::uint16_t*>(packet + 0xA);
+    y = *reinterpret_cast<const std::uint16_t*>(packet + 0xC);
     flag = packet[0x18];
-  } else {
-    const std::uintptr_t value = reinterpret_cast<std::uintptr_t>(packet);
-    sourceAid = static_cast<std::uint32_t>(value);
-    targetAid = static_cast<std::uint32_t>(value);
-    x = static_cast<std::uint16_t>(value);
-    y = static_cast<std::uint16_t>(value);
-    skillId = static_cast<std::uint16_t>(value);
-    property = static_cast<int>(value);
-    delay = static_cast<int>(value);
   }
 
   this->NotifySkillCasting(sourceAid, targetAid, x, y, skillId, property, delay, flag, 0);
