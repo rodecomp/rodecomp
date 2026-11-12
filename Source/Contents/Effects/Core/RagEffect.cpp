@@ -9963,7 +9963,10 @@ void CRagEffect::SpawnBlurAfterimage() {
     return;
   }
 
-  if (this->state.duration != 30) {
+  CBlurPC* blur;
+  if (this->state.duration == 30) {
+    blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  } else {
     if (this->state.stateCnt % 5 != 0) {
       return;
     }
@@ -9972,12 +9975,12 @@ void CRagEffect::SpawnBlurAfterimage() {
     if (action == 0 || action == 10 || action == 6 || action == 11 || action == 13) {
       return;
     }
+
+    blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
   }
 
-  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*blur, *this, this->render.position);
-  CRenderObject* object = blur;
-  WorldObjects().push_back(object);
+  WorldObjects().push_back(blur);
 }
 
 // OFFSET: 0x00C1F430
@@ -10033,11 +10036,17 @@ void CRagEffect::SpawnHallucinationTrail() {
     this->state.stateCnt = 0;
   }
 
-  if (this->state.duration != 30 && this->state.stateCnt % 5 != 0) {
-    return;
+  CHalluPC2* hallu;
+  if (this->state.duration == 30) {
+    hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+  } else {
+    if (this->state.stateCnt % 5 != 0) {
+      return;
+    }
+
+    hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
   }
 
-  CRenderObject* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
   WorldObjects().push_back(hallu);
 }
 
