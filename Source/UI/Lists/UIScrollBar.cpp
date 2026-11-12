@@ -823,20 +823,17 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 
   const std::string count = FormatOwnedString("%d", this->m_item.quantity);
   FontCache& fonts = g_fontCache;
-  int textY;
   if (compact) {
-    textY = y + 20;
-    x += 16;
+    this->DrawTextAt(x + 16, y + 20, count.c_str(), 0, 0, 11, 0, 0, 0);
   } else {
-    textY = y + 15;
+    const int textY = y + 15;
     x += this->m_item.quantity < 1000 ? 14 : 0;
     this->DrawTextAt(x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
   }
-
-  this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
 }
 
 // OFFSET: 0x008900D0
