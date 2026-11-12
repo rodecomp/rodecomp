@@ -1088,8 +1088,8 @@ void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
   }
 
   if (actor) {
-    const std::int64_t x = packet->x;
     const std::int64_t y = packet->y;
+    const std::int64_t x = packet->x;
     actor->SendMsg(nullptr, AM_FALLEN_ANGEL, 0, static_cast<int>(x), static_cast<int>(x >> 32), static_cast<int>(y), static_cast<int>(y >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
