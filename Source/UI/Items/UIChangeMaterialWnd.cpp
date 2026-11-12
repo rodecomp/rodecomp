@@ -368,6 +368,12 @@ int UIChangeMaterialWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
+  case UM_UPPUSH:
+    this->itemList->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
+    break;
+  case UM_DOWNPUSH:
+    this->itemList->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
+    break;
   case UM_DEFPUSH:
     if (sender == reinterpret_cast<UIWindow*>(this->searchEdit) && reinterpret_cast<UIWindow*>(this->searchEdit) == g_windowMgr.GetHoverWindow()) {
       this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
@@ -375,6 +381,9 @@ int UIChangeMaterialWnd::SendMsg(
     break;
   case UM_COMMAND:
     switch (argument1) {
+    case 0x16c:
+      this->itemList->SortItems(argument2 > 0);
+      break;
     case ID_OK:
       this->SendChangeMaterial();
       break;
@@ -384,21 +393,12 @@ int UIChangeMaterialWnd::SendMsg(
     case ID_SEARCH:
       this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
       break;
-    case 0x16c:
-      this->itemList->SortItems(argument2 > 0);
-      break;
     case 0x19f:
       this->itemList->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     default:
       break;
     }
-    break;
-  case UM_UPPUSH:
-    this->itemList->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    break;
-  case UM_DOWNPUSH:
-    this->itemList->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     break;
   case UM_REFRESHITEM:
     if (argument1 != 0) {
@@ -417,10 +417,7 @@ int UIChangeMaterialWnd::SendMsg(
         this->m_materials.push_back(info);
       }
 
-      if (entry->results.size() < 2) {
-        this->m_resultAmount = entry->results.front().amount;
-        this->m_resultText = "";
-      } else {
+      if (entry->results.size() > 1) {
         int total = 0;
         for (const MaterialResult& result : entry->results) {
           total += result.amount;
@@ -431,6 +428,9 @@ int UIChangeMaterialWnd::SendMsg(
         const std::string name = ItemDisplayName(first.id);
         const std::string text = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_ON), name.c_str(), first.quantity, last.quantity);
         this->m_resultText = text;
+      } else {
+        this->m_resultAmount = entry->results.front().amount;
+        this->m_resultText = "";
       }
 
       this->m_button->SetDisabled(entry->state != 1);
