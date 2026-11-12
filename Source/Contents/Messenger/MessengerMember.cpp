@@ -342,15 +342,20 @@ void UIDragMiniPartyWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   std::string prefix = "유저인터페이스\\renewalparty\\";
   if (this->member.valid) {
-    bool dead = false;
+    int dead = 0;
     if (this->member.dead == 1) {
-      dead = true;
-    } else if (this->member.accountId == g_session.m_aid) {
-      dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead == 1;
+      dead = 1;
+    } else if (g_session.m_aid == this->member.accountId) {
+      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead == 1) {
+        dead = 1;
+      }
     }
 
     int yOffset = this->member.leader ? 0 : 2;
-    const char* jobFmt = dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp";
+    const char* jobFmt = "%sicon_jobs_%d.bmp";
+    if (dead) {
+      jobFmt = "%sicon_jobs_%d_die.bmp";
+    }
     char path[256];
     sprintf(path, jobFmt, prefix.c_str(), this->member.job);
     this->DrawBitmap(
