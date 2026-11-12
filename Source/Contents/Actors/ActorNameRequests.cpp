@@ -7,6 +7,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) void std::deque<std::uint32_t>::pop_front() noexcept;
+
 #pragma pack(push, 1)
 struct PACKET_CZ_REQNAME2 {
   /* 0000 */ std::int16_t packetType;
