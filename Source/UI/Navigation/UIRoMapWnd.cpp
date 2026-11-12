@@ -69,9 +69,9 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 // FUNCTION: fn_12622
 __declspec(noinline) void UIRoMapWnd::ClearRecords() {
   this->m_records.clear();
-  this->previewTexture = 0;
+  this->previewTexture = nullptr;
   this->hoverTooltip = 0;
-  this->previewArea = 0;
+  this->previewArea = nullptr;
   this->selectedRecord = 0;
   this->hoveredRecord = 0;
   this->padding_00CC = 0;
@@ -130,17 +130,17 @@ void UIRoMapWnd::DrawHoverTooltip() {
   int maxWidth = 0;
   const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
   const WorldViewRecord* record = this->hoveredRecord;
-  const int* anchor = this->previewArea;
+  const WorldViewArea* anchor = this->previewArea;
   const RECT rect = reinterpret_cast<const RECT&>(record->left);
   int x;
-  if (anchor[2] < rect.right) {
+  if (anchor->right < rect.right) {
     leftSide = true;
-    x = anchor[0] - 10;
+    x = anchor->left - 10;
   } else {
-    x = anchor[2] + 10;
+    x = anchor->right + 10;
   }
 
-  int y = anchor[1];
+  int y = anchor->top;
   int count = 0;
   for (std::list<std::string>::const_iterator it = record->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
     const int width = this->TextWidth(it->c_str(), 0, 0, 12, 1, 0);
@@ -650,7 +650,7 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
 
 // OFFSET: 0x009119B0
 // FUNCTION: fn_12522
-UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(0) {
+UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
   g_session.m_hotkeyScript->Call("ReadKafraMoveMapServiceInfo", "");
   g_session.m_hotkeyScript->Call("ReadKafraMiniMapPosInfo", "");
   this->fieldNames.clear();
@@ -676,9 +676,9 @@ UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(0) {
 // OFFSET: 0x009144B0
 // FUNCTION: fn_12541
 UIRoMapWnd::~UIRoMapWnd() {
-  delete reinterpret_cast<WorldViewArea*>(this->previewArea);
+  delete this->previewArea;
   delete this->selectedRecord;
-  this->previewTexture = 0;
+  this->previewTexture = nullptr;
 }
 
 // OFFSET: 0x0091E4D0
@@ -956,9 +956,9 @@ void UIRoMapWnd::DrawWorld() {
   const WorldViewRecord* selected = this->selectedRecord;
   if (selected != nullptr && this->previewArea != nullptr) {
     DrawAlphaRectangle(selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top, g_worldViewMgr.selectBoxColor);
-    if (this->previewTexture != 0) {
-      DrawAlphaRectangle(this->previewArea[0], this->previewArea[1], 130, 130, 0x88000000);
-      reinterpret_cast<CTexture*>(this->previewTexture)->Stretch(this->previewArea[0], this->previewArea[1], 130, 130);
+    if (this->previewTexture != nullptr) {
+      DrawAlphaRectangle(this->previewArea->left, this->previewArea->top, 130, 130, 0x88000000);
+      this->previewTexture->Stretch(this->previewArea->left, this->previewArea->top, 130, 130);
     }
   }
 

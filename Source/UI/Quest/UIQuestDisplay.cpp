@@ -208,8 +208,8 @@ void UIQuestDisplay::OnRBtnUp(int x, int y) {
 // OFFSET: 0x009515D0
 // FUNCTION: fn_12953
 void UIQuestDisplay::StoreInfo() {
-  if (this->m_visibleSetting) {
-    *this->m_visibleSetting = this->geometry.visible;
+  if (this->m_info) {
+    this->m_info->visible = this->geometry.visible;
   }
 }
 
@@ -218,12 +218,12 @@ void UIQuestDisplay::StoreInfo() {
 int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_SETINFO: {
-    this->m_visibleSetting = reinterpret_cast<int*>(argument1);
+    this->m_info = reinterpret_cast<QuestDisplayInfo*>(argument1);
     QuestDisplayInfo* info = reinterpret_cast<QuestDisplayInfo*>(argument1);
     if (!info->IsValid()) {
       info->Reset();
     }
-    this->Show(*this->m_visibleSetting);
+    this->Show(this->m_info->visible);
     break;
   }
   case UM_MENU_SELECTED: {

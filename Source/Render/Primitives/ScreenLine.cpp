@@ -397,8 +397,8 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     y = g_renderer->viewport.height - 130;
   }
 
-  WorldViewArea* previous = reinterpret_cast<WorldViewArea*>(this->previewArea);
-  this->previewArea = reinterpret_cast<int*>(new WorldViewArea{x, y, x + 130, y + 130, 1});
+  WorldViewArea* previous = this->previewArea;
+  this->previewArea = new WorldViewArea{x, y, x + 130, y + 130, 1};
   delete previous;
 
   tagRECT area = {x, y, x + 130, y + 130};
@@ -415,7 +415,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     std::string path = "유저인터페이스\\map\\";
     path += name;
     path += ".bmp";
-    this->previewTexture = reinterpret_cast<int>(g_texMgr.Load(path.c_str(), 0, true, true, false));
+    this->previewTexture = g_texMgr.Load(path.c_str(), 0, true, true, false);
   }
 
   name = g_session.GetMapDisplayName(this->selectedRecord->name.c_str());

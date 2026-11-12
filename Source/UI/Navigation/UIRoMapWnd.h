@@ -106,9 +106,9 @@ private:
   /* 00BC */ WorldViewRecord* hoveredRecord;
   /* 00C0 */ WorldViewRecord* selectedRecord;
   /* 00C4 */ RoMapTooltipBox* hoverTooltip;
-  /* 00C8 */ int* previewArea;
+  /* 00C8 */ WorldViewArea* previewArea;
   /* 00CC */ unsigned char padding_00CC;
-  /* 00D0 */ int previewTexture;
+  /* 00D0 */ CTexture* previewTexture;
   /* 00D4 */ unsigned char m_showLabels;
   /* 00D8 */ std::uint32_t m_lastTime;
   /* 00DC */ unsigned char m_resetTime;
