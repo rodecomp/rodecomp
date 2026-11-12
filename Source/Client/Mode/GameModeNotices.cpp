@@ -7370,7 +7370,8 @@ void CGameMode::ReceivePartyInfo2(const unsigned char* data) {
   const int count = (packet->length - 0x1C) / sizeof(PartyRosterRecord50);
   for (int index = 0; index < count; ++index) {
     const PartyRosterRecord50& record = packet->entries[index];
-    PartyRosterEntry entry = {};
+    PartyRosterEntry entry;
+    SecureZeroMemory(&entry, sizeof(entry));
     entry.accountId = record.accountId;
     std::memcpy(entry.name, record.name, sizeof(entry.name));
     std::memcpy(entry.mapName, record.mapName, sizeof(entry.mapName));
