@@ -3418,19 +3418,17 @@ static EfstActionRegistrar s_efstAction1424(1424, NewAction<CEfstAction_ShowEffe
 
 // OFFSET: 0x00453F10
 // FUNCTION: fn_45562
-static bool s_efstActionRegistered722 = [] {
-  std::function<CEfstAction*()> factory = NewAction<CEfstAction_UNLIMIT, CEfstAction>;
+static bool s_efstActionRegistered722 = [](std::function<CEfstAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterEfstAction(722, factory);
   return true;
-}();
+}(NewAction<CEfstAction_UNLIMIT, CEfstAction>);
 
 // OFFSET: 0x00453FE0
 // FUNCTION: fn_45563
-static bool s_skillActionRegistered5002 = [] {
-  std::function<CSkillAction*()> factory = NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>;
+static bool s_skillActionRegistered5002 = [](std::function<CSkillAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillAction(5002, factory);
   return true;
-}();
+}(NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>);
 
 // GLOBAL: gl_25726
 static SkillActionRegistrar s_skillAction6516(6516, NewAction<CSkillAction_AG_ENERGY_CONVERSION, CSkillAction>);
@@ -3471,11 +3469,10 @@ static SkillActionRegistrar s_skillAction6519(6519, NewAction<CSkillAction_IQ_BL
 
 // OFFSET: 0x00457500
 // FUNCTION: fn_45564
-static bool s_efstActionRegistered1665 = [] {
-  std::function<CEfstAction*()> factory = NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>;
+static bool s_efstActionRegistered1665 = [](std::function<CEfstAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterEfstAction(1665, factory);
   return true;
-}();
+}(NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>);
 
 // GLOBAL: gl_25745
 static SkillActionRegistrar s_skillAction6510(6510, NewAction<CSkillAction_BO_DUST_EXPLOSION, CSkillAction>);
