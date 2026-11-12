@@ -394,71 +394,68 @@ void UIHotKeyWnd::Paint() {
       continue;
     }
 
-    const HotkeyEntry entry = this->GetHotkey(this->m_tab, row, true);
-    if (entry.info.description.empty()) {
-      continue;
+    HotkeyInfo info = this->GetHotkey(this->m_tab, row, true).info;
+    if (!info.description.empty()) {
+      if (info.text.empty()) {
+        info.text = info.key1 ? LookupMessage(MSI_HOTKEY_UNKOWN) : LookupMessage(MSI_HOTKEY_NOTHING);
+      }
+
+      const int halfWidth = this->geometry.width / 2;
+      const int column = visibleRow / this->m_rowsPerPage;
+      const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
+                       (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
+
+      const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
+      const int textX = (this->m_keyColumnWidth - textWidth) / 2;
+
+      const int backgroundX = column ? this->geometry.width - this->m_keyColumnWidth - this->m_horizontalMargin
+                                     : halfWidth - this->m_keyColumnWidth;
+      const int keyX = column ? halfWidth : this->m_horizontalMargin;
+
+      std::uint32_t color = 0xDFFFFE;
+      switch (this->m_tab) {
+      case 0:
+        color = 0xFFEFD6;
+        break;
+      case 3:
+        color = 0xEFD6FF;
+        break;
+      default:
+        break;
+      }
+
+      this->FillRegion(backgroundX, rowY, this->m_keyColumnWidth, this->m_rowHeight - 1, color);
+
+      if (visibleRow == this->m_selectedRow) {
+        this->FillRegion(keyX + 1, rowY, halfWidth - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
+      }
+
+      this->FillRegion(keyX, rowY - 1 + this->m_rowHeight, this->m_keyColumnWidth + this->m_descriptionColumnWidth, 1, 0xC0C0C0);
+      this->FillRegion(backgroundX, rowY, 1, this->m_rowHeight, 0xC0C0C0);
+
+      const std::string fitted = this->FitDisplayText(130, info.description.c_str(), 0, 12, 0);
+      const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
+      const int descriptionX = keyX + (halfWidth - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
+
+      this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(textX + backgroundX, rowY + 5, info.text.c_str(), 0, 0, 12, 0, 0, 0);
+
+      ++visibleRow;
     }
-
-    std::string text = entry.info.text;
-    if (text.empty()) {
-      text = entry.info.key1 ? LookupMessage(MSI_HOTKEY_UNKOWN) : LookupMessage(MSI_HOTKEY_NOTHING);
-    }
-
-    const int halfWidth = this->geometry.width / 2;
-    const int column = visibleRow / this->m_rowsPerPage;
-    const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
-                     (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
-
-    const int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int textX = (this->m_keyColumnWidth - textWidth) / 2;
-
-    const int backgroundX = column ? this->geometry.width - this->m_keyColumnWidth - this->m_horizontalMargin
-                                   : halfWidth - this->m_keyColumnWidth;
-    const int keyX = column ? halfWidth : this->m_horizontalMargin;
-
-    std::uint32_t color = 0xDFFFFE;
-    switch (this->m_tab) {
-    case 0:
-      color = 0xFFEFD6;
-      break;
-    case 3:
-      color = 0xEFD6FF;
-      break;
-    default:
-      break;
-    }
-
-    this->FillRegion(backgroundX, rowY, this->m_keyColumnWidth, this->m_rowHeight - 1, color);
-
-    if (visibleRow == this->m_selectedRow) {
-      this->FillRegion(keyX + 1, rowY, halfWidth - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
-    }
-
-    this->FillRegion(keyX, rowY - 1 + this->m_rowHeight, this->m_keyColumnWidth + this->m_descriptionColumnWidth, 1, 0xC0C0C0);
-    this->FillRegion(backgroundX, rowY, 1, this->m_rowHeight, 0xC0C0C0);
-
-    const std::string fitted = this->FitDisplayText(130, entry.info.description.c_str(), 0, 12, 0);
-    const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
-    const int descriptionX = keyX + (halfWidth - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
-
-    this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(textX + backgroundX, rowY + 5, text.c_str(), 0, 0, 12, 0, 0, 0);
-
-    ++visibleRow;
   }
 
   if (this->m_paged) {
-    const std::string pages = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
-    const int pagesWidth = this->TextWidth(pages.c_str(), 0, 0, 12, 0, 0);
+    std::string text = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
+    const int pagesWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     const int pageX =
       (this->m_prevButton->geometry.width - pagesWidth + 60) / 2 + this->m_prevButton->geometry.x;
 
-    const std::string current = FormatOwnedString("%d", this->m_page);
-    DrawOutlinedText(*this, pageX, 25, current.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+    text = static_cast<const std::string&>(FormatOwnedString("%d", this->m_page));
+    DrawOutlinedText(*this, pageX, 25, text.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
 
-    const int currentWidth = this->TextWidth(current.c_str(), 0, 0, 12, 0, 0);
-    const std::string total = FormatOwnedString(" / %d", this->m_pageCount);
-    DrawOutlinedText(*this, pageX + currentWidth, 25, total.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
+    const int currentWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+    text = static_cast<const std::string&>(FormatOwnedString(" / %d", this->m_pageCount));
+    DrawOutlinedText(*this, pageX + currentWidth, 25, text.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
   }
 
   const int bottomY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin;

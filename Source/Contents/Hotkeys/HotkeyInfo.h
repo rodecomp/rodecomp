@@ -15,6 +15,7 @@ struct HotkeyInfo {
   /* 0020 */ std::string description;
   HotkeyInfo();
   HotkeyInfo(const HotkeyInfo& other);
+  HotkeyInfo(HotkeyInfo&& other) = default;
   HotkeyInfo& operator=(const HotkeyInfo& other) = default;
   HotkeyInfo& operator=(HotkeyInfo&& other) = default;
 
