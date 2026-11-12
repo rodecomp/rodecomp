@@ -2,7 +2,6 @@
 
 #include <cstdlib>
 #include <cstring>
-#pragma optimize("s", on)
 
 // STRING: st_12997
 const WCHAR aMicrosoftBaseC[] = L"Microsoft Base Cryptographic Provider v1.0";
@@ -32,7 +31,6 @@ BYTE g_rsaPublicKeyBlob[] = {
 // GLOBAL: gl_24468
 DWORD g_rsaPublicKeyBlobLen = 276;
 
-#pragma optimize("s", on)
 // OFFSET: 0x00402B10
 // FUNCTION: fn_00136
 FileSignatureVerifier::FileSignatureVerifier() {
@@ -54,7 +52,6 @@ FileSignatureVerifier::FileSignatureVerifier() {
     provider = 0;
   }
 }
-#pragma optimize("", on)
 
 // OFFSET: 0x00402B60
 // FUNCTION: fn_45444
