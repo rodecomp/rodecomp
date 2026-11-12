@@ -49,19 +49,11 @@ void UIStaticText_LF::OnWheel(int delta) {
 // OFFSET: 0x00951BF0
 // FUNCTION: fn_12966
 void UIStaticText_LF::SetText(std::string text) {
-  *reinterpret_cast<std::string*>(reinterpret_cast<char*>(this) + 0x7C) = text;
+  this->m_text = text;
   std::list<std::string> lines;
-  this->WrapFormattedText(
-    text, &lines, this->geometry.width,
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0x9C),
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0xA0),
-    *reinterpret_cast<const unsigned char*>(reinterpret_cast<const char*>(this) + 0xA8)
-  );
+  this->WrapFormattedText(text, &lines, this->geometry.width, this->m_fontFamily, this->m_fontHeight, this->m_bold);
   const int count = static_cast<int>(lines.size());
-  this->Resize(
-    this->geometry.width,
-    (count - 1) * *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0x94) +
-      *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0xA0) * count
-  );
+  const int height = (count - 1) * this->m_lineSpacing + this->m_fontHeight * count;
+  this->Resize(this->geometry.width, height);
   this->Invalidate();
 }
