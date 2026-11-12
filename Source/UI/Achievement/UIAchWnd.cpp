@@ -69,11 +69,11 @@ void UIAchListWnd::SelectAchievement(int index) {
   this->selectedIndex = index;
 
   if (this->parent) {
-    int id = -1;
-    if (static_cast<unsigned>(index) < this->ids.size()) {
-      id = this->ids[index];
+    if (this->ids.size() > static_cast<unsigned>(index)) {
+      this->parent->SendMsg(this, UM_LIST_SELECTION, this->ids[index], 0, 0, 0);
+    } else {
+      this->parent->SendMsg(this, UM_LIST_SELECTION, -1, 0, 0, 0);
     }
-    this->parent->SendMsg(this, UM_LIST_SELECTION, id, 0, 0, 0);
   }
 
   this->Invalidate();
