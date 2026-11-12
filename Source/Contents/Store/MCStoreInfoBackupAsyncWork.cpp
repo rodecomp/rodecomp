@@ -50,7 +50,7 @@ const char* g_mcStoreInfoBackupSavePoolName = DecryptName<0x73D1674B61DF7B0BULL>
 // OFFSET: 0x00607B10
 // FUNCTION: fn_04241
 CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Load"), m_accountId(0), m_characterId(0),
+    : NAsyncWork(g_mcStoreInfoBackupLoadPoolName), m_accountId(0), m_characterId(0),
       m_diagnostic(false, std::string(DecryptName<0xF535E561137F138DULL>({0xF8, 0x7D, 0x14, 0x7D, 0x16, 0x8A, 0x5B, 0xF5})), loadSource, 28), m_type(0) {
 }
 
@@ -123,7 +123,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Complete() {
 // OFFSET: 0x00608D60
 // FUNCTION: fn_04247
 CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
-    : NAsyncWork("MerchantStoreInformation_Save"), m_accountId(0), m_characterId(0),
+    : NAsyncWork(g_mcStoreInfoBackupSavePoolName), m_accountId(0), m_characterId(0),
       m_diagnostic(false, std::string(DecryptName<0x3FAF85D995034FD7ULL>({0xA2, 0x21, 0x68, 0xFB, 0xAE, 0xEA, 0xC1, 0x3F})), saveSource, 30), m_type(0) {
 }
 
