@@ -896,8 +896,11 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       this->buttons[index]->Move(x, this->geometry.height - 40);
       this->buttons[index]->SetId(ids[index]);
       static_cast<UIBitmapButton*>(this->buttons[index])->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
-      static_cast<UIBitmapButton*>(this->buttons[index])->SetDisabled(disabled[index]);
-      this->buttons[index]->Invalidate();
+      {
+        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+        button->SetDisabled(disabled[index]);
+        button->Invalidate();
+      }
       this->AddChild(this->buttons[index]);
     }
   }
@@ -1509,16 +1512,22 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
     int tooltip;
     if (this->mode == 0) {
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetDisabled(1);
-      static_cast<UIBitmapButton*>(this->buttons[0])->Invalidate();
+      {
+        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
       tooltip = 0x62;
     } else {
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetDisabled(0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->Invalidate();
+      {
+        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
+        button->SetDisabled(0);
+        button->Invalidate();
+      }
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
       static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
