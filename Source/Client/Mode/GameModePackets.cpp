@@ -4001,11 +4001,9 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     if (abyss) {
       static_cast<CFromTheAbyssEffect*>(abyss)->SetLevel(count);
     }
-    for (auto it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
-      if (it->id == 1244) {
-        it->value1 = count;
-        break;
-      }
+    auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 1244; });
+    if (it != g_activeSkillEffects.end()) {
+      it->value1 = count;
     }
     return;
   }
