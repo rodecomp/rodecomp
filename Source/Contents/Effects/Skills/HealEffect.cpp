@@ -460,6 +460,7 @@ void CHealEffect::OnProcess() {
       const float sine = g_sinTable[angle];
       const float tiltSin = g_sinTable[particle->phaseParameter];
 
+      EffectPoint points[2];
       const float bottomX = particle->scale * cosine;
       const float bottomZ = particle->scale * sine;
       particle->vertices[3].x = bottomX;
@@ -524,6 +525,7 @@ void CHealEffect::OnProcess() {
       const float sine = g_sinTable[angle];
       const float tiltSin = g_sinTable[particle->phaseParameter];
 
+      EffectPoint points[2];
       const float bottomX = particle->scale * cosine;
       const float bottomZ = particle->scale * sine;
       particle->vertices[3].y = 0.0f;
