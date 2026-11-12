@@ -33,7 +33,11 @@ void UIEmblemWnd::Paint() {
   const std::string name = g_guildMgr->GetEmblemFilename(this->guildId);
   CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
   if (emblem && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
-    this->DrawBitmap(framed ? 2 : 0, framed ? 2 : 0, &emblem->gif, true);
+    if (framed) {
+      this->DrawBitmap(2, 2, &emblem->gif, true);
+    } else {
+      this->DrawBitmap(0, 0, &emblem->gif, true);
+    }
   }
 }
 
