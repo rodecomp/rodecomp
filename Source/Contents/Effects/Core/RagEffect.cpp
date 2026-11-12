@@ -1597,9 +1597,7 @@ bool CRagEffect::Aspersio() {
     PlayEffectWave(*this, "effect\\priest_aspersio.wav");
   }
 
-  const int frame = this->state.stateCnt;
-
-  if (frame % 5 == 0 && frame > 60 && frame < 140) {
+  if (this->state.stateCnt % 5 == 0 && this->state.stateCnt > 60 && this->state.stateCnt < 140) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
     this->state.duration = 400;
     this->state.lastPrim->state.duration = 40;
