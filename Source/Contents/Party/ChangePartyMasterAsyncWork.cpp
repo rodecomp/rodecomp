@@ -29,7 +29,7 @@ const char* g_changePartyMasterPoolName = DecryptName<0x93E7A3A1F587CDC5ULL>(CRY
 // OFFSET: 0x005CD7B0
 // FUNCTION: fn_03677
 CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
-    : NAsyncWork("Change_PartyMaster"), m_accountId(0), m_characterId(0), m_token(""), m_worldName(""), m_response(""), m_url(""),
+    : NAsyncWork(g_changePartyMasterPoolName), m_accountId(0), m_characterId(0), m_token(""), m_worldName(""), m_response(""), m_url(""),
       m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 27) {
 }
 
