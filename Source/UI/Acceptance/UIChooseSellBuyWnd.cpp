@@ -9258,10 +9258,12 @@ static __forceinline void AppendItemListReplayRecords(std::vector<unsigned char>
   std::int16_t* fields = reinterpret_cast<std::int16_t*>(packet.data());
   fields[0] = packetId;
   fields[1] = static_cast<std::int16_t>(packet.size());
-  std::int16_t* index = fields + 2;
-  const std::list<ITEM_INFO>::const_iterator end = items.end();
-  for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != end; ++item) {
-    *index++ = static_cast<std::int16_t>(item->identity[1]);
+  std::int16_t* index = reinterpret_cast<std::int16_t*>(packet.data() + 4);
+  if (index) {
+    const std::list<ITEM_INFO>::const_iterator end = items.end();
+    for (std::list<ITEM_INFO>::const_iterator item = items.begin(); item != end; ++item) {
+      *index++ = static_cast<std::int16_t>(item->identity[1]);
+    }
   }
   AppendReplayRecord(records, MakeFramedMessage(id + 3, packet));
 
@@ -10251,7 +10253,7 @@ void UITipboxWnd::OnProcess() {
         this->m_dots[index].visible = true;
         break;
       }
-      if (index == this->m_dots.size() - 1) {
+      if (this->m_dots.size() - 1 == index) {
         for (std::size_t dot = 0; dot < this->m_dots.size(); ++dot) {
           this->m_dots[dot].visible = false;
         }
