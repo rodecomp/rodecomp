@@ -379,8 +379,9 @@ int CAchievementMgr::L_InsertAchieveInfo(lua_State* state) {
     const std::string title = lua_tostring(state, -4);
     const std::string summaryText = lua_tostring(state, -3);
     const std::string description = lua_tostring(state, -2);
+    CAchievementMgr* const manager = g_achievementMgr;
     const std::pair<bool, std::string> result =
-      g_achievementMgr->InsertAchieveInfo(id, title, summaryText, description, static_cast<int>(lua_tonumber(state, -1)));
+      manager->InsertAchieveInfo(id, title, summaryText, description, static_cast<int>(lua_tonumber(state, -1)));
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveInfo : %s", result.second.c_str()));
@@ -411,8 +412,9 @@ int CAchievementMgr::L_InsertAchieveResource(lua_State* state) {
     const int id = static_cast<int>(lua_tonumber(state, -4));
     const std::string text = lua_tostring(state, -3);
     const int targetCount = static_cast<int>(lua_tonumber(state, -2));
+    CAchievementMgr* const manager = g_achievementMgr;
     const std::pair<bool, std::string> result =
-      g_achievementMgr->InsertAchieveResource(id, text, targetCount, static_cast<int>(lua_tonumber(state, -1)));
+      manager->InsertAchieveResource(id, text, targetCount, static_cast<int>(lua_tonumber(state, -1)));
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveResource : %s", result.second.c_str()));
