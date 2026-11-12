@@ -2,6 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -79,10 +80,7 @@ void UIWaitDBSaveWnd::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   ResourceMgr& resources = ResourceMgr::Instance();
-  constexpr auto backgroundSourceText = CRYPT_NAME("유저인터페이스\\WaitDBSave\\loading.bmp", 0x9B5B959B954D9333ULL);
-  const auto& backgroundSource = backgroundSourceText.data;
-  thread_local EncryptedName<sizeof(backgroundSource), 0x9B5B959B954D9333ULL> backgroundName(backgroundSource);
-  CBitmapRes* background = static_cast<CBitmapRes*>(resources.Load(Resolve(backgroundName.Text())));
+  CBitmapRes* background = static_cast<CBitmapRes*>(resources.Load(Resolve(OBFUSCATE_TEXT_NAMED("유저인터페이스\\WaitDBSave\\loading.bmp", 0x9B5B959B954D9333ULL, backgroundName))));
   if (background) {
     this->DrawBitmap(
       static_cast<int>((this->geometry.width - background->image.width) * 0.5), static_cast<int>((this->geometry.height - background->image.height) * 0.5),
