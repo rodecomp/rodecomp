@@ -64,7 +64,7 @@ bool CAxeBoomerang::IsAlive() {
 // OFFSET: 0x006F5CE0
 // FUNCTION: fn_06842
 void CAxeBoomerang::OnProcess() {
-  if (this->emitter) {
+  if (EZ2STREmitter* emitter = this->emitter) {
     CRenderObject* actor = FindRenderObject(this->actor);
     if (!actor) {
       this->alive = 0;
@@ -99,6 +99,8 @@ void CAxeBoomerang::OnProcess() {
       const float dz = this->launchPosition.z - actor->render.position.z;
       const float length = SquareRoot(dy * dy + dx * dx + dz * dz);
       const float invDist = 1.0f / length;
+      const vector3d target = actor->render.position;
+      const vector3d launch = this->launchPosition;
 
       const float offsetX = invDist * dx * scale;
       const float offsetY = invDist * dy * scale;
@@ -112,18 +114,18 @@ void CAxeBoomerang::OnProcess() {
 
       const bool finished = 1.0f <= t;
 
-      this->particlePosition.x = (offsetY * rotation.values[3] + offsetX * rotation.values[0] + offsetZ * rotation.values[6] + rotation.values[9] + this->launchPosition.x) * term1 + term2 * actor->render.position.x + term0 * this->launchPosition.x;
-      this->particlePosition.y = (offsetY * rotation.values[4] + offsetX * rotation.values[1] + offsetZ * rotation.values[7] + rotation.values[10] + this->launchPosition.y) * term1 + term2 * actor->render.position.y + term0 * this->launchPosition.y;
-      this->particlePosition.z = (offsetY * rotation.values[5] + offsetX * rotation.values[2] + offsetZ * rotation.values[8] + rotation.values[11] + this->launchPosition.z) * term1 + term2 * actor->render.position.z + term0 * this->launchPosition.z;
+      this->particlePosition.x = (offsetY * rotation.values[3] + offsetX * rotation.values[0] + offsetZ * rotation.values[6] + rotation.values[9] + launch.x) * term1 + term2 * target.x + term0 * launch.x;
+      this->particlePosition.y = (offsetY * rotation.values[4] + offsetX * rotation.values[1] + offsetZ * rotation.values[7] + rotation.values[10] + launch.y) * term1 + term2 * target.y + term0 * launch.y;
+      this->particlePosition.z = (offsetY * rotation.values[5] + offsetX * rotation.values[2] + offsetZ * rotation.values[8] + rotation.values[11] + launch.z) * term1 + term2 * target.z + term0 * launch.z;
 
       if (finished) {
         this->alive = 0;
       }
 
-      this->emitter->position.x = this->particlePosition.x;
-      this->emitter->position.y = this->particlePosition.y;
-      this->emitter->position.z = this->particlePosition.z;
-      reinterpret_cast<CEZ2STRParticle*>(this->emitter)->Process(0.0f, 0.0f, 0.0f);
+      emitter->position.x = this->particlePosition.x;
+      emitter->position.y = this->particlePosition.y;
+      emitter->position.z = this->particlePosition.z;
+      reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
     }
   }
 
