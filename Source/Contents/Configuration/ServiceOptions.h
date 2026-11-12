@@ -16,9 +16,9 @@ std::pair<int, unsigned char> FindServiceOption(const char* name);
 int SetOption(const char* name, unsigned char value);
 
 struct ServiceOptions {
-  /* 0000 */ std::unordered_map<std::uint32_t, unsigned char, SkillIdHash> values;
+  /* 0000 */ std::unordered_map<int, unsigned char> values;
 
-  unsigned char Get(int id) const;
+  static unsigned char Get(int id);
   static bool Set(int id, unsigned char value);
 };
 

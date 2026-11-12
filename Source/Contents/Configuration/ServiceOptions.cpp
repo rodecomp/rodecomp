@@ -534,8 +534,8 @@ bool CGameSettingsMgr::LoadSettings() {
 
 // OFFSET: 0x006C17A0
 // FUNCTION: fn_06318
-unsigned char ServiceOptions::Get(int id) const {
-  const auto entry = g_serviceOptions.values.find(static_cast<std::uint32_t>(id));
+unsigned char ServiceOptions::Get(int id) {
+  const auto entry = g_serviceOptions.values.find(id);
   return entry == g_serviceOptions.values.end() ? 0 : entry->second;
 }
 
@@ -626,7 +626,7 @@ bool GameSettings::ReadOptionTable() {
       }
       lua_pop(state, 1);
 
-      g_serviceOptions.values[static_cast<std::uint32_t>(option.id)] = option.defaultValue;
+      g_serviceOptions.values[option.id] = option.defaultValue;
     }
 
     lua_pushstring(state, "Title");
@@ -709,7 +709,7 @@ __declspec(noinline) int SetOption(const char* name, unsigned char value) {
     return 3;
   }
 
-  g_serviceOptions.values[static_cast<std::uint32_t>(optionId)] = value;
+  g_serviceOptions.values[optionId] = value;
   return optionId;
 }
 
@@ -723,7 +723,7 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
   int optionId = 3;
   std::string strings[3];
   g_session.GetTalkType(name, &optionId, strings);
-  const auto entry = g_serviceOptions.values.find(static_cast<std::uint32_t>(optionId));
+  const auto entry = g_serviceOptions.values.find(optionId);
   if (entry == g_serviceOptions.values.end()) {
     return {3, 0};
   }
@@ -733,11 +733,11 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
 // OFFSET: 0x006C2A80
 // FUNCTION: fn_06325
 bool ServiceOptions::Set(int id, unsigned char value) {
-  if (g_serviceOptions.values.find(static_cast<std::uint32_t>(id)) == g_serviceOptions.values.end()) {
+  if (g_serviceOptions.values.find(id) == g_serviceOptions.values.end()) {
     return false;
   }
 
-  g_serviceOptions.values[static_cast<std::uint32_t>(id)] = value;
+  g_serviceOptions.values[id] = value;
   return true;
 }
 
