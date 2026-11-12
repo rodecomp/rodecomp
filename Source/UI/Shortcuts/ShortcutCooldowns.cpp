@@ -62,6 +62,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+
 // OFFSET: 0x00E1DCA0
 // FUNCTION: fn_23875
 int CSession::IsHomunculusSkill(unsigned id) const {
