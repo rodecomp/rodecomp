@@ -7307,8 +7307,9 @@ void CGameMode::ReceiveGuildExpulsion2(const unsigned char* data) {
 void CGameMode::ReceiveGuildLeave2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildMemberLeftPacket2*>(data);
   GuildInfo* guildInfo = &g_guildInfo;
-  char reason[40];
-  strcpy_s(reason, sizeof(reason), packet->name);
+  char reason[41];
+  strcpy_s(reason, 40, packet->name);
+  reason[40] = '\0';
 
   if (packet->characterId == g_session.m_gid) {
     ClearGuildShortcutSkills();
