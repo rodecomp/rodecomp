@@ -26,6 +26,7 @@
 #include <windows.h>
 
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
 
 // GLOBAL: gl_24705
 int g_serviceMode;
