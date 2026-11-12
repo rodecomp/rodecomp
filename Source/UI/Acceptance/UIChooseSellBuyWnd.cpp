@@ -3772,7 +3772,11 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (this->m_lineCount % 19 > 0) {
         ++this->m_pageCount;
       }
-      this->SendMsg(this, b == 287 ? 92 : 93, page, 0, 0, 0);
+      if (b == 287) {
+        this->SendMsg(this, 92, page, 0, 0, 0);
+      } else {
+        this->SendMsg(this, 93, page, 0, 0, 0);
+      }
     }
     break;
   }
@@ -6229,8 +6233,8 @@ void UIItemCollectionWnd::SetHeight(int height) {
   }
   this->m_resizer->Move(this->geometry.width - 17, resizerY);
 
+  const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
   if (moveInfoId != 0) {
-    const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
     this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_compare != 0 ? bottom - 29 : bottom);
   } else {
     this->m_moveInfo->Move(-1000, -1000);
@@ -10032,7 +10036,11 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (item.quantity > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-    mode->drag.BeginItem(g_windowMgr, this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
+    if (this->m_page == 1) {
+      mode->drag.BeginItem(g_windowMgr, 24, item, item.quantity, slots.values[2]);
+    } else {
+      mode->drag.BeginItem(g_windowMgr, 2, item, item.quantity, slots.values[2]);
+    }
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
