@@ -3030,9 +3030,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       vec1.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
 
       if (shape == 0.0f) {
-        angle += angle < 90 ? 270 : -90;
+        angle += angle >= 90 ? -90 : 270;
       } else if (shape == 1.0f) {
-        angle += angle < 60 ? 300 : -60;
+        angle += angle >= 60 ? -60 : 300;
       } else if (shape == 2.0f) {
         angle -= 130;
         if (angle < 0) {
@@ -4018,9 +4018,15 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
 
     for (int i = 10; i >= 1; --i) {
       const char mode = this->state.slots[ec].flag1[4];
-      const bool narrow = mode == 6 || mode == 7;
-      const int angle1 = narrow ? 35 : 45;
-      const int angle2 = narrow ? 145 : 135;
+      int angle1;
+      int angle2;
+      if (mode == 6 || mode == 7) {
+        angle1 = 35;
+        angle2 = 145;
+      } else {
+        angle1 = 45;
+        angle2 = 135;
+      }
       int step = 10 - i;
       if (mode != 2 && mode != 4 && mode != 5) {
         step *= 3;
@@ -4028,12 +4034,12 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       const float radius = static_cast<float>(step) + this->state.slots[ec].distance;
       this->state.slots[ec].vecBPre = {radius * g_cosTable[angle1], 0.0f, g_sinTable[angle1] * radius};
       this->state.slots[ec].vecBNow = {radius * g_cosTable[angle2], 0.0f, g_sinTable[angle2] * radius};
-      unsigned angle3 = static_cast<unsigned>(angle2 + (narrow ? 70 : 90));
+      unsigned angle3 = static_cast<unsigned>(angle2 + (mode == 6 || mode == 7 ? 70 : 90));
       if (angle3 >= 360) {
         angle3 -= 360;
       }
       this->state.slots[ec].vecTNow = {radius * g_cosTable[angle3], 0.0f, g_sinTable[angle3] * radius};
-      int angle4 = static_cast<int>(angle3) + (narrow ? 110 : 90);
+      int angle4 = static_cast<int>(angle3) + (mode == 6 || mode == 7 ? 110 : 90);
       if (angle4 >= 360) {
         angle4 -= 360;
       }
@@ -4061,7 +4067,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
           }
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, texture, 0, 10, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, narrow ? 0 : 1, texture, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, mode == 6 || mode == 7 ? 0 : 1, texture, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
 
