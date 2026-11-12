@@ -243,8 +243,7 @@ void CLightSphereEffect::OnProcess() {
 
       int alpha = particle->alpha;
       if (particle->elapsedFrames > 500) {
-        const int faded = alpha - 1;
-        alpha = faded >= 0 ? faded : 0;
+        alpha = std::max(alpha - 1, 0);
       }
       particle->alpha = alpha;
 
