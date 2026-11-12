@@ -14,6 +14,7 @@
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/ShowEffect.h"
+#include "Contents/Effects/Skills/MonsterSkillEffects.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -1953,8 +1954,8 @@ EfstActionMessage CEfstAction_SERVANTWEAPON::GetEfstEndMessage() {
 void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillDamage(int actor, CGameActor* targetActor, CGameActor*) {
   CGameActor* source = reinterpret_cast<CGameActor*>(actor);
   if (source) {
-    if (CEffect* effect = g_effectMgr->Find(source->render.accountId, 0x99C)) {
-      effect->SetLifeTime(0x1453);
+    if (CServantWeaponNewEffect* effect = static_cast<CServantWeaponNewEffect*>(g_effectMgr->Find(source->render.accountId, 0x99C))) {
+      effect->Shoot(0x1453);
     }
   }
 
