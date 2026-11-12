@@ -42,8 +42,8 @@ void CHealEffect::AddSparks(int kind) {
     particle->angleBits = 0;
     particle->angleParameter = 0;
 
-    const int driftZ = (std::max)(rand() % 13, 0);
-    const int driftX = (std::max)(rand() % 13, 0);
+    const int driftZ = ClampedRandom(13);
+    const int driftX = ClampedRandom(13);
     particle->offsetY = 0.0f;
     particle->offsetX = static_cast<float>(driftX - 6);
     particle->offsetZ = static_cast<float>(driftZ - 6);
@@ -55,29 +55,29 @@ void CHealEffect::AddSparks(int kind) {
     case 0:
     case 3:
     case 6:
-      particle->scale = static_cast<float>((std::max)(rand() % 10, 0)) * 0.1f + 2.0f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.4f;
+      particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       break;
     case 1:
-      particle->scale = static_cast<float>((std::max)(rand() % 10, 0)) * 0.1f + 2.0f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.6f;
+      particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.6f;
       break;
     case 2:
-      particle->scale = static_cast<float>((std::max)(rand() % 40, 0)) * 0.1f + 0.4f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.4f;
+      particle->scale = static_cast<float>(ClampedRandom(40)) * 0.1f + 0.4f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       break;
     case 4:
-      particle->scale = static_cast<float>((std::max)(rand() % 10, 0)) * 0.1f + 2.0f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.3f;
+      particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.3f;
       break;
     case 7:
-      particle->scale = static_cast<float>((std::max)(rand() % 10, 0)) * 0.1f + 2.0f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.4f;
+      particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       particle->SetColor(0, 255, 255);
       break;
     case 8:
-      particle->scale = static_cast<float>((std::max)(rand() % 10, 0)) * 0.1f + 2.0f;
-      particle->animationParameter = static_cast<float>((std::max)(rand() % 40, 0)) * 0.01f + 0.4f;
+      particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       particle->SetColor(255, 255, 0);
       break;
     }
