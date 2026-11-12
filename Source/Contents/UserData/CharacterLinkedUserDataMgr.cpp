@@ -72,8 +72,7 @@ void CCharacterLinkedUserDataMgr::CompleteSave() {
 // OFFSET: 0x005E6BB0
 // FUNCTION: fn_03931
 __declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
-  const std::string base =
-    ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+  const std::string base = g_session.ResolveAccountServiceBase();
   if (!base.empty()) {
     this->m_saveUrl = base + OBFUSCATE_TEXT_NAMED("/charconfig/save", 0xD3E5516F89F161D1ULL, savePath);
 

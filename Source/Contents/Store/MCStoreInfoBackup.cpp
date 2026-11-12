@@ -78,7 +78,7 @@ void CMCStoreInfoBackup::Reset(LuaScript& settings, LuaScript& tables, const cha
   this->loaded = false;
   this->title = "";
   this->items.clear();
-  const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
+  const std::string base = g_session.ResolveAccountServiceBase();
 
   if (!base.empty()) {
     this->saveUrl = base + "/MerchantStore/save";

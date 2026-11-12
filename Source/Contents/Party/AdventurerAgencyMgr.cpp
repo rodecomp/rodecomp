@@ -70,7 +70,7 @@ const std::vector<CAdvenPartyInfo>& CAdventurerAgencyMgr::Entries() const {
 // OFFSET: 0x005CAA50
 // FUNCTION: fn_03655
 std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
-  std::string url = ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+  std::string url = g_session.ResolveAccountServiceBase();
 
   if (url.empty()) {
     return "";

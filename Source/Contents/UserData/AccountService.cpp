@@ -1,4 +1,6 @@
 #include "Contents/UserData/AccountService.h"
+#include "Client/Session/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Script/LuaScript.h"
 
 // OFFSET: 0x00DDBB60

@@ -1196,6 +1196,7 @@ public:
   void RefreshMercenaryInfo();
   bool IsBlankString(const char* text) const;
   void InvalidateWindowFrames();
+  std::string ResolveAccountServiceBase();
   void RefreshSkillTree();
   void SetJob(int job);
   void EraseMiniPartyRecord(int id);
