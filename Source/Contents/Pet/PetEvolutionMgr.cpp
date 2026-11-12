@@ -96,28 +96,37 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
 // FUNCTION: fn_05371
 bool CPetEvolutionMgr::Load() {
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    lua_register(lua.GetState(), "InsertEvolutionRecipeLGU", CPetEvolutionMgr::L_InsertEvolutionRecipeLGU);
-    lua_register(lua.GetState(), "InsertPetAutoFeeding", CPetEvolutionMgr::L_InsertPetAutoFeeding);
-    if (luaL_loadfile(lua.GetState(), "system\\PetEvolutionCln_true.lub") != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
-      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
-    } else {
-      lua_getglobal(lua.GetState(), "main");
-      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
-        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
-      } else if (!lua_isstring(lua.GetState(), -1)) {
-        MessageBoxA(nullptr, "second return value is not string...", "CPetEvolutionMgr", 0);
-      } else {
-        if (lua_toboolean(lua.GetState(), -2)) {
-          return true;
-        }
-        MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CPetEvolutionMgr", 0);
-      }
-    }
+  if (!lua.IsValid()) {
+    return false;
   }
 
-  return false;
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "InsertEvolutionRecipeLGU", CPetEvolutionMgr::L_InsertEvolutionRecipeLGU);
+  lua_register(lua.GetState(), "InsertPetAutoFeeding", CPetEvolutionMgr::L_InsertPetAutoFeeding);
+  if (luaL_loadfile(lua.GetState(), "system\\PetEvolutionCln_true.lub") != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
+    return false;
+  }
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
+    return false;
+  }
+
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPetEvolutionMgr", 0);
+    return false;
+  }
+  if (!lua_isstring(lua.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CPetEvolutionMgr", 0);
+    return false;
+  }
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CPetEvolutionMgr", 0);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x006733E0
