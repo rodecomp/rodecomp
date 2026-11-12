@@ -35,10 +35,13 @@ void CLightSphereEffect::CreateRayParticles(int param) {
         particle->scale = 1.0f;
 
         int r1 = std::rand() % 360;
-        particle->phaseParameter = r1 < 0 ? 0 : r1;
+        if (r1 < 0) {
+          r1 = 0;
+        }
+        particle->phaseParameter = r1;
 
         int r2 = std::rand() % 360;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(r2 < 0 ? 0 : r2);
+        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(r2, 0));
 
         int r3 = std::rand() % 360;
         particle->angleParameter = r3 < 0 ? 0 : r3;
