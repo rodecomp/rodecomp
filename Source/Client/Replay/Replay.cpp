@@ -756,40 +756,43 @@ int ReplayFileList::Open(int mode, int argument1, int argument2) {
     std::memset(this->path, 0, sizeof(this->path));
     std::memcpy(this->path, name.data(), name.size());
 
-    this->replay->fileMode = 0x20;
-    this->replay->file = std::fopen(this->path, "rb");
+    Replay* replay = this->replay;
+    replay->fileMode = 0x20;
+    replay->file = std::fopen(this->path, "rb");
 
-    if (this->replay->file) {
-      std::fseek(this->replay->file, 100, SEEK_SET);
-      std::memset(&this->replay->header, 0, 0xC);
-      std::fread(&this->replay->header, 0xC, 1, this->replay->file);
+    if (replay->file) {
+      std::fseek(replay->file, 100, SEEK_SET);
+      std::memset(&replay->header, 0, 0xC);
+      std::fread(&replay->header, 0xC, 1, replay->file);
 
-      if (this->replay->header.signature == 0x52414705u || this->replay->header.signature == 0x51404605u) {
+      if (replay->header.signature == 0x52414705u || replay->header.signature == 0x51404605u) {
         for (int index = 0; index <= 0x1A; ++index) {
           ReplaySection section = {};
-          std::fread(&section, sizeof(section), 1, this->replay->file);
+          std::fread(&section, sizeof(section), 1, replay->file);
 
-          if (section.id > 0x1A) {
+          if (section.id < 0 || section.id > 0x1A) {
             break;
           }
 
-          this->replay->sections[section.id] = section;
+          replay->sections[section.id].id = section.id;
+          replay->sections[section.id].bytes = section.bytes;
+          replay->sections[section.id].fileOffset = section.fileOffset;
         }
 
-        if (this->replay->ParseMetadata(this->replay->ReadSection(2)) != 0xFFFFFFFFu) {
+        if (replay->ParseMetadata(replay->ReadSection(2)) != 0xFFFFFFFFu) {
           return 1;
         }
 
-        std::memset(&this->replay->header, 0, sizeof(this->replay->header));
+        std::memset(&replay->header, 0, sizeof(replay->header));
       }
 
-      if (this->replay->file) {
-        std::fclose(this->replay->file);
-        this->replay->file = nullptr;
+      if (replay->file) {
+        std::fclose(replay->file);
+        replay->file = nullptr;
       }
 
-      std::memset(&this->replay->header, 0, sizeof(this->replay->header));
-      std::memset(this->replay->sections, 0, sizeof(this->replay->sections));
+      std::memset(&replay->header, 0, sizeof(replay->header));
+      std::memset(replay->sections, 0, sizeof(replay->sections));
     }
 
     return 0;
