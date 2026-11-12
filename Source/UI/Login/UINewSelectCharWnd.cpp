@@ -421,7 +421,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     }
     slotInfo.frame = 0;
 
-    slotInfo.actionNames[0] = GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
+    slotInfo.actionNames[0] = g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
     slotInfo.spriteNames[0] = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
     int head = character->head;
     slotInfo.actionNames[1] = g_session.GetHeadActName(character->job, character->sex, &head);
@@ -445,7 +445,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
       slotInfo.headPaletteName = g_session.GetHeadPalName(head, character->job, character->sex, slotInfo.headPalette);
     }
 
-    slotInfo.imfName = GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
+    slotInfo.imfName = g_session.GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
   }
 
   for (int index = 0; index < this->m_totalSlots; ++index) {

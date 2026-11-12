@@ -97,7 +97,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->m_slots[slotIndex].action = 0;
     this->m_slots[slotIndex].frame = 0;
 
-    this->m_slots[slotIndex].actionNames[0] = static_cast<const std::string&>(GetBodyActionResourceName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
+    this->m_slots[slotIndex].actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
     this->m_slots[slotIndex].spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
 
     int head = info->head;
@@ -128,7 +128,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
       this->m_slots[slotIndex].headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.GetCurrentSex(), this->m_slots[slotIndex].headPalette));
     }
 
-    this->m_slots[slotIndex].imfName = GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
+    this->m_slots[slotIndex].imfName = g_session.GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
   }
 }
 

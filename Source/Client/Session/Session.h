@@ -1124,6 +1124,8 @@ public:
   const std::vector<std::string>* GetFogParameters(const char* rswName, int* found);
   std::string GetPlayerHeadSprName();
   std::string GetImfName(int job);
+  std::string GetBodyImfName(int job, int sex, int head, int costumeJob);
+  std::string GetBodyActionResourceName(int job, int sex, int costumeJob, int costume);
   std::uint16_t FindInventoryIndexByItemId(int itemId);
   std::vector<int> FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly);
   std::vector<unsigned char> BuildStatusReplayPacket();

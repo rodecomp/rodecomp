@@ -162,7 +162,7 @@ void UINewSkillListWnd::DrawCharacter() {
   const int bodyPalette = g_session.m_bodyStyle;
   const int headPalette = g_session.m_headPalette;
 
-  actions[0].assign(static_cast<const std::string&>(GetBodyActionResourceName(job, sex, g_session.m_bodyCostume, 0)));
+  actions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(job, sex, g_session.m_bodyCostume, 0)));
   sprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(job, sex, g_session.m_bodyCostume, 0)));
   actions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(job, sex, &head)));
   sprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(job, sex, &head)));
@@ -172,7 +172,7 @@ void UINewSkillListWnd::DrawCharacter() {
   if (headPalette != 0) {
     headPal.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, job, sex, headPalette)));
   }
-  bodyImf = GetBodyImfName(job, sex, head, g_session.m_bodyCostume);
+  bodyImf = g_session.GetBodyImfName(job, sex, head, g_session.m_bodyCostume);
 
   for (int layer = 0; layer < 2; ++layer) {
     ResourceMgr::Instance().Load(bodyImf.c_str());

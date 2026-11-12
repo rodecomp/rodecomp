@@ -1,4 +1,5 @@
 #include "Contents/Sprites/SpriteRidingOffset.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/Jobs/JobNames.h"
 #include "Resource/ResourceMgr.h"
@@ -6,7 +7,7 @@
 
 // OFFSET: 0x00DDE340
 // FUNCTION: fn_23394
-std::string GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
+std::string CSession::GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
   return g_equipmentResourceMgr->GetBodyResourceName(0, job, sex, costumeJob, costume);
 }
 
@@ -17,7 +18,7 @@ int SpriteRidingOffset(const ActionFrame* frame, unsigned animation, unsigned mo
     return 0;
   }
 
-  std::string name = GetBodyActionResourceName(JobNames::BaseJob(job), sex, costumeJob, 0);
+  std::string name = g_session.GetBodyActionResourceName(JobNames::BaseJob(job), sex, costumeJob, 0);
   std::string resourceName(name);
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(resourceName));
   if (!action) {

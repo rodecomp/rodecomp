@@ -570,14 +570,14 @@ void CPc::SetModifyFactorOfmotionSpeed(int value) {
 
 // OFFSET: 0x00DDD190
 // FUNCTION: fn_23381
-__declspec(noinline) std::string GetBodyImfName(int job, int sex, int head, int costumeJob) {
+__declspec(noinline) std::string CSession::GetBodyImfName(int job, int sex, int head, int costumeJob) {
   return g_equipmentResourceMgr->GetBodyImfName(job, sex, head, costumeJob);
 }
 
 // OFFSET: 0x00DB0500
 // FUNCTION: fn_22617
 void CGrannyPc::SetImfFileName() {
-  this->imfName = GetBodyImfName(
+  this->imfName = g_session.GetBodyImfName(
     this->GetEffectiveJob(-1), this->sex, this->head, this->GetEffectiveJob(-1)
   );
 }
@@ -591,7 +591,7 @@ void CPc::SetImfFileName() {
     job = g_session.GetRidingJob(job);
   }
 
-  this->imfName = GetBodyImfName(job, this->sex, this->head, this->bodyStyle);
+  this->imfName = g_session.GetBodyImfName(job, this->sex, this->head, this->bodyStyle);
 }
 
 // OFFSET: 0x00DAFB60
@@ -2544,23 +2544,23 @@ void CPc::SetSprJob(int job) {
     this->LoadEquipAction(0, g_session.GetRaceBodyResourceName(0, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetRaceBodyResourceName(1, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
   } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SANTA, this->sex, 0, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SANTA, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SANTA, this->sex, 0, 0).c_str());
   } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER, this->sex, 0, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SUMMER, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER, this->sex, 0, 0).c_str());
   } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_HANBOK, this->sex, 0, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_HANBOK, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_HANBOK, this->sex, 0, 0).c_str());
   } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
   } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
-    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER2, this->sex, 0, 0).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SUMMER2, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER2, this->sex, 0, 0).c_str());
   } else if (this->isRiding != 0) {
     this->LoadEquipAction(
-      0, GetBodyActionResourceName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str()
+      0, g_session.GetBodyActionResourceName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str()
     );
     this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str());
   } else {
@@ -2581,7 +2581,7 @@ void CPc::SetSprJob(int job) {
     }
 
     this->LoadEquipAction(
-      0, GetBodyActionResourceName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str()
+      0, g_session.GetBodyActionResourceName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str()
     );
     this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
   }
@@ -4360,7 +4360,7 @@ void CPc::SetState(int state, int resetPosition) {
 
   if (state == 3) {
     const int job = this->GetEffectiveJob(JobNames::BaseJob(this->job));
-    this->LoadEquipAction(0, GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
     current = this->render.state;
   }

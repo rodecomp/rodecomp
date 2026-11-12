@@ -110,7 +110,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   int layer = 0;
   CImfRes* imf = static_cast<CImfRes*>(
-    ResourceMgr::Instance().Load(GetBodyImfName(this->job, this->appearance[0], this->appearance[1], this->bodyCostume).c_str())
+    ResourceMgr::Instance().Load(g_session.GetBodyImfName(this->job, this->appearance[0], this->appearance[1], this->bodyCostume).c_str())
   );
   this->RenderRobeCommands(commands, false, view, layer, position, screenX, screenY, distanceScale, 0.0f, rhw);
 
@@ -125,7 +125,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   std::vector<CSprRes*> sprites(9, nullptr);
   const int job = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
   actions[0] = static_cast<CActRes*>(
-    ResourceMgr::Instance().Load(GetBodyActionResourceName(job, this->appearance[0], this->bodyCostume, 0))
+    ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(job, this->appearance[0], this->bodyCostume, 0))
   );
   const int spriteJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
   sprites[0] = static_cast<CSprRes*>(
@@ -243,7 +243,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       case 1: {
         const int bodyJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
         CActRes* bodyAction = static_cast<CActRes*>(
-          ResourceMgr::Instance().Load(GetBodyActionResourceName(bodyJob, this->appearance[0], this->bodyCostume, 0))
+          ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(bodyJob, this->appearance[0], this->bodyCostume, 0))
         );
         const ActionFrame& bodyFrame = bodyAction->Frame(this->actionIndex, this->frameIndex);
         if (frame->anchorCount > 0 && bodyFrame.anchorCount > 0) {

@@ -166,7 +166,7 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_view.x = 70;
   this->m_view.y = 123;
 
-  this->m_view.actionNames[0].assign(GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
+  this->m_view.actionNames[0].assign(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
   this->m_view.spriteNames[0].assign(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0));
 
   if (this->m_info.sex == 1 && this->m_info.head == 13) {
@@ -190,7 +190,7 @@ UIMakeCharWnd::UIMakeCharWnd()
     this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette));
   }
 
-  this->m_view.imfName = GetBodyImfName(this->m_info.job, this->m_info.sex, this->m_info.head, this->m_info.bodyCostume);
+  this->m_view.imfName = g_session.GetBodyImfName(this->m_info.job, this->m_info.sex, this->m_info.head, this->m_info.bodyCostume);
   this->geometry.currentAlpha = 0x80;
   this->geometry.targetAlpha = 0xFF;
 }
@@ -4320,7 +4320,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->m_view.actionNames[1].assign(g_session.GetHeadActName(this->m_info.job, sex, &head));
       this->m_view.spriteNames[1].assign(g_session.GetHeadSprName(this->m_info.job, sex, &head));
       this->m_info.head = static_cast<std::int16_t>(head);
-      this->m_view.imfName = GetBodyImfName(this->m_info.job, sex, this->m_info.head, this->m_info.bodyCostume);
+      this->m_view.imfName = g_session.GetBodyImfName(this->m_info.job, sex, this->m_info.head, this->m_info.bodyCostume);
       if (this->m_view.headPalette) {
         this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, sex, this->m_view.headPalette));
       }

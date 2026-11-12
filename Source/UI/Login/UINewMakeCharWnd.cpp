@@ -85,7 +85,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_action = 0;
   this->m_frame = 0;
 
-  this->m_raceActions[0].assign(static_cast<const std::string&>(GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0)));
+  this->m_raceActions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0)));
   this->m_raceSprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0)));
 
   if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && this->m_head == 13) {
@@ -109,7 +109,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
     this->m_racePalettes[0].assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette)));
   }
 
-  this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
+  this->m_raceOffsets = g_session.GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
 
   this->previewState = 0;
   this->m_startTime = timeGetTime();
@@ -331,7 +331,7 @@ void UIHairStyleButton::OnCreate(int width, int height) {
 // OFFSET: 0x007DBFD0
 // FUNCTION: fn_09626
 void UINewMakeCharWnd::UpdatePreviewResources() {
-  this->m_raceActions[0] = static_cast<const std::string&>(GetBodyActionResourceName(this->m_job, this->m_sex, this->m_job, 0));
+  this->m_raceActions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_job, this->m_sex, this->m_job, 0));
   this->m_raceSprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, this->m_job, 0));
   int head = this->m_head;
   this->m_raceActions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
@@ -350,7 +350,7 @@ void UINewMakeCharWnd::UpdatePreviewResources() {
     this->m_racePalettes[0] = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette));
   }
 
-  this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
+  this->m_raceOffsets = g_session.GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
 }
 
 // OFFSET: 0x007DA340

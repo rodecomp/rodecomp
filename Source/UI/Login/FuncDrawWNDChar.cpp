@@ -377,7 +377,7 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
       case 1: {
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
         sprName = static_cast<const std::string&>(g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield));
-        actName = static_cast<const std::string&>(GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield));
+        actName = static_cast<const std::string&>(g_session.GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield));
         this->bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0));
         break;
       }
