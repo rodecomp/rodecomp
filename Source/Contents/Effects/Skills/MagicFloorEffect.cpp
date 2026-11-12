@@ -140,9 +140,10 @@ bool CMagicFloorEffect::IsAlive() {
 void CMagicFloorEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
 
     if (particle) {
       const float current = *reinterpret_cast<const float*>(&particle->angleBits);
@@ -186,9 +187,10 @@ void CMagicFloorEffect::OnProcess() {
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
 
     if (particle) {
       const int direction = static_cast<int>(*reinterpret_cast<const float*>(&particle->angleBits) + 5.0f) % 360;
