@@ -25,19 +25,8 @@
 
 #include "Resource/MSGSTRINGID.h"
 extern "C" {
-void lua_settop(lua_State* L, int index);
-int lua_type(lua_State* L, int index);
-double lua_tonumber(lua_State* L, int index);
-void lua_pushnil(lua_State* L);
-void lua_pushnumber(lua_State* L, double value);
-void lua_pushstring(lua_State* L, const char* text);
-void lua_gettable(lua_State* L, int index);
-void lua_getfield(lua_State* L, int index, const char* key);
-int lua_next(lua_State* L, int index);
+#include <lua.h>
 }
-
-constexpr int LUA_GLOBALSINDEX = -10002;
-constexpr int LUA_TTABLE = 5;
 
 #include <cstddef>
 #include <cstdint>
