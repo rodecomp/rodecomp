@@ -371,11 +371,11 @@ void UIWindowMgr::LoadUIRectInfo() {
       if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->messengerGroupWndVisible), &size) != ERROR_SUCCESS) {
         this->messengerGroupWndVisible = 0;
       }
-      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", nullptr, &type, base + 0x740, &size) != ERROR_SUCCESS) {
-        *reinterpret_cast<int*>(base + 0x740) = 1;
+      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", nullptr, &type, reinterpret_cast<BYTE*>(&this->messengerPartyTab), &size) != ERROR_SUCCESS) {
+        this->messengerPartyTab = 1;
       }
-      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", nullptr, &type, base + 0x744, &size) != ERROR_SUCCESS) {
-        *reinterpret_cast<int*>(base + 0x744) = 0;
+      if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", nullptr, &type, reinterpret_cast<BYTE*>(&this->messengerSizeMode), &size) != ERROR_SUCCESS) {
+        this->messengerSizeMode = 0;
       }
       RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.X", nullptr, &type, base + 0x75C, &size);
       RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.Y", nullptr, &type, base + 0x760, &size);
@@ -392,8 +392,8 @@ void UIWindowMgr::LoadUIRectInfo() {
       RegQueryValueExA(key, "MERCHANTITEMWNDINFO.Y", nullptr, &type, base + 0x784, &size);
       RegQueryValueExA(key, "MERCHANTITEMWNDINFO.W", nullptr, &type, base + 0x788, &size);
       RegQueryValueExA(key, "MERCHANTITEMWNDINFO.H", nullptr, &type, base + 0x78C, &size);
-      if (RegQueryValueExA(key, "MERCHANTITEMWNDINFO.SHOW", nullptr, &type, base + 0x790, &size) != ERROR_SUCCESS) {
-        *reinterpret_cast<int*>(base + 0x790) = 0;
+      if (RegQueryValueExA(key, "MERCHANTITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->merchantItemWndVisible), &size) != ERROR_SUCCESS) {
+        this->merchantItemWndVisible = 0;
       }
       RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.X", nullptr, &type, base + 0x794, &size);
       RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.Y", nullptr, &type, base + 0x798, &size);
@@ -851,8 +851,8 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.W", 0, REG_DWORD, base + 0x734, 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.H", 0, REG_DWORD, base + 0x738, 4);
     RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->messengerGroupWndVisible), 4);
-    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", 0, REG_DWORD, base + 0x740, 4);
-    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", 0, REG_DWORD, base + 0x744, 4);
+    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->messengerPartyTab), 4);
+    RegSetValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->messengerSizeMode), 4);
     RegSetValueExA(key, "EXCHANGEACCEPTWNDINFO.X", 0, REG_DWORD, base + 0x75C, 4);
     RegSetValueExA(key, "EXCHANGEACCEPTWNDINFO.Y", 0, REG_DWORD, base + 0x760, 4);
     RegSetValueExA(key, "EXCHANGEACCEPTWNDINFO.W", 0, REG_DWORD, base + 0x764, 4);
@@ -866,7 +866,7 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.Y", 0, REG_DWORD, base + 0x784, 4);
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.W", 0, REG_DWORD, base + 0x788, 4);
     RegSetValueExA(key, "MERCHANTITEMWNDINFO.H", 0, REG_DWORD, base + 0x78C, 4);
-    RegSetValueExA(key, "MERCHANTITEMWNDINFO.SHOW", 0, REG_DWORD, base + 0x790, 4);
+    RegSetValueExA(key, "MERCHANTITEMWNDINFO.SHOW", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->merchantItemWndVisible), 4);
     RegSetValueExA(key, "MERCHANTMIRRORITEMWNDINFO.X", 0, REG_DWORD, base + 0x794, 4);
     RegSetValueExA(key, "MERCHANTMIRRORITEMWNDINFO.Y", 0, REG_DWORD, base + 0x798, 4);
     RegSetValueExA(key, "MERCHANTMIRRORITEMWNDINFO.W", 0, REG_DWORD, base + 0x79C, 4);

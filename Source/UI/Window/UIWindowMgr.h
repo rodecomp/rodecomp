@@ -359,7 +359,8 @@ public:
   /* 05D0 */ int shortenItemWndVisible;
   /* 05D4 */ unsigned char padding_05D4[0x168];
   /* 073C */ int messengerGroupWndVisible;
-  /* 0740 */ unsigned char messengerPartyTabState[0x08];
+  /* 0740 */ int messengerPartyTab;
+  /* 0744 */ int messengerSizeMode;
   /* 0748 */ NormalItemSlotWindow m_normalItemSlotWindow;
   /* 075C */ unsigned char exchangeAcceptAndSkillListPlacement[0x20];
   /* 077C */ int skillListWndVisible;

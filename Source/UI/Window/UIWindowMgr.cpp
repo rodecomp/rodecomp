@@ -4281,26 +4281,18 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_FRIENDWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      int previous;
-      std::memcpy(&previous, this->messengerPartyTabState, sizeof(previous));
-      int partyTab = 0;
-      std::memcpy(this->messengerPartyTabState, &partyTab, sizeof(partyTab));
-      const bool closed = g_windowMgr.CloseWindow(WID_MESSENGERWND);
-      std::memcpy(&partyTab, this->messengerPartyTabState, sizeof(partyTab));
-      if (!closed || previous != partyTab) {
+      const int previous = this->messengerPartyTab;
+      this->messengerPartyTab = 0;
+      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerPartyTab) {
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
     }
     break;
   case HK_PARTYWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      int previous;
-      std::memcpy(&previous, this->messengerPartyTabState, sizeof(previous));
-      int partyTab = 1;
-      std::memcpy(this->messengerPartyTabState, &partyTab, sizeof(partyTab));
-      const bool closed = g_windowMgr.CloseWindow(WID_MESSENGERWND);
-      std::memcpy(&partyTab, this->messengerPartyTabState, sizeof(partyTab));
-      if (!closed || previous != partyTab) {
+      const int previous = this->messengerPartyTab;
+      this->messengerPartyTab = 1;
+      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerPartyTab) {
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
     }
@@ -5113,7 +5105,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   case WID_MESSENGERWND:
-    if (*reinterpret_cast<const int*>(this->messengerPartyTabState)) {
+    if (this->messengerPartyTab) {
       this->EnsureWindow(WID_MESSENGERGROUPWND)->SendMsg(nullptr, UM_COMMAND, ID_RADIOBTN, 2, 0, 0);
     } else {
       this->EnsureWindow(WID_MESSENGERGROUPWND)->SendMsg(nullptr, UM_COMMAND, ID_RADIOBTN, 1, 0, 0);
