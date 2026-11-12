@@ -671,9 +671,7 @@ UIMessengerGroupWnd::UIMessengerGroupWnd() : UIFrameWnd(0) {
   this->iconModeButtons[1] = nullptr;
   this->iconModeButtons[0] = nullptr;
   this->iconIndex = 0;
-  for (int i = 0; i < 11; ++i) {
-    this->hiddenButtons[i] = 0;
-  }
+  SecureZeroMemory(this->hiddenButtons, sizeof(this->hiddenButtons));
 }
 
 // OFFSET: 0x0073A080
