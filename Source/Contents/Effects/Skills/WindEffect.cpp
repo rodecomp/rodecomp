@@ -38,7 +38,7 @@ void CWindEffect::Init() {
       particle->alpha = alpha;
       particle->SetColor(this->red, this->green, this->blue);
       particle->scale = this->particleScale;
-      particle->animationParameter = this->ringCount > 1 ? this->height / static_cast<float>(this->ringCount - 1) * static_cast<float>(ring) : 0.0f;
+      particle->animationParameter = 1 < this->ringCount ? this->height / static_cast<float>(this->ringCount - 1) * static_cast<float>(ring) : 0.0f;
       particle->speedParameter = this->angleSpeed;
       particle->angleParameter = this->arcLength;
       if (this->sourceBlend != -1) {
