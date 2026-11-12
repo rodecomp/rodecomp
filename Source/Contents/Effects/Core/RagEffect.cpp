@@ -9231,18 +9231,18 @@ void CRagEffect::FrostScatter(char swapAxes, char narrow) {
 
 // INLINED
 static __forceinline void SetupRippleSlot(CRagEffect& effect, int slot, std::int16_t rotStart, float distance, std::int16_t riseAngle) {
-  effect.state.currentPrimitive->slots[slot].life = 1;
-  effect.state.currentPrimitive->slots[slot].process = 0;
-  effect.state.currentPrimitive->slots[slot].fullDisplayAngle = 360;
-  effect.state.currentPrimitive->slots[slot].rotStart = rotStart;
-  effect.state.currentPrimitive->slots[slot].alphaB = 0;
-  effect.state.currentPrimitive->slots[slot].distance = distance;
-  effect.state.currentPrimitive->slots[slot].maxHeight = effect.state.currentPrimitive->slots[slot].distance;
-  effect.state.currentPrimitive->slots[slot].riseAngle = riseAngle;
-  effect.state.currentPrimitive->slots[slot].vecBNow.y = 0.0f;
+  effect.state.lastPrim->state.slots[slot].life = 1;
+  effect.state.lastPrim->state.slots[slot].process = 0;
+  effect.state.lastPrim->state.slots[slot].fullDisplayAngle = 360;
+  effect.state.lastPrim->state.slots[slot].rotStart = rotStart;
+  effect.state.lastPrim->state.slots[slot].alphaB = 0;
+  effect.state.lastPrim->state.slots[slot].distance = distance;
+  effect.state.lastPrim->state.slots[slot].maxHeight = effect.state.lastPrim->state.slots[slot].distance;
+  effect.state.lastPrim->state.slots[slot].riseAngle = riseAngle;
+  effect.state.lastPrim->state.slots[slot].vecBNow.y = 0.0f;
   for (int j = 0; j < 21; ++j) {
-    effect.state.currentPrimitive->slots[slot].height[j] = 0.0f;
-    effect.state.currentPrimitive->slots[slot].flag1[j] = 0;
+    effect.state.lastPrim->state.slots[slot].height[j] = 0.0f;
+    effect.state.lastPrim->state.slots[slot].flag1[j] = 0;
   }
 }
 
@@ -9252,15 +9252,15 @@ static __forceinline void LaunchRippleRings(CRagEffect& effect, const char* name
   effect.render.position.x = parent.position.x;
   effect.render.position.y = parent.position.y;
   effect.render.position.z = parent.position.z;
-  effect.state.currentPrimitive = &CreateEffectParticle(effect, effect.render, 65, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  effect.state.currentPrimitive->renderFlag = 5;
-  effect.state.currentPrimitive->duration = effect.state.duration;
-  AllocateTextures(*effect.state.currentPrimitive);
-  effect.state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  effect.state.lastPrim = CreateEffectParticle(effect, effect.render, 65, 0.0f, 0.0f, 0.0f, WorldObjects());
+  effect.state.lastPrim->state.renderFlag = 5;
+  effect.state.lastPrim->state.duration = effect.state.duration;
+  AllocateTextures(effect.state.lastPrim->state);
+  effect.state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   if (kind == 0) {
-    effect.state.currentPrimitive->size = smallSize;
+    effect.state.lastPrim->state.size = smallSize;
   } else if (kind == 1) {
-    effect.state.currentPrimitive->size = 18.0f;
+    effect.state.lastPrim->state.size = 18.0f;
   }
 
   SetupRippleSlot(effect, 0, static_cast<std::int16_t>(270 + turn), 2.5f + growth, static_cast<std::int16_t>(53 - turn));
@@ -9285,49 +9285,49 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = 99999999;
-    this->state.currentPrimitive->pattern |= 1u;
-    this->state.currentPrimitive->radius = 15.0f;
-    this->state.currentPrimitive->deltaPos2.y -= 1.5f;
-    this->state.currentPrimitive->latitude = 90.0f;
-    this->state.currentPrimitive->alpha = 0.0f;
-    this->state.currentPrimitive->maxAlpha = 128.0f;
-    this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
-    this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 10;
-    Owner(this->state.currentPrimitive).InitSegment();
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim->state.duration = 99999999;
+    this->state.lastPrim->state.pattern |= 1u;
+    this->state.lastPrim->state.radius = 15.0f;
+    this->state.lastPrim->state.deltaPos2.y -= 1.5f;
+    this->state.lastPrim->state.latitude = 90.0f;
+    this->state.lastPrim->state.alpha = 0.0f;
+    this->state.lastPrim->state.maxAlpha = 128.0f;
+    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
+    this->state.lastPrim->InitSegment();
+    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
   if (this->state.stateCnt % 10 != 0) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 4.5f;
-  this->state.currentPrimitive->radiusSpeed = 0.0005f;
-  this->state.currentPrimitive->duration = 70;
-  this->state.currentPrimitive->longitude = static_cast<float>(ClampedRandom(360));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 4.5f;
+  this->state.lastPrim->state.radiusSpeed = 0.0005f;
+  this->state.lastPrim->state.duration = 70;
+  this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
   if (ClampedRandom(2) == 0) {
-    this->state.currentPrimitive->longSpeed = 2.5f - static_cast<float>(ClampedRandom(11)) * 0.1f;
+    this->state.lastPrim->state.longSpeed = 2.5f - static_cast<float>(ClampedRandom(11)) * 0.1f;
   } else {
-    this->state.currentPrimitive->longSpeed = static_cast<float>(ClampedRandom(11)) * 0.1f - 2.5f;
+    this->state.lastPrim->state.longSpeed = static_cast<float>(ClampedRandom(11)) * 0.1f - 2.5f;
   }
 
-  this->state.currentPrimitive->gravSpeed = -0.3f;
-  EffectPrimitiveState& falling = *this->state.currentPrimitive;
+  this->state.lastPrim->state.gravSpeed = -0.3f;
+  EffectPrimitiveState& falling = this->state.lastPrim->state;
   falling.gravAccel = -(falling.gravSpeed / falling.duration) / 1.5f;
-  EffectPrimitiveState& particle = *this->state.currentPrimitive;
+  EffectPrimitiveState& particle = this->state.lastPrim->state;
   reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
-  EffectPrimitiveState& moving = *this->state.currentPrimitive;
+  EffectPrimitiveState& moving = this->state.lastPrim->state;
   moving.deltaPos2 = RotatedForward(moving.transform, moving.radius);
-  this->state.currentPrimitive->size = static_cast<float>(ClampedRandom(10) / 10) + 0.7f;
-  const int lifetime = this->state.currentPrimitive->duration;
-  this->state.currentPrimitive->fadeOutCnt = lifetime - lifetime / 3;
-  Owner(this->state.currentPrimitive).SetSpriteName("이팩트\\particle1.spr");
-  Owner(this->state.currentPrimitive).SetActionName("이팩트\\particle1.act");
-  Owner(this->state.currentPrimitive).InitSegment();
+  this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(10) / 10) + 0.7f;
+  const int lifetime = this->state.lastPrim->state.duration;
+  this->state.lastPrim->state.fadeOutCnt = lifetime - lifetime / 3;
+  this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+  this->state.lastPrim->SetActionName("이팩트\\particle1.act");
+  this->state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C0E820
