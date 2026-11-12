@@ -9732,10 +9732,12 @@ UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
 // FUNCTION: fn_12370
 int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case UM_ADDITEM:
-    this->m_items.push_back(LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2)));
+  case UM_ADDITEM: {
+    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2));
+    this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;
+  }
   case UM_REFRESH:
     this->UpdateScroll();
     this->Invalidate();
