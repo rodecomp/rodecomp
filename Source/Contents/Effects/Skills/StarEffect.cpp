@@ -126,7 +126,8 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
   }
 
   StarParticleState& state = *reinterpret_cast<StarParticleState*>(&particle->animationParameter);
-  if (particle->elapsedFrames % 14 == 0) {
+  const int frame = particle->elapsedFrames;
+  if (frame % 14 == 0) {
     int texture = static_cast<int>(state.texture) + 1;
     if (texture > 6) {
       texture = 1;
@@ -135,7 +136,6 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     particle->SetTexture(FormatOwnedString("effect\\star%02d.bmp", texture).c_str());
   }
 
-  const int frame = particle->elapsedFrames;
   int alpha = particle->alpha;
   if (frame < 80) {
     alpha += 3;
