@@ -74,7 +74,8 @@ bool CPlayerNameDictionary::Contains(std::uint32_t id) const {
 // FUNCTION: fn_04265
 void CPlayerNameDictionary::Update() {
   while (!this->m_requests.empty()) {
-    if (timeGetTime() < this->m_requests.front().tick + 10000u) {
+    const Request request = this->m_requests.front();
+    if (timeGetTime() < request.tick + 10000u) {
       break;
     }
 
