@@ -983,12 +983,13 @@ void CFallenAngelEffect::SetPosition(vector3d position) {
   vector3d target = position;
   target.y += (g_cameraDistance - 230.0f) * 0.0625f + 10.0f;
 
+  EZ2STREmitter* emitter = this->emitter;
   this->position[0] = target.x;
   this->position[1] = target.y;
   this->position[2] = target.z;
-  this->emitter->position.x = target.x;
-  this->emitter->position.y = target.y;
-  this->emitter->position.z = target.z;
+  emitter->position.x = target.x;
+  emitter->position.y = target.y;
+  emitter->position.z = target.z;
 }
 
 // OFFSET: 0x007118C0
@@ -3346,8 +3347,10 @@ void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
   particle->frameParameters[0] = ClampedRandom(2);
 
   const int angle = ClampedRandom(360);
-  particle->offsetX = g_cosTable[angle] * 18.0f;
-  particle->offsetZ = g_sinTable[angle] * 18.0f;
+  const float x = g_cosTable[angle] * 18.0f;
+  const float z = g_sinTable[angle] * 18.0f;
+  particle->offsetZ = z;
+  particle->offsetX = x;
   particle->offsetY = 0.0f;
   particle->alpha = 0xFF;
   particle->scale = static_cast<float>(ClampedRandom(31)) * 0.1f + 2.0f;
