@@ -48,10 +48,12 @@ bool CSmokeEffect::IsAlive() {
 // FUNCTION: fn_19179
 void CSmokeEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CSpriteParticle* particle = *it) {
+    CSpriteParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+    if (particle) {
       matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
       float& angle = *reinterpret_cast<float*>(&particle->angleBits);
       float& spin = *reinterpret_cast<float*>(&particle->spinBits);
