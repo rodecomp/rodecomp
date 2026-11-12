@@ -908,19 +908,22 @@ void CUIRewards::OnCreate(int width, int height) {
   rewardList->rowHeight = 41;
   rewardList->SetSize(225, 41);
   this->rewardList->Move(110, 72);
-  this->rewardList->onSelect = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnPrepareItem(item, data); };
-  this->rewardList->binder = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnBindItem(item, data); };
+  this->rewardList->SetOnSelect([this](CUIRewardItem* item, const CRewardItemData& data) { this->OnPrepareItem(item, data); });
+  this->rewardList->SetBinder([this](CUIRewardItem* item, const CRewardItemData& data) { this->OnBindItem(item, data); });
   this->rewardList->SetImages("", "", "", "");
-  this->rewardList->itemX = 0;
-  this->rewardList->itemY = 0;
+  {
+    CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList = this->rewardList;
+    rewardList->itemX = 0;
+    rewardList->itemY = 0;
+  }
   this->rewardList->scrollBar->SetSize(7, 41);
   this->rewardList->scrollBar->Move(218, 0);
   this->rewardList->scrollBar->step = 41;
-  this->rewardList->scrollBar->SetButtonImages(
+  this->rewardList->SetScrollBarButtonImages(
     "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
   );
-  this->rewardList->scrollBar->SetBackground("");
-  this->rewardList->scrollBar->SetThumbImages(
+  this->rewardList->SetScrollBarBackground("");
+  this->rewardList->SetScrollBarThumbImages(
     "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
     "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
   );
