@@ -510,7 +510,10 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
     wideKeywords.push_back(std::wstring(buffer));
   }
 
-  const std::string text = this->name + ' ' + this->title + ' ';
+  std::string text = this->name;
+  text.push_back(' ');
+  text += this->title;
+  text.push_back(' ');
   MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, buffer, 100);
   const std::wstring wideText(buffer);
 
@@ -555,7 +558,10 @@ void CNaviInfo::SearchMobs(const std::vector<std::string>& keywords, std::vector
   }
 
   std::wstring entryText;
-  const std::string text = this->name + ' ' + this->title + ' ';
+  std::string text = this->name;
+  text.push_back(' ');
+  text += this->title;
+  text.push_back(' ');
   MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, buffer, 100);
   const std::wstring wideText(buffer);
 
