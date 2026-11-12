@@ -1594,7 +1594,8 @@ void CSkillAction_AT_TERRA_HARVEST::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  const int variant = std::max(std::rand() % 2, 0);
+  const int roll = std::rand() % 2;
+  const int variant = roll >= 0 ? roll : 0;
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string([] {
     constexpr auto bytesText = CRYPT_NAME("terra_harvest_red", 0xAFA5617F178B6185ULL);
     const auto& bytes = bytesText.data;

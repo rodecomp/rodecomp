@@ -610,7 +610,8 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectCreate(int argument, CRender
     return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
-  if (CEffect* effect = g_effectMgr->Spawn(object->render.accountId, 2472, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(object->render.accountId, 2472, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames([] {
       const char bytes[] = CRYPT_CHARS(16, "ice_pillar_loop", 0x0BEB63A5C905B3A7ULL);
       thread_local EncryptedName<sizeof(bytes), 0x0BEB63A5C905B3A7ULL> name(bytes);
@@ -622,7 +623,8 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectCreate(int argument, CRender
     }());
     effect->SetDelay(990);
   }
-  if (CEffect* effect = g_effectMgr->Spawn(object->render.accountId, 2473, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(object->render.accountId, 2473, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames([] {
       const char bytes[] = CRYPT_CHARS(23, "ice_pillar_loop_bottom", 0x8F1B5BFD5F6175B5ULL);
       thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
