@@ -22,6 +22,7 @@
 #include "UI/Login/UILoginWnd.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -129,13 +130,6 @@ const char* DecryptText(const std::uint8_t (&source)[Length]) {
   return text.Text();
 }
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptString(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> text(source);
-  return text.Text();
-}
-
 // OFFSET: 0x00ACFCF0
 // FUNCTION: fn_17807
 const char* GetLicenceText() {
@@ -148,9 +142,7 @@ const char* GetLicenceText() {
       text.assign(static_cast<const char*>(file.GetData()), file.GetSize());
       file.Close();
     } else {
-      text = DecryptString<0xBDADDD87C5A50B6BULL>({'\x25', '\x64', '\x85', '\x80', '\xD2', '\x91', '\xEC', '\x9D', '\x1F', '\x6E', '\xDD', '\xB1', '\xA7', '\xBB',
-                                                   '\xC4', '\xD1', '\x0E', '\x25', '\x85', '\xED', '\xEB', '\xB4', '\xCE', '\xD8', '\x05', '\x68', '\xC0', '\xEB',
-                                                   '\xF3', '\xA5', '\xD9', '\x94', '\x6B'});
+      text = OBFUSCATE_TEXT("No EULA text file. (licence.txt)", 0xBDADDD87C5A50B6BULL);
     }
   }
 
@@ -188,9 +180,7 @@ void InitializeServiceStrings() {
   case 20:
     break;
   default: {
-    constexpr auto sourceText = CRYPT_NAME("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL);
-    const auto& source = sourceText.data;
-    ShowErrorDialog(DecryptString<0xD3755DD95F47A909ULL>(source), 0);
+    ShowErrorDialog(OBFUSCATE_TEXT("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL), 0);
     break;
   }
   }
@@ -210,60 +200,40 @@ void InitializeServiceStrings() {
   GetLocalTime(&time);
 
   {
-    constexpr std::array<std::uint8_t, 15> sourceArray = CRYPT_NAME("..\\licence.txt", 0x078143534999254DULL);
-    const std::uint8_t (&source)[15] = sourceArray._Elems;
-    g_licenceFileName = DecryptText<0x078143534999254DULL>(source);
+    g_licenceFileName = OBFUSCATE_BYTES_TEXT("..\\licence.txt", 0x078143534999254DULL);
   }
   g_startupSecondPhase = static_cast<unsigned char>(time.wSecond) & 3;
 
   {
-    constexpr auto sourceText = CRYPT_NAME("Software\\Gravity Soft\\Ragnarok", 0xAFA5617F178B6185ULL);
-    const auto& source = sourceText.data;
-    g_subKey = DecryptString<0xAFA5617F178B6185ULL>(source);
+    g_subKey = OBFUSCATE_TEXT("Software\\Gravity Soft\\Ragnarok", 0xAFA5617F178B6185ULL);
   }
 
   {
-    constexpr std::array<std::uint8_t, 9> sourceArray = CRYPT_NAME("Ragnarok", 0xE50B2935073DD3E9ULL);
-    const std::uint8_t (&source)[9] = sourceArray._Elems;
-    g_windowName = DecryptText<0xE50B2935073DD3E9ULL>(source);
+    g_windowName = OBFUSCATE_BYTES_TEXT("Ragnarok", 0xE50B2935073DD3E9ULL);
   }
 
   switch (g_serviceMode) {
   case 2: {
-    constexpr std::array<std::uint8_t, 14> clientArray = CRYPT_NAME("RagIndoor.exe", 0xC399B7091589B50BULL);
-    const std::uint8_t (&client)[14] = clientArray._Elems;
-    g_clientExeName = DecryptText<0xC399B7091589B50BULL>(client);
-    const std::uint8_t patcher[] = CRYPT_BYTES(13, "Indoorup.exe", 0x7FC1015DFFCF6D19ULL);
-    g_patcherExeName = DecryptText<0x7FC1015DFFCF6D19ULL>(patcher);
-    const auto message = CRYPT_NAME("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
-    g_runPatcherMessage = DecryptString<0x0753A7E1EFA9E139ULL>(message.data);
+    g_clientExeName = OBFUSCATE_BYTES_TEXT("RagIndoor.exe", 0xC399B7091589B50BULL);
+    g_patcherExeName = OBFUSCATE_BYTES_TEXT("Indoorup.exe", 0x7FC1015DFFCF6D19ULL);
+    g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
     break;
   }
   case 3: {
-    const std::uint8_t client[] = CRYPT_BYTES(13, "RagGuild.exe", 0x7FCD77F9C7CBD14DULL);
-    g_clientExeName = DecryptText<0x7FCD77F9C7CBD14DULL>(client);
-    const std::uint8_t patcher[] = CRYPT_BYTES(12, "Guildup.exe", 0xCB3FBD4183DB8323ULL);
-    g_patcherExeName = DecryptText<0xCB3FBD4183DB8323ULL>(patcher);
-    const char message[] = CRYPT_CHARS(24, "Please run RagGuild.exe", 0x3B915119EFD523EFULL);
-    g_runPatcherMessage = DecryptString<0x3B915119EFD523EFULL>(message);
+    g_clientExeName = OBFUSCATE_BYTES_TEXT("RagGuild.exe", 0x7FCD77F9C7CBD14DULL);
+    g_patcherExeName = OBFUSCATE_BYTES_TEXT("Guildup.exe", 0xCB3FBD4183DB8323ULL);
+    g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagGuild.exe", 0x3B915119EFD523EFULL);
     break;
   }
   default: {
-    const std::uint8_t dev[] = CRYPT_BYTES(4, "Dev", 0x3F5315DFE32B4FAFULL);
-    if (std::strstr(g_launchServerName, DecryptText<0x3F5315DFE32B4FAFULL>(dev))) {
-      const std::uint8_t client[] = CRYPT_BYTES(15, "RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
-      g_clientExeName = DecryptText<0x33832D4D3FDFBDBFULL>(client);
-      const std::uint8_t patcher[] = CRYPT_BYTES(14, "PatchupQM.exe", 0x7D750DADBDE9C3F1ULL);
-      g_patcherExeName = DecryptText<0x7D750DADBDE9C3F1ULL>(patcher);
-      const char message[] = CRYPT_CHARS(26, "Please run RagnarokQM.exe", 0xED5143E7C1B39315ULL);
-      g_runPatcherMessage = DecryptString<0xED5143E7C1B39315ULL>(message);
+    if (std::strstr(g_launchServerName, OBFUSCATE_BYTES_TEXT("Dev", 0x3F5315DFE32B4FAFULL))) {
+      g_clientExeName = OBFUSCATE_BYTES_TEXT("RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
+      g_patcherExeName = OBFUSCATE_BYTES_TEXT("PatchupQM.exe", 0x7D750DADBDE9C3F1ULL);
+      g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagnarokQM.exe", 0xED5143E7C1B39315ULL);
     } else {
-      const std::uint8_t client[] = CRYPT_BYTES(13, "Ragnarok.exe", 0xFF7D83CB791339D9ULL);
-      g_clientExeName = DecryptText<0xFF7D83CB791339D9ULL>(client);
-      const std::uint8_t patcher[] = CRYPT_BYTES(12, "Patchup.exe", 0x31956551B311FD95ULL);
-      g_patcherExeName = DecryptText<0x31956551B311FD95ULL>(patcher);
-      const char message[] = CRYPT_CHARS(24, "Please run Ragnarok.exe", 0x393D916561BDC391ULL);
-      g_runPatcherMessage = DecryptString<0x393D916561BDC391ULL>(message);
+      g_clientExeName = OBFUSCATE_BYTES_TEXT("Ragnarok.exe", 0xFF7D83CB791339D9ULL);
+      g_patcherExeName = OBFUSCATE_BYTES_TEXT("Patchup.exe", 0x31956551B311FD95ULL);
+      g_runPatcherMessage = OBFUSCATE_TEXT("Please run Ragnarok.exe", 0x393D916561BDC391ULL);
     }
     break;
   }
@@ -300,8 +270,7 @@ void LoadLoadingScreens(int count) {
 
   for (int index = 0; index < count; ++index) {
     char name[256];
-    std::sprintf(name, DecryptString<0x7989830DE73B9DBDULL>({'\x7D', '\x32', '\xFB', '\x1D', '\xCD', '\x4D', '\x4C', '\xB4', '\x7B', '\x79', '\xFB', '\x2B', '\xB0', '\x39', '\xD5', '\x15',
-                                                                            '\xD2', '\xFC', '\x5F', '\x8E', '\x63', '\xE4', '\xAC', '\x49', '\x8F', '\xF9', '\x15', '\x8D', '\x7D', '\xE4', '\x89'}), index);
+    std::sprintf(name, OBFUSCATE_TEXT("유저인터페이스\\loading%02d.jpg", 0x7989830DE73B9DBDULL), index);
     if (ResourceMgr::Instance().Exists(name)) {
       g_loadingScreens.push_back(std::string(name));
     }
@@ -425,9 +394,7 @@ void InitializeLanguage() {
     g_textCodePage = 1256;
     break;
   default: {
-    constexpr auto sourceText = CRYPT_NAME("no language setting !!!", 0x5B832361BDA77197ULL);
-    const auto& source = sourceText.data;
-    ShowErrorDialog(DecryptString<0x5B832361BDA77197ULL>(source), 0);
+    ShowErrorDialog(OBFUSCATE_TEXT("no language setting !!!", 0x5B832361BDA77197ULL), 0);
   }
   case 1:
   case 6:
@@ -474,9 +441,7 @@ void InitializeServiceConfiguration() {
   const std::uint8_t portSource[] = CRYPT_BYTES(5, "6900", 0xEB3D4FAB0FC183DBULL);
   g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
 
-  constexpr auto webPageSourceText = CRYPT_NAME("http://www.ragnarok.co.kr", 0xFFBF43D1FFD5FF49ULL);
-  const auto& webPageSource = webPageSourceText.data;
-  g_webPageUrl = DecryptString<0xFFBF43D1FFD5FF49ULL>(webPageSource);
+  g_webPageUrl = OBFUSCATE_TEXT("http://www.ragnarok.co.kr", 0xFFBF43D1FFD5FF49ULL);
 
   g_extendedSlot = true;
   g_serviceOverrideKey = "";
@@ -490,23 +455,13 @@ void InitializeServiceConfiguration() {
     // (jump into the empty stub 0x027AB0FE). The code from here on starts at 0x00AD237E.
     g_serviceFlag07 = 29;
     if (std::strstr(g_launchServerName, "QmSakray")) {
-      constexpr auto keySourceText = CRYPT_NAME("kro-qm-2a.ragnarok.co.kr:6900", 0x45E3F103CBB5F157ULL);
-      const auto& keySource = keySourceText.data;
-      g_serviceOverrideKey = DecryptString<0x45E3F103CBB5F157ULL>(keySource);
+      g_serviceOverrideKey = OBFUSCATE_TEXT("kro-qm-2a.ragnarok.co.kr:6900", 0x45E3F103CBB5F157ULL);
 
-      constexpr auto addressSourceText = CRYPT_NAME("kro-qm-1a.ragnarok.co.kr:6951", 0x2D33791F67AD47DFULL);
-      const auto& addressSource = addressSourceText.data;
-      const std::uint8_t formatSource[] = CRYPT_BYTES(3, "%s", 0x2F2701A7E56D3D89ULL);
-      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0x2D33791F67AD47DFULL>(addressSource));
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2F2701A7E56D3D89ULL), OBFUSCATE_TEXT("kro-qm-1a.ragnarok.co.kr:6951", 0x2D33791F67AD47DFULL));
     } else {
-      constexpr auto keySourceText = CRYPT_NAME("kro-acc3.ragnarok.co.kr:6900", 0x6B3301E1A3079125ULL);
-      const auto& keySource = keySourceText.data;
-      g_serviceOverrideKey = DecryptString<0x6B3301E1A3079125ULL>(keySource);
+      g_serviceOverrideKey = OBFUSCATE_TEXT("kro-acc3.ragnarok.co.kr:6900", 0x6B3301E1A3079125ULL);
 
-      constexpr auto addressSourceText = CRYPT_NAME("kro-agency-s.ragnarok.co.kr:6954", 0xC39FB559A17D3963ULL);
-      const auto& addressSource = addressSourceText.data;
-      const std::uint8_t formatSource[] = CRYPT_BYTES(3, "%s", 0x2F2701A7E56D3D89ULL);
-      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), DecryptText<0x2F2701A7E56D3D89ULL>(formatSource), DecryptString<0xC39FB559A17D3963ULL>(addressSource));
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2F2701A7E56D3D89ULL), OBFUSCATE_TEXT("kro-agency-s.ragnarok.co.kr:6954", 0xC39FB559A17D3963ULL));
     }
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
     g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));
@@ -514,17 +469,13 @@ void InitializeServiceConfiguration() {
   }
   case 2: {
     g_serviceFlag07 = 14;
-    const std::uint8_t hostSource[] = CRYPT_BYTES(13, "192.168.5.52", 0x71B7691737C5A1AFULL);
-    g_serviceHost = DecryptText<0x71B7691737C5A1AFULL>(hostSource);
+    g_serviceHost = OBFUSCATE_BYTES_TEXT("192.168.5.52", 0x71B7691737C5A1AFULL);
     break;
   }
   case 3: {
-    constexpr auto hostSourceText = CRYPT_NAME("211.172.247.115", 0x899D11BB83695B0DULL);
-    const auto& hostSource = hostSourceText.data;
-    g_serviceHost = DecryptString<0x899D11BB83695B0DULL>(hostSource);
+    g_serviceHost = OBFUSCATE_TEXT("211.172.247.115", 0x899D11BB83695B0DULL);
     g_serviceFlag07 = 29;
-    const std::uint8_t portSource[] = CRYPT_BYTES(5, "6900", 0x2B8725D7E95325F5ULL);
-    g_servicePort = DecryptText<0x2B8725D7E95325F5ULL>(portSource);
+    g_servicePort = OBFUSCATE_BYTES_TEXT("6900", 0x2B8725D7E95325F5ULL);
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
     g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));
     break;
@@ -538,119 +489,114 @@ void InitializeServiceConfiguration() {
 // FUNCTION: fn_17818
 void ReadClientInfo(XmlNode* clientInfo) {
   XmlNode* serviceType =
-      clientInfo->FindChild(DecryptText<0x5B8F49AF09390D1BULL>({0x68, 0x68, 0x4B, 0x7F, 0xC6, 0x2A, 0xEA, 0x2F, 0x62, 0x7D, 0x5C, 0x09}));
+      clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("servicetype", 0x5B8F49AF09390D1BULL));
   if (serviceType) {
-    if (serviceType->Text() == std::string(DecryptText<0x3F557BE333F95F6DULL>({0x06, 0x30, 0x8B, 0x56, 0x82, 0x7B}))) {
+    if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("korea", 0x3F557BE333F95F6DULL))) {
       g_serviceType = 0;
-    } else if (serviceType->Text() == std::string(DecryptText<0x474DC581D5E98357ULL>({0x36, 0xEE, 0x8C, 0xA7, 0xE8, 0xA6, 0x2C, 0x47}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("america", 0x474DC581D5E98357ULL))) {
       g_serviceType = 1;
-    } else if (serviceType->Text() == std::string(DecryptText<0x01FF9313695DD9DFULL>({0xB5, 0xB8, 0x2D, 0x08, 0x7D, 0x93}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("japan", 0x01FF9313695DD9DFULL))) {
       g_serviceType = 2;
-    } else if (serviceType->Text() == std::string(DecryptText<0x1BF915E1F37DFDFDULL>({0x9E, 0x95, 0x14, 0x9D, 0x80, 0x15}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("china", 0x1BF915E1F37DFDFDULL))) {
       g_serviceType = 3;
-    } else if (serviceType->Text() == std::string(DecryptText<0x49C3759B77DBD3C1ULL>({0xB5, 0xB2, 0xB2, 0x00, 0xFA, 0x1B, 0xC3}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("taiwan", 0x49C3759B77DBD3C1ULL))) {
       g_serviceType = 4;
-    } else if (serviceType->Text() == std::string(DecryptText<0x6DED3DD1CF75AD9BULL>({0xEF, 0xC5, 0x14, 0xA6, 0xD1}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("thai", 0x6DED3DD1CF75AD9BULL))) {
       g_serviceType = 5;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0x91E147EBBD47C39FULL>({0xF6, 0xAD, 0x23, 0xD2, 0x85, 0x22, 0x92, 0xF8, 0xFE, 0xC3}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("indonesia", 0x91E147EBBD47C39FULL))) {
       g_serviceType = 6;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0xD1538513DF975701ULL>({0x71, 0x3F, 0xFE, 0xB3, 0x7A, 0xF5, 0x23, 0xB8, 0x6F, 0x32, 0x97}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("philippine", 0xD1538513DF975701ULL))) {
       g_serviceType = 7;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0xA1A55B4D1597EDD3ULL>({0xBE, 0x8C, 0xFB, 0x74, 0x34, 0x28, 0xCC, 0xC0, 0xD3}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("malaysia", 0xA1A55B4D1597EDD3ULL))) {
       g_serviceType = 8;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0x4F1791FB1503C713ULL>({0x60, 0xAE, 0x6D, 0x72, 0x9A, 0xE1, 0x78, 0x3D, 0x76, 0xC7}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("singapore", 0x4F1791FB1503C713ULL))) {
       g_serviceType = 9;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0x7D993F650D2785FFULL>({0x98, 0xE0, 0x55, 0x60, 0x04, 0x51, 0xE0, 0x7D}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("germany", 0x7D993F650D2785FFULL))) {
       g_serviceType = 10;
-    } else if (serviceType->Text() == std::string(DecryptText<0x61FF87ED7BF39BE1ULL>({0x88, 0xF5, 0x97, 0x12, 0x8C, 0x87}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("india", 0x61FF87ED7BF39BE1ULL))) {
       g_serviceType = 11;
-    } else if (serviceType->Text() == std::string(DecryptText<0x151F77EBEBBB2147ULL>({0x25, 0x53, 0xDA, 0x91, 0x82, 0x1B, 0x1F}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("brazil", 0x151F77EBEBBB2147ULL))) {
       g_serviceType = 12;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0x2D394DBD0F332733ULL>({0x52, 0x52, 0x40, 0x7B, 0xCF, 0x2C, 0x55, 0x44, 0x52, 0x27}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("australia", 0x2D394DBD0F332733ULL))) {
       g_serviceType = 13;
-    } else if (serviceType->Text() == std::string(DecryptText<0x69D345DB950F336DULL>({0x1F, 0x46, 0x7C, 0xE6, 0xB2, 0x24, 0xD3}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("russia", 0x69D345DB950F336DULL))) {
       g_serviceType = 14;
     } else if (serviceType->Text() ==
-               std::string(DecryptText<0xC7912587FFF31B71ULL>({0x07, 0x72, 0x96, 0x8B, 0xE9, 0x44, 0xFC, 0xC7}))) {
+               std::string(OBFUSCATE_BYTES_TEXT("vietnam", 0xC7912587FFF31B71ULL))) {
       g_serviceType = 15;
-    } else if (serviceType->Text() == std::string(DecryptText<0x2D3B15774149D5DDULL>({0xBE, 0xBD, 0x20, 0x2D, 0x12, 0x15}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("chile", 0x2D3B15774149D5DDULL))) {
       g_serviceType = 17;
-    } else if (serviceType->Text() == std::string(DecryptText<0x9B17C9EFDBB39F2FULL>({0x49, 0xED, 0xD2, 0xB5, 0x8C, 0xAC, 0x17}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("france", 0x9B17C9EFDBB39F2FULL))) {
       g_serviceType = 18;
-    } else if (serviceType->Text() == std::string(DecryptText<0x0BEB63A5C905B3A7ULL>({0xD2, 0xD2, 0x60, 0xC9}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("uae", 0x0BEB63A5C905B3A7ULL))) {
       g_serviceType = 19;
-    } else if (serviceType->Text() == std::string(DecryptText<0x8B3FEB5B8BD5C3C3ULL>({0xA6, 0xB6, 0xD5}))) {
+    } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("eu", 0x8B3FEB5B8BD5C3C3ULL))) {
       g_serviceType = 20;
     } else {
       ShowErrorDialog(
-                      DecryptString<0x8F1B5BFD5F6175B5ULL>({'\xE6', '\x10', '\x13', '\x29', '\x94', '\x38', '\x7E', '\xDB', '\xCC', '\x05', '\x04',
-                                                          '\x7F', '\xB8', '\x29', '\x69', '\xE0', '\xC7', '\x55', '\x40', '\x7E', '\xFD'}),
+                      OBFUSCATE_TEXT("ServiceType Error !!", 0x8F1B5BFD5F6175B5ULL),
                       0);
     }
   } else if (!g_clientInfoLoaded) {
     ShowErrorDialog(
-                    DecryptString<0x078333BB9725B7C9ULL>(
-                        {'\x87', '\xD8', '\x05', '\xC4', '\xDE', '\x41', '\xF5', '\x6E', '\xAA', '\xD2', '\x71', '\xEE', '\xCB', '\x56', '\xA3', '\x26', '\xE8', '\xB7'}),
+                    OBFUSCATE_TEXT("No ServiceType !!", 0x078333BB9725B7C9ULL),
                     0);
   }
 
   XmlNode* serverType =
-      clientInfo->FindChild(DecryptText<0xF5657D1F3DE5CDC7ULL>({0xB4, 0xA8, 0x97, 0x4B, 0x7A, 0x0F, 0x11, 0x8C, 0xB7, 0xA8, 0xE5}));
+      clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("servertype", 0xF5657D1F3DE5CDC7ULL));
   if (serverType) {
-    if (serverType->Text() == std::string(DecryptText<0x69FD1D9733D3CFC1ULL>({0xB1, 0xBD, 0xBA, 0x5E, 0xF6, 0x6F, 0x84, 0x69}))) {
+    if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("primary", 0x69FD1D9733D3CFC1ULL))) {
       g_serviceMode = g_serviceMode == 13 ? 13 : 0;
-    } else if (serverType->Text() == std::string(DecryptText<0xF7530137154D8FE5ULL>({0x96, 0xEE, 0x26, 0x67, 0x56, 0x78, 0x53}))) {
+    } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("sakray", 0xF7530137154D8FE5ULL))) {
       g_serviceMode = 1;
-    } else if (serverType->Text() == std::string(DecryptText<0x8B65CD61012B5931ULL>({0x5D, 0x36, 0x48, 0x60, 0x0D, 0xCD}))) {
+    } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("local", 0x8B65CD61012B5931ULL))) {
       g_serviceMode = 2;
-    } else if (serverType->Text() == std::string(DecryptText<0x17359BF953C367B3ULL>({0xC3, 0x0C, 0xC3}))) {
+    } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("pk", 0x17359BF953C367B3ULL))) {
       g_serviceMode = 5;
     } else {
       ShowErrorDialog(
-                      DecryptString<0x2FF3C5036D070127ULL>({'\x74', '\x64', '\x75', '\x1B', '\x66', '\xB7', '\xA7', '\x56', '\x57', '\x64',
-                                                          '\x27', '\x28', '\x71', '\xB7', '\x9C', '\x5D', '\x07', '\x20', '\x26', '\x6D'}),
+                      OBFUSCATE_TEXT("ServerType Error !!", 0x2FF3C5036D070127ULL),
                       0);
     }
   } else if (!g_clientInfoLoaded) {
     ShowErrorDialog(
-        DecryptString<0x93E7A3A1F587CDC5ULL>({'\x8B', '\xA2', '\xA7', '\xA6', '\xC4', '\xD1', '\x91', '\xF6', '\xB7', '\x99', '\xFE', '\x85', '\xC4', '\x83', '\xC6', '\xB2', '\xC5'}),
+        OBFUSCATE_TEXT("No ServerType !!", 0x93E7A3A1F587CDC5ULL),
         0);
   }
 
-  if (clientInfo->FindChild(DecryptString<0xC52FB5FBB94FF917ULL>(
-          {'\x7F', '\x90', '\x2B', '\xDC', '\x9A', '\xD6', '\x4C', '\xAA', '\x62', '\x97', '\x3B', '\xD5', '\x92', '\xC6', '\x5B', '\xC5'}))) {
+  if (clientInfo->FindChild(OBFUSCATE_TEXT("hideaccountlist", 0xC52FB5FBB94FF917ULL))) {
     g_hideAccountList = true;
   }
 
-  if (clientInfo->FindChild(DecryptText<0x812BE72BCD5707B7ULL>({0xD2, 0x7F, 0x23, 0xA8, 0x45, 0x83, 0x4E, 0xE5, 0xC4, 0x6B, 0x38, 0xB9, 0x2B}))) {
+  if (clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("extendedslot", 0x812BE72BCD5707B7ULL))) {
     g_extendedSlot = true;
   }
 
-  if (clientInfo->FindChild(DecryptText<0x59278F63D79F3DA1ULL>({0xD3, 0x58, 0xFE, 0xB3, 0x05, 0xE0, 0x4B, 0x3D, 0xC4, 0x4F, 0x9F}))) {
+  if (clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("readfolder", 0x59278F63D79F3DA1ULL))) {
     g_readFolder = true;
   }
 
-  XmlNode* loading = clientInfo->FindChild(DecryptText<0x1D6D75EDE7CD311FULL>({0x73, 0x5E, 0xAC, 0x83, 0x84, 0x1B, 0x0A, 0x1D}));
+  XmlNode* loading = clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("loading", 0x1D6D75EDE7CD311FULL));
   if (loading) {
-    for (XmlNode* image = loading->FindChild(DecryptText<0x3375B1C7DBB5FD55ULL>({0x3C, 0x90, 0xD4, 0xBC, 0xA2, 0xB1})); image;
-         image = image->FindSibling(DecryptText<0xD98F03A52D35636DULL>({0x04, 0x0E, 0x54, 0x4A, 0xC0, 0x03}))) {
+    for (XmlNode* image = loading->FindChild(OBFUSCATE_BYTES_TEXT("image", 0x3375B1C7DBB5FD55ULL)); image;
+         image = image->FindSibling(OBFUSCATE_BYTES_TEXT("image", 0xD98F03A52D35636DULL))) {
       char path[256];
       std::sprintf(path,
-                   DecryptString<0x0F0F8B6B8F9D19D1ULL>(
-                       {'\x11', '\xB6', '\x5D', '\x75', '\xAB', '\x45', '\xCA', '\xC2', '\x17', '\xFD', '\x5D', '\x43', '\xD6', '\x31', '\x53', '\x2A', '\xA2', '\x19'}),
+                   OBFUSCATE_TEXT("유저인터페이스\\%s", 0x0F0F8B6B8F9D19D1ULL),
                    image->Text().c_str());
       g_loadingScreens.push_back(std::string(path));
     }
   }
 
   XmlNode* homepage =
-      clientInfo->FindChild(DecryptText<0x31D7C1EDA345E36DULL>({0x1B, 0x8A, 0x20, 0xD4, 0x85, 0xAE, 0xBA, 0x54, 0x1D, 0x82, 0x22, 0xC6, 0xED}));
+      clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("viewhomepage", 0x31D7C1EDA345E36DULL));
   if (homepage) {
     sprintf_s(g_homepageUrl, sizeof(g_homepageUrl), "%s", homepage->Text().c_str());
   }
