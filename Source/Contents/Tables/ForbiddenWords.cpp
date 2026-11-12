@@ -139,9 +139,10 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
   // STATIC: 0x016D4558
   // GLOBAL: gl_24377
   static char matchedWord[264];
-  const bool fromString = text == nullptr;
+  bool fromString = false;
 
-  if (fromString) {
+  if (text == nullptr) {
+    fromString = true;
     strcpy_s(valueBuffer, sizeof(valueBuffer), value->c_str());
     text = valueBuffer;
   }
@@ -167,7 +168,8 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
     int advance = 1;
 
-    for (const char* word : this->words) {
+    for (std::vector<const char*>::const_iterator it = this->words.begin(); it != this->words.end(); ++it) {
+      const char* word = *it;
       if (std::strncmp(word, current, std::strlen(word)) != 0) {
         continue;
       }
