@@ -815,20 +815,21 @@ __declspec(noinline) void CGameMode::ReceiveFormatStringMessage(const unsigned c
   char text[261];
   std::memset(text, 0, sizeof(text));
 
-  const char* first = reinterpret_cast<const char*>(message + 1);
   switch (count) {
   case 0:
     _snprintf(text, 260, format);
     break;
   case 1:
-    _snprintf(text, 260, format, first);
+    _snprintf(text, 260, format, reinterpret_cast<const char*>(message + 1));
     break;
   case 2: {
+    const char* first = reinterpret_cast<const char*>(message + 1);
     const char* second = first + std::strlen(first) + 1;
     _snprintf(text, 260, format, first, second);
     break;
   }
   case 3: {
+    const char* first = reinterpret_cast<const char*>(message + 1);
     const char* second = first + std::strlen(first) + 1;
     const char* third = second + std::strlen(second) + 1;
     _snprintf(text, 260, format, first, second, third);
