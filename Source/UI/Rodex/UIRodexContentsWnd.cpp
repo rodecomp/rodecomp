@@ -404,8 +404,9 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
   this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
   this->m_contents->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
-  this->m_contents->disabled = 1;
-  this->m_contents->Invalidate();
+  UIRodexEditCtrl3* contents = this->m_contents;
+  contents->disabled = 1;
+  contents->Invalidate();
   reinterpret_cast<unsigned char*>(&this->m_contents->editFlags)[1] = 1;
   this->m_contents->SetId(504);
 
@@ -418,7 +419,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_contents->SetTagColor(0xD630A9);
   this->AddChild(this->m_contents);
 
-  if (hasItem) {
+  if (hasItem > 0) {
     this->m_itemButton = new UIBitmapButton();
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_out.bmp", 0, 0);
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_over.bmp", 1, 0);
@@ -446,8 +447,9 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
     this->m_adminButton->Configure(70, LookupMessage(MSI_RODEX_TAB_ADMIN));
     this->m_adminButton->Move(224, 376);
     this->m_adminButton->SetId(305);
-    this->m_adminButton->SetDisabled(0);
-    this->m_adminButton->Invalidate();
+    UIBasicButton* button = this->m_adminButton;
+    button->SetDisabled(0);
+    button->Invalidate();
     this->AddChild(this->m_adminButton);
   }
 
