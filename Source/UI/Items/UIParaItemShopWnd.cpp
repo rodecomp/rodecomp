@@ -793,14 +793,13 @@ void UIParaResultWnd::Paint() {
     return;
   }
 
-  int rows = (this->geometry.height - this->footerHeight - 17) / 8 + ((this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  const int rows = (this->geometry.height - this->footerHeight - 17) / 8 + ((this->geometry.height - this->footerHeight - 17) % 8 != 0);
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, y, left, false);
   }
 
-  rows = (this->geometry.height - this->footerHeight - 17) / 8 + ((this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
   }
