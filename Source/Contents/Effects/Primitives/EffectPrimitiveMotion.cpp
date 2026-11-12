@@ -4122,16 +4122,16 @@ __declspec(noinline) void CEffectPrim::PrimGI4() {
         this->state.slots[index].alphaB = 0;
       }
 
-      if (this->state.slots[index].distance < 3.5f) {
-        this->state.slots[index].alphaB += 10;
-      } else {
+      if (this->state.slots[index].distance >= 3.5f) {
         this->state.slots[index].alphaB -= 3;
 
-        if (this->state.slots[index].alphaB < 1) {
+        if (this->state.slots[index].alphaB <= 0) {
+          this->state.slots[index].alphaB = 0;
           this->state.slots[index].distance = 2.87f;
           this->state.slots[index].riseAngle = 74;
-          this->state.slots[index].alphaB = 0;
         }
+      } else {
+        this->state.slots[index].alphaB += 10;
       }
 
       WaveSlotHeights(this->state.slots[index], index, 0.15f, steps);
@@ -4151,7 +4151,8 @@ __declspec(noinline) void CEffectPrim::PrimGI1() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
 
     if (process <= 0) {
       continue;
@@ -4162,6 +4163,7 @@ __declspec(noinline) void CEffectPrim::PrimGI1() {
 
     if (slot.riseAngle < 10) {
       slot.riseAngle = 10;
+      slot.alphaB = 0;
     }
 
     if (slot.distance >= 4.0f) {
