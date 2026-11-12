@@ -88,32 +88,37 @@ void CTownInfoMgr::Destroy() {
 // FUNCTION: fn_18010
 bool CTownInfoMgr::LoadScript() {
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    lua_register(lua.GetState(), "AddTownInfo", CTownInfoMgr::L_AddTownInfo);
-
-    if (luaL_loadfile(lua.GetState(), "System\\Towninfo.lub") == 0 && lua_pcall(lua.GetState(), 0, 0, 0) == 0) {
-      lua_getglobal(lua.GetState(), "main");
-      if (lua_pcall(lua.GetState(), 0, 2, 0) == 0) {
-        if (!lua_isstring(lua.GetState(), -1)) {
-          MessageBoxA(nullptr, "second return value is not string...", "CTownInfoMgr", MB_OK);
-          return false;
-        }
-
-        if (lua_toboolean(lua.GetState(), -2)) {
-          return true;
-        }
-
-        const std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
-        MessageBoxA(nullptr, message.c_str(), "CTownInfoMgr", MB_OK);
-        return false;
-      }
-    }
-
-    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CTownInfoMgr", MB_OK);
+  if (!lua.IsValid()) {
+    return false;
   }
 
-  return false;
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "AddTownInfo", CTownInfoMgr::L_AddTownInfo);
+  if (luaL_loadfile(lua.GetState(), "System\\Towninfo.lub") != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CTownInfoMgr", MB_OK);
+    return false;
+  }
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CTownInfoMgr", MB_OK);
+    return false;
+  }
+
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CTownInfoMgr", MB_OK);
+    return false;
+  }
+  if (!lua_isstring(lua.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CTownInfoMgr", MB_OK);
+    return false;
+  }
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    const std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
+    MessageBoxA(nullptr, message.c_str(), "CTownInfoMgr", MB_OK);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00AE2A90
