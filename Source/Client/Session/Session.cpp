@@ -2880,27 +2880,21 @@ void CSession::LoadExternalSettings() {
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]) == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x20]) == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x24]) == -1) {
-    constexpr std::array<char, 27> source = CRYPT_NAME("Error ExternSettings Value", 0x655DBD856D95E95BULL);
-    thread_local EncryptedName<sizeof(source), 0x655DBD856D95E95BULL> name(source);
-    ShowErrorDialog(name.Text(), 0);
+    ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0x655DBD856D95E95BULL, char), 0);
   }
 
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x78]));
 
   if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) == -1 || *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) == -1) {
-    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0x9DA96FE53B211987ULL);
-    thread_local EncryptedName<sizeof(source), 0x9DA96FE53B211987ULL> name(source);
-    ShowErrorDialog(name.Text(), 0);
+    ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0x9DA96FE53B211987ULL, char), 0);
   }
 
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x28]));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]));
 
   if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]) == -1) {
-    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0xA78387FF5BD35BC1ULL);
-    thread_local EncryptedName<sizeof(source), 0xA78387FF5BD35BC1ULL> name(source);
-    ShowErrorDialog(name.Text(), 0);
+    ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0xA78387FF5BD35BC1ULL, char), 0);
   }
 
   this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->raceCreationOptions));
@@ -2925,9 +2919,7 @@ void CSession::LoadExternalSettings() {
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th_sub", &this->m_maxLevelEffect4thSub);
 
   if (this->m_maxLevelEffect4th == -1 || this->m_maxLevelEffect4thSub == -1) {
-    const std::array<char, 27> source = CRYPT_CHARS(27, "Error ExternSettings Value", 0x81D175D33BC75123ULL);
-    thread_local EncryptedName<sizeof(source), 0x81D175D33BC75123ULL> name(source);
-    ShowErrorDialog(name.Text(), 0);
+    ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0x81D175D33BC75123ULL, char), 0);
   }
 }
 
@@ -2942,17 +2934,11 @@ void CSession::Init() {
   const char* fileName = std::strrchr(modulePath, '\\');
   std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName + 1));
 
-  const std::array<char, 32> keySource = CRYPT_CHARS(32, "Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL);
-  thread_local EncryptedName<sizeof(keySource), 0x2FE993D1DDE1F197ULL> keyName(keySource);
   HKEY key;
-  if (RegCreateKeyExA(HKEY_CURRENT_USER, keyName.Text(), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
-    const std::array<char, 8> pathSource = CRYPT_CHARS(8, "RagPath", 0xE7978FB5A94DD7FDULL);
-    thread_local EncryptedName<sizeof(pathSource), 0xE7978FB5A94DD7FDULL> pathName(pathSource);
-    std::string valueName = pathName.Text();
+  if (RegCreateKeyExA(HKEY_CURRENT_USER, OBFUSCATE_ARRAY_TEXT("Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL, char), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+    std::string valueName = OBFUSCATE_ARRAY_TEXT("RagPath", 0xE7978FB5A94DD7FDULL, char);
     if (g_serviceMode == 1) {
-      const std::array<char, 11> sakraySource = CRYPT_CHARS(11, "SakrayPath", 0xB7FD8F670FC7B96BULL);
-      thread_local EncryptedName<sizeof(sakraySource), 0xB7FD8F670FC7B96BULL> sakrayName(sakraySource);
-      std::string sakrayValueName = sakrayName.Text();
+      std::string sakrayValueName = OBFUSCATE_ARRAY_TEXT("SakrayPath", 0xB7FD8F670FC7B96BULL, char);
     }
 
     RegSetValueExA(key, valueName.c_str(), 0, REG_SZ, reinterpret_cast<const BYTE*>(directory), static_cast<DWORD>(std::strlen(directory)));
@@ -4031,44 +4017,24 @@ CSession::CSession() {
   CSpecialPopupMgr::Create();
   CRuneSystemMgr::Create();
   if (!CUserHotkeyMgr::Initialize()) {
-    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xED796785D1DF137FULL);
-    thread_local EncryptedName<sizeof(captionSource), 0xED796785D1DF137FULL> caption(captionSource);
-    const char* captionText = caption.Text();
-    const std::array<char, 33> textSource = CRYPT_CHARS(33, "CUserHotkeyMgr::CreateInstance()", 0xF14F79170939C7F1ULL);
-    thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
-    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+    const char* captionText = OBFUSCATE_ARRAY_TEXT("Error", 0xED796785D1DF137FULL, char);
+    MessageBoxA(nullptr, OBFUSCATE_ARRAY_TEXT("CUserHotkeyMgr::CreateInstance()", 0xF14F79170939C7F1ULL, char), captionText, MB_OK);
   }
   if (!CBarterMarketItemMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xBF2B4B31397FF5A7ULL);
-    thread_local EncryptedName<sizeof(captionSource), 0xBF2B4B31397FF5A7ULL> caption(captionSource);
-    const char* captionText = caption.Text();
-    const std::array<char, 47> textSource = CRYPT_CHARS(47, "InstanceCBarterMarketItemMgr::CreateInstance()", 0xD97D5DBDBB2F2709ULL);
-    thread_local EncryptedName<sizeof(textSource), 0xD97D5DBDBB2F2709ULL> text(textSource);
-    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+    const char* captionText = OBFUSCATE_ARRAY_TEXT("Error", 0xBF2B4B31397FF5A7ULL, char);
+    MessageBoxA(nullptr, OBFUSCATE_ARRAY_TEXT("InstanceCBarterMarketItemMgr::CreateInstance()", 0xD97D5DBDBB2F2709ULL, char), captionText, MB_OK);
   }
   if (!CExpandedBarterMarketItemMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0x050505679903579BULL);
-    thread_local EncryptedName<sizeof(captionSource), 0x050505679903579BULL> caption(captionSource);
-    const char* captionText = caption.Text();
-    const std::array<char, 48> textSource = CRYPT_CHARS(48, "InstanceCBarterMarketItem2Mgr::CreateInstance()", 0x83EFBFBB37EDBDBDULL);
-    thread_local EncryptedName<sizeof(textSource), 0x83EFBFBB37EDBDBDULL> text(textSource);
-    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+    const char* captionText = OBFUSCATE_ARRAY_TEXT("Error", 0x050505679903579BULL, char);
+    MessageBoxA(nullptr, OBFUSCATE_ARRAY_TEXT("InstanceCBarterMarketItem2Mgr::CreateInstance()", 0x83EFBFBB37EDBDBDULL, char), captionText, MB_OK);
   }
   if (!CPetEvolutionMgr::Create()) {
-    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0xAD075B8DB599F1CDULL);
-    thread_local EncryptedName<sizeof(captionSource), 0xAD075B8DB599F1CDULL> caption(captionSource);
-    const char* captionText = caption.Text();
-    const std::array<char, 27> textSource = CRYPT_CHARS(27, "CPetEvolutionMgr file Init", 0xDD3913D5D7F97BE1ULL);
-    thread_local EncryptedName<sizeof(textSource), 0xDD3913D5D7F97BE1ULL> text(textSource);
-    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+    const char* captionText = OBFUSCATE_ARRAY_TEXT("Error", 0xAD075B8DB599F1CDULL, char);
+    MessageBoxA(nullptr, OBFUSCATE_ARRAY_TEXT("CPetEvolutionMgr file Init", 0xDD3913D5D7F97BE1ULL, char), captionText, MB_OK);
   }
   if (!CAchievementMgr::CreateInstance()) {
-    const std::array<char, 6> captionSource = CRYPT_CHARS(6, "Error", 0x39FF7FB50DEB998FULL);
-    thread_local EncryptedName<sizeof(captionSource), 0x39FF7FB50DEB998FULL> caption(captionSource);
-    const char* captionText = caption.Text();
-    const std::array<char, 26> textSource = CRYPT_CHARS(26, "CAchievementMgr file init", 0x2F8B0F37118D157FULL);
-    thread_local EncryptedName<sizeof(textSource), 0x2F8B0F37118D157FULL> text(textSource);
-    MessageBoxA(nullptr, text.Text(), captionText, MB_OK);
+    const char* captionText = OBFUSCATE_ARRAY_TEXT("Error", 0x39FF7FB50DEB998FULL, char);
+    MessageBoxA(nullptr, OBFUSCATE_ARRAY_TEXT("CAchievementMgr file init", 0x2F8B0F37118D157FULL, char), captionText, MB_OK);
   }
 
   this->m_newRobeDrawOnTop = false;
@@ -6229,9 +6195,7 @@ void CSession::InitJobSpriteNames() {
   jobSpriteNames[158] = OBFUSCATE_ARRAY("로그\\로그", 0xB5D7B5AF4FEDFF57ULL, char).Text();
   jobSpriteNames[240] = OBFUSCATE_ARRAY("초보자\\초보자", 0x67DD5BAB1919D9D1ULL, char).Text();
   {
-    constexpr std::array<char, 14> source = CRYPT_NAME("초보자\\초보자", 0xB5F3F779237315F3ULL);
-    thread_local EncryptedName<sizeof(source), 0xB5F3F779237315F3ULL> name(source);
-    jobSpriteNames[241] = name.Text();
+    jobSpriteNames[241] = OBFUSCATE_ARRAY_TEXT("초보자\\초보자", 0xB5F3F779237315F3ULL, char);
   }
   jobSpriteNames[242] = PoringSuperNovice2SpriteName().Text();
   jobSpriteNames[243] = PoringSuperNovice2BabySpriteName().Text();
