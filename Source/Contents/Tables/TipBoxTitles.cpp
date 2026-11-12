@@ -30,13 +30,6 @@ CTipBoxMgr* g_itemTagOwner = nullptr;
 
 namespace {
 
-  // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const char (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
-  }
-
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
   __declspec(noinline) void SplitTitle(const char* text, std::vector<std::string>& lines, int width) {
@@ -305,14 +298,10 @@ bool CTipBoxMgr::RegisterLuaFunctions() {
   lua_register(state.GetState(), "AddPage", AddPage);
   lua_register(state.GetState(), "AddIsTag", AddIsTag);
 
-  constexpr auto sourceText = CRYPT_NAME("System\\tipbox.lua", 0x0BEB63A5C905B3A7ULL);
-  const auto& source = sourceText.data;
 
-  if (luaL_loadfile(state.GetState(), DecryptName<0x0BEB63A5C905B3A7ULL>(source)) != 0) {
-    constexpr auto secondSourceText = CRYPT_NAME("System\\tipbox.lub", 0x078333BB9725B7C9ULL);
-    const auto& secondSource = secondSourceText.data;
+  if (luaL_loadfile(state.GetState(), OBFUSCATE_TEXT("System\\tipbox.lua", 0x0BEB63A5C905B3A7ULL)) != 0) {
 
-    if (luaL_loadfile(state.GetState(), DecryptName<0x078333BB9725B7C9ULL>(secondSource)) != 0) {
+    if (luaL_loadfile(state.GetState(), OBFUSCATE_TEXT("System\\tipbox.lub", 0x078333BB9725B7C9ULL)) != 0) {
       MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);
       return false;
     }

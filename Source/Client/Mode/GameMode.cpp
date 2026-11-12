@@ -5586,13 +5586,6 @@ void CPingLiveSchedule::Process(const std::uint64_t& now) {
 
 namespace {
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptGameModeName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 }
 
 // OFFSET: 0x00CDEF00
@@ -5627,10 +5620,7 @@ int CGameMode::Run() {
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
       if (!message.empty()) {
-        constexpr auto sourceText = CRYPT_NAME("nProtect GameGuard", 0xADC51BF9C98B413DULL);
-        const auto& source = sourceText.data;
-        thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
-        MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
+        MessageBoxA(hWnd, message.c_str(), OBFUSCATE_TEXT("nProtect GameGuard", 0xADC51BF9C98B413DULL), 0);
       }
     }
 
@@ -6634,25 +6624,15 @@ void CGameMode::UpdateBalloons() {
       shownSkill = this->skillId;
       std::string text;
       if (shownSkill == 10000) {
-        constexpr auto sourceText = CRYPT_NAME("Capture Monster", 0x3FA3AFA7035DE3FFULL);
-        const auto& source = sourceText.data;
-        text.assign(DecryptGameModeName<0x3FA3AFA7035DE3FFULL>(source));
+        text.assign(OBFUSCATE_TEXT("Capture Monster", 0x3FA3AFA7035DE3FFULL));
       } else if (shownSkill == 20000) {
-        constexpr auto sourceText = CRYPT_NAME("Please Marry Me", 0xDB27CB557D038759ULL);
-        const auto& source = sourceText.data;
-        text = DecryptGameModeName<0xDB27CB557D038759ULL>(source);
+        text = OBFUSCATE_TEXT("Please Marry Me", 0xDB27CB557D038759ULL);
       } else if (shownSkill == 20001) {
-        constexpr auto sourceText = CRYPT_NAME("Be my Baby", 0x51BB39B763BBBD8DULL);
-        const auto& source = sourceText.data;
-        text = DecryptGameModeName<0x51BB39B763BBBD8DULL>(source);
+        text = OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL);
       } else if (shownSkill == 40000) {
-        constexpr auto sourceText = CRYPT_NAME("Capture Monster", 0x87E3D1C50D572DEFULL);
-        const auto& source = sourceText.data;
-        text = DecryptGameModeName<0x87E3D1C50D572DEFULL>(source);
+        text = OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL);
       } else if (g_session.IsState291To303(shownSkill)) {
-        constexpr auto sourceText = CRYPT_NAME("????", 0xB7AFBD2FD9FD7501ULL);
-        const auto& source = sourceText.data;
-        text = DecryptGameModeName<0xB7AFBD2FD9FD7501ULL>(source);
+        text = OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL);
       } else {
         text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
       }

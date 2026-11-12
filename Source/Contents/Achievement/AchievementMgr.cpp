@@ -226,10 +226,7 @@ bool CAchievementMgr::LoadAchievementInfo() {
     lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
     lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
     lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
-    constexpr auto sourceText = CRYPT_NAME("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL);
-    const auto& source = sourceText.data;
-    thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> path(source);
-    if (luaL_loadfile(lua.GetState(), path.Text()) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    if (luaL_loadfile(lua.GetState(), OBFUSCATE_TEXT_NAMED("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL, path)) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
       MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
     } else {
       lua_getglobal(lua.GetState(), "main");

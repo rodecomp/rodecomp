@@ -52,17 +52,17 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   if (remainingTime == 0xFFFFFFFE && packet->remainingFreeTime == 0xFFFFFFFE) {
     const char* message = LookupMessage(MSI_BILLING_FREE_USER);
     // GLOBAL: gl_25061
-    const char* format = OBFUSCATE_ARRAY_TEXT("%s\x0A", 0x4B755DB19953E311ULL, std::uint8_t);
+    const char* format = OBFUSCATE_BYTES_TEXT("%s\x0A", 0x4B755DB19953E311ULL);
     sprintf(text, format, message);
   } else if (remainingTime == 0xFFFFFFFD && packet->remainingFreeTime == 0xFFFFFFFD) {
     const char* message = LookupMessage(MSI_BILLING_PCB);
     // GLOBAL: gl_25062
-    const char* format = OBFUSCATE_ARRAY_TEXT("%s\x0A", 0xF715514F5961B75BULL, std::uint8_t);
+    const char* format = OBFUSCATE_BYTES_TEXT("%s\x0A", 0xF715514F5961B75BULL);
     sprintf(text, format, message);
   } else if (remainingTime == 0xFFFFFFFF && packet->remainingFreeTime == 0xFFFFFFFF) {
     const char* message = LookupMessage(MSI_BILLING_INTERNET_CAFE);
     // GLOBAL: gl_25063
-    const char* format = OBFUSCATE_ARRAY_TEXT("%s\x0A", 0x4191BB5531FD3999ULL, std::uint8_t);
+    const char* format = OBFUSCATE_BYTES_TEXT("%s\x0A", 0x4191BB5531FD3999ULL);
     sprintf(text, format, message);
   } else if (remainingTime != 0) {
     const std::uint32_t freeTime = packet->remainingFreeTime;
@@ -72,7 +72,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
     } else {
       const char* message = LookupMessage(MSI_BILLING_100);
       // GLOBAL: gl_25064
-      const char* format = OBFUSCATE_ARRAY_TEXT("%s\x0A", 0xB19D1FA9116F39D3ULL, std::uint8_t);
+      const char* format = OBFUSCATE_BYTES_TEXT("%s\x0A", 0xB19D1FA9116F39D3ULL);
       sprintf(text, format, message);
       const std::uint32_t time = packet->remainingTime;
       const char* dayFormat = LookupMessage(MSI_BILLING_DAY_HOUR_MINUTES);
@@ -82,14 +82,14 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
     if (packet->remainingFreeTime > 0) {
       const char* message = LookupMessage(MSI_BILLING_800);
       // GLOBAL: gl_25065
-      const char* format = OBFUSCATE_ARRAY_TEXT("%s\x0A", 0x9569C9C7E70909AFULL, std::uint8_t);
+      const char* format = OBFUSCATE_BYTES_TEXT("%s\x0A", 0x9569C9C7E70909AFULL);
       sprintf(text, format, message);
       const std::uint32_t freeTime = packet->remainingFreeTime;
       const char* hourFormat = LookupMessage(MSI_BILLING_HOUR_MINUTES);
       sprintf(text + strlen(text), hourFormat, freeTime / minutesPerHour, freeTime % minutesPerHour);
     } else {
       // GLOBAL: gl_25066
-      const char* format = OBFUSCATE_ARRAY_TEXT("\x0A", 0xD7A749EB27D5BF6DULL, std::uint8_t);
+      const char* format = OBFUSCATE_BYTES_TEXT("\x0A", 0xD7A749EB27D5BF6DULL);
       sprintf(text, format);
     }
   }
@@ -217,12 +217,8 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
 
   if (strlen(text) != 0) {
     char message[256];
-    sprintf(message, []() -> EncryptedName<7, 0xBD2BA1C11B01E73BULL>& {
-      constexpr std::array<std::uint8_t, 7> source = CRYPT_NAME("%s(%d)", 0xBD2BA1C11B01E73BULL);
-      // GLOBAL: gl_25060
-      thread_local EncryptedName<7, 0xBD2BA1C11B01E73BULL> format(source);
-      return format;
-    }().Text(), text, packet->errorCode);
+    // GLOBAL: gl_25060
+    sprintf(message, OBFUSCATE_ARRAY("%s(%d)", 0xBD2BA1C11B01E73BULL, std::uint8_t).Text(), text, packet->errorCode);
     g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
   }
 

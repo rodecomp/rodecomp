@@ -17,13 +17,6 @@
 
 namespace {
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 }
 
 // OFFSET: 0x00B78840
@@ -337,13 +330,9 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 8.0f;
     break;
   case EF_UNK_2443: {
-    constexpr auto spriteSourceText = CRYPT_NAME("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL);
-    const auto& spriteSource = spriteSourceText.data;
-    particle->SetSprite(DecryptName<0xDB27CB557D038759ULL>(spriteSource));
+    particle->SetSprite(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL));
 
-    constexpr auto actionSourceText = CRYPT_NAME("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL);
-    const auto& actionSource = actionSourceText.data;
-    particle->SetAction(DecryptName<0x51BB39B763BBBD8DULL>(actionSource));
+    particle->SetAction(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL));
     particle->flags = 1;
     particle->depthOffset = 0.0015f;
     particle->loopMode = 0;

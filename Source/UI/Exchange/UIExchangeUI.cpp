@@ -44,13 +44,6 @@ template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetBinde
 template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetImages(const std::string&, const std::string&, const std::string&,
                                                                                     const std::string&);
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-static const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 // OFFSET: 0x00A0F840
 // FUNCTION: fn_15180
 template <>
@@ -581,9 +574,7 @@ void ExchangeUI::CUIItem::OnCreate(int width, int height) {
   this->slotBackground = new CUIStaticImage();
   this->slotBackground->SetSize(32, 32);
   this->slotBackground->Move(9, 0);
-  this->slotBackground->SetImage(std::string(DecryptName<0x75ADC57D87EFBD8FULL>({'\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x17',
-                                   '\xEE', '\xCE', '\x86', '\xE4', '\x22', '\xAC', '\xC3', '\x01', '\xEA', '\xCF', '\x89', '\xE6', '\x1E', '\xA0', '\xF1', '\x1C',
-                                   '\xFB', '\xD8', '\x82', '\xF0', '\x14', '\xAB', '\xF2', '\x18', '\xE6', '\xD9', '\xC1', '\xE5', '\x10', '\xB5', '\xAD'})));
+  this->slotBackground->SetImage(std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\itemwin_mid.bmp", 0x75ADC57D87EFBD8FULL)));
   this->AddChild(this->slotBackground);
 
   this->itemIcon = new CUIGameItem();
@@ -600,7 +591,7 @@ void ExchangeUI::CUIItem::OnCreate(int width, int height) {
   this->quantityText->SetText("");
   this->quantityText->SetFitText(0);
   this->quantityText->SetAlign(0, 6);
-  this->quantityText->SetFont(std::string(DecryptName<0xC517FB932D95BB6DULL>({'\x2A', '\xCE', '\xF9', '\x44', '\xFE', '\xFB'})));
+  this->quantityText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xC517FB932D95BB6DULL)));
   this->quantityText->SetFontHeight(11);
   this->quantityText->SetBold(0);
   this->quantityText->SetColor(0);
@@ -614,7 +605,7 @@ void ExchangeUI::CUIItem::OnCreate(int width, int height) {
   this->itemNameText->SetText("");
   this->itemNameText->SetFitText(1);
   this->itemNameText->SetAlign(0, 6);
-  this->itemNameText->SetFont(std::string(DecryptName<0x23BBD58F8B5FF5C9ULL>({'\x8E', '\x80', '\x33', '\xE2', '\xE2', '\xD5'})));
+  this->itemNameText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x23BBD58F8B5FF5C9ULL)));
   this->itemNameText->SetFontHeight(12);
   this->itemNameText->SetBold(0);
   this->itemNameText->SetColor(0);

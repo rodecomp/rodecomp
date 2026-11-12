@@ -20,10 +20,7 @@
 bool CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
   CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
-  constexpr auto sourceText = CRYPT_NAME("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL);
-  const auto& source = sourceText.data;
-  thread_local EncryptedName<sizeof(source), 0x17FB0F6BFF3BE93FULL> name(source);
-  const bool loaded = storage.LoadTokens(tokens, name.Text(), 0);
+  const bool loaded = storage.LoadTokens(tokens, OBFUSCATE_TEXT("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL), 0);
 
   for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
     g_mapInfoMgr->AddMapDisplayName(token[0], token[1], false);

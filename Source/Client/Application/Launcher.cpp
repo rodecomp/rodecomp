@@ -686,21 +686,15 @@ bool RestartFromCommandLine() {
 // OFFSET: 0x00E58A60
 // FUNCTION: fn_24365
 void ApplyAiPatch() {
-  constexpr std::array<std::uint8_t, 9> patchSource = CRYPT_NAME("AI_patch", 0x3B915119EFD523EFULL);
-  EncryptedName<sizeof(patchSource), 0x3B915119EFD523EFULL>& patchName = ThreadLocalName<0x3B915119EFD523EFULL>(patchSource);
-  if (_access(patchName.Text(), 0) != 0) {
+  if (_access(OBFUSCATE_BYTES_TEXT("AI_patch", 0x3B915119EFD523EFULL), 0) != 0) {
     return;
   }
 
-  constexpr std::array<std::uint8_t, 3> aiSource = CRYPT_NAME("AI", 0x5B8F49AF09390D1BULL);
-  EncryptedName<sizeof(aiSource), 0x5B8F49AF09390D1BULL>& aiName = ThreadLocalName<0x5B8F49AF09390D1BULL>(aiSource);
-  if (_access(aiName.Text(), 0) != 0) {
+  if (_access(OBFUSCATE_BYTES_TEXT("AI", 0x5B8F49AF09390D1BULL), 0) != 0) {
     return;
   }
 
-  constexpr std::array<std::uint8_t, 10> backupSource = CRYPT_NAME("AI_backup", 0x49C3759B77DBD3C1ULL);
-  EncryptedName<sizeof(backupSource), 0x49C3759B77DBD3C1ULL>& backupName = ThreadLocalName<0x49C3759B77DBD3C1ULL>(backupSource);
-  if (_access(backupName.Text(), 0) == 0) {
+  if (_access(OBFUSCATE_BYTES_TEXT("AI_backup", 0x49C3759B77DBD3C1ULL), 0) == 0) {
     constexpr std::array<std::uint8_t, 10> deleteSource = CRYPT_NAME("AI_backup", 0x6DED3DD1CF75AD9BULL);
     char path[16] = {};
     EncryptedName<sizeof(deleteSource), 0x6DED3DD1CF75AD9BULL>& deleteName = ThreadLocalName<0x6DED3DD1CF75AD9BULL>(deleteSource);
@@ -715,26 +709,16 @@ void ApplyAiPatch() {
     SHFileOperationA(&operation);
   }
 
-  constexpr std::array<std::uint8_t, 10> backupTargetSource = CRYPT_NAME("AI_backup", 0x1BF915E1F37DFDFDULL);
-  EncryptedName<sizeof(backupTargetSource), 0x1BF915E1F37DFDFDULL>& backupTarget = ThreadLocalName<0x1BF915E1F37DFDFDULL>(backupTargetSource);
-  const char* backup = backupTarget.Text();
-  constexpr std::array<std::uint8_t, 3> currentSource = CRYPT_NAME("AI", 0x01FF9313695DD9DFULL);
-  EncryptedName<sizeof(currentSource), 0x01FF9313695DD9DFULL>& current = ThreadLocalName<0x01FF9313695DD9DFULL>(currentSource);
-  std::rename(current.Text(), backup);
+  const char* backup = OBFUSCATE_BYTES_TEXT("AI_backup", 0x1BF915E1F37DFDFDULL);
+  std::rename(OBFUSCATE_BYTES_TEXT("AI", 0x01FF9313695DD9DFULL), backup);
 
-  constexpr std::array<std::uint8_t, 3> installTargetSource = CRYPT_NAME("AI", 0x4F1791FB1503C713ULL);
-  EncryptedName<sizeof(installTargetSource), 0x4F1791FB1503C713ULL>& installTarget = ThreadLocalName<0x4F1791FB1503C713ULL>(installTargetSource);
-  const char* install = installTarget.Text();
-  constexpr std::array<std::uint8_t, 9> patchedSource = CRYPT_NAME("AI_patch", 0xA1A55B4D1597EDD3ULL);
-  EncryptedName<sizeof(patchedSource), 0xA1A55B4D1597EDD3ULL>& patched = ThreadLocalName<0xA1A55B4D1597EDD3ULL>(patchedSource);
-  std::rename(patched.Text(), install);
+  const char* install = OBFUSCATE_BYTES_TEXT("AI", 0x4F1791FB1503C713ULL);
+  std::rename(OBFUSCATE_BYTES_TEXT("AI_patch", 0xA1A55B4D1597EDD3ULL), install);
 }
 
 // INLINED
 void ExitForProtectionCheck(const char* commandLine) {
-  constexpr std::array<std::uint8_t, 15> checkSource = CRYPT_NAME("/check_themida", 0xC7FB6DF18577D34BULL);
-  EncryptedName<sizeof(checkSource), 0xC7FB6DF18577D34BULL>& check = ThreadLocalName<0xC7FB6DF18577D34BULL>(checkSource);
-  if (std::strstr(commandLine, check.Text())) {
+  if (std::strstr(commandLine, OBFUSCATE_BYTES_TEXT("/check_themida", 0xC7FB6DF18577D34BULL))) {
     ExitProcess(0);
   }
 }
@@ -884,14 +868,10 @@ int InitApp(HINSTANCE instance, int showCommand) {
     int posY;
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      constexpr std::array<std::uint8_t, 12> xSource = CRYPT_NAME("Window_XPos", 0x9B17C9EFDBB39F2FULL);
-      EncryptedName<sizeof(xSource), 0x9B17C9EFDBB39F2FULL>& xName = ThreadLocalName<0x9B17C9EFDBB39F2FULL>(xSource);
-      posX = g_session.GetOptionInteger(xName.Text(), defaultX);
+      posX = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_XPos", 0x9B17C9EFDBB39F2FULL), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
-      constexpr std::array<std::uint8_t, 12> ySource = CRYPT_NAME("Window_YPos", 0x69D345DB950F336DULL);
-      EncryptedName<sizeof(ySource), 0x69D345DB950F336DULL>& yName = ThreadLocalName<0x69D345DB950F336DULL>(ySource);
-      posY = g_session.GetOptionInteger(yName.Text(), defaultY);
+      posY = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_YPos", 0x69D345DB950F336DULL), defaultY);
     } else {
       posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
       posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
@@ -915,10 +895,8 @@ int InitApp(HINSTANCE instance, int showCommand) {
   int windowWidth = static_cast<int>(width);
   int windowHeight = static_cast<int>(height);
   if (!g_configuredFullscreen) {
-    constexpr std::array<std::uint8_t, 14> traySource = CRYPT_NAME("Shell_TrayWnd", 0xC7912587FFF31B71ULL);
-    EncryptedName<sizeof(traySource), 0xC7912587FFF31B71ULL>& trayName = ThreadLocalName<0xC7912587FFF31B71ULL>(traySource);
     RECT trayRect;
-    HWND tray = FindWindowA(trayName.Text(), nullptr);
+    HWND tray = FindWindowA(OBFUSCATE_BYTES_TEXT("Shell_TrayWnd", 0xC7912587FFF31B71ULL), nullptr);
     if (tray) {
       GetWindowRect(tray, &trayRect);
     }
@@ -938,12 +916,8 @@ int InitApp(HINSTANCE instance, int showCommand) {
 
   hWnd = CreateApplicationWindow(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
   if (!hWnd) {
-    constexpr std::array<std::uint8_t, 6> titleSource = CRYPT_NAME("ERROR", 0x078333BB9725B7C9ULL);
-    EncryptedName<sizeof(titleSource), 0x078333BB9725B7C9ULL>& title = ThreadLocalName<0x078333BB9725B7C9ULL>(titleSource);
-    const char* caption = title.Text();
-    constexpr std::array<std::uint8_t, 23> messageSource = CRYPT_NAME("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL);
-    EncryptedName<sizeof(messageSource), 0x8F1B5BFD5F6175B5ULL>& message = ThreadLocalName<0x8F1B5BFD5F6175B5ULL>(messageSource);
-    MessageBoxA(nullptr, message.Text(), caption, MB_OK);
+    const char* caption = OBFUSCATE_BYTES_TEXT("ERROR", 0x078333BB9725B7C9ULL);
+    MessageBoxA(nullptr, OBFUSCATE_BYTES_TEXT("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL), caption, MB_OK);
     return 0;
   }
 
