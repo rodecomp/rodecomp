@@ -824,14 +824,18 @@ void UISelCharForUServerWnd::Paint() {
 // FUNCTION: fn_12679
 void UISerachStoreInfoWnd::Paint() {
   const bool empty = std::string(this->m_edits[1]->Text()).size() == 0;
-  this->m_findButton->SetDisabled(empty);
-  this->m_findButton->Invalidate();
-  this->m_edits[0]->disabled = empty;
-  this->m_edits[0]->Invalidate();
-  this->m_edits[2]->disabled = empty;
-  this->m_edits[2]->Invalidate();
-  this->m_edits[3]->disabled = empty;
-  this->m_edits[3]->Invalidate();
+  UIBitmapButton* findButton = this->m_findButton;
+  findButton->SetDisabled(empty);
+  findButton->Invalidate();
+  UIEditCtrl* edit = this->m_edits[0];
+  edit->disabled = empty;
+  edit->Invalidate();
+  edit = this->m_edits[2];
+  edit->disabled = empty;
+  edit->Invalidate();
+  edit = this->m_edits[3];
+  edit->disabled = empty;
+  edit->Invalidate();
 
   this->DrawPanelBackground(0, 0, "");
   this->DrawTitleBar(true, LookupMessage(MSI_SEARCH_STOREINFO), 0);
@@ -841,8 +845,7 @@ void UISerachStoreInfoWnd::Paint() {
   DrawOutlinedText(*this, 273, 20, "Zeny", 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
   this->DrawTextAt(353, 38, "~", 0, 0, 12, 0, 0, 0);
 
-  const std::string count = FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.storeSearchCount);
-  this->DrawRightAlignedText(this->geometry.width - 60, 60, count.c_str(), 0, 0, 12, 0, 0);
+  this->DrawRightAlignedText(this->geometry.width - 60, 60, FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.storeSearchCount).c_str(), 0, 0, 12, 0, 0);
 
   this->FillRegion(5, 80, this->geometry.width - 10, 20, 0xDFFFFE);
   DrawRoundedBorder(*this, 5, 80, this->geometry.width - 10, this->m_rowHeight * 10 + 21, 0xC0C0C0);
@@ -850,18 +853,14 @@ void UISerachStoreInfoWnd::Paint() {
   DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
   this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
 
-  this->DrawTextAt((110 - this->TextWidth(LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0)) / 2 + 50, 85,
-    LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0, 0
-  );
-  this->DrawTextAt((170 - this->TextWidth(LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0)) / 2 + 160, 85,
-    LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0, 0
-  );
-  this->DrawTextAt((30 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0)) / 2 + 330, 85,
-    LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0, 0
-  );
-  this->DrawTextAt((75 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0)) / 2 + 360, 85,
-    LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0, 0
-  );
+  int x = (110 - this->TextWidth(LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0)) / 2 + 50;
+  this->DrawTextAt(x, 85, LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0, 0);
+  x = (170 - this->TextWidth(LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0)) / 2 + 160;
+  this->DrawTextAt(x, 85, LookupMessage(MSI_ITEM2), 0, 0, 12, 0, 0, 0);
+  x = (30 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0)) / 2 + 330;
+  this->DrawTextAt(x, 85, LookupMessage(MSI_SEARCH_ITEM_COUNT), 0, 0, 12, 0, 0, 0);
+  x = (75 - this->TextWidth(LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0)) / 2 + 360;
+  this->DrawTextAt(x, 85, LookupMessage(MSI_SEARCH_ITEM_PRICE), 0, 0, 12, 0, 0, 0);
 
   if (this->m_statusText.size() != 0) {
     this->DrawTextAt(5, this->geometry.height - 20, this->m_statusText.c_str(), 0, 0, 12, 0xFF, 0, 0);
@@ -895,9 +894,9 @@ void UISerachStoreInfoWnd::Paint() {
     if (entry->item.grade > 0) {
       this->DrawBitmap(
         13, y + 5,
-        &static_cast<CBitmapRes*>(
+        static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", entry->item.grade).c_str()))
-        )->image,
+        ),
         true
       );
     }
