@@ -1693,10 +1693,7 @@ const float g_featherOffsets[3] = {0.0f, 0.1f, -0.1f};
 void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(int sourceActor, CGameActor* target) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
-    constexpr auto bytesText = CRYPT_NAME("attack_00", 0x2FF3C5036D070127ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
-    const std::string effectName = name.Text();
+    const std::string effectName = OBFUSCATE_TEXT("attack_00", 0x2FF3C5036D070127ULL);
     this->SpawnDirectionalEffect(source, target, effectName);
   }
 }
@@ -1706,10 +1703,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(int sourceActor, CGa
 void CSkillAction_DamageWereRaptorForm::SpawnAttack01Effect(int sourceActor, CGameActor* target) {
   CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
   if (source && target) {
-    constexpr auto bytesText = CRYPT_NAME("attack_01", 0x17359BF953C367B3ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x17359BF953C367B3ULL> name(bytes);
-    const std::string effectName = name.Text();
+    const std::string effectName = OBFUSCATE_TEXT("attack_01", 0x17359BF953C367B3ULL);
     this->SpawnDirectionalEffect(source, target, effectName);
   }
 }
