@@ -26,6 +26,8 @@
 #include <cstring>
 #include <string>
 
+template __declspec(noinline) std::string::size_type std::string::find(const char, const std::string::size_type) const noexcept;
+
 #pragma pack(push, 1)
 struct CharacterRenamePacket {
   /* 0000 */ short id;
@@ -112,7 +114,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       if (name.find('\n', 0) != std::string::npos) {
         g_windowMgr.Confirm(LookupMessage(MSI_TOKENAGENCY_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
-        return 0;
+        break;
       }
 
       if (g_serviceType == 1 && !ValidateCharacterName(this->m_edit->Text())) {
@@ -123,11 +125,11 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
 
       if (this->m_edit->Length() < 4) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
-      const bool allowed = g_forbiddenWords.Allows(this->m_edit->Text());
-      const bool blank = g_session.IsBlankString(this->m_edit->Text());
+      const int allowed = g_forbiddenWords.Allows(this->m_edit->Text());
+      const int blank = g_session.IsBlankString(this->m_edit->Text());
       if (!allowed || blank) {
         if (!allowed) {
           g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
@@ -135,13 +137,13 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         if (blank) {
           g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         }
-        return 0;
+        break;
       }
 
       if (this->m_edit->Length() >= 24 || !this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
         g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
-        return 0;
+        break;
       }
 
       char newName[24] = {};
@@ -171,7 +173,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         g_renameGid = packet.gid;
         std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
         std::memcpy(g_renameName, this->m_info.name, sizeof(g_renameName));
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         g_windowMgr.Schedule(this);
       }
       break;
