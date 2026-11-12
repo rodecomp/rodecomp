@@ -49,6 +49,8 @@
 #include <string>
 #include <vector>
 
+template __declspec(noinline) std::vector<unsigned char>::vector(const std::size_t, const unsigned char&, const std::allocator<unsigned char>&);
+
 namespace {
 #pragma pack(push, 1)
   struct MessengerRecordHeader {
