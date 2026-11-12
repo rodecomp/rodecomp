@@ -136,9 +136,10 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
   }
 
   const float* motion = reinterpret_cast<const float*>(particle->animationParameters);
+  const float depth = -particle->animationParameter;
   const int segment = particle->columnIndex;
   float radius = particle->speedParameter;
-  const float height = -particle->animationParameter + segment * motion[0];
+  const float height = segment * motion[0] + depth;
   int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->angleBits));
   angle = angle % 360;
   for (int step = 1; step <= segment; ++step) {
@@ -148,37 +149,37 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
   EffectPoint corners[4];
   angle += 90;
   angle = angle % 360;
-  corners[0].x = radius * g_cosTable[angle];
-  corners[0].y = height - 1.0f;
-  corners[0].z = radius * g_sinTable[angle];
+  float corner0X = radius * g_cosTable[angle];
+  float corner0Y = height - 1.0f;
+  float corner0Z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  corners[1].x = radius * g_cosTable[angle];
-  corners[1].y = height - 1.0f;
-  corners[1].z = radius * g_sinTable[angle];
+  float corner1X = radius * g_cosTable[angle];
+  float corner1Y = height - 1.0f;
+  float corner1Z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  corners[2].x = radius * g_cosTable[angle];
-  corners[2].y = height - 1.0f;
-  corners[2].z = radius * g_sinTable[angle];
+  float corner2X = radius * g_cosTable[angle];
+  float corner2Y = height - 1.0f;
+  float corner2Z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  corners[3].x = radius * g_cosTable[angle];
-  corners[3].y = height - 1.0f;
-  corners[3].z = radius * g_sinTable[angle];
+  float corner3X = radius * g_cosTable[angle];
+  float corner3Y = height - 1.0f;
+  float corner3Z = radius * g_sinTable[angle];
 
-  particle->vertices[0].x = corners[2].x;
-  particle->vertices[0].y = corners[2].y;
-  particle->vertices[0].z = corners[2].z;
-  particle->vertices[1].x = corners[1].x;
-  particle->vertices[1].y = corners[1].y;
-  particle->vertices[1].z = corners[1].z;
-  particle->vertices[2].x = corners[3].x;
-  particle->vertices[2].y = corners[3].y;
-  particle->vertices[2].z = corners[3].z;
-  particle->vertices[3].x = corners[0].x;
-  particle->vertices[3].y = corners[0].y;
-  particle->vertices[3].z = corners[0].z;
+  particle->vertices[0].x = corner2X;
+  particle->vertices[0].y = corner2Y;
+  particle->vertices[0].z = corner2Z;
+  particle->vertices[1].x = corner1X;
+  particle->vertices[1].y = corner1Y;
+  particle->vertices[1].z = corner1Z;
+  particle->vertices[2].x = corner3X;
+  particle->vertices[2].y = corner3Y;
+  particle->vertices[2].z = corner3Z;
+  particle->vertices[3].x = corner0X;
+  particle->vertices[3].y = corner0Y;
+  particle->vertices[3].z = corner0Z;
 }
 
 // OFFSET: 0x00B7BC20
@@ -281,7 +282,8 @@ void CStormKickEffect::OnProcess() {
       particle->alpha = alpha;
 
       float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
-      const int turned = static_cast<int>(rotation - static_cast<float>(std::max(rand() % 3, 0) + 3));
+      const int jitter = rand() % 3;
+      const int turned = static_cast<int>(rotation - static_cast<float>((jitter >= 0 ? jitter : 0) + 3));
       rotation = static_cast<float>(turned % 360);
 
       matrix transform;
@@ -295,9 +297,10 @@ void CStormKickEffect::OnProcess() {
 
   for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
     if (particle) {
       float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
       const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
@@ -309,7 +312,8 @@ void CStormKickEffect::OnProcess() {
 
       if (this->id == EF_STORMKICK8) {
         if (frame > 30) {
-          alpha = std::max(alpha - 3, 0);
+          alpha -= 3;
+          alpha = alpha >= 0 ? alpha : 0;
         } else {
           alpha += 3;
         }
@@ -331,19 +335,19 @@ void CStormKickEffect::OnProcess() {
       const float vertical = radius * g_sinTable[tilt];
 
       EffectPoint corners[4];
-      corners[3].x = g_cosTable[angle] * particle->scale;
-      corners[3].y = -particle->speedParameter;
-      corners[3].z = g_sinTable[angle] * particle->scale;
-      corners[1].x = corners[3].x + g_cosTable[angle] * horizontal;
-      corners[1].y = corners[3].y - vertical;
-      corners[1].z = corners[3].z + g_sinTable[angle] * horizontal;
+      float innerX = g_cosTable[angle] * particle->scale;
+      float innerY = -particle->speedParameter;
+      float innerZ = g_sinTable[angle] * particle->scale;
+      float outerX = innerX + g_cosTable[angle] * horizontal;
+      float outerY = innerY - vertical;
+      float outerZ = innerZ + g_sinTable[angle] * horizontal;
 
-      particle->vertices[3].x = corners[3].x;
-      particle->vertices[3].y = corners[3].y;
-      particle->vertices[3].z = corners[3].z;
-      particle->vertices[1].x = corners[1].x;
-      particle->vertices[1].y = corners[1].y;
-      particle->vertices[1].z = corners[1].z;
+      particle->vertices[3].x = innerX;
+      particle->vertices[3].y = innerY;
+      particle->vertices[3].z = innerZ;
+      particle->vertices[1].x = outerX;
+      particle->vertices[1].y = outerY;
+      particle->vertices[1].z = outerZ;
       if (segment != 0) {
         particle->vertices[0].x = this->lastPoints[1].x;
         particle->vertices[0].y = this->lastPoints[1].y;
@@ -353,8 +357,12 @@ void CStormKickEffect::OnProcess() {
         particle->vertices[2].z = this->lastPoints[0].z;
       }
 
-      this->lastPoints[0] = corners[3];
-      this->lastPoints[1] = corners[1];
+      this->lastPoints[0].x = innerX;
+      this->lastPoints[0].y = innerY;
+      this->lastPoints[0].z = innerZ;
+      this->lastPoints[1].x = outerX;
+      this->lastPoints[1].y = outerY;
+      this->lastPoints[1].z = outerZ;
     }
 
     ++particle->elapsedFrames;
@@ -406,14 +414,14 @@ void CStormKickEffect::Render() {
       particle->destinationBlend = 6;
       break;
     case EF_STORMKICK6:
-      if (motion[1] == 0.0f) {
+      if (0.0f == motion[1]) {
         particle->destinationBlend = 6;
         particle->alpha = alpha / 3;
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
         particle->alpha = alpha;
         continue;
       }
-      if (motion[1] != 1.0f) {
+      if (1.0f != motion[1]) {
         continue;
       }
     default:
