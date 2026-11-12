@@ -2572,10 +2572,10 @@ void CLoginMode::PollNetworkStatus() {
       this->slotExtension.time1 = htonl(this->slotExtension.time1);
       this->slotExtension.time2 = htonl(this->slotExtension.time2);
 
-      const unsigned int dataLength = packet->length - offsetof(AcceptEnterNeoUnionPacket, characters);
-      this->characterCount = dataLength / sizeof(CharacterInfo);
+      this->characterCount = (packet->length - offsetof(AcceptEnterNeoUnionPacket, characters)) / sizeof(CharacterInfo);
       g_session.characterCount = this->characterCount;
-      const unsigned char* characters = reinterpret_cast<const unsigned char*>(packet->characters) + dataLength % sizeof(CharacterInfo);
+      const unsigned char* characters =
+        reinterpret_cast<const unsigned char*>(packet->characters) + (packet->length - offsetof(AcceptEnterNeoUnionPacket, characters)) % sizeof(CharacterInfo);
       memcpy_s(this->characters, sizeof(this->characters), characters, this->characterCount * sizeof(CharacterInfo));
       this->pendingCursorType = 19;
       break;
