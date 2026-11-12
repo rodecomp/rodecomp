@@ -244,9 +244,9 @@ void UINewMakeCharWnd::OnProcess() {
 int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_SETSTATE: {
-    bool previous = this->m_selected;
+    const bool previous = this->m_selected;
     this->m_selected = argument1 != 0;
-    if (previous != (argument1 != 0)) {
+    if (previous != this->m_selected) {
       if (argument1) {
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 0, 0);
         this->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 1, 0);
@@ -273,7 +273,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       this->m_preview->Enable(1);
       sprintf_s(
-        name, this->m_sex == 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle_girl%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle%02d.bmp",
+        name, this->m_sex != 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle_girl%02d.bmp",
         this->m_style + 1
       );
     } else if (this->m_race == 1) {
@@ -285,10 +285,11 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         return 0;
       }
       this->m_preview->Enable(1);
-      sprintf_s(
-        name, this->m_sex == 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle_doramGirl%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle_doramBoy%02d.bmp",
-        this->m_style + 1
-      );
+      if (this->m_sex == 0) {
+        sprintf_s(name, "유저인터페이스\\make_character_ver2\\img_hairStyle_doramGirl%02d.bmp", this->m_style + 1);
+      } else {
+        sprintf_s(name, "유저인터페이스\\make_character_ver2\\img_hairStyle_doramBoy%02d.bmp", this->m_style + 1);
+      }
     }
     if (this->m_preview) {
       this->m_preview->SetBitmap(name, 0, 0);
