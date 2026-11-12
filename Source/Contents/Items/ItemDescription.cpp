@@ -110,7 +110,7 @@ int ITEM_INFO::GetIdDisplayName(char* output, int& capacity, unsigned char consu
     return 0;
   }
 
-  const int length = output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  const int length = !output ? 0 : static_cast<int>(strnlen(output, capacity));
   if (consume != 0) {
     capacity -= length;
   }
