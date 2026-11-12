@@ -3198,11 +3198,10 @@ void UIPcGage::Paint() {
     if (this->maximum != 0) {
       const float percent = static_cast<float>(this->current * 100 / this->maximum);
       if (0.0f != percent) {
-        const int width = static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f);
         if (25.0f > percent) {
-          this->FillRegion(1, 1, width, this->geometry.height - 2, this->colors[4]);
+          this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), this->geometry.height - 2, this->colors[4]);
         } else {
-          this->FillRegion(1, 1, width, this->geometry.height - 2, this->colors[2]);
+          this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), this->geometry.height - 2, this->colors[2]);
         }
       }
     }
