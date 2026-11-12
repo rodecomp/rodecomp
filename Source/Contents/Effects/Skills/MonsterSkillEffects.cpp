@@ -961,9 +961,10 @@ void CFallenAngelEffect::OnProcess() {
   const float dz = this->startZ - this->position[2];
   const float speed = 1.0f / SquareRoot(dx * dx + 0.0f + dz * dz);
 
-  this->emitter->position.x = start.x + dx * speed * 0.09f;
-  this->emitter->position.y = start.y + speed * 0.0f;
-  this->emitter->position.z = start.z + dz * speed * 0.09f;
+  EZ2STREmitter* emitter = this->emitter;
+  emitter->position.x = start.x + dx * speed * 0.09f;
+  emitter->position.y = start.y + speed * 0.0f;
+  emitter->position.z = start.z + dz * speed * 0.09f;
 
   AsParticle(this->emitter)->Process(0.0f, -80.0f, 0.0f);
   this->emitter->elapsed++;
@@ -2509,10 +2510,13 @@ void CPneumaticusProcellaEffect::OnProcess() {
     }
 
     CEZ2STRParticle* particle = AsParticle(emitter);
-    particle->position.x = this->position[0] + emitter->offset.x;
-    particle->position.y = this->position[1] + emitter->offset.y;
-    particle->position.z = this->position[2] + emitter->offset.z;
-    particle->Process(0.0f, -80.0f, 0.0f);
+    const float x = this->position[0] + emitter->offset.x;
+    const float y = this->position[1] + emitter->offset.y;
+    const float z = this->position[2] + emitter->offset.z;
+    particle->position.x = x;
+    particle->position.y = y;
+    particle->position.z = z;
+    AsParticle(*it)->Process(0.0f, -80.0f, 0.0f);
   }
 }
 
@@ -4148,9 +4152,12 @@ void CTunaPartyEffect::OnProcess() {
     particle->animationParameter = phase;
     const float cosine = ClientCos(phase) * 10.0f;
     const float sine = ClientSin(phase) * 10.0f;
-    particle->position.y = this->position[1] - 10.0f;
-    particle->position.x = this->position[0] + sine;
-    particle->position.z = this->position[2] + cosine;
+    const float y = this->position[1] - 10.0f;
+    const float x = this->position[0] + sine;
+    const float z = this->position[2] + cosine;
+    particle->position.y = y;
+    particle->position.x = x;
+    particle->position.z = z;
     float angle = phase / 3.141592f * 180.0f;
     if (angle > 360.0f) {
       angle -= static_cast<float>(static_cast<int>(angle / 360.0f) * 360);
@@ -4673,12 +4680,9 @@ void CGravityControlEffect::OnProcess() {
   actor->render.position.y = height + this->heightOffset;
 
   if (this->target) {
-    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(this->target);
-    AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
-    emitter->position.x = this->position[0];
-    emitter->position.y = this->position[1];
-    emitter->position.z = this->position[2];
-    ++emitter->elapsed;
+    AsParticle(reinterpret_cast<EZ2STREmitter*>(this->target))->Process(0.0f, 0.0f, 0.0f);
+    reinterpret_cast<EZ2STREmitter*>(this->target)->position = *reinterpret_cast<const vector3d*>(this->position);
+    ++reinterpret_cast<EZ2STREmitter*>(this->target)->elapsed;
   }
 }
 
