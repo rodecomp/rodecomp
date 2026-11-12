@@ -261,7 +261,6 @@ void UINewSkillListWnd::DrawCharacter() {
 // OFFSET: 0x009AF300
 // FUNCTION: fn_13802
 void UINewSkillListWnd::DrawSkillList() {
-  LuaScript& script = *g_session.m_hotkeyScript;
   int drawn = 0;
   int index = 0;
 
@@ -295,7 +294,7 @@ void UINewSkillListWnd::DrawSkillList() {
           shade = 120;
           this->DrawAuxiliary(1, x + 44, y + 34, bitmap, true, false);
         } else {
-          this->DrawBitmap(x + 44, y + 34, &bitmap->image, true);
+          this->DrawBitmap(x + 44, y + 34, bitmap, true);
         }
       }
 
@@ -304,7 +303,7 @@ void UINewSkillListWnd::DrawSkillList() {
       const int green = level > maxLevel ? 0 : shade;
       const int textX = x + 112;
       const int textY = y + 47;
-      const bool usesLevel = CSkillInfo::UsesLevel(script, static_cast<int>(skill.id));
+      const bool usesLevel = CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(skill.id));
       if (level != 0) {
         std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
@@ -340,7 +339,7 @@ void UINewSkillListWnd::DrawSkillList() {
             const std::uint32_t id = skill.id;
             for (const CSkillInfo& live : this->SkillList(this->m_tab, true)) {
               if (live.id == id && live.level != 0) {
-                const int amount = skill.UseSpAmount(script, useLevel);
+                const int amount = skill.UseSpAmount(*g_session.m_hotkeyScript, useLevel);
                 if (amount != 0 && useLevel <= skill.level) {
                   sp = amount;
                 }
@@ -350,10 +349,10 @@ void UINewSkillListWnd::DrawSkillList() {
             }
           }
           if (!found) {
-            sp = skill.UseSpAmount(script, skill.level);
+            sp = skill.UseSpAmount(*g_session.m_hotkeyScript, skill.level);
           }
 
-          const int ap = skill.UseApAmount(script, useLevel > 0 ? useLevel : skill.level);
+          const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, useLevel > 0 ? useLevel : skill.level);
           if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
             if (ap != 0) {
               std::sprintf(text, "Sp : %d%%, Ap : %d", sp, ap);
