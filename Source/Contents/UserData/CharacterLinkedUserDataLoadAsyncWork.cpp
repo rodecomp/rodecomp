@@ -19,21 +19,16 @@ namespace {
                                 "aracterLinkedUserDataLoadAsyncWork.cpp";
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
   }
-}
 
 // GLOBAL: gl_25607
-const char* g_characterLinkedUserDataLoadPoolName = OBFUSCATE_ARRAY_TEXT("CharacterLinkedUserData_Load", 0xC52FB5FBB94FF917ULL, std::uint8_t);
+const char* g_characterLinkedUserDataLoadPoolName = OBFUSCATE_BYTES_TEXT("CharacterLinkedUserData_Load", 0xC52FB5FBB94FF917ULL);
 
 // OFFSET: 0x005E4A50
 // FUNCTION: fn_03916
 CCharacterLinkedUserDataLoadAsyncWork::CCharacterLinkedUserDataLoadAsyncWork()
     : NAsyncWork(g_characterLinkedUserDataLoadPoolName), m_accountId(0), m_characterId(0),
-      m_diagnostic(false, std::string(DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17})), sourceFile, 29) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x17359BF953C367B3ULL)), sourceFile, 29) {
 }
 
 // INLINED
@@ -58,7 +53,7 @@ void CCharacterLinkedUserDataLoadAsyncWork::Bind(
   this->m_token = token;
   this->m_response = "";
 
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 55);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x2FF3C5036D070127ULL)), sourceFile, 55);
 }
 
 // OFFSET: 0x005E5280
@@ -71,14 +66,14 @@ bool CCharacterLinkedUserDataLoadAsyncWork::Execute() {
 
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x5E, 0x78, 0x89, 0xE7}), accountId, 4);
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x12, 0xB4, 0xF1, 0xDB}), characterId, 4);
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07}), this->m_token, 4);
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xF6, 0x52, 0xED, 0xBB, 0x07, 0xC1, 0x46, 0x34, 0xC4, 0x3D}), name, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x1D6D75EDE7CD311FULL), accountId, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("GID", 0x3375B1C7DBB5FD55ULL), characterId, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0x812BE72BCD5707B7ULL), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0x59278F63D79F3DA1ULL), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x31D7C1EDA345E36DULL>({0x0A, 0x8C, 0x2A, 0xC7, 0xED})), sourceFile, 103);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("good", 0x31D7C1EDA345E36DULL)), sourceFile, 103);
   }
 
   return false;
