@@ -2,6 +2,9 @@
 
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::uint32_t, CActorNameCard>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::uint32_t, CActorNameCard>>>, std::_Iterator_base0>::operator++() noexcept;
+
 // OFFSET: 0x005BFA60
 // FUNCTION: fn_03499
 std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
