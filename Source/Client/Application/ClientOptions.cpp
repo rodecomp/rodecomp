@@ -4,7 +4,8 @@
 // FUNCTION: fn_12610
 int CSession::GetOption(int id) const {
   const auto entry = this->m_options.Values().find(static_cast<int>(id));
-  return static_cast<int>(entry == this->m_options.Values().end() ? 0 : entry->second);
+  const std::int64_t value = entry == this->m_options.Values().end() ? 0 : entry->second;
+  return static_cast<int>(value);
 }
 
 // OFFSET: 0x005E7970
