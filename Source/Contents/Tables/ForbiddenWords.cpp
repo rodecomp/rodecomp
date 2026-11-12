@@ -168,12 +168,9 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
     int advance = 1;
 
-    for (std::vector<const char*>::const_iterator it = this->words.begin(); it != this->words.end(); ++it) {
-      const char* word = *it;
-      if (std::strncmp(word, current, std::strlen(word)) != 0) {
-        continue;
-      }
-
+    const auto found = std::find_if(this->words.begin(), this->words.end(), [current](const char* word) { return std::strncmp(word, current, std::strlen(word)) == 0; });
+    if (found != this->words.end()) {
+      const char* word = *found;
       std::strcpy(matchedWord, word);
       LowercaseWithCodePage(matchedWord, static_cast<unsigned short>(g_textCodePage));
       advance = 0;
@@ -189,20 +186,18 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
       if (position == std::wstring::npos) {
         advance = 1;
-        break;
+      } else {
+        wide = std::wstring(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
+        const std::wstring prefix = wide.substr(0, position);
+        const std::wstring suffix = wide.substr(position + std::wcslen(wordWide.c_str()));
+        wide = prefix;
+        for (int index = 0; index < advance; ++index) {
+          wide += L"*";
+        }
+        wide += suffix;
+        const std::string converted(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP));
+        strcpy_s(text, std::strlen(text) + 1, converted.c_str());
       }
-
-      wide = std::wstring(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
-      const std::wstring prefix = wide.substr(0, position);
-      const std::wstring suffix = wide.substr(position + std::wcslen(wordWide.c_str()));
-      wide = prefix;
-      for (int index = 0; index < advance; ++index) {
-        wide += L"*";
-      }
-      wide += suffix;
-      const std::string converted(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP));
-      strcpy_s(text, std::strlen(text) + 1, converted.c_str());
-      break;
     }
 
     for (int index = 0; index < advance; ++index) {
