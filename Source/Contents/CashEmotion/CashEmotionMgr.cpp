@@ -99,6 +99,9 @@ protected:
 
 class CCashEmotionAction_Register : public ICashEmotionAction {
 public:
+  // INLINED
+  CCashEmotionAction_Register() {
+  }
   bool Execute(int packId, int emotionId) override;
 };
 
@@ -127,6 +130,9 @@ class UICashEmotionPack_Search : public UICashEmotionPack {
 public:
   // INLINED
   explicit UICashEmotionPack_Search() : UICashEmotionPack() {
+  }
+  // INLINED
+  ~UICashEmotionPack_Search() override {
   }
   void Paint() override;
 
@@ -186,6 +192,9 @@ protected:
 class UICashEmotionScrollWnd : public UIScrollWnd {
 public:
   __declspec(noinline) UICashEmotionScrollWnd(int width, int height, unsigned char cached);
+  // INLINED
+  ~UICashEmotionScrollWnd() override {
+  }
   void OnCreate(int width, int height) override;
   void UpdateScrollRange() override;
 
@@ -196,6 +205,9 @@ public:
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
   __declspec(noinline) UICashEmotionListChildWnd_Abstract(int width, int height, unsigned char cached);
+  // INLINED
+  ~UICashEmotionListChildWnd_Abstract() override {
+  }
   void OnWheel(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Refresh(const char* filter) = 0;
@@ -3067,13 +3079,12 @@ int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
 // OFFSET: 0x007CA550
 // FUNCTION: fn_09445
 void UICashEmotionPack::OnCreate(int, int) {
-  auto* priceText = new (std::nothrow) UIStaticText();
-  this->packTitleText = priceText;
-  if (priceText) {
-    priceText->SetSize(145, 14);
-    priceText->Move(33, 14);
-    priceText->shadow = 1;
-    this->AddChild(priceText);
+  this->packTitleText = new (std::nothrow) UIStaticText();
+  if (this->packTitleText) {
+    this->packTitleText->SetSize(145, 14);
+    this->packTitleText->Move(33, 14);
+    this->packTitleText->shadow = 1;
+    this->AddChild(this->packTitleText);
   }
 
   this->m_titleText = new UIStaticText();
