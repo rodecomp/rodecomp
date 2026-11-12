@@ -91,10 +91,12 @@ bool CItemReformMgr::HasItem(int itemId) {
   return this->m_reformItemList.end() != this->m_reformItemList.find(itemId);
 }
 
-static void EnsureItemDbMgr() {
+// INLINED
+static CItemDBToIDMgr* EnsureItemDbMgr() {
   if (g_itemDbToIdMgr == nullptr) {
     g_itemDbToIdMgr = new (std::nothrow) CItemDBToIDMgr;
   }
+  return g_itemDbToIdMgr;
 }
 
 // OFFSET: 0x005FA180
@@ -279,8 +281,7 @@ void CItemReformMgr::LoadReformItemList() {
   lua_pushnil(state);
   while (lua_next(state, -2) != 0) {
     const std::string itemName(lua_tostring(state, -2));
-    EnsureItemDbMgr();
-    const int itemId = g_itemDbToIdMgr->GetItemID(itemName);
+    const int itemId = EnsureItemDbMgr()->GetItemID(itemName);
 
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
