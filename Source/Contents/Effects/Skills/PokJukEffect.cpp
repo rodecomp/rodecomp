@@ -5,12 +5,22 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
 #include <cstdlib>
 
 namespace {
+struct ZeroVector3d : vector3d {
+  // INLINED
+  ZeroVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+};
+
 // INLINED
 __forceinline int ClampedRandom(int range) {
   const int value = rand() % range;
@@ -194,15 +204,17 @@ void CPokJukEffect::Render() {
       const int index = particle->rowIndex * 160 + particle->columnIndex;
 
       for (int layer = 0; layer < 2; ++layer) {
-        vector3d corners[4]{};
+        ZeroVector3d corners[4];
         const float radius = particle->speedParameter - shrink;
 
-        for (int corner = 0; corner < 4; ++corner) {
-          int angle = static_cast<int>(static_cast<float>(corner * 90) + *reinterpret_cast<float*>(&particle->angleBits));
+        vector3d* corner = corners;
+        for (int offset = 0; offset < 360; offset += 90) {
+          corner->y = 0.0f;
+          int angle = static_cast<int>(static_cast<float>(offset) + *reinterpret_cast<float*>(&particle->angleBits));
           angle = angle % 360;
-          corners[corner].x = radius * g_cosTable[angle];
-          corners[corner].y = 0.0f;
-          corners[corner].z = radius * g_sinTable[angle];
+          corner->x = radius * g_cosTable[angle];
+          corner->z = radius * g_sinTable[angle];
+          ++corner;
         }
 
         this->FaceCamera(corners);
@@ -248,7 +260,7 @@ void CPokJukEffect::Render() {
         particle->alpha = shown;
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
         particle->alpha = alpha;
-        shrink += layer == 0 ? 0.5f : 0.25f;
+        shrink += layer == 0 ? g_depthAverageHalf : 0.25f;
       }
     }
   }
