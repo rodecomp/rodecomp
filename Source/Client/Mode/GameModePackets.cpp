@@ -1977,7 +1977,7 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
 
 // OFFSET: 0x00D08670
 // FUNCTION: fn_21592
-void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int updateTime, int itemId, int amount, int zeny, int zenyLimit, int charId) {
+__declspec(noinline) void CGameMode::ProcessBuyingStorePurchase(int updateTime, int itemId, int amount, int zeny, int zenyLimit, int charId) {
   ITEM_INFO item = g_session.FindItem1758ByItemId(itemId);
   item.SetItemId(itemId);
   item.quantity = amount;
@@ -2003,7 +2003,7 @@ void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int updateTime, i
 // OFFSET: 0x00D08640
 // FUNCTION: fn_21591
 __declspec(noinline) void CGameMode::ReceiveBuyingStorePurchase(const unsigned char* packet) {
-  ProcessBuyingStorePurchase(
+  this->ProcessBuyingStorePurchase(
     *reinterpret_cast<const int*>(packet + 0x14),
     *reinterpret_cast<const int*>(packet + 2),
     *reinterpret_cast<const short*>(packet + 6),
