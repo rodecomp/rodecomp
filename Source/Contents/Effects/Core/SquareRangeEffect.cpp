@@ -61,9 +61,10 @@ bool CSquareRangeEffect::IsAlive() {
 void CSquareRangeEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
       if (this->resize) {
         particle->scale = this->size * 2.5f;
