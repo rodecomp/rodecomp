@@ -359,10 +359,10 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
     if (this->m_huntMinLevel[index] >= 0 && this->m_huntMaxLevel[index] >= 0 && (minLevel != 0 || this->m_huntMaxLevel[index] != 0)) {
       if (minLevel == 0) {
         text = std::format("{} Lv.{}▼", name, maxLevel);
-      } else if (this->m_huntMaxLevel[index] != 0) {
-        text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
-      } else {
+      } else if (this->m_huntMaxLevel[index] == 0) {
         text = std::format("{} Lv.{}▲", name, minLevel);
+      } else {
+        text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
       }
     } else {
       text = name;
