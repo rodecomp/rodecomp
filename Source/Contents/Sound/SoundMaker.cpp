@@ -1202,7 +1202,7 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->render.bodyPalette = 0;
   this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->headPaletteName = source->headPaletteName;
+  this->headPaletteName = std::string(source->headPaletteName);
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->imfName = source->imfName;
@@ -1291,7 +1291,7 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.bodyPalette = 0;
   this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->headPaletteName = source->headPaletteName;
+  this->headPaletteName = std::string(source->headPaletteName);
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->imfName = source->imfName;
