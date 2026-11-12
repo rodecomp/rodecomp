@@ -1634,7 +1634,20 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
 
   const int saleType = luaL_checkinteger(state, 3);
   const int price = luaL_checkinteger(state, 4);
-  if (!(saleType == 0 && price == 0) && !(saleType == 1 && price != 0)) {
+  bool valid = true;
+  if (saleType == 0) {
+    if (price != 0) {
+      valid = false;
+    }
+  } else if (saleType == 1) {
+    if (price == 0) {
+      valid = false;
+    }
+  } else {
+    valid = false;
+  }
+
+  if (!valid) {
     g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_SALE_TYPE", packId);
     return 1;
   }
@@ -1642,25 +1655,30 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   const int dateType = luaL_checkinteger(state, 5);
   unsigned int startTime = static_cast<unsigned int>(luaL_checknumber(state, 6));
   unsigned int endTime = static_cast<unsigned int>(luaL_checknumber(state, 7));
-  if (!(dateType == 0 && endTime == 0) && !(dateType == 1 && endTime != 0)) {
+  if (dateType == 0) {
+    if (endTime != 0) {
+      valid = false;
+    }
+  } else if (dateType == 1) {
+    if (endTime == 0) {
+      valid = false;
+    }
+  } else {
+    valid = false;
+  }
+
+  if (!valid) {
     g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_DATE_TYPE", packId);
     return 1;
   }
 
-  std::tm date;
   if (startTime != 0) {
-    date = {};
-    date.tm_mday = startTime % 100;
-    date.tm_year = startTime / 10000 - 1900;
-    date.tm_mon = startTime % 10000 / 100 - 1;
+    std::tm date = {0, 0, 0, static_cast<int>(startTime % 100), static_cast<int>(startTime % 10000 / 100 - 1), static_cast<int>(startTime / 10000 - 1900)};
     startTime = _mktime32(&date);
   }
 
   if (endTime != 0) {
-    date = {};
-    date.tm_mday = endTime % 100;
-    date.tm_year = endTime / 10000 - 1900;
-    date.tm_mon = endTime % 10000 / 100 - 1;
+    std::tm date = {0, 0, 0, static_cast<int>(endTime % 100), static_cast<int>(endTime % 10000 / 100 - 1), static_cast<int>(endTime / 10000 - 1900)};
     endTime = _mktime32(&date);
   }
 
@@ -1672,8 +1690,9 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   }
 
   const char limited = static_cast<char>(luaL_checkinteger(state, 10));
-  if (g_cashEmotionMgr->packs.try_emplace(packId, name, price, startTime, endTime, period, limited).second == true) {
-    g_cashEmotionMgr->packOrder.push_back(packId);
+  CCashEmotionMgr* mgr = g_cashEmotionMgr;
+  if (mgr->packs.try_emplace(packId, name, price, startTime, endTime, period, limited).second == true) {
+    mgr->packOrder.push_back(packId);
   }
 
   return 1;
