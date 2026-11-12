@@ -140,7 +140,10 @@ int EquipWndInfo::IsValid() const {
     return 0;
   }
 
-  const int extraHeight = g_session.m_swapEquipmentMode == 1 ? 158 : 0;
+  int extraHeight = 0;
+  if (g_session.m_swapEquipmentMode == 1) {
+    extraHeight = 158;
+  }
   if (this->height != 167 && this->height != 17 && this->height != 187 && this->height != 187 + extraHeight) {
     return 0;
   }
@@ -148,7 +151,11 @@ int EquipWndInfo::IsValid() const {
     return 0;
   }
 
-  return this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+  if (this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height) {
+    return 1;
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x009A5460
@@ -300,7 +307,11 @@ int MerchantItemShopWndInfo::IsValid(bool wide) const {
     return 0;
   }
 
-  return this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+  if (this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height) {
+    return 1;
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x009A5B00
