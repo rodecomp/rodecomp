@@ -342,7 +342,7 @@ void UIListBox::Paint() {
 
   const int first = this->topLine;
   const int limit = ((this->geometry.height / this->lineHeight - this->bottomMargin) + first);
-  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = this->textColor;
 
   for (int index = first; index < end; ++index) {
@@ -356,8 +356,7 @@ void UIListBox::Paint() {
     int y = (row * this->lineHeight);
 
     if (this->centerVertically == 1) {
-      const int height = this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0);
-      y = static_cast<int>(static_cast<float>((this->lineHeight - height)) * 0.5f + static_cast<float>((row * this->lineHeight)));
+      y = static_cast<int>(static_cast<float>((this->lineHeight - this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0))) * 0.5f + static_cast<float>((row * this->lineHeight)));
     }
 
     DrawColoredText(*this, x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
