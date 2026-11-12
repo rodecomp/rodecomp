@@ -7449,8 +7449,9 @@ bool CEffectPrim::PrimDriftingOrbs() {
 
   const char kind = slot.flag1[0];
 
-  if (kind != 0 && kind < 20 && kind > 9) {
-    if (this->state.isChangeProcessed == 0) {
+  if (kind != 0 && kind < 20 && kind >= 10) {
+    switch (this->state.isChangeProcessed) {
+    case 0:
       if (slot.process % (kind - 9) == 0) {
         slot.height[6] += 1.0f;
 
@@ -7461,7 +7462,8 @@ bool CEffectPrim::PrimDriftingOrbs() {
 
       slot.distance = 6.0f;
       slot.height[7] = -15.0f;
-    } else if (this->state.isChangeProcessed == 1) {
+      break;
+    case 1:
       if (slot.process % (kind - 9) == 0) {
         slot.height[6] += 15.0f;
 
@@ -7481,6 +7483,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
       if (slot.distance >= 10.0f) {
         slot.distance = 10.0f;
       }
+      break;
     }
   } else if (kind == 0 || kind >= 20 || (slot.process & 1) == 0) {
     slot.height[6] += 1.0f;
