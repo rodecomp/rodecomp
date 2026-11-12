@@ -1050,7 +1050,7 @@ std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::stri
 
 // OFFSET: 0x00839860
 // FUNCTION: fn_10459
-std::string CCreateLineInfo::FitText(UIWindow* window, std::string text, const LineTextStyle& style, int width) {
+std::string CCreateLineInfo::FitText(UIWindow* window, const std::string text, const LineTextStyle& style, int width) {
   const int length = static_cast<int>(text.size());
   int position = 0;
   int total = 0;
