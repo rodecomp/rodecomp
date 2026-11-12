@@ -66,12 +66,12 @@ bool UIMenuIconWnd::ToggleWindow(int id) {
 // OFFSET: 0x0084A880
 // FUNCTION: fn_10613
 UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
-  if (!this->CanHitTest() || this->geometry.visible == 0 || x < this->geometry.x) {
+  if (!this->CanHitTest() || this->geometry.visible == 0 || this->geometry.x > x) {
     return nullptr;
   }
 
   if (!g_session.m_showMenuIcon) {
-    if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->notificationOpenButton->geometry.height) {
+    if (this->geometry.x + this->geometry.width <= x || this->geometry.y > y || this->geometry.y + this->notificationOpenButton->geometry.height <= y) {
       return nullptr;
     }
     if (this->notifiedCommands.size() == 0) {
@@ -80,7 +80,7 @@ UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
     return this->notificationOpenButton;
   }
 
-  if (x >= this->geometry.x + this->geometry.width || y < this->geometry.y || y >= this->geometry.y + this->geometry.height) {
+  if (this->geometry.x + this->geometry.width <= x || this->geometry.y > y || this->geometry.y + this->geometry.height <= y) {
     return nullptr;
   }
 
@@ -250,16 +250,13 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     behaviorId = 11;
     message = 105;
     break;
-  case 193:
-    message = 265;
+  case ID_EQUIP:
+    behaviorId = 10;
+    message = 104;
     break;
   case ID_ITEMS:
     behaviorId = 8;
     message = 106;
-    break;
-  case ID_EQUIP:
-    behaviorId = 10;
-    message = 104;
     break;
   case ID_SKILL:
     behaviorId = 37;
@@ -269,17 +266,6 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     behaviorId = 69;
     message = 103;
     break;
-  case ID_MAP:
-    behaviorId = 140;
-    message = 2859;
-    break;
-  case 361:
-    behaviorId = 134;
-    message = 1317;
-    break;
-  case 370:
-    message = 3128;
-    break;
   case 373:
     behaviorId = 59;
     message = 3134;
@@ -288,25 +274,39 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     behaviorId = 157;
     message = 2003;
     break;
-  case 399:
-    behaviorId = 198;
-    message = 2350;
+  case 361:
+    behaviorId = 134;
+    message = 1317;
+    break;
+  case ID_MAP:
+    behaviorId = 140;
+    message = 2859;
     break;
   case 430:
     behaviorId = 203;
     message = 2353;
     break;
+  case 193:
+    message = 265;
+    break;
+  case 399:
+    behaviorId = 198;
+    message = 2350;
+    break;
+  case 370:
+    message = 3128;
+    break;
   case 461:
     behaviorId = 251;
     message = 3135;
     break;
-  case 473:
-    behaviorId = 270;
-    message = 2646;
-    break;
   case 476:
     behaviorId = 263;
     message = 3136;
+    break;
+  case 473:
+    behaviorId = 270;
+    message = 2646;
     break;
   case 511:
     behaviorId = 315;
@@ -343,11 +343,11 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
   if (known) {
     const char* behavior = nullptr;
     g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", behaviorId, &behavior);
-    if (std::strlen(behavior) == 0) {
-      this->m_tooltip = LookupMessage(message);
-    } else {
+    if (std::strlen(behavior) != 0) {
       const std::string text = FormatOwnedString("%s (%s)", LookupMessage(message), behavior);
       this->m_tooltip = text;
+    } else {
+      this->m_tooltip = LookupMessage(message);
     }
   }
 
