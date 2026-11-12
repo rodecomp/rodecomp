@@ -418,17 +418,22 @@ void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
 // OFFSET: 0x009E5B20
 // FUNCTION: fn_14450
 int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  int position;
   switch (message) {
   case UM_SCROLLVERT:
-    position = this->scrollPosition + a;
-    break;
+    this->scrollPosition = std::clamp(this->scrollPosition + a, 0, this->scrollMaximum);
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollEnabled = this->scrollMaximum > 0;
+    return 0;
   case UM_SCROLLVERTPAGEUP:
-    position = this->scrollStep + this->scrollPosition;
-    break;
+    this->scrollPosition = std::clamp(this->scrollStep + this->scrollPosition, 0, this->scrollMaximum);
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollEnabled = this->scrollMaximum > 0;
+    return 0;
   case UM_SCROLLVERTPAGEDOWN:
-    position = this->scrollPosition - this->scrollStep;
-    break;
+    this->scrollPosition = std::clamp(this->scrollPosition - this->scrollStep, 0, this->scrollMaximum);
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollEnabled = this->scrollMaximum > 0;
+    return 0;
   case UM_DEFPUSH:
     if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
       g_serverLanguage->Insert("\r\n");
@@ -469,21 +474,20 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->selectedAll = 1;
     return 3;
   case WM_CHAR:
-    if (this->textAlignment != 0) {
-      if (this->textAlignment == 1) {
-        if ((a < '0' || a > '9') && a != VK_BACK) {
-          return 3;
-        }
-      } else if (this->textAlignment == 2) {
-        if ((a < '0' || a > '9') && a != '.' && a != VK_BACK) {
-          return 3;
-        }
-      } else {
-        return 3;
+    if (this->textAlignment == 0) {
+      g_serverLanguage->Character(a, b);
+      this->selectedAll = 1;
+    } else if (this->textAlignment == 1) {
+      if ((a >= '0' && a <= '9') || a == VK_BACK) {
+        g_serverLanguage->Character(a, b);
+        this->selectedAll = 1;
+      }
+    } else if (this->textAlignment == 2) {
+      if ((a >= '0' && a <= '9') || a == '.' || a == VK_BACK) {
+        g_serverLanguage->Character(a, b);
+        this->selectedAll = 1;
       }
     }
-    g_serverLanguage->Character(a, b);
-    this->selectedAll = 1;
     return 3;
   case UM_DOWNPUSH:
     if (this->lines.size() - 1 > static_cast<unsigned>(this->line)) {
@@ -520,11 +524,6 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     UIEditCtrl::SendMsg(sender, message, a, b, c, d);
     return 0;
   }
-
-  this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
-  static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
-  this->scrollEnabled = this->scrollMaximum > 0;
-  return 0;
 }
 
 // OFFSET: 0x009E6300
@@ -642,10 +641,7 @@ void CUIEditCtrlEx::PaintTextLines() {
     this->selectedAll = 0;
   }
 
-  int width = this->geometry.width;
-  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
-    width -= this->scrollBar->geometry.width;
-  }
+  const int width = reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 ? this->geometry.width - this->scrollBar->geometry.width : this->geometry.width;
 
   if (this->lines.empty()) {
     int x = this->horizontalPadding;
@@ -677,7 +673,7 @@ void CUIEditCtrlEx::PaintTextLines() {
     int y = (lineIndex - firstLine) * this->lineHeight + this->verticalPadding;
 
     if (!line.text.empty()) {
-      if (g_windowMgr.GetHoverWindow() == this && line.selectionEnd - line.selectionBegin > 0) {
+      if (this == g_windowMgr.GetHoverWindow() && line.selectionEnd - line.selectionBegin > 0) {
         const int selectionBeginWidth =
           line.selectionBegin > 0 ? this->TextWidth(line.text.c_str(), line.selectionBegin, 0, 12, 0, 0) : 0;
         const int selectionEndWidth =
@@ -696,7 +692,7 @@ void CUIEditCtrlEx::PaintTextLines() {
       this->PlaceTags(x, y, firstLine, endLine, lineIndex, this->lineCount);
     }
 
-    if (g_windowMgr.GetHoverWindow() == this && lineIndex == this->line) {
+    if (this == g_windowMgr.GetHoverWindow() && lineIndex == this->line) {
       const int caretOffset = this->column > 0 ? this->TextWidth(line.text.c_str(), this->column, 0, 12, 0, 0) : 0;
       this->DrawCaret(x - 2 + caretOffset, y);
     }
