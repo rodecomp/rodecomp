@@ -589,15 +589,13 @@ int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argum
       this->m_firstTag = --this->m_firstTag < 0 ? 0 : this->m_firstTag;
       this->Invalidate();
       break;
-    case ID_NEXT_PAGE: {
+    case ID_NEXT_PAGE:
       ++this->m_firstTag;
-      const int first = this->m_firstTag;
-      if (CRuneSystemMgr::GetInstance()->GetTagCount() < first + 10) {
-        this->m_firstTag = first - 1;
+      if (CRuneSystemMgr::GetInstance()->GetTagCount() < this->m_firstTag + 10) {
+        --this->m_firstTag;
       }
       this->Invalidate();
       break;
-    }
     }
     break;
   case 0xA9:
@@ -1135,8 +1133,8 @@ void UIGage_Circle::Paint() {
   );
 
   const std::string text = FormatOwnedString("%.2f%%", static_cast<double>(static_cast<float>(this->m_value) * 0.001f));
-  const int width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
-  this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f), this->m_textY, text.c_str(), 0,
+  const int space = this->geometry.width - this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
+  this->DrawTextAt(static_cast<int>(static_cast<float>(space) * 0.5f), this->m_textY, text.c_str(), 0,
     0, 12, 0xFFFFFF, 1, 0
   );
 }
