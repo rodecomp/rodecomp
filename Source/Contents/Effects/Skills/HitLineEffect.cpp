@@ -201,8 +201,12 @@ void CHitLineEffect::Render() {
       }
 
       ++corner;
-      this->previous[0] = edge[0];
-      this->previous[1] = edge[1];
+      this->previous[0].x = edge[0].x;
+      this->previous[0].y = edge[0].y;
+      this->previous[0].z = edge[0].z;
+      this->previous[1].x = edge[1].x;
+      this->previous[1].y = edge[1].y;
+      this->previous[1].z = edge[1].z;
     }
   }
 }
