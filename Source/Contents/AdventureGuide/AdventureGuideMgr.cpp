@@ -1173,16 +1173,19 @@ bool CAdventureGuideMgr::Create() {
   }
 
   if (g_adventureGuideMgr->m_initialized) {
-    if (g_adventureGuideMgr->Load()) {
-      return true;
+    if (!g_adventureGuideMgr->Load()) {
+      if (g_adventureGuideMgr) {
+        delete g_adventureGuideMgr;
+      }
+
+      g_adventureGuideMgr = nullptr;
+      return false;
     }
-    if (g_adventureGuideMgr) {
-      delete g_adventureGuideMgr;
-    }
-  } else {
-    delete g_adventureGuideMgr;
+
+    return true;
   }
 
+  delete g_adventureGuideMgr;
   g_adventureGuideMgr = nullptr;
   return false;
 }

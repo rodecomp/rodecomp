@@ -287,8 +287,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, in
     found->second.rewardBuffId = value;
     return std::make_pair(true, "good");
   } else {
-    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
-    return std::make_pair(false, message);
+    return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
   }
 }
 
@@ -300,8 +299,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, in
     found->second.rewardItemId = value;
     return std::make_pair(true, "good");
   } else {
-    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
-    return std::make_pair(false, message);
+    return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
   }
 }
 
@@ -313,8 +311,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, i
     found->second.rewardTitleId = value;
     return std::make_pair(true, "good");
   } else {
-    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
-    return std::make_pair(false, message);
+    return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
   }
 }
 
@@ -327,8 +324,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveUIType(int id, int ty
     found->second.iconName = text;
     return std::make_pair(true, "good");
   } else {
-    const std::string message = FormatOwnedString("achievement info [%d] cannot be find", id);
-    return std::make_pair(false, message);
+    return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
   }
 }
 
@@ -357,8 +353,7 @@ std::pair<bool, std::string> CAchievementMgr::SetAchieveTab(int id, int group, i
     return std::make_pair(true, "good");
   }
 
-  const std::string message = FormatOwnedString("duplicate achievement tab number info [%d]", id);
-  return std::make_pair(false, message);
+  return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("duplicate achievement tab number info [%d]", id)));
 }
 
 // OFFSET: 0x0066FED0

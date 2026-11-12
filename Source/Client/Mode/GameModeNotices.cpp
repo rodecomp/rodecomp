@@ -682,14 +682,16 @@ void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
   const auto* result = reinterpret_cast<const RouletteResultPacket*>(packet);
 
   switch (result->result) {
-  case GENERATE_ROULETTE_SUCCESS:
+  case GENERATE_ROULETTE_SUCCESS: {
     g_rouletteMgr->m_stage = result->stage;
     g_rouletteMgr->SetAdditionItem(result->additionItemId);
-    g_rouletteMgr->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
+    RouletteMgr* manager = g_rouletteMgr;
+    manager->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
     g_rouletteMgr->SetResult(result->index, 0, 0);
     g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
       static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
     break;
+  }
   case GENERATE_ROULETTE_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_RECV_ITEM_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
@@ -702,14 +704,16 @@ void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
       g_windowMgr.EnableRouletteWnd();
     }
     break;
-  case GENERATE_ROULETTE_LOSING:
+  case GENERATE_ROULETTE_LOSING: {
     g_rouletteMgr->m_stage = result->stage;
     g_rouletteMgr->SetAdditionItem(result->additionItemId);
-    g_rouletteMgr->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
+    RouletteMgr* manager = g_rouletteMgr;
+    manager->SetPoints(result->goldPoint, result->silverPoint, result->bronzePoint);
     g_rouletteMgr->SetResult(result->index, 0, 1);
     g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
       static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
     break;
+  }
   case 4:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JPN_PERSONALINFO_DEATHMSG)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
