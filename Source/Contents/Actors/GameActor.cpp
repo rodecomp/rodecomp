@@ -505,7 +505,7 @@ void CGameActor::ResetState() {
   this->isAsuraAttack = 0;
   this->isBladeStop = 0;
   this->homunAI = 0;
-  this->merAI = 0;
+  this->merAI = nullptr;
   this->objectType = 4;
   this->actorWindows[4] = 0;
   this->transformJobs[0] = -1;
@@ -627,10 +627,10 @@ void CGameActor::ReleaseAttachments() {
     this->homunAI = 0;
   }
 
-  if (this->merAI && reinterpret_cast<CMercenaryAI*>(this->merAI)->state) {
-    reinterpret_cast<CMercenaryAI*>(this->merAI)->Shutdown();
-    delete reinterpret_cast<CMercenaryAI*>(this->merAI);
-    this->merAI = 0;
+  if (this->merAI && this->merAI->state) {
+    this->merAI->Shutdown();
+    delete this->merAI;
+    this->merAI = nullptr;
   }
 
   if (this->actorWindows[0]) {
@@ -1204,6 +1204,5 @@ void __stdcall CreateHallucinationPc(
 // OFFSET: 0x00AA20D0
 // FUNCTION: fn_17210
 bool CGameActor::HasActiveMercenaryAI() {
-  const int* entry = reinterpret_cast<const int*>(this->merAI);
-  return entry && entry[1] != 0;
+  return this->merAI && this->merAI->state;
 }

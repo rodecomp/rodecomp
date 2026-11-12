@@ -66,6 +66,8 @@ struct ActorDamageMessage {
   /* 0034 */ int skillTarget;
 };
 
+class CMercenaryAI;
+
 class CGameActor : public EffectActor {
 public:
   CGameActor();
@@ -140,7 +142,7 @@ public:
   /* 0306 */ unsigned char padding_0306[2];
   /* 0308 */ int spGaugeValue;
   /* 030C */ int homunAI;
-  /* 0310 */ int merAI;
+  /* 0310 */ CMercenaryAI* merAI;
   /* 0314 */ unsigned char objectType;
   /* 0315 */ unsigned char padding_0315[3];
   /* 0318 */ float homunMsg[6];

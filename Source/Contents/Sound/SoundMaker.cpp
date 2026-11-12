@@ -1409,8 +1409,8 @@ bool CNpc::OnProcess() {
 
   if (g_session.IsMercenaryAid(this->render.accountId)) {
     if (this->merAI) {
-      if (reinterpret_cast<CMercenaryAI*>(this->merAI)->state) {
-        reinterpret_cast<CMercenaryAI*>(this->merAI)->Process(this->render.accountId);
+      if (this->merAI->state) {
+        this->merAI->Process(this->render.accountId);
       } else {
         const char* path;
         if (g_serviceOptions.Get(0xAE)) {
@@ -1424,11 +1424,11 @@ bool CNpc::OnProcess() {
         } else {
           path = ".\\AI\\AI_M.lua";
         }
-        reinterpret_cast<CMercenaryAI*>(this->merAI)->Load(path);
+        this->merAI->Load(path);
         this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
       }
     } else {
-      this->merAI = reinterpret_cast<int>(new CMercenaryAI(1));
+      this->merAI = new CMercenaryAI(1);
     }
   }
 

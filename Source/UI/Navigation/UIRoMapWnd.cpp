@@ -80,10 +80,10 @@ __declspec(noinline) void UIRoMapWnd::ClearRecords() {
 // OFFSET: 0x0091E0F0
 // FUNCTION: fn_12625
 void UIRoMapWnd::ResetKafraBounds() {
-  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x21C) = 0;
-  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x224) = 0;
-  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x218) = 0;
-  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x220) = 0;
+  this->m_kafraTop = 0;
+  this->m_kafraBottom = 0;
+  this->m_kafraLeft = 0;
+  this->m_kafraRight = 0;
 }
 
 // OFFSET: 0x0091EBA0

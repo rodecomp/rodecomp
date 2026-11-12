@@ -1,6 +1,7 @@
 #include "UI/Party/MiniPartyPlacement.h"
 #include "UI/Party/MiniPartyGrid.h"
 #include "UI/Party/MiniPartyWndAreaMgr.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -32,7 +33,7 @@ void __stdcall Nullsub228() {
 // FUNCTION: fn_17165
 UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
   for (UIWindow* window : this->snapExcluded) {
-    if (cell == *reinterpret_cast<int*>(reinterpret_cast<char*>(window) + 0x104)) {
+    if (cell == static_cast<UIMiniPartyWnd*>(window)->m_cell) {
       return window;
     }
   }

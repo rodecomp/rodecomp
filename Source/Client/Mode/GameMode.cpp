@@ -81,6 +81,7 @@
 #include "UI/Monster/UIMonsterInfoWnd.h"
 #include "Contents/Clan/ClanInfo.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Items/SelectPackageItemMgr.h"
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/Navigation/NavigationManager.h"
@@ -510,7 +511,7 @@ void CGameMode::SendMousePointerState(int value) {
 // OFFSET: 0x00CECE00
 // FUNCTION: fn_21360
 void CGameMode::ClearGroundAlphaCheck() {
-  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0x458) = 0;
+  this->checkGroundAlpha = 0;
 }
 
 // OFFSET: 0x00CECE10
@@ -3740,7 +3741,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         case MENUID_MER_FOLLOW: {
           auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_mercenaryAid));
-          if (actor && actor->merAI && *reinterpret_cast<int*>(actor->merAI + 4)) {
+          if (actor && actor->merAI && actor->merAI->state) {
             float value[6] = {};
             const int type = 9;
             std::memcpy(value, &type, sizeof(type));
