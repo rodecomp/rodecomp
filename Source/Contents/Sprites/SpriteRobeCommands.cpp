@@ -16,6 +16,8 @@
 #include <string>
 #include <windows.h>
 
+template __declspec(noinline) void std::list<CharacterRenderDrawItem>::push_back(const CharacterRenderDrawItem&);
+
 struct CharacterRenderDrawItem {
   int flags;
   RenderCommand* command;

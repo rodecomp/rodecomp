@@ -15,6 +15,8 @@
 #include <string>
 #include <windows.h>
 
+template __declspec(noinline) void std::list<RenderPrimitive*>::push_back(RenderPrimitive* const&);
+
 // OFFSET: 0x0080DBA0
 // FUNCTION: fn_10104
 void CCharacterRender::RenderRobe(
