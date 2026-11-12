@@ -3444,14 +3444,12 @@ void UIChatHisBox2::Paint() {
   FontCache& fonts = g_fontCache;
   for (int row = 0; top + row < static_cast<int>(end); ++row) {
     const int index = top + row;
-    int x;
     if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
       const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
-      x = this->geometry.width - width - 19;
+      this->DrawTextAt(this->geometry.width - width - 19, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     } else {
-      x = 2;
+      this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     }
-    this->DrawTextAt(x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }
