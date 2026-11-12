@@ -47,10 +47,7 @@ void CUITab::OnCreate(int width, int height) {
   this->labelText->SetAlign(6, 6);
   {
     CUIStaticText* text = this->labelText;
-    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0x91493751EF33B5FDULL);
-    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
-    thread_local EncryptedName<sizeof(fontSource), 0x91493751EF33B5FDULL> fontName(fontSource);
-    text->SetFont(fontName.Text());
+    text->SetFont(OBFUSCATE_BYTES_TEXT("Gulim", 0x91493751EF33B5FDULL));
   }
   this->labelText->SetFontHeight(12);
   this->labelText->SetBold(1);
