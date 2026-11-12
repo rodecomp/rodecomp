@@ -103,7 +103,8 @@ void CRedLineEffect::OnProcess() {
       float width;
 
       if (age >= 125) {
-        particle->alpha = std::max(particle->alpha - 15, 0);
+        const int alpha = particle->alpha - 15;
+        particle->alpha = alpha >= 0 ? alpha : 0;
         particle->speedParameter = std::max(0.0f, particle->speedParameter - 5.0f);
         width = particle->speedParameter;
       } else if (age < 100) {
@@ -124,7 +125,6 @@ void CRedLineEffect::OnProcess() {
 
       EffectPoint points[2];
       points[0].x = particle->scale * g_cosTable[angle];
-      points[0].y = 0.0f;
       points[0].z = particle->scale * g_sinTable[angle];
 
       if (particle->animationParameter == 1.0f) {

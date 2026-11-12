@@ -100,19 +100,19 @@ void CShadowExceedNew::OnProcess() {
   }
 
   const float angle = actor->render.angle / 180.0f * 3.141592f;
-  const float cosine = std::cos(angle);
-  const float sine = std::sin(angle);
+  const float cosine = ClientCos(angle);
+  const float sine = ClientSin(angle);
   const float y = actor->render.position.y + 0.0f;
   const float z = cosine * 5.0f + actor->render.position.z;
   const float x = -sine * 5.0f + actor->render.position.x;
   const int direction = actor->render.previousAnimation % 8;
-  this->drawBackEmitters = static_cast<unsigned int>(direction - 2) < 4;
+  this->drawBackEmitters = static_cast<unsigned int>(direction - 2) <= 3;
 
   for (auto it = this->frontEmitters.begin(); it != this->frontEmitters.end();) {
-    (*it)->position.x = x + (*it)->offsetX;
-    (*it)->position.y = y + (*it)->offsetY;
-    (*it)->position.z = z + (*it)->offsetZ;
-    (*it)->m_flipX = direction == 0 || direction == 1;
+    CEZ2STRParticle* emitter = *it;
+    const vector3d position = {x + emitter->offsetX, y + emitter->offsetY, z + emitter->offsetZ};
+    emitter->position = position;
+    emitter->m_flipX = direction == 0 || direction == 1;
     if ((*it)->Process(0.0f, 0.0f, 0.0f)) {
       ++it;
     } else {
@@ -122,10 +122,10 @@ void CShadowExceedNew::OnProcess() {
   }
 
   for (auto it = this->backEmitters.begin(); it != this->backEmitters.end();) {
-    (*it)->position.x = x + (*it)->offsetX;
-    (*it)->position.y = y + (*it)->offsetY;
-    (*it)->position.z = z + (*it)->offsetZ;
-    (*it)->m_flipX = direction == 4 || direction == 5;
+    CEZ2STRParticle* emitter = *it;
+    const vector3d position = {x + emitter->offsetX, y + emitter->offsetY, z + emitter->offsetZ};
+    emitter->position = position;
+    emitter->m_flipX = direction == 4 || direction == 5;
     if ((*it)->Process(0.0f, 0.0f, 0.0f)) {
       ++it;
     } else {
