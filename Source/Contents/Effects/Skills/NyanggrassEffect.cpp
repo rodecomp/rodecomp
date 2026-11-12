@@ -86,14 +86,14 @@ void CMultiTexParticle::AllocateVertices(int count) {
 // OFFSET: 0x007080F0
 // FUNCTION: fn_07069
 void CMultiTexParticle::Render(int column, int row) {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (!gameMode->scene->ground) {
+  GroundGeometry* ground = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground;
+  if (!ground) {
     return;
   }
 
   EffectPoint corners[4];
 
-  if (!gameMode->scene->ground->TerrainCellCorners(column, row, &corners[0].x)) {
+  if (!ground->TerrainCellCorners(column, row, &corners[0].x)) {
     return;
   }
 
