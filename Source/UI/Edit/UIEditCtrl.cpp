@@ -2498,7 +2498,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
     notice->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_QUEST_INFO_01));
     notice->FitToText();
     notice->Move(12, this->geometry.height - 20);
-    notice->SetChecked(g_session.itemDropOptions[1]);
+    notice->SetChecked(g_session.m_skipPriceWarning);
     this->AddChild(notice);
   }
 
@@ -3979,7 +3979,7 @@ void UIItemStoreFindWnd::SetSearchText(std::string text) {
 // OFFSET: 0x00971490
 // FUNCTION: fn_13263
 int UIMerchantShopMakeWnd::CommitPrice(int next) {
-  if (this->editIndex == -1 || g_session.itemDropOptions[1] == 0) {
+  if (this->editIndex == -1 || g_session.m_skipPriceWarning == 0) {
     this->editIndex = next;
     return 1;
   }
@@ -9437,12 +9437,12 @@ void UIItemShopWnd::Paint() {
     }
 
     char text[352];
-    const int aid = *reinterpret_cast<const int*>(&g_session.characterRenameData[0x1D]);
+    const int aid = g_session.m_renameAid;
     const char* name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     int length = sprintf(text, LookupMessage(message), name, aid);
     this->DrawTextAt(12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
 
-    const int gid = *reinterpret_cast<const int*>(&g_session.characterRenameData[0x21]);
+    const int gid = g_session.m_renameCharGid;
     name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     length = sprintf(text, LookupMessage(MSI_POINT_SHOP2), name, gid);
     this->DrawTextAt(12, this->geometry.height - this->bottomPadding - 21, text, length, 0, 12, 0, 0, 0);

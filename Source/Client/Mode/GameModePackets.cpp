@@ -4459,7 +4459,7 @@ __declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packe
   }
 
   const unsigned int count = packet[2];
-  int& storeCount = *reinterpret_cast<int*>(&g_session.storeSlotCounts[4]);
+  int& storeCount = g_session.m_buyingStoreSlotCount;
   if (count < 2) {
     storeCount = 2;
   } else {

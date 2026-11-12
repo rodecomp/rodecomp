@@ -281,13 +281,8 @@ public:
   /* 0F38 */ int cartMaxCount;
   /* 0F3C */ int cartWeight;
   /* 0F40 */ int cartMaxWeight;
-  union {
-    /* 0F44 */ unsigned char storeSlotCounts[8];
-    struct {
-      /* 0F44 */ int m_vendingSlotCount;
-      /* 0F48 */ int m_buyingStoreSlotCount;
-    };
-  };
+  /* 0F44 */ int m_vendingSlotCount;
+  /* 0F48 */ int m_buyingStoreSlotCount;
   /* 0F4C */ int storeItemLimit;
   /* 0F50 */ int selectedCharacterSlot;
   /* 0F54 */ float m_guildTargetCharacter;
@@ -547,7 +542,11 @@ public:
   /* 58E1 */ unsigned char padding_58E1[0x19];
   /* 58FA */ char clientVersion[0x18];
   /* 5912 */ unsigned char characterRenameEnabled;
-  /* 5913 */ unsigned char characterRenameData[0x25];
+  /* 5913 */ unsigned char padding_5913;
+  /* 5914 */ std::uint32_t m_renameGid;
+  /* 5918 */ char m_renameName[24];
+  /* 5930 */ int m_renameAid;
+  /* 5934 */ int m_renameCharGid;
   /* 5938 */ int replaySessionFlag;
   /* 593C */ int memorialWindowOpen;
   /* 5940 */ int memorialWindowX;
@@ -593,20 +592,21 @@ public:
   /* 5BEC */ int storeSearchY;
   /* 5BF0 */ std::uint32_t storeSearchOwnerAid;
   /* 5BF4 */ int m_pairValues[3];
-  union {
-    /* 5C00 */ unsigned char itemDropOptions[0x1C];
-    struct {
-      /* 5C00 */ bool m_lockItemDrop;
-      /* 5C01 */ bool m_skipPriceWarning;
-      /* 5C02 */ unsigned char itemDropState[0x12];
-      /* 5C14 */ bool m_muteSellSound;
-      /* 5C15 */ unsigned char sellSoundState[7];
-    };
-  };
+  /* 5C00 */ bool m_lockItemDrop;
+  /* 5C01 */ bool m_skipPriceWarning;
+  /* 5C04 */ int unknown_5C04;
+  /* 5C08 */ int unknown_5C08;
+  /* 5C0C */ int unknown_5C0C;
+  /* 5C10 */ int unknown_5C10;
+  /* 5C14 */ bool m_muteSellSound;
+  /* 5C18 */ int unknown_5C18;
   /* 5C1C */ int replayPacketMode;
   /* 5C20 */ long long m_bankBalance;
   /* 5C28 */ std::map<int, int> actorEffectStates;
-  /* 5C30 */ unsigned char itemSelectionState[0x38];
+  /* 5C30 */ int unknown_5C30;
+  /* 5C34 */ int unknown_5C34;
+  /* 5C38 */ int unknown_5C38;
+  /* 5C3C */ unsigned char padding_5C3C[0x2C];
   /* 5C68 */ ITEM_INFO selectionItems[5];
   /* 6140 */ std::uint16_t achievementResult;
   /* 6144 */ std::map<int, SessionRecord6144> achievements;
@@ -689,13 +689,9 @@ public:
   /* 7F75 */ unsigned char padding_7F75[3];
   /* 7F78 */ int unknown_7F78;
   /* 7F7C */ bool m_homunculusAutoFeed;
-  union {
-    /* 7F7D */ unsigned char homunculusFeedOptions[0x0F];
-    struct {
-      /* 7F7D */ unsigned char padding_7F7D[0x0B];
-      /* 7F88 */ bool m_loginModeFlag;
-    };
-  };
+  /* 7F80 */ int unknown_7F80;
+  /* 7F84 */ int unknown_7F84;
+  /* 7F88 */ bool m_loginModeFlag;
   /* 7F8C */ int m_priorityClass;
   /* 7F90 */ int m_showRankingSchedule;
   /* 7F94 */ std::set<std::uint32_t> pendingActorNames;
@@ -1385,6 +1381,19 @@ static_assert(offsetof(CSession, m_homunStats) == 0x559C);
 static_assert(offsetof(CSession, m_level) == 0x1650);
 static_assert(offsetof(CSession, m_vendingSlotCount) == 0xF44);
 static_assert(offsetof(CSession, m_buyingStoreSlotCount) == 0xF48);
+static_assert(offsetof(CSession, m_renameGid) == 0x5914);
+static_assert(offsetof(CSession, m_renameName) == 0x5918);
+static_assert(offsetof(CSession, m_renameAid) == 0x5930);
+static_assert(offsetof(CSession, m_renameCharGid) == 0x5934);
+static_assert(offsetof(CSession, replaySessionFlag) == 0x5938);
+static_assert(offsetof(CSession, unknown_5C04) == 0x5C04);
+static_assert(offsetof(CSession, unknown_5C18) == 0x5C18);
+static_assert(offsetof(CSession, replayPacketMode) == 0x5C1C);
+static_assert(offsetof(CSession, unknown_5C30) == 0x5C30);
+static_assert(offsetof(CSession, selectionItems) == 0x5C68);
+static_assert(offsetof(CSession, unknown_7F80) == 0x7F80);
+static_assert(offsetof(CSession, m_loginModeFlag) == 0x7F88);
+static_assert(offsetof(CSession, m_priorityClass) == 0x7F8C);
 static_assert(offsetof(CSession, storeItemLimit) == 0xF4C);
 static_assert(offsetof(CSession, m_hotkeyPage) == 0xBC);
 static_assert(offsetof(CSession, m_pairValues) == 0x5BF4);

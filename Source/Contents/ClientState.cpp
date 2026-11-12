@@ -1468,11 +1468,11 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1090:
-      std::memcpy(this->storeSlotCounts, data.data() + offset, header.bytes);
+      std::memcpy(&this->m_vendingSlotCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1091:
-      std::memcpy(&this->storeSlotCounts[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_buyingStoreSlotCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1092:

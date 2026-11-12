@@ -1266,8 +1266,8 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1087, &this->cartMaxCount, sizeof(this->cartMaxCount)));
   AppendRecord(records, MakeReplayRecord(1088, &this->cartWeight, sizeof(this->cartWeight)));
   AppendRecord(records, MakeReplayRecord(1089, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
-  AppendRecord(records, MakeReplayRecord(1090, this->storeSlotCounts, 4));
-  AppendRecord(records, MakeReplayRecord(1091, &this->storeSlotCounts[0x4], 4));
+  AppendRecord(records, MakeReplayRecord(1090, &this->m_vendingSlotCount, 4));
+  AppendRecord(records, MakeReplayRecord(1091, &this->m_buyingStoreSlotCount, 4));
   AppendRecord(records, MakeReplayRecord(1092, &this->m_chatTarget, sizeof(this->m_chatTarget)));
   AppendRecord(records, MakeReplayRecord(1093, &this->unknown_549C, sizeof(this->unknown_549C)));
   AppendRecord(records, MakeReplayRecord(1094, &this->partyExpShare, sizeof(this->partyExpShare)));

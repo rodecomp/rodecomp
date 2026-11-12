@@ -3033,8 +3033,8 @@ void CSession::Init() {
   this->autoReplyState[0] = 0;
 
   this->m_itemSendTick = GetTickCount();
-  *reinterpret_cast<int*>(&this->characterRenameData[0x01]) = 0;
-  std::sprintf(reinterpret_cast<char*>(&this->characterRenameData[0x05]), "");
+  this->m_renameGid = 0;
+  std::sprintf(this->m_renameName, "");
   reinterpret_cast<bool&>(this->replaySessionFlag) = false;
   this->memorialWindowOpen = 0;
   this->memorialWindowX = -1;
@@ -3074,11 +3074,11 @@ void CSession::Init() {
   }
 
   this->replayPacketMode = 0;
-  *reinterpret_cast<int*>(&this->sellSoundState[0x03]) = 0;
+  this->unknown_5C18 = 0;
   this->m_skipPriceWarning = true;
-  *reinterpret_cast<int*>(&this->itemSelectionState[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->itemSelectionState[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->itemSelectionState[0x08]) = 0;
+  this->unknown_5C30 = 0;
+  this->unknown_5C34 = 0;
+  this->unknown_5C38 = 0;
   this->mainShortcutRow = 0;
   this->alternateShortcutRow = 0;
   for (int index = 0; index < 5; ++index) {
@@ -3086,10 +3086,10 @@ void CSession::Init() {
   }
 
   this->achievementResult = 0;
-  *reinterpret_cast<int*>(&this->itemDropState[0x02]) = 0;
-  *reinterpret_cast<int*>(&this->itemDropState[0x06]) = 0;
-  *reinterpret_cast<int*>(&this->itemDropState[0x0A]) = 0;
-  *reinterpret_cast<int*>(&this->itemDropState[0x0E]) = 1;
+  this->unknown_5C04 = 0;
+  this->unknown_5C08 = 0;
+  this->unknown_5C0C = 0;
+  this->unknown_5C10 = 1;
   this->m_muteSellSound = true;
   this->ClearAchievements();
   this->playerAppearanceState = 0;
@@ -3109,9 +3109,9 @@ void CSession::Init() {
   this->m_itemDescendingOrder = false;
   this->m_showMenuIcon = true;
   this->m_homunculusAutoFeed = false;
-  *reinterpret_cast<int*>(&this->homunculusFeedOptions[0x03]) = -1;
-  *reinterpret_cast<int*>(&this->homunculusFeedOptions[0x07]) = 50;
-  this->homunculusFeedOptions[0x0B] = 0;
+  this->unknown_7F80 = -1;
+  this->unknown_7F84 = 50;
+  this->m_loginModeFlag = false;
   this->m_showRankingSchedule = -1;
   this->m_hideCostumes = 0;
 }
@@ -3184,8 +3184,8 @@ void CSession::ResetCharacterState() {
   this->cartMaxCount = 0;
   this->cartWeight = 0;
   this->cartMaxWeight = 0;
-  *reinterpret_cast<int*>(&this->storeSlotCounts[0x00]) = 13;
-  *reinterpret_cast<int*>(&this->storeSlotCounts[0x04]) = 5;
+  this->m_vendingSlotCount = 13;
+  this->m_buyingStoreSlotCount = 5;
   this->playerTeam[0] = 0;
   this->m_score1 = -1;
   this->m_score2 = -1;

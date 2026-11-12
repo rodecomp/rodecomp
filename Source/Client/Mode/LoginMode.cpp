@@ -2563,11 +2563,11 @@ void CLoginMode::PollNetworkStatus() {
       const ShortResultPacket* packet = reinterpret_cast<const ShortResultPacket*>(g_gameModePacketBuffer);
       if (packet->result != 0) {
         char text[300];
-        sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), reinterpret_cast<const char*>(&g_session.characterRenameData[5]));
+        sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), g_session.m_renameName);
         if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
           ChangeCharacterNamePacket request;
           request.id = ID_CH_REQ_CHANGE_CHARNAME;
-          request.gid = *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1]);
+          request.gid = g_session.m_renameGid;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(request.id), &request);
           break;
         }
@@ -2899,7 +2899,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_UPDATE_CHARINFO2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, packet->info.slot, 0, 0, 0));
-      if (character && character->gid == *reinterpret_cast<const std::uint32_t*>(&g_session.characterRenameData[1])) {
+      if (character && character->gid == g_session.m_renameGid) {
         *character = packet->info;
         StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));
         this->pendingCursorType = 7;
