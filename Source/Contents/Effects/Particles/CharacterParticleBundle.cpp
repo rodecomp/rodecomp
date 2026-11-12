@@ -81,11 +81,8 @@ void CChopChopClawMarks::SpawnParticle() {
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
-    constexpr auto bytesText = CRYPT_NAME("DRUID\\KR_CHOP_CHOP\\chop_chop\\chop_chop.str", 0x1D6D75EDE7CD311FULL);
-    const auto& bytes = bytesText.data;
     // GLOBAL: gl_24875
-    thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
-    particle->Load(name.Text());
+    particle->Load(OBFUSCATE_TEXT("DRUID\\KR_CHOP_CHOP\\chop_chop\\chop_chop.str", 0x1D6D75EDE7CD311FULL));
     particle->offsetX = x;
     particle->offsetY = y;
     particle->offsetZ = 0.0f;
