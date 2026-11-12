@@ -334,9 +334,10 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         --it;
       }
       if (it == display->m_jobs.begin()) {
-        it = display->m_jobs.end();
+        it = --display->m_jobs.end();
+      } else {
+        --it;
       }
-      --it;
       display->job = it->first;
     }
     break;
