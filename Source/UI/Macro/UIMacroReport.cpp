@@ -16,6 +16,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -24,13 +25,6 @@
 #include <string>
 
 namespace {
-
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
 
 }
 
@@ -141,8 +135,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_background->Move(0, 17);
   {
     CUIStaticImage* background = this->m_background;
-    const auto backgroundImageSource = CRYPT_NAME("유저인터페이스\\MacroReport\\bg_macroreport.bmp", 0x2BAD156DE3E1F9D9ULL);
-    const std::string backgroundImage(DecryptName<0x2BAD156DE3E1F9D9ULL>(backgroundImageSource.data));
+    const std::string backgroundImage(OBFUSCATE_TEXT("유저인터페이스\\MacroReport\\bg_macroreport.bmp", 0x2BAD156DE3E1F9D9ULL));
     background->SetImage(backgroundImage);
   }
   this->AddChild(this->m_background);
@@ -152,12 +145,9 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->m_titleBar;
-    const auto titleRightSource = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x03772763F96D9DA5ULL);
-    const std::string titleRight(DecryptName<0x03772763F96D9DA5ULL>(titleRightSource.data));
-    const auto titleMiddleSource = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xC517FB932D95BB6DULL);
-    const std::string titleMiddle(DecryptName<0xC517FB932D95BB6DULL>(titleMiddleSource.data));
-    const auto titleLeftSource = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x23BBD58F8B5FF5C9ULL);
-    const std::string titleLeft(DecryptName<0x23BBD58F8B5FF5C9ULL>(titleLeftSource.data));
+    const std::string titleRight(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x03772763F96D9DA5ULL));
+    const std::string titleMiddle(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xC517FB932D95BB6DULL));
+    const std::string titleLeft(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x23BBD58F8B5FF5C9ULL));
     titleBar->SetImages(titleLeft, titleMiddle, titleRight);
   }
   this->AddChild(this->m_titleBar);
@@ -166,14 +156,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
   title->SetSize(100, 17);
   title->Move(18, 0);
   {
-    const auto titleTextSource = CRYPT_NAME("유저 신고", 0x0B7109397F6B1387ULL);
-    title->SetText(DecryptName<0x0B7109397F6B1387ULL>(titleTextSource.data));
+    title->SetText(OBFUSCATE_TEXT("유저 신고", 0x0B7109397F6B1387ULL));
   }
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const auto titleFontSource = CRYPT_NAME("Gulim", 0x13E33FA1A591AB67ULL);
-    title->SetFont(std::string(DecryptName<0x13E33FA1A591AB67ULL>(titleFontSource.data)));
+    title->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
   }
   title->SetFontHeight(12);
   title->SetBold(0);
@@ -191,14 +179,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   menuButton->disabled = 0;
   menuButton->Invalidate();
   {
-    const auto menuDisabledSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL);
-    const std::string menuDisabled(DecryptName<0xD97D5DBDBB2F2709ULL>(menuDisabledSource.data));
-    const auto menuPressedSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL);
-    const std::string menuPressed(DecryptName<0xCD8F077123FB7D6FULL>(menuPressedSource.data));
-    const auto menuHoverSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL);
-    const std::string menuHover(DecryptName<0x9949BFD527532943ULL>(menuHoverSource.data));
-    const auto menuNormalSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL);
-    const std::string menuNormal(DecryptName<0x17A9E5BF39AD4737ULL>(menuNormalSource.data));
+    const std::string menuDisabled(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL));
+    const std::string menuPressed(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL));
+    const std::string menuHover(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL));
+    const std::string menuNormal(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL));
     menuButton->SetImages(menuNormal, menuHover, menuPressed, menuDisabled);
   }
   this->m_titleBar->AddChild(menuButton);
@@ -210,14 +194,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    const auto closeDisabledSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL);
-    const std::string closeDisabled(DecryptName<0xDD3913D5D7F97BE1ULL>(closeDisabledSource.data));
-    const auto closePressedSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL);
-    const std::string closePressed(DecryptName<0xA5FD29D7AB6DC59FULL>(closePressedSource.data));
-    const auto closeHoverSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL);
-    const std::string closeHover(DecryptName<0xF14F79170939C7F1ULL>(closeHoverSource.data));
-    const auto closeNormalSource = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL);
-    const std::string closeNormal(DecryptName<0xED796785D1DF137FULL>(closeNormalSource.data));
+    const std::string closeDisabled(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL));
+    const std::string closePressed(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL));
+    const std::string closeHover(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL));
+    const std::string closeNormal(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL));
     closeButton->SetImages(closeNormal, closeHover, closePressed, closeDisabled);
   }
   this->m_titleBar->SetSecondButton(closeButton);
@@ -227,8 +207,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_messageEdit->Move(8, 80);
   {
     CUIEditBox* edit = this->m_messageEdit;
-    const auto placeholderSource = CRYPT_NAME("신고 내용을 입력하세요.", 0x050505679903579BULL);
-    edit->SetText(std::string(DecryptName<0x050505679903579BULL>(placeholderSource.data)));
+    edit->SetText(std::string(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL)));
   }
   this->m_messageEdit->SetTextColor(0x808080);
   this->m_messageEdit->SetBackgroundColor(0xFFF3EE);
@@ -247,15 +226,13 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->firstTypeText->Move(28, 25);
   {
     CUIStaticText* text = this->firstTypeText;
-    const auto firstTypeSource = CRYPT_NAME("불법 프로그램 의심 신고", 0x83EFBFBB37EDBDBDULL);
-    text->SetText(DecryptName<0x83EFBFBB37EDBDBDULL>(firstTypeSource.data));
+    text->SetText(OBFUSCATE_TEXT("불법 프로그램 의심 신고", 0x83EFBFBB37EDBDBDULL));
   }
   this->firstTypeText->SetFitText(0);
   this->firstTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->firstTypeText;
-    const auto firstTypeFontSource = CRYPT_NAME("Gulim", 0xBF2B4B31397FF5A7ULL);
-    text->SetFont(std::string(DecryptName<0xBF2B4B31397FF5A7ULL>(firstTypeFontSource.data)));
+    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL)));
   }
   this->firstTypeText->SetFontHeight(12);
   this->firstTypeText->SetBold(0);
@@ -269,15 +246,13 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->secondTypeText->Move(28, 43);
   {
     CUIStaticText* text = this->secondTypeText;
-    const auto secondTypeSource = CRYPT_NAME("버그 및 시스템 악용", 0x2FE993D1DDE1F197ULL);
-    text->SetText(DecryptName<0x2FE993D1DDE1F197ULL>(secondTypeSource.data));
+    text->SetText(OBFUSCATE_TEXT("버그 및 시스템 악용", 0x2FE993D1DDE1F197ULL));
   }
   this->secondTypeText->SetFitText(0);
   this->secondTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->secondTypeText;
-    const auto secondTypeFontSource = CRYPT_NAME("Gulim", 0x39FF7FB50DEB998FULL);
-    text->SetFont(std::string(DecryptName<0x39FF7FB50DEB998FULL>(secondTypeFontSource.data)));
+    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL)));
   }
   this->secondTypeText->SetFontHeight(12);
   this->secondTypeText->SetBold(0);
@@ -294,14 +269,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->cancelButton->Invalidate();
   {
     CUIImageButton* button = this->cancelButton;
-    const auto cancelDisabledSource = CRYPT_NAME("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL);
-    const std::string cancelDisabled(DecryptName<0x35E5656B5DEDCD75ULL>(cancelDisabledSource.data));
-    const auto cancelHoverSource = CRYPT_NAME("유저인터페이스\\btn_cancel2_over.bmp", 0x4941FD9F21BBB9FDULL);
-    const std::string cancelHover(DecryptName<0x4941FD9F21BBB9FDULL>(cancelHoverSource.data));
-    const auto cancelPressedSource = CRYPT_NAME("유저인터페이스\\btn_cancel2_press.bmp", 0xAD075B8DB599F1CDULL);
-    const std::string cancelPressed(DecryptName<0xAD075B8DB599F1CDULL>(cancelPressedSource.data));
-    const auto cancelNormalSource = CRYPT_NAME("유저인터페이스\\btn_cancel2_normal.bmp", 0x2F8B0F37118D157FULL);
-    const std::string cancelNormal(DecryptName<0x2F8B0F37118D157FULL>(cancelNormalSource.data));
+    const std::string cancelDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL));
+    const std::string cancelHover(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_over.bmp", 0x4941FD9F21BBB9FDULL));
+    const std::string cancelPressed(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_press.bmp", 0xAD075B8DB599F1CDULL));
+    const std::string cancelNormal(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_normal.bmp", 0x2F8B0F37118D157FULL));
     button->SetImages(cancelNormal, cancelPressed, cancelHover, cancelDisabled);
   }
   this->AddChild(this->cancelButton);
@@ -314,14 +285,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->reportButton->Invalidate();
   {
     CUIImageButton* button = this->reportButton;
-    const auto reportDisabledSource = CRYPT_NAME("유저인터페이스\\btn_report_disable.bmp", 0xCB1D253B7FE1F563ULL);
-    const std::string reportDisabled(DecryptName<0xCB1D253B7FE1F563ULL>(reportDisabledSource.data));
-    const auto reportHoverSource = CRYPT_NAME("유저인터페이스\\btn_report_over.bmp", 0x7115D9F973F913C9ULL);
-    const std::string reportHover(DecryptName<0x7115D9F973F913C9ULL>(reportHoverSource.data));
-    const auto reportPressedSource = CRYPT_NAME("유저인터페이스\\btn_report_press.bmp", 0xE7978FB5A94DD7FDULL);
-    const std::string reportPressed(DecryptName<0xE7978FB5A94DD7FDULL>(reportPressedSource.data));
-    const auto reportNormalSource = CRYPT_NAME("유저인터페이스\\btn_report_normal.bmp", 0xB7FD8F670FC7B96BULL);
-    const std::string reportNormal(DecryptName<0xB7FD8F670FC7B96BULL>(reportNormalSource.data));
+    const std::string reportDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_report_disable.bmp", 0xCB1D253B7FE1F563ULL));
+    const std::string reportHover(OBFUSCATE_TEXT("유저인터페이스\\btn_report_over.bmp", 0x7115D9F973F913C9ULL));
+    const std::string reportPressed(OBFUSCATE_TEXT("유저인터페이스\\btn_report_press.bmp", 0xE7978FB5A94DD7FDULL));
+    const std::string reportNormal(OBFUSCATE_TEXT("유저인터페이스\\btn_report_normal.bmp", 0xB7FD8F670FC7B96BULL));
     button->SetImages(reportNormal, reportPressed, reportHover, reportDisabled);
   }
   this->AddChild(this->reportButton);
@@ -334,14 +301,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_firstTypeButton->Invalidate();
   {
     CUIRadioButton* button = this->m_firstTypeButton;
-    const auto firstRadioDisabledSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0x0F15B16B5BAFD57FULL);
-    const std::string firstRadioDisabled(DecryptName<0x0F15B16B5BAFD57FULL>(firstRadioDisabledSource.data));
-    const auto firstRadioHoverSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0x7DE349D717D7F123ULL);
-    const std::string firstRadioHover(DecryptName<0x7DE349D717D7F123ULL>(firstRadioHoverSource.data));
-    const auto firstRadioPressedSource = CRYPT_NAME("유저인터페이스\\radiobtn_on.bmp", 0xE55723712993051DULL);
-    const std::string firstRadioPressed(DecryptName<0xE55723712993051DULL>(firstRadioPressedSource.data));
-    const auto firstRadioNormalSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0x793F370985ED674FULL);
-    const std::string firstRadioNormal(DecryptName<0x793F370985ED674FULL>(firstRadioNormalSource.data));
+    const std::string firstRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x0F15B16B5BAFD57FULL));
+    const std::string firstRadioHover(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7DE349D717D7F123ULL));
+    const std::string firstRadioPressed(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xE55723712993051DULL));
+    const std::string firstRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x793F370985ED674FULL));
     button->SetImages(firstRadioNormal, firstRadioPressed, firstRadioHover, firstRadioDisabled);
   }
   this->m_firstTypeButton->checked = true;
@@ -356,14 +319,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_secondTypeButton->Invalidate();
   {
     CUIRadioButton* button = this->m_secondTypeButton;
-    const auto secondRadioDisabledSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0xF3CB6F7711A71B6DULL);
-    const std::string secondRadioDisabled(DecryptName<0xF3CB6F7711A71B6DULL>(secondRadioDisabledSource.data));
-    const auto secondRadioHoverSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0x839B27DF8F5967B3ULL);
-    const std::string secondRadioHover(DecryptName<0x839B27DF8F5967B3ULL>(secondRadioHoverSource.data));
-    const auto secondRadioPressedSource = CRYPT_NAME("유저인터페이스\\radiobtn_on.bmp", 0x7321C3814F8799E1ULL);
-    const std::string secondRadioPressed(DecryptName<0x7321C3814F8799E1ULL>(secondRadioPressedSource.data));
-    const auto secondRadioNormalSource = CRYPT_NAME("유저인터페이스\\radiobtn_off.bmp", 0x7941D76335CFA14FULL);
-    const std::string secondRadioNormal(DecryptName<0x7941D76335CFA14FULL>(secondRadioNormalSource.data));
+    const std::string secondRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xF3CB6F7711A71B6DULL));
+    const std::string secondRadioHover(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x839B27DF8F5967B3ULL));
+    const std::string secondRadioPressed(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0x7321C3814F8799E1ULL));
+    const std::string secondRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7941D76335CFA14FULL));
     button->SetImages(secondRadioNormal, secondRadioPressed, secondRadioHover, secondRadioDisabled);
   }
   this->m_secondTypeButton->checked = false;
@@ -375,15 +334,13 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->warningText->Move(9, 142);
   {
     CUIStaticText* text = this->warningText;
-    const auto warningSource = CRYPT_NAME("기능 악용 시 제재를 받을 수 있습니다.", 0x452FEF0D7FC95565ULL);
-    text->SetText(DecryptName<0x452FEF0D7FC95565ULL>(warningSource.data));
+    text->SetText(OBFUSCATE_TEXT("기능 악용 시 제재를 받을 수 있습니다.", 0x452FEF0D7FC95565ULL));
   }
   this->warningText->SetFitText(0);
   this->warningText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->warningText;
-    const auto warningFontSource = CRYPT_NAME("Gulim", 0x9FED7DA189490D5DULL);
-    const std::string warningFont(DecryptName<0x9FED7DA189490D5DULL>(warningFontSource.data));
+    const std::string warningFont(OBFUSCATE_TEXT("Gulim", 0x9FED7DA189490D5DULL));
     text->SetFont(warningFont);
   }
   this->warningText->SetFontHeight(12);
