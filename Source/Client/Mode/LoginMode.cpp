@@ -1596,8 +1596,11 @@ __declspec(noinline) void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneSe
 // OFFSET: 0x00D971E0
 // FUNCTION: fn_22299
 void CLoginMode::ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet) {
+  const int port = packet->port;
+  const std::uint32_t ip = packet->ip;
+  const std::uint32_t gid = packet->gid;
   std::string host(std::begin(packet->host), std::end(packet->host));
-  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, host.c_str());
+  this->ConnectZoneServer(gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), ip, port, host.c_str());
 }
 
 #pragma pack(push, 1)
