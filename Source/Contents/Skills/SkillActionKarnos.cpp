@@ -736,15 +736,15 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillEffect(int level, CGameActor* source, 
   }
 
   const int shotEffect = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 18> encryptedArray = CRYPT_NAME("sharpen_hail_shot", 0x7FCD77F9C7CBD14DULL);
-    const std::uint8_t (&encrypted)[18] = encryptedArray._Elems;
-    thread_local EncryptedName<sizeof(encrypted), 0x7FCD77F9C7CBD14DULL> name(encrypted);
+    constexpr auto bytesText = CRYPT_NAME("sharpen_hail_shot", 0x7FCD77F9C7CBD14DULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x7FCD77F9C7CBD14DULL> name(bytes);
     return name.Text();
   }());
   const int bottomEffect = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 25> encryptedArray = CRYPT_NAME("sharpen_hail_shot_bottom", 0xD1538513DF975701ULL);
-    const std::uint8_t (&encrypted)[25] = encryptedArray._Elems;
-    thread_local EncryptedName<sizeof(encrypted), 0xD1538513DF975701ULL> name(encrypted);
+    constexpr auto bytesText = CRYPT_NAME("sharpen_hail_shot_bottom", 0xD1538513DF975701ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0xD1538513DF975701ULL> name(bytes);
     return name.Text();
   }());
 
