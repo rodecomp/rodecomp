@@ -219,7 +219,7 @@ public:
   void Paint() override;
   void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  void RecallHistory(int step);
+  __declspec(noinline) void RecallHistory(int step);
   /* 011C */ std::string bitmapName;
   /* 0134 */ std::vector<std::string> history;
   /* 0140 */ int historyIndex;
