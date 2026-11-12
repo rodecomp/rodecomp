@@ -71,13 +71,21 @@ void CChopChopClawMarks::SpawnParticle() {
     do {
       const int positiveX = std::ranges::max(rand() % 2, 0);
       const int x = std::max(rand() % 4, 1);
-      point.x = static_cast<float>(positiveX ? x : -x);
+      int signedX = -x;
+      if (positiveX) {
+        signedX = x;
+      }
+      point.x = static_cast<float>(signedX);
       const int positiveY = std::ranges::max(rand() % 2, 0);
       const int y = std::max(rand() % 4, 1);
-      point.y = static_cast<float>(positiveY ? y : -y);
-    } while (std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
+      int signedY = -y;
+      if (positiveY) {
+        signedY = y;
+      }
+      point.y = static_cast<float>(signedY);
+    } while (ring.end() == std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
       return candidate.x == point.x && candidate.y == point.y;
-    }) == ring.end());
+    }));
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
