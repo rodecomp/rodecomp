@@ -39,8 +39,10 @@ void CStormGustEffect::Open() {
     particle->SetTexture("effect\\ice.tga");
     particle->alpha = 250;
 
-    const float speed = static_cast<float>(std::max(0, rand() % 25) + 3);
-    const float angle = static_cast<float>(std::max(0, rand() % 360));
+    const int speedRoll = rand() % 25;
+    const float speed = static_cast<float>((speedRoll >= 0 ? speedRoll : 0) + 3);
+    const int angleRoll = rand() % 360;
+    const float angle = static_cast<float>(angleRoll >= 0 ? angleRoll : 0);
     const float velocityZ = ClientCosine(static_cast<int>(angle)) * -speed;
     const float velocityX = ClientSine(static_cast<int>(angle)) * speed;
     particle->offsetX = velocityX;
@@ -48,12 +50,14 @@ void CStormGustEffect::Open() {
     particle->offsetZ = velocityZ;
 
     particle->speedParameter = 1.5f;
-    particle->scale = static_cast<float>(std::max(0, rand() % 100) + 400) / 100.0f;
+    const int scaleRoll = rand() % 100;
+    particle->scale = static_cast<float>((scaleRoll >= 0 ? scaleRoll : 0) + 400) / 100.0f;
 
     matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
     rotation.IsIdentity();
     rotation.MakeXRotation(100.0f / 180.0f * 3.141592f);
-    rotation.AppendYRotation(static_cast<float>(std::max(0, rand() % 360)) / 180.0f * 3.141592f);
+    const int yawRoll = rand() % 360;
+    rotation.AppendYRotation(static_cast<float>(yawRoll >= 0 ? yawRoll : 0) / 180.0f * 3.141592f);
     this->particles.push_back(particle);
   }
 }

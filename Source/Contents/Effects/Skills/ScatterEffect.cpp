@@ -40,10 +40,14 @@ void CScatterEffect::Open() {
       this->effectLifetime = 300;
       particle->SetSprite("이팩트\\sakura01.spr");
       particle->SetAction("이팩트\\sakura01.act");
-      particle->scale = static_cast<float>(std::max(0, rand() % 6) + 22) / 70.0f;
-      particle->frameDelay = static_cast<float>(std::max(0, rand() % 3) + 2) * 0.15f;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::max(0, rand() % 360));
-      const int angle = std::max(0, rand() % 360);
+      const int scaleRoll = rand() % 6;
+      particle->scale = static_cast<float>((scaleRoll >= 0 ? scaleRoll : 0) + 22) / 70.0f;
+      const int delayRoll = rand() % 3;
+      particle->frameDelay = static_cast<float>((delayRoll >= 0 ? delayRoll : 0) + 2) * 0.15f;
+      const int spinRoll = rand() % 360;
+      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(spinRoll >= 0 ? spinRoll : 0);
+      const int angleRoll = rand() % 360;
+      const int angle = angleRoll >= 0 ? angleRoll : 0;
       particle->velocity.x = 0.0f;
       particle->velocity.y = 0.0f;
       particle->velocity.z = 0.0f;

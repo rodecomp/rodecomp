@@ -23,16 +23,21 @@ CSteal::~CSteal() {
 void CSteal::SpawnParticles() {
   for (int i = 0; i < 10; ++i) {
     const int life = this->effectLifetime;
-    const int yaw = std::max(0, rand() % 360);
-    const int pitch = std::max(0, rand() % 100) - 50;
+    const int yawRoll = rand() % 360;
+    const int yaw = yawRoll >= 0 ? yawRoll : 0;
+    const int pitchRoll = rand() % 100;
+    const int pitch = (pitchRoll >= 0 ? pitchRoll : 0) - 50;
 
-    const float frameDelay = static_cast<float>(std::max(0, rand() % 50) + 50) / 100.0f;
+    const int frameDelayRoll = rand() % 50;
+    const float frameDelay = static_cast<float>((frameDelayRoll >= 0 ? frameDelayRoll : 0) + 50) / 100.0f;
     const float shrink = -(frameDelay / static_cast<float>(life)) * g_depthAverageHalf;
 
-    const float lift = -static_cast<float>(std::max(0, rand() % 90) + 60) / 100.0f;
+    const int liftRoll = rand() % 90;
+    const float lift = -static_cast<float>((liftRoll >= 0 ? liftRoll : 0) + 60) / 100.0f;
     const float liftStep = -(lift / static_cast<float>(life)) * 2.0f;
 
-    const float scale = static_cast<float>(std::max(0, rand() % 100) + 100) / 100.0f;
+    const int scaleRoll = rand() % 100;
+    const float scale = static_cast<float>((scaleRoll >= 0 ? scaleRoll : 0) + 100) / 100.0f;
     const float scaleStep = -(scale / static_cast<float>(life));
     const int fadeStart = life - life / 3;
 
@@ -40,7 +45,8 @@ void CSteal::SpawnParticles() {
     rotation.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(yaw))));
     rotation.AppendXRotation(GetRadian(static_cast<int>(static_cast<float>(pitch))));
 
-    const float distance = static_cast<float>(std::max(0, rand() % 4) + 4);
+    const int distanceRoll = rand() % 4;
+    const float distance = static_cast<float>((distanceRoll >= 0 ? distanceRoll : 0) + 4);
 
     vector3d& offset = this->offsets[i];
     offset.x = 0.0f;
