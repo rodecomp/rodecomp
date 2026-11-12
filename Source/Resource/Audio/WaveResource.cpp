@@ -37,7 +37,7 @@ bool CWave::Load(const char* name) {
   const std::uint32_t size = file.GetSize();
   this->Unload();
 
-  void* raw = ::operator new(size);
+  char* raw = new char[size];
   file.Read(raw, size);
   file.Close();
 
@@ -49,7 +49,7 @@ bool CWave::Load(const char* name) {
     this->milesAllocated = 1;
     miles.wavInfo(raw, &info);
     miles.decompressADPCM(&info, &this->data, nullptr);
-    std::free(raw);
+    delete[] raw;
 
     return true;
   }
@@ -57,7 +57,7 @@ bool CWave::Load(const char* name) {
   if (type == 13) {
     this->milesAllocated = 1;
     miles.decompressASI(raw, size, name, &this->data, nullptr, nullptr);
-    std::free(raw);
+    delete[] raw;
 
     return true;
   }
