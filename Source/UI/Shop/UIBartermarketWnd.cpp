@@ -33,6 +33,8 @@
 #include <new>
 #include <string>
 
+template __declspec(noinline) std::map<int, int>::map(const std::map<int, int>&);
+
 // OFFSET: 0x00844BE0
 // FUNCTION: fn_10567
 UIExpandedBarterItemPurchaseWnd::UIExpandedBarterItemPurchaseWnd()
