@@ -39,6 +39,7 @@
 #include "Render/Text/EmbedFont.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <algorithm>
 #include <array>
@@ -6316,13 +6317,6 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
   g_session.RefreshMercenaryInfo();
 }
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 // GLOBAL: gl_25251
 HANDLE g_embedFontFiles;
 
@@ -6330,35 +6324,27 @@ HANDLE g_embedFontFiles;
 // FUNCTION: fn_23337
 void CSession::InitClientData() {
   if (!g_itemInfoMgr->Load()) {
-    const auto captionSource = CRYPT_NAME("Error", 0xCD8F077123FB7D6FULL);
-    const char* caption = DecryptName<0xCD8F077123FB7D6FULL>(captionSource.data);
-    const auto messageSource = CRYPT_NAME("ItemInfo file Init", 0x23BBD58F8B5FF5C9ULL);
-    const char* message = DecryptName<0x23BBD58F8B5FF5C9ULL>(messageSource.data);
+    const char* caption = OBFUSCATE_TEXT("Error", 0xCD8F077123FB7D6FULL);
+    const char* message = OBFUSCATE_TEXT("ItemInfo file Init", 0x23BBD58F8B5FF5C9ULL);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
   if (!g_specialPopupMgr->Init()) {
-    const auto captionSource = CRYPT_NAME("Error", 0x17A9E5BF39AD4737ULL);
-    const char* caption = DecryptName<0x17A9E5BF39AD4737ULL>(captionSource.data);
-    const auto messageSource = CRYPT_NAME("SPECIALPOPUP file Init", 0x9949BFD527532943ULL);
-    const char* message = DecryptName<0x9949BFD527532943ULL>(messageSource.data);
+    const char* caption = OBFUSCATE_TEXT("Error", 0x17A9E5BF39AD4737ULL);
+    const char* message = OBFUSCATE_TEXT("SPECIALPOPUP file Init", 0x9949BFD527532943ULL);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
   if (!g_runeSystemMgr->LoadScripts()) {
-    const auto captionSource = CRYPT_NAME("Error", 0xCFF3899D95AF355FULL);
-    const char* caption = DecryptName<0xCFF3899D95AF355FULL>(captionSource.data);
-    const auto messageSource = CRYPT_NAME("CRuneSystemMgr file Init", 0x13E33FA1A591AB67ULL);
-    const char* message = DecryptName<0x13E33FA1A591AB67ULL>(messageSource.data);
+    const char* caption = OBFUSCATE_TEXT("Error", 0xCFF3899D95AF355FULL);
+    const char* message = OBFUSCATE_TEXT("CRuneSystemMgr file Init", 0x13E33FA1A591AB67ULL);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
   static_cast<void>(CTipBoxMgr::Create());
   if (!g_itemTagOwner->RegisterLuaFunctions()) {
-    const auto captionSource = CRYPT_NAME("Error", 0x4F99DF03C3EF31B7ULL);
-    const char* caption = DecryptName<0x4F99DF03C3EF31B7ULL>(captionSource.data);
-    const auto messageSource = CRYPT_NAME("TipBox file Init", 0xE52DF30DCBAF7125ULL);
-    const char* message = DecryptName<0xE52DF30DCBAF7125ULL>(messageSource.data);
+    const char* caption = OBFUSCATE_TEXT("Error", 0x4F99DF03C3EF31B7ULL);
+    const char* message = OBFUSCATE_TEXT("TipBox file Init", 0xE52DF30DCBAF7125ULL);
     MessageBoxA(nullptr, message, caption, 0);
   }
 
