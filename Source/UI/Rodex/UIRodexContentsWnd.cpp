@@ -118,9 +118,10 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   RodexMailStore* store = g_rodexMailStore;
   switch (store->inboxType) {
   case MAIL_INBOX_NORMAL: {
+    RodexMailMap& mails = store->m_mails0;
     const std::int64_t mailId = store->currentMailId;
-    RodexMailMap::iterator mail = store->m_mails0.find(mailId);
-    if (mail != store->m_mails0.end()) {
+    RodexMailMap::iterator mail = mails.find(mailId);
+    if (mail != mails.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
 
@@ -137,18 +138,20 @@ void UIRodexContentsWnd::OnCreate(int, int) {
     break;
   }
   case MAIL_INBOX_ACCOUNT: {
+    RodexMailMap& mails = store->m_mails1;
     const std::int64_t mailId = store->currentMailId;
-    RodexMailMap::iterator mail = store->m_mails1.find(mailId);
-    if (mail != store->m_mails1.end()) {
+    RodexMailMap::iterator mail = mails.find(mailId);
+    if (mail != mails.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
     }
     break;
   }
   case MAIL_INBOX_RETURNED: {
+    RodexMailMap& mails = store->m_mails2;
     const std::int64_t mailId = store->currentMailId;
-    RodexMailMap::iterator mail = store->m_mails2.find(mailId);
-    if (mail != store->m_mails2.end()) {
+    RodexMailMap::iterator mail = mails.find(mailId);
+    if (mail != mails.end()) {
       this->SetMailContents(mail->second.sender, mail->second.title, mail->second.body, mail->second.hasItem, mail->second.zeny,
                             mail->second.type);
     }
