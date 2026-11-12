@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <array>
 #include <cstdio>
@@ -25,28 +26,17 @@ namespace {
   }
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
+    // INLINED
   }
-
-  // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::array<std::uint8_t, Length>& source) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
-  }
-}
 
 // GLOBAL: gl_25600
-const char* g_accountLinkedUserDataLoadPoolName = DecryptName<0x1D6D75EDE7CD311FULL>(CRYPT_BYTES(27, "AccountLinkedUserData_Load", 0x1D6D75EDE7CD311FULL));
+const char* g_accountLinkedUserDataLoadPoolName = OBFUSCATE_BYTES_TEXT("AccountLinkedUserData_Load", 0x1D6D75EDE7CD311FULL);
 
 // OFFSET: 0x005B9E50
 // FUNCTION: fn_03440
 CAccountLinkedUserDataLoadAsyncWork::CAccountLinkedUserDataLoadAsyncWork()
     : NAsyncWork(g_accountLinkedUserDataLoadPoolName), m_accountId(0),
-      m_diagnostic(false, std::string(DecryptName<0x59278F63D79F3DA1ULL>({0xD4, 0x53, 0xF4, 0xB9, 0x14, 0xE0, 0x49, 0x59})), sourceFile, 26) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x59278F63D79F3DA1ULL)), sourceFile, 26) {
 }
 
 // INLINED
@@ -67,9 +57,7 @@ void CAccountLinkedUserDataLoadAsyncWork::Bind(std::uint32_t accountId, std::str
   this->m_url = url;
   this->m_response = "";
 
-  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0x812BE72BCD5707B7ULL);
-  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x812BE72BCD5707B7ULL>(diagnosticSource)), sourceFile, 50);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x812BE72BCD5707B7ULL)), sourceFile, 50);
 }
 
 // OFFSET: 0x005BA910
@@ -80,15 +68,12 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
   CCURLPostHander handler(this->m_url);
-  constexpr std::array<std::uint8_t, 4> aid = CRYPT_NAME("AID", 0xC52FB5FBB94FF917ULL);
-  handler.AddField(DecryptName<0xC52FB5FBB94FF917ULL>(aid), accountId, 4);
-  constexpr std::array<std::uint8_t, 10> worldName = CRYPT_NAME("WorldName", 0x93E7A3A1F587CDC5ULL);
-  handler.AddField(DecryptName<0x93E7A3A1F587CDC5ULL>(worldName), name, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0xC52FB5FBB94FF917ULL), accountId, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0x93E7A3A1F587CDC5ULL), name, 4);
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    constexpr std::array<std::uint8_t, 5> good = CRYPT_NAME("good", 0x2FF3C5036D070127ULL);
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x2FF3C5036D070127ULL>(good), 92);
+    AsyncDiagnostic diagnostic = Diagnostic(true, OBFUSCATE_BYTES_TEXT("good", 0x2FF3C5036D070127ULL), 92);
     this->m_diagnostic = std::move(diagnostic);
   }
 
