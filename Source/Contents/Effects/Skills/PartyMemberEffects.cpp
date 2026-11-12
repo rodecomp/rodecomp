@@ -16,6 +16,8 @@
 
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
+
 namespace {
   struct CRollingCutterRagEffect : CRagEffect {
     __declspec(noinline) CRollingCutterRagEffect();
