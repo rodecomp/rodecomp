@@ -1989,31 +1989,28 @@ void UIScrollBar2::Paint() {
   }
 
   std::string path = "유저인터페이스\\basic_interface\\";
-  if (this->vertical == 1) {
+  switch (this->vertical) {
+  case 1: {
     this->FillRegion(0, 11, 10, this->geometry.height - 21, 0);
     if (this->state == 1) {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str()))), false);
     } else if (this->state == 4) {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str()))), false);
     } else {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str()))), false);
     }
 
     const int thumb = this->ThumbOffset() + this->arrowLength;
     this->FillRegion(0, thumb + 1, 10, this->ThumbLength() - 1, 0xAFAAA5);
     if (this->state == 2) {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str()))), false);
     } else if (this->state == 5) {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str()))), false);
     } else {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down.bmp").c_str()))), false);
     }
+    break;
+  }
   }
 }
 
