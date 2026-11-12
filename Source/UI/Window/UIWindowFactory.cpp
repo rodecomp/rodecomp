@@ -43,15 +43,15 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     case WID_JOINTO_BATTLEFIELDWND:
       window = new UIEntryQueueWnd();
       break;
+    case WID_ENTRYQUEUESTANDBYWND:
+      window = new UIEntryQueueStandByWnd();
+      break;
     case WID_QUIKSLOTWND:
       window = new UIQuickSlotWnd();
       break;
     case WID_SEARCH_STORE_INFO:
       window = new UISerachStoreInfoWnd();
       g_searchStoreInfoCreated = true;
-      break;
-    case WID_ENTRYQUEUESTANDBYWND:
-      window = new UIEntryQueueStandByWnd();
       break;
     }
 
