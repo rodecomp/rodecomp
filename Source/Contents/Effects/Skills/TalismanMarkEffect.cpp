@@ -195,9 +195,9 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
 
   const vector3d center = *reinterpret_cast<const vector3d*>(this->position);
   const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-  const float viewX = center.y * view[3] + center.x * view[0] + center.z * view[6] + view[9];
-  const float viewY = center.y * view[4] + center.x * view[1] + center.z * view[7] + view[10];
-  const float viewZ = center.y * view[5] + center.x * view[2] + center.z * view[8] + view[11];
+  const float viewX = center.x * view[0] + center.y * view[3] + center.z * view[6] + view[9];
+  const float viewY = center.x * view[1] + center.y * view[4] + center.z * view[7] + view[10];
+  const float viewZ = center.x * view[2] + center.y * view[5] + center.z * view[8] + view[11];
 
   const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
   int angle = particle->phaseParameter;
