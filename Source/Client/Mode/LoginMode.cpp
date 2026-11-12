@@ -1352,15 +1352,17 @@ void PreloadLoginSprites() {
 // FUNCTION: fn_22315
 void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
   this->loginResponseReceived = true;
-  std::string message;
+  std::string message("");
   switch (packet->error) {
-  case 0:
+  case 0: {
+    const std::size_t length = packet->length - 28;
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
-      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), packet->length - 28));
+      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), length));
     GetRagConnection().Close();
     g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
+  }
   case 400:
     if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
@@ -1429,15 +1431,17 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
 // FUNCTION: fn_22316
 void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
   this->loginResponseReceived = true;
-  std::string message;
+  std::string message("");
   switch (packet->error) {
-  case 0:
+  case 0: {
+    const std::size_t length = packet->length - 8;
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
-      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), packet->length - 8));
+      std::min<std::size_t>(sizeof(g_session.m_loginErrorText), length));
     GetRagConnection().Close();
     g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
+  }
   case 400:
     if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
