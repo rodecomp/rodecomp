@@ -7409,8 +7409,7 @@ void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
   member.online = *reinterpret_cast<const int*>(packet + 0x18);
   guildInfo->AddMember(member);
 
-  const std::string playerName(name, 25);
-  g_playerNameDictionary->Set(*reinterpret_cast<const std::uint32_t*>(packet + 6), playerName.c_str());
+  g_playerNameDictionary->Set(*reinterpret_cast<const std::uint32_t*>(packet + 6), std::string(name, 25).c_str());
   guildInfo->UpdateMemberExpRatios();
   g_windowMgr.RefreshGuildWindows();
 }
@@ -12649,7 +12648,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -12681,7 +12680,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->objectType = packet->objectType;
