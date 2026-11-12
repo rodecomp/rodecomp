@@ -1300,19 +1300,22 @@ void UITVTextButton::OnRBtnUp(int x, int y) {
 // OFFSET: 0x00892DE0
 // FUNCTION: fn_11495
 void UIComboBoxV2Wnd::OnWheel(int value) {
-  this->selected += 0 > value ? 1 : -1;
+  int selected = this->selected + (0 > value ? 1 : -1);
+  this->selected = selected;
 
   const int count = static_cast<int>(this->list->lines.size());
-  if (count <= this->selected) {
-    this->selected = count - 1;
+  if (count <= selected) {
+    selected = count - 1;
+    this->selected = selected;
   }
 
-  if (this->selected < 0) {
+  if (selected < 0) {
     this->selected = 0;
+    selected = 0;
   }
 
   if (this->parent) {
-    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, selected, 0, 0, 0);
   }
 
   this->Invalidate();
