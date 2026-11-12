@@ -1247,8 +1247,8 @@ void CSkillAction_AT_ROARING_PIERCER::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 18> bytesArray = CRYPT_NAME("roaring_piercer_g", 0x078333BB9725B7C9ULL);
-    const std::uint8_t (&bytes)[18] = bytesArray._Elems;
+    constexpr auto bytesText = CRYPT_NAME("roaring_piercer_g", 0x078333BB9725B7C9ULL);
+    const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
     return name.Text();
   }());
@@ -1272,8 +1272,8 @@ void CSkillAction_AT_ROARING_PIERCEER_S::OnSkillEffect(int level, CGameActor* so
   }
 
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 18> bytesArray = CRYPT_NAME("roaring_piercer_y", 0x8F1B5BFD5F6175B5ULL);
-    const std::uint8_t (&bytes)[18] = bytesArray._Elems;
+    constexpr auto bytesText = CRYPT_NAME("roaring_piercer_y", 0x8F1B5BFD5F6175B5ULL);
+    const auto& bytes = bytesText.data;
     thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
     return name.Text();
   }());
