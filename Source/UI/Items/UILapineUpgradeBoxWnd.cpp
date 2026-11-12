@@ -151,10 +151,9 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
 // OFFSET: 0x00603B60
 // FUNCTION: fn_04200
 void UILapineUpgradeBoxWnd::Paint() {
-  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapineUpgrade.bmp")));
-  this->DrawBitmap(0, 0, background, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapineUpgrade.bmp"))), true);
 
-  if (this->title.size() != 0) {
+  if (this->title.size() > 0) {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
@@ -165,9 +164,8 @@ void UILapineUpgradeBoxWnd::Paint() {
     DrawItemIcon(*this, ResourceMgr::Instance(), 101, 165, this->item, 0);
   }
 
-  if (timeGetTime() < this->noticeTick + this->noticeDuration) {
-    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp")));
-    this->DrawBitmap(6, 229, icon, true);
+  if (this->noticeTick + this->noticeDuration > timeGetTime()) {
+    this->DrawBitmap(6, 229, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp"))), true);
     this->DrawTextAt(25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
   }
 }
