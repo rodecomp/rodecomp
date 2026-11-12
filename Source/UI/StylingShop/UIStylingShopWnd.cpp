@@ -2381,9 +2381,9 @@ void UIBasicStylingWnd::OnCreate(int, int) {
     std::memset(normal, 0, sizeof(normal));
     std::memset(hover, 0, sizeof(hover));
     std::memset(pressed, 0, sizeof(pressed));
-    sprintf_s(normal, "유저인터페이스\\styleshop\\color%02d_off.bmp", i + 1);
-    sprintf_s(hover, "유저인터페이스\\styleshop\\color%02d_off_over.bmp", i + 1);
-    sprintf_s(pressed, "유저인터페이스\\styleshop\\color%02d_on.bmp", i + 1);
+    sprintf_s(normal, sizeof(normal), "유저인터페이스\\styleshop\\color%02d_off.bmp", i + 1);
+    sprintf_s(hover, sizeof(hover), "유저인터페이스\\styleshop\\color%02d_off_over.bmp", i + 1);
+    sprintf_s(pressed, sizeof(pressed), "유저인터페이스\\styleshop\\color%02d_on.bmp", i + 1);
 
     UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton();
     button->SetBitmap(normal, 0, 0);
