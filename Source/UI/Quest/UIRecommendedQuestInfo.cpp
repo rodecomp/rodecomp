@@ -265,8 +265,9 @@ static bool s_registered = [] {
 // OFFSET: 0x00A58E00
 // FUNCTION: fn_16351
 void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
-  const auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
-  if (found != g_renewQuestMgr->m_recommendedQuests.end()) {
+  const auto& quests = g_renewQuestMgr->m_recommendedQuests;
+  const auto found = quests.find(questId);
+  if (found != quests.end()) {
     this->titleText->SetText(found->second.m_title.c_str(), found->second.m_title.size());
     this->scrollWindow->SetQuest(questId);
   }
