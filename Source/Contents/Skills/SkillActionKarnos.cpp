@@ -1079,18 +1079,18 @@ void CSkillAction_KR_FEATHER_SPRINKLE::OnSkillEffect(int level, CGameActor* sour
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 17> effectSourceArray = CRYPT_NAME("feather_sprinkle", 0x3B915119EFD523EFULL);
-    const std::uint8_t (&effectSource)[17] = effectSourceArray._Elems;
-    thread_local EncryptedName<sizeof(effectSource), 0x3B915119EFD523EFULL> effectName(effectSource);
-    return effectName.Text();
+    constexpr auto bytesText = CRYPT_NAME("feather_sprinkle", 0x3B915119EFD523EFULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x3B915119EFD523EFULL> name(bytes);
+    return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 24> bottomSourceArray = CRYPT_NAME("feather_sprinkle_bottom", 0x474DC581D5E98357ULL);
-    const std::uint8_t (&bottomSource)[24] = bottomSourceArray._Elems;
-    thread_local EncryptedName<sizeof(bottomSource), 0x474DC581D5E98357ULL> bottomName(bottomSource);
-    return bottomName.Text();
+    constexpr auto bytesText = CRYPT_NAME("feather_sprinkle_bottom", 0x474DC581D5E98357ULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x474DC581D5E98357ULL> name(bytes);
+    return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
