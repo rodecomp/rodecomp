@@ -17,7 +17,7 @@ UIBroadcastBalloon::UIBroadcastBalloon() : UIWindow(0) {
 // OFFSET: 0x007C2D70
 // FUNCTION: fn_09333
 void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage& message) {
-  std::list<BroadcastBalloonMessage>& messages = this->m_messages[category];
+  std::list<BroadcastBalloonMessage>& messages = this->m_messages[static_cast<int>(category)];
   messages.push_back(message);
 
   unsigned int limit = 3;
@@ -26,7 +26,7 @@ void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage&
     limit = 1;
     break;
   }
-  if (messages.size() > limit) {
+  if (limit < messages.size()) {
     messages.pop_front();
   }
 
