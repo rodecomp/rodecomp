@@ -234,11 +234,13 @@ void CSkillAction_KR_DOUBLE_SLASH::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  constexpr std::array<std::uint8_t, 13> effectSourceArray = CRYPT_NAME("double_slash", 0x1D6D75EDE7CD311FULL);
-  const std::uint8_t (&effectSource)[13] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    constexpr auto bytesText = CRYPT_NAME("double_slash", 0x1D6D75EDE7CD311FULL);
+    const auto& bytes = bytesText.data;
+    thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
+    return name.Text();
+  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B0A10
