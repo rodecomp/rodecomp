@@ -172,8 +172,9 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     break;
   }
   case ID_CHECK:
-    this->m_checkedCount += sender->geometry.state != 0 ? 1 : -1;
-    if (this->m_checkedCount > 9) {
+    const int checkedCount = this->m_checkedCount + (sender->geometry.state != 0 ? 1 : -1);
+    this->m_checkedCount = checkedCount;
+    if (checkedCount > 9) {
       g_windowMgr.Confirm(LookupMessage(MSI_ERROR_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
       static_cast<UICheckBox*>(sender)->SetChecked(0);
     }
