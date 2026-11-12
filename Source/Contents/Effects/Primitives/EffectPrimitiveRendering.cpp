@@ -3427,26 +3427,21 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
         }
       }
 
-      unsigned char tint;
       switch (this->state.slots[0].flag1[2]) {
       case 0:
-        tint = 55;
+        this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 1:
-        tint = 105;
+        this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 2:
-        tint = 75;
+        this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 75, 75, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 3:
-        tint = 85;
+        this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 85, 85, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      default:
-        ++trail;
-        continue;
       }
 
-      this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, tint, tint, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       ++trail;
     }
   }
