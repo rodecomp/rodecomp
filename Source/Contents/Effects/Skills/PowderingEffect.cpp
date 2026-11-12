@@ -105,15 +105,11 @@ void CPowderingEffect::Open() {
 void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
-  const int span1 = this->particleGridSize * 5;
-  const int r1 = RandomSpan(span1);
-  const int r1Final = r1 - span1 / 2 + 1;
+  const int r1Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
 
   const float yVal = static_cast<float>(RandomSpan(7) + 7);
 
-  const int span2 = this->particleGridSize * 5;
-  const int r2 = RandomSpan(span2);
-  const int r2Final = r2 - span2 / 2 + 1;
+  const int r2Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
 
   spriteParticle->velocity.y = -yVal;
   spriteParticle->velocity.x = static_cast<float>(r1Final);
@@ -266,9 +262,11 @@ void CPowderingEffect::OnProcess() {
     vector3d velocity = particle->velocity;
     particle->alpha = alpha;
     velocity.y += static_cast<float>(RandomSpan(10)) * 0.01f;
-    particle->velocity = velocity;
-    ++particle->elapsedFrames;
+    particle->velocity.x = velocity.x;
+    particle->velocity.y = velocity.y;
+    particle->velocity.z = velocity.z;
     particle->position = {velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};
+    ++particle->elapsedFrames;
   }
 }
 
