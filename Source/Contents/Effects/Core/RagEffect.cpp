@@ -45,22 +45,15 @@
 #include <limits>
 
 // INLINED
-inline RagEffectState::RagEffectState()
-    : parent(nullptr), defZ(0), isDirection(0), type(0), level(1), flag(0), count(0), stateCnt(0), deltaPos{}, deltaPos2{}, deltaPos3{},
-      resource(nullptr), resourceData(nullptr), currentLayer(0), loopCount(0), loopLimit(0), currentPrimitive(nullptr), colorChannels{-1, -1, -1, -1},
-      forceRender(0), tag(0), visibilityFlags(0) {
+inline RagEffectState::RagEffectState() : deltaPos(), deltaPos2(), deltaPos3() {
   for (unsigned index = 0; index < 20; ++index) {
-    auto* record = this->objSeg + index * 80;
-    const std::uint32_t zero = 0;
-
-    for (unsigned field = 0; field < 6; ++field) {
-      std::memcpy(record + field * 4, &zero, sizeof(zero));
-    }
+    this->objSeg[index].header[0] = 0;
+    this->objSeg[index].header[1] = 0;
+    this->objSeg[index].header[2] = 0;
+    this->objSeg[index].header[3] = 0;
+    this->objSeg[index].header[4] = 0;
+    this->objSeg[index].header[5] = 0;
   }
-
-  std::memset(this->currentKey, 0, sizeof(this->currentKey));
-
-  std::memset(this->vertices, 0, sizeof(this->vertices));
 }
 
 // INLINED
@@ -70,6 +63,38 @@ inline RagEffectState::~RagEffectState() {
 // OFFSET: 0x00BF84B0
 // FUNCTION: fn_20007
 CRagEffect::CRagEffect() {
+  this->state.visibilityFlags = 0;
+  this->state.parent = nullptr;
+  this->state.count = 0;
+  this->state.stateCnt = 0;
+  this->state.type = 0;
+  this->state.level = 1;
+  this->state.flag = 0;
+  this->state.defZ = 0;
+  this->state.isDirection = 0;
+  this->state.deltaPos[0] = 0.0f;
+  this->state.deltaPos[1] = 0.0f;
+  this->state.deltaPos[2] = 0.0f;
+  this->state.deltaPos2[0] = 0.0f;
+  this->state.deltaPos2[1] = 0.0f;
+  this->state.deltaPos2[2] = 0.0f;
+  this->state.deltaPos3[0] = 0.0f;
+  this->state.deltaPos3[1] = 0.0f;
+  this->state.deltaPos3[2] = 0.0f;
+  this->state.resource = nullptr;
+  this->state.resourceData = nullptr;
+  this->state.currentLayer = 0;
+  std::memset(this->state.currentKey, 0, sizeof(this->state.currentKey));
+  std::memset(this->state.vertices, 0, sizeof(this->state.vertices));
+  this->state.colorChannels[0] = -1;
+  this->state.colorChannels[1] = -1;
+  this->state.colorChannels[2] = -1;
+  this->state.colorChannels[3] = -1;
+  this->state.loopCount = 0;
+  this->state.loopLimit = 0;
+  this->state.forceRender = 0;
+  this->state.currentPrimitive = nullptr;
+  this->state.tag = 0;
 }
 
 // INLINED

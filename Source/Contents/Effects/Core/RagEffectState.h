@@ -11,6 +11,11 @@ struct EffectPrimitiveState;
 struct CEffectPrim;
 struct EffectActor;
 
+struct RagEffectSegment {
+  /* 0000 */ std::uint32_t header[6];
+  /* 0018 */ unsigned char unknown_0018[56];
+};
+
 struct RagEffectState {
   RagEffectState();
   ~RagEffectState();
@@ -34,7 +39,7 @@ struct RagEffectState {
   /* 00054 */ float deltaPos2[3];
   /* 00060 */ float deltaPos3[3];
   /* 0006C */ std::list<EffectPrimitiveState*> primList;
-  /* 00074 */ unsigned char objSeg[1600];
+  /* 00074 */ RagEffectSegment objSeg[20];
   /* 006B4 */ CRes* resource;
   /* 006B8 */ void* resourceData;
   /* 006BC */ EZeffectTransform transforms[128];
@@ -58,6 +63,7 @@ struct RagEffectState {
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RagEffectSegment) == 0x50);
 static_assert(sizeof(RagEffectState) == 0x11B70);
 static_assert(offsetof(RagEffectState, transforms) == 0x6BC);
 static_assert(offsetof(RagEffectState, currentLayer) == 0x118BC);
