@@ -28,9 +28,8 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     return;
   }
 
-  RenderPrimitive* primitive;
   if (stretched == true) {
-    primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
     primitive->texture = texture;
     const int right = x + width;
     const int bottom = y + height;
@@ -62,8 +61,9 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[3].z = 0.000001f;
     primitive->quad[3].rhw = 0.999999f;
     primitive->quad[3].diffuse = color;
+    this->m_primitives.push_back(primitive);
   } else {
-    primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
     primitive->texture = texture;
     const int imageWidth = texture->Width();
     const int imageHeight = texture->Height();
@@ -109,7 +109,6 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[3].z = 0.000001f;
     primitive->quad[3].rhw = 0.999999f;
     primitive->quad[3].diffuse = color;
+    this->m_primitives.push_back(primitive);
   }
-
-  this->m_primitives.push_back(primitive);
 }
