@@ -9,6 +9,10 @@
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
 
+// STATIC: 0x01347EB0
+// GLOBAL: gl_25477
+float g_groundGridUV[8] = {0, 0, 1, 0, 0, 1, 1, 1};
+
 // OFFSET: 0x00AC0A90
 // FUNCTION: fn_17569
 bool GroundGeometry::CellRectangle(int column, int row, float* vertices) const {
@@ -143,11 +147,8 @@ __declspec(noinline) void GroundGeometry::DrawGridDecal(
 void GroundGeometry::DrawGrid(
   const float* matrix, int column, int row, std::uint32_t color
 ) const {
-  // STATIC: 0x01347EB0
-  // GLOBAL: gl_25477
-  static const float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
   this->DrawGridDecal(
-    matrix, column, row, color, *g_texMgr.Load("grid.tga", 0, false, true, false), uv
+    matrix, column, row, color, *g_texMgr.Load("grid.tga", 0, false, true, false), g_groundGridUV
   );
 }
 

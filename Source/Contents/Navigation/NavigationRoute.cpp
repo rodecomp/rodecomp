@@ -105,9 +105,8 @@ void CNavigationManager::DrawRoute(const float* matrix) {
       if (minX < x && maxX > x && minY < y && maxY > y) {
         ++visible;
         CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
-        constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
         const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
-        this->ground->DrawCellDecal(matrix, x, y, color, *texture, uv);
+        this->ground->DrawCellDecal(matrix, x, y, color, *texture, g_groundGridUV);
       }
     }
   }

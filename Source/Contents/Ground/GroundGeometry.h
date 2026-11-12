@@ -120,6 +120,8 @@ public:
   /* 00A8 */ bool waterPartitioned;
 };
 
+extern float g_groundGridUV[8];
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GroundLightmap) == 56);
 static_assert(offsetof(GroundLightmap, texture) == 0x04);
