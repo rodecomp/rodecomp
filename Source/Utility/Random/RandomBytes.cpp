@@ -2,6 +2,8 @@
 
 #include <random>
 
+template __declspec(noinline) std::mt19937::mersenne_twister_engine(std::mt19937::result_type);
+
 namespace {
   struct RandomByteSource {
     /* 0000 */ std::mt19937 m_engine;
