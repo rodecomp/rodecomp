@@ -128,22 +128,23 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       g_mouse.active = 1;
     }
 
-    if (!GetRenderSystemHolder()->IsWindowed()) {
+    if (GetRenderSystemHolder()->IsWindowed()) {
       if (g_isAppActive == 1) {
         g_restoreSurfaces = 1;
+        ShowWindow(window, SW_MAXIMIZE);
+        return 1;
+      }
+      CWebBrowser* browser = g_windowMgr.FindBrowser(reinterpret_cast<HWND>(lParam));
+      if (browser && browser->MatchesWindow(reinterpret_cast<HWND>(lParam))) {
+        SetApplicationActive(1);
+      } else {
+        ShowWindow(window, SW_MINIMIZE);
       }
       return 1;
     }
+
     if (g_isAppActive == 1) {
       g_restoreSurfaces = 1;
-      ShowWindow(window, SW_MAXIMIZE);
-      return 1;
-    }
-    CWebBrowser* browser = g_windowMgr.FindBrowser(reinterpret_cast<HWND>(lParam));
-    if (browser && browser->MatchesWindow(reinterpret_cast<HWND>(lParam))) {
-      SetApplicationActive(1);
-    } else {
-      ShowWindow(window, SW_MINIMIZE);
     }
     return 1;
   }
