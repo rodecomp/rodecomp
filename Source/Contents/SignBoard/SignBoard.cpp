@@ -91,7 +91,9 @@ void CSignBoardMgr::Initialize() {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
       position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
-      object->render.position = position;
+      object->render.position.x = position.x;
+      object->render.position.y = position.y;
+      object->render.position.z = position.z;
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
       break;
     }
@@ -101,7 +103,9 @@ void CSignBoardMgr::Initialize() {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
       position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
-      icon->render.position = position;
+      icon->render.position.x = position.x;
+      icon->render.position.y = position.y;
+      icon->render.position.z = position.z;
       icon->Load(std::string(it->image));
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(icon);
       break;
@@ -122,7 +126,9 @@ void CSignBoardMgr::Initialize() {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
       position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
         static_cast<float>(it->offset);
-      object->render.position = position;
+      object->render.position.x = position.x;
+      object->render.position.y = position.y;
+      object->render.position.z = position.z;
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
       break;
     }
