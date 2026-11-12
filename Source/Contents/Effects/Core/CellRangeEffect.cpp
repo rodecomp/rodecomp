@@ -16,6 +16,8 @@
 #include <cstring>
 #include <string>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 // OFFSET: 0x00B43050
 // FUNCTION: fn_18874
 CCellRangeEffect::CCellRangeEffect() : CEffect(-1), cellSize(5.0f) {
