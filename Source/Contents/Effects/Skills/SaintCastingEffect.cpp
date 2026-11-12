@@ -169,22 +169,25 @@ bool CSaintCastingEffect::IsAlive() {
 // FUNCTION: fn_19165
 void CSaintCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-
     CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle && particle->elapsedFrames > 0) {
-      const int previousTilt = particle->phaseParameter - 1;
+      int tilt = particle->phaseParameter - 1;
       float scale = particle->scale + 0.07f;
-      int tilt = previousTilt < 10 ? 10 : previousTilt;
-      int alpha = previousTilt >= 10 ? particle->alpha : 0;
+      int alpha = particle->alpha;
+      if (tilt < 10) {
+        tilt = 10;
+        alpha = 0;
+      }
 
       if (scale >= 4.0f) {
         alpha -= 3;
         if (alpha <= 0) {
           alpha = 0;
-          if (particle->elapsedFrames < this->effectLifetime - 30) {
+          if (this->effectLifetime - 30 > particle->elapsedFrames) {
             tilt = this->id == EF_AURABLADE ? 64 : 74;
             scale = 3.37f;
           }
