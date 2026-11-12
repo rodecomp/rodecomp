@@ -4883,15 +4883,13 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     for (int i = 0; i < 10; ++i) {
-      const float rx = slot.distance;
-      int angle = slot.rotStart - 65;
+      const float rx = this->state.slots[ec].distance;
+      int angle = this->state.slots[ec].rotStart - 65;
 
       if (angle >= 360) {
         angle -= 360;
@@ -4901,8 +4899,8 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
         angle += 360;
       }
 
-      vec1.Set(rx * g_cosTable[angle], slot.height[0], rx * g_sinTable[angle]);
-      int angle2 = slot.rotStart + 65;
+      vec1.Set(rx * g_cosTable[angle], this->state.slots[ec].height[0], rx * g_sinTable[angle]);
+      int angle2 = this->state.slots[ec].rotStart + 65;
 
       if (angle2 >= 360) {
         angle2 -= 360;
@@ -4912,10 +4910,10 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
         angle2 += 360;
       }
 
-      vec4.Set(rx * g_cosTable[angle2], slot.height[0], rx * g_sinTable[angle2]);
-      const float rz = i < 5 ? slot.maxHeight : slot.maxHeight + (0.5f * g_sinTable[slot.riseAngle] + 0.5f);
+      vec4.Set(rx * g_cosTable[angle2], this->state.slots[ec].height[0], rx * g_sinTable[angle2]);
+      const float rz = i < 5 ? this->state.slots[ec].maxHeight : this->state.slots[ec].maxHeight + (0.5f * g_sinTable[this->state.slots[ec].riseAngle] + 0.5f);
 
-      angle = slot.rotStart;
+      angle = this->state.slots[ec].rotStart;
 
       if (angle >= 360) {
         angle -= 360;
@@ -4927,18 +4925,18 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 
       const float sn1 = g_sinTable[angle];
       const float cs1 = g_cosTable[angle];
-      const int add = i < 5 ? (i - i % 5) * 9 + i % 5 * 3 + slot.fullDisplayAngle : (i - i % 5) * 9 + i % 5 * 3;
+      const int add = i < 5 ? (i - i % 5) * 9 + i % 5 * 3 + this->state.slots[ec].fullDisplayAngle : (i - i % 5) * 9 + i % 5 * 3;
       const float lx = g_cosTable[add] * rz;
       const float ly = g_sinTable[add] * rz;
 
-      slot.vecBNow.z = sn1 * lx;
-      slot.vecBNow.x = cs1 * lx;
-      vec2.Set(vec1.x + slot.vecBNow.x, vec1.y - ly, vec1.z + slot.vecBNow.z);
-      vec3.Set(vec4.x + slot.vecBNow.x, vec4.y - ly, vec4.z + slot.vecBNow.z);
+      this->state.slots[ec].vecBNow.z = sn1 * lx;
+      this->state.slots[ec].vecBNow.x = cs1 * lx;
+      vec2.Set(vec1.x + this->state.slots[ec].vecBNow.x, vec1.y - ly, vec1.z + this->state.slots[ec].vecBNow.z);
+      vec3.Set(vec4.x + this->state.slots[ec].vecBNow.x, vec4.y - ly, vec4.z + this->state.slots[ec].vecBNow.z);
 
       if (ec == 1) {
         if (i % 5 < 4) {
-          int alpha = slot.alphaB;
+          int alpha = this->state.slots[ec].alphaB;
 
           for (int b = 3; b >= i % 5; --b) {
             alpha = static_cast<int>(static_cast<float>(alpha) * 0.7f);
@@ -4946,11 +4944,11 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 205, 205, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 205, 205, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       } else if (ec == 0) {
         if (i % 5 < 4) {
-          int alpha = slot.alphaB;
+          int alpha = this->state.slots[ec].alphaB;
 
           for (int b = 3; b >= i % 5; --b) {
             alpha = static_cast<int>(static_cast<float>(alpha) * 0.7f);
@@ -4958,7 +4956,7 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec4, vec3, vec2, vec1, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec4, vec3, vec2, vec1, wtm, 1, 0, 0, 205, 205, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec4, vec3, vec2, vec1, wtm, 1, 0, 0, 205, 205, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
