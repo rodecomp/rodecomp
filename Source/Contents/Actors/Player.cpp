@@ -2839,7 +2839,7 @@ struct PlayerMoveRequest {
 bool CPlayer::OnProcess() {
   this->ProcessBodyState();
   this->UpdateStateEffects();
-  this->ProcessActorEffects();
+  this->ProcessDamageMessages();
   this->UpdateGaugePositions();
 
   if (this->render.isSingleColor == true && timeGetTime() > this->render.started + 100) {
@@ -2860,8 +2860,8 @@ bool CPlayer::OnProcess() {
     request.serverTime = g_session.GetServerTime();
     request.destinationX = reinterpret_cast<const int&>(this->destCellX);
     request.destinationY = this->destCellZ;
-    const int address = reinterpret_cast<int>(&request);
-    this->SendMsg(nullptr, AM_MOVE, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const long long address = reinterpret_cast<int>(&request);
+    this->SendMsg(nullptr, AM_MOVE, 0, static_cast<int>(address), static_cast<int>(address >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdatePendingAction();
