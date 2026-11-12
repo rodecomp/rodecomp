@@ -114,8 +114,7 @@ bool CPrivateAirplaneMgr::Init() {
   }
 
   if (lua_toboolean(lua.GetState(), -2) == 0) {
-    std::string msg = FormatOwnedString("error : %s", lua_tostring(lua.GetState(), -1));
-    MessageBoxA(nullptr, msg.c_str(), "CPrivateAirplaneMgr", 0);
+    MessageBoxA(nullptr, FormatOwnedString("error : %s", lua_tostring(lua.GetState(), -1)).c_str(), "CPrivateAirplaneMgr", 0);
     return false;
   }
 
