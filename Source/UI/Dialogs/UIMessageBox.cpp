@@ -1294,15 +1294,15 @@ void UINoticeWnd::Paint() {
   }
 
   const int leftTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int index = 0, y = 17; index < leftTiles; ++index, y += 8) {
+  for (int index = 0; index < leftTiles; ++index) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, 8 * index + 17, left, false);
   }
 
   const int rightTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int index = 0, y = 17; index < rightTiles; ++index, y += 8) {
+  for (int index = 0; index < rightTiles; ++index) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, 8 * index + 17, right, false);
   }
 
   unsigned red;
