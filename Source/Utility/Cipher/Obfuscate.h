@@ -89,6 +89,9 @@ namespace utility {
     return name.Text(); \
   }(__VA_ARGS__)
 
+#define OBFUSCATE_SOURCE_ARRAY_CHAR(text, key) ::utility::Obfuscator<sizeof(text), key>(text).Array<char>()
+#define OBFUSCATE_SOURCE_ARRAY_BYTE(text, key) ::utility::Obfuscator<sizeof(text), key>(text).Array<std::uint8_t>()
+
 #define OBFUSCATE_ARRAY(text, key, element) \
   []() -> EncryptedName<sizeof(text), key>& { \
     OBFUSCATE_NAME_ARRAY_(text, key, element, name); \

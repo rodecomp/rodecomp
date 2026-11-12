@@ -87,6 +87,38 @@
    "kind": "xor-repeating-key",
    "keyBytes": 8,
    "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_ARRAY_CHAR",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_ARRAY_BYTE",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_CHARS",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true,
+   "lengthArgument": true
+  },
+  {
+   "macro": "OBFUSCATE_SOURCE_BYTES",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true,
+   "lengthArgument": true
   }
  ],
  "matchPolicy": {
