@@ -51,6 +51,8 @@
 #include <shellapi.h>
 #include <timeapi.h>
 
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 #pragma pack(push, 1)
 struct CashItemPurchase {
   /* 0000 */ int itemId;
