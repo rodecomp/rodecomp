@@ -377,13 +377,11 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   this->resultItem.identity[0] = 5;
   this->resultItem.identified = 1;
   this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
-  for (int index = 0; index < 25; ++index) {
-    this->resultItem.options[index] = 0;
-  }
+  SecureZeroMemory(this->resultItem.options, sizeof(this->resultItem.options));
   if (info->randomOptionCode.size() == 0) {
     this->resultItem.optionCount = this->selectedItem->optionCount;
     memcpy_s(this->resultItem.options, sizeof(this->resultItem.options), this->selectedItem->options, this->selectedItem->optionCount * 5);
-  } else if (info->randomOptionCode.size() != 2 || info->randomOptionCode[0] != 'G' || info->randomOptionCode[1] != '0') {
+  } else if (info->randomOptionCode != "G0") {
     this->resultItem.optionCount = 1;
     *reinterpret_cast<short*>(this->resultItem.options) = g_itemOptionPlaceholderId;
   }
