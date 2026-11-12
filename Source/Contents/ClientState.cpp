@@ -1396,43 +1396,43 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1072:
-      std::memcpy(&this->equipmentViewState[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1073:
-      std::memcpy(&this->equipmentViewState[0x8], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1074:
-      std::memcpy(&this->equipmentViewState[0xC], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1075:
-      std::memcpy(&this->equipmentViewState[0x10], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1076:
-      std::memcpy(&this->equipmentViewState[0x14], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1077:
-      std::memcpy(&this->equipmentViewState[0x18], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1078:
-      std::memcpy(&this->equipmentViewState[0x1C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[6], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1079:
-      std::memcpy(&this->equipmentViewState[0x20], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[7], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1080:
-      std::memcpy(&this->equipmentViewState[0x24], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_equipViewLook[8], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1081:
-      std::memcpy(&this->equipmentViewState[0x2C], data.data() + offset, header.bytes);
+      std::memcpy(this->m_equipViewName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1082:

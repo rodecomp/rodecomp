@@ -3044,7 +3044,7 @@ void CSession::Init() {
   this->memorialCreationTime = 0;
   this->memorialExpirationTime = 0;
   this->memorialDungeonState = 0;
-  *reinterpret_cast<int*>(this->equipmentViewState) = 0;
+  this->m_allowEquipView = 0;
   this->m_simplifiedSkillList = 0;
   this->m_showSkillDescription = 1;
   this->characterSlotState = 0;
@@ -3113,7 +3113,7 @@ void CSession::Init() {
   *reinterpret_cast<int*>(&this->homunculusFeedOptions[0x07]) = 50;
   this->homunculusFeedOptions[0x0B] = 0;
   this->m_showRankingSchedule = -1;
-  *reinterpret_cast<int*>(this->feedOptions) = 0;
+  this->m_hideCostumes = 0;
 }
 
 // OFFSET: 0x00DF7C40
@@ -4001,7 +4001,8 @@ SessionTraits::SessionTraits() {
 // FUNCTION: fn_22763
 CSession::CSession() {
   this->m_priorityClass = 32;
-  *reinterpret_cast<std::uint16_t*>(&this->feedOptions[4]) = 0x100;
+  this->m_genderChangeBlocked = false;
+  this->m_itemSlotActive = true;
   this->sessionIndex = -1;
   this->skyMapNames.clear();
 
@@ -4036,7 +4037,7 @@ CSession::CSession() {
   this->unknown_7F78 = 0;
   CPrivateAirplaneMgr::Create();
   CCheckAttendanceMgr::Create();
-  *reinterpret_cast<int*>(&this->equipmentViewState[0x28]) = 0;
+  this->m_equipViewLook[9] = 0;
   this->extraInventorySlots = 0;
   CMapInfoMgr::Create();
   this->madogearType = 0;

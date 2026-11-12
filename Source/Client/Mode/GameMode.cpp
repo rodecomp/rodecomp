@@ -3439,7 +3439,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_OK)), 0xFF, 0, 0, 0);
           return 0;
         }
-        if (g_session.feedOptions[4] != 0) {
+        if (g_session.m_genderChangeBlocked) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CANCEL)), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -9856,7 +9856,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   }
   case TT_REQ_OPEN_EQUIPEDITEM_ONOFF:
-    this->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, *reinterpret_cast<int*>(g_session.equipmentViewState) == 0, 0, 0, 0);
+    this->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, g_session.m_allowEquipView == 0, 0, 0, 0);
     break;
   case TT_SHOW_WEB_ADDRESSBAR: {
     CWebBrowser* browser = g_windowMgr.activeBrowser;

@@ -16,7 +16,6 @@
 #include "File/ShortcutFilename.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Mode/EquipWindowLook.h"
 #include "UI/Macro/UIMacroDetectorWnd.h"
 #include "UI/Macro/UIMacroBlackListCheckWnd.h"
 #include "UI/Items/UILapineScrollBar.h"
@@ -1763,7 +1762,7 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
 // FUNCTION: fn_21682
 __declspec(noinline) void CGameMode::ReceiveEquipmentViewState(const unsigned char* packet) {
   const unsigned char value = packet[2];
-  *reinterpret_cast<int*>(g_session.equipmentViewState) = value;
+  g_session.m_allowEquipView = value;
   const char* text = LookupMessage(value != 0 ? 0x54F : 0x54E);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
@@ -4838,7 +4837,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     g_session.InvalidateWindowFrames();
     break;
   case 169:
-    reinterpret_cast<bool&>(g_session.feedOptions[4]) = packet->value != 0;
+    g_session.m_genderChangeBlocked = packet->value != 0;
     break;
   }
 
@@ -6728,8 +6727,8 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
 __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case CONFIG_OPEN_EQUIPMENT_WINDOW: {
-    *reinterpret_cast<int*>(g_session.equipmentViewState) = *reinterpret_cast<const int*>(packet + 6);
-    const char* text = LookupMessage((*reinterpret_cast<int*>(g_session.equipmentViewState) != 0) + 0x54E);
+    g_session.m_allowEquipView = *reinterpret_cast<const int*>(packet + 6);
+    const char* text = LookupMessage((g_session.m_allowEquipView != 0) + 0x54E);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.equipWnd) {
       g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -6750,7 +6749,7 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
     g_session.SetHomunculusAutoFeed(*reinterpret_cast<const int*>(packet + 6) > 0);
     break;
   case CONFIG_DISABLE_SHOWCOSTUMES:
-    *reinterpret_cast<int*>(g_session.feedOptions) = *reinterpret_cast<const int*>(packet + 6);
+    g_session.m_hideCostumes = *reinterpret_cast<const int*>(packet + 6);
     break;
   case 6:
     g_session.SetPetInfoAlert(*reinterpret_cast<const int*>(packet + 6) != 0);
@@ -7286,16 +7285,16 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
     }
   }
 
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2C];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  std::memcpy(g_equipWindowLook.name, packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2C];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  std::memcpy(g_session.m_equipViewName, packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -7338,16 +7337,16 @@ void CGameMode::ReceiveEquipWindowMicroscope3(const unsigned char* packet) {
     }
   }
 
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2C];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2C];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  memcpy_s(g_session.m_equipViewName, sizeof(g_session.m_equipViewName), packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -7953,16 +7952,16 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   }
 
   RefreshItemWindows(&g_windowMgr);
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2C];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2C];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  memcpy_s(g_session.m_equipViewName, sizeof(g_session.m_equipViewName), packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -7988,17 +7987,17 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   }
 
   RefreshItemWindows(&g_windowMgr);
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2E];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
-  g_equipWindowLook.bodyCostume = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2E];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  memcpy_s(g_session.m_equipViewName, sizeof(g_session.m_equipViewName), packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[9] = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);
@@ -8024,17 +8023,17 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   }
 
   RefreshItemWindows(&g_windowMgr);
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2E];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  memcpy_s(g_equipWindowLook.name, sizeof(g_equipWindowLook.name), packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
-  g_equipWindowLook.bodyCostume = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2E];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  memcpy_s(g_session.m_equipViewName, sizeof(g_session.m_equipViewName), packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[9] = *reinterpret_cast<const std::int16_t*>(packet + 0x2C);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);

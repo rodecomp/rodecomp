@@ -558,7 +558,10 @@ public:
   /* 5968 */ int memorialQueuePosition;
   /* 596C */ int memorialCreationTime;
   /* 5970 */ int memorialExpirationTime;
-  /* 5974 */ unsigned char equipmentViewState[0x48];
+  /* 5974 */ int m_allowEquipView;
+  /* 5978 */ int m_equipViewLook[10];
+  /* 59A0 */ char m_equipViewName[24];
+  /* 59B8 */ unsigned char unknown_59B8[4];
   /* 59BC */ int characterSlotState;
   /* 59C0 */ int m_normalSlotCount;
   /* 59C4 */ int m_premiumSlotCount;
@@ -722,7 +725,10 @@ public:
   /* 80EC */ std::string damageSpriteName;
   /* 8104 */ std::string damageSkinAuxiliaryName;
   /* 811C */ std::vector<ITEM_INFO> m_cardItems;
-  /* 8128 */ unsigned char feedOptions[0x08];
+  /* 8128 */ int m_hideCostumes;
+  /* 812C */ bool m_genderChangeBlocked;
+  /* 812D */ bool m_itemSlotActive;
+  /* 812E */ unsigned char padding_812E[2];
   /* 8130 */ int restrictedCharacterSlots;
   /* 8134 */ int playerSkillMode;
   /* 8138 */ std::int64_t m_startTimeTicks;
@@ -1093,7 +1099,7 @@ public:
   float GetOptionFloat(const char* key, float fallback);
   // INLINED
   bool& ItemSlotActive() {
-    return reinterpret_cast<bool&>(this->feedOptions[5]);
+    return this->m_itemSlotActive;
   }
   int GetOptionInteger(const char* key, int fallback);
   std::string GetOptionString(const char* key, const char* fallback);
@@ -1424,6 +1430,8 @@ static_assert(offsetof(CSession, guildLeader) == 0x5450);
 static_assert(offsetof(CSession, partyName) == 0x54C4);
 static_assert(offsetof(CSession, memorialDungeonName) == 0x5950);
 static_assert(offsetof(CSession, memorialExpirationTime) == 0x5970);
+static_assert(offsetof(CSession, m_equipViewLook) == 0x5978);
+static_assert(offsetof(CSession, m_equipViewName) == 0x59A0);
 static_assert(offsetof(CSession, characterSlotState) == 0x59BC);
 static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, m_lastIntervalTime) == 0x6188);

@@ -1,6 +1,5 @@
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/WindowId.h"
-#include "Client/Mode/EquipWindowLook.h"
 #include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -8,9 +7,6 @@
 #include <cstdint>
 #include <cstring>
 
-
-// GLOBAL: gl_25085
-EquipWindowLook g_equipWindowLook;
 
 // OFFSET: 0x00D325F0
 // FUNCTION: fn_21743
@@ -49,16 +45,16 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
     }
   }
 
-  g_equipWindowLook.job = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
-  g_equipWindowLook.sex = packet[0x2C];
-  g_equipWindowLook.head = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
-  g_equipWindowLook.accessory = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
-  g_equipWindowLook.accessory2 = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
-  g_equipWindowLook.accessory3 = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
-  g_equipWindowLook.bodyPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
-  g_equipWindowLook.headPalette = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
-  std::memcpy(g_equipWindowLook.name, packet + 4, sizeof(g_equipWindowLook.name));
-  g_equipWindowLook.robe = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
+  g_session.m_equipViewLook[0] = *reinterpret_cast<const std::int16_t*>(packet + 0x1C);
+  g_session.m_equipViewLook[1] = packet[0x2C];
+  g_session.m_equipViewLook[2] = *reinterpret_cast<const std::int16_t*>(packet + 0x1E);
+  g_session.m_equipViewLook[3] = *reinterpret_cast<const std::int16_t*>(packet + 0x20);
+  g_session.m_equipViewLook[4] = *reinterpret_cast<const std::int16_t*>(packet + 0x22);
+  g_session.m_equipViewLook[5] = *reinterpret_cast<const std::int16_t*>(packet + 0x24);
+  g_session.m_equipViewLook[6] = *reinterpret_cast<const std::int16_t*>(packet + 0x2A);
+  g_session.m_equipViewLook[7] = *reinterpret_cast<const std::int16_t*>(packet + 0x28);
+  std::memcpy(g_session.m_equipViewName, packet + 4, sizeof(g_session.m_equipViewName));
+  g_session.m_equipViewLook[8] = *reinterpret_cast<const std::int16_t*>(packet + 0x26);
 
   if (!g_windowMgr.CloseWindow(WID_EQUIPWND_VIEWOTHER_1)) {
     g_windowMgr.EnsureWindow(WID_EQUIPWND_VIEWOTHER_1);

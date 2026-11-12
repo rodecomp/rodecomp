@@ -39,7 +39,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Input/Mouse.h"
-#include "Client/Mode/EquipWindowLook.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "Client/Mode/ModeEvents.h"
@@ -551,7 +550,7 @@ void UIEquipWnd::Paint() {
 
   if (this->m_viewOther == 1) {
     char title[100];
-    std::sprintf(title, LookupMessage(MSI_OTHERUSER_EQUIPED_ITEM), reinterpret_cast<const char*>(&g_session.equipmentViewState[0x2C]));
+    std::sprintf(title, LookupMessage(MSI_OTHERUSER_EQUIPED_ITEM), g_session.m_equipViewName);
     this->DrawTextAt(17, 4, title, 0, 0, 12, 0xFFFFFF, 0, 0);
     this->DrawTextAt(16, 3, title, 0, 0, 12, 0, 0, 0);
   } else {
@@ -3071,7 +3070,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     if (this->m_viewOther == 0) {
       UICheckBox* check = this->allowViewCheck;
-      check->geometry.state = *reinterpret_cast<const int*>(g_session.equipmentViewState);
+      check->geometry.state = g_session.m_allowEquipView;
       check->Invalidate();
     }
 
@@ -3321,13 +3320,13 @@ void UIEquipWnd::OnCreate(int width, int height) {
     this->allowViewCheck->SetSize(80, 12);
     this->allowViewCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_OPEN_EQUIPED_ITEM));
     this->allowViewCheck->Move(10, this->geometry.height - 15);
-    this->allowViewCheck->SetChecked(*reinterpret_cast<const int*>(g_session.equipmentViewState));
+    this->allowViewCheck->SetChecked(g_session.m_allowEquipView);
     this->AddChild(this->allowViewCheck);
 
     this->swapModeCheck = new UICheckBox();
     this->swapModeCheck->SetSize(80, 12);
     this->swapModeCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_SHORTCUT_SKILL_TOOLTIP_SP_PERCENT_AP_VALUE));
-    this->swapModeCheck->SetChecked(*reinterpret_cast<const int*>(g_session.feedOptions) == 0);
+    this->swapModeCheck->SetChecked(g_session.m_hideCostumes == 0);
     this->swapModeCheck->Show(0);
     this->swapModeCheck->Move(10, this->geometry.height - 15);
     this->AddChild(this->swapModeCheck);
@@ -11538,12 +11537,12 @@ void UIEquipWnd::RefreshLook()
     if (mode->scene && mode->scene->player)
       costumeJob = mode->scene->player->GetBodyCostume();
   } else {
-    appearance[0] = g_equipWindowLook.job;
-    appearance[1] = g_equipWindowLook.sex;
-    appearance[2] = g_equipWindowLook.head;
-    appearance[6] = g_equipWindowLook.bodyPalette;
-    appearance[7] = g_equipWindowLook.headPalette;
-    costumeJob = g_equipWindowLook.bodyCostume;
+    appearance[0] = g_session.m_equipViewLook[0];
+    appearance[1] = g_session.m_equipViewLook[1];
+    appearance[2] = g_session.m_equipViewLook[2];
+    appearance[6] = g_session.m_equipViewLook[6];
+    appearance[7] = g_session.m_equipViewLook[7];
+    costumeJob = g_session.m_equipViewLook[9];
   }
   appearance[3] = 0;
   appearance[4] = 0;
