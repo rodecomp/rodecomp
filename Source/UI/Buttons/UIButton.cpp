@@ -191,7 +191,7 @@ void UIButton::ResetCursor(int x, int y) {
 // FUNCTION: fn_10852
 void UIButton::OnLBtnUp(int x, int y) {
   if (this->m_disabled != 0) {
-    if (g_windowMgr.Capture() == this) {
+    if (this == g_windowMgr.Capture()) {
       g_windowMgr.ReleaseCapture();
     }
 
@@ -206,9 +206,8 @@ void UIButton::OnLBtnUp(int x, int y) {
     this->geometry.state = 0;
   } else {
     this->geometry.state = 1;
-    UIWindow* parent = this->parent;
-    if (parent) {
-      if (g_windowMgr.WindowPolicy(3, parent->geometry.id) != 0) {
+    if (this->parent) {
+      if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) != 0) {
         int id = this->geometry.id;
         if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
@@ -217,12 +216,11 @@ void UIButton::OnLBtnUp(int x, int y) {
           }
         } else {
           if (id == 184 || id == 321) {
-            parent->RecordEditTexts();
+            this->parent->RecordEditTexts();
             id = this->geometry.id;
-            parent = this->parent;
           }
 
-          parent->SendMsg(this, UM_COMMAND, id, this->m_argument, 0, 0);
+          this->parent->SendMsg(this, UM_COMMAND, id, this->m_argument, 0, 0);
         }
       }
     } else {
