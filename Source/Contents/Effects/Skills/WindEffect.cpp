@@ -101,7 +101,7 @@ void CWindEffect::OnProcess() {
     switch (particle->animationState) {
     case 0: {
       int alpha = particle->alpha + 1;
-      if (alpha >= this->maxAlpha) {
+      if (this->maxAlpha <= alpha) {
         alpha = this->maxAlpha;
         particle->animationState = 1;
       }
