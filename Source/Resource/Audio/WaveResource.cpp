@@ -29,7 +29,7 @@ bool CWave::Load(const char* name) {
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Wave :: Cannot find File : ") + std::string(name)).c_str(), 0);
+    ShowErrorDialog((std::string("Wave :: Cannot find File : ") + std::string(name)).c_str(), 0);
 
     return false;
   }
