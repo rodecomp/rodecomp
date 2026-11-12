@@ -1581,41 +1581,39 @@ void CEffectPrim::RenderRiseArc(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 21;
+    const int step = this->state.slots[ec].fullDisplayAngle / 21;
     int i = 0;
-    for (int offset = 0; offset < slot.fullDisplayAngle; offset += step) {
-      int angle = slot.rotStart + offset;
+    for (int offset = 0; offset < this->state.slots[ec].fullDisplayAngle; offset += step) {
+      int angle = this->state.slots[ec].rotStart + offset;
       angle %= 360;
-      if (slot.fullDisplayAngle == 360 && i == 20) {
-        angle = slot.rotStart;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
+        angle = this->state.slots[ec].rotStart;
       }
 
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      float* v = &slot.vecBNow.z;
-      v[-1] = -slot.maxHeight;
-      v[-2] = slot.distance * cosine;
-      v[0] = slot.distance * sine;
+      float* v = &this->state.slots[ec].vecBNow.z;
+      v[-1] = -this->state.slots[ec].maxHeight;
+      v[-2] = this->state.slots[ec].distance * cosine;
+      v[0] = this->state.slots[ec].distance * sine;
 
-      const float rise = slot.height[i];
-      const float riseX = rise * g_cosTable[slot.riseAngle];
-      v[2] = -(slot.maxHeight + rise * g_sinTable[slot.riseAngle]);
+      const float rise = this->state.slots[ec].height[i];
+      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
+      v[2] = -(this->state.slots[ec].maxHeight + rise * g_sinTable[this->state.slots[ec].riseAngle]);
       v[3] = riseX * sine + v[0];
       v[1] = riseX * cosine + v[-2];
 
       if (i > 0) {
-        this->RenderTeiRect(&rpCnt, i - 1, slot.alphaB, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0);
+        this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0);
       }
 
       ++i;
-      slot.vecBPre = slot.vecBNow;
-      slot.vecTPre = slot.vecTNow;
+      this->state.slots[ec].vecBPre = this->state.slots[ec].vecBNow;
+      this->state.slots[ec].vecTPre = this->state.slots[ec].vecTNow;
       if (i >= 21) {
         i = 20;
       }
