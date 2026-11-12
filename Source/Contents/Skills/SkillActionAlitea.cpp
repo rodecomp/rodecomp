@@ -722,8 +722,7 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   this->CanUse(source);
 
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
     constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("pulse_of_madness", 0x2FF3C5036D070127ULL);
     const std::uint8_t (&bytes)[17] = bytesArray._Elems;
     thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
