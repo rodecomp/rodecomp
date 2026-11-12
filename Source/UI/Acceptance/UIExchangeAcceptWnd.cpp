@@ -116,10 +116,10 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       while (offset < static_cast<unsigned>(b)) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += sizeof(header);
-        if (header.type == 21651) {
-          break;
-        }
-        if (header.type == 21652) {
+        switch (header.type) {
+        case 21651:
+          return 0;
+        case 21652: {
           char text[260] = {};
           std::memcpy(text, bytes + offset, header.length);
           offset += header.length;
@@ -127,8 +127,11 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           const std::string name = text;
           CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
           SetExchangeName(mode, name);
-        } else {
+          break;
+        }
+        default:
           offset += header.length;
+          break;
         }
       }
     }
