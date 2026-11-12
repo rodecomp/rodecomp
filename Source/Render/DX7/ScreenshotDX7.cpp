@@ -16,15 +16,11 @@
 namespace {
   // INLINED
   std::uint16_t PackedColor(const DeviceOwnerDX7* owner, int red, int green, int blue) {
-    if (!owner) {
-      return 0;
-    }
-
-    return static_cast<std::uint16_t>(
+    return owner ? static_cast<std::uint16_t>(
       (static_cast<std::uint16_t>(blue >> owner->blue.expansion) << owner->blue.shift) +
       (static_cast<std::uint16_t>(green >> owner->green.expansion) << owner->green.shift) +
       (static_cast<std::uint16_t>(red >> owner->red.expansion) << owner->red.shift)
-    );
+    ) : 0;
   }
 
   // INLINED
@@ -100,7 +96,7 @@ bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
             red = (color >> 16) & 0xFF;
             green = (color >> 8) & 0xFF;
             blue = color & 0xFF;
-            fromOverlay = PackedColor(owner, red, green, blue) != transparent;
+            fromOverlay = transparent != PackedColor(owner, red, green, blue);
           }
         }
 
@@ -185,7 +181,7 @@ bool CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
             red = (color >> 16) & 0xFF;
             green = (color >> 8) & 0xFF;
             blue = color & 0xFF;
-            fromOverlay = PackedColor(g_deviceOwnerDX7, red, green, blue) != transparent;
+            fromOverlay = transparent != PackedColor(g_deviceOwnerDX7, red, green, blue);
           }
         }
 
@@ -268,7 +264,7 @@ bool CRendererDX7::SaveLogo(std::string filename) {
   const int pixelBytes = locked.lPitch / locked.dwWidth;
   const int paddedWidth = locked.lPitch / pixelBytes;
   const int size = 3 * paddedWidth * locked.dwHeight;
-  auto* pixels = static_cast<unsigned char*>(std::malloc(size));
+  auto* pixels = new unsigned char[size];
   const auto& image = logo->image;
 
   for (DWORD y = 0; y < locked.dwHeight; ++y) {
@@ -277,8 +273,6 @@ bool CRendererDX7::SaveLogo(std::string filename) {
     int remaining = size - 3 * paddedWidth * y;
 
     for (DWORD x = 0; x < locked.dwWidth && remaining > 0; ++x, destination += 3, remaining -= 3) {
-      const unsigned char* pixel = source + x * pixelBytes;
-
       if (x >= locked.dwWidth - image.width && y >= locked.dwHeight - image.height) {
         const std::uint32_t* color = &image.pixels[(image.height - locked.dwHeight + y) * image.width + (image.width - locked.dwWidth + x)];
 
@@ -287,6 +281,8 @@ bool CRendererDX7::SaveLogo(std::string filename) {
           continue;
         }
       }
+
+      const unsigned char* pixel = source + x * pixelBytes;
 
       if (locked.ddpfPixelFormat.dwRGBBitCount == 16) {
         const std::uint16_t value = *reinterpret_cast<const std::uint16_t*>(pixel);
@@ -314,7 +310,7 @@ bool CRendererDX7::SaveLogo(std::string filename) {
   SecureZeroMemory(&properties, sizeof(properties));
 
   if (ijlInit(&properties) != 0) {
-    std::free(pixels);
+    delete[] pixels;
     return false;
   }
 
@@ -329,10 +325,10 @@ bool CRendererDX7::SaveLogo(std::string filename) {
   properties.jpegHeight = locked.dwHeight;
 
   if (ijlWrite(&properties, 8) != 0) {
-    std::free(pixels);
+    delete[] pixels;
     return false;
   }
 
-  std::free(pixels);
+  delete[] pixels;
   return true;
 }
