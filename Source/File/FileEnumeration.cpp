@@ -16,11 +16,15 @@ void EnumerateFileNames(std::list<std::string>& names, const char* directory, co
 
   const std::string current(".");
   const std::string parent("..");
-  do {
+  if (current != found.cFileName && parent != found.cFileName) {
+    names.push_back(std::string(found.cFileName));
+  }
+
+  while (FindNextFileA(handle, &found)) {
     if (current != found.cFileName && parent != found.cFileName) {
       names.push_back(std::string(found.cFileName));
     }
-  } while (FindNextFileA(handle, &found));
+  }
   FindClose(handle);
 }
 
@@ -38,10 +42,14 @@ void EnumerateFileNames(std::vector<std::string>& names, const char* directory, 
 
   const std::string current(".");
   const std::string parent("..");
-  do {
+  if (current != found.cFileName && parent != found.cFileName) {
+    names.push_back(std::string(found.cFileName));
+  }
+
+  while (FindNextFileA(handle, &found)) {
     if (current != found.cFileName && parent != found.cFileName) {
       names.push_back(std::string(found.cFileName));
     }
-  } while (FindNextFileA(handle, &found));
+  }
   FindClose(handle);
 }
