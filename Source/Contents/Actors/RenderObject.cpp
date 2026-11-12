@@ -3143,21 +3143,21 @@ void CGameActor::SetHatEffect(int effectId, bool on) {
   const std::int64_t value = hatEffect;
   this->SendMsg(this, AM_DELETE_EFFECT, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-  bool show = on;
   CPc* pc;
   if (hatEffect == 254 && IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
     pc->appearanceFlags = on ? pc->appearanceFlags | 0x10 : pc->appearanceFlags ^ 0x10;
-    show = (pc->virtue & 0x10) != 0 || (pc->appearanceFlags & 0x10) != 0;
-  }
-  if (!show) {
+    if ((pc->virtue & 0x10) == 0 && (pc->appearanceFlags & 0x10) == 0) {
+      return;
+    }
+  } else if (!on) {
     return;
   }
 
   CEffect* effect = g_effectMgr->Spawn(this->render.accountId, hatEffect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->headAttached = 1;
-  } else {
-    this->LaunchEffect(hatEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  } else if (CRagEffect* ragEffect = this->LaunchEffect(hatEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    ragEffect->state.visibilityFlags = 1;
   }
 }
 
