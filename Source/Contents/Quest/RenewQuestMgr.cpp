@@ -528,17 +528,17 @@ void CRenewQuestMgr::AddNewQuest(unsigned int id) {
 // OFFSET: 0x0067A630
 // FUNCTION: fn_05451
 void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& info) {
-  int type = 0;
-  int destinationY = 0;
-  int destinationX = 0;
-  const char* text7 = nullptr;
-  const char* text6 = nullptr;
-  const char* text5 = nullptr;
-  const char* text4 = nullptr;
-  const char* text3 = nullptr;
-  const char* icon = nullptr;
-  const char* title = nullptr;
   bool simpleView = true;
+  const char* title = nullptr;
+  const char* icon = nullptr;
+  const char* text3 = nullptr;
+  const char* text4 = nullptr;
+  const char* text5 = nullptr;
+  const char* text6 = nullptr;
+  const char* text7 = nullptr;
+  int destinationX = 0;
+  int destinationY = 0;
+  int type = 0;
   if (g_session.m_hotkeyScript->Call("GetOngoingQuestInfoByID", "d>bsssssssddd", id, &simpleView, &title, &icon, &text3, &text4, &text5, &text6,
                         &text7, &destinationX, &destinationY, &type)) {
     info.m_title = title ? title : "";
@@ -855,7 +855,7 @@ int CRenewQuestMgr::L_AddOngoingDescription(lua_State* state) {
   const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
   std::string description = luaL_checkstring(state, 2);
   DecodeTextEscapes(description);
-  g_renewQuestMgr->m_ongoingQuests[id].m_descriptions.push_back(description);
+  g_renewQuestMgr->m_ongoingQuests[static_cast<unsigned int>(id)].m_descriptions.push_back(description);
   return 0;
 }
 
@@ -865,7 +865,7 @@ int CRenewQuestMgr::L_AddOngoingRewardInfo(lua_State* state) {
   const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
   const unsigned int item = static_cast<unsigned int>(luaL_checknumber(state, 2));
   const unsigned int count = static_cast<unsigned int>(luaL_checknumber(state, 3));
-  g_renewQuestMgr->m_ongoingQuests[id].m_rewards.push_back(std::make_pair(item, count));
+  g_renewQuestMgr->m_ongoingQuests[static_cast<unsigned int>(id)].m_rewards.push_back(std::make_pair(item, count));
   return 0;
 }
 
@@ -876,7 +876,7 @@ int CRenewQuestMgr::L_AddRecommendedQuestInfo(lua_State* state) {
   const int index = static_cast<int>(luaL_checknumber(state, 2));
   std::string description = luaL_checkstring(state, 3);
   DecodeTextEscapes(description);
-  g_renewQuestMgr->m_recommendedQuests[id].m_descriptions[index].push_back(description);
+  g_renewQuestMgr->m_recommendedQuests[static_cast<unsigned int>(id)].m_descriptions[index].push_back(description);
   return 0;
 }
 
