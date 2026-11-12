@@ -30,11 +30,10 @@ std::string CCURLMgr::ToUtf8(std::string text) {
 
     if (converted) {
       WideCharToMultiByte(CP_UTF8, 0, wide, -1, converted, length, nullptr, nullptr);
-      result.assign(converted, std::strlen(converted));
-      _freea(converted);
-    } else {
-      result.assign(converted, std::strlen(converted));
     }
+
+    result = converted;
+    _freea(converted);
 
     SysFreeString(wide);
   }
