@@ -374,10 +374,10 @@ static_assert(sizeof(GroundSkillArgumentData) == 0x24);
 // FUNCTION: fn_22010
 void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
   std::vector<PartyRosterEntry> members;
-  const unsigned count = (static_cast<unsigned>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 28u) / sizeof(PartyRosterEntry);
-  const PartyRosterEntry* entry = reinterpret_cast<const PartyRosterEntry*>(packet + 28);
-  for (unsigned i = 0; i < count; ++i) {
-    members.push_back(*entry++);
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 28) / sizeof(PartyRosterEntry);
+  const PartyRosterEntry* entries = reinterpret_cast<const PartyRosterEntry*>(packet + 28);
+  for (int i = 0; i < count; ++i) {
+    members.push_back(entries[i]);
   }
   this->SetPartyMemberList(reinterpret_cast<const char*>(packet + 4), &members);
 }
@@ -447,45 +447,45 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
 // OFFSET: 0x00D413F0
 // FUNCTION: fn_21824
 void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags) {
-  if (type == 0x126) {
-    this->SpawnMirrorActor(aid, owner, x, y);
-    return;
-  }
-  GroundSkillArgumentData data;
-  data.extended.skill.aid = aid;
-  data.extended.skill.owner = owner;
-  data.extended.skill.type = type;
-  data.extended.skill.x = x;
-  data.extended.skill.y = y;
-  data.extended.skill.visible = visible;
-  data.extended.skill.level = level;
-  data.extended.flags = flags;
-  data.value = value;
-  if (owner != g_session.m_aid && !visible) {
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), aid);
-    if (found != this->m_skillUnitIds.end()) {
-      this->m_skillUnitIds.erase(found);
-      data.extended.skill.visible = 0;
+  if (type != 0x126) {
+    GroundSkillArgumentData data;
+    data.extended.skill.aid = aid;
+    data.extended.skill.owner = owner;
+    data.extended.skill.type = type;
+    data.extended.skill.x = x;
+    data.extended.skill.y = y;
+    data.extended.skill.visible = visible;
+    data.extended.skill.level = level;
+    data.extended.flags = flags;
+    data.value = value;
+    if (owner != g_session.m_aid && !visible) {
+      const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [aid](std::uint32_t id) { return aid == id; });
+      if (this->m_skillUnitIds.end() != found) {
+        this->m_skillUnitIds.erase(found);
+        data.extended.skill.visible = 0;
+      }
+    } else if (visible) {
+      this->m_skillUnitIds.push_back(aid);
     }
-  } else if (visible) {
-    this->m_skillUnitIds.push_back(aid);
-  }
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(aid));
-  if (!skill) {
-    if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
-          static_cast<unsigned>(type) - 20021u <= 11978u)) {
-      return;
-    }
-    skill = new (std::nothrow) CSkill(aid);
-    this->scene->objects.push_back(skill);
-    this->scene->skills.push_back(skill);
+    CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(aid));
     if (!skill) {
-      return;
+      if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
+            static_cast<unsigned>(type) - 20021u <= 11978u)) {
+        return;
+      }
+      skill = new (std::nothrow) CSkill(aid);
+      this->scene->objects.push_back(skill);
+      this->scene->skills.push_back(skill);
+      if (!skill) {
+        return;
+      }
     }
+    skill->sourceActorId = owner;
+    const int address = reinterpret_cast<int>(&data);
+    skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SpawnMirrorActor(aid, owner, x, y);
   }
-  skill->sourceActorId = owner;
-  const int address = reinterpret_cast<int>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 struct GameOptionEntry {
@@ -2637,7 +2637,8 @@ void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining
 // FUNCTION: fn_21823
 void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
-  GroundSkillSpawnData data;
+  GroundSkillArgumentData arguments;
+  GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
   data.owner = packet.owner;
   data.type = packet.type;
@@ -2678,7 +2679,8 @@ void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
 // FUNCTION: fn_21819
 void CGameMode::Zc_Skill_Entry2(const unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
-  GroundSkillSpawnData data;
+  GroundSkillArgumentData arguments;
+  GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
   data.owner = packet.owner;
   data.type = packet.type;
@@ -2742,7 +2744,8 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
     return;
   }
 
-  GroundSkillSpawnData data;
+  GroundSkillArgumentData arguments;
+  GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
   data.owner = packet.owner;
   data.type = packet.type;
@@ -2800,7 +2803,8 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
     return;
   }
 
-  GroundSkillSpawnData data;
+  GroundSkillArgumentData arguments;
+  GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
   data.owner = packet.owner;
   data.type = packet.type;
