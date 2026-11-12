@@ -39,6 +39,7 @@ public:
   void Brighten(int x, int y, int width, int height, int amount) override;
   void Dim(int x, int y, int width, int height, int percent) override;
   void UploadTexture(CTexture*& texture);
+  void UpdateCache();
   HGDIOBJ Create(int width, int height);
   void ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue);
   void SetAlpha(unsigned char maxLuminance);

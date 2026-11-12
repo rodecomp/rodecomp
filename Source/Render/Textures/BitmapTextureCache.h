@@ -14,7 +14,6 @@ public:
   BitmapTextureCache();
   ~BitmapTextureCache();
   void Clear();
-  void Update(BitmapPixels& bitmap);
 
 protected:
   friend class CDCBitmap;
