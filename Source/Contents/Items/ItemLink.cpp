@@ -10,7 +10,7 @@
 namespace {
   // OFFSET: 0x0087A700
   // FUNCTION: fn_11236
-  int Number(std::string text) {
+  int __stdcall Number(std::string text) {
     char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     int result = 0;
     const int size = static_cast<int>(text.size()) + 1;

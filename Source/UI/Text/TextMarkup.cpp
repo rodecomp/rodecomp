@@ -81,7 +81,7 @@ bool HasTextLinks(const std::string& text) {
 
 // OFFSET: 0x008791E0
 // FUNCTION: fn_11214
-std::string ExpandTextEscapes(const std::string& text) {
+std::string __stdcall ExpandTextEscapes(const std::string& text) {
   std::string result = text;
   auto position = result.find("\\n");
 
@@ -123,7 +123,7 @@ std::string RemoveTextColors(const char* text) {
 
 // OFFSET: 0x00A7F660
 // FUNCTION: fn_16966
-const std::string DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
+const std::string __stdcall DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
   std::string text = source;
   int position = static_cast<int>(text.find(begin));
 
@@ -156,31 +156,31 @@ const std::string DisplayTextTag(const std::string& source, const std::string& b
 
 // OFFSET: 0x00A7F510
 // FUNCTION: fn_16963
-const std::string DisplayItemTextTag(const std::string& text) {
+const std::string __stdcall DisplayItemTextTag(const std::string& text) {
   return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
 }
 
 // OFFSET: 0x00A7F580
 // FUNCTION: fn_16964
-const std::string DisplayNavigationTextTag(const std::string& text) {
+const std::string __stdcall DisplayNavigationTextTag(const std::string& text) {
   return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
 }
 
 // OFFSET: 0x00A7F5F0
 // FUNCTION: fn_16965
-const std::string DisplayQuestTextTag(const std::string& text) {
+const std::string __stdcall DisplayQuestTextTag(const std::string& text) {
   return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
 }
 
 // OFFSET: 0x00A7FE50
 // FUNCTION: fn_16967
-const std::string DisplayTipBoxTextTag(const std::string& text) {
+const std::string __stdcall DisplayTipBoxTextTag(const std::string& text) {
   return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0
 // FUNCTION: fn_16968
-const std::string DisplayUrlTextTag(const std::string& text) {
+const std::string __stdcall DisplayUrlTextTag(const std::string& text) {
   return DisplayTextTag(text, g_urlTagBegin, g_urlTagEnd);
 }
 
