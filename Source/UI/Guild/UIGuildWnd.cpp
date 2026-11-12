@@ -1534,7 +1534,7 @@ void UIGuildInfoManageWnd::Paint() {
   int row = 0;
   int y = 157;
   for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
-    if (y > 204) {
+    if (y >= 205) {
       break;
     }
     if (related->relation == 0) {
@@ -1554,7 +1554,7 @@ void UIGuildInfoManageWnd::Paint() {
   row = 0;
   y = 231;
   for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
-    if (y > 278) {
+    if (y >= 279) {
       break;
     }
     if (related->relation == 1) {
@@ -1851,7 +1851,7 @@ void UIGuildBanishedMemberWnd::Paint() {
     memset(reason, 0, sizeof(reason));
     strncpy_s(reason, sizeof(reason), member->reason.c_str(), member->reason.size());
     if (g_forbiddenWords.Contains(reason) == true) {
-      std::string masked;
+      std::string masked("");
       g_forbiddenWords.Mask(reason, &masked);
     }
     this->m_reasons[drawn]->SetTextFitted(reason);
