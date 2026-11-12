@@ -1391,11 +1391,9 @@ void CUIGroupGraphics::LoadAdapters() {
 
   CUIListBoxEx<CUIComboItem, RenderAdapter>* list = this->m_adapterCombo->listBox;
   list->scrollBar->SetPosition(list->rowHeight * index);
-  for (CUIComboItem* item : list->items) {
-    if (item->index == index) {
-      list->SelectItem(item);
-      break;
-    }
+  const auto item = std::find_if(list->items.begin(), list->items.end(), [index](CUIComboItem* candidate) { return index == candidate->index; });
+  if (item != list->items.end()) {
+    list->SelectItem(*item);
   }
 }
 
@@ -1429,11 +1427,9 @@ void CUIGroupGraphics::LoadModes() {
 
   CUIListBoxEx<CUIComboItem, DisplayMode>* list = this->m_modeCombo->listBox;
   list->scrollBar->SetPosition(list->rowHeight * index);
-  for (CUIComboItem* item : list->items) {
-    if (item->index == index) {
-      list->SelectItem(item);
-      break;
-    }
+  const auto item = std::find_if(list->items.begin(), list->items.end(), [index](CUIComboItem* candidate) { return index == candidate->index; });
+  if (item != list->items.end()) {
+    list->SelectItem(*item);
   }
 }
 
@@ -1471,16 +1467,14 @@ void CUIGroupGraphicsAPI::LoadBackends() {
     return;
   }
 
-  const auto found = std::find_if(data.begin(), data.end(), [this](const RenderBackend& backend) { return backend.identity == this->m_pendingBackend; });
+  const auto found = std::find_if(data.begin(), data.end(), [this](const RenderBackend& backend) { return this->m_pendingBackend == backend.identity; });
   const int index = found != data.end() ? static_cast<int>(std::distance(data.begin(), found)) : 0;
 
   CUIListBoxEx<CUIComboItem, RenderBackend>* list = this->m_combo->listBox;
   list->scrollBar->SetPosition(list->rowHeight * index);
-  for (CUIComboItem* item : list->items) {
-    if (item->index == index) {
-      list->SelectItem(item);
-      break;
-    }
+  const auto item = std::find_if(list->items.begin(), list->items.end(), [index](CUIComboItem* candidate) { return index == candidate->index; });
+  if (item != list->items.end()) {
+    list->SelectItem(*item);
   }
 }
 
@@ -1602,11 +1596,12 @@ void CUIGroupSound::OnBgmMute(bool muted) {
 // OFFSET: 0x00A3F6D0
 // FUNCTION: fn_15949
 void CUIGroupSound::OnEffectMute(bool muted) {
-  this->m_effectSlider->SetTransparent(muted);
+  const bool enabled = !muted;
+  this->m_effectSlider->SetTransparent(!enabled);
   CUIVScrollBar* const slider = this->m_effectSlider;
-  slider->dragging = muted;
+  slider->dragging = !enabled;
   slider->Invalidate();
-  g_serviceOptions.Set(0xB, !muted);
+  g_serviceOptions.Set(0xB, enabled);
 }
 
 // OFFSET: 0x00A401C0
@@ -2331,11 +2326,12 @@ void GameSettingsUI::CUIGroupSound::Apply() {
   this->SetBgmEnabled(g_session.GetDefaultOptionValue(OBFUSCATE_SOURCE_TEXT("/bgm", 0xC517FB932D95BB6DULL), 1) != 0);
   this->SetEffectVolume(g_session.GetDefaultOptionValue(OBFUSCATE_SOURCE_TEXT("Effect_Volume", 0x23BBD58F8B5FF5C9ULL), 100));
   const int effect = g_session.GetDefaultOptionValue(OBFUSCATE_SOURCE_TEXT("/sound", 0x0B7109397F6B1387ULL), 1);
-  const bool muted = effect == 0;
-  this->m_effectSlider->SetTransparent(muted);
-  this->m_effectSlider->dragging = muted;
-  this->m_effectSlider->Invalidate();
-  g_serviceOptions.Set(0xB, effect != 0);
+  const bool enabled = effect != 0;
+  this->m_effectSlider->SetTransparent(!enabled);
+  CUIVScrollBar* const slider = this->m_effectSlider;
+  slider->dragging = !enabled;
+  slider->Invalidate();
+  g_serviceOptions.Set(0xB, enabled);
 }
 
 // OFFSET: 0x00A19C60
