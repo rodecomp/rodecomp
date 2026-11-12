@@ -1627,7 +1627,7 @@ void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
 // OFFSET: 0x00D657D0
 // FUNCTION: fn_22002
 void CGameMode::ReceiveActorNameCard(const unsigned char* packet) {
-  char name[25] = {0};
+  char name[25] = "";
 
   memcpy_s(name, 24, packet + 6, 24);
   name[24] = '\0';
@@ -1727,7 +1727,8 @@ void CGameMode::ReceiveGameOptions(int count, const GameOptionEntry* entries) {
 void CGameMode::ReceiveActorClanName(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorClanNamePacket*>(data);
 
-  this->nameCard.SetValue3(packet->aid, std::string(packet->name, packet->name + (packet->length - 8)));
+  const char* name = packet->name;
+  this->nameCard.SetValue3(packet->aid, std::string(name, name + (packet->length - 8)));
 }
 
 // OFFSET: 0x00D66470
