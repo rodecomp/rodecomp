@@ -2023,17 +2023,15 @@ void UIScrollBar3::Paint() {
   }
 
   std::string path = "유저인터페이스\\basic_interface\\";
-  if (this->vertical == 1) {
+  switch (this->vertical) {
+  case 1: {
     this->FillRegion(0, 10, 9, this->geometry.height - 20, 0xF1F1F1);
     if (this->state == 1) {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str()))), false);
     } else if (this->state == 4) {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str()))), false);
     } else {
-      auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str())));
-      this->DrawBitmap(0, 0, up, false);
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str()))), false);
     }
 
     int thumb = this->ThumbOffset() + this->arrowLength;
@@ -2048,15 +2046,14 @@ void UIScrollBar3::Paint() {
 
     this->FillRegion(0, thumb + 1, 9, length - 1, 0xE9E9E9);
     if (this->state == 2) {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str()))), false);
     } else if (this->state == 5) {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str()))), false);
     } else {
-      auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str())));
-      this->DrawBitmap(0, this->geometry.height - this->arrowLength, down, false);
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str()))), false);
     }
+    break;
+  }
   }
 
   this->minimumThumb = 0;
@@ -2072,12 +2069,10 @@ void UIScrollBar4::Paint() {
 
   std::string path = "유저인터페이스\\basic_interface\\";
   if (this->vertical == 0) {
-    auto* track = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scrollbar.bmp").c_str())));
-    this->DrawBitmap(0, 0, track, true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scrollbar.bmp").c_str()))), true);
 
     const int offset = this->ThumbOffset();
-    auto* thumb = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scroll_bar.bmp").c_str())));
-    this->DrawBitmap(offset, 0, thumb, true);
+    this->DrawBitmap(offset, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scroll_bar.bmp").c_str()))), true);
   }
 
   this->minimumThumb = 0;
