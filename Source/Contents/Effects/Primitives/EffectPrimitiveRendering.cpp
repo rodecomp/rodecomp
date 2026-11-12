@@ -2570,7 +2570,7 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle = angle + 90 < 360 ? angle + 90 : angle - 270;
+      angle += angle + 90 >= 360 ? -270 : 90;
     }
 
     if (slot.flag1[1] == 1) {
@@ -2605,7 +2605,7 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle = angle + 90 < 360 ? angle + 90 : angle - 270;
+      angle += angle + 90 >= 360 ? -270 : 90;
     }
 
     if (slot.flag1[3] == 0) {
@@ -5498,9 +5498,9 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     }
 
     const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
-    const int angle2 = angle + 90 < 360 ? angle + 90 : angle - 270;
-    const int angle3 = angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270;
-    const int angle4 = angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270;
+    const int angle2 = angle + 90 >= 360 ? angle - 270 : angle + 90;
+    const int angle3 = angle2 + 90 >= 360 ? angle2 - 270 : angle2 + 90;
+    const int angle4 = angle3 + 90 >= 360 ? angle3 - 270 : angle3 + 90;
     const float y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecBPre = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
     this->state.slots[ec].vecBNow = {static_cast<float>(g_cosTable[angle2] * radius), y, static_cast<float>(g_sinTable[angle2] * radius)};
