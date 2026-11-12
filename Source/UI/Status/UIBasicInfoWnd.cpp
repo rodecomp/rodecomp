@@ -385,8 +385,8 @@ void UIBasicInfoWnd::DrawExpanded() {
     this->DrawTextAt(173, 51, FormatOwnedString("%d%%", percent).c_str(), 0, 1, 14, 0, 0, 0);
   }
 
-  const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
-  const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+  const int sp = g_session.m_sp;
+  const int spMax = g_session.m_maxSp;
   if (spMax > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(sp) * 100 / spMax;
     this->DrawTextAt(173, 65, FormatOwnedString("%d%%", percent).c_str(), 0, 1, 14, 0, 0, 0);
@@ -511,8 +511,8 @@ void UIBasicInfoWnd::DrawCollapsed() {
     136, 36, FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent).c_str(), 0, family, fontHeight, 0, 0, 0
   );
 
-  const int sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
-  const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+  const int sp = g_session.m_sp;
+  const int spMax = g_session.m_maxSp;
   std::uint32_t spColor = 0;
   if (spMax > 0) {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
@@ -555,8 +555,8 @@ void UIBasicInfoWnd::OnCreate(int width, int height) {
 
   this->spBar = new UIBarGraphPlayer();
   static_cast<UIBarGraphPlayer*>(this->spBar)->SetValues(
-    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]); },
-    []() -> std::int64_t { return *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]); }
+    []() -> std::int64_t { return g_session.m_sp; },
+    []() -> std::int64_t { return g_session.m_maxSp; }
   );
   static_cast<UIBarGraphPlayer*>(this->spBar)->SetSize(135, 9);
   static_cast<UIBarGraphPlayer*>(this->spBar)->Move(-100, -100);
@@ -704,8 +704,8 @@ void UIBasicInfoWnd::Paint() {
       this->DrawTextAt(offset + x, 36, text, length, 1, 14, 0, 0, 0);
     }
 
-    const int& sp = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
-    const int& spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+    const int& sp = g_session.m_sp;
+    const int& spMax = g_session.m_maxSp;
     if (spMax < 0) {
       return;
     }
@@ -750,9 +750,9 @@ void UIBasicInfoWnd::Paint() {
       this->DrawTextAt(173, 51, text, 0, 1, 14, 0, 0, 0);
     }
 
-    const int spMax = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+    const int spMax = g_session.m_maxSp;
     if (spMax != 0) {
-      std::sprintf(text, "%d%%", *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]) * 100 / spMax);
+      std::sprintf(text, "%d%%", g_session.m_sp * 100 / spMax);
       this->DrawTextAt(173, 65, text, 0, 1, 14, 0, 0, 0);
     }
 

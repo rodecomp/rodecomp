@@ -4425,8 +4425,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     if (g_session.homunAlive != 0) {
       g_session.ClearHomunStatus();
       if (CMode* mode = g_modeMgr.GetGameMode()) {
-        std::uint32_t aid;
-        std::memcpy(&aid, &g_session.spAndHomunculusStats[8], sizeof(aid));
+        const std::uint32_t aid = g_session.m_homunAid;
         CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
         if (actor) {
           if (actor->HasActiveHomunculusAI()) {

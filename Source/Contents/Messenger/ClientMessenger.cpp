@@ -4861,10 +4861,10 @@ int GetPlayerValue(lua_State* state) {
   int value = 0;
   switch (args[0]) {
   case SP_SP:
-    value = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0]);
+    value = g_session.m_sp;
     break;
   case SP_MAXSP:
-    value = *reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4]);
+    value = g_session.m_maxSp;
     break;
   case SP_BASELEVEL:
     value = g_session.m_level;
@@ -5598,8 +5598,8 @@ __declspec(noinline) void CSession::UpdateRandomStats() {
     this->randomStatIndexD = std::ranges::max(std::rand() % 12, 0);
   }
 
-  const int bound70 = reinterpret_cast<int&>(this->spAndHomunculusStats[0]);
-  const int bound74 = reinterpret_cast<int&>(this->spAndHomunculusStats[4]);
+  const int bound70 = this->m_sp;
+  const int bound74 = this->m_maxSp;
   const int bound68 = this->hp;
   const int bound6C = this->maxHp;
   this->randomStatIndexC = std::ranges::max(std::rand() % 12, 0);
@@ -5619,12 +5619,12 @@ __declspec(noinline) void CSession::UpdateRandomStats() {
     this->maxHp = bound6C;
     this->RefreshHpSpWindows();
   }
-  if (reinterpret_cast<int&>(this->spAndHomunculusStats[0]) != bound70) {
-    reinterpret_cast<int&>(this->spAndHomunculusStats[0]) = bound70;
+  if (this->m_sp != bound70) {
+    this->m_sp = bound70;
     this->RefreshHpSpWindows();
   }
-  if (reinterpret_cast<int&>(this->spAndHomunculusStats[4]) != bound74) {
-    reinterpret_cast<int&>(this->spAndHomunculusStats[4]) = bound74;
+  if (this->m_maxSp != bound74) {
+    this->m_maxSp = bound74;
     this->RefreshHpSpWindows();
   }
 }

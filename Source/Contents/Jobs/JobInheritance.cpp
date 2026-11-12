@@ -1326,7 +1326,7 @@ int CSession::GetPairValue() const {
 // FUNCTION: fn_23793
 int CSession::GetPetTargetAid() const {
   int target = 0;
-  std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]);
+  std::uint32_t aid = this->m_homunAid;
   CGameMode* mode;
   CRenderObject* actor;
   if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&

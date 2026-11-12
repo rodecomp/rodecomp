@@ -2057,7 +2057,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case 4: {
           std::uint32_t target;
           if (g_session.IsHomunculusSkill(skill->id)) {
-            target = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+            target = g_session.m_homunAid;
           } else {
             const bool mercenary = g_session.IsMercenarySkill(skill->id) != 0;
             target = mercenary ? g_session.m_mercenaryAid : g_session.m_aid;
@@ -2705,7 +2705,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       if (argument1 == 154 || argument1 == 41) {
-        if (*reinterpret_cast<const int*>(g_session.spAndHomunculusStats) < (argument1 == 154 ? 40 : 30)) {
+        if (g_session.m_sp < (argument1 == 154 ? 40 : 30)) {
           char message[256];
           std::sprintf(message, LookupMessage(MSI_USESKILL_FAIL_SP_INSUFFICIENT));
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFF, 11, 0, 0);
@@ -2850,8 +2850,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         [] { return static_cast<std::int64_t>(g_session.maxHp); }
       );
       gauge->SetSecondValues(
-        [] { return static_cast<std::int64_t>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0])); },
-        [] { return static_cast<std::int64_t>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4])); }
+        [] { return static_cast<std::int64_t>(g_session.m_sp); },
+        [] { return static_cast<std::int64_t>(g_session.m_maxSp); }
       );
       if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
         gauge->SetFourthValues(
@@ -3336,7 +3336,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_HOMUN_WAIT: {
       CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(
-          *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8])));
+          g_session.m_homunAid));
       if (actor != nullptr && actor->HasActiveHomunculusAI()) {
         const int message[6] = {9, 0, 0, 0, 0, 0};
         actor->SetMsg2AI(reinterpret_cast<const float*>(message), 0);
@@ -3724,7 +3724,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_HOMUN_FOLLOW: {
-          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<std::uint32_t*>(&g_session.spAndHomunculusStats[8])));
+          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_homunAid));
           if (actor && actor->HasActiveHomunculusAI()) {
             float value[6] = {};
             const int type = 9;
@@ -4394,8 +4394,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         [] { return static_cast<std::int64_t>(g_session.maxHp); }
       );
       gauge->SetSecondValues(
-        [] { return static_cast<std::int64_t>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0])); },
-        [] { return static_cast<std::int64_t>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4])); }
+        [] { return static_cast<std::int64_t>(g_session.m_sp); },
+        [] { return static_cast<std::int64_t>(g_session.m_maxSp); }
       );
       if (g_session.IsTreeGroupThree(g_session.GetDisplayJob())) {
         gauge->SetFourthValues(
@@ -7424,7 +7424,7 @@ void CGameMode::InitializeState() {
     g_weatherEffect.Fireworks();
   }
 
-  *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x08]) = -1;
+  g_session.m_homunAid = -1;
   g_session.homunAlive = 0;
   g_session.ClearHomunStatus();
   g_session.m_mercenaryAid = -1;
@@ -8146,7 +8146,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     attack = 1;
   }
 
-  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& homunAid = g_session.m_homunAid;
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if (g_session.homunAlive != 0) {
     if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
@@ -8492,7 +8492,7 @@ int CGameMode::ProcessGroundClick(int result) {
     return result;
   }
 
-  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& homunAid = g_session.m_homunAid;
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if (g_session.homunAlive != 0) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
@@ -10188,7 +10188,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     this->SetCursorAction(0);
   }
 
-  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& homunAid = g_session.m_homunAid;
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -10490,7 +10490,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
   const int& siegeMode = g_session.m_isSiegeZone;
-  const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  const std::uint32_t& homunAid = g_session.m_homunAid;
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   GuildInfo* guildInfo = &g_guildInfo;
 

@@ -53,7 +53,7 @@ static_assert(sizeof(ActionRequestPacket) == 11);
 
 // INLINED
 bool IsHomunAid(std::uint32_t aid) {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+  return aid != 0xFFFFFFFF && aid == g_session.m_homunAid;
 }
 
 // INLINED
@@ -289,7 +289,7 @@ int AiHomunAttack(lua_State* state) {
 
   // GLOBAL: gl_24908
   static std::uint32_t lastAttackTime;
-  if (*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[0x48]) + lastAttackTime < timeGetTime()) {
+  if (g_session.m_homunStats[7] + lastAttackTime < timeGetTime()) {
     ActionRequestPacket packet;
     packet.opcode = ID_CZ_REQUEST_ACTNPC;
     packet.aid = aid;
@@ -310,7 +310,7 @@ int AiMercenaryAttack(lua_State* state) {
   if (!g_session.IsMercenaryAid(aid)) {
     return 0;
   }
-  if (*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]) != 0 && g_session.IsHomunAid(target)) {
+  if (g_session.m_homunAid != 0 && g_session.IsHomunAid(target)) {
     return 0;
   }
 
@@ -401,7 +401,7 @@ int AiHomunGetV(lua_State* state) {
           skillLevel = static_cast<int>(luaL_checknumber(state, 4));
         }
 
-        std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+        std::uint32_t homunAid = g_session.m_homunAid;
         if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
           CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(homunAid));
           if (targetActor) {
@@ -413,7 +413,7 @@ int AiHomunGetV(lua_State* state) {
               range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
             }
 
-            int clamped = ClampTargetAttackRange(*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]), range);
+            int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
             if (clamped > 0) {
               const float dx = static_cast<float>(targetX - cellX);
               const float dy = static_cast<float>(cellY - targetY);
@@ -487,7 +487,7 @@ int AiHomunGetV(lua_State* state) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
         range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
-      std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
+      std::uint32_t homunAid = g_session.m_homunAid;
       result = static_cast<double>(ClampTargetAttackRange(homunAid, range));
     }
     lua_pushnumber(state, result);
@@ -517,7 +517,7 @@ int AiHomunGetV(lua_State* state) {
 
   case V_SP:
     if (aid == g_session.m_aid) {
-      lua_pushnumber(state, static_cast<double>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0])));
+      lua_pushnumber(state, static_cast<double>(g_session.m_sp));
       return 1;
     } else if (!g_session.IsHomunAid(aid)) {
       lua_pushnumber(state, -1.0);
@@ -541,7 +541,7 @@ int AiHomunGetV(lua_State* state) {
 
   case V_MAXSP:
     if (aid == g_session.m_aid) {
-      lua_pushnumber(state, static_cast<double>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4])));
+      lua_pushnumber(state, static_cast<double>(g_session.m_maxSp));
       return 1;
     } else if (!g_session.IsHomunAid(aid)) {
       lua_pushnumber(state, -1.0);
@@ -601,7 +601,7 @@ int AiMercenaryGetV(lua_State* state) {
               range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
             }
 
-            int clamped = ClampTargetAttackRange(*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]), range);
+            int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
             if (clamped > 0) {
               const float dx = static_cast<float>(targetX - cellX);
               const float dy = static_cast<float>(cellY - targetY);
@@ -711,7 +711,7 @@ int AiMercenaryGetV(lua_State* state) {
 
   case V_SP:
     if (aid == g_session.m_aid) {
-      lua_pushnumber(state, static_cast<double>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0])));
+      lua_pushnumber(state, static_cast<double>(g_session.m_sp));
       return 1;
     } else if (!g_session.IsMercenaryAid(aid)) {
       lua_pushnumber(state, -1.0);
@@ -735,7 +735,7 @@ int AiMercenaryGetV(lua_State* state) {
 
   case V_MAXSP:
     if (aid == g_session.m_aid) {
-      lua_pushnumber(state, static_cast<double>(*reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[4])));
+      lua_pushnumber(state, static_cast<double>(g_session.m_maxSp));
       return 1;
     } else if (!g_session.IsMercenaryAid(aid)) {
       lua_pushnumber(state, -1.0);

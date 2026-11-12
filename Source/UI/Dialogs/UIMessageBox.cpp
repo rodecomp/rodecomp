@@ -3451,7 +3451,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
   this->nameEdit = new UIEditCtrl2();
   this->nameEdit->SetSize(80, 16);
-  char* const name = reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]);
+  char* const name = g_session.m_homunName;
   if (std::strcmp(name, "") == 0) {
     std::sprintf(name, g_session.GetJobName(g_session.m_homunJob, -1));
   }
@@ -3557,7 +3557,7 @@ void UIHomunInfoWnd::Paint() {
   this->DrawTextAt(100, 131, LookupMessage(MSI_PET_HUNGRY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
-  const int* const stats = reinterpret_cast<const int*>(&g_session.spAndHomunculusStats[0x2C]);
+  const int* const stats = g_session.m_homunStats;
   char number[12];
   int bytes = std::sprintf(number, "%d", stats[0]);
   this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
@@ -3625,7 +3625,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
     switch (a) {
     case ID_OK: {
-      char* const name = reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]);
+      char* const name = g_session.m_homunName;
       if (std::strlen(this->nameEdit->Text()) >= 24) {
         g_windowMgr.Confirm(LookupMessage(MSI_HOMUN_NAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||

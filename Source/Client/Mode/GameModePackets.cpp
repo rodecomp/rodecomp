@@ -1346,7 +1346,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
   }
   case SP_SP: {
     g_session.UpdateRandomStats();
-    int& sp = *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0]);
+    int& sp = g_session.m_sp;
     const int value = sp + amount;
     if (sp != value) {
       sp = value;
@@ -3670,7 +3670,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, std::int6
   } else if (status == EF_SPTIME) {
     if (aid == g_session.m_aid) {
       g_session.UpdateRandomStats();
-      int& sp = *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0]);
+      int& sp = g_session.m_sp;
       const int value = sp + static_cast<int>(amount);
       if (sp != value) {
         sp = value;
@@ -4575,14 +4575,14 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     break;
   case SP_SP:
-    if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0]) != packet->value) {
-      *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0]) = packet->value;
+    if (g_session.m_sp != packet->value) {
+      g_session.m_sp = packet->value;
       g_session.RefreshHpSpWindows();
     }
     break;
   case SP_MAXSP:
-    if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[4]) != packet->value) {
-      *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[4]) = packet->value;
+    if (g_session.m_maxSp != packet->value) {
+      g_session.m_maxSp = packet->value;
       g_session.RefreshHpSpWindows();
     }
     break;
@@ -6787,7 +6787,7 @@ void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
   switch (static_cast<char>(packet[3])) {
   case HO_PRE_INIT:
-    *reinterpret_cast<std::uint32_t*>(&g_session.spAndHomunculusStats[0x08]) = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+    g_session.m_homunAid = *reinterpret_cast<const std::uint32_t*>(packet + 4);
     if (actor) {
       g_session.homunAlive = 1;
       g_session.m_homunJob = actor->GetEffectiveJob(-1);
@@ -8996,7 +8996,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       const std::string text = FormatOwnedString(LookupMessage(MSI_NOT_EXIST_PET_FOOD), item.DisplayName(0).c_str());
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
-      if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]))) {
+      if (CRenderObject* actor = this->scene->GetGameActorByAID(g_session.m_homunAid)) {
         const int emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Sweat);
         actor->SendMsg(nullptr, AM_CASH_EMOTION, 0, emotion, 0, 0, 0, 0);
       }
@@ -25143,7 +25143,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY2:
-      StringFormat(reinterpret_cast<char *>(g_session.spAndHomunculusStats + 0xC), 32, static_cast<std::size_t>(-1), "%s",
+      StringFormat(g_session.m_homunName, 32, static_cast<std::size_t>(-1), "%s",
                    reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
       g_session.homunNameModified = g_gameModePacketBuffer[0x1A];
       g_session.m_homunLevel = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1B);
@@ -25160,14 +25160,14 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       }
       g_session.homunFriendly = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1F);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x2C)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x21);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x30)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x23);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x34)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x25);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x38)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x27);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x3C)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x29);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x40)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2B);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x44)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2D);
-      reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x48)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2F);
+      g_session.m_homunStats[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x21);
+      g_session.m_homunStats[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x23);
+      g_session.m_homunStats[2] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x25);
+      g_session.m_homunStats[3] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x27);
+      g_session.m_homunStats[4] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x29);
+      g_session.m_homunStats[5] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2B);
+      g_session.m_homunStats[6] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2D);
+      g_session.m_homunStats[7] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2F);
       g_session.m_homunHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x31);
       g_session.RefreshHomunculusInfo();
       g_session.m_homunMaxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x35);

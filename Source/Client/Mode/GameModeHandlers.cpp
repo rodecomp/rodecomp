@@ -897,8 +897,8 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
 // FUNCTION: fn_21802
 void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   const HomunculusInfoPacket* packet = reinterpret_cast<const HomunculusInfoPacket*>(data);
-  char* name = reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]);
-  int* stats = reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x2C]);
+  char* name = g_session.m_homunName;
+  int* stats = g_session.m_homunStats;
   if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
     std::sprintf(name, "%s", packet->name);
   } else {
@@ -949,8 +949,8 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   }
 
   const HomunculusInfoPacket3* packet = reinterpret_cast<const HomunculusInfoPacket3*>(data);
-  int* stats = reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x2C]);
-  StringFormat(reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]), 32, static_cast<std::size_t>(-1), "%s", packet->name);
+  int* stats = g_session.m_homunStats;
+  StringFormat(g_session.m_homunName, 32, static_cast<std::size_t>(-1), "%s", packet->name);
   g_session.homunNameModified = packet->flags;
   g_session.m_homunLevel = packet->level;
   g_session.homunHunger = packet->hunger;
@@ -1002,8 +1002,8 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
 // FUNCTION: fn_21804
 void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   const HomunculusInfoPacket2* packet = reinterpret_cast<const HomunculusInfoPacket2*>(data);
-  char* name = reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]);
-  int* stats = reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x2C]);
+  char* name = g_session.m_homunName;
+  int* stats = g_session.m_homunStats;
   if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
     std::sprintf(name, "%s", packet->name);
   } else {

@@ -1059,16 +1059,16 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
 std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
   std::vector<unsigned char> records;
   AppendRecord(records, MakeReplayRecord(5000, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(5101, &this->spAndHomunculusStats[0x08], 4));
-  AppendRecord(records, MakeReplayRecord(5102, &this->spAndHomunculusStats[0x0C], 32));
-  AppendRecord(records, MakeReplayRecord(5103, &this->spAndHomunculusStats[0x2C], 4));
-  AppendRecord(records, MakeReplayRecord(5104, &this->spAndHomunculusStats[0x30], 4));
-  AppendRecord(records, MakeReplayRecord(5105, &this->spAndHomunculusStats[0x34], 4));
-  AppendRecord(records, MakeReplayRecord(5106, &this->spAndHomunculusStats[0x38], 4));
-  AppendRecord(records, MakeReplayRecord(5107, &this->spAndHomunculusStats[0x3C], 4));
-  AppendRecord(records, MakeReplayRecord(5108, &this->spAndHomunculusStats[0x40], 4));
-  AppendRecord(records, MakeReplayRecord(5109, &this->spAndHomunculusStats[0x44], 4));
-  AppendRecord(records, MakeReplayRecord(5110, &this->spAndHomunculusStats[0x48], 4));
+  AppendRecord(records, MakeReplayRecord(5101, &this->m_homunAid, sizeof(this->m_homunAid)));
+  AppendRecord(records, MakeReplayRecord(5102, this->m_homunName, sizeof(this->m_homunName)));
+  AppendRecord(records, MakeReplayRecord(5103, &this->m_homunStats[0], sizeof(this->m_homunStats[0])));
+  AppendRecord(records, MakeReplayRecord(5104, &this->m_homunStats[1], sizeof(this->m_homunStats[1])));
+  AppendRecord(records, MakeReplayRecord(5105, &this->m_homunStats[2], sizeof(this->m_homunStats[2])));
+  AppendRecord(records, MakeReplayRecord(5106, &this->m_homunStats[3], sizeof(this->m_homunStats[3])));
+  AppendRecord(records, MakeReplayRecord(5107, &this->m_homunStats[4], sizeof(this->m_homunStats[4])));
+  AppendRecord(records, MakeReplayRecord(5108, &this->m_homunStats[5], sizeof(this->m_homunStats[5])));
+  AppendRecord(records, MakeReplayRecord(5109, &this->m_homunStats[6], sizeof(this->m_homunStats[6])));
+  AppendRecord(records, MakeReplayRecord(5110, &this->m_homunStats[7], sizeof(this->m_homunStats[7])));
   AppendRecord(records, MakeReplayRecord(5111, &this->m_homunJob, sizeof(this->m_homunJob)));
   AppendRecord(records, MakeReplayRecord(5112, &this->m_homunLevel, sizeof(this->m_homunLevel)));
   AppendRecord(records, MakeReplayRecord(5113, &this->m_homunHp, sizeof(this->m_homunHp)));
@@ -1363,8 +1363,8 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   AppendRecord(records, BuildReplayTaggedRecord(2028, this->minimapTokenStorage, 0x30));
   AppendRecord(records, BuildReplayTaggedRecord(2029, &this->hp, sizeof(this->hp)));
   AppendRecord(records, BuildReplayTaggedRecord(2030, &this->maxHp, sizeof(this->maxHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(2031, &this->spAndHomunculusStats[0], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(2032, &this->spAndHomunculusStats[4], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(2031, &this->m_sp, sizeof(this->m_sp)));
+  AppendRecord(records, BuildReplayTaggedRecord(2032, &this->m_maxSp, sizeof(this->m_maxSp)));
   AppendRecord(records, BuildReplayTaggedRecord(2033, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget)));
   AppendRecord(records, BuildReplayTaggedRecord(2034, &this->quitBlocked, sizeof(this->quitBlocked)));
   AppendRecord(records, BuildReplayTaggedRecord(2035, &this->battleChat, sizeof(this->battleChat)));

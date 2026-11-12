@@ -174,11 +174,11 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       offset += header.bytes;
       break;
     case 2031:
-      std::memcpy(&this->spAndHomunculusStats[0], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_sp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 2032:
-      std::memcpy(&this->spAndHomunculusStats[4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_maxSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 2033:
@@ -546,43 +546,43 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
     case 5001:
       return offset;
     case 5101:
-      std::memcpy(&this->spAndHomunculusStats[8], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunAid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5102:
-      std::memcpy(&this->spAndHomunculusStats[0xC], data.data() + offset, header.bytes);
+      std::memcpy(this->m_homunName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5103:
-      std::memcpy(&this->spAndHomunculusStats[0x2C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5104:
-      std::memcpy(&this->spAndHomunculusStats[0x30], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5105:
-      std::memcpy(&this->spAndHomunculusStats[0x34], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5106:
-      std::memcpy(&this->spAndHomunculusStats[0x38], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5107:
-      std::memcpy(&this->spAndHomunculusStats[0x3C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5108:
-      std::memcpy(&this->spAndHomunculusStats[0x40], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5109:
-      std::memcpy(&this->spAndHomunculusStats[0x44], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[6], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5110:
-      std::memcpy(&this->spAndHomunculusStats[0x48], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunStats[7], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5111:

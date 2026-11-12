@@ -3103,13 +3103,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
           g_session.RefreshHpSpWindows();
         }
         const int sp = static_cast<int>(this->characters[i].sp);
-        if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x00]) != sp) {
-          *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x00]) = sp;
+        if (g_session.m_sp != sp) {
+          g_session.m_sp = sp;
           g_session.RefreshHpSpWindows();
         }
         const int maxSp = static_cast<int>(this->characters[i].maxSp);
-        if (*reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x04]) != maxSp) {
-          *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x04]) = maxSp;
+        if (g_session.m_maxSp != maxSp) {
+          g_session.m_maxSp = maxSp;
           g_session.RefreshHpSpWindows();
         }
         g_session.m_zeny = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x00]);

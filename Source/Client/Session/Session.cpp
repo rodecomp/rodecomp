@@ -2295,7 +2295,7 @@ void CSession::RefreshHpSpWindows() {
 
   if (g_windowMgr.basicInfoWnd) {
     if (this->maxHp < this->hp ||
-        *reinterpret_cast<const int*>(&this->spAndHomunculusStats[4]) < *reinterpret_cast<const int*>(&this->spAndHomunculusStats[0])) {
+        this->m_maxSp < this->m_sp) {
       return;
     }
 
@@ -2985,8 +2985,8 @@ void CSession::Init() {
   this->m_monsterTalkId = -1;
   std::sprintf(this->petName, "");
 
-  std::sprintf(reinterpret_cast<char*>(&this->spAndHomunculusStats[0x0C]), "");
-  int* homunStats = reinterpret_cast<int*>(&this->spAndHomunculusStats[0x2C]);
+  std::sprintf(this->m_homunName, "");
+  int* homunStats = this->m_homunStats;
   for (int index = 0; index < 8; ++index) {
     homunStats[index] = 0;
   }
@@ -3099,7 +3099,7 @@ void CSession::Init() {
   this->automaticSkillHotkey = 0;
   this->m_currentHotkey = 0;
   this->petGid = 0xFFFFFFFF;
-  *reinterpret_cast<int*>(&this->spAndHomunculusStats[0x08]) = -1;
+  this->m_homunAid = -1;
   this->m_mercenaryAid = -1;
   this->m_guildMemberListSort = true;
   this->m_blockPrivateTab = false;
