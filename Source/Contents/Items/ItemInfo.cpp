@@ -190,9 +190,7 @@ void ITEM_INFO::Reset() {
   this->priceFactor = 0;
   this->sprite = 0;
   this->optionCount = 0;
-  for (int index = 0; index < 25; ++index) {
-    this->options[index] = 0;
-  }
+  SecureZeroMemory(this->options, sizeof(this->options));
   for (int index = 0; index < 4; ++index) {
     this->flags[index] = 0;
   }
