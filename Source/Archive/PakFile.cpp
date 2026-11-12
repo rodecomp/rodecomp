@@ -745,8 +745,9 @@ namespace myGPack {
           return false;
         }
 
+        const std::uint8_t* data = buffer.data();
         const std::uint64_t offset = this->Allocate(entry.alignedSize);
-        if (!this->m_output.Write(offset, buffer.data(), entry.alignedSize)) {
+        if (!this->m_output.Write(offset, data, entry.alignedSize)) {
           return false;
         }
 
