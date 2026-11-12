@@ -130,10 +130,11 @@ void BinkMovies::Update() {
         nearest = distance < nearest ? distance : nearest;
       }
 
-      const int attenuation = movie->radius > nearest
-        ? static_cast<int>((static_cast<float>(g_soundMgr->sampleVolume) / movie->radius) * (movie->radius - nearest)) * 256
-        : 0;
-      BinkSetVolume(movie->decoder->Handle(), 0, attenuation);
+      if (movie->radius > nearest) {
+        BinkSetVolume(movie->decoder->Handle(), 0, static_cast<int>((static_cast<float>(g_soundMgr->sampleVolume) / movie->radius) * (movie->radius - nearest)) * 256);
+      } else {
+        BinkSetVolume(movie->decoder->Handle(), 0, 0);
+      }
     }
   }
 }
