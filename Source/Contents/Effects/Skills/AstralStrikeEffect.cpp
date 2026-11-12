@@ -12,12 +12,7 @@
 namespace {
 // INLINED
 __forceinline int RandomIndex(int range) {
-  int result = 0;
-  const int value = rand() % range;
-  if (value >= 0) {
-    result = value;
-  }
-  return result;
+  return std::ranges::max(rand() % range, 0);
 }
 // INLINED
 __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
