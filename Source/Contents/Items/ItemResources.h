@@ -1,6 +1,4 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMRESOURCES_H
 #define RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMRESOURCES_H
 
-const char* SkillDragResource(const char* name);
-
 #endif

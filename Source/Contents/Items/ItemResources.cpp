@@ -30,7 +30,7 @@ const char* CSession::ItemDragResource(const char* id, int identified) {
 
 // OFFSET: 0x00DDDCD0
 // FUNCTION: fn_23392
-const char* SkillDragResource(const char* name) {
+const char* CSession::SkillDragResource(const char* name) {
   static std::string resource;
   resource = "아이템\\";
   resource += name;

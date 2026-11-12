@@ -181,6 +181,7 @@ class CSession {
 public:
   void IconPath(char* output, const char* id, int identified);
   const char* ItemDragResource(const char* id, int identified);
+  const char* SkillDragResource(const char* name);
   /* 0000 */ std::uint32_t mapPropertyId;
   /* 0004 */ std::list<CSkillInfo> m_additionalSkills;
   /* 000C */ CPlayerSkillBundle m_skillBundle;
