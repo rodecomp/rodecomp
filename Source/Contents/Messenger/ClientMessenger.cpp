@@ -58,6 +58,8 @@
 #include <utility>
 #include <vector>
 
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 extern "C" {
 #include <lualib.h>
 }
