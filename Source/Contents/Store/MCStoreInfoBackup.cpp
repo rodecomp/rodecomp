@@ -150,7 +150,8 @@ void CMCStoreInfoBackup::Load(
     return;
   }
 
-  g_asyncWorkMgr->LoadStore(accountId, characterId, accountName, this->LoadUrl(),
+  CAsyncWorkMgr* mgr = g_asyncWorkMgr;
+  mgr->LoadStore(accountId, characterId, accountName, this->LoadUrl(),
                             std::string(reinterpret_cast<const char*>(&g_session.webServiceLoginData[0x08]), 16), type);
 }
 
@@ -162,7 +163,7 @@ void CMCStoreInfoBackup::Save(int type) {
   Json::Value data;
   this->ExportData(data);
 
-  if (!data.isNull()) {
+  if (data.isNull() != true) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
