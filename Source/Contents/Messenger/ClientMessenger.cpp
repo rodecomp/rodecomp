@@ -79,6 +79,12 @@ struct EquipmentValueC {
   /* 0000 */ int value;
 };
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
+template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
+  std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
+) noexcept;
+template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_tree<std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>>(
+  std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&, std::_Tree_node<std::pair<const int, int>, void*>*
+) noexcept;
 
 struct EquipmentEntryA {
   /* 0000 */ int value;
