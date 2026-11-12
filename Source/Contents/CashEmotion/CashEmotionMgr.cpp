@@ -1538,10 +1538,7 @@ int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
       name = LookupMessage(FindMessageId(key.c_str()));
     }
 
-    result = nullptr;
-    if (g_cashEmotionMgr->AddEmotion(packId, emotionId, name, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str())) {
-      result = name;
-    }
+    result = g_cashEmotionMgr->AddEmotion(packId, emotionId, name, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str()) ? name : nullptr;
   }
 
   lua_pushstring(state, result);
