@@ -69,14 +69,8 @@ struct ZeroVector3d : vector3d {
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
 void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
-  vector3d vert[4];
-  for (vector3d& element : vert) {
-    ZeroVector(element);
-  }
-  vector3d tvert[4];
-  for (vector3d& element : tvert) {
-    ZeroVector(element);
-  }
+  ZeroVector3d vert[4];
+  ZeroVector3d tvert[4];
 
   vert[0].z = this->state.widthSize;
   vert[2].y = this->state.heightSize;
@@ -2240,10 +2234,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
 // OFFSET: 0x00BCFC00
 // FUNCTION: fn_19867
 void CEffectPrim::RenderRing(matrix& wtm) {
-  vector3d corners[4];
-  for (vector3d& element : corners) {
-    ZeroVector(element);
-  }
+  ZeroVector3d corners[4];
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
