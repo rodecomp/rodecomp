@@ -426,15 +426,16 @@ void UISeekPartyWnd::Paint() {
     );
     if (ResourceMgr::Instance().Exists(name.c_str())) {
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-      this->DrawBitmap(1, 18, &bitmap->image, false);
+      this->DrawBitmap(1, 18, bitmap, false);
     }
   }
 
   this->DrawButtonBar(2, 0, 1);
 
   char text[10] = {};
-  const unsigned seconds = this->m_elapsed / 1000;
-  std::sprintf(text, "%02d:%02d:%02d", seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60);
+  std::sprintf(
+    text, "%02d:%02d:%02d", this->m_elapsed / 1000 / 60 / 60 % 60, this->m_elapsed / 1000 / 60 % 60, this->m_elapsed / 1000 % 60
+  );
   this->DrawTextAt(10, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
 }
 
