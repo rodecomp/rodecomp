@@ -18,6 +18,8 @@ int g_snapDirection = 1;
 // GLOBAL: gl_24655
 CSnapMgr g_snapMgr;
 
+template __declspec(noinline) void std::list<SnapObject*>::push_back(SnapObject* const&);
+
 // OFFSET: 0x007E2DB0
 // FUNCTION: fn_09714
 bool SnapObject::ContainsUpward(SnapObject* target) {
