@@ -314,9 +314,7 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
   this->m_swapButton->SetBitmap("유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
   this->m_swapButton->SetSize(this->m_swapButton->BitmapWidth(), this->m_swapButton->BitmapHeight());
-  UISwapBitmapButton* button = this->m_swapButton;
-  const std::string label = LookupMessage(MSI_DESC_VIT2);
-  button->label = label;
+  this->m_swapButton->SetLabel(LookupMessage(MSI_DESC_VIT2));
   this->m_swapButton->m_textColor = 0x172842;
   this->m_swapButton->Move(0x51, 0x9B);
   this->m_swapButton->SetId(0x1FC);
@@ -334,9 +332,9 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
 void UISwapBitmapButton::Paint() {
   UIBitmapButton::Paint();
   const unsigned long elapsed = timeGetTime() - g_swapEquipmentTick;
-  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_normal.bmp", 0, 0);
-  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
-  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
+  this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_normal.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 0, 0);
+  this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_over.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 1, 0);
+  this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_press.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 2, 0);
   this->m_textColor = elapsed < 10000 ? 0x969696 : 0x172842;
   this->DrawCenteredText(this->geometry.width / 2, this->geometry.height / 2 - 5, this->label.c_str(), this->label.size(), 0, 12, this->m_textColor, 0);
 }
