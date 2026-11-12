@@ -121,7 +121,7 @@ void CSteal::OnProcess() {
     const float velocityY = particle->velocity.y;
     const float velocityZ = particle->velocity.z;
     float lift = params[3] + params[4];
-    const float distance = std::max(0.0f, params[0] + particle->frameDelay);
+    const float distance = std::max(params[0] + particle->frameDelay, 0.0f);
 
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
