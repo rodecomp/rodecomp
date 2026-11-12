@@ -51,6 +51,8 @@ struct SessionRecord6144 {
   /* 0032 */ std::int16_t year;
   /* 0034 */ std::int16_t month;
   /* 0036 */ std::int16_t day;
+
+  void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
 };
 
 #pragma pack(push, 1)
@@ -924,7 +926,6 @@ public:
   int CountSelectionItems() const;
   int CountDistinctCostumeItems() const;
   int CountDistinctEquippedItems() const;
-  void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
   int GetDefaultOptionValue(const char* name, int fallback) const;
   int FindActorSkillAnimationValue(int key) const;
   CSkillInfo AdditionalSkillAt(int index) const;

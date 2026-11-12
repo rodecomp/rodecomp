@@ -593,16 +593,17 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
     std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
     record.completedAt = packet.completedAt;
     record.rewarded = packet.rewarded;
-    this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+    record.SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
     return;
   }
 
   SessionRecord6144 record;
-  record.completionFlags = static_cast<std::uint16_t>(1 | packet.completed << 8);
+  reinterpret_cast<unsigned char*>(&record.completionFlags)[0] = 1;
+  reinterpret_cast<unsigned char*>(&record.completionFlags)[1] = packet.completed;
   std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
-  this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+  record.SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
   this->achievements.insert({packet.id, record});
 }
 
@@ -658,7 +659,7 @@ int CSession::CountSelectionItems() const {
 
 // OFFSET: 0x00E09080
 // FUNCTION: fn_23775
-void CSession::SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const {
+__declspec(noinline) void SessionRecord6144::SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const {
   time = time > 0 ? time : 0;
 
   const std::tm local = *_localtime32(&time);
