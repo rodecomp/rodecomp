@@ -169,43 +169,43 @@ struct ConfirmPurchaseCallback {
 // OFFSET: 0x0063A780
 // FUNCTION: fn_04771
 void OnStoveInitialized(Stove::PCSDK::CallbackResult callbackResult) {
-  InitializeCallback()(callbackResult);
+  static_cast<const InitializeCallback*>(nullptr)->operator()(callbackResult);
 }
 
 // OFFSET: 0x0063A7F0
 // FUNCTION: fn_04772
 void OnStoveTermsAgreementFetched(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url) {
-  TermsAgreementCallback()(callbackResult, unused, url);
+  static_cast<const TermsAgreementCallback*>(nullptr)->operator()(callbackResult, unused, url);
 }
 
 // OFFSET: 0x0063A860
 // FUNCTION: fn_04773
 void OnStoveAllProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count) {
-  CategoryProductsCallback()(callbackResult, products, count);
+  static_cast<const CategoryProductsCallback*>(nullptr)->operator()(callbackResult, products, count);
 }
 
 // OFFSET: 0x0063A8D0
 // FUNCTION: fn_04774
 void OnStoveCategoryProductsFetched(Stove::PCSDK::CallbackResult callbackResult, const Stove::PCSDK::IAP::StovePCProduct* products, unsigned int count) {
-  FetchProductsCallback()(callbackResult, products, count);
+  static_cast<const FetchProductsCallback*>(nullptr)->operator()(callbackResult, products, count);
 }
 
 // OFFSET: 0x0063A940
 // FUNCTION: fn_04775
 void OnStovePurchaseStarted(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult purchaseResult) {
-  PurchaseResultCallback()(callbackResult, purchaseResult);
+  static_cast<const PurchaseResultCallback*>(nullptr)->operator()(callbackResult, purchaseResult);
 }
 
 // OFFSET: 0x0063A9D0
 // FUNCTION: fn_04776
 void OnStovePurchaseConfirmed(Stove::PCSDK::CallbackResult callbackResult, bool purchased, int productCount, unsigned int count, int remainingCount, int resultCode) {
-  ConfirmPurchaseCallback()(callbackResult, purchased, productCount, count, remainingCount, resultCode);
+  static_cast<const ConfirmPurchaseCallback*>(nullptr)->operator()(callbackResult, purchased, productCount, count, remainingCount, resultCode);
 }
 
 // OFFSET: 0x0063AA50
 // FUNCTION: fn_04777
 void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::Base::StovePCShutdown shutdown) {
-  ShutdownCallback()(callbackResult, shutdown);
+  static_cast<const ShutdownCallback*>(nullptr)->operator()(callbackResult, shutdown);
 }
 
 
