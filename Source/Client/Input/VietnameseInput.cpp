@@ -30,13 +30,14 @@ TELEXInputMode::TELEXInputMode() {
 
 // OFFSET: 0x00AFBB40
 // FUNCTION: fn_18308
-int TELEXInputMode::Convert(char key, char vowel, int index) {
+int TELEXInputMode::Convert(char key, char vowel, int value) {
+  int index = value;
   if (key == this->m_lastKey) {
     this->Reset();
     return 1000;
   }
   int tone = 0;
-  while (key != g_telexToneKeys[tone] && tone < 5) {
+  while (g_telexToneKeys[tone] != key && tone < 5) {
     ++tone;
   }
   if (tone < 5) {
@@ -251,7 +252,8 @@ VNIInputMode::VNIInputMode() {
 
 // OFFSET: 0x00AFC210
 // FUNCTION: fn_18318
-int VNIInputMode::Convert(char key, char vowel, int index) {
+int VNIInputMode::Convert(char key, char vowel, int value) {
+  int index = value;
   if (key == this->m_lastKey) {
     this->Reset();
     return 1000;
@@ -270,8 +272,8 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       this->m_toneIndex = key - '0';
       index = index - '6' + key;
     } else {
-      this->Reset();
       index = -1;
+      this->Reset();
     }
     break;
   case '6':
@@ -283,8 +285,8 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       this->m_markKey = 6;
       index += 6;
     } else {
-      this->Reset();
       index = -1;
+      this->Reset();
     }
     break;
   case '7':
@@ -300,8 +302,8 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       this->m_markKey = 6;
       index += 6;
     } else {
-      this->Reset();
       index = -1;
+      this->Reset();
     }
     break;
   case '8':
@@ -313,8 +315,8 @@ int VNIInputMode::Convert(char key, char vowel, int index) {
       this->m_markKey = 12;
       index += 12;
     } else {
-      this->Reset();
       index = -1;
+      this->Reset();
     }
     break;
   case '9':
