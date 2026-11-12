@@ -38,6 +38,7 @@
 #include "Utility/Singleton.h"
 #include "Utility/Text/StringUtil.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
@@ -524,9 +525,7 @@ bool CGameSettingsMgr::LoadSettings() {
 
   this->Init_Func();
 
-  constexpr std::array<char, 50> source = CRYPT_NAME("LuaFiles514\\Lua Files\\OptionInfo\\GameSettings.lub", 0x0F41EBBDA32D1B17ULL);
-  thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-  if (!this->LoadFile(name.Text())) {
+  if (!this->LoadFile(OBFUSCATE_ARRAY_TEXT("LuaFiles514\\Lua Files\\OptionInfo\\GameSettings.lub", 0x0F41EBBDA32D1B17ULL, char))) {
     return false;
   }
   return this->ReadOptionTable();
