@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Client/Session/Session.h"
 #include "Client/Mode/CGameMode.h"
