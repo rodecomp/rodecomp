@@ -127,8 +127,7 @@ void CCloud::OnProcess() {
 
   const int frame = particle->elapsedFrames;
   if (frame < this->fadeInEnd) {
-    const float value = this->alpha + this->fadeInStep;
-    this->alpha = value > 255.0f ? 255.0f : value;
+    this->alpha = std::min({this->alpha + this->fadeInStep, 255.0f});
     particle->alpha = static_cast<int>(this->alpha);
   } else if (frame > this->fadeOutStart) {
     this->alpha -= this->fadeOutStep;
