@@ -132,18 +132,20 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
   pages.emplace_front();
   SpriteAtlasPage& page = pages.front();
 
+  CTexture* texture;
   if (width <= 256 && height <= 256) {
     if (this->m_spare.empty()) {
-      page.texture = g_texMgr.CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
+      texture = g_texMgr.CreateTexture(256, 256, TextureFormat::A1R5G5B5, false, false);
     } else {
-      page.texture = this->m_spare.back();
+      texture = this->m_spare.back();
       this->m_spare.pop_back();
     }
   } else {
-    page.texture = g_texMgr.CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
+    texture = g_texMgr.CreateTexture(width, height, TextureFormat::A1R5G5B5, false, false);
   }
 
-  page.texture->Fill(nullptr, 0);
+  page.texture = texture;
+  texture->Fill(nullptr, 0);
   page.cellWidth = cellSizes[category].width;
   page.cellHeight = cellSizes[category].height;
   const int columns = width / page.cellWidth;
@@ -161,6 +163,7 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
     }
   }
 
+  page.lastUsed = 0;
   return &page;
 }
 
