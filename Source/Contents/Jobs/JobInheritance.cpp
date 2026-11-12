@@ -253,7 +253,10 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_TROUBADOUR:
   case JT_TROUVERE:
   case JT_HYPER_NOVICE:
-    return shield == 1;
+    if (shield == 1) {
+      return true;
+    }
+    return false;
   case JT_SWORDMAN:
   case JT_KNIGHT:
   case JT_CRUSADER:
