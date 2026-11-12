@@ -619,9 +619,10 @@ std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkil
       output = buffer;
     }
 
+    int secondsPerMinute = 60;
     const int remainder = remainingSeconds - hours * 3600;
-    const int minutes = remainder / 60;
-    const int seconds = remainder % 60;
+    const int minutes = remainder / secondsPerMinute;
+    const int seconds = remainder % secondsPerMinute;
     if (minutes != 0) {
       std::sprintf(buffer, " %d %s", minutes, LookupMessage(MSI_MINUTE));
       output = output + buffer;

@@ -117,7 +117,8 @@ std::string IntToSignedString(int value, bool grouped, bool showPlus) {
   std::string text;
   const bool negative = value < 0;
   for (std::size_t i = 0; i < digits.size(); ++i) {
-    if ((digits.size() - i) % 3 == 0) {
+    std::size_t remaining = digits.size() - i;
+    if (remaining % 3 == 0) {
       text += std::string(",");
     }
     text += digits.at(i);
