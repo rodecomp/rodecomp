@@ -3075,8 +3075,8 @@ void CSession::Init() {
   this->ClearPairValues(1, 1, 1);
 
   this->m_lockItemDrop = false;
-  for (std::list<ITEM_INFO>& items : this->inventoryCategories) {
-    items.erase(items.begin(), items.end());
+  for (int index = 0; index < 11; ++index) {
+    this->inventoryCategories[index].erase(this->inventoryCategories[index].begin(), this->inventoryCategories[index].end());
   }
 
   this->replayPacketMode = 0;
@@ -3087,8 +3087,8 @@ void CSession::Init() {
   *reinterpret_cast<int*>(&this->itemSelectionState[0x08]) = 0;
   this->mainShortcutRow = 0;
   this->alternateShortcutRow = 0;
-  for (ITEM_INFO& item : this->selectionItems) {
-    item.Reset();
+  for (int index = 0; index < 5; ++index) {
+    this->selectionItems[index].Reset();
   }
 
   this->achievementResult = 0;
