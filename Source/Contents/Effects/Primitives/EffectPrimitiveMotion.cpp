@@ -1436,25 +1436,23 @@ bool CEffectPrim::PrimLineLink() {
 
   ++this->state.slots[0].process;
 
-  this->state.slots[0].vecTNow = {this->render.position.x, this->render.position.y, this->render.position.z};
+  this->state.slots[0].vecTNow = this->render.position;
   this->state.slots[0].vecTNow.y -= 8.0f;
 
   if (this->state.slots[0].height[4] == 2.0f) {
-    if (this->state.slots[0].process < 41) {
-      if (this->state.slots[0].process < 20) {
-        this->state.slots[0].alphaB += 6;
-      }
-    } else {
+    if (this->state.slots[0].process > 40) {
       this->state.slots[0].alphaB -= 3;
 
       if (this->state.slots[0].alphaB < 0) {
         this->state.slots[0].alphaB = 0;
       }
+    } else if (this->state.slots[0].process < 20) {
+      this->state.slots[0].alphaB += 6;
     }
   } else if (this->state.slots[0].height[4] == 3.0f) {
     const int phase = this->state.slots[0].process % 360;
 
-    if (this->state.slots[0].process < 81) {
+    if (this->state.slots[0].process <= 80) {
       ++this->state.slots[0].alphaB;
     }
 
@@ -1477,7 +1475,9 @@ bool CEffectPrim::PrimLineLink() {
     this->state.slots[0].life = 0;
     this->state.slots[0].alphaB = 0;
   } else {
-    this->state.slots[0].vecTPre = {target->render.position.x, target->render.position.y, target->render.position.z};
+    this->state.slots[0].vecTPre.x = target->render.position.x;
+    this->state.slots[0].vecTPre.y = target->render.position.y;
+    this->state.slots[0].vecTPre.z = target->render.position.z;
     this->state.slots[0].vecTPre.y -= 8.0f;
   }
 
@@ -4764,6 +4764,7 @@ __declspec(noinline) void CEffectPrim::PrimScrollTexture() {
 __declspec(noinline) void CEffectPrim::PrimFrameFade() {
   FaceCamera(this->state.slots);
 
+  int frameDelay = 3;
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -4771,7 +4772,7 @@ __declspec(noinline) void CEffectPrim::PrimFrameFade() {
       continue;
     }
 
-    if (++slot.process % 3 == 0) {
+    if (++slot.process % frameDelay == 0) {
       ++slot.flag1[0];
       const int frames = static_cast<int>(this->state.totalTexture);
       if (slot.flag1[0] >= frames) {
@@ -5482,6 +5483,7 @@ __declspec(noinline) bool CEffectPrim::PrimOrbitFade() {
 __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
   FollowMaster(*this);
 
+  int steps = 360;
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5491,7 +5493,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
     }
 
     slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 3);
-    if (slot.rotStart >= 360) {
+    if (slot.rotStart >= steps) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
@@ -5511,10 +5513,10 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
 
     const int offset = index * 45;
     for (int point = 0; point < 21; ++point) {
-      const int angle = offset >= 90 ? 2 * (offset + slot.process) : phase + slot.process;
+      const int angle = (offset < 90 ? slot.process + phase : (slot.process + offset) * 2) % steps;
       const float base = slot.maxHeight;
       slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + base;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
@@ -5527,6 +5529,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
 
+  int steps = 360;
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5536,7 +5539,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
     }
 
     slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
-    if (slot.rotStart >= 360) {
+    if (slot.rotStart >= steps) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
@@ -5557,10 +5560,10 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
 
     const int offset = index * 45;
     for (int point = 0; point < 21; ++point) {
-      const int angle = offset >= 90 ? 2 * (offset + slot.process) : phase + slot.process;
+      const int angle = (offset < 90 ? slot.process + phase : (slot.process + offset) * 2) % steps;
       const float base = slot.maxHeight;
       slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + base;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
@@ -5644,6 +5647,7 @@ void CEffectPrim::PrimWaveSpin() {
 void CEffectPrim::PrimBreathingWave() {
   FollowMaster(*this);
 
+  int steps = 360;
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5696,10 +5700,10 @@ void CEffectPrim::PrimBreathingWave() {
 
     const int offset = index * 45;
     for (int point = 0; point < 21; ++point) {
-      const int angle = offset >= 90 ? 2 * (offset + slot.process) : phase + slot.process;
+      const int angle = (offset < 90 ? slot.process + phase : (slot.process + offset) * 2) % steps;
       const float base = slot.maxHeight;
       slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + base;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
