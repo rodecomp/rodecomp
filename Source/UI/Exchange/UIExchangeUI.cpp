@@ -626,20 +626,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     // GLOBAL: gl_25394
     thread_local EncryptedName<sizeof(titleRightSource), 0x17A9E5BF39AD4737ULL> titleRightName(titleRightSource.data);
     const std::string titleRight(titleRightName.Text());
-    const char titleMiddleSource[] = {
-      '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',
-      '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77', '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x77',
-      '\xCC', '\xE9', '\x01', '\x9C', '\x01', '\x46', '\x05', '\x5C', '\xC8', '\xF4', '\x09', '\xD7', '\x01', '\x4A', '\x07', '\x03'
-    };
+    const char titleMiddleSource[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x03772763F96D9DA5ULL);
     // GLOBAL: gl_25395
     thread_local EncryptedName<sizeof(titleMiddleSource), 0x03772763F96D9DA5ULL> titleMiddleName(titleMiddleSource);
     const std::string titleMiddle(titleMiddleName.Text());
-    const char titleLeftSource[] = {
-      '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
-      '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x7F',
-      '\xEE', '\x67', '\x07', '\x1A', '\x5B', '\x68', '\x03', '\x54', '\xEB', '\x76', '\x0D', '\x0B', '\x17', '\x6B', '\x1C', '\x7B',
-      '\x87'
-    };
+    const char titleLeftSource[] = OBFUSCATE_SOURCE_CHARS(49, "유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x0B7109397F6B1387ULL);
     // GLOBAL: gl_25396
     thread_local EncryptedName<sizeof(titleLeftSource), 0x0B7109397F6B1387ULL> titleLeftName(titleLeftSource);
     const std::string titleLeft(titleLeftName.Text());
@@ -654,9 +645,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    const char titleFontSource[] = {
-      '\x20', '\xDE', '\xFD', '\xCC', '\xCC', '\x3F'
-    };
+    const char titleFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Gulim", 0x13E33FA1A591AB67ULL);
     // GLOBAL: gl_25397
     thread_local EncryptedName<sizeof(titleFontSource), 0x13E33FA1A591AB67ULL> titleFontName(titleFontSource);
     title->SetFont(std::string(titleFontName.Text()));
@@ -677,9 +666,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerText->SetAlign(0, 6);
   {
     CUIStaticText* partner = this->partnerText;
-    const char partnerFontSource[] = {
-      '\x28', '\x08', '\x97', '\x4A', '\x1C', '\x07'
-    };
+    const char partnerFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Gulim", 0xCD8F077123FB7D6FULL);
     // GLOBAL: gl_25398
     thread_local EncryptedName<sizeof(partnerFontSource), 0xCD8F077123FB7D6FULL> partnerFontName(partnerFontSource);
     partner->SetFont(std::string(partnerFontName.Text()));
@@ -696,11 +683,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->backgroundImage->Move(0, 17);
   {
     CUIStaticImage* background = this->backgroundImage;
-    const char backgroundSource[] = {
-      '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xFB',
-      '\x22', '\x5A', '\x3A', '\x44', '\x8A', '\xD6', '\x27', '\xED', '\x26', '\x5B', '\x35', '\x46', '\xB6', '\xDA', '\x15', '\xFC',
-      '\x3B', '\x4A', '\x3B', '\x46', '\xBB', '\xD8', '\x2C', '\xC6', '\x21', '\x4E', '\x61', '\x09', '\xB7', '\xD2', '\x39', '\x99'
-    };
+    const char backgroundSource[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\exchange_bg2.bmp", 0x9949BFD527532943ULL);
     // GLOBAL: gl_25399
     thread_local EncryptedName<sizeof(backgroundSource), 0x9949BFD527532943ULL> backgroundName(backgroundSource);
     background->SetImage(std::string(backgroundName.Text()));
@@ -721,53 +704,32 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->firstList->scrollBar->Move(259, 0);
   this->firstList->scrollBar->step = 30;
   {
-    const char downSource[] = {
-      '\xC9', '\x88', '\xEF', '\x41', '\x7D', '\x93', '\xB8', '\x14', '\xCF', '\xC3', '\xEF', '\x77', '\x00', '\xE7', '\x21', '\xAA',
-      '\x6A', '\x55', '\x40', '\xD7', '\xD1', '\x6D', '\x19', '\xB6', '\x7E', '\x49', '\x01', '\xD9', '\xD0', '\x2D', '\x7D'
-    };
+    const char downSource[] = OBFUSCATE_SOURCE_CHARS(31, "유저인터페이스\\scroll0down.bmp", 0xD97D5DBDBB2F2709ULL);
     // GLOBAL: gl_25400
     thread_local EncryptedName<sizeof(downSource), 0xD97D5DBDBB2F2709ULL> downName(downSource);
     const std::string down(downName.Text());
-    const char upSource[] = {
-      '\xBF', '\xBC', '\x1F', '\x2B', '\x45', '\xA9', '\xBC', '\x20', '\xB9', '\xF7', '\x1F', '\x1D', '\x38', '\xDD', '\x25', '\x9E',
-      '\x1C', '\x61', '\xB0', '\xBD', '\xE9', '\x57', '\x0C', '\x9D', '\x51', '\x71', '\xB2', '\xA1', '\x85'
-    };
+    const char upSource[] = OBFUSCATE_SOURCE_CHARS(29, "유저인터페이스\\scroll0up.bmp", 0xED796785D1DF137FULL);
     // GLOBAL: gl_25401
     thread_local EncryptedName<sizeof(upSource), 0xED796785D1DF137FULL> upName(upSource);
     const std::string up(upName.Text());
     this->firstList->scrollBar->SetButtonImages(up, down);
   }
   {
-    const char backgroundSource[] = {
-      '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xD6',
-      '\xFC', '\xB7', '\x02', '\xC7', '\xBB', '\x19', '\x90', '\xCC', '\xFB', '\xEB', '\x0F', '\xC6', '\xA7', '\x29'
-    };
+    const char backgroundSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\scroll0mid.bmp", 0xA5FD29D7AB6DC59FULL);
     // GLOBAL: gl_25402
     thread_local EncryptedName<sizeof(backgroundSource), 0xA5FD29D7AB6DC59FULL> backgroundName(backgroundSource);
     this->firstList->scrollBar->SetBackground(std::string(backgroundName.Text()));
   }
   {
-    const char thumbBottomSource[] = {
-      '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xAE',
-      '\x82', '\x09', '\x96', '\xBB', '\xB9', '\x23', '\x5B', '\xBC', '\x93', '\x24', '\x9D', '\xB8', '\xA2', '\x7D', '\x17', '\xBF',
-      '\x8C', '\x0B', '\xF9'
-    };
+    const char thumbBottomSource[] = OBFUSCATE_SOURCE_CHARS(35, "유저인터페이스\\scroll0bar_down.bmp", 0xDD3913D5D7F97BE1ULL);
     // GLOBAL: gl_25403
     thread_local EncryptedName<sizeof(thumbBottomSource), 0xDD3913D5D7F97BE1ULL> thumbBottomName(thumbBottomSource);
     const std::string thumbBottom(thumbBottomName.Text());
-    const char thumbMiddleSource[] = {
-      '\x5B', '\xF8', '\xC3', '\x63', '\xA7', '\xCB', '\xC0', '\xC8', '\x5D', '\xB3', '\xC3', '\x55', '\xDA', '\xBF', '\x59', '\x76',
-      '\xF8', '\x25', '\x6C', '\xF5', '\x0B', '\x35', '\x67', '\x64', '\xE9', '\x08', '\x6E', '\xF0', '\x03', '\x2B', '\x67', '\x68',
-      '\xEB', '\x57'
-    };
+    const char thumbMiddleSource[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\scroll0bar_mid.bmp", 0x050505679903579BULL);
     // GLOBAL: gl_25404
     thread_local EncryptedName<sizeof(thumbMiddleSource), 0x050505679903579BULL> thumbMiddleName(thumbMiddleSource);
     const std::string thumbMiddle(thumbMiddleName.Text());
-    const char thumbTopSource[] = {
-      '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x82',
-      '\x92', '\xB5', '\x56', '\x65', '\x7B', '\x49', '\x2D', '\x90', '\x83', '\x98', '\x4C', '\x79', '\x39', '\x1B', '\x22', '\x81',
-      '\xF1'
-    };
+    const char thumbTopSource[] = OBFUSCATE_SOURCE_CHARS(33, "유저인터페이스\\scroll0bar_up.bmp", 0xF14F79170939C7F1ULL);
     // GLOBAL: gl_25405
     thread_local EncryptedName<sizeof(thumbTopSource), 0xF14F79170939C7F1ULL> thumbTopName(thumbTopSource);
     const std::string thumbTop(thumbTopName.Text());
@@ -780,9 +742,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyHighlight->SetSize(150, 18);
   this->ownZenyHighlight->Move(69, 330);
   {
-    const char zenySource[] = {
-      '\x97', '\xF5'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0xBF2B4B31397FF5A7ULL);
     // GLOBAL: gl_25406
     thread_local EncryptedName<sizeof(zenySource), 0xBF2B4B31397FF5A7ULL> zenyName(zenySource);
     this->ownZenyHighlight->SetText(zenyName.Text());
@@ -791,9 +751,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyHighlight->SetAlign(2, 6);
   {
     CUIStaticText* text = this->ownZenyHighlight;
-    const char zenyFontSource[] = {
-      '\xFC', '\xCF', '\x84', '\x56', '\xD7', '\xBF'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x83EFBFBB37EDBDBDULL);
     // GLOBAL: gl_25407
     thread_local EncryptedName<sizeof(zenyFontSource), 0x83EFBFBB37EDBDBDULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -809,9 +767,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyText->SetSize(150, 18);
   this->ownZenyText->Move(70, 330);
   {
-    const char zenySource[] = {
-      '\xBF', '\x99'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0x39FF7FB50DEB998FULL);
     // GLOBAL: gl_25408
     thread_local EncryptedName<sizeof(zenySource), 0x39FF7FB50DEB998FULL> zenyName(zenySource);
     this->ownZenyText->SetText(zenyName.Text());
@@ -820,9 +776,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyText->SetAlign(2, 6);
   {
     CUIStaticText* text = this->ownZenyText;
-    const char zenyFontSource[] = {
-      '\xD6', '\x83', '\x88', '\xBC', '\xBD', '\x93'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x2FE993D1DDE1F197ULL);
     // GLOBAL: gl_25409
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2FE993D1DDE1F197ULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -838,9 +792,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyShadow->SetSize(150, 18);
   this->ownZenyShadow->Move(70, 331);
   {
-    const char zenySource[] = {
-      '\xFD', '\xF1'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0xAD075B8DB599F1CDULL);
     // GLOBAL: gl_25410
     thread_local EncryptedName<sizeof(zenySource), 0xAD075B8DB599F1CDULL> zenyName(zenySource);
     this->ownZenyShadow->SetText(zenyName.Text());
@@ -849,9 +801,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->ownZenyShadow->SetAlign(2, 6);
   {
     CUIStaticText* text = this->ownZenyShadow;
-    const char zenyFontSource[] = {
-      '\x3E', '\x67', '\xE4', '\x70', '\x5B', '\x0F'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x2F8B0F37118D157FULL);
     // GLOBAL: gl_25411
     thread_local EncryptedName<sizeof(zenyFontSource), 0x2F8B0F37118D157FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -892,53 +842,32 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->secondList->scrollBar->Move(259, 0);
   this->secondList->scrollBar->step = 30;
   {
-    const char downSource[] = {
-      '\x3D', '\x16', '\x7B', '\xDB', '\x5F', '\x33', '\x84', '\x84', '\x3B', '\x5D', '\x7B', '\xED', '\x22', '\x47', '\x1D', '\x3A',
-      '\x9E', '\xCB', '\xD4', '\x4D', '\xF3', '\xCD', '\x25', '\x26', '\x8A', '\xD7', '\x95', '\x43', '\xF2', '\x8D', '\x41'
-    };
+    const char downSource[] = OBFUSCATE_SOURCE_CHARS(31, "유저인터페이스\\scroll0down.bmp", 0x4941FD9F21BBB9FDULL);
     // GLOBAL: gl_25412
     thread_local EncryptedName<sizeof(downSource), 0x4941FD9F21BBB9FDULL> downName(downSource);
     const std::string down(downName.Text());
-    const char upSource[] = {
-      '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x46',
-      '\x16', '\xBF', '\x82', '\x31', '\x07', '\x55', '\x90', '\x45', '\x5B', '\xAF', '\x80', '\x2D', '\x6B'
-    };
+    const char upSource[] = OBFUSCATE_SOURCE_CHARS(29, "유저인터페이스\\scroll0up.bmp", 0x35E5656B5DEDCD75ULL);
     // GLOBAL: gl_25413
     thread_local EncryptedName<sizeof(upSource), 0x35E5656B5DEDCD75ULL> upName(upSource);
     const std::string up(upName.Text());
     this->secondList->scrollBar->SetButtonImages(up, down);
   }
   {
-    const char backgroundSource[] = {
-      '\x3D', '\x78', '\x8D', '\x53', '\x75', '\x41', '\x52', '\x2A', '\x3B', '\x33', '\x8D', '\x65', '\x08', '\x35', '\xCB', '\x94',
-      '\x9E', '\xA5', '\x22', '\xC5', '\xD9', '\xBF', '\xFA', '\x8E', '\x99', '\xF9', '\x2F', '\xC4', '\xC5', '\x8F'
-    };
+    const char backgroundSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\scroll0mid.bmp", 0xE7978FB5A94DD7FDULL);
     // GLOBAL: gl_25414
     thread_local EncryptedName<sizeof(backgroundSource), 0xE7978FB5A94DD7FDULL> backgroundName(backgroundSource);
     this->secondList->scrollBar->SetBackground(std::string(backgroundName.Text()));
   }
   {
-    const char thumbBottomSource[] = {
-      '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x02',
-      '\xAA', '\x61', '\x96', '\x1F', '\x95', '\xE9', '\x77', '\x10', '\xBB', '\x4C', '\x9D', '\x1C', '\x8E', '\xB7', '\x3B', '\x13',
-      '\xA4', '\x63', '\xF9'
-    };
+    const char thumbBottomSource[] = OBFUSCATE_SOURCE_CHARS(35, "유저인터페이스\\scroll0bar_down.bmp", 0x7115D9F973F913C9ULL);
     // GLOBAL: gl_25415
     thread_local EncryptedName<sizeof(thumbBottomSource), 0x7115D9F973F913C9ULL> thumbBottomName(thumbBottomSource);
     const std::string thumbBottom(thumbBottomName.Text());
-    const char thumbMiddleSource[] = {
-      '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xB8',
-      '\x00', '\x87', '\x8E', '\x13', '\x57', '\x15', '\x7F', '\xAA', '\x11', '\xAA', '\x8C', '\x16', '\x5F', '\x0B', '\x7F', '\xA6',
-      '\x13', '\xF5'
-    };
+    const char thumbMiddleSource[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\scroll0bar_mid.bmp", 0xCB1D253B7FE1F563ULL);
     // GLOBAL: gl_25416
     thread_local EncryptedName<sizeof(thumbMiddleSource), 0xCB1D253B7FE1F563ULL> thumbMiddleName(thumbMiddleSource);
     const std::string thumbMiddle(thumbMiddleName.Text());
-    const char thumbTopSource[] = {
-      '\xAB', '\x16', '\x07', '\xF5', '\xA7', '\x41', '\x38', '\x7A', '\xAD', '\x5D', '\x07', '\xC3', '\xDA', '\x35', '\xA1', '\xC4',
-      '\x08', '\xCB', '\xA8', '\x63', '\x0B', '\xBF', '\x9F', '\xD6', '\x19', '\xE6', '\xB2', '\x7F', '\x49', '\xED', '\x90', '\xC7',
-      '\x6B'
-    };
+    const char thumbTopSource[] = OBFUSCATE_SOURCE_CHARS(33, "유저인터페이스\\scroll0bar_up.bmp", 0xB7FD8F670FC7B96BULL);
     // GLOBAL: gl_25417
     thread_local EncryptedName<sizeof(thumbTopSource), 0xB7FD8F670FC7B96BULL> thumbTopName(thumbTopSource);
     const std::string thumbTop(thumbTopName.Text());
@@ -951,9 +880,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyHighlight->SetSize(150, 18);
   this->partnerZenyHighlight->Move(349, 330);
   {
-    const char zenySource[] = {
-      '\x2D', '\x05'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0xE55723712993051DULL);
     // GLOBAL: gl_25418
     thread_local EncryptedName<sizeof(zenySource), 0xE55723712993051DULL> zenyName(zenySource);
     this->partnerZenyHighlight->SetText(zenyName.Text());
@@ -962,9 +889,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyHighlight->SetAlign(2, 6);
   {
     CUIStaticText* text = this->partnerZenyHighlight;
-    const char zenyFontSource[] = {
-      '\x0E', '\x15', '\x84', '\xE4', '\x65', '\x37'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x793F370985ED674FULL);
     // GLOBAL: gl_25419
     thread_local EncryptedName<sizeof(zenyFontSource), 0x793F370985ED674FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -980,9 +905,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyText->SetSize(150, 18);
   this->partnerZenyText->Move(350, 330);
   {
-    const char zenySource[] = {
-      '\x4F', '\xD5'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0x0F15B16B5BAFD57FULL);
     // GLOBAL: gl_25420
     thread_local EncryptedName<sizeof(zenySource), 0x0F15B16B5BAFD57FULL> zenyName(zenySource);
     this->partnerZenyText->SetText(zenyName.Text());
@@ -991,9 +914,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyText->SetAlign(2, 6);
   {
     CUIStaticText* text = this->partnerZenyText;
-    const char zenyFontSource[] = {
-      '\x62', '\x83', '\xBE', '\x76', '\xBB', '\x49'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x7DE349D717D7F123ULL);
     // GLOBAL: gl_25421
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7DE349D717D7F123ULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -1009,9 +930,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyShadow->SetSize(150, 18);
   this->partnerZenyShadow->Move(350, 331);
   {
-    const char zenySource[] = {
-      '\xD1', '\x99'
-    };
+    const char zenySource[] = OBFUSCATE_SOURCE_CHARS(2, "0", 0x7321C3814F8799E1ULL);
     // GLOBAL: gl_25422
     thread_local EncryptedName<sizeof(zenySource), 0x7321C3814F8799E1ULL> zenyName(zenySource);
     this->partnerZenyShadow->SetText(zenyName.Text());
@@ -1020,9 +939,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->partnerZenyShadow->SetAlign(2, 6);
   {
     CUIStaticText* text = this->partnerZenyShadow;
-    const char zenyFontSource[] = {
-      '\x0E', '\xD3', '\xA6', '\x54', '\x0F', '\xD7'
-    };
+    const char zenyFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Arial", 0x7941D76335CFA14FULL);
     // GLOBAL: gl_25423
     thread_local EncryptedName<sizeof(zenyFontSource), 0x7941D76335CFA14FULL> zenyFontName(zenyFontSource);
     text->SetFont(std::string(zenyFontName.Text()));
@@ -1041,31 +958,19 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->logCheckBox->disabled = 0;
   this->logCheckBox->Invalidate();
   {
-    const char disabledSource[] = {
-      '\xA5', '\xFA', '\x09', '\x85', '\xCD', '\x21', '\xEA', '\x88', '\xA3', '\xB1', '\x09', '\xB3', '\xB0', '\x55', '\x73', '\x26',
-      '\x0D', '\x30', '\xAA', '\x14', '\x6F', '\x80', '\x57', '\x1A', '\x55', '\x7B', '\xAB', '\x12', '\x7D', '\xEF'
-    };
+    const char disabledSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\checkbox_0.bmp", 0x452FEF0D7FC95565ULL);
     // GLOBAL: gl_25424
     thread_local EncryptedName<sizeof(disabledSource), 0x452FEF0D7FC95565ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const char pressedSource[] = {
-      '\x9D', '\xA2', '\x89', '\x73', '\x61', '\xB3', '\x28', '\x52', '\x9B', '\xE9', '\x89', '\x45', '\x1C', '\xC7', '\xB1', '\xFC',
-      '\x35', '\x68', '\x2A', '\xE2', '\xC3', '\x12', '\x95', '\xC0', '\x6D', '\x23', '\x2B', '\xE4', '\xD1', '\x7D'
-    };
+    const char pressedSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\checkbox_0.bmp", 0x9FED7DA189490D5DULL);
     // GLOBAL: gl_25425
     thread_local EncryptedName<sizeof(pressedSource), 0x9FED7DA189490D5DULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const char hoverSource[] = {
-      '\x73', '\xC8', '\x99', '\x75', '\x1F', '\xE9', '\x5E', '\x4E', '\x75', '\x83', '\x99', '\x43', '\x62', '\x9D', '\xC7', '\xE0',
-      '\xDB', '\x02', '\x3A', '\xE4', '\xBD', '\x48', '\xE3', '\xDC', '\x82', '\x49', '\x3B', '\xE2', '\xAF', '\x27'
-    };
+    const char hoverSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\checkbox_1.bmp", 0x839B27DF8F5967B3ULL);
     // GLOBAL: gl_25426
     thread_local EncryptedName<sizeof(hoverSource), 0x839B27DF8F5967B3ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const char normalSource[] = {
-      '\xAD', '\xB4', '\x67', '\xEB', '\xB7', '\xA1', '\x0E', '\x3E', '\xAB', '\xFF', '\x67', '\xDD', '\xCA', '\xD5', '\x97', '\x90',
-      '\x05', '\x7E', '\xC4', '\x7A', '\x15', '\x00', '\xB3', '\xAC', '\x5D', '\x35', '\xC5', '\x7C', '\x07', '\x6F'
-    };
+    const char normalSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\checkbox_0.bmp", 0xF3CB6F7711A71B6DULL);
     // GLOBAL: gl_25427
     thread_local EncryptedName<sizeof(normalSource), 0xF3CB6F7711A71B6DULL> normalName(normalSource);
     const std::string normal(normalName.Text());
@@ -1083,9 +988,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->screenshotLabel->SetAlign(0, 6);
   {
     CUIStaticText* label = this->screenshotLabel;
-    const char labelFontSource[] = {
-      '\x22', '\x86', '\xBB', '\x34', '\xE0', '\x13'
-    };
+    const char labelFontSource[] = OBFUSCATE_SOURCE_CHARS(6, "Gulim", 0x176F138D5DD7F365ULL);
     // GLOBAL: gl_25428
     thread_local EncryptedName<sizeof(labelFontSource), 0x176F138D5DD7F365ULL> labelFontName(labelFontSource);
     label->SetFont(std::string(labelFontName.Text()));
@@ -1104,31 +1007,19 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->lockButton->disabled = 0;
   this->lockButton->Invalidate();
   {
-    const char disabledSource[] = {
-      '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x2D',
-      '\xC3', '\x5F', '\xB0', '\xAC', '\x68', '\x80', '\xFD', '\x26', '\xC4', '\x1F', '\x8D', '\xAE', '\x73', '\xDF'
-    };
+    const char disabledSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\btn_ok_dis.bmp", 0x4F99DF03C3EF31B7ULL);
     // GLOBAL: gl_25429
     thread_local EncryptedName<sizeof(disabledSource), 0x4F99DF03C3EF31B7ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const char pressedSource[] = {
-      '\x2D', '\xDA', '\xA1', '\xD9', '\x77', '\x2D', '\x94', '\xE0', '\x2B', '\x91', '\xA1', '\xEF', '\x0A', '\x59', '\x0D', '\x4F',
-      '\x99', '\x1B', '\x3E', '\x4C', '\xDC', '\xBC', '\x30', '\x03', '\x8F', '\x18', '\x11', '\x23'
-    };
+    const char pressedSource[] = OBFUSCATE_SOURCE_CHARS(28, "유저인터페이스\\btn_ok_a.bmp", 0x2D51E3B7236175EDULL);
     // GLOBAL: gl_25430
     thread_local EncryptedName<sizeof(pressedSource), 0x2D51E3B7236175EDULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const char hoverSource[] = {
-      '\xD7', '\xB4', '\xED', '\x59', '\x7D', '\x25', '\x84', '\xC2', '\xD1', '\xFF', '\xED', '\x6F', '\x00', '\x51', '\x1D', '\x6D',
-      '\x63', '\x75', '\x72', '\xCC', '\xD6', '\xB4', '\x23', '\x21', '\x75', '\x76', '\x5D', '\xA3'
-    };
+    const char hoverSource[] = OBFUSCATE_SOURCE_CHARS(28, "유저인터페이스\\btn_ok_b.bmp", 0x0F41EBBDA32D1B17ULL);
     // GLOBAL: gl_25431
     thread_local EncryptedName<sizeof(hoverSource), 0x0F41EBBDA32D1B17ULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const char normalSource[] = {
-      '\x01', '\xE8', '\x05', '\xED', '\x21', '\x57', '\x10', '\x36', '\x07', '\xA3', '\x05', '\xDB', '\x5C', '\x23', '\x89', '\x99',
-      '\xB5', '\x29', '\x9A', '\x78', '\x8A', '\xB7', '\xB7', '\x96', '\xB1', '\x47'
-    };
+    const char normalSource[] = OBFUSCATE_SOURCE_CHARS(26, "유저인터페이스\\btn_ok.bmp", 0xFBD599E117C547C1ULL);
     // GLOBAL: gl_25432
     thread_local EncryptedName<sizeof(normalSource), 0xFBD599E117C547C1ULL> normalName(normalSource);
     const std::string normal(normalName.Text());
@@ -1143,34 +1034,19 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->tradeButton->disabled = 0;
   this->tradeButton->Invalidate();
   {
-    const char disabledSource[] = {
-      '\x99', '\x18', '\xC7', '\xE9', '\x05', '\xB3', '\xA6', '\x82', '\x9F', '\x53', '\xC7', '\xDF', '\x78', '\xC7', '\x3F', '\x2D',
-      '\x2D', '\xD9', '\x58', '\x76', '\xBD', '\x1E', '\x0B', '\x2E', '\x37', '\xD0', '\x62', '\x4C', '\xA1', '\x14', '\x10', '\x61',
-      '\x3B', '\xDA', '\x77', '\x13'
-    };
+    const char disabledSource[] = OBFUSCATE_SOURCE_CHARS(36, "유저인터페이스\\btn_exchange_dis.bmp", 0x4F637DC51307B759ULL);
     // GLOBAL: gl_25433
     thread_local EncryptedName<sizeof(disabledSource), 0x4F637DC51307B759ULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const char pressedSource[] = {
-      '\xE5', '\xDE', '\x6F', '\x31', '\xCD', '\x3D', '\xE8', '\x28', '\xE3', '\x95', '\x6F', '\x07', '\xB0', '\x49', '\x71', '\x87',
-      '\x51', '\x1F', '\xF0', '\xAE', '\x75', '\x90', '\x45', '\x84', '\x4B', '\x16', '\xCA', '\x94', '\x6C', '\xDD', '\x4F', '\x88',
-      '\x55', '\x71'
-    };
+    const char pressedSource[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\btn_exchange_a.bmp", 0xE52DF30DCBAF7125ULL);
     // GLOBAL: gl_25434
     thread_local EncryptedName<sizeof(pressedSource), 0xE52DF30DCBAF7125ULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const char hoverSource[] = {
-      '\x9F', '\x9A', '\x6F', '\x6F', '\x5D', '\x47', '\x36', '\x02', '\x99', '\xD1', '\x6F', '\x59', '\x20', '\x33', '\xAF', '\xAD',
-      '\x2B', '\x5B', '\xF0', '\xF0', '\xE5', '\xEA', '\x9B', '\xAE', '\x31', '\x52', '\xCA', '\xCA', '\xFF', '\xA7', '\x91', '\xA2',
-      '\x2F', '\x35'
-    };
+    const char hoverSource[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\btn_exchange_b.bmp", 0xCFF3899D95AF355FULL);
     // GLOBAL: gl_25435
     thread_local EncryptedName<sizeof(hoverSource), 0xCFF3899D95AF355FULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const char normalSource[] = {
-      '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xF3',
-      '\x83', '\xA7', '\x3C', '\x0C', '\x05', '\xFA', '\x19', '\xF0', '\x99', '\xAE', '\x06', '\x47', '\x1F', '\xF4', '\x01', '\x91'
-    };
+    const char normalSource[] = OBFUSCATE_SOURCE_CHARS(32, "유저인터페이스\\btn_exchange.bmp", 0x9171997D6963C9F7ULL);
     // GLOBAL: gl_25436
     thread_local EncryptedName<sizeof(normalSource), 0x9171997D6963C9F7ULL> normalName(normalSource);
     const std::string normal(normalName.Text());
@@ -1185,31 +1061,19 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->cancelButton->disabled = 0;
   this->cancelButton->Invalidate();
   {
-    const char disabledSource[] = {
-      '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x51',
-      '\xB9', '\x6D', '\x92', '\x18', '\xF6', '\x55', '\x70', '\x56', '\xA1', '\x2D', '\xAF', '\x16', '\xE7', '\x3B'
-    };
+    const char disabledSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\btn_cancel.bmp", 0x33133B977BCD03CDULL);
     // GLOBAL: gl_25437
     thread_local EncryptedName<sizeof(disabledSource), 0x33133B977BCD03CDULL> disabledName(disabledSource);
     const std::string disabled(disabledName.Text());
-    const char pressedSource[] = {
-      '\x37', '\xBC', '\xEB', '\x55', '\x31', '\xC1', '\xD8', '\x40', '\x31', '\xF7', '\xEB', '\x63', '\x4C', '\xB5', '\x41', '\xEF',
-      '\x83', '\x7D', '\x74', '\xCC', '\x90', '\x61', '\x7E', '\xE8', '\x9B', '\x4C', '\x4A', '\x81', '\x93', '\x62', '\x6D', '\x8D'
-    };
+    const char pressedSource[] = OBFUSCATE_SOURCE_CHARS(32, "유저인터페이스\\btn_cancel_a.bmp", 0x8D1D0FF1AF2B13F7ULL);
     // GLOBAL: gl_25438
     thread_local EncryptedName<sizeof(pressedSource), 0x8D1D0FF1AF2B13F7ULL> pressedName(pressedSource);
     const std::string pressed(pressedName.Text());
-    const char hoverSource[] = {
-      '\x4D', '\x14', '\x0F', '\x81', '\x51', '\x69', '\x5A', '\x7E', '\x4B', '\x5F', '\x0F', '\xB7', '\x2C', '\x1D', '\xC3', '\xD1',
-      '\xF9', '\xD5', '\x90', '\x18', '\xF0', '\xC9', '\xFC', '\xD6', '\xE1', '\xE4', '\xAD', '\x55', '\xF3', '\xCA', '\xEF', '\xB3'
-    };
+    const char hoverSource[] = OBFUSCATE_SOURCE_CHARS(32, "유저인터페이스\\btn_cancel_b.bmp", 0xB39FA7917BCFBB8DULL);
     // GLOBAL: gl_25439
     thread_local EncryptedName<sizeof(hoverSource), 0xB39FA7917BCFBB8DULL> hoverName(hoverSource);
     const std::string hover(hoverName.Text());
-    const char normalSource[] = {
-      '\x6B', '\x6E', '\x8D', '\xC3', '\xA7', '\xBB', '\x0E', '\xE0', '\x6D', '\x25', '\x8D', '\xF5', '\xDA', '\xCF', '\x97', '\x4F',
-      '\xDF', '\xAF', '\x12', '\x5A', '\x06', '\x1B', '\xA8', '\x48', '\xC7', '\xEF', '\x2F', '\x54', '\x17', '\x75'
-    };
+    const char normalSource[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\btn_cancel.bmp", 0x2DCB7567394DC1ABULL);
     // GLOBAL: gl_25440
     thread_local EncryptedName<sizeof(normalSource), 0x2DCB7567394DC1ABULL> normalName(normalSource);
     const std::string normal(normalName.Text());

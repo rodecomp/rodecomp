@@ -19,6 +19,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 #include <algorithm>
 #include <cstdint>
@@ -720,33 +721,19 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->title->Move(0, 0);
   this->title->SetImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x31', '\x68', '\xF9', '\xF3', '\xD7', '\xB7', '\x8A', '\x3C', '\x37', '\x23', '\xF9', '\xC5', '\xAA', '\xC3', '\x13', '\x93',
-        '\x90', '\xB4', '\x50', '\x6A', '\x48', '\x10', '\x21', '\x85', '\x94', '\xB5', '\x5F', '\x68', '\x74', '\x1C', '\x13', '\x85',
-        '\x98', '\xB3', '\x55', '\x6C', '\x75', '\x18', '\x3D', '\xAE', '\x9D', '\xA2', '\x5F', '\x7D', '\x39', '\x1B', '\x22', '\x81',
-        '\xF1'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(49, "유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xF14F79170939C7F1ULL);
       constexpr EncryptedSource<49> source(bytes);
       thread_local EncryptedName<49, 0xF14F79170939C7F1ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x5F', '\x6A', '\xAD', '\x51', '\x17', '\xE7', '\x38', '\x68', '\x59', '\x21', '\xAD', '\x67', '\x6A', '\x93', '\xA1', '\xC7',
-        '\xFE', '\xB6', '\x04', '\xC8', '\x88', '\x40', '\x93', '\xD1', '\xFA', '\xB7', '\x0B', '\xCA', '\xB4', '\x4C', '\xA1', '\xD1',
-        '\xF6', '\xB1', '\x01', '\xCE', '\xB5', '\x48', '\x8F', '\xFA', '\xF2', '\xAC', '\x09', '\x85', '\xB5', '\x44', '\x8D', '\xA5'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xA5FD29D7AB6DC59FULL);
       constexpr EncryptedSource<48> source(bytes);
       thread_local EncryptedName<48, 0xA5FD29D7AB6DC59FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x21', '\xD4', '\x39', '\x2D', '\x15', '\xDD', '\xFC', '\x10', '\x27', '\x9F', '\x39', '\x1B', '\x68', '\xA9', '\x65', '\xBF',
-        '\x80', '\x08', '\x90', '\xB4', '\x8A', '\x7A', '\x57', '\xA9', '\x84', '\x09', '\x9F', '\xB6', '\xB6', '\x76', '\x65', '\xA9',
-        '\x88', '\x0F', '\x95', '\xB2', '\xB7', '\x72', '\x4B', '\x82', '\x93', '\x12', '\x9E', '\xBF', '\xA1', '\x3D', '\x5B', '\xB0',
-        '\x91', '\x7B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(50, "유저인터페이스\\basic_interface\\titlebar_right.bmp", 0xDD3913D5D7F97BE1ULL);
       constexpr EncryptedSource<50> source(bytes);
       thread_local EncryptedName<50, 0xDD3913D5D7F97BE1ULL> name(source);
       return name.Text();
@@ -762,7 +749,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   titleText->SetAlign(0, 6);
   titleText->SetFont(
     std::string([] {
-      constexpr std::uint8_t bytes[] = {0xDC, 0x22, 0x6F, 0xF0, 0x0A, 0x05};
+      constexpr std::uint8_t bytes[] = OBFUSCATE_SOURCE_BYTES(6, "Gulim", 0x050505679903579BULL);
       constexpr EncryptedSource<6> source(bytes);
       thread_local EncryptedName<6, 0x050505679903579BULL> name(source);
       return name.Text();
@@ -784,41 +771,25 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   systemButton->Invalidate();
   systemButton->SetImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x7D', '\x12', '\x2D', '\xCD', '\x7B', '\x71', '\x2A', '\x4E', '\x7B', '\x59', '\x2D', '\xFB', '\x06', '\x05', '\xB3', '\xE1',
-        '\xDC', '\xCE', '\x84', '\x54', '\xE4', '\xD6', '\x81', '\xF7', '\xD8', '\xCF', '\x8B', '\x56', '\xD8', '\xDA', '\xB3', '\xF0',
-        '\xC4', '\xCE', '\xB2', '\x55', '\xDA', '\xCC', '\x8A', '\xDC', '\xD2', '\xDB', '\x8B', '\x19', '\xD9', '\xD2', '\x9F', '\x83'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x83EFBFBB37EDBDBDULL);
       constexpr EncryptedSource<48> source(bytes);
       thread_local EncryptedName<48, 0x83EFBFBB37EDBDBDULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x67', '\x5A', '\xBF', '\xC3', '\xF1', '\x85', '\xEE', '\x72', '\x61', '\x11', '\xBF', '\xF5', '\x8C', '\xF1', '\x77', '\xDD',
-        '\xC6', '\x86', '\x16', '\x5A', '\x6E', '\x22', '\x45', '\xCB', '\xC2', '\x87', '\x19', '\x58', '\x52', '\x2E', '\x77', '\xCC',
-        '\xDE', '\x86', '\x20', '\x5B', '\x50', '\x38', '\x4E', '\xE0', '\xC8', '\x9B', '\x51', '\x5B', '\x5C', '\x3B', '\x2B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(47, "유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xBF2B4B31397FF5A7ULL);
       constexpr EncryptedSource<47> source(bytes);
       thread_local EncryptedName<47, 0xBF2B4B31397FF5A7ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x09', '\x5A', '\x9F', '\x71', '\x4F', '\x1B', '\x7E', '\xEE', '\x0F', '\x11', '\x9F', '\x47', '\x32', '\x6F', '\xE7', '\x41',
-        '\xA8', '\x86', '\x36', '\xE8', '\xD0', '\xBC', '\xD5', '\x57', '\xAC', '\x87', '\x39', '\xEA', '\xEC', '\xB0', '\xE7', '\x50',
-        '\xB0', '\x86', '\x00', '\xE9', '\xEE', '\xA6', '\xDE', '\x7C', '\xA6', '\x9B', '\x71', '\xE9', '\xE2', '\xA5', '\xBB'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(47, "유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x23BBD58F8B5FF5C9ULL);
       constexpr EncryptedSource<47> source(bytes);
       thread_local EncryptedName<47, 0x23BBD58F8B5FF5C9ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xAD', '\x14', '\x55', '\xD7', '\x53', '\x35', '\xD2', '\x08', '\xAB', '\x5F', '\x55', '\xE1', '\x2E', '\x41', '\x4B', '\xA7',
-        '\x0C', '\xC8', '\xFC', '\x4E', '\xCC', '\x92', '\x79', '\xB1', '\x08', '\xC9', '\xF3', '\x4C', '\xF0', '\x9E', '\x4B', '\xB6',
-        '\x14', '\xC8', '\xCA', '\x4F', '\xF2', '\x88', '\x72', '\x9A', '\x02', '\xDD', '\xF3', '\x03', '\xF1', '\x96', '\x67', '\xC5'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xC517FB932D95BB6DULL);
       constexpr EncryptedSource<48> source(bytes);
       thread_local EncryptedName<48, 0xC517FB932D95BB6DULL> name(source);
       return name.Text();
@@ -834,43 +805,25 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   closeButton->Invalidate();
   closeButton->SetImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x65', '\x32', '\xAD', '\x03', '\xA3', '\xE9', '\xB2', '\xCE', '\x63', '\x79', '\xAD', '\x35', '\xDE', '\x9D', '\x2B', '\x61',
-        '\xC4', '\xEE', '\x04', '\x9A', '\x3C', '\x4E', '\x19', '\x77', '\xC0', '\xEF', '\x0B', '\x98', '\x00', '\x42', '\x2B', '\x70',
-        '\xDC', '\xEE', '\x32', '\x9A', '\x0F', '\x48', '\x04', '\x66', '\xFA', '\xF2', '\x0B', '\x9F', '\x4D', '\x45', '\x1A', '\x73',
-        '\xA5'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(49, "유저인터페이스\\basic_interface\\sys_close_off.bmp", 0x03772763F96D9DA5ULL);
       constexpr EncryptedSource<49> source(bytes);
       thread_local EncryptedName<49, 0x03772763F96D9DA5ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x47', '\xBC', '\xAB', '\x85', '\xF9', '\xC7', '\xB4', '\xC6', '\x41', '\xF7', '\xAB', '\xB3', '\x84', '\xB3', '\x2D', '\x69',
-        '\xE6', '\x60', '\x02', '\x1C', '\x66', '\x60', '\x1F', '\x7F', '\xE2', '\x61', '\x0D', '\x1E', '\x5A', '\x6C', '\x2D', '\x78',
-        '\xFE', '\x60', '\x34', '\x1C', '\x55', '\x66', '\x02', '\x6E', '\xD8', '\x7C', '\x05', '\x51', '\x5B', '\x64', '\x01', '\x0B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x0B7109397F6B1387ULL);
       constexpr EncryptedSource<48> source(bytes);
       thread_local EncryptedName<48, 0x0B7109397F6B1387ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xA7', '\x04', '\x51', '\x5F', '\x61', '\xF1', '\x26', '\xDE', '\xA1', '\x4F', '\x51', '\x69', '\x1C', '\x85', '\xBF', '\x71',
-        '\x06', '\xD8', '\xF8', '\xC6', '\xFE', '\x56', '\x8D', '\x67', '\x02', '\xD9', '\xF7', '\xC4', '\xC2', '\x5A', '\xBF', '\x60',
-        '\x1E', '\xD8', '\xCE', '\xC6', '\xCD', '\x50', '\x90', '\x76', '\x38', '\xC4', '\xFF', '\x8B', '\xC3', '\x52', '\x93', '\x13'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(48, "유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x13E33FA1A591AB67ULL);
       constexpr EncryptedSource<48> source(bytes);
       thread_local EncryptedName<48, 0x13E33FA1A591AB67ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xF7', '\xE8', '\x6D', '\xC3', '\x7F', '\x2B', '\x6C', '\xDA', '\xF1', '\xA3', '\x6D', '\xF5', '\x02', '\x5F', '\xF5', '\x75',
-        '\x56', '\x34', '\xC4', '\x5A', '\xE0', '\x8C', '\xC7', '\x63', '\x52', '\x35', '\xCB', '\x58', '\xDC', '\x80', '\xF5', '\x64',
-        '\x4E', '\x34', '\xF2', '\x5A', '\xD3', '\x8A', '\xDA', '\x72', '\x68', '\x28', '\xCB', '\x5F', '\x91', '\x87', '\xC4', '\x67',
-        '\x37'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(49, "유저인터페이스\\basic_interface\\sys_close_off.bmp", 0x17A9E5BF39AD4737ULL);
       constexpr EncryptedSource<49> source(bytes);
       thread_local EncryptedName<49, 0x17A9E5BF39AD4737ULL> name(source);
       return name.Text();
@@ -887,41 +840,25 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->tabList->SetBinder([this](SelectPackageItemBox::CUITabInfo* tab, const SelectPackageItemBox::CTabInfoData& data) { this->BindTab(tab, data); });
   this->tabList->SetImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x83', '\x86', '\x93', '\xDD', '\x15', '\x71', '\x8C', '\x54', '\x85', '\xCD', '\x93', '\xEB', '\x68', '\x05', '\x15', '\xEA',
-        '\x26', '\x45', '\x36', '\x44', '\xA1', '\xCF', '\x28', '\xFA', '\x28', '\x48', '\x34', '\x42', '\x89', '\xDD', '\x3D', '\xF7',
-        '\x1C', '\x5A', '\x36', '\x53', '\x8A', '\xD3', '\x20', '\xEA', '\x37', '\x07', '\x31', '\x4A', '\xA5', '\xBF'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(46, "유저인터페이스\\selectpackage\\btn_set_list.bmp", 0x9949BFD527532943ULL);
       constexpr EncryptedSource<46> source(bytes);
       thread_local EncryptedName<46, 0x9949BFD527532943ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xAF', '\xD2', '\x3B', '\xD9', '\xB1', '\xC9', '\x4A', '\x00', '\xA9', '\x99', '\x3B', '\xEF', '\xCC', '\xBD', '\xD3', '\xBE',
-        '\x0A', '\x11', '\x9E', '\x40', '\x05', '\x77', '\xEE', '\xAE', '\x04', '\x1C', '\x9C', '\x46', '\x2D', '\x65', '\xFB', '\xA3',
-        '\x30', '\x0E', '\x9E', '\x57', '\x2E', '\x77', '\xFD', '\xA8', '\x1C', '\x0E', '\xD5', '\x41', '\x1C', '\x77', '\x8F'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(47, "유저인터페이스\\selectpackage\\btn_set_press.bmp", 0xCD8F077123FB7D6FULL);
       constexpr EncryptedSource<47> source(bytes);
       thread_local EncryptedName<47, 0xCD8F077123FB7D6FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xA9', '\xB0', '\xB7', '\xAF', '\x5D', '\x5B', '\xBE', '\xAE', '\xAF', '\xFB', '\xB7', '\x99', '\x20', '\x2F', '\x27', '\x10',
-        '\x0C', '\x73', '\x12', '\x36', '\xE9', '\xE5', '\x1A', '\x00', '\x02', '\x7E', '\x10', '\x30', '\xC1', '\xF7', '\x0F', '\x0D',
-        '\x36', '\x6C', '\x12', '\x21', '\xC2', '\xF9', '\x12', '\x10', '\x1D', '\x31', '\x15', '\x38', '\xED', '\x95'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(46, "유저인터페이스\\selectpackage\\btn_set_list.bmp", 0x637B959D55771F69ULL);
       constexpr EncryptedSource<46> source(bytes);
       thread_local EncryptedName<46, 0x637B959D55771F69ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x91', '\x24', '\x0D', '\xFB', '\x7B', '\xF3', '\x84', '\x1C', '\x97', '\x6F', '\x0D', '\xCD', '\x06', '\x87', '\x1D', '\xA2',
-        '\x34', '\xE7', '\xA8', '\x62', '\xCF', '\x4D', '\x20', '\xB2', '\x3A', '\xEA', '\xAA', '\x64', '\xE7', '\x5F', '\x35', '\xBF',
-        '\x0E', '\xF8', '\xA8', '\x75', '\xE4', '\x51', '\x28', '\xA2', '\x25', '\xA5', '\xAF', '\x6C', '\xCB', '\x3D'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(46, "유저인터페이스\\selectpackage\\btn_set_list.bmp", 0xD1413DBB01CD8B51ULL);
       constexpr EncryptedSource<46> source(bytes);
       thread_local EncryptedName<46, 0xD1413DBB01CD8B51ULL> name(source);
       return name.Text();
@@ -934,19 +871,13 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->tabList->scrollBar->step = 34;
   this->tabList->SetScrollBarButtonImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x79', '\xAA', '\xB7', '\xB5', '\xCB', '\xD3', '\x4A', '\xB8', '\x7F', '\xE1', '\xB7', '\x83', '\xB6', '\xA7', '\xD3', '\x06',
-        '\xDA', '\x77', '\x18', '\x23', '\x67', '\x2D', '\xFA', '\x05', '\x97', '\x67', '\x1A', '\x3F', '\x0B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(29, "유저인터페이스\\scroll0up.bmp", 0x758F1D0B4F7705B9ULL);
       constexpr EncryptedSource<29> source(bytes);
       thread_local EncryptedName<29, 0x758F1D0B4F7705B9ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xA5', '\xB6', '\x85', '\xF3', '\xED', '\xED', '\xDE', '\x44', '\xA3', '\xFD', '\x85', '\xC5', '\x90', '\x99', '\x47', '\xFA',
-        '\x06', '\x6B', '\x2A', '\x65', '\x41', '\x13', '\x7F', '\xE6', '\x12', '\x77', '\x6B', '\x6B', '\x40', '\x53', '\x1B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(31, "유저인터페이스\\scroll0down.bmp", 0x891B232D09451965ULL);
       constexpr EncryptedSource<31> source(bytes);
       thread_local EncryptedName<31, 0x891B232D09451965ULL> name(source);
       return name.Text();
@@ -954,10 +885,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   );
   this->tabList->SetScrollBarBackground(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x55', '\x20', '\x21', '\xF7', '\x9D', '\xC7', '\xA4', '\x3C', '\x53', '\x6B', '\x21', '\xC1', '\xE0', '\xB3', '\x3D', '\x82',
-        '\xF6', '\xFD', '\x8E', '\x61', '\x31', '\x39', '\x0C', '\x98', '\xF1', '\xA1', '\x83', '\x60', '\x2D', '\x09'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\scroll0mid.bmp", 0xF161095D0DE18F95ULL);
       constexpr EncryptedSource<30> source(bytes);
       thread_local EncryptedName<30, 0xF161095D0DE18F95ULL> name(source);
       return name.Text();
@@ -965,31 +893,19 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   );
   this->tabList->SetScrollBarThumbImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x2F', '\xDE', '\x1F', '\xE9', '\xAD', '\x81', '\x02', '\x20', '\x29', '\x95', '\x1F', '\xDF', '\xD0', '\xF5', '\x9B', '\x9E',
-        '\x8C', '\x03', '\xB0', '\x7F', '\x01', '\x7F', '\xA5', '\x8C', '\x9D', '\x2E', '\xAA', '\x63', '\x43', '\x2D', '\xAA', '\x9D',
-        '\xEF'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(33, "유저인터페이스\\scroll0bar_up.bmp", 0xEDC74F6D13DF71EFULL);
       constexpr EncryptedSource<33> source(bytes);
       thread_local EncryptedName<33, 0xEDC74F6D13DF71EFULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x4F', '\x12', '\x2F', '\x7D', '\xBD', '\x0B', '\x68', '\xB8', '\x49', '\x59', '\x2F', '\x4B', '\xC0', '\x7F', '\xF1', '\x06',
-        '\xEC', '\xCF', '\x80', '\xEB', '\x11', '\xF5', '\xCF', '\x14', '\xFD', '\xE2', '\x82', '\xEE', '\x19', '\xEB', '\xCF', '\x18',
-        '\xFF', '\xBD'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\scroll0bar_mid.bmp", 0x75ADC57D87EFBD8FULL);
       constexpr EncryptedSource<34> source(bytes);
       thread_local EncryptedName<34, 0x75ADC57D87EFBD8FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x19', '\x56', '\x21', '\x19', '\xAD', '\xDB', '\x68', '\xE6', '\x1F', '\x1D', '\x21', '\x2F', '\xD0', '\xAF', '\xF1', '\x58',
-        '\xBA', '\x8B', '\x8E', '\x8F', '\x01', '\x25', '\xCF', '\x4A', '\xAB', '\xA6', '\x85', '\x8C', '\x1A', '\x7B', '\x83', '\x49',
-        '\xB4', '\x89', '\xE1'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(35, "유저인터페이스\\scroll0bar_down.bmp", 0x2BAD156DE3E1F9D9ULL);
       constexpr EncryptedSource<35> source(bytes);
       thread_local EncryptedName<35, 0x2BAD156DE3E1F9D9ULL> name(source);
       return name.Text();
@@ -1007,41 +923,25 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->itemList->SetBinder([this](SelectPackageItemBox::CUIItemInfo* item, const ITEM_INFO& data) { this->BindItem(item, data); });
   this->itemList->SetImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x11', '\xF4', '\x57', '\x1F', '\xF9', '\x49', '\x2E', '\xE2', '\x17', '\xBF', '\x57', '\x29', '\x84', '\x3D', '\xB7', '\x5C',
-        '\xB4', '\x37', '\xF2', '\x86', '\x4D', '\xF7', '\x8A', '\x4C', '\xBA', '\x3A', '\xF0', '\x80', '\x65', '\xEE', '\x9F', '\x4A',
-        '\xBC', '\x04', '\xFB', '\x8C', '\x4A', '\xF3', '\xC5', '\x4D', '\xBC', '\x2B', '\x97'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(43, "유저인터페이스\\selectpackage\\item_list.bmp", 0x2FEB8739E5975BD1ULL);
       constexpr EncryptedSource<43> source(bytes);
       thread_local EncryptedName<43, 0x2FEB8739E5975BD1ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x0D', '\xAC', '\x0D', '\x81', '\x57', '\xF5', '\xD6', '\xFE', '\x0B', '\xE7', '\x0D', '\xB7', '\x2A', '\x81', '\x4F', '\x40',
-        '\xA8', '\x6F', '\xA8', '\x18', '\xE3', '\x4B', '\x72', '\x50', '\xA6', '\x62', '\xAA', '\x1E', '\xCB', '\x52', '\x67', '\x56',
-        '\xA0', '\x5C', '\xA1', '\x12', '\xE4', '\x4F', '\x3D', '\x51', '\xA0', '\x73', '\xCD'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(43, "유저인터페이스\\selectpackage\\item_list.bmp", 0x33133B977BCD03CDULL);
       constexpr EncryptedSource<43> source(bytes);
       thread_local EncryptedName<43, 0x33133B977BCD03CDULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xEF', '\x78', '\x85', '\xDF', '\xF9', '\x65', '\xE8', '\x6C', '\xE9', '\x33', '\x85', '\xE9', '\x84', '\x11', '\x71', '\xD2',
-        '\x4A', '\xBB', '\x20', '\x46', '\x4D', '\xDB', '\x4C', '\xC2', '\x44', '\xB6', '\x22', '\x40', '\x65', '\xC2', '\x59', '\xC4',
-        '\x42', '\x88', '\x29', '\x4C', '\x4A', '\xDF', '\x03', '\xC3', '\x42', '\xA7', '\x45'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(43, "유저인터페이스\\selectpackage\\item_list.bmp", 0xA12DAB392545D72FULL);
       constexpr EncryptedSource<43> source(bytes);
       thread_local EncryptedName<43, 0xA12DAB392545D72FULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xB5', '\x94', '\xC3', '\xD5', '\xD3', '\x0F', '\x64', '\xA6', '\xB3', '\xDF', '\xC3', '\xE3', '\xAE', '\x7B', '\xFD', '\x18',
-        '\x10', '\x57', '\x66', '\x4C', '\x67', '\xB1', '\xC0', '\x08', '\x1E', '\x5A', '\x64', '\x4A', '\x4F', '\xA8', '\xD5', '\x0E',
-        '\x18', '\x64', '\x6F', '\x46', '\x60', '\xB5', '\x8F', '\x09', '\x18', '\x4B', '\x03'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(43, "유저인터페이스\\selectpackage\\item_list.bmp", 0x6BA1C1132F033B75ULL);
       constexpr EncryptedSource<43> source(bytes);
       thread_local EncryptedName<43, 0x6BA1C1132F033B75ULL> name(source);
       return name.Text();
@@ -1054,19 +954,13 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->itemList->scrollBar->step = 34;
   this->itemList->SetScrollBarButtonImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x05', '\x82', '\xEB', '\xC5', '\x49', '\xD3', '\xA8', '\x22', '\x03', '\xC9', '\xEB', '\xF3', '\x34', '\xA7', '\x31', '\x9C',
-        '\xA6', '\x5F', '\x44', '\x53', '\xE5', '\x2D', '\x18', '\x9F', '\xEB', '\x4F', '\x46', '\x4F', '\x89'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(29, "유저인터페이스\\scroll0up.bmp", 0xEF6D1D893F2B2DC5ULL);
       constexpr EncryptedSource<29> source(bytes);
       thread_local EncryptedName<29, 0xEF6D1D893F2B2DC5ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\xDD', '\x68', '\x8B', '\x4F', '\x1D', '\xB9', '\x8C', '\xEE', '\xDB', '\x23', '\x8B', '\x79', '\x60', '\xCD', '\x15', '\x50',
-        '\x7E', '\xB5', '\x24', '\xD9', '\xB1', '\x47', '\x2D', '\x4C', '\x6A', '\xA9', '\x65', '\xD7', '\xB0', '\x07', '\x49'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(31, "유저인터페이스\\scroll0down.bmp", 0x234977DDB54BC71DULL);
       constexpr EncryptedSource<31> source(bytes);
       thread_local EncryptedName<31, 0x234977DDB54BC71DULL> name(source);
       return name.Text();
@@ -1074,10 +968,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   );
   this->itemList->SetScrollBarBackground(
     std::string([] {
-      constexpr char bytes[] = {
-        '\xB7', '\x38', '\x47', '\xE7', '\xE3', '\x9D', '\x24', '\xA2', '\xB1', '\x73', '\x47', '\xD1', '\x9E', '\xE9', '\xBD', '\x1C',
-        '\x14', '\xE5', '\xE8', '\x71', '\x4F', '\x63', '\x8C', '\x06', '\x13', '\xB9', '\xE5', '\x70', '\x53', '\x53'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(30, "유저인터페이스\\scroll0mid.bmp", 0x6FE153231D879777ULL);
       constexpr EncryptedSource<30> source(bytes);
       thread_local EncryptedName<30, 0x6FE153231D879777ULL> name(source);
       return name.Text();
@@ -1085,31 +976,19 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   );
   this->itemList->SetScrollBarThumbImages(
     std::string([] {
-      constexpr char bytes[] = {
-        '\x9B', '\xFC', '\x9F', '\x27', '\x47', '\x51', '\x66', '\xF4', '\x9D', '\xB7', '\x9F', '\x11', '\x3A', '\x25', '\xFF', '\x4A',
-        '\x38', '\x21', '\x30', '\xB1', '\xEB', '\xAF', '\xC1', '\x58', '\x29', '\x0C', '\x2A', '\xAD', '\xA9', '\xFD', '\xCE', '\x49',
-        '\x5B'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(33, "유저인터페이스\\scroll0bar_up.bmp", 0x39A39F87DD5F535BULL);
       constexpr EncryptedSource<33> source(bytes);
       thread_local EncryptedName<33, 0x39A39F87DD5F535BULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x37', '\x66', '\xA3', '\x93', '\xBD', '\x57', '\xB4', '\x5C', '\x31', '\x2D', '\xA3', '\xA5', '\xC0', '\x23', '\x2D', '\xE2',
-        '\x94', '\xBB', '\x0C', '\x05', '\x11', '\xA9', '\x13', '\xF0', '\x85', '\x96', '\x0E', '\x00', '\x19', '\xB7', '\x13', '\xFC',
-        '\x87', '\xC9'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(34, "유저인터페이스\\scroll0bar_mid.bmp", 0x9171997D6963C9F7ULL);
       constexpr EncryptedSource<34> source(bytes);
       thread_local EncryptedName<34, 0x9171997D6963C9F7ULL> name(source);
       return name.Text();
     }()),
     std::string([] {
-      constexpr char bytes[] = {
-        '\x77', '\x9E', '\x2F', '\x39', '\xC3', '\x11', '\x5C', '\x82', '\x71', '\xD5', '\x2F', '\x0F', '\xBE', '\x65', '\xC5', '\x3C',
-        '\xD4', '\x43', '\x80', '\xAF', '\x6F', '\xEF', '\xFB', '\x2E', '\xC5', '\x6E', '\x8B', '\xAC', '\x74', '\xB1', '\xB7', '\x2D',
-        '\xDA', '\x41', '\xEF'
-      };
+      constexpr char bytes[] = OBFUSCATE_SOURCE_CHARS(35, "유저인터페이스\\scroll0bar_down.bmp", 0x4F99DF03C3EF31B7ULL);
       constexpr EncryptedSource<35> source(bytes);
       thread_local EncryptedName<35, 0x4F99DF03C3EF31B7ULL> name(source);
       return name.Text();
@@ -1126,7 +1005,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->okButton->Invalidate();
   this->okButton->SetText(
     std::string([] {
-      constexpr std::uint8_t bytes[] = {0xED, 0xDF, 0x6F, 0x05, 0x0D};
+      constexpr std::uint8_t bytes[] = OBFUSCATE_SOURCE_BYTES(5, "확인", 0xE52DF30DCBAF7125ULL);
       constexpr EncryptedSource<5> source(bytes);
       thread_local EncryptedName<5, 0xE52DF30DCBAF7125ULL> name(source);
       return name.Text();
@@ -1143,7 +1022,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->cancelButton->Invalidate();
   this->cancelButton->SetText(
     std::string([] {
-      constexpr std::uint8_t bytes[] = {0xEB, 0xE8, 0x1E, 0x77, 0x9D};
+      constexpr std::uint8_t bytes[] = OBFUSCATE_SOURCE_BYTES(5, "닫기", 0xCFF3899D95AF355FULL);
       constexpr EncryptedSource<5> source(bytes);
       thread_local EncryptedName<5, 0xCFF3899D95AF355FULL> name(source);
       return name.Text();
