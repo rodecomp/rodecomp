@@ -382,7 +382,9 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     this->m_checkedDays = argument1 / 10;
     this->m_blinking = argument1 == this->m_checkedDays * 10;
-    this->m_blinking = this->m_checkedDays < this->m_rewardCount && this->m_blinking;
+    if (this->m_rewardCount <= this->m_checkedDays) {
+      this->m_blinking = false;
+    }
     this->Invalidate();
     break;
   case UM_COMMAND:
