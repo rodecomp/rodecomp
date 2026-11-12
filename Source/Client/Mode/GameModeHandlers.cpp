@@ -1845,16 +1845,14 @@ void CGameMode::ReceiveRuneSetGrades(const unsigned char* data) {
     return;
   }
 
-  unsigned int count = packet->count;
-  const unsigned int size = packet->length - 9;
+  int count = packet->count;
+  const int size = packet->length - 9;
   if (size != count * sizeof(RuneSetGradeEntry)) {
     count = size / sizeof(RuneSetGradeEntry);
   }
 
-  const RuneSetGradeEntry* entry = packet->entries;
-  for (; count != 0; --count) {
-    g_runeSystemMgr->SetRuneGrade(packet->tagId, 0, entry->id, entry->grade, entry->gradeLevel);
-    ++entry;
+  for (int i = 0; i < count; ++i) {
+    g_runeSystemMgr->SetRuneGrade(packet->tagId, 0, packet->entries[i].id, packet->entries[i].grade, packet->entries[i].gradeLevel);
   }
 
   CTagData* tag = g_runeSystemMgr->GetTag(packet->tagId);
