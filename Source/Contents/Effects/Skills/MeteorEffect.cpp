@@ -149,7 +149,7 @@ void CMeteorEffect::OnProcess() {
 void CMeteorEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (IsParticleAlive(particle) == true && particle) {
+    if (IsParticleAlive(*it) == true && particle) {
       static_cast<CSpriteParticle*>(particle)->Draw(0);
     }
   }
