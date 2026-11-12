@@ -8301,49 +8301,44 @@ int g_hoverActorGid;
 __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
   this->EnsureNameBalloon(this->itemNameBalloon);
   CActorNameCard card = this->nameCard.Lookup(actor->render.accountId);
-  if (!card.received) {
-    return;
-  }
+  if (card.received) {
+    actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)
+        ? card.name = "??????"
+        : card.name = static_cast<const std::string&>(this->nameCard.Name(actor->render.accountId));
 
-  if (actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
-    card.name = "??????";
-  } else {
-    const std::string name = this->nameCard.Name(actor->render.accountId);
-    card.name = name;
-  }
-
-  if (g_session.IsMonsterActor(actor) == 1) {
-    UINameBalloonText* balloon = this->itemNameBalloon;
-    unsigned char monsterType;
-    if (actor->GetEffectiveJob(-1) == 20269) {
-      monsterType = 0;
+    if (g_session.IsMonsterActor(actor) == 1) {
+      UINameBalloonText* balloon = this->itemNameBalloon;
+      unsigned char monsterType;
+      if (actor->GetEffectiveJob(-1) == 20269) {
+        monsterType = 0;
+      } else {
+        monsterType = actor->hpGaugeFlags;
+      }
+      balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
     } else {
-      monsterType = actor->hpGaugeFlags;
+      this->itemNameBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
     }
-    balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
-  } else {
-    this->itemNameBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
-  }
 
-  const unsigned char showEmblem = g_serviceOptions.Get(0x40);
-  if ((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) {
-    this->itemNameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
-  } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId) {
-    this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
-  } else if (actor->GetGdid() && showEmblem) {
-    std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
-    const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
-    this->itemNameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
-  } else {
-    this->itemNameBalloon->SetIcon("", 0);
-  }
+    const unsigned char showEmblem = g_serviceOptions.Get(0x40);
+    if ((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) {
+      this->itemNameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
+    } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId) {
+      this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
+    } else if (actor->GetGdid() && showEmblem) {
+      std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
+      const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
+      this->itemNameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
+    } else {
+      this->itemNameBalloon->SetIcon("", 0);
+    }
 
-  UINameBalloonText* balloon = this->itemNameBalloon;
-  if (balloon) {
-    balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), actor->render.accountId);
-    balloon->m_outlineColor = 0;
+    UINameBalloonText* balloon = this->itemNameBalloon;
+    if (balloon) {
+      balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), actor->render.accountId);
+      balloon->m_outlineColor = 0;
+    }
+    this->PlaceWindowAtActor(this->itemNameBalloon, actor);
   }
-  this->PlaceWindowAtActor(this->itemNameBalloon, actor);
 }
 
 // OFFSET: 0x00CDFE10
