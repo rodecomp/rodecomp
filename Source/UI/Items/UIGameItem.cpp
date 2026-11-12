@@ -104,13 +104,15 @@ void CUIGameItem::OnMouseHover(int x, int y) {
   int screenX = x;
   int screenY = y - 20;
   this->ToScreen(screenX, screenY);
-  const std::uint32_t color = g_session.GetItemNameColor(this->itemInfo);
-  CMode* tooltip = g_modeMgr.gameMode;
   if (this->itemInfo.optionCount > 0) {
-    const std::string text = FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.optionCount);
-    tooltip->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
+    CMode* tooltip = g_modeMgr.gameMode;
+    tooltip->ShowTooltip(
+      FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.optionCount).c_str(),
+      screenX, screenY, g_session.GetItemNameColor(this->itemInfo), 0, 1
+    );
   } else {
-    tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, color, 0, 1);
+    CMode* tooltip = g_modeMgr.gameMode;
+    tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, g_session.GetItemNameColor(this->itemInfo), 0, 1);
   }
 }
 
