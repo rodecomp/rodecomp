@@ -40,7 +40,7 @@ struct SpriteLayerQuad {
 class SpriteLayerRenderer {
 public:
   // INLINED
-  explicit SpriteLayerRenderer(CPc* pc) : pc(pc), position(), depthScale(1.0f), depthBias(0.0f) {
+  explicit SpriteLayerRenderer(CPc* pc) : pc(pc), position{0.0f, 0.0f, 0.0f}, depthScale(1.0f), depthBias(0.0f) {
   }
 
   void Render(const float* matrix, int padding_0030, char blendVariant);
