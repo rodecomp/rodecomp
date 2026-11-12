@@ -45,6 +45,8 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   const BillingInfoPacket* packet = reinterpret_cast<const BillingInfoPacket*>(data);
   char text[256];
   const std::uint32_t remainingTime = packet->remainingTime;
+  std::uint32_t minutesPerHour = 60;
+  std::uint32_t hoursPerDay = 24;
 
   if (remainingTime == 0xFFFFFFFE && packet->remainingFreeTime == 0xFFFFFFFE) {
     const char* message = LookupMessage(MSI_BILLING_FREE_USER);
@@ -80,7 +82,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
     const std::uint32_t freeTime = packet->remainingFreeTime;
     if (freeTime != 0) {
       const char* message = LookupMessage(MSI_BILLING_BOTH);
-      sprintf(text, message, remainingTime / (60 * 24), remainingTime / 60 % 24, remainingTime % 60, freeTime / 60, freeTime % 60);
+      sprintf(text, message, remainingTime / (60 * 24), remainingTime / minutesPerHour % hoursPerDay, remainingTime % minutesPerHour, freeTime / minutesPerHour, freeTime % minutesPerHour);
     } else {
       const char* message = LookupMessage(MSI_BILLING_100);
       const char* format = [] {
@@ -93,7 +95,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
       sprintf(text, format, message);
       const std::uint32_t time = packet->remainingTime;
       const char* dayFormat = LookupMessage(MSI_BILLING_DAY_HOUR_MINUTES);
-      sprintf(text + strlen(text), dayFormat, time / (60 * 24), time / 60 % 24, time % 60);
+      sprintf(text + strlen(text), dayFormat, time / (60 * 24), time / minutesPerHour % hoursPerDay, time % minutesPerHour);
     }
   } else {
     if (packet->remainingFreeTime > 0) {
@@ -108,7 +110,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
       sprintf(text, format, message);
       const std::uint32_t freeTime = packet->remainingFreeTime;
       const char* hourFormat = LookupMessage(MSI_BILLING_HOUR_MINUTES);
-      sprintf(text + strlen(text), hourFormat, freeTime / 60, freeTime % 60);
+      sprintf(text + strlen(text), hourFormat, freeTime / minutesPerHour, freeTime % minutesPerHour);
     } else {
       const char* format = [] {
         constexpr std::array<std::uint8_t, 2> sourceArray = CRYPT_NAME("\x0A", 0xD7A749EB27D5BF6DULL);
