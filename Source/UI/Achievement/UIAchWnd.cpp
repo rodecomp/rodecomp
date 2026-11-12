@@ -972,7 +972,11 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
   this->UpdateScroll();
   this->selectedIndex = 0;
   if (this->parent) {
-    this->parent->SendMsg(this, UM_LIST_SELECTION, this->ids.empty() ? -1 : this->ids[0], 0, 0, 0);
+    if (this->ids.size() > 0) {
+      this->parent->SendMsg(this, UM_LIST_SELECTION, this->ids[0], 0, 0, 0);
+    } else {
+      this->parent->SendMsg(this, UM_LIST_SELECTION, -1, 0, 0, 0);
+    }
   }
 
   this->Invalidate();
@@ -1021,9 +1025,11 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   this->tab->Select(group, sub);
 
   if (group == 0) {
-    this->upper->SetTitle(LookupMessage(MSI_OTPUSER_ONLY));
+    const std::string title = LookupMessage(MSI_OTPUSER_ONLY);
+    this->upper->SetTitle(title);
   } else {
-    this->upper->SetTitle(this->tab->Label(this->group, this->sub));
+    const std::string title = this->tab->Label(this->group, this->sub);
+    this->upper->SetTitle(title);
   }
   this->upper->Invalidate();
 
