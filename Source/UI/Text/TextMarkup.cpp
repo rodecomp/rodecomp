@@ -291,7 +291,7 @@ void UITextViewer::SplitTextLinkArguments(std::string text, UITextButton* button
     const std::string argument = remaining.substr(0, comma);
     AddTextLinkArgument(button->m_lines, argument);
     remaining = remaining.substr(comma + 1);
-    comma = remaining.find(',');
+    comma = remaining.find(",");
   }
 
   AddTextLinkArgument(button->m_lines, remaining);
