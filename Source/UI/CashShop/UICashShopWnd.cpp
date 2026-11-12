@@ -1312,15 +1312,21 @@ int UICashShopWnd_Item::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_REFRESHITEM:
     this->m_item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     this->Show(1);
-    this->m_addButton->SetDisabled(0);
-    this->m_addButton->Invalidate();
+    {
+      auto* addButton = this->m_addButton;
+      addButton->SetDisabled(0);
+      addButton->Invalidate();
+    }
     this->m_soldOut->Show(0);
     this->m_largeLayout = argument2 == 9;
     if (argument2 == 9) {
       if (static_cast<int>(this->m_item.saleData[3]) <= 0) {
         this->m_addButton->Move(0x53, 0x78);
-        this->m_addButton->SetDisabled(1);
-        this->m_addButton->Invalidate();
+        {
+          auto* addButton = this->m_addButton;
+          addButton->SetDisabled(1);
+          addButton->Invalidate();
+        }
         this->m_addButton->SetText(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_DONT_MOVE_CART));
         this->m_addButton->AddTextStyle(0, 0xC, 0x313131, 1, 1, -1000, -1000);
         this->m_addButton->AddTextStyle(1, 0xC, 0x313131, 1, 1, -1000, -1000);

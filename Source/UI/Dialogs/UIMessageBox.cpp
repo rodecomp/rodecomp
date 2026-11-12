@@ -1168,11 +1168,17 @@ void UIReplayRECControlWnd::ApplyMode() {
     this->filenameEdit->Move(-100, -100);
     this->recordStartButton->Move(110, 5);
     this->button_00C8->Move(136, 5);
-    this->button_00C8->SetDisabled(0);
-    this->button_00C8->Invalidate();
+    {
+      UIButton* button = this->button_00C8;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->button_00D0->Move(162, 5);
-    this->button_00D0->SetDisabled(0);
-    this->button_00D0->Invalidate();
+    {
+      UIButton* button = this->button_00D0;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->recordTimeText->Move(32, 12);
     this->tabs[0]->Move(6, 5);
   } else if (this->mode == 1) {
@@ -1197,11 +1203,17 @@ void UIReplayRECControlWnd::ApplyMode() {
     this->filenameEdit->Move(-100, -100);
     this->recordStopButton->Move(110, 5);
     this->button_00C8->Move(136, 5);
-    this->button_00C8->SetDisabled(1);
-    this->button_00C8->Invalidate();
+    {
+      UIButton* button = this->button_00C8;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->button_00D0->Move(162, 5);
-    this->button_00D0->SetDisabled(1);
-    this->button_00D0->Invalidate();
+    {
+      UIButton* button = this->button_00D0;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->recordTimeText->Move(32, 12);
     this->tabs[0]->Move(6, 5);
   } else if (this->mode == 2) {

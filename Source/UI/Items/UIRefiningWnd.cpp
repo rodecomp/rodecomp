@@ -609,10 +609,16 @@ void UIRefiningWnd::OnProcess() {
 
   if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.identity[1] > 0 && this->selectedMaterial >= 0 &&
       static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-    this->refiningButton->SetDisabled(0);
-    this->refiningButton->Invalidate();
-    this->refiningButton->cost = this->SelectedMaterialValue();
-    this->refiningButton->Invalidate();
+    {
+      auto* refiningButton = this->refiningButton;
+      refiningButton->SetDisabled(0);
+      refiningButton->Invalidate();
+    }
+    {
+      auto* refiningButton = this->refiningButton;
+      refiningButton->cost = this->SelectedMaterialValue();
+      refiningButton->Invalidate();
+    }
     this->Invalidate();
   }
 

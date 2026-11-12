@@ -75,9 +75,13 @@ void UIComboBoxDefWnd::OnCreate(int, int) {
   this->list->Move(0, this->button->BitmapHeight());
   this->AddChild(this->list);
 
-  this->label = new UIStaticText();
-  this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
-  this->label->SetText("(NO SELECT)", 0);
+  {
+    char text[12] = {};
+    std::sprintf(text, "(NO SELECT)");
+    this->label = new UIStaticText();
+    this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
+    this->label->SetText(text, 0);
+  }
   this->label->Move(2, 3);
   this->label->shadow = 1;
   this->AddChild(this->label);
