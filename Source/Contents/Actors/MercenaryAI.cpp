@@ -413,7 +413,7 @@ int AiHomunGetV(lua_State* state) {
               range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
             }
 
-            int clamped = ClampTargetAttackRange(homunAid, range);
+            int clamped = ClampTargetAttackRange(*reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]), range);
             if (clamped > 0) {
               const float dx = static_cast<float>(targetX - cellX);
               const float dy = static_cast<float>(cellY - targetY);
@@ -1002,13 +1002,13 @@ int AiIsMonster(lua_State* state) {
       }
     } else if (g_session.IsPlayerJobId(job)) {
       CWorld* world = mode->scene;
-      bool ally;
+      int ally;
       if (world->isPKZone || world->isEventPVPMode) {
         ally = g_session.IsPartyMember(actor->render.accountId, true);
       } else if (world->isSiegeMode) {
-        ally = g_session.IsLocalPlayerAid(actor->GetGdid()) != 0;
+        ally = g_session.IsLocalPlayerAid(actor->GetGdid());
       } else {
-        ally = true;
+        ally = 1;
       }
       if (!ally) {
         if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
@@ -1041,8 +1041,8 @@ int AiMove(lua_State* state) {
     return 0;
   }
 
-  if (!mode->IsValidCell(x, y)) {
-    if (!mode->GetClosestValidCell(&x, &y)) {
+  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(x, y)) {
+    if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&x, &y)) {
       return 0;
     }
   }
