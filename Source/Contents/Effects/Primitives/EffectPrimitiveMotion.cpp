@@ -3401,7 +3401,7 @@ void CEffectPrim::PrimElectric2() {
 
     if (slot.process <= 10) {
       const int boost = std::rand() % 6;
-      slot.alphaB += static_cast<std::int16_t>((boost < 0 ? 0 : boost) + 15);
+      slot.alphaB += static_cast<std::int16_t>((boost >= 0 ? boost : 0) + 15);
     }
 
     if (slot.process > 20) {
@@ -3820,7 +3820,7 @@ void CEffectPrim::PrimPokJuk() {
 
       const int coin = std::rand() % 2;
 
-      if ((coin < 0 ? 0 : coin) == 0) {
+      if ((coin >= 0 ? coin : 0) == 0) {
         --slot.alphaB;
       }
 
@@ -3833,13 +3833,13 @@ void CEffectPrim::PrimPokJuk() {
       slot.process = 0;
       slot.flag1[1] = 0;
       const int heading = std::rand() % 360;
-      slot.riseAngle = static_cast<std::int16_t>(heading < 0 ? 0 : heading);
+      slot.riseAngle = static_cast<std::int16_t>(heading >= 0 ? heading : 0);
       slot.vecBNow.x = this->render.position.x;
       slot.vecBNow.y = this->render.position.y;
       slot.vecBNow.z = this->render.position.z;
       slot.vecBNow.x = this->render.position.x - 15.0f;
       const int spread = std::rand() % 100;
-      slot.distance = static_cast<float>(spread < 0 ? 0 : spread) * 0.004f + 0.4f;
+      slot.distance = static_cast<float>(spread >= 0 ? spread : 0) * 0.004f + 0.4f;
     }
   }
 }
@@ -3882,7 +3882,7 @@ void CEffectPrim::PrimSTIN4() {
     if (slot.process == 1) {
       Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
       const int swing = std::rand() % 21;
-      const std::int16_t turn = static_cast<std::int16_t>((swing < 0 ? 0 : swing) + 25);
+      const std::int16_t turn = static_cast<std::int16_t>((swing >= 0 ? swing : 0) + 25);
 
       if (slot.flag1[2] == 0) {
         slot.rotStart += turn;
@@ -4264,7 +4264,7 @@ bool CEffectPrim::PrimCHOOKGI() {
 
   slot.vecBNow.y += slot.height[7];
   const int drift = std::rand() % 5;
-  slot.height[8] += static_cast<float>((drift < 0 ? 0 : drift) + 5);
+  slot.height[8] += static_cast<float>((drift >= 0 ? drift : 0) + 5);
 
   if (slot.height[8] >= 360.0f) {
     slot.height[8] -= 360.0f;
