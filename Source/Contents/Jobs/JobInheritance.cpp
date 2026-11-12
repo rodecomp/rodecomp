@@ -1334,7 +1334,7 @@ int CSession::GetPetTargetAid() const {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;
   }
 
-  aid = *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
+  aid = this->m_mercenaryAid;
   if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
       (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;

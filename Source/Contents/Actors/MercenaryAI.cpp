@@ -58,7 +58,7 @@ bool IsHomunAid(std::uint32_t aid) {
 
 // INLINED
 bool IsMercenaryAid(std::uint32_t aid) {
-  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  return aid != 0xFFFFFFFF && aid == g_session.m_mercenaryAid;
 }
 
 // INLINED
@@ -273,7 +273,7 @@ int AiHomunAttack(lua_State* state) {
   if (!g_session.IsHomunAid(aid)) {
     return 0;
   }
-  if (*reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]) != 0 && g_session.IsMercenaryAid(target)) {
+  if (g_session.m_mercenaryAid != 0 && g_session.IsMercenaryAid(target)) {
     return 0;
   }
 
@@ -455,7 +455,7 @@ int AiHomunGetV(lua_State* state) {
     }
 
   case V_ATTACKRANGE: {
-    int range = *reinterpret_cast<const int*>(&g_session.companionTargetState[4]);
+    int range = g_session.m_homunAttackRange;
     if (!actor || range == 0) {
       lua_pushnumber(state, -1.0);
       return 1;
@@ -589,7 +589,7 @@ int AiMercenaryGetV(lua_State* state) {
           skillLevel = static_cast<int>(luaL_checknumber(state, 4));
         }
 
-        std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+        std::uint32_t mercAid = g_session.m_mercenaryAid;
         if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
           CGameActor* targetActor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(mercAid));
           if (targetActor) {
@@ -676,7 +676,7 @@ int AiMercenaryGetV(lua_State* state) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
         range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
       }
-      std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+      std::uint32_t mercAid = g_session.m_mercenaryAid;
       result = static_cast<double>(ClampTargetAttackRange(mercAid, range));
     }
     lua_pushnumber(state, result);

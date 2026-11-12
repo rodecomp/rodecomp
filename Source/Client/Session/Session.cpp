@@ -3005,8 +3005,8 @@ void CSession::Init() {
   this->homunAlive = 0;
   this->m_traceAi = 0;
   this->m_homunActionState = 0;
-  *reinterpret_cast<int*>(&this->companionTargetState[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->companionTargetState[0x04]) = 0;
+  this->m_homunHungerNotified = 0;
+  this->m_homunAttackRange = 0;
   this->moveHomunEnemy = 0;
   this->selectHomunEnemy = 0;
   this->attackHomunEnemy = 0;
@@ -3100,7 +3100,7 @@ void CSession::Init() {
   this->m_currentHotkey = 0;
   this->petGid = 0xFFFFFFFF;
   *reinterpret_cast<int*>(&this->spAndHomunculusStats[0x08]) = -1;
-  *reinterpret_cast<int*>(&this->companionTargetState[0x08]) = -1;
+  this->m_mercenaryAid = -1;
   this->m_guildMemberListSort = true;
   this->m_blockPrivateTab = false;
   this->swapEquipmentFlag[0] = 0;

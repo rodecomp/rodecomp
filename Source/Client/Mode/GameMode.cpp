@@ -2059,7 +2059,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             target = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
           } else {
             const bool mercenary = g_session.IsMercenarySkill(skill->id) != 0;
-            target = mercenary ? *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]) : g_session.m_aid;
+            target = mercenary ? g_session.m_mercenaryAid : g_session.m_aid;
           }
           this->SendMsg(MM_USE_SKILL, skill->id, target, argument2, argument3);
           this->SendMsg(MM_HANG_USE_SKILL, 0, 0, 0, 0);
@@ -3739,7 +3739,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_MER_FOLLOW: {
-          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<std::uint32_t*>(&g_session.companionTargetState[8])));
+          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_mercenaryAid));
           if (actor && actor->merAI && *reinterpret_cast<int*>(actor->merAI + 4)) {
             float value[6] = {};
             const int type = 9;
@@ -7426,7 +7426,7 @@ void CGameMode::InitializeState() {
   *reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x08]) = -1;
   g_session.homunAlive = 0;
   g_session.ClearHomunStatus();
-  *reinterpret_cast<int*>(&g_session.companionTargetState[0x08]) = -1;
+  g_session.m_mercenaryAid = -1;
   g_session.mercenaryAlive = 0;
   g_session.ResetMercenaryStats();
   g_windowMgr.FocusWindow01C8Edit();
@@ -8146,7 +8146,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   }
 
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if (g_session.homunAlive != 0) {
     if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -8492,7 +8492,7 @@ int CGameMode::ProcessGroundClick(int result) {
   }
 
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if (g_session.homunAlive != 0) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
       if (g_session.selectHomunEnemy != 0) {
@@ -10188,7 +10188,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -10490,7 +10490,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
   const int& siegeMode = *reinterpret_cast<const int*>(&g_session.interactionFlags[4]);
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
-  const std::uint32_t& mercenaryAid = *reinterpret_cast<const std::uint32_t*>(&g_session.companionTargetState[8]);
+  const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   GuildInfo* guildInfo = &g_guildInfo;
 
   if (pick->accountId != g_session.m_aid) {

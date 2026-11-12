@@ -674,15 +674,15 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
       offset += header.bytes;
       break;
     case 5133:
-      std::memcpy(&this->companionTargetState[0], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunHungerNotified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5134:
-      std::memcpy(&this->companionTargetState[4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_homunAttackRange, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5201:
-      std::memcpy(&this->companionTargetState[8], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_mercenaryAid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 5202:

@@ -4451,9 +4451,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     if (g_session.mercenaryAlive != 0) {
       g_session.ResetMercenaryStats();
       if (CMode* mode = g_modeMgr.GetGameMode()) {
-        std::uint32_t aid;
-        std::memcpy(&aid, &g_session.companionTargetState[8], sizeof(aid));
-        CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
+        CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(g_session.m_mercenaryAid));
         if (actor && actor->HasActiveMercenaryAI()) {
           AiCommand command;
           command.type = 9;

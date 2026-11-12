@@ -1091,9 +1091,9 @@ std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
   AppendRecord(records, MakeReplayRecord(5130, &this->homunAlive, sizeof(this->homunAlive)));
   AppendRecord(records, MakeReplayRecord(5131, &this->m_traceAi, sizeof(this->m_traceAi)));
   AppendRecord(records, MakeReplayRecord(5132, &this->m_homunActionState, sizeof(this->m_homunActionState)));
-  AppendRecord(records, MakeReplayRecord(5133, &this->companionTargetState[0x0], 4));
-  AppendRecord(records, MakeReplayRecord(5134, &this->companionTargetState[0x4], 4));
-  AppendRecord(records, MakeReplayRecord(5201, &this->companionTargetState[0x8], 4));
+  AppendRecord(records, MakeReplayRecord(5133, &this->m_homunHungerNotified, sizeof(this->m_homunHungerNotified)));
+  AppendRecord(records, MakeReplayRecord(5134, &this->m_homunAttackRange, sizeof(this->m_homunAttackRange)));
+  AppendRecord(records, MakeReplayRecord(5201, &this->m_mercenaryAid, sizeof(this->m_mercenaryAid)));
   AppendRecord(records, MakeReplayRecord(5202, this->m_mercenaryName, sizeof(this->m_mercenaryName)));
   AppendRecord(records, MakeReplayRecord(5203, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
   AppendRecord(records, MakeReplayRecord(5204, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));

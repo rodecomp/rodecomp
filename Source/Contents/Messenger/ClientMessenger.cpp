@@ -6237,7 +6237,7 @@ void CGameMode::Zc_Mer_Init(const unsigned char* data) {
   const MercenaryInitPacket* packet = reinterpret_cast<const MercenaryInitPacket*>(data);
   g_session.m_mercSkills.clear();
   CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid);
-  *reinterpret_cast<std::uint32_t*>(&g_session.companionTargetState[8]) = packet->aid;
+  g_session.m_mercenaryAid = packet->aid;
   g_session.mercenaryAlive = 1;
   if (actor != nullptr) {
     g_session.m_mercenaryClass = static_cast<CGameActor*>(actor)->GetEffectiveJob(-1);

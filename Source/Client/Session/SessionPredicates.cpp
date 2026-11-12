@@ -100,7 +100,7 @@ int CSession::IsMercenaryAid(std::uint32_t aid) const {
   if (aid == 0xFFFFFFFF) {
     return false;
   }
-  return aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]);
+  return aid == this->m_mercenaryAid;
 }
 
 // OFFSET: 0x00E1DE30
@@ -110,7 +110,7 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
     return 0;
   }
   if (aid == *reinterpret_cast<const std::uint32_t*>(&this->spAndHomunculusStats[8]) ||
-      aid == *reinterpret_cast<const std::uint32_t*>(&this->companionTargetState[8]) || aid == this->petGid ||
+      aid == this->m_mercenaryAid || aid == this->petGid ||
       aid == static_cast<std::uint32_t>(this->elementalGid)) {
     return 1;
   }

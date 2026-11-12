@@ -928,12 +928,12 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
   g_session.InvalidateWindowFrames();
-  *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
+  g_session.m_homunAttackRange = packet->attackRange;
   if (g_windowMgr.homunculusSkillWnd) {
     g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  int& notified = *reinterpret_cast<int*>(&g_session.companionTargetState[0]);
+  int& notified = g_session.m_homunHungerNotified;
   const std::int16_t state = packet->hunger;
   if ((state == 1 || state == 5 || state == 10) && notified != state) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_HOMUN_HUNGRY)), 0xFF, 0, 0, 0);
@@ -956,7 +956,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   g_session.homunHunger = packet->hunger;
   g_session.RefreshHomunculusInfo();
 
-  int& notified = *reinterpret_cast<int*>(&g_session.companionTargetState[0]);
+  int& notified = g_session.m_homunHungerNotified;
   const int state = packet->hunger;
   switch (state) {
   case 1:
@@ -990,7 +990,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
     g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
+  g_session.m_homunAttackRange = packet->attackRange;
   if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.homunInfoWnd)) {
     window->expBar->FillBackground(0xFFFFFF);
     window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
@@ -1032,12 +1032,12 @@ void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
   g_session.InvalidateWindowFrames();
-  *reinterpret_cast<int*>(&g_session.companionTargetState[4]) = packet->attackRange;
+  g_session.m_homunAttackRange = packet->attackRange;
   if (g_windowMgr.homunculusSkillWnd) {
     g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 
-  int& notified = *reinterpret_cast<int*>(&g_session.companionTargetState[0]);
+  int& notified = g_session.m_homunHungerNotified;
   const std::int16_t state = packet->hunger;
   if ((state == 1 || state == 5 || state == 10) && notified != state) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_HOMUN_HUNGRY)), 0xFF, 0, 0, 0);

@@ -25154,9 +25154,9 @@ void CGameMode::ProcessIncomingPackets() {
       case 1:
       case 5:
       case 10:
-        if (*reinterpret_cast<int *>(g_session.companionTargetState) != *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
+        if (g_session.m_homunHungerNotified != *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_HOMUN_HUNGRY)), 0xFF, 0, 0, 0);
-          *reinterpret_cast<int *>(g_session.companionTargetState) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
+          g_session.m_homunHungerNotified = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
         }
         break;
       }
@@ -25186,7 +25186,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (g_windowMgr.homunculusSkillWnd) {
         g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
-      reinterpret_cast<int *>(g_session.companionTargetState)[1] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x4B);
+      g_session.m_homunAttackRange = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x4B);
       break;
     case ID_ZC_NPC_BARTER_MARKET_ITEMINFO: {
       g_barterMarketItemMgr->Clear();

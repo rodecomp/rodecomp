@@ -458,7 +458,9 @@ public:
   /* 5614 */ int homunAlive;
   /* 5618 */ int m_traceAi;
   /* 561C */ int m_homunActionState;
-  /* 5620 */ unsigned char companionTargetState[0xC];
+  /* 5620 */ int m_homunHungerNotified;
+  /* 5624 */ int m_homunAttackRange;
+  /* 5628 */ std::uint32_t m_mercenaryAid;
   /* 562C */ char m_mercenaryName[32];
   /* 564C */ int m_mercenaryStats[8];
   /* 566C */ int m_mercenaryHp;
