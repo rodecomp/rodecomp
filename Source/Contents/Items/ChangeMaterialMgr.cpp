@@ -29,16 +29,17 @@ MaterialKey::MaterialKey(const std::vector<ChangeMaterialEntry>& materials) {
 bool MaterialKeyLess::operator()(const MaterialKey& left, const MaterialKey& right) const {
   const int leftCount = static_cast<int>(left.itemIds.size());
   const int rightCount = static_cast<int>(right.itemIds.size());
-  const int count = leftCount < rightCount ? rightCount : leftCount;
+  int i = 0;
+  const int count = std::max(leftCount, rightCount);
 
-  for (int i = 0; i < count; ++i) {
+  for (; i < count; ++i) {
     const int leftId = i < leftCount ? left.itemIds[i] : 0;
     const int rightId = i < rightCount ? right.itemIds[i] : 0;
     if (leftId < rightId) {
       return true;
     }
-    if (rightId < leftId) {
-      break;
+    if (leftId > rightId) {
+      return false;
     }
   }
 
@@ -210,24 +211,26 @@ int CChangeMaterialMgr::LuaInsertRecipe(lua_State* L) {
       return 2;
     }
 
-    lua_pushinteger(L, 1);
-    lua_gettable(L, -2);
-    double itemId = lua_tonumber(L, -1);
-    lua_pop(L, 1);
+    {
+      lua_pushinteger(L, 1);
+      lua_gettable(L, -2);
+      double itemId = lua_tonumber(L, -1);
+      lua_pop(L, 1);
 
-    lua_pushinteger(L, 2);
-    lua_gettable(L, -2);
-    std::string name = lua_tostring(L, -1);
-    lua_pop(L, 1);
+      lua_pushinteger(L, 2);
+      lua_gettable(L, -2);
+      std::string name = lua_tostring(L, -1);
+      lua_pop(L, 1);
 
-    lua_pushinteger(L, 3);
-    lua_gettable(L, -2);
-    double count = lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    lua_pop(L, 1);
+      lua_pushinteger(L, 3);
+      lua_gettable(L, -2);
+      int count = static_cast<int>(lua_tonumber(L, -1));
+      lua_pop(L, 1);
+      lua_pop(L, 1);
 
-    ChangeMaterialEntry entry(static_cast<int>(itemId), static_cast<int>(count));
-    materials.push_back(entry);
+      ChangeMaterialEntry entry(static_cast<int>(itemId), count);
+      materials.push_back(entry);
+    }
 
     ++index;
     lua_pushinteger(L, index);
@@ -246,29 +249,31 @@ int CChangeMaterialMgr::LuaInsertRecipe(lua_State* L) {
       return 2;
     }
 
-    lua_pushinteger(L, 1);
-    lua_gettable(L, -2);
-    double itemId = lua_tonumber(L, -1);
-    lua_pop(L, 1);
+    {
+      lua_pushinteger(L, 1);
+      lua_gettable(L, -2);
+      double itemId = lua_tonumber(L, -1);
+      lua_pop(L, 1);
 
-    lua_pushinteger(L, 2);
-    lua_gettable(L, -2);
-    std::string name = lua_tostring(L, -1);
-    lua_pop(L, 1);
+      lua_pushinteger(L, 2);
+      lua_gettable(L, -2);
+      std::string name = lua_tostring(L, -1);
+      lua_pop(L, 1);
 
-    lua_pushinteger(L, 3);
-    lua_gettable(L, -2);
-    double count = lua_tonumber(L, -1);
-    lua_pop(L, 1);
+      lua_pushinteger(L, 3);
+      lua_gettable(L, -2);
+      double count = lua_tonumber(L, -1);
+      lua_pop(L, 1);
 
-    lua_pushinteger(L, 4);
-    lua_gettable(L, -2);
-    double rate = lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    lua_pop(L, 1);
+      lua_pushinteger(L, 4);
+      lua_gettable(L, -2);
+      int rate = static_cast<int>(lua_tonumber(L, -1));
+      lua_pop(L, 1);
+      lua_pop(L, 1);
 
-    ChangeMaterialProduct product(static_cast<int>(itemId), static_cast<int>(count), static_cast<int>(rate));
-    products.push_back(product);
+      ChangeMaterialProduct product(static_cast<int>(itemId), static_cast<int>(count), rate);
+      products.push_back(product);
+    }
 
     ++index;
     lua_pushinteger(L, index);
