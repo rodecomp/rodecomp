@@ -9095,7 +9095,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     }
     if (packet->value != 0) {
       const char* actionName = g_session.GetPetAccActName(packet->value);
-      actor->SetActionName(ResourceMgr::Instance(), actionName);
+      actor->SetActionName(actionName);
       g_session.petAccessory = packet->value;
     } else {
       g_session.petAccessory = 0;
@@ -12545,7 +12545,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -12577,7 +12577,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
