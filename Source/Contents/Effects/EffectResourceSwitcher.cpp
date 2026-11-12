@@ -120,7 +120,9 @@ void EffectResourceSwitcher::SetNames(const std::string& source, const std::stri
   EffectLists* effects = g_effectMgr;
   this->effect = static_cast<CEZ2STREffectEx*>(
       effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
-  this->spawnPosition = actor->render.position;
+  this->spawnPosition.x = actor->render.position.x;
+  this->spawnPosition.y = actor->render.position.y;
+  this->spawnPosition.z = actor->render.position.z;
 }
 
 // OFFSET: 0x005A22E0
@@ -336,10 +338,10 @@ bool CEZ2STREffectEx::IsAlive() {
   }
 
   if (emitter->looping == 1) {
-    return CEffect::IsAlive();
+    return this->ActorExists();
   }
 
-  if (emitter->lifetime == 0.0f) {
+  if (0.0f == emitter->lifetime) {
     return true;
   }
 
