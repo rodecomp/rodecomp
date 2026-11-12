@@ -2144,7 +2144,7 @@ void UIChatHisBox::AddItemLinkLine(const char* text, int& color, int& mode) {
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     wrapped[line] = this->RenderItemLinks(wrapped[line].c_str(), source);
-    if (line != 0) {
+    if (line > 0) {
       this->lineColors.push_back(color);
       this->history.push_back(std::string());
     }
