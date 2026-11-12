@@ -1714,15 +1714,17 @@ int CSession::GetItem1738Quantity(std::uint32_t id) const {
 
 // OFFSET: 0x00DDB540
 // FUNCTION: fn_23353
-bool CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
-  for (std::list<MessengerMember>::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
+BOOL CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
+  using FriendList = std::list<MessengerMember>;
+  for (FriendList::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     if (it->characterId == characterId) {
-      this->m_friends.erase(it);
-      return true;
+      FriendList::iterator (FriendList::*erase)(FriendList::const_iterator) = &FriendList::erase;
+      (this->m_friends.*erase)(it);
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00DF9F10
