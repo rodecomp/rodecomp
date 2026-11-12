@@ -75,6 +75,9 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 
 extern "C" long long _Xtime_get_ticks();
 
+template __declspec(noinline) std::unordered_map<std::string, CashEmotionCommand*>::iterator
+std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::find<void>(const std::string&);
+
 class ICashEmotionAction {
 public:
   virtual ~ICashEmotionAction();
@@ -1109,7 +1112,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type, const char* n
 // FUNCTION: fn_02969
 void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emotionId) {
   auto it = this->m_shortcuts.find(name);
-  if (it != this->m_shortcuts.end()) {
+  if (this->m_shortcuts.end() != it) {
     it->second->Add(packId, emotionId);
     return;
   }
