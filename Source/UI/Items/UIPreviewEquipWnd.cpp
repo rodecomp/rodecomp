@@ -54,13 +54,13 @@ void UIPreviewEquipWnd::DrawCharacter() {
   up[0] = this->m_render->cameraUpX;
   up[1] = this->m_render->cameraUpY;
   up[2] = *reinterpret_cast<float*>(&this->m_render->cameraUpZ);
-  view.LookAt(eye, reinterpret_cast<float*>(&this->m_render->positionX), up);
+  view.LookAt(eye, &this->m_render->position.x, up);
 
   float screenX = 0.0f;
   float screenY = 0.0f;
   float depth = 0.0f;
   g_renderer->ProjectViewportCentered(
-    reinterpret_cast<float*>(&this->m_render->positionX), view.values, &screenX, &screenY, &depth,
+    &this->m_render->position.x, view.values, &screenX, &screenY, &depth,
     static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&this->m_render->viewportOffsetX),
     static_cast<float>(this->geometry.height) + this->m_render->viewportOffsetY
   );

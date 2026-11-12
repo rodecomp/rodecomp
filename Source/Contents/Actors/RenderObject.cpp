@@ -2641,18 +2641,18 @@ void CCharacterNpc::Render(int) {
     return;
   }
 
-  reinterpret_cast<CCharacterRender*>(this->characterRender)->actionIndex = this->render.previousAnimation;
-  reinterpret_cast<CCharacterRender*>(this->characterRender)->frameIndex = this->render.curMotion;
+  this->characterRender->actionIndex = this->render.previousAnimation;
+  this->characterRender->frameIndex = this->render.curMotion;
 
   char useBounds = 0;
   std::list<CharacterRenderDrawItem> drawList =
-    reinterpret_cast<CCharacterRender*>(this->characterRender)->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
+    this->characterRender->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
 
-  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->characterRender);
+  CCharacterRender* characterRender = this->characterRender;
   float bounds[5];
   std::memcpy(bounds, characterRender->renderBounds, sizeof(bounds));
-  const float tlvertX = *reinterpret_cast<float*>(&characterRender->screenX);
-  const float tlvertY = *reinterpret_cast<float*>(&characterRender->screenY);
+  const float tlvertX = characterRender->screenX;
+  const float tlvertY = characterRender->screenY;
   if (useBounds == 1) {
     this->SetRenderInfo(bounds, tlvertX, tlvertY);
   } else {
@@ -2688,16 +2688,16 @@ struct CharacterNpcViewInfo {
 
 // INLINED
 static CCharacterRender* NpcCharacterRender(CCharacterNpc* self) {
-  return reinterpret_cast<CCharacterRender*>(self->characterRender);
+  return self->characterRender;
 }
 
 // INLINED
 static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
   {
     CCharacterRender* render = NpcCharacterRender(self);
-    render->positionX = *reinterpret_cast<int*>(&self->render.position.x);
-    render->positionY = *reinterpret_cast<int*>(&self->render.position.y);
-    render->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+    render->position.x = self->render.position.x;
+    render->position.y = self->render.position.y;
+    render->position.z = self->render.position.z;
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
@@ -2715,9 +2715,9 @@ static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, Cha
 static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
   {
     CCharacterRender* render = NpcCharacterRender(self);
-    render->positionX = *reinterpret_cast<int*>(&self->render.position.x);
-    render->positionY = *reinterpret_cast<int*>(&self->render.position.y);
-    render->positionZ = *reinterpret_cast<int*>(&self->render.position.z);
+    render->position.x = self->render.position.x;
+    render->position.y = self->render.position.y;
+    render->position.z = self->render.position.z;
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
@@ -2745,7 +2745,7 @@ void CCharacterNpc::SendMsg(
     if (this->characterRender != nullptr) {
       return;
     }
-    this->characterRender = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    this->characterRender = new CCharacterRender(0, 0);
     FillCharacterNpcRenderPrimary(this, info);
     return;
   case AM_STANDENTRY:
@@ -2761,7 +2761,7 @@ void CCharacterNpc::SendMsg(
     if (this->characterRender != nullptr) {
       return;
     }
-    this->characterRender = reinterpret_cast<CGameObject*>(new CCharacterRender(0, 0));
+    this->characterRender = new CCharacterRender(0, 0);
     FillCharacterNpcRenderSecondary(this, info);
     return;
   case AM_MOVEENTRY:
@@ -4743,7 +4743,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
 // OFFSET: 0x005A10B0
 // FUNCTION: fn_03040
 CCharacterNpc::CCharacterNpc() : CNpc() {
-  this->characterRender = 0;
+  this->characterRender = nullptr;
 }
 
 // INLINED

@@ -58,10 +58,10 @@ CCharacterRender::CCharacterRender(int width, int renderHeight)
       upperHeadgearLocation(0), middleHeadgearLocation(0), madogearType(0), riding(0), bodyCostume(0), viewportOffsetX(0), viewportOffsetY(80.0f), bodyBlend(-1),
       bodyCellX(-1), bodyCellY(-1), viewportWidth(width), viewportHeight(renderHeight), cameraDistance(400.0f), cameraPitch(-45.0f),
       cameraYaw(0.0f), padding_007C(0.0f), padding_0080(0.0f), padding_0084(0.0f), cameraUpX(0.0f), cameraUpY(1.0f), cameraUpZ(0),
-      screenX(0), screenY(0), robe(0), isHelmRobe(0) {
-  this->positionX = 0;
-  this->positionY = 0;
-  this->positionZ = 0;
+      screenX(0.0f), screenY(0.0f), robe(0), isHelmRobe(0) {
+  this->position.x = 0.0f;
+  this->position.y = 0.0f;
+  this->position.z = 0.0f;
   this->actionIndex = 0;
   this->frameIndex = 0;
   this->drawShadow = 1;
@@ -75,7 +75,7 @@ CCharacterRender::~CCharacterRender() = default;
 // FUNCTION: fn_10108
 std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char trackBounds, char* boundsUpdated) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const float* origin = reinterpret_cast<const float*>(&this->positionX);
+  const float* origin = &this->position.x;
   const float* view = mode->camera->frame.view.values;
   float position[3];
   position[0] = origin[0] * view[0] + origin[1] * view[3] + origin[2] * view[6] + view[9];
@@ -83,8 +83,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   position[2] = origin[0] * view[2] + origin[1] * view[5] + origin[2] * view[8] + view[11];
   float depthBias = 0.0f;
 
-  float& screenX = *reinterpret_cast<float*>(&this->screenX);
-  float& screenY = *reinterpret_cast<float*>(&this->screenY);
+  float& screenX = this->screenX;
+  float& screenY = this->screenY;
   screenX = 0.0f;
   screenY = 0.0f;
   float rhw = 0.0f;

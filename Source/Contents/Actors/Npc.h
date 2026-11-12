@@ -47,6 +47,8 @@ public:
   /* 043C */ int padding_043C;
 };
 
+class CCharacterRender;
+
 class CCharacterNpc : public CNpc {
 public:
   CCharacterNpc();
@@ -57,7 +59,7 @@ public:
   void Render(int argument) override;
   void SetSprJob(int value) override;
 
-  /* 0440 */ CGameObject* characterRender;
+  /* 0440 */ CCharacterRender* characterRender;
 };
 
 class CHalluNPC : public CNpc {

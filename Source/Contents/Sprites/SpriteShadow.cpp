@@ -22,7 +22,7 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const float* origin = reinterpret_cast<const float*>(&this->positionX);
+  const float* origin = &this->position.x;
   const float height = mode->scene->terrain->Height(origin[0], origin[2]);
   float position[3];
   position[0] = origin[0];
