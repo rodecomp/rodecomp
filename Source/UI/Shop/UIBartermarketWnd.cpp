@@ -278,7 +278,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(i
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
-        return std::make_pair(true, *it);
+        return std::pair<bool, BarterMarketEntry>(true, *it);
       }
       ++visible;
     }
@@ -298,7 +298,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == (y - 17) / 64) {
-        return std::make_pair(true, *it);
+        return std::pair<bool, BarterMarketEntry>(true, *it);
       }
       ++visible;
     }
@@ -368,14 +368,14 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
               char buffer[16] = {};
               entry.name = _itoa(chunk->field_0, buffer, 10);
               entry.field_0 = chunk->field_c;
-              return std::make_pair(true, entry);
+              return std::pair<bool, BarterMarketEntry>(true, entry);
             }
             right += 42;
           }
         }
         if (x > 40 && x < 72) {
           entry = *it;
-          return std::make_pair(true, entry);
+          return std::pair<bool, BarterMarketEntry>(true, entry);
         }
       }
       ++visible;
