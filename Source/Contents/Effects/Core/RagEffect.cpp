@@ -5331,7 +5331,7 @@ void CRagEffect::Magnum2(const char* name) {
   const int frame = this->state.stateCnt;
   const int elapsed = frame - 25;
   if (static_cast<unsigned int>(elapsed) <= 30) {
-    if (frame % 3 == 0 && static_cast<int>(++this->state.flag) < 11) {
+    if (this->state.stateCnt % 3 == 0 && static_cast<int>(++this->state.flag) < 11) {
       this->state.lastPrim = CreateEffectParticle(*this, this->render, 73, 0.0f, 0.0f, 0.0f, WorldObjects());
       this->state.lastPrim->state.renderFlag = 5;
       this->state.lastPrim->state.duration = this->state.duration;
@@ -11223,8 +11223,11 @@ void CRagEffect::YufitelHit(char kind) {
     this->state.lastPrim->state.changeHeightAccel = -this->state.lastPrim->state.changeHeightSpeed / 50.0f;
     this->state.lastPrim->state.fadeOutCnt = 1;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    this->state.lastPrim->state.textures[0] =
-      g_texMgr.Load(kind == 0 ? "effect\\thunder_pang.bmp" : "effect\\pokjuk_d.bmp", 0, false, true, false);
+    if (kind == 0) {
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_pang.bmp", 0, false, true, false);
+    } else {
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pokjuk_d.bmp", 0, false, true, false);
+    }
   }
 
   if (this->state.stateCnt != 10) {
