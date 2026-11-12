@@ -2734,10 +2734,10 @@ void CCharacterNpc::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
 ) {
   CharacterNpcViewInfo* info = reinterpret_cast<CharacterNpcViewInfo*>(b);
-  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+  switch (static_cast<std::int64_t>(static_cast<std::uint64_t>(static_cast<std::uint32_t>(a)) << 32 | static_cast<std::uint32_t>(message))) {
   case AM_INITSTANDENTRY:
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
-    this->render.visible = g_session.IsVisibleJob(info->job) ? 1 : 0;
+    this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->render.visible = g_session.IsVisibleJob(info->job);
     this->SetGuildInfo(info->guildId, info->guildEmblemVersion);
     if (this->characterRender != nullptr) {
       return;
@@ -2746,7 +2746,7 @@ void CCharacterNpc::SendMsg(
     FillCharacterNpcRenderPrimary(this, info);
     return;
   case AM_STANDENTRY:
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->characterRender == nullptr) {
       return;
     }
@@ -2754,7 +2754,7 @@ void CCharacterNpc::SendMsg(
     return;
   case AM_INITMOVEENTRY:
   case AM_INITMOVEENTRY2:
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->characterRender != nullptr) {
       return;
     }
@@ -2763,7 +2763,7 @@ void CCharacterNpc::SendMsg(
     return;
   case AM_MOVEENTRY:
   case AM_MOVEENTRY2:
-    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->CGameActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     if (this->characterRender == nullptr) {
       return;
     }
