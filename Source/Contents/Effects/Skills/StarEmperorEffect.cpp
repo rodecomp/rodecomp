@@ -209,8 +209,8 @@ void CStarEmperorEffect::OnProcess() {
         step = half > frame ? half - frame : frame - half;
       }
 
-      const float size = -(1.15f / static_cast<float>(this->effectLifetime)) * g_depthAverageHalf * static_cast<float>((step + 1) * step / 2) +
-                         static_cast<float>(step) * 1.15f;
+      const float acceleration = -(1.15f / static_cast<float>(this->effectLifetime));
+      const float size = acceleration * 0.5f * static_cast<float>((step + 1) * step / 2) + static_cast<float>(step) * 1.15f;
       matrix scale;
       scale.SetScale(size, size, size);
       matrix rotation;
@@ -221,10 +221,7 @@ void CStarEmperorEffect::OnProcess() {
 
       if (this->id == 1203) {
         const int quarter = this->effectLifetime / 4;
-        if (quarter <= step) {
-          step = this->effectLifetime - step;
-        }
-        particle->alpha = 255 / quarter * step;
+        particle->alpha = (quarter > step ? step : this->effectLifetime - step) * (255 / quarter);
       } else {
         const int half = this->effectLifetime / 2;
         const int fade = 255 / half;
