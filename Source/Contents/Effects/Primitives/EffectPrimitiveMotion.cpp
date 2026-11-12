@@ -2425,15 +2425,15 @@ bool CEffectPrim::Prim3DParticle() {
 
   if ((flags & 2u) != 0) {
     if (this->state.stateCnt % this->state.chCnt == 0) {
-      this->state.chCnt = rand() % 8 + 12;
-      this->state.deltaPos3.x = static_cast<float>(rand() % 5 + 5) / 100.0f;
-      this->state.deltaPos3.z = static_cast<float>(rand() % 5 + 5) / 100.0f;
+      this->state.chCnt = ClampedRandom(8) + 12;
+      this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
+      this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
 
-      if (rand() % 2 == 0) {
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.x = -this->state.deltaPos3.x;
       }
 
-      if (rand() % 2 == 0) {
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.z = -this->state.deltaPos3.z;
       }
     }
@@ -2443,21 +2443,21 @@ bool CEffectPrim::Prim3DParticle() {
   }
 
   if ((flags & 4u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
-    this->state.speed = static_cast<float>(rand() % 35 + 15) / 100.0f;
-    this->state.longitude = static_cast<float>(rand() % 80) + (this->state.longitude - 40.0f);
-    this->state.latitude = static_cast<float>(rand() % 80) + (this->state.latitude - 40.0f);
+    this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
+    this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
+    this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
     reinterpret_cast<struct matrix*>(this->state.transform)->AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     flags = this->state.pattern;
-    this->state.chCnt = rand() % 10 + 5;
+    this->state.chCnt = ClampedRandom(10) + 5;
   }
 
   if ((flags & 8u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
-    this->state.longitude = static_cast<float>(rand() % 10) + (this->state.longitude - 5.0f);
-    this->state.latitude = static_cast<float>(rand() % 10) + (this->state.latitude - 5.0f);
+    this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
+    this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    this->state.chCnt = rand() % 15 + 5;
+    this->state.chCnt = ClampedRandom(15) + 5;
   }
 
   this->render.position = {
@@ -2508,7 +2508,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
 
     if (this->state.playWaveType == 1) {
       char name[52];
-      std::sprintf(name, "effect\\EF_Coin%d.wav", rand() % 3 + 1);
+      std::sprintf(name, "effect\\EF_Coin%d.wav", ClampedRandom(3) + 1);
       const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -2776,15 +2776,15 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
 
   if ((flags & 2u) != 0) {
     if (this->state.stateCnt % this->state.chCnt == 0) {
-      this->state.chCnt = rand() % 8 + 12;
-      this->state.deltaPos3.x = static_cast<float>(rand() % 5 + 5) / 100.0f;
-      this->state.deltaPos3.z = static_cast<float>(rand() % 5 + 5) / 100.0f;
+      this->state.chCnt = ClampedRandom(8) + 12;
+      this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
+      this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
 
-      if (rand() % 2 == 0) {
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.x = -this->state.deltaPos3.x;
       }
 
-      if (rand() % 2 == 0) {
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.z = -this->state.deltaPos3.z;
       }
     }
@@ -2794,21 +2794,21 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   }
 
   if ((flags & 4u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
-    this->state.speed = static_cast<float>(rand() % 35 + 15) / 100.0f;
-    this->state.longitude = static_cast<float>(rand() % 80) + (this->state.longitude - 40.0f);
-    this->state.latitude = static_cast<float>(rand() % 80) + (this->state.latitude - 40.0f);
+    this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
+    this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
+    this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
     reinterpret_cast<struct matrix*>(this->state.transform)->AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    this->state.chCnt = rand() % 10 + 5;
+    this->state.chCnt = ClampedRandom(10) + 5;
     flags = this->state.pattern;
   }
 
   if ((flags & 8u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
-    this->state.longitude = static_cast<float>(rand() % 10) + (this->state.longitude - 5.0f);
-    this->state.latitude = static_cast<float>(rand() % 10) + (this->state.latitude - 5.0f);
+    this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
+    this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    this->state.chCnt = rand() % 15 + 5;
+    this->state.chCnt = ClampedRandom(15) + 5;
     flags = this->state.pattern;
   }
 
@@ -3040,7 +3040,7 @@ static __forceinline void WanderAngle(float& angle, float& target) {
 
       if (range != 0) {
         const int roll = std::rand() % range;
-        pick = roll < 0 ? 0 : roll;
+        pick = roll >= 0 ? roll : 0;
       }
 
       target = static_cast<float>(pick);
@@ -3058,7 +3058,7 @@ static __forceinline void WanderAngle(float& angle, float& target) {
 
       if (range != 0) {
         const int roll = std::rand() % range;
-        pick = roll < 0 ? 0 : roll;
+        pick = roll >= 0 ? roll : 0;
       }
 
       target = static_cast<float>(359 - pick);
@@ -3081,7 +3081,7 @@ static __forceinline void WanderAngleSlow(float& angle, float& target) {
 
       if (range != 0) {
         const int roll = std::rand() % range;
-        pick = roll < 0 ? 0 : roll;
+        pick = roll >= 0 ? roll : 0;
       }
 
       target = static_cast<float>(pick);
@@ -3099,7 +3099,7 @@ static __forceinline void WanderAngleSlow(float& angle, float& target) {
 
       if (range != 0) {
         const int roll = std::rand() % range;
-        pick = roll < 0 ? 0 : roll;
+        pick = roll >= 0 ? roll : 0;
       }
 
       target = static_cast<float>(359 - pick);
@@ -3155,10 +3155,10 @@ bool CEffectPrim::PrimAcidDemon() {
 
     if (index == 3) {
       const int step = roll % 2;
-      slot.rotStart = static_cast<std::int16_t>((step < 0 ? 0 : step) + 2 + slot.rotStart);
+      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 2 + slot.rotStart);
     } else {
       const int step = roll % 3;
-      slot.rotStart = static_cast<std::int16_t>((step < 0 ? 0 : step) + 4 + slot.rotStart);
+      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 4 + slot.rotStart);
     }
 
     if (slot.rotStart >= 360) {
