@@ -17,21 +17,16 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CChangePartyMasterAsyncWork.cpp";
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
   }
-}
 
 // GLOBAL: gl_25602
-const char* g_changePartyMasterPoolName = OBFUSCATE_ARRAY_TEXT("Change_PartyMaster", 0x93E7A3A1F587CDC5ULL, std::uint8_t);
+const char* g_changePartyMasterPoolName = OBFUSCATE_BYTES_TEXT("Change_PartyMaster", 0x93E7A3A1F587CDC5ULL);
 
 // OFFSET: 0x005CD7B0
 // FUNCTION: fn_03677
 CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
     : NAsyncWork(g_changePartyMasterPoolName), m_accountId(0), m_characterId(0), m_token(""), m_worldName(""), m_response(""), m_url(""),
-      m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 27) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x2FF3C5036D070127ULL)), sourceFile, 27) {
 }
 
 // INLINED
@@ -59,7 +54,7 @@ void CChangePartyMasterAsyncWork::Bind(
   this->m_worldName = worldName;
   this->m_url = url;
   this->m_token = token;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17})), sourceFile, 55);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x17359BF953C367B3ULL)), sourceFile, 55);
 }
 
 // OFFSET: 0x005CE150
@@ -77,20 +72,20 @@ bool CChangePartyMasterAsyncWork::Execute() {
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_characterName);
   std::string targetName = CCURLMgr::GetInstance()->ToUtf8(this->m_targetName);
   CCURLPostHander handler(this->m_url);
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x14, 0xB4, 0xF1, 0xDB}), account, 4);
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x58, 0x78, 0x89, 0xE7}), character, 4);
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xE2, 0x55, 0xFE, 0xA5, 0x2D, 0xEE, 0x4A, 0x3C, 0xA1}), name, 4);
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xE3, 0x68, 0x08, 0x8C, 0x62, 0xA3, 0x2B}), targetAccount, 4);
-  handler.AddField(DecryptName<0xD3755DD95F47A909ULL>({0x5D, 0xC6, 0x18, 0x18, 0x90, 0x19, 0x75}), targetCharacter, 4);
-  handler.AddField(DecryptName<0x31D7C1EDA345E36DULL>({0x39, 0x8C, 0x1A, 0xE0, 0x85, 0xA0, 0xA5, 0x7F, 0x0C, 0x8E, 0x20, 0xA3}), targetName, 4);
-  handler.AddField(DecryptName<0xD98F03A52D35636DULL>({0x3A, 0x0C, 0x47, 0x41, 0xC1, 0x4D, 0xEE, 0xB4, 0x08, 0x63}), world, 4);
-  handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>({0x90, 0x6C, 0xE9, 0xE7, 0x3F, 0xE4, 0x64, 0x6A, 0xBF, 0x19}), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x3375B1C7DBB5FD55ULL), account, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("GID", 0x1D6D75EDE7CD311FULL), character, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("CharName", 0x59278F63D79F3DA1ULL), name, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("To_AID", 0x812BE72BCD5707B7ULL), targetAccount, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("To_GID", 0xD3755DD95F47A909ULL), targetCharacter, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("To_CharName", 0x31D7C1EDA345E36DULL), targetName, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0xD98F03A52D35636DULL), world, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0x0F0F8B6B8F9D19D1ULL), this->m_token, 4);
 
   if (handler.Perform() != 0) {
-    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x91651D81F559F971ULL>({0x17, 0x98, 0x30, 0x99, 0x81})), sourceFile, 113);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("fail", 0x91651D81F559F971ULL)), sourceFile, 113);
   } else {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x73D1674B61DF7B0BULL>({0x78, 0x0E, 0xBC, 0x02, 0x2E, 0x14, 0xA2, 0x73})), sourceFile, 122);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("success", 0x73D1674B61DF7B0BULL)), sourceFile, 122);
   }
 
   return false;
