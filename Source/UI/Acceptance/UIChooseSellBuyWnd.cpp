@@ -2304,7 +2304,7 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   case 4:
     if (x < 445) {
       const int quantity = g_session.GetItem1720QuantityByItemId(drag->name.c_str());
-      if (quantity < 2) {
+      if (quantity <= 1) {
         this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         return;
       }
@@ -11577,35 +11577,35 @@ void UIBookWnd::OnProcess() {
     return;
   }
   int line = this->m_autoLine;
-  if (line >= this->m_lineCount) {
+  if (line < this->m_lineCount) {
+    const char* text = this->m_lines[line].c_str();
+    if ((std::strlen(text) == 0 || std::strcmp(text, " ") == 0) && line < this->m_lineCount - 1) {
+      this->m_autoLine = line + 1;
+    }
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
+    UIWindow* balloon = this->m_balloon;
+    if (balloon == nullptr) {
+      balloon = new UITransBalloonText();
+      this->m_balloon = balloon;
+      balloon->SetSize(8, 8);
+      g_windowMgr.AddRenderedFront(this->m_balloon);
+      balloon = this->m_balloon;
+    }
+    static_cast<UITransBalloonText*>(balloon)->SetText(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str()), 100);
+    this->m_balloon->Move((g_renderer->viewport.width - 640) / 2 - this->m_balloon->geometry.width / 2 + 320, 81);
+    static_cast<UITransBalloonText*>(this->m_balloon)->m_textColor = 0xE1E4FF;
+    static_cast<UITransBalloonText*>(this->m_balloon)->m_outlineColor = 0;
+    ++this->m_autoLine;
+    this->m_autoTick = timeGetTime();
+  } else {
     this->m_autoTick = 0;
     if (this->m_balloon != nullptr) {
       g_windowMgr.Schedule(this->m_balloon);
       this->m_balloon = nullptr;
     }
     g_windowMgr.CloseWindow(WID_BOOKWND);
-    return;
   }
-  const char* text = this->m_lines[line].c_str();
-  if ((std::strlen(text) == 0 || std::strcmp(text, " ") == 0) && line < this->m_lineCount - 1) {
-    this->m_autoLine = line + 1;
-  }
-  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
-  UIWindow* balloon = this->m_balloon;
-  if (balloon == nullptr) {
-    balloon = new UITransBalloonText();
-    this->m_balloon = balloon;
-    balloon->SetSize(8, 8);
-    g_windowMgr.AddRenderedFront(this->m_balloon);
-    balloon = this->m_balloon;
-  }
-  static_cast<UITransBalloonText*>(balloon)->SetText(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str()), 100);
-  this->m_balloon->Move((g_renderer->viewport.width - 640) / 2 - this->m_balloon->geometry.width / 2 + 320, 81);
-  static_cast<UITransBalloonText*>(this->m_balloon)->m_textColor = 0xE1E4FF;
-  static_cast<UITransBalloonText*>(this->m_balloon)->m_outlineColor = 0;
-  ++this->m_autoLine;
-  this->m_autoTick = timeGetTime();
 }
 
 int ParseItemIdTag(const char* text, const char* end, int& length, int& itemId);
