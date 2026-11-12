@@ -795,8 +795,7 @@ __declspec(noinline) GameSettingsUI::CUIOptionItem::CUIOptionItem()
 // FUNCTION: fn_15437
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
@@ -807,7 +806,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -815,13 +814,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -853,8 +853,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
 // FUNCTION: fn_15438
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
@@ -865,7 +864,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -873,13 +872,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -911,8 +911,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
 // FUNCTION: fn_15439
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
@@ -923,7 +922,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -931,13 +930,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -969,8 +969,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
 // FUNCTION: fn_15440
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
@@ -981,7 +980,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -989,13 +988,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -1027,8 +1027,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
 // FUNCTION: fn_15441
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
@@ -1039,7 +1038,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -1047,13 +1046,14 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
