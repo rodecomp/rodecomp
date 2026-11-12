@@ -89,8 +89,11 @@ namespace {
   // INLINED
   __forceinline void FaceCamera(EffectPrimitiveSlot* slots) {
     const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
-    slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
-    slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
+    slots[0].alphaT = static_cast<std::int16_t>(view->camera.yaw);
+    slots[0].alphaT = 360 - slots[0].alphaT;
+
+    slots[1].alphaT = static_cast<std::int16_t>(view->camera.pitch);
+    slots[1].alphaT = 360 - slots[1].alphaT + 90;
 
     if (slots[1].alphaT >= 360) {
       slots[1].alphaT -= 360;
@@ -3006,9 +3009,10 @@ __declspec(noinline) void CEffectPrim::FollowMasterAndTickSlots() {
 
 // OFFSET: 0x00BE8770
 // FUNCTION: fn_19944
-__declspec(noinline) void CEffectPrim::FollowMasterAndTickSlots2() {
+__declspec(noinline) bool CEffectPrim::FollowMasterAndTickSlots2() {
   FollowMaster(*this);
   TickLiveSlots(this->state.slots);
+  return true;
 }
 
 // INLINED

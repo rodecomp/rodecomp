@@ -157,7 +157,7 @@ struct CEffectPrim : CRenderObject {
   bool IsPartyVisible();
   unsigned char FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();
-  void FollowMasterAndTickSlots2();
+  bool FollowMasterAndTickSlots2();
   void ShiftSegment();
   void InitSegment();
   void RenderTeiRect(int* rpCnt, short alpha, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, short pw, char tn, char f1, unsigned char r, unsigned char g, unsigned char b, float ty1, float ty2, float tx, float tx2, char extra);
