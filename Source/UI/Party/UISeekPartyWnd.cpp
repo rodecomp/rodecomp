@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<int, bool>::_Mybase::_Nodeptr> std::map<int, bool>::_Mybase::_Find_lower_bound<int>(const int&) const;
+
 
 // OFFSET: 0x00912010
 // FUNCTION: fn_12525
