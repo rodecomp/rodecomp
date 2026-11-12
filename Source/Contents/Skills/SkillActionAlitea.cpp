@@ -397,12 +397,11 @@ void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) 
 // FUNCTION: fn_03156
 void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
-    EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
       constexpr std::array<char, 16> bytes = CRYPT_NAME("dr_hit_werewolf", 0x3375B1C7DBB5FD55ULL);
       thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
       return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -410,13 +409,12 @@ void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
 // FUNCTION: fn_03157
 void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
   if (target) {
-    EffectLists* effects = g_effectMgr;
-    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
           constexpr auto bytesText = CRYPT_NAME("ice_hit", 0x91651D81F559F971ULL);
           const auto& bytes = bytesText.data;
           thread_local EncryptedName<sizeof(bytes), 0x91651D81F559F971ULL> name(bytes);
           return name.Text();
-        }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+        }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetScale(0.9f);
     }
   }
