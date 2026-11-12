@@ -17,6 +17,7 @@
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <array>
 #include <cstddef>
@@ -558,19 +559,10 @@ void CSkillAction_DR_FLICKING_TONADO::OnSkillEffect(int level, CGameActor* sourc
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = CRYPT_NAME("flicking_tonado", 0x2FF3C5036D070127ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("flicking_tonado", 0x2FF3C5036D070127ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    const std::uint8_t bottomSource[] = CRYPT_BYTES(23, "flicking_tonado_bottom", 0x17359BF953C367B3ULL);
-    thread_local EncryptedName<sizeof(bottomSource), 0x17359BF953C367B3ULL> bottomName(bottomSource);
-    return bottomName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("flicking_tonado_bottom", 0x17359BF953C367B3ULL, bottomName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00621C00
@@ -703,17 +695,11 @@ int CEfstAction_GROUND_GROW::GetEffectId(int efstId, int argument4) {
   }
 
   const auto full = []() {
-    const auto fullSource = CRYPT_NAME("full", 0x078333BB9725B7C9ULL);
-    thread_local EncryptedName<sizeof(fullSource), 0x078333BB9725B7C9ULL> fullName(fullSource.data);
-    return fullName.Text();
+    return OBFUSCATE_TEXT_NAMED("full", 0x078333BB9725B7C9ULL, fullName);
   };
   std::string suffix = step == 11 ? std::string(full()) : std::format("{:02}", step);
 
-  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string([] {
-    const auto prefixSource = CRYPT_NAME("ground_grow_", 0x8F1B5BFD5F6175B5ULL);
-    thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource.data);
-    return prefixName.Text();
-  }()) + suffix);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(OBFUSCATE_TEXT_NAMED("ground_grow_", 0x8F1B5BFD5F6175B5ULL, prefixName)) + suffix);
 }
 
 // OFFSET: 0x00622920
@@ -731,11 +717,7 @@ EfstActionMessage CEfstAction_NATURE_PROTECTION::GetEfstEndMessage() {
 // OFFSET: 0x00622980
 // FUNCTION: fn_04511
 int CEfstAction_NATURE_PROTECTION::GetEffectId(int efstId, int argument4) {
-  return CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 18> bytes = CRYPT_NAME("nature_protection", 0x8B3FEB5B8BD5C3C3ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
-    return name.Text();
-  }());
+  return CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("nature_protection", 0x8B3FEB5B8BD5C3C3ULL, char));
 }
 
 // OFFSET: 0x00622B20
@@ -796,11 +778,7 @@ EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::GetEfstEndMessage() {
 // OFFSET: 0x00622E30
 // FUNCTION: fn_04518
 int CEfstAction_THUNDERING_ROD_MAX::GetEffectId(int efstId, int argument4) {
-  return CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 20> bytes = CRYPT_NAME("thundering_rod_full", 0x9B17C9EFDBB39F2FULL);
-    thread_local EncryptedName<sizeof(bytes), 0x9B17C9EFDBB39F2FULL> name(bytes);
-    return name.Text();
-  }());
+  return CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_rod_full", 0x9B17C9EFDBB39F2FULL, char));
 }
 
 // OFFSET: 0x00622FD0
