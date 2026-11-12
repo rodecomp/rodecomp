@@ -880,8 +880,7 @@ void UINewSkillListWnd::Paint() {
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_right.bmp")));
   this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, bitmap, false);
 
-  int span = this->geometry.width - left - 24;
-  int count = span / 5 + (span % 5 != 0);
+  int count = (this->geometry.width - left - 24) / 5 + ((this->geometry.width - left - 24) % 5 != 0);
   for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_mid.bmp")));
     this->DrawBitmap(x, 0, bitmap, false);
@@ -893,7 +892,7 @@ void UINewSkillListWnd::Paint() {
   this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height, bitmap, false);
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_mid.bmp")));
-  span = this->geometry.width - left - 24;
+  int span = this->geometry.width - left - 24;
   count = span / bitmap->image.width + (span % bitmap->image.width != 0);
   for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
     this->DrawBitmap(x, this->geometry.height - bitmap->image.height, bitmap, false);

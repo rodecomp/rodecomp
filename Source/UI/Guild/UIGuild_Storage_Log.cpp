@@ -79,11 +79,11 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->m_state = 1;
         this->m_logTextHeight = 0;
 
-        unsigned offset = this->m_offset;
+        unsigned offset;
         if (state == 11) {
-          offset -= 20;
+          offset = this->m_offset - 20;
         } else {
-          offset = offset - offset % 10 - 10;
+          offset = this->m_offset - this->m_offset % 10 - 10;
         }
 
         this->m_offset = std::max(0u, offset);
