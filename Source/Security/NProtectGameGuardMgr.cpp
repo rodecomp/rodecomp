@@ -9,6 +9,7 @@
 #include "Utility/Threading/NSyncObject.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <array>

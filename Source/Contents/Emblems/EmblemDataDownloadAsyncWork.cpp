@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -30,7 +31,7 @@ namespace {
 }
 
 // GLOBAL: gl_25609
-const char* g_emblemDataDownloadPoolName = DecryptName<0x17359BF953C367B3ULL>(CRYPT_BYTES(16, "Emblem_Download", 0x17359BF953C367B3ULL));
+const char* g_emblemDataDownloadPoolName = OBFUSCATE_ARRAY_TEXT("Emblem_Download", 0x17359BF953C367B3ULL, std::uint8_t);
 
 // OFFSET: 0x005E9C00
 // FUNCTION: fn_03963

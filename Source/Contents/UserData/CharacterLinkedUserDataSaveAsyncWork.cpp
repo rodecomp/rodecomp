@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -26,7 +27,7 @@ namespace {
 }
 
 // GLOBAL: gl_25608
-const char* g_characterLinkedUserDataSavePoolName = DecryptName<0x17359BF953C367B3ULL>(CRYPT_BYTES(29, "CharacterLinkedUserData_Save", 0x17359BF953C367B3ULL));
+const char* g_characterLinkedUserDataSavePoolName = OBFUSCATE_ARRAY_TEXT("CharacterLinkedUserData_Save", 0x17359BF953C367B3ULL, std::uint8_t);
 
 // OFFSET: 0x005E7C10
 // FUNCTION: fn_03944

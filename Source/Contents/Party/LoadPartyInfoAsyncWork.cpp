@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -24,7 +25,7 @@ namespace {
 }
 
 // GLOBAL: gl_25603
-const char* g_loadPartyInfoPoolName = DecryptName<0x93E7A3A1F587CDC5ULL>(CRYPT_BYTES(15, "PartyInfo_Load", 0x93E7A3A1F587CDC5ULL));
+const char* g_loadPartyInfoPoolName = OBFUSCATE_ARRAY_TEXT("PartyInfo_Load", 0x93E7A3A1F587CDC5ULL, std::uint8_t);
 
 // OFFSET: 0x005D0470
 // FUNCTION: fn_03692

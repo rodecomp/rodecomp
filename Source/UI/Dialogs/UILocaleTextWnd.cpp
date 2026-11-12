@@ -3,6 +3,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <array>
 #include <cstddef>
@@ -20,12 +21,7 @@ void CUISubTab::OnCreate(int width, int height) {
   this->labelText->SetText("");
   this->labelText->SetFitText(0);
   this->labelText->SetAlign(6, 6);
-  this->labelText->SetFont([] {
-    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xB127A19D775BF751ULL);
-    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
-    thread_local EncryptedName<sizeof(fontSource), 0xB127A19D775BF751ULL> fontName(fontSource);
-    return fontName.Text();
-  }());
+  this->labelText->SetFont(OBFUSCATE_TEXT_NAMED("Gulim", 0xB127A19D775BF751ULL, fontName));
   this->labelText->SetFontHeight(12);
   this->labelText->SetBold(1);
   this->labelText->SetColor(0x5F3C2C);
@@ -36,11 +32,7 @@ void CUISubTab::OnCreate(int width, int height) {
   this->stampImage = new CUIStaticImage();
   this->stampImage->SetSize(40, 26);
   this->stampImage->Move(58, 0);
-  this->stampImage->SetImage([] {
-    const std::array<char, 54> stampSource = CRYPT_CHARS(54, "유저인터페이스\\AdventureGuide\\stamp_completed_sub.bmp", 0x0F61499B4973EB5DULL);
-    thread_local EncryptedName<sizeof(stampSource), 0x0F61499B4973EB5DULL> stampName(stampSource);
-    return stampName.Text();
-  }());
+  this->stampImage->SetImage(OBFUSCATE_TEXT_NAMED("유저인터페이스\\AdventureGuide\\stamp_completed_sub.bmp", 0x0F61499B4973EB5DULL, stampName));
   this->AddChild(this->stampImage);
 }
 
@@ -77,12 +69,7 @@ void CUITabInfo::OnCreate(int width, int height) {
   this->titleText->SetText("");
   this->titleText->SetFitText(0);
   this->titleText->SetAlign(0, 6);
-  this->titleText->SetFont([] {
-    constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xCD8F077123FB7D6FULL);
-    const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
-    thread_local EncryptedName<sizeof(fontSource), 0xCD8F077123FB7D6FULL> fontName(fontSource);
-    return fontName.Text();
-  }());
+  this->titleText->SetFont(OBFUSCATE_TEXT_NAMED("Gulim", 0xCD8F077123FB7D6FULL, fontName));
   this->titleText->SetFontHeight(12);
   this->titleText->SetBold(1);
   this->titleText->SetColor(0x815A48);
@@ -96,11 +83,7 @@ void CUITabInfo::OnCreate(int width, int height) {
   this->descriptionText->SetText("");
   this->descriptionText->SetFitText(1);
   this->descriptionText->SetAlign(0, 6);
-  this->descriptionText->SetFont([] {
-    const std::uint8_t fontSource[] = CRYPT_BYTES(6, "Gulim", 0x9949BFD527532943ULL);
-    thread_local EncryptedName<sizeof(fontSource), 0x9949BFD527532943ULL> fontName(fontSource);
-    return fontName.Text();
-  }());
+  this->descriptionText->SetFont(OBFUSCATE_TEXT_NAMED("Gulim", 0x9949BFD527532943ULL, fontName));
   this->descriptionText->SetFontHeight(12);
   this->descriptionText->SetBold(0);
   this->descriptionText->SetColor(0x2A435D);

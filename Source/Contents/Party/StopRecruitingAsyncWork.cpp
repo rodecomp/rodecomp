@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -24,7 +25,7 @@ namespace {
 }
 
 // GLOBAL: gl_25606
-const char* g_stopRecruitingPoolName = DecryptName<0xD97D5DBDBB2F2709ULL>(CRYPT_BYTES(16, "Stop_Recruiting", 0xD97D5DBDBB2F2709ULL));
+const char* g_stopRecruitingPoolName = OBFUSCATE_ARRAY_TEXT("Stop_Recruiting", 0xD97D5DBDBB2F2709ULL, std::uint8_t);
 
 // OFFSET: 0x005D5D70
 // FUNCTION: fn_03711

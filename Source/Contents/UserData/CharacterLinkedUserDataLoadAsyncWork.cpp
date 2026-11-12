@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -26,7 +27,7 @@ namespace {
 }
 
 // GLOBAL: gl_25607
-const char* g_characterLinkedUserDataLoadPoolName = DecryptName<0xC52FB5FBB94FF917ULL>(CRYPT_BYTES(29, "CharacterLinkedUserData_Load", 0xC52FB5FBB94FF917ULL));
+const char* g_characterLinkedUserDataLoadPoolName = OBFUSCATE_ARRAY_TEXT("CharacterLinkedUserData_Load", 0xC52FB5FBB94FF917ULL, std::uint8_t);
 
 // OFFSET: 0x005E4A50
 // FUNCTION: fn_03916

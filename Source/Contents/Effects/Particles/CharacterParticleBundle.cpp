@@ -1,6 +1,7 @@
 #include "Contents/Effects/Particles/CharacterParticleBundle.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -141,12 +142,7 @@ const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
 // OFFSET: 0x005A3C70
 // FUNCTION: fn_03135
 void CChopChopClawMarks::OnInit() {
-  const int id = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 10> bytesArray = CRYPT_NAME("chop_chop", 0x59278F63D79F3DA1ULL);
-    const std::uint8_t (&bytes)[10] = bytesArray._Elems;
-    thread_local EncryptedName<sizeof(bytes), 0x59278F63D79F3DA1ULL> name(bytes);
-    return name.Text();
-  }());
+  const int id = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("chop_chop", 0x59278F63D79F3DA1ULL, std::uint8_t));
   if (EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(id)) {
     this->offsetX = info->offsetX;
     this->offsetY = info->offsetY;

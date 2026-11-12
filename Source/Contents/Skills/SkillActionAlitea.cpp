@@ -386,11 +386,7 @@ public:
 void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 18> bytes = CRYPT_NAME("dr_hit_wereraptor", 0x1D6D75EDE7CD311FULL);
-      thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_wereraptor", 0x1D6D75EDE7CD311FULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -398,11 +394,7 @@ void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) 
 // FUNCTION: fn_03156
 void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 16> bytes = CRYPT_NAME("dr_hit_werewolf", 0x3375B1C7DBB5FD55ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_werewolf", 0x3375B1C7DBB5FD55ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -420,11 +412,7 @@ void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
 // FUNCTION: fn_03158
 void CSkillAction_ThunderingBasic::PlayThunderEffect(CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 20> bytes = CRYPT_NAME("thundering_attack_g", 0x3FAF85D995034FD7ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_g", 0x3FAF85D995034FD7ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -433,12 +421,7 @@ void CSkillAction_ThunderingBasic::PlayThunderEffect(CGameActor* source) {
 void CSkillAction_ThunderingExpand::PlayThunderEffect(CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<std::uint8_t, 20> bytesArray = CRYPT_NAME("thundering_attack_y", 0x490FFB43A12F0DB9ULL);
-      const std::uint8_t (&bytes)[20] = bytesArray._Elems;
-      thread_local EncryptedName<sizeof(bytes), 0x490FFB43A12F0DB9ULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_y", 0x490FFB43A12F0DB9ULL, std::uint8_t)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -608,11 +591,7 @@ void CSkillAction_Icing::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03180
 void CSkillAction_Thundering::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-          constexpr std::array<char, 16> bytes = CRYPT_NAME("thundering_cast", 0x93E7A3A1F587CDC5ULL);
-          thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
-          return name.Text();
-        }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_cast", 0x93E7A3A1F587CDC5ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -722,12 +701,7 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   this->CanUse(source);
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 17> bytesArray = CRYPT_NAME("pulse_of_madness", 0x2FF3C5036D070127ULL);
-    const std::uint8_t (&bytes)[17] = bytesArray._Elems;
-    thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("pulse_of_madness", 0x2FF3C5036D070127ULL, std::uint8_t)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A6C00
@@ -841,11 +815,7 @@ void CSkillAction_AT_QUILL_SPEAR::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 16> bytes = CRYPT_NAME("quill_spear_3x7", 0x93E7A3A1F587CDC5ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
-    return name.Text();
-  }());
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("quill_spear_3x7", 0x93E7A3A1F587CDC5ULL, char));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
@@ -864,11 +834,7 @@ void CSkillAction_AT_QUILL_SPEAR_S::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 16> bytes = CRYPT_NAME("quill_spear_5x7", 0x3FAF85D995034FD7ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
-    return name.Text();
-  }());
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("quill_spear_5x7", 0x3FAF85D995034FD7ULL, char));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
@@ -955,17 +921,9 @@ void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(int level, CGameActor* source, 
 void CSkillAction_AT_GRAVITY_HOLE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 13> bytes = CRYPT_NAME("gravity_hole", 0x91651D81F559F971ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x91651D81F559F971ULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole", 0x91651D81F559F971ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 20> bytes = CRYPT_NAME("gravity_hole_bottom", 0x73D1674B61DF7B0BULL);
-      thread_local EncryptedName<sizeof(bytes), 0x73D1674B61DF7B0BULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole_bottom", 0x73D1674B61DF7B0BULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -1006,32 +964,16 @@ void CSkillObjectAction_AT_GLACIER_MONOLITH::OnSkillObjectCreate(int argument, C
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 23> bytes = CRYPT_NAME("glacier_monolith_start", 0xD3755DD95F47A909ULL);
-    thread_local EncryptedName<sizeof(bytes), 0xD3755DD95F47A909ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_monolith_start", 0xD3755DD95F47A909ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 30> bytes = CRYPT_NAME("glacier_monolith_start_bottom", 0x31D7C1EDA345E36DULL);
-    thread_local EncryptedName<sizeof(bytes), 0x31D7C1EDA345E36DULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_monolith_start_bottom", 0x31D7C1EDA345E36DULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<char, 22> bytes = CRYPT_NAME("glacier_monolith_loop", 0xC7912587FFF31B71ULL);
-        thread_local EncryptedName<sizeof(bytes), 0xC7912587FFF31B71ULL> name(bytes);
-        return name.Text();
-      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_monolith_loop", 0xC7912587FFF31B71ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(990);
   }
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<char, 29> bytes = CRYPT_NAME("glacier_monolith_loop_bottom", 0x69D345DB950F336DULL);
-        thread_local EncryptedName<sizeof(bytes), 0x69D345DB950F336DULL> name(bytes);
-        return name.Text();
-      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_monolith_loop_bottom", 0x69D345DB950F336DULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(990);
   }
 }
@@ -1071,11 +1013,7 @@ void CSkillAction_AT_GLACIER_NOVA::OnGroundSkillEffect(vector3d position, int ar
 // FUNCTION: fn_03226
 void CSkillAction_AT_GLACIER_SHARD::OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-          constexpr std::array<char, 21> bytes = CRYPT_NAME("glacier_shard_target", 0x151F77EBEBBB2147ULL);
-          thread_local EncryptedName<sizeof(bytes), 0x151F77EBEBBB2147ULL> name(bytes);
-          return name.Text();
-        }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_shard_target", 0x151F77EBEBBB2147ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -1133,17 +1071,9 @@ int CSkillAction_AT_ROARING_CHARGE_S::GetSkillAttackMotion() {
 void CSkillAction_AT_ROARING_CHARGE_S::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 17> bytes = CRYPT_NAME("roaring_charge_s", 0x8B3FEB5B8BD5C3C3ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("roaring_charge_s", 0x8B3FEB5B8BD5C3C3ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 24> bytes = CRYPT_NAME("roaring_charge_s_bottom", 0x0BEB63A5C905B3A7ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x0BEB63A5C905B3A7ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("roaring_charge_s_bottom", 0x0BEB63A5C905B3A7ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1229,32 +1159,12 @@ void CSkillAction_AT_FURIOS_STORM::PlayThunderEffect(CGameActor* source) {
 // FUNCTION: fn_03239
 void CEfstAction_FURIOS_STORM::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<std::uint8_t, 16> bytes = CRYPT_NAME("thundering_cast", 0x7FC1015DFFCF6D19ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
-      return name.Text();
-    }()));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_cast", 0x7FC1015DFFCF6D19ULL, std::uint8_t)));
     for (int index = 0; index < 4; ++index) {
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<std::uint8_t, 15> bytes = CRYPT_NAME("furios_storm_a", 0xCB3FBD4183DB8323ULL);
-        thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
-        return name.Text();
-      }()));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<std::uint8_t, 22> bytes = CRYPT_NAME("furios_storm_a_bottom", 0x7FCD77F9C7CBD14DULL);
-        thread_local EncryptedName<sizeof(bytes), 0x7FCD77F9C7CBD14DULL> name(bytes);
-        return name.Text();
-      }()));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<std::uint8_t, 15> bytes = CRYPT_NAME("furios_storm_b", 0xD1538513DF975701ULL);
-        thread_local EncryptedName<sizeof(bytes), 0xD1538513DF975701ULL> name(bytes);
-        return name.Text();
-      }()));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr std::array<std::uint8_t, 22> bytes = CRYPT_NAME("furios_storm_b_bottom", 0x91E147EBBD47C39FULL);
-        thread_local EncryptedName<sizeof(bytes), 0x91E147EBBD47C39FULL> name(bytes);
-        return name.Text();
-      }()));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_a", 0xCB3FBD4183DB8323ULL, std::uint8_t)));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_a_bottom", 0x7FCD77F9C7CBD14DULL, std::uint8_t)));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_b", 0xD1538513DF975701ULL, std::uint8_t)));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_b_bottom", 0x91E147EBBD47C39FULL, std::uint8_t)));
     }
   }
 }
@@ -1419,17 +1329,9 @@ int CSkillAction_AT_TEMPEST_FLAP::GetSkillAttackMotion() {
 void CSkillAction_AT_TEMPEST_FLAP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 13> bytes = CRYPT_NAME("tempest_flap", 0x17FFC98B398FAF61ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x17FFC98B398FAF61ULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap", 0x17FFC98B398FAF61ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 20> bytes = CRYPT_NAME("tempest_flap_bottom", 0x9B5B959B954D9333ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x9B5B959B954D9333ULL> name(bytes);
-      return name.Text();
-    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_bottom", 0x9B5B959B954D9333ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
 
@@ -1448,28 +1350,8 @@ void CSkillAction_AT_TERRA_HARVEST::OnSkillEffect(int level, CGameActor* source,
 
   const int roll = std::rand() % 2;
   const int variant = roll >= 0 ? roll : 0;
-  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string([] {
-    constexpr auto bytesText = CRYPT_NAME("terra_harvest_red", 0xAFA5617F178B6185ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0xAFA5617F178B6185ULL> name(bytes);
-    return name.Text();
-  }()) : std::string([] {
-    constexpr auto bytesText = CRYPT_NAME("terra_harvest_yellow", 0x078143534999254DULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x078143534999254DULL> name(bytes);
-    return name.Text();
-  }()));
-  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string([] {
-    constexpr auto bytesText = CRYPT_NAME("terra_harvest_red_bottom", 0x8741152D8FB34B4FULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x8741152D8FB34B4FULL> name(bytes);
-    return name.Text();
-  }()) : std::string([] {
-    constexpr auto bytesText = CRYPT_NAME("terra_harvest_yellow_bottom", 0x955D4DF94DE9BB07ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x955D4DF94DE9BB07ULL> name(bytes);
-    return name.Text();
-  }()));
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string(OBFUSCATE_TEXT("terra_harvest_red", 0xAFA5617F178B6185ULL)) : std::string(OBFUSCATE_TEXT("terra_harvest_yellow", 0x078143534999254DULL)));
+  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string(OBFUSCATE_TEXT("terra_harvest_red_bottom", 0x8741152D8FB34B4FULL)) : std::string(OBFUSCATE_TEXT("terra_harvest_yellow_bottom", 0x955D4DF94DE9BB07ULL)));
   g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   g_effectMgr->Spawn(target->render.accountId, bottomId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
@@ -1478,17 +1360,9 @@ void CSkillAction_AT_TERRA_HARVEST::OnSkillEffect(int level, CGameActor* source,
 // FUNCTION: fn_03268
 void CSkillAction_AT_TERRA_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 11> bytes = CRYPT_NAME("terra_wave", 0xC399B7091589B50BULL);
-    thread_local EncryptedName<sizeof(bytes), 0xC399B7091589B50BULL> name(bytes);
-    return name.Text();
-  }()), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("terra_wave", 0xC399B7091589B50BULL, char)), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 18> bytes = CRYPT_NAME("terra_wave_bottom", 0xB739073FE921AD6FULL);
-    thread_local EncryptedName<sizeof(bytes), 0xB739073FE921AD6FULL> name(bytes);
-    return name.Text();
-  }()), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("terra_wave_bottom", 0xB739073FE921AD6FULL, char)), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005AD970
@@ -1502,17 +1376,9 @@ int CSkillAction_AT_SOLID_STOMP::GetSkillAttackMotion() {
 void CSkillAction_AT_SOLID_STOMP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 12> bytes = CRYPT_NAME("solid_stomp", 0xFF7D83CB791339D9ULL);
-      thread_local EncryptedName<sizeof(bytes), 0xFF7D83CB791339D9ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("solid_stomp", 0xFF7D83CB791339D9ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 19> bytes = CRYPT_NAME("solid_stomp_bottom", 0xED5143E7C1B39315ULL);
-      thread_local EncryptedName<sizeof(bytes), 0xED5143E7C1B39315ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("solid_stomp_bottom", 0xED5143E7C1B39315ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1540,17 +1406,9 @@ void CEfstAction_ZEPHYR_LINK::OnEfstBegin(int efstId, int value, int argument3, 
   if (actor) {
     this->OnEfstEnd(efstId, value, argument3, argument4, actor);
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 12> bytes = CRYPT_NAME("zephyr_link", 0x393D916561BDC391ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x393D916561BDC391ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("zephyr_link", 0x393D916561BDC391ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 19> bytes = CRYPT_NAME("zephyr_link_bottom", 0x31956551B311FD95ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x31956551B311FD95ULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("zephyr_link_bottom", 0x31956551B311FD95ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1559,17 +1417,9 @@ void CEfstAction_ZEPHYR_LINK::OnEfstBegin(int efstId, int value, int argument3, 
 void CEfstAction_ZEPHYR_LINK::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 12> bytes = CRYPT_NAME("zephyr_link", 0x2F2701A7E56D3D89ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x2F2701A7E56D3D89ULL> name(bytes);
-      return name.Text();
-    }()));
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("zephyr_link", 0x2F2701A7E56D3D89ULL, char)));
     effects = g_effectMgr;
-    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 19> bytes = CRYPT_NAME("zephyr_link_bottom", 0x6B3301E1A3079125ULL);
-      thread_local EncryptedName<sizeof(bytes), 0x6B3301E1A3079125ULL> name(bytes);
-      return name.Text();
-    }()));
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("zephyr_link_bottom", 0x6B3301E1A3079125ULL, char)));
   }
 }
 
@@ -1668,11 +1518,7 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
 // FUNCTION: fn_03264
 void CSkillAction_AT_TEMPEST_FLAP::OnSkillCast(int level, CGameActor* source) {
   if (this->CanUse(source)) {
-        if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-      constexpr std::array<char, 18> bytes = CRYPT_NAME("tempest_flap_cast", 0x33832D4D3FDFBDBFULL);
-      thread_local EncryptedName<sizeof(bytes), 0x33832D4D3FDFBDBFULL> name(bytes);
-      return name.Text();
-    }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+        if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_cast", 0x33832D4D3FDFBDBFULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }

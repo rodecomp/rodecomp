@@ -3,6 +3,7 @@
 #include "UI/Items/UIEquipmentPropertiesWnd.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -282,24 +283,12 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->titleBar;
-    const std::string right([] {
-      constexpr std::array<char, 50> source = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x0B7109397F6B1387ULL);
-      // GLOBAL: gl_25321
-      thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
-      return name.Text();
-    }());
-    const std::string middle([] {
-      constexpr std::array<char, 48> source = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x03772763F96D9DA5ULL);
-      // GLOBAL: gl_25322
-      thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
-      return name.Text();
-    }());
-    const std::string left([] {
-      constexpr std::array<char, 49> source = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xC517FB932D95BB6DULL);
-      // GLOBAL: gl_25323
-      thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25321
+    const std::string right(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x0B7109397F6B1387ULL, char));
+    // GLOBAL: gl_25322
+    const std::string middle(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x03772763F96D9DA5ULL, char));
+    // GLOBAL: gl_25323
+    const std::string left(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xC517FB932D95BB6DULL, char));
     titleBar->SetImages(left, middle, right);
   }
   this->AddChild(this->titleBar);
@@ -311,12 +300,8 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {
-    title->SetFont(std::string([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x13E33FA1A591AB67ULL);
-      // GLOBAL: gl_25324
-      thread_local EncryptedName<sizeof(source), 0x13E33FA1A591AB67ULL> name(source);
-      return name.Text();
-    }()));
+    // GLOBAL: gl_25324
+    title->SetFont(std::string(OBFUSCATE_ARRAY_TEXT("Gulim", 0x13E33FA1A591AB67ULL, char)));
   }
   title->SetFontHeight(12);
   title->SetBold(0);
@@ -334,30 +319,14 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   baseButton->disabled = 0;
   baseButton->Invalidate();
   {
-    const std::string inactive([] {
-      constexpr std::array<char, 48> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL);
-      // GLOBAL: gl_25325
-      thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
-      return name.Text();
-    }());
-    const std::string pressed([] {
-      constexpr std::array<char, 47> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL);
-      // GLOBAL: gl_25326
-      thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> name(source);
-      return name.Text();
-    }());
-    const std::string hover([] {
-      constexpr std::array<char, 47> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL);
-      // GLOBAL: gl_25327
-      thread_local EncryptedName<sizeof(source), 0x9949BFD527532943ULL> name(source);
-      return name.Text();
-    }());
-    const std::string normal([] {
-      constexpr std::array<char, 48> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL);
-      // GLOBAL: gl_25328
-      thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25325
+    const std::string inactive(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL, char));
+    // GLOBAL: gl_25326
+    const std::string pressed(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL, char));
+    // GLOBAL: gl_25327
+    const std::string hover(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL, char));
+    // GLOBAL: gl_25328
+    const std::string normal(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL, char));
     baseButton->SetImages(normal, hover, pressed, inactive);
   }
   this->titleBar->AddChild(baseButton);
@@ -369,30 +338,14 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    const std::string inactive([] {
-      constexpr std::array<char, 49> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL);
-      // GLOBAL: gl_25329
-      thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
-      return name.Text();
-    }());
-    const std::string pressed([] {
-      constexpr std::array<char, 48> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL);
-      // GLOBAL: gl_25331
-      thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
-      return name.Text();
-    }());
-    const std::string hover([] {
-      constexpr std::array<char, 48> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL);
-      // GLOBAL: gl_25333
-      thread_local EncryptedName<sizeof(source), 0xF14F79170939C7F1ULL> name(source);
-      return name.Text();
-    }());
-    const std::string normal([] {
-      constexpr std::array<char, 49> source = CRYPT_NAME("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL);
-      // GLOBAL: gl_25335
-      thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25329
+    const std::string inactive(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL, char));
+    // GLOBAL: gl_25331
+    const std::string pressed(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL, char));
+    // GLOBAL: gl_25333
+    const std::string hover(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL, char));
+    // GLOBAL: gl_25335
+    const std::string normal(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL, char));
     closeButton->SetImages(normal, hover, pressed, inactive);
   }
   this->titleBar->SetSecondButton(closeButton);
@@ -413,50 +366,26 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->list->scrollBar->step = 18;
   {
     auto* list = this->list;
-    const std::string down([] {
-      constexpr std::array<char, 31> source = CRYPT_NAME("유저인터페이스\\scroll0down.bmp", 0x83EFBFBB37EDBDBDULL);
-      // GLOBAL: gl_25336
-      thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-      return name.Text();
-    }());
-    const std::string up([] {
-      constexpr std::array<char, 29> source = CRYPT_NAME("유저인터페이스\\scroll0up.bmp", 0x050505679903579BULL);
-      // GLOBAL: gl_25337
-      thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25336
+    const std::string down(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0down.bmp", 0x83EFBFBB37EDBDBDULL, char));
+    // GLOBAL: gl_25337
+    const std::string up(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0up.bmp", 0x050505679903579BULL, char));
     list->scrollBar->SetButtonImages(up, down);
   }
   {
     auto* list = this->list;
-    const std::string background([] {
-      constexpr std::array<char, 30> source = CRYPT_NAME("유저인터페이스\\scroll0mid.bmp", 0xBF2B4B31397FF5A7ULL);
-      // GLOBAL: gl_25338
-      thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25338
+    const std::string background(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0mid.bmp", 0xBF2B4B31397FF5A7ULL, char));
     list->scrollBar->SetBackground(background);
   }
   {
     auto* list = this->list;
-    const std::string bottom([] {
-      constexpr std::array<char, 35> source = CRYPT_NAME("유저인터페이스\\scroll0bar_down.bmp", 0x2F8B0F37118D157FULL);
-      // GLOBAL: gl_25339
-      thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-      return name.Text();
-    }());
-    const std::string middle([] {
-      constexpr std::array<char, 34> source = CRYPT_NAME("유저인터페이스\\scroll0bar_mid.bmp", 0x39FF7FB50DEB998FULL);
-      // GLOBAL: gl_25340
-      thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
-      return name.Text();
-    }());
-    const std::string top([] {
-      constexpr std::array<char, 33> source = CRYPT_NAME("유저인터페이스\\scroll0bar_up.bmp", 0x2FE993D1DDE1F197ULL);
-      // GLOBAL: gl_25341
-      thread_local EncryptedName<sizeof(source), 0x2FE993D1DDE1F197ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25339
+    const std::string bottom(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x2F8B0F37118D157FULL, char));
+    // GLOBAL: gl_25340
+    const std::string middle(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x39FF7FB50DEB998FULL, char));
+    // GLOBAL: gl_25341
+    const std::string top(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0x2FE993D1DDE1F197ULL, char));
     list->scrollBar->SetThumbImages(top, middle, bottom);
   }
   this->list->AddNewItem();
@@ -480,23 +409,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   allButton->Invalidate();
   allButton->SetId(0);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("전체", 0xAD075B8DB599F1CDULL);
-      // GLOBAL: gl_25342
-      thread_local EncryptedName<sizeof(source), 0xAD075B8DB599F1CDULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25342
+    const std::string label(OBFUSCATE_ARRAY_TEXT("전체", 0xAD075B8DB599F1CDULL, char));
     allButton->SetText(label);
   }
   allButton->SetFitText(0);
   allButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x4941FD9F21BBB9FDULL);
-      // GLOBAL: gl_25343
-      thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25343
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x4941FD9F21BBB9FDULL, char));
     allButton->SetFont(font);
   }
   allButton->SetFontHeight(12);
@@ -516,23 +437,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   statButton->Invalidate();
   statButton->SetId(1);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("스탯", 0x35E5656B5DEDCD75ULL);
-      // GLOBAL: gl_25344
-      thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25344
+    const std::string label(OBFUSCATE_ARRAY_TEXT("스탯", 0x35E5656B5DEDCD75ULL, char));
     statButton->SetText(label);
   }
   statButton->SetFitText(0);
   statButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0xB7FD8F670FC7B96BULL);
-      // GLOBAL: gl_25345
-      thread_local EncryptedName<sizeof(source), 0xB7FD8F670FC7B96BULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25345
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0xB7FD8F670FC7B96BULL, char));
     statButton->SetFont(font);
   }
   statButton->SetFontHeight(12);
@@ -552,23 +465,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   abilityButton->Invalidate();
   abilityButton->SetId(2);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("어빌", 0xE7978FB5A94DD7FDULL);
-      // GLOBAL: gl_25346
-      thread_local EncryptedName<sizeof(source), 0xE7978FB5A94DD7FDULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25346
+    const std::string label(OBFUSCATE_ARRAY_TEXT("어빌", 0xE7978FB5A94DD7FDULL, char));
     abilityButton->SetText(label);
   }
   abilityButton->SetFitText(0);
   abilityButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x7115D9F973F913C9ULL);
-      // GLOBAL: gl_25347
-      thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25347
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x7115D9F973F913C9ULL, char));
     abilityButton->SetFont(font);
   }
   abilityButton->SetFontHeight(12);
@@ -588,23 +493,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   battleButton->Invalidate();
   battleButton->SetId(3);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("전투", 0xCB1D253B7FE1F563ULL);
-      // GLOBAL: gl_25348
-      thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25348
+    const std::string label(OBFUSCATE_ARRAY_TEXT("전투", 0xCB1D253B7FE1F563ULL, char));
     battleButton->SetText(label);
   }
   battleButton->SetFitText(0);
   battleButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x793F370985ED674FULL);
-      // GLOBAL: gl_25349
-      thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25349
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x793F370985ED674FULL, char));
     battleButton->SetFont(font);
   }
   battleButton->SetFontHeight(12);
@@ -624,23 +521,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   elementButton->Invalidate();
   elementButton->SetId(4);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("속성", 0xE55723712993051DULL);
-      // GLOBAL: gl_25350
-      thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25350
+    const std::string label(OBFUSCATE_ARRAY_TEXT("속성", 0xE55723712993051DULL, char));
     elementButton->SetText(label);
   }
   elementButton->SetFitText(0);
   elementButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x7DE349D717D7F123ULL);
-      // GLOBAL: gl_25351
-      thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25351
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x7DE349D717D7F123ULL, char));
     elementButton->SetFont(font);
   }
   elementButton->SetFontHeight(12);
@@ -660,23 +549,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   raceButton->Invalidate();
   raceButton->SetId(5);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("종족", 0x0F15B16B5BAFD57FULL);
-      // GLOBAL: gl_25352
-      thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25352
+    const std::string label(OBFUSCATE_ARRAY_TEXT("종족", 0x0F15B16B5BAFD57FULL, char));
     raceButton->SetText(label);
   }
   raceButton->SetFitText(0);
   raceButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x7941D76335CFA14FULL);
-      // GLOBAL: gl_25353
-      thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25353
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x7941D76335CFA14FULL, char));
     raceButton->SetFont(font);
   }
   raceButton->SetFontHeight(12);
@@ -696,23 +577,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   skillButton->Invalidate();
   skillButton->SetId(6);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("스킬", 0x7321C3814F8799E1ULL);
-      // GLOBAL: gl_25354
-      thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25354
+    const std::string label(OBFUSCATE_ARRAY_TEXT("스킬", 0x7321C3814F8799E1ULL, char));
     skillButton->SetText(label);
   }
   skillButton->SetFitText(0);
   skillButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x839B27DF8F5967B3ULL);
-      // GLOBAL: gl_25355
-      thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25355
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x839B27DF8F5967B3ULL, char));
     skillButton->SetFont(font);
   }
   skillButton->SetFontHeight(12);
@@ -732,23 +605,15 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   specialButton->Invalidate();
   specialButton->SetId(7);
   {
-    const std::string label([] {
-      constexpr std::array<char, 5> source = CRYPT_NAME("특수", 0xF3CB6F7711A71B6DULL);
-      // GLOBAL: gl_25356
-      thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25356
+    const std::string label(OBFUSCATE_ARRAY_TEXT("특수", 0xF3CB6F7711A71B6DULL, char));
     specialButton->SetText(label);
   }
   specialButton->SetFitText(0);
   specialButton->SetAlign(6, 6);
   {
-    const std::string font([] {
-      constexpr std::array<char, 6> source = CRYPT_NAME("Gulim", 0x452FEF0D7FC95565ULL);
-      // GLOBAL: gl_25357
-      thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25357
+    const std::string font(OBFUSCATE_ARRAY_TEXT("Gulim", 0x452FEF0D7FC95565ULL, char));
     specialButton->SetFont(font);
   }
   specialButton->SetFontHeight(12);
@@ -765,12 +630,8 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->resizer->Move(286, 294);
   {
     CUIResizer* resizer = this->resizer;
-    const std::string image([] {
-      constexpr std::array<char, 30> source = CRYPT_NAME("유저인터페이스\\btn_resize.bmp", 0x9FED7DA189490D5DULL);
-      // GLOBAL: gl_25358
-      thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
-      return name.Text();
-    }());
+    // GLOBAL: gl_25358
+    const std::string image(OBFUSCATE_ARRAY_TEXT("유저인터페이스\\btn_resize.bmp", 0x9FED7DA189490D5DULL, char));
     resizer->SetImage(image);
   }
   this->resizer->SetOnResize([this](int deltaWidth, int deltaHeight) { this->Grow(deltaWidth, deltaHeight); });
@@ -793,13 +654,8 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width,
   this->labelText->SetText("");
   this->labelText->SetFitText(0);
   this->labelText->SetAlign(6, 0);
-  this->labelText->SetFont(std::string([] {
-    constexpr auto sourceText = CRYPT_NAME("Gulim", 0x2BAD156DE3E1F9D9ULL);
-    const auto& source = sourceText.data;
-    // GLOBAL: gl_25121
-    thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
-    return name.Text();
-  }()));
+  // GLOBAL: gl_25121
+  this->labelText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x2BAD156DE3E1F9D9ULL)));
   this->labelText->SetFontHeight(12);
   this->labelText->SetBold(0);
   this->labelText->SetColor(0xFF2A00);
@@ -813,13 +669,8 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::OnCreate(int width,
   this->valueText->SetText("");
   this->valueText->SetFitText(1);
   this->valueText->SetAlign(0, 0);
-  this->valueText->SetFont(std::string([] {
-    constexpr auto sourceText = CRYPT_NAME("Gulim", 0x23BBD58F8B5FF5C9ULL);
-    const auto& source = sourceText.data;
-    // GLOBAL: gl_25122
-    thread_local EncryptedName<sizeof(source), 0x23BBD58F8B5FF5C9ULL> name(source);
-    return name.Text();
-  }()));
+  // GLOBAL: gl_25122
+  this->valueText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x23BBD58F8B5FF5C9ULL)));
   this->valueText->SetFontHeight(12);
   this->valueText->SetBold(0);
   this->valueText->SetColor(0);

@@ -8,6 +8,7 @@
 #include "Utility/Hash/XxHash3.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <algorithm>
 #include <atomic>
@@ -178,13 +179,8 @@ bool CGPak::Open(CPakFile* file) {
 
   this->m_file = file;
   const std::uint8_t* bytes = file->Read(0, sizeof(PakHeaderFile));
-  EncryptedName<14, 0x050505679903579BULL>& eventHorizon = []() -> EncryptedName<14, 0x050505679903579BULL>& {
-    constexpr auto sourceText = CRYPT_NAME("Event Horizon", 0x050505679903579BULL);
-    const auto& source = sourceText.data;
-    // GLOBAL: gl_25504
-    thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> name(source);
-    return name;
-  }();
+  // GLOBAL: gl_25504
+  EncryptedName<14, 0x050505679903579BULL>& eventHorizon = OBFUSCATE_STRING("Event Horizon", 0x050505679903579BULL);
 
   if (std::memcmp(bytes, eventHorizon.Text(), 14) == 0) {
     const PakFileHeader* header = reinterpret_cast<const PakFileHeader*>(bytes);
@@ -192,13 +188,8 @@ bool CGPak::Open(CPakFile* file) {
     this->m_entryCount = header->entryCount;
     this->m_tableOffset = header->tableOffset + sizeof(PakFileHeader);
   } else {
-    EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& masterOfMagic = []() -> EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& {
-      constexpr auto sourceText = CRYPT_NAME("Master of Magic", 0x83EFBFBB37EDBDBDULL);
-      const auto& source = sourceText.data;
-      // GLOBAL: gl_25505
-      thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
-      return name;
-    }();
+    // GLOBAL: gl_25505
+    EncryptedName<16, 0x83EFBFBB37EDBDBDULL>& masterOfMagic = OBFUSCATE_STRING("Master of Magic", 0x83EFBFBB37EDBDBDULL);
 
     if (std::memcmp(bytes, masterOfMagic.Text(), 16) != 0) {
       return false;

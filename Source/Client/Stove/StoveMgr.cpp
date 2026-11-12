@@ -689,11 +689,6 @@ void TermsAgreementCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
     g_modeMgr.GetGameMode()->SendMsg(MM_REQUEST_CASH_SHOP, 0, 0, 0, 0);
   } else {
     std::string path = EncodeText(CP_ACP, std::wstring(url));
-    ShellExecuteA(nullptr, [] {
-      constexpr auto sourceText = CRYPT_NAME("OPEN", 0x2FF3C5036D070127ULL);
-      const auto& source = sourceText.data;
-      thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> verb(source);
-      return verb.Text();
-    }(), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
+    ShellExecuteA(nullptr, OBFUSCATE_TEXT_NAMED("OPEN", 0x2FF3C5036D070127ULL, verb), path.c_str(), path.c_str(), nullptr, SW_SHOWNORMAL);
   }
 }
