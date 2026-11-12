@@ -2389,8 +2389,12 @@ bool CEffectPrim::Prim3DParticle() {
   const int frame = this->state.stateCnt;
 
   if (frame == this->state.changePoint) {
-    this->state.speed3d = this->state.changeSpeed3d;
-    this->state.deltaPosAccel = this->state.changeAccel3d;
+    this->state.speed3d.x = this->state.changeSpeed3d.x;
+    this->state.speed3d.y = this->state.changeSpeed3d.y;
+    this->state.speed3d.z = this->state.changeSpeed3d.z;
+    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
+    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
+    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
   }
 
   float vertical = this->state.accel + this->state.speed;
@@ -2424,7 +2428,7 @@ bool CEffectPrim::Prim3DParticle() {
   flags = this->state.pattern;
 
   if ((flags & 2u) != 0) {
-    if (this->state.stateCnt % this->state.chCnt == 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
       this->state.chCnt = ClampedRandom(8) + 12;
       this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
       this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
@@ -2442,7 +2446,7 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.deltaPos.x = this->state.deltaPos3.x + this->state.deltaPos.x;
   }
 
-  if ((flags & 4u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
+  if ((flags & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
     this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
@@ -2452,7 +2456,7 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.chCnt = ClampedRandom(10) + 5;
   }
 
-  if ((flags & 8u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
+  if ((flags & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
@@ -2740,8 +2744,12 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   const int frame = this->state.stateCnt;
 
   if (frame == this->state.changePoint) {
-    this->state.speed3d = this->state.changeSpeed3d;
-    this->state.deltaPosAccel = this->state.changeAccel3d;
+    this->state.speed3d.x = this->state.changeSpeed3d.x;
+    this->state.speed3d.y = this->state.changeSpeed3d.y;
+    this->state.speed3d.z = this->state.changeSpeed3d.z;
+    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
+    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
+    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
   }
 
   float vertical = this->state.accel + this->state.speed;
@@ -2775,7 +2783,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   flags = this->state.pattern;
 
   if ((flags & 2u) != 0) {
-    if (this->state.stateCnt % this->state.chCnt == 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
       this->state.chCnt = ClampedRandom(8) + 12;
       this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
       this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
@@ -2793,7 +2801,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.deltaPos.x = this->state.deltaPos3.x + this->state.deltaPos.x;
   }
 
-  if ((flags & 4u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
+  if ((flags & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
     this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
@@ -2803,7 +2811,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     flags = this->state.pattern;
   }
 
-  if ((flags & 8u) != 0 && this->state.stateCnt % this->state.chCnt == 0) {
+  if ((flags & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
     reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
@@ -3760,6 +3768,8 @@ void CEffectPrim::PrimPokJuk() {
   FaceCamera(slots);
   FollowMaster(*this);
 
+  int trailPeriod = 3;
+  int beatPeriod = 20;
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = slots[index];
 
@@ -3774,16 +3784,22 @@ void CEffectPrim::PrimPokJuk() {
       continue;
     }
 
-    if (process % 3 == 0) {
-      slot.vecTPre = slot.vecTNow;
-      slot.vecTNow = slot.vecBPre;
-      slot.vecBPre = slot.vecBNow;
+    if (process % trailPeriod == 0) {
+      slot.vecTPre.x = slot.vecTNow.x;
+      slot.vecTPre.y = slot.vecTNow.y;
+      slot.vecTPre.z = slot.vecTNow.z;
+      slot.vecTNow.x = slot.vecBPre.x;
+      slot.vecTNow.y = slot.vecBPre.y;
+      slot.vecTNow.z = slot.vecBPre.z;
+      slot.vecBPre.x = slot.vecBNow.x;
+      slot.vecBPre.y = slot.vecBNow.y;
+      slot.vecBPre.z = slot.vecBNow.z;
     }
 
     const int delay = slot.flag1[2];
 
     if (process <= delay + 180 && process >= delay + 160) {
-      const char beat = static_cast<char>(process % 20);
+      const char beat = static_cast<char>(process % beatPeriod);
 
       if (beat == 15 || beat == 19) {
         slot.flag1[3] = 1;
@@ -5649,6 +5665,7 @@ void CEffectPrim::PrimWaveSpin() {
 void CEffectPrim::PrimBreathingWave() {
   FollowMaster(*this);
 
+  int period = 100;
   int steps = 360;
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
@@ -5658,7 +5675,7 @@ void CEffectPrim::PrimBreathingWave() {
       continue;
     }
 
-    const int cycle = ++slot.process % 100;
+    const int cycle = ++slot.process % period;
     if (cycle == 0) {
       this->state.size = 4.0f;
     } else if (cycle == 25) {
