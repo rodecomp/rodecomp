@@ -1728,7 +1728,9 @@ void CGameMode::ReceiveActorClanName(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorClanNamePacket*>(data);
 
   const char* name = packet->name;
-  this->nameCard.SetValue3(packet->aid, std::string(name, name + (packet->length - 8)));
+  const int length = packet->length - 8;
+  const std::uint32_t aid = packet->aid;
+  this->nameCard.SetValue3(aid, std::string(name, name + length));
 }
 
 // OFFSET: 0x00D66470
