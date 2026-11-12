@@ -56,7 +56,12 @@ void CAstralStrikeEffect::SpawnStrike() {
   const int offsetZ = RandomIndex(span);
   position.z += (static_cast<float>(offsetZ) - half) * 0.1f;
 
-  switch (RandomIndex(3)) {
+  int kind = rand() % 3;
+  if (kind < 0) {
+    kind = 0;
+  }
+
+  switch (kind) {
   case 0: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 13));
     bottom->Load(std::string("astralstrike\\astralstrike_sub_1_bottom\\astralstrike_sub_1_bottom.str"));
