@@ -62,9 +62,9 @@ BinkMovies::BinkMovies() = default;
 // OFFSET: 0x007AFED0
 // FUNCTION: fn_09162
 BinkMovies::~BinkMovies() {
-  for (NamedBinkMovie* movie : this->m_movies) {
+  std::for_each(this->m_movies.begin(), this->m_movies.end(), [](NamedBinkMovie* movie) {
     delete movie;
-  }
+  });
 }
 
 // OFFSET: 0x007B00F0
