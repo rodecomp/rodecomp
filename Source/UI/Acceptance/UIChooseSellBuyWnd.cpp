@@ -7874,8 +7874,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
-  this->m_textViewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_textViewer->Invalidate();
+  this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
   this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_BE_PATIENT)), 38, 0, 0);
 }
