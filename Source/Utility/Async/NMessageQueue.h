@@ -33,6 +33,10 @@ public:
 
 protected:
   struct Record {
+    // INLINED
+    Record(std::uint32_t argumentLow, std::uint32_t argumentHigh, std::uint32_t id) : argumentLow(argumentLow), argumentHigh(argumentHigh), id(id) {
+    }
+
     /* 0000 */ std::uint32_t argumentLow;
     /* 0004 */ std::uint32_t argumentHigh;
     /* 0008 */ std::uint32_t id;
