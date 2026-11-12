@@ -472,7 +472,8 @@ long long UIBank_NewWnd::AdjustAmount(int amount) {
   } else if (!this->IsNumeric(text)) {
     result = amount;
   } else {
-    result = amount + _atoi64(text.c_str());
+    const long long value = _atoi64(text.c_str());
+    result = amount + value;
   }
   if (result > 0x7FFFFFFF) {
     result = 0x7FFFFFFF;
