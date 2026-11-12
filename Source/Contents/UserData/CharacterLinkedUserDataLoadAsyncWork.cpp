@@ -31,7 +31,7 @@ const char* g_characterLinkedUserDataLoadPoolName = DecryptName<0xC52FB5FBB94FF9
 // OFFSET: 0x005E4A50
 // FUNCTION: fn_03916
 CCharacterLinkedUserDataLoadAsyncWork::CCharacterLinkedUserDataLoadAsyncWork()
-    : NAsyncWork("CharacterLinkedUserData_Load"), m_accountId(0), m_characterId(0),
+    : NAsyncWork(g_characterLinkedUserDataLoadPoolName), m_accountId(0), m_characterId(0),
       m_diagnostic(false, std::string(DecryptName<0x17359BF953C367B3ULL>({0xC6, 0x09, 0xA8, 0x3D, 0x8E, 0xF4, 0x5B, 0x17})), sourceFile, 29) {
 }
 
