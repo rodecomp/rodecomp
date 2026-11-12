@@ -562,9 +562,9 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
   const vector3d position = source->render.position;
   g_effectMgr->Spawn(source->render.accountId, 2183, position, target->render.accountId, -1, 0, 0);
 
-  const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-  g_soundMgr->PlayWave("effect\\IG_SHIELD_SHOOTING.wav", target->render.position.x - player->render.position.x, 0.0f,
-                       target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
+  const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+  const vector3d soundPosition = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
+  g_soundMgr->PlayWave("effect\\IG_SHIELD_SHOOTING.wav", soundPosition.x, soundPosition.y, soundPosition.z, 250, 40, 1.0f, 0);
 }
 
 // OFFSET: 0x0078B5E0
