@@ -227,8 +227,7 @@ void UILapineBox_IngredientListWnd::OnCreate(int width, int height) {
 void UIIngredientInfoWnd::Paint() {
   this->ClearSurface(0xFFF7F7);
   if (this->selected == 1) {
-    CBitmapRes* selected = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp")));
-    this->DrawBitmap(32, 0, selected, false);
+    this->DrawBitmap(32, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp"))), false);
   }
 
   std::string name;
@@ -248,10 +247,9 @@ void UIIngredientInfoWnd::Paint() {
 // OFFSET: 0x005FFF90
 // FUNCTION: fn_04156
 void UILapineBoxWnd::Paint() {
-  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapine.bmp")));
-  this->DrawBitmap(0, 0, background, true);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapine.bmp"))), true);
 
-  if (this->title.size() != 0) {
+  if (this->title.size() > 0) {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
@@ -264,16 +262,12 @@ void UILapineBoxWnd::Paint() {
   for (unsigned index = 0; index < this->items.size(); ++index) {
     int position[2];
     this->MaterialPosition(position, index);
-    const int x = position[0];
-    const int y = position[1];
-    CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
-    this->DrawBitmap(x - 4, y + 11, slot, true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, this->items[index], 0, 0);
+    this->DrawBitmap(position[0] - 4, position[1] + 11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp"))), true);
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), position[0], position[1], this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {
-    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp")));
-    this->DrawBitmap(6, 229, icon, true);
+    this->DrawBitmap(6, 229, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp"))), true);
     this->DrawTextAt(25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
   }
 }
