@@ -119,8 +119,11 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (static_cast<std::size_t>(this->topLine) > limit) {
       this->topLine = static_cast<int>(limit);
     }
-    this->verticalBar->position = this->topLine;
-    this->verticalBar->Invalidate();
+    {
+      auto* verticalBar = this->verticalBar;
+      verticalBar->position = this->topLine;
+      verticalBar->Invalidate();
+    }
     this->Invalidate();
     if (this->transparent != 0 && this->parent) {
       this->parent->Invalidate();
@@ -148,8 +151,11 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->horizontalOffset > limit) {
       this->horizontalOffset = limit;
     }
-    this->horizontalBar->position = this->horizontalOffset;
-    this->horizontalBar->Invalidate();
+    {
+      auto* horizontalBar = this->horizontalBar;
+      horizontalBar->position = this->horizontalOffset;
+      horizontalBar->Invalidate();
+    }
     this->Invalidate();
     if (this->transparent != 0 && this->parent) {
       this->parent->Invalidate();
