@@ -23,21 +23,16 @@ namespace {
   }
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
   }
-}
 
 // GLOBAL: gl_25609
-const char* g_emblemDataDownloadPoolName = OBFUSCATE_ARRAY_TEXT("Emblem_Download", 0x17359BF953C367B3ULL, std::uint8_t);
+const char* g_emblemDataDownloadPoolName = OBFUSCATE_BYTES_TEXT("Emblem_Download", 0x17359BF953C367B3ULL);
 
 // OFFSET: 0x005E9C00
 // FUNCTION: fn_03963
 CEmblemDataDownloadAsyncWork::CEmblemDataDownloadAsyncWork()
     : NAsyncWork(g_emblemDataDownloadPoolName), m_accountId(0), m_guildId(0), m_version(0), m_responseCode(500),
-      m_diagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>({0x62, 0x97, 0x24, 0xD7, 0x8C, 0xDA, 0x41, 0xC5})), sourceFile, 29) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xC52FB5FBB94FF917ULL)), sourceFile, 29) {
 }
 
 // INLINED
@@ -61,7 +56,7 @@ void CEmblemDataDownloadAsyncWork::Bind(
   this->m_accountName = accountName;
   this->m_guildId = guildId;
   this->m_version = version;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 57);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x93E7A3A1F587CDC5ULL)), sourceFile, 57);
 }
 
 // OFFSET: 0x005EA430
@@ -76,19 +71,19 @@ bool CEmblemDataDownloadAsyncWork::Execute() {
   std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
 
   CCURLPostHander handler(this->m_url);
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>({0xE0, 0x74, 0xDB, 0xD7}), account, 4);
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>({0xF6, 0x72, 0x23, 0xA5, 0x7F, 0x88, 0x40, 0xE4, 0xD9, 0x07}), this->m_token, 4);
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>({0x02, 0x92, 0xC7, 0xB7, 0xA3, 0xFF, 0x14, 0x5E, 0x30, 0xFD}), name, 4);
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>({0x58, 0x75, 0x84, 0xA3, 0xED}), guild, 4);
-  handler.AddField(DecryptName<0xD98F03A52D35636DULL>({0x3B, 0x06, 0x47, 0x5E, 0xCC, 0x6C, 0xE1, 0xD9}), version, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x59278F63D79F3DA1ULL), account, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0x812BE72BCD5707B7ULL), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0x3375B1C7DBB5FD55ULL), name, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("GDID", 0x1D6D75EDE7CD311FULL), guild, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("Version", 0xD98F03A52D35636DULL), version, 4);
 
   if (handler.Perform() == 0) {
     this->m_responseCode = static_cast<int>(handler.ResponseCode());
     this->m_response = handler.Response();
-    AsyncDiagnostic diagnostic = Diagnostic(true, DecryptName<0x0F0F8B6B8F9D19D1ULL>({0xB6, 0x76, 0xF2, 0xEB, 0x6B}), 96);
+    AsyncDiagnostic diagnostic = Diagnostic(true, OBFUSCATE_BYTES_TEXT("good", 0x0F0F8B6B8F9D19D1ULL), 96);
     this->m_diagnostic = std::move(diagnostic);
   } else {
-    AsyncDiagnostic diagnostic = Diagnostic(false, DecryptName<0xD3755DD95F47A909ULL>({0x6F, 0xC8, 0x2E, 0x33, 0xD9}), 105);
+    AsyncDiagnostic diagnostic = Diagnostic(false, OBFUSCATE_BYTES_TEXT("fail", 0xD3755DD95F47A909ULL), 105);
     this->m_diagnostic = std::move(diagnostic);
   }
 
