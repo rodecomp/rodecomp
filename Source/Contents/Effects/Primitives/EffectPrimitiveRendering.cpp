@@ -2799,8 +2799,14 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
     const float half = size * 0.5f;
     const int opposite = angle < 180 ? angle + 180 : angle - 180;
     const float top = half - slot.height[4];
-    slot.vecBPre = {half * g_cosTable[angle] - g_sinTable[angle] * 0.0f, top, half * g_sinTable[angle] + g_cosTable[angle] * 0.0f};
-    slot.vecBNow = {half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f, top, half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f};
+    const float preX = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
+    const float preZ = half * g_sinTable[angle] + g_cosTable[angle] * 0.0f;
+    slot.vecBPre = {preX, top, preZ};
+    const float nowX = half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f;
+    const float nowZ = half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f;
+    slot.vecBNow = {nowX, top, nowZ};
+    vec3.Set(nowX, top - size, nowZ);
+    vec4.Set(preX, top - size, preZ);
 
     const float mode = slot.height[5];
     const float level = slot.height[3];
@@ -2953,8 +2959,6 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
     }
 
     if (size > 0.0f) {
-      vec3.Set(slot.vecBNow.x, top - size, slot.vecBNow.z);
-      vec4.Set(slot.vecBPre.x, top - size, slot.vecBPre.z);
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, extra);
     }
   }
