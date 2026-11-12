@@ -250,10 +250,22 @@ int SetEmitterInfo(lua_State* state) {
     break;
   }
   case MSG_SET_COLOR: {
-    const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
-    const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
-    const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
-    const int alpha = (std::min)(static_cast<int>(luaL_checknumber(state, 6)), 255);
+    int red = static_cast<int>(luaL_checknumber(state, 3));
+    if (red > 255) {
+      red = 255;
+    }
+    int green = static_cast<int>(luaL_checknumber(state, 4));
+    if (green > 255) {
+      green = 255;
+    }
+    int blue = static_cast<int>(luaL_checknumber(state, 5));
+    if (blue > 255) {
+      blue = 255;
+    }
+    int alpha = static_cast<int>(luaL_checknumber(state, 6));
+    if (alpha > 255) {
+      alpha = 255;
+    }
     effect->red = red;
     effect->green = green;
     effect->blue = blue;
@@ -282,18 +294,22 @@ int SetEmitterInfo(lua_State* state) {
     effect->SetTexture(texture);
     break;
   }
-  case MSG_SET_SPEED:
-    effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
+  case MSG_SET_SPEED: {
+    const float speed = static_cast<float>(luaL_checknumber(state, 3));
+    effect->SetParticleSpeed(speed);
     break;
+  }
   case MSG_SET_SRCMODE:
     effect->sourceBlend = luaL_checknumber(state, 3);
     break;
   case MSG_SET_DESTMODE:
     effect->destinationBlend = luaL_checknumber(state, 3);
     break;
-  case MSG_SET_MAXPARTICLE:
-    effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
+  case MSG_SET_MAXPARTICLE: {
+    const int count = static_cast<int>(luaL_checknumber(state, 3));
+    effect->SetCount(count);
     break;
+  }
   case MSG_SET_ZENABLE:
     effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
     break;
@@ -529,10 +545,22 @@ int SetAnimatedEmitterInfo(lua_State* state) {
     break;
   }
   case MSG_SET_COLOR: {
-    const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
-    const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
-    const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
-    const int alpha = (std::min)(static_cast<int>(luaL_checknumber(state, 6)), 255);
+    int red = static_cast<int>(luaL_checknumber(state, 3));
+    if (red > 255) {
+      red = 255;
+    }
+    int green = static_cast<int>(luaL_checknumber(state, 4));
+    if (green > 255) {
+      green = 255;
+    }
+    int blue = static_cast<int>(luaL_checknumber(state, 5));
+    if (blue > 255) {
+      blue = 255;
+    }
+    int alpha = static_cast<int>(luaL_checknumber(state, 6));
+    if (alpha > 255) {
+      alpha = 255;
+    }
     effect->red = red;
     effect->green = green;
     effect->blue = blue;
@@ -561,18 +589,22 @@ int SetAnimatedEmitterInfo(lua_State* state) {
     effect->SetTexture(texture);
     break;
   }
-  case MSG_SET_SPEED:
-    effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
+  case MSG_SET_SPEED: {
+    const float speed = static_cast<float>(luaL_checknumber(state, 3));
+    effect->SetParticleSpeed(speed);
     break;
+  }
   case MSG_SET_SRCMODE:
     effect->sourceBlend = luaL_checknumber(state, 3);
     break;
   case MSG_SET_DESTMODE:
     effect->destinationBlend = luaL_checknumber(state, 3);
     break;
-  case MSG_SET_MAXPARTICLE:
-    effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
+  case MSG_SET_MAXPARTICLE: {
+    const int count = static_cast<int>(luaL_checknumber(state, 3));
+    effect->SetCount(count);
     break;
+  }
   case MSG_SET_ZENABLE:
     effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
     break;
