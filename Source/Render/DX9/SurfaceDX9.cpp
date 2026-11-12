@@ -233,26 +233,33 @@ void CSurfaceDX9::Draw(int x, int y, int width, int height, std::uint32_t) {
     return;
   }
 
+  DeviceOwnerDX9* owner = this->m_owner;
+  IDirect3DSurface9* backBuffer = owner->backBuffer;
+  IDirect3DDevice9* device = owner->device;
   D3DSURFACE_DESC description;
   if (FAILED(this->m_surface->GetDesc(&description))) {
     return;
   }
 
   const RECT target{x, y, x + width, y + height};
-  const RECT destination = Clip(target, this->m_owner->backBufferDescription);
+  const RECT destination = Clip(target, owner->backBufferDescription);
   const RECT original{0, 0, destination.right - destination.left, destination.bottom - destination.top};
   const RECT source = Clip(original, description);
-  this->m_owner->device->StretchRect(this->m_surface, &source, this->m_owner->backBuffer, &destination, D3DTEXF_NONE);
+  device->StretchRect(this->m_surface, &source, backBuffer, &destination, D3DTEXF_NONE);
 }
 
 // OFFSET: 0x00570BA0
 // FUNCTION: fn_02434
 void CSurfaceDX9::Stretch(int x, int y, int width, int height) {
-  if (!this->m_surface) {
+  IDirect3DSurface9* surface = this->m_surface;
+  if (!surface) {
     return;
   }
 
+  DeviceOwnerDX9* owner = this->m_owner;
+  IDirect3DDevice9* device = owner->device;
+  IDirect3DSurface9* backBuffer = owner->backBuffer;
   const RECT target{x, y, x + width, y + height};
-  const RECT destination = Clip(target, this->m_owner->backBufferDescription);
-  this->m_owner->device->StretchRect(this->m_surface, nullptr, this->m_owner->backBuffer, &destination, D3DTEXF_LINEAR);
+  const RECT destination = Clip(target, owner->backBufferDescription);
+  device->StretchRect(surface, nullptr, backBuffer, &destination, D3DTEXF_LINEAR);
 }
