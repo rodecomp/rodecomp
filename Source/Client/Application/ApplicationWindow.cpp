@@ -27,15 +27,17 @@
 // GLOBAL: gl_24399
 HWND hWnd;
 
+#pragma optimize("y", on)
 // OFFSET: 0x03DE9F37
 // FUNCTION: fn_45411
 HWND __stdcall CreateApplicationWindow(
-  DWORD extendedStyle, const char* className, const char*, DWORD style, int x, int y, int width, int height, HWND parent, HMENU menu, HINSTANCE instance,
+  DWORD extendedStyle, const char* className, const char*, volatile DWORD style, int x, int y, int width, int height, HWND parent, HMENU menu, HINSTANCE instance,
   void* parameter
 ) {
   DWORD windowStyle = style | WS_SYSMENU;
   return CreateWindowExA(extendedStyle, className, "Ragnarok 2026", windowStyle, x, y, width, height, parent, menu, instance, parameter);
 }
+#pragma optimize("y", off)
 
 // OFFSET: 0x00E57DD0
 // FUNCTION: fn_24360
