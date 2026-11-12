@@ -1420,12 +1420,12 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
   this->viewer->SetBackgroundColor(0xFFFF00FF);
 
   auto accept = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == 187; });
-  if (accept != this->m_children.end()) {
+  if (this->m_children.end() != accept) {
     (*accept)->Move(0x59, 0x6D);
   }
 
   auto cancel = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == 188; });
-  if (cancel != this->m_children.end()) {
+  if (this->m_children.end() != cancel) {
     auto* button = static_cast<UIBitmapButton*>(*cancel);
     button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
