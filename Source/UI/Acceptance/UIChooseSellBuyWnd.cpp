@@ -2166,10 +2166,7 @@ int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     int width = 20;
     const int count = static_cast<int>(this->m_items.end() - this->m_items.begin());
     for (int index = 0; index < count; ++index) {
-      const int textWidth = this->TextWidth(this->m_items[index].c_str(), 0, 0, 12, 0, 0);
-      if (width < textWidth) {
-        width = textWidth;
-      }
+      width = std::max(width, this->TextWidth(this->m_items[index].c_str(), 0, 0, 12, 0, 0));
     }
     this->Resize(width + 6, this->m_itemHeight * count / 2);
     this->Invalidate();
@@ -3592,14 +3589,16 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     unsigned offset = 6;
     if (0x542E == header.type) {
       bool scanning = true;
-      while (static_cast<unsigned>(b) > offset && scanning) {
+      while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
-        if (header.type != 0x542F) {
-          offset += header.length;
-        }
-        if (header.type == 0x542F) {
+        switch (header.type) {
+        case 0x542F:
           scanning = false;
+          break;
+        default:
+          offset += header.length;
+          break;
         }
       }
     }
@@ -3889,7 +3888,8 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     unsigned offset = 6;
 
     if (20850 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += 6;
 
@@ -3899,10 +3899,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
           g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
           g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
           g_windowMgr.CloseWindow(WID_ITEMSELLWND);
-          break;
+          scanning = false;
+        } else {
+          offset += header.length;
         }
-
-        offset += header.length;
       }
     }
 
