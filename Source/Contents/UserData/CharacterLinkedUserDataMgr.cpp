@@ -5,6 +5,7 @@
 #include "Script/LuaScript.h"
 #include "Utility/Cipher/EncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <new>
 
@@ -74,13 +75,9 @@ __declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
   const std::string base =
     ResolveAccountServiceBase(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
   if (!base.empty()) {
-    const auto saveSource = CRYPT_NAME("/charconfig/save", 0xD3E5516F89F161D1ULL);
-    thread_local EncryptedName<sizeof(saveSource), 0xD3E5516F89F161D1ULL> savePath(saveSource.data);
-    this->m_saveUrl = base + savePath.Text();
+    this->m_saveUrl = base + OBFUSCATE_TEXT_NAMED("/charconfig/save", 0xD3E5516F89F161D1ULL, savePath);
 
-    const char loadSource[] = CRYPT_CHARS(17, "/charconfig/load", 0x5FFD7FABB5D1EF57ULL);
-    thread_local EncryptedName<sizeof(loadSource), 0x5FFD7FABB5D1EF57ULL> loadPath(loadSource);
-    this->m_loadUrl = base + loadPath.Text();
+    this->m_loadUrl = base + OBFUSCATE_TEXT_NAMED("/charconfig/load", 0x5FFD7FABB5D1EF57ULL, loadPath);
   }
 }
 
