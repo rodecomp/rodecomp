@@ -6,8 +6,8 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 
+#include <atlbase.h>
 #include <cstring>
-#include <wrl/client.h>
 
 // OFFSET: 0x00569FF0
 // FUNCTION: fn_02283
@@ -70,8 +70,8 @@ __declspec(noinline) std::vector<RenderAdapter> EnumerateAdaptersDX9();
 // OFFSET: 0x0056D770
 // FUNCTION: fn_02368
 std::vector<RenderAdapter> EnumerateAdaptersDX9() {
-  Microsoft::WRL::ComPtr<IDirect3D9Ex> direct3D;
-  const HRESULT result = Direct3DCreate9Ex(D3D_SDK_VERSION, direct3D.GetAddressOf());
+  CComPtr<IDirect3D9Ex> direct3D;
+  const HRESULT result = Direct3DCreate9Ex(D3D_SDK_VERSION, &direct3D);
 
   if (FAILED(result)) {
     return {};
