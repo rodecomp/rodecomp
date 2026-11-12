@@ -47,9 +47,7 @@ protected:
   /* 0170 */ int m_state;
   /* 0174 */ int m_logTextHeight;
   /* 0178 */ std::uint32_t m_categoryCounts[3];
-  /* 0184 */ std::uint32_t* m_rowFlagsBegin;
-  /* 0188 */ std::uint32_t* m_rowFlagsEnd;
-  /* 018C */ std::uint32_t* m_rowFlagsCapacity;
+  /* 0184 */ std::vector<std::uint32_t> m_rowFlags;
 
   void FillLogRows(int index);
   void FillRows();

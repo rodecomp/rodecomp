@@ -21,9 +21,6 @@ std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
 // OFFSET: 0x009469D0
 // FUNCTION: fn_12849
 UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
-  this->m_rowFlagsBegin = 0;
-  this->m_rowFlagsEnd = 0;
-  this->m_rowFlagsCapacity = 0;
   this->m_category = 0;
   this->m_offset = 0;
   this->m_state = 1;
@@ -67,7 +64,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->m_state = 1;
       this->m_page = page + 1;
       this->m_logTextHeight = 0;
-      this->m_rowFlagsEnd = this->m_rowFlagsBegin;
+      this->m_rowFlags.clear();
       this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     }
@@ -88,7 +85,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
         this->m_offset = std::max(0u, offset);
         this->m_page = std::max(1u, page - 1);
-        this->m_rowFlagsEnd = this->m_rowFlagsBegin;
+        this->m_rowFlags.clear();
         this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
@@ -104,7 +101,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->m_state = 1;
     this->m_logTextHeight = 0;
     this->m_offset = 0;
-    this->m_rowFlagsEnd = this->m_rowFlagsBegin;
+    this->m_rowFlags.clear();
     this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     return 0;
 
@@ -136,7 +133,7 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
 
     std::string date;
     date = logs[this->m_offset].itemName;
-    reinterpret_cast<std::vector<std::uint32_t>*>(&this->m_rowFlagsBegin)->push_back(logs[this->m_offset].operation);
+    this->m_rowFlags.push_back(logs[this->m_offset].operation);
     _itoa(logs[this->m_offset].quantity, number, 10);
 
     if (logs[this->m_offset].category == 1) {
@@ -197,9 +194,8 @@ void UIGuild_Storage_Log::Paint() {
   CBitmapRes* in = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\in.bmp")));
 
   for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
-    UITabControl* tabs = this->m_tabs;
-    tabs->colors[tab] = 0xFFFFFFFF;
-    tabs->Invalidate();
+    this->m_tabs->colors[tab] = 0xFFFFFFFF;
+    this->m_tabs->Invalidate();
   }
   UITabControl* tabs = this->m_tabs;
   tabs->colors[this->m_category] = 0xC89623;
@@ -214,7 +210,7 @@ void UIGuild_Storage_Log::Paint() {
   this->FillRows();
 
   int y = 60;
-  for (const std::uint32_t* it = this->m_rowFlagsBegin; it != this->m_rowFlagsEnd; ++it) {
+  for (auto it = this->m_rowFlags.begin(); it != this->m_rowFlags.end(); ++it) {
     this->DrawBitmap(6, y, *it == 1 ? in : out, true);
     y += 15;
   }
