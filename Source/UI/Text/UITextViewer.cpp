@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <new>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 // OFFSET: 0x0086F0A0
 // FUNCTION: fn_11086
 UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0) {
