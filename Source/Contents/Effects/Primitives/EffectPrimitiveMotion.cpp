@@ -6429,8 +6429,7 @@ namespace {
 // OFFSET: 0x00BBEAF0
 // FUNCTION: fn_19814
 bool CEffectPrim::PrimFloatingBubbles() {
-  EffectPrimitiveSlot* slots = this->state.slots;
-  FaceCamera(slots);
+  FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
@@ -6438,43 +6437,41 @@ bool CEffectPrim::PrimFloatingBubbles() {
   this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    ++slot.process;
+    ++this->state.slots[index].process;
 
     for (int bubble = 0; bubble <= 12; bubble += 4) {
-      slot.height[bubble] += 1.0f;
+      this->state.slots[index].height[bubble] += 1.0f;
 
-      if (slot.height[bubble] >= 10.0f) {
-        slot.height[bubble + 1] -= 12.0f;
+      if (this->state.slots[index].height[bubble] < 10.0f) {
+        this->state.slots[index].height[bubble + 1] += 25.0f;
+      } else {
+        this->state.slots[index].height[bubble + 1] -= 12.0f;
 
-        if (slot.height[bubble + 1] < 12.0f) {
-          slot.height[bubble] = 0.0f;
-          slot.height[bubble + 1] = 0.0f;
-          slot.height[bubble + 3] = static_cast<float>(ClampedRandom(360));
-          slot.height[bubble + 2] = static_cast<float>(ClampedRandom(5));
+        if (this->state.slots[index].height[bubble + 1] < 12.0f) {
+          this->state.slots[index].height[bubble] = 0.0f;
+          this->state.slots[index].height[bubble + 1] = 0.0f;
+          this->state.slots[index].height[bubble + 3] = static_cast<float>(ClampedRandom(360));
+          this->state.slots[index].height[bubble + 2] = static_cast<float>(ClampedRandom(5));
 
           if (bubble == 0) {
-            slot.vecBPre.y = static_cast<float>(-3 - ClampedRandom(8));
+            this->state.slots[index].vecBPre.y = static_cast<float>(-3 - ClampedRandom(8));
           } else if (bubble == 4) {
-            slot.vecBNow.y = static_cast<float>(-3 - ClampedRandom(8));
+            this->state.slots[index].vecBNow.y = static_cast<float>(-3 - ClampedRandom(8));
           } else if (bubble == 8) {
-            slot.vecTPre.y = static_cast<float>(-3 - ClampedRandom(8));
+            this->state.slots[index].vecTPre.y = static_cast<float>(-3 - ClampedRandom(8));
           } else {
-            slot.vecTNow.y = static_cast<float>(-3 - ClampedRandom(8));
+            this->state.slots[index].vecTNow.y = static_cast<float>(-3 - ClampedRandom(8));
           }
         }
-      } else {
-        slot.height[bubble + 1] += 25.0f;
       }
     }
 
     if (this->state.master->state.parent) {
-      slot.height[20] = static_cast<CGameActor*>(this->state.master->state.parent)->GetNameOffset();
+      this->state.slots[index].height[20] = static_cast<CGameActor*>(this->state.master->state.parent)->GetNameOffset();
     }
   }
 
