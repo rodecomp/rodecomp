@@ -12359,12 +12359,11 @@ void UIExchangeWnd::Paint() {
   this->DrawTextAt(63, 4, partner, 0, 0, 12, 0xB4B4B4, 0, 0);
   this->DrawTextAt(62, 3, partner, 0, 0, 12, 0, 0, 0);
 
+  const char* buttons[3] = {"ok", "exchange"};
   const std::string prefix = "유저인터페이스\\btn_";
-  const char* buttons[2] = {"ok", "exchange"};
-  const int buttonX[2] = {3, 260};
+  const int buttonX[3] = {3, 260};
   for (int index = 0; index < 2; ++index) {
-    const std::string path = prefix + buttons[index] + "_dis.bmp";
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + buttons[index] + "_dis.bmp").c_str())));
     this->DrawBitmap(buttonX[index], this->geometry.height - 23, bitmap, false);
   }
   for (int row = 0; row < 10; ++row) {
