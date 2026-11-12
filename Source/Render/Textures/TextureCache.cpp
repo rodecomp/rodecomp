@@ -15,6 +15,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) std::string::basic_string(const char* const);
+
 // GLOBAL: gl_24639
 int g_textureReduction = 1;
 
