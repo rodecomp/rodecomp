@@ -141,16 +141,11 @@ void CWorld::FinishModelLoading() {
 // OFFSET: 0x00AC94C0
 // FUNCTION: fn_17684
 void CWorld::InitWorld() {
-  const auto ErrorDialog = reinterpret_cast<int (*)(const char*, UINT)>(
-    static_cast<int (*)(CRenderSystemBase*, const char*, UINT)>(&ShowErrorDialog)
-  );
-
-  const char* rawMapName = reinterpret_cast<const char*>(this->gameMode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
-  std::string mapName(rawMapName ? rawMapName : "");
+  std::string mapName(reinterpret_cast<const char*>(this->gameMode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0)));
 
   auto* worldRes = static_cast<C3dWorldRes*>(ResourceMgr::Instance().Load(mapName.c_str()));
   if (!worldRes) {
-    ErrorDialog("world\xbf\xa1 NULL\xb0\xaa\xc0\xcc \xb5\xe9\xbe\xee\xbf\xd4\xbd\xc0\xb4\xcf\xb4\xd9", 0);
+    ShowErrorDialog("world\xbf\xa1 NULL\xb0\xaa\xc0\xcc \xb5\xe9\xbe\xee\xbf\xd4\xbd\xc0\xb4\xcf\xb4\xd9", 0);
     return;
   }
 
@@ -177,13 +172,13 @@ void CWorld::InitWorld() {
   g_renderer->SetLighting(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
 
   if (worldRes->terrainName.empty()) {
-    ErrorDialog("attr \xc6\xc4\xc0\xcf\xc0\xcc rsw \xb3\xbb\xbf\xa1 \xc1\xf6\xc1\xa4\xb5\xc7\xbe\xee \xc0\xd6\xc1\xf6 \xbe\xca\xbd\xc0\xb4\xcf\xb4\xd9", 0);
+    ShowErrorDialog("attr \xc6\xc4\xc0\xcf\xc0\xcc rsw \xb3\xbb\xbf\xa1 \xc1\xf6\xc1\xa4\xb5\xc7\xbe\xee \xc0\xd6\xc1\xf6 \xbe\xca\xbd\xc0\xb4\xcf\xb4\xd9", 0);
     return;
   }
 
   this->terrain = static_cast<C3dAttr*>(ResourceMgr::Instance().Load(worldRes->terrainName.c_str()));
   if (!this->terrain) {
-    ErrorDialog("attr \xc6\xc4\xc0\xcf \xc0\xd0\xb1\xe2\xbf\xa1 \xbd\xc7\xc6\xd0", 0);
+    ShowErrorDialog("attr \xc6\xc4\xc0\xcf \xc0\xd0\xb1\xe2\xbf\xa1 \xbd\xc7\xc6\xd0", 0);
     return;
   }
 
@@ -191,18 +186,18 @@ void CWorld::InitWorld() {
   this->nearbyRange = this->terrain->cellSize * this->nearbyRange;
 
   if (worldRes->groundName.empty()) {
-    ErrorDialog("gnd \xc6\xc4\xc0\xcf\xc0\xcc rsw \xb3\xbb\xbf\xa1 \xc1\xf6\xc1\xa4\xb5\xc7\xbe\xee \xc0\xd6\xc1\xf6 \xbe\xca\xbd\xc0\xb4\xcf\xb4\xd9", 0);
+    ShowErrorDialog("gnd \xc6\xc4\xc0\xcf\xc0\xcc rsw \xb3\xbb\xbf\xa1 \xc1\xf6\xc1\xa4\xb5\xc7\xbe\xee \xc0\xd6\xc1\xf6 \xbe\xca\xbd\xc0\xb4\xcf\xb4\xd9", 0);
     return;
   }
 
   auto* groundRes = static_cast<CGndRes*>(ResourceMgr::Instance().Load(worldRes->groundName.c_str()));
   if (!groundRes) {
-    ErrorDialog("ground\xbf\xa1 NULL\xc0\xcc \xb5\xe9\xbe\xee\xbf\xd4\xbd\xc0\xb4\xcf\xb4\xd9.", 0);
+    ShowErrorDialog("ground\xbf\xa1 NULL\xc0\xcc \xb5\xe9\xbe\xee\xbf\xd4\xbd\xc0\xb4\xcf\xb4\xd9.", 0);
     return;
   }
 
   if (groundRes->loaded == 0) {
-    ErrorDialog("\xb8\xca\xc0\xcc \xbf\xbe \xb9\xf6\xc1\xaf\xc0\xd4\xb4\xcf\xb4\xd9", 0);
+    ShowErrorDialog("\xb8\xca\xc0\xcc \xbf\xbe \xb9\xf6\xc1\xaf\xc0\xd4\xb4\xcf\xb4\xd9", 0);
     return;
   }
 
@@ -256,7 +251,7 @@ void CWorld::InitWorld() {
     const float dy = placement->position[1] - g_worldLoadCenter[1];
     const float dz = placement->position[2] - g_worldLoadCenter[2];
     const float squared = dy * dy + dx * dx + dz * dz;
-    const float distance = std::sqrt(squared);
+    const float distance = SquareRoot(squared);
 
     if (distance > 200.0f) {
       g_deferredWorldModels.push_back({distance, placement});
