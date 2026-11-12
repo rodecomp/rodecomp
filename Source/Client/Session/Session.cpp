@@ -2266,12 +2266,9 @@ ITEM_INFO CSession::GetSwapCostumeItem(int index) const {
 // OFFSET: 0x00E31DE0
 // FUNCTION: fn_24177
 bool CSession::IsRequestReady(int requestId) {
-  std::list<ShortcutCooldownRecord>::iterator it = this->m_requestTimers.begin();
-  for (; it != this->m_requestTimers.end(); ++it) {
-    if (requestId == it->id || it->id == 0x241) {
-      break;
-    }
-  }
+  std::list<ShortcutCooldownRecord>::iterator it = std::find_if(this->m_requestTimers.begin(), this->m_requestTimers.end(), [requestId](const ShortcutCooldownRecord& record) {
+    return requestId == record.id || record.id == 0x241;
+  });
   if (it != this->m_requestTimers.end() && it->end - 100 > timeGetTime()) {
     return false;
   }
