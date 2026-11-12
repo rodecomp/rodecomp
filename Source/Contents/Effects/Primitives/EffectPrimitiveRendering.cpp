@@ -1687,30 +1687,28 @@ void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 10;
+    const int step = this->state.slots[ec].fullDisplayAngle / 10;
     int level = 0;
 
     for (int ring = 10; ring != 0; --ring) {
-      for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-        int angle = slot.rotStart + count;
+      for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += step) {
+        int angle = this->state.slots[ec].rotStart + count;
         angle %= 360;
         const float cs = g_cosTable[angle];
         const float sn = g_sinTable[angle];
-        const float dist = slot.distance;
-        slot.vecBNow = {dist * cs, 0.0f, dist * sn};
+        const float dist = this->state.slots[ec].distance;
+        this->state.slots[ec].vecBNow = {dist * cs, 0.0f, dist * sn};
 
-        const float radius = slot.height[level];
-        const float spread = radius * g_cosTable[slot.riseAngle];
-        slot.vecTNow = {spread * cs + slot.vecBNow.x, -(radius * g_sinTable[slot.riseAngle]), spread * sn + slot.vecBNow.z};
+        const float radius = this->state.slots[ec].height[level];
+        const float spread = radius * g_cosTable[this->state.slots[ec].riseAngle];
+        this->state.slots[ec].vecTNow = {spread * cs + this->state.slots[ec].vecBNow.x, -(radius * g_sinTable[this->state.slots[ec].riseAngle]), spread * sn + this->state.slots[ec].vecBNow.z};
 
         if (level > 0) {
-          this->RenderTeiRect(&rpCnt, level - 1, slot.alphaB, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0);
+          this->RenderTeiRect(&rpCnt, level - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0);
         }
 
         ++level;
@@ -1718,8 +1716,8 @@ void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
           level = 20;
         }
 
-        slot.vecBPre = slot.vecBNow;
-        slot.vecTPre = slot.vecTNow;
+        this->state.slots[ec].vecBPre = this->state.slots[ec].vecBNow;
+        this->state.slots[ec].vecTPre = this->state.slots[ec].vecTNow;
       }
     }
   }
