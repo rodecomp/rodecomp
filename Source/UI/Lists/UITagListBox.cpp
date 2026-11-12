@@ -384,6 +384,7 @@ void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, 
   char* text = reinterpret_cast<char*>(argument1);
   const int width = static_cast<int>(argument2);
   std::vector<std::string> lines;
+  const int lineWidth = width == 0 ? 35 : width;
 
   if (width == 138) {
     WrapPlainText(text, lines, 38);
@@ -407,7 +408,7 @@ void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, 
     } else {
       std::vector<STagInfoV2> tags;
       const std::string parsed = this->ParseTaggedText(std::string(text), tags);
-      this->AppendTaggedLines(parsed, tags, width == 0 ? 35 : width);
+      this->AppendTaggedLines(parsed, tags, lineWidth);
     }
 
     this->plainTextMode &= ~255;
