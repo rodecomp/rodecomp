@@ -6792,7 +6792,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 21200 || header.type == 21250) {
+    if (21200 == header.type || 21250 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
@@ -8979,7 +8979,7 @@ void UIItemStoreFindWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9037,7 +9037,7 @@ void UIItemStoreSubWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9129,7 +9129,7 @@ void UIItemPurchaseWnd::Paint() {
     }
     this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9257,7 +9257,7 @@ void UIItemSellWnd::Paint() {
     }
     this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9365,7 +9365,7 @@ void UIItemShopWnd::Paint() {
     }
     this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9498,7 +9498,7 @@ void UIItemStoreWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9579,7 +9579,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 90, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -9778,7 +9778,7 @@ void UIMerchantShopMakeWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 48, *it, 0, 0);
     this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 60,
         static_cast<CBitmapRes*>(
@@ -10760,7 +10760,7 @@ void UIItemSellWnd2::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -10838,7 +10838,7 @@ void UIItemShopWnd2::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     this->DrawFittedItemName(column + 76, top + 29, &*it, 0, 0, 12, 0);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
