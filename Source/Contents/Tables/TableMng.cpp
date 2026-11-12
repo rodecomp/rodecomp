@@ -259,7 +259,7 @@ bool CTableMng::ReadEntryQueueXls(void* excelPtr) {
       WideCharToMultiByte(CP_ACP, 0, wbuf, -1, info->bitmapName, sizeof(info->bitmapName), nullptr, nullptr);
     }
 
-    if (this->m_entryQueue.find(info->id) != this->m_entryQueue.end()) {
+    if (this->m_entryQueue.end() != this->m_entryQueue.find(info->id)) {
       char buf[260];
       memset(buf, 0, sizeof(buf));
       sprintf_s(buf, sizeof(buf), "Row [%d]", row + 1);
@@ -382,7 +382,7 @@ bool CTableMng::WriteEntryQueueXls() {
             }
 
             int row = 3;
-            for (auto it = this->m_entryQueue.begin(); it != this->m_entryQueue.end(); ++it, ++row) {
+            for (auto it = this->m_entryQueue.begin(), end = this->m_entryQueue.end(); it != end; ++it, ++row) {
               BasicExcelCell* cell = sheet2->Cell(row, 0);
               if (cell != nullptr) {
                 cell->SetInteger(it->second->id);
