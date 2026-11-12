@@ -475,8 +475,8 @@ public:
   void SpawnHit();
   void SpawnSpark();
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ std::vector<EZ2STREmitter*> hitEmitters;
+  /* 00CC */ std::vector<CParticle*> emitters;
+  /* 00D8 */ std::vector<CParticle*> hitEmitters;
   /* 00E4 */ std::vector<std::string> textures;
 };
 

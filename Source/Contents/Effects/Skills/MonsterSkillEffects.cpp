@@ -1949,12 +1949,11 @@ void CJupitelThunderHit::SpawnHit() {
   }
 
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
-  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   particle->elapsedFrames = -10;
   particle->scale = 7.5f;
   particle->animationState = 0;
   particle->SetTexture("effect\\thunder_plazma_blast_a.bmp");
-  this->hitEmitters.push_back(emitter);
+  this->hitEmitters.push_back(particle);
 }
 
 // OFFSET: 0x0071C270
@@ -1971,10 +1970,9 @@ void CJupitelThunderHit::SpawnSpark() {
   }
 
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
-  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
   particle->SetTexture(texture);
   particle->speedParameter = 2.5f;
-  this->emitters.push_back(emitter);
+  this->emitters.push_back(particle);
 }
 
 // OFFSET: 0x0071C520
@@ -2005,8 +2003,8 @@ bool CJupitelThunderHit::IsAlive() {
 // FUNCTION: fn_07325
 void CJupitelThunderHit::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    ++(*it)->elapsed;
-    CEZ2STRParticle* particle = AsParticle(*it);
+    ++(*it)->elapsedFrames;
+    CParticle* particle = *it;
     if (particle && particle->elapsedFrames >= 0) {
       if (particle->elapsedFrames == 10) {
         particle->elapsedFrames = -10;
@@ -2028,8 +2026,8 @@ void CJupitelThunderHit::OnProcess() {
   }
 
   for (auto it = this->hitEmitters.begin(); it != this->hitEmitters.end(); ++it) {
-    ++(*it)->elapsed;
-    CEZ2STRParticle* particle = AsParticle(*it);
+    ++(*it)->elapsedFrames;
+    CParticle* particle = *it;
     if (particle && particle->elapsedFrames >= 0) {
       std::size_t index = static_cast<signed char>(particle->animationState) + 1;
       if (index >= this->textures.size()) {
@@ -2056,16 +2054,16 @@ void CJupitelThunderHit::OnProcess() {
 // FUNCTION: fn_07326
 void CJupitelThunderHit::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
-    if (emitter && emitter->elapsed >= 0) {
-      AsParticle(emitter)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    CParticle* particle = *it;
+    if (particle && particle->elapsedFrames >= 0) {
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 
   for (auto it = this->hitEmitters.begin(); it != this->hitEmitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
-    if (emitter && emitter->elapsed >= 0) {
-      AsParticle(emitter)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    CParticle* particle = *it;
+    if (particle && particle->elapsedFrames >= 0) {
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
   }
 }
@@ -3618,11 +3616,11 @@ void CDancingKnifeEffect::Close() {
 // FUNCTION: fn_07322
 void CJupitelThunderHit::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
   for (auto it = this->hitEmitters.begin(); it != this->hitEmitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->hitEmitters.clear();
 }
