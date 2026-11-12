@@ -7455,8 +7455,7 @@ std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 // FUNCTION: fn_21667
 __declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
   const MiniMapEffectMarkerPacket* marker = reinterpret_cast<const MiniMapEffectMarkerPacket*>(packet);
-  const int key = marker->key;
-  auto found = g_miniMapEffectMarkers.find(key);
+  auto found = g_miniMapEffectMarkers.find(marker->key);
   if (found != g_miniMapEffectMarkers.end()) {
     found->second.x = marker->x;
     found->second.y = marker->y;
@@ -7464,7 +7463,7 @@ __declspec(noinline) void CGameMode::AddMiniMapEffectMarker(const unsigned char*
     return;
   }
 
-  g_miniMapEffectMarkers.emplace(key, MiniMapEffectMarker{0x78, marker->x, marker->y});
+  g_miniMapEffectMarkers.insert({marker->key, {0x78, marker->x, marker->y}});
 }
 
 struct ActorMessage32 {
