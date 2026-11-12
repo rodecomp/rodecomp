@@ -444,7 +444,7 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case UM_MENU_SELECTED:
     this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
-    return 0;
+    break;
   case UM_COMMAND:
     if (argument1 == 34 && this->m_member.accountId == static_cast<std::uint32_t>(argument2) && this->m_member.offline == 0 && this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, 34, argument2, argument3, argument4);
@@ -456,11 +456,13 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       return 0;
     }
     const int previous = this->m_sizeMode;
+    const int wideWidth = this->m_widths[0];
+    const int normalWidth = this->m_widths[1];
     if (argument2 <= this->m_widths[2]) {
       this->m_sizeMode = 2;
-    } else if (argument2 <= this->m_widths[1]) {
+    } else if (argument2 <= normalWidth) {
       this->m_sizeMode = 1;
-    } else if (argument2 <= this->m_widths[0]) {
+    } else if (argument2 <= wideWidth) {
       this->m_sizeMode = 0;
     } else {
       return 0;
@@ -516,10 +518,12 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (this->m_infoWnd) {
       this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
-    return 0;
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x00740300
