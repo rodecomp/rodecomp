@@ -1471,7 +1471,8 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   case UM_COMMAND: {
     CMode* mode = g_modeMgr.gameMode;
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == ID_CLOSE) {
+    switch (a) {
+    case ID_CLOSE: {
       mode = g_modeMgr.gameMode;
       int windowId;
       if (this->buyingShop != 0) {
@@ -1513,22 +1514,21 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       g_session.ClearMerchantPurchaseItems();
       return 0;
     }
-
-    if (a == ID_CHECK) {
+    case ID_CHECK:
       g_session.m_muteSellSound = !g_session.m_muteSellSound;
       return 0;
-    }
-
-    if (a == ID_CLOSE_OFFLINE_STORE &&
-        g_windowMgr.Confirm(LookupMessage(MSI_LIMIT_USER_MSG), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-      mode->SendMsg(MM_CLOSE_OFFLINE_STORE, this->offlineStoreId, 0, 0, 0);
-      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-      if (this->buyingShop == 1) {
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
-      } else {
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
+    case ID_CLOSE_OFFLINE_STORE:
+      if (g_windowMgr.Confirm(LookupMessage(MSI_LIMIT_USER_MSG), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        mode->SendMsg(MM_CLOSE_OFFLINE_STORE, this->offlineStoreId, 0, 0, 0);
+        mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        if (this->buyingShop == 1) {
+          g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
+        } else {
+          g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
+        }
+        return 0;
       }
-      return 0;
+      break;
     }
     break;
   }
@@ -7480,11 +7480,12 @@ void UIItemStoreFindWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
-      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -7499,11 +7500,12 @@ void UIItemStoreSubWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
-      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -7518,11 +7520,12 @@ void UIItemStoreWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
-      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -7559,16 +7562,16 @@ void UIMerchantItemMyShopWnd::OnMouseHover(int x, int y) {
 
     std::string text;
     char price[64];
-    if (this->buyingShop == 0) {
+    if (this->buyingShop != 0) {
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_ITEMINFO), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64),
+                               item.quantity));
+    } else {
       if (item.identified == 1 && item.optionCount != 0) {
         text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA11), item.DisplayName(0).c_str(), item.optionCount,
                                  FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
       } else {
         text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
       }
-    } else {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_ITEMINFO), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64),
-                               item.quantity));
     }
 
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -7603,11 +7606,12 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
-      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.gameMode;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
     return;
   }
@@ -11322,10 +11326,13 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    if (mode->drag.source == 1) {
+    switch (mode->drag.source) {
+    case 1:
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 9) {
+      break;
+    case 9:
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
