@@ -653,11 +653,10 @@ static EfstActionRegistrar s_efstAction1362(1362, NewAction<CEfstAction_T_THIRD_
 
 // OFFSET: 0x00460720
 // FUNCTION: fn_45566
-static bool s_skillObjectActionRegistered292 = [] {
-  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>;
+static bool s_skillObjectActionRegistered292 = [](std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(292, factory);
   return true;
-}();
+}(NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>);
 
 // GLOBAL: gl_25900
 static SkillActionRegistrar s_skillAction5431(5431, NewAction<CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS, CSkillAction>);

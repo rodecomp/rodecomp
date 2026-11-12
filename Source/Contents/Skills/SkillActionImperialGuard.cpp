@@ -958,11 +958,10 @@ static EfstActionRegistrar s_efstAction1217(1217, NewAction<CEfstAction_REBOUND_
 
 // OFFSET: 0x0045A7E0
 // FUNCTION: fn_45565
-static bool s_skillObjectActionRegistered275 = [] {
-  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>;
+static bool s_skillObjectActionRegistered275 = [](std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(275, factory);
   return true;
-}();
+}(NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>);
 
 // GLOBAL: gl_25801
 static SkillActionRegistrar s_skillAction5260(5260, NewAction<CSkillAction_IG_ATTACK_STANCE, CSkillAction>);

@@ -595,11 +595,10 @@ static EfstActionRegistrar s_efstAction1377(1377, NewAction<CEfstAction_TEMPORAR
 
 // OFFSET: 0x004616C0
 // FUNCTION: fn_45567
-static bool s_skillObjectActionRegistered293 = [] {
-  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>;
+static bool s_skillObjectActionRegistered293 = [](std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(293, factory);
   return true;
-}();
+}(NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>);
 
 // GLOBAL: gl_25919
 static SkillActionRegistrar s_skillAction5448(5448, NewAction<CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES, CSkillAction>);

@@ -1213,11 +1213,10 @@ static EfstActionRegistrar s_efstAction1693(1693, NewAction<CEfstAction_WIND_VEI
 
 // OFFSET: 0x0040E870
 // FUNCTION: fn_45561
-static bool s_skillObjectActionRegistered313 = [] {
-  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>;
+static bool s_skillObjectActionRegistered313 = [](std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(313, factory);
   return true;
-}();
+}(NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>);
 
 // GLOBAL: gl_25663
 static SkillActionRegistrar s_skillAction6551(6551, NewAction<CSkillAction_KR_CLAW_WAVE, CSkillAction>);
