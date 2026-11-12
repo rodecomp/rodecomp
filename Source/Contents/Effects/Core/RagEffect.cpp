@@ -4372,7 +4372,7 @@ void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
 
 // OFFSET: 0x00C6CDE0
 // FUNCTION: fn_20298
-void CRagEffect::BubbleSpiral(int angle, const char*, char flag) {
+void CRagEffect::BubbleSpiral(std::int16_t angle, const char*, char flag) {
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
