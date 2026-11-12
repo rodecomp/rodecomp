@@ -2236,10 +2236,10 @@ void CSkillAction_DK_DRAGONIC_BREATH::OnSkillHit(int level, CGameActor* source, 
       break;
     }
 
-    const int first = std::rand();
-    const int second = std::rand();
-    const int jitterX = std::max(second % 10, 0);
-    const int jitterY = std::max(first % 10, 0);
+    const int first = std::rand() % 10;
+    const int second = std::rand() % 10;
+    const int jitterX = std::max(second, 0);
+    const int jitterY = std::max(first, 0);
     effect->position[0] = static_cast<float>((i % 2) * 10 - jitterX) + source->render.position.x;
     effect->position[2] = source->render.position.z + 0.0f;
     effect->position[1] = static_cast<float>((i % 4) / 2 * 10 - jitterY) + source->render.position.y;
