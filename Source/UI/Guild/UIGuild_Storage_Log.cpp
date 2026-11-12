@@ -197,11 +197,13 @@ void UIGuild_Storage_Log::Paint() {
   CBitmapRes* in = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\in.bmp")));
 
   for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
-    this->m_tabs->colors[tab] = 0xFFFFFFFF;
-    this->m_tabs->Invalidate();
+    UITabControl* tabs = this->m_tabs;
+    tabs->colors[tab] = 0xFFFFFFFF;
+    tabs->Invalidate();
   }
-  this->m_tabs->colors[this->m_category] = 0xC89623;
-  this->m_tabs->Invalidate();
+  UITabControl* tabs = this->m_tabs;
+  tabs->colors[this->m_category] = 0xC89623;
+  tabs->Invalidate();
 
   this->DrawTextAt(234, 23, LookupMessage(MSI_EA5), 0, 0, 11, 0xFF, 0, 0);
   this->DrawTextAt(6, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_IN), 0, 0, 12, 0, 0, 0);
