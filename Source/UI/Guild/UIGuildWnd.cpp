@@ -1313,7 +1313,7 @@ void UIGuildSkillWnd::Paint() {
       gray = 120;
     }
 
-    this->DrawTextAt(x + 112, y + 46, skill->DisplayName(*g_session.m_hotkeyScript), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
+    this->DrawTextAt(x + 112, y + 46, skill->DisplayName(), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
     if (++drawn == this->m_visibleRows * this->m_columns) {
       break;
     }

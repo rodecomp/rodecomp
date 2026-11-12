@@ -106,9 +106,9 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
     const int sp = skill.UseSpAmount(script, level);
     const int ap = skill.UseApAmount(script, level);
     if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
-      text = SkillUseTextPercent(skill.DisplayName(script), level, sp, ap);
+      text = SkillUseTextPercent(skill.DisplayName(), level, sp, ap);
     } else {
-      text = SkillUseTextFlat(skill.DisplayName(script), level, sp, ap);
+      text = SkillUseTextFlat(skill.DisplayName(), level, sp, ap);
     }
   } else {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);

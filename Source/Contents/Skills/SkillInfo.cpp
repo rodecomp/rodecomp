@@ -566,7 +566,7 @@ int CSkillInfo::UseSpAmount(LuaScript& script, int skillLevel) const {
 
 // OFFSET: 0x007736F0
 // FUNCTION: fn_08315
-const char* CSkillInfo::DisplayName(LuaScript&) const {
+const char* CSkillInfo::DisplayName() const {
   return CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(this->id));
 }
 

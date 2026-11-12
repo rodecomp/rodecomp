@@ -86,9 +86,9 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       const int sp = skill.UseSpAmount(*g_session.m_hotkeyScript, level);
       const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, level);
       if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
-        text = SkillTooltipPercent(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap);
+        text = SkillTooltipPercent(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
       } else {
-        text = SkillTooltipFlat(shortcut.c_str(), skill.DisplayName(*g_session.m_hotkeyScript), level, sp, ap);
+        text = SkillTooltipFlat(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
       }
     }
   } else {

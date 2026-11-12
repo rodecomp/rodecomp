@@ -138,7 +138,7 @@ public:
   bool MatchesShortcut(const NormalItemSlot* slot) const;
   int UseApAmount(LuaScript& script, int skillLevel) const;
   int UseSpAmount(LuaScript& script, int skillLevel) const;
-  const char* DisplayName(LuaScript& script) const;
+  const char* DisplayName() const;
   const char* IdName(LuaScript& script) const;
   static const char* DisplayName(LuaScript& script, int skillId);
   static const char* IdName(LuaScript& script, int skillId);

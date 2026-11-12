@@ -8188,7 +8188,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       g_windowMgr.CloseWindow(WID_SKILLDELAYINFO);
     }
 
-    this->descriptionText = this->skillName = skill.DisplayName(*g_session.m_hotkeyScript);
+    this->descriptionText = this->skillName = skill.DisplayName();
     this->m_skillId = static_cast<int>(skill.id);
     {
       CSkillInfo owned = g_session.LookupSkill(static_cast<std::uint32_t>(a));

@@ -2886,7 +2886,7 @@ void UISkillListWnd::Paint() {
     }
 
     x += 112;
-    std::string name = this->FitDisplayText(this->geometry.width - x - 20, it->DisplayName(*g_session.m_hotkeyScript), 0, 12, 0);
+    std::string name = this->FitDisplayText(this->geometry.width - x - 20, it->DisplayName(), 0, 12, 0);
     this->DrawTextAt(x, top + 22, name.c_str(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
     if (++drawn == this->visibleRows * this->columns) {
       break;
@@ -10667,7 +10667,7 @@ void UISkillListWnd::OnMouseHover(int x, int y) {
 
   const int index = this->SkillAt(x, y);
   CSkillInfo skill = this->GetSkillByIndex(index);
-  const char* name = skill.DisplayName(*g_session.m_hotkeyScript);
+  const char* name = skill.DisplayName();
 
   if (std::strlen(name) != 0) {
     int tooltipY = (index - this->scroll) * 32 + 17;

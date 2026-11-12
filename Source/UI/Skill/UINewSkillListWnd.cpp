@@ -368,7 +368,7 @@ void UINewSkillListWnd::DrawSkillList() {
         this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
       }
 
-      this->DrawTextAt(textX, y + 35, skill.DisplayName(script), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+      this->DrawTextAt(textX, y + 35, skill.DisplayName(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
       if (++drawn == this->m_visibleRows * this->m_columns) {
         break;
       }
@@ -1027,7 +1027,7 @@ void UINewSkillListWnd::OnMouseHover(int x, int y) {
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
       CMode* mode = g_modeMgr.gameMode;
-      mode->ShowTooltip((*skill)->DisplayName(*g_session.m_hotkeyScript), tooltipX + x, tooltipY + y, -1, 0, 1);
+      mode->ShowTooltip((*skill)->DisplayName(), tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
 
@@ -1532,7 +1532,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       }
 
       if (static_cast<int>(info->canPlanLevel) <= 0) {
-        const char* name = info->DisplayName(*g_session.m_hotkeyScript);
+        const char* name = info->DisplayName();
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(MSI_REFUSE_LOGIN_AUTH), name)), 0xFF, 0, 0, 0);
         return false;
       }
@@ -1690,12 +1690,12 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int nameWidth = this->TextWidth(skill.DisplayName(script), 0, 0, 11, 0, 0);
+    const int nameWidth = this->TextWidth(skill.DisplayName(), 0, 0, 11, 0, 0);
     int nameOffset = 0;
     if (nameWidth < 48) {
       nameOffset = (48 - nameWidth) / 2;
     }
-    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, (shade << 8 | shade) << 8 | shade, 0, 0
+    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(), 48, 0, 11, 0), 0, 0, 11, (shade << 8 | shade) << 8 | shade, 0, 0
     );
 
     if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {
