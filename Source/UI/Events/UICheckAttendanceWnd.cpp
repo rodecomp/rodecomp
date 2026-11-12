@@ -121,11 +121,7 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   __time32_t now;
   _time32(&now);
   __time32_t remaining = _mktime32(&end) - now;
-  if (remaining < 1) {
-    this->m_daysLeft = 0;
-  } else {
-    this->m_daysLeft = _localtime32(&remaining)->tm_yday;
-  }
+  this->m_daysLeft = remaining > 0 ? _localtime32(&remaining)->tm_yday : 0;
 
   this->m_notice = new UIBmpTextButton();
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 0, 0);
