@@ -78,18 +78,24 @@ namespace {
     }
 
     actor->CopyVolumes(resource.volumes);
+    actor->occlusionEnabled = 0;
     actor->SetSpeed(placement.animationSpeed);
     actor->playback = placement.animation;
-    std::memcpy(actor->position, placement.position, sizeof(actor->position));
+    actor->position[0] = placement.position[0];
+    actor->position[1] = placement.position[1];
+    actor->position[2] = placement.position[2];
     actor->dirty = 1;
-    std::memcpy(actor->rotation, placement.rotation, sizeof(actor->rotation));
+    actor->rotation[0] = placement.rotation[0];
+    actor->rotation[1] = placement.rotation[1];
+    actor->rotation[2] = placement.rotation[2];
     actor->dirty = 1;
-    std::memcpy(actor->scale, placement.scale, sizeof(actor->scale));
+    actor->scale[0] = placement.scale[0];
+    actor->scale[1] = placement.scale[1];
+    actor->scale[2] = placement.scale[2];
     actor->dirty = 1;
     actor->commandMode = placement.flag;
     actor->color = static_cast<std::uint32_t>(placement.index);
     actor->Assign(resource);
-    actor->occlusionEnabled = 0;
     actor->Prepare(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
 
     return actor;
