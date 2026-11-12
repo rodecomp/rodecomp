@@ -717,16 +717,25 @@ int CSession::FindSkillFollowEffect(int key) const {
 // FUNCTION: fn_23363
 const char* CSession::GetEnemyHitWaveName(int element) {
   switch (element) {
-  case ELE_FIRE:
-    switch (std::max(std::rand() % 2, 0)) {
+  case ELE_FIRE: {
+    int roll = std::rand() % 2;
+    if (roll < 0) {
+      roll = 0;
+    }
+    switch (roll) {
     case 0:
       return "_enemy_hit_fire1.wav";
     case 1:
       return "_enemy_hit_fire2.wav";
     }
     break;
-  case ELE_WIND:
-    switch (std::max(std::rand() % 2, 0)) {
+  }
+  case ELE_WIND: {
+    int roll = std::rand() % 2;
+    if (roll < 0) {
+      roll = 0;
+    }
+    switch (roll) {
     case 0:
       return "_enemy_hit_wind1.wav";
     case 1:
@@ -734,8 +743,10 @@ const char* CSession::GetEnemyHitWaveName(int element) {
     }
     break;
   }
+  }
 
-  switch (std::max(std::rand() % 4, 0)) {
+  int roll = std::rand() % 4;
+  switch (roll >= 0 ? roll : 0) {
   case 0:
     return "_enemy_hit_normal1.wav";
   case 1:
