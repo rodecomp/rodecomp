@@ -70,7 +70,7 @@ void UITagListBox::Paint() {
   }
   const int limit = (this->geometry.height / divisor + first);
   const int end =
-    static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+    static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = 0;
 
   for (int index = 0; index < first; ++index) {
