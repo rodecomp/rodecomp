@@ -64,8 +64,7 @@ int CGuildTip::Load() {
     switch (fileBuf[i]) {
     case 10: {
       fileBuf[i] = 0;
-      std::string line(baseBuf);
-      tmpList.push_back(line);
+      tmpList.push_back(baseBuf);
       baseBuf = fileBuf + i + 1;
       break;
     }
