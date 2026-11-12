@@ -7381,20 +7381,20 @@ void UIItemShopWnd2::OnMouseHover(int x, int y) {
 
   std::string text;
   char price[64];
-  if (this->interactionDisabled == 0) {
-    if (item.prices[0] == item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+  if (this->interactionDisabled != 0) {
+    if (item.prices[0] != item.prices[1]) {
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
+                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0],
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     }
   } else {
-    if (item.prices[0] == item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
+    if (item.prices[0] != item.prices[1]) {
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0],
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     }
   }
 
