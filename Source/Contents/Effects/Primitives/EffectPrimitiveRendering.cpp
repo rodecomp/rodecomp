@@ -4014,14 +4014,12 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     for (int i = 10; i >= 1; --i) {
-      const char mode = slot.flag1[4];
+      const char mode = this->state.slots[ec].flag1[4];
       const bool narrow = mode == 6 || mode == 7;
       const int angle1 = narrow ? 35 : 45;
       const int angle2 = narrow ? 145 : 135;
@@ -4029,24 +4027,24 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       if (mode != 2 && mode != 4 && mode != 5) {
         step *= 3;
       }
-      const float radius = static_cast<float>(step) + slot.distance;
-      slot.vecBPre = {radius * g_cosTable[angle1], 0.0f, g_sinTable[angle1] * radius};
-      slot.vecBNow = {radius * g_cosTable[angle2], 0.0f, g_sinTable[angle2] * radius};
+      const float radius = static_cast<float>(step) + this->state.slots[ec].distance;
+      this->state.slots[ec].vecBPre = {radius * g_cosTable[angle1], 0.0f, g_sinTable[angle1] * radius};
+      this->state.slots[ec].vecBNow = {radius * g_cosTable[angle2], 0.0f, g_sinTable[angle2] * radius};
       unsigned angle3 = static_cast<unsigned>(angle2 + (narrow ? 70 : 90));
       if (angle3 >= 360) {
         angle3 -= 360;
       }
-      slot.vecTNow = {radius * g_cosTable[angle3], 0.0f, g_sinTable[angle3] * radius};
+      this->state.slots[ec].vecTNow = {radius * g_cosTable[angle3], 0.0f, g_sinTable[angle3] * radius};
       int angle4 = static_cast<int>(angle3) + (narrow ? 110 : 90);
       if (angle4 >= 360) {
         angle4 -= 360;
       }
-      slot.vecTPre = {radius * g_cosTable[angle4], 0.0f, g_sinTable[angle4] * radius};
+      this->state.slots[ec].vecTPre = {radius * g_cosTable[angle4], 0.0f, g_sinTable[angle4] * radius};
 
-      vec1.Set(slot.height[0] + slot.vecBPre.x, 0.0f, slot.vecBPre.z);
-      vec2.Set(slot.height[0] + slot.vecBNow.x, 0.0f, slot.vecBNow.z);
-      vec3.Set(slot.height[0] + slot.vecTNow.x, 0.0f, slot.vecTNow.z);
-      vec4.Set(slot.height[0] + slot.vecTPre.x, 0.0f, slot.vecTPre.z);
+      vec1.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecBPre.x, 0.0f, this->state.slots[ec].vecBPre.z);
+      vec2.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecBNow.x, 0.0f, this->state.slots[ec].vecBNow.z);
+      vec3.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecTNow.x, 0.0f, this->state.slots[ec].vecTNow.z);
+      vec4.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecTPre.x, 0.0f, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
       const float lift = mode == 2 || mode == 4 || mode == 6 || mode == 7 ? 40.0f : 30.0f;
       vec1.y -= lift;
@@ -4054,9 +4052,9 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       vec4.y -= lift;
       vec3.y -= lift;
 
-      const int alpha = static_cast<int>(slot.height[i]);
+      const int alpha = static_cast<int>(this->state.slots[ec].height[i]);
       if (alpha > 0) {
-        const unsigned char texture = static_cast<unsigned char>(slot.flag1[0]);
+        const unsigned char texture = static_cast<unsigned char>(this->state.slots[ec].flag1[0]);
         if (mode == 0) {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, texture, 0, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (mode == 3) {
@@ -4070,14 +4068,14 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       }
 
       if (mode == 5 || mode == 6 || mode == 7) {
-        slot.vecBPre = {slot.vecBPre.x * 1.1f, slot.vecBPre.y * 1.1f, slot.vecBPre.z * 1.1f};
-        slot.vecBNow = {slot.vecBNow.x * 1.1f, slot.vecBNow.y * 1.1f, slot.vecBNow.z * 1.1f};
-        slot.vecTPre = {slot.vecTPre.x * 1.1f, slot.vecTPre.y * 1.1f, slot.vecTPre.z * 1.1f};
-        slot.vecTNow = {slot.vecTNow.x * 1.1f, slot.vecTNow.y * 1.1f, slot.vecTNow.z * 1.1f};
-        vec1.Set(slot.vecBPre.x + slot.height[0], slot.vecBPre.y, slot.vecBPre.z);
-        vec2.Set(slot.vecBNow.x + slot.height[0], slot.vecBNow.y, slot.vecBNow.z);
-        vec3.Set(slot.vecTNow.x + slot.height[0], slot.vecTNow.y, slot.vecTNow.z);
-        vec4.Set(slot.vecTPre.x + slot.height[0], slot.vecTPre.y, slot.vecTPre.z);
+        this->state.slots[ec].vecBPre = {this->state.slots[ec].vecBPre.x * 1.1f, this->state.slots[ec].vecBPre.y * 1.1f, this->state.slots[ec].vecBPre.z * 1.1f};
+        this->state.slots[ec].vecBNow = {this->state.slots[ec].vecBNow.x * 1.1f, this->state.slots[ec].vecBNow.y * 1.1f, this->state.slots[ec].vecBNow.z * 1.1f};
+        this->state.slots[ec].vecTPre = {this->state.slots[ec].vecTPre.x * 1.1f, this->state.slots[ec].vecTPre.y * 1.1f, this->state.slots[ec].vecTPre.z * 1.1f};
+        this->state.slots[ec].vecTNow = {this->state.slots[ec].vecTNow.x * 1.1f, this->state.slots[ec].vecTNow.y * 1.1f, this->state.slots[ec].vecTNow.z * 1.1f};
+        vec1.Set(this->state.slots[ec].vecBPre.x + this->state.slots[ec].height[0], this->state.slots[ec].vecBPre.y, this->state.slots[ec].vecBPre.z);
+        vec2.Set(this->state.slots[ec].vecBNow.x + this->state.slots[ec].height[0], this->state.slots[ec].vecBNow.y, this->state.slots[ec].vecBNow.z);
+        vec3.Set(this->state.slots[ec].vecTNow.x + this->state.slots[ec].height[0], this->state.slots[ec].vecTNow.y, this->state.slots[ec].vecTNow.z);
+        vec4.Set(this->state.slots[ec].vecTPre.x + this->state.slots[ec].height[0], this->state.slots[ec].vecTPre.y, this->state.slots[ec].vecTPre.z);
         this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
         const float outerLift = mode == 5 ? 30.0f : 40.0f;
         vec1.y -= outerLift;
@@ -4085,15 +4083,15 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         vec3.y -= outerLift;
         vec4.y -= outerLift;
 
-        const int outerAlpha = static_cast<int>(slot.height[i]);
+        const int outerAlpha = static_cast<int>(this->state.slots[ec].height[i]);
         if (outerAlpha > 0) {
           if (mode == 7) {
             this->RenderTeiRect(
-              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 0, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0
+              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0
             );
           } else {
             this->RenderTeiRect(
-              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
             );
           }
         }
