@@ -23,15 +23,15 @@ bool ResourceMgr::Exists(std::string name) {
 
   const char* dot = ReverseFindChar(normalized, '.');
   const int type = this->FindType(dot ? dot + 1 : nullptr);
-  if (type < 0) {
-    return false;
+  if (type >= 0) {
+    const std::string resolved = AddResourcePrefix(normalized, this->m_prefixes[type]);
+    if (CRes* existing = this->Find(type, resolved.c_str())) {
+      existing->lastUse = timeGetTime();
+      return true;
+    }
+
+    return ResourceExists(resolved.c_str(), 0);
   }
 
-  const std::string resolved = AddResourcePrefix(normalized, this->m_prefixes[type]);
-  if (CRes* existing = this->Find(type, resolved.c_str())) {
-    existing->lastUse = timeGetTime();
-    return true;
-  }
-
-  return ResourceExists(resolved.c_str(), 0);
+  return false;
 }
