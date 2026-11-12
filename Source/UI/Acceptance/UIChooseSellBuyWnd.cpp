@@ -10228,29 +10228,29 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
 void UITipboxWnd::OnProcess() {
   if (this->refreshPending == true) {
     this->refreshPending = false;
-    const int index = (std::max)(0, g_itemTagOwner->paragraphIndex);
+    const int index = g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0;
     const std::string text = g_itemTagOwner->m_currentEntry.paragraphs[index];
     std::vector<std::string> lines;
     WrapPlainText(text.c_str(), lines, 1000);
     this->tipViewer->Clear();
-    for (const std::string& line : lines) {
-      this->tipViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(line.c_str()), 32, 0, 0);
+    for (std::size_t line = 0; line < lines.size(); ++line) {
+      this->tipViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(lines[line].c_str()), 32, 0, 0);
     }
     this->Invalidate();
   }
   if (g_itemTagOwner->HasImages() == true) {
     this->Invalidate();
   }
-  if (this->m_frameTime - this->m_buildTime > 299) {
+  if (this->m_frameTime - this->m_buildTime >= 300) {
     this->m_buildTime = timeGetTime();
     for (std::size_t index = 0; index < this->m_dots.size(); ++index) {
       if (!this->m_dots[index].visible) {
         this->m_dots[index].visible = true;
         break;
       }
-      if (index + 1 == this->m_dots.size()) {
-        for (TipBoxDot& dot : this->m_dots) {
-          dot.visible = false;
+      if (index == this->m_dots.size() - 1) {
+        for (std::size_t dot = 0; dot < this->m_dots.size(); ++dot) {
+          this->m_dots[dot].visible = false;
         }
       }
     }
@@ -12032,15 +12032,14 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 void UITipboxWnd::Search(std::string& keyword) {
   const std::vector<int>& results = g_itemTagOwner->Search(keyword);
   this->searchResults->Clear();
-  for (const int id : results) {
-    const std::string& source = g_itemTagOwner->GetTip(id).title;
-    std::string title(source.c_str(), source.size());
+  for (std::vector<int>::const_iterator it = results.begin(); it != results.end(); ++it) {
+    std::string title = g_itemTagOwner->GetTip(*it).title;
     const std::size_t separator = title.find("#");
     if (separator != std::string::npos) {
       title = title.substr(0, separator);
     }
     if (title.size() != 0) {
-      this->searchResults->AddLine(title.c_str(), id);
+      this->searchResults->AddLine(title.c_str(), *it);
     }
   }
   this->searchResults->Invalidate();
