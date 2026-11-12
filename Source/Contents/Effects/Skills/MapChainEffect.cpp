@@ -122,10 +122,11 @@ bool CMapChainEffect::IsAlive() {
 // FUNCTION: fn_18952
 void CMapChainEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
       float angle = *reinterpret_cast<const float*>(particle->animationParameters) + *reinterpret_cast<float*>(&particle->angleBits);
       if (angle >= 360.0f) {
@@ -145,10 +146,9 @@ void CMapChainEffect::OnProcess() {
         particle->alpha = alpha > 0 ? alpha : 0;
       }
 
-      const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeYRotation(view->camera.yaw / -180.0f * 3.141592f);
+      rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
       particle->transform = rotation;
 
       const int segment = particle->columnIndex;
