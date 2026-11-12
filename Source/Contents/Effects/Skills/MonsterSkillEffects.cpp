@@ -982,7 +982,9 @@ void CFallenAngelEffect::SetPosition(vector3d position) {
   this->position[0] = target.x;
   this->position[1] = target.y;
   this->position[2] = target.z;
-  this->emitter->position = target;
+  this->emitter->position.x = target.x;
+  this->emitter->position.y = target.y;
+  this->emitter->position.z = target.z;
 }
 
 // OFFSET: 0x007118C0
