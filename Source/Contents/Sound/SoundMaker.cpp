@@ -1043,24 +1043,46 @@ void CHalluNPC::Render(int argument) {
 void CNpc::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
   switch (this->GetEffectiveJob(-1)) {
+    case JT_HIDDEN_NPC: {
+      float x;
+      float y;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
+      CRenderer* renderer = g_renderer;
+      const float distance = renderer->ScaleDistance(reciprocalDepth);
+      const float scale = distance / g_heightScale;
+      this->render.distanceScale = scale;
+
+      const float halfWidth = static_cast<float>(this->xSize / 2);
+      const float halfHeight = static_cast<float>(this->ySize / 2);
+      float bounds[5];
+      bounds[0] = x - halfWidth * renderer->viewport.uiScaleX * scale;
+      bounds[1] = y - halfHeight * renderer->viewport.uiScaleY * scale;
+      bounds[2] = halfWidth * renderer->viewport.uiScaleX * scale + x;
+      bounds[3] = y;
+      bounds[4] = reciprocalDepth;
+      this->SetRenderInfo(bounds, x, y);
+      return;
+    }
     case JT_WARPNPC: {
       if (!this->render.enabled) {
-        this->UpdateTlvertex(matrix);
-        return;
+        break;
       }
 
       float x;
       float y;
       float reciprocalDepth;
       g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
-      const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+      CRenderer* renderer = g_renderer;
+      const float distance = renderer->ScaleDistance(reciprocalDepth);
+      const float scale = distance / g_heightScale;
       this->render.distanceScale = scale;
 
       float bounds[5];
-      bounds[0] = x - g_renderer->viewport.uiScaleX * 50.0f * scale;
-      bounds[1] = y - g_renderer->viewport.uiScaleY * 50.0f * scale;
-      bounds[2] = g_renderer->viewport.uiScaleX * 50.0f * scale + x;
-      bounds[3] = g_renderer->viewport.uiScaleY * 50.0f * scale + y;
+      bounds[0] = x - renderer->viewport.uiScaleX * 50.0f * scale;
+      bounds[1] = y - renderer->viewport.uiScaleY * 50.0f * scale;
+      bounds[2] = renderer->viewport.uiScaleX * 50.0f * scale + x;
+      bounds[3] = renderer->viewport.uiScaleY * 50.0f * scale + y;
       bounds[4] = reciprocalDepth;
       this->SetRenderInfo(bounds, x, y);
 
@@ -1072,69 +1094,44 @@ void CNpc::Render(int argument) {
     case JT_EFFECTLAUNCHER:
     case JT_HIDDEN_WARP_NPC:
       return;
-    case JT_HIDDEN_NPC: {
-      float x;
-      float y;
-      float reciprocalDepth;
-      g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
-      const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
-      this->render.distanceScale = scale;
+    default:
+      if (this->GetEffectiveJob(-1) < 6017 || this->GetEffectiveJob(-1) > 6046) {
+        for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+          if (effect.id == 184) {
+            if (this->objectType == 5 && (!this->render.visible || !this->render.enabled)) {
+              this->SetColor(-1, 0, 0, 0);
+              this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+              return;
+            }
+            break;
+          }
+        }
 
-      const float halfWidth = static_cast<float>(this->xSize / 2);
-      const float halfHeight = static_cast<float>(this->ySize / 2);
-      float bounds[5];
-      bounds[0] = x - halfWidth * g_renderer->viewport.uiScaleX * scale;
-      bounds[1] = y - halfHeight * g_renderer->viewport.uiScaleY * scale;
-      bounds[2] = halfWidth * g_renderer->viewport.uiScaleX * scale + x;
-      bounds[3] = y;
-      bounds[4] = reciprocalDepth;
-      this->SetRenderInfo(bounds, x, y);
-      return;
-    }
-  }
-
-  if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
-    if (!this->render.visible) {
-      return;
-    }
-
-    if ((this->render.color & 0xFF000000) == 0xFF000000) {
-      this->DrawShadow(argument, this->render.scale);
-    }
-    if (this->render.enabled) {
-      this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
-    } else {
-      this->UpdateTlvertex(matrix);
-    }
-    return;
-  }
-
-  bool hidden = false;
-  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-    if (effect.id == 184) {
-      hidden = true;
+        if (!this->render.visible) {
+          return;
+        }
+        if ((this->render.color & 0xFF000000) == 0xFF000000) {
+          this->DrawShadow(argument, this->render.scale);
+        }
+        if (this->render.enabled) {
+          this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+          return;
+        }
+      } else {
+        if (!this->render.visible) {
+          return;
+        }
+        if ((this->render.color & 0xFF000000) == 0xFF000000) {
+          this->DrawShadow(argument, this->render.scale);
+        }
+        if (this->render.enabled) {
+          this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
+          return;
+        }
+      }
       break;
-    }
   }
-
-  if (hidden && this->objectType == 5 && (!this->render.visible || !this->render.enabled)) {
-    this->SetColor(-1, 0, 0, 0);
-    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
-    return;
-  }
-
-  if (!this->render.visible) {
-    return;
-  }
-
-  if ((this->render.color & 0xFF000000) == 0xFF000000) {
-    this->DrawShadow(argument, this->render.scale);
-  }
-  if (this->render.enabled) {
-    this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
-  } else {
-    this->UpdateTlvertex(matrix);
-  }
+  this->UpdateTlvertex(matrix);
 }
 
 // OFFSET: 0x00DA2F00
