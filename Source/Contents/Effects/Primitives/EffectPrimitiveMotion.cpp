@@ -2614,7 +2614,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   particle.longitude = particle.longSpeed + particle.longitude;
   particle.latitude = particle.latiSpeed + particle.latitude;
 
-  if (particle.maxHeightSize <= particle.heightSize && particle.heightSize != particle.maxHeightSize) {
+  if (particle.heightSize > particle.maxHeightSize) {
     particle.heightAccel = 0;
     particle.heightSpeed = 0;
   }
@@ -2628,9 +2628,9 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     angle = this->render.angle;
   } else {
     if ((particle.pattern & 0x40u) != 0) {
-      const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
-      particle.longitude = view->camera.yaw + 90.0f;
-      particle.roll = view->camera.pitch;
+      const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      particle.longitude = mode->camera->camera.yaw + 90.0f;
+      particle.roll = mode->camera->camera.pitch;
       rotation.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
       rotation.AppendZRotation(GetRadian(static_cast<int>(particle.roll)));
     } else {
@@ -2641,7 +2641,8 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     angle = particle.longitude;
   }
 
-  rotation.AppendYRotation(GetRadian(static_cast<int>(angle)));
+  const float yaw = GetRadian(static_cast<int>(angle));
+  rotation.AppendYRotation(yaw);
 
   if ((particle.pattern & 2u) != 0) {
     const auto index = particle.chCnt;
@@ -2652,9 +2653,13 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x10u) != 0) {
-    particle.master->state.deltaPos[0] = particle.deltaPos2.x + particle.deltaPos.x;
-    particle.master->state.deltaPos[1] = particle.deltaPos.y + particle.deltaPos2.y;
-    particle.master->state.deltaPos[2] = particle.deltaPos.z + particle.deltaPos2.z;
+    const float masterX = particle.deltaPos2.x + particle.deltaPos.x;
+    const float masterY = particle.deltaPos.y + particle.deltaPos2.y;
+    const float masterZ = particle.deltaPos.z + particle.deltaPos2.z;
+    CRagEffect* master = particle.master;
+    master->state.deltaPos[0] = masterX;
+    master->state.deltaPos[1] = masterY;
+    master->state.deltaPos[2] = masterZ;
   }
 
   if ((particle.pattern & 4u) != 0) {
