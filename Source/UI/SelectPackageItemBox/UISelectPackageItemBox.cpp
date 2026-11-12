@@ -712,7 +712,7 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->nameText->SetFitText(1);
   this->nameText->SetAlign(0, 6);
   // GLOBAL: gl_25123
-  this->nameText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xE7978FB5A94DD7FDULL)));
+  this->nameText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xED796785D1DF137FULL)));
   this->nameText->SetFontHeight(12);
   this->nameText->SetBold(0);
   this->nameText->SetColor(0);
