@@ -73,6 +73,8 @@ bool NThread::Start() {
 // FUNCTION: fn_45509
 void NThread::Stop() {
   switch (this->m_state) {
+  case 0:
+    return;
   case 2:
     if (ResumeThread(this->m_handle) != static_cast<DWORD>(-1)) {
       this->m_state = 1;
@@ -88,8 +90,6 @@ void NThread::Stop() {
       this->m_handle = nullptr;
     }
     this->m_state = 0;
-    break;
-  default:
     break;
   }
 }
