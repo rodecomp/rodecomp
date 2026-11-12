@@ -154,14 +154,13 @@ void CMagnumBreak::Render() {
     ring->vertices[3].x = outerEnd.x;
     ring->vertices[3].y = outerEnd.y;
     ring->vertices[3].z = outerEnd.z;
-    const float column = static_cast<float>(ring->columnIndex % 4);
     ParticleQuad quad;
     quad.billboard = false;
     quad.unused = false;
     quad.depth = true;
     quad.top = 1.0f;
     quad.bottom = 0.0f;
-    quad.left = column * 0.25f;
+    quad.left = static_cast<float>(ring->columnIndex % 4) * 0.25f;
     quad.right = quad.left + 0.25f;
     ring->Render(quad);
   }
