@@ -67,7 +67,9 @@ const char* CSimpleStringMgr::GetString(const char* key) {
 // FUNCTION: fn_09078
 std::vector<std::string> CSimpleStringMgr::TransformFields(const std::vector<std::string>& fields) {
   std::vector<std::string> result;
-  result.reserve(fields.size());
+  if (!fields.empty()) {
+    result.reserve(fields.size());
+  }
   for (std::string field : fields) {
     if (field.empty()) {
       field = "NO MSG";
