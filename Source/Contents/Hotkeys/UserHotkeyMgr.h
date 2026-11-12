@@ -16,7 +16,8 @@ public:
   static void Shutdown();
   void Reset();
   int TabAt(int position) const;
-  void LoadV2(LuaScript& script, Json::Value& data);
+  void LoadV2(Json::Value& data);
+  void LoadUserHotkeyTab(Json::Value& values, int tab);
   void Capture();
   bool HasUserAssignments(LuaScript& script) const;
   bool HasChanges() const;

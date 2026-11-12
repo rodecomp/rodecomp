@@ -109,7 +109,7 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
         g_session.m_emotionHotkeys.Load(root[DecryptText<0x2FF3C5036D070127ULL>(emotionSource)]);
         constexpr std::array<std::uint8_t, 5> hotkeySourceArray = CRYPT_NAME("data", 0x17359BF953C367B3ULL);
         const std::uint8_t (&hotkeySource)[5] = hotkeySourceArray._Elems;
-        g_userHotkeyMgr->LoadV2(*g_session.m_hotkeyScript, root[DecryptText<0x17359BF953C367B3ULL>(hotkeySource)]);
+        g_userHotkeyMgr->LoadV2(root[DecryptText<0x17359BF953C367B3ULL>(hotkeySource)]);
       }
         [[fallthrough]];
       case 2:

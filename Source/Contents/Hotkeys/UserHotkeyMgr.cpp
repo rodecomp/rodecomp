@@ -160,18 +160,18 @@ void CUserHotkeyMgr::Reset() {
 
 // OFFSET: 0x005BC420
 // FUNCTION: fn_03464
-void CUserHotkeyMgr::LoadV2(LuaScript& script, Json::Value& data) {
+void CUserHotkeyMgr::LoadV2(Json::Value& data) {
   Json::Value values = data["UserHotkey_V2"];
   if (values.empty()) {
     this->m_version2 = false;
   } else {
     this->m_version2 = true;
-    ClearUserHotkeys(script);
-    LoadUserHotkeyTab(script, values["SkillBar_1Tab"], 0);
-    LoadUserHotkeyTab(script, values["SkillBar_2Tab"], 3);
-    LoadUserHotkeyTab(script, values["InterfaceTab"], 1);
-    LoadUserHotkeyTab(script, values["EmotionTab"], 2);
-    SaveUserHotkeys(script);
+    ClearUserHotkeys();
+    this->LoadUserHotkeyTab(values["SkillBar_1Tab"], 0);
+    this->LoadUserHotkeyTab(values["SkillBar_2Tab"], 3);
+    this->LoadUserHotkeyTab(values["InterfaceTab"], 1);
+    this->LoadUserHotkeyTab(values["EmotionTab"], 2);
+    SaveUserHotkeys();
   }
 }
 
