@@ -136,9 +136,12 @@ void UIAccountLimitedToolWnd::OnCreate(int, int) {
       this->m_buttons[i]->SetId(buttonIds[i]);
       this->m_buttons[i]->Enable(1);
       this->AddChild(this->m_buttons[i]);
-      UIBitmapButton* button = this->m_buttons[i];
-      button->SetDisabled(i == 0 ? 0 : 1);
-      button->Invalidate();
+      if (i == 0) {
+        this->m_buttons[i]->SetDisabled(0);
+      } else {
+        this->m_buttons[i]->SetDisabled(1);
+      }
+      this->m_buttons[i]->Invalidate();
     }
   }
 
