@@ -2114,14 +2114,17 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(int sourceActor, CGa
     const float baseZ = (forwardZ * advance + source->render.position.z) - rightZ * shift;
 
     for (int column = 0; column < count; ++column) {
-      if (std::max(std::rand() % 2, 0) != 0) {
+      const int skip = std::rand() % 2;
+      if ((skip >= 0 ? skip : 0) != 0) {
         continue;
       }
 
-      const float offset = g_featherOffsets[std::max(std::rand() % 3, 0)];
+      const int pick = std::rand() % 3;
+      const float offset = g_featherOffsets[pick >= 0 ? pick : 0];
       const float step = static_cast<float>(column);
       const vector3d position = {rightX * step + baseX + offset * forwardX, rightY * step + baseY + offset * forwardY, rightZ * step + baseZ + offset * forwardZ};
-      const int fade = std::max(std::rand() % 101, 0) + alpha;
+      const int jitter = std::rand() % 101;
+      const int fade = (jitter >= 0 ? jitter : 0) + alpha;
       const int scale = std::max(std::rand() % 11, 7);
       if (CEffect* effect = g_effectMgr->Spawn(0, effectId, position, 0, -1, 0, 0)) {
         effect->SetFlipX(flipped);

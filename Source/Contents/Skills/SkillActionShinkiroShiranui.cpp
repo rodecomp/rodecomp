@@ -103,8 +103,10 @@ void CSkillAction_SS_REIKETSUHOU::OnGroundSkillEffect(vector3d position, int lev
   const int count = counts[std::min<unsigned int>(level, 10) - 1];
   for (int index = 0; index < count; ++index) {
     vector3d spot = position;
-    spot.x += (std::max(0, std::rand() % (count * 50 + 1)) - count * 50 * 0.5f) * 0.1f;
-    spot.z += (std::max(0, std::rand() % (count * 50 + 1)) - count * 50 * 0.5f) * 0.1f;
+    const int rollX = std::rand() % (count * 50 + 1);
+    spot.x += ((rollX >= 0 ? rollX : 0) - count * 50 * 0.5f) * 0.1f;
+    const int rollZ = std::rand() % (count * 50 + 1);
+    spot.z += ((rollZ >= 0 ? rollZ : 0) - count * 50 * 0.5f) * 0.1f;
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
       effect->SetDelay(index * 80);
@@ -287,7 +289,8 @@ void CSkillAction_SS_HITOUAKUMU::OnSkillEffect(int level, CGameActor* source, CG
 
   ShuffledSequence shuffle;
   for (int ring = 0; ring < 3; ++ring) {
-    const int count = std::max(0, std::rand() % 5) + 15;
+    const int roll = std::rand() % 5;
+    const int count = (roll >= 0 ? roll : 0) + 15;
     const float step = 360.0f / count;
     const std::vector<int> order = shuffle(count);
     for (int index = 0; index < count; ++index) {

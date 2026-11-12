@@ -853,18 +853,25 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
     const float y = target->render.position.y;
     const float originZ = target->render.position.z;
     float z = originZ;
+    int roll;
     switch (index & 3) {
     case 1:
-      x = originX + static_cast<float>(std::max(rand() % 8, 0));
-      z = originZ + static_cast<float>(std::max(rand() % 8, 0));
+      roll = rand() % 8;
+      x = originX + static_cast<float>(roll >= 0 ? roll : 0);
+      roll = rand() % 8;
+      z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
       break;
     case 2:
-      x = originX + static_cast<float>(std::max(rand() % 8, 0));
-      z = originZ - static_cast<float>(std::max(rand() % 8, 0));
+      roll = rand() % 8;
+      x = originX + static_cast<float>(roll >= 0 ? roll : 0);
+      roll = rand() % 8;
+      z = originZ - static_cast<float>(roll >= 0 ? roll : 0);
       break;
     case 3:
-      x = originX - static_cast<float>(std::max(rand() % 8, 0));
-      z = originZ + static_cast<float>(std::max(rand() % 8, 0));
+      roll = rand() % 8;
+      x = originX - static_cast<float>(roll >= 0 ? roll : 0);
+      roll = rand() % 8;
+      z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
       break;
     }
     CEffect* effect = g_effectMgr->Spawn(0, subEffectId, vector3d{x, y, z}, 0, -1, 0, 0);
