@@ -36,7 +36,7 @@ public:
 
 private:
   /* 0004 */ DeviceOwnerDX9* m_device;
-  /* 0008 */ std::unique_ptr<CTexture> m_defaultTexture;
+  /* 0008 */ std::unique_ptr<CTextureDX9> m_defaultTexture;
   /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 
 };

@@ -6,6 +6,7 @@
 #include <new>
 
 template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=(std::shared_ptr<CSurface>&&) noexcept;
+template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=<CSurfaceDX9>(std::shared_ptr<CSurfaceDX9>&&) noexcept;
 
 // OFFSET: 0x0056CF60
 // FUNCTION: fn_02353
@@ -97,7 +98,7 @@ CSurface* CRenderSystemDX9::CreateSurfaceOrTexture(std::uint32_t width, std::uin
 // FUNCTION: fn_02369
 CTexture* CRenderSystemDX9::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-      this->m_defaultTexture = std::unique_ptr<CTexture>(new CTextureDX9(*this->m_device));
+      this->m_defaultTexture = std::make_unique<CTextureDX9>(*this->m_device);
   }
 
   return this->m_defaultTexture.get();
@@ -107,7 +108,8 @@ CTexture* CRenderSystemDX9::BackBufferTexture() {
 // FUNCTION: fn_02371
 std::shared_ptr<CSurface> CRenderSystemDX9::BackBufferSurface() {
   if (!this->m_backBuffer) {
-      this->m_backBuffer = std::make_shared<CSurfaceDX9>(*this->m_device, this->m_device->backBuffer);
+      IDirect3DSurface9* backBuffer = this->m_device->backBuffer;
+      this->m_backBuffer = std::make_shared<CSurfaceDX9>(*this->m_device, backBuffer);
   }
 
   return this->m_backBuffer;
