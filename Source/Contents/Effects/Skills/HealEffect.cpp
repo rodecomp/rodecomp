@@ -442,7 +442,8 @@ void CHealEffect::OnProcess() {
           alpha = (std::min)(alpha + 5, 180);
         }
       } else {
-        alpha = (std::max)(alpha - 2, 0);
+        const int faded = alpha - 2;
+        alpha = faded >= 0 ? faded : 0;
       }
       particle->alpha = alpha;
 
@@ -507,7 +508,8 @@ void CHealEffect::OnProcess() {
           alpha = (std::min)(alpha + 5, 180);
         }
       } else {
-        alpha = (std::max)(alpha - 2, 0);
+        const int faded = alpha - 2;
+        alpha = faded >= 0 ? faded : 0;
       }
       particle->alpha = alpha;
 
@@ -578,7 +580,8 @@ void CHealEffect::OnProcess() {
           particle->SetTexture("effect\\pok1.tga");
         }
       }
-      particle->alpha = (std::max)(alpha - 3, 0);
+      const int faded = alpha - 3;
+      particle->alpha = faded >= 0 ? faded : 0;
 
       particle->offsetX -= 0.0f;
       particle->offsetY -= particle->animationParameter;
