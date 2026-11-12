@@ -84,11 +84,13 @@ void CJupitelThunderStormEffect::Open() {
       offsetZ = static_cast<float>(corners[corner][1]) * g_depthAverageHalf;
     } else {
       const int randomZ = rand() % range;
-      offsetX = std::max(rand() % range, 0);
-      offsetZ = (static_cast<float>(std::max(randomZ, 0)) + g_depthAverageHalf) * static_cast<float>(corners[corner][1]);
+      const int randomX = rand() % range;
+      offsetX = randomX >= 0 ? randomX : 0;
+      offsetZ = (static_cast<float>(randomZ >= 0 ? randomZ : 0) + g_depthAverageHalf) * static_cast<float>(corners[corner][1]);
     }
 
-    bolt->Load(FormatOwnedString("HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm\\jupitel_thunder_storm_%02d.str", std::max(rand() % 3, 0)));
+    const int variant = rand() % 3;
+    bolt->Load(FormatOwnedString("HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm\\jupitel_thunder_storm_%02d.str", variant >= 0 ? variant : 0));
     bolt->position.z = offsetZ + this->sourcePosition[2];
     bolt->position.y = this->sourcePosition[1] - 15.0f;
     bolt->position.x = static_cast<float>(corners[corner][0]) * (static_cast<float>(offsetX) + g_depthAverageHalf) + this->sourcePosition[0];
