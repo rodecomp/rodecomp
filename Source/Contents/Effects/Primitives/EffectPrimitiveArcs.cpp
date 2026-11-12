@@ -1346,9 +1346,6 @@ void CEffectPrim::RenderBladeFins(matrix& wtm) {
   vector3d inner{};
   vector3d base2{};
   int rpCnt = 0;
-  unsigned char red;
-  unsigned char green;
-  unsigned char blue;
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
@@ -1379,21 +1376,14 @@ void CEffectPrim::RenderBladeFins(matrix& wtm) {
 
     if (this->state.slots[ec].flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 255;
-      green = 25;
-      blue = 25;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 255, 25, 25, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (this->state.slots[ec].flag1[0] == 2) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 255;
-      green = 255;
-      blue = 255;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 25;
-      green = 25;
-      blue = 255;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 25, 25, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     }
-    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
 
     angle = this->state.slots[ec].riseAngle + 25;
     if (angle >= 360) {
@@ -1410,21 +1400,14 @@ void CEffectPrim::RenderBladeFins(matrix& wtm) {
 
     if (this->state.slots[ec].flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 255;
-      green = 25;
-      blue = 25;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 255, 25, 25, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else if (this->state.slots[ec].flag1[0] == 2) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 255;
-      green = 255;
-      blue = 255;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB / 4, base, outer, inner, base2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-      red = 25;
-      green = 25;
-      blue = 255;
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, 25, 25, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     }
-    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, base, outer, inner, base2, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }
 
