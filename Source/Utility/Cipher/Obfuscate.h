@@ -51,6 +51,12 @@ namespace utility {
     return name; \
   }()
 
+#define OBFUSCATE_ARRAY_TEXT(text, key, element) \
+  []() { \
+    OBFUSCATE_NAME_ARRAY_(text, key, element, name); \
+    return name.Text(); \
+  }()
+
 #define OBFUSCATE_ARRAY_BODY(text, key, element) \
   OBFUSCATE_NAME_ARRAY_(text, key, element, name); \
   return name
