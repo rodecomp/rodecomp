@@ -100,6 +100,7 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 
@@ -1071,23 +1072,11 @@ void UILoginOTPWnd::OnCreate(int, int) {
   this->AddChild(label);
 
   UIBmpTextButton* button = new UIBmpTextButton();
-  EncryptedName<49, 0xE55723712993051DULL>& normalName = []() -> EncryptedName<49, 0xE55723712993051DULL>& {
-    const char normalSource[] = CRYPT_CHARS(49, "유저인터페이스\\login_interface\\bt_otp_normal.bmp", 0xE55723712993051DULL);
-    thread_local EncryptedName<sizeof(normalSource), 0xE55723712993051DULL> name(normalSource);
-    return name;
-  }();
+  EncryptedName<49, 0xE55723712993051DULL>& normalName = OBFUSCATE_STRING("유저인터페이스\\login_interface\\bt_otp_normal.bmp", 0xE55723712993051DULL);
   button->SetBitmap(normalName.Text(), 0, 0);
-  EncryptedName<47, 0x7DE349D717D7F123ULL>& hoverName = []() -> EncryptedName<47, 0x7DE349D717D7F123ULL>& {
-    const char hoverSource[] = CRYPT_CHARS(47, "유저인터페이스\\login_interface\\bt_otp_over.bmp", 0x7DE349D717D7F123ULL);
-    thread_local EncryptedName<sizeof(hoverSource), 0x7DE349D717D7F123ULL> name(hoverSource);
-    return name;
-  }();
+  EncryptedName<47, 0x7DE349D717D7F123ULL>& hoverName = OBFUSCATE_STRING("유저인터페이스\\login_interface\\bt_otp_over.bmp", 0x7DE349D717D7F123ULL);
   button->SetBitmap(hoverName.Text(), 1, 0);
-  EncryptedName<48, 0x0F15B16B5BAFD57FULL>& pressedName = []() -> EncryptedName<48, 0x0F15B16B5BAFD57FULL>& {
-    const char pressedSource[] = CRYPT_CHARS(48, "유저인터페이스\\login_interface\\bt_otp_press.bmp", 0x0F15B16B5BAFD57FULL);
-    thread_local EncryptedName<sizeof(pressedSource), 0x0F15B16B5BAFD57FULL> name(pressedSource);
-    return name;
-  }();
+  EncryptedName<48, 0x0F15B16B5BAFD57FULL>& pressedName = OBFUSCATE_STRING("유저인터페이스\\login_interface\\bt_otp_press.bmp", 0x0F15B16B5BAFD57FULL);
   button->SetBitmap(pressedName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(186, 92);
@@ -2434,11 +2423,7 @@ void UILoginWnd::OnProcess() {
   if (g_windowMgr.GetHoverWindow() == this->idEdit) {
     this->idEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
     if (this->idPlaceholder == true) {
-      EncryptedName<3, 0x2D51E3B7236175EDULL>& placeholder = []() -> EncryptedName<3, 0x2D51E3B7236175EDULL>& {
-        const char source[] = CRYPT_CHARS(3, "ID", 0x2D51E3B7236175EDULL);
-        thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
-        return name;
-      }();
+      EncryptedName<3, 0x2D51E3B7236175EDULL>& placeholder = OBFUSCATE_STRING("ID", 0x2D51E3B7236175EDULL);
       if (std::strcmp(placeholder.Text(), this->idEdit->Text()) == 0) {
         this->idEdit->SetText("");
         goto password;
@@ -2450,11 +2435,7 @@ void UILoginWnd::OnProcess() {
       this->idEdit->TextColor(156, 156, 156, 0xFFFFFFFF);
       UIEditCtrl_Custom* edit = this->idEdit;
       this->idPlaceholder = true;
-      edit->SetText([]() -> EncryptedName<3, 0x0F41EBBDA32D1B17ULL>& {
-        const char source[] = CRYPT_CHARS(3, "ID", 0x0F41EBBDA32D1B17ULL);
-        thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
-        return name;
-      }().Text());
+      edit->SetText(OBFUSCATE_STRING("ID", 0x0F41EBBDA32D1B17ULL).Text());
     }
     if (this->idPlaceholder == false) {
       this->idEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
@@ -2472,11 +2453,7 @@ password:
     ImmReleaseContext(hWnd, context);
     this->passwordEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
     if (this->passwordPlaceholder == true) {
-      EncryptedName<9, 0x7115D9F973F913C9ULL>& placeholder = []() -> EncryptedName<9, 0x7115D9F973F913C9ULL>& {
-        const char source[] = CRYPT_CHARS(9, "PASSWORD", 0x7115D9F973F913C9ULL);
-        thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
-        return name;
-      }();
+      EncryptedName<9, 0x7115D9F973F913C9ULL>& placeholder = OBFUSCATE_STRING("PASSWORD", 0x7115D9F973F913C9ULL);
       if (std::strcmp(placeholder.Text(), this->passwordEdit->Text()) == 0) {
         this->passwordEdit->SetText("");
         this->passwordEdit->mask = 0;
@@ -2489,11 +2466,7 @@ password:
       this->passwordPlaceholder = true;
       this->passwordEdit->TextColor(156, 156, 156, 0xFFFFFFFF);
       auto* edit = this->passwordEdit;
-      edit->SetText([]() -> EncryptedName<9, 0xCB1D253B7FE1F563ULL>& {
-        const char source[] = CRYPT_CHARS(9, "PASSWORD", 0xCB1D253B7FE1F563ULL);
-        thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
-        return name;
-      }().Text());
+      edit->SetText(OBFUSCATE_STRING("PASSWORD", 0xCB1D253B7FE1F563ULL).Text());
       this->passwordEdit->mask = 0;
     }
     if (this->passwordPlaceholder != false) {
