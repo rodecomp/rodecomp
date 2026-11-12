@@ -5,6 +5,8 @@
 
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
+
 namespace {
   // INLINED
   int ActiveOption(std::uint16_t id) {
