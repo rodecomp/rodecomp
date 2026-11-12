@@ -702,7 +702,12 @@ void ApplyAiPatch() {
     EncryptedName<sizeof(deleteSource), 0x6DED3DD1CF75AD9BULL>& deleteName = ThreadLocalName<0x6DED3DD1CF75AD9BULL>(deleteSource);
     std::strcpy(path, deleteName.Text());
 
-    SHFILEOPSTRUCTA operation = {nullptr, FO_DELETE, path, nullptr, FOF_ALLOWUNDO | FOF_NOCONFIRMATION};
+    SHFILEOPSTRUCTA operation = {};
+    operation.hwnd = nullptr;
+    operation.wFunc = FO_DELETE;
+    operation.pFrom = path;
+    operation.pTo = nullptr;
+    operation.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION;
     SHFileOperationA(&operation);
   }
 
