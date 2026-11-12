@@ -57,23 +57,21 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   }
 
   for (int index = rowStart; index < rowStart + 9; ++index) {
-    NormalItemSlot previous;
+    const auto isDuplicate = [&](NormalItemSlot previous) {
+      if (id == previous.itemId && level == previous.value && type == previous.enabled) {
+        return true;
+      }
+      return !CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(previous.itemId)) && id == previous.itemId && type == previous.enabled;
+    };
     if (bank == 0) {
-      previous = this->m_shortcutSlots[index];
+      if (!isDuplicate(this->m_shortcutSlots[index])) {
+        continue;
+      }
     } else if (bank == 1) {
-      previous = this->m_secondaryShortcutSlots[index];
+      if (!isDuplicate(this->m_secondaryShortcutSlots[index])) {
+        continue;
+      }
     } else {
-      continue;
-    }
-
-    bool duplicate = previous.itemId == id && previous.value == level && previous.enabled == type;
-
-    if (!duplicate) {
-      const bool usesLevel = CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(previous.itemId));
-      duplicate = !usesLevel && previous.itemId == id && previous.enabled == type;
-    }
-
-    if (!duplicate) {
       continue;
     }
 
@@ -118,7 +116,7 @@ void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
 
   int found = -1;
   for (int index = 0; index < 9; ++index) {
-    if (this->m_normalItemSlots[index].itemId == id) {
+    if (id == this->m_normalItemSlots[index].itemId) {
       found = index;
       break;
     }
