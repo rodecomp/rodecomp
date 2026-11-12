@@ -915,14 +915,20 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     this->stateTick = timeGetTime();
     this->frame = 0;
     if (this->cancelButton) {
-      this->cancelButton->SetDisabled(0);
-      this->cancelButton->Invalidate();
+      {
+        auto* cancelButton = this->cancelButton;
+        cancelButton->SetDisabled(0);
+        cancelButton->Invalidate();
+      }
     }
 
     this->result = 7;
     this->refiningButton->Enable(1);
-    this->refiningButton->SetDisabled(1);
-    this->refiningButton->Invalidate();
+    {
+      auto* refiningButton = this->refiningButton;
+      refiningButton->SetDisabled(1);
+      refiningButton->Invalidate();
+    }
     this->returnButton->Enable(0);
     this->againButton->Enable(0);
     this->Invalidate();
