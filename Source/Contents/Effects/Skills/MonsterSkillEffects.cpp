@@ -621,7 +621,9 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
     particle->scale = 2.5f;
     particle->alpha = 150;
     particle->SetColor(255, 0, 0);
-    particle->position = position;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     InitParticleQuad(particle->vertices);
     this->emitters.push_back(particle);
   }
