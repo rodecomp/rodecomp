@@ -25,8 +25,8 @@ void DrawScreenLine(float startX, float startY, float endX, float endY, int thic
 
   angle += 1.570796f;
   const float width = static_cast<float>(thickness);
-  const float offsetY = std::sin(angle) * width;
-  const float offsetX = std::cos(angle) * width;
+  const float offsetY = ClientSin(angle) * width;
+  const float offsetX = ClientCos(angle) * width;
   DrawScreenQuad(
     startX - offsetX, startY - offsetY, startX + offsetX, startY + offsetY, endX - offsetX, endY - offsetY, endX + offsetX, endY + offsetY, texture, color
   );
