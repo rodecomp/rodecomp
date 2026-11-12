@@ -180,6 +180,7 @@ namespace myGPack {
 
       std::memset(this->m_roundKeys[round], 0, sizeof(this->m_roundKeys[round]));
 
+      unsigned bitsPerGroup = 6;
       for (unsigned i = 0; i < 48; ++i) {
         std::uint8_t bit = s_keyCompression[i] - 1;
         unsigned byte;
@@ -191,7 +192,7 @@ namespace myGPack {
         }
 
         if (halves[byte] & s_bitMasks[bit & 7]) {
-          this->m_roundKeys[round][i / 6] |= s_bitMasks[i % 6];
+          this->m_roundKeys[round][i / bitsPerGroup] |= s_bitMasks[i % bitsPerGroup];
         }
       }
     }
