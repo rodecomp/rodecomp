@@ -1829,7 +1829,9 @@ void CDropItemEffect::Open() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     EZ2STREmitter* emitter = this->emitters[i];
     if (emitter) {
-      emitter->position = this->position;
+      emitter->position.x = this->position.x;
+      emitter->position.y = this->position.y;
+      emitter->position.z = this->position.z;
     }
   }
 }
@@ -3746,14 +3748,18 @@ void CSevereRainStorm::SpawnGrenades() {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping_bottom\\grenades_dropping_bottom.str"));
-      particle->position = position;
+      particle->position.x = position.x;
+      particle->position.y = position.y;
+      particle->position.z = position.z;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
     }
 
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping\\grenades_dropping.str"));
-      particle->position = position;
+      particle->position.x = position.x;
+      particle->position.y = position.y;
+      particle->position.z = position.z;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
     }
   }
@@ -3865,14 +3871,18 @@ void CSevereRainStorm::SpawnStarCannon() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon_bottom\\ske_star_cannon_bottom.str"));
-    particle->position = position;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
   particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon\\ske_star_cannon.str"));
-    particle->position = position;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
@@ -3893,14 +3903,18 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
-    particle->position = position;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
   particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy03.str"));
-    particle->position = position;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
