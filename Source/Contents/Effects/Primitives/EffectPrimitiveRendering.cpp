@@ -2137,8 +2137,11 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
 
       const int alpha = static_cast<int>(slot.height[ring]);
       if (alpha > 0) {
-        const unsigned char shade = ring == 10 ? 55 : 5;
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, shade, shade, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        if (ring == 10) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
       }
     }
   }
@@ -4093,11 +4096,15 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
 
         const int outerAlpha = static_cast<int>(slot.height[i]);
         if (outerAlpha > 0) {
-          const unsigned char red = mode == 7 ? 255 : 5;
-          const unsigned char blue = mode == 7 ? 5 : 255;
-          this->RenderTeiRect(
-            &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 0, red, 5, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0
-          );
+          if (mode == 7) {
+            this->RenderTeiRect(
+              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 0, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0
+            );
+          } else {
+            this->RenderTeiRect(
+              &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+            );
+          }
         }
       }
     }
