@@ -1097,7 +1097,7 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
   switch (argument1) {
   case ID_LEFT:
-    this->direction = this->direction < 7 ? this->direction + 1 : 0;
+    this->direction = this->direction >= 7 ? 0 : this->direction + 1;
     break;
   case ID_RIGHT:
     if (this->direction <= 0) {
@@ -1105,6 +1105,12 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     } else {
       --this->direction;
     }
+    break;
+  case 450:
+    this->SelectPreviousStyle(this->GetStyleTable(2).c_str(), &this->head);
+    break;
+  case 451:
+    this->SelectNextStyle(this->GetStyleTable(2).c_str(), &this->head);
     break;
   case ID_PREVIEW:
     this->SelectPreviousStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
@@ -1114,12 +1120,6 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     break;
   case ID_NEXTVIEW:
     this->SelectNextStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
-    break;
-  case 450:
-    this->SelectPreviousStyle(this->GetStyleTable(2).c_str(), &this->head);
-    break;
-  case 451:
-    this->SelectNextStyle(this->GetStyleTable(2).c_str(), &this->head);
     break;
   case 495:
     shop->SendMsg(nullptr, 495, 0, 0, 0, 0);
