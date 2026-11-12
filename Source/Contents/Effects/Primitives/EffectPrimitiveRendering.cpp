@@ -1638,7 +1638,8 @@ static __forceinline void RenderFacingQuad(
   vec2 = {position.x + corner2.x, position.y + corner2.y, position.z + corner2.z};
   vec3 = {position.x + corner3.x, position.y + corner3.y, position.z + corner3.z};
   vec4 = {position.x + corner4.x, position.y + corner4.y, position.z + corner4.z};
-  const int alpha = std::max(alphaValue * 2, 0);
+  const int doubled = alphaValue * 2;
+  const int alpha = doubled >= 0 ? doubled : 0;
 
   if (slot.flag1[5] == 7) {
     prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -5291,8 +5292,8 @@ void CEffectPrim::Render2DCircle() {
 void CEffectPrim::Render2DDiamond() {
   const float sn = ClientSine(static_cast<int>(this->state.roll));
   const float cs = ClientCosine(static_cast<int>(this->state.roll));
-  const float halfHeight = this->state.heightSize * g_depthAverageHalf;
-  const float halfWidth = this->state.widthSize * g_depthAverageHalf;
+  const float halfHeight = this->state.heightSize * 0.5f;
+  const float halfWidth = this->state.widthSize * 0.5f;
   const float notch = halfHeight / 1.2f;
 
   this->state.triangles[0].vertices[0].x = -halfWidth;
