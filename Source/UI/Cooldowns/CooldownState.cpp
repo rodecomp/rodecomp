@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) std::_Tree<std::_Tmap_traits<unsigned, CooldownEdge, std::less<unsigned>, std::allocator<std::pair<const unsigned, CooldownEdge>>, false>>::~_Tree() noexcept;
+
 // INLINED
 std::uint32_t CooldownNow() {
   return g_replayAnimationScaling ? Replay::Instance().elapsed : timeGetTime();
