@@ -10,6 +10,8 @@
 #include <new>
 #include <process.h>
 
+extern "C" __declspec(dllimport) unsigned int __stdcall AIL_stream_status(void* stream);
+
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
 CSoundMgr* g_soundMgr = nullptr;
@@ -396,19 +398,21 @@ bool CSoundMgr::IsComplete() const {
     return false;
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-
-  if (miles.streamStatus(this->secondaryStream) == 2) {
+  if (AIL_stream_status(this->secondaryStream) == 2) {
     return true;
   }
 
-  return miles.streamStatus(this->stream) == 2;
+  if (AIL_stream_status(this->stream) == 2) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00639AC0
 // FUNCTION: fn_04758
 bool CSoundMgr::IsStopped() const {
-  return this->stream && MilesRuntime::Get().streamStatus(this->stream) == 8;
+  return this->stream && AIL_stream_status(this->stream) == 8;
 }
 
 // OFFSET: 0x00639AE0
