@@ -2921,20 +2921,22 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
 
   const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 12) / sizeof(Item1718PendingRecord);
   const Item1718PendingRecord* record = reinterpret_cast<const Item1718PendingRecord*>(packet + 12);
-  for (int i = 0; i < count; ++i, ++record) {
+  for (int i = 0; i < count; ++i) {
+    const Item1718PendingRecord entry = *record;
     RawItemBasic item = {};
-    _itoa(record->itemId, item.itemId, 10);
-    item.price = record->price;
-    item.realPrice = record->realPrice;
-    item.type = record->type;
+    _itoa(entry.itemId, item.itemId, 10);
+    item.price = entry.price;
+    item.realPrice = entry.realPrice;
+    item.type = entry.type;
     item.id = -1;
     item.identified = 1;
     g_session.AddShopItem(item, 0);
     if (g_pendingCashItemList && g_pendingCashItemList->entry) {
       Unknown015D4818Values& values = g_pendingCashItemList->entry->values;
-      values.sprite = record->sprite;
-      values.location = record->location;
+      values.sprite = entry.sprite;
+      values.location = entry.location;
     }
+    ++record;
   }
 
   g_pendingAid = *reinterpret_cast<const int*>(packet + 4);
