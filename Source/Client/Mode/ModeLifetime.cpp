@@ -21,5 +21,5 @@ void* __fastcall sub_AD53B0(void* self) {
 
 // OFFSET: 0x00AD53C0
 // FUNCTION: fn_17822
-CMode::~CMode() {
+__declspec(noinline) CMode::~CMode() {
 }
