@@ -353,13 +353,13 @@ static_assert(sizeof(AcceptEnterNeoUnionPacket) == 0x18 + sizeof(CharacterInfo))
 static_assert(offsetof(CharacterSlotCountsPacket, extension) == 0xA);
 static_assert(sizeof(BlockedCharacter) == 0x18);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
-
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptName(const std::array<char, Length>& source) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
+
 
 struct CharacterInfo2SizeErrorFormat {
   __declspec(noinline) EncryptedName<75, 0xED15938D333D2DB9ULL>& operator()() const;
@@ -584,16 +584,14 @@ std::string GetMacAddress() {
     if (adapter != nullptr) {
       char text[100];
       memset(text, 0, sizeof(text));
-      constexpr std::array<char, 30> source = CRYPT_NAME("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL);
-      _snprintf(text, sizeof(text), DecryptName<0x0F41EBBDA32D1B17ULL>(source), adapter->Address[0], adapter->Address[1], adapter->Address[2],
+      _snprintf(text, sizeof(text), OBFUSCATE_ARRAY_TEXT("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL, char), adapter->Address[0], adapter->Address[1], adapter->Address[2],
         adapter->Address[3], adapter->Address[4], adapter->Address[5]);
       delete[] reinterpret_cast<char*>(adapter);
       return text;
     }
   }
 
-  constexpr std::array<char, 18> source = CRYPT_NAME("11-22-33-44-55-66", 0xFBD599E117C547C1ULL);
-  return DecryptName<0xFBD599E117C547C1ULL>(source);
+  return OBFUSCATE_ARRAY_TEXT("11-22-33-44-55-66", 0xFBD599E117C547C1ULL, char);
 }
 
 // OFFSET: 0x00D8E700
@@ -747,8 +745,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
   if ((packet->length - 4) % sizeof(CharacterInfo) != 0) {
     char text[256];
     memset(text, 0, sizeof(text));
-    constexpr std::array<char, 55> source = CRYPT_NAME("CHARACTER_INFO2 size error!! CHARACTER_INFO2 size : %d", 0x0399459DAF454F0FULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x0399459DAF454F0FULL>(source), sizeof(CharacterInfo));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_ARRAY_TEXT("CHARACTER_INFO2 size error!! CHARACTER_INFO2 size : %d", 0x0399459DAF454F0FULL, char), sizeof(CharacterInfo));
     g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
   }
@@ -757,8 +754,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
   if (total > 68) {
     char text[256];
     memset(text, 0, sizeof(text));
-    constexpr std::array<char, 33> source = CRYPT_NAME("CHARACTER_INFO2 Cnt Over %d / %d", 0xD5A78DB38D8DAFABULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xD5A78DB38D8DAFABULL>(source), total, 68);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_ARRAY_TEXT("CHARACTER_INFO2 Cnt Over %d / %d", 0xD5A78DB38D8DAFABULL, char), total, 68);
     g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
     return;
   }
@@ -1379,12 +1375,9 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     break;
   case 900: {
     ShowErrorDialog(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
-    constexpr std::array<char, 21> parametersSource = CRYPT_NAME("http://ro.gnjoy.com/", 0x8783C33941E15117ULL);
-    const char* parametersText = DecryptName<0x8783C33941E15117ULL>(parametersSource);
-    constexpr std::array<char, 21> fileSource = CRYPT_NAME("http://ro.gnjoy.com/", 0x1767DDE18D779D8BULL);
-    const char* fileText = DecryptName<0x1767DDE18D779D8BULL>(fileSource);
-    constexpr std::array<char, 5> operationSource = CRYPT_NAME("OPEN", 0xC1BB8111EDD183E1ULL);
-    ShellExecuteA(nullptr, DecryptName<0xC1BB8111EDD183E1ULL>(operationSource), fileText, parametersText, nullptr, SW_SHOW);
+    const char* parametersText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x8783C33941E15117ULL, char);
+    const char* fileText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x1767DDE18D779D8BULL, char);
+    ShellExecuteA(nullptr, OBFUSCATE_ARRAY_TEXT("OPEN", 0xC1BB8111EDD183E1ULL, char), fileText, parametersText, nullptr, SW_SHOW);
     g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     return;
   }
@@ -1398,10 +1391,8 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
 
   if (!message.empty()) {
     const int error = packet->error;
-    constexpr std::array<char, 5> codeSource = CRYPT_NAME("(%d)", 0x271B45771F83DD9FULL);
-    message += FormatOwnedString(DecryptName<0x271B45771F83DD9FULL>(codeSource), error);
-    constexpr std::array<char, 6> detailSource = CRYPT_NAME(" [%s]", 0xC70319B5EB61598FULL);
-    message += FormatOwnedString(DecryptName<0xC70319B5EB61598FULL>(detailSource), packet->detail);
+    message += FormatOwnedString(OBFUSCATE_ARRAY_TEXT("(%d)", 0x271B45771F83DD9FULL, char), error);
+    message += FormatOwnedString(OBFUSCATE_ARRAY_TEXT(" [%s]", 0xC70319B5EB61598FULL, char), packet->detail);
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
     if (this->otpTimedOut != true) {
       if (error == 500) {
@@ -1469,12 +1460,10 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     const char* caption;
     bool protect;
     if (error == 800) {
-      constexpr std::array<char, 7> captionSource = CRYPT_NAME("메세지", 0x75ADC57D87EFBD8FULL);
-      caption = DecryptName<0x75ADC57D87EFBD8FULL>(captionSource);
+      caption = OBFUSCATE_ARRAY_TEXT("메세지", 0x75ADC57D87EFBD8FULL, char);
       protect = true;
     } else {
-      constexpr std::array<char, 5> codeSource = CRYPT_NAME("(%d)", 0xD1413DBB01CD8B51ULL);
-      message += FormatOwnedString(DecryptName<0xD1413DBB01CD8B51ULL>(codeSource), error);
+      message += FormatOwnedString(OBFUSCATE_ARRAY_TEXT("(%d)", 0xD1413DBB01CD8B51ULL, char), error);
       caption = "Message";
       protect = false;
     }
@@ -3186,21 +3175,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       if (argument1 == 1) {
         g_tipOfTheDayEnglish = true;
         g_serverLanguage->alternateLanguage = static_cast<std::uint16_t>(argument1);
-        constexpr std::array<std::uint8_t, 5> prefixSource = CRYPT_NAME("uae\\", 0x23BBD58F8B5FF5C9ULL);
-        thread_local EncryptedName<sizeof(prefixSource), 0x23BBD58F8B5FF5C9ULL> prefix(prefixSource);
-        g_serverLanguage->SetServicePrefix(prefix.Text());
-        const std::array<std::uint8_t, 5> suffixSource = CRYPT_BYTES(5, "uae\\", 0x0B7109397F6B1387ULL);
-        thread_local EncryptedName<sizeof(suffixSource), 0x0B7109397F6B1387ULL> suffixName(suffixSource);
-        suffix = suffixName.Text();
+        g_serverLanguage->SetServicePrefix(OBFUSCATE_BYTES_TEXT("uae\\", 0x23BBD58F8B5FF5C9ULL));
+        suffix = OBFUSCATE_BYTES_TEXT("uae\\", 0x0B7109397F6B1387ULL);
       } else {
         g_tipOfTheDayEnglish = false;
         g_serverLanguage->alternateLanguage = 9;
-        const std::array<std::uint8_t, 9> prefixSource = CRYPT_BYTES(9, "english\\", 0x03772763F96D9DA5ULL);
-        thread_local EncryptedName<sizeof(prefixSource), 0x03772763F96D9DA5ULL> prefix(prefixSource);
-        g_serverLanguage->SetServicePrefix(prefix.Text());
-        const std::array<std::uint8_t, 9> suffixSource = CRYPT_BYTES(9, "english\\", 0xEDC74F6D13DF71EFULL);
-        thread_local EncryptedName<sizeof(suffixSource), 0xEDC74F6D13DF71EFULL> suffixName(suffixSource);
-        suffix = suffixName.Text();
+        g_serverLanguage->SetServicePrefix(OBFUSCATE_BYTES_TEXT("english\\", 0x03772763F96D9DA5ULL));
+        suffix = OBFUSCATE_BYTES_TEXT("english\\", 0xEDC74F6D13DF71EFULL);
       }
       g_session.ReloadLanguageTables();
       g_session.IgnoreText(suffix);
@@ -3245,15 +3226,11 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_session.m_accountName = servers[argument1].address.name;
     const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
     const std::uint32_t ip = servers[selected].address.ip;
-    const std::array<std::uint8_t, 12> ipFormatSource = CRYPT_BYTES(12, "%d.%d.%d.%d", 0xF161095D0DE18F95ULL);
-    thread_local EncryptedName<sizeof(ipFormatSource), 0xF161095D0DE18F95ULL> ipFormat(ipFormatSource);
     CharServerEndpoint endpoint;
-    wsprintfA(endpoint.ip, ipFormat.Text(), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
+    wsprintfA(endpoint.ip, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
     const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
     endpoint.port = servers[selected2].address.port;
-    const std::array<std::uint8_t, 3> hostFormatSource = CRYPT_BYTES(3, "%s", 0x2BAD156DE3E1F9D9ULL);
-    thread_local EncryptedName<sizeof(hostFormatSource), 0x2BAD156DE3E1F9D9ULL> hostFormat(hostFormatSource);
-    StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), hostFormat.Text(), servers[selected2].domain);
+    StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[selected2].domain);
     g_charServerEndpoint = endpoint;
     g_charServerIp = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.ip;
     g_session.m_serverName = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.name;
