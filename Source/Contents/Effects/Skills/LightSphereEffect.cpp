@@ -226,7 +226,7 @@ void CLightSphereEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->rays.begin(); it != this->rays.end(); ++it) {
     CParticle* particle = *it;
 
-    vector3d& position = particle->position;
+    vector3d& position = (*it)->position;
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
@@ -240,10 +240,8 @@ void CLightSphereEffect::OnProcess() {
 
       int alpha = particle->alpha;
       if (particle->elapsedFrames > 500) {
-        --alpha;
-        if (alpha < 0) {
-          alpha = 0;
-        }
+        const int faded = alpha - 1;
+        alpha = faded >= 0 ? faded : 0;
       }
       particle->alpha = alpha;
 
