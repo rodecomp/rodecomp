@@ -10,6 +10,22 @@
 class CParticle;
 class CEZ2STRParticle;
 
+struct ChargingPierceOffset : vector3d {
+  // INLINED
+  ChargingPierceOffset() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+
+  // INLINED
+  ChargingPierceOffset(float offsetX, float offsetY, float offsetZ) {
+    this->x = offsetX;
+    this->y = offsetY;
+    this->z = offsetZ;
+  }
+};
+
 class CChargingPierceEffect : public CEffect {
 public:
   CChargingPierceEffect();
@@ -22,7 +38,7 @@ public:
 
   int ActiveCount();
 
-  /* 00CC */ vector3d offsets[10];
+  /* 00CC */ ChargingPierceOffset offsets[10];
   /* 0144 */ CParticle* sparks[10];
   /* 016C */ CEZ2STRParticle* emitters[10];
 };
