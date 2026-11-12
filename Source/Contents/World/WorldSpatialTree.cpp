@@ -63,9 +63,9 @@ WorldSpatialTree::~WorldSpatialTree() {
 // OFFSET: 0x00AC80C0
 // FUNCTION: fn_17664
 void WorldSpatialTree::ClearChildren() {
-  for (WorldSpatialTree*& child : this->children) {
-    delete child;
-    child = nullptr;
+  for (int index = 0; index < 4; ++index) {
+    delete this->children[index];
+    this->children[index] = nullptr;
   }
 }
 
