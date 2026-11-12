@@ -29,8 +29,7 @@ UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0
   unsigned green;
   unsigned blue;
   SkinPaletteChannels(ResourceMgr::Instance(), 18, 2, red, green, blue);
-  this->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->Invalidate();
+  this->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
 
   this->plainTextMode = 0;
 }
