@@ -216,10 +216,10 @@ bool CLevel150Effect::IsAlive() {
 void CLevel150Effect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
       int tilt = particle->phaseParameter - 1;
       float scale = particle->scale + 0.07f;
@@ -229,15 +229,15 @@ void CLevel150Effect::OnProcess() {
         alpha = 0;
       }
 
-      if (scale < 3.5f) {
-        alpha += 10;
-      } else {
+      if (scale >= 3.5f) {
         alpha -= 3;
         if (alpha <= 0) {
-          alpha = 0;
           tilt = 74;
           scale = 2.87f;
         }
+        alpha = std::max(0, alpha);
+      } else {
+        alpha += 10;
       }
 
       particle->alpha = alpha;
@@ -257,10 +257,10 @@ void CLevel150Effect::OnProcess() {
 
   for (std::vector<CParticle*>::iterator it = this->shocks.begin(); it != this->shocks.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle) {
       int tilt = particle->phaseParameter + 3;
       if (tilt >= 360) {
@@ -400,10 +400,10 @@ bool CLevel150SubEffect::IsAlive() {
 void CLevel150SubEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
     if (particle && particle->elapsedFrames > 0) {
       float size = particle->animationParameter * 1.02;
       if (size > 20.0f) {
