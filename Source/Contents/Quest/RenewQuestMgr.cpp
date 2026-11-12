@@ -28,6 +28,9 @@ extern "C" {
 #include <new>
 #include <utility>
 
+template __declspec(noinline) bool std::string_view::_Equal(const std::string_view) const noexcept;
+template __declspec(noinline) std::list<std::string>::const_iterator std::find<std::list<std::string>::const_iterator, std::string_view>(std::list<std::string>::const_iterator, const std::list<std::string>::const_iterator, const std::string_view&);
+
 #pragma pack(push, 1)
 struct RenewQuestOngoingRecord {
   /* 0000 */ unsigned int questId;
@@ -588,8 +591,8 @@ bool CRenewQuestMgr::IsInFilter(int filter, std::string_view icon) {
   case 0:
     return true;
   case 1:
-    for (const auto& entry : this->m_filters) {
-      const std::list<std::string>& icons = entry.second.m_icons;
+    for (auto& entry : this->m_filters) {
+      std::list<std::string>& icons = entry.second.m_icons;
       if (icons.end() != std::find(icons.begin(), icons.end(), icon)) {
         return false;
       }
