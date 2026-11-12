@@ -548,9 +548,8 @@ void UIChangeMaterialWnd::Paint() {
 
   {
     const std::string amount = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_OFF), this->m_resultAmount / 10);
-    const char* text = amount.c_str();
-    const int width = this->TextWidth(text, 0, 0x1D, 0x17, 1, 0);
-    DrawOutlinedText(*this, 0x4F + (0xC8 - width) / 2, 0x64, text, 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
+    const int width = this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0);
+    DrawOutlinedText(*this, 0x4F + (0xC8 - width) / 2, 0x64, amount.c_str(), 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
   }
 
   if (!this->m_resultText.empty()) {
