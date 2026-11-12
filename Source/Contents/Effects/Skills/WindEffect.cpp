@@ -126,8 +126,8 @@ void CWindEffect::OnProcess() {
     }
     angle = nextAngle;
 
-    const float cosine = static_cast<float>(std::cos(static_cast<double>(angle / 180.0f * 3.141592f)));
-    const float sine = static_cast<float>(std::sin(static_cast<double>(angle / 180.0f * 3.141592f)));
+    const float cosine = ClientCos(angle / 180.0f * 3.141592f);
+    const float sine = ClientSin(angle / 180.0f * 3.141592f);
 
     EffectPoint points[4];
     const float scale = particle->scale;
