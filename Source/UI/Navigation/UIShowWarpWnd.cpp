@@ -28,8 +28,9 @@ void UIShowWarpWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 0xf0;
   this->m_list->backgroundGreen = 0xf0;
   this->m_list->backgroundBlue = 0xf0;
-  this->m_list->selected = -1;
-  this->m_list->Invalidate();
+  UIListBox* list = this->m_list;
+  list->selected = -1;
+  list->Invalidate();
   this->m_list->selectable = 0;
   this->AddChild(this->m_list);
 
