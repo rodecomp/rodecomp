@@ -70,16 +70,21 @@ bool CScatterEffect::IsAlive() {
 // FUNCTION: fn_19172
 void CScatterEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CSpriteParticle* particle = *it) {
+    CSpriteParticle* particle = *it;
+    vector3d& position = (*it)->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+    if (particle) {
       particle->alpha = std::ranges::max(particle->alpha - 3, 0);
 
       const int angle = particle->phaseParameter;
-      particle->velocity.y += particle->frameDelay;
-      particle->velocity.x += g_cosTable[angle] * 0.2f;
-      particle->velocity.z += g_sinTable[angle] * 0.2f;
+      const float rise = particle->frameDelay;
+      const float driftX = g_cosTable[angle] * 0.2f;
+      const float driftZ = g_sinTable[angle] * 0.2f;
+      particle->velocity.y += rise;
+      particle->velocity.x += driftX;
+      particle->velocity.z += driftZ;
 
       matrix translate;
       std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
