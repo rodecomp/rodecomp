@@ -46,19 +46,8 @@ public:
 namespace {
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const char (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
+    // INLINED
   }
-
-  // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::array<char, Length>& source) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
-  }
-}
 
 // OFFSET: 0x0076C3E0
 // FUNCTION: fn_45544
@@ -121,44 +110,28 @@ std::string CNProtectGameGuardMgr::ErrorMessage() {
 const char* CNProtectGameGuardMgr::GameName() {
   switch (g_serviceType) {
   case 3: {
-    constexpr auto sourceText = CRYPT_NAME("ROCN", 0x7321C3814F8799E1ULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0x7321C3814F8799E1ULL>(source);
+    return OBFUSCATE_TEXT("ROCN", 0x7321C3814F8799E1ULL);
   }
   case 0:
     if (std::strstr(g_session.clientVersion, g_devClientTag) != nullptr) {
-      constexpr auto sourceText = CRYPT_NAME("RagnarokKR", 0x7941D76335CFA14FULL);
-      const auto& source = sourceText.data;
-      return DecryptName<0x7941D76335CFA14FULL>(source);
+      return OBFUSCATE_TEXT("RagnarokKR", 0x7941D76335CFA14FULL);
     } else {
-      constexpr auto sourceText = CRYPT_NAME("RagnarokKR", 0x0F15B16B5BAFD57FULL);
-      const auto& source = sourceText.data;
-      return DecryptName<0x0F15B16B5BAFD57FULL>(source);
+      return OBFUSCATE_TEXT("RagnarokKR", 0x0F15B16B5BAFD57FULL);
     }
   case 2: {
-    constexpr auto sourceText = CRYPT_NAME("RagnarokJP", 0x7DE349D717D7F123ULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0x7DE349D717D7F123ULL>(source);
+    return OBFUSCATE_TEXT("RagnarokJP", 0x7DE349D717D7F123ULL);
   }
   case 12: {
-    constexpr auto sourceText = CRYPT_NAME("RagnarokBR", 0x9FED7DA189490D5DULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0x9FED7DA189490D5DULL>(source);
+    return OBFUSCATE_TEXT("RagnarokBR", 0x9FED7DA189490D5DULL);
   }
   case 7: {
-    constexpr auto sourceText = CRYPT_NAME("RagnarokPH", 0x452FEF0D7FC95565ULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0x452FEF0D7FC95565ULL>(source);
+    return OBFUSCATE_TEXT("RagnarokPH", 0x452FEF0D7FC95565ULL);
   }
   case 4: {
-    constexpr auto sourceText = CRYPT_NAME("ROTW", 0xF3CB6F7711A71B6DULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0xF3CB6F7711A71B6DULL>(source);
+    return OBFUSCATE_TEXT("ROTW", 0xF3CB6F7711A71B6DULL);
   }
   default: {
-    constexpr auto sourceText = CRYPT_NAME("Ragnarok", 0x839B27DF8F5967B3ULL);
-    const auto& source = sourceText.data;
-    return DecryptName<0x839B27DF8F5967B3ULL>(source);
+    return OBFUSCATE_TEXT("Ragnarok", 0x839B27DF8F5967B3ULL);
   }
   }
 }
@@ -196,25 +169,21 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(
       []() {
-        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x0F41EBBDA32D1B17ULL);
-        return DecryptName<0x0F41EBBDA32D1B17ULL>(sourceText.data);
+        return OBFUSCATE_TEXT("%s(%d)", 0x0F41EBBDA32D1B17ULL);
       }(), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
   case 0x3E9:
   case 0x3EA: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    constexpr auto sourceText = CRYPT_NAME("unknown(%d)", 0x2D51E3B7236175EDULL);
-    const auto& source = sourceText.data;
-    manager->SetError(g_nprotectSource, 0x13B, std::string(FormatString(DecryptName<0x2D51E3B7236175EDULL>(source), code)));
+    manager->SetError(g_nprotectSource, 0x13B, std::string(FormatString(OBFUSCATE_TEXT("unknown(%d)", 0x2D51E3B7236175EDULL), code)));
     return 0;
   }
   case 0x3F6: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(
       []() {
-        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0x176F138D5DD7F365ULL);
-        return DecryptName<0x176F138D5DD7F365ULL>(sourceText.data);
+        return OBFUSCATE_TEXT("%s(%d)", 0x176F138D5DD7F365ULL);
       }(), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
@@ -228,8 +197,7 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(
       []() {
-        constexpr auto sourceText = CRYPT_NAME("%s(%d)", 0xFBD599E117C547C1ULL);
-        return DecryptName<0xFBD599E117C547C1ULL>(sourceText.data);
+        return OBFUSCATE_TEXT("%s(%d)", 0xFBD599E117C547C1ULL);
       }(), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
@@ -259,15 +227,12 @@ bool CNProtectGameGuardMgr::Initialize() {
   const int status = gameLib->Init();
   if (status != 0x755) {
     char message[0x400] = {};
-    constexpr std::array<char, 21> bodySource = CRYPT_NAME("GameGuard Error: %lu", 0xCFF3899D95AF355FULL);
-    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), DecryptName<0xCFF3899D95AF355FULL>(bodySource), status);
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), OBFUSCATE_ARRAY_TEXT("GameGuard Error: %lu", 0xCFF3899D95AF355FULL, char), status);
 
     char title[0x100] = {};
-    constexpr std::array<char, 22> titleSource = CRYPT_NAME("GameGuard Error : %lu", 0xE52DF30DCBAF7125ULL);
-    StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), DecryptName<0xE52DF30DCBAF7125ULL>(titleSource), status);
+    StringFormat(title, sizeof(title), static_cast<std::size_t>(-1), OBFUSCATE_ARRAY_TEXT("GameGuard Error : %lu", 0xE52DF30DCBAF7125ULL, char), status);
 
-    constexpr std::array<char, 10> tagSource = CRYPT_NAME("ApplyNPGE", 0x4F99DF03C3EF31B7ULL);
-    if (std::strstr(g_commandLine, DecryptName<0x4F99DF03C3EF31B7ULL>(tagSource)) == nullptr) {
+    if (std::strstr(g_commandLine, OBFUSCATE_ARRAY_TEXT("ApplyNPGE", 0x4F99DF03C3EF31B7ULL, char)) == nullptr) {
       MessageBoxA(hWnd, message, title, 0);
       return false;
     }
