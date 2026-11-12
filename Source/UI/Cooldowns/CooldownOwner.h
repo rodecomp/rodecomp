@@ -8,7 +8,7 @@
 class CooldownOwner {
 public:
   CooldownOwner();
-  __declspec(noinline) ~CooldownOwner();
+  ~CooldownOwner();
   void Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed);
   void ClearReverseCommands();
 
@@ -26,7 +26,6 @@ public:
     return this->m_drawing;
   }
 
-private:
   /* 0000 */ bool m_initialized;
   /* 0004 */ CooldownDrawing m_drawing;
   /* 001C */ std::map<unsigned, CooldownState> m_values;

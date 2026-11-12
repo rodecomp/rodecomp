@@ -1,7 +1,8 @@
 #include "UI/Cooldowns/CooldownOwner.h"
 
 // INLINED
-CooldownOwner::CooldownOwner() : m_initialized(false) {
+CooldownOwner::CooldownOwner() {
+  this->m_initialized = false;
   this->m_drawing.normal.clear();
   this->m_drawing.reverse.clear();
   this->m_values.clear();
@@ -53,6 +54,12 @@ bool CreateCooldownOwner() {
 
   g_cooldownOwner = new (std::nothrow) CooldownOwner;
   if (!g_cooldownOwner) {
+    return false;
+  }
+
+  if (!g_cooldownOwner->m_initialized) {
+    delete g_cooldownOwner;
+    g_cooldownOwner = nullptr;
     return false;
   }
 
