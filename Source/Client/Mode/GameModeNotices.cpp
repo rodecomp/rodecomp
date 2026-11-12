@@ -92,9 +92,6 @@
 #include <xtimec.h>
 #include "Resource/MSGSTRINGID.h"
 
-
-extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
-
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
 
@@ -1333,7 +1330,6 @@ struct ItemEffectResultPacket {
 };
 #pragma pack(pop)
 
-
 struct AchievementStatePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t type;
@@ -1868,9 +1864,6 @@ int g_buyingStoreDbNumber;
 
 // GLOBAL: gl_25113
 int g_buyingStoreNoPermission;
-
-
-
 
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
@@ -2959,7 +2952,6 @@ struct LongParChangePacket {
 };
 #pragma pack(pop)
 
-
 // OFFSET: 0x00D195D0
 // FUNCTION: fn_21606
 void CGameMode::ReceiveBankDepositAck(const unsigned char* data) {
@@ -3048,7 +3040,6 @@ struct TradeItemFilterPacket {
   /* 0002 */ int type;
 };
 #pragma pack(pop)
-
 
 // OFFSET: 0x00D198F0
 // FUNCTION: fn_21612

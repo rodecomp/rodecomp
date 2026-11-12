@@ -36,8 +36,6 @@
 #include <new>
 #include <vector>
 
-extern template void std::string::resize(size_type, char);
-
 // GLOBAL: gl_24799
 CWorldViewMgr g_worldViewMgr;
 

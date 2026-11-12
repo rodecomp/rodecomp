@@ -20,8 +20,6 @@
 #include <new>
 #include <vector>
 
-extern template std::vector<int>::~vector();
-
 // GLOBAL: gl_24882
 template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
