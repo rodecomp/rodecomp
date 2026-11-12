@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+template __declspec(noinline) void std::vector<std::string>::resize(size_type, const std::string&);
+
 // OFFSET: 0x00DDE3D0
 // FUNCTION: fn_23395
 const char* CSession::GetHitWaveName(int job) {
