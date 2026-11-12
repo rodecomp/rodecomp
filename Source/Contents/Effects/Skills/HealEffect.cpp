@@ -12,6 +12,12 @@
 #include <cstdlib>
 #include <string>
 
+// INLINED
+static int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+
 // OFFSET: 0x00B67310
 // FUNCTION: fn_19065
 CHealEffect::CHealEffect() : CEffect(-1) {
@@ -81,7 +87,7 @@ void CHealEffect::AddSparks(int kind) {
 // OFFSET: 0x00B678F0
 // FUNCTION: fn_19068
 void CHealEffect::AddColumn(int kind) {
-  const float randomHeight = static_cast<float>((std::max)(rand() % 20, 0)) + 40.0f;
+  const float randomHeight = static_cast<float>(ClampedRandom(20)) + 40.0f;
   for (int row = 0, angle = 0; angle < 360; ++row, angle += 180) {
     const int randomAngle = (std::max)(rand() % 360, 0);
     for (int segment = 0; segment < 21; ++segment) {
@@ -129,7 +135,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = randomHeight;
         baseAngle = static_cast<float>(randomAngle);
-        particle->scale = static_cast<float>((std::max)(rand() % 100, 0)) * 0.005f + 4.5f + static_cast<float>(row) * 0.2f;
+        particle->scale = static_cast<float>(ClampedRandom(100)) * 0.005f + 4.5f + static_cast<float>(row) * 0.2f;
         particle->SetColor(255, 255, 255);
         this->columnLifetime = 30;
         break;
