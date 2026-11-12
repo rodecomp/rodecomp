@@ -1,6 +1,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Network/TextEncoding.h"
 #include "UI/Edit/UIEditBoxEx.h"
@@ -31,13 +32,13 @@ static const std::string g_probabilityHighlightBegin = "^FF0000<B>";
 static const std::string g_probabilityHighlightEnd = "^000000</B>";
 
 namespace {
-
 // INLINED
 template <std::uint64_t Key, std::size_t Length>
 const char* DecryptName(const char (&source)[Length]) {
   thread_local EncryptedName<Length, Key> name(source);
   return name.Text();
 }
+
 
 }
 
@@ -193,7 +194,7 @@ void CUIItem::OnCreate(int width, int height) {
   this->nameText->SetSize(231, 29);
   this->nameText->Move(1, 0);
   this->nameText->SetTextOffset(0, 6);
-  this->nameText->SetFont(std::string(DecryptName<0xEDC74F6D13DF71EFULL>({'\xA8', '\x04', '\xB3', '\x7A', '\x00', '\x4F'})));
+  this->nameText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xEDC74F6D13DF71EFULL)));
   this->nameText->SetFontHeight(12);
   this->nameText->SetBold(0);
   this->nameText->SetTextColor(0);
@@ -212,7 +213,7 @@ void CUIItem::OnCreate(int width, int height) {
   this->probabilityText->SetSize(78, 29);
   this->probabilityText->Move(233, 0);
   this->probabilityText->SetTextOffset(2, 6);
-  this->probabilityText->SetFont(std::string(DecryptName<0x03772763F96D9DA5ULL>({'\xE2', '\xE8', '\x01', '\x90', '\x0E', '\x27'})));
+  this->probabilityText->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x03772763F96D9DA5ULL)));
   this->probabilityText->SetFontHeight(12);
   this->probabilityText->SetBold(0);
   this->probabilityText->SetTextColor(0);
