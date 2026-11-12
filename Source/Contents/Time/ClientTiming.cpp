@@ -16,6 +16,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -32,13 +33,6 @@ template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::
 int g_serviceMode;
 
 namespace {
-
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const char (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
 
 }
 
@@ -720,16 +714,12 @@ void CSession::LoadRobeAlpha() {
     int period = 0;
     LuaScript* script = this->m_hotkeyScript;
 
-    const char signatureSource[] = CRYPT_CHARS(7, "d>dddd", 0x6373E5456BAD7B71ULL);
-    const auto functionSource = CRYPT_NAME("querytransparentiteminfo", 0xD51953E763B94747ULL);
 
-    if (!script->Call(DecryptName<0xD51953E763B94747ULL>(functionSource.data), DecryptName<0x6373E5456BAD7B71ULL>(signatureSource), index, &robeId, &from, &to, &period)) {
+    if (!script->Call(OBFUSCATE_TEXT("querytransparentiteminfo", 0xD51953E763B94747ULL), OBFUSCATE_TEXT("d>dddd", 0x6373E5456BAD7B71ULL), index, &robeId, &from, &to, &period)) {
       char message[260];
       std::memset(message, 0, sizeof(message));
-      const char formatSource[] = CRYPT_CHARS(41, "querytransparentiteminfo // %d 읽기 실패", 0x6BE143F5D31307DBULL);
-      std::sprintf(message, DecryptName<0x6BE143F5D31307DBULL>(formatSource), index);
-      const char titleSource[] = CRYPT_CHARS(6, "Error", 0xAB5791D7AFF97F8DULL);
-      MessageBoxA(hWnd, message, DecryptName<0xAB5791D7AFF97F8DULL>(titleSource), 0);
+      std::sprintf(message, OBFUSCATE_TEXT("querytransparentiteminfo // %d 읽기 실패", 0x6BE143F5D31307DBULL), index);
+      MessageBoxA(hWnd, message, OBFUSCATE_TEXT("Error", 0xAB5791D7AFF97F8DULL), 0);
       return;
     }
 
