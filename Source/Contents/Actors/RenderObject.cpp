@@ -4317,20 +4317,19 @@ void CGameActor::SetCharm(int type, int count) {
       static_cast<CEnergyOrbEffect*>(effect)->SetCount(count);
     }
   } else {
-    int effectId;
+    CRagEffect* effect;
     if (type == 1) {
-      effectId = 0x2E1;
+      effect = this->LaunchEffect(0x2E1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 2) {
-      effectId = 0x2E2;
+      effect = this->LaunchEffect(0x2E2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 3) {
-      effectId = 0x2DF;
+      effect = this->LaunchEffect(0x2DF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 4) {
-      effectId = 0x2E0;
+      effect = this->LaunchEffect(0x2E0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
-      effectId = 0xE4;
+      effect = this->LaunchEffect(0xE4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
-    CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     vector3d position{static_cast<float>(count), 0.0f, 0.0f};
     if (effect != nullptr) {
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -4387,33 +4386,23 @@ void CGameActor::UpdateMaxLevelAura() {
       this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != skill) {
+    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
       this->hasLevelAura = 0;
       return;
     }
-    if (g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
-      this->hasLevelAura = 0;
-      return;
-    }
-    this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    return;
-  }
-
-  if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
+  } else if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
     if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x28]) == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       return;
     }
     this->hasLevelAura = 0;
     return;
-  }
-
-  if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<std::int16_t>(this->characterLevel)) {
-    this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != static_cast<std::int16_t>(this->characterLevel)) {
+    this->hasLevelAura = 0;
     return;
   }
 
-  this->hasLevelAura = 0;
+  this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00CC2340
