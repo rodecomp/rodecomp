@@ -3,11 +3,6 @@
 // OFFSET: 0x00B89990
 // FUNCTION: fn_19390
 int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side) {
-  for (NaviDataEntry& entry : this->entries) {
-    entry.previous = -1;
-    entry.link = nullptr;
-    entry.cost = 0;
-  }
   this->entries.clear();
 
   for (CNaviInfo* destination : this->destinations) {
@@ -15,40 +10,41 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
   }
 
   if (includeObjects) {
-    for (CNavi_Link* object : this->objects) {
-      object->SetDepth(0);
-      NaviDataEntry entry = {-1, object, 1};
+    for (std::vector<CNavi_Link*>::iterator it = this->objects.begin(); it != this->objects.end(); ++it) {
+      (*it)->SetDepth(0);
+      NaviDataEntry entry = {-1, *it, 1};
       this->entries.push_back(entry);
     }
   }
 
-  for (NaviLink& start : this->startLinks) {
-    CNavi_Link* link = start.link;
+  for (std::vector<NaviLink>::iterator it = this->startLinks.begin(); it != this->startLinks.end(); ++it) {
+    CNavi_Link* link = it->link;
     const int type = link->GetType();
-    bool accept;
-    if (type == 204) {
-      if (!allowGates) {
-        continue;
-      }
-      accept = !link->GetLinkedInfo()->IsVisited();
-    } else if (type == 205) {
-      if (!allowWarps) {
-        continue;
-      }
-      accept = !link->GetLinkedInfo()->IsVisited();
-    } else if (type == 202 || type == 203) {
+    if (type == 204 && !allowGates) {
+      continue;
+    }
+    if (type == 205 && !allowWarps) {
+      continue;
+    }
+    if (type == 202 || type == 203) {
       if (allowGates != true) {
         continue;
       }
-      accept = type == 202 ? side == 2 : side == 1;
-    } else {
-      accept = !link->GetLinkedInfo()->IsVisited();
+      if (type == 202) {
+        if (side != 2) {
+          continue;
+        }
+      } else if (type == 203) {
+        if (side != 1) {
+          continue;
+        }
+      }
+    } else if (link->GetLinkedInfo()->IsVisited()) {
+      continue;
     }
-    if (accept) {
-      start.link->SetDepth(0);
-      NaviDataEntry entry = {-1, start.link, start.cost};
-      this->entries.push_back(entry);
-    }
+    it->link->SetDepth(0);
+    NaviDataEntry entry = {-1, it->link, it->cost};
+    this->entries.push_back(entry);
   }
 
   int first = 0;
@@ -167,11 +163,6 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
 
 done:
   this->range = 50000;
-  for (NaviDataEntry& entry : this->entries) {
-    entry.previous = -1;
-    entry.link = nullptr;
-    entry.cost = 0;
-  }
   this->entries.clear();
   this->ResetLinkDepths();
   return result;
