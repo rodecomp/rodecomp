@@ -173,20 +173,15 @@ void CThrowItemEffect::Open() {
         break;
       case EF_KAIHOU:
         if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
-          switch (owner->charmType) {
-          case CHARM_TYPE_WATER:
+          if (owner->charmType == CHARM_TYPE_WATER) {
             particle->SetTexture("effect\\WaterOrb.bmp");
             particle->scale = 1.0f;
-            break;
-          case CHARM_TYPE_LAND:
+          } else if (owner->charmType == CHARM_TYPE_LAND) {
             particle->SetTexture("effect\\StoneOrb.bmp");
-            break;
-          case CHARM_TYPE_FIRE:
+          } else if (owner->charmType == CHARM_TYPE_FIRE) {
             particle->SetTexture("effect\\FireOrb.bmp");
-            break;
-          case CHARM_TYPE_WIND:
+          } else if (owner->charmType == CHARM_TYPE_WIND) {
             particle->SetTexture("effect\\LightningOrb.bmp");
-            break;
           }
 
           this->effectLifetime = 200;
@@ -574,7 +569,8 @@ void CVolcanoEffect::OnProcess() {
     particlePosition.z = this->position[2];
 
     if (particle) {
-      particle->scale += this->id == EF_GUMGANG2 ? 0.1f : 0.3f;
+      const float scale = particle->scale + (this->id == EF_GUMGANG2 ? 0.1f : 0.3f);
+      particle->scale = scale;
 
       int tilt = particle->phaseParameter - 1;
       if (this->id == EF_GUMGANG2) {
@@ -632,9 +628,9 @@ void CVolcanoEffect::OnProcess() {
       const float height = radius * g_sinTable[tilt];
 
       EffectPoint corners[2];
-      corners[0].x = particle->scale * cosine;
+      corners[0].x = scale * cosine;
       corners[0].y = 0.0f;
-      corners[0].z = particle->scale * sine;
+      corners[0].z = scale * sine;
       corners[1].x = corners[0].x + spread * cosine;
       corners[1].y = 0.0f - height;
       corners[1].z = corners[0].z + spread * sine;
