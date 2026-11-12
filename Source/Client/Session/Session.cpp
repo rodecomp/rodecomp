@@ -2857,64 +2857,64 @@ void CSession::LoadExternalSettings() {
 
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &this->m_maxBaseLevel);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel3rd", &this->m_maxLevel);
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x00]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x04]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelHomun", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x08]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelNovice", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x0C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelSuperNovice", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x10]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelBase", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x14]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel2nd", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x18]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel3rd", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x20]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x24]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &this->m_maxBaseLevelExtend2);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &this->m_maxBaseLevelUpperJob);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelHomun", &this->m_maxBaseLevelHomun);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelNovice", &this->m_maxJobLevelNovice);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelSuperNovice", &this->m_maxJobLevelSuperNovice);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelBase", &this->m_maxJobLevelBase);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel2nd", &this->m_maxJobLevel2nd);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel3rd", &this->m_maxJobLevel3rd);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &this->m_maxJobLevelExtend2);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &this->m_maxJobLevelUpperJob);
 
   if (this->m_maxBaseLevel == -1 ||
       this->m_maxLevel == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x00]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x04]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x08]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x0C]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x10]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x14]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x18]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x1C]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x20]) == -1 ||
-      *reinterpret_cast<int*>(&this->jobLevelLimits[0x24]) == -1) {
+      this->m_maxBaseLevelExtend2 == -1 ||
+      this->m_maxBaseLevelUpperJob == -1 ||
+      this->m_maxBaseLevelHomun == -1 ||
+      this->m_maxJobLevelNovice == -1 ||
+      this->m_maxJobLevelSuperNovice == -1 ||
+      this->m_maxJobLevelBase == -1 ||
+      this->m_maxJobLevel2nd == -1 ||
+      this->m_maxJobLevel3rd == -1 ||
+      this->m_maxJobLevelExtend2 == -1 ||
+      this->m_maxJobLevelUpperJob == -1) {
     ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0x655DBD856D95E95BULL, char), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x78]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel4th", &this->m_maxBaseLevel4th);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevel4th", &this->m_maxJobLevel4th);
 
-  if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) == -1 || *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) == -1) {
+  if (this->m_maxBaseLevel4th == -1 || this->m_maxJobLevel4th == -1) {
     ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0x9DA96FE53B211987ULL, char), 0);
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x28]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelDoram", &this->m_maxBaseLevelDoram);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelDoram", &this->m_maxJobLevelDoram);
 
-  if (*reinterpret_cast<int*>(&this->jobLevelLimits[0x2C]) == -1) {
+  if (this->m_maxJobLevelDoram == -1) {
     ShowErrorDialog(OBFUSCATE_ARRAY_TEXT("Error ExternSettings Value", 0xA78387FF5BD35BC1ULL, char), 0);
   }
 
   this->m_hotkeyScript->Call(std::string("GetTableBoolValueForC", 21), "ss>b", "MakeableRace", "Doram", &*reinterpret_cast<int*>(this->raceCreationOptions));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x30]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x34]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x38]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x3C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x40]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x44]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x48]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x4C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Boss99LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x50]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x54]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x58]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x5C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x60]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x64]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x68]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x6C]));
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura_sub", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x70]));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura", &this->m_default99LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Default99LvAura_sub", &this->m_default99LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura", &this->m_baby99LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Baby99LvAura_sub", &this->m_baby99LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura", &this->m_secondHigh99LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "SecondHigh99LvAura_sub", &this->m_secondHigh99LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura", &this->m_homun99LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Homun99LvAura_sub", &this->m_homun99LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "Level99AuraTable", "Boss99LvAura_sub", &this->m_boss99LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura", &this->m_default150LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default150LvAura_sub", &this->m_default150LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura", &this->m_default160LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default160LvAura_sub", &this->m_default160LvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura", &this->m_homunMaxLvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "HomunMaxLvAura_sub", &this->m_homunMaxLvAuraSub);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura", &this->m_default185LvAura);
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "Default185LvAura_sub", &this->m_default185LvAuraSub);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th", &this->m_maxLevelEffect4th);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelAuraTable", "MaxLevelEffect4th_sub", &this->m_maxLevelEffect4thSub);
 
@@ -4048,8 +4048,8 @@ CSession::CSession() {
   this->extraInventorySlots = 0;
   CMapInfoMgr::Create();
   this->madogearType = 0;
-  *reinterpret_cast<int*>(&this->jobLevelLimits[0x74]) = 0;
-  *reinterpret_cast<int*>(&this->jobLevelLimits[0x78]) = 0;
+  this->m_maxBaseLevel4th = 0;
+  this->m_maxJobLevel4th = 0;
   CChangeMaterialMgr::CreateInstance();
   this->m_options.Clear();
   *reinterpret_cast<int*>(&this->webServiceLoginData[0x18]) = 0;

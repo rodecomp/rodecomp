@@ -2326,32 +2326,32 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     int first = 200;
     int second = 0x3D0;
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x30]) > 0) {
-      first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x30]);
+    if (g_session.m_default99LvAura > 0) {
+      first = g_session.m_default99LvAura;
     }
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x34]) > 0) {
-      second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x34]);
+    if (g_session.m_default99LvAuraSub > 0) {
+      second = g_session.m_default99LvAuraSub;
     }
     if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x38]) > 0) {
-        first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x38]);
+      if (g_session.m_baby99LvAura > 0) {
+        first = g_session.m_baby99LvAura;
       }
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x3C]) > 0) {
-        second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x3C]);
+      if (g_session.m_baby99LvAuraSub > 0) {
+        second = g_session.m_baby99LvAuraSub;
       }
     } else if (this->GetEffectiveJob(-1) > 0xFA0 || g_session.IsSuperNoviceJob(this->GetEffectiveJob(-1))) {
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x40]) > 0) {
-        first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x40]);
+      if (g_session.m_secondHigh99LvAura > 0) {
+        first = g_session.m_secondHigh99LvAura;
       }
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x44]) > 0) {
-        second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x44]);
+      if (g_session.m_secondHigh99LvAuraSub > 0) {
+        second = g_session.m_secondHigh99LvAuraSub;
       }
     } else if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x48]) > 0) {
-        first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x48]);
+      if (g_session.m_homun99LvAura > 0) {
+        first = g_session.m_homun99LvAura;
       }
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x4C]) > 0) {
-        second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x4C]);
+      if (g_session.m_homun99LvAuraSub > 0) {
+        second = g_session.m_homun99LvAuraSub;
       }
     } else if (this->GetEffectiveJob(-1) >= 0x666) {
       break;
@@ -2383,29 +2383,29 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
       first = 0x3D2;
       second = 0x3D3;
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x64]) > 0) {
-        first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x64]);
+      if (g_session.m_homunMaxLvAura > 0) {
+        first = g_session.m_homunMaxLvAura;
       }
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x68]) > 0) {
-        second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x68]);
+      if (g_session.m_homunMaxLvAuraSub > 0) {
+        second = g_session.m_homunMaxLvAuraSub;
       }
     } else if (message == 0x93) {
       first = 0x3D2;
       second = 0x3D3;
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x54]) > 0) {
-        first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x54]);
+      if (g_session.m_default150LvAura > 0) {
+        first = g_session.m_default150LvAura;
       }
-      if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x58]) > 0) {
-        second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x58]);
+      if (g_session.m_default150LvAuraSub > 0) {
+        second = g_session.m_default150LvAuraSub;
       }
     } else {
       second = 0x3FF;
       if (message == 0x92) {
-        if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x5C]) > 0) {
-          first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x5C]);
+        if (g_session.m_default160LvAura > 0) {
+          first = g_session.m_default160LvAura;
         }
-        if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x60]) > 0) {
-          second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x60]);
+        if (g_session.m_default160LvAuraSub > 0) {
+          second = g_session.m_default160LvAuraSub;
         }
       }
     }
@@ -2432,11 +2432,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     int first = 0x4CA;
     int second = 0x4CB;
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x6C]) > 0) {
-      first = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x6C]);
+    if (g_session.m_default185LvAura > 0) {
+      first = g_session.m_default185LvAura;
     }
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x70]) > 0) {
-      second = *reinterpret_cast<int*>(&g_session.jobLevelLimits[0x70]);
+    if (g_session.m_default185LvAuraSub > 0) {
+      second = g_session.m_default185LvAuraSub;
     }
     const vector3d offset{0.0f, 0.0f, 0.0f};
     if (showFirst != 0) {

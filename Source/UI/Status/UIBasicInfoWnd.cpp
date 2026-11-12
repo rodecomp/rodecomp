@@ -630,11 +630,11 @@ void UIBasicInfoWnd::Paint() {
     if (g_session.IsTreeGroupTwo(g_session.GetDisplayJob())) {
       maxLevel = g_session.m_maxLevel;
     } else if (g_session.IsSuperNovice2Job(g_session.GetDisplayJob())) {
-      maxLevel = *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0]);
+      maxLevel = g_session.m_maxBaseLevelExtend2;
     } else if (g_session.IsExpandedJob(g_session.GetDisplayJob())) {
-      maxLevel = *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
+      maxLevel = g_session.m_maxBaseLevelUpperJob;
     } else {
-      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
+      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? g_session.m_maxBaseLevelDoram
                                                                          : g_session.m_maxBaseLevel;
     }
 

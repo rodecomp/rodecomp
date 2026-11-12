@@ -4330,7 +4330,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsTreeGroupThree(this->GetEffectiveJob(-1)) == true) {
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x74]) == static_cast<std::int16_t>(this->characterLevel)) {
+    if (g_session.m_maxBaseLevel4th == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL4TH_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4339,7 +4339,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsSuperNovice2Job(this->GetEffectiveJob(-1))) {
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0]) == static_cast<std::int16_t>(this->characterLevel)) {
+    if (g_session.m_maxBaseLevelExtend2 == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4348,7 +4348,7 @@ void CGameActor::UpdateMaxLevelAura() {
   }
 
   if (g_session.IsExpandedJob(this->GetEffectiveJob(-1))) {
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[4]) == static_cast<std::int16_t>(this->characterLevel)) {
+    if (g_session.m_maxBaseLevelUpperJob == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4358,7 +4358,7 @@ void CGameActor::UpdateMaxLevelAura() {
 
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
     const int skill = static_cast<std::int16_t>(this->characterLevel);
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[8]) == skill) {
+    if (g_session.m_maxBaseLevelHomun == skill) {
       this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0);
       return;
     }
@@ -4367,7 +4367,7 @@ void CGameActor::UpdateMaxLevelAura() {
       return;
     }
   } else if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
-    if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x28]) == static_cast<std::int16_t>(this->characterLevel)) {
+    if (g_session.m_maxBaseLevelDoram == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }

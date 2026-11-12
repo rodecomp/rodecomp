@@ -1967,18 +1967,18 @@ bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
 // FUNCTION: fn_24162
 int CSession::GetMaxBaseLevel(int job) const {
   if (g_session.IsTreeGroupThree(job) == true) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x74]);
+    return g_session.m_maxBaseLevel4th;
   }
   if (g_session.IsTreeGroupTwo(job)) {
     return g_session.m_maxLevel;
   }
   if (g_session.IsSuperNovice2Job(job)) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0]);
+    return g_session.m_maxBaseLevelExtend2;
   }
   if (g_session.IsExpandedJob(job)) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
+    return g_session.m_maxBaseLevelUpperJob;
   }
-  return g_session.IsDoramJob(job) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
+  return g_session.IsDoramJob(job) == true ? g_session.m_maxBaseLevelDoram
                                            : g_session.m_maxBaseLevel;
 }
 
@@ -1986,30 +1986,30 @@ int CSession::GetMaxBaseLevel(int job) const {
 // FUNCTION: fn_24163
 int CSession::GetMaxJobLevel(int job) const {
   if (g_session.IsSuperNoviceJob(job)) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x10]);
+    return g_session.m_maxJobLevelSuperNovice;
   }
   if ((job >= JT_KNIGHT_H && job < JT_NOVICE_B) || job == JT_GUNSLINGER || job == JT_NINJA || job == JT_GUNSLINGER_B || job == JT_NINJA_B ||
       job == JT_DRUID || job == JT_DRUID_B) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x18]);
+    return g_session.m_maxJobLevel2nd;
   }
   if (job == JT_NOVICE || job == JT_NOVICE_B || job == JT_NOVICE_H) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x0C]);
+    return g_session.m_maxJobLevelNovice;
   }
   if (g_session.IsTreeGroupThree(job) == true) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x78]);
+    return g_session.m_maxJobLevel4th;
   }
   if (g_session.IsTreeGroupTwo(job)) {
-    return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x1C]);
+    return g_session.m_maxJobLevel3rd;
   }
   if (!g_session.IsExpandedJob(job)) {
     if (g_session.IsDoramJob(job) == true) {
-      return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x2C]);
+      return g_session.m_maxJobLevelDoram;
     }
     if (!g_session.IsSuperNovice2Job(job)) {
-      return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x14]);
+      return g_session.m_maxJobLevelBase;
     }
   }
-  return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x24]);
+  return g_session.m_maxJobLevelUpperJob;
 }
 
 // OFFSET: 0x00E1E690

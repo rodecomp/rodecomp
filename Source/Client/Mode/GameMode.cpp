@@ -1953,7 +1953,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
               if ((g_session.IsSuperNoviceJob(g_session.GetDisplayJob()) &&
                    g_session.m_level >= g_session.m_maxBaseLevel) ||
                   (g_session.IsSuperNovice2Job(g_session.GetDisplayJob()) &&
-                   g_session.m_level >= *reinterpret_cast<const int*>(g_session.jobLevelLimits))) {
+                   g_session.m_level >= g_session.m_maxBaseLevelExtend2)) {
                 g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_SUPERNOVICE_CHOPOKGI_CAPPEDLEVEL)), 0xFF, 0, 0, 0);
                 break;
               }
