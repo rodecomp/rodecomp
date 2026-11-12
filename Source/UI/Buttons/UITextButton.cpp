@@ -506,12 +506,14 @@ void UIBasicItemCtrl::OnMouseHover(int, int) {
 
   if (std::atoi(this->m_item.itemId.c_str()) < 1) {
     text = this->m_tooltip;
-  } else if (this->m_item.identity[1] == 0) {
-    text = static_cast<const std::string&>(this->m_item.DisplayName(0));
-  } else if (this->m_item.optionCount != 0) {
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), this->m_item.DisplayName(0).c_str(), this->m_item.optionCount, this->m_item.quantity));
+  } else if (this->m_item.identity[1] > 0) {
+    if (this->m_item.optionCount != 0) {
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), this->m_item.DisplayName(0).c_str(), this->m_item.optionCount, this->m_item.quantity));
+    } else {
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), this->m_item.DisplayName(0).c_str(), this->m_item.quantity));
+    }
   } else {
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), this->m_item.DisplayName(0).c_str(), this->m_item.quantity));
+    text = static_cast<const std::string&>(this->m_item.DisplayName(0));
   }
 
   int screenX = 0, screenY = 0;
