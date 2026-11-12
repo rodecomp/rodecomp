@@ -13677,7 +13677,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory && !actor->GetGdid()) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
   } else {
@@ -13700,7 +13700,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
@@ -14010,7 +14010,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;
@@ -14663,7 +14663,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY, 0, reinterpret_cast<int>(&entry), reinterpret_cast<int>(&entry) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -14689,7 +14689,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
