@@ -81,6 +81,12 @@
    "kind": "xor-repeating-key",
    "keyBytes": 8,
    "includeTerminator": true
+  },
+  {
+   "macro": "OBFUSCATE_BYTES_TEXT",
+   "kind": "xor-repeating-key",
+   "keyBytes": 8,
+   "includeTerminator": true
   }
  ],
  "matchPolicy": {

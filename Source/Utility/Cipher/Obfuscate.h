@@ -57,6 +57,8 @@ namespace utility {
     return name.Text(); \
   }()
 
+#define OBFUSCATE_BYTES_TEXT(text, key) OBFUSCATE_ARRAY_TEXT(text, key, std::uint8_t)
+
 #define OBFUSCATE_ARRAY_BODY(text, key, element) \
   OBFUSCATE_NAME_ARRAY_(text, key, element, name); \
   return name
