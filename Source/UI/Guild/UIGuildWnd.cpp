@@ -1953,7 +1953,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   }
 
   char lastLogin[128];
-  const __time32_t* lastLoginTime = reinterpret_cast<const __time32_t*>(member.lastOfflineTime);
+  const __time32_t* lastLoginTime = &member.lastOfflineTime;
   if (*lastLoginTime != 0) {
     strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_REFINING), _localtime32(lastLoginTime));
   } else {

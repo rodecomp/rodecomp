@@ -4372,7 +4372,7 @@ void CGameMode::ReceiveGuildMemberList(const unsigned char* data) {
     member.exp = record->exp;
     member.online = record->online;
     member.expRatio = 0.0f;
-    *reinterpret_cast<int*>(member.lastOfflineTime) = record->lastTimeOffline;
+    member.lastOfflineTime = record->lastTimeOffline;
     if (member.characterId == g_session.m_gid) {
       member.name = g_session.DecodePlayerName();
     }
@@ -10811,7 +10811,7 @@ void CGameMode::ReceiveGuildMemberAdd2(const unsigned char* data) {
   member.level = packet->level;
   member.exp = packet->exp;
   member.online = packet->online;
-  *reinterpret_cast<int*>(member.lastOfflineTime) = packet->lastTimeOffline;
+  member.lastOfflineTime = packet->lastTimeOffline;
   if (!g_playerNameDictionary->Contains(packet->characterId)) {
     const std::uint32_t characterId = packet->characterId;
     std::string name(packet->name, packet->name + sizeof(packet->name));
@@ -10931,7 +10931,7 @@ void CGameMode::ReceiveGuildMemberList2(const unsigned char* data) {
     const int lastTimeOffline = record->lastTimeOffline;
     member.characterId = record->characterId;
     member.expRatio = 0.0f;
-    *reinterpret_cast<int*>(member.lastOfflineTime) = lastTimeOffline;
+    member.lastOfflineTime = lastTimeOffline;
     if (member.characterId == g_session.m_gid) {
       member.name = g_session.DecodePlayerName();
     } else {
@@ -11860,7 +11860,7 @@ void CGameMode::ReceiveGuildMemberAdd4(const unsigned char* data) {
   member.level = packet->level;
   member.exp = packet->exp;
   member.online = packet->online;
-  *reinterpret_cast<int*>(member.lastOfflineTime) = packet->lastTimeOffline;
+  member.lastOfflineTime = packet->lastTimeOffline;
   if (member.name.size() == 0) {
     member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildMemberNamelessTag;
   }

@@ -1979,8 +1979,8 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->destCellY = entry->cellY;
+    this->headType = entry->head;
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     this->SetState(0, 1);
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
@@ -2013,9 +2013,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->destCellY = entry->cellY;
+    this->moveSpeed = entry->speed;
+    this->headType = entry->head;
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     if (Replay::Instance().state == 6) {
       switch (entry->state) {
@@ -2058,13 +2058,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     }
     this->render.accountId = entry->aid;
     entry->job = MountedJob(entry->job, entry->stateFlags);
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     this->SetSprAct(entry->job, entry->sex, 0);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     this->healthState = entry->healthState;
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     gameMode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
@@ -2074,7 +2074,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -2094,10 +2094,10 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->emblemVersion = entry->pkState;
       break;
     }
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     entry->job = MountedJob(entry->job, entry->stateFlags);
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     this->SetSprAct(entry->job, entry->sex, 1);
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
     this->healthState = entry->healthState;
@@ -2105,7 +2105,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     }
@@ -2114,9 +2114,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_MOVE: {
     const int* route = reinterpret_cast<const int*>(static_cast<std::intptr_t>(b));
     this->routeStartTick = route[0];
-    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(&this->destinationAndSpeed[4]))) {
+    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], this->moveSpeed)) {
       this->movementState[5] = route[5];
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
+      this->destCellY = route[6];
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -2247,7 +2247,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       lying = true;
     }
     this->movementState[5] = static_cast<int>(b);
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = static_cast<int>(c);
+    this->destCellY = static_cast<int>(c);
     if (found) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       gameMode->CellCenter(static_cast<int>(b), static_cast<int>(c), this->render.position.x, this->render.position.z);
@@ -2283,7 +2283,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   }
   case AM_CORRECT_POS:
     this->movementState[5] = static_cast<int>(b);
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = static_cast<int>(c);
+    this->destCellY = static_cast<int>(c);
     mode->CellCenter(static_cast<int>(b), static_cast<int>(c), this->render.position.x, this->render.position.z);
     break;
   case AM_RESURRECTION:

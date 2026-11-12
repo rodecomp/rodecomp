@@ -3200,7 +3200,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
     return 0;
   case LMM_SELECTSVR: {
-    *reinterpret_cast<int*>(this->selectedServerStorage) = argument1;
+    this->selectedServer = argument1;
     if (argument1 == -1) {
       return 0;
     }
@@ -3213,16 +3213,16 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
 
     g_session.m_accountName = servers[argument1].address.name;
-    const int selected = *reinterpret_cast<int*>(this->selectedServerStorage);
+    const int selected = this->selectedServer;
     const std::uint32_t ip = servers[selected].address.ip;
     CharServerEndpoint endpoint;
     wsprintfA(endpoint.ip, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
-    const int selected2 = *reinterpret_cast<int*>(this->selectedServerStorage);
+    const int selected2 = this->selectedServer;
     endpoint.port = servers[selected2].address.port;
     StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[selected2].domain);
     g_charServerEndpoint = endpoint;
-    g_charServerIp = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.ip;
-    g_session.m_serverName = servers[*reinterpret_cast<int*>(this->selectedServerStorage)].address.name;
+    g_charServerIp = servers[this->selectedServer].address.ip;
+    g_session.m_serverName = servers[this->selectedServer].address.name;
     g_checkAttendanceMgr->LoadLocal(g_session.m_serverName);
     this->pendingCursorType = 5;
     return 0;
@@ -3527,7 +3527,7 @@ __declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* tex
 void __stdcall LoadCustomServerList(CLoginMode* mode) {
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(mode->serverList);
   mode->serverCount = 0;
-  *reinterpret_cast<int*>(mode->selectedServerStorage) = -1;
+  mode->selectedServer = -1;
 
   XmlNode* connection = g_clientInfoRoot->FindChild("connection");
   int count = 0;
@@ -3576,7 +3576,7 @@ void __stdcall LoadCustomServerList(CLoginMode* mode) {
 
   mode->serverCount = count;
   if (count != 0) {
-    *reinterpret_cast<int*>(mode->selectedServerStorage) = 0;
+    mode->selectedServer = 0;
   }
 }
 

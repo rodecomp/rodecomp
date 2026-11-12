@@ -31,7 +31,7 @@ public:
   virtual void Clear();
   virtual void Refresh();
 
-  /* 007C */ unsigned char backgroundChannels[0xC];
+  /* 007C */ int backgroundColor[3];
   /* 0088 */ std::map<int, IdListLine> lines;
   /* 0090 */ int selected;
   /* 0094 */ int topLine;

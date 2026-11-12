@@ -2937,7 +2937,7 @@ void CPlayer::UpdatePendingAction() {
       const bool elapsed = timeGetTime() > this->tickOfMoveForAttack + delay;
       const int state = static_cast<int>(this->render.state);
       int cellX = target->movementState[5];
-      int cellY = *reinterpret_cast<const int*>(target->destinationAndSpeed);
+      int cellY = target->destCellY;
       float x;
       float z;
       if (this->proceedType == 5) {
@@ -2990,7 +2990,7 @@ void CPlayer::UpdatePendingAction() {
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
     const float x = target->render.position.x;
     int cellX = target->movementState[5];
-    int cellY = *reinterpret_cast<const int*>(target->destinationAndSpeed);
+    int cellY = target->destCellY;
     const float z = target->render.position.z;
     const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
@@ -3992,7 +3992,7 @@ void CPlayer::SendMsg(
     this->routeStartTick = route[0];
     if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], g_session.m_moveSpeed)) {
       this->movementState[5] = route[5];
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
+      this->destCellY = route[6];
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -4003,11 +4003,11 @@ void CPlayer::SendMsg(
       mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
       if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], g_session.m_moveSpeed)) {
         this->movementState[5] = route[5];
-        *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
+        this->destCellY = route[6];
         this->SetState(1, 1);
       }
     }
-    g_navigationManager.CheckArrival(this->movementState[5], *reinterpret_cast<const int*>(this->destinationAndSpeed));
+    g_navigationManager.CheckArrival(this->movementState[5], this->destCellY);
     break;
   }
   case AM_FREEZE:
@@ -4077,7 +4077,7 @@ void CPlayer::SendMsg(
       if (target != nullptr) {
         this->proceedType =
           static_cast<std::uint32_t>(g_session.m_moveSpeed * 4 / 3) <
-              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->destinationAndSpeed)[1]
+              static_cast<std::uint32_t>(static_cast<CGameActor*>(target)->moveSpeed)
             ? 5
             : 1;
         this->proceedTargetGid = static_cast<int>(b);
@@ -4303,7 +4303,7 @@ void CPlayer::Initialize() {
   this->standTick = timeGetTime() - 1200;
   this->SetState(0, 1);
 
-  *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = g_session.m_moveSpeed;
+  this->moveSpeed = g_session.m_moveSpeed;
   this->render.isCharacter = 1;
   this->SetSexBit(g_session.GetCurrentSex());
 
@@ -4794,9 +4794,9 @@ void CPc::SendMsg(
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -4832,9 +4832,9 @@ void CPc::SendMsg(
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -4886,13 +4886,13 @@ void CPc::SendMsg(
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -4931,13 +4931,13 @@ void CPc::SendMsg(
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -4972,7 +4972,7 @@ void CPc::SendMsg(
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -4991,7 +4991,7 @@ void CPc::SendMsg(
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -5004,7 +5004,7 @@ void CPc::SendMsg(
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -5024,7 +5024,7 @@ void CPc::SendMsg(
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -5038,7 +5038,7 @@ void CPc::SendMsg(
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -5052,7 +5052,7 @@ void CPc::SendMsg(
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     }
@@ -5064,7 +5064,7 @@ void CPc::SendMsg(
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -5079,7 +5079,7 @@ void CPc::SendMsg(
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     }
@@ -5216,9 +5216,9 @@ void CGrannyPc::SendMsg(
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -5253,9 +5253,9 @@ void CGrannyPc::SendMsg(
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -5301,13 +5301,13 @@ void CGrannyPc::SendMsg(
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.angle = static_cast<float>((entry->direction + 4) * 45);
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->xSize = entry->xSize;
     this->ySize = entry->ySize;
     this->movementState[5] = entry->cellX;
-    *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->cellY;
+    this->destCellY = entry->cellY;
     this->headDir = entry->headDir;
-    *reinterpret_cast<int*>(this->headType) = entry->head;
+    this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
       entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
@@ -5340,7 +5340,7 @@ void CGrannyPc::SendMsg(
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -5359,7 +5359,7 @@ void CGrannyPc::SendMsg(
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -5371,7 +5371,7 @@ void CGrannyPc::SendMsg(
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->stateFlags = entry->stateFlags;
     this->effectState = entry->effectState;
@@ -5393,7 +5393,7 @@ void CGrannyPc::SendMsg(
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     } else {
@@ -5406,7 +5406,7 @@ void CGrannyPc::SendMsg(
   case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = entry->speed;
+    this->moveSpeed = entry->speed;
     this->routeStartTick = entry->moveStartTick;
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
@@ -5420,7 +5420,7 @@ void CGrannyPc::SendMsg(
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
       this->movementState[5] = entry->destX;
-      *reinterpret_cast<int*>(this->destinationAndSpeed) = entry->destY;
+      this->destCellY = entry->destY;
       this->SetState(1, 1);
       this->pathStartCell = 0;
     }

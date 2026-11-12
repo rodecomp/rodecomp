@@ -134,7 +134,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     }
 
     const int destinationX = actor->movementState[5];
-    const int destinationY = *reinterpret_cast<const int*>(actor->destinationAndSpeed);
+    const int destinationY = actor->destCellY;
     entry->moveData[0] = static_cast<std::uint8_t>(cellX >> 2);
     entry->moveData[1] = static_cast<std::uint8_t>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry->moveData[2] = static_cast<std::uint8_t>((cellY << 4) | ((destinationX >> 6) & 0x0F));
@@ -146,12 +146,12 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->packetLength = static_cast<std::uint16_t>(packet.size() + name.size());
     entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
-    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
+    entry->speed = static_cast<std::uint16_t>(actor->moveSpeed);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
     entry->healthState = static_cast<std::uint16_t>(actor->effectState);
     entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
-    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
+    entry->head = static_cast<std::uint16_t>(actor->headType);
     entry->guildId = actor->GetGdid();
     {
       CGuildMgr* guildMgr = g_guildMgr;
@@ -188,7 +188,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
 
     const int direction = (static_cast<int>(actor->render.angle) + 180) / 45 % 8;
     const int cellX = actor->movementState[5];
-    const int cellY = *reinterpret_cast<const int*>(actor->destinationAndSpeed);
+    const int cellY = actor->destCellY;
     entry->posDir[0] = static_cast<std::uint8_t>(cellX >> 2);
     entry->posDir[1] = static_cast<std::uint8_t>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry->posDir[2] = static_cast<std::uint8_t>((cellY << 4) | (direction & 0x0F));
@@ -205,12 +205,12 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->packetLength = static_cast<std::uint16_t>(packet.size() + name.size());
     entry->objectType = actor->objectType;
     entry->accountId = actor->render.accountId;
-    entry->speed = *reinterpret_cast<const std::uint16_t*>(actor->destinationAndSpeed + 4);
+    entry->speed = static_cast<std::uint16_t>(actor->moveSpeed);
     entry->bodyState = static_cast<std::uint16_t>(actor->bodyState);
     entry->healthState = static_cast<std::uint16_t>(actor->effectState);
     entry->effectState = actor->GetStateFlags();
     entry->job = static_cast<std::uint16_t>(actor->GetEffectiveJob(-1));
-    entry->head = *reinterpret_cast<const std::uint16_t*>(actor->headType);
+    entry->head = static_cast<std::uint16_t>(actor->headType);
     entry->guildId = actor->GetGdid();
     {
       CGuildMgr* guildMgr = g_guildMgr;

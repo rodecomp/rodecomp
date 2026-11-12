@@ -1364,7 +1364,7 @@ bool CNpc::OnProcess() {
     case JT_EFFECTLAUNCHER:
       if (timeGetTime() > this->effectTick + this->xSize * 1000) {
         this->effectTick = timeGetTime();
-        this->LaunchEffect(*reinterpret_cast<int*>(&this->destinationAndSpeed[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(this->moveSpeed, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     default:

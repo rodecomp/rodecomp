@@ -74,7 +74,8 @@ public:
   void SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) override;
 
   /* 0158 */ int movementState[6];
-  /* 0170 */ unsigned char destinationAndSpeed[0x08];
+  /* 0170 */ int destCellY;
+  /* 0174 */ int moveSpeed;
   /* 0178 */ int isCounter;
   /* 017C */ int isTrickDead;
   /* 0180 */ int isPlayHitWave;
@@ -108,7 +109,7 @@ public:
   /* 0290 */ int nameWidth;
   /* 0294 */ int xSize;
   /* 0298 */ int ySize;
-  /* 029C */ unsigned char headType[0x04];
+  /* 029C */ int headType;
   /* 02A0 */ std::list<ActorDamageMessage> willBeAttackList;
   /* 02A8 */ std::list<ActorDamageMessage> willBeAttackedList;
   /* 02B0 */ int willBeDead;

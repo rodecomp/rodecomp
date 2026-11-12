@@ -109,7 +109,7 @@ public:
   /* 00B8 */ unsigned char billingInfo[0x80];
   /* 0138 */ unsigned char loginCredentials[0x8C];
   /* 01C4 */ int serverCount;
-  /* 01C8 */ unsigned char selectedServerStorage[0x4];
+  /* 01C8 */ int selectedServer;
   /* 01CC */ int characterCount;
   /* 01D0 */ unsigned char loginExtra[0x8];
   /* 01D8 */ int receivedCharacterCount;

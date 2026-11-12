@@ -3413,9 +3413,9 @@ void UIEquipWnd::OnCreate(int width, int height) {
 
   this->m_titleList = new UIListBoxTitle();
   this->m_titleList->Configure(3, this->m_contentTop + 39, this->geometry.width - 6, 105, 0);
-  reinterpret_cast<int*>(this->m_titleList->backgroundChannels)[0] = 225;
-  reinterpret_cast<int*>(this->m_titleList->backgroundChannels)[1] = 225;
-  reinterpret_cast<int*>(this->m_titleList->backgroundChannels)[2] = 225;
+  this->m_titleList->backgroundColor[0] = 225;
+  this->m_titleList->backgroundColor[1] = 225;
+  this->m_titleList->backgroundColor[2] = 225;
   this->m_titleList->SetId(480);
   this->m_titleList->Show(0);
   this->AddChild(this->m_titleList);
@@ -10556,7 +10556,7 @@ void UITipboxWnd::OnCreate(int width, int) {
 
   this->searchResults = new UIListBoxID();
   this->searchResults->Configure(250, 50, 216, 266, 0);
-  int* background = reinterpret_cast<int*>(this->searchResults->backgroundChannels);
+  int* background = this->searchResults->backgroundColor;
   background[0] = 240;
   background[1] = 240;
   background[2] = 240;

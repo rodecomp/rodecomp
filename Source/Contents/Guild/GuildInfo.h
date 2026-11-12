@@ -50,7 +50,7 @@ public:
     /* 0068 */ float expRatio;
     /* 006C */ int exp;
     /* 0070 */ int online;
-    /* 0074 */ unsigned char lastOfflineTime[0x04];
+    /* 0074 */ __time32_t lastOfflineTime;
   };
 
   struct Unknown00D4Entry {

@@ -2184,7 +2184,7 @@ UIListBoxID::UIListBoxID()
   this->bottomMargin = 0;
   this->transparent = 0;
   this->lineHeight = 16;
-  int* background = reinterpret_cast<int*>(this->backgroundChannels);
+  int* background = this->backgroundColor;
   background[0] = 255;
   background[1] = 255;
   background[2] = 255;

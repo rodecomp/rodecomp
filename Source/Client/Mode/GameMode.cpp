@@ -5956,7 +5956,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       stored->job = actor->GetEffectiveJob(-1);
       stored->sex = static_cast<unsigned char>(actor->sex);
       stored->cellX = static_cast<std::uint16_t>(actor->movementState[5]);
-      stored->cellY = static_cast<std::uint16_t>(*reinterpret_cast<const int*>(actor->destinationAndSpeed));
+      stored->cellY = static_cast<std::uint16_t>(actor->destCellY);
       stored->head = static_cast<std::uint16_t>(pc->head);
       const std::int64_t value = actor->GetWeapon();
       stored->weapon = static_cast<int>(value);
@@ -8769,7 +8769,7 @@ void CGameMode::Update() {
           if (timeGetTime() - g_followUpdateTick > 1000) {
             g_followUpdateTick = timeGetTime();
             int x = actor->movementState[5];
-            int y = *reinterpret_cast<const int*>(actor->destinationAndSpeed);
+            int y = actor->destCellY;
             int cellX = x;
             int cellY = y;
             if (g_windowMgr.chatRoomWnd == nullptr && this->scene->player->render.state != 6) {

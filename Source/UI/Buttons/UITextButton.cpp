@@ -3000,7 +3000,7 @@ void UIListBoxID::Paint() {
       this->parent->Invalidate();
     }
   } else {
-    this->ClearSurface(RGB(this->backgroundChannels[0], this->backgroundChannels[4], this->backgroundChannels[8]));
+    this->ClearSurface(RGB(this->backgroundColor[0], this->backgroundColor[1], this->backgroundColor[2]));
   }
 
   const int first = this->topLine;
@@ -3028,7 +3028,7 @@ void UIListBoxTitle::Paint() {
       this->parent->Invalidate();
     }
   } else {
-    this->ClearSurface(RGB(this->backgroundChannels[0], this->backgroundChannels[4], this->backgroundChannels[8]));
+    this->ClearSurface(RGB(this->backgroundColor[0], this->backgroundColor[1], this->backgroundColor[2]));
   }
 
   const int first = this->topLine;

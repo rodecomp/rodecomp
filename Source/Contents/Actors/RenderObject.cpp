@@ -2699,7 +2699,7 @@ static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, Cha
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
-  NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
+  NpcCharacterRender(self)->appearance[1] = self->headType;
   NpcCharacterRender(self)->appearance[2] = info->standHeadPaletteOrMoveBodyPalette;
   NpcCharacterRender(self)->appearance[3] = info->standBodyPaletteOrMoveAccessory3;
   NpcCharacterRender(self)->lowerHeadgear = info->standAccessory;
@@ -2719,7 +2719,7 @@ static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, C
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
-  NpcCharacterRender(self)->appearance[1] = *reinterpret_cast<int*>(&self->headType);
+  NpcCharacterRender(self)->appearance[1] = self->headType;
   NpcCharacterRender(self)->appearance[2] = info->moveHeadPalette;
   NpcCharacterRender(self)->appearance[3] = info->standHeadPaletteOrMoveBodyPalette;
   NpcCharacterRender(self)->lowerHeadgear = info->moveAccessory;
