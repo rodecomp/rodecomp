@@ -12,6 +12,8 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include <new>
 
+template __declspec(noinline) std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+
 // OFFSET: 0x007435C0
 // FUNCTION: fn_07745
 CMiniPartyWndAreaMgr* CMiniPartyWndAreaMgr::Instance() {
