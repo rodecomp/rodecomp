@@ -3213,10 +3213,15 @@ void UIPcGage::Paint() {
       const float percent = static_cast<float>(this->current * 100 / this->maximum);
       const float second = static_cast<float>(this->secondaryValue * 100 / this->secondaryMaximum);
       if (percent != 0.0f) {
-        this->FillRegion(
-          1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), (this->geometry.height - 3) / 2,
-          25.0f > percent ? this->colors[4] : this->colors[2]
-        );
+        if (25.0f > percent) {
+          this->FillRegion(
+            1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), (this->geometry.height - 3) / 2, this->colors[4]
+          );
+        } else {
+          this->FillRegion(
+            1, 1, static_cast<int>(static_cast<float>(this->geometry.width) * percent / 100.0f - 2.0f), (this->geometry.height - 3) / 2, this->colors[2]
+          );
+        }
       }
       if (second != 0.0f) {
         this->FillRegion(
@@ -3345,7 +3350,11 @@ void UITextViewEX::Paint() {
             x = 0;
           }
           const bool hasImage = !StringImage(*text).empty();
-          text->Move(x, hasImage ? y - 7 : y);
+          if (hasImage) {
+            text->Move(x, y - 7);
+          } else {
+            text->Move(x, y);
+          }
           x = x + 5 + text->geometry.width;
         }
       }
