@@ -149,11 +149,17 @@ HRESULT CRenderSystemDX7::Initialize(HWND window) {
   const RenderAdapter selected = SelectedRenderAdapter();
 
   for (std::size_t i = 0; i < adapters.size(); ++i) {
-    if (adapters[i].Matches(selected)) {
-      drawIdentity = adapters[i].drawGuid;
-      renderIdentity = adapters[i].renderGuid;
+    const RenderAdapter& adapter = adapters[i];
+    if (adapter.Matches(selected)) {
+      drawIdentity = adapter.drawGuid;
+      renderIdentity = adapter.renderGuid;
       break;
     }
+  }
+
+  DWORD flags = 6;
+  if (g_configuredFullscreen != 0) {
+    flags = 7;
   }
 
   DDSURFACEDESC2 mode;
@@ -161,7 +167,6 @@ HRESULT CRenderSystemDX7::Initialize(HWND window) {
   mode.dwWidth = static_cast<DWORD>(g_configuredScreenWidth);
   mode.dwHeight = static_cast<DWORD>(g_configuredScreenHeight);
   mode.ddpfPixelFormat.dwRGBBitCount = static_cast<DWORD>(g_configuredBitsPerPixel);
-  const DWORD flags = g_configuredFullscreen != 0 ? 7 : 6;
   return this->m_device->Initialize(window, &drawIdentity, &renderIdentity, &mode, flags);
 }
 
