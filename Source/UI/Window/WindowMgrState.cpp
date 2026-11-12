@@ -219,13 +219,19 @@ void UIWindowMgr::LoadUIRectInfo() {
       char name[256];
 
       RegQueryValueExA(key, "m_minimapZoomWnd", nullptr, &type, reinterpret_cast<BYTE*>(&this->minimapZoom), &size);
-      if (RegQueryValueExA(key, "M_ISDRAGALL", nullptr, &type, reinterpret_cast<BYTE*>(&this->dragAllItems), &size) != ERROR_SUCCESS || this->dragAllItems != 0) {
+      if (RegQueryValueExA(key, "M_ISDRAGALL", nullptr, &type, reinterpret_cast<BYTE*>(&this->dragAllItems), &size) != ERROR_SUCCESS) {
+        this->dragAllItems = 1;
+      }
+      if (this->dragAllItems != 0) {
         this->dragAllItems = 1;
       }
       if (RegQueryValueExA(key, "M_ISDRAWCOMPASS", nullptr, &type, reinterpret_cast<BYTE*>(&this->drawCompass), &size) != ERROR_SUCCESS) {
         this->drawCompass = 0;
       }
-      if (RegQueryValueExA(key, "M_MINIMAPARGB", nullptr, &type, reinterpret_cast<BYTE*>(&this->minimapColor), &size) != ERROR_SUCCESS || this->minimapColor != 0xFFFFFFFF) {
+      if (RegQueryValueExA(key, "M_MINIMAPARGB", nullptr, &type, reinterpret_cast<BYTE*>(&this->minimapColor), &size) != ERROR_SUCCESS) {
+        this->minimapColor = 0xAAFFFFFF;
+      }
+      if (this->minimapColor != 0xFFFFFFFF) {
         this->minimapColor = 0xAAFFFFFF;
       }
       RegQueryValueExA(key, "M_CHATWNDSTATUS", nullptr, &type, reinterpret_cast<BYTE*>(&this->chatWndStatus), &size);
@@ -308,9 +314,8 @@ void UIWindowMgr::LoadUIRectInfo() {
       std::memset(name, 0, sizeof(name) - 1);
       RegQueryValueExA(key, "ITEMSTOREWNDNUM", nullptr, &type, reinterpret_cast<BYTE*>(&this->itemStoreWindowCount), &size);
       if (this->itemStoreWindowCount != 8) {
-        ItemStoreFindSlotInfo* const storeSlots = reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C);
         for (int index = 0; index < 8; ++index) {
-          storeSlots[index].Reset(index);
+          reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C)[index].Reset(index);
         }
         this->itemStoreWindowCount = 8;
         reinterpret_cast<ItemStoreFindListInfo*>(base + 0x614)->Reset();
