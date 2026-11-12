@@ -3676,9 +3676,11 @@ void CSevereRainStorm::SpawnParticles() {
       const long long ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
       const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 10u) - 1] * 50;
       vector3d position = {this->position[0], this->position[1], this->position[2]};
-      const float half = static_cast<float>(spread) * 0.5f;
-      position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
-      position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+      const int range = static_cast<int>(spread) + 1;
+      const int offsetX = ClampedRandom(range);
+      const float half = static_cast<float>(spread) * g_depthAverageHalf;
+      position.x = (static_cast<float>(offsetX) - half) * 0.1f + position.x;
+      position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
       EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
@@ -3727,9 +3729,11 @@ void CSevereRainStorm::SpawnCrossRain() {
   vector3d position = *reinterpret_cast<const vector3d*>(this->position);
   const int spread = ranges[index] * 50;
 
-  const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(ClampedRandom(spread + 1)) - half) * 0.1f + position.x;
-  position.z = (static_cast<float>(ClampedRandom(spread + 1)) - half) * 0.1f + position.z;
+  const int range = spread + 1;
+  const int offsetX = ClampedRandom(range);
+  const float half = static_cast<float>(spread) * g_depthAverageHalf;
+  position.x = (static_cast<float>(offsetX) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + position.z;
   position.y -= 10.0f;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
@@ -3869,9 +3873,11 @@ void CSevereRainStorm::SpawnStarCannon() {
   const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 5u) - 1] * 50;
   const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
   vector3d position = base;
-  const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
-  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+  const int range = static_cast<int>(spread) + 1;
+  const int offsetX = ClampedRandom(range);
+  const float half = static_cast<float>(spread) * g_depthAverageHalf;
+  position.x = (static_cast<float>(offsetX) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + base.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
@@ -3901,9 +3907,11 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 5u) - 1] * 50;
   const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
   vector3d position = base;
-  const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
-  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+  const int range = static_cast<int>(spread) + 1;
+  const int offsetX = ClampedRandom(range);
+  const float half = static_cast<float>(spread) * g_depthAverageHalf;
+  position.x = (static_cast<float>(offsetX) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + base.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
   if (particle) {
