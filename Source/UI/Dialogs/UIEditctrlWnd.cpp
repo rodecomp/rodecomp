@@ -231,10 +231,7 @@ void UIMiniMapWnd::OnLBtnDown(int x, int y) {
       this->dragging = 0;
       int clickX = x - 6;
       g_windowMgr.miniMapClickY = y - 6;
-      if (clickX < 0) {
-        clickX = 0;
-      }
-      g_windowMgr.miniMapClickX = clickX;
+      g_windowMgr.miniMapClickX = clickX < 0 ? 0 : clickX;
       g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
     }
   } else {
