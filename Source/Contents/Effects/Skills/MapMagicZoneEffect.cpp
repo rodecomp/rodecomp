@@ -179,9 +179,10 @@ void CMapMagicZoneEffect::OnProcess() {
 
   for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
     ++particle->elapsedFrames;
     float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
     spinAngle = static_cast<float>(static_cast<int>(particle->rowIndex + spinAngle + 3.0f));
