@@ -150,6 +150,8 @@
 #include "Utility/Cipher/CryptName.h"
 #include <new>
 
+template __declspec(noinline) decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, const int&>(std::string&, const int&);
+
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
 __declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
@@ -2558,14 +2560,13 @@ __declspec(noinline) void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
 // OFFSET: 0x00D7B420
 // FUNCTION: fn_22203
 __declspec(noinline) void CGameMode::Zc_Trycapture_Monster(const unsigned char* packet) {
-  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.petTamingDeceiveWnd);
   if (packet[2] != 0) {
-    if (window) {
-      window->SendMsg(nullptr, UM_SET_TARGET, 1, 7, 0, 0);
+    if (g_windowMgr.petTamingDeceiveWnd) {
+      g_windowMgr.petTamingDeceiveWnd->SendMsg(nullptr, UM_SET_TARGET, 1, 7, 0, 0);
     }
   } else {
-    if (window) {
-      window->SendMsg(nullptr, UM_SET_TARGET, 1, 3, 0, 0);
+    if (g_windowMgr.petTamingDeceiveWnd) {
+      g_windowMgr.petTamingDeceiveWnd->SendMsg(nullptr, UM_SET_TARGET, 1, 3, 0, 0);
     }
   }
 }
