@@ -2855,7 +2855,7 @@ void CSession::LoadExternalSettings() {
     break;
   }
 
-  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &*reinterpret_cast<int*>(this->maxBaseLevel));
+  this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel", &this->m_maxBaseLevel);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevel3rd", &this->m_maxLevel);
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x00]));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "BaseLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x04]));
@@ -2868,7 +2868,7 @@ void CSession::LoadExternalSettings() {
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelExtend2", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x20]));
   this->m_hotkeyScript->Call(std::string("GetTableIntValueForC", 20), "ss>d", "MaxLevelTable", "JobLevelUpperJob", &*reinterpret_cast<int*>(&this->jobLevelLimits[0x24]));
 
-  if (*reinterpret_cast<int*>(this->maxBaseLevel) == -1 ||
+  if (this->m_maxBaseLevel == -1 ||
       this->m_maxLevel == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x00]) == -1 ||
       *reinterpret_cast<int*>(&this->jobLevelLimits[0x04]) == -1 ||
@@ -2946,7 +2946,7 @@ void CSession::Init() {
 
   this->m_averagePing = 0;
   *reinterpret_cast<int*>(&this->itemSendState[0x08]) = 0;
-  *reinterpret_cast<int*>(this->showEffects) = 1;
+  this->m_showEffects = 1;
   this->m_aid = 0;
 
   SYSTEMTIME systemTime;
@@ -2954,18 +2954,18 @@ void CSession::Init() {
   const int now =
     (((((static_cast<unsigned char>(systemTime.wYear) * 12 +systemTime.wMonth) * 31 + systemTime.wDay) * 24 + systemTime.wHour + 9) * 60 + systemTime.wMinute) * 60 + systemTime.wSecond) * 1000 +
     systemTime.wMilliseconds;
-  *reinterpret_cast<int*>(this->clientTimeOffset) = now - timeGetTime();
+  this->m_clientTimeOffset = now - timeGetTime();
   *reinterpret_cast<int*>(this->guildTargetCharacter) = 0;
   *reinterpret_cast<int*>(&this->whisperOptions[0x00]) = 0;
   *reinterpret_cast<int*>(&this->timeAttackState[0x04]) = 0;
   *reinterpret_cast<int*>(&this->timeAttackState[0x00]) = 0;
   *reinterpret_cast<int*>(&this->timeAttackState[0x0C]) = 0;
   *reinterpret_cast<int*>(&this->timeAttackState[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->interactionFlags[0x00]) = 0;
-  *reinterpret_cast<int*>(&this->interactionFlags[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->interactionFlags[0x08]) = 0;
+  this->m_serviceOption229 = 0;
+  this->m_isSiegeZone = 0;
+  this->m_isPvpZone = 0;
   this->partyBlocked = 0;
-  *reinterpret_cast<int*>(this->timeAttackMode) = 0;
+  this->m_timeAttackMode = 0;
   this->m_hotkeyPage = 0;
   *reinterpret_cast<int*>(this->whisperRecordStorage) = 0;
   this->mapPropertyId = 0;
@@ -2973,11 +2973,11 @@ void CSession::Init() {
   g_activeSkillEffects.clear();
 
   *reinterpret_cast<int*>(&this->whisperOptions[0x04]) = 0;
-  *reinterpret_cast<int*>(this->petNameModified) = 0;
+  this->m_petNameModified = 0;
   this->petJob = -1;
   this->petLevel = 1;
   this->petHunger = 100;
-  *reinterpret_cast<int*>(this->petMaxHunger) = 100;
+  this->m_petMaxHunger = 100;
   this->m_petFriendly = 100;
   this->petEggIndex = -1;
   this->petPreviousHunger = 100;
@@ -2991,9 +2991,9 @@ void CSession::Init() {
     homunStats[index] = 0;
   }
   this->m_homunJob = -1;
-  *reinterpret_cast<int*>(this->homunLevel) = 1;
+  this->m_homunLevel = 1;
   this->m_homunHp = 0;
-  *reinterpret_cast<int*>(this->homunMaxHp) = 999999;
+  this->m_homunMaxHp = 999999;
   this->m_homunSp = 0;
   this->homunMaxSp = 999999;
   this->m_homunExp = 0;
@@ -3027,7 +3027,7 @@ void CSession::Init() {
   this->m_mercenaryLoyalty = 0;
   this->m_mercenarySummons = 0;
   this->m_mercenaryKills = 0;
-  *reinterpret_cast<int*>(this->mercenaryAttackRange) = 0;
+  this->m_mercenaryAttackRange = 0;
   this->m_mercenaryExpiration = 0;
   this->m_mercenaryActionState = 0;
   this->autoReplyState[0] = 0;
@@ -3208,7 +3208,7 @@ void CSession::ResetCharacterState() {
   this->battleChat = 0;
   this->quitAllowed = 0;
   this->sessionFlag = 0;
-  *reinterpret_cast<int*>(&g_session.mapTransitionFlag[0x00]) = 0;
+  g_session.m_mapTransitionFlag = 0;
   *reinterpret_cast<std::uint16_t*>(&this->playerStatusFlags[0x08]) = 0;
   this->adoptionSkillAvailable = 0;
   this->loginOptions[0] = 1;

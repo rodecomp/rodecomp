@@ -2804,7 +2804,7 @@ void UISkillListWnd::Paint() {
   if (this->skillTab == 0) {
     this->DrawTextAt(17, 4, LookupMessage(MSI_HOMUN_SKILLLIST), 0, 0, 12, 0xFFFFFF, 0, 0);
     this->DrawTextAt(16, 3, LookupMessage(MSI_HOMUN_SKILLLIST), 0, 0, 12, 0, 0, 0);
-    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), *reinterpret_cast<const int*>(g_session.companionSkillPoints));
+    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), g_session.m_homunSkillPoint);
   } else if (this->skillTab == 1) {
     this->DrawTextAt(17, 4, LookupMessage(MSI_MER_SKILLLIST), 0, 0, 12, 0xFFFFFF, 0, 0);
     this->DrawTextAt(16, 3, LookupMessage(MSI_MER_SKILLLIST), 0, 0, 12, 0, 0, 0);
@@ -2980,7 +2980,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
     mode->SendMsg(MM_USEITEM, static_cast<int>(item.identity[1]), 0, 0, 0);
     break;
   case 18:
-    if (*reinterpret_cast<const int*>(&g_session.healthPoints[4]) >= 0) {
+    if (g_session.m_manner >= 0) {
       if (g_windowMgr
               .Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
         mode->SendMsg(MM_USEITEM, static_cast<int>(item.identity[1]), 0, 0, 0);
@@ -4917,9 +4917,9 @@ void UISkillListWnd::UpdateRowButtons() {
     CSkillInfo skill = this->GetVisibleSkill(row);
     int points = 0;
     if (this->skillTab == 0) {
-      points = reinterpret_cast<int*>(g_session.companionSkillPoints)[0];
+      points = g_session.m_homunSkillPoint;
     } else if (this->skillTab == 1) {
-      points = reinterpret_cast<int*>(g_session.companionSkillPoints)[1];
+      points = g_session.m_mercenarySkillPoint;
     }
 
     if (row < this->visibleRows && this->scroll + row < this->skills.size() && points != 0 && skill.available != 0 && skill.upgradable != 0) {
@@ -5564,11 +5564,11 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_LVLUP6:
     case ID_LVLUP7: {
       if (this->skillTab == 0) {
-        if (reinterpret_cast<int*>(g_session.companionSkillPoints)[0] == 0) {
+        if (g_session.m_homunSkillPoint == 0) {
           return 0;
         }
       } else if (this->skillTab == 1) {
-        if (reinterpret_cast<int*>(g_session.companionSkillPoints)[1] == 0) {
+        if (g_session.m_mercenarySkillPoint == 0) {
           return 0;
         }
       }

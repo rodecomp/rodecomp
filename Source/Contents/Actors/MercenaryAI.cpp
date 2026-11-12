@@ -535,7 +535,7 @@ int AiHomunGetV(lua_State* state) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(*reinterpret_cast<const int*>(&g_session.homunMaxHp[0])));
+      lua_pushnumber(state, static_cast<double>(g_session.m_homunMaxHp));
       return 1;
     }
 
@@ -644,7 +644,7 @@ int AiMercenaryGetV(lua_State* state) {
     }
 
   case V_ATTACKRANGE: {
-    int range = *reinterpret_cast<const int*>(&g_session.mercenaryAttackRange[0]);
+    int range = g_session.m_mercenaryAttackRange;
     if (!actor || range == 0) {
       lua_pushnumber(state, -1.0);
       return 1;

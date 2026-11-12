@@ -1979,7 +1979,7 @@ int CSession::GetMaxBaseLevel(int job) const {
     return *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
   }
   return g_session.IsDoramJob(job) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
-                                           : *reinterpret_cast<const int*>(g_session.maxBaseLevel);
+                                           : g_session.m_maxBaseLevel;
 }
 
 // OFFSET: 0x00E2FA80

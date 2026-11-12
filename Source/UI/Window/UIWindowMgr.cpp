@@ -4469,13 +4469,9 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       g_windowMgr.EnsureWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
     }
     break;
-  case HK_GROUND_CURSOR_ONOFF + 100: {
-    int flag;
-    std::memcpy(&flag, g_session.showEffects, sizeof(flag));
-    flag = 1 - flag;
-    std::memcpy(g_session.showEffects, &flag, sizeof(flag));
+  case HK_GROUND_CURSOR_ONOFF + 100:
+    g_session.m_showEffects = 1 - g_session.m_showEffects;
     break;
-  }
   case HK_CHATMODE_ONOFF + 100:
     if (this->basicInfoWnd && this->chatModeChanged && this->chatWnd && (this->IsHoverOnWindow01C8Button() || this->hoverWindow == nullptr)) {
       static_cast<UINewChatWnd*>(this->chatWnd)->ToggleInput();

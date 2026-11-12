@@ -4525,13 +4525,13 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
 
   switch (packet->type) {
   case SP_SPEED:
-    if (*reinterpret_cast<int*>(&g_session.healthPoints[0]) != packet->value) {
-      *reinterpret_cast<int*>(&g_session.healthPoints[0]) = packet->value;
+    if (g_session.m_moveSpeed != packet->value) {
+      g_session.m_moveSpeed = packet->value;
       g_session.InvalidateWindowFrames();
     }
     break;
   case SP_KARMA:
-    *reinterpret_cast<int*>(&g_session.optionFlags[0]) = packet->value;
+    g_session.m_karma = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_MANNER:
@@ -4544,7 +4544,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       this->scene->player->SendMsg(nullptr, AM_DELETE_PROHIBITEFFECT, 0, 0, 0, 0, 0, 0);
     }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
-    *reinterpret_cast<int*>(&g_session.healthPoints[4]) = packet->value;
+    g_session.m_manner = packet->value;
     g_session.InvalidateWindowFrames();
     break;
   case SP_UNBREAKABLE:
@@ -4588,7 +4588,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     break;
   case SP_STATUSPOINT:
-    *reinterpret_cast<int*>(&g_session.statusPoints[0]) = packet->value;
+    g_session.m_statusPoint = packet->value;
     g_session.InvalidateWindowFrames();
     if (g_windowMgr.statusWnd) {
       g_windowMgr.statusWnd->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
@@ -10121,7 +10121,7 @@ static_assert(sizeof(EffectNumberPacket) == 0xE);
 // FUNCTION: fn_21764
 void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   const EffectNumberPacket* packet = reinterpret_cast<const EffectNumberPacket*>(data);
-  if (*reinterpret_cast<int*>(&g_session.interactionFlags[0x8]) == 0 && this->scene->isPKZone == 0) {
+  if (g_session.m_isPvpZone == 0 && this->scene->isPKZone == 0) {
     return;
   }
 
@@ -22923,7 +22923,7 @@ void CGameMode::ProcessIncomingPackets() {
           std::string(reinterpret_cast<const char *>(g_gameModePacketBuffer + 6), reinterpret_cast<const char *>(g_gameModePacketBuffer + 0x1E)).c_str());
       break;
     case ID_ZC_NOTIFY_MAPPROPERTY:
-      g_serviceOptions.Set(229, *reinterpret_cast<const int *>(g_session.interactionFlags) != 0);
+      g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
       switch (*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)) {
       case MAPPROPERTY_FREEPVPZONE:
       case MAPPROPERTY_PVPSERVERZONE:
@@ -22975,7 +22975,7 @@ void CGameMode::ProcessIncomingPackets() {
         window->nameEdit->SetText(g_session.petName);
         window->Invalidate();
       }
-      *reinterpret_cast<int *>(g_session.petNameModified) = packet[0x1A];
+      g_session.m_petNameModified = packet[0x1A];
       g_session.petLevel = value;
       break;
     }
@@ -23035,22 +23035,22 @@ void CGameMode::ProcessIncomingPackets() {
       const int seconds = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 3);
       switch (g_gameModePacketBuffer[2]) {
       case 0:
-        *reinterpret_cast<int *>(g_session.timeAttackMode) = 0;
+        g_session.m_timeAttackMode = 0;
         g_session.m_timeAttackVisible = 1;
         g_session.m_timeAttackCountdown = seconds * 1000;
         break;
       case 1:
         g_session.m_timeAttackCountdown = timeGetTime() + seconds * 1000;
-        *reinterpret_cast<int *>(g_session.timeAttackMode) = 1;
+        g_session.m_timeAttackMode = 1;
         g_session.m_timeAttackVisible = 1;
         break;
       case 2:
         g_session.m_timeAttackCountdown = timeGetTime() - seconds * 1000;
-        *reinterpret_cast<int *>(g_session.timeAttackMode) = 2;
+        g_session.m_timeAttackMode = 2;
         g_session.m_timeAttackVisible = 1;
         break;
       case 3:
-        *reinterpret_cast<int *>(g_session.timeAttackMode) = 3;
+        g_session.m_timeAttackMode = 3;
         g_session.m_timeAttackCountdown = seconds * 30 + 29;
         g_session.m_timeAttackVisible = 1;
         break;
@@ -23164,7 +23164,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     case ID_ZC_NOTIFY_MAPPROPERTY2: {
-      g_serviceOptions.Set(229, *reinterpret_cast<const int *>(g_session.interactionFlags) != 0);
+      g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
       const std::int16_t type = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2);
       g_session.mapPropertyId = type;
       if (type == 5 || type == 6) {
@@ -25147,7 +25147,7 @@ void CGameMode::ProcessIncomingPackets() {
       StringFormat(reinterpret_cast<char *>(g_session.spAndHomunculusStats + 0xC), 32, static_cast<std::size_t>(-1), "%s",
                    reinterpret_cast<const char *>(g_gameModePacketBuffer + 2));
       g_session.homunNameModified = g_gameModePacketBuffer[0x1A];
-      *reinterpret_cast<int *>(g_session.homunLevel) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1B);
+      g_session.m_homunLevel = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1B);
       g_session.homunHunger = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D);
       g_session.RefreshHomunculusInfo();
       switch (*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x1D)) {
@@ -25171,7 +25171,7 @@ void CGameMode::ProcessIncomingPackets() {
       reinterpret_cast<int *>(g_session.spAndHomunculusStats + 0x48)[0] = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x2F);
       g_session.m_homunHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x31);
       g_session.RefreshHomunculusInfo();
-      *reinterpret_cast<int *>(g_session.homunMaxHp) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x35);
+      g_session.m_homunMaxHp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x35);
       g_session.RefreshHomunculusInfo();
       g_session.m_homunSp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x39);
       g_session.RefreshHomunculusInfo();
@@ -25181,7 +25181,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshHomunculusInfo();
       g_session.m_homunMaxExp = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 0x45);
       g_session.RefreshHomunculusInfo();
-      *reinterpret_cast<int *>(g_session.companionSkillPoints) = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x49);
+      g_session.m_homunSkillPoint = *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0x49);
       g_session.InvalidateWindowFrames();
       if (g_windowMgr.homunculusSkillWnd) {
         g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);

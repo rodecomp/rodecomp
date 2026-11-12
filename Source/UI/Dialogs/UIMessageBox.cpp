@@ -3508,7 +3508,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
 
   this->hpBar = new UIBarGraphHomun();
   this->hpBar->SetValues([]() -> std::int64_t { return g_session.m_homunHp; },
-                         []() -> std::int64_t { return *reinterpret_cast<const int*>(g_session.homunMaxHp); });
+                         []() -> std::int64_t { return g_session.m_homunMaxHp; });
   this->hpBar->SetSize(157, 9);
   this->hpBar->Move(117, 73);
   this->AddChild(this->hpBar);
@@ -3576,7 +3576,7 @@ void UIHomunInfoWnd::Paint() {
   bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
   this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
   char level[12];
-  _itoa(*reinterpret_cast<const int*>(g_session.homunLevel), level, 10);
+  _itoa(g_session.m_homunLevel, level, 10);
   this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   if (g_session.m_homunJob == -1) {
     return;

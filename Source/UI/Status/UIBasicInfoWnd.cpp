@@ -635,7 +635,7 @@ void UIBasicInfoWnd::Paint() {
       maxLevel = *reinterpret_cast<const int*>(&g_session.jobLevelLimits[4]);
     } else {
       maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? *reinterpret_cast<const int*>(&g_session.jobLevelLimits[0x28])
-                                                                         : *reinterpret_cast<const int*>(g_session.maxBaseLevel);
+                                                                         : g_session.m_maxBaseLevel;
     }
 
     double percent;

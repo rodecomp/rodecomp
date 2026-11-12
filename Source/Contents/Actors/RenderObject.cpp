@@ -4362,7 +4362,7 @@ void CGameActor::UpdateMaxLevelAura() {
       this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
+    if (g_session.m_maxBaseLevel != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
       this->hasLevelAura = 0;
       return;
     }
@@ -4373,7 +4373,7 @@ void CGameActor::UpdateMaxLevelAura() {
     }
     this->hasLevelAura = 0;
     return;
-  } else if (*reinterpret_cast<int*>(g_session.maxBaseLevel) != static_cast<std::int16_t>(this->characterLevel)) {
+  } else if (g_session.m_maxBaseLevel != static_cast<std::int16_t>(this->characterLevel)) {
     this->hasLevelAura = 0;
     return;
   }

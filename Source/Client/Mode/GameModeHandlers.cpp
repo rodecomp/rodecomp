@@ -911,12 +911,12 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   for (int i = 0; i < 8; ++i) {
     stats[i] = packet->stats[i];
   }
-  *reinterpret_cast<int*>(g_session.homunLevel) = packet->level;
+  g_session.m_homunLevel = packet->level;
   g_session.m_homunHp = packet->hp;
   g_session.RefreshHomunculusInfo();
   g_session.m_homunSp = packet->sp;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.homunMaxHp) = packet->maxHp;
+  g_session.m_homunMaxHp = packet->maxHp;
   g_session.RefreshHomunculusInfo();
   g_session.homunMaxSp = packet->maxSp;
   g_session.RefreshHomunculusInfo();
@@ -926,7 +926,7 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   g_session.homunHunger = packet->hunger;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
+  g_session.m_homunSkillPoint = packet->skillPoints;
   g_session.InvalidateWindowFrames();
   g_session.m_homunAttackRange = packet->attackRange;
   if (g_windowMgr.homunculusSkillWnd) {
@@ -952,7 +952,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   int* stats = reinterpret_cast<int*>(&g_session.spAndHomunculusStats[0x2C]);
   StringFormat(reinterpret_cast<char*>(&g_session.spAndHomunculusStats[0x0C]), 32, static_cast<std::size_t>(-1), "%s", packet->name);
   g_session.homunNameModified = packet->flags;
-  *reinterpret_cast<int*>(g_session.homunLevel) = packet->level;
+  g_session.m_homunLevel = packet->level;
   g_session.homunHunger = packet->hunger;
   g_session.RefreshHomunculusInfo();
 
@@ -974,7 +974,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   }
   g_session.m_homunHp = packet->hp;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.homunMaxHp) = packet->maxHp;
+  g_session.m_homunMaxHp = packet->maxHp;
   g_session.RefreshHomunculusInfo();
   g_session.m_homunSp = packet->sp;
   g_session.RefreshHomunculusInfo();
@@ -984,7 +984,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   g_session.m_homunMaxExp = packet->maxExp;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
+  g_session.m_homunSkillPoint = packet->skillPoints;
   g_session.InvalidateWindowFrames();
   if (g_windowMgr.homunculusSkillWnd) {
     g_windowMgr.homunculusSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -1015,12 +1015,12 @@ void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   for (int i = 0; i < 8; ++i) {
     stats[i] = packet->stats[i];
   }
-  *reinterpret_cast<int*>(g_session.homunLevel) = packet->level;
+  g_session.m_homunLevel = packet->level;
   g_session.m_homunHp = packet->hp;
   g_session.RefreshHomunculusInfo();
   g_session.m_homunSp = packet->sp;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.homunMaxHp) = packet->maxHp;
+  g_session.m_homunMaxHp = packet->maxHp;
   g_session.RefreshHomunculusInfo();
   g_session.homunMaxSp = packet->maxSp;
   g_session.RefreshHomunculusInfo();
@@ -1030,7 +1030,7 @@ void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   g_session.RefreshHomunculusInfo();
   g_session.homunHunger = packet->hunger;
   g_session.RefreshHomunculusInfo();
-  *reinterpret_cast<int*>(g_session.companionSkillPoints) = packet->skillPoints;
+  g_session.m_homunSkillPoint = packet->skillPoints;
   g_session.InvalidateWindowFrames();
   g_session.m_homunAttackRange = packet->attackRange;
   if (g_windowMgr.homunculusSkillWnd) {

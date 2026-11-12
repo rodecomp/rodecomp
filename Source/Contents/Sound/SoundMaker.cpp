@@ -743,7 +743,7 @@ void CNpc::SendMsg(
           case 8: {
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunHp); },
-              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.homunMaxHp)); }
+              [] { return static_cast<std::int64_t>(g_session.m_homunMaxHp); }
             );
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunSp); },
@@ -760,7 +760,7 @@ void CNpc::SendMsg(
           case 7: {
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetThirdValues(
               [] { return static_cast<std::int64_t>(g_session.petHunger); },
-              [] { return static_cast<std::int64_t>(*reinterpret_cast<int*>(g_session.petMaxHunger)); }
+              [] { return static_cast<std::int64_t>(g_session.m_petMaxHunger); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
             static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 7;

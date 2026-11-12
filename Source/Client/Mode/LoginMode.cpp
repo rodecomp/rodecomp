@@ -3075,13 +3075,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         *reinterpret_cast<int*>(&g_session.characterLoginData[0x00]) = this->characters[i].slot;
         g_session.SetJob(this->characters[i].job);
         g_session.m_gid = this->characters[i].gid;
-        *reinterpret_cast<int*>(g_session.healthPoints) = this->characters[i].speed;
+        g_session.m_moveSpeed = this->characters[i].speed;
         g_session.InvalidateWindowFrames();
         g_session.m_level = this->characters[i].level;
         g_session.InvalidateWindowFrames();
         g_session.m_skillPoint = this->characters[i].skillPoint;
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(g_session.statusPoints) = this->characters[i].jobPoint;
+        g_session.m_statusPoint = this->characters[i].jobPoint;
         g_session.InvalidateWindowFrames();
         g_session.m_standardStats[0] = this->characters[i].stats[0];
         g_session.InvalidateWindowFrames();
@@ -3122,9 +3122,9 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x1C]) = *reinterpret_cast<const std::int64_t*>(&this->characters[i].progressionData[0x04]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(g_session.optionFlags) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x1C]);
+        g_session.m_karma = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x1C]);
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<int*>(&g_session.healthPoints[0x04]) = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x20]);
+        g_session.m_manner = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x20]);
         g_session.InvalidateWindowFrames();
         g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x0C]);
         g_session.InvalidateWindowFrames();

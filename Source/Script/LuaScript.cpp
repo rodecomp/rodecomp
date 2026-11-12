@@ -176,8 +176,7 @@ int SetCmdOnOffList(lua_State* state) {
   const int optionId = SetOption(name, enabled);
   if (optionId != 3) {
     if (optionId == 229) {
-      const int value = enabled;
-      std::memcpy(g_session.interactionFlags, &value, sizeof(value));
+      g_session.m_serviceOption229 = enabled;
     }
     g_session.m_commandOptions.emplace_back(name, optionId);
   }

@@ -1951,7 +1951,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             if (this->recordChat[9] == last && this->recordChat[7] == first &&
                 this->scene->player->render.state != 3) {
               if ((g_session.IsSuperNoviceJob(g_session.GetDisplayJob()) &&
-                   g_session.m_level >= *reinterpret_cast<const int*>(g_session.maxBaseLevel)) ||
+                   g_session.m_level >= g_session.m_maxBaseLevel) ||
                   (g_session.IsSuperNovice2Job(g_session.GetDisplayJob()) &&
                    g_session.m_level >= *reinterpret_cast<const int*>(g_session.jobLevelLimits))) {
                 g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_SUPERNOVICE_CHOPOKGI_CAPPEDLEVEL)), 0xFF, 0, 0, 0);
@@ -7656,7 +7656,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
 
   if (g_serviceOptions.Get(0x79)) {
     UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.shortCutWnd);
-    *reinterpret_cast<int*>(&g_session.mapTransitionFlag[0x00]) = 1;
+    g_session.m_mapTransitionFlag = 1;
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (g_mouse.wheel > 0) {
       if (!shortcuts) {
@@ -8629,7 +8629,7 @@ int CGameMode::ProcessGroundClick(int result) {
     return result;
   }
 
-  if (*reinterpret_cast<const int*>(g_session.showEffects) != 0) {
+  if (g_session.m_showEffects != 0) {
     g_groundOverlayA = column;
     g_groundOverlayB = row;
     g_groundOverlaySkip = 0;
@@ -8858,12 +8858,12 @@ void CGameMode::Update() {
     g_windowMgr.DrawCenteredBackground();
     g_windowMgr.DrawWindows();
     g_mapInfoMgr->DrawMapName();
-    if (this->scene->isPKZone != 0 || *reinterpret_cast<const int*>(&g_session.interactionFlags[0x08]) != 0) {
+    if (this->scene->isPKZone != 0 || g_session.m_isPvpZone != 0) {
       this->DrawMiniMapCoordinates();
       this->DrawTimeAttackTimer();
     }
     if (*reinterpret_cast<const int*>(&g_session.timeAttackState[0x08]) != 0) {
-      this->DrawTimeAttackCountdown(*reinterpret_cast<const std::uint32_t*>(&g_session.timeAttackState[0x00]), *reinterpret_cast<const int*>(g_session.timeAttackMode));
+      this->DrawTimeAttackCountdown(*reinterpret_cast<const std::uint32_t*>(&g_session.timeAttackState[0x00]), g_session.m_timeAttackMode);
     }
 
     if (this->drag.source != 0 && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
@@ -8942,14 +8942,14 @@ void CGameMode::ProcessInput() {
   }
 
   if (this->skillUseType != nullptr) {
-    if (*reinterpret_cast<int*>(&g_session.mapTransitionFlag[0x00]) == 0) {
+    if (g_session.m_mapTransitionFlag == 0) {
       if (g_mouse.wheel > 0) {
         this->SendMsg(MM_USESKILL_LEVEL_PLUS, 1, 0, 0, 0);
       } else if (g_mouse.wheel < 0) {
         this->SendMsg(MM_USESKILL_LEVEL_MINUS, 1, 0, 0, 0);
       }
     }
-    *reinterpret_cast<int*>(&g_session.mapTransitionFlag[0x00]) = 0;
+    g_session.m_mapTransitionFlag = 0;
   }
 
   if (g_mouse.buttons[0] == 3) {
@@ -10166,7 +10166,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         }
         }
       } else if (pick->healthState != 0 || scene->isPKZone != 0 || scene->isEventPVPMode != 0 ||
-                 *reinterpret_cast<const int*>(&g_session.interactionFlags[4]) != 0) {
+                 g_session.m_isSiegeZone != 0) {
         if (!g_session.IsPartyMember(actor->render.accountId, true)) {
           attack = 1;
         }
@@ -10488,7 +10488,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
   const unsigned char forceOption = g_serviceOptions.Get(0x6D);
-  const int& siegeMode = *reinterpret_cast<const int*>(&g_session.interactionFlags[4]);
+  const int& siegeMode = g_session.m_isSiegeZone;
   const std::uint32_t& homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.spAndHomunculusStats[8]);
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   GuildInfo* guildInfo = &g_guildInfo;

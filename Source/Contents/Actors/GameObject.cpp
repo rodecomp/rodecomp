@@ -2305,7 +2305,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_MAKE_LEVEL99_EFFECT: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(0x6A);
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<signed char>(this->levelAuraType)) {
+    if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
     if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
@@ -2323,7 +2323,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->GetEffectiveJob(-1) == JT_G_TREASURE_BOX) {
       break;
     }
-    this->levelAuraType = static_cast<unsigned char>(*reinterpret_cast<int*>(g_session.maxBaseLevel));
+    this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     int first = 200;
     int second = 0x3D0;
     if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x30]) > 0) {
@@ -2371,13 +2371,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case 147: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(0x6A);
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<signed char>(this->levelAuraType)) {
+    if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
     if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
       break;
     }
-    this->levelAuraType = static_cast<unsigned char>(*reinterpret_cast<int*>(g_session.maxBaseLevel));
+    this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     int first = 0x3FE;
     int second;
     if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
@@ -2423,13 +2423,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case 150: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(0x6A);
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<signed char>(this->levelAuraType)) {
+    if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
     if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
       break;
     }
-    this->levelAuraType = static_cast<unsigned char>(*reinterpret_cast<int*>(g_session.maxBaseLevel));
+    this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     int first = 0x4CA;
     int second = 0x4CB;
     if (*reinterpret_cast<int*>(&g_session.jobLevelLimits[0x6C]) > 0) {
@@ -2452,13 +2452,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_MAKE_LEVEL4TH_EFFECT: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(0x6A);
-    if (*reinterpret_cast<int*>(g_session.maxBaseLevel) == static_cast<signed char>(this->levelAuraType)) {
+    if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
     if (StateFlag06(this->stateFlags) == true || StateFlag01(this->stateFlags) == true || StateFlag02(this->stateFlags) == true) {
       break;
     }
-    this->levelAuraType = static_cast<unsigned char>(*reinterpret_cast<int*>(g_session.maxBaseLevel));
+    this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
     const int first = g_session.m_maxLevelEffect4th;
     const int second = g_session.m_maxLevelEffect4thSub;
     const vector3d offset{0.0f, 0.0f, 0.0f};

@@ -6263,7 +6263,7 @@ void CGameMode::Zc_Mer_Init(const unsigned char* data) {
   g_session.m_mercenaryLoyalty = packet->loyalty;
   g_session.m_mercenarySummons = packet->summons;
   g_session.m_mercenaryKills = packet->kills;
-  *reinterpret_cast<int*>(&g_session.mercenaryAttackRange[0]) = packet->attackRange;
+  g_session.m_mercenaryAttackRange = packet->attackRange;
   g_session.m_mercenaryExpiration = packet->expiration;
 }
 

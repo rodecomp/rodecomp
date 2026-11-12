@@ -3990,7 +3990,7 @@ void CPlayer::SendMsg(
     this->preMoveOn = 0;
     const int* route = reinterpret_cast<const int*>(static_cast<std::intptr_t>(b));
     this->routeStartTick = route[0];
-    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.healthPoints))) {
+    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], g_session.m_moveSpeed)) {
       this->movementState[5] = route[5];
       *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
       this->SetState(1, 1);
@@ -4001,7 +4001,7 @@ void CPlayer::SendMsg(
       int subColumn;
       int subRow;
       mode->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
-      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.healthPoints))) {
+      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], g_session.m_moveSpeed)) {
         this->movementState[5] = route[5];
         *reinterpret_cast<int*>(this->destinationAndSpeed) = route[6];
         this->SetState(1, 1);
@@ -4076,7 +4076,7 @@ void CPlayer::SendMsg(
       CRenderObject* target = mode->scene->GetGameActorByAID(static_cast<std::uint32_t>(b));
       if (target != nullptr) {
         this->proceedType =
-          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.healthPoints) * 4 / 3) <
+          static_cast<std::uint32_t>(g_session.m_moveSpeed * 4 / 3) <
               reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->destinationAndSpeed)[1]
             ? 5
             : 1;
@@ -4303,7 +4303,7 @@ void CPlayer::Initialize() {
   this->standTick = timeGetTime() - 1200;
   this->SetState(0, 1);
 
-  *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = *reinterpret_cast<const int*>(&g_session.healthPoints[0]);
+  *reinterpret_cast<int*>(&this->destinationAndSpeed[4]) = g_session.m_moveSpeed;
   this->render.isCharacter = 1;
   this->SetSexBit(g_session.GetCurrentSex());
 

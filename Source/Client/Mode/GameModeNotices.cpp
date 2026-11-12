@@ -329,7 +329,7 @@ void CGameMode::ReceiveStatus(const unsigned char* data) {
   bonusStats[5] = packet->stats[11];
   g_session.InvalidateWindowFrames();
 
-  *reinterpret_cast<int*>(g_session.statusPoints) = packet->statusPoint;
+  g_session.m_statusPoint = packet->statusPoint;
   g_session.InvalidateWindowFrames();
 
   bonusStats[7] = packet->values[0];
@@ -4916,18 +4916,18 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
   g_mapPropertyMgr->SetValue(packet->mapId, 41, (packet->flags >> 10) & 1);
   g_session.mapPropertyId = packet->mapId;
 
-  g_serviceOptions.Set(229, *reinterpret_cast<int*>(&g_session.interactionFlags[0x0]) != 0);
-  *reinterpret_cast<int*>(&g_session.interactionFlags[0x4]) = 0;
-  *reinterpret_cast<int*>(&g_session.interactionFlags[0x8]) = 0;
+  g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
+  g_session.m_isSiegeZone = 0;
+  g_session.m_isPvpZone = 0;
   g_session.partyBlocked = 0;
   if (g_session.GetMapProperty0F()) {
     g_serviceOptions.Set(229, 1);
   }
   if (g_session.GetMapProperty10()) {
-    *reinterpret_cast<int*>(&g_session.interactionFlags[0x4]) = 1;
+    g_session.m_isSiegeZone = 1;
   }
   if (g_session.GetMapProperty11()) {
-    *reinterpret_cast<int*>(&g_session.interactionFlags[0x8]) = 1;
+    g_session.m_isPvpZone = 1;
   }
   if (g_session.GetMapProperty12()) {
     g_session.partyBlocked = 1;

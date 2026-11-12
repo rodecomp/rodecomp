@@ -1620,7 +1620,7 @@ void UIStatusWnd::Paint() {
   this->DrawRightAlignedText(275, 38, FormatOwnedString("%d + %d", derived[8], derived[15]).c_str(), 0, 1, 14, 0, 0);
   this->DrawRightAlignedText(275, 54, FormatOwnedString("%d + %d", derived[17], derived[19]).c_str(), 0, 1, 14, 0, 0);
   this->DrawRightAlignedText(275, 70, FormatOwnedString("%d", (2000 - derived[6]) / 10).c_str(), 0, 1, 14, 0, 0);
-  this->DrawRightAlignedText(275, 86, FormatOwnedString("%d", *reinterpret_cast<const int*>(g_session.statusPoints)).c_str(), 0, 1, 14, 0, 0);
+  this->DrawRightAlignedText(275, 86, FormatOwnedString("%d", g_session.m_statusPoint).c_str(), 0, 1, 14, 0, 0);
   if (g_guildInfo.guildName.size() != 0) {
     this->DrawRightAlignedText(275, 102, g_guildInfo.guildName.c_str(), 0, 0, 12, 0, 0);
   }
@@ -8528,7 +8528,7 @@ static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = g_modeMgr.gameMode;
   const int* statCosts = reinterpret_cast<const int*>(g_session.combatStats);
-  const int statusPoint = *reinterpret_cast<const int*>(g_session.statusPoints);
+  const int statusPoint = g_session.m_statusPoint;
   switch (message) {
   case UM_COMMAND:
     switch (a) {

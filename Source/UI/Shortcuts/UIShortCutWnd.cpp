@@ -366,7 +366,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
     break;
 
   case TYPE_CASH_POINT_ITEM:
-    if (*reinterpret_cast<const int*>(&g_session.healthPoints[4]) >= 0) {
+    if (g_session.m_manner >= 0) {
       const int result =
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
       if (result == 187) {

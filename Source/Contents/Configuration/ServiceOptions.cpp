@@ -1034,7 +1034,7 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
     }
   }
 
-  *reinterpret_cast<int*>(g_session.interactionFlags) = value;
+  g_session.m_serviceOption229 = value;
 }
 #pragma inline_depth()
 
