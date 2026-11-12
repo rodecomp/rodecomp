@@ -3095,7 +3095,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_standardStats[5] = this->characters[i].stats[5];
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x04]) = this->characters[i].exp;
+        g_session.m_exp = this->characters[i].exp;
         g_session.InvalidateWindowFrames();
         const int hp = static_cast<int>(this->characters[i].hp);
         if (g_session.hp != hp) {
@@ -3120,7 +3120,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.m_zeny = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x00]);
         g_session.RefreshHpSpWindows();
         g_session.InvalidateWindowFrames();
-        *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x1C]) = *reinterpret_cast<const std::int64_t*>(&this->characters[i].progressionData[0x04]);
+        g_session.m_jobExp = *reinterpret_cast<const std::int64_t*>(&this->characters[i].progressionData[0x04]);
         g_session.InvalidateWindowFrames();
         g_session.m_karma = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x1C]);
         g_session.InvalidateWindowFrames();

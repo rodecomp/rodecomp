@@ -36,19 +36,19 @@
 namespace {
 
 std::int64_t BaseExpCurrent() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x04]);
+  return g_session.m_exp;
 }
 
 std::int64_t BaseExpMaximum() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x0C]);
+  return g_session.m_nextExp;
 }
 
 std::int64_t JobExpCurrent() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x1C]);
+  return g_session.m_jobExp;
 }
 
 std::int64_t JobExpMaximum() {
-  return *reinterpret_cast<const std::int64_t*>(&g_session.playerExperienceState[0x14]);
+  return g_session.m_nextJobExp;
 }
 
 }

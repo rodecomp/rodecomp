@@ -11517,10 +11517,10 @@ __declspec(noinline) void SetActiveSkillEffect184(unsigned char enable) {
 // OFFSET: 0x00D316D0
 // FUNCTION: fn_21734
 void CGameMode::ReceiveExpChange(const unsigned char* packet) {
-  std::int64_t& exp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x04]);
-  std::int64_t& nextExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x0C]);
-  std::int64_t& nextJobExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x14]);
-  std::int64_t& jobExp = *reinterpret_cast<std::int64_t*>(&g_session.playerExperienceState[0x1C]);
+  std::int64_t& exp = g_session.m_exp;
+  std::int64_t& nextExp = g_session.m_nextExp;
+  std::int64_t& nextJobExp = g_session.m_nextJobExp;
+  std::int64_t& jobExp = g_session.m_jobExp;
   switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
   case SP_BASEEXP:
     if (g_session.IsAdminSubMode(2)) {

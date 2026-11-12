@@ -1168,7 +1168,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1015:
-      std::memcpy(&this->playerExperienceState[0x4], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_exp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1016:
@@ -1180,7 +1180,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1018:
-      std::memcpy(&this->playerExperienceState[0xC], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_nextExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1019:
@@ -1324,11 +1324,11 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1054:
-      std::memcpy(&this->playerExperienceState[0x14], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_nextJobExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1055:
-      std::memcpy(&this->playerExperienceState[0x1C], data.data() + offset, header.bytes);
+      std::memcpy(&this->m_jobExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1056:

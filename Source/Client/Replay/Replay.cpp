@@ -1191,10 +1191,10 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1012, &this->m_navigationPlayerMap[0x14], 4));
   AppendRecord(records, MakeReplayRecord(1013, &this->m_navigationPlayerMap[0x18], 4));
   AppendRecord(records, MakeReplayRecord(1014, &this->m_job, sizeof(this->m_job)));
-  AppendRecord(records, MakeReplayRecord(1015, &this->playerExperienceState[0x4], 8));
+  AppendRecord(records, MakeReplayRecord(1015, &this->m_exp, 8));
   AppendRecord(records, MakeReplayRecord(1016, &this->m_level, sizeof(this->m_level)));
   AppendRecord(records, MakeReplayRecord(1017, &this->m_statusPoint, sizeof(this->m_statusPoint)));
-  AppendRecord(records, MakeReplayRecord(1018, &this->playerExperienceState[0xC], 8));
+  AppendRecord(records, MakeReplayRecord(1018, &this->m_nextExp, 8));
   AppendRecord(records, MakeReplayRecord(1019, &this->m_jobLevel, sizeof(this->m_jobLevel)));
   AppendRecord(records, MakeReplayRecord(1020, &this->m_skillPoint, 4));
   AppendRecord(records, MakeReplayRecord(1021, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint)));
@@ -1230,8 +1230,8 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1051, &this->m_zeny, sizeof(this->m_zeny)));
   AppendRecord(records, MakeReplayRecord(1052, &this->m_moveSpeed, sizeof(this->m_moveSpeed)));
   AppendRecord(records, MakeReplayRecord(1053, &this->m_manner, sizeof(this->m_manner)));
-  AppendRecord(records, MakeReplayRecord(1054, &this->playerExperienceState[0x14], 4));
-  AppendRecord(records, MakeReplayRecord(1055, &this->playerExperienceState[0x1C], 4));
+  AppendRecord(records, MakeReplayRecord(1054, &this->m_nextJobExp, 4));
+  AppendRecord(records, MakeReplayRecord(1055, &this->m_jobExp, 4));
   AppendRecord(records, MakeReplayRecord(1056, &this->m_karma, sizeof(this->m_karma)));
   AppendRecord(records, MakeReplayRecord(1057, &this->monsterInfoEnabled, sizeof(this->monsterInfoEnabled)));
   AppendRecord(records, MakeReplayRecord(1058, &this->m_clientTimeOffset, sizeof(this->m_clientTimeOffset)));

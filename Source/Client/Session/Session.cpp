@@ -3124,10 +3124,8 @@ void CSession::ResetCharacterState() {
   const int randomValue = std::max(0, std::rand() % 1024) + 1;
 
   this->m_zeny = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x1C]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x20]) = 0;
+  this->m_exp = 0;
+  this->m_jobExp = 0;
   this->m_maxWeight = 0;
   this->m_weight = 0;
 
@@ -3161,7 +3159,7 @@ void CSession::ResetCharacterState() {
   *reinterpret_cast<int*>(&this->combatStats[0x0C]) = 2;
   *reinterpret_cast<int*>(&this->combatStats[0x10]) = 2;
 
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x28]) = 0;
+  this->m_statusPoint = 0;
   *reinterpret_cast<int*>(&this->combatStats[0x1C]) = 0;
   *reinterpret_cast<int*>(&this->combatStats[0x30]) = 0;
   *reinterpret_cast<int*>(&this->combatStats[0x34]) = 0;
@@ -3177,14 +3175,10 @@ void CSession::ResetCharacterState() {
   *reinterpret_cast<int*>(&this->combatStats[0x18]) = 0;
   *reinterpret_cast<int*>(&this->combatStats[0x24]) = 0;
 
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x04]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x08]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x1C]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x20]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x0C]) = 999999;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x10]) = 0;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x14]) = 999999;
-  *reinterpret_cast<int*>(&this->playerExperienceState[0x18]) = 0;
+  this->m_exp = 0;
+  this->m_jobExp = 0;
+  this->m_nextExp = 999999;
+  this->m_nextJobExp = 999999;
 
   this->cartCount = 0;
   this->cartMaxCount = 0;
