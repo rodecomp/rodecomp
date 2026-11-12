@@ -2609,16 +2609,22 @@ void UILoginWnd::LoadLogin() {
     DWORD type = REG_DWORD;
     DWORD size = 4;
     int saveId;
-    const char checkSource[] = CRYPT_CHARS(10, "CHECKSAVE", 0xF14F79170939C7F1ULL);
-    thread_local EncryptedName<sizeof(checkSource), 0xF14F79170939C7F1ULL> checkName(checkSource);
+    EncryptedName<10, 0xF14F79170939C7F1ULL>& checkName = []() -> EncryptedName<10, 0xF14F79170939C7F1ULL>& {
+      const char checkSource[] = CRYPT_CHARS(10, "CHECKSAVE", 0xF14F79170939C7F1ULL);
+      thread_local EncryptedName<sizeof(checkSource), 0xF14F79170939C7F1ULL> name(checkSource);
+      return name;
+    }();
     RegQueryValueExA(key, checkName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&saveId), &size);
     if (saveId != 1) {
       saveId = 0;
     }
 
     int bitwise;
-    const char bitwiseSource[] = CRYPT_CHARS(8, "BITWISE", 0xA5FD29D7AB6DC59FULL);
-    thread_local EncryptedName<sizeof(bitwiseSource), 0xA5FD29D7AB6DC59FULL> bitwiseName(bitwiseSource);
+    EncryptedName<8, 0xA5FD29D7AB6DC59FULL>& bitwiseName = []() -> EncryptedName<8, 0xA5FD29D7AB6DC59FULL>& {
+      const char bitwiseSource[] = CRYPT_CHARS(8, "BITWISE", 0xA5FD29D7AB6DC59FULL);
+      thread_local EncryptedName<sizeof(bitwiseSource), 0xA5FD29D7AB6DC59FULL> name(bitwiseSource);
+      return name;
+    }();
     RegQueryValueExA(key, bitwiseName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&bitwise), &size);
 
     char id[52];
@@ -2626,15 +2632,21 @@ void UILoginWnd::LoadLogin() {
     char password[26] = {};
     type = REG_SZ;
     size = 25;
-    const char passwordSource[] = CRYPT_CHARS(9, "PASSWORD", 0xDD3913D5D7F97BE1ULL);
-    thread_local EncryptedName<sizeof(passwordSource), 0xDD3913D5D7F97BE1ULL> passwordName(passwordSource);
+    EncryptedName<9, 0xDD3913D5D7F97BE1ULL>& passwordName = []() -> EncryptedName<9, 0xDD3913D5D7F97BE1ULL>& {
+      const char passwordSource[] = CRYPT_CHARS(9, "PASSWORD", 0xDD3913D5D7F97BE1ULL);
+      thread_local EncryptedName<sizeof(passwordSource), 0xDD3913D5D7F97BE1ULL> name(passwordSource);
+      return name;
+    }();
     RegQueryValueExA(key, passwordName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(password), &size);
     password[24] = 0;
 
     type = REG_SZ;
     size = 51;
-    const char idSource[] = CRYPT_CHARS(3, "ID", 0x050505679903579BULL);
-    thread_local EncryptedName<sizeof(idSource), 0x050505679903579BULL> idName(idSource);
+    EncryptedName<3, 0x050505679903579BULL>& idName = []() -> EncryptedName<3, 0x050505679903579BULL>& {
+      const char idSource[] = CRYPT_CHARS(3, "ID", 0x050505679903579BULL);
+      thread_local EncryptedName<sizeof(idSource), 0x050505679903579BULL> name(idSource);
+      return name;
+    }();
     RegQueryValueExA(key, idName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(id), &size);
     id[50] = 0;
     password[24] = 0;
@@ -2644,8 +2656,11 @@ void UILoginWnd::LoadLogin() {
       unsigned char shade;
       bool placeholder = std::strcmp("", id) == 0;
       if (!placeholder) {
-        const char compareSource[] = CRYPT_CHARS(3, "ID", 0x83EFBFBB37EDBDBDULL);
-        thread_local EncryptedName<sizeof(compareSource), 0x83EFBFBB37EDBDBDULL> compareName(compareSource);
+        EncryptedName<3, 0x83EFBFBB37EDBDBDULL>& compareName = []() -> EncryptedName<3, 0x83EFBFBB37EDBDBDULL>& {
+          const char compareSource[] = CRYPT_CHARS(3, "ID", 0x83EFBFBB37EDBDBDULL);
+          thread_local EncryptedName<sizeof(compareSource), 0x83EFBFBB37EDBDBDULL> name(compareSource);
+          return name;
+        }();
         placeholder = std::strcmp(compareName.Text(), id) == 0;
       }
 
@@ -2655,8 +2670,11 @@ void UILoginWnd::LoadLogin() {
       } else {
         this->idPlaceholder = true;
         UIEditCtrl_Custom* edit = this->idEdit;
-        const char textSource[] = CRYPT_CHARS(3, "ID", 0xBF2B4B31397FF5A7ULL);
-        thread_local EncryptedName<sizeof(textSource), 0xBF2B4B31397FF5A7ULL> textName(textSource);
+        EncryptedName<3, 0xBF2B4B31397FF5A7ULL>& textName = []() -> EncryptedName<3, 0xBF2B4B31397FF5A7ULL>& {
+          const char textSource[] = CRYPT_CHARS(3, "ID", 0xBF2B4B31397FF5A7ULL);
+          thread_local EncryptedName<sizeof(textSource), 0xBF2B4B31397FF5A7ULL> name(textSource);
+          return name;
+        }();
         edit->SetText(textName.Text());
         shade = 156;
       }
