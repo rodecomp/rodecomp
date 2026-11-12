@@ -12043,40 +12043,39 @@ static_assert(sizeof(MirrorSkillSpawnData) == 0x1C);
 void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y) {
   if (owner == g_session.m_aid) {
     CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
-    if (actor) {
-      this->CellCenter(x, y, actor->render.position.x, actor->render.position.z);
-      actor->render.position.y =
-        this->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
+    if (!actor) {
+      ActorStandEntry entry;
+      entry.cellX = x;
+      entry.aid = aid;
+      entry.cellY = y;
+      entry.job = g_session.GetDisplayJob();
+      entry.appearanceVariant = g_session.GetCurrentSex();
+      entry.head = g_session.m_head;
+      entry.weapon = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]);
+      entry.shield = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]);
+      entry.accessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]);
+      entry.direction = 180;
+      entry.shieldAppearance = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0xC]);
+      entry.accessory2 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]);
+      entry.accessory3 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]);
+      entry.headPalette = g_session.m_headPalette;
+      entry.bodyPalette = g_session.m_bodyStyle;
+      entry.robe = g_session.m_robe;
+      entry.bodyCostume = g_session.m_bodyCostume;
+
+      CPc* pc = new CPc;
+      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
+      pc->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      pc->objectType = 7;
+      pc->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->scene->objects.push_back(pc);
+      this->scene->actors.push_back(pc);
+      this->spriteMirrorActorIds.push_back(aid);
       return;
     }
 
-    ActorStandEntry entry;
-    entry.cellX = x;
-    entry.aid = aid;
-    entry.cellY = y;
-    entry.job = g_session.GetDisplayJob();
-    entry.appearanceVariant = g_session.GetCurrentSex();
-    entry.head = g_session.m_head;
-    entry.weapon = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x4]);
-    entry.shield = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0x8]);
-    entry.accessory = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x0]);
-    entry.direction = 180;
-    entry.shieldAppearance = *reinterpret_cast<const int*>(&g_session.weaponAppearance[0xC]);
-    entry.accessory2 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x4]);
-    entry.accessory3 = *reinterpret_cast<const int*>(&g_session.accessoryAppearance[0x8]);
-    entry.headPalette = g_session.m_headPalette;
-    entry.bodyPalette = g_session.m_bodyStyle;
-    entry.robe = g_session.m_robe;
-    entry.bodyCostume = g_session.m_bodyCostume;
-
-    CPc* pc = new CPc;
-    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-    pc->SendMsg(nullptr, AM_INITSTANDENTRY2, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    pc->objectType = 7;
-    pc->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    this->scene->objects.push_back(pc);
-    this->scene->actors.push_back(pc);
-    this->spriteMirrorActorIds.push_back(aid);
+    this->CellCenter(x, y, actor->render.position.x, actor->render.position.z);
+    actor->render.position.y = this->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
     return;
   }
 
