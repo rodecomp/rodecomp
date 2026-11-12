@@ -33,7 +33,7 @@ bool CPrivateAirplaneMgr::Create() {
     return false;
   }
 
-  if (!CPrivateAirplaneMgr::Init()) {
+  if (!g_privateAirplaneItems->Init()) {
     delete g_privateAirplaneItems;
     g_privateAirplaneItems = nullptr;
     return false;
