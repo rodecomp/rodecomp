@@ -2764,8 +2764,8 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 0x574E) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (0x574E == header.type) {
       while (position < static_cast<unsigned int>(b)) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
@@ -2862,8 +2862,8 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 0x571C) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (0x571C == header.type) {
       while (position < static_cast<unsigned int>(b)) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
@@ -7628,7 +7628,7 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
-    if (header.type == 0x5528) {
+    if (0x5528 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += 6;
@@ -10168,8 +10168,8 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 0x5654) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (0x5654 == header.type) {
       while (position < static_cast<unsigned int>(b)) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
