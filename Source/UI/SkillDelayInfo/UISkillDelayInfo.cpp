@@ -142,11 +142,8 @@ void CUIDelayItem::OnCreate(int width, int height) {
   this->level->SetText("");
   this->level->SetFitText(0);
   this->level->SetAlign(6, 6);
-  constexpr std::array<std::uint8_t, 6> levelFontSourceArray = CRYPT_NAME("Gulim", 0xE33F2FF779878559ULL);
-  const std::uint8_t (&levelFontSource)[6] = levelFontSourceArray._Elems;
   // GLOBAL: gl_25165
-  thread_local EncryptedName<sizeof(levelFontSource), 0xE33F2FF779878559ULL> levelFont(levelFontSource);
-  this->level->SetFont(std::string(levelFont.Text()));
+  this->level->SetFont(std::string(OBFUSCATE_ARRAY_TEXT("Gulim", 0xE33F2FF779878559ULL, std::uint8_t)));
   this->level->SetFontHeight(12);
   this->level->SetBold(0);
   this->level->SetColor(0);
