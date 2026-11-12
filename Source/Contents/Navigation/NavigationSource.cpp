@@ -15,6 +15,7 @@ template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(co
 
 template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
 template __declspec(noinline) void std::vector<PathCell>::push_back(const PathCell&);
+template __declspec(noinline) void std::_Destroy_range<std::allocator<NaviRouteLine>>(NaviRouteLine*, NaviRouteLine* const, std::allocator<NaviRouteLine>&) noexcept;
 
 // GLOBAL: gl_24627
 CNavigationManager g_navigationManager;
