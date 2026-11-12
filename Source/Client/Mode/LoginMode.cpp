@@ -613,7 +613,9 @@ int CLoginMode::GetMaxCharacterSlot() {
     }
 
     const int slot = this->characters[i].slot;
-    maxSlot = maxSlot < slot ? slot : maxSlot;
+    if (slot > maxSlot) {
+      maxSlot = slot;
+    }
   }
 
   return maxSlot;
@@ -1588,7 +1590,7 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
 // OFFSET: 0x00D90740
 // FUNCTION: fn_22285
 __declspec(noinline) void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
-  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, std::string());
+  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, "");
 }
 
 // OFFSET: 0x00D971E0
