@@ -398,7 +398,7 @@ CRenderObject* FindRenderObject(std::uint32_t aid) {
 
 // OFFSET: 0x00CD76A0
 // FUNCTION: fn_21296
-bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument) {
+__declspec(safebuffers) bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument) {
   if (!source || !target) {
     return false;
   }
