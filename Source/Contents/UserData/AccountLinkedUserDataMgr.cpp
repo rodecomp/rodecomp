@@ -2,7 +2,6 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Script/LuaScript.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
-#include "Contents/UserData/AccountService.h"
 #include "Contents/UserData/AccountUserData.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Hotkeys/EmotionHotkeys.h"
@@ -128,7 +127,7 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
 // OFFSET: 0x005BCB10
 // FUNCTION: fn_03467
 void CAccountLinkedUserDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
-  const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
+  const std::string base = g_session.ResolveAccountServiceBase();
   if (!base.empty()) {
     constexpr std::array<std::uint8_t, 17> saveSourceArray = CRYPT_NAME("/userconfig/save", 0x59278F63D79F3DA1ULL);
     const std::uint8_t (&saveSource)[17] = saveSourceArray._Elems;

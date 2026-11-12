@@ -1,4 +1,3 @@
-#include "Contents/UserData/AccountService.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Client/Session/Session.h"
@@ -56,7 +55,7 @@ void CEmblemDataMgr::Shutdown() {
 // OFFSET: 0x005EB580
 // FUNCTION: fn_03974
 void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
-  const std::string base = ResolveAccountServiceBase(settings, tables, host, port, overrideKey);
+  const std::string base = g_session.ResolveAccountServiceBase();
 
   if (!base.empty()) {
     {
