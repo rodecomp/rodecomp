@@ -13,6 +13,11 @@ struct PetEvolutionRecipe {
   /* 0004 */ std::vector<std::pair<int, int>> materials;
 };
 
+struct PetEvolutionNote {
+  /* 0000 */ int value;
+  /* 0004 */ std::string text;
+};
+
 // VTABLE: vt_00355
 class CPetEvolutionMgr {
 public:
@@ -41,7 +46,7 @@ public:
 
   /* 0004 */ bool m_isValid;
   /* 0008 */ std::map<int, std::vector<PetEvolutionRecipe>> m_recipes;
-  /* 0010 */ std::map<int, std::string> padding_0010;
+  /* 0010 */ std::map<int, PetEvolutionNote> padding_0010;
   /* 0018 */ std::vector<int> m_autoFeeding;
 };
 

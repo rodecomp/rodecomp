@@ -59,15 +59,6 @@ int g_guildTotalInfoRowHeight = 19;
 // GLOBAL: gl_24990
 int g_guildTotalInfoColumnWidths[4] = {151, 82, 70, 70};
 
-struct GuildTotalInfoEntry {
-  /* 0000 */ int padding_0000;
-  /* 0004 */ std::string name;
-  /* 001C */ int level;
-  /* 0020 */ int memberCount;
-  /* 0024 */ int maxMembers;
-  /* 0028 */ int ranking;
-};
-
 // GLOBAL: gl_24994
 std::string g_guildNamelessTag = "<NAMELESS>";
 
@@ -1646,7 +1637,7 @@ void UIGuildTotalInfoWnd::Paint() {
     x += widths[column] + 1;
   }
 
-  const auto& entries = *reinterpret_cast<const std::list<GuildTotalInfoEntry>*>(&g_guildInfo.guildList);
+  const auto& entries = g_guildInfo.guildList;
   int drawn = 0;
   int index = 0;
   for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
@@ -2365,7 +2356,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     switch (a1) {
     case ID_OK:
       if (this->m_positionMap.size() != 0) {
-        reinterpret_cast<std::map<int, GuildPositionEntry>&>(g_guildInfo.pendingPositionChanges) = this->m_positionMap;
+        g_guildInfo.pendingPositionChanges = this->m_positionMap;
         g_modeMgr.gameMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
         this->m_positionMap.clear();
         this->m_button->Move(-200, -200);

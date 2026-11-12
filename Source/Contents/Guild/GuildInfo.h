@@ -8,6 +8,25 @@
 #include <string>
 #include <vector>
 
+struct GuildTotalInfoEntry {
+  /* 0000 */ int padding_0000;
+  /* 0004 */ std::string name;
+  /* 001C */ int level;
+  /* 0020 */ int memberCount;
+  /* 0024 */ int maxMembers;
+  /* 0028 */ int ranking;
+};
+
+struct GuildPositionEntry {
+  /* 0000 */ int id;
+  /* 0004 */ int positionId;
+  /* 0008 */ std::string name;
+  /* 0020 */ int canInvite;
+  /* 0024 */ int canExpel;
+  /* 0028 */ int tax;
+  /* 002C */ int canStorage;
+};
+
 struct GuildMemberManageEntry {
   /* 0000 */ int accountId;
   /* 0004 */ int characterId;
@@ -89,10 +108,10 @@ public:
   /* 00DC */ std::list<Member> m_members;
   /* 00E4 */ std::list<RelatedGuild> relatedGuilds;
   /* 00EC */ std::list<Unknown00ECEntry> bannedMembers;
-  /* 00F4 */ std::list<int> guildList;
+  /* 00F4 */ std::list<GuildTotalInfoEntry> guildList;
   /* 00FC */ std::map<int, std::string> m_positions;
   /* 0104 */ std::map<int, GuildMemberManageEntry> pendingMemberPositions;
-  /* 010C */ std::map<int, int> pendingPositionChanges;
+  /* 010C */ std::map<int, GuildPositionEntry> pendingPositionChanges;
   /* 0114 */ std::vector<int> agitIds;
 
   GuildInfo();

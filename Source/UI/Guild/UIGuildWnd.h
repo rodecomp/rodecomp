@@ -46,16 +46,6 @@ class ForbiddenWords;
 
 bool CompareWideText(const char* left, const char* right);
 
-struct GuildPositionEntry {
-  /* 0000 */ int id;
-  /* 0004 */ int positionId;
-  /* 0008 */ std::string name;
-  /* 0020 */ int canInvite;
-  /* 0024 */ int canExpel;
-  /* 0028 */ int tax;
-  /* 002C */ int canStorage;
-};
-
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd();

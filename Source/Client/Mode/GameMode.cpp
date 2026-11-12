@@ -2161,7 +2161,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (g_guildInfo.isMaster == 0) {
         return 0;
       }
-      auto& positions = reinterpret_cast<std::map<int, GuildPositionEntry>&>(g_guildInfo.pendingPositionChanges);
+      auto& positions = g_guildInfo.pendingPositionChanges;
       const std::int16_t length = static_cast<std::int16_t>(4U + 40U * positions.size());
       if (length > 0x800) {
         return 0;
