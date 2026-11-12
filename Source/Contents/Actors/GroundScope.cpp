@@ -207,8 +207,8 @@ void CGroundScope::SendMsg(CGameObject* sender, int message, int a, int b, int c
 
     case AM_SET_SKILL:
       this->m_size = this->SkillScopeType(b) + 2;
-      this->m_skillId = b;
       this->m_angleSpeed = this->m_size != 0 ? 0.5f / static_cast<float>(this->m_size) : 0.0f;
+      this->m_skillId = b;
       return;
   }
 
